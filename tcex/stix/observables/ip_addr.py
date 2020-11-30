@@ -52,6 +52,7 @@ class StixIPBase(StixModel):
 class StixIPv4Object(StixIPBase):
     """STIX Threat Actor object."""
 
+    # pylint: disable=arguments-differ
     def consume(self, stix_data: Union[list, dict]):
         """Convert STIX IPv4-addr Cyber Observables to ThreatConnect indicators.
 
@@ -63,6 +64,7 @@ class StixIPv4Object(StixIPBase):
         """
         yield from super().do_consume(stix_data, 32)
 
+    # pylint: disable=arguments-differ
     def produce(self, tc_data: Union[list, dict], **kwargs):
         """Produce STIX 2.0 JSON object from TC API response.
 
@@ -97,8 +99,7 @@ class StixIPv4Object(StixIPBase):
         }
 
         yield from self._map(
-            tc_data,
-            parse_map,
+            tc_data, parse_map,
         )
 
     def _produce_address(self, tc_data: dict):
@@ -114,14 +115,14 @@ class StixIPv4Object(StixIPBase):
         }
 
         yield from self._map(
-            tc_data,
-            parse_map,
+            tc_data, parse_map,
         )
 
 
 class StixIPv6Object(StixIPBase):
     """STIX Threat Actor object."""
 
+    # pylint: disable=arguments-differ
     def consume(self, stix_data: Union[list, dict]):
         """Convert STIX IPv6-addr Cyber Observables to ThreatConnect indicators.
 
@@ -133,6 +134,7 @@ class StixIPv6Object(StixIPBase):
         """
         yield from super().do_consume(stix_data, 128)
 
+    # pylint: disable=arguments-differ
     def produce(self, tc_data: Union[list, dict], **kwargs):
         """Produce STIX 2.0 JSON object from TC API response.
 

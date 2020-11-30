@@ -12,6 +12,7 @@ from tcex.stix.model import StixModel
 class StixURLObject(StixModel):
     """STIX Threat Actor object."""
 
+    # pylint: disable=arguments-differ
     def consume(self, stix_data: Union[list, dict]):
         """Parse a STIX URL Object into a ThreatConnect URL Indicator."""
         mapper = {
@@ -28,6 +29,7 @@ class StixURLObject(StixModel):
 
         yield from self._map(stix_data, mapper)
 
+    # pylint: disable=arguments-differ
     def produce(self, tc_data: Union[list, dict], **kwargs):
         """Produce STIX 2.0 JSON object from TC API response.
 

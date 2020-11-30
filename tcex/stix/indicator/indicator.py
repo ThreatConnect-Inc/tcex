@@ -4,13 +4,12 @@ import stix2
 see: https://docs.oasis-open.org/cti/stix/v2.1/csprd01/stix-v2.1-csprd01.html#_Toc16070633
 """
 # standard library
-import uuid
-from typing import Union, Iterable
 import itertools
+import uuid
+from datetime import datetime
+from typing import Iterable, Union
 
 # third-party
-import stix2
-from datetime import datetime
 from dendrol import Pattern
 from dendrol.lang.STIXPatternListener import STIXPatternListener
 from dendrol.lang.STIXPatternParser import STIXPatternParser
@@ -33,6 +32,7 @@ class StixIndicator(StixModel):
             return f'{new_time}Z'
         return new_time
 
+    # pylint: disable=arguments-differ
     def produce(self, tc_data: Union[list, dict], **kwargs):
         """Produce a STIX Indicator from a ThreatConnect Indicator.
 
@@ -46,7 +46,6 @@ class StixIndicator(StixModel):
             tc_data = [tc_data]
 
         for data in tc_data:
-            print('data: ', data)
             _type = kwargs.get('indicator_type') or data.get('type')
             indicator_details = self.indicator_type_details.get(_type.lower())
             if not indicator_details:
@@ -74,11 +73,15 @@ class StixIndicator(StixModel):
                 security_label = security_label.get('name', '').strip().lower()
                 if security_label in self.security_label_map:
                     kwargs.setdefault('object_marking_refs', [])
-                    kwargs['object_marking_refs'].append(self.security_label_map.get(security_label))
+                    kwargs['object_marking_refs'].append(
+                        self.security_label_map.get(security_label)
+                    )
             for attribute in data.get('attribute', []):
                 if attribute.get('type').lower() == 'description':
                     value = attribute.get('value')
-                    last_modified = datetime.strptime(attribute.get('lastModified'), '%Y-%m-%dT%H:%M:%SZ')
+                    last_modified = datetime.strptime(
+                        attribute.get('lastModified'), '%Y-%m-%dT%H:%M:%SZ'
+                    )
                     if attribute.get('displayed'):
                         kwargs['description'] = value
                         break
@@ -137,14 +140,15 @@ class StixIndicator(StixModel):
             mappings = [
                 self._default_consume_handler(s.indicators, batch_xid_array),
                 self._ip_consume_handler(s.indicators, batch_xid_array),
-                self._file_consume_handler(s.indicators, batch_xid_array)
+                self._file_consume_handler(s.indicators, batch_xid_array),
             ]
             mappings = list(itertools.chain(*mappings))
-        except:
+        except Exception:
             self.logger.log.trace(f'''Error occurred parsing pattern: {stix_data.get('pattern')}''')
         return mappings
 
-    def _file_consume_handler(self, indicators: Iterable[dict], batch_xid_array):
+    @staticmethod
+    def _file_consume_handler(indicators: Iterable[dict], batch_xid_array):
         """Produce ThreatConnect file mappings from a list of STIX 2.1 indicators
 
         Args:
@@ -166,10 +170,10 @@ class StixIndicator(StixModel):
         batch_xid_array.append('File')
         mappings = []
         if (
-                len(file_indicators) <= 3
-                and len(sha256_indicators) <= 1
-                and len(sha2_indicators) <= 1
-                and len(md5_indicators) <= 1
+            len(file_indicators) <= 3
+            and len(sha256_indicators) <= 1
+            and len(sha2_indicators) <= 1
+            and len(md5_indicators) <= 1
         ):
             value = ' : '.join([v.get('value') for v in file_indicators])
             mappings.append(
@@ -177,7 +181,7 @@ class StixIndicator(StixModel):
                     'type': 'File',
                     'summary': value,
                     'confidence': '@.confidence',
-                    'xid': Batch.generate_xid(batch_xid_array + [value])
+                    'xid': Batch.generate_xid(batch_xid_array + [value]),
                 }
             )
         else:
@@ -187,12 +191,13 @@ class StixIndicator(StixModel):
                         'type': 'File',
                         'summary': i.get('value'),
                         'confidence': '@.confidence',
-                        'xid': Batch.generate_xid(batch_xid_array + [i.get('value')])
+                        'xid': Batch.generate_xid(batch_xid_array + [i.get('value')]),
                     }
                 )
         return mappings
 
-    def _ip_consume_handler(self, indicators: Iterable[dict], batch_xid_array):
+    @staticmethod
+    def _ip_consume_handler(indicators: Iterable[dict], batch_xid_array):
         """Produce ThreatConnect Address/CIDR mappings from a list of STIX 2.1 indicators
 
         Args:
@@ -202,7 +207,9 @@ class StixIndicator(StixModel):
             A array of indicator mappings.
         """
         mappings = []
-        for i in filter(lambda i: i.get('path') in ['ipv4-addr:value', 'ipv6-addr:value'], indicators):
+        for i in filter(
+            lambda i: i.get('path') in ['ipv4-addr:value', 'ipv6-addr:value'], indicators
+        ):
             path = i.get('path')
             value = i.get('value')
             parse_map = None
@@ -229,12 +236,15 @@ class StixIndicator(StixModel):
                         'summary': value.split('/')[0],
                     }
             parse_map['confidence'] = '@.confidence'
-            parse_map['xid'] = Batch.generate_xid(batch_xid_array + [parse_map.get('type'), parse_map.get('summary')])
+            parse_map['xid'] = Batch.generate_xid(
+                batch_xid_array + [parse_map.get('type'), parse_map.get('summary')]
+            )
             mappings.append(parse_map)
         return mappings
 
-    def _default_consume_handler(self, indicators: Iterable[dict], batch_xid_array):
-        """Produce ThreatConnect URL/EmailAddress/Host/ASN mappings from a list of STIX 2.1 indicators
+    @staticmethod
+    def _default_consume_handler(indicators: Iterable[dict], batch_xid_array):
+        """Produce ThreatConnect URL/EmailAddress/Host/ASN mappings from STIX 2.1 indicators
 
         Args:
             stix_data: STIX Indicator objects to parse.
@@ -261,8 +271,8 @@ class StixIndicator(StixModel):
                     'type': indicator_type,
                     'summary': value,
                     'confidence': '@.confidence',
-                    'xid': Batch.generate_xid(batch_xid_array + [indicator_type, value])
-            }
+                    'xid': Batch.generate_xid(batch_xid_array + [indicator_type, value]),
+                }
             )
         return mappings
 
@@ -284,7 +294,7 @@ class STIXListener(STIXPatternListener):
         test = ctx.getText()
         eq_index = test.index('=')
         if eq_index:
-            path, value = test[:eq_index], test[(eq_index + 1):]  # noqa: E203
+            path, value = test[:eq_index], test[(eq_index + 1) :]  # noqa: E203
 
             self._indicators.append({'path': path.strip(), 'value': value.strip()[1:-1]})
 
@@ -309,5 +319,3 @@ class STIXListener(STIXPatternListener):
     def indicators(self):
         """Return the indicators parsed out of this pattern."""
         return self._indicators
-
-

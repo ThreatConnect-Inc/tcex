@@ -1,17 +1,32 @@
 [
   {
-    "associatedGroups": [
+    "attribute": [
       {
-        "groupXid": "indicator--33fe3b22-0201-47cf-85d0-97c02164528d"
+        "type": "STIX Title",
+        "value": "IP Address for known C2 channel"
+      },
+      {
+        "type": "Description",
+        "value": "Test description C2 channel."
+      },
+      {
+        "type": "STIX Indicator Type",
+        "value": "malicious-activity"
+      },
+      {
+        "type": "External Date Created",
+        "value": "2014-05-08T09:00:00Z"
+      },
+      {
+        "displayed": true,
+        "type": "Source",
+        "value": "Object ID: indicator--33fe3b22-0201-47cf-85d0-97c02164528d\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path\nObject Path: collection_path/objects/indicator--33fe3b22-0201-47cf-85d0-97c02164528d/"
       }
     ],
+    "dateAdded": "2014-05-08T09:00:00.000Z",
+    "lastModified": "2014-05-08T09:00:00.000Z",
     "summary": "10.0.0.0",
     "type": "Address",
-    "xid": "2458ecf56cf02d5458ad4146d594b55a80fa2f989c93b2c6698a6a7008d05312"
-  },
-  {
-    "name": "IP Address for known C2 channel",
-    "type": "Signature",
-    "xid": "indicator--33fe3b22-0201-47cf-85d0-97c02164528d"
+    "xid": "0a9da2b11110dac2e98eee5336b866a537d91311eb55381f3e30bb03c7016964"
   }
 ]

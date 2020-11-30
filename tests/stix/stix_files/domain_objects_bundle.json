@@ -169,6 +169,7 @@
       "value": "https://example.com/research/index.html"
     },
     {
+      "confidence": "4",
       "created": "2015-05-15T09:12:16.432Z",
       "description": "Test description.",
       "id": "indicator--8d12f44f-8ac0-4b12-8b4a-3699ca8c9691",
@@ -179,14 +180,13 @@
         "dummy label one",
         "dummy label two"
       ],
-      "confidence": "4",
+      "modified": "2015-05-15T09:12:16.432Z",
+      "name": "Appendix E MD5 hash '001dd76872d80801692ff942308c64e6'",
       "object_marking_refs": [
         "marking-definition--613f2e26-407d-48c7-9eca-b8e91df99dc9",
         "marking-definition--34098fce-860f-48ae-8e50-ebd3cc5e41da",
         "is_not_a_valid_marking_ref"
       ],
-      "modified": "2015-05-15T09:12:16.432Z",
-      "name": "Appendix E MD5 hash '001dd76872d80801692ff942308c64e6'",
       "pattern": "[file:hashes.md5 = '001dd76872d80801692ff942308c64e6' OR file:hashes.md5 = '001dd76872d80801692ff942308c6333']",
       "pattern_type": "stix",
       "spec_version": "2.1",

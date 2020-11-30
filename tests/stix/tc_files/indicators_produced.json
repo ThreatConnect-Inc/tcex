@@ -1,0 +1,2015 @@
+[
+  {
+    "confidence": 0,
+    "created": "2020-08-13T18:25:43.000Z",
+    "description": "",
+    "id": "indicator--954e6970-0071-5e44-939d-363e9d2edfcb",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-08-13T18:25:43.000Z",
+    "name": "23.23.23.23/32",
+    "pattern": "[ipv4-addr:value = '23.23.23.23/32']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-08-13T18:25:43.000Z"
+  },
+  {
+    "confidence": 0,
+    "created": "2020-08-13T18:25:43.000Z",
+    "description": "",
+    "id": "indicator--acd21163-164c-599a-a5c7-eeb04538532b",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-08-13T18:25:43.000Z",
+    "name": "2001:0db8:85a3:0000:0000:8a2e:0370:7334/64",
+    "pattern": "[ipv6-addr:value = '2001:0db8:85a3:0000:0000:8a2e:0370:7334/64']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-08-13T18:25:43.000Z"
+  },
+  {
+    "confidence": 0,
+    "created": "2020-08-13T15:25:38.000Z",
+    "description": "",
+    "id": "indicator--94041d77-6e02-57aa-a000-65dfaf5bbf5b",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-08-13T15:25:38.000Z",
+    "name": "HKEY_CLASSES_ROOT :  : REG_NONE",
+    "pattern": "[windows-registry-key:key = 'HKEY_CLASSES_ROOT' AND windows-registry-key:values.data_type = 'REG_NONE']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-08-13T15:25:38.000Z"
+  },
+  {
+    "confidence": 0,
+    "created": "2020-08-13T15:20:14.000Z",
+    "description": "",
+    "id": "indicator--ffcfac61-0678-5677-94ed-f6186bcd1b19",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-08-13T15:20:14.000Z",
+    "name": "HKEY_CLASSES_ROOT : Foo : REG_NONE",
+    "pattern": "[windows-registry-key:key = 'HKEY_CLASSES_ROOT' AND windows-registry-key:values.name = 'Foo' AND windows-registry-key:values.data_type = 'REG_NONE']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-08-13T15:20:14.000Z"
+  },
+  {
+    "confidence": 0,
+    "created": "2020-08-13T13:54:13.000Z",
+    "description": "",
+    "id": "indicator--24017499-69fe-53cc-8081-508ee6242439",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-08-13T13:54:13.000Z",
+    "name": "foo@bar.com",
+    "pattern": "[email-addr:value = 'foo@bar.com']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-08-13T13:54:13.000Z"
+  },
+  {
+    "confidence": 0,
+    "created": "2020-08-13T13:49:06.000Z",
+    "description": "",
+    "id": "indicator--42aa9b75-9c4c-5c48-87e2-d679fe5dc021",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-08-13T13:49:06.000Z",
+    "name": "ASN1234",
+    "pattern": "[autonomous-system:name = 'ASN1234']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-08-13T13:49:06.000Z"
+  },
+  {
+    "confidence": 0,
+    "created": "2020-08-10T16:42:21.000Z",
+    "description": "",
+    "id": "indicator--8b1b741a-bae6-5b3e-b1c5-aab6a2fb8e59",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-08-10T16:42:21.000Z",
+    "name": "6C8178BD2FCEF170871D4CEB422774B0",
+    "pattern": "[file:hashes.md5 = '6C8178BD2FCEF170871D4CEB422774B0']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-08-10T16:42:21.000Z"
+  },
+  {
+    "confidence": 0,
+    "created": "2020-08-09T21:53:00.000Z",
+    "description": "",
+    "id": "indicator--f6cf42d8-6511-5e2d-8362-362195d41233",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-08-09T21:53:00.000Z",
+    "name": "23.23.23.23",
+    "pattern": "[ipv4-addr:value = '23.23.23.23']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-08-09T21:53:00.000Z"
+  },
+  {
+    "confidence": 0,
+    "created": "2020-08-05T16:54:09.000Z",
+    "description": "",
+    "id": "indicator--5ab8ac98-74c0-5192-a58b-f8d8b3f30833",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-08-05T16:54:09.000Z",
+    "name": "mabnastudy.com",
+    "pattern": "[domain-name:value = 'mabnastudy.com']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-08-05T16:54:09.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--f930af76-b44f-523f-a0c8-cfe4fe0b39cc",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "51.178.15.11",
+    "pattern": "[ipv4-addr:value = '51.178.15.11']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--84034e9b-d642-5025-845f-72d06a40db76",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "158.69.30.202",
+    "pattern": "[ipv4-addr:value = '158.69.30.202']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--92a93d75-6379-5eb2-b7ce-c57855fdfa82",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "csxeiaweuao781cs.cf",
+    "pattern": "[domain-name:value = 'csxeiaweuao781cs.cf']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--307e8850-6ac2-5cd9-b0d4-172e0a44e0bb",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "ns2.inetsafespace.com",
+    "pattern": "[domain-name:value = 'ns2.inetsafespace.com']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--ca4aa1d4-eb3d-5e36-973c-11531070eb36",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "159.89.156.66",
+    "pattern": "[ipv4-addr:value = '159.89.156.66']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--77b3b5e5-841b-5114-8487-0a1d75f635ed",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "www.hpadvantage.com",
+    "pattern": "[domain-name:value = 'www.hpadvantage.com']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--7b2c5c0f-b6e8-5999-bd8b-d7cb4f1db7a6",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "97.76.39.27",
+    "pattern": "[ipv4-addr:value = '97.76.39.27']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--aca8d4b5-79b6-5384-aff4-b68951088d6a",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "45.76.245.222",
+    "pattern": "[ipv4-addr:value = '45.76.245.222']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--e606ba2b-01a3-5b0b-b9e0-5c7dfc90b205",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "18.220.16.20",
+    "pattern": "[ipv4-addr:value = '18.220.16.20']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--395eff85-f52b-5a9f-a33a-485dcda39cbf",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "3.134.59.162",
+    "pattern": "[ipv4-addr:value = '3.134.59.162']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--365f204d-0f17-5ffa-a3ba-2ceb878e7588",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "34.209.40.26",
+    "pattern": "[ipv4-addr:value = '34.209.40.26']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--1bf74531-9381-59dc-bd57-9575ec7798df",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "choice.microsoft.com.ansatc.net",
+    "pattern": "[domain-name:value = 'choice.microsoft.com.ansatc.net']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--857a5cd6-fda1-532e-b1fc-33d3e0ccd14a",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "a1.bodkin.ren",
+    "pattern": "[domain-name:value = 'a1.bodkin.ren']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--549fb4a3-534d-58ba-9dfa-a6bbc3d3949c",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "45.227.255.213",
+    "pattern": "[ipv4-addr:value = '45.227.255.213']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--8f348e06-1721-5e73-8283-caae97fd610d",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "8.129.186.184",
+    "pattern": "[ipv4-addr:value = '8.129.186.184']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--9b0ee98a-de99-5ce2-a493-117d7647204f",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "39.105.11.31",
+    "pattern": "[ipv4-addr:value = '39.105.11.31']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--e382ba03-bc1c-5abc-90d0-9ffe79009419",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "106.53.237.229",
+    "pattern": "[ipv4-addr:value = '106.53.237.229']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--d6cb2f9a-57ed-525e-b209-4eecfedbe65d",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "instantdns.giize.com",
+    "pattern": "[domain-name:value = 'instantdns.giize.com']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--616df8b7-586e-57fa-8e7e-bbd3cfec6a9e",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "18.162.225.179",
+    "pattern": "[ipv4-addr:value = '18.162.225.179']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--ca54f64e-18ed-5990-891d-e12765622ad1",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "feeder.blogdns.com",
+    "pattern": "[domain-name:value = 'feeder.blogdns.com']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--c5505395-98c4-51fc-91d4-7007646563f4",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "112.126.65.97",
+    "pattern": "[ipv4-addr:value = '112.126.65.97']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--b3a2b551-1b26-511c-93fd-67b1850df941",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "182.92.211.211",
+    "pattern": "[ipv4-addr:value = '182.92.211.211']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--5f569a05-805b-50b0-82e8-a6e3a603c7cf",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "consultane.com",
+    "pattern": "[domain-name:value = 'consultane.com']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--506f7efd-5132-59c7-bdb5-030f3efd91a4",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "www.afghanistanhelp.com",
+    "pattern": "[domain-name:value = 'www.afghanistanhelp.com']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--4a389bb7-dcc6-5ed6-a472-ccc28849a44e",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "proxy.persq.center",
+    "pattern": "[domain-name:value = 'proxy.persq.center']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--54fe9f36-a13b-52f8-8173-dca73bc5009e",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "portal.lashmeet-medical.com",
+    "pattern": "[domain-name:value = 'portal.lashmeet-medical.com']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--a0ed07bf-1be1-5939-a52e-c57f389bc193",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "78.141.219.97",
+    "pattern": "[ipv4-addr:value = '78.141.219.97']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--2b9c5852-ec6a-58a2-a4c5-2976cc40ec40",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "45.77.172.161",
+    "pattern": "[ipv4-addr:value = '45.77.172.161']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--4d743987-128e-503b-badb-cf99d753d7fa",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "103.138.12.53",
+    "pattern": "[ipv4-addr:value = '103.138.12.53']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--5ee45013-9172-5d4a-896c-32b25812a03c",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "bopin.kingpt.xyz",
+    "pattern": "[domain-name:value = 'bopin.kingpt.xyz']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--088d355d-8dd2-5934-b781-6d7a8657e66a",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "d1h23l85nb9pka.cloudfront.net",
+    "pattern": "[domain-name:value = 'd1h23l85nb9pka.cloudfront.net']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--160b86f4-329c-5234-9084-28cb5afb17e3",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "139.155.37.225",
+    "pattern": "[ipv4-addr:value = '139.155.37.225']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--7180293c-c745-50c3-8448-d5adc91468b0",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "23.105.202.144",
+    "pattern": "[ipv4-addr:value = '23.105.202.144']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--3186fa12-0afc-5d52-b569-53109a05168e",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "51.210.87.65",
+    "pattern": "[ipv4-addr:value = '51.210.87.65']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--214f2a14-e4c9-5441-be53-90a657d284f4",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "34.201.68.226",
+    "pattern": "[ipv4-addr:value = '34.201.68.226']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--e84e5b27-364f-5ae3-8704-f68f91d74100",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "codir.ocitnetad.com",
+    "pattern": "[domain-name:value = 'codir.ocitnetad.com']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--4d837d7f-819f-52b4-ac95-fd1316afd22e",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "rest.burritobaton.com",
+    "pattern": "[domain-name:value = 'rest.burritobaton.com']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--3209c7c0-286e-5ba3-a0fc-15348a3630ad",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "https://rest.burritobaton.com/bad/path",
+    "pattern": "[url:value = 'https://rest.burritobaton.com/bad/path']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--9f86444d-90d3-5833-91de-5eafebf34a8f",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "testing.c.inty.io",
+    "pattern": "[domain-name:value = 'testing.c.inty.io']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--2b1baedf-ae7d-5dc7-b89d-7963952ceb3f",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "118.25.24.247",
+    "pattern": "[ipv4-addr:value = '118.25.24.247']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--a5a600b1-de6b-5611-a669-26e883490eeb",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "45.79.192.64",
+    "pattern": "[ipv4-addr:value = '45.79.192.64']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--34f593a7-a6a2-555f-855d-e88ac11a409c",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "50.116.24.203",
+    "pattern": "[ipv4-addr:value = '50.116.24.203']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--54252d82-cece-55bd-a361-73554b771711",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "47.91.242.27",
+    "pattern": "[ipv4-addr:value = '47.91.242.27']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--053ed184-af3f-5f31-a25d-c4a6faaff614",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "207.148.127.216",
+    "pattern": "[ipv4-addr:value = '207.148.127.216']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--913a42dc-ec9d-567e-b2ae-19fe026962bb",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "198.23.229.132",
+    "pattern": "[ipv4-addr:value = '198.23.229.132']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--00576e16-fb57-573f-919e-cfef804446f8",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "hkservices.info",
+    "pattern": "[domain-name:value = 'hkservices.info']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--5f3b2aa8-a387-5c5a-aea1-ea55006aa7bc",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "microsoft.iguyi.co",
+    "pattern": "[domain-name:value = 'microsoft.iguyi.co']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--3e87fb7c-083a-5282-b64a-9b2cec7b4876",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "192.243.102.171",
+    "pattern": "[ipv4-addr:value = '192.243.102.171']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--98efa637-6ff1-5d2c-ad88-609d7f991766",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "144.34.182.100",
+    "pattern": "[ipv4-addr:value = '144.34.182.100']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--624c5242-2108-5fe7-8015-c3c3e06eee6e",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "185.238.0.70",
+    "pattern": "[ipv4-addr:value = '185.238.0.70']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--6d80d4c9-110a-5686-905c-997b53149275",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "jquery-cdn-api.net",
+    "pattern": "[domain-name:value = 'jquery-cdn-api.net']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--b577f4ff-be2e-55e4-a276-3506ae511d89",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "185.158.249.150",
+    "pattern": "[ipv4-addr:value = '185.158.249.150']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--40b78187-8e04-50d8-9dbc-3e0b1c1902f3",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "114.118.4.194",
+    "pattern": "[ipv4-addr:value = '114.118.4.194']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--d1b94426-be97-5ab7-9450-a9e29a83877c",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "154.220.3.196",
+    "pattern": "[ipv4-addr:value = '154.220.3.196']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--6ad8d4b6-7f29-5594-86e9-1a149985ae88",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "services.social.microsoft.com.ansatc.net",
+    "pattern": "[domain-name:value = 'services.social.microsoft.com.ansatc.net']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--7ccacc3b-b083-5f55-ace0-d48778798819",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "39.102.40.225",
+    "pattern": "[ipv4-addr:value = '39.102.40.225']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--95dd6471-74d2-5c5b-a558-967e7d80e3d3",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "47.108.153.115",
+    "pattern": "[ipv4-addr:value = '47.108.153.115']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--4a82aba4-60c0-511e-ada8-f02a28385beb",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "47.115.37.55",
+    "pattern": "[ipv4-addr:value = '47.115.37.55']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--5e6335d2-8e6f-54c1-ba4c-c077d06ef51a",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "54.75.11.162",
+    "pattern": "[ipv4-addr:value = '54.75.11.162']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--7b27f217-9299-5032-b0c7-ecb586ba6622",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "134.209.5.246",
+    "pattern": "[ipv4-addr:value = '134.209.5.246']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--48d59de1-01c2-5ed9-9634-42c2b83d8c31",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "3.81.19.92",
+    "pattern": "[ipv4-addr:value = '3.81.19.92']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--8cf69b22-9c4d-5055-8c64-044ec212c35b",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "loadbalancer.azureedge.net",
+    "pattern": "[domain-name:value = 'loadbalancer.azureedge.net']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--5ef25a61-0012-5b94-96f5-976291b21b6f",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "35.234.156.244",
+    "pattern": "[ipv4-addr:value = '35.234.156.244']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--274701c0-29c3-59a2-a01c-44254948dad4",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "192.169.7.160",
+    "pattern": "[ipv4-addr:value = '192.169.7.160']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--d2cf3893-6b77-5701-b6fa-6b66369a339c",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "45.33.27.73",
+    "pattern": "[ipv4-addr:value = '45.33.27.73']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--1a164726-1e5a-5bf0-8f7c-d69d8cd79c53",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "46.28.69.147",
+    "pattern": "[ipv4-addr:value = '46.28.69.147']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--bf388c66-ed11-58d1-8190-b4e786cd0cfb",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "46.166.129.189",
+    "pattern": "[ipv4-addr:value = '46.166.129.189']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--139189e1-89dc-5fbd-bc13-c525a62b41dd",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "pagfiles.r-cloudfront.net",
+    "pattern": "[domain-name:value = 'pagfiles.r-cloudfront.net']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--5b84b21d-db79-53bf-88b1-e1601516ddb2",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "35.229.135.45",
+    "pattern": "[ipv4-addr:value = '35.229.135.45']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--f3b35226-0309-5070-9621-a46c3b8abe09",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "221.236.10.253",
+    "pattern": "[ipv4-addr:value = '221.236.10.253']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--1f8451d9-c5f9-5043-806d-e0f21f76ad95",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "152.32.240.239",
+    "pattern": "[ipv4-addr:value = '152.32.240.239']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--ac79cf19-989b-52be-98ff-d8261a9e7892",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "192.210.241.175",
+    "pattern": "[ipv4-addr:value = '192.210.241.175']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--5c1c1afc-9cb1-5cf3-953f-a74e0b8bfb4e",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "tancang.vincomcentral.net",
+    "pattern": "[domain-name:value = 'tancang.vincomcentral.net']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--ad351b3b-78a8-5f59-883e-075e10e7beb1",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "ns7.tstartel.org",
+    "pattern": "[domain-name:value = 'ns7.tstartel.org']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--6b763e0c-de05-5adc-bbd6-3bd3b471b470",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "mail.alibebe.tk",
+    "pattern": "[domain-name:value = 'mail.alibebe.tk']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--a6fca7dd-e630-5dae-9707-c74ebae397a5",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "34.92.251.26",
+    "pattern": "[ipv4-addr:value = '34.92.251.26']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--115bd0e1-31e3-5bf8-9ce4-5ccab1c310cb",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "18.203.47.161",
+    "pattern": "[ipv4-addr:value = '18.203.47.161']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--98e67958-ae0f-588b-b6c9-afa77ef02dc8",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "texasheavyindustries.com",
+    "pattern": "[domain-name:value = 'texasheavyindustries.com']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--4844474e-e7fd-5263-bb0a-2e38aed7f7af",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "103.149.27.217",
+    "pattern": "[ipv4-addr:value = '103.149.27.217']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--a0aed8ea-2fe6-56c9-a0ff-4d2077847d2b",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "45.132.73.141",
+    "pattern": "[ipv4-addr:value = '45.132.73.141']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--643b4ea0-cfb0-557f-9540-d0c4ecc01dfe",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "ns1.apossin.top",
+    "pattern": "[domain-name:value = 'ns1.apossin.top']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--f82eaac7-0177-5844-a431-1cbb16ab0ca0",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "sync.sharepoint-update.com",
+    "pattern": "[domain-name:value = 'sync.sharepoint-update.com']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--f24b3161-0d69-535b-a72d-dc9d19526806",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "huayuxinwen.net",
+    "pattern": "[domain-name:value = 'huayuxinwen.net']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--3108c2fb-0d8c-5a02-8812-00aeff4f9f37",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "45.77.156.6",
+    "pattern": "[ipv4-addr:value = '45.77.156.6']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--827a78cb-3801-5dac-a889-f4b90222d360",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "13.65.198.106",
+    "pattern": "[ipv4-addr:value = '13.65.198.106']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--6c7a5add-0621-5aeb-bc0b-0a889b56e78e",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "pediatrics.heathmanagementtoday.com",
+    "pattern": "[domain-name:value = 'pediatrics.heathmanagementtoday.com']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--9bde68b2-98c4-585e-82c5-ab8aa2df30f7",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "dns.bertrail.com",
+    "pattern": "[domain-name:value = 'dns.bertrail.com']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--0e29f43d-163e-5144-9178-8d007555dc65",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "54.174.145.85",
+    "pattern": "[ipv4-addr:value = '54.174.145.85']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--4f5c02e5-e9f1-5da3-8db8-7e10e36ca1b2",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "172.241.27.47",
+    "pattern": "[ipv4-addr:value = '172.241.27.47']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--6e5865cf-2ac4-56dc-849c-afe63603af00",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "68.183.238.81",
+    "pattern": "[ipv4-addr:value = '68.183.238.81']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--dd5622da-cf27-59e3-9bf4-3bb77f515d0f",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "80.240.21.138",
+    "pattern": "[ipv4-addr:value = '80.240.21.138']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--a21283c7-a831-5338-8a60-22ce53eee4d5",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "23.225.94.32",
+    "pattern": "[ipv4-addr:value = '23.225.94.32']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  },
+  {
+    "confidence": 60,
+    "created": "2020-07-30T13:40:24.000Z",
+    "description": "",
+    "id": "indicator--fab98749-9f9a-5b84-846e-4c1972db2d77",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Moderate"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:40:24.000Z",
+    "name": "www.aws-domain.com",
+    "pattern": "[domain-name:value = 'www.aws-domain.com']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:40:24.000Z"
+  }
+]

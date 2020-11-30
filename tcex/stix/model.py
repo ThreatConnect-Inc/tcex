@@ -1,7 +1,7 @@
 """Top-level Stix Model Class."""
 # standard library
-import itertools
 import copy
+import itertools
 from operator import methodcaller
 from typing import Dict, Iterable, Union
 
@@ -10,8 +10,8 @@ import jmespath
 from stix2.base import _STIXBase
 
 # first-party
-from tcex.logger import Logger
 from tcex.batch import Batch
+from tcex.logger import Logger
 
 
 class StixModel:
@@ -64,15 +64,17 @@ class StixModel:
 
     @property
     def security_label_map(self):
+        """Map of TLP labels to STIX marking-definitions."""
         return {
             'tlp:white': 'marking-definition--613f2e26-407d-48c7-9eca-b8e91df99dc9',
             'tlp:green': 'marking-definition--34098fce-860f-48ae-8e50-ebd3cc5e41da',
             'tlp:amber': 'marking-definition--f88d31f6-486f-44da-b317-01333bde0b82',
-            'tlp:red': 'marking-definition--5e57c739-391a-4eb3-b6be-7d15ca92d5ed'
+            'tlp:red': 'marking-definition--5e57c739-391a-4eb3-b6be-7d15ca92d5ed',
         }
 
     @property
     def x_threat_rating_map(self):
+        """Map of Threat Rating Numbers to Labels."""
         return {
             '0': 'Threat Rating: Unknown',
             '1': 'Threat Rating: Suspicious',
@@ -224,7 +226,7 @@ class StixModel:
         return self._relationship
 
     def produce(
-            self, tc_data: Union[list, dict], type_mapping: Dict = None, **kwargs
+        self, tc_data: Union[list, dict], type_mapping: Dict = None, **kwargs
     ):  # pylint: disable=unused-argument
         """Convert ThreatConnect data (in parsed JSON format) into STIX objects.
 
@@ -259,7 +261,7 @@ class StixModel:
         data = tc_data.get('data', tc_data)
         for key, values in self.indicator_type_details.items():
             if values.get('api_branch').upper() in [s.upper() for s in data.keys()] or values.get(
-                    'type', ''
+                'type', ''
             ).upper() in [s.upper() for s in data.keys()]:
                 api_branch = values.get('api_branch')
                 indicator_type = key
@@ -289,7 +291,7 @@ class StixModel:
                 data.pop(field, '')
             yield _type, data
 
-    # pylint: disable=unused-argument
+    # pylint: disable=unused-argument,no-self-use
     def as_object_mapping(self, stix_data):
         """Produce ThreatConnect ASN mappings from a STIX 2.1 JSON object.
 
@@ -306,6 +308,7 @@ class StixModel:
             'confidence': '@.confidence',
         }
 
+    # pylint: disable=unused-argument,no-self-use
     def domain_name_mapping(self, stix_data):
         """Produce ThreatConnect Host mappings from a STIX 2.1 JSON object.
 
@@ -322,6 +325,7 @@ class StixModel:
             'confidence': '@.confidence',
         }
 
+    # pylint: disable=unused-argument,no-self-use
     def email_address_mapping(self, stix_data):
         """Produce ThreatConnect EmailAddress mappings from a STIX 2.1 JSON object.
 
@@ -338,6 +342,7 @@ class StixModel:
             'confidence': '@.confidence',
         }
 
+    # pylint: disable=unused-argument,no-self-use
     def _ip_addr_mapping(self, stix_data, full_block_size):
         """Produce ThreatConnect Address/CIDR mappings from a STIX 2.1 JSON object.
 
@@ -362,6 +367,7 @@ class StixModel:
             'block': '@.value',
         }
 
+    # pylint: disable=unused-argument,no-self-use
     def ipv6_mapping(self, stix_data):
         """Produce ThreatConnect Address/CIDR mappings from a STIX 2.1 JSON object.
 
@@ -374,6 +380,7 @@ class StixModel:
 
         return self._ip_addr_mapping(stix_data, 128)
 
+    # pylint: disable=unused-argument,no-self-use
     def ipv4_mapping(self, stix_data):
         """Produce ThreatConnect Address/CIDR mappings from a STIX 2.1 JSON object.
 
@@ -386,6 +393,7 @@ class StixModel:
 
         return self._ip_addr_mapping(stix_data, 32)
 
+    # pylint: disable=unused-argument,no-self-use
     def url_mapping(self, stix_data):
         """Produce ThreatConnect URL mappings from a STIX 2.1 JSON object.
 
@@ -396,12 +404,9 @@ class StixModel:
             A indicator mappings.
         """
 
-        return {
-            'type': 'URL',
-            'text': '@.value',
-            'confidence': '@.confidence'
-        }
+        return {'type': 'URL', 'text': '@.value', 'confidence': '@.confidence'}
 
+    # pylint: disable=unused-argument,no-self-use
     def registry_key_mapping(self, stix_data):
         """Produce ThreatConnect Registry Key mappings from a STIX 2.1 JSON object.
 
@@ -419,21 +424,20 @@ class StixModel:
         }
         if not stix_data.get('values'):
             return mapper
-        else:
-            for i in range(len(stix_data.get('values'))):
-                mapper['Value Name'] = f'@.values[{i}].name'
-                mapper['Value Type'] = f'@.values[{i}].data_type'
-                mapper['attributes'].append(
-                    {'type': 'Value Data', 'value': f'@.values[{i}].data'}
-                )
+
+        for i in range(len(stix_data.get('values'))):
+            mapper['Value Name'] = f'@.values[{i}].name'
+            mapper['Value Type'] = f'@.values[{i}].data_type'
+            mapper['attributes'].append({'type': 'Value Data', 'value': f'@.values[{i}].data'})
         return mapper
 
     def consume(
-            self, stix_data: dict,
-            collection_id,
-            collection_name,
-            collection_path,
-            custom_type_mapping: dict = None
+        self,
+        stix_data: dict,
+        collection_id,
+        collection_name,
+        collection_path,
+        custom_type_mapping: dict = None,
     ):
         """Convert stix_data (in parsed JSON format) into ThreatConnect objects.
 
@@ -442,7 +446,7 @@ class StixModel:
             collection_path: the url path to the collection
             collection_name: the collection name
             collection_id: the collection id
-            custom_type_mapping: mapping of stix type to a mapping function object that takes stix_data as a parameter.
+            custom_type_mapping: stix type to a mapping function which takes stix_data as a param.
 
         Yields:
             ThreatConnect objects
@@ -454,7 +458,7 @@ class StixModel:
             'ipv4-addr': self.ipv4_mapping,
             'ipv6-addr': self.ipv6_mapping,
             'windows-registry-key': self.registry_key_mapping,
-            'url': self.url_mapping
+            'url': self.url_mapping,
         }
         type_mapping.update(custom_type_mapping or {})
         visitor_mapping = {'relationship': self.relationship}
@@ -510,7 +514,7 @@ class StixModel:
 
     @staticmethod
     def smart_update(list_one, list_two):
-        """Updates one dict with the other but joins arrays."""
+        """Update one dict with the other but joins arrays."""
         updated_dict = {}
         dict_items = map(methodcaller('items'), (list_one, list_two))
         for k, v in itertools.chain.from_iterable(dict_items):
@@ -525,7 +529,7 @@ class StixModel:
         self._visitors.append(visitor)
 
     def _map(self, data: Union[list, dict], mapping: dict):
-        """Produces a dict with the appropriate values given data and a mapping.
+        """Produce a dict with the appropriate values given data and a mapping.
 
         Args:
             data: The data to be referenced in the mappings
@@ -570,7 +574,6 @@ class StixModel:
                         del mapped_obj[key]
             yield mapped_obj
 
-
     @staticmethod
     def _remove_milliseconds(time):
         time = time.split('.')
@@ -590,7 +593,8 @@ class StixModel:
                 resolved_value = resolved_value.lower()
                 if resolved_value in self.security_label_map.values():
                     security_label = list(self.security_label_map.keys())[
-                        list(self.security_label_map.values()).index(resolved_value)]
+                        list(self.security_label_map.values()).index(resolved_value)
+                    ]
                     object_marking_refs.append({'name': security_label.upper()})
             return object_marking_refs
         if key == 'tag':
@@ -604,7 +608,9 @@ class StixModel:
             for attribute in value:
                 attribute_value = attribute.get('value')
                 if attribute.get('value', '').startswith('@'):
-                    attribute_value = jmespath.search(f'{attribute_value}', jmespath.search('@', data)) or []
+                    attribute_value = (
+                        jmespath.search(f'{attribute_value}', jmespath.search('@', data)) or []
+                    )
                     if isinstance(attribute_value, list):
                         attribute_value = '\n'.join(attribute_value)
                     if attribute.get('value') in ['@.valid_from', '@.valid_until']:
@@ -647,11 +653,11 @@ class JMESPathStixModel(StixModel):
     """Generic implmenetation of StixModel that converts data based on jmespath statements."""
 
     def __init__(
-            self,
-            produce_map: Dict[str, str],
-            produce_type: _STIXBase,
-            consume_map: Dict[str, str],
-            logger: Logger,
+        self,
+        produce_map: Dict[str, str],
+        produce_type: _STIXBase,
+        consume_map: Dict[str, str],
+        logger: Logger,
     ):
         """Instantiate a JMESPath StixModel.
 
@@ -675,7 +681,7 @@ class JMESPathStixModel(StixModel):
             self._produce_type(**stix_data) for stix_data in self._map(tc_data, self._produce_map)
         )
 
-    # pylint: disable=arguments-differ
+    # pylint: disable=arguments-differ, unused-argument
     def consume(self, stix_data: Union[list, dict], **kwargs):
         """Accept STIX objects and produces TC Entities."""
         yield from self._map(stix_data, self._consume_map)

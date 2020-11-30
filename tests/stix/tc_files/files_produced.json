@@ -1,0 +1,1774 @@
+[
+  {
+    "confidence": 0,
+    "created": "2020-08-10T16:42:21.000Z",
+    "description": "",
+    "id": "indicator--7dd6fb88-cd93-5135-91ec-40b248e074aa",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-08-10T16:42:21.000Z",
+    "name": "6C8178BD2FCEF170871D4CEB422774B0 :  : ",
+    "pattern": "[file:hashes.md5 = '6C8178BD2FCEF170871D4CEB422774B0']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-08-10T16:42:21.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:39:13.000Z",
+    "description": "",
+    "id": "indicator--116f74cb-54a3-5a29-8d79-4088cf880194",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Suspicious"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:39:14.000Z",
+    "name": "861879F402FE3080AB058C0C88536BE4 :  : ",
+    "pattern": "[file:hashes.md5 = '861879F402FE3080AB058C0C88536BE4']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:39:13.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:39:13.000Z",
+    "description": "",
+    "id": "indicator--ba07a1e2-7ed5-5d90-861f-2be834ba23c5",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Suspicious"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:39:14.000Z",
+    "name": "8CA29C265D8C41BE7C2A463930E3E1B3 :  : ",
+    "pattern": "[file:hashes.md5 = '8CA29C265D8C41BE7C2A463930E3E1B3']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:39:13.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:39:13.000Z",
+    "description": "",
+    "id": "indicator--e9e3b412-a276-50b2-aab0-6658f12c695b",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Suspicious"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:39:14.000Z",
+    "name": "6FD56F2DF05A77BDFD3265A4D1F2ABAC :  : ",
+    "pattern": "[file:hashes.md5 = '6FD56F2DF05A77BDFD3265A4D1F2ABAC']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:39:13.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:39:13.000Z",
+    "description": "",
+    "id": "indicator--2faa2665-6c3a-590c-82e0-84d4a9c85f57",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Suspicious"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:39:14.000Z",
+    "name": "EE6420F6BCCD3EB9510211C020129C0C :  : ",
+    "pattern": "[file:hashes.md5 = 'EE6420F6BCCD3EB9510211C020129C0C']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:39:13.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:39:13.000Z",
+    "description": "",
+    "id": "indicator--522c685d-9489-55e0-b027-ebee0aa53170",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Suspicious"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:39:14.000Z",
+    "name": "11796E9E5567954FFE6EB9049F29ACB2 :  : ",
+    "pattern": "[file:hashes.md5 = '11796E9E5567954FFE6EB9049F29ACB2']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:39:13.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:39:13.000Z",
+    "description": "",
+    "id": "indicator--e1a94b9c-47e9-58be-81a1-b397affda301",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Suspicious"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:39:14.000Z",
+    "name": "30247645638FF6D314C83044C831CDC4 :  : ",
+    "pattern": "[file:hashes.md5 = '30247645638FF6D314C83044C831CDC4']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:39:13.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:39:13.000Z",
+    "description": "",
+    "id": "indicator--fb587af3-24ea-5dcb-9d86-572309974eb8",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Suspicious"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:39:14.000Z",
+    "name": "3B07DD54568A2058BB30DB6D9A0915DC :  : ",
+    "pattern": "[file:hashes.md5 = '3B07DD54568A2058BB30DB6D9A0915DC']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:39:13.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:39:13.000Z",
+    "description": "",
+    "id": "indicator--ead61dd5-e520-567c-bb80-c8ecad9f0ef2",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Suspicious"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:39:14.000Z",
+    "name": "429BE60F0E444F4D9BA1255E88093721 :  : ",
+    "pattern": "[file:hashes.md5 = '429BE60F0E444F4D9BA1255E88093721']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:39:13.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:39:13.000Z",
+    "description": "",
+    "id": "indicator--5e0bb62f-07a4-5689-a6fb-2a09de7fe56f",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Suspicious"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:39:14.000Z",
+    "name": "98FE909510C79B21E740FEC32FB6B1A0 :  : ",
+    "pattern": "[file:hashes.md5 = '98FE909510C79B21E740FEC32FB6B1A0']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:39:13.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:39:13.000Z",
+    "description": "",
+    "id": "indicator--36bee5be-cbe6-51be-9207-140637e97131",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Suspicious"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:39:14.000Z",
+    "name": "D07992FE6ABFB99E7FDDDBC9F1A28D2C :  : ",
+    "pattern": "[file:hashes.md5 = 'D07992FE6ABFB99E7FDDDBC9F1A28D2C']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:39:13.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:39:13.000Z",
+    "description": "",
+    "id": "indicator--873a6374-47e4-59ce-b9e4-af69ffe8490e",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: High"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:39:14.000Z",
+    "name": "D61D598106B04520A018DFA58E707AB2 :  : ",
+    "pattern": "[file:hashes.md5 = 'D61D598106B04520A018DFA58E707AB2']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:39:13.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:39:13.000Z",
+    "description": "",
+    "id": "indicator--ed9a7971-404a-5ee5-bea1-6d6114e6ce25",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Suspicious"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:39:14.000Z",
+    "name": "69492C49FE10CAEBAC8B56732467A7F4 :  : ",
+    "pattern": "[file:hashes.md5 = '69492C49FE10CAEBAC8B56732467A7F4']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:39:13.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:39:13.000Z",
+    "description": "",
+    "id": "indicator--8b95975f-aaaa-5e01-8311-a1271ab63216",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Suspicious"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:39:14.000Z",
+    "name": "579D3AF1B487EA3C442870EABE886A4F :  : ",
+    "pattern": "[file:hashes.md5 = '579D3AF1B487EA3C442870EABE886A4F']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:39:13.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:39:13.000Z",
+    "description": "",
+    "id": "indicator--50e82497-34dd-58c8-9408-cbd5fbdf87e8",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Suspicious"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:39:14.000Z",
+    "name": "EFDA5178286678794B40987E66E686CE :  : ",
+    "pattern": "[file:hashes.md5 = 'EFDA5178286678794B40987E66E686CE']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:39:13.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:39:13.000Z",
+    "description": "",
+    "id": "indicator--7a15eba3-9a0a-5bc8-9cac-4c082fa56b86",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Suspicious"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:39:14.000Z",
+    "name": "E58B8DE07372B9913CA2FBD3B103BB8F :  : ",
+    "pattern": "[file:hashes.md5 = 'E58B8DE07372B9913CA2FBD3B103BB8F']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:39:13.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:39:13.000Z",
+    "description": "",
+    "id": "indicator--d26f52a4-f2b5-56cb-9a67-b28f4a8f02eb",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Suspicious"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:39:14.000Z",
+    "name": "F18CED8772E9D1A640B8B4A731DFB6E0 :  : ",
+    "pattern": "[file:hashes.md5 = 'F18CED8772E9D1A640B8B4A731DFB6E0']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:39:13.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:39:13.000Z",
+    "description": "",
+    "id": "indicator--f1f36a14-343b-56f2-99e2-10f1809b631d",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Suspicious"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:39:14.000Z",
+    "name": "2F9F4F2A9D438CDC944F79BDF44A18F8 :  : ",
+    "pattern": "[file:hashes.md5 = '2F9F4F2A9D438CDC944F79BDF44A18F8']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:39:13.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:39:13.000Z",
+    "description": "",
+    "id": "indicator--f20f3250-9723-5478-a166-adf8b11a2d5d",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Suspicious"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:39:14.000Z",
+    "name": "3A9CDD8A5CBC3AB10AD64C4BB641B41F :  : ",
+    "pattern": "[file:hashes.md5 = '3A9CDD8A5CBC3AB10AD64C4BB641B41F']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:39:13.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:39:13.000Z",
+    "description": "",
+    "id": "indicator--7d1d8672-4a4b-5581-842d-557dde175caf",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Suspicious"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:39:14.000Z",
+    "name": "DC146F77CAAAEA3DEAE053D9DC5A82D2 :  : ",
+    "pattern": "[file:hashes.md5 = 'DC146F77CAAAEA3DEAE053D9DC5A82D2']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:39:13.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:39:13.000Z",
+    "description": "",
+    "id": "indicator--692ff111-591f-573b-8738-29b884970d56",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Suspicious"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:39:14.000Z",
+    "name": "4D38AC3319B167F6C8ACB16B70297111 :  : ",
+    "pattern": "[file:hashes.md5 = '4D38AC3319B167F6C8ACB16B70297111']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:39:13.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:39:13.000Z",
+    "description": "",
+    "id": "indicator--326875f6-c7f2-5074-a7e3-b6016bd088c4",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Suspicious"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:39:14.000Z",
+    "name": "07854284DBD341CD695E24D7CA54162E :  : ",
+    "pattern": "[file:hashes.md5 = '07854284DBD341CD695E24D7CA54162E']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:39:13.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:39:13.000Z",
+    "description": "",
+    "id": "indicator--6b5847d3-04a4-59c2-a4c6-24cc2dbc9a89",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Suspicious"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:39:14.000Z",
+    "name": "4A2B8954695B32322508E844FF7E74F5 :  : ",
+    "pattern": "[file:hashes.md5 = '4A2B8954695B32322508E844FF7E74F5']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:39:13.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:39:13.000Z",
+    "description": "",
+    "id": "indicator--3cbb11f4-1fb7-56f4-8b8d-4f1a704ceeeb",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Suspicious"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:39:14.000Z",
+    "name": "18427CDCB5729A194954F0A6B5C0835A :  : ",
+    "pattern": "[file:hashes.md5 = '18427CDCB5729A194954F0A6B5C0835A']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:39:13.000Z"
+  },
+  {
+    "confidence": 100,
+    "created": "2020-07-30T13:39:13.000Z",
+    "description": "",
+    "id": "indicator--76251498-68df-55bf-b7b5-061a9cc69c7e",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "labels": [
+      "Threat Rating: Suspicious"
+    ],
+    "lang": "en",
+    "modified": "2020-07-30T13:39:14.000Z",
+    "name": "AE7A46529A0F74FB83BEEB1AB2C68C5C :  : ",
+    "pattern": "[file:hashes.md5 = 'AE7A46529A0F74FB83BEEB1AB2C68C5C']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-30T13:39:13.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:15:11.000Z",
+    "description": "",
+    "id": "indicator--fd3a9099-1f1b-512e-a300-5f00ab186690",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "911E7FC51A299CDC36CCCD3CAD930169 : 75B4F551138EC7AC673F985145C70CF5C340F62C : 22DCF97EC111B708369A785BA32A1D8767E6BE002919072C04DDAE954FB3FE26",
+    "pattern": "[file:hashes.md5 = '911E7FC51A299CDC36CCCD3CAD930169' OR file:hashes.sha1 = '75B4F551138EC7AC673F985145C70CF5C340F62C' OR file:hashes.sha256 = '22DCF97EC111B708369A785BA32A1D8767E6BE002919072C04DDAE954FB3FE26']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:15:11.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:50.000Z",
+    "description": "",
+    "id": "indicator--c8d9a830-2bd3-5884-bfb2-d8bcb71da34f",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:00.000Z",
+    "name": "9292471ED7464442E95FF7FBC3028334 : EA09C5926E14CDD52FEE8A82976F3FFA8A597591 : EFB0259E622D73C1D946689B619E6FBEEBEAC1D59A021BC68E5F64F6C18A3947",
+    "pattern": "[file:hashes.md5 = '9292471ED7464442E95FF7FBC3028334' OR file:hashes.sha1 = 'EA09C5926E14CDD52FEE8A82976F3FFA8A597591' OR file:hashes.sha256 = 'EFB0259E622D73C1D946689B619E6FBEEBEAC1D59A021BC68E5F64F6C18A3947']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:50.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:50.000Z",
+    "description": "",
+    "id": "indicator--ce235389-92c5-5962-88f3-a2391904b1c4",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:00.000Z",
+    "name": "D97C2783BEDF2AFAC777C40196B45A8A : B2DA435A216DB73738A4024B90D46507AE4CB003 : 42BF836A66B1DA8C69E34EDACEA7CDAD3C6678E9FF091DE5F5ECE0BBC47FD6D2",
+    "pattern": "[file:hashes.md5 = 'D97C2783BEDF2AFAC777C40196B45A8A' OR file:hashes.sha1 = 'B2DA435A216DB73738A4024B90D46507AE4CB003' OR file:hashes.sha256 = '42BF836A66B1DA8C69E34EDACEA7CDAD3C6678E9FF091DE5F5ECE0BBC47FD6D2']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:50.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--3cb2ead7-9e3c-5481-90d7-7ece333db485",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "7A0EBA6829DB215B34679BC0499D2735 : 8332942D96E44E307383AF8D1AA0D0CE5C1F81C7 : B50F03E0959BE78FB89499C7F4C7681007160B79F101FF844FDC665BB475F786",
+    "pattern": "[file:hashes.md5 = '7A0EBA6829DB215B34679BC0499D2735' OR file:hashes.sha1 = '8332942D96E44E307383AF8D1AA0D0CE5C1F81C7' OR file:hashes.sha256 = 'B50F03E0959BE78FB89499C7F4C7681007160B79F101FF844FDC665BB475F786']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--93ed870d-f67d-5889-8db0-0ffe69ac7c32",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "6862D390F84F85A3F59C18D8FBA708BC : 6DAF56A45D8FA2DDCF92ECA4B815D7ED4AEDDAAB : BC57C2CAE4E3CBF76E452EAF23FF3C10814DECD35A4C6AB6D1364C1D88AA89FE",
+    "pattern": "[file:hashes.md5 = '6862D390F84F85A3F59C18D8FBA708BC' OR file:hashes.sha1 = '6DAF56A45D8FA2DDCF92ECA4B815D7ED4AEDDAAB' OR file:hashes.sha256 = 'BC57C2CAE4E3CBF76E452EAF23FF3C10814DECD35A4C6AB6D1364C1D88AA89FE']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--d86b7446-0e0f-554a-ba4c-ab14c7732bc3",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "B7061748AA6CE1B74BBD7E0744935C40 : 2F6E45A7E7B00B8A0862CEE8208E25BA70B79B07 : 15F6C4D7108C2C8ABC893B3C56640CD07E8408EEC93A82884BDD8EE941CA70AB",
+    "pattern": "[file:hashes.md5 = 'B7061748AA6CE1B74BBD7E0744935C40' OR file:hashes.sha1 = '2F6E45A7E7B00B8A0862CEE8208E25BA70B79B07' OR file:hashes.sha256 = '15F6C4D7108C2C8ABC893B3C56640CD07E8408EEC93A82884BDD8EE941CA70AB']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--319f82e4-8262-5fb0-8fa7-df25a9773d50",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "4880AD2D5303929EDB5F04214BAA88D0 : A550EE70C8EF1AE650847A914640F8743DADBEE7 : 6D566F77241AEDC65035E8A3E04C5C9C1FBBBF4BC87165D4F3DD6C255EC77796",
+    "pattern": "[file:hashes.md5 = '4880AD2D5303929EDB5F04214BAA88D0' OR file:hashes.sha1 = 'A550EE70C8EF1AE650847A914640F8743DADBEE7' OR file:hashes.sha256 = '6D566F77241AEDC65035E8A3E04C5C9C1FBBBF4BC87165D4F3DD6C255EC77796']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--4b4f52f5-6271-5a58-b9d6-b1bb7bc0f7a0",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "1A7C65247C5212FFE80D29FA41A9C811 : 1D18E2DF85181CB157909AA072538061D0D9E88A : BE083492FD7E1C45BECBEF698969780B98AC4B0B04FB5A8AA7EB070BB8A1B905",
+    "pattern": "[file:hashes.md5 = '1A7C65247C5212FFE80D29FA41A9C811' OR file:hashes.sha1 = '1D18E2DF85181CB157909AA072538061D0D9E88A' OR file:hashes.sha256 = 'BE083492FD7E1C45BECBEF698969780B98AC4B0B04FB5A8AA7EB070BB8A1B905']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--2787dcd7-bdf1-58f2-82b7-bf0cb9e81b52",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "111262E54A450D55343792509CE20F41 : 4D38F604D34908015CDC0C25D177BFC650C17E9E : EEEF7E3567EE8010B5E5A4003B095257DEFF29D34F3F5BD02231696664DEA8CA",
+    "pattern": "[file:hashes.md5 = '111262E54A450D55343792509CE20F41' OR file:hashes.sha1 = '4D38F604D34908015CDC0C25D177BFC650C17E9E' OR file:hashes.sha256 = 'EEEF7E3567EE8010B5E5A4003B095257DEFF29D34F3F5BD02231696664DEA8CA']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--7eb80ebf-928a-5beb-b20b-20119b63b4cb",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "FEDEA4B801F50850539F8A31A1033933 : 1BA31B5B87B14AE5FE4970CF1D0D53479A04D699 : 8062BFD89BED5BF003BB7CBEB5CAF6B9136158DCC499E60EA161B896B2D78CE5",
+    "pattern": "[file:hashes.md5 = 'FEDEA4B801F50850539F8A31A1033933' OR file:hashes.sha1 = '1BA31B5B87B14AE5FE4970CF1D0D53479A04D699' OR file:hashes.sha256 = '8062BFD89BED5BF003BB7CBEB5CAF6B9136158DCC499E60EA161B896B2D78CE5']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--0010432c-92f0-5928-a87d-7ea0c00a8de5",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "83014065745296B9B99F505D600196CA : 9A06D9DCE7B5F73AB16EE82ACD223FF7C614D14D : 2DCE75EF076D3E882EE387E23FC1E27FE6D15E5C7ADC554F1A83CA0C4098F262",
+    "pattern": "[file:hashes.md5 = '83014065745296B9B99F505D600196CA' OR file:hashes.sha1 = '9A06D9DCE7B5F73AB16EE82ACD223FF7C614D14D' OR file:hashes.sha256 = '2DCE75EF076D3E882EE387E23FC1E27FE6D15E5C7ADC554F1A83CA0C4098F262']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--07dabffe-8951-53cf-8179-7cbd632d418b",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "37BBF3747E7435AFB7082E3B73DB9701 : 150511AB5648C38230E246493612B44BD9A3962B : A9D5D4C30349146158ED7D2E7037336DBCBDF50DA8398969AE4EEABAF6E1E9F6",
+    "pattern": "[file:hashes.md5 = '37BBF3747E7435AFB7082E3B73DB9701' OR file:hashes.sha1 = '150511AB5648C38230E246493612B44BD9A3962B' OR file:hashes.sha256 = 'A9D5D4C30349146158ED7D2E7037336DBCBDF50DA8398969AE4EEABAF6E1E9F6']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--5680679a-5455-5554-800a-9ff1aff6bfa7",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "D6517757C0817BCB18979B6C0713580D : 0BCE80006A25CF33D86A862D626755FB620A2607 : 3D267EAEC3528BF0EE1816759FECAAA108FF89EF223238B4CB9DD60DA1170E42",
+    "pattern": "[file:hashes.md5 = 'D6517757C0817BCB18979B6C0713580D' OR file:hashes.sha1 = '0BCE80006A25CF33D86A862D626755FB620A2607' OR file:hashes.sha256 = '3D267EAEC3528BF0EE1816759FECAAA108FF89EF223238B4CB9DD60DA1170E42']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--6c58f638-b205-5e22-a0ec-8a6eb474e6c7",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "9486EB35F521F6FD8440078015B0D19D : 4E0BC2DAF65E592EA69602C63106C398F94AB1F6 : D8680FDEF26B4FD2CA520CC066BE758005612E892BAFC054C4891E113B963414",
+    "pattern": "[file:hashes.md5 = '9486EB35F521F6FD8440078015B0D19D' OR file:hashes.sha1 = '4E0BC2DAF65E592EA69602C63106C398F94AB1F6' OR file:hashes.sha256 = 'D8680FDEF26B4FD2CA520CC066BE758005612E892BAFC054C4891E113B963414']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--3e78a2a7-533e-58c2-922b-4520c5fac26d",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "296358935C929C2EEC83A1D45BCDF7FC : 2A13120AAC47DDA49A3B1721503BB8CD261CFD89 : FA6093150DA69DA8D7E10FC94DBFF851EA8C56AE75B0EE9122CFD0F03BAD07B3",
+    "pattern": "[file:hashes.md5 = '296358935C929C2EEC83A1D45BCDF7FC' OR file:hashes.sha1 = '2A13120AAC47DDA49A3B1721503BB8CD261CFD89' OR file:hashes.sha256 = 'FA6093150DA69DA8D7E10FC94DBFF851EA8C56AE75B0EE9122CFD0F03BAD07B3']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--6415d6ce-8100-55e0-96bf-416df5d20ba1",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "985323D88A36E171C3D84F5A385FA069 : EC44135CCEAB05A9A63689FBB43E93A21E725463 : FECA68261888067660FBFBC0E0B6C8E933F95A324B617EEEFB5AF073E22E89D9",
+    "pattern": "[file:hashes.md5 = '985323D88A36E171C3D84F5A385FA069' OR file:hashes.sha1 = 'EC44135CCEAB05A9A63689FBB43E93A21E725463' OR file:hashes.sha256 = 'FECA68261888067660FBFBC0E0B6C8E933F95A324B617EEEFB5AF073E22E89D9']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--b69003b3-3d53-5dd7-a7b8-4fd363831df9",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "A661F9F01AD1687D261C7E32432CB5F0 : D4C220AB54ED79D490D4B8676472AD28ACB47233 : DED2677C21053BDAA2147A0586E0EC9B1F070372A8B2EA59C1228CA0AC8B0D0B",
+    "pattern": "[file:hashes.md5 = 'A661F9F01AD1687D261C7E32432CB5F0' OR file:hashes.sha1 = 'D4C220AB54ED79D490D4B8676472AD28ACB47233' OR file:hashes.sha256 = 'DED2677C21053BDAA2147A0586E0EC9B1F070372A8B2EA59C1228CA0AC8B0D0B']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--edc02adc-e6d5-50d6-9adc-c65329037c77",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "56B2A6EA6417CCBE07AF04A5C5E7F87F : 99BD2E4C940544705DD6C58425700595E2DA1DCE : 880BBA3FA9D2E255AD00CC35D53AA361BCDF739D16064D669A4B21B9A8034F73",
+    "pattern": "[file:hashes.md5 = '56B2A6EA6417CCBE07AF04A5C5E7F87F' OR file:hashes.sha1 = '99BD2E4C940544705DD6C58425700595E2DA1DCE' OR file:hashes.sha256 = '880BBA3FA9D2E255AD00CC35D53AA361BCDF739D16064D669A4B21B9A8034F73']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--7b0c8365-5732-5752-b46f-03fe446ce18a",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "0E604292CDAC6E078BFF1662E8FEF68F : 1F8C498E4B9E40358D847F4922688CB2E6399C33 : 01000F47024F103F6003494AF57D94361EB927459BED3D37CB20BE23C9AB8B1F",
+    "pattern": "[file:hashes.md5 = '0E604292CDAC6E078BFF1662E8FEF68F' OR file:hashes.sha1 = '1F8C498E4B9E40358D847F4922688CB2E6399C33' OR file:hashes.sha256 = '01000F47024F103F6003494AF57D94361EB927459BED3D37CB20BE23C9AB8B1F']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--2f7d43ff-00aa-5066-9e33-a579b79da633",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "754CF74835BA88808DF131FDB7BC1513 : 2E4E580C6F832CD4E476082C3EEEBD98A19DD821 : 2AFDCC1364C8F6A48C6E36D59184C484CEE37BB5B15D7A33BEDE1908A883160C",
+    "pattern": "[file:hashes.md5 = '754CF74835BA88808DF131FDB7BC1513' OR file:hashes.sha1 = '2E4E580C6F832CD4E476082C3EEEBD98A19DD821' OR file:hashes.sha256 = '2AFDCC1364C8F6A48C6E36D59184C484CEE37BB5B15D7A33BEDE1908A883160C']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--e954e2d8-5c5a-5490-81db-f9ecf5a09d55",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "930271F6332C8A55B5E588071C67408C : AF9C316EC1A19CEDCB7680779E313FCF3AB54261 : 372E2C092A40290ABDC6F0189BAB14AB9B4173147BFDF30D2C897BC18966FC94",
+    "pattern": "[file:hashes.md5 = '930271F6332C8A55B5E588071C67408C' OR file:hashes.sha1 = 'AF9C316EC1A19CEDCB7680779E313FCF3AB54261' OR file:hashes.sha256 = '372E2C092A40290ABDC6F0189BAB14AB9B4173147BFDF30D2C897BC18966FC94']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--a1294aeb-5156-5e32-a173-e99a02508bae",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "D9BD911BCF5A9B6B29D10E805B8BB877 : 4812B2B03777351C93887A24087A36761AD1608E : 96A3201FA6C5771D32D5CA7D7CAEE1CF66DFC635B5B2466D1EB5C4F105B6446A",
+    "pattern": "[file:hashes.md5 = 'D9BD911BCF5A9B6B29D10E805B8BB877' OR file:hashes.sha1 = '4812B2B03777351C93887A24087A36761AD1608E' OR file:hashes.sha256 = '96A3201FA6C5771D32D5CA7D7CAEE1CF66DFC635B5B2466D1EB5C4F105B6446A']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--9c8297b6-7684-59af-af39-22c39748a533",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "0A02A0E274FDA32995E10A79A9C17002 : D1B8809CE7BA138E8F270EA213F133312B99C899 : 6BEA7CE2131569B667BC699C65C26BEDF04D57844C6FD0ADA025A9C5E0282F43",
+    "pattern": "[file:hashes.md5 = '0A02A0E274FDA32995E10A79A9C17002' OR file:hashes.sha1 = 'D1B8809CE7BA138E8F270EA213F133312B99C899' OR file:hashes.sha256 = '6BEA7CE2131569B667BC699C65C26BEDF04D57844C6FD0ADA025A9C5E0282F43']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--a8b4ed59-98d2-5abf-8710-ec47b947fd7e",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "3095C5F904CA04B34F31174D88332D76 : 08E4A16EF735438CAA74BD3E09CA7550A80A4F2C : 945ECECCB2FD0B7D3A4FD86464737752BA8C1CF215159868595BD9D167A337A2",
+    "pattern": "[file:hashes.md5 = '3095C5F904CA04B34F31174D88332D76' OR file:hashes.sha1 = '08E4A16EF735438CAA74BD3E09CA7550A80A4F2C' OR file:hashes.sha256 = '945ECECCB2FD0B7D3A4FD86464737752BA8C1CF215159868595BD9D167A337A2']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--6b0f5bb6-89b4-5808-b0cd-36c0b7f8909e",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "20D411B0275DA72C869D8BD530A8D96E : 3581CDC16FEA965668FA4B85D9A347C2DED52DE0 : B074555CDDF875B99FF9CE9E8200DE31564F2148FC08AEEE3F5A275FF74B50A0",
+    "pattern": "[file:hashes.md5 = '20D411B0275DA72C869D8BD530A8D96E' OR file:hashes.sha1 = '3581CDC16FEA965668FA4B85D9A347C2DED52DE0' OR file:hashes.sha256 = 'B074555CDDF875B99FF9CE9E8200DE31564F2148FC08AEEE3F5A275FF74B50A0']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--c19922e3-00c0-5c74-a455-7ca1c6cb1e0a",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "4166E750448D6A20B10A5EF66C3666CC : 220E3E3CE379926E72F6238DC64E43E7BB05AF58 : 594685DB35F5C6C5F80F0833794AFE2B1AE360D133CC264706D51D3AF10CF734",
+    "pattern": "[file:hashes.md5 = '4166E750448D6A20B10A5EF66C3666CC' OR file:hashes.sha1 = '220E3E3CE379926E72F6238DC64E43E7BB05AF58' OR file:hashes.sha256 = '594685DB35F5C6C5F80F0833794AFE2B1AE360D133CC264706D51D3AF10CF734']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--98f481b5-d9b0-58ba-b232-b649a67b5114",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "51A4BE167BFF9A410D03E77A42A989CD : 61FC4B7C0FF7598E38576FE32C1F0144B866E1EB : 42F412C4C92CF7A033468530A734B1393C600EF084E3DB63BDCC6AC9CE53924B",
+    "pattern": "[file:hashes.md5 = '51A4BE167BFF9A410D03E77A42A989CD' OR file:hashes.sha1 = '61FC4B7C0FF7598E38576FE32C1F0144B866E1EB' OR file:hashes.sha256 = '42F412C4C92CF7A033468530A734B1393C600EF084E3DB63BDCC6AC9CE53924B']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--032eb8c1-e3e2-5e9d-83fa-cecd68e8acd4",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "C560049728EC34CE46C6939D3E59DC11 : 92096EDAD372DCC44BD4BD8AE1CA32475D30A9C4 : EAE8257E25DE69D2A726792A2E7FCBF2087E3593B2C6CCA179FDA478828CAB26",
+    "pattern": "[file:hashes.md5 = 'C560049728EC34CE46C6939D3E59DC11' OR file:hashes.sha1 = '92096EDAD372DCC44BD4BD8AE1CA32475D30A9C4' OR file:hashes.sha256 = 'EAE8257E25DE69D2A726792A2E7FCBF2087E3593B2C6CCA179FDA478828CAB26']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--c2a8f9c9-7469-5611-9bb0-b5d0a102be05",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "50ED7A6C6BFBC3EEB5A6B4CF83169323 : 53B30B6BDADD9601D71BC4BF42112B72E290F386 : CB2253AFA98F680FD04E01FAC7DD77F5F7221BE1129C73B6F69FC3AA5A1979EA",
+    "pattern": "[file:hashes.md5 = '50ED7A6C6BFBC3EEB5A6B4CF83169323' OR file:hashes.sha1 = '53B30B6BDADD9601D71BC4BF42112B72E290F386' OR file:hashes.sha256 = 'CB2253AFA98F680FD04E01FAC7DD77F5F7221BE1129C73B6F69FC3AA5A1979EA']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--fdbbcba0-2f0f-5626-b932-affa4e7cce3e",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "3A8017611A3E370F63206B79E1A4FAD2 : EF502A254376FD6387A3956192380D3CFC05CFAC : 359FDF0180A32C48901BFD70B139482AF8D3D7E2D0BD7A260EA90359A24482B9",
+    "pattern": "[file:hashes.md5 = '3A8017611A3E370F63206B79E1A4FAD2' OR file:hashes.sha1 = 'EF502A254376FD6387A3956192380D3CFC05CFAC' OR file:hashes.sha256 = '359FDF0180A32C48901BFD70B139482AF8D3D7E2D0BD7A260EA90359A24482B9']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--340ba961-ae77-5939-af28-95d9a413f7ca",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "CF148A13BC9CCB2983AF56A696A9B862 : 8E27346F2FD1889EAE060D829DEDFBBF60A51ED1 : CC85E266410524A0B5C06BCB9CDECCC2B2303C11B415E220CB4FFE21115469DA",
+    "pattern": "[file:hashes.md5 = 'CF148A13BC9CCB2983AF56A696A9B862' OR file:hashes.sha1 = '8E27346F2FD1889EAE060D829DEDFBBF60A51ED1' OR file:hashes.sha256 = 'CC85E266410524A0B5C06BCB9CDECCC2B2303C11B415E220CB4FFE21115469DA']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--f7aadb63-d739-5c3b-9c1e-94c1065a1f53",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "4706958FC051D3EB3FF548F9C861D309 : 4D3A3F4ED604DDE727A353696FEEE6C5455F0E43 : 83D862DC0FE620BF9AC92CA395EDCAEBF03E458F56A02858AF42A1866889B9C5",
+    "pattern": "[file:hashes.md5 = '4706958FC051D3EB3FF548F9C861D309' OR file:hashes.sha1 = '4D3A3F4ED604DDE727A353696FEEE6C5455F0E43' OR file:hashes.sha256 = '83D862DC0FE620BF9AC92CA395EDCAEBF03E458F56A02858AF42A1866889B9C5']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--398df86e-9af4-5575-a7db-14f35d190c32",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "364688B5E4388C7104DAA156D06AE9A7 : C052E2AE6C47B7D9EC573C23947FF796B64178C6 : A22FD8C976069AEB676B7335E35A4F19BD55293F669BCC71F407147012B0379D",
+    "pattern": "[file:hashes.md5 = '364688B5E4388C7104DAA156D06AE9A7' OR file:hashes.sha1 = 'C052E2AE6C47B7D9EC573C23947FF796B64178C6' OR file:hashes.sha256 = 'A22FD8C976069AEB676B7335E35A4F19BD55293F669BCC71F407147012B0379D']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--76c423b0-39b5-5667-9817-864c8027a749",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "34561D31F4549266ABBBA86E6B7173C1 : 74157C497C6D5ECB362A9F61F0700AE4879B721C : 9DCB68ADE925F8DD5122BFF523BAA7440D1F166C3AC10AC6AFEF106FC0AF4089",
+    "pattern": "[file:hashes.md5 = '34561D31F4549266ABBBA86E6B7173C1' OR file:hashes.sha1 = '74157C497C6D5ECB362A9F61F0700AE4879B721C' OR file:hashes.sha256 = '9DCB68ADE925F8DD5122BFF523BAA7440D1F166C3AC10AC6AFEF106FC0AF4089']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--b73baa2f-34b5-5e77-bc8f-0e3495e5b25e",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "F533135FBE5AAF291F641D3365F4BBE5 : 528C9070997E9FA82CF24B121D6A4A272F7627A9 : B275294485C13F167C07E4CB6D58778E9C0B4D1BF727002B947DCE7138AD4312",
+    "pattern": "[file:hashes.md5 = 'F533135FBE5AAF291F641D3365F4BBE5' OR file:hashes.sha1 = '528C9070997E9FA82CF24B121D6A4A272F7627A9' OR file:hashes.sha256 = 'B275294485C13F167C07E4CB6D58778E9C0B4D1BF727002B947DCE7138AD4312']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--5d2b931d-672f-5686-b693-4d70b548fbd1",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "350AD2EC7E3F875237C8196F1DBDB6B9 : 2536B63E0B6F3DE3F175A755927D267C0D86221B : 32C4C0EEA0239DAEAAF20E44839BC7A70FC48BF998A97FE242D0523B76626640",
+    "pattern": "[file:hashes.md5 = '350AD2EC7E3F875237C8196F1DBDB6B9' OR file:hashes.sha1 = '2536B63E0B6F3DE3F175A755927D267C0D86221B' OR file:hashes.sha256 = '32C4C0EEA0239DAEAAF20E44839BC7A70FC48BF998A97FE242D0523B76626640']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--6b79836b-ce7d-56a1-9c34-869c75cfa28a",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "FCFADBE0E01F7BF2A7E28246F25E4D3A : 13388C78E07F712252BFD4053716F587DC5A7C94 : 486A42E9DFC33D0FF1A414B4E2F9C16996B425B5E8FE43048CB9EEF0FBC9230B",
+    "pattern": "[file:hashes.md5 = 'FCFADBE0E01F7BF2A7E28246F25E4D3A' OR file:hashes.sha1 = '13388C78E07F712252BFD4053716F587DC5A7C94' OR file:hashes.sha256 = '486A42E9DFC33D0FF1A414B4E2F9C16996B425B5E8FE43048CB9EEF0FBC9230B']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--c9ded3d0-1b13-56d8-af97-ea8c2d43a6f8",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "B30C9810C6873504C2AB80B54D75F7A9 : 39CB9E1FD71BB61D8AAB887E126F07B9F3703125 : D749CA82F13FA8542556185DB0D24EF63C370BC0F907214B0DA1B0E2BEAA2390",
+    "pattern": "[file:hashes.md5 = 'B30C9810C6873504C2AB80B54D75F7A9' OR file:hashes.sha1 = '39CB9E1FD71BB61D8AAB887E126F07B9F3703125' OR file:hashes.sha256 = 'D749CA82F13FA8542556185DB0D24EF63C370BC0F907214B0DA1B0E2BEAA2390']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--3be280e1-bbfd-5dab-8ae8-604e118a5de3",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "B983A10FCC5B01DD8E9B669B5AC7BE68 : CE32080BD4CFB62C233FF1721807907A96D3778E : A2937B62D85A8E38D303D9B117B70D8779BD46354EE834CD03C834E79367D9F6",
+    "pattern": "[file:hashes.md5 = 'B983A10FCC5B01DD8E9B669B5AC7BE68' OR file:hashes.sha1 = 'CE32080BD4CFB62C233FF1721807907A96D3778E' OR file:hashes.sha256 = 'A2937B62D85A8E38D303D9B117B70D8779BD46354EE834CD03C834E79367D9F6']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--d0892b76-9f17-5c4f-a211-1b01a3549edc",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "E14F704E983FBE2FB88BF11A06436D7E : 16A741CD33A3583F7A7CBB5D5E0D17C51AD66B2B : FC89E8D722A8625E80E22F5A19EF1371E388E1583E55618F2EA2451DFE356845",
+    "pattern": "[file:hashes.md5 = 'E14F704E983FBE2FB88BF11A06436D7E' OR file:hashes.sha1 = '16A741CD33A3583F7A7CBB5D5E0D17C51AD66B2B' OR file:hashes.sha256 = 'FC89E8D722A8625E80E22F5A19EF1371E388E1583E55618F2EA2451DFE356845']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--654b8f87-cce4-5f30-a3e7-23cb162a338d",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "8E0F694FBEA4F273A6FE1DF86BDE91D2 : 176C883587C47102AF5D280C6DE644BF57E7F81C : 682C71132D92C668C57479B8A991A540D30C4A7F67D1060BC2BA08208902AA1C",
+    "pattern": "[file:hashes.md5 = '8E0F694FBEA4F273A6FE1DF86BDE91D2' OR file:hashes.sha1 = '176C883587C47102AF5D280C6DE644BF57E7F81C' OR file:hashes.sha256 = '682C71132D92C668C57479B8A991A540D30C4A7F67D1060BC2BA08208902AA1C']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--ea1830c9-b2a3-54f9-83c9-f556d8068da7",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "11784621F7928F09AD89802FF0538303 : 97F5EC6B9641A6ACC971BC8D7BE66332645D5935 : D5B33668B878B1A75151B5DE30370A60BD05C56D7A8433EA52697F1B96036EBA",
+    "pattern": "[file:hashes.md5 = '11784621F7928F09AD89802FF0538303' OR file:hashes.sha1 = '97F5EC6B9641A6ACC971BC8D7BE66332645D5935' OR file:hashes.sha256 = 'D5B33668B878B1A75151B5DE30370A60BD05C56D7A8433EA52697F1B96036EBA']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--4967125f-7bf8-5725-9f40-5b87998ff1dc",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "D07B3844BAA07C57E8EF119EA1C29E85 : 0601EAFDF5B9550B940A1255A28AF2C5B4447ECA : A8602955F5FDFAFA21AEBEE64FEB294B68D8E7B85997992C560F769329E7043F",
+    "pattern": "[file:hashes.md5 = 'D07B3844BAA07C57E8EF119EA1C29E85' OR file:hashes.sha1 = '0601EAFDF5B9550B940A1255A28AF2C5B4447ECA' OR file:hashes.sha256 = 'A8602955F5FDFAFA21AEBEE64FEB294B68D8E7B85997992C560F769329E7043F']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--374d5a28-68d9-535e-aadb-3c14f5b01091",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "BD25FA92B8D2665DA2BB29434CDCC677 : B6A49FC90E76B84E7D38050C938F8ACD21474E59 : 29351837BE2EE7EC1CD05FB09EE502EF3F43DFC549D23D69D4B61C400343D899",
+    "pattern": "[file:hashes.md5 = 'BD25FA92B8D2665DA2BB29434CDCC677' OR file:hashes.sha1 = 'B6A49FC90E76B84E7D38050C938F8ACD21474E59' OR file:hashes.sha256 = '29351837BE2EE7EC1CD05FB09EE502EF3F43DFC549D23D69D4B61C400343D899']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--c46d4c7e-eaf1-5d11-84bd-899d864f0195",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "A4790C7120C43750792695C6630331F2 : 391F87C33B3BFDDCD616841257F15710FACB183B : DBF2EBD41AB20D4E4DB459EAD2D4FB1AAF858642F56A85BCD8032DE3DC9147A5",
+    "pattern": "[file:hashes.md5 = 'A4790C7120C43750792695C6630331F2' OR file:hashes.sha1 = '391F87C33B3BFDDCD616841257F15710FACB183B' OR file:hashes.sha256 = 'DBF2EBD41AB20D4E4DB459EAD2D4FB1AAF858642F56A85BCD8032DE3DC9147A5']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--16704293-db9e-5920-b2e2-8518ada58824",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "AFCA2D26681A18CD1C628EBF7C5A33DD : 39586504D540E03D9E0561A64D4C95E7C9BBF647 : 4614CE4401ABFD3E57C93BE9CBAF3E447D008251AA1F770A7AEFE0962331E6B3",
+    "pattern": "[file:hashes.md5 = 'AFCA2D26681A18CD1C628EBF7C5A33DD' OR file:hashes.sha1 = '39586504D540E03D9E0561A64D4C95E7C9BBF647' OR file:hashes.sha256 = '4614CE4401ABFD3E57C93BE9CBAF3E447D008251AA1F770A7AEFE0962331E6B3']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--21d07026-9f8a-5fe4-aa49-bb5c7367b14d",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "867A392FC7313A340358F51A8D71BB5D : 457D9D7DA288BB0277D2E7CBEE3DF6F530162FD3 : 84364F2B9C2A736F22B57745B51CC3DB232111A27C6720E700A5EB5E1E1B9602",
+    "pattern": "[file:hashes.md5 = '867A392FC7313A340358F51A8D71BB5D' OR file:hashes.sha1 = '457D9D7DA288BB0277D2E7CBEE3DF6F530162FD3' OR file:hashes.sha256 = '84364F2B9C2A736F22B57745B51CC3DB232111A27C6720E700A5EB5E1E1B9602']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--00f9e5da-a1a8-5a22-b71a-a944457b8d24",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "C336DFF17238047304411FB504581E7B : 6FC0C1A3381CEBD89E63193556918B82B7E122C5 : 1471E8E6AC0FC93F251E6CC084C631818C2CA56F8ACD22C0513D6BC7A5BFF6E2",
+    "pattern": "[file:hashes.md5 = 'C336DFF17238047304411FB504581E7B' OR file:hashes.sha1 = '6FC0C1A3381CEBD89E63193556918B82B7E122C5' OR file:hashes.sha256 = '1471E8E6AC0FC93F251E6CC084C631818C2CA56F8ACD22C0513D6BC7A5BFF6E2']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--982a286b-2de7-596f-b805-0eff5ac2a515",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "319611FBB3D661217F677DDF28D483CF : 6977357268E815C316BBCE759F7FA67AAE62A87F : 25A846ABAD50A711C8B05B24BF27319B67E300203960C9D5A07359AD81CCA41B",
+    "pattern": "[file:hashes.md5 = '319611FBB3D661217F677DDF28D483CF' OR file:hashes.sha1 = '6977357268E815C316BBCE759F7FA67AAE62A87F' OR file:hashes.sha256 = '25A846ABAD50A711C8B05B24BF27319B67E300203960C9D5A07359AD81CCA41B']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--4c158932-a3d3-5cc3-a761-9b4e8dad77de",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "5CB4E0DCBF33C0364A82DC727CC2B1EA : 3305B2873EF5C62E7FC2DBB9E1CB631D8029EFB0 : FD0677231A936D9A6C4DA463CA611E3B373DAE8891D7E8364CEF672E31623B6A",
+    "pattern": "[file:hashes.md5 = '5CB4E0DCBF33C0364A82DC727CC2B1EA' OR file:hashes.sha1 = '3305B2873EF5C62E7FC2DBB9E1CB631D8029EFB0' OR file:hashes.sha256 = 'FD0677231A936D9A6C4DA463CA611E3B373DAE8891D7E8364CEF672E31623B6A']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--e80ffe09-7bd2-51a1-9f3a-639bb7b33bdd",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "D58AFC7D92DA5DCFB107FD8587AAB09E : 10D16E0CC20251037BDABF3FE0A336E32E59A664 : B7130EA92276A04AD913100D743C53D289C3FC5F7060CA2BD2444526BA56BF9F",
+    "pattern": "[file:hashes.md5 = 'D58AFC7D92DA5DCFB107FD8587AAB09E' OR file:hashes.sha1 = '10D16E0CC20251037BDABF3FE0A336E32E59A664' OR file:hashes.sha256 = 'B7130EA92276A04AD913100D743C53D289C3FC5F7060CA2BD2444526BA56BF9F']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--fd25372c-e7dc-5362-b76d-19e2326c5be3",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "C453FE09D47214B2D13B4788339C9DC6 : 545BA34D46A5ECA71848246836D56530E5D2B8C8 : 1E7B6EF1419E525F18722B9457768A734D6BBE46408D747E90A28B24B0D60AF5",
+    "pattern": "[file:hashes.md5 = 'C453FE09D47214B2D13B4788339C9DC6' OR file:hashes.sha1 = '545BA34D46A5ECA71848246836D56530E5D2B8C8' OR file:hashes.sha256 = '1E7B6EF1419E525F18722B9457768A734D6BBE46408D747E90A28B24B0D60AF5']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--2ffd2416-a085-53aa-a7a1-faf0d80735f1",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "A5A22BC0824CD4C244214038450C2454 : 5C8BD10940A0CA9F7B26AF60927DCA84C7641F15 : 0BEBB820A811A0668727AAD61D8E4D417D040195E7EA3E83E88D799D0C6B300F",
+    "pattern": "[file:hashes.md5 = 'A5A22BC0824CD4C244214038450C2454' OR file:hashes.sha1 = '5C8BD10940A0CA9F7B26AF60927DCA84C7641F15' OR file:hashes.sha256 = '0BEBB820A811A0668727AAD61D8E4D417D040195E7EA3E83E88D799D0C6B300F']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--485935cb-a6d6-5cbe-bb96-4403c15d360c",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "D9827AB6AEDFC80A79FE9E30D9AAA2CE : 1E5C3560566B7E2E7FA607B8F58AF4B2672E01D3 : 0C60A4F529FF0F08D5CE6937DA608B79779FC46151454E3F748F79F67098E42C",
+    "pattern": "[file:hashes.md5 = 'D9827AB6AEDFC80A79FE9E30D9AAA2CE' OR file:hashes.sha1 = '1E5C3560566B7E2E7FA607B8F58AF4B2672E01D3' OR file:hashes.sha256 = '0C60A4F529FF0F08D5CE6937DA608B79779FC46151454E3F748F79F67098E42C']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--44edb717-2f58-5f6b-8a11-563804507d9c",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "06FD0F76EBF3171ED25BC7CA90BE486B : 409F3D2DFEACA83D4E00165942E30FD81829A192 : C53E9EB2C58CF36A041F9D04F7907E28D023693A438190EDDBAE2D7F82B5A0CC",
+    "pattern": "[file:hashes.md5 = '06FD0F76EBF3171ED25BC7CA90BE486B' OR file:hashes.sha1 = '409F3D2DFEACA83D4E00165942E30FD81829A192' OR file:hashes.sha256 = 'C53E9EB2C58CF36A041F9D04F7907E28D023693A438190EDDBAE2D7F82B5A0CC']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--9754f1ae-f4fa-5710-9cd0-cbd6aaad93b2",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "E7FECE3A8CB0C783AA9CB9002E2D1F98 : 8AC2A47DBC2EB4604B018484566A58D9C8847AF6 : D2B2C311DA183D92A228D5BF6F5E108C6B01AF4C2CD890A9AA71F6AD2353CC1C",
+    "pattern": "[file:hashes.md5 = 'E7FECE3A8CB0C783AA9CB9002E2D1F98' OR file:hashes.sha1 = '8AC2A47DBC2EB4604B018484566A58D9C8847AF6' OR file:hashes.sha256 = 'D2B2C311DA183D92A228D5BF6F5E108C6B01AF4C2CD890A9AA71F6AD2353CC1C']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--73f4ed18-7030-5fa7-a2aa-3d6c80307bff",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "F154EDE4AFB64308DDCF27DED6FDCD79 : 26A01947D5DAECE478506B988A2765DBCF16894C : A24808C8C4CE4D1B557C8A3647C1C1D686CAF5C41C9ECA6B6EDD5395C916979E",
+    "pattern": "[file:hashes.md5 = 'F154EDE4AFB64308DDCF27DED6FDCD79' OR file:hashes.sha1 = '26A01947D5DAECE478506B988A2765DBCF16894C' OR file:hashes.sha256 = 'A24808C8C4CE4D1B557C8A3647C1C1D686CAF5C41C9ECA6B6EDD5395C916979E']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--be3bedd2-2308-593f-8806-269c232062db",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "077A2B1793C2FE60440FB880BE20F98D : 2FA583FD23D49550DAE4A7405E4380E3437A8E6D : 832DC7CFE03E3880ECD157E1DDD829F1B2945EC856C59660628A57A9C3DA0AF8",
+    "pattern": "[file:hashes.md5 = '077A2B1793C2FE60440FB880BE20F98D' OR file:hashes.sha1 = '2FA583FD23D49550DAE4A7405E4380E3437A8E6D' OR file:hashes.sha256 = '832DC7CFE03E3880ECD157E1DDD829F1B2945EC856C59660628A57A9C3DA0AF8']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--d75e3951-ee0c-5b74-8801-9fad594d0b3f",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "CBA5DFFC82DFADC4B5B3A5B58F0715E3 : 4DB4214043F39FF2CF7F8E66C0A497E6D4CA05D6 : AC20F8F16EFD13EA704488EB43B1A761F9E26BCDC70AC70D57CB15CBDAB200BB",
+    "pattern": "[file:hashes.md5 = 'CBA5DFFC82DFADC4B5B3A5B58F0715E3' OR file:hashes.sha1 = '4DB4214043F39FF2CF7F8E66C0A497E6D4CA05D6' OR file:hashes.sha256 = 'AC20F8F16EFD13EA704488EB43B1A761F9E26BCDC70AC70D57CB15CBDAB200BB']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--3962930b-310d-5520-bee8-4fcec11c2f9d",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "06430235355EFF497B149B0032BFE4F3 : 195FE3AF2C7D55397352886D9C63E4719D6EA964 : FB236A7C4576DBFCB5EB85C09E59F1C4480B61122306BB15B063049FACFB2FA3",
+    "pattern": "[file:hashes.md5 = '06430235355EFF497B149B0032BFE4F3' OR file:hashes.sha1 = '195FE3AF2C7D55397352886D9C63E4719D6EA964' OR file:hashes.sha256 = 'FB236A7C4576DBFCB5EB85C09E59F1C4480B61122306BB15B063049FACFB2FA3']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--92aceae0-f736-518a-ac4c-662576ddab86",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "1DA62AE3251FFCE56F33F798E7E7462E : 60E8AAEB675A19DF152F3E1E8F76279891A749BC : 18EAF7547EBF0D5ECBFA0183B260298EE9C3569F4BFD975044C2810EB4E10E87",
+    "pattern": "[file:hashes.md5 = '1DA62AE3251FFCE56F33F798E7E7462E' OR file:hashes.sha1 = '60E8AAEB675A19DF152F3E1E8F76279891A749BC' OR file:hashes.sha256 = '18EAF7547EBF0D5ECBFA0183B260298EE9C3569F4BFD975044C2810EB4E10E87']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--7ecf9bee-0e51-5968-b508-8fedac442325",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "641480371444B5691B6864E8E6AC3BF8 : 05B6A3ED34B10428C7EE17E412DBEA3424CA428A : A1B007FA2BD4AFE7D28901DB5B935BC7743025BCC86BDA1572968A7379D4FF84",
+    "pattern": "[file:hashes.md5 = '641480371444B5691B6864E8E6AC3BF8' OR file:hashes.sha1 = '05B6A3ED34B10428C7EE17E412DBEA3424CA428A' OR file:hashes.sha256 = 'A1B007FA2BD4AFE7D28901DB5B935BC7743025BCC86BDA1572968A7379D4FF84']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--e34e7f59-74b0-583b-a50b-a81937ebce4e",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "C50239B1574BEF1612BECA5BAE003371 : 29374B0ED87EB1421AEE4907244E12503974AE99 : 1F220289D049B17293E916CB66D3D76BE2A8691B89BFA315C05AC6551BDF91E5",
+    "pattern": "[file:hashes.md5 = 'C50239B1574BEF1612BECA5BAE003371' OR file:hashes.sha1 = '29374B0ED87EB1421AEE4907244E12503974AE99' OR file:hashes.sha256 = '1F220289D049B17293E916CB66D3D76BE2A8691B89BFA315C05AC6551BDF91E5']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--20c07f73-5e6d-585d-b1f5-0ee76ef2db07",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "9C57F60C89D7A224D7897F6C86BA29AB : 0F9F5C753EEE8A6124EEC4AAE68F32EC7B0D3F99 : 31A4A79F86DB4FB0A893EED71AFB197672DB839FE65B961AB3051977352BEAF2",
+    "pattern": "[file:hashes.md5 = '9C57F60C89D7A224D7897F6C86BA29AB' OR file:hashes.sha1 = '0F9F5C753EEE8A6124EEC4AAE68F32EC7B0D3F99' OR file:hashes.sha256 = '31A4A79F86DB4FB0A893EED71AFB197672DB839FE65B961AB3051977352BEAF2']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--beb94af9-7b20-5f36-bf0d-d6513e6f155f",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "76E94654A62EED05975D7A53A207E4CE : DF7AA49C605891F3E680B09C43616F62B8EF80E6 : 30B2945FED7C0143ADF622669A82E93AD4D31475396BFAA9B160B387AE8028F9",
+    "pattern": "[file:hashes.md5 = '76E94654A62EED05975D7A53A207E4CE' OR file:hashes.sha1 = 'DF7AA49C605891F3E680B09C43616F62B8EF80E6' OR file:hashes.sha256 = '30B2945FED7C0143ADF622669A82E93AD4D31475396BFAA9B160B387AE8028F9']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--7179d73a-c70e-5ce6-a832-b9839b8e0f4a",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "AC019287A4E5D2192F4B7AAE9C496A6E : 42CA554CBB2FF1AF5E62E32E660D47A3A58196C3 : 92529CE55913E4B8DB24086685D5CA2DC78C421094688D83C5F1971D0C3B8E00",
+    "pattern": "[file:hashes.md5 = 'AC019287A4E5D2192F4B7AAE9C496A6E' OR file:hashes.sha1 = '42CA554CBB2FF1AF5E62E32E660D47A3A58196C3' OR file:hashes.sha256 = '92529CE55913E4B8DB24086685D5CA2DC78C421094688D83C5F1971D0C3B8E00']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--1ba2ed3f-e911-5f4d-a887-9c7b35a0d311",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "39CB9D894C1B3F01F6F51FD96F1BE960 : F089EF1B9915D201A63E7430E0C81660E3918CC2 : 7672C98EC56F080B7A6A3649296931E601E262CDD9288B6F1448EA134108D7D2",
+    "pattern": "[file:hashes.md5 = '39CB9D894C1B3F01F6F51FD96F1BE960' OR file:hashes.sha1 = 'F089EF1B9915D201A63E7430E0C81660E3918CC2' OR file:hashes.sha256 = '7672C98EC56F080B7A6A3649296931E601E262CDD9288B6F1448EA134108D7D2']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--386e9e7a-1ce9-5ed8-93d4-a873071b97d6",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "2CDE33DB853EC251C1FC4C86B7C26128 : 13FA5EF5D928449C757CFC7EC326D7A756405D73 : 264A6E306257B05C2DAEA8FDA44725EF04DC467A65AE9993DA5EFDB0EFF1FD7A",
+    "pattern": "[file:hashes.md5 = '2CDE33DB853EC251C1FC4C86B7C26128' OR file:hashes.sha1 = '13FA5EF5D928449C757CFC7EC326D7A756405D73' OR file:hashes.sha256 = '264A6E306257B05C2DAEA8FDA44725EF04DC467A65AE9993DA5EFDB0EFF1FD7A']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--a4cda0ed-b124-5640-aed6-d041a7d4b48a",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "1713D90B032CEC50298B67FB944D377F : AE604DA2F936B7963B02465CE2C2073DE54D66E2 : EA27163C16C2A04E6385AB6EE26E21D6834453ED2F1259AA86712EF28195EB06",
+    "pattern": "[file:hashes.md5 = '1713D90B032CEC50298B67FB944D377F' OR file:hashes.sha1 = 'AE604DA2F936B7963B02465CE2C2073DE54D66E2' OR file:hashes.sha256 = 'EA27163C16C2A04E6385AB6EE26E21D6834453ED2F1259AA86712EF28195EB06']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--316376d2-6912-5604-8a47-a78096110cbc",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "B710A2EB08308997C8692A821E77977E : 2D469497083B709762B1C9E814CE7E91FCAE95C4 : 4304B6E3DE89A990508C4549A471D76AF0BC041EBBCB68228F8FF5AD2663D473",
+    "pattern": "[file:hashes.md5 = 'B710A2EB08308997C8692A821E77977E' OR file:hashes.sha1 = '2D469497083B709762B1C9E814CE7E91FCAE95C4' OR file:hashes.sha256 = '4304B6E3DE89A990508C4549A471D76AF0BC041EBBCB68228F8FF5AD2663D473']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--cc303222-cda0-5e67-bbcc-6c574277f484",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "C3B70C6AE434F6F1D5B632B321F3B908 : 71803DFA3AB49A95CAA018FAE44B983352D5E48E : 444C75D64DC626ABA381B67376A353DD9ED156764C08A124363A7BF98112CF59",
+    "pattern": "[file:hashes.md5 = 'C3B70C6AE434F6F1D5B632B321F3B908' OR file:hashes.sha1 = '71803DFA3AB49A95CAA018FAE44B983352D5E48E' OR file:hashes.sha256 = '444C75D64DC626ABA381B67376A353DD9ED156764C08A124363A7BF98112CF59']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--e16d33ea-32f2-591c-adf5-bfe1f8dd2a5c",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "B3DE2F23507E210F3ADB348945620C67 : 21F3DF0337B4900555E3A9B29973E459544B2720 : 307BB9BCFE9FB5A93CF7C36129DE7A01078752B7DDE4E6F2C6B403B61DDE72C9",
+    "pattern": "[file:hashes.md5 = 'B3DE2F23507E210F3ADB348945620C67' OR file:hashes.sha1 = '21F3DF0337B4900555E3A9B29973E459544B2720' OR file:hashes.sha256 = '307BB9BCFE9FB5A93CF7C36129DE7A01078752B7DDE4E6F2C6B403B61DDE72C9']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--d7a45363-1c93-51dd-83af-3d6140c842e7",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "8807535167875EC3B6A53ED4FCE6452C : 6BEA522E87BA242B6DA2E360C136014EDAF71506 : A28F339838D6DF04351F86C51E8A31C62E773C2F12F3686C6D57BAC6CBEBBCD9",
+    "pattern": "[file:hashes.md5 = '8807535167875EC3B6A53ED4FCE6452C' OR file:hashes.sha1 = '6BEA522E87BA242B6DA2E360C136014EDAF71506' OR file:hashes.sha256 = 'A28F339838D6DF04351F86C51E8A31C62E773C2F12F3686C6D57BAC6CBEBBCD9']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 95,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--44127645-fafe-555a-99ff-9e3c7a13a63b",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:07.000Z",
+    "name": "B1D8816B6DCC087908863A2B611E2099 : E31CC898B4125E8F4D035146C97CEFD21EFA4EAC : 489A98C71BBC5BBA39319B6D736992E6E0BFECC350D5D633679C6E090866A706",
+    "pattern": "[file:hashes.md5 = 'B1D8816B6DCC087908863A2B611E2099' OR file:hashes.sha1 = 'E31CC898B4125E8F4D035146C97CEFD21EFA4EAC' OR file:hashes.sha256 = '489A98C71BBC5BBA39319B6D736992E6E0BFECC350D5D633679C6E090866A706']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  },
+  {
+    "confidence": 75,
+    "created": "2020-07-24T15:12:30.000Z",
+    "description": "",
+    "id": "indicator--f4cee501-b4ae-5830-ae94-aa4c38facc84",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "lang": "en",
+    "modified": "2020-07-24T15:33:08.000Z",
+    "name": "7BF3F2D339E9124E12F88BFBBF69C180 : 1B0830D193574ED2A9DA46F8CA7BEF81C89B0696 : 59A8C19B84D704192D7F42B318DA7F6DE5F27EF972FB8673727E631720F2A030",
+    "pattern": "[file:hashes.md5 = '7BF3F2D339E9124E12F88BFBBF69C180' OR file:hashes.sha1 = '1B0830D193574ED2A9DA46F8CA7BEF81C89B0696' OR file:hashes.sha256 = '59A8C19B84D704192D7F42B318DA7F6DE5F27EF972FB8673727E631720F2A030']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "valid_from": "2020-07-24T15:12:30.000Z"
+  }
+]

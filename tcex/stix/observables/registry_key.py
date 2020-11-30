@@ -12,6 +12,7 @@ from tcex.stix.model import StixModel  # pylint: disable=cyclic-import
 class StixRegistryKeyObject(StixModel):
     """STIX Threat Actor object."""
 
+    # pylint: disable=arguments-differ
     def consume(self, stix_data: Union[list, dict]):
         """Convert STIX Windows Registry Key Cyber Observables to ThreatConnect Indicators.
 
@@ -44,6 +45,7 @@ class StixRegistryKeyObject(StixModel):
                     )
                     yield from self._map(data, mapper)
 
+    # pylint: disable=arguments-differ
     def produce(self, tc_data: Union[list, dict], **kwargs):
         """Produce STIX 2.0 JSON object from TC API response.
 

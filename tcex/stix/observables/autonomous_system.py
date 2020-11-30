@@ -38,7 +38,7 @@ class StixASObject(StixModel):
 
         yield from (AutonomousSystem(**stix_data) for stix_data in self._map(tc_data, parse_map))
 
-    # pylint: disable=arguments-differ
+    # pylint: disable=arguments-differ, unused-argument
     def consume(self, stix_data: Union[list, dict], **kwargs):
         """Produce a ThreatConnect object from a STIX 2.0 JSON object."""
         parse_map = {

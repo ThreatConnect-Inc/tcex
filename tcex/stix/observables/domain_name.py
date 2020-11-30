@@ -18,6 +18,7 @@ class StixDomainNameObject(StixModel):
     see: https://docs.oasis-open.org/cti/stix/v2.1/csprd01/stix-v2.1-csprd01.html#_Toc16070687
     """
 
+    # pylint: disable=arguments-differ
     def produce(self, tc_data: Union[list, dict], **kwargs) -> Iterable[DomainName]:
         """Produce STIX 2.0 JSON object from TC API response."""
         if isinstance(tc_data, list) and len(tc_data) > 0 and 'summary' in tc_data[0]:
@@ -34,6 +35,7 @@ class StixDomainNameObject(StixModel):
 
         yield from (DomainName(**stix_data) for stix_data in self._map(tc_data, parse_map))
 
+    # pylint: disable=arguments-differ
     def consume(self, stix_data: Union[list, dict]):
         """Produce a ThreatConnect object from a STIX 2.0 JSON object."""
         parse_map = {
@@ -46,6 +48,5 @@ class StixDomainNameObject(StixModel):
         parse_map.update(self.default_map)
 
         yield from self._map(
-            stix_data,
-            parse_map,
+            stix_data, parse_map,
         )
