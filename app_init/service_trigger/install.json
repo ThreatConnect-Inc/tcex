@@ -9,6 +9,7 @@
   "labels": [],
   "languageVersion": "3.6",
   "listDelimiter": "|",
+  "minServerVersion": "6.0.7",
   "note": "",
   "params": [
     {
