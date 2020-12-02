@@ -90,6 +90,9 @@ class StixIndicator(StixModel):
                         kwargs['description'] = value
 
             id_ = f'''{data.get('ownerName').lower()}-{_type.lower()}-{data.get('summary')}'''
+            if id_.lower() == '00abedb4-aa42-466c-9c01-fed23315a9b7':
+                self.tcex.log.error(f'RESERVED UUID 00abedb4-aa42-466c-9c01-fed23315a9b7 created for indicator {data}')
+                continue
             kwargs['id'] = f'indicator--{uuid.uuid5(uuid.NAMESPACE_X500, id_)}'
 
             # {
