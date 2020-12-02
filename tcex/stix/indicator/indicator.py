@@ -89,9 +89,13 @@ class StixIndicator(StixModel):
                         latest = last_modified
                         kwargs['description'] = value
 
+            # APP-1766 - STIX spec requirement
             id_ = f'''{data.get('ownerName').lower()}-{_type.lower()}-{data.get('summary')}'''
             if id_.lower() == '00abedb4-aa42-466c-9c01-fed23315a9b7':
-                self.tcex.log.error(f'RESERVED UUID 00abedb4-aa42-466c-9c01-fed23315a9b7 created for indicator {data}')
+                self.logger.log.error(
+                    'RESERVED UUID 00abedb4-aa42-466c-9c01-fed23315a9b7 '
+                    f'created for indicator {data}'
+                )
                 continue
             kwargs['id'] = f'indicator--{uuid.uuid5(uuid.NAMESPACE_X500, id_)}'
 
@@ -118,7 +122,7 @@ class StixIndicator(StixModel):
             try:
                 rating = str(int(data.get('rating')))
                 kwargs.setdefault('labels', []).append(self.x_threat_rating_map[rating])
-            except Exception:
+            except Exception:  # nosec
                 pass
 
             yield kwargs

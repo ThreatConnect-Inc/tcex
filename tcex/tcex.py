@@ -47,6 +47,7 @@ class TcEx:
         self._indicator_types = None
         self._indicator_types_data = None
         self._jobs = None
+        self._key_value_store = None
         self._logger = None
         self._playbook = None
         self._redis_client = None
@@ -325,21 +326,6 @@ class TcEx:
         return indicator_list
 
     @property
-    def victim_asset_types(self) -> list:
-        """Return all defined ThreatConnect Asset types.
-
-        Returns:
-            (list): A list of ThreatConnect Asset types.
-        """
-        return [
-            'EmailAddress',
-            'SocialNetwork',
-            'NetworkAccount',
-            'WebSite',
-            'Phone',
-        ]
-
-    @property
     def group_types(self) -> list:
         """Return all defined ThreatConnect Group types.
 
@@ -470,6 +456,36 @@ class TcEx:
             for itd in r.json().get('data', {}).get('indicatorType'):
                 self._indicator_types_data[itd.get('name')] = itd
         return self._indicator_types_data
+
+    @property
+    def key_value_store(self) -> object:
+        """Return the correct KV store for this execution.
+
+        The TCKeyValueAPI KV store is limited to two operations (create and read),
+        while the Redis kvstore wraps a few other Redis methods.
+        """
+        if self._key_value_store is None:
+            if self.default_args.tc_playbook_db_type == 'Redis':
+                from .key_value_store import KeyValueRedis
+
+                self._key_value_store = KeyValueRedis(
+                    self.default_args.tc_playbook_db_context, self.redis_client
+                )
+            elif self.default_args.tc_playbook_db_type == 'TCKeyValueAPI':
+                from .key_value_store import KeyValueApi
+
+                # providing runtime_level to KeyValueApi for service Apps so that the new
+                # API endpoint (in TC 6.0.7) can be used with the context. this new
+                # endpoint could be used for PB Apps, however to support versions of
+                # TC < 6.0.7 the old endpoint must still be used.
+                self._key_value_store = KeyValueApi(
+                    self.default_args.tc_playbook_db_context,
+                    self.session,
+                    self.ij.runtime_level.lower(),
+                )
+            else:  # pragma: no cover
+                raise RuntimeError(f'Invalid DB Type: ({self.default_args.tc_playbook_db_type})')
+        return self._key_value_store
 
     @property
     def log(self) -> object:
@@ -936,3 +952,18 @@ class TcEx:
 
             self._utils = Utils(temp_path=self.default_args.tc_temp_path)
         return self._utils
+
+    @property
+    def victim_asset_types(self) -> list:
+        """Return all defined ThreatConnect Asset types.
+
+        Returns:
+            (list): A list of ThreatConnect Asset types.
+        """
+        return [
+            'EmailAddress',
+            'SocialNetwork',
+            'NetworkAccount',
+            'WebSite',
+            'Phone',
+        ]

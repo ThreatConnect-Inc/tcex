@@ -413,7 +413,7 @@ class Validator:
                     for item in data:
                         if not isinstance(item, dict):
                             bad_data.append(f'Invalid JSON data provide ({item}).')
-                except ValueError as e:
+                except ValueError:
                     print('failed to load data')
                     bad_data.append(f'Invalid JSON data provide ({data}).')
             elif isinstance(data, (OrderedDict, dict)):

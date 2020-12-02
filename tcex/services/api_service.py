@@ -168,7 +168,7 @@ class ApiService(CommonService):
             # read body from redis
             body_variable: str = message.pop('bodyVariable', None)
             if body_variable is not None:
-                body: Any = self.redis_client.hget(request_key, body_variable)
+                body: Any = self.key_value_store.read(body_variable, context=request_key)
                 if body is not None:
                     # for API service the data in Redis is not b64 encoded
                     body = BytesIO(body)
@@ -263,7 +263,7 @@ class ApiService(CommonService):
                             self.log.error(f'unhandled type dir - {dir(body)}')
 
                 # write body to Redis
-                self.redis_client.hset(request_key, 'response.body', body)
+                self.key_value_store.create('response.body', body, contex=request_key)
 
                 # set thread event to True to trigger response
                 self.log.info('feature=api-service, event=response-body-written')

@@ -29,7 +29,7 @@ class WebhookTriggerService(CommonServiceTrigger):
         # Webhook App (default)
 
         * Dict - Playbook will not be launched and provided data
-                 will be used in the response to the client.
+            will be used in the response to the client.
         * True - Playbook will be launched.
         * Else - Playbook will NOT be launched.
 
@@ -44,7 +44,7 @@ class WebhookTriggerService(CommonServiceTrigger):
         For this feature the callback method must fire the event on it's own.
 
         * Dict - Playbook will not be launched and provided data
-                 will be used in the response to the client.
+            will be used in the response to the client.
         * Else - Response will be set to default of statusCode=200, body=None, and headers=[].
 
         Args:
@@ -203,7 +203,7 @@ class WebhookTriggerService(CommonServiceTrigger):
         # get a context aware pb instance for the App callback method
         playbook: object = self.tcex.pb(context=self.session_id, output_variables=outputs)
         try:
-            body: Any = self.redis_client.hget(message.get('requestKey'), 'request.body')
+            body: Any = self.key_value_store.read('request.body', context=message.get('requestKey'))
             if body is not None:
                 body = base64.b64decode(body).decode()
             # pylint: disable=not-callable
@@ -289,7 +289,7 @@ class WebhookTriggerService(CommonServiceTrigger):
         request_key: str = message.get('requestKey')
 
         try:
-            body: Any = self.redis_client.hget(request_key, 'request.body')
+            body: Any = self.key_value_store.read('request.body', context=request_key)
             if body is not None:
                 body = base64.b64decode(body).decode()
         except Exception as e:

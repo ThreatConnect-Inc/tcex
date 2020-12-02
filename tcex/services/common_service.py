@@ -30,7 +30,6 @@ class CommonService:
 
         # properties
         self._ready = False
-        self._redis_client = None
         self._start_time = datetime.now()
         self.args: object = tcex.default_args
         self.configs = {}
@@ -38,6 +37,7 @@ class CommonService:
         self.heartbeat_sleep_time = 1
         self.heartbeat_watchdog = 0
         self.ij = tcex.ij
+        self.key_value_store = self.tcex.key_value_store
         self.log = tcex.log
         self.logger = tcex.logger
         self.message_broker = MqttMessageBroker(
@@ -49,6 +49,7 @@ class CommonService:
             logger=tcex.log,
         )
         self.ready = False
+        self.redis_client = self.tcex.redis_client
         self.token = tcex.token
 
         # config callbacks
@@ -345,13 +346,6 @@ class CommonService:
                     json.dumps(ready_command), self.args.tc_svc_client_topic
                 )
                 self._ready = True
-
-    @property
-    def redis_client(self) -> object:
-        """Return the correct KV store for this execution."""
-        if self._redis_client is None:
-            self._redis_client: object = self.tcex.redis_client
-        return self._redis_client
 
     def service_thread(
         self,
