@@ -428,7 +428,7 @@ class StixModel:
         for i in range(len(stix_data.get('values'))):
             mapper['Value Name'] = f'@.values[{i}].name'
             mapper['Value Type'] = f'@.values[{i}].data_type'
-            mapper['attributes'].append({'type': 'Value Data', 'value': f'@.values[{i}].data'})
+            mapper.setdefault('attribute', []).append({'type': 'Value Data', 'value': f'@.values[{i}].data'})
         return mapper
 
     def consume(
@@ -500,8 +500,8 @@ class StixModel:
                     map_.update(safe_default_map)
                     tc_data = itertools.chain(tc_data, self._map(data, map_))
             elif mapping_method:
-                self.default_map['xid'] = xid
-                map_ = self.smart_update(self.default_map, mapping_method(stix_data))
+                safe_default_map['xid'] = xid
+                map_ = self.smart_update(safe_default_map, mapping_method(data))
                 tc_data = itertools.chain(tc_data, self._map(data, map_))
             # else:
             #     self.default_map['xid'] = xid

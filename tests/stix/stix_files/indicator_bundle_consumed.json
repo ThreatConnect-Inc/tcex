@@ -1,482 +1,482 @@
-[
-  {
-    "attribute": [
-      {
-        "type": "STIX Title",
-        "value": "HTRAN Hop Point Accessor"
-      },
-      {
-        "type": "Description",
-        "value": "Test description."
-      },
-      {
-        "type": "STIX Indicator Type",
-        "value": "malicious-activity"
-      },
-      {
-        "type": "External Date Created",
-        "value": "2015-05-15T09:12:16Z"
-      },
-      {
-        "displayed": true,
-        "type": "Source",
-        "value": "Object ID: indicator--031778a4-057f-48e6-9db9-c8d72b811111\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--031778a4-057f-48e6-9db9-c8d72b811111/"
-      }
-    ],
-    "dateAdded": "2015-05-15T09:12:16.432Z",
-    "lastModified": "2015-05-15T09:12:16.432Z",
-    "summary": "223.166.0.0/15",
-    "type": "CIDR",
-    "xid": "8d8a69c29eb767d3f90c7d3645e0824a42c7d7aaf860169031582c3f451c4eaa"
-  },
-  {
-    "attribute": [
-      {
-        "type": "STIX Title",
-        "value": "HTRAN Hop Point Accessor"
-      },
-      {
-        "type": "Description",
-        "value": "Test description."
-      },
-      {
-        "type": "STIX Indicator Type",
-        "value": "malicious-activity"
-      },
-      {
-        "type": "External Date Created",
-        "value": "2015-05-15T09:12:16Z"
-      },
-      {
-        "displayed": true,
-        "type": "Source",
-        "value": "Object ID: indicator--031778a4-057f-48e6-9db9-c8d72b811111\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--031778a4-057f-48e6-9db9-c8d72b811111/"
-      }
-    ],
-    "dateAdded": "2015-05-15T09:12:16.432Z",
-    "lastModified": "2015-05-15T09:12:16.432Z",
-    "summary": "58.246.0.0/15",
-    "type": "CIDR",
-    "xid": "50a10878c8a09602d9271912a8461141158def8bc2da867f1d99de625b005a7c"
-  },
-  {
-    "attribute": [
-      {
-        "type": "STIX Title",
-        "value": "HTRAN Hop Point Accessor"
-      },
-      {
-        "type": "Description",
-        "value": "Test description."
-      },
-      {
-        "type": "STIX Indicator Type",
-        "value": "malicious-activity"
-      },
-      {
-        "type": "External Date Created",
-        "value": "2015-05-15T09:12:16Z"
-      },
-      {
-        "displayed": true,
-        "type": "Source",
-        "value": "Object ID: indicator--031778a4-057f-48e6-9db9-c8d72b811111\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--031778a4-057f-48e6-9db9-c8d72b811111/"
-      }
-    ],
-    "dateAdded": "2015-05-15T09:12:16.432Z",
-    "lastModified": "2015-05-15T09:12:16.432Z",
-    "summary": "112.64.0.0/15",
-    "type": "CIDR",
-    "xid": "dbdf45dd9584182dab62e81867c62fef573993c43126f5e6e2412fa3a31fe1ec"
-  },
-  {
-    "attribute": [
-      {
-        "type": "STIX Title",
-        "value": "HTRAN Hop Point Accessor"
-      },
-      {
-        "type": "Description",
-        "value": "Test description."
-      },
-      {
-        "type": "STIX Indicator Type",
-        "value": "malicious-activity"
-      },
-      {
-        "type": "External Date Created",
-        "value": "2015-05-15T09:12:16Z"
-      },
-      {
-        "displayed": true,
-        "type": "Source",
-        "value": "Object ID: indicator--031778a4-057f-48e6-9db9-c8d72b811111\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--031778a4-057f-48e6-9db9-c8d72b811111/"
-      }
-    ],
-    "dateAdded": "2015-05-15T09:12:16.432Z",
-    "lastModified": "2015-05-15T09:12:16.432Z",
-    "summary": "139.226.0.0/15",
-    "type": "CIDR",
-    "xid": "f2bc805b3f8169ae4a124f98db43f661c3ce0c8a1a9182f151491eb93ee8ec89"
-  },
-  {
-    "attribute": [
-      {
-        "type": "STIX Title",
-        "value": "FQDN hugesoft.org"
-      },
-      {
-        "type": "Description",
-        "value": "Test description."
-      },
-      {
-        "type": "STIX Indicator Type",
-        "value": "malicious-activity"
-      },
-      {
-        "type": "External Date Created",
-        "value": "2015-05-15T09:12:16Z"
-      },
-      {
-        "displayed": true,
-        "type": "Source",
-        "value": "Object ID: indicator--031778a4-057f-48e6-9db9-c8d72b811111\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--031778a4-057f-48e6-9db9-c8d72b811111/"
-      }
-    ],
-    "dateAdded": "2015-05-15T09:12:16.432Z",
-    "lastModified": "2015-05-15T09:12:16.432Z",
-    "summary": "hugesoft.org",
-    "type": "Host",
-    "xid": "e36a8702d6931e567095f76369b26fd2ccb1f7782e2c84abd2044ec2cc6a95d8"
-  },
-  {
-    "attribute": [
-      {
-        "type": "STIX Title",
-        "value": "FQDN arrowservice.net"
-      },
-      {
-        "type": "Description",
-        "value": "Test description."
-      },
-      {
-        "type": "STIX Indicator Type",
-        "value": "malicious-activity"
-      },
-      {
-        "type": "External Date Created",
-        "value": "2015-05-15T09:12:16Z"
-      },
-      {
-        "displayed": true,
-        "type": "Source",
-        "value": "Object ID: indicator--031778a4-057f-48e6-9db9-c8d72b811111\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--031778a4-057f-48e6-9db9-c8d72b811111/"
-      }
-    ],
-    "dateAdded": "2015-05-15T09:12:16.432Z",
-    "lastModified": "2015-05-15T09:12:16.432Z",
-    "summary": "arrowservice.net",
-    "type": "Host",
-    "xid": "5470dd8b24051355d7ae279af85bebcec2e94bcf6f0a9c476bc923608def13a7"
-  },
-  {
-    "attribute": [
-      {
-        "type": "STIX Title",
-        "value": "FQDN msnhome.org"
-      },
-      {
-        "type": "Description",
-        "value": "Test description."
-      },
-      {
-        "type": "STIX Indicator Type",
-        "value": "malicious-activity"
-      },
-      {
-        "type": "External Date Created",
-        "value": "2015-05-15T09:12:16Z"
-      },
-      {
-        "displayed": true,
-        "type": "Source",
-        "value": "Object ID: indicator--031778a4-057f-48e6-9db9-c8d72b811111\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--031778a4-057f-48e6-9db9-c8d72b811111/"
-      }
-    ],
-    "dateAdded": "2015-05-15T09:12:16.432Z",
-    "lastModified": "2015-05-15T09:12:16.432Z",
-    "summary": "msnhome.org",
-    "type": "Host",
-    "xid": "3086be54a0a97f75642ad37e462caeffb7aa7b931d020e01bc94f13b63f66f2b"
-  },
-  {
-    "attribute": [
-      {
-        "type": "STIX Title",
-        "value": "Appendix E MD5 hash '001dd76872d80801692ff942308c64e6'"
-      },
-      {
-        "type": "Description",
-        "value": "Test description."
-      },
-      {
-        "type": "STIX Indicator Type",
-        "value": "malicious-activity"
-      },
-      {
-        "type": "External Date Created",
-        "value": "2015-05-15T09:12:16Z"
-      },
-      {
-        "displayed": true,
-        "type": "Source",
-        "value": "Object ID: indicator--031778a4-057f-48e6-9db9-c8d72b811111\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--031778a4-057f-48e6-9db9-c8d72b811111/"
-      }
-    ],
-    "dateAdded": "2015-05-15T09:12:16.432Z",
-    "lastModified": "2015-05-15T09:12:16.432Z",
-    "summary": "001dd76872d80801692ff942308c64e6",
-    "type": "File",
-    "xid": "33313e5e82dd623a2e457e2e56543aeeca997689eb6385474bb508f634a785ef"
-  },
-  {
-    "attribute": [
-      {
-        "type": "STIX Title",
-        "value": "Appendix E MD5 hash '001dd76872d80801692ff942308c64e6'"
-      },
-      {
-        "type": "Description",
-        "value": "Test description."
-      },
-      {
-        "type": "STIX Indicator Type",
-        "value": "malicious-activity"
-      },
-      {
-        "type": "External Date Created",
-        "value": "2015-05-15T09:12:16Z"
-      },
-      {
-        "displayed": true,
-        "type": "Source",
-        "value": "Object ID: indicator--031778a4-057f-48e6-9db9-c8d72b811111\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--031778a4-057f-48e6-9db9-c8d72b811111/"
-      }
-    ],
-    "dateAdded": "2015-05-15T09:12:16.432Z",
-    "lastModified": "2015-05-15T09:12:16.432Z",
-    "summary": "001dd76872d80801692ff942308c6333",
-    "type": "File",
-    "xid": "419bcae46a6d0514dc750b6ceb08e39cc974c1db01a6eb0cb5668caf27e8d447"
-  },
-  {
-    "attribute": [
-      {
-        "type": "STIX Title",
-        "value": "Appendix E MD5 hash '002325a0a67fded0381b5648d7fe9b8e'"
-      },
-      {
-        "type": "Description",
-        "value": "Test description."
-      },
-      {
-        "type": "STIX Indicator Type",
-        "value": "malicious-activity"
-      },
-      {
-        "type": "External Date Created",
-        "value": "2015-05-15T09:12:16Z"
-      },
-      {
-        "displayed": true,
-        "type": "Source",
-        "value": "Object ID: indicator--031778a4-057f-48e6-9db9-c8d72b811111\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--031778a4-057f-48e6-9db9-c8d72b811111/"
-      }
-    ],
-    "dateAdded": "2015-05-15T09:12:16.432Z",
-    "lastModified": "2015-05-15T09:12:16.432Z",
-    "summary": "002325a0a67fded0381b5648d7fe9b8e",
-    "type": "File",
-    "xid": "f39e63505a83cdb7c53704c11aed27947cee66c5fb9e13f4dfe3924caeb37ed2"
-  },
-  {
-    "attribute": [
-      {
-        "type": "STIX Title",
-        "value": "Appendix E MD5 hash '00dbb9e1c09dbdafb360f3163ba5a3de'"
-      },
-      {
-        "type": "Description",
-        "value": "Test description."
-      },
-      {
-        "type": "STIX Indicator Type",
-        "value": "malicious-activity"
-      },
-      {
-        "type": "External Date Created",
-        "value": "2015-05-15T09:12:16Z"
-      },
-      {
-        "displayed": true,
-        "type": "Source",
-        "value": "Object ID: indicator--031778a4-057f-48e6-9db9-c8d72b811111\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--031778a4-057f-48e6-9db9-c8d72b811111/"
-      }
-    ],
-    "dateAdded": "2015-05-15T09:12:16.432Z",
-    "lastModified": "2015-05-15T09:12:16.432Z",
-    "summary": "00dbb9e1c09dbdafb360f3163ba5a3de",
-    "type": "File",
-    "xid": "8fad14ea5db28daa1957b08df271738bfc32dbe06059ccf5d18fdaab9fa2aaf6"
-  },
-  {
-    "attribute": [
-      {
-        "type": "STIX Title",
-        "value": "Test for IN Operator"
-      },
-      {
-        "type": "Description",
-        "value": "Test description."
-      },
-      {
-        "type": "STIX Indicator Type",
-        "value": "malicious-activity"
-      },
-      {
-        "type": "External Date Created",
-        "value": "2015-05-15T09:12:16Z"
-      },
-      {
-        "displayed": true,
-        "type": "Source",
-        "value": "Object ID: indicator--031778a4-057f-48e6-9db9-c8d72b811111\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--031778a4-057f-48e6-9db9-c8d72b811111/"
-      }
-    ],
-    "dateAdded": "2015-05-15T09:12:16.432Z",
-    "lastModified": "2015-05-15T09:12:16.432Z",
-    "summary": "223.1.0.0/15",
-    "type": "CIDR",
-    "xid": "accb42fde2e3f68aa4bfd8a29875e8a5c11db12389643a0e74071452831755ac"
-  },
-  {
-    "attribute": [
-      {
-        "type": "STIX Title",
-        "value": "Test for IN Operator"
-      },
-      {
-        "type": "Description",
-        "value": "Test description."
-      },
-      {
-        "type": "STIX Indicator Type",
-        "value": "malicious-activity"
-      },
-      {
-        "type": "External Date Created",
-        "value": "2015-05-15T09:12:16Z"
-      },
-      {
-        "displayed": true,
-        "type": "Source",
-        "value": "Object ID: indicator--031778a4-057f-48e6-9db9-c8d72b811111\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--031778a4-057f-48e6-9db9-c8d72b811111/"
-      }
-    ],
-    "dateAdded": "2015-05-15T09:12:16.432Z",
-    "lastModified": "2015-05-15T09:12:16.432Z",
-    "summary": "1.2.3.4",
-    "type": "Address",
-    "xid": "5914ab28b3892373ce6a8285e21e77dba3f7bf58ac629e8982b08b02f25ec9aa"
-  },
-  {
-    "attribute": [
-      {
-        "type": "STIX Title",
-        "value": "Test for IN Operator"
-      },
-      {
-        "type": "Description",
-        "value": "Test description."
-      },
-      {
-        "type": "STIX Indicator Type",
-        "value": "malicious-activity"
-      },
-      {
-        "type": "External Date Created",
-        "value": "2015-05-15T09:12:16Z"
-      },
-      {
-        "displayed": true,
-        "type": "Source",
-        "value": "Object ID: indicator--031778a4-057f-48e6-9db9-c8d72b811111\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--031778a4-057f-48e6-9db9-c8d72b811111/"
-      }
-    ],
-    "dateAdded": "2015-05-15T09:12:16.432Z",
-    "lastModified": "2015-05-15T09:12:16.432Z",
-    "summary": "5.6.7.8/12",
-    "type": "CIDR",
-    "xid": "9165ca73b608e5f7e53f81b542a9608bf90fcee1f5df633493969e1526b86dcf"
-  },
-  {
-    "attribute": [
-      {
-        "type": "STIX Title",
-        "value": "Test for IN Operator"
-      },
-      {
-        "type": "Description",
-        "value": "Test description."
-      },
-      {
-        "type": "STIX Indicator Type",
-        "value": "malicious-activity"
-      },
-      {
-        "type": "External Date Created",
-        "value": "2015-05-15T09:12:16Z"
-      },
-      {
-        "displayed": true,
-        "type": "Source",
-        "value": "Object ID: indicator--031778a4-057f-48e6-9db9-c8d72b811111\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--031778a4-057f-48e6-9db9-c8d72b811111/"
-      }
-    ],
-    "dateAdded": "2015-05-15T09:12:16.432Z",
-    "lastModified": "2015-05-15T09:12:16.432Z",
-    "summary": "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
-    "type": "Address",
-    "xid": "3904960401b0db8e1710ce475aa4e192bf469fca559ed4e36f123b52e9fa219b"
-  },
-  {
-    "attribute": [
-      {
-        "type": "STIX Title",
-        "value": "Test for IN Operator"
-      },
-      {
-        "type": "Description",
-        "value": "Test description."
-      },
-      {
-        "type": "STIX Indicator Type",
-        "value": "malicious-activity"
-      },
-      {
-        "type": "External Date Created",
-        "value": "2015-05-15T09:12:16Z"
-      },
-      {
-        "displayed": true,
-        "type": "Source",
-        "value": "Object ID: indicator--031778a4-057f-48e6-9db9-c8d72b811111\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--031778a4-057f-48e6-9db9-c8d72b811111/"
-      }
-    ],
-    "dateAdded": "2015-05-15T09:12:16.432Z",
-    "lastModified": "2015-05-15T09:12:16.432Z",
-    "summary": "2001:0db8:85a3:0000:0000:8a2e:0370:7111/64",
-    "type": "CIDR",
-    "xid": "44ecf93e7d7cbe94884a059846f5208666167a7aee3ff8e6ee0c0aca5a10c0e5"
-  }
+	[
+   {
+      "type":"CIDR",
+      "summary":"223.166.0.0/15",
+      "xid":"8d8a69c29eb767d3f90c7d3645e0824a42c7d7aaf860169031582c3f451c4eaa",
+      "dateAdded":"2015-05-15T09:12:16.432Z",
+      "lastModified":"2015-05-15T09:12:16.432Z",
+      "attribute":[
+         {
+            "type":"STIX Title",
+            "value":"HTRAN Hop Point Accessor"
+         },
+         {
+            "type":"Description",
+            "value":"Test description."
+         },
+         {
+            "type":"STIX Indicator Type",
+            "value":"malicious-activity"
+         },
+         {
+            "type":"External Date Created",
+            "value":"2015-05-15T09:12:16Z"
+         },
+         {
+            "type":"Source",
+            "value":"Object ID: indicator--031778a4-057f-48e6-9db9-c8d72b81ccd5\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--031778a4-057f-48e6-9db9-c8d72b81ccd5/",
+            "displayed":true
+         }
+      ]
+   },
+   {
+      "type":"CIDR",
+      "summary":"58.246.0.0/15",
+      "xid":"50a10878c8a09602d9271912a8461141158def8bc2da867f1d99de625b005a7c",
+      "dateAdded":"2015-05-15T09:12:16.432Z",
+      "lastModified":"2015-05-15T09:12:16.432Z",
+      "attribute":[
+         {
+            "type":"STIX Title",
+            "value":"HTRAN Hop Point Accessor"
+         },
+         {
+            "type":"Description",
+            "value":"Test description."
+         },
+         {
+            "type":"STIX Indicator Type",
+            "value":"malicious-activity"
+         },
+         {
+            "type":"External Date Created",
+            "value":"2015-05-15T09:12:16Z"
+         },
+         {
+            "type":"Source",
+            "value":"Object ID: indicator--da1d061b-2bc9-467a-b16f-8d14f468e1f0\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--da1d061b-2bc9-467a-b16f-8d14f468e1f0/",
+            "displayed":true
+         }
+      ]
+   },
+   {
+      "type":"CIDR",
+      "summary":"112.64.0.0/15",
+      "xid":"dbdf45dd9584182dab62e81867c62fef573993c43126f5e6e2412fa3a31fe1ec",
+      "dateAdded":"2015-05-15T09:12:16.432Z",
+      "lastModified":"2015-05-15T09:12:16.432Z",
+      "attribute":[
+         {
+            "type":"STIX Title",
+            "value":"HTRAN Hop Point Accessor"
+         },
+         {
+            "type":"Description",
+            "value":"Test description."
+         },
+         {
+            "type":"STIX Indicator Type",
+            "value":"malicious-activity"
+         },
+         {
+            "type":"External Date Created",
+            "value":"2015-05-15T09:12:16Z"
+         },
+         {
+            "type":"Source",
+            "value":"Object ID: indicator--2173d108-5714-42fd-8213-4f3790259fda\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--2173d108-5714-42fd-8213-4f3790259fda/",
+            "displayed":true
+         }
+      ]
+   },
+   {
+      "type":"CIDR",
+      "summary":"139.226.0.0/15",
+      "xid":"f2bc805b3f8169ae4a124f98db43f661c3ce0c8a1a9182f151491eb93ee8ec89",
+      "dateAdded":"2015-05-15T09:12:16.432Z",
+      "lastModified":"2015-05-15T09:12:16.432Z",
+      "attribute":[
+         {
+            "type":"STIX Title",
+            "value":"HTRAN Hop Point Accessor"
+         },
+         {
+            "type":"Description",
+            "value":"Test description."
+         },
+         {
+            "type":"STIX Indicator Type",
+            "value":"malicious-activity"
+         },
+         {
+            "type":"External Date Created",
+            "value":"2015-05-15T09:12:16Z"
+         },
+         {
+            "type":"Source",
+            "value":"Object ID: indicator--8ce03314-dfea-4498-ac9b-136e41ab00e4\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--8ce03314-dfea-4498-ac9b-136e41ab00e4/",
+            "displayed":true
+         }
+      ]
+   },
+   {
+      "type":"Host",
+      "summary":"hugesoft.org",
+      "xid":"e36a8702d6931e567095f76369b26fd2ccb1f7782e2c84abd2044ec2cc6a95d8",
+      "dateAdded":"2015-05-15T09:12:16.432Z",
+      "lastModified":"2015-05-15T09:12:16.432Z",
+      "attribute":[
+         {
+            "type":"STIX Title",
+            "value":"FQDN hugesoft.org"
+         },
+         {
+            "type":"Description",
+            "value":"Test description."
+         },
+         {
+            "type":"STIX Indicator Type",
+            "value":"malicious-activity"
+         },
+         {
+            "type":"External Date Created",
+            "value":"2015-05-15T09:12:16Z"
+         },
+         {
+            "type":"Source",
+            "value":"Object ID: indicator--3f3ff9f1-bb4e-4392-89e5-1991179042ba\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--3f3ff9f1-bb4e-4392-89e5-1991179042ba/",
+            "displayed":true
+         }
+      ]
+   },
+   {
+      "type":"Host",
+      "summary":"arrowservice.net",
+      "xid":"5470dd8b24051355d7ae279af85bebcec2e94bcf6f0a9c476bc923608def13a7",
+      "dateAdded":"2015-05-15T09:12:16.432Z",
+      "lastModified":"2015-05-15T09:12:16.432Z",
+      "attribute":[
+         {
+            "type":"STIX Title",
+            "value":"FQDN arrowservice.net"
+         },
+         {
+            "type":"Description",
+            "value":"Test description."
+         },
+         {
+            "type":"STIX Indicator Type",
+            "value":"malicious-activity"
+         },
+         {
+            "type":"External Date Created",
+            "value":"2015-05-15T09:12:16Z"
+         },
+         {
+            "type":"Source",
+            "value":"Object ID: indicator--8390fd29-24ed-45d4-84d7-c5e5feaf195d\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--8390fd29-24ed-45d4-84d7-c5e5feaf195d/",
+            "displayed":true
+         }
+      ]
+   },
+   {
+      "type":"Host",
+      "summary":"msnhome.org",
+      "xid":"3086be54a0a97f75642ad37e462caeffb7aa7b931d020e01bc94f13b63f66f2b",
+      "dateAdded":"2015-05-15T09:12:16.432Z",
+      "lastModified":"2015-05-15T09:12:16.432Z",
+      "attribute":[
+         {
+            "type":"STIX Title",
+            "value":"FQDN msnhome.org"
+         },
+         {
+            "type":"Description",
+            "value":"Test description."
+         },
+         {
+            "type":"STIX Indicator Type",
+            "value":"malicious-activity"
+         },
+         {
+            "type":"External Date Created",
+            "value":"2015-05-15T09:12:16Z"
+         },
+         {
+            "type":"Source",
+            "value":"Object ID: indicator--1002c58e-cbde-4930-b5ee-490037fd4f7e\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--1002c58e-cbde-4930-b5ee-490037fd4f7e/",
+            "displayed":true
+         }
+      ]
+   },
+   {
+      "type":"File",
+      "summary":"001dd76872d80801692ff942308c64e6",
+      "xid":"33313e5e82dd623a2e457e2e56543aeeca997689eb6385474bb508f634a785ef",
+      "dateAdded":"2015-05-15T09:12:16.432Z",
+      "lastModified":"2015-05-15T09:12:16.432Z",
+      "attribute":[
+         {
+            "type":"STIX Title",
+            "value":"Appendix E MD5 hash '001dd76872d80801692ff942308c64e6'"
+         },
+         {
+            "type":"Description",
+            "value":"Test description."
+         },
+         {
+            "type":"STIX Indicator Type",
+            "value":"malicious-activity"
+         },
+         {
+            "type":"External Date Created",
+            "value":"2015-05-15T09:12:16Z"
+         },
+         {
+            "type":"Source",
+            "value":"Object ID: indicator--8d12f44f-8ac0-4b12-8b4a-3699ca8c9691\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--8d12f44f-8ac0-4b12-8b4a-3699ca8c9691/",
+            "displayed":true
+         }
+      ]
+   },
+   {
+      "type":"File",
+      "summary":"001dd76872d80801692ff942308c6333",
+      "xid":"419bcae46a6d0514dc750b6ceb08e39cc974c1db01a6eb0cb5668caf27e8d447",
+      "dateAdded":"2015-05-15T09:12:16.432Z",
+      "lastModified":"2015-05-15T09:12:16.432Z",
+      "attribute":[
+         {
+            "type":"STIX Title",
+            "value":"Appendix E MD5 hash '001dd76872d80801692ff942308c64e6'"
+         },
+         {
+            "type":"Description",
+            "value":"Test description."
+         },
+         {
+            "type":"STIX Indicator Type",
+            "value":"malicious-activity"
+         },
+         {
+            "type":"External Date Created",
+            "value":"2015-05-15T09:12:16Z"
+         },
+         {
+            "type":"Source",
+            "value":"Object ID: indicator--8d12f44f-8ac0-4b12-8b4a-3699ca8c9691\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--8d12f44f-8ac0-4b12-8b4a-3699ca8c9691/",
+            "displayed":true
+         }
+      ]
+   },
+   {
+      "type":"File",
+      "summary":"002325a0a67fded0381b5648d7fe9b8e",
+      "xid":"f39e63505a83cdb7c53704c11aed27947cee66c5fb9e13f4dfe3924caeb37ed2",
+      "dateAdded":"2015-05-15T09:12:16.432Z",
+      "lastModified":"2015-05-15T09:12:16.432Z",
+      "attribute":[
+         {
+            "type":"STIX Title",
+            "value":"Appendix E MD5 hash '002325a0a67fded0381b5648d7fe9b8e'"
+         },
+         {
+            "type":"Description",
+            "value":"Test description."
+         },
+         {
+            "type":"STIX Indicator Type",
+            "value":"malicious-activity"
+         },
+         {
+            "type":"External Date Created",
+            "value":"2015-05-15T09:12:16Z"
+         },
+         {
+            "type":"Source",
+            "value":"Object ID: indicator--745e1537-b4f3-49da-9f64-df6b1b5df190\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--745e1537-b4f3-49da-9f64-df6b1b5df190/",
+            "displayed":true
+         }
+      ]
+   },
+   {
+      "type":"File",
+      "summary":"00dbb9e1c09dbdafb360f3163ba5a3de",
+      "xid":"8fad14ea5db28daa1957b08df271738bfc32dbe06059ccf5d18fdaab9fa2aaf6",
+      "dateAdded":"2015-05-15T09:12:16.432Z",
+      "lastModified":"2015-05-15T09:12:16.432Z",
+      "attribute":[
+         {
+            "type":"STIX Title",
+            "value":"Appendix E MD5 hash '00dbb9e1c09dbdafb360f3163ba5a3de'"
+         },
+         {
+            "type":"Description",
+            "value":"Test description."
+         },
+         {
+            "type":"STIX Indicator Type",
+            "value":"malicious-activity"
+         },
+         {
+            "type":"External Date Created",
+            "value":"2015-05-15T09:12:16Z"
+         },
+         {
+            "type":"Source",
+            "value":"Object ID: indicator--1dbe6ed0-c305-458f-9cce-f83c678f5afd\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--1dbe6ed0-c305-458f-9cce-f83c678f5afd/",
+            "displayed":true
+         }
+      ]
+   },
+   {
+      "type":"CIDR",
+      "summary":"223.1.0.0/15",
+      "xid":"accb42fde2e3f68aa4bfd8a29875e8a5c11db12389643a0e74071452831755ac",
+      "dateAdded":"2015-05-15T09:12:16.432Z",
+      "lastModified":"2015-05-15T09:12:16.432Z",
+      "attribute":[
+         {
+            "type":"STIX Title",
+            "value":"Test for IN Operator"
+         },
+         {
+            "type":"Description",
+            "value":"Test description."
+         },
+         {
+            "type":"STIX Indicator Type",
+            "value":"malicious-activity"
+         },
+         {
+            "type":"External Date Created",
+            "value":"2015-05-15T09:12:16Z"
+         },
+         {
+            "type":"Source",
+            "value":"Object ID: indicator--031778a4-057f-48e6-9db9-c8d72b811111\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--031778a4-057f-48e6-9db9-c8d72b811111/",
+            "displayed":true
+         }
+      ]
+   },
+   {
+      "type":"Address",
+      "summary":"1.2.3.4",
+      "xid":"5914ab28b3892373ce6a8285e21e77dba3f7bf58ac629e8982b08b02f25ec9aa",
+      "dateAdded":"2015-05-15T09:12:16.432Z",
+      "lastModified":"2015-05-15T09:12:16.432Z",
+      "attribute":[
+         {
+            "type":"STIX Title",
+            "value":"Test for IN Operator"
+         },
+         {
+            "type":"Description",
+            "value":"Test description."
+         },
+         {
+            "type":"STIX Indicator Type",
+            "value":"malicious-activity"
+         },
+         {
+            "type":"External Date Created",
+            "value":"2015-05-15T09:12:16Z"
+         },
+         {
+            "type":"Source",
+            "value":"Object ID: indicator--031778a4-057f-48e6-9db9-c8d72b811111\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--031778a4-057f-48e6-9db9-c8d72b811111/",
+            "displayed":true
+         }
+      ]
+   },
+   {
+      "type":"CIDR",
+      "summary":"5.6.7.8/12",
+      "xid":"9165ca73b608e5f7e53f81b542a9608bf90fcee1f5df633493969e1526b86dcf",
+      "dateAdded":"2015-05-15T09:12:16.432Z",
+      "lastModified":"2015-05-15T09:12:16.432Z",
+      "attribute":[
+         {
+            "type":"STIX Title",
+            "value":"Test for IN Operator"
+         },
+         {
+            "type":"Description",
+            "value":"Test description."
+         },
+         {
+            "type":"STIX Indicator Type",
+            "value":"malicious-activity"
+         },
+         {
+            "type":"External Date Created",
+            "value":"2015-05-15T09:12:16Z"
+         },
+         {
+            "type":"Source",
+            "value":"Object ID: indicator--031778a4-057f-48e6-9db9-c8d72b811111\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--031778a4-057f-48e6-9db9-c8d72b811111/",
+            "displayed":true
+         }
+      ]
+   },
+   {
+      "type":"Address",
+      "summary":"2001:0db8:85a3:0000:0000:8a2e:0370:7334",
+      "xid":"3904960401b0db8e1710ce475aa4e192bf469fca559ed4e36f123b52e9fa219b",
+      "dateAdded":"2015-05-15T09:12:16.432Z",
+      "lastModified":"2015-05-15T09:12:16.432Z",
+      "attribute":[
+         {
+            "type":"STIX Title",
+            "value":"Test for IN Operator"
+         },
+         {
+            "type":"Description",
+            "value":"Test description."
+         },
+         {
+            "type":"STIX Indicator Type",
+            "value":"malicious-activity"
+         },
+         {
+            "type":"External Date Created",
+            "value":"2015-05-15T09:12:16Z"
+         },
+         {
+            "type":"Source",
+            "value":"Object ID: indicator--031778a4-057f-48e6-9db9-c8d72b811111\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--031778a4-057f-48e6-9db9-c8d72b811111/",
+            "displayed":true
+         }
+      ]
+   },
+   {
+      "type":"CIDR",
+      "summary":"2001:0db8:85a3:0000:0000:8a2e:0370:7111/64",
+      "xid":"44ecf93e7d7cbe94884a059846f5208666167a7aee3ff8e6ee0c0aca5a10c0e5",
+      "dateAdded":"2015-05-15T09:12:16.432Z",
+      "lastModified":"2015-05-15T09:12:16.432Z",
+      "attribute":[
+         {
+            "type":"STIX Title",
+            "value":"Test for IN Operator"
+         },
+         {
+            "type":"Description",
+            "value":"Test description."
+         },
+         {
+            "type":"STIX Indicator Type",
+            "value":"malicious-activity"
+         },
+         {
+            "type":"External Date Created",
+            "value":"2015-05-15T09:12:16Z"
+         },
+         {
+            "type":"Source",
+            "value":"Object ID: indicator--031778a4-057f-48e6-9db9-c8d72b811111\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/indicator--031778a4-057f-48e6-9db9-c8d72b811111/",
+            "displayed":true
+         }
+      ]
+   }
 ]
