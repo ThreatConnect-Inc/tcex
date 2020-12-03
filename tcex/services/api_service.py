@@ -263,7 +263,7 @@ class ApiService(CommonService):
                             self.log.error(f'unhandled type dir - {dir(body)}')
 
                 # write body to Redis
-                self.key_value_store.create('response.body', body, contex=request_key)
+                self.key_value_store.create('response.body', body, context=request_key)
 
                 # set thread event to True to trigger response
                 self.log.info('feature=api-service, event=response-body-written')
