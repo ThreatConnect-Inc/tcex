@@ -147,9 +147,11 @@ class TestCase:
         os_envs = set(os.environ.get('TCEX_TEST_ENVS', 'build').split(','))
         if os_environments:
             os_envs = set(os_environments)
-            self._skip = True
+        # APP-1212 - fix issue where outputs were being deleted when profile was skipped
+        self._skip = False
         if not os_envs.intersection(set(test_envs)):
             pytest.skip('Profile skipped based on current environment.')
+            self._skip = True
 
     def create_config(self, args):
         """Create files necessary to start a Service App."""

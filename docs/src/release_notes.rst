@@ -7,10 +7,10 @@ Release Notes
 ======
 + APP-1641 - [Batch] Fixed issue that batch delete that prevented single submission or last submission from working.
 + APP-1642 - [Service] Increased tc_svc_broker_conn_timeout arg to 60 to address disconnect issue in API service.
-+ APP-1643 - [App Init] Add "no-commit-to-branch" feature to the pre-commit configuration.
-+ APP-1244 - [Testing] Add the is_json operator to assist in testing validation.
-+ APP-1406 - [Testing] Fix testing issue centered around the `validation_criteria` field present during bulk tests.
-+ APP-891  - [STIX] Add additional support for consuming and producing STIX documents.
++ APP-1643 - [App Init] Added "no-commit-to-branch" feature to the pre-commit configuration.
++ APP-1244 - [Testing] Added the is_json operator to assist in testing validation.
++ APP-1406 - [Testing] Fixed testing issue centered around the `validation_criteria` field present during bulk tests.
++ APP-891  - [STIX] Added additional support for consuming and producing STIX documents.
 
 2.0.14
 ======
