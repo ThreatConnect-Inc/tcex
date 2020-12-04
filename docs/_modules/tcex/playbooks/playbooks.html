@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.playbooks.playbooks &mdash; TcEx 2.0.13 documentation</title>
+  <title>tcex.playbooks.playbooks &mdash; TcEx 2.0.15 documentation</title>
 
 
 
@@ -60,7 +60,7 @@
 
 
               <div class="version">
-                2.0.13
+                2.0.15
               </div>
 
 
@@ -479,6 +479,8 @@
 <div class="viewcode-block" id="Playbooks.delete"><a class="viewcode-back" href="../../../tcex_docs/tcex.playbooks.html#tcex.playbooks.playbooks.Playbooks.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Delete method of CRUD operation for all data types.</span>
 
+<span class="sd">        This method is only supported when using key_value_redis.</span>
+
 <span class="sd">        Args:</span>
 <span class="sd">            key (str): The variable to write to the DB.</span>
 
@@ -487,7 +489,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_value_store</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">key_value_store</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="p">,</span> <span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;The key field was None.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span></div>

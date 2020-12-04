@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.key_value_store.key_value_redis &mdash; TcEx 2.0.13 documentation</title>
+  <title>tcex.key_value_store.key_value_redis &mdash; TcEx 2.0.15 documentation</title>
 
 
 
@@ -60,7 +60,7 @@
 
 
               <div class="version">
-                2.0.13
+                2.0.15
               </div>
 
 
@@ -181,69 +181,68 @@
 
   <h1>Source code for tcex.key_value_store.key_value_redis</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;TcEx Framework Key Value Redis Module&quot;&quot;&quot;</span>
+<span class="c1"># standard library</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
 
 
 <div class="viewcode-block" id="KeyValueRedis"><a class="viewcode-back" href="../../../tcex_docs/tcex.key_value_store.html#tcex.key_value_store.key_value_redis.KeyValueRedis">[docs]</a><span class="k">class</span> <span class="nc">KeyValueRedis</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;TcEx Key Value Redis Module.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        context (str): The Redis context (hash) for hashed based operations.</span>
 <span class="sd">        redis_client (redis.Client): An instance of redis client.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">redis_client</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">redis_client</span><span class="p">:</span> <span class="nb">object</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize the Class properties.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_context</span> <span class="o">=</span> <span class="n">context</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_redis_client</span> <span class="o">=</span> <span class="n">redis_client</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">context</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the current context.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span>
-
-    <span class="nd">@context</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set or update the current context.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_context</span> <span class="o">=</span> <span class="n">context</span>
-
-<div class="viewcode-block" id="KeyValueRedis.create"><a class="viewcode-back" href="../../../tcex_docs/tcex.key_value_store.html#tcex.key_value_store.key_value_redis.KeyValueRedis.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="KeyValueRedis.create"><a class="viewcode-back" href="../../../tcex_docs/tcex.key_value_store.html#tcex.key_value_store.key_value_redis.KeyValueRedis.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Create key/value pair in Redis.</span>
 
 <span class="sd">        Args:</span>
+<span class="sd">            context: A specific context for the create.</span>
 <span class="sd">            key (str): The field name (key) for the kv pair in Redis.</span>
 <span class="sd">            value (any): The value for the kv pair in Redis.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: The response from Redis.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redis_client</span><span class="o">.</span><span class="n">hset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redis_client</span><span class="o">.</span><span class="n">hset</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="KeyValueRedis.delete"><a class="viewcode-back" href="../../../tcex_docs/tcex.key_value_store.html#tcex.key_value_store.key_value_redis.KeyValueRedis.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<div class="viewcode-block" id="KeyValueRedis.delete"><a class="viewcode-back" href="../../../tcex_docs/tcex.key_value_store.html#tcex.key_value_store.key_value_redis.KeyValueRedis.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Alias for hdel method.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            key (str): The field name (key) for the kv pair in Redis.</span>
+<span class="sd">            context: A specific context for the create.</span>
+<span class="sd">            key: The field name (key) for the kv pair in Redis.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: The response from Redis.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redis_client</span><span class="o">.</span><span class="n">hdel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redis_client</span><span class="o">.</span><span class="n">hdel</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="KeyValueRedis.hgetall"><a class="viewcode-back" href="../../../tcex_docs/tcex.key_value_store.html#tcex.key_value_store.key_value_redis.KeyValueRedis.hgetall">[docs]</a>    <span class="k">def</span> <span class="nf">hgetall</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="KeyValueRedis.hgetall"><a class="viewcode-back" href="../../../tcex_docs/tcex.key_value_store.html#tcex.key_value_store.key_value_redis.KeyValueRedis.hgetall">[docs]</a>    <span class="k">def</span> <span class="nf">hgetall</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read data from Redis for the current context.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: A specific context for the create.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            list: The response data from Redis.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redis_client</span><span class="o">.</span><span class="n">hgetall</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redis_client</span><span class="o">.</span><span class="n">hgetall</span><span class="p">(</span><span class="n">context</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="KeyValueRedis.read"><a class="viewcode-back" href="../../../tcex_docs/tcex.key_value_store.html#tcex.key_value_store.key_value_redis.KeyValueRedis.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<div class="viewcode-block" id="KeyValueRedis.read"><a class="viewcode-back" href="../../../tcex_docs/tcex.key_value_store.html#tcex.key_value_store.key_value_redis.KeyValueRedis.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Read data from Redis for the provided key.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: A specific context for the create.</span>
+<span class="sd">            key: The field name (key) for the kv pair in Redis.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: The response data from Redis.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redis_client</span><span class="o">.</span><span class="n">hget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redis_client</span><span class="o">.</span><span class="n">hget</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
         <span class="c1"># convert retrieved bytes to string</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>

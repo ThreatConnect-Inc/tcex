@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Module: Case Management &mdash; TcEx 2.0.13 documentation</title>
+  <title>Module: Case Management &mdash; TcEx 2.0.15 documentation</title>
 
 
 
@@ -62,7 +62,7 @@
 
 
               <div class="version">
-                2.0.13
+                2.0.15
               </div>
 
 
@@ -99,7 +99,24 @@
 <li class="toctree-l1"><a class="reference internal" href="app_directory_structure.html">App-Directory Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_batch.html">Module: Batch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_cache.html">Module: Cache</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Module: Case Management</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Module: Case Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#create">Create</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multiple">Multiple</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#delete">Delete</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Multiple</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#get">Get</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#filters">Filters</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="module_datastore.html">Module: Datastore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_decorators.html">Module: Decorators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_metrics.html">Module: Metrics</a></li>
@@ -187,7 +204,326 @@
 <p class="admonition-title">Important</p>
 <p>The Case Management module requires ThreatConnect version 6.0 or higher.</p>
 </div>
-<p>The ThreatConnect TcEx Framework provides the <a class="reference internal" href="tcex_docs/tcex.case_management.html#tcex.case_management.case_management.CaseManagement" title="tcex.case_management.case_management.CaseManagement"><code class="xref py py-mod docutils literal notranslate"><span class="pre">CaseManagement</span></code></a> module to create, delete, and update all Case Management objects.</p>
+<p>The ThreatConnect TcEx Framework provides the <a class="reference internal" href="tcex_docs/tcex.case_management.html#tcex.case_management.case_management.CaseManagement" title="tcex.case_management.case_management.CaseManagement"><code class="xref py py-mod docutils literal notranslate"><span class="pre">CaseManagement</span></code></a> module to create, fetch, and delete Case Management objects.</p>
+<ul class="simple">
+<li><p>Create - Cases, Artifacts, Notes, Tags, Tasks, Workflow Events, and Workflow Templates.</p></li>
+<li><p>Get - Cases, Artifacts, Artifact Type, Notes, Tags, Tasks, Workflow Events, and Workflow Templates</p></li>
+<li><p>Delete - Cases Artifacts, Notes, Tags, and Tasks</p></li>
+<li><p>Update - Not Supported</p></li>
+</ul>
+<div class="section" id="create">
+<h2>Create<a class="headerlink" href="#create" title="Permalink to this headline">¶</a></h2>
+<p>Can create Cases, Artifacts, Notes, Tags, Tasks, Workflow Events, and Workflow Templates.</p>
+<div class="section" id="examples">
+<h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<p>Create Case:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">case_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Case Name&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;severity&#39;</span><span class="p">:</span> <span class="s1">&#39;Low&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;Open&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">case</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">case</span><span class="p">(</span><span class="o">**</span><span class="n">case_data</span><span class="p">)</span>
+<span class="n">case</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Create Artifact:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">case</span> <span class="o">=</span> <span class="n">create_case</span><span class="p">()</span>
+
+<span class="n">artifact_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;case_id&#39;</span><span class="p">:</span> <span class="n">case_id</span><span class="p">,</span>
+    <span class="s1">&#39;intel_type&#39;</span><span class="p">:</span> <span class="s1">&#39;indicator-ASN&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;summary&#39;</span><span class="p">:</span> <span class="s1">&#39;asn-100&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;ASN&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1"># create artifact</span>
+<span class="n">artifact</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">artifact</span><span class="p">(</span><span class="o">**</span><span class="n">artifact_data</span><span class="p">)</span>
+<span class="n">artifact</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Create Note:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">case</span> <span class="o">=</span> <span class="n">create_case</span><span class="p">()</span>
+
+<span class="c1"># note data</span>
+<span class="n">note_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;case_id&#39;</span><span class="p">:</span> <span class="n">case_id</span><span class="p">,</span>
+    <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="s1">&#39;sample note for case.&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;date_added&#39;</span><span class="p">:</span> <span class="s1">&#39;2033-12-07T14:16:40-05:00&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;edited&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1"># create note</span>
+<span class="n">note</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">note</span><span class="p">(</span><span class="o">**</span><span class="n">note_data</span><span class="p">)</span>
+<span class="n">note</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Create Tag:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tag_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;a description of tag&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Tag Name&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1"># create tag</span>
+<span class="n">tag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="o">**</span><span class="n">tag_data</span><span class="p">)</span>
+<span class="n">tag</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Create Task:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">case</span> <span class="o">=</span> <span class="n">create_case</span><span class="p">()</span>
+
+<span class="c1"># task data</span>
+<span class="n">task_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;case_id&#39;</span><span class="p">:</span> <span class="n">case_id</span><span class="p">,</span>
+    <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;a description of task&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;task-name&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;workflow_phase&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;workflow_step&#39;</span><span class="p">:</span> <span class="mi">1</span>
+<span class="p">}</span>
+
+<span class="c1"># create task</span>
+<span class="n">task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">task</span><span class="p">(</span><span class="o">**</span><span class="n">task_data</span><span class="p">)</span>
+<span class="n">task</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Create Workflow Event:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">case</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm_helper</span><span class="o">.</span><span class="n">create_case</span><span class="p">()</span>
+
+ <span class="c1"># workflow event data</span>
+ <span class="n">workflow_event_data</span> <span class="o">=</span> <span class="p">{</span>
+     <span class="s1">&#39;case_id&#39;</span><span class="p">:</span> <span class="n">case_id</span><span class="p">,</span>
+     <span class="s1">&#39;summary&#39;</span><span class="p">:</span> <span class="s1">&#39;Workflow Event Summary&#39;</span>
+ <span class="p">}</span>
+
+ <span class="c1"># create workflow_event</span>
+ <span class="n">workflow_event</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">workflow_event</span><span class="p">(</span><span class="o">**</span><span class="n">workflow_event_data</span><span class="p">)</span>
+ <span class="n">workflow_event</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Create Workflow Template:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">workflow_template_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;a description for workflow template&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Workflow Template Name&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1"># create workflow_template</span>
+<span class="n">workflow_template</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">workflow_template</span><span class="p">(</span><span class="o">**</span><span class="n">workflow_template_data</span><span class="p">)</span>
+<span class="n">workflow_template</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="multiple">
+<h3>Multiple<a class="headerlink" href="#multiple" title="Permalink to this headline">¶</a></h3>
+<p>It is possible to create multiple objects at the same time as well. For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">case_data</span> <span class="o">=</span> <span class="p">{</span>
+     <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Case Name&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;severity&#39;</span><span class="p">:</span> <span class="s1">&#39;Low&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;Open&#39;</span><span class="p">,</span>
+ <span class="p">}</span>
+
+ <span class="c1"># create case</span>
+ <span class="n">case</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">case</span><span class="p">(</span><span class="o">**</span><span class="n">case_data</span><span class="p">)</span>
+
+ <span class="c1"># artifact data</span>
+ <span class="n">artifact_data</span> <span class="o">=</span> <span class="p">[</span>
+     <span class="p">{</span><span class="s1">&#39;summary&#39;</span><span class="p">:</span> <span class="s1">&#39;asn4455&#39;</span><span class="p">,</span> <span class="s1">&#39;intel_type&#39;</span><span class="p">:</span> <span class="s1">&#39;indicator-ASN&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;ASN&#39;</span><span class="p">},</span>
+     <span class="p">{</span><span class="s1">&#39;summary&#39;</span><span class="p">:</span> <span class="s1">&#39;asn5544&#39;</span><span class="p">,</span> <span class="s1">&#39;intel_type&#39;</span><span class="p">:</span> <span class="s1">&#39;indicator-ASN&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;ASN&#39;</span><span class="p">},</span>
+ <span class="p">]</span>
+
+ <span class="c1"># add artifacts</span>
+ <span class="k">for</span> <span class="n">artifact</span> <span class="ow">in</span> <span class="n">artifact_data</span><span class="p">:</span>
+     <span class="n">case</span><span class="o">.</span><span class="n">add_artifact</span><span class="p">(</span><span class="o">**</span><span class="n">artifact</span><span class="p">)</span>
+
+ <span class="c1"># note data</span>
+ <span class="n">note_data</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;A note&#39;</span><span class="p">]</span>
+
+ <span class="c1"># add notes</span>
+ <span class="k">for</span> <span class="n">note</span> <span class="ow">in</span> <span class="n">note_data</span><span class="p">:</span>
+     <span class="n">case</span><span class="o">.</span><span class="n">add_note</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">note</span><span class="p">)</span>
+
+ <span class="c1"># tag data</span>
+ <span class="n">tag_data</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;tag-1&#39;</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;tag-2&#39;</span><span class="p">}]</span>
+
+ <span class="c1"># add tags</span>
+ <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tag_data</span><span class="p">:</span>
+     <span class="n">case</span><span class="o">.</span><span class="n">add_tag</span><span class="p">(</span><span class="o">**</span><span class="n">tag</span><span class="p">)</span>
+
+ <span class="c1"># task data</span>
+ <span class="n">task_data</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;task-1&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;task description&#39;</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;Pending&#39;</span><span class="p">}]</span>
+
+ <span class="c1"># add task</span>
+ <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">task_data</span><span class="p">:</span>
+     <span class="n">case</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="o">**</span><span class="n">task</span><span class="p">)</span>
+
+ <span class="c1"># submit case</span>
+ <span class="n">case</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Will create a Case with artifacts, tags, notes, and tasks all under it in one submit.</p>
+</div>
+</div>
+<div class="section" id="delete">
+<h2>Delete<a class="headerlink" href="#delete" title="Permalink to this headline">¶</a></h2>
+<p>Can delete Cases Artifacts, Notes, Tags, and Tasks</p>
+<div class="section" id="id2">
+<h3>Examples<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>Delete Case:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">case</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">case</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">case_id</span><span class="p">)</span>
+
+<span class="c1"># delete the case</span>
+<span class="n">case</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Delete Artifact:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">artifact</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">artifact</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">artifact_id</span><span class="p">)</span>
+
+<span class="c1"># delete the artifact</span>
+<span class="n">artifact</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Delete Note:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">note</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">note</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">note</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+<span class="c1"># delete the note</span>
+<span class="n">note</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Delete Tag:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">tag_id</span><span class="p">)</span>
+
+<span class="c1"># delete the tag</span>
+<span class="n">tag</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Delete Task:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">task</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">task_id</span><span class="p">)</span>
+
+<span class="c1"># delete the task</span>
+<span class="n">task</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id3">
+<h3>Multiple<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p>For safety reasons there is no call to delete multiple Case Management objects
+all at once but a similar affect can be done from iterating over the items you wish to delete.
+For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tasks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">tasks</span><span class="p">()</span>
+<span class="n">tasks</span><span class="o">.</span><span class="n">filter</span><span class="o">.</span><span class="n">case_id</span><span class="p">(</span><span class="n">TQL</span><span class="o">.</span><span class="n">Operator</span><span class="o">.</span><span class="n">EQ</span><span class="p">,</span> <span class="n">case_id</span><span class="p">)</span>
+<span class="n">tasks</span><span class="o">.</span><span class="n">filter</span><span class="o">.</span><span class="n">automated</span><span class="p">(</span><span class="n">TQL</span><span class="o">.</span><span class="n">Operator</span><span class="o">.</span><span class="n">EQ</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">:</span>
+    <span class="n">task</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Will delete all tasks under the Case with the id case_id and that was not automatically generated.</p>
+</div>
+</div>
+<div class="section" id="get">
+<h2>Get<a class="headerlink" href="#get" title="Permalink to this headline">¶</a></h2>
+<p>Can retrieve Cases, Artifacts, Artifact Type, Notes, Tags, Tasks, Workflow Events, and Workflow Templates</p>
+<div class="section" id="id4">
+<h3>Examples<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>Retrieve a Single Case:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># retrieve case for asserts</span>
+<span class="n">case</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">case</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">case_id</span><span class="p">)</span>
+<span class="n">case</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Retrieve multiple Cases:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">cases</span><span class="p">():</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Retrieve a Single Artifact:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># retrieve case for asserts</span>
+<span class="n">artifact</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">case</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">case_id</span><span class="p">)</span>
+<span class="n">artifact</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Retrieve multiple Artifacts:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">artifacts</span><span class="p">():</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Retrieve a Single Artifact Type:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">artifact_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">artifact_type</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">artifact_type</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Retrieve multiple Artifact Types:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">artifact_types</span><span class="p">():</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">at</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Retrieve a Single Note:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># retrieve case for asserts</span>
+<span class="n">note</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">case</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">note_id</span><span class="p">)</span>
+<span class="n">note</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Retrieve multiple Notes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">notes</span><span class="p">():</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Retrieve a Single Tag:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># retrieve case for asserts</span>
+<span class="n">tag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">case_id</span><span class="p">)</span>
+<span class="n">tag</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Retrieve multiple Tags:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">tags</span><span class="p">():</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Retrieve a Single Task:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># retrieve case for asserts</span>
+<span class="n">task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">task</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">case_id</span><span class="p">)</span>
+<span class="n">task</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Retrieve multiple Tasks:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">tasks</span><span class="p">():</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Retrieve a Single Workflow Event:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># retrieve case for asserts</span>
+<span class="n">workflow_event</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">workflow_event</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">workflow_event_id</span><span class="p">)</span>
+<span class="n">workflow_event</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Retrieve multiple Workflow Events:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">we</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">workflow_events</span><span class="p">():</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">we</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Retrieve a Single Workflow Template:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">workflow_template</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">workflow_template</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">workflow_template</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+<span class="n">workflow_template</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Retrieve multiple Workflow Templates:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">wt</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">workflow_templates</span><span class="p">():</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">wt</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="filters">
+<h3>Filters<a class="headerlink" href="#filters" title="Permalink to this headline">¶</a></h3>
+<p>Each of the different Case Management object types has a variety of filters available to them under their filters object.
+To apply a filter to a object call the appropriate method and provide it with the desired operator and intended value.
+For example to retrieve all artifacts under a specific case the follow filter can be applied:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">artifacts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">artifacts</span><span class="p">()</span>
+<span class="n">artifacts</span><span class="o">.</span><span class="n">filter</span><span class="o">.</span><span class="n">has_case_id</span><span class="p">(</span><span class="n">TQL</span><span class="o">.</span><span class="n">Operator</span><span class="o">.</span><span class="n">EQ</span><span class="p">,</span> <span class="n">case_id</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">artifact</span> <span class="ow">in</span> <span class="n">artifacts</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">artifact</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
 </div>
 
 

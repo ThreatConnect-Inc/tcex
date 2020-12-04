@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.services.mqtt_message_broker &mdash; TcEx 2.0.13 documentation</title>
+  <title>tcex.services.mqtt_message_broker &mdash; TcEx 2.0.15 documentation</title>
 
 
 
@@ -60,7 +60,7 @@
 
 
               <div class="version">
-                2.0.13
+                2.0.15
               </div>
 
 
@@ -312,6 +312,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="n">mqtt</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">client_id</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">clean_session</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">reconnect_delay_set</span><span class="p">(</span><span class="n">min_delay</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_delay</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">broker_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">broker_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">broker_timeout</span><span class="p">)</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">broker_cacert</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">tls_set</span><span class="p">(</span>

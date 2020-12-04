@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>App-Directory Structure &mdash; TcEx 2.0.13 documentation</title>
+  <title>App-Directory Structure &mdash; TcEx 2.0.15 documentation</title>
 
 
 
@@ -62,7 +62,7 @@
 
 
               <div class="version">
-                2.0.13
+                2.0.15
               </div>
 
 
@@ -437,7 +437,13 @@ dump.rdb
 68
 69
 70
-71</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">exclude</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">^lib</span>
+71
+72
+73
+74
+75
+76
+77</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">exclude</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">^lib</span>
 <span class="nt">repos</span><span class="p">:</span>
   <span class="p p-Indicator">-</span> <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/pre-commit/pre-commit-hooks</span>
     <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">v2.4.0</span>
@@ -456,6 +462,12 @@ dump.rdb
       <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">double-quote-string-fixer</span>
       <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">end-of-file-fixer</span>
       <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mixed-line-ending</span>
+      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">no-commit-to-branch</span>
+        <span class="nt">args</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">--branch</span>
+          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">master</span>
+          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">--branch</span>
+          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">qa</span>
       <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pretty-format-json</span>
         <span class="nt">args</span><span class="p">:</span>
           <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">--autofix</span>

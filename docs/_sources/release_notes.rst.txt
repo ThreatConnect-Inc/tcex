@@ -3,6 +3,23 @@
 Release Notes
 #############
 
+2.0.15
+======
++ APP-891  - [STIX] Added additional support for consuming and producing STIX documents.
++ APP-1212 - [Testing] fixed output deletion issue for skipped test when --merge_outputs is used.
++ APP-1244 - [Testing] Added the is_json operator to assist in testing validation.
++ APP-1406 - [Testing] Fixed testing issue centered around the `validation_criteria` field present during bulk tests.
++ APP-1407 - [Testing] Fixed issue encountered when `validation_criteria` is set in a test profile (apps that use batch).
++ APP-1413 - [Testing] Converts option inputs that have a value of null to use #App:1234:null!String.
++ APP-1641 - [Batch] Fixed issue that batch delete that prevented single submission or last submission from working.
++ APP-1642 - [Service] Increased tc_svc_broker_conn_timeout arg to 60 to address disconnect issue in API service.
++ APP-1643 - [App Init] Added "no-commit-to-branch" feature to the pre-commit configuration.
++ APP-1760 - [KeyValueStore] Updated module to support new endpoint for PLAT-1237 in support of service Apps running on MEO.
+
+2.0.14
+======
++ APP-1394 - [Batch] Updated batch data processing to handle max sizes appropriately.
+
 2.0.13
 ======
 + APP-1296 - [Session] Updated external session retry to accept a URL for retry mount.

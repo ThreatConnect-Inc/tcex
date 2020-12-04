@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Key Value Store Module &mdash; TcEx 2.0.13 documentation</title>
+  <title>Key Value Store Module &mdash; TcEx 2.0.15 documentation</title>
 
 
 
@@ -62,7 +62,7 @@
 
 
               <div class="version">
-                2.0.13
+                2.0.15
               </div>
 
 
@@ -220,23 +220,27 @@
 <p>TcEx Framework Key Value API Module</p>
 <dl class="py class">
 <dt id="tcex.key_value_store.key_value_api.KeyValueApi">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.key_value_store.key_value_api.</code><code class="sig-name descname">KeyValueApi</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">session</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/key_value_store/key_value_api.html#KeyValueApi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.key_value_store.key_value_api.KeyValueApi" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.key_value_store.key_value_api.</code><code class="sig-name descname">KeyValueApi</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">session</span><span class="p">:</span> <span class="n">object</span></em>, <em class="sig-param"><span class="n">runtime_level</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/key_value_store/key_value_api.html#KeyValueApi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.key_value_store.key_value_api.KeyValueApi" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>TcEx Key Value API Module.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>session</strong> (<em>request.Session</em>) – A configured requests session for TC API (tcex.session).</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>session</strong> (<em>request.Session</em>) – A configured requests session for TC API (tcex.session).</p></li>
+<li><p><strong>runtime_level</strong> – The runtime level of the App.</p></li>
+</ul>
 </dd>
 </dl>
 <dl class="py method">
 <dt id="tcex.key_value_store.key_value_api.KeyValueApi.create">
-<code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/key_value_store/key_value_api.html#KeyValueApi.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.key_value_store.key_value_api.KeyValueApi.create" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">key</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/tcex/key_value_store/key_value_api.html#KeyValueApi.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.key_value_store.key_value_api.KeyValueApi.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create key/value pair in remote KV store.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<em>string</em>) – The key to create in remote KV store.</p></li>
-<li><p><strong>value</strong> (<em>any</em>) – The value to store in remote KV store.</p></li>
+<li><p><strong>context</strong> – A specific context for the create.</p></li>
+<li><p><strong>key</strong> – The key to create in remote KV store.</p></li>
+<li><p><strong>value</strong> – The value to store in remote KV store.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -250,11 +254,14 @@
 
 <dl class="py method">
 <dt id="tcex.key_value_store.key_value_api.KeyValueApi.read">
-<code class="sig-name descname">read</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/key_value_store/key_value_api.html#KeyValueApi.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.key_value_store.key_value_api.KeyValueApi.read" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">read</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">key</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; Any<a class="reference internal" href="../_modules/tcex/key_value_store/key_value_api.html#KeyValueApi.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.key_value_store.key_value_api.KeyValueApi.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read data from remote KV store for the provided key.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>key</strong> (<em>string</em>) – The key to read in remote KV store.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>context</strong> – A specific context for the create.</p></li>
+<li><p><strong>key</strong> – The key to read in remote KV store.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>The response data from the remote KV store.</p>
@@ -273,30 +280,22 @@
 <p>TcEx Framework Key Value Redis Module</p>
 <dl class="py class">
 <dt id="tcex.key_value_store.key_value_redis.KeyValueRedis">
-<em class="property">class </em><code class="sig-prename descclassname">tcex.key_value_store.key_value_redis.</code><code class="sig-name descname">KeyValueRedis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span></em>, <em class="sig-param"><span class="n">redis_client</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/key_value_store/key_value_redis.html#KeyValueRedis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.key_value_store.key_value_redis.KeyValueRedis" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">tcex.key_value_store.key_value_redis.</code><code class="sig-name descname">KeyValueRedis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">redis_client</span><span class="p">:</span> <span class="n">object</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/key_value_store/key_value_redis.html#KeyValueRedis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.key_value_store.key_value_redis.KeyValueRedis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>TcEx Key Value Redis Module.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>context</strong> (<em>str</em>) – The Redis context (hash) for hashed based operations.</p></li>
-<li><p><strong>redis_client</strong> (<em>redis.Client</em>) – An instance of redis client.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>redis_client</strong> (<em>redis.Client</em>) – An instance of redis client.</p>
 </dd>
 </dl>
 <dl class="py method">
-<dt id="tcex.key_value_store.key_value_redis.KeyValueRedis.context">
-<em class="property">property </em><code class="sig-name descname">context</code><a class="headerlink" href="#tcex.key_value_store.key_value_redis.KeyValueRedis.context" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the current context.</p>
-</dd></dl>
-
-<dl class="py method">
 <dt id="tcex.key_value_store.key_value_redis.KeyValueRedis.create">
-<code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/key_value_store/key_value_redis.html#KeyValueRedis.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.key_value_store.key_value_redis.KeyValueRedis.create" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">key</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/tcex/key_value_store/key_value_redis.html#KeyValueRedis.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.key_value_store.key_value_redis.KeyValueRedis.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create key/value pair in Redis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>context</strong> – A specific context for the create.</p></li>
 <li><p><strong>key</strong> (<em>str</em>) – The field name (key) for the kv pair in Redis.</p></li>
 <li><p><strong>value</strong> (<em>any</em>) – The value for the kv pair in Redis.</p></li>
 </ul>
@@ -312,11 +311,14 @@
 
 <dl class="py method">
 <dt id="tcex.key_value_store.key_value_redis.KeyValueRedis.delete">
-<code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/key_value_store/key_value_redis.html#KeyValueRedis.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.key_value_store.key_value_redis.KeyValueRedis.delete" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">key</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/tcex/key_value_store/key_value_redis.html#KeyValueRedis.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.key_value_store.key_value_redis.KeyValueRedis.delete" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for hdel method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>key</strong> (<em>str</em>) – The field name (key) for the kv pair in Redis.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>context</strong> – A specific context for the create.</p></li>
+<li><p><strong>key</strong> – The field name (key) for the kv pair in Redis.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>The response from Redis.</p>
@@ -329,28 +331,37 @@
 
 <dl class="py method">
 <dt id="tcex.key_value_store.key_value_redis.KeyValueRedis.hgetall">
-<code class="sig-name descname">hgetall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/key_value_store/key_value_redis.html#KeyValueRedis.hgetall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.key_value_store.key_value_redis.KeyValueRedis.hgetall" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">hgetall</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/key_value_store/key_value_redis.html#KeyValueRedis.hgetall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.key_value_store.key_value_redis.KeyValueRedis.hgetall" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read data from Redis for the current context.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The response data from Redis.</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>context</strong> – A specific context for the create.</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>list</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The response data from Redis.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="tcex.key_value_store.key_value_redis.KeyValueRedis.read">
-<code class="sig-name descname">read</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/key_value_store/key_value_redis.html#KeyValueRedis.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.key_value_store.key_value_redis.KeyValueRedis.read" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">read</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">key</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; Any<a class="reference internal" href="../_modules/tcex/key_value_store/key_value_redis.html#KeyValueRedis.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.key_value_store.key_value_redis.KeyValueRedis.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read data from Redis for the provided key.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The response data from Redis.</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>context</strong> – A specific context for the create.</p></li>
+<li><p><strong>key</strong> – The field name (key) for the kv pair in Redis.</p></li>
+</ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The response data from Redis.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
 </dd>
 </dl>
 </dd></dl>

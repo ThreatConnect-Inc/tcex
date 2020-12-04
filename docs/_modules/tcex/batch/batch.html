@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.batch.batch &mdash; TcEx 2.0.13 documentation</title>
+  <title>tcex.batch.batch &mdash; TcEx 2.0.15 documentation</title>
 
 
 
@@ -60,7 +60,7 @@
 
 
               <div class="version">
-                2.0.13
+                2.0.15
               </div>
 
 
@@ -717,45 +717,38 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            dict: A dictionary of group, indicators, and/or file data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">entity_count</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">entity_size</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;file&#39;</span><span class="p">:</span> <span class="p">{},</span> <span class="s1">&#39;group&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;indicator&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+        <span class="n">tracker</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;count&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;bytes&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
 
         <span class="c1"># process group from memory, returning if max values have been reached</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_groups</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">,</span> <span class="n">entity_count</span><span class="p">,</span> <span class="n">entity_size</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_groups</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">,</span> <span class="n">tracker</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">data</span>
 
         <span class="c1"># process group from shelf file, returning if max values have been reached</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_groups</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups_shelf</span><span class="p">,</span> <span class="n">entity_count</span><span class="p">,</span> <span class="n">entity_size</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_groups</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups_shelf</span><span class="p">,</span> <span class="n">tracker</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">data</span>
 
         <span class="c1"># process indicator from memory, returning if max values have been reached</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_indicators</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">indicators</span><span class="p">,</span> <span class="n">entity_count</span><span class="p">,</span> <span class="n">entity_size</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_indicators</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">indicators</span><span class="p">,</span> <span class="n">tracker</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">data</span>
 
         <span class="c1"># process indicator from shelf file, returning if max values have been reached</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_indicators</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">indicators_shelf</span><span class="p">,</span> <span class="n">entity_count</span><span class="p">,</span> <span class="n">entity_size</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_indicators</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">indicators_shelf</span><span class="p">,</span> <span class="n">tracker</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">data</span>
 
         <span class="k">return</span> <span class="n">data</span>
 
-<div class="viewcode-block" id="Batch.data_group_association"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.data_group_association">[docs]</a>    <span class="k">def</span> <span class="nf">data_group_association</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">entity_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">entity_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">xid</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<div class="viewcode-block" id="Batch.data_group_association"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.data_group_association">[docs]</a>    <span class="k">def</span> <span class="nf">data_group_association</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">tracker</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">xid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return group dict array following all associations.</span>
 
 <span class="sd">        The *data* dict is passed by reference to make it easier to update both the group data</span>
 <span class="sd">        and file data inline versus passing the data all the way back up to the calling methods.</span>
-<span class="sd">        The entity_count and entity size values are immutable and must be returned.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            data: The data dict to update with group and file data.</span>
-<span class="sd">            entity_count: The total count of all entities collected.</span>
-<span class="sd">            entity_size: The total size in bytes of all entities collected.</span>
+<span class="sd">            tracker: A dict containing total count of all entities collected and</span>
+<span class="sd">                the total size in bytes of all entities collected.</span>
 <span class="sd">            xid: The xid of the group to retrieve associations.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Tuple[int, int]: Return tuple containting updated entity_count and entity_size.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">xids</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
         <span class="n">xids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xid</span><span class="p">)</span>
@@ -778,13 +771,11 @@
                     <span class="n">data</span><span class="p">[</span><span class="s1">&#39;file&#39;</span><span class="p">][</span><span class="n">xid</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_data</span>
 
                 <span class="c1"># update entity trackers</span>
-                <span class="n">entity_count</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">entity_size</span> <span class="o">+=</span> <span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">group_data</span><span class="p">))</span>
+                <span class="n">tracker</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">tracker</span><span class="p">[</span><span class="s1">&#39;bytes&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">group_data</span><span class="p">))</span>
 
-                <span class="c1"># groups.append(group_data)</span>
-                <span class="n">xids</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;associatedGroupXid&#39;</span><span class="p">,</span> <span class="p">[]))</span>
-
-        <span class="k">return</span> <span class="n">entity_count</span><span class="p">,</span> <span class="n">entity_size</span></div>
+                <span class="c1"># extend xids with any groups associated with the same object</span>
+                <span class="n">xids</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;associatedGroupXid&#39;</span><span class="p">,</span> <span class="p">[]))</span></div>
 
 <div class="viewcode-block" id="Batch.data_group_type"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.data_group_type">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">data_group_type</span><span class="p">(</span><span class="n">group_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">object</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
@@ -814,14 +805,14 @@
 
         <span class="k">return</span> <span class="n">file_data</span><span class="p">,</span> <span class="n">group_data</span></div>
 
-<div class="viewcode-block" id="Batch.data_groups"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.data_groups">[docs]</a>    <span class="k">def</span> <span class="nf">data_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">groups</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">entity_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">entity_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="Batch.data_groups"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.data_groups">[docs]</a>    <span class="k">def</span> <span class="nf">data_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">groups</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">tracker</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Process Group data.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            data: The data dict to update with group and file data.</span>
 <span class="sd">            groups: The list of groups to process.</span>
-<span class="sd">            entity_count: The total count of all entities collected.</span>
-<span class="sd">            entity_size: The total size in bytes of all entities collected.</span>
+<span class="sd">            tracker: A dict containing total count of all entities collected and</span>
+<span class="sd">                the total size in bytes of all entities collected.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if max values have been hit, else False.</span>
@@ -832,35 +823,35 @@
         <span class="c1"># process group objects</span>
         <span class="k">for</span> <span class="n">xid</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">groups</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
             <span class="c1"># get association from group data</span>
-            <span class="n">entity_count</span><span class="p">,</span> <span class="n">entity_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_group_association</span><span class="p">(</span>
-                <span class="n">data</span><span class="p">,</span> <span class="n">entity_count</span><span class="p">,</span> <span class="n">entity_size</span><span class="p">,</span> <span class="n">xid</span>
-            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_group_association</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">xid</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">entity_count</span> <span class="o">%</span> <span class="mi">2_500</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">tracker</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2_500</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="c1"># log count/size at a sane level</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                    <span class="s1">&#39;feature=batch, action=data-groups, &#39;</span>
-                    <span class="sa">f</span><span class="s1">&#39;count=</span><span class="si">{</span><span class="n">entity_count</span><span class="si">:</span><span class="s1">,</span><span class="si">}</span><span class="s1">, size=</span><span class="si">{</span><span class="n">entity_size</span><span class="si">:</span><span class="s1">,</span><span class="si">}</span><span class="s1">&#39;</span>
+                    <span class="sd">&#39;&#39;&#39;feature=batch, action=data-groups, &#39;&#39;&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;&#39;&#39;count=</span><span class="si">{</span><span class="n">tracker</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">)</span><span class="si">:</span><span class="s1">,</span><span class="si">}</span><span class="s1">, bytes=</span><span class="si">{</span><span class="n">tracker</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bytes&#39;</span><span class="p">)</span><span class="si">:</span><span class="s1">,</span><span class="si">}</span><span class="s1">&#39;&#39;&#39;</span>
                 <span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">entity_count</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_max_chunk</span> <span class="ow">or</span> <span class="n">entity_size</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_max_size</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">tracker</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_max_chunk</span>
+                <span class="ow">or</span> <span class="n">tracker</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bytes&#39;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_max_size</span>
+            <span class="p">):</span>
                 <span class="c1"># stop processing xid once max limit are reached</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">&#39;feature=batch, event=max-hit, count=</span><span class="si">{</span><span class="n">entity_count</span><span class="si">:</span><span class="s1">,</span><span class="si">}</span><span class="s1">, size=</span><span class="si">{</span><span class="n">entity_size</span><span class="si">:</span><span class="s1">,</span><span class="si">}</span><span class="s1">&#39;</span>
+                    <span class="sd">&#39;&#39;&#39;feature=batch, event=max-value-reached, &#39;&#39;&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;&#39;&#39;count=</span><span class="si">{</span><span class="n">tracker</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">)</span><span class="si">:</span><span class="s1">,</span><span class="si">}</span><span class="s1">, bytes=</span><span class="si">{</span><span class="n">tracker</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bytes&#39;</span><span class="p">)</span><span class="si">:</span><span class="s1">,</span><span class="si">}</span><span class="s1">&#39;&#39;&#39;</span>
                 <span class="p">)</span>
                 <span class="k">return</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="kc">False</span></div>
 
-<div class="viewcode-block" id="Batch.data_indicators"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.data_indicators">[docs]</a>    <span class="k">def</span> <span class="nf">data_indicators</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">indicators</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">entity_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">entity_size</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="Batch.data_indicators"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.data_indicators">[docs]</a>    <span class="k">def</span> <span class="nf">data_indicators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">indicators</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">tracker</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Process Indicator data.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            data: The data dict to update with group and file data.</span>
 <span class="sd">            indicators: The list of indicators to process.</span>
-<span class="sd">            entity_count: The total count of all entities collected.</span>
-<span class="sd">            entity_size: The total size in bytes of all entities collected.</span>
+<span class="sd">            tracker: A dict containing total count of all entities collected and</span>
+<span class="sd">                the total size in bytes of all entities collected.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if max values have been hit, else False.</span>
@@ -873,20 +864,24 @@
             <span class="k">del</span> <span class="n">indicators</span><span class="p">[</span><span class="n">xid</span><span class="p">]</span>
 
             <span class="c1"># update entity trackers</span>
-            <span class="n">entity_count</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="n">entity_size</span> <span class="o">+=</span> <span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">indicator_data</span><span class="p">))</span>
+            <span class="n">tracker</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">tracker</span><span class="p">[</span><span class="s1">&#39;bytes&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">indicator_data</span><span class="p">))</span>
 
-            <span class="k">if</span> <span class="n">entity_count</span> <span class="o">%</span> <span class="mi">2_500</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">tracker</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2_500</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="c1"># log count/size at a sane level</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                    <span class="s1">&#39;feature=batch, action=data-indicator, &#39;</span>
-                    <span class="sa">f</span><span class="s1">&#39;count=</span><span class="si">{</span><span class="n">entity_count</span><span class="si">:</span><span class="s1">,</span><span class="si">}</span><span class="s1">, size=</span><span class="si">{</span><span class="n">entity_size</span><span class="si">:</span><span class="s1">,</span><span class="si">}</span><span class="s1">&#39;</span>
+                    <span class="sd">&#39;&#39;&#39;feature=batch, action=data-indicators, &#39;&#39;&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;&#39;&#39;count=</span><span class="si">{</span><span class="n">tracker</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">)</span><span class="si">:</span><span class="s1">,</span><span class="si">}</span><span class="s1">, bytes=</span><span class="si">{</span><span class="n">tracker</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bytes&#39;</span><span class="p">)</span><span class="si">:</span><span class="s1">,</span><span class="si">}</span><span class="s1">&#39;&#39;&#39;</span>
                 <span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">entity_count</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_max_chunk</span> <span class="ow">or</span> <span class="n">entity_size</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_max_size</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">tracker</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_max_chunk</span>
+                <span class="ow">or</span> <span class="n">tracker</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bytes&#39;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_max_size</span>
+            <span class="p">):</span>
                 <span class="c1"># stop processing xid once max limit are reached</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">&#39;feature=batch, event=max-hit, count=</span><span class="si">{</span><span class="n">entity_count</span><span class="si">:</span><span class="s1">,</span><span class="si">}</span><span class="s1">, size=</span><span class="si">{</span><span class="n">entity_size</span><span class="si">:</span><span class="s1">,</span><span class="si">}</span><span class="s1">&#39;</span>
+                    <span class="sd">&#39;&#39;&#39;feature=batch, event=max-value-reached, &#39;&#39;&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;&#39;&#39;count=</span><span class="si">{</span><span class="n">tracker</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">)</span><span class="si">:</span><span class="s1">,</span><span class="si">}</span><span class="s1">, bytes=</span><span class="si">{</span><span class="n">tracker</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bytes&#39;</span><span class="p">)</span><span class="si">:</span><span class="s1">,</span><span class="si">}</span><span class="s1">&#39;&#39;&#39;</span>
                 <span class="p">)</span>
                 <span class="k">return</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="kc">False</span></div>
@@ -1848,7 +1843,7 @@
 
                 <span class="c1"># while waiting of FR for delete support in createAndUpload submit delete request</span>
                 <span class="c1"># the old way (submit job + submit data), still using V2.</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># pylint: disable=len-as-condition</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># pylint: disable=len-as-condition</span>
                     <span class="n">batch_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">submit_job</span><span class="p">(</span><span class="n">halt_on_error</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">batch_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="n">batch_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">submit_data</span><span class="p">(</span>

@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Playbooks Module &mdash; TcEx 2.0.13 documentation</title>
+  <title>Playbooks Module &mdash; TcEx 2.0.15 documentation</title>
 
 
 
@@ -62,7 +62,7 @@
 
 
               <div class="version">
-                2.0.13
+                2.0.15
               </div>
 
 
@@ -418,12 +418,6 @@ from DB. If there are no keys/variables the raw string will be returned.</p>
 <dd class="field-odd"><p>(str)</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="tcex.playbooks.playbooks_base.PlaybooksBase.key_value_store">
-<em class="property">property </em><code class="sig-name descname">key_value_store</code><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase.key_value_store" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the correct KV store for this execution.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -803,6 +797,7 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 <dt id="tcex.playbooks.playbooks.Playbooks.delete">
 <code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.delete" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete method of CRUD operation for all data types.</p>
+<p>This method is only supported when using key_value_redis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>key</strong> (<em>str</em>) – The variable to write to the DB.</p>

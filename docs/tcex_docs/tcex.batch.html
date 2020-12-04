@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Batch Module &mdash; TcEx 2.0.13 documentation</title>
+  <title>Batch Module &mdash; TcEx 2.0.15 documentation</title>
 
 
 
@@ -62,7 +62,7 @@
 
 
               <div class="version">
-                2.0.13
+                2.0.15
               </div>
 
 
@@ -571,25 +571,18 @@ the indicator data will be stored in instance list.</p></li>
 
 <dl class="py method">
 <dt id="tcex.batch.batch.Batch.data_group_association">
-<code class="sig-name descname">data_group_association</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">entity_count</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">entity_size</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">xid</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>int<span class="p">, </span>int<span class="p">]</span><a class="reference internal" href="../_modules/tcex/batch/batch.html#Batch.data_group_association"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.batch.batch.Batch.data_group_association" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">data_group_association</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">tracker</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">xid</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/tcex/batch/batch.html#Batch.data_group_association"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.batch.batch.Batch.data_group_association" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return group dict array following all associations.</p>
 <p>The <em>data</em> dict is passed by reference to make it easier to update both the group data
-and file data inline versus passing the data all the way back up to the calling methods.
-The entity_count and entity size values are immutable and must be returned.</p>
+and file data inline versus passing the data all the way back up to the calling methods.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> – The data dict to update with group and file data.</p></li>
-<li><p><strong>entity_count</strong> – The total count of all entities collected.</p></li>
-<li><p><strong>entity_size</strong> – The total size in bytes of all entities collected.</p></li>
+<li><p><strong>tracker</strong> – A dict containing total count of all entities collected and
+the total size in bytes of all entities collected.</p></li>
 <li><p><strong>xid</strong> – The xid of the group to retrieve associations.</p></li>
 </ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Return tuple containting updated entity_count and entity_size.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Tuple[int, int]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -613,15 +606,15 @@ The entity_count and entity size values are immutable and must be returned.</p>
 
 <dl class="py method">
 <dt id="tcex.batch.batch.Batch.data_groups">
-<code class="sig-name descname">data_groups</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">groups</span><span class="p">:</span> <span class="n">list</span></em>, <em class="sig-param"><span class="n">entity_count</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">entity_size</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/tcex/batch/batch.html#Batch.data_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.batch.batch.Batch.data_groups" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">data_groups</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">groups</span><span class="p">:</span> <span class="n">list</span></em>, <em class="sig-param"><span class="n">tracker</span><span class="p">:</span> <span class="n">dict</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/tcex/batch/batch.html#Batch.data_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.batch.batch.Batch.data_groups" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process Group data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> – The data dict to update with group and file data.</p></li>
 <li><p><strong>groups</strong> – The list of groups to process.</p></li>
-<li><p><strong>entity_count</strong> – The total count of all entities collected.</p></li>
-<li><p><strong>entity_size</strong> – The total size in bytes of all entities collected.</p></li>
+<li><p><strong>tracker</strong> – A dict containing total count of all entities collected and
+the total size in bytes of all entities collected.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -635,15 +628,15 @@ The entity_count and entity size values are immutable and must be returned.</p>
 
 <dl class="py method">
 <dt id="tcex.batch.batch.Batch.data_indicators">
-<code class="sig-name descname">data_indicators</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">indicators</span><span class="p">:</span> <span class="n">list</span></em>, <em class="sig-param"><span class="n">entity_count</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">entity_size</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/tcex/batch/batch.html#Batch.data_indicators"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.batch.batch.Batch.data_indicators" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">data_indicators</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">indicators</span><span class="p">:</span> <span class="n">list</span></em>, <em class="sig-param"><span class="n">tracker</span><span class="p">:</span> <span class="n">dict</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/tcex/batch/batch.html#Batch.data_indicators"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.batch.batch.Batch.data_indicators" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process Indicator data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> – The data dict to update with group and file data.</p></li>
 <li><p><strong>indicators</strong> – The list of indicators to process.</p></li>
-<li><p><strong>entity_count</strong> – The total count of all entities collected.</p></li>
-<li><p><strong>entity_size</strong> – The total size in bytes of all entities collected.</p></li>
+<li><p><strong>tracker</strong> – A dict containing total count of all entities collected and
+the total size in bytes of all entities collected.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

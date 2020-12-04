@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.services.api_service &mdash; TcEx 2.0.13 documentation</title>
+  <title>tcex.services.api_service &mdash; TcEx 2.0.15 documentation</title>
 
 
 
@@ -60,7 +60,7 @@
 
 
               <div class="version">
-                2.0.13
+                2.0.15
               </div>
 
 
@@ -348,9 +348,9 @@
         <span class="n">body</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># read body from redis</span>
-            <span class="n">body_variable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;bodyVariable&#39;</span><span class="p">)</span>
+            <span class="n">body_variable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;bodyVariable&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">body_variable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">body</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">redis_client</span><span class="o">.</span><span class="n">hget</span><span class="p">(</span><span class="n">request_key</span><span class="p">,</span> <span class="n">body_variable</span><span class="p">)</span>
+                <span class="n">body</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_value_store</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">request_key</span><span class="p">,</span> <span class="n">body_variable</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">body</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="c1"># for API service the data in Redis is not b64 encoded</span>
                     <span class="n">body</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
@@ -445,7 +445,7 @@
                             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;unhandled type dir - </span><span class="si">{</span><span class="nb">dir</span><span class="p">(</span><span class="n">body</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
                 <span class="c1"># write body to Redis</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">redis_client</span><span class="o">.</span><span class="n">hset</span><span class="p">(</span><span class="n">request_key</span><span class="p">,</span> <span class="s1">&#39;response.body&#39;</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">key_value_store</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">request_key</span><span class="p">,</span> <span class="s1">&#39;response.body&#39;</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
 
                 <span class="c1"># set thread event to True to trigger response</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;feature=api-service, event=response-body-written&#39;</span><span class="p">)</span>
