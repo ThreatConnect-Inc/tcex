@@ -307,7 +307,7 @@ class Playbooks(PlaybooksBase):
         """
         data = None
         if key is not None:
-            data = self.tcex.key_value_store.delete(key.strip(), context=self._context)
+            data = self.tcex.key_value_store.delete(self._context, key.strip())
         else:  # pragma: no cover
             self.log.warning('The key field was None.')
         return data
