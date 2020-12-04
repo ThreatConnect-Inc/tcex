@@ -83,7 +83,7 @@ class PlaybooksBase:
             raise RuntimeError(f'Failed to serialize value ({e}).')
 
         try:
-            return self.tcex.key_value_store.create(key.strip(), value, context=self._context)
+            return self.tcex.key_value_store.create(self._context, key.strip(), value)
         except RuntimeError as e:
             self.log.error(e)
 
@@ -137,7 +137,7 @@ class PlaybooksBase:
             raise RuntimeError(f'Failed to serialize value ({e}).')
 
         try:
-            return self.tcex.key_value_store.create(key.strip(), value, context=self._context)
+            return self.tcex.key_value_store.create(self._context, key.strip(), value)
         except RuntimeError as e:
             self.log.error(e)
 
@@ -228,7 +228,7 @@ class PlaybooksBase:
         variable_type = self.variable_type(key)
 
         try:
-            value = self.tcex.key_value_store.read(key.strip(), context=self._context)
+            value = self.tcex.key_value_store.read(self._context, key.strip())
         except RuntimeError as e:
             self.log.error(e)
             return None
@@ -272,7 +272,7 @@ class PlaybooksBase:
         variable_type = self.variable_type(key)
 
         try:
-            value = self.tcex.key_value_store.read(key.strip(), context=self._context)
+            value = self.tcex.key_value_store.read(self._context, key.strip())
         except RuntimeError as e:
             self.log.error(e)
             return None
@@ -468,7 +468,7 @@ class PlaybooksBase:
         data = None
         if key is not None and value is not None:
             try:
-                data = self.tcex.key_value_store.create(key.strip(), value, context=self._context)
+                data = self.tcex.key_value_store.create(self._context, key.strip(), value)
             except RuntimeError as e:
                 self.log.error(e)
         else:
@@ -489,7 +489,7 @@ class PlaybooksBase:
         """
         value = None
         if key is not None:
-            value = self.tcex.key_value_store.read(key.strip(), context=self._context)
+            value = self.tcex.key_value_store.read(self._context, key.strip())
         else:
             self.log.warning('The key field was None.')
         return value

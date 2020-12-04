@@ -203,7 +203,7 @@ class WebhookTriggerService(CommonServiceTrigger):
         # get a context aware pb instance for the App callback method
         playbook: object = self.tcex.pb(context=self.session_id, output_variables=outputs)
         try:
-            body: Any = self.key_value_store.read('request.body', context=message.get('requestKey'))
+            body: Any = self.key_value_store.read(message.get('requestKey'), 'request.body')
             if body is not None:
                 body = base64.b64decode(body).decode()
             # pylint: disable=not-callable
@@ -289,7 +289,7 @@ class WebhookTriggerService(CommonServiceTrigger):
         request_key: str = message.get('requestKey')
 
         try:
-            body: Any = self.key_value_store.read('request.body', context=request_key)
+            body: Any = self.key_value_store.read(request_key, 'request.body')
             if body is not None:
                 body = base64.b64decode(body).decode()
         except Exception as e:
