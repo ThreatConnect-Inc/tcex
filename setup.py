@@ -63,7 +63,7 @@ setup(
     include_package_data=True,
     install_requires=[
         'colorama>=0.3.9',
-        'dendrol @ git+https://github.com/cblades-tc/dendrol.git@master',
+        'dendrol',
         'future',
         'hvac>=0.3.0',
         'inflect>=0.2.5',
