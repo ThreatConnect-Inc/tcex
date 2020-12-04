@@ -95,7 +95,7 @@ class TestProfiles(${class_name}):
             # get Validation instance
             validation = ValidateFeature(self.validator)
             # for service Apps the context on playbooks needs to be set manually
-            self.validator.tcex.playbook.key_value_store.context = context
+            self.validator.tcex.playbook._context = context
             # the trigger id is stored via the monkey patched session_id method
             trigger_id = self.redis_client.hget(context, '_trigger_id').decode('utf-8')
             output_data = (self.profile.outputs or {}).get(trigger_id)

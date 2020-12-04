@@ -468,9 +468,7 @@ class TcEx:
             if self.default_args.tc_playbook_db_type == 'Redis':
                 from .key_value_store import KeyValueRedis
 
-                self._key_value_store = KeyValueRedis(
-                    self.default_args.tc_playbook_db_context, self.redis_client
-                )
+                self._key_value_store = KeyValueRedis(self.redis_client)
             elif self.default_args.tc_playbook_db_type == 'TCKeyValueAPI':
                 from .key_value_store import KeyValueApi
 
@@ -478,11 +476,7 @@ class TcEx:
                 # API endpoint (in TC 6.0.7) can be used with the context. this new
                 # endpoint could be used for PB Apps, however to support versions of
                 # TC < 6.0.7 the old endpoint must still be used.
-                self._key_value_store = KeyValueApi(
-                    self.default_args.tc_playbook_db_context,
-                    self.session,
-                    self.ij.runtime_level.lower(),
-                )
+                self._key_value_store = KeyValueApi(self.session, self.ij.runtime_level.lower(),)
             else:  # pragma: no cover
                 raise RuntimeError(f'Invalid DB Type: ({self.default_args.tc_playbook_db_type})')
         return self._key_value_store

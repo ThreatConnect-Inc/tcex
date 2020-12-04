@@ -177,12 +177,11 @@ class CommonServiceTrigger(CommonService):
                 # only required for testing in tcex framework
                 self._tcex_testing(session_id, trigger_id)
 
-                # get instance of playbook specifically for this thread
+                # get an instance of PB module with current
+                # session_id and outputs to pass to callback
                 outputs: Union[list, str] = config.get('tc_playbook_out_variables') or []
                 if isinstance(outputs, str):
                     outputs = outputs.split(',')
-
-                # get an instance of PB module with current session_id to pass to callback
                 playbook: object = self.tcex.pb(context=session_id, output_variables=outputs)
 
                 self.log.info(f'feature=trigger-service, event=fire-event, trigger-id={session_id}')
