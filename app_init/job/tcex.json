@@ -9,7 +9,12 @@
       "setup.cfg",
       "tcex.json",
       "*.install.json",
-      "tcex.d"
+      "tcex.d",
+      "JIRA.*",
+      ".env",
+      ".gitlab-ci.yml",
+      "app.yaml",
+      "README.html"
     ]
   }
 }
