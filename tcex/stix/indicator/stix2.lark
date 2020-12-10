@@ -1,0 +1,128 @@
+// STIX2 LALR(1)
+//
+// The productions that TCEX cares about are ones that
+// identify "is" or "in" indicators.  These indicator
+// productions and their predecessor steps (ie the path)
+// are the only production rules in place in the corresponding
+// lark transformer, which is why the positive assertion rules
+// in the prop_test production use -> indicator
+// and -> indicator_list to identify which rules create
+// indicators or indicator lists.
+//
+// Lark grammars prefix production rules with:
+//   ? - to try to inline the rule -- helps keep the tree flat
+//   ! - include literal terminals to the underlying production
+//       which normally drop out (useful for timestamps, etc, where
+//       the dropped out terminals are going to be put right back in)
+//
+// Important!  Lark enforces case on rules (lowercase) vs TERMINALS
+// (uppercase)
+
+pattern: observation_expressions
+
+?observation_expressions: observation_expressions "followedby"i observation_expressions
+    | observation_expression_or
+
+?observation_expression_or: observation_expression_or "or"i observation_expression_or
+    | observation_expression_and
+
+?observation_expression_and: observation_expression_and "and"i observation_expression_and
+    | observation_expression
+
+?observation_expression: "[" comparison_expression "]"
+    | "(" observation_expressions ")"
+    | observation_expression start_stop_qualifier
+    | observation_expression within_qualifier
+    | observation_expression repeated_qualifier
+
+?comparison_expression: comparison_expression "or"i comparison_expression
+    | comparison_expression_and
+
+?comparison_expression_and: comparison_expression_and "and"i comparison_expression_and
+    | prop_test
+
+?prop_test: object_path NOT EQ primitive_literal
+    | object_path (NOT NEQ|EQ) primitive_literal -> indicator
+    | object_path NOT? (GT|LT|GE|LE) orderable_literal
+    | object_path "in"i set_literal -> indicator_list
+    | object_path NOT "in"i set_literal
+    | object_path NOT? "like"i STRING_LITERAL
+    | object_path NOT? "matches"i STRING_LITERAL
+    | object_path NOT? "issubset"i STRING_LITERAL
+    | object_path NOT? "issuperset"i STRING_LITERAL
+    | "(" comparison_expression ")"
+    | "exists"i object_path
+
+start_stop_qualifier: "start"i timestamp_literal "stop"i timestamp_literal
+
+within_qualifier: "within"i (INT_POS_LITERAL|FLOAT_POS_LITERAL) "seconds"i
+
+repeated_qualifier: "repeats"i INT_POS_LITERAL "times"i
+
+?object_path: object_type ":" first_path_component object_path_component?
+
+?object_type: IDENTIFIER_WITHOUT_HYPHEN
+    | IDENTIFIER_WITH_HYPHEN
+
+?first_path_component: IDENTIFIER_WITHOUT_HYPHEN
+    | STRING_LITERAL
+
+?object_path_component: object_path_component object_path_component  -> path_step
+    | "." (IDENTIFIER_WITHOUT_HYPHEN | STRING_LITERAL)     -> key_path_step
+    | "[" (INT_POS_LITERAL|INT_NEG_LITERAL|"*") "]"         -> index_path_step
+
+?set_literal: "(" ")"
+    | "(" primitive_literal ("," primitive_literal)* ")"
+
+?primitive_literal: orderable_literal
+    | bool_literal
+
+?orderable_literal: INT_POS_LITERAL
+    | INT_NEG_LITERAL
+    | FLOAT_POS_LITERAL
+    | FLOAT_NEG_LITERAL
+    | STRING_LITERAL
+    | binary_literal
+    | hex_literal
+    | timestamp_literal
+
+DIGIT: "0".."9"
+WHOLEDIGIT: "1".."9"
+INT_NEG_LITERAL: "-" ("0" | WHOLEDIGIT DIGIT*)
+INT_POS_LITERAL: "+"? ("0" | WHOLEDIGIT DIGIT*)
+FLOAT_NEG_LITERAL: "-" DIGIT* "." DIGIT+
+FLOAT_POS_LITERAL: "+"? DIGIT* "." DIGIT+
+
+?hex_literal: "h" QUOTE TWO_HEX_DIGITS* QUOTE
+
+?binary_literal: "b" QUOTE ( BASE64CHAR BASE64CHAR BASE64CHAR BASE64CHAR )* ( ( BASE64CHAR BASE64CHAR BASE64CHAR BASE64CHAR ) | ( BASE64CHAR BASE64CHAR BASE64CHAR ) "=" | ( BASE64CHAR BASE64CHAR ) "==") QUOTE
+
+?bool_literal: "true"i | "false"i
+
+!timestamp_literal: "t" QUOTE DIGIT DIGIT DIGIT DIGIT "-" ( ("0" WHOLEDIGIT) | ("1" /[012]/) ) "-" ( ("0" WHOLEDIGIT) | (/[12]/ DIGIT) | ("3" /[01]/) ) "T" ( (/[01]/ DIGIT) | ("2" /[0-3]/) ) ":" /[0-5]/ DIGIT  ":" (/[0-5]/ DIGIT | "60") ("." DIGIT+)? "Z" QUOTE
+
+EQ: "=" | "=="
+NEQ: "!=" | "<>"
+GT: ">"
+LT: "<"
+GE: ">="
+LE: "<="
+NOT: /not/i
+QUOTE: "'"
+STRING_LITERAL: QUOTE _STRING_ESC_INNER QUOTE
+
+IDENTIFIER_WITHOUT_HYPHEN: /[a-zA-Z_][a-zA-Z0-9_]*/
+IDENTIFIER_WITH_HYPHEN: /[a-zA-Z_][a-zA-Z0-9_-]*/
+
+HEXDIGIT: /[A-Fa-f0-9]/
+TWO_HEX_DIGITS: HEXDIGIT HEXDIGIT
+BASE64CHAR: /[A-Za-z0-9+\/]/
+
+COMMENT:  /"/*" .*? "*/"/
+LINE_COMMENT: /"//" ~[\r\n]/
+
+%import common._STRING_ESC_INNER
+%import common.WS
+%ignore WS
+%ignore COMMENT
+%ignore LINE_COMMENT

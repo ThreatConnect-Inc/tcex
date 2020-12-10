@@ -9,14 +9,11 @@ import uuid
 from datetime import datetime
 from typing import Iterable, Union
 
-# third-party
-from dendrol import Pattern
-from dendrol.lang.STIXPatternListener import STIXPatternListener
-from dendrol.lang.STIXPatternParser import STIXPatternParser
-
 # first-party
 from tcex.batch import Batch
 from tcex.stix import StixModel  # pylint: disable=cyclic-import
+
+from .stix2_lark import Indicator, Stix2IndicatorParser
 
 
 class StixIndicator(StixModel):
@@ -24,6 +21,11 @@ class StixIndicator(StixModel):
 
     see: https://docs.oasis-open.org/cti/stix/v2.1/csprd01/stix-v2.1-csprd01.html#_Toc16070633
     """
+
+    def __init__(self, logger):
+        """Initialize stix parser."""
+        super().__init__(logger)
+        self.stix_parser = Stix2IndicatorParser()
 
     @staticmethod
     def _add_milliseconds(time):
@@ -136,18 +138,16 @@ class StixIndicator(StixModel):
         Returns:
             A array of indicator mappings.
         """
-        pattern = Pattern(stix_data.get('pattern'))
         mappings = []
         batch_xid_array = [stix_data.get('id')]
         if collection_id:
             batch_xid_array += [collection_id]
         try:
-            s = STIXListener()
-            pattern.walk(s)
+            indicators = self.stix_parser.parse(stix_data.get('pattern'))
             mappings = [
-                self._default_consume_handler(s.indicators, batch_xid_array),
-                self._ip_consume_handler(s.indicators, batch_xid_array),
-                self._file_consume_handler(s.indicators, batch_xid_array),
+                self._default_consume_handler(indicators, batch_xid_array),
+                self._ip_consume_handler(indicators, batch_xid_array),
+                self._file_consume_handler(indicators, batch_xid_array),
             ]
             mappings = list(itertools.chain(*mappings))
         except Exception:
@@ -155,7 +155,7 @@ class StixIndicator(StixModel):
         return mappings
 
     @staticmethod
-    def _file_consume_handler(indicators: Iterable[dict], batch_xid_array):
+    def _file_consume_handler(indicators: Iterable[Indicator], batch_xid_array):
         """Produce ThreatConnect file mappings from a list of STIX 2.1 indicators
 
         Args:
@@ -164,13 +164,11 @@ class StixIndicator(StixModel):
         Returns:
             A array of indicator mappings.
         """
-        file_indicators = list(filter(lambda i: 'file:hashes' in i.get('path'), indicators))
+        file_indicators = list(filter(lambda i: 'file:hashes' in i.path, indicators))
 
-        sha256_indicators = list(
-            filter(lambda i: 'SHA-156' in i.get('path').upper(), file_indicators)
-        )
-        sha2_indicators = list(filter(lambda i: 'SHA-1' in i.get('path').upper(), file_indicators))
-        md5_indicators = list(filter(lambda i: 'MD5' in i.get('path').upper(), file_indicators))
+        sha256_indicators = list(filter(lambda i: 'SHA-156' in i.path.upper(), file_indicators))
+        sha2_indicators = list(filter(lambda i: 'SHA-1' in i.path.upper(), file_indicators))
+        md5_indicators = list(filter(lambda i: 'MD5' in i.path.upper(), file_indicators))
 
         if len(file_indicators) <= 0:
             return []
@@ -182,7 +180,7 @@ class StixIndicator(StixModel):
             and len(sha2_indicators) <= 1
             and len(md5_indicators) <= 1
         ):
-            value = ' : '.join([v.get('value') for v in file_indicators])
+            value = ' : '.join([v.value for v in file_indicators])
             mappings.append(
                 {
                     'type': 'File',
@@ -196,15 +194,15 @@ class StixIndicator(StixModel):
                 mappings.append(
                     {
                         'type': 'File',
-                        'summary': i.get('value'),
+                        'summary': i.value,
                         'confidence': '@.confidence',
-                        'xid': Batch.generate_xid(batch_xid_array + [i.get('value')]),
+                        'xid': Batch.generate_xid(batch_xid_array + [i.value]),
                     }
                 )
         return mappings
 
     @staticmethod
-    def _ip_consume_handler(indicators: Iterable[dict], batch_xid_array):
+    def _ip_consume_handler(indicators: Iterable[Indicator], batch_xid_array):
         """Produce ThreatConnect Address/CIDR mappings from a list of STIX 2.1 indicators
 
         Args:
@@ -214,33 +212,29 @@ class StixIndicator(StixModel):
             A array of indicator mappings.
         """
         mappings = []
-        for i in filter(
-            lambda i: i.get('path') in ['ipv4-addr:value', 'ipv6-addr:value'], indicators
-        ):
-            path = i.get('path')
-            value = i.get('value')
+        for i in filter(lambda i: i.path in ['ipv4-addr:value', 'ipv6-addr:value'], indicators):
             parse_map = None
-            if path == 'ipv4-addr:value':
-                if '/' in value and value.split('/')[1] != '32':  # this is a CIDR
+            if i.path == 'ipv4-addr:value':
+                if '/' in i.value and i.value.split('/')[1] != '32':  # this is a CIDR
                     parse_map = {
                         'type': 'CIDR',
-                        'summary': value,
+                        'summary': i.value,
                     }
                 else:  # this is an address
                     parse_map = {
                         'type': 'Address',
-                        'summary': value.split('/')[0],
+                        'summary': i.value.split('/')[0],
                     }
-            elif path == 'ipv6-addr:value':
-                if '/' in value and value.split('/')[1] != '128':  # this is a CIDR
+            elif i.path == 'ipv6-addr:value':
+                if '/' in i.value and i.value.split('/')[1] != '128':  # this is a CIDR
                     parse_map = {
                         'type': 'CIDR',
-                        'summary': value,
+                        'summary': i.value,
                     }
                 else:  # this is an address
                     parse_map = {
                         'type': 'Address',
-                        'summary': value.split('/')[0],
+                        'summary': i.value.split('/')[0],
                     }
             parse_map['confidence'] = '@.confidence'
             parse_map['xid'] = Batch.generate_xid(
@@ -250,7 +244,7 @@ class StixIndicator(StixModel):
         return mappings
 
     @staticmethod
-    def _default_consume_handler(indicators: Iterable[dict], batch_xid_array):
+    def _default_consume_handler(indicators: Iterable[Indicator], batch_xid_array):
         """Produce ThreatConnect URL/EmailAddress/Host/ASN mappings from STIX 2.1 indicators
 
         Args:
@@ -268,61 +262,15 @@ class StixIndicator(StixModel):
         }
 
         mappings = []
-        for i in filter(lambda i: i.get('path') in type_map.keys(), indicators):
-            path = i.get('path')
-            value = i.get('value')
-            indicator_type = type_map.get(path)
+        for i in filter(lambda i: i.path in type_map.keys(), indicators):
+            indicator_type = type_map.get(i.path)
 
             mappings.append(
                 {
                     'type': indicator_type,
-                    'summary': value,
+                    'summary': i.value,
                     'confidence': '@.confidence',
-                    'xid': Batch.generate_xid(batch_xid_array + [indicator_type, value]),
+                    'xid': Batch.generate_xid(batch_xid_array + [indicator_type, i.value]),
                 }
             )
         return mappings
-
-
-class STIXListener(STIXPatternListener):
-    """Visitor for the parsed stix pattern."""
-
-    def __init__(self):
-        """Visitor for the parsed stix pattern."""
-        super().__init__()
-        self._indicators = []  # indicators that have been pulled out of this
-
-    def enterPropTestEqual(self, ctx: STIXPatternParser.PropTestEqualContext):
-        """Pull out path and value from statements with =.
-
-        Args:
-            ctx: the context of the equals statement.
-        """
-        test = ctx.getText()
-        eq_index = test.index('=')
-        if eq_index:
-            path, value = test[:eq_index], test[(eq_index + 1) :]  # noqa: E203
-
-            self._indicators.append({'path': path.strip(), 'value': value.strip()[1:-1]})
-
-    def enterPropTestSet(self, ctx: STIXPatternParser.PropTestParenContext):
-        """Pull out path and value from statements with in (...).
-
-        Args:
-            ctx: the context of the equals statement.
-        """
-        text = ctx.getText()
-        path, values = text.split('IN')
-
-        path = path.strip()
-
-        values = values[1:-1]  # strip off the surrounding parens.
-        values = [v.strip()[1:-1] for v in values.split(',')]  # split on , and strip
-
-        for value in values:
-            self._indicators.append({'path': path, 'value': value})
-
-    @property
-    def indicators(self):
-        """Return the indicators parsed out of this pattern."""
-        return self._indicators

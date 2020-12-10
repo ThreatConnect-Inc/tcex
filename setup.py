@@ -63,12 +63,12 @@ setup(
     include_package_data=True,
     install_requires=[
         'colorama>=0.3.9',
-        'dendrol',
         'future',
         'hvac>=0.3.0',
         'inflect>=0.2.5',
         'jmespath',
         'jsonschema>=2.6.0',
+        'lark',
         'paho-mqtt',
         'parsedatetime',
         'pyaes',
