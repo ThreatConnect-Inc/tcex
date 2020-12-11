@@ -9,6 +9,7 @@ The ThreatConnect&trade; TcEx App Framework provides functionality for writing T
  * hvac (https://pypi.python.org/pypi/hvac)
  * inflect (https://pypi.python.org/pypi/inflect)
  * jsonschema (https://pypi.python.org/pypi/jsonschema)
+ * lark (https://pypi.org/project/lark/)
  * paho-mqtt (https://pypi.org/project/paho-mqtt/)
  * parsedatetime (https://pypi.python.org/pypi/parsedatetime)
  * python-dateutil (https://pypi.python.org/pypi/python-dateutil)
