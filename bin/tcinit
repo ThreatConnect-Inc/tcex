@@ -33,7 +33,7 @@ epilog = (
     '                     an input, analyzes or modifies the data, and writes the results as \n'
     '                     output.\n'
     '\nExternal App Templates:\n'
-    '  external         - This template provides the structure for a External App without any\n'
+    '  external         - This template provides the structure for an External App without any\n'
     '                     App logic.\n'
     '  external_ingress - This template provides a working example of downloading remote threat \n'
     '                     intel (md5 hash indicators) and writing the data in the ThreatConnect \n'

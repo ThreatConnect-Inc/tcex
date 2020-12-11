@@ -58,6 +58,8 @@ class KeyValueApi:
             url = f'/internal/playbooks/keyValue/{context}/{key}'
         r = self._session.get(url)
         data = r.content
-        if data is not None and not isinstance(data, str):
-            data = str(r.content, 'utf-8')
+
+        # Binary data for PB Apps is base64 encoded, for service Apps it is not
+        if data is not None and isinstance(data, bytes):
+            data = data.decode('utf-8')
         return data
