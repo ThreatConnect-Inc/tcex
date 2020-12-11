@@ -3,6 +3,10 @@
 Release Notes
 #############
 
+2.0.16
+======
++ APP-1807, APP-1801  - [STIX] Remove dependency on Dendrol and replace with lark parser.
+
 2.0.15
 ======
 + APP-891  - [STIX] Added additional support for consuming and producing STIX documents.
