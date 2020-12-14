@@ -88,7 +88,7 @@ setup(
     long_description_content_type='text/markdown',
     name=metadata['__package_name__'],
     packages=find_packages(exclude=['tests', 'tests.*']),
-    package_data={'': ['*.json']},
+    package_data={'': ['*.json', '*.lark']},
     package_dir={'tcex': 'tcex'},
     project_urls={
         'Documentation': 'https://threatconnect-inc.github.io/tcex/',

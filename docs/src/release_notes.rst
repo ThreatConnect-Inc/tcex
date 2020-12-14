@@ -3,6 +3,10 @@
 Release Notes
 #############
 
+2.0.17
+======
++ Update setup.py package_data to include STIX parser lark file.
+
 2.0.16
 ======
 + APP-1807, APP-1801  - [STIX] Remove dependency on Dendrol and replace with lark parser.
