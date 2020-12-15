@@ -7,7 +7,11 @@ from setuptools import find_packages, setup
 
 metadata = {}
 metadata_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'tcex', '__metadata__.py')
-with open(metadata_file, mode='r', encoding='utf-8',) as f:
+with open(
+    metadata_file,
+    mode='r',
+    encoding='utf-8',
+) as f:
     exec(f.read(), metadata)  # nosec; pylint: disable=exec-used
 
 if not metadata:
@@ -80,7 +84,6 @@ setup(
         'stdlib-list>=0.6.0',
         'stix2',
         'tzlocal',
-        'urllib3',
         'wrapt',
     ],
     license=metadata['__license__'],

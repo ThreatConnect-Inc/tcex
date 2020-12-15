@@ -6,7 +6,7 @@ Release Notes
 2.0.17
 ======
 + Update setup.py package_data to include STIX parser lark file.
-+ APP-1829 Try to recover from SSLError: Wrong Version Number in ExternalSession and TCSession.
++ APP-1829 - [Session] Added logic to attempt to handle "[SSL: WRONG_VERSION_NUMBER] wrong version number" error new to urllib3.
 
 2.0.16
 ======

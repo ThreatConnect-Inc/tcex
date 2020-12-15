@@ -288,7 +288,7 @@ class ExternalSession(Session):
                 )
                 del self.proxies['https']
                 return self.request(method, url, **kwargs)
-            raise s
+            raise
 
         if response.status_code == 429 and not tc_is_retry:
             too_many_requests_handler = self.too_many_requests_handler

@@ -148,7 +148,7 @@ class TcSession(Session):
                 )
                 del self.proxies['https']
                 return self.request(method, url, **kwargs)
-            raise s
+            raise
         # don't show curl message for logging commands
         if '/v2/logs/app' not in url:
             # APP-79 - adding logging of request as curl commands
