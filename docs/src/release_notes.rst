@@ -6,6 +6,7 @@ Release Notes
 2.0.17
 ======
 + Update setup.py package_data to include STIX parser lark file.
++ APP-1829 Try to recover from SSLError: Wrong Version Number in ExternalSession and TCSession.
 
 2.0.16
 ======
