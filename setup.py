@@ -80,7 +80,7 @@ setup(
         'stdlib-list>=0.6.0',
         'stix2',
         'tzlocal',
-        'urllib3>=1.21.1,<1.26',
+        'urllib3',
         'wrapt',
     ],
     license=metadata['__license__'],

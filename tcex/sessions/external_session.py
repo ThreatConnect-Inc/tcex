@@ -268,7 +268,27 @@ class ExternalSession(Session):
         # method doesn't expect it so it needs to be removed.
         tc_is_retry = kwargs.pop('tc_is_retry', False)
 
-        response: Response = super().request(method, url, **kwargs)
+        try:
+            response: Response = super().request(method, url, **kwargs)
+        except exceptions.SSLError as s:
+            # This is to solve an issue created by urllib3 versions > 1.26.0 wherein they got more
+            # strict about connections to https proxies.
+            # see: https://github.com/urllib3/urllib3/issues/1850 for a discussion and
+            # see: https://jira-tc.atlassian.net/browse/APP-1829 and the included slack convo for
+            # context around our decision to handle this here
+            if (
+                'WRONG_VERSION_NUMBER' in str(s)
+                and isinstance(self.proxies, dict)
+                and 'https' in self.proxies
+            ):
+                self.log.warning(
+                    'Got SSLError while connecting to external resource, '
+                    'removing https key in proxies dictionary. '
+                    f'Got exception: \n{s}'
+                )
+                del self.proxies['https']
+                return self.request(method, url, **kwargs)
+            raise s
 
         if response.status_code == 429 and not tc_is_retry:
             too_many_requests_handler = self.too_many_requests_handler
