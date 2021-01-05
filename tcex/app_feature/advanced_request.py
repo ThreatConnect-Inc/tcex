@@ -15,9 +15,10 @@ class AdvancedRequest:
     """App Feature Advanced Request Module
 
     Args:
-        session (object): An instance of Requests Session object.
-        tcex (object): An instance of Tcex object.
-        timeout (Optional[int] = 600): The timeout value for the request.
+        session: An instance of Requests Session object.
+        tcex: An instance of Tcex object.
+        timeout: The timeout value for the request.
+        output_prefix: The prefix for any output variables created with advanced requests.
     """
 
     def __init__(

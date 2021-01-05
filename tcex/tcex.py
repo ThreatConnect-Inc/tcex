@@ -102,7 +102,9 @@ class TcEx:
         if signal_interupt in (2, 15):
             self.exit(1, 'The App received an interrupt signal and will now exit.')
 
-    def advanced_request(self, session: object, timeout: Optional[int] = 600) -> object:
+    def advanced_request(
+        self, session: object, timeout: Optional[int] = 600, output_prefix: Optional[str] = None
+    ) -> object:
         """Return instance of AdvancedRequest.
 
         Args:
@@ -114,7 +116,7 @@ class TcEx:
         """
         from .app_feature import AdvancedRequest
 
-        return AdvancedRequest(session, self, timeout)
+        return AdvancedRequest(session, self, timeout, output_prefix)
 
     def aot_rpush(self, exit_code: int) -> None:
         """Push message to AOT action channel."""
@@ -640,7 +642,7 @@ class TcEx:
             else:
                 # proxy url without auth
                 proxy_url = f'{self.default_args.tc_proxy_host}:{self.default_args.tc_proxy_port}'
-            proxies = {'http': f'http://{proxy_url}', 'https': f'https://{proxy_url}'}
+            proxies = {'http': f'http://{proxy_url}', 'https': f'http://{proxy_url}'}
         return proxies
 
     @property

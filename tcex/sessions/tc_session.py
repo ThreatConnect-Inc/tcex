@@ -9,7 +9,6 @@ import time
 # third-party
 import urllib3
 from requests import Session, adapters, auth
-from requests.exceptions import SSLError
 from urllib3.util.retry import Retry
 
 from ..utils import Utils
@@ -128,27 +127,8 @@ class TcSession(Session):
         # accept path for API calls instead of full URL
         if not url.startswith('https'):
             url = f'{self.base_url}{url}'
-        try:
-            response = super().request(method, url, **kwargs)
-        except SSLError as s:
-            # This is to solve an issue created by urllib3 versions > 1.26.0 wherein they got more
-            # strict about connections to https proxies.
-            # see: https://github.com/urllib3/urllib3/issues/1850 for a discussion and
-            # see: https://jira-tc.atlassian.net/browse/APP-1829 and the included slack convo for
-            # context around our decision to handle this here
-            if (
-                'WRONG_VERSION_NUMBER' in str(s)
-                and isinstance(self.proxies, dict)
-                and 'https' in self.proxies
-            ):
-                self.log.warning(
-                    'Got SSLError while connecting to external resource, '
-                    'removing https key in proxies dictionary. '
-                    f'Got exception: \n{s}'
-                )
-                del self.proxies['https']
-                return self.request(method, url, **kwargs)
-            raise
+        response = super().request(method, url, **kwargs)
+
         # don't show curl message for logging commands
         if '/v2/logs/app' not in url:
             # APP-79 - adding logging of request as curl commands
