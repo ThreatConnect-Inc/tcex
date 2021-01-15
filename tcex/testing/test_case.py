@@ -470,7 +470,7 @@ class TestCase:
             'apiservice',
             'triggerservice',
             'webhooktriggerservice',
-        ]:
+        ] and self._skip is False:
             # exit message can not be validated for a Service App
             self.profile.update_exit_message()
 
