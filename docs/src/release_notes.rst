@@ -3,6 +3,10 @@
 Release Notes
 #############
 
+2.0.18
+======
++ APP-1829 - [Session] Added logic to use http instead of https for proxy.
+
 2.0.17
 ======
 + Update setup.py package_data to include STIX parser lark file.
