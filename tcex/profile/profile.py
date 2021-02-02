@@ -132,7 +132,7 @@ class Profile:
 
         profile = OrderedDict()
         profile['_comments_'] = []
-        profile['environments'] = ['build']
+        profile['environments'] = profile_data.get('environments', ['build'])
         profile['stage'] = profile_data.get('stage', {'kvstore': {}})
         profile['configs'] = []  # add config here and remove later to ensure proper order
         profile['inputs'] = {}  # add inputs here and remove later to ensure proper order

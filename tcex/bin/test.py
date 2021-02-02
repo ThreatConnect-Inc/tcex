@@ -51,6 +51,7 @@ class Test(Bin):
         profile_data['exit_message'] = None
         profile_data['inputs'] = inputs
         profile_data['outputs'] = None
+        profile_data['environments'] = [*self.profile.environments, 'negative']
 
         # create a meaningful profile name
         new_profile = Profile(default_args={}, feature=self.args.feature, name=profile_name)

@@ -6,6 +6,7 @@ Release Notes
 2.0.18
 ======
 + APP-1829 - [Session] Added logic to use http instead of https for proxy.
++ APP-2044 - [Testing] Enhance tctest --negative to copy environments from base profile and add 'negative'.
 
 2.0.17
 ======
