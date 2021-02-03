@@ -63,6 +63,7 @@ class Lib(Bin):
             '--quiet',
             '--target',
             lib_dir_fq,
+            '--system',
         ]
         if self.args.no_cache_dir:
             exe_command.append('--no-cache-dir')
