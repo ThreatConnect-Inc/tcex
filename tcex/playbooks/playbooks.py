@@ -68,7 +68,7 @@ class Playbooks(PlaybooksBase):
         """
         index = f'{key}-{variable_type}'
         self.output_data.setdefault(index, {})
-        if value is None:
+        if value is None and variable_type not in self._variable_array_types and not append_array:
             return
 
         if variable_type in self._variable_array_types and append_array:
