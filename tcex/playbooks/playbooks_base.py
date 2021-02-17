@@ -96,10 +96,10 @@ class PlaybooksBase:
         # get variable type from variable value
         variable_type = self.variable_type(key)
 
-        if variable_type == 'BinaryArray':
-            if validate and not isinstance(value, list):
-                raise RuntimeError('Invalid data provided for BinaryArray.')
+        if validate and not iter(value) == value:
+            raise RuntimeError(f'Invalid data provided for {variable_type}.')
 
+        if variable_type == 'BinaryArray':
             value_encoded = []
             for v in value:
                 if v is not None:
@@ -111,12 +111,9 @@ class PlaybooksBase:
                 value_encoded.append(v)
             value = value_encoded
         elif variable_type == 'KeyValueArray':
-            if validate and (not isinstance(value, list) or not self._is_key_value_array(value)):
+            if validate and not self._is_key_value_array(value):
                 raise RuntimeError('Invalid data provided for KeyValueArray.')
         elif variable_type == 'StringArray':
-            if validate and not isinstance(value, list):
-                raise RuntimeError('Invalid data provided for StringArray.')
-
             value_coerced = []
             for v in value:
                 # coerce string values
@@ -127,7 +124,7 @@ class PlaybooksBase:
                 value_coerced.append(v)
             value = value_coerced
         elif variable_type == 'TCEntityArray':
-            if validate and (not isinstance(value, list) or not self._is_tc_entity_array(value)):
+            if validate and not self._is_tc_entity_array(value):
                 raise RuntimeError('Invalid data provided for TcEntityArray.')
 
         # self.log.trace(f'pb create - context: {self._context}, key: {key}, value: {value}')
