@@ -4,6 +4,7 @@ import base64
 import json
 import re
 from collections import OrderedDict
+from collections.abc import Iterable
 
 
 class PlaybooksBase:
@@ -96,7 +97,7 @@ class PlaybooksBase:
         # get variable type from variable value
         variable_type = self.variable_type(key)
 
-        if validate and not iter(value) == value:
+        if validate and not isinstance(value, Iterable):
             raise RuntimeError(f'Invalid data provided for {variable_type}.')
 
         if variable_type == 'BinaryArray':
