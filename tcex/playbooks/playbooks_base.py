@@ -97,7 +97,7 @@ class PlaybooksBase:
         # get variable type from variable value
         variable_type = self.variable_type(key)
 
-        if validate and not isinstance(value, Iterable):
+        if validate and (not isinstance(value, Iterable) or isinstance(value, str)):
             raise RuntimeError(f'Invalid data provided for {variable_type}.')
 
         if variable_type == 'BinaryArray':
