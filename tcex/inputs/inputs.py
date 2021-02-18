@@ -349,7 +349,7 @@ class Inputs:
                 'MainThread', self._default_args.tc_token, self._default_args.tc_token_expires
             )
 
-    def resolved_args(self, parse=False):
+    def resolved_args(self, parse=False) -> Namespace:
         """Return namespace of args that have all playbook variables automatically resolved.
 
         .. Note:: Accessing resolved_args should only be done directly in the App.

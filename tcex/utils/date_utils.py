@@ -19,7 +19,7 @@ class DatetimeUtils:
     """TcEx framework Datetime Utils module"""
 
     @staticmethod
-    def _replace_timezone(dateutil_parser: object) -> object:
+    def _replace_timezone(dateutil_parser: object) -> datetime:
         """Replace the timezone on a datetime object.
 
         Args:

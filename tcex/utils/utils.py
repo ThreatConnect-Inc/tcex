@@ -58,12 +58,12 @@ class Utils:
         return self._camel_pattern.sub(' ', camel_string).lower()
 
     @property
-    def datetime(self) -> object:
+    def datetime(self) -> DatetimeUtils:
         """Return an instance of DatetimeUtils."""
         return DatetimeUtils()
 
     @property
-    def mitre_attack(self) -> object:
+    def mitre_attack(self) -> MitreAttackUtils:
         """Return an instance of MitreAttackUtils."""
         return MitreAttackUtils()
 
@@ -153,7 +153,7 @@ class Utils:
         return flat_list
 
     @property
-    def inflect(self) -> object:
+    def inflect(self) -> 'inflect.engine':
         """Return instance of inflect."""
         if self._inflect is None:
             # third-party

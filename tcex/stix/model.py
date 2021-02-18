@@ -428,7 +428,9 @@ class StixModel:
         for i in range(len(stix_data.get('values'))):
             mapper['Value Name'] = f'@.values[{i}].name'
             mapper['Value Type'] = f'@.values[{i}].data_type'
-            mapper.setdefault('attribute', []).append({'type': 'Value Data', 'value': f'@.values[{i}].data'})
+            mapper.setdefault('attribute', []).append(
+                {'type': 'Value Data', 'value': f'@.values[{i}].data'}
+            )
         return mapper
 
     def consume(

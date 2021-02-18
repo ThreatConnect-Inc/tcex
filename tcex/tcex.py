@@ -1,4 +1,5 @@
 """TcEx Framework"""
+
 # standard library
 import inspect
 import logging
@@ -8,7 +9,7 @@ import re
 import signal
 import sys
 import threading
-from typing import Optional
+from typing import Optional, Union
 from urllib.parse import quote
 
 from .app_config_object import InstallJson
@@ -104,7 +105,7 @@ class TcEx:
 
     def advanced_request(
         self, session: object, timeout: Optional[int] = 600, output_prefix: Optional[str] = None
-    ) -> object:
+    ) -> 'AdvancedRequest':  # noqa: F821
         """Return instance of AdvancedRequest.
 
         Args:
@@ -127,7 +128,7 @@ class TcEx:
                 self.exit(1, f'Exception during AOT exit push ({e}).')
 
     @property
-    def args(self) -> object:
+    def args(self) -> 'Namespace':  # noqa: F821
         """Argparser args Namespace."""
         return self.inputs.args()
 
@@ -138,7 +139,7 @@ class TcEx:
         attribute_write_type: Optional[str] = 'Replace',
         halt_on_error: Optional[bool] = False,
         playbook_triggers_enabled: Optional[bool] = False,
-    ) -> object:
+    ) -> 'Batch':  # noqa: F821
         """Return instance of Batch
 
         Args:
@@ -164,7 +165,7 @@ class TcEx:
         data_type: str,
         ttl_seconds: Optional[int] = None,
         mapping: Optional[dict] = None,
-    ) -> object:
+    ) -> 'Cache':  # noqa: F821
         """Get instance of the Cache module.
 
         Args:
@@ -184,7 +185,7 @@ class TcEx:
         return Cache(self, domain, data_type, ttl_seconds, mapping)
 
     @property
-    def case_management(self) -> object:
+    def case_management(self) -> 'CaseManagement':  # noqa: F821
         """Include the Threat Intel Module.
 
         .. Note:: Threat Intell methods can be accessed using ``tcex.ti.<method>``.
@@ -197,11 +198,13 @@ class TcEx:
         return CaseManagement(self)
 
     @property
-    def cm(self) -> object:
+    def cm(self) -> 'CaseManagement':  # noqa: F821
         """Include the Case Management Module."""
         return self.case_management
 
-    def datastore(self, domain: str, data_type: str, mapping: Optional[dict] = None) -> object:
+    def datastore(
+        self, domain: str, data_type: str, mapping: Optional[dict] = None
+    ) -> 'DataStore':  # noqa: F821
         """Get instance of the DataStore module.
 
         Args:
@@ -220,12 +223,12 @@ class TcEx:
         return DataStore(self, domain, data_type, mapping)
 
     @property
-    def default_args(self) -> object:
+    def default_args(self) -> 'Namespace':  # noqa: F821
         """Argparser args Namespace."""
         return self._default_args
 
     @property
-    def error_codes(self) -> object:
+    def error_codes(self) -> 'TcExErrorCodes':  # noqa: F821
         """Return TcEx error codes."""
         if self._error_codes is None:
             from .tcex_error_codes import TcExErrorCodes
@@ -460,7 +463,7 @@ class TcEx:
         return self._indicator_types_data
 
     @property
-    def key_value_store(self) -> object:
+    def key_value_store(self) -> Union['KeyValueRedis', 'KeyValueApi']:  # noqa: F821
         """Return the correct KV store for this execution.
 
         The TCKeyValueAPI KV store is limited to two operations (create and read),
@@ -484,7 +487,7 @@ class TcEx:
         return self._key_value_store
 
     @property
-    def log(self) -> object:
+    def log(self) -> 'TraceLogger':  # noqa: F821
         """Return a valid logger."""
         if self._log is None:
             self._log = self.logger.log
@@ -497,7 +500,7 @@ class TcEx:
             self._log = log
 
     @property
-    def logger(self) -> object:
+    def logger(self) -> Logger:
         """Return logger."""
         if self._logger is None:
             logger_name = self._config.get('tc_logger_name', 'tcex')
@@ -512,7 +515,7 @@ class TcEx:
         data_type: str,
         interval: str,
         keyed: Optional[bool] = False,
-    ) -> object:
+    ) -> 'Metrics':  # noqa: F821
         """Get instance of the Metrics module.
 
         Args:
@@ -558,7 +561,7 @@ class TcEx:
             # write last <max_length> characters to file
             mh.write(message[-max_length:])
 
-    def notification(self) -> object:
+    def notification(self) -> 'Notifications':  # noqa: F821
         """Get instance of the Notification module.
 
         Returns:
@@ -569,11 +572,11 @@ class TcEx:
         return Notifications(self)
 
     @property
-    def parser(self) -> object:
+    def parser(self) -> 'TcArgumentParser':  # noqa: F821
         """Instance tcex args parser."""
         return self.inputs.parser
 
-    def pb(self, context: str, output_variables: list) -> object:
+    def pb(self, context: str, output_variables: list) -> 'Playbooks':  # noqa: F821
         """Return a new instance of playbook module.
 
         Args:
@@ -588,7 +591,7 @@ class TcEx:
         return Playbooks(self, context, output_variables)
 
     @property
-    def playbook(self) -> object:
+    def playbook(self) -> 'Playbooks':  # noqa: F821
         """Return an instance of Playbooks module.
 
         This property defaults context and outputvariables to arg values.
@@ -603,7 +606,7 @@ class TcEx:
             outputs: list = self.default_args.tc_playbook_out_variables or []
             if isinstance(outputs, str):
                 outputs = outputs.split(',')
-            self._playbook: object = self.pb(self.default_args.tc_playbook_db_context, outputs)
+            self._playbook = self.pb(self.default_args.tc_playbook_db_context, outputs)
         return self._playbook
 
     @property
@@ -646,12 +649,12 @@ class TcEx:
         return proxies
 
     @property
-    def rargs(self) -> object:
+    def rargs(self) -> 'Namespace':  # noqa: F821
         """Return argparser args Namespace with Playbook args automatically resolved."""
         return self.inputs.resolved_args()
 
     @staticmethod
-    def rc(host, port, db=0, blocking=False, **kwargs) -> object:
+    def rc(host, port, db=0, blocking=False, **kwargs) -> 'RedisClient':  # noqa: F821
         """Return a *new* instance of Redis client.
 
         For a full list of kwargs see https://redis-py.readthedocs.io/en/latest/#redis.Connection.
@@ -675,7 +678,7 @@ class TcEx:
         return RedisClient(host=host, port=port, db=db, blocking=blocking, **kwargs).client
 
     @property
-    def redis_client(self) -> object:
+    def redis_client(self) -> 'RedisClient':  # noqa: F821
         """Return redis client instance configure for Playbook/Service Apps."""
         if self._redis_client is None:
             from .key_value_store import RedisClient
@@ -764,7 +767,7 @@ class TcEx:
     @staticmethod
     def safe_group_name(
         group_name: str, group_max_length: Optional[int] = 100, ellipsis: Optional[bool] = True
-    ):
+    ) -> str:
         """Truncate group name to match limit breaking on space and optionally add an ellipsis.
 
         .. note:: Currently the ThreatConnect group name limit is 100 characters.
@@ -823,7 +826,7 @@ class TcEx:
         return url
 
     @property
-    def service(self) -> object:
+    def service(self) -> 'CommonService':  # noqa: F821
         """Include the Service Module.
 
         .. Note:: Service methods can be accessed using ``tcex.service.<method>``.
@@ -842,7 +845,7 @@ class TcEx:
         return self._service
 
     @property
-    def session(self) -> object:
+    def session(self) -> 'TcSession':  # noqa: F821
         """Return an instance of Requests Session configured for the ThreatConnect API."""
         if self._session is None:
             from .sessions import TcSession
@@ -879,7 +882,7 @@ class TcEx:
         return self._session
 
     @property
-    def session_external(self) -> object:
+    def session_external(self) -> 'ExternalSession':  # noqa: F821
         """Return an instance of Requests Session configured for the ThreatConnect API."""
         if self._session_external is None:
             from .sessions import ExternalSession
@@ -904,7 +907,7 @@ class TcEx:
         return self._session_external
 
     @property
-    def stix_model(self) -> object:
+    def stix_model(self) -> 'StixModel':  # noqa: F821
         """Include the Threat Intel Module.
 
         .. Note:: Threat Intell methods can be accessed using ``tcex.ti.<method>``.
@@ -916,7 +919,7 @@ class TcEx:
         return self._stix_model
 
     @property
-    def ti(self) -> object:
+    def ti(self) -> 'ThreatIntelligence':  # noqa: F821
         """Include the Threat Intel Module.
 
         .. Note:: Threat Intell methods can be accessed using ``tcex.ti.<method>``.
@@ -928,7 +931,7 @@ class TcEx:
         return self._ti
 
     @property
-    def token(self) -> object:
+    def token(self) -> Tokens:
         """Return token object."""
         if self._token is None:
             sleep_interval = int(os.getenv('TC_TOKEN_SLEEP_INTERVAL', '30'))
@@ -938,7 +941,7 @@ class TcEx:
         return self._token
 
     @property
-    def utils(self) -> object:
+    def utils(self) -> 'Utils':  # noqa: F821
         """Include the Utils module.
 
         .. Note:: Utils methods can be accessed using ``tcex.utils.<method>``.
