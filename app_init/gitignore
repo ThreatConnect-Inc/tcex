@@ -40,6 +40,8 @@ temp
 .vscode
 *.iml
 nbproject
+*.swp
+*.vim
 
 #-------------------------------------------------
 # OS Exclusions
