@@ -42,6 +42,8 @@ docs/src/_templates
 .vs
 .vscode
 nbproject
+*.swp
+*.vim
 
 #-------------------------------------------------
 # Module Specific Exclusions
