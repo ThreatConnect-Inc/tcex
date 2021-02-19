@@ -367,6 +367,13 @@ class DownloadTemplates(TemplateBase):
         )
         self.download_file(f'{self.url}/{template}/run.py', destination='run.py', overwrite=True)
 
+        if template == 'service_api':
+            self.download_file(
+                f'{self.url}/{template}/api_service_app.py',
+                destination='api_service_app.py',
+                overwrite=True,
+            )
+
     def test_conftest_py(self):
         """Download the configtest.py file."""
         if not self.profile:
