@@ -3,6 +3,11 @@
 Release Notes
 #############
 
+2.0.19
+======
++ APP-2179 - [Service] Add support for Acknowledge commands.
++ APP-2180 - [Input] Updated resovled_args method to properly handle resolving arguments that come in as a list.
+
 2.0.18
 ======
 + APP-1829 - [Session] Added logic to use http instead of https for proxy.
