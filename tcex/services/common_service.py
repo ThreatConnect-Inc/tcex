@@ -72,6 +72,16 @@ class CommonService:
             thread_key='session_id',
         )
 
+    def process_acknowledged_command(
+        self, message: dict
+    ) -> None:  # pylint: disable=unused-argument
+        """Process the Acknowledge command.
+
+        Args:
+            message: The message payload from the server topic.
+        """
+        self.log.info(f'feature=service, event=acknowledge, message={message}')
+
     def add_metric(self, label: str, value: Union[int, str]) -> None:
         """Add a metric.
 
@@ -87,6 +97,7 @@ class CommonService:
     def command_map(self) -> dict:
         """Return the command map for the current Service type."""
         return {
+            'acknowledged': self.process_acknowledged_command,
             'heartbeat': self.process_heartbeat_command,
             'loggingchange': self.process_logging_change_command,
             'shutdown': self.process_shutdown_command,

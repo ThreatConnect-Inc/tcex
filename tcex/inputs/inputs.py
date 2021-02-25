@@ -365,11 +365,22 @@ class Inputs:
 
             # iterate over args and resolve any playbook variables
             for arg in vars(self._default_args):
+                # arg_val is a bool, str, or list provided by argparser
                 arg_val = getattr(self._default_args, arg)
+
+                # skip resolving reserved args
                 if arg not in self.tc_reserved_args:
-                    if isinstance(arg_val, (str)):
-                        arg_val = self.tcex.playbook.read(arg_val)
-                setattr(self._default_args_resolved, arg, arg_val)
+
+                    if isinstance(arg_val, str):
+                        # strings could be a variable, try to resolve the value
+                        setattr(self._default_args_resolved, arg, self.tcex.playbook.read(arg_val))
+                    elif isinstance(arg_val, list):
+                        # list could contain variables, try to resolve the value
+                        avl = []
+                        for av in arg_val:
+                            if isinstance(av, str):
+                                avl.append(self.tcex.playbook.read(av))
+                        setattr(self._default_args_resolved, arg, avl)
 
             # set parsed bool to ensure args are only parsed once
             self._parsed_resolved = True
