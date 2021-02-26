@@ -168,7 +168,7 @@ class ApiService(CommonService):
             # read body from redis
             body_variable: str = message.pop('bodyVariable', None)
             if body_variable is not None:
-                body: Any = self.key_value_store.read(request_key, body_variable)
+                body: Any = self.key_value_store.read(request_key, body_variable, decode=False)
                 if body is not None:
                     # for API service the data in Redis is not b64 encoded
                     body = BytesIO(body)

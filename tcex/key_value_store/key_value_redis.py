@@ -1,6 +1,6 @@
 """TcEx Framework Key Value Redis Module"""
 # standard library
-from typing import Any
+from typing import Any, Optional
 
 
 class KeyValueRedis:
@@ -50,18 +50,33 @@ class KeyValueRedis:
         """
         return self._redis_client.hgetall(context)
 
-    def read(self, context: str, key: str) -> Any:
+    def read(self, context: str, key: str, decode='utf-8') -> Any:
         """Read data from Redis for the provided key.
+
+        Args:
+            context: A specific context for the create.
+            key: The field name (key) for the kv pair in Redis.
+            decode: encoding to use to decode retrieved value or False to not decode value.
+
+        Returns:
+            str: The response data from Redis.
+        """
+        value = self.hget(context, key)
+        # convert retrieved bytes to string
+        if isinstance(value, bytes) and decode:
+            value = value.decode('utf-8')
+        return value
+
+    def hget(self, context: str, key: str) -> Optional[bytes]:
+        """Read data from redis for the provided key.
+
+        This method will *not* convert the retrieved data (like read() does).
 
         Args:
             context: A specific context for the create.
             key: The field name (key) for the kv pair in Redis.
 
         Returns:
-            str: The response data from Redis.
+            Optional[bytes]: the raw value from redis, if any
         """
-        value = self._redis_client.hget(context, key)
-        # convert retrieved bytes to string
-        if isinstance(value, bytes):
-            value = value.decode('utf-8')
-        return value
+        return self._redis_client.hget(context, key)
