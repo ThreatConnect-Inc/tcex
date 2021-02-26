@@ -536,10 +536,12 @@ class TestUtils:
         [
             (
                 '#App:0001:tee1!TCEnhancedEntityArray',
-                [
-                    {'id': '001', 'type': 'Address', 'summary': '1.1.1.1'},
-                    {'id': '002', 'type': 'Address', 'summary': '2.2.2.2'},
-                ],
+                {
+                    'indicator': [
+                        {'id': '001', 'type': 'Address', 'summary': '1.1.1.1'},
+                        {'id': '002', 'type': 'Address', 'summary': '2.2.2.2'},
+                    ]
+                },
             )
         ],
     )
@@ -618,7 +620,7 @@ class TestUtils:
             config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
         ).tcex
         # stage the data
-        tcex.playbook.create_tc_entity_array(variable, value.get('group'))
+        tcex.playbook.create_tc_entity_array(variable, value)
 
         result = tcex.playbook.read_group_values(variable)
         expected = [i.get('name') for i in value.get('group')]

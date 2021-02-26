@@ -98,10 +98,14 @@ class PlaybooksBase:
         # get variable type from variable value
         variable_type = self.variable_type(key)
 
-        if validate and (not isinstance(value, Iterable) or isinstance(value, (str, dict))):
-            raise RuntimeError(f'Invalid data provided for {variable_type}.')
+        # Enhanced entity array is the wild-wild west, don't validate it
+        if variable_type != 'TCEnhancedEntityArray':
+            if validate and (not isinstance(value, Iterable) or isinstance(value, (str, dict))):
+                raise RuntimeError(f'Invalid data provided for {variable_type}.')
 
-        value = [*value]  # spread the value so that we know it's a list (as opposed to an iterable)
+            value = [
+                *value
+            ]  # spread the value so that we know it's a list (as opposed to an iterable)
 
         if variable_type == 'BinaryArray':
             value_encoded = []
