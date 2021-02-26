@@ -82,6 +82,47 @@ class TestUtils:
     @pytest.mark.parametrize(
         'variable,value',
         [
+            ('#App:0003:sa5!StringArray', ('6', '6')),
+            ('#App:0003:sa6!StringArray', map(lambda a: a, ['6', '6'])),
+            ('#App:0003:sa6!StringArray', filter(lambda a: True, ['6', '6'])),
+        ],
+    )
+    def test_playbook_string_array_iterables(self, variable, value, tcex):
+        """Test the string array method of Playbook module With an iterable as input.
+
+        Args:
+            variable (str): The key/variable to create in Key Value Store.
+            value (str): The value to store in Key Value Store.
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+        """
+        tcex.playbook.create_string_array(variable, value)
+        result = tcex.playbook.read_string_array(variable)
+        assert result == ['6', '6'], f'result of ({result}) does not match ({list(value)})'
+
+        tcex.playbook.delete(variable)
+        assert tcex.playbook.read(variable) is None
+
+    @pytest.mark.parametrize(
+        'variable,value', [('#App:0003:sa5!StringArray', 'foobar')],
+    )
+    def test_playbook_string_array_string(self, variable, value, tcex):
+        """Test the string array method of Playbook module with string input (should fail)
+
+        Args:
+            variable (str): The key/variable to create in Key Value Store.
+            value (str): The value to store in Key Value Store.
+            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+        """
+        try:
+            tcex.playbook.create_string_array(variable, value)
+        except RuntimeError:
+            pass  # expected
+        else:
+            assert False, 'Should have failed.'
+
+    @pytest.mark.parametrize(
+        'variable,value',
+        [
             ('#App:0003:sa1!StringArray', ['1', []]),
             ('#App:0003:sa2!StringArray', ['2', {}]),
             ('#App:0003:sa3!StringArray', ['3', b'bytes']),

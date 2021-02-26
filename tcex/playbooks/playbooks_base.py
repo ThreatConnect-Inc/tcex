@@ -87,6 +87,7 @@ class PlaybooksBase:
             return self.tcex.key_value_store.create(self._context, key.strip(), value)
         except RuntimeError as e:
             self.log.error(e)
+        return None
 
     def _create_array(self, key, value, validate=True):
         """Create the value in Redis if applicable."""
@@ -97,8 +98,10 @@ class PlaybooksBase:
         # get variable type from variable value
         variable_type = self.variable_type(key)
 
-        if validate and (not isinstance(value, Iterable) or isinstance(value, str)):
+        if validate and (not isinstance(value, Iterable) or isinstance(value, (str, dict))):
             raise RuntimeError(f'Invalid data provided for {variable_type}.')
+
+        value = [*value]  # spread the value so that we know it's a list (as opposed to an iterable)
 
         if variable_type == 'BinaryArray':
             value_encoded = []
@@ -138,6 +141,7 @@ class PlaybooksBase:
             return self.tcex.key_value_store.create(self._context, key.strip(), value)
         except RuntimeError as e:
             self.log.error(e)
+        return None
 
     @staticmethod
     def _decode_binary(data):
