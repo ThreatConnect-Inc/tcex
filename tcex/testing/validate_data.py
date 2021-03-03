@@ -887,6 +887,12 @@ class Redis:
             app_data = self.provider.tcex.playbook.read_binary(variable, False, False)
         elif variable.endswith('BinaryArray'):
             app_data = self.provider.tcex.playbook.read_binary_array(variable, False, False)
+        elif variable.endswith('TCEnhancedEntity') or variable.endswith('TCEntity'):
+            app_data = self.provider.tcex.playbook.read(variable)
+            try:
+                app_data = json.loads(app_data)
+            except Exception:
+                self.log.warning(f'Could not convert {app_data} to json.')
         else:
             app_data = self.provider.tcex.playbook.read(variable)
 
