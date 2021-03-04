@@ -95,12 +95,12 @@ class ReadArg:
             from arg value.  Not valid if group_values, group_ids, or indicator_values is True.
         to_bool (bool, kwargs): Transform the arg value into a bool where 'true' (case-insensitive),
             '1' (str), and 1 (int or float) will become True and everything else will become False.
-            Accepts one parameter 'disallow_none' which, if True, will fail if the arg value is
+            Accepts one parameter 'allow_none' which, if True, will succeed if the arg value is
             none.
         to_float (bool, kwargs):  Transform the arg value into an float.  Accepts one
-            parameter 'disallow_none' which, if True, will fail if the arg value is none.
+            parameter 'allow_none' which, if True, will succeed if the arg value is none.
         to_int (bool, kwargs):  Transform the arg value into an int.  Accepts one
-            parameter 'disallow_none' which, if True, will fail if the arg value is none.
+            parameter 'allow_none' which, if True, will succeed if the arg value is none.
         validators (Union[List[Callable], Callable]): A callable or list of callables that will be
             invoked with the arg value and arg name and must raise a ValidationError if
             the arg is not valid.  Any return value will be ignored.  Validators will be invoked in
