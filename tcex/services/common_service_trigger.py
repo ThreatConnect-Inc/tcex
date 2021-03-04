@@ -266,6 +266,23 @@ class CommonServiceTrigger(CommonService):
         finally:
             self.logger.remove_handler_by_name(self.thread_name)
 
+    def log_config(self, trigger_id: str, config: dict) -> None:
+        """Log the config wile hiding encrypted values.
+
+        Args:
+            trigger_id: The current trigger Id.
+            config: The configuration to be logged.
+        """
+
+        logged_config = config.copy()
+
+        for param in self.ij.params:
+            if param.get('encrypt', False) and config.__contains__(param.get('name')):
+                logged_config[param.get('name')] = '***'
+        self.log.info(
+            f'feature=service, event=create-config, trigger_id={trigger_id}, config={logged_config}'
+        )
+
     def process_create_config_command(self, message: dict) -> None:
         """Process the CreateConfig command.
 
@@ -306,9 +323,8 @@ class CommonServiceTrigger(CommonService):
             thread_key='trigger_id',
         )
 
-        self.log.info(
-            f'feature=service, event=create-config, trigger_id={trigger_id}, config={config}'
-        )
+        # log the config
+        self.log_config(trigger_id, config)
 
         # register config apiToken
         self.token.register_token(trigger_id, message.get('apiToken'), message.get('expireSeconds'))
