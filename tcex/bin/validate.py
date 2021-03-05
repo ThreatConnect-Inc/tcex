@@ -138,6 +138,42 @@ class Validate(Bin):
                 }
             )
 
+    def check_feed_files(self):
+        """Validate feed files for feed job apps."""
+        package_name = f'{self.tj.package_app_name}_v{self.ij.program_version.split(".")[0]}'
+        package_name = package_name.replace('_', ' ')
+        if self.ij.runtime_level == 'Organization':
+            for i, feed in enumerate(self.ij.feeds):
+                job_file = feed.get('jobFile')
+                if not os.path.isfile(feed.get('jobFile')):
+                    self.validation_data['errors'].append(
+                        f'Feed validation failed '
+                        f'(Feed {i} references non-existent job-file {job_file})'
+                    )
+                else:
+                    try:
+                        job = json.load(open(job_file))
+
+                        if 'programName' not in job:
+                            self.validation_data['errors'].append(
+                                f'Feed file validation failed for {job_file} '
+                                f'({job_file} does not contain required field \'programNme\')'
+                            )
+                        else:
+                            job_program_name = job.get('programName')
+                            if job_program_name != package_name:
+                                self.validation_data['errors'].append(
+                                    f'Feed file validation failed for {job_file} '
+                                    f'(programName in file name does not match package name '
+                                    f'{package_name})'
+                                )
+
+                    except json.decoder.JSONDecodeError as j:
+                        self.validation_data['errors'].append(
+                            f'Feed file validation failed for {job_file} '
+                            f'({job_file} is not valid JSON: {j})'
+                        )
+
     @staticmethod
     def check_import_stdlib(module):
         """Check if module is in Python stdlib.

@@ -564,7 +564,7 @@ class InstallJson:
     @property
     def feeds(self):
         """Return property."""
-        return self.contents.get('feeds', {})
+        return self.contents.get('feeds', [])
 
     @property
     def labels(self):

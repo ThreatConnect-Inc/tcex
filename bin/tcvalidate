@@ -35,6 +35,7 @@ if __name__ == '__main__':
             tcv.check_imports()
             tcv.check_install_json()
             tcv.check_layout_json()
+            tcv.check_feed_files()
             tcv.print_results()
         sys.exit(tcv.exit_code)
     except Exception:
