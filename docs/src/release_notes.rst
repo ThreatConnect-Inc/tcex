@@ -3,6 +3,16 @@
 Release Notes
 #############
 
+2.0.19
+======
++ APP-2044 - [Testing] When generating test profiles with --negative, environments will be copied from base profile and "negative" appended.
++ APP-2128 - [Playbook] Accept any iterable for array types when creating outputs.
++ APP-2129 - [Playbook] Enhance add_output() to add None values to array types when append=True.
++ APP-2130 - Add foward-reference type hints.
++ APP-2140 - [tcinit] Add missing file for API Service template.
++ APP-2186 - [KeyValueStore] Add parameter to disable decoding of value read by read().
++ APP-2228 - [tcvalidate] Add several validations for feed job apps.
+
 2.0.18
 ======
 + APP-1829 - [Session] Added logic to use http instead of https for proxy.
