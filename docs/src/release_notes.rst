@@ -11,6 +11,7 @@ Release Notes
 + APP-2130 - Add foward-reference type hints.
 + APP-2140 - [tcinit] Add missing file for API Service template.
 + APP-2186 - [KeyValueStore] Add parameter to disable decoding of value read by read().
++ APP-2219 - [tctest] update tctest to allow user to re-enter choice inputs if they enter a bad value.
 + APP-2228 - [tcvalidate] Add several validations for feed job apps.
 
 2.0.18
