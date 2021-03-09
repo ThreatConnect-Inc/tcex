@@ -219,6 +219,14 @@ class TcEx:
 
         return DataStore(self, domain, data_type, mapping)
 
+    @staticmethod
+    def client(**kwargs) -> object:
+        """Return instance of Client."""
+        # TODO: finish this ...
+        from .client.client import _Client
+
+        return _Client(**kwargs)
+
     @property
     def default_args(self) -> object:
         """Argparser args Namespace."""
