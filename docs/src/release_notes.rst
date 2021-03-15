@@ -3,6 +3,19 @@
 Release Notes
 #############
 
+2.0.19
+======
++ APP-2044 - [Testing] When generating test profiles with --negative, environments will be copied from base profile and "negative" appended.
++ APP-2128 - [Playbook] Accept any iterable for array types when creating outputs.
++ APP-2129 - [Playbook] Enhance add_output() to add None values to array types when append=True.
++ APP-2130 - Add foward-reference type hints.
++ APP-2140 - [tcinit] Add missing file for API Service template.
++ APP-2186 - [KeyValueStore] Add parameter to disable decoding of value read by read().
++ APP-2219 - [tctest] update tctest to allow user to re-enter choice inputs if they enter a bad value.
++ APP-2228 - [tcvalidate] Add several validations for feed job apps.
++ APP-2179 - [Service] Add support for Acknowledge commands.
++ APP-2180 - [Input] Updated resovled_args method to properly handle resolving arguments that come in as a list.
+
 2.0.18
 ======
 + APP-1829 - [Session] Added logic to use http instead of https for proxy.

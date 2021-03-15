@@ -205,6 +205,67 @@ class TestUtils:
             tcex.playbook.delete(variable)
             assert tcex.playbook.read(variable) is None
 
+    @pytest.mark.parametrize(
+        'output_data',
+        [
+            (
+                [
+                    {
+                        'variable': '#App:0001:sa1!StringArray',
+                        'value': ['a', 'b', None, 'c'],
+                        'expected': ['a', 'b', None, 'c'],
+                        'append': True,
+                    },
+                    {
+                        'variable': '#App:0001:sa2!StringArray',
+                        'value': [['d', 'e'], None],
+                        'expected': ['d', 'e'],
+                        'append': False,
+                    },
+                ]
+            )
+        ],
+    )
+    def test_playbook_add_output_append_logic(self, output_data, playbook_app):
+        """Test the create output method of Playbook module.
+
+        Args:
+            variable (str): The key/variable to create in Key Value Store.
+            value (str): The value to store in Key Value Store.
+            playbook_app (callable, fixture): The playbook_app fixture.
+        """
+        tcex = playbook_app(
+            config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
+        ).tcex
+
+        # add all output
+        expected_data = {}
+        for od in output_data:
+            variable = od.get('variable')
+            value = od.get('value')
+
+            parsed_variable = tcex.playbook.parse_variable(variable)
+            variable_name = parsed_variable.get('name')
+            variable_type = parsed_variable.get('type')
+            for v in value:
+                tcex.playbook.add_output(
+                    variable_name, v, variable_type, append_array=od.get('append')
+                )
+
+            expected_data[variable] = od.get('expected')
+
+        # write output
+        tcex.playbook.write_output()
+
+        # validate output
+        for variable, value in expected_data.items():
+            result = tcex.playbook.read(variable)
+
+            assert result == value, f'result of ({result}) does not match ({value})'
+
+            tcex.playbook.delete(variable)
+            assert tcex.playbook.read(variable) is None
+
     def test_playbook_check_output_variable(self, playbook_app):
         """Test the create output method of Playbook module.
 

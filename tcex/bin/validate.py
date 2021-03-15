@@ -74,7 +74,41 @@ class Validate(Bin):
     @property
     def _validation_data(self):
         """Return structure for validation data."""
-        return {'errors': [], 'fileSyntax': [], 'layouts': [], 'moduleImports': [], 'schema': []}
+        return {
+            'errors': [],
+            'fileSyntax': [],
+            'layouts': [],
+            'moduleImports': [],
+            'schema': [],
+            'feeds': [],
+        }
+
+    def _check_node_import(self, node, filename):
+        if isinstance(node, ast.Import):
+            for n in node.names:
+                m = n.name.split('.')[0]
+                if not self.check_import_stdlib(m):
+                    m_status = self.check_imported(m)
+                    if not m_status:
+                        self.validation_data['errors'].append(
+                            f"""Module validation failed for {filename} """
+                            f"""(module "{m}" could not be imported)."""
+                        )
+                    self.validation_data['moduleImports'].append(
+                        {'filename': filename, 'module': m, 'status': m_status}
+                    )
+        elif isinstance(node, ast.ImportFrom):
+            m = node.module.split('.')[0]
+            if not self.check_import_stdlib(m):
+                m_status = self.check_imported(m)
+                if not m_status:
+                    self.validation_data['errors'].append(
+                        f"""Module validation failed for {filename} """
+                        f"""(module "{m}" could not be imported)."""
+                    )
+                self.validation_data['moduleImports'].append(
+                    {'filename': filename, 'module': m, 'status': m_status}
+                )
 
     def check_imports(self):
         """Check the projects top level directory for missing imports.
@@ -82,7 +116,6 @@ class Validate(Bin):
         This method will check only files ending in **.py** and does not handle imports validation
         for sub-directories.
         """
-        modules = []
         for filename in sorted(os.listdir(self.app_path)):
             if not filename.endswith('.py'):
                 continue
@@ -93,50 +126,67 @@ class Validate(Bin):
                 code_lines = deque([(f.read(), 1)])
 
                 while code_lines:
-                    m_status = True
                     code, lineno = code_lines.popleft()  # pylint: disable=unused-variable
                     try:
                         parsed_code = ast.parse(code)
                         for node in ast.walk(parsed_code):
-                            if isinstance(node, ast.Import):
-                                for n in node.names:
-                                    m = n.name.split('.')[0]
-                                    if self.check_import_stdlib(m):
-                                        # stdlib module, not need to proceed
-                                        continue
-                                    m_status = self.check_imported(m)
-                                    modules.append(
-                                        {'file': filename, 'module': m, 'status': m_status}
-                                    )
-                            elif isinstance(node, ast.ImportFrom):
-                                m = node.module.split('.')[0]
-                                if self.check_import_stdlib(m):
-                                    # stdlib module, not need to proceed
-                                    continue
-                                m_status = self.check_imported(m)
-                                modules.append({'file': filename, 'module': m, 'status': m_status})
-                            else:
-                                continue
+                            self._check_node_import(node, filename)
                     except SyntaxError:
                         pass
 
-        for module_data in modules:
-            status = True
-            if not module_data.get('status'):
-                status = False
-                # update validation data errors
-                self.validation_data['errors'].append(
-                    f"""Module validation failed for {module_data.get('file')} """
-                    f"""(module "{module_data.get('module')}" could not be imported)."""
-                )
-            # update validation data for module
-            self.validation_data['moduleImports'].append(
-                {
-                    'filename': module_data.get('file'),
-                    'module': module_data.get('module'),
-                    'status': status,
-                }
-            )
+    def check_feed_files(self):
+        """Validate feed files for feed job apps."""
+        package_name = f'{self.tj.package_app_name}_v{self.ij.program_version.split(".")[0]}'
+        package_name = package_name.replace('_', ' ')
+        if self.ij.runtime_level == 'Organization':
+
+            for i, feed in enumerate(self.ij.feeds):
+                passed = True
+                feed_name = f'(feeds[{i}]) {feed.get("sourceName")}'
+                job_file = feed.get('jobFile')
+                if not os.path.isfile(feed.get('jobFile')):
+                    self.validation_data['errors'].append(
+                        f'Feed validation failed '
+                        f'(Feed {i} references non-existent job-file {job_file})'
+                    )
+                    passed = False
+                else:
+                    try:
+                        job = json.load(open(job_file))
+
+                        if 'programName' not in job:
+                            self.validation_data['errors'].append(
+                                f'Feed file validation failed for {job_file} '
+                                f'({job_file} does not contain required field \'programNme\')'
+                            )
+                            passed = False
+
+                        else:
+                            job_program_name = job.get('programName')
+                            if job_program_name != package_name:
+                                self.validation_data['errors'].append(
+                                    f'Feed file validation failed for {job_file} '
+                                    f'(programName in file name does not match package name '
+                                    f'{package_name})'
+                                )
+                                passed = False
+
+                    except json.decoder.JSONDecodeError as j:
+                        self.validation_data['errors'].append(
+                            f'Feed file validation failed for {job_file} '
+                            f'({job_file} is not valid JSON: {j})'
+                        )
+                        passed = False
+
+                if feed.get('attributesFile') and not os.path.isfile(feed.get('attributesFile')):
+                    self.validation_data['errors'].append(
+                        f'Feed validation failed '
+                        f'(Feed {i} references non-existent attributes file '
+                        f'{feed.get("attributesFile")})'
+                    )
+                    passed = False
+
+                self.validation_data['feeds'].append({'name': feed_name, 'status': passed})
 
     @staticmethod
     def check_import_stdlib(module):
@@ -438,6 +488,7 @@ class Validate(Bin):
                 self.check_imports()
                 self.check_install_json()
                 self.check_layout_json()
+                self.check_feed_files()
                 self.print_json()
 
             # reset validation_data
@@ -456,9 +507,7 @@ class Validate(Bin):
         """Print JSON output."""
         print(json.dumps({'validation_data': self.validation_data}))
 
-    def print_results(self):
-        """Print results."""
-        # Validating Syntax
+    def _print_file_syntax_results(self):
         if self.validation_data.get('fileSyntax'):
             print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Validated File Syntax:')
             print(f"{c.Style.BRIGHT}{'File:'!s:<60}{'Status:'!s:<25}")
@@ -467,7 +516,7 @@ class Validate(Bin):
                 status_value = self.status_value(f.get('status'))
                 print(f"{f.get('filename')!s:<60}{status_color}{status_value!s:<25}")
 
-        # Validating Imports
+    def _print_imports_results(self):
         if self.validation_data.get('moduleImports'):
             print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Validated Imports:')
             print(f"{c.Style.BRIGHT}{'File:'!s:<30}{'Module:'!s:<30}{'Status:'!s:<25}")
@@ -479,7 +528,7 @@ class Validate(Bin):
                     f"{f.get('module')!s:<30}{status_color}{status_value!s:<25}"
                 )
 
-        # Validating Schema
+    def _print_schema_results(self):
         if self.validation_data.get('schema'):
             print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Validated Schema:')
             print(f"{c.Style.BRIGHT}{'File:'!s:<60}{'Status:'!s:<25}")
@@ -488,7 +537,7 @@ class Validate(Bin):
                 status_value = self.status_value(f.get('status'))
                 print(f"{f.get('filename')!s:<60}{status_color}{status_value!s:<25}")
 
-        # Validating Layouts
+    def _print_layouts_results(self):
         if self.validation_data.get('layouts'):
             print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Validated Layouts:')
             print(f"{c.Style.BRIGHT}{'Params:'!s:<60}{'Status:'!s:<25}")
@@ -497,6 +546,16 @@ class Validate(Bin):
                 status_value = self.status_value(f.get('status'))
                 print(f"{f.get('params')!s:<60}{status_color}{status_value!s:<25}")
 
+    def _print_feed_results(self):
+        if self.validation_data.get('feeds'):
+            print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Validated Feed Jobs:')
+            print(f"{c.Style.BRIGHT}{'Feeds:'!s:<60}{'Status:'!s:<25}")
+            for f in self.validation_data.get('feeds'):
+                status_color = self.status_color(f.get('status'))
+                status_value = self.status_value(f.get('status'))
+                print(f"{f.get('name')!s:<60}{status_color}{status_value!s:<25}")
+
+    def _print_errors(self):
         if self.validation_data.get('errors'):
             print('\n')  # separate errors from normal output
         for error in self.validation_data.get('errors'):
@@ -507,18 +566,31 @@ class Validate(Bin):
             if not self.args.ignore_validation:
                 self.exit_code = 1
 
+    def print_results(self):
+        """Print results."""
+        # Validating Syntax
+        self._print_file_syntax_results()
+
+        # Validating Imports
+        self._print_imports_results()
+
+        # Validating Schema
+        self._print_schema_results()
+
+        # Validating Layouts
+        self._print_layouts_results()
+
+        # Validating Feed Job Definition Files
+        self._print_feed_results()
+
+        self._print_errors()
+
     @staticmethod
     def status_color(status):
         """Return the appropriate status color."""
-        status_color = c.Fore.GREEN
-        if not status:
-            status_color = c.Fore.RED
-        return status_color
+        return c.Fore.GREEN if status else c.Fore.RED
 
     @staticmethod
     def status_value(status):
         """Return the appropriate status color."""
-        status_value = 'passed'
-        if not status:
-            status_value = 'failed'
-        return status_value
+        return 'passed' if status else 'failed'

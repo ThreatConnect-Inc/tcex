@@ -770,7 +770,7 @@ class Interactive:
             except ValueError:
                 # if "magic" variable (e.g., ${GROUP_TYPES}) was not expanded then use index 0.
                 # there is no way to tell if the default value is be part of the expansion.
-                if any([re.match(r'^\${.*}$', v) for v in valid_values]):
+                if any(re.match(r'^\${.*}$', v) for v in valid_values):
                     option_index = 0
                 else:
                     print(
@@ -845,16 +845,18 @@ class Interactive:
                 rd = ''
             print(f'{ld:40} {rd:40}')
 
-        index = self._input_value('Type', '[0]') or 0
+        data_type = None
+        while not data_type:
+            index = self._input_value('Type', '[0]') or 0
 
-        try:
-            data_type = data_types[int(index)]
-        except (IndexError, TypeError, ValueError):
-            print(
-                f'{c.Fore.RED}Invalid index of {index} provided. '
-                f'Please provide a integer between 0-{len(data_types) - 1}'
-            )
-            sys.exit(1)
+            try:
+                data_type = data_types[int(index)]
+            except (IndexError, TypeError, ValueError):
+                print(
+                    f'{c.Fore.RED}Invalid index of {index} provided. '
+                    f'Please provide a integer between 0-{len(data_types) - 1}'
+                )
+                sys.exit(1)
 
         return data_type
 
@@ -939,7 +941,7 @@ class Interactive:
                 except ValueError:
                     # if "magic" variable (e.g., ${GROUP_TYPES}) was not expanded then skip value.
                     # there is no way to tell if the default value is be part of the expansion.
-                    if any([re.match(r'^\${.*}$', v) for v in valid_values]):
+                    if any(re.match(r'^\${.*}$', v) for v in valid_values):
                         continue
 
                     print(
