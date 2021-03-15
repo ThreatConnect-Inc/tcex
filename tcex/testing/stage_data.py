@@ -193,7 +193,15 @@ class ThreatConnect:
                 ]:
                     continue
                 cm.id = data.get('id')
-                cm.delete()
+                try:
+                    cm.delete()
+                except RuntimeError as e:
+                    if len(e.args) == 2 and e.args[0] == 952 and 'api status code: 404' in e.args[1].lower():
+                        self.provider.tcex.logger.log.warning(
+                            f'Staged Indicator: {data} was not found and could not be deleted.'
+                        )
+                    else:
+                        raise e
 
     def clear(self, owner):
         """Delete and recreate the owner"""
