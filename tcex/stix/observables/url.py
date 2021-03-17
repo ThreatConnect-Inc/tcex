@@ -6,7 +6,7 @@ from typing import Union
 from stix2 import URL
 
 # first-party
-from tcex.stix.model import StixModel
+from tcex.stix.model import StixModel  # pylint: disable=cyclic-import
 
 
 class StixURLObject(StixModel):

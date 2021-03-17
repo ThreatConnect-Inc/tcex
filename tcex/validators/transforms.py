@@ -101,6 +101,6 @@ def to_bool():
         if not isinstance(value, list):
             return Utils.to_bool(value)
 
-        return list([Utils.to_bool(v) for v in value])
+        return list([Utils.to_bool(v) for v in value])  # pylint: disable=consider-using-generator
 
     return _validator

@@ -237,6 +237,7 @@ class Profile:
                 return json.load(fh, object_pairs_hook=OrderedDict)
         except (OSError, ValueError):
             print(f'{c.Fore.RED}Could not open/read profile {self.filename}.')
+            return None
 
     @property
     def context_tracker(self):
