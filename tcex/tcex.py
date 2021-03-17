@@ -159,6 +159,51 @@ class TcEx:
             self, owner, action, attribute_write_type, halt_on_error, playbook_triggers_enabled
         )
 
+    def batch_submit(
+        self,
+        owner: str,
+        action: Optional[str] = 'Create',
+        attribute_write_type: Optional[str] = 'Replace',
+        halt_on_error: Optional[bool] = False,
+        playbook_triggers_enabled: Optional[bool] = False,
+    ) -> 'BatchSubmit':  # noqa: F821
+        """Return instance of Batch
+
+        Args:
+            tcex: An instance of TcEx object.
+            owner: The ThreatConnect owner for Batch action.
+            action: Action for the batch job ['Create', 'Delete'].
+            attribute_write_type: Write type for TI attributes ['Append', 'Replace'].
+            halt_on_error: If True any batch error will halt the batch job.
+            playbook_triggers_enabled: Deprecated input, will not be used.
+
+        Returns:
+            object: An instance of the Batch Class.
+        """
+        from .batch.batch_submit import BatchSubmit
+
+        return BatchSubmit(
+            self, owner, action, attribute_write_type, halt_on_error, playbook_triggers_enabled
+        )
+
+    def batch_writer(self, batch_output_dir: str) -> 'BatchWriter':  # noqa: F821
+        """Return instance of Batch
+
+        Args:
+            tcex: An instance of TcEx object.
+            owner: The ThreatConnect owner for Batch action.
+            action: Action for the batch job ['Create', 'Delete'].
+            attribute_write_type: Write type for TI attributes ['Append', 'Replace'].
+            halt_on_error: If True any batch error will halt the batch job.
+            playbook_triggers_enabled: Deprecated input, will not be used.
+
+        Returns:
+            object: An instance of the Batch Class.
+        """
+        from .batch.batch_writer import BatchWriter
+
+        return BatchWriter(self, batch_output_dir)
+
     def cache(
         self,
         domain: str,

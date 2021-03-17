@@ -67,7 +67,7 @@ class Batch:
             action: Action for the batch job ['Create', 'Delete'].
             attribute_write_type: Write type for Indicator attributes ['Append', 'Replace'].
             halt_on_error: If True any batch error will halt the batch job.
-            playbook_triggers_enabled: **DEPRECATED**
+            playbook_triggers_enabled: Enables firing of playbooks.
         """
         self.tcex = tcex
         self._action = action
@@ -841,9 +841,9 @@ class Batch:
                 for error_msg in self._critical_failures:
                     if re.findall(error_msg, error_reason):
                         self.tcex.handle_error(10500, [error_reason], halt_on_error)
-            return errors
         except Exception as e:
             self.tcex.handle_error(560, [e], halt_on_error)
+        return errors
 
     def event(self, name: str, **kwargs) -> Event:
         """Add Event data to Batch object.
