@@ -15,6 +15,7 @@ Release Notes
 + APP-2228 - [tcvalidate] Add several validations for feed job apps.
 + APP-2179 - [Service] Add support for Acknowledge commands.
 + APP-2180 - [Input] Updated resovled_args method to properly handle resolving arguments that come in as a list.
++ APP-1940 - [Profile] Updated merge_inputs method to resolve playbook variables for permutation check.
 
 2.0.18
 ======

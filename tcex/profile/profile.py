@@ -314,6 +314,7 @@ class Profile:
         # handle non-layout and layout based App appropriately
         for profile_inputs, params in self.profile_inputs_params:
             profile_inputs_flattened = self._flatten_inputs(profile_inputs)
+            profile_inputs_flattened_rargs = self.rargs(profile_inputs)
 
             inputs = {}
             merged_inputs = {
@@ -349,7 +350,7 @@ class Profile:
                         value = False
 
                 # update inputs for next permutation check
-                inputs[name] = value
+                inputs[name] = profile_inputs_flattened_rargs.get(name)
 
                 # store merged/updated inputs for writing back to profile
                 merged_inputs[input_type][name] = value
@@ -812,12 +813,11 @@ class Profile:
         """Return outputs dict."""
         return self.data.get('outputs')
 
-    @property
-    def rargs(self):
+    def rargs(self, profile_inputs: dict) -> dict:
         """Return combined/flattened args with value from staging data if required."""
         rargs = {}
-        for arg, value in self.args.items():
-            if re.match(self.utils.variable_match, value):
+        for arg, value in self._flatten_inputs(profile_inputs).items():
+            if isinstance(value, str) and re.match(self.utils.variable_match, value):
                 # look for value in staging data
                 if self.stage_kvstore.get(value) is not None:
                     value = self.stage_kvstore.get(value)
