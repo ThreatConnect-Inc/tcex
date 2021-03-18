@@ -314,7 +314,7 @@ class Profile:
         # handle non-layout and layout based App appropriately
         for profile_inputs, params in self.profile_inputs_params:
             profile_inputs_flattened = self._flatten_inputs(profile_inputs)
-            profile_inputs_flattened_rargs = self.rargs(profile_inputs)
+            profile_inputs_flattened_resolved = self.resolve_from_staging(profile_inputs)
 
             inputs = {}
             merged_inputs = {
@@ -350,7 +350,7 @@ class Profile:
                         value = False
 
                 # update inputs for next permutation check
-                inputs[name] = profile_inputs_flattened_rargs.get(name)
+                inputs[name] = profile_inputs_flattened_resolved.get(name)
 
                 # store merged/updated inputs for writing back to profile
                 merged_inputs[input_type][name] = value
@@ -813,7 +813,7 @@ class Profile:
         """Return outputs dict."""
         return self.data.get('outputs')
 
-    def rargs(self, profile_inputs: dict) -> dict:
+    def resolve_from_staging(self, profile_inputs: dict) -> dict:
         """Return combined/flattened args with value from staging data if required."""
         rargs = {}
         for arg, value in self._flatten_inputs(profile_inputs).items():

@@ -167,14 +167,14 @@ class TestToken:
 
         tcex.token.unregister_token(token_key)
 
-    def token_thread_fail(self, tcex, key):
+    def token_thread_fail(self, tcex, key):  # pylint: disable=W0613, R0201
         """Run thread test for expected fail test.
 
         Args:
             tcex (TcEx): An instantiated instance of TcEx object.
             key (str): The thread key.
         """
-        tcex.token.register_thread(key, self.thread_name)
+        # tcex.token.register_thread(key, self.thread_name)
 
         # sleep until token renewal
         time.sleep(tcex.token.sleep_interval + 1)
@@ -183,9 +183,11 @@ class TestToken:
         if r.ok:
             assert False, 'API request passed on a fail test.'
 
-        tcex.token.unregister_thread(key, self.thread_name)
+        # tcex.token.unregister_thread(key, self.thread_name)
 
-    def token_thread_pass(self, tcex, key, sleep=True, register_thread=True, old_token=None):
+    def token_thread_pass(  # pylint: disable=W0613, R0201
+        self, tcex, key, sleep=True, register_thread=True, old_token=None
+    ):
         """Run thread test for expected pass test.
 
         Args:  # coverage
@@ -195,8 +197,8 @@ class TestToken:
             register_thread (bool, optional): If true register the thread. Defaults to True.
             old_token (str, optional): The generated token before renewal. Defaults to None.
         """
-        if register_thread:
-            tcex.token.register_thread(key, self.thread_name)
+        # if register_thread:
+        #     tcex.token.register_thread(key, self.thread_name)
 
         # sleep until renewal
         if sleep:
@@ -209,5 +211,5 @@ class TestToken:
         if old_token:
             assert old_token != tcex.token.token
 
-        if register_thread:
-            tcex.token.unregister_thread(key, self.thread_name)
+        # if register_thread:
+        #     tcex.token.unregister_thread(key, self.thread_name)
