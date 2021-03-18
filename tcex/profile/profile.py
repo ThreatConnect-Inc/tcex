@@ -349,8 +349,10 @@ class Profile:
                     if not isinstance(value, bool):
                         value = False
 
-                # update inputs for next permutation check
-                inputs[name] = profile_inputs_flattened_resolved.get(name)
+                # inputs with PBT can't be using in display clause
+                if not data.get('playbookDataType'):
+                    # update inputs using resolved inputs for next permutation check
+                    inputs[name] = profile_inputs_flattened_resolved.get(name)
 
                 # store merged/updated inputs for writing back to profile
                 merged_inputs[input_type][name] = value
