@@ -72,7 +72,7 @@ repos:
     rev: v0.1
     hooks:
       - id: xenon
-        args: ["--max-average=A"]
+        args: ["--max-average=A", "-e=tests*"]
   - repo: local
     hooks:
       - id: pylint
