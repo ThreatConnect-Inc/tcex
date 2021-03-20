@@ -3,17 +3,20 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>tcex.tcex &mdash; TcEx 2.0.15 documentation</title>
+  <title>tcex.tcex &mdash; TcEx 2.0.19 documentation</title>
 
 
 
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+
+
+
 
 
 
@@ -30,7 +33,6 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
 
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -50,7 +52,7 @@
 
 
 
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> TcEx
+            <a href="../../index.html" class="icon icon-home"> TcEx
 
 
 
@@ -60,7 +62,7 @@
 
 
               <div class="version">
-                2.0.15
+                2.0.19
               </div>
 
 
@@ -156,6 +158,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -181,6 +185,7 @@
 
   <h1>Source code for tcex.tcex</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;TcEx Framework&quot;&quot;&quot;</span>
+
 <span class="c1"># standard library</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -190,7 +195,7 @@
 <span class="kn">import</span> <span class="nn">signal</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">threading</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">quote</span>
 
 <span class="kn">from</span> <span class="nn">.app_config_object</span> <span class="kn">import</span> <span class="n">InstallJson</span>
@@ -284,7 +289,9 @@
         <span class="k">if</span> <span class="n">signal_interupt</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">15</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;The App received an interrupt signal and will now exit.&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TcEx.advanced_request"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.advanced_request">[docs]</a>    <span class="k">def</span> <span class="nf">advanced_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">600</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+<div class="viewcode-block" id="TcEx.advanced_request"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.advanced_request">[docs]</a>    <span class="k">def</span> <span class="nf">advanced_request</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">600</span><span class="p">,</span> <span class="n">output_prefix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;AdvancedRequest&#39;</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
         <span class="sd">&quot;&quot;&quot;Return instance of AdvancedRequest.</span>
 
 <span class="sd">        Args:</span>
@@ -296,7 +303,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.app_feature</span> <span class="kn">import</span> <span class="n">AdvancedRequest</span>
 
-        <span class="k">return</span> <span class="n">AdvancedRequest</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">AdvancedRequest</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">output_prefix</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcEx.aot_rpush"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.aot_rpush">[docs]</a>    <span class="k">def</span> <span class="nf">aot_rpush</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exit_code</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Push message to AOT action channel.&quot;&quot;&quot;</span>
@@ -307,7 +314,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Exception during AOT exit push (</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Namespace&#39;</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
         <span class="sd">&quot;&quot;&quot;Argparser args Namespace.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">args</span><span class="p">()</span>
 
@@ -318,7 +325,7 @@
         <span class="n">attribute_write_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Replace&#39;</span><span class="p">,</span>
         <span class="n">halt_on_error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">playbook_triggers_enabled</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Batch&#39;</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
         <span class="sd">&quot;&quot;&quot;Return instance of Batch</span>
 
 <span class="sd">        Args:</span>
@@ -344,7 +351,7 @@
         <span class="n">data_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">ttl_seconds</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">mapping</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Cache&#39;</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
         <span class="sd">&quot;&quot;&quot;Get instance of the Cache module.</span>
 
 <span class="sd">        Args:</span>
@@ -364,7 +371,7 @@
         <span class="k">return</span> <span class="n">Cache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">ttl_seconds</span><span class="p">,</span> <span class="n">mapping</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">case_management</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">case_management</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;CaseManagement&#39;</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
         <span class="sd">&quot;&quot;&quot;Include the Threat Intel Module.</span>
 
 <span class="sd">        .. Note:: Threat Intell methods can be accessed using ``tcex.ti.&lt;method&gt;``.</span>
@@ -377,11 +384,13 @@
         <span class="k">return</span> <span class="n">CaseManagement</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">cm</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">cm</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;CaseManagement&#39;</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
         <span class="sd">&quot;&quot;&quot;Include the Case Management Module.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">case_management</span>
 
-<div class="viewcode-block" id="TcEx.datastore"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.datastore">[docs]</a>    <span class="k">def</span> <span class="nf">datastore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mapping</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+<div class="viewcode-block" id="TcEx.datastore"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.datastore">[docs]</a>    <span class="k">def</span> <span class="nf">datastore</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mapping</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;DataStore&#39;</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
         <span class="sd">&quot;&quot;&quot;Get instance of the DataStore module.</span>
 
 <span class="sd">        Args:</span>
@@ -400,12 +409,12 @@
         <span class="k">return</span> <span class="n">DataStore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">mapping</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">default_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">default_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Namespace&#39;</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
         <span class="sd">&quot;&quot;&quot;Argparser args Namespace.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">error_codes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">error_codes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;TcExErrorCodes&#39;</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
         <span class="sd">&quot;&quot;&quot;Return TcEx error codes.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_codes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.tcex_error_codes</span> <span class="kn">import</span> <span class="n">TcExErrorCodes</span>
@@ -640,7 +649,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_types_data</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">key_value_store</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">key_value_store</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;KeyValueRedis&#39;</span><span class="p">,</span> <span class="s1">&#39;KeyValueApi&#39;</span><span class="p">]:</span>  <span class="c1"># noqa: F821</span>
         <span class="sd">&quot;&quot;&quot;Return the correct KV store for this execution.</span>
 
 <span class="sd">        The TCKeyValueAPI KV store is limited to two operations (create and read),</span>
@@ -664,7 +673,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_value_store</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;TraceLogger&#39;</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
         <span class="sd">&quot;&quot;&quot;Return a valid logger.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log</span>
@@ -677,7 +686,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">log</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">logger</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">logger</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Logger</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return logger.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">logger_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tc_logger_name&#39;</span><span class="p">,</span> <span class="s1">&#39;tcex&#39;</span><span class="p">)</span>
@@ -692,7 +701,7 @@
         <span class="n">data_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">interval</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">keyed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Metrics&#39;</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
         <span class="sd">&quot;&quot;&quot;Get instance of the Metrics module.</span>
 
 <span class="sd">        Args:</span>
@@ -738,7 +747,7 @@
             <span class="c1"># write last &lt;max_length&gt; characters to file</span>
             <span class="n">mh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="o">-</span><span class="n">max_length</span><span class="p">:])</span></div>
 
-<div class="viewcode-block" id="TcEx.notification"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.notification">[docs]</a>    <span class="k">def</span> <span class="nf">notification</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+<div class="viewcode-block" id="TcEx.notification"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.notification">[docs]</a>    <span class="k">def</span> <span class="nf">notification</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Notifications&#39;</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
         <span class="sd">&quot;&quot;&quot;Get instance of the Notification module.</span>
 
 <span class="sd">        Returns:</span>
@@ -749,11 +758,11 @@
         <span class="k">return</span> <span class="n">Notifications</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">parser</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">parser</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;TcArgumentParser&#39;</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
         <span class="sd">&quot;&quot;&quot;Instance tcex args parser.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">parser</span>
 
-<div class="viewcode-block" id="TcEx.pb"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.pb">[docs]</a>    <span class="k">def</span> <span class="nf">pb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output_variables</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+<div class="viewcode-block" id="TcEx.pb"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.pb">[docs]</a>    <span class="k">def</span> <span class="nf">pb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output_variables</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Playbooks&#39;</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
         <span class="sd">&quot;&quot;&quot;Return a new instance of playbook module.</span>
 
 <span class="sd">        Args:</span>
@@ -768,7 +777,7 @@
         <span class="k">return</span> <span class="n">Playbooks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_variables</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">playbook</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">playbook</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Playbooks&#39;</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
         <span class="sd">&quot;&quot;&quot;Return an instance of Playbooks module.</span>
 
 <span class="sd">        This property defaults context and outputvariables to arg values.</span>
@@ -783,7 +792,7 @@
             <span class="n">outputs</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_playbook_out_variables</span> <span class="ow">or</span> <span class="p">[]</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                 <span class="n">outputs</span> <span class="o">=</span> <span class="n">outputs</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_playbook</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pb</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_playbook_db_context</span><span class="p">,</span> <span class="n">outputs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_playbook</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pb</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_playbook_db_context</span><span class="p">,</span> <span class="n">outputs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_playbook</span>
 
     <span class="nd">@property</span>
@@ -822,16 +831,16 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># proxy url without auth</span>
                 <span class="n">proxy_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="n">proxies</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;http&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;http://</span><span class="si">{</span><span class="n">proxy_url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;https&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;https://</span><span class="si">{</span><span class="n">proxy_url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">}</span>
+            <span class="n">proxies</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;http&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;http://</span><span class="si">{</span><span class="n">proxy_url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;https&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;http://</span><span class="si">{</span><span class="n">proxy_url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">}</span>
         <span class="k">return</span> <span class="n">proxies</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">rargs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">rargs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Namespace&#39;</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
         <span class="sd">&quot;&quot;&quot;Return argparser args Namespace with Playbook args automatically resolved.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">resolved_args</span><span class="p">()</span>
 
 <div class="viewcode-block" id="TcEx.rc"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.rc">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">rc</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">blocking</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">rc</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">blocking</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;RedisClient&#39;</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
         <span class="sd">&quot;&quot;&quot;Return a *new* instance of Redis client.</span>
 
 <span class="sd">        For a full list of kwargs see https://redis-py.readthedocs.io/en/latest/#redis.Connection.</span>
@@ -855,7 +864,7 @@
         <span class="k">return</span> <span class="n">RedisClient</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span> <span class="n">blocking</span><span class="o">=</span><span class="n">blocking</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">client</span></div>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">redis_client</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">redis_client</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;RedisClient&#39;</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
         <span class="sd">&quot;&quot;&quot;Return redis client instance configure for Playbook/Service Apps.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redis_client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.key_value_store</span> <span class="kn">import</span> <span class="n">RedisClient</span>
@@ -944,7 +953,7 @@
 <div class="viewcode-block" id="TcEx.safe_group_name"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safe_group_name">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">safe_group_name</span><span class="p">(</span>
         <span class="n">group_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">group_max_length</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">ellipsis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="p">):</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Truncate group name to match limit breaking on space and optionally add an ellipsis.</span>
 
 <span class="sd">        .. note:: Currently the ThreatConnect group name limit is 100 characters.</span>
@@ -1003,7 +1012,7 @@
         <span class="k">return</span> <span class="n">url</span></div>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">service</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">service</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;CommonService&#39;</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
         <span class="sd">&quot;&quot;&quot;Include the Service Module.</span>
 
 <span class="sd">        .. Note:: Service methods can be accessed using ``tcex.service.&lt;method&gt;``.</span>
@@ -1022,7 +1031,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_service</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">session</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">session</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;TcSession&#39;</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
         <span class="sd">&quot;&quot;&quot;Return an instance of Requests Session configured for the ThreatConnect API.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.sessions</span> <span class="kn">import</span> <span class="n">TcSession</span>
@@ -1059,7 +1068,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">session_external</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">session_external</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ExternalSession&#39;</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
         <span class="sd">&quot;&quot;&quot;Return an instance of Requests Session configured for the ThreatConnect API.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session_external</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.sessions</span> <span class="kn">import</span> <span class="n">ExternalSession</span>
@@ -1084,7 +1093,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session_external</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">stix_model</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">stix_model</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;StixModel&#39;</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
         <span class="sd">&quot;&quot;&quot;Include the Threat Intel Module.</span>
 
 <span class="sd">        .. Note:: Threat Intell methods can be accessed using ``tcex.ti.&lt;method&gt;``.</span>
@@ -1096,7 +1105,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stix_model</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">ti</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">ti</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ThreatIntelligence&#39;</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
         <span class="sd">&quot;&quot;&quot;Include the Threat Intel Module.</span>
 
 <span class="sd">        .. Note:: Threat Intell methods can be accessed using ``tcex.ti.&lt;method&gt;``.</span>
@@ -1108,7 +1117,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ti</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tokens</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return token object.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_token</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">sleep_interval</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;TC_TOKEN_SLEEP_INTERVAL&#39;</span><span class="p">,</span> <span class="s1">&#39;30&#39;</span><span class="p">))</span>
@@ -1118,7 +1127,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_token</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">utils</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">utils</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Utils&#39;</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
         <span class="sd">&quot;&quot;&quot;Include the Utils module.</span>
 
 <span class="sd">        .. Note:: Utils methods can be accessed using ``tcex.utils.&lt;method&gt;``.</span>
@@ -1150,19 +1159,16 @@
           </div>
           <footer>
 
-
   <hr/>
 
   <div role="contentinfo">
     <p>
-
-        &copy; Copyright 2016, ThreatConnect Inc
+        &#169; Copyright 2016, ThreatConnect Inc.
 
     </p>
   </div>
 
 </footer>
-
         </div>
       </div>
 

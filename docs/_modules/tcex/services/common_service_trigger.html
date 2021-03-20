@@ -3,17 +3,20 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>tcex.services.common_service_trigger &mdash; TcEx 2.0.15 documentation</title>
+  <title>tcex.services.common_service_trigger &mdash; TcEx 2.0.19 documentation</title>
 
 
 
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+
+
+
 
 
 
@@ -30,7 +33,6 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
 
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -50,7 +52,7 @@
 
 
 
-            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> TcEx
+            <a href="../../../index.html" class="icon icon-home"> TcEx
 
 
 
@@ -60,7 +62,7 @@
 
 
               <div class="version">
-                2.0.15
+                2.0.19
               </div>
 
 
@@ -139,6 +141,8 @@
       <div class="wy-nav-content">
 
         <div class="rst-content">
+
+
 
 
 
@@ -448,6 +452,23 @@
         <span class="k">finally</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">remove_handler_by_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thread_name</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="CommonServiceTrigger.log_config"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.common_service_trigger.CommonServiceTrigger.log_config">[docs]</a>    <span class="k">def</span> <span class="nf">log_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trigger_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Log the config wile hiding encrypted values.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            trigger_id: The current trigger Id.</span>
+<span class="sd">            config: The configuration to be logged.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">logged_config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;encrypt&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">and</span> <span class="n">config</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)):</span>
+                <span class="n">logged_config</span><span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="s1">&#39;***&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;feature=service, event=create-config, trigger_id=</span><span class="si">{</span><span class="n">trigger_id</span><span class="si">}</span><span class="s1">, config=</span><span class="si">{</span><span class="n">logged_config</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="p">)</span></div>
+
 <div class="viewcode-block" id="CommonServiceTrigger.process_create_config_command"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.common_service_trigger.CommonServiceTrigger.process_create_config_command">[docs]</a>    <span class="k">def</span> <span class="nf">process_create_config_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Process the CreateConfig command.</span>
 
@@ -488,9 +509,8 @@
             <span class="n">thread_key</span><span class="o">=</span><span class="s1">&#39;trigger_id&#39;</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;feature=service, event=create-config, trigger_id=</span><span class="si">{</span><span class="n">trigger_id</span><span class="si">}</span><span class="s1">, config=</span><span class="si">{</span><span class="n">config</span><span class="si">}</span><span class="s1">&#39;</span>
-        <span class="p">)</span>
+        <span class="c1"># log the config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_config</span><span class="p">(</span><span class="n">trigger_id</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
 
         <span class="c1"># register config apiToken</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">register_token</span><span class="p">(</span><span class="n">trigger_id</span><span class="p">,</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;apiToken&#39;</span><span class="p">),</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;expireSeconds&#39;</span><span class="p">))</span>
@@ -594,19 +614,16 @@
           </div>
           <footer>
 
-
   <hr/>
 
   <div role="contentinfo">
     <p>
-
-        &copy; Copyright 2016, ThreatConnect Inc
+        &#169; Copyright 2016, ThreatConnect Inc.
 
     </p>
   </div>
 
 </footer>
-
         </div>
       </div>
 
