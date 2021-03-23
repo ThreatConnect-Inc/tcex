@@ -3,6 +3,34 @@
 Release Notes
 #############
 
+2.0.19
+======
++ APP-2044 - [Testing] When generating test profiles with --negative, environments will be copied from base profile and "negative" appended.
++ APP-2128 - [Playbook] Accept any iterable for array types when creating outputs.
++ APP-2129 - [Playbook] Enhance add_output() to add None values to array types when append=True.
++ APP-2130 - Add foward-reference type hints.
++ APP-2140 - [tcinit] Add missing file for API Service template.
++ APP-2186 - [KeyValueStore] Add parameter to disable decoding of value read by read().
++ APP-2219 - [tctest] update tctest to allow user to re-enter choice inputs if they enter a bad value.
++ APP-2228 - [tcvalidate] Add several validations for feed job apps.
++ APP-2179 - [Service] Add support for Acknowledge commands.
++ APP-2180 - [Input] Updated resovled_args method to properly handle resolving arguments that come in as a list.
++ APP-1940 - [Profile] Updated merge_inputs method to resolve playbook variables for permutation check.
+
+2.0.18
+======
++ APP-1829 - [Session] Added logic to use http instead of https for proxy.
++ APP-2044 - [Testing] Enhance tctest --negative to copy environments from base profile and add 'negative'.
+
+2.0.17
+======
++ Update setup.py package_data to include STIX parser lark file.
++ APP-1829 - [Session] Added logic to attempt to handle "[SSL: WRONG_VERSION_NUMBER] wrong version number" error new to urllib3.
+
+2.0.16
+======
++ APP-1807, APP-1801  - [STIX] Remove dependency on Dendrol and replace with lark parser.
+
 2.0.15
 ======
 + APP-891  - [STIX] Added additional support for consuming and producing STIX documents.
