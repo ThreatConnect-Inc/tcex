@@ -1,6 +1,7 @@
 """TcEx testing profile Class."""
 # import json
 # standard library
+import hashlib
 import json
 import re
 
@@ -48,7 +49,21 @@ class Rules:
             return {'expected_output': data, 'op': 'is_date'}
         if self.matches_dd_rule(data):
             return {'expected_output': data, 'op': 'dd', 'ignore_order': False, 'exclude_paths': []}
+        if self.matches_heq_rule(data):
+            output = {'expected_output': self.hash_value(data), 'op': 'heq'}
+            if isinstance(data, str):
+                output['encoding'] = 'utf-8'
+            return output
         return {'expected_output': data, 'op': 'eq'}
+
+    @staticmethod
+    def hash_value(value):
+        """Return the SHA256 hash of the given value."""
+        if isinstance(value, (bytes, bytearray)):
+            return hashlib.sha256(value).hexdigest()
+        if isinstance(value, str):
+            return hashlib.sha256(value.encode('utf-8')).hexdigest()
+        raise RuntimeError(f'Tried to hash unsupported type: {type(value)}')
 
     @staticmethod
     def matches_number_rule(outputs):
@@ -141,3 +156,16 @@ class Rules:
     def matches_dd_rule(outputs):
         """Return if output should use the dd operator."""
         return isinstance(outputs, (dict, list))
+
+    @staticmethod
+    def matches_heq_rule(outputs):
+        """Determine if an output should use hash_eq.
+
+        Use hash_eq operator for the following scenarios:
+            1) The type is Binary
+            2) The type is String and the length is > 1024
+        """
+        return outputs is not None and (
+            isinstance(outputs, (bytes, bytearray))
+            or (isinstance(outputs, str) and len(outputs) > 1024)
+        )
