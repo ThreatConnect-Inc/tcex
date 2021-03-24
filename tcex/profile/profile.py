@@ -350,7 +350,7 @@ class Profile:
                         value = False
 
                 # inputs with PBT can't be using in display clause
-                if not data.get('playbookDataType'):
+                if not data.get('playbookDataType') or data.get('type').lower() == 'multichoice':
                     # update inputs using resolved inputs for next permutation check
                     inputs[name] = profile_inputs_flattened_resolved.get(name)
 
