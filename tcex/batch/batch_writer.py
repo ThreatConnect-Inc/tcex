@@ -47,12 +47,16 @@ module = __import__(__name__)
 class BatchWriter:
     """ThreatConnect Batch Import Module"""
 
-    def __init__(self, tcex: 'TcEx', batch_output_dir: str) -> None:  # noqa: F821
+    def __init__(self, tcex: 'TcEx', output_dir: str, **kwargs) -> None:  # noqa: F821
         """Initialize Class properties."""
         self.tcex = tcex
-        self.batch_output_dir = batch_output_dir
+        self.output_dir = output_dir
+        self.output_extension = kwargs.get('output_extension')
+        self.write_callback = kwargs.get('write_callback')
+        self.write_callback_kwargs = kwargs.get('write_callback_kwargs', {})
 
         # properties
+        self._batch_files = []
         self._batch_max_chunk = 100_000
         self._batch_size = 0  # track current batch size
         self._batch_max_size = 75_000_000  # max size in bytes
@@ -444,8 +448,24 @@ class BatchWriter:
     def close(self) -> None:
         """Cleanup batch job."""
         self.dump()
-        self.groups_shelf.close()
-        self.indicators_shelf.close()
+
+        # cleanup shelf files
+        try:
+            self.groups_shelf.close()
+            os.unlink(self.group_shelf_fqfn)
+        except Exception as ex:
+            self.tcex.log.warning(
+                f'action=batch-close, filename={self.group_shelf_fqfn} exception={ex}'
+            )
+
+        # cleanup shelf files
+        try:
+            self.indicators_shelf.close()
+            os.unlink(self.indicator_shelf_fqfn)
+        except Exception as ex:
+            self.tcex.log.warning(
+                f'action=batch-close, filename={self.indicator_shelf_fqfn} exception={ex}'
+            )
 
     @property
     def data(self):
@@ -1134,7 +1154,16 @@ class BatchWriter:
         """Write batch json data to a file."""
         if content:
             # get timestamp as a string without decimal place and consistent length
-            batch_filename = f'{str(round(time.time() * 10000000))}.json.gz'
-            batch_json_file = os.path.join(self.batch_output_dir, batch_filename)
-            with gzip.open(batch_json_file, mode='wt', encoding='utf-8') as fh:
+            filename = f'{str(round(time.time() * 10000000))}.json.gz'
+            if self.output_extension is not None:
+                # add any additional extension provided
+                filename += self.output_extension
+            # TODO: is this needed
+            self._batch_files.append(filename)
+            fqfn = os.path.join(self.output_dir, filename)
+            with gzip.open(fqfn, mode='wt', encoding='utf-8') as fh:
                 json.dump(content, fh)
+
+            # send callback the filename
+            if callable(self.write_callback):
+                self.write_callback(fqfn, **self.write_callback_kwargs)

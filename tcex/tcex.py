@@ -186,23 +186,24 @@ class TcEx:
             self, owner, action, attribute_write_type, halt_on_error, playbook_triggers_enabled
         )
 
-    def batch_writer(self, batch_output_dir: str) -> 'BatchWriter':  # noqa: F821
+    def batch_writer(self, output_dir: str, **kwargs) -> 'BatchWriter':  # noqa: F821
         """Return instance of Batch
 
         Args:
             tcex: An instance of TcEx object.
-            owner: The ThreatConnect owner for Batch action.
-            action: Action for the batch job ['Create', 'Delete'].
-            attribute_write_type: Write type for TI attributes ['Append', 'Replace'].
-            halt_on_error: If True any batch error will halt the batch job.
-            playbook_triggers_enabled: Deprecated input, will not be used.
+            output_dir: Deprecated input, will not be used.
+            output_extension (kwargs: str): Append this extension to output files.
+            write_callback (kwargs: Callable): A callback method to call when a batch json file
+                is written. The callback will be passed the fully qualified name of the written
+                file.
+            write_callback_kwargs (kwargs: dict): Additional values to send to callback method.
 
         Returns:
             object: An instance of the Batch Class.
         """
         from .batch.batch_writer import BatchWriter
 
-        return BatchWriter(self, batch_output_dir)
+        return BatchWriter(self, output_dir, **kwargs)
 
     def cache(
         self,
