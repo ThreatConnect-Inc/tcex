@@ -3,17 +3,20 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Module: Metrics &mdash; TcEx 2.0.15 documentation</title>
+  <title>Module: Metrics &mdash; TcEx 2.0.19 documentation</title>
 
 
 
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+
+
+
 
 
 
@@ -30,7 +33,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
 
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -52,7 +54,7 @@
 
 
 
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> TcEx
+            <a href="index.html" class="icon icon-home"> TcEx
 
 
 
@@ -62,7 +64,7 @@
 
 
               <div class="version">
-                2.0.15
+                2.0.19
               </div>
 
 
@@ -163,6 +165,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -192,15 +196,15 @@
 <div class="section" id="metrics-instance">
 <h2>Metrics Instance<a class="headerlink" href="#metrics-instance" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">tcex.metrics()</span></code> method has required fields of <strong>name</strong>, <strong>description</strong>, <strong>data_type</strong>, <strong>interval</strong>, and <strong>keyed</strong> as parameters.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">metrics</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="s1">&#39;My Metrics&#39;</span><span class="p">,</span> <span class="s1">&#39;Metric Testing&#39;</span><span class="p">,</span> <span class="s1">&#39;Sum&#39;</span><span class="p">,</span> <span class="s1">&#39;Daily&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">metrics</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="s1">&#39;My Metrics&#39;</span><span class="p">,</span> <span class="s1">&#39;Metric Testing&#39;</span><span class="p">,</span> <span class="s1">&#39;Sum&#39;</span><span class="p">,</span> <span class="s1">&#39;Daily&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
 </div>
 <div class="section" id="add-metrics">
 <h2>Add Metrics<a class="headerlink" href="#add-metrics" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="xref py py-meth docutils literal notranslate"><span class="pre">add()</span></code> method has a required field of <strong>value</strong>. It also accepts an option field for <strong>date</strong>, <strong>return_value</strong>, and <strong>key</strong>.  If no date is provided, the current <strong>datetime</strong> will be used.  The <strong>return_value</strong> field will tell the API to return the value for the current interval.  The <strong>key</strong> arg is only used for Keyed Metrics; otherwise, the <code class="xref py py-meth docutils literal notranslate"><span class="pre">add_keyed()</span></code> method can be used.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">metrics</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="s1">&#39;My Metric&#39;</span><span class="p">,</span> <span class="s1">&#39;TcEx Metric Testing&#39;</span><span class="p">,</span> <span class="s1">&#39;Sum&#39;</span><span class="p">,</span> <span class="s1">&#39;Daily&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">metrics</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="s1">&#39;My Metric&#39;</span><span class="p">,</span> <span class="s1">&#39;TcEx Metric Testing&#39;</span><span class="p">,</span> <span class="s1">&#39;Sum&#39;</span><span class="p">,</span> <span class="s1">&#39;Daily&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 <span class="n">metrics</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
@@ -208,9 +212,9 @@
 <div class="section" id="add-keyed-metrics">
 <h2>Add Keyed Metrics<a class="headerlink" href="#add-keyed-metrics" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="xref py py-meth docutils literal notranslate"><span class="pre">add_keyed()</span></code> method has required fields of <strong>value</strong> and <strong>key</strong>. It also accepts option fields for <strong>date</strong> and <strong>return_value</strong>.  If no date is provided the current <strong>datetime</strong> will be used.  The <strong>return_value</strong> field will tell the API to return the value for the current interval.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">metrics</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="s1">&#39;My Keyed Metric&#39;</span><span class="p">,</span> <span class="s1">&#39;TcEx Keyed Metric Testing&#39;</span><span class="p">,</span> <span class="s1">&#39;Sum&#39;</span><span class="p">,</span> <span class="s1">&#39;Daily&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">metrics</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="s1">&#39;My Keyed Metric&#39;</span><span class="p">,</span> <span class="s1">&#39;TcEx Keyed Metric Testing&#39;</span><span class="p">,</span> <span class="s1">&#39;Sum&#39;</span><span class="p">,</span> <span class="s1">&#39;Daily&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 <span class="n">address_results</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s1">&#39;Address&#39;</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="s1">&#39;2019-03-28T12:25:40Z&#39;</span><span class="p">,</span> <span class="n">return_value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">host_results</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">99</span><span class="p">,</span> <span class="s1">&#39;Host&#39;</span><span class="p">,</span> <span class="s1">&#39;2019-03-28T12:25:40Z&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 </pre></div>
@@ -223,29 +227,21 @@
 
           </div>
           <footer>
-
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-
-        <a href="module_notifications.html" class="btn btn-neutral float-right" title="Module: Notifications" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-
-
-        <a href="module_decorators.html" class="btn btn-neutral float-left" title="Module: Decorators" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-
+        <a href="module_notifications.html" class="btn btn-neutral float-right" title="Module: Notifications" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="module_decorators.html" class="btn btn-neutral float-left" title="Module: Decorators" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-
-        &copy; Copyright 2016, ThreatConnect Inc
+        &#169; Copyright 2016, ThreatConnect Inc.
 
     </p>
   </div>
 
 </footer>
-
         </div>
       </div>
 

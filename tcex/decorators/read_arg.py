@@ -257,6 +257,7 @@ class ReadArg:
             # check arg_data against fail_on_values
             if enabled:
                 try:
+                    # pylint: disable=consider-using-generator
                     list([v(arg_data, self.arg, label) for v in self.validators])
                 except ValidationError as v:
                     value_formatted = (

@@ -466,11 +466,12 @@ class TestCase:
 
     def teardown_method(self):
         """Run after each test method runs."""
-        if self.enable_update_profile and self.ij.runtime_level.lower() not in [
-            'apiservice',
-            'triggerservice',
-            'webhooktriggerservice',
-        ] and self._skip is False:
+        if (
+            self.enable_update_profile
+            and self.ij.runtime_level.lower()
+            not in ['apiservice', 'triggerservice', 'webhooktriggerservice']
+            and self._skip is False
+        ):
             # exit message can not be validated for a Service App
             self.profile.update_exit_message()
 

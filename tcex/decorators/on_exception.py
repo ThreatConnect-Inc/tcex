@@ -54,7 +54,7 @@ class OnException:
             function: The custom decorator function.
         """
 
-        def exception(app, *args, **kwargs):
+        def exception(app, *args, **kwargs):  # pylint: disable=inconsistent-return-statements
             """Call the function and handle any exception.
 
             Args:

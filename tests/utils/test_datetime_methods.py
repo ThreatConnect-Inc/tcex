@@ -143,7 +143,7 @@ class TestUtils:
             ('2019 10:36:28 25 Sep Thu', None, r'2019-09-25T10:36:28'),
             ('Sat Oct 11 17:13:46 UTC 2003', 'US/Eastern', r'2003-10-11T13:13:46-04:00'),
             ('Thu Sep 25 10:36:28 2003', None, r'2003-09-25T10:36:28'),
-            ('Thu Sep 25 10:36:28', None, r'2020-09-25T10:36:28'),
+            ('Thu Sep 25 10:36:28', None, r'2021-09-25T10:36:28'),
             # only supported with fuzzy_with_tokens
             # ('Today is January 1, 2047 at 8:21:00AM', None, '2047-01-01 08:21:00'),
         ],
@@ -224,7 +224,7 @@ class TestUtils:
                 'UTC',
                 {
                     'operator': operator.add,
-                    'strftime': '%Y-08-25T22:00:00',
+                    'strftime': '2021-08-25T22:00:00',
                     'timedelta': {'days': 1, 'years': 1},
                 },
             ),
@@ -233,7 +233,7 @@ class TestUtils:
                 'UTC',
                 {
                     'operator': operator.add,
-                    'strftime': '%Y-08-25T22:00:00',
+                    'strftime': '2021-08-25T22:00:00',
                     'timedelta': {'days': 1, 'years': 1},
                 },
             ),

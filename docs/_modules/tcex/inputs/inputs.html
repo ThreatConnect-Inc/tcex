@@ -3,17 +3,20 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>tcex.inputs.inputs &mdash; TcEx 2.0.15 documentation</title>
+  <title>tcex.inputs.inputs &mdash; TcEx 2.0.19 documentation</title>
 
 
 
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+
+
+
 
 
 
@@ -30,7 +33,6 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
 
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -50,7 +52,7 @@
 
 
 
-            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> TcEx
+            <a href="../../../index.html" class="icon icon-home"> TcEx
 
 
 
@@ -60,7 +62,7 @@
 
 
               <div class="version">
-                2.0.15
+                2.0.19
               </div>
 
 
@@ -139,6 +141,8 @@
       <div class="wy-nav-content">
 
         <div class="rst-content">
+
+
 
 
 
@@ -366,7 +370,7 @@
                     <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_terminate_seconds</span><span class="p">,</span>
                 <span class="p">)</span>
 
-                <span class="k">if</span> <span class="n">msg_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">msg_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;AOT subscription timeout reached.&#39;</span><span class="p">)</span>
 
                 <span class="n">msg_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">msg_data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
@@ -531,7 +535,7 @@
                 <span class="s1">&#39;MainThread&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_token</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_token_expires</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="Inputs.resolved_args"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.inputs.Inputs.resolved_args">[docs]</a>    <span class="k">def</span> <span class="nf">resolved_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Inputs.resolved_args"><a class="viewcode-back" href="../../../tcex_docs/tcex.inputs.html#tcex.inputs.inputs.Inputs.resolved_args">[docs]</a>    <span class="k">def</span> <span class="nf">resolved_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Namespace</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return namespace of args that have all playbook variables automatically resolved.</span>
 
 <span class="sd">        .. Note:: Accessing resolved_args should only be done directly in the App.</span>
@@ -547,11 +551,25 @@
 
             <span class="c1"># iterate over args and resolve any playbook variables</span>
             <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="p">):</span>
+                <span class="c1"># arg_val is a bool, str, or list provided by argparser</span>
                 <span class="n">arg_val</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span>
+
+                <span class="c1"># skip resolving reserved args</span>
                 <span class="k">if</span> <span class="n">arg</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_reserved_args</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg_val</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">)):</span>
-                        <span class="n">arg_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">arg_val</span><span class="p">)</span>
-                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_args_resolved</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="n">arg_val</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg_val</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+                        <span class="c1"># strings could be a variable, try to resolve the value</span>
+                        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_args_resolved</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="n">arg_val</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg_val</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                        <span class="c1"># list could contain variables, try to resolve the value</span>
+                        <span class="n">avl</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="k">for</span> <span class="n">av</span> <span class="ow">in</span> <span class="n">arg_val</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">av</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                                <span class="n">avl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">av</span><span class="p">))</span>
+                        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_args_resolved</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="n">avl</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg_val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                        <span class="c1"># strings could be a variable, try to resolve the value</span>
+                        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_args_resolved</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">arg_val</span><span class="p">))</span>
 
             <span class="c1"># set parsed bool to ensure args are only parsed once</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_parsed_resolved</span> <span class="o">=</span> <span class="kc">True</span>
@@ -699,19 +717,16 @@
           </div>
           <footer>
 
-
   <hr/>
 
   <div role="contentinfo">
     <p>
-
-        &copy; Copyright 2016, ThreatConnect Inc
+        &#169; Copyright 2016, ThreatConnect Inc.
 
     </p>
   </div>
 
 </footer>
-
         </div>
       </div>
 

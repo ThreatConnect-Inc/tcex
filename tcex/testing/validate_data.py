@@ -168,6 +168,8 @@ class Validator:
             '>=': self.operator_ge,
             'gt': self.operator_gt,
             '>': self.operator_gt,
+            'heq': self.operator_hash_eq,
+            'hash_eq': self.operator_hash_eq,
             'jeq': self.operator_json_eq,
             'json_eq': self.operator_json_eq,
             'kveq': self.operator_keyvalue_eq,
@@ -428,6 +430,54 @@ class Validator:
             return False, ','.join(bad_data)
         return True, ','.join(bad_data)
 
+    @staticmethod
+    def operator_hash_eq(app_data, test_data, **kwargs):
+        """Compare SHA256 hash of app data against SHA256 hash stored in expected_output.
+
+        Args:
+            app_data (dict|str|list): The data created by the App.
+            test_data (dict|str|list): The data provided in the test case.
+
+        Returns:
+            bool: The results of the operator.
+        """
+        if isinstance(app_data, (bytes, bytearray)):
+            app_data_hash = hashlib.sha256(app_data).hexdigest()
+        elif isinstance(app_data, str):
+            encoding = kwargs.get('encoding', 'utf-8')
+            app_data_hash = hashlib.sha256(app_data.encode(encoding)).hexdigest()
+        else:
+            return (
+                False,
+                f'heq only supports Binary and String outputs, but app data was {type(app_data)}',
+            )
+
+        if test_data != app_data_hash:
+            # handle "null" -> None match
+            return False, f'App Data is {app_data_hash} but Test Data is {test_data}'
+
+        return True, ''
+
+    @staticmethod
+    def _load_json_data(data):
+        if isinstance(data, (str)):
+            return json.loads(data)
+        if isinstance(data, (list)):
+            # ADI-1076/ADI-1149
+            data_updated = []
+            for ad in data:
+                if isinstance(ad, (OrderedDict, dict)):
+                    ad = json.dumps(ad)
+
+                try:
+                    # APP-599 - best effort try to stringify value in list
+                    ad = json.loads(ad)
+                except Exception:
+                    pass
+                data_updated.append(ad)
+            return data_updated
+        return data
+
     def operator_json_eq(self, app_data, test_data, **kwargs):
         """Compare app data equals tests data.
 
@@ -444,52 +494,14 @@ class Validator:
         if (test_data is None or app_data is None) and app_data != test_data:
             # handle "null" -> None match
             return False, f'App Data {app_data} does not match Test Data {test_data}'
-
-        if isinstance(app_data, (str)):
-            try:
-                app_data = json.loads(app_data)
-            except ValueError:
-                return False, f'Invalid JSON data provide ({app_data}).'
-        elif isinstance(app_data, (list)):
-            # ADI-1076/ADI-1149
-            app_data_updated = []
-            for ad in app_data:
-                try:
-                    if isinstance(ad, (OrderedDict, dict)):
-                        ad = json.dumps(ad)
-                except ValueError:
-                    return False, f'Invalid JSON data provide ({app_data}).'
-
-                try:
-                    # APP-599 - best effort try to stringify value in list
-                    ad = json.loads(ad)
-                except Exception:
-                    pass
-                app_data_updated.append(ad)
-            app_data = app_data_updated
-
-        if isinstance(test_data, (str)):
-            try:
-                test_data = json.loads(test_data)
-            except ValueError:
-                return False, f'Invalid JSON data provide ({test_data}).'
-        elif isinstance(test_data, (list)):
-            # ADI-1076/ADI-1149
-            test_data_updated = []
-            for td in test_data:
-                try:
-                    if isinstance(td, (OrderedDict, dict)):
-                        td = json.dumps(td)
-                except ValueError:
-                    return False, f'Invalid JSON data provide ({test_data}).'
-
-                try:
-                    # APP-599 - best effort try to stringify value in list
-                    td = json.loads(td)
-                except Exception:
-                    pass
-                test_data_updated.append(td)
-            test_data = test_data_updated
+        try:
+            app_data = self._load_json_data(app_data)
+        except ValueError:
+            return False, f'Invalid JSON data provide ({app_data}).'
+        try:
+            test_data = self._load_json_data(test_data)
+        except ValueError:
+            return False, f'Invalid JSON data provide ({test_data}).'
 
         exclude = kwargs.pop('exclude', [])
         if isinstance(app_data, list) and isinstance(test_data, list):
@@ -860,10 +872,7 @@ class Redis:
             [type]: [description]
         """
         # remove comment field from kwargs if it exists
-        try:
-            del kwargs['comment']
-        except KeyError:
-            pass
+        kwargs.pop('comment', None)
 
         # log skipped validations here so that variable can be logged
         if op == 'skip':
@@ -883,18 +892,7 @@ class Redis:
             )
             return False
 
-        if variable.endswith('Binary'):
-            app_data = self.provider.tcex.playbook.read_binary(variable, False, False)
-        elif variable.endswith('BinaryArray'):
-            app_data = self.provider.tcex.playbook.read_binary_array(variable, False, False)
-        elif variable.endswith('TCEnhancedEntity') or variable.endswith('TCEntity'):
-            app_data = self.provider.tcex.playbook.read(variable)
-            try:
-                app_data = json.loads(app_data)
-            except Exception:
-                self.log.warning(f'Could not convert {app_data} to json.')
-        else:
-            app_data = self.provider.tcex.playbook.read(variable)
+        app_data = self._read_variable(variable)
 
         # logging header
         self.log.title(variable, '-')
@@ -934,6 +932,21 @@ class Redis:
         if details:
             assert_error += f' Details       : {details}\n'
         return passed, assert_error
+
+    def _read_variable(self, variable):
+        if variable.endswith('Binary'):
+            app_data = self.provider.tcex.playbook.read_binary(variable, False, False)
+        elif variable.endswith('BinaryArray'):
+            app_data = self.provider.tcex.playbook.read_binary_array(variable, False, False)
+        elif variable.endswith('TCEnhancedEntity') or variable.endswith('TCEntity'):
+            app_data = self.provider.tcex.playbook.read(variable)
+            try:
+                app_data = json.loads(app_data)
+            except Exception:
+                self.log.warning(f'Could not convert {app_data} to json.')
+        else:
+            app_data = self.provider.tcex.playbook.read(variable)
+        return app_data
 
     def eq(self, variable, data):
         """Validate test data equality"""

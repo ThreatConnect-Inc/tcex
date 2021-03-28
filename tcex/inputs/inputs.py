@@ -184,7 +184,7 @@ class Inputs:
                     timeout=self._default_args.tc_terminate_seconds,
                 )
 
-                if msg_data is None:
+                if msg_data is None:  # pragma: no cover
                     self.tcex.exit(0, 'AOT subscription timeout reached.')
 
                 msg_data = json.loads(msg_data[1])
@@ -371,9 +371,9 @@ class Inputs:
                 # skip resolving reserved args
                 if arg not in self.tc_reserved_args:
 
-                    if isinstance(arg_val, str):
+                    if isinstance(arg_val, bool):
                         # strings could be a variable, try to resolve the value
-                        setattr(self._default_args_resolved, arg, self.tcex.playbook.read(arg_val))
+                        setattr(self._default_args_resolved, arg, arg_val)
                     elif isinstance(arg_val, list):
                         # list could contain variables, try to resolve the value
                         avl = []
@@ -381,6 +381,9 @@ class Inputs:
                             if isinstance(av, str):
                                 avl.append(self.tcex.playbook.read(av))
                         setattr(self._default_args_resolved, arg, avl)
+                    elif isinstance(arg_val, str):
+                        # strings could be a variable, try to resolve the value
+                        setattr(self._default_args_resolved, arg, self.tcex.playbook.read(arg_val))
 
             # set parsed bool to ensure args are only parsed once
             self._parsed_resolved = True
