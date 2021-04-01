@@ -610,14 +610,15 @@ class StixModel:
             attributes = []
             for attribute in value:
                 attribute_value = attribute.get('value')
-                if attribute.get('value', '').startswith('@'):
-                    attribute_value = (
-                        jmespath.search(f'{attribute_value}', jmespath.search('@', data)) or []
-                    )
-                    if isinstance(attribute_value, list):
-                        attribute_value = '\n'.join(attribute_value)
-                    if attribute.get('value') in ['@.valid_from', '@.valid_until']:
-                        attribute_value = self._remove_milliseconds(attribute_value)
+                if isinstance(attribute_value, str):
+                    if attribute.get('value', '').startswith('@'):
+                        attribute_value = (
+                            jmespath.search(f'{attribute_value}', jmespath.search('@', data)) or []
+                        )
+                        if isinstance(attribute_value, list):
+                            attribute_value = '\n'.join(attribute_value)
+                        if attribute.get('value') in ['@.valid_from', '@.valid_until']:
+                            attribute_value = self._remove_milliseconds(attribute_value)
                 if not attribute_value:
                     continue
                 attribute['value'] = attribute_value
