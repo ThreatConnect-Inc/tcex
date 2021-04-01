@@ -3,17 +3,20 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>tcex.key_value_store.key_value_api &mdash; TcEx 2.0.15 documentation</title>
+  <title>tcex.key_value_store.key_value_api &mdash; TcEx 2.0.19 documentation</title>
 
 
 
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+
+
+
 
 
 
@@ -30,7 +33,6 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
 
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -50,7 +52,7 @@
 
 
 
-            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> TcEx
+            <a href="../../../index.html" class="icon icon-home"> TcEx
 
 
 
@@ -60,7 +62,7 @@
 
 
               <div class="version">
-                2.0.15
+                2.0.19
               </div>
 
 
@@ -139,6 +141,8 @@
       <div class="wy-nav-content">
 
         <div class="rst-content">
+
+
 
 
 
@@ -240,8 +244,10 @@
             <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/internal/playbooks/keyValue/</span><span class="si">{</span><span class="n">context</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">content</span>
-        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Binary data for PB Apps is base64 encoded, for service Apps it is not</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span></div></div>
 </pre></div>
 
@@ -250,19 +256,16 @@
           </div>
           <footer>
 
-
   <hr/>
 
   <div role="contentinfo">
     <p>
-
-        &copy; Copyright 2016, ThreatConnect Inc
+        &#169; Copyright 2016, ThreatConnect Inc.
 
     </p>
   </div>
 
 </footer>
-
         </div>
       </div>
 

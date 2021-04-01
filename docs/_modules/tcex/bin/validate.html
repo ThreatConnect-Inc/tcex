@@ -3,17 +3,20 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>tcex.bin.validate &mdash; TcEx 2.0.15 documentation</title>
+  <title>tcex.bin.validate &mdash; TcEx 2.0.19 documentation</title>
 
 
 
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+
+
+
 
 
 
@@ -30,7 +33,6 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
 
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -50,7 +52,7 @@
 
 
 
-            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> TcEx
+            <a href="../../../index.html" class="icon icon-home"> TcEx
 
 
 
@@ -60,7 +62,7 @@
 
 
               <div class="version">
-                2.0.15
+                2.0.19
               </div>
 
 
@@ -139,6 +141,8 @@
       <div class="wy-nav-content">
 
         <div class="rst-content">
+
+
 
 
 
@@ -256,7 +260,41 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_validation_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return structure for validation data.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;errors&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;fileSyntax&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;layouts&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;moduleImports&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;schema&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;errors&#39;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s1">&#39;fileSyntax&#39;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s1">&#39;layouts&#39;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s1">&#39;moduleImports&#39;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s1">&#39;schema&#39;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s1">&#39;feeds&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_check_node_import</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Import</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_import_stdlib</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+                    <span class="n">m_status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_imported</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">m_status</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;&quot;&quot;Module validation failed for </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> &quot;&quot;&quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;&quot;&quot;(module &quot;</span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s2">&quot; could not be imported).&quot;&quot;&quot;</span>
+                        <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;moduleImports&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="p">{</span><span class="s1">&#39;filename&#39;</span><span class="p">:</span> <span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;module&#39;</span><span class="p">:</span> <span class="n">m</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">m_status</span><span class="p">}</span>
+                    <span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">ImportFrom</span><span class="p">):</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_import_stdlib</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+                <span class="n">m_status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_imported</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">m_status</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;&quot;&quot;Module validation failed for </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> &quot;&quot;&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;&quot;&quot;(module &quot;</span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s2">&quot; could not be imported).&quot;&quot;&quot;</span>
+                    <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;moduleImports&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="p">{</span><span class="s1">&#39;filename&#39;</span><span class="p">:</span> <span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;module&#39;</span><span class="p">:</span> <span class="n">m</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">m_status</span><span class="p">}</span>
+                <span class="p">)</span>
 
 <div class="viewcode-block" id="Validate.check_imports"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.validate.Validate.check_imports">[docs]</a>    <span class="k">def</span> <span class="nf">check_imports</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check the projects top level directory for missing imports.</span>
@@ -264,7 +302,6 @@
 <span class="sd">        This method will check only files ending in **.py** and does not handle imports validation</span>
 <span class="sd">        for sub-directories.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">modules</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">)):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.py&#39;</span><span class="p">):</span>
                 <span class="k">continue</span>
@@ -275,50 +312,67 @@
                 <span class="n">code_lines</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="mi">1</span><span class="p">)])</span>
 
                 <span class="k">while</span> <span class="n">code_lines</span><span class="p">:</span>
-                    <span class="n">m_status</span> <span class="o">=</span> <span class="kc">True</span>
                     <span class="n">code</span><span class="p">,</span> <span class="n">lineno</span> <span class="o">=</span> <span class="n">code_lines</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>  <span class="c1"># pylint: disable=unused-variable</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">parsed_code</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
                         <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">ast</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">parsed_code</span><span class="p">):</span>
-                            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Import</span><span class="p">):</span>
-                                <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
-                                    <span class="n">m</span> <span class="o">=</span> <span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-                                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_import_stdlib</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
-                                        <span class="c1"># stdlib module, not need to proceed</span>
-                                        <span class="k">continue</span>
-                                    <span class="n">m_status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_imported</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
-                                    <span class="n">modules</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                                        <span class="p">{</span><span class="s1">&#39;file&#39;</span><span class="p">:</span> <span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;module&#39;</span><span class="p">:</span> <span class="n">m</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">m_status</span><span class="p">}</span>
-                                    <span class="p">)</span>
-                            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">ImportFrom</span><span class="p">):</span>
-                                <span class="n">m</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-                                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_import_stdlib</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
-                                    <span class="c1"># stdlib module, not need to proceed</span>
-                                    <span class="k">continue</span>
-                                <span class="n">m_status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_imported</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
-                                <span class="n">modules</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;file&#39;</span><span class="p">:</span> <span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;module&#39;</span><span class="p">:</span> <span class="n">m</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">m_status</span><span class="p">})</span>
-                            <span class="k">else</span><span class="p">:</span>
-                                <span class="k">continue</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_check_node_import</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
                     <span class="k">except</span> <span class="ne">SyntaxError</span><span class="p">:</span>
-                        <span class="k">pass</span>
+                        <span class="k">pass</span></div>
 
-        <span class="k">for</span> <span class="n">module_data</span> <span class="ow">in</span> <span class="n">modules</span><span class="p">:</span>
-            <span class="n">status</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">module_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">):</span>
-                <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
-                <span class="c1"># update validation data errors</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;&quot;&quot;Module validation failed for </span><span class="si">{</span><span class="n">module_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;file&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> &quot;&quot;&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;&quot;&quot;(module &quot;</span><span class="si">{</span><span class="n">module_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;module&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot; could not be imported).&quot;&quot;&quot;</span>
-                <span class="p">)</span>
-            <span class="c1"># update validation data for module</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;moduleImports&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="p">{</span>
-                    <span class="s1">&#39;filename&#39;</span><span class="p">:</span> <span class="n">module_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;file&#39;</span><span class="p">),</span>
-                    <span class="s1">&#39;module&#39;</span><span class="p">:</span> <span class="n">module_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;module&#39;</span><span class="p">),</span>
-                    <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">status</span><span class="p">,</span>
-                <span class="p">}</span>
-            <span class="p">)</span></div>
+<div class="viewcode-block" id="Validate.check_feed_files"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.validate.Validate.check_feed_files">[docs]</a>    <span class="k">def</span> <span class="nf">check_feed_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Validate feed files for feed job apps.&quot;&quot;&quot;</span>
+        <span class="n">package_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tj</span><span class="o">.</span><span class="n">package_app_name</span><span class="si">}</span><span class="s1">_v</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">program_version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">package_name</span> <span class="o">=</span> <span class="n">package_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">runtime_level</span> <span class="o">==</span> <span class="s1">&#39;Organization&#39;</span><span class="p">:</span>
+
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">feed</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">feeds</span><span class="p">):</span>
+                <span class="n">passed</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">feed_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;(feeds[</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">]) </span><span class="si">{</span><span class="n">feed</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sourceName&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="n">job_file</span> <span class="o">=</span> <span class="n">feed</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;jobFile&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">feed</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;jobFile&#39;</span><span class="p">)):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;Feed validation failed &#39;</span>
+                        <span class="sa">f</span><span class="s1">&#39;(Feed </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1"> references non-existent job-file </span><span class="si">{</span><span class="n">job_file</span><span class="si">}</span><span class="s1">)&#39;</span>
+                    <span class="p">)</span>
+                    <span class="n">passed</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">job</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">job_file</span><span class="p">))</span>
+
+                        <span class="k">if</span> <span class="s1">&#39;programName&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">job</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                                <span class="sa">f</span><span class="s1">&#39;Feed file validation failed for </span><span class="si">{</span><span class="n">job_file</span><span class="si">}</span><span class="s1"> &#39;</span>
+                                <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="n">job_file</span><span class="si">}</span><span class="s1"> does not contain required field </span><span class="se">\&#39;</span><span class="s1">programNme</span><span class="se">\&#39;</span><span class="s1">)&#39;</span>
+                            <span class="p">)</span>
+                            <span class="n">passed</span> <span class="o">=</span> <span class="kc">False</span>
+
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">job_program_name</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;programName&#39;</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">job_program_name</span> <span class="o">!=</span> <span class="n">package_name</span><span class="p">:</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                                    <span class="sa">f</span><span class="s1">&#39;Feed file validation failed for </span><span class="si">{</span><span class="n">job_file</span><span class="si">}</span><span class="s1"> &#39;</span>
+                                    <span class="sa">f</span><span class="s1">&#39;(programName in file name does not match package name &#39;</span>
+                                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">package_name</span><span class="si">}</span><span class="s1">)&#39;</span>
+                                <span class="p">)</span>
+                                <span class="n">passed</span> <span class="o">=</span> <span class="kc">False</span>
+
+                    <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">decoder</span><span class="o">.</span><span class="n">JSONDecodeError</span> <span class="k">as</span> <span class="n">j</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s1">&#39;Feed file validation failed for </span><span class="si">{</span><span class="n">job_file</span><span class="si">}</span><span class="s1"> &#39;</span>
+                            <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="n">job_file</span><span class="si">}</span><span class="s1"> is not valid JSON: </span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s1">)&#39;</span>
+                        <span class="p">)</span>
+                        <span class="n">passed</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="k">if</span> <span class="n">feed</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;attributesFile&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">feed</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;attributesFile&#39;</span><span class="p">)):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;Feed validation failed &#39;</span>
+                        <span class="sa">f</span><span class="s1">&#39;(Feed </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1"> references non-existent attributes file &#39;</span>
+                        <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">feed</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;attributesFile&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">)&#39;</span>
+                    <span class="p">)</span>
+                    <span class="n">passed</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;feeds&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">feed_name</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">passed</span><span class="p">})</span></div>
 
 <div class="viewcode-block" id="Validate.check_import_stdlib"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.validate.Validate.check_import_stdlib">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">check_import_stdlib</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
@@ -620,6 +674,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">check_imports</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">check_install_json</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">check_layout_json</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">check_feed_files</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">print_json</span><span class="p">()</span>
 
             <span class="c1"># reset validation_data</span>
@@ -638,9 +693,7 @@
         <span class="sd">&quot;&quot;&quot;Print JSON output.&quot;&quot;&quot;</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;validation_data&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">}))</span></div>
 
-<div class="viewcode-block" id="Validate.print_results"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.validate.Validate.print_results">[docs]</a>    <span class="k">def</span> <span class="nf">print_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Print results.&quot;&quot;&quot;</span>
-        <span class="c1"># Validating Syntax</span>
+    <span class="k">def</span> <span class="nf">_print_file_syntax_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileSyntax&#39;</span><span class="p">):</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="si">}{</span><span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">BLUE</span><span class="si">}</span><span class="s1">Validated File Syntax:&#39;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="si">}{</span><span class="s1">&#39;File:&#39;</span><span class="si">!s:</span><span class="s2">&lt;60</span><span class="si">}{</span><span class="s1">&#39;Status:&#39;</span><span class="si">!s:</span><span class="s2">&lt;25</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -649,7 +702,7 @@
                 <span class="n">status_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status_value</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">))</span>
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;filename&#39;</span><span class="p">)</span><span class="si">!s:</span><span class="s2">&lt;60</span><span class="si">}{</span><span class="n">status_color</span><span class="si">}{</span><span class="n">status_value</span><span class="si">!s:</span><span class="s2">&lt;25</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Validating Imports</span>
+    <span class="k">def</span> <span class="nf">_print_imports_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;moduleImports&#39;</span><span class="p">):</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="si">}{</span><span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">BLUE</span><span class="si">}</span><span class="s1">Validated Imports:&#39;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="si">}{</span><span class="s1">&#39;File:&#39;</span><span class="si">!s:</span><span class="s2">&lt;30</span><span class="si">}{</span><span class="s1">&#39;Module:&#39;</span><span class="si">!s:</span><span class="s2">&lt;30</span><span class="si">}{</span><span class="s1">&#39;Status:&#39;</span><span class="si">!s:</span><span class="s2">&lt;25</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -661,7 +714,7 @@
                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;module&#39;</span><span class="p">)</span><span class="si">!s:</span><span class="s2">&lt;30</span><span class="si">}{</span><span class="n">status_color</span><span class="si">}{</span><span class="n">status_value</span><span class="si">!s:</span><span class="s2">&lt;25</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
 
-        <span class="c1"># Validating Schema</span>
+    <span class="k">def</span> <span class="nf">_print_schema_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;schema&#39;</span><span class="p">):</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="si">}{</span><span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">BLUE</span><span class="si">}</span><span class="s1">Validated Schema:&#39;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="si">}{</span><span class="s1">&#39;File:&#39;</span><span class="si">!s:</span><span class="s2">&lt;60</span><span class="si">}{</span><span class="s1">&#39;Status:&#39;</span><span class="si">!s:</span><span class="s2">&lt;25</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -670,7 +723,7 @@
                 <span class="n">status_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status_value</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">))</span>
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;filename&#39;</span><span class="p">)</span><span class="si">!s:</span><span class="s2">&lt;60</span><span class="si">}{</span><span class="n">status_color</span><span class="si">}{</span><span class="n">status_value</span><span class="si">!s:</span><span class="s2">&lt;25</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Validating Layouts</span>
+    <span class="k">def</span> <span class="nf">_print_layouts_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;layouts&#39;</span><span class="p">):</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="si">}{</span><span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">BLUE</span><span class="si">}</span><span class="s1">Validated Layouts:&#39;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="si">}{</span><span class="s1">&#39;Params:&#39;</span><span class="si">!s:</span><span class="s2">&lt;60</span><span class="si">}{</span><span class="s1">&#39;Status:&#39;</span><span class="si">!s:</span><span class="s2">&lt;25</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -679,6 +732,16 @@
                 <span class="n">status_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status_value</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">))</span>
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">)</span><span class="si">!s:</span><span class="s2">&lt;60</span><span class="si">}{</span><span class="n">status_color</span><span class="si">}{</span><span class="n">status_value</span><span class="si">!s:</span><span class="s2">&lt;25</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">_print_feed_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;feeds&#39;</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="si">}{</span><span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">BLUE</span><span class="si">}</span><span class="s1">Validated Feed Jobs:&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="si">}{</span><span class="s1">&#39;Feeds:&#39;</span><span class="si">!s:</span><span class="s2">&lt;60</span><span class="si">}{</span><span class="s1">&#39;Status:&#39;</span><span class="si">!s:</span><span class="s2">&lt;25</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;feeds&#39;</span><span class="p">):</span>
+                <span class="n">status_color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status_color</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">))</span>
+                <span class="n">status_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status_value</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">))</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span><span class="si">!s:</span><span class="s2">&lt;60</span><span class="si">}{</span><span class="n">status_color</span><span class="si">}{</span><span class="n">status_value</span><span class="si">!s:</span><span class="s2">&lt;25</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_print_errors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errors&#39;</span><span class="p">):</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>  <span class="c1"># separate errors from normal output</span>
         <span class="k">for</span> <span class="n">error</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errors&#39;</span><span class="p">):</span>
@@ -687,23 +750,36 @@
 
             <span class="c1"># ignore exit code</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">ignore_validation</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">1</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">1</span>
+
+<div class="viewcode-block" id="Validate.print_results"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.validate.Validate.print_results">[docs]</a>    <span class="k">def</span> <span class="nf">print_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Print results.&quot;&quot;&quot;</span>
+        <span class="c1"># Validating Syntax</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_print_file_syntax_results</span><span class="p">()</span>
+
+        <span class="c1"># Validating Imports</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_print_imports_results</span><span class="p">()</span>
+
+        <span class="c1"># Validating Schema</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_print_schema_results</span><span class="p">()</span>
+
+        <span class="c1"># Validating Layouts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_print_layouts_results</span><span class="p">()</span>
+
+        <span class="c1"># Validating Feed Job Definition Files</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_print_feed_results</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_print_errors</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Validate.status_color"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.validate.Validate.status_color">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">status_color</span><span class="p">(</span><span class="n">status</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the appropriate status color.&quot;&quot;&quot;</span>
-        <span class="n">status_color</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">GREEN</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">status</span><span class="p">:</span>
-            <span class="n">status_color</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span>
-        <span class="k">return</span> <span class="n">status_color</span></div>
+        <span class="k">return</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">GREEN</span> <span class="k">if</span> <span class="n">status</span> <span class="k">else</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span></div>
 
 <div class="viewcode-block" id="Validate.status_value"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.validate.Validate.status_value">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">status_value</span><span class="p">(</span><span class="n">status</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the appropriate status color.&quot;&quot;&quot;</span>
-        <span class="n">status_value</span> <span class="o">=</span> <span class="s1">&#39;passed&#39;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">status</span><span class="p">:</span>
-            <span class="n">status_value</span> <span class="o">=</span> <span class="s1">&#39;failed&#39;</span>
-        <span class="k">return</span> <span class="n">status_value</span></div></div>
+        <span class="k">return</span> <span class="s1">&#39;passed&#39;</span> <span class="k">if</span> <span class="n">status</span> <span class="k">else</span> <span class="s1">&#39;failed&#39;</span></div></div>
 </pre></div>
 
            </div>
@@ -711,19 +787,16 @@
           </div>
           <footer>
 
-
   <hr/>
 
   <div role="contentinfo">
     <p>
-
-        &copy; Copyright 2016, ThreatConnect Inc
+        &#169; Copyright 2016, ThreatConnect Inc.
 
     </p>
   </div>
 
 </footer>
-
         </div>
       </div>
 

@@ -3,17 +3,20 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>tcex.services.common_service &mdash; TcEx 2.0.15 documentation</title>
+  <title>tcex.services.common_service &mdash; TcEx 2.0.19 documentation</title>
 
 
 
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+
+
+
 
 
 
@@ -30,7 +33,6 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
 
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -50,7 +52,7 @@
 
 
 
-            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> TcEx
+            <a href="../../../index.html" class="icon icon-home"> TcEx
 
 
 
@@ -60,7 +62,7 @@
 
 
               <div class="version">
-                2.0.15
+                2.0.19
               </div>
 
 
@@ -139,6 +141,8 @@
       <div class="wy-nav-content">
 
         <div class="rst-content">
+
+
 
 
 
@@ -254,6 +258,16 @@
             <span class="n">thread_key</span><span class="o">=</span><span class="s1">&#39;session_id&#39;</span><span class="p">,</span>
         <span class="p">)</span></div>
 
+<div class="viewcode-block" id="CommonService.process_acknowledged_command"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.common_service.CommonService.process_acknowledged_command">[docs]</a>    <span class="k">def</span> <span class="nf">process_acknowledged_command</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">dict</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pylint: disable=unused-argument</span>
+        <span class="sd">&quot;&quot;&quot;Process the Acknowledge command.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            message: The message payload from the server topic.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;feature=service, event=acknowledge, message=</span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="CommonService.add_metric"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.common_service.CommonService.add_metric">[docs]</a>    <span class="k">def</span> <span class="nf">add_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Add a metric.</span>
 
@@ -269,6 +283,7 @@
     <span class="k">def</span> <span class="nf">command_map</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return the command map for the current Service type.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;acknowledged&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_acknowledged_command</span><span class="p">,</span>
             <span class="s1">&#39;heartbeat&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_heartbeat_command</span><span class="p">,</span>
             <span class="s1">&#39;loggingchange&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_logging_change_command</span><span class="p">,</span>
             <span class="s1">&#39;shutdown&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_shutdown_command</span><span class="p">,</span>
@@ -598,19 +613,16 @@
           </div>
           <footer>
 
-
   <hr/>
 
   <div role="contentinfo">
     <p>
-
-        &copy; Copyright 2016, ThreatConnect Inc
+        &#169; Copyright 2016, ThreatConnect Inc.
 
     </p>
   </div>
 
 </footer>
-
         </div>
       </div>
 

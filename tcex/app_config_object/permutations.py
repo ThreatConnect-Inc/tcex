@@ -183,6 +183,9 @@ class Permutations:
         elif isinstance(value, bool):
             # core expects true/false so we convert bool value to string and lower
             value = str(value).lower()
+        else:
+            # no other types can be used in a diplay clause so skip them
+            return
 
         # only column defined in install.json can be updated
         if column in self.ij.params_dict:
