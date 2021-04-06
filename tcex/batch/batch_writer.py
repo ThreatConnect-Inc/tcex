@@ -592,7 +592,7 @@ class BatchWriter:
 
             if tracker.get('count') % 2_500 == 0:
                 # log count/size at a sane level
-                self.tcex.log.info(
+                self.tcex.log.debug(
                     '''feature=batch, action=data-groups, '''
                     f'''count={tracker.get('count'):,}, bytes={tracker.get('bytes'):,}'''
                 )
@@ -634,7 +634,7 @@ class BatchWriter:
 
             if tracker.get('count') % 2_500 == 0:
                 # log count/size at a sane level
-                self.tcex.log.info(
+                self.tcex.log.debug(
                     '''feature=batch, action=data-indicators, '''
                     f'''count={tracker.get('count'):,}, bytes={tracker.get('bytes'):,}'''
                 )
