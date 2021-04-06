@@ -843,7 +843,7 @@ class Batch:
                         self.tcex.handle_error(10500, [error_reason], halt_on_error)
         except Exception as e:
             self.tcex.handle_error(560, [e], halt_on_error)
-            return None
+        return errors
 
     def event(self, name: str, **kwargs) -> Event:
         """Add Event data to Batch object.

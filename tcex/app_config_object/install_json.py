@@ -443,6 +443,7 @@ class InstallJson:
             if feature in [
                 'advancedRequest',
                 'CALSettings',
+                'smtpSettings',
                 'webhookResponseMarshall',
                 'webhookServiceEndpoint',
             ]:
