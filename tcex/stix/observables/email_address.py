@@ -40,7 +40,7 @@ class StixEmailAddressObject(StixModel):
         """Produce a ThreatConnect object from a STIX 2.0 JSON object."""
         parse_map = {
             'type': 'EmailAddress',
-            'summary': '@.value',
+            'address': '@.value',
             'confidence': '@.confidence',
             'xid': '@.id',
             'attributes': [{'type': 'External ID', 'value': '@.id'}],

@@ -21,7 +21,7 @@ class StixIPBase(StixModel):
         """
         mapper_ip = {
             'type': 'Address',
-            'summary': '@.value',
+            'ip': '@.value',
             'xid': '@.id',
             'confidence': '@.confidence',
             'attributes': [{'type': 'External ID', 'value': '@.id'}],
@@ -31,7 +31,7 @@ class StixIPBase(StixModel):
         mapper_cider = {
             'confidence': '@.confidence',
             'type': 'CIDR',
-            'summary': '@.value',
+            'block': '@.value',
             'xid': '@.id',
             'attributes': [{'type': 'External ID', 'value': '@.id'}],
         }

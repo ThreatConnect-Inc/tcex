@@ -40,7 +40,7 @@ class StixDomainNameObject(StixModel):
         """Produce a ThreatConnect object from a STIX 2.0 JSON object."""
         parse_map = {
             'type': 'Host',
-            'summary': '@.value',
+            'hostName': '@.value',
             'xid': '@.id',
             'confidence': '@.confidence',
             'attributes': [{'type': 'External ID', 'value': '@.id'}],

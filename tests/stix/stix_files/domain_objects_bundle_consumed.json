@@ -7,7 +7,7 @@
         "value": "Object ID: ipv4-addr--1e4ffad7-0b88-41d4-ba4d-77d27490b956\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/ipv4-addr--1e4ffad7-0b88-41d4-ba4d-77d27490b956/"
       }
     ],
-    "ip": "198.51.100.3",
+    "summary": "198.51.100.3",
     "type": "Address",
     "xid": "7aca216a8fe4977bfc58edfaf9dcfdd51860022abf9ad6a1619c80aa325c2860"
   },
@@ -19,7 +19,7 @@
         "value": "Object ID: domain-name--ecb120bf-2694-4902-a737-62b74539a41b\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/domain-name--ecb120bf-2694-4902-a737-62b74539a41b/"
       }
     ],
-    "hostName": "example.com",
+    "summary": "example.com",
     "type": "Host",
     "xid": "289e3ba1d75de049583ed50a3c0bc38e403d2c929a4a696b206cb83c8e9334ab"
   },
@@ -31,7 +31,7 @@
         "value": "Object ID: ipv4-addr--1e4ffad7-0b88-41d4-ba4d-77d27490b956\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/ipv4-addr--1e4ffad7-0b88-41d4-ba4d-77d27490b956/"
       }
     ],
-    "block": "198.51.100.2/16",
+    "summary": "198.51.100.2/16",
     "type": "CIDR",
     "xid": "7aca216a8fe4977bfc58edfaf9dcfdd51860022abf9ad6a1619c80aa325c2860"
   },
@@ -43,7 +43,7 @@
         "value": "Object ID: ipv6-addr--1e4ffad7-0b88-41d4-ba4d-77d27490b956\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/ipv6-addr--1e4ffad7-0b88-41d4-ba4d-77d27490b956/"
       }
     ],
-    "ip": "2001:0db8:85a3:0000:0000:8a2e:0370:7111",
+    "summary": "2001:0db8:85a3:0000:0000:8a2e:0370:7111",
     "type": "Address",
     "xid": "27b13ebf030f4553a420f4ee2be2a8cebbc62e86b811d4390a9d02b26bb23f9c"
   },
@@ -55,7 +55,7 @@
         "value": "Object ID: ipv6-addr--1e4ffad7-0b88-41d4-ba4d-77d27490b956\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/ipv6-addr--1e4ffad7-0b88-41d4-ba4d-77d27490b956/"
       }
     ],
-    "block": "2001:0db8:85a3:0000:0000:8a2e:0370:7111/64",
+    "summary": "2001:0db8:85a3:0000:0000:8a2e:0370:7111/64",
     "type": "CIDR",
     "xid": "27b13ebf030f4553a420f4ee2be2a8cebbc62e86b811d4390a9d02b26bb23f9c"
   },
@@ -84,7 +84,7 @@
     "xid": "fe45df3e70a93f274ea90522d4a29e7c02ba0dbad8991e84e48a7ef36c858460"
   },
   {
-    "address": "john@example.com",
+    "summary": "john@example.com",
     "attribute": [
       {
         "displayed": true,
@@ -137,7 +137,7 @@
         "value": "Object ID: url--c1477287-23ac-5971-a010-5c287877fa60\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/url--c1477287-23ac-5971-a010-5c287877fa60/"
       }
     ],
-    "text": "https://example.com/research/index.html",
+    "summary": "https://example.com/research/index.html",
     "type": "URL",
     "xid": "259cc710ab2fac274daf622482560756f1b860cfaa89c98c7be8781efd4c204a"
   },
