@@ -8,10 +8,10 @@ from ..mappings import Mappings
 class Group(Mappings):
     """Unique API calls for Group API Endpoints"""
 
-    def __init__(self, tcex, **kwargs):
+    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
         """Initialize Class properties."""
         super().__init__(
-            tcex,
+            ti,
             'Group',
             'groups',
             kwargs.pop('sub_type', None),

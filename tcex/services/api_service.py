@@ -248,28 +248,14 @@ class ApiService(CommonService):
                 if body_data:
                     body_data = reduce(lambda a, b: a + b, body_data)
 
-                # # process body
-                # body = ''
-                # if hasattr(body_data, 'read'):
-                #     body = body_data.read()
-                # elif isinstance(body_data, list):
-                #     for bd in body_data:
-                #         if hasattr(bd, 'read'):
-                #             body += bd.read()
-                #         elif isinstance(bd, bytes):
-                #             body += bd.decode()
-                #         elif isinstance(bd, list):
-                #             for b in bd:
-                #                 self.log.error(f'unhandled type - {type(b)}')
-                #         else:
-                #             self.log.error(f'unhandled type - {type(body)}')
-                #             self.log.error(f'unhandled type dir - {dir(body)}')
-
                 # write body to Redis
-                self.key_value_store.create(request_key, 'response.body', body_data or '')
+                if body_data is not None:
+                    self.key_value_store.create(request_key, 'response.body', body_data)
 
-                # set thread event to True to trigger response
-                self.log.info('feature=api-service, event=response-body-written')
+                    # set thread event to True to trigger response
+                    self.log.info('feature=api-service, event=response-body-written')
+
+                # release event lock
                 event.set()
             except Exception as e:
                 self.log.error(

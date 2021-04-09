@@ -4,9 +4,8 @@
 class Filters:
     """Filters module for Threat Intelligence"""
 
-    def __init__(self, tcex):
+    def __init__(self):
         """Initialize class properties."""
-        self._tcex = tcex
         self._filters = []
 
     @property

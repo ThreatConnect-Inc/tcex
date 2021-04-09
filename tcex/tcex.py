@@ -9,13 +9,19 @@ import re
 import signal
 import sys
 import threading
+from functools import lru_cache
 from typing import Optional, Union
 from urllib.parse import quote
 
 from .app_config_object import InstallJson
 from .inputs import Inputs
-from .logger import Logger
+from .logger import Logger, TraceLogger
 from .tokens import Tokens
+
+# init tcex logger
+logging.setLoggerClass(TraceLogger)
+logger = logging.getLogger('tcex')
+logger.setLevel(logging.TRACE)  # pylint: disable=E1101
 
 
 class TcEx:
@@ -57,7 +63,6 @@ class TcEx:
         self._session_external = None
         self._stix_model = None
         self._utils = None
-        self._ti = None
         self._token = None
         self.ij = InstallJson()
 
@@ -376,6 +381,51 @@ class TcEx:
 
         return indicator_list
 
+    # TODO: [high] testing ... organize this later
+    def get_session(self) -> 'TcSession':  # noqa: F821
+        """Return an instance of Requests Session configured for the ThreatConnect API."""
+        from .sessions import TcSession
+
+        _session = TcSession(
+            logger=self.log,
+            api_access_id=self.default_args.api_access_id,
+            api_secret_key=self.default_args.api_secret_key,
+            base_url=self.default_args.tc_api_path,
+        )
+
+        # set verify
+        _session.verify = self.default_args.tc_verify
+
+        # set token
+        _session.token = self.token
+
+        # update User-Agent
+        _session.headers.update({'User-Agent': f'TcEx: {__import__(__name__).__version__}'})
+
+        # add proxy support if requested
+        if self.default_args.tc_proxy_tc:
+            _session.proxies = self.proxies
+            self.log.info(
+                f'Using proxy host {self.args.tc_proxy_host}:'
+                f'{self.args.tc_proxy_port} for ThreatConnect session.'
+            )
+
+        # enable curl logging if tc_log_curl param is set.
+        if self.default_args.tc_log_curl:
+            _session.log_curl = True
+
+        # return session
+        return _session
+
+    def get_ti(self) -> 'ThreatIntelligence':  # noqa: F821
+        """Include the Threat Intel Module.
+
+        .. Note:: Threat Intel methods can be accessed using ``tcex.ti.<method>``.
+        """
+        from .threat_intelligence import ThreatIntelligence
+
+        return ThreatIntelligence(session=self.get_session())
+
     @property
     def group_types(self) -> list:
         """Return all defined ThreatConnect Group types.
@@ -549,8 +599,7 @@ class TcEx:
     def logger(self) -> Logger:
         """Return logger."""
         if self._logger is None:
-            logger_name = self._config.get('tc_logger_name', 'tcex')
-            self._logger = Logger(self, logger_name)
+            self._logger = Logger(self, 'tcex')
             self._logger.add_cache_handler('cache')
         return self._logger
 
@@ -894,37 +943,7 @@ class TcEx:
     def session(self) -> 'TcSession':  # noqa: F821
         """Return an instance of Requests Session configured for the ThreatConnect API."""
         if self._session is None:
-            from .sessions import TcSession
-
-            self._session = TcSession(
-                logger=self.log,
-                api_access_id=self.default_args.api_access_id,
-                api_secret_key=self.default_args.api_secret_key,
-                base_url=self.default_args.tc_api_path,
-            )
-
-            # set verify
-            self._session.verify = self.default_args.tc_verify
-
-            # set token
-            self._session.token = self.token
-
-            # update User-Agent
-            self._session.headers.update(
-                {'User-Agent': f'TcEx: {__import__(__name__).__version__}'}
-            )
-
-            # add proxy support if requested
-            if self.default_args.tc_proxy_tc:
-                self._session.proxies = self.proxies
-                self.log.info(
-                    f'Using proxy host {self.args.tc_proxy_host}:'
-                    f'{self.args.tc_proxy_port} for ThreatConnect session.'
-                )
-
-            # enable curl logging if tc_log_curl param is set.
-            if self.default_args.tc_log_curl:
-                self._session.log_curl = True
+            self._session = self.get_session()
         return self._session
 
     @property
@@ -965,16 +984,13 @@ class TcEx:
         return self._stix_model
 
     @property
+    @lru_cache()
     def ti(self) -> 'ThreatIntelligence':  # noqa: F821
         """Include the Threat Intel Module.
 
-        .. Note:: Threat Intell methods can be accessed using ``tcex.ti.<method>``.
+        .. Note:: Threat Intel methods can be accessed using ``tcex.ti.<method>``.
         """
-        if self._ti is None:
-            from .threat_intelligence import ThreatIntelligence
-
-            self._ti = ThreatIntelligence(self)
-        return self._ti
+        return self.get_ti()
 
     @property
     def token(self) -> Tokens:

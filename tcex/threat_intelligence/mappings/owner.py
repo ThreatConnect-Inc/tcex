@@ -1,24 +1,19 @@
 """ThreatConnect TI Generic Mappings Object"""
-# first-party
-from tcex.utils import Utils
-
 from ..tcex_ti_tc_request import TiTcRequest
 
 
 class Owner:
     """Common API calls for for Indicators/SecurityLabels/Groups and Victims"""
 
-    def __init__(self, tcex):
+    def __init__(self, ti: 'ThreatIntelligenc'):
         """Initialize Class properties."""
-        self._tcex = tcex
         self._data = {}
 
         self._type = 'Owner'
         self._api_type = 'owners'
         self._api_entity = 'owner'
 
-        self._utils = Utils()
-        self._tc_requests = TiTcRequest(self._tcex)
+        self._tc_requests = TiTcRequest(ti.session)
 
     @property
     def type(self):
@@ -78,7 +73,11 @@ class Owner:
 
     def single(self, unique_id):
         """Return main type."""
-        return self.tc_requests.single(self.api_type, None, unique_id,)
+        return self.tc_requests.single(
+            self.api_type,
+            None,
+            unique_id,
+        )
 
     def many(self):
         """Get all of the owners available.

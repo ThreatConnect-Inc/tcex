@@ -1,6 +1,16 @@
 """ThreatConnect Threat Intelligence Module"""
+# standard library
+import logging
+from functools import lru_cache
+from typing import Optional
+
 # third-party
 import inflect
+from requests import Session
+
+# first-party
+from tcex.tcex_error_codes import TcExErrorCodes
+from tcex.utils import Utils
 
 from .mappings.filters import Filters
 from .mappings.group.group import Group
@@ -30,15 +40,121 @@ p = inflect.engine()
 # import local modules for dynamic reference
 module = __import__(__name__)
 
+# get tcex logger
+logger = logging.getLogger('tcex')
+
 
 class ThreatIntelligence:
     """ThreatConnect Threat Intelligence Module"""
 
-    def __init__(self, tcex):
+    def __init__(self, session: Session) -> None:
         """Initialize Class properties."""
-        self.tcex = tcex
+        self.session = session
+
+        # properties
         self._custom_indicator_classes = {}
+        self.log = logger
+        self.utils = Utils()
+
+        # generate custom ioc classes
         self._gen_indicator_class()
+
+    @property
+    @lru_cache()
+    def _error_codes(self) -> TcExErrorCodes:  # noqa: F821
+        """Return TcEx error codes."""
+        return TcExErrorCodes()
+
+    @property
+    def _group_types(self) -> list:
+        """Return all defined ThreatConnect Group types.
+
+        Returns:
+            (list): A list of ThreatConnect Group types.
+        """
+        return [
+            'Adversary',
+            'Campaign',
+            'Document',
+            'Email',
+            'Event',
+            'Incident',
+            'Intrusion Set',
+            'Signature',
+            'Report',
+            'Threat',
+            'Task',
+        ]
+
+    @property
+    def _group_types_data(self) -> dict:
+        """Return supported ThreatConnect Group types."""
+        return {
+            'Adversary': {'apiBranch': 'adversaries', 'apiEntity': 'adversary'},
+            'Campaign': {'apiBranch': 'campaigns', 'apiEntity': 'campaign'},
+            'Document': {'apiBranch': 'documents', 'apiEntity': 'document'},
+            'Email': {'apiBranch': 'emails', 'apiEntity': 'email'},
+            'Event': {'apiBranch': 'events', 'apiEntity': 'event'},
+            'Incident': {'apiBranch': 'incidents', 'apiEntity': 'incident'},
+            'Intrusion Set': {'apiBranch': 'intrusionSets', 'apiEntity': 'intrusionSet'},
+            'Report': {'apiBranch': 'reports', 'apiEntity': 'report'},
+            'Signature': {'apiBranch': 'signatures', 'apiEntity': 'signature'},
+            'Threat': {'apiBranch': 'threats', 'apiEntity': 'threat'},
+            'Task': {'apiBranch': 'tasks', 'apiEntity': 'task'},
+        }
+
+    @property
+    @lru_cache()
+    def _indicator_types_data(self) -> dict:
+        """Return ThreatConnect indicator types data.
+
+        Retrieve the data from the API if it hasn't already been retrieved.
+
+        Returns:
+            (dict): A dictionary of ThreatConnect Indicator data.
+        """
+        _indicator_types_data = {}
+
+        # retrieve data from API
+        r = self.session.get('/v2/types/indicatorTypes')
+
+        # TODO: use handle error instead
+        if not r.ok:
+            raise RuntimeError('Could not retrieve indicator types from ThreatConnect API.')
+
+        for itd in r.json().get('data', {}).get('indicatorType'):
+            _indicator_types_data[itd.get('name')] = itd
+
+        return _indicator_types_data
+
+    def _handle_error(
+        self, code: int, message_values: Optional[list] = None, raise_error: Optional[bool] = True
+    ) -> None:
+        """Raise RuntimeError
+
+        Args:
+            code: The error code from API or SDK.
+            message: The error message from API or SDK.
+            raise_error: Raise a Runtime error. Defaults to True.
+
+        Raises:
+            RuntimeError: Raised a defined error.
+        """
+        try:
+            if message_values is None:
+                message_values = []
+            message = self._error_codes.message(code).format(*message_values)
+            self.log.error(f'Error code: {code}, {message}')
+        except AttributeError:
+            self.log.error(f'Incorrect error code provided ({code}).')
+            raise RuntimeError(100, 'Generic Failure, see logs for more details.')
+        except IndexError:
+            self.log.error(
+                f'Incorrect message values provided for error code {code} ({message_values}).'
+            )
+            raise RuntimeError(100, 'Generic Failure, see logs for more details.')
+        if raise_error:
+            raise RuntimeError(code, message)
 
     def address(self, **kwargs):
         """Return an Address TI object.
@@ -56,7 +172,7 @@ class ThreatIntelligence:
         Returns:
             obj: An instance of Address.
         """
-        return Address(self.tcex, **kwargs)
+        return Address(self, **kwargs)
 
     def url(self, **kwargs):
         """Create the URL TI object.
@@ -68,7 +184,7 @@ class ThreatIntelligence:
         Return:
             obj: An instance of URL.
         """
-        return URL(self.tcex, **kwargs)
+        return URL(self, **kwargs)
 
     def email_address(self, **kwargs):
         """Create the Email Address TI object.
@@ -80,7 +196,7 @@ class ThreatIntelligence:
         Return:
             obj: An instance of EmailAddress.
         """
-        return EmailAddress(self.tcex, **kwargs)
+        return EmailAddress(self, **kwargs)
 
     def file(self, **kwargs):
         """Create the File TI object.
@@ -91,7 +207,7 @@ class ThreatIntelligence:
         Return:
             obj: An instance of File.
         """
-        return File(self.tcex, **kwargs)
+        return File(self, **kwargs)
 
     def host(self, **kwargs):
         """Create the Host TI object.
@@ -103,11 +219,12 @@ class ThreatIntelligence:
         Return:
             obj: An instance of Host.
         """
-        return Host(self.tcex, **kwargs)
+        return Host(self, **kwargs)
 
-    def filters(self):
+    @staticmethod
+    def filters():
         """Create a Filters TI object"""
-        return Filters(self.tcex)
+        return Filters()
 
     def indicator(self, indicator_type=None, owner=None, **kwargs):
         """Return an TI object.
@@ -128,7 +245,7 @@ class ThreatIntelligence:
             obj: An instance of Indicator or specific indicator type.
         """
         if not indicator_type:
-            return Indicator(self.tcex, owner=owner, **kwargs)
+            return Indicator(self, owner=owner, **kwargs)
 
         indicator_type_map = {
             'address': Address,
@@ -150,7 +267,6 @@ class ThreatIntelligence:
 
         # update kwargs
         kwargs['owner'] = owner
-        kwargs['tcex'] = self.tcex
 
         # return correct indicator object
         indicator_object = indicator_type_map.get(indicator_type)
@@ -164,7 +280,7 @@ class ThreatIntelligence:
             group_type: The type of group object.
         """
         if not group_type:
-            return Group(self.tcex, owner=owner, **kwargs)
+            return Group(self, owner=owner, **kwargs)
 
         group_type_map = {
             'adversary': Adversary,
@@ -189,7 +305,6 @@ class ThreatIntelligence:
 
         # update kwargs
         kwargs['owner'] = owner
-        kwargs['tcex'] = self.tcex
 
         # return correct group object
         group_object = group_type_map.get(group_type)
@@ -205,7 +320,7 @@ class ThreatIntelligence:
         Return:
             ti.Adversary: An instance of Adversary.
         """
-        return Adversary(self.tcex, **kwargs)
+        return Adversary(self, **kwargs)
 
     def campaign(self, **kwargs):
         """Create the Campaign TI object.
@@ -218,7 +333,7 @@ class ThreatIntelligence:
         Return:
             ti.Campaign: An instance of Campaign.
         """
-        return Campaign(self.tcex, **kwargs)
+        return Campaign(self, **kwargs)
 
     def document(self, **kwargs):
         """Create the Document TI object.
@@ -233,7 +348,7 @@ class ThreatIntelligence:
         Return:
             ti.Document: An instance of Document.
         """
-        return Document(self.tcex, **kwargs)
+        return Document(self, **kwargs)
 
     def email(self, **kwargs):
         """Create the Email TI object.
@@ -250,7 +365,7 @@ class ThreatIntelligence:
         Return:
             ti.Email: An instance of Email.
         """
-        return Email(self.tcex, **kwargs)
+        return Email(self, **kwargs)
 
     def event(self, **kwargs):
         """Create the Event TI object.
@@ -264,7 +379,7 @@ class ThreatIntelligence:
         Return:
             ti.Event: An instance of Event.
         """
-        return Event(self.tcex, **kwargs)
+        return Event(self, **kwargs)
 
     def incident(self, **kwargs):
         """Create the Incident TI object.
@@ -277,7 +392,7 @@ class ThreatIntelligence:
         Return:
             ti.Incident: An instance of Incident.
         """
-        return Incident(self.tcex, **kwargs)
+        return Incident(self, **kwargs)
 
     def intrusion_set(self, **kwargs):
         """Create the Intrustion Set TI object.
@@ -289,7 +404,7 @@ class ThreatIntelligence:
         Return:
             ti.IntrusionSet: An instance of IntrusionSet.
         """
-        return IntrusionSet(self.tcex, **kwargs)
+        return IntrusionSet(self, **kwargs)
 
     def report(self, **kwargs):
         """Create the Report TI object.
@@ -299,7 +414,7 @@ class ThreatIntelligence:
             name:
             **kwargs:
         """
-        return Report(self.tcex, **kwargs)
+        return Report(self, **kwargs)
 
     def signature(self, **kwargs):
         """Create the Signature TI object.
@@ -315,7 +430,7 @@ class ThreatIntelligence:
         Return:
             obj: An instance of Signature.
         """
-        return Signature(self.tcex, **kwargs)
+        return Signature(self, **kwargs)
 
     def task(self, **kwargs):
         """Create the Task TI object.
@@ -331,7 +446,7 @@ class ThreatIntelligence:
         Return:
             obj: An instance of Task
         """
-        return Task(self.tcex, **kwargs)
+        return Task(self, **kwargs)
 
     def threat(self, **kwargs):
         """Create the Threat TI object.
@@ -341,7 +456,7 @@ class ThreatIntelligence:
             name:
             **kwargs:
         """
-        return Threat(self.tcex, **kwargs)
+        return Threat(self, **kwargs)
 
     def victim(self, **kwargs):
         """Create the Victim TI object.
@@ -352,15 +467,15 @@ class ThreatIntelligence:
             **kwargs:
 
         """
-        return Victim(self.tcex, **kwargs)
+        return Victim(self, **kwargs)
 
     def tag(self, name):
         """Create the Tag TI object."""
-        return Tag(self.tcex, name)
+        return Tag(self, name)
 
     def owner(self):
         """Create the Owner object."""
-        return Owner(self.tcex)
+        return Owner(self)
 
     def create_entity(self, entity, owner):
         """Given a Entity and a Owner, creates a indicator/group in ThreatConnect"""
@@ -528,18 +643,22 @@ class ThreatIntelligence:
             values = []
             value = None
             keys = d.keys()
-            if resource_type.lower() in map(str.lower, self.tcex.group_types):
-                r = self.tcex.ti.group(group_type=resource_type, name=d.get('name'))
+            if resource_type.lower() in map(str.lower, self._group_types):
+                # @bpurdy - is this okay?
+                # r = self.tcex.ti.group(group_type=resource_type, name=d.get('name'))
+                r = self.group(group_type=resource_type, name=d.get('name'))
                 value = d.get('name')
-            elif resource_type.lower() in map(str.lower, self.tcex.indicator_types):
-                r = self.tcex.ti.indicator(indicator_type=resource_type)
+            elif resource_type.lower() in map(str.lower, self._indicator_types_data.keys()):
+                # @bpurdy - is this okay?
+                # r = self.tcex.ti.indicator(indicator_type=resource_type)
+                r = self.indicator(indicator_type=resource_type)
                 r._set_unique_id(d)
                 value = r.unique_id
             elif resource_type.lower() in ['victim']:
-                r = self.tcex.ti.victim(d.get('name'))
+                r = self.victim(name=d.get('name'))
                 value = d.get('name')
             else:
-                self.tcex.handle_error(925, ['type', 'entities', 'type', 'type', resource_type])
+                self._handle_error(925, ['type', 'entities', 'type', 'type', resource_type])
 
             if 'summary' in d:
                 values.append(d.get('summary'))
@@ -625,11 +744,11 @@ class ThreatIntelligence:
     def _gen_indicator_class(self):
         """Generate Custom Indicator Classes."""
 
-        for entry in self.tcex.indicator_types_data.values():
+        for entry in self._indicator_types_data.values():
             name = entry.get('name')
             class_name = name.replace(' ', '')
             # temp fix for API issue where boolean are returned as strings
-            entry['custom'] = self.tcex.utils.to_bool(entry.get('custom'))
+            entry['custom'] = self.utils.to_bool(entry.get('custom'))
 
             if class_name in globals():
                 # skip Indicator Type if a class already exists
@@ -676,12 +795,12 @@ class ThreatIntelligence:
             custom_class (object): The class to add.
         """
         method_name = name.replace(' ', '_').lower()
-        tcex = self.tcex
+        ti = self
 
         # Add Method for each Custom Indicator class
         def method_1(**kwargs):  # pylint: disable=possibly-unused-variable
             """Add Custom Indicator data to Batch object"""
-            return custom_class(tcex, **kwargs)
+            return custom_class(ti, **kwargs)
 
         method = locals()['method_1']
         setattr(self, method_name, method)

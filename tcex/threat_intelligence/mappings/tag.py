@@ -15,17 +15,18 @@ class Tag:
 
     """
 
-    def __init__(self, tcex, name):
+    def __init__(self, ti: 'ThreatIntelligenc', name):
         """Initialize Class Properties."""
         self._name = name
-        self._tcex = tcex
-        self._type = 'tags'
+
+        # properties
+        self._api_entity = 'tag'
         self._api_sub_type = None
         self._api_type = None
-        self._api_entity = 'tag'
-
+        self._tc_requests = TiTcRequest(ti.session)
+        self._type = 'tags'
         self._utils = Utils()
-        self._tc_requests = TiTcRequest(self._tcex)
+        self.ti = ti
 
     @staticmethod
     def is_tag():
@@ -41,9 +42,9 @@ class Tag:
             group_type:
         """
         if group_type and group_type.lower() == 'task':
-            group = self._tcex.ti.task()
+            group = self.ti.task()
         else:
-            group = self._tcex.ti.group(group_type)
+            group = self.ti.group(group_type)
         return self.tc_requests.groups_from_tag(
             group, self.name, filters=filters, owner=owner, params=params
         )
@@ -56,14 +57,14 @@ class Tag:
             filters:
             indicator_type:
         """
-        indicator = self._tcex.ti.indicator(indicator_type)
+        indicator = self.ti.indicator(indicator_type)
         yield from self.tc_requests.indicators_from_tag(
             indicator, self.name, filters=filters, owner=owner, params=params
         )
 
     def victims(self, filters=None, owner=None, params=None):
         """Get  all victims from a tag."""
-        victim = self._tcex.ti.victim()
+        victim = self.ti.victim()
         yield from self.tc_requests.victims_from_tag(
             victim, self.name, filters=filters, owner=owner, params=params
         )
