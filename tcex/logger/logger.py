@@ -342,14 +342,11 @@ class Logger:
 
     def _log_python_version(self) -> None:
         """Log the current Python version."""
-        python_version = '.'.join(
-            [
-                sys.version_info.major,
-                sys.version_info.minor,
-                sys.version_info.micro,
-            ]
+        self.log.info(
+            f'python-version={sys.version_info.major}.'
+            f'{sys.version_info.minor}.'
+            f'{sys.version_info.micro}'
         )
-        self.log.info(f'python-version={python_version}')
 
     def _log_tc_proxy(self, args: object) -> None:
         """Log the proxy settings.
