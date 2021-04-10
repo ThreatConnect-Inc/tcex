@@ -590,23 +590,13 @@ class BatchWriter:
             # get association from group data
             self.data_group_association(data, tracker, xid)
 
-            if tracker.get('count') % 2_500 == 0:
+            if tracker.get('count') % 10_000 == 0:
                 # log count/size at a sane level
                 self.tcex.log.debug(
                     '''feature=batch, action=data-groups, '''
                     f'''count={tracker.get('count'):,}, bytes={tracker.get('bytes'):,}'''
                 )
 
-            # if (
-            #     tracker.get('count') >= self._batch_max_chunk
-            #     or tracker.get('bytes') >= self._batch_max_size
-            # ):
-            #     # stop processing xid once max limit are reached
-            #     self.tcex.log.info(
-            #         '''feature=batch, event=max-value-reached, '''
-            #         f'''count={tracker.get('count'):,}, bytes={tracker.get('bytes'):,}'''
-            #     )
-            #     return True
         return False
 
     def data_indicators(self, data: dict, indicators: list, tracker: dict) -> bool:
@@ -632,23 +622,13 @@ class BatchWriter:
             tracker['count'] += 1
             # tracker['bytes'] += sys.getsizeof(json.dumps(indicator_data))
 
-            if tracker.get('count') % 2_500 == 0:
+            if tracker.get('count') % 10_000 == 0:
                 # log count/size at a sane level
                 self.tcex.log.debug(
                     '''feature=batch, action=data-indicators, '''
                     f'''count={tracker.get('count'):,}, bytes={tracker.get('bytes'):,}'''
                 )
 
-            # if (
-            #     tracker.get('count') >= self._batch_max_chunk
-            #     or tracker.get('bytes') >= self._batch_max_size
-            # ):
-            #     # stop processing xid once max limit are reached
-            #     self.tcex.log.info(
-            #         '''feature=batch, event=max-value-reached, '''
-            #         f'''count={tracker.get('count'):,}, bytes={tracker.get('bytes'):,}'''
-            #     )
-            #     return True
         return False
 
     def document(self, name: str, file_name: str, **kwargs) -> Document:

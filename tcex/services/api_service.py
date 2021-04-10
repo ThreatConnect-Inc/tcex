@@ -249,7 +249,7 @@ class ApiService(CommonService):
                     body_data = reduce(lambda a, b: a + b, body_data)
 
                 # write body to Redis
-                if body_data is not None:
+                if body_data:
                     self.key_value_store.create(request_key, 'response.body', body_data)
 
                     # set thread event to True to trigger response
