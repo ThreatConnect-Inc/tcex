@@ -31,6 +31,8 @@ class ApiHandler(logging.Handler):
         Args:
             record (obj): The record to be logged.
         """
+        # TODO: [low] switch this after testing
+        # if not threading.current_thread() is threading.main_thread():  # pragma: no cover
         if threading.current_thread().name != 'MainThread':  # pragma: no cover
             return
 

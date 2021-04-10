@@ -38,12 +38,11 @@ class TcEx:
 
     def __init__(self, **kwargs):
         """Initialize Class Properties."""
-        # catch interupt signals
-        if threading.current_thread().name == 'MainThread':
-            signal.signal(signal.SIGINT, self._signal_handler)
-            if platform.system() != 'Windows':
-                signal.signal(signal.SIGHUP, self._signal_handler)
-            signal.signal(signal.SIGTERM, self._signal_handler)
+        # catch interupt signals specifically based on thread name
+        signal.signal(signal.SIGINT, self._signal_handler)
+        if platform.system() != 'Windows':
+            signal.signal(signal.SIGHUP, self._signal_handler)
+        signal.signal(signal.SIGTERM, self._signal_handler)
 
         # Property defaults
         self._config: dict = kwargs.get('config') or {}
@@ -65,6 +64,7 @@ class TcEx:
         self._utils = None
         self._token = None
         self.ij = InstallJson()
+        self.main_os_pid = os.getpid()
 
         # add custom logger if provided
         self._log: object = kwargs.get('logger')
@@ -105,7 +105,7 @@ class TcEx:
         self.log.error(
             f'App interrupted - file: {call_file}, method: {call_module}, line: {call_line}.'
         )
-        if signal_interupt in (2, 15):
+        if threading.current_thread().name == 'MainThread' and signal_interupt in (2, 15):
             self.exit(1, 'The App received an interrupt signal and will now exit.')
 
     def advanced_request(

@@ -100,6 +100,7 @@ class CommonService:
             'acknowledged': self.process_acknowledged_command,
             'heartbeat': self.process_heartbeat_command,
             'loggingchange': self.process_logging_change_command,
+            'selfcheck': self.process_self_check,
             'shutdown': self.process_shutdown_command,
         }
 
@@ -128,6 +129,17 @@ class CommonService:
                 )
                 self.process_shutdown_command({'reason': 'Missed heartbeat commands.'})
                 break
+
+            if self.heartbeat_watchdog > 0:
+                # perform self health check
+                message = {
+                    'command': 'SelfCheck',
+                    'date': str(datetime.now()),
+                    'heartbeat_watchdog': self.heartbeat_watchdog,
+                }
+                self.message_broker.publish(
+                    message=json.dumps(message), topic=self.args.tc_svc_server_topic
+                )
             time.sleep(self.heartbeat_sleep_time)
             self.heartbeat_watchdog += 1
 
@@ -286,6 +298,22 @@ class CommonService:
             f'feature=service, event=invalid-command-received, message="""({message})""".'
         )
 
+    def process_self_check(self, message: dict) -> None:
+        """Implement parent method to process the shutdown command.
+
+        .. code-block:: python
+            :linenos:
+            :lineno-start: 1
+
+            {
+                "command": "SelfCheck",
+            }
+
+        Args:
+            message: The message payload from the server topic.
+        """
+        self.log.warning(f'feature=service, event=self-check, message={message}')
+
     def process_shutdown_command(self, message: dict) -> None:
         """Implement parent method to process the shutdown command.
 
@@ -330,9 +358,10 @@ class CommonService:
         # update shutdown flag
         self.message_broker.shutdown = True
 
-        # delay shutdown to give App time to cleanup
-        time.sleep(5)
-        self.tcex.exit(0)  # final shutdown in case App did not
+        # TODO: [review] this doesn't help if MainThread does not die.
+        # # delay shutdown to give App time to cleanup
+        # time.sleep(5)
+        # self.tcex.exit(0)  # final shutdown in case App did not
 
     @property
     def ready(self) -> bool:
