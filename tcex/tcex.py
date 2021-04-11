@@ -105,8 +105,11 @@ class TcEx:
         self.log.error(
             f'App interrupted - file: {call_file}, method: {call_module}, line: {call_line}.'
         )
+        exit_code = 0
         if threading.current_thread().name == 'MainThread' and signal_interupt in (2, 15):
-            self.exit(1, 'The App received an interrupt signal and will now exit.')
+            exit_code = 1
+
+        self.exit(exit_code, 'The App received an interrupt signal and will now exit.')
 
     def advanced_request(
         self, session: object, timeout: Optional[int] = 600, output_prefix: Optional[str] = None
