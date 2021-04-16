@@ -7,6 +7,9 @@ import platform
 import sys
 from typing import Optional
 
+# first-party
+from tcex.app_config.install_json import InstallJson
+
 from .api_handler import ApiHandler, ApiHandlerFormatter
 from .cache_handler import CacheHandler
 from .pattern_file_handler import PatternFileHandler
@@ -27,6 +30,9 @@ class Logger:
         """
         self.tcex = tcex
         self.logger_name = logger_name
+
+        # properties
+        self.ij = InstallJson()
 
     @property
     def _logger(self) -> logging.Logger:
@@ -324,14 +330,14 @@ class Logger:
     def _log_app_data(self) -> None:
         """Log the App data information as a best effort."""
         try:
-            self.log.info(f'app-name="{self.tcex.ij.display_name}"')
-            if self.tcex.ij.features:
-                self.log.info(f'app-features={self.tcex.ij.features}')
-            self.log.info(f'app-minimum-threatconnect-version={self.tcex.ij.min_server_version}')
-            self.log.info(f'app-runtime-level={self.tcex.ij.runtime_level}')
-            self.log.info(f'app-version={self.tcex.ij.program_version}')
-            if self.tcex.ij.commit_hash is not None:
-                self.log.info(f'app-commit-hash={self.tcex.ij.commit_hash}')
+            self.log.info(f'app-name="{self.ij.data.display_name}"')
+            if self.ij.data.features:
+                self.log.info(f'app-features={self.ij.data.features}')
+            self.log.info(f'app-minimum-threatconnect-version={self.ij.data.min_server_version}')
+            self.log.info(f'app-runtime-level={self.ij.data.runtime_level}')
+            self.log.info(f'app-version={self.ij.data.program_version}')
+            if self.ij.data.commit_hash is not None:
+                self.log.info(f'app-commit-hash={self.ij.data.commit_hash}')
         except Exception:  # nosec; pragma: no cover
             pass
 

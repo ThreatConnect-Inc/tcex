@@ -158,9 +158,9 @@ Testing framework
 + Added ``is_variable()`` method to Playbook module.
 + Updated ReadArgs decorator to return None when arg doesn't exist.
 + Updated ReadArgs to not log input value.
-+ Added new Permutations class to app_config_object module.
-+ Added new Profile and ProfileInteractive Classes to app_config_object module.
-+ Added new TcexJson Class to app_config_object module.
++ Added new Permutations class to app_config module.
++ Added new Profile and ProfileInteractive Classes to app_config module.
++ Added new TcexJson Class to app_config module.
 + Moved all testing template generation/download logic to consolidated templates.py file.
 + Added schema management to InstallJson class.
 + Added schema management to LayoutJson class.

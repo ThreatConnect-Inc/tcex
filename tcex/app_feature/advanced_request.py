@@ -8,6 +8,9 @@ from typing import Dict, List, Optional, Union
 # third-party
 import requests
 
+# first-party
+from tcex.app_config.install_json import InstallJson
+
 from ..decorators import ReadArg
 
 
@@ -29,7 +32,7 @@ class AdvancedRequest:
         output_prefix: Optional[str] = None,
     ):
         """Initialize class properties."""
-        self.output_prefix: str = output_prefix or tcex.ij.output_prefix
+        self.output_prefix: str = output_prefix or InstallJson().data.playbook.output_prefix
         self.session: object = session
         self.tcex: object = tcex
 

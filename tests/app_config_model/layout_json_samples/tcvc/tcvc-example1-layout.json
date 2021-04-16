@@ -1,0 +1,48 @@
+{
+  "inputs": [
+    {
+      "parameters": [
+        {
+          "name": "tc_action"
+        }
+      ],
+      "sequence": 1,
+      "title": "Action"
+    },
+    {
+      "parameters": [
+        {
+          "name": "string"
+        }
+      ],
+      "sequence": 2,
+      "title": "Connection"
+    },
+    {
+      "parameters": [
+        {
+          "display": "tc_action in ('Test')",
+          "name": "test"
+        }
+      ],
+      "sequence": 3,
+      "title": "Configure"
+    },
+    {
+      "parameters": [
+        {
+          "display": "tc_action in ('Advanced')",
+          "name": "advanced"
+        }
+      ],
+      "sequence": 4,
+      "title": "Advanced"
+    }
+  ],
+  "outputs": [
+    {
+      "display": "tc_action in ('Test')",
+      "name": "test.output"
+    }
+  ]
+}

@@ -48,7 +48,9 @@ class CommonServiceTrigger(CommonService):
             _context_tracker = json.loads(_context_tracker)
             _context_tracker.append(session_id)
             self.redis_client.hset(
-                self.args.tcex_testing_context, '_context_tracker', json.dumps(_context_tracker),
+                self.args.tcex_testing_context,
+                '_context_tracker',
+                json.dumps(_context_tracker),
             )
             self.redis_client.hset(session_id, '_trigger_id', trigger_id)
 
@@ -190,7 +192,13 @@ class CommonServiceTrigger(CommonService):
                 self.service_thread(
                     name=session_id,
                     target=self.fire_event_trigger,
-                    args=(callback, playbook, session_id, trigger_id, config,),
+                    args=(
+                        callback,
+                        playbook,
+                        session_id,
+                        trigger_id,
+                        config,
+                    ),
                     kwargs=kwargs,
                     session_id=session_id,
                     trigger_id=trigger_id,
@@ -276,8 +284,8 @@ class CommonServiceTrigger(CommonService):
 
         logged_config = config.copy()
 
-        for param in self.ij.params:
-            if param.get('encrypt', False) and config.__contains__(param.get('name')):
+        for param in self.ij.data.params:
+            if param.encrypt and config.__contains__(param.name):
                 logged_config[param.get('name')] = '***'
         self.log.info(
             f'feature=service, event=create-config, trigger_id={trigger_id}, config={logged_config}'
@@ -336,7 +344,7 @@ class CommonServiceTrigger(CommonService):
         if callable(self.create_config_callback):
 
             kwargs = {}
-            if self.ij.runtime_level.lower() == 'webhooktriggerservice':
+            if self.ij.data.runtime_level.lower() == 'webhooktriggerservice':
                 # only webhook triggers get and require the PB url
                 kwargs['url'] = message.get('url')
 

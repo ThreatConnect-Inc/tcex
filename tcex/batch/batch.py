@@ -1607,7 +1607,12 @@ class Batch:
             # submit file data after batch job is complete
             self._file_threads.append(
                 self.submit_thread(
-                    name='submit-files', target=self.submit_files, args=(file_data, halt_on_error,),
+                    name='submit-files',
+                    target=self.submit_files,
+                    args=(
+                        file_data,
+                        halt_on_error,
+                    ),
                 )
             )
         return batch_data
@@ -1706,7 +1711,10 @@ class Batch:
                     self.submit_thread(
                         name='submit-files',
                         target=self.submit_files,
-                        args=(file_data, halt_on_error,),
+                        args=(
+                            file_data,
+                            halt_on_error,
+                        ),
                     )
                 )
             batch_data_array.append(batch_data)
@@ -1817,7 +1825,12 @@ class Batch:
         if file_data:
             self._file_threads.append(
                 self.submit_thread(
-                    name='submit-files', target=self.submit_files, args=(file_data, halt_on_error,),
+                    name='submit-files',
+                    target=self.submit_files,
+                    args=(
+                        file_data,
+                        halt_on_error,
+                    ),
                 )
             )
 

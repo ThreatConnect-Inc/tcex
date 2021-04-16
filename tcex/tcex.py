@@ -13,10 +13,15 @@ from functools import lru_cache
 from typing import Optional, Union
 from urllib.parse import quote
 
-from .app_config_object import InstallJson
-from .inputs import Inputs
-from .logger import Logger, TraceLogger
-from .tokens import Tokens
+# first-party
+from tcex.app_config import InstallJson
+from tcex.input import Input
+from tcex.key_value_store import KeyValueApi, KeyValueRedis, key_value_store
+from tcex.logger import Logger, TraceLogger
+from tcex.playbook import Playbook
+from tcex.pleb import Event
+from tcex.sessions import TcSession
+from tcex.tokens import Tokens
 
 # init tcex logger
 logging.setLoggerClass(TraceLogger)
@@ -53,9 +58,7 @@ class TcEx:
         self._indicator_types = None
         self._indicator_types_data = None
         self._jobs = None
-        self._key_value_store = None
         self._logger = None
-        self._playbook = None
         self._redis_client = None
         self._service = None
         self._session = None
@@ -63,6 +66,7 @@ class TcEx:
         self._stix_model = None
         self._utils = None
         self._token = None
+        self.event = Event()
         self.ij = InstallJson()
         self.main_os_pid = os.getpid()
 
@@ -70,7 +74,12 @@ class TcEx:
         self._log: object = kwargs.get('logger')
 
         # init args (needs logger)
-        self.inputs = Inputs(self, self._config, kwargs.get('config_file'))
+        self.inputs = Input(self._config, kwargs.get('config_file'))
+
+        # method subscription for Event module
+        self.event.subscribe(channel='exit', callback=self.exit)
+        self.event.subscribe(channel='exit_code', callback=self.exit_code)
+        self.event.subscribe(channel='register_token', callback=self.token.register_token)
 
     def _association_types(self):
         """Retrieve Custom Indicator Associations types from the ThreatConnect API."""
@@ -301,23 +310,17 @@ class TcEx:
             code: The exit code value for the app.
             msg: A message to log and add to message tc output.
         """
-        # add exit message to message.tc file and log
-        if msg is not None:
-            if code in [0, 3] or (code is None and self.exit_code in [0, 3]):
-                self.log.info(msg)
-            else:
-                self.log.error(msg)
-            self.message_tc(msg)
+        # get correct code
+        code = self.exit_code_handler(code)
 
-        if code is None:
-            code = self.exit_code
-        elif code in [0, 1, 3]:
-            pass
-        else:
-            self.log.error('Invalid exit code')
-            code = 1
+        # handle exit msg logging
+        self.exit_msg_handler(code, msg)
 
-        if self.default_args.tc_aot_enabled:
+        # playbook exit
+        self.exit_playbook_handler()
+
+        # aot notify
+        if self.input.data.tc_aot_enabled:
             # push exit message
             self.aot_rpush(code)
 
@@ -326,6 +329,40 @@ class TcEx:
 
         self.log.info(f'Exit Code: {code}')
         sys.exit(code)
+
+    def exit_code_handler(self, code: int) -> int:
+        """."""
+        if code is None:
+            code = self.exit_code
+        elif code == 3 and self.ij.data.runtime_level.lower() == 'playbook':
+            self.log.info('Changing exit code from 3 to 0 for Playbook App.')
+            code = 0
+        elif code in [0, 1, 3]:
+            pass
+        else:
+            self.log.error('Invalid exit code')
+            code = 1
+
+        return code
+
+    def exit_msg_handler(self, code: int, msg: str) -> None:
+        """."""
+        # add exit message to message.tc file and log
+        if msg is not None:
+            if code in [0, 3] or (code is None and self.exit_code in [0, 3]):
+                self.log.info(msg)
+            else:
+                self.log.error(msg)
+            self.message_tc(msg)
+
+    def exit_playbook_handler(self, msg: str) -> None:
+        """."""
+        # write outputs before exiting
+        self.playbook.write_output()
+
+        # required only for tcex testing framework
+        if self.inputs.data.tcex_testing_context is not None:  # pragma: no cover
+            self.redis_client.hset(self.inputs.data.tcex_testing_context, '_exit_message', msg)
 
     @property
     def exit_code(self) -> None:
@@ -384,11 +421,22 @@ class TcEx:
 
         return indicator_list
 
-    # TODO: [high] testing ... organize this later
-    def get_session(self) -> 'TcSession':  # noqa: F821
-        """Return an instance of Requests Session configured for the ThreatConnect API."""
-        from .sessions import TcSession
+    def get_playbook(
+        self, context: Optional[str] = None, output_variables: Optional[list] = None
+    ) -> Playbook:
+        """Return a new instance of playbook module.
 
+        Args:
+            context: The KV Store context/session_id. For PB Apps the context is provided on
+                startup, but for service Apps each request gets a different context.
+            output_variables: The requested output variables. For PB Apps outputs are provided on
+                startup, but for service Apps each request gets different outputs.
+        """
+        return Playbook(self.inputs, context, output_variables)
+
+    # TODO: [high] testing ... organize this later
+    def get_session(self) -> TcSession:  # noqa: F821
+        """Return an instance of Requests Session configured for the ThreatConnect API."""
         _session = TcSession(
             logger=self.log,
             api_access_id=self.default_args.api_access_id,
@@ -561,29 +609,18 @@ class TcEx:
                 self._indicator_types_data[itd.get('name')] = itd
         return self._indicator_types_data
 
+    # TODO: [med] update to support scoped instance
     @property
-    def key_value_store(self) -> Union['KeyValueRedis', 'KeyValueApi']:  # noqa: F821
+    def key_value_store(self) -> Union[KeyValueApi, KeyValueRedis]:  # noqa: F821
         """Return the correct KV store for this execution.
 
         The TCKeyValueAPI KV store is limited to two operations (create and read),
         while the Redis kvstore wraps a few other Redis methods.
         """
-        if self._key_value_store is None:
-            if self.default_args.tc_playbook_db_type == 'Redis':
-                from .key_value_store import KeyValueRedis
-
-                self._key_value_store = KeyValueRedis(self.redis_client)
-            elif self.default_args.tc_playbook_db_type == 'TCKeyValueAPI':
-                from .key_value_store import KeyValueApi
-
-                # providing runtime_level to KeyValueApi for service Apps so that the new
-                # API endpoint (in TC 6.0.7) can be used with the context. this new
-                # endpoint could be used for PB Apps, however to support versions of
-                # TC < 6.0.7 the old endpoint must still be used.
-                self._key_value_store = KeyValueApi(self.session, self.ij.runtime_level.lower())
-            else:  # pragma: no cover
-                raise RuntimeError(f'Invalid DB Type: ({self.default_args.tc_playbook_db_type})')
-        return self._key_value_store
+        try:
+            return key_value_store(self.inputs.data.tc_kvstore_type)
+        except RuntimeError as ex:
+            self.exit(1, f'Failed to get instance of KeyValue Store ({ex}).')
 
     @property
     def log(self) -> 'TraceLogger':  # noqa: F821
@@ -670,26 +707,8 @@ class TcEx:
         return Notifications(self)
 
     @property
-    def parser(self) -> 'TcArgumentParser':  # noqa: F821
-        """Instance tcex args parser."""
-        return self.inputs.parser
-
-    def pb(self, context: str, output_variables: list) -> 'Playbooks':  # noqa: F821
-        """Return a new instance of playbook module.
-
-        Args:
-            context: The Redis context for Playbook or Service Apps.
-            output_variables: A list of requested PB/Service output variables.
-
-        Returns:
-            tcex.playbook.Playbooks: An instance of Playbooks
-        """
-        from .playbooks import Playbooks
-
-        return Playbooks(self, context, output_variables)
-
-    @property
-    def playbook(self) -> 'Playbooks':  # noqa: F821
+    @lru_cache
+    def playbook(self) -> Playbook:
         """Return an instance of Playbooks module.
 
         This property defaults context and outputvariables to arg values.
@@ -699,13 +718,7 @@ class TcEx:
         Returns:
             tcex.playbook.Playbooks: An instance of Playbooks
         """
-        if self._playbook is None:
-            # handle outputs coming in as a csv string and list
-            outputs: list = self.default_args.tc_playbook_out_variables or []
-            if isinstance(outputs, str):
-                outputs = outputs.split(',')
-            self._playbook = self.pb(self.default_args.tc_playbook_db_context, outputs)
-        return self._playbook
+        return self.get_playbook()
 
     @property
     def proxies(self) -> dict:
@@ -930,11 +943,11 @@ class TcEx:
         .. Note:: Service methods can be accessed using ``tcex.service.<method>``.
         """
         if self._service is None:
-            if self.ij.runtime_level.lower() == 'apiservice':
+            if self.ij.data.runtime_level.lower() == 'apiservice':
                 from .services import ApiService as Service
-            elif self.ij.runtime_level.lower() == 'triggerservice':
+            elif self.ij.data.runtime_level.lower() == 'triggerservice':
                 from .services import CommonServiceTrigger as Service
-            elif self.ij.runtime_level.lower() == 'webhooktriggerservice':
+            elif self.ij.data.runtime_level.lower() == 'webhooktriggerservice':
                 from .services import WebhookTriggerService as Service
             else:
                 self.exit(1, 'Could not determine the service type.')
@@ -942,6 +955,7 @@ class TcEx:
             self._service = Service(self)
         return self._service
 
+    # TODO: [med] update to support scoped instance
     @property
     def session(self) -> 'TcSession':  # noqa: F821
         """Return an instance of Requests Session configured for the ThreatConnect API."""
@@ -959,7 +973,11 @@ class TcEx:
 
             # add User-Agent to headers
             self._session_external.headers.update(
-                {'User-Agent': f'TcEx App: {self.ij.display_name} - {self.ij.program_version}'}
+                {
+                    'User-Agent': (
+                        f'TcEx App: {self.ij.data.display_name} - {self.ij.data.program_version}'
+                    )
+                }
             )
 
             # add proxy support if requested
@@ -986,6 +1004,7 @@ class TcEx:
             self._stix_model = StixModel(self.logger)
         return self._stix_model
 
+    # TODO: [med] update to support scoped instance
     @property
     @lru_cache()
     def ti(self) -> 'ThreatIntelligence':  # noqa: F821

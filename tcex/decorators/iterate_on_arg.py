@@ -7,6 +7,7 @@ from typing import List, Union
 import wrapt
 
 # first-party
+from tcex.app_config.install_json import InstallJson
 from tcex.validators import (
     ValidationError,
     equal_to,
@@ -68,6 +69,7 @@ class IterateOnArg:
         self.fail_enabled = kwargs.get('fail_enabled', False)
         self.fail_msg = kwargs.get('fail_msg')
         self.fail_on = kwargs.get('fail_on', [])
+        self.ij = InstallJson()
         self.transforms: Union[List[callable], callable] = kwargs.get('transforms', [])
         self.validators: Union[List[callable], callable] = kwargs.get('validators', [])
         if self.fail_on:
@@ -135,7 +137,10 @@ class IterateOnArg:
                 app (class): The instance of the App class "self".
             """
             # retrieve the label for the current Arg
-            label = app.tcex.ij.params_dict.get(self.arg, {}).get('label')
+            try:
+                label = self.ij.data.params_dict.get(self.arg).label
+            except AttributeError:
+                label = None
 
             # get the signature for the decorated method
             fn_signature = inspect.signature(wrapped, follow_wrapped=True).parameters

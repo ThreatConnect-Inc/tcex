@@ -6,6 +6,7 @@ from typing import Callable, List, Union
 import wrapt
 
 # first-party
+from tcex.app_config.install_json import InstallJson
 from tcex.validators import (
     ValidationError,
     equal_to,
@@ -115,6 +116,7 @@ class ReadArg:
         self.fail_enabled = kwargs.get('fail_enabled', True)
         self.fail_msg = kwargs.get('fail_msg')
         self.fail_on = kwargs.get('fail_on', [])
+        self.ij = InstallJson()
         self.embedded = kwargs.get('embedded', True)
         self.indicator_values = kwargs.get('indicator_values', False)
         self.group_values = kwargs.get('group_values', False)
@@ -187,7 +189,10 @@ class ReadArg:
                 app (class): The instance of the App class "self".
             """
             # retrieve the label for the current Arg
-            label = app.tcex.ij.params_dict.get(self.arg, {}).get('label')
+            try:
+                label = self.ij.data.params_dict.get(self.arg).label
+            except AttributeError:
+                label = None
 
             # self.enable (e.g., True or 'fail_on_false') enables/disables this feature
             enabled = self.fail_enabled

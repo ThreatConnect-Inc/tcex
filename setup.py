@@ -7,7 +7,10 @@ from setuptools import find_packages, setup
 
 metadata = {}
 metadata_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'tcex', '__metadata__.py')
-with open(metadata_file, mode='r', encoding='utf-8',) as f:
+with open(
+    metadata_file,
+    encoding='utf-8',
+) as f:
     exec(f.read(), metadata)  # nosec; pylint: disable=exec-used
 
 if not metadata:
@@ -62,6 +65,7 @@ setup(
     extras_require={'dev': dev_packages, 'develop': dev_packages, 'development': dev_packages},
     include_package_data=True,
     install_requires=[
+        'backports.cached-property; python_version < "3.8.0"',
         'colorama>=0.3.9',
         'future',
         'hvac>=0.3.0',
@@ -72,6 +76,7 @@ setup(
         'paho-mqtt',
         'parsedatetime',
         'pyaes',
+        'pydantic',
         'python-dateutil>=2.6.1',
         'pytz',
         'redis>=2.10.6',

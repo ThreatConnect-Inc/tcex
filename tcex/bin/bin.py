@@ -7,8 +7,8 @@ import sys
 # third-party
 import colorama as c
 
-from ..app_config_object import InstallJson, LayoutJson, TcexJson
-from ..app_config_object.permutations import Permutations
+from ..app_config import InstallJson, LayoutJson, TcexJson
+from ..app_config.permutations import Permutations
 
 
 class Bin:

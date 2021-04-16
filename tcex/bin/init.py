@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """TcEx App Init."""
-from ..app_config_object.templates import DownloadTemplates
+from ..app_config.templates import DownloadTemplates
 from .bin import Bin
 
 

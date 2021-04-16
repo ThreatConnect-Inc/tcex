@@ -49,7 +49,10 @@ parser = argparse.ArgumentParser(
 )
 parser.add_argument('--branch', default='master', help='Git branch.')
 parser.add_argument(
-    '--layout', action='store_true', help='Create a layout.json file.', default=False,
+    '--layout',
+    action='store_true',
+    help='Create a layout.json file.',
+    default=False,
 )
 parser.add_argument(
     '--migrate',
@@ -155,10 +158,10 @@ if __name__ == '__main__':
 
         # if we are migrating, update the install.json
         if (args.update or args.migrate) and not template.startswith('external'):
-            tci.ij.update(migrate=args.migrate)
+            tci.ij.update.multiple(migrate=args.migrate)
             # APP-86 - sort output data by name
             if tci.lj.has_layout:
-                tci.lj.update(features=tci.ij.features)
+                tci.lj.update()
 
         # print results
         tci.download_template.print_download_results()
@@ -166,7 +169,7 @@ if __name__ == '__main__':
         # external and external_ingress templates do not use tcex.json or install.json
         if not template.startswith('external'):
             # update install.json
-            tci.ij.update()
+            tci.ij.update.multiple()
 
             # update tcex.json
             tci.tj.update(template)
@@ -182,7 +185,7 @@ if __name__ == '__main__':
 
         # create layout.json file if requested
         if args.layout:
-            tci.lj.create(tci.ij.params, tci.ij.output_variables)
+            tci.lj.create(tci.ij.data.params, tci.ij.data.playbook.output_variables)
 
         # cleanly exit
         sys.exit()

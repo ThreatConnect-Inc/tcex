@@ -10,7 +10,9 @@ import zipfile
 # third-party
 import colorama as c
 
-from ..app_config_object import InstallJson
+# first-party
+from tcex.app_config import InstallJson
+
 from .bin import Bin
 
 
@@ -220,7 +222,7 @@ class Package(Bin):
         2. Use major version from programVersion field in install.json if available.
         3. Default to '1.0.0' updated to major version only ('v1').
         """
-        app_version = f"v{ij.program_version.split('.')[0]}"
+        app_version = f"v{ij.data.program_version.split('.')[0]}"
         return self.tj.package_app_version or app_version
 
     def print_json(self):

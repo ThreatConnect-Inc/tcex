@@ -136,15 +136,15 @@ class Validate(Bin):
 
     def check_feed_files(self):
         """Validate feed files for feed job apps."""
-        package_name = f'{self.tj.package_app_name}_v{self.ij.program_version.split(".")[0]}'
+        package_name = f'{self.tj.package_app_name}_v{self.ij.data.program_version.split(".")[0]}'
         package_name = package_name.replace('_', ' ')
-        if self.ij.runtime_level == 'Organization':
+        if self.ij.data.runtime_level == 'Organization':
 
-            for i, feed in enumerate(self.ij.feeds):
+            for i, feed in enumerate(self.ij.data.feeds):
                 passed = True
-                feed_name = f'(feeds[{i}]) {feed.get("sourceName")}'
-                job_file = feed.get('jobFile')
-                if not os.path.isfile(feed.get('jobFile')):
+                feed_name = f'(feeds[{i}]) {feed.source_name}'
+                job_file = feed.job_file
+                if not os.path.isfile(feed.job_file):
                     self.validation_data['errors'].append(
                         f'Feed validation failed '
                         f'(Feed {i} references non-existent job-file {job_file})'
@@ -178,7 +178,7 @@ class Validate(Bin):
                         )
                         passed = False
 
-                if feed.get('attributesFile') and not os.path.isfile(feed.get('attributesFile')):
+                if feed.attributes_file and not os.path.isfile(feed.attributes_file):
                     self.validation_data['errors'].append(
                         f'Feed validation failed '
                         f'(Feed {i} references non-existent attributes file '
@@ -319,26 +319,26 @@ class Validate(Bin):
         # do not track hidden or serviceConfig inputs as they should not be in layouts.json
         ij_input_names = [
             p.get('name')
-            for p in self.ij.filter_params_dict(service_config=False, hidden=False).values()
+            for p in self.ij.data.filter_params_dict(service_config=False, hidden=False).values()
         ]
-        ij_output_names = [o.get('name') for o in self.ij.output_variables]
+        ij_output_names = [o.name for o in self.ij.data.playbook.output_variables]
 
         # Check for duplicate inputs
-        for name in self.ij.validate_duplicate_input_names():
+        for name in self.ij.validate.validate_duplicate_input_names():
             self.validation_data['errors'].append(
                 f'Duplicate input name found in install.json ({name})'
             )
             status = False
 
         # Check for duplicate sequence numbers
-        for sequence in self.ij.validate_duplicate_sequences():
+        for sequence in self.ij.validate.validate_duplicate_sequences():
             self.validation_data['errors'].append(
                 f'Duplicate sequence number found in install.json ({sequence})'
             )
             status = False
 
         # Check for duplicate outputs variables
-        for output in self.ij.validate_duplicate_outputs():
+        for output in self.ij.validate.validate_duplicate_outputs():
             self.validation_data['errors'].append(
                 f'Duplicate output variable name found in install.json ({output})'
             )
