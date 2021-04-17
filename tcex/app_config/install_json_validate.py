@@ -3,14 +3,14 @@
 # standard library
 from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from .install_json import InstallJson
 
 
 class InstallJsonValidate:
     """Validate install.json file."""
 
-    def __init__(self, ij: InstallJson) -> None:  # pylint: disable=E0601
+    def __init__(self, ij: 'InstallJson') -> None:  # pylint: disable=E0601
         """Initialize class properties."""
         self.ij = ij
 
@@ -18,7 +18,7 @@ class InstallJsonValidate:
         """Check for duplicate input names."""
         duplicates = []
         tracker = []
-        for param in self.ij.data.data.params:
+        for param in self.ij.data.params:
             if param.name in tracker:
                 duplicates.append(param.name)
             tracker.append(param.name)

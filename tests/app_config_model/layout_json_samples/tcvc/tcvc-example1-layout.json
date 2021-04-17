@@ -42,7 +42,15 @@
   "outputs": [
     {
       "display": "tc_action in ('Test')",
-      "name": "test.output"
+      "name": "test1.output"
+    },
+    {
+      "display": "tc_action in ('Test')",
+      "name": "test2.output"
+    },
+    {
+      "display": "tc_action in ('Test')",
+      "name": "test3.output"
     }
   ]
 }

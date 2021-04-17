@@ -4,14 +4,14 @@
 import os
 from typing import TYPE_CHECKING, Optional
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from .install_json import InstallJson
 
 
 class InstallJsonUpdate:
     """Update install.json file with current standards and schema."""
 
-    def __init__(self, ij: InstallJson) -> None:  # pylint: disable=E0601
+    def __init__(self, ij: 'InstallJson') -> None:  # pylint: disable=E0601
         """Initialize class properties."""
         self.ij = ij
 
@@ -52,12 +52,8 @@ class InstallJsonUpdate:
         if playbook_data_types is True:
             self.update_playbook_data_types()
 
-        with self.ij.fqfn.open(mode='w') as fh:
-            # write updated profile
-            data = self.ij.data.json(
-                by_alias=True, exclude_defaults=True, exclude_none=True, indent=2, sort_keys=True
-            )
-            fh.write(f'{data}\n')
+        # write updated profile
+        self.ij.write()
 
     # def update_display_name(self, json_data: dict) -> None:
     #     """Update the displayName parameter."""
@@ -88,7 +84,7 @@ class InstallJsonUpdate:
             features = ['appBuilderCompliant', 'fileParams']
 
         # add layoutEnabledApp if layout.json file exists in project
-        if os.path.isfile(os.path.join(self.ij.fqfn.parent, 'layout.json')):
+        if os.path.isfile(os.path.join(self.ij.fqfn.parent, 'layout.json')):  # pragma: no cover
             features.append('layoutEnabledApp')
 
         # re-add supported optional features

@@ -51,10 +51,7 @@
       "required": true,
       "sequence": 1,
       "type": "String",
-      "validValues": [
-        "${USER:TEXT}",
-        "${ORGANIZATION:TEXT}"
-      ]
+      "validValues": []
     },
     {
       "label": "String Optional",
@@ -63,7 +60,8 @@
       "type": "String",
       "validValues": [
         "${USER:TEXT}",
-        "${ORGANIZATION:TEXT}"
+        "${ORGANIZATION:TEXT}",
+        "${TEXT}"
       ]
     },
     {

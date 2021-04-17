@@ -33,6 +33,11 @@ runtime_level_map = {
         ProxyModel,
         ServiceModel,
     ],
+    'external': [
+        ApiModel,
+        BatchModel,
+        LoggingModel,
+    ],
     'organization': [
         ApiModel,
         BatchModel,

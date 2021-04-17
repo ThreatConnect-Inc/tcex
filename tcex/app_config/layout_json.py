@@ -6,8 +6,13 @@ import os
 from collections import OrderedDict
 from functools import lru_cache
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from .models import LayoutJsonModel
+
+if TYPE_CHECKING:  # pragma: no cover
+    # first-party
+    from tcex.app_config.models.install_json_model import OutputVariablesModel, ParamsModel
 
 
 class LayoutJson:
@@ -31,15 +36,15 @@ class LayoutJson:
             try:
                 with self.fqfn.open() as fh:
                     contents = json.load(fh, object_pairs_hook=OrderedDict)
-            except OSError:
+            except OSError:  # pragma: no cover
                 self.log.error(
                     f'feature=install-json, exception=failed-reading-file, filename={self.fqfn}'
                 )
-        else:
+        else:  # pragma: no cover
             self.log.error(f'feature=install-json, exception=file-not-found, filename={self.fqfn}')
         return contents
 
-    def create(self, inputs, outputs):
+    def create(self, inputs: 'ParamsModel', outputs: 'OutputVariablesModel'):
         """Create new layout.json file based on inputs and outputs."""
 
         def input_data(sequence: int, title: str) -> dict:
@@ -61,15 +66,15 @@ class LayoutJson:
             }
         )
 
-        for input in inputs:
-            if input.name == 'tc_action':
+        for input_ in inputs:
+            if input_.name == 'tc_action':
                 lj.inputs[0].parameters.append({'name': 'tc_action'})
-            elif input.hidden is True:
+            elif input_.hidden is True:
                 lj.inputs[2].parameters.append(
-                    {'display': "'hidden' != 'hidden'", 'hidden': 'true', 'name': input.name}
+                    {'display': "'hidden' != 'hidden'", 'hidden': 'true', 'name': input_.name}
                 )
             else:
-                lj.inputs[2].parameters.append({'display': '', 'name': input.name})
+                lj.inputs[2].parameters.append({'display': '', 'name': input_.name})
 
         # write layout file to disk
         data = lj.json(
@@ -78,7 +83,7 @@ class LayoutJson:
         self.write(data)
 
     @property
-    @lru_cache()
+    # @lru_cache()
     def data(self) -> LayoutJsonModel:
         """Return the Install JSON model."""
         return LayoutJsonModel(**self.contents)
@@ -88,9 +93,10 @@ class LayoutJson:
         """Return True if App has layout.json file."""
         return self.fqfn.is_file()
 
+    @property
     def update(self):
         """Return InstallJsonUpdate instance."""
-        return LayoutJsonUpdate(lj=self).update()
+        return LayoutJsonUpdate(lj=self)
 
     def write(self, data: str) -> None:
         """Write updated file.
@@ -109,7 +115,7 @@ class LayoutJsonUpdate:
         """Initialize class properties."""
         self.lj = lj
 
-    def update(self) -> None:
+    def multiple(self) -> None:
         """Update the layouts.json file."""
         # APP-86 - sort output data by name
         self.update_sort_outputs()

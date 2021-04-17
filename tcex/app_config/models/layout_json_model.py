@@ -1,6 +1,5 @@
 """Layout JSON Model"""
 # standard library
-from functools import lru_cache
 from typing import List, Optional, Union
 
 # third-party
@@ -20,6 +19,7 @@ def snake_to_camel(snake_string: str) -> str:
 
 
 class ParametersModel(BaseModel):
+    """Model for layout_json.inputs.{}"""
 
     display: Optional[str]
     name: str
@@ -32,6 +32,7 @@ class ParametersModel(BaseModel):
 
 
 class InputsModel(BaseModel):
+    """Model for layout_json.inputs"""
 
     parameters: List[ParametersModel]
     sequence: int
@@ -45,6 +46,7 @@ class InputsModel(BaseModel):
 
 
 class OutputsModel(BaseModel):
+    """Model for layout_json.outputs"""
 
     display: Optional[str]
     name: str
@@ -77,19 +79,16 @@ class LayoutJsonModel(BaseModel):
         return self.outputs_.get(name) or NoneModel
 
     @property
-    @lru_cache
     def outputs_(self) -> dict[str, OutputsModel]:
         """Return layout.json outputs in a flattened dict with name param as key."""
         return {o.name: o for o in self.outputs}
 
     @property
-    @lru_cache
     def param_names(self) -> list:
         """Return all param names in a single list."""
-        return self.params.keys()
+        return list(self.params.keys())
 
     @property
-    @lru_cache
     def params(self) -> dict[str, ParametersModel]:
         """Return layout.json params in a flattened dict with name param as key."""
         parameters = {}

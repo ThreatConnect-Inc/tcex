@@ -1,44 +1,16 @@
 {
   "allowOnDemand": true,
-  "allowRunAsUser": true,
-  "apiUserTokenParam": true,
-  "appId": "f0a3fa03-8df8-52fe-9c64-5970c0bf4cdf",
+  "appId": "080c91ce-85a3-5c4f-b4b3-3e5380475c9c",
   "commitHash": "abc123",
-  "displayName": "Organization (Job) App",
+  "displayName": "API Service App",
+  "displayPath": "api_service_app",
   "features": [
-    "fileParams",
-    "secureParams"
-  ],
-  "feeds": [
-    {
-      "attributesFile": "attributes.json",
-      "deprecation": [
-        {
-          "confidenceAmount": 3,
-          "deleteAtMinimum": true,
-          "indicatorType": "Host",
-          "intervalDays": 11,
-          "percentage": true
-        }
-      ],
-      "documentStorageLimitMb": 10000,
-      "enableBulkJson": true,
-      "firstRunParams": [
-        {
-          "param": "last_run",
-          "value": "90 days ago"
-        }
-      ],
-      "indicatorLimit": 50000000,
-      "jobFile": "crowdstrike.job.json",
-      "sourceCategory": "Premium",
-      "sourceDescription": "CrowdStrike Falcon Intelligence",
-      "sourceName": "CrowdStrike Falcon Intelligence"
-    }
+    "appBuilderCompliant",
+    "fileParams"
   ],
   "labels": [
     "label1",
-    "label2"
+    "label1"
   ],
   "languageVersion": "3.6",
   "listDelimiter": "|",
@@ -46,10 +18,11 @@
   "note": "The App Note.",
   "params": [
     {
-      "label": "String Required",
-      "name": "string_required",
+      "label": "Service String Required",
+      "name": "service_string_required",
       "required": true,
       "sequence": 1,
+      "serviceConfig": true,
       "type": "String",
       "validValues": [
         "${USER:TEXT}",
@@ -57,9 +30,10 @@
       ]
     },
     {
-      "label": "String Optional",
-      "name": "string_optional",
+      "label": "Service String Optional",
+      "name": "service_string_optional",
       "sequence": 2,
+      "serviceConfig": true,
       "type": "String",
       "validValues": [
         "${USER:TEXT}",
@@ -68,9 +42,10 @@
     },
     {
       "hidden": true,
-      "label": "String Hidden",
-      "name": "string_hidden",
+      "label": "Service String Hidden",
+      "name": "service_string_hidden",
       "sequence": 3,
+      "serviceConfig": true,
       "type": "String",
       "validValues": [
         "${USER:TEXT}",
@@ -79,9 +54,10 @@
     },
     {
       "encrypt": true,
-      "label": "String Encrypted",
-      "name": "string_encrypted",
+      "label": "Service String Encrypted",
+      "name": "service_string_encrypted",
       "sequence": 4,
+      "serviceConfig": true,
       "type": "String",
       "validValues": [
         "${USER:KEYCHAIN}",
@@ -90,9 +66,10 @@
     },
     {
       "allowMultiple": true,
-      "label": "String Allow Multiple",
-      "name": "string_allow_multiple",
+      "label": "Service String Allow Multiple",
+      "name": "service_string_allow_multiple",
       "sequence": 5,
+      "serviceConfig": true,
       "type": "String",
       "validValues": [
         "${USER:TEXT}",
@@ -100,19 +77,21 @@
       ]
     },
     {
-      "label": "Choice Required",
-      "name": "choice_required",
+      "label": "Service Choice Required",
+      "name": "service_choice_required",
       "required": true,
       "sequence": 6,
+      "serviceConfig": true,
       "type": "Choice",
       "validValues": [
         "${OWNERS}"
       ]
     },
     {
-      "label": "Choice Optional",
-      "name": "choice_optional",
+      "label": "Service Choice Optional",
+      "name": "service_choice_optional",
       "sequence": 7,
+      "serviceConfig": true,
       "type": "Choice",
       "validValues": [
         "${OWNERS}"
@@ -120,10 +99,11 @@
     },
     {
       "default": "choice1|choice2",
-      "label": "MultiChoice Required",
-      "name": "multi_choice_required",
+      "label": "Service MultiChoice Required",
+      "name": "service_multi_choice_required",
       "required": true,
       "sequence": 8,
+      "serviceConfig": true,
       "type": "MultiChoice",
       "validValues": [
         "choice1",
@@ -132,9 +112,10 @@
       ]
     },
     {
-      "label": "MultiChoice Optional",
-      "name": "multi_choice_optional",
+      "label": "Service MultiChoice Optional",
+      "name": "service_multi_choice_optional",
       "sequence": 9,
+      "serviceConfig": true,
       "type": "MultiChoice",
       "validValues": [
         "choice1",
@@ -144,29 +125,22 @@
     },
     {
       "default": true,
-      "label": "Boolean Required",
-      "name": "boolean_required",
+      "label": "Service Boolean Required",
+      "name": "service_boolean_required",
       "sequence": 10,
+      "serviceConfig": true,
       "type": "Boolean"
     },
     {
-      "label": "Boolean Optional",
-      "name": "boolean_optional",
+      "label": "Service Boolean Optional",
+      "name": "service_boolean_optional",
       "sequence": 11,
+      "serviceConfig": true,
       "type": "Boolean"
     }
   ],
   "programLanguage": "PYTHON",
   "programMain": "run",
   "programVersion": "1.0.0",
-  "publishOutFiles": [
-    "publish_out_file1",
-    "publish_out_file2"
-  ],
-  "repeatingMinutes": [
-    5,
-    10,
-    15
-  ],
-  "runtimeLevel": "Organization"
+  "runtimeLevel": "ApiService"
 }

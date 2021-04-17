@@ -33,6 +33,22 @@ class InstallJson:
         self.fqfn = Path(os.path.join(path, filename))
 
     @property
+    def app_prefix(self) -> str:
+        """Return the appropriate output var type for the current App."""
+        return self.app_prefixes.get(self.data.runtime_level.lower(), '')
+
+    @property
+    def app_prefixes(self) -> str:
+        """Return all the current App prefixes."""
+        return {
+            'organization': 'TC_-_',
+            'playbook': 'TCPB_-_',
+            'apiservice': 'TCVA_-_',
+            'triggerservice': 'TCVC_-_',
+            'webhooktriggerservice': 'TCVW_-_',
+        }
+
+    @property
     @lru_cache
     def contents(self) -> dict:
         """Return install.json file contents."""
@@ -41,11 +57,11 @@ class InstallJson:
             try:
                 with self.fqfn.open() as fh:
                     contents = json.load(fh, object_pairs_hook=OrderedDict)
-            except OSError:
+            except OSError:  # pragma: no cover
                 self.log.error(
                     f'feature=install-json, exception=failed-reading-file, filename={self.fqfn}'
                 )
-        else:
+        else:  # pragma: no cover
             self.log.error(f'feature=install-json, exception=file-not-found, filename={self.fqfn}')
         return contents
 
@@ -78,7 +94,7 @@ class InstallJson:
         return f'#{self.data.app_output_var_type}:{job_id}:{var_name}!{var_type}'
 
     @property
-    @lru_cache
+    # @lru_cache
     def data(self) -> InstallJsonModel:
         """Return the Install JSON model."""
         return InstallJsonModel(**self.contents)
@@ -93,7 +109,7 @@ class InstallJson:
         Returns:
             list: An expanded list of valid values for Choice or MultiChoice inputs.
         """
-        valid_values = list(valid_values)
+        # valid_values = list(valid_values)
         if '${GROUP_TYPES}' in valid_values:
             valid_values.remove('${GROUP_TYPES}')
             valid_values.extend(
@@ -110,9 +126,11 @@ class InstallJson:
                     'Threat',
                 ]
             )
-        elif '${OWNERS}' in valid_values:
+
+        if '${OWNERS}' in valid_values:
             valid_values.remove('${OWNERS}')
-        elif '${USERS}' in valid_values:
+
+        if '${USERS}' in valid_values:
             valid_values.remove('${USERS}')
         return valid_values
 
@@ -148,23 +166,30 @@ class InstallJson:
             if p.type.lower() == 'boolean':
                 args[n] = p.default
             elif p.type.lower() == 'choice':
-                # use the value from input_permutations if available or provide valid values
+                # provide all options by default
                 valid_values = f"[{'|'.join(self.expand_valid_values(p.valid_values))}]"
+
+                # use the value from input_permutations if available or provide valid values
                 if input_permutations is not None:
                     valid_values = input_permutations.get(n, valid_values)
+
+                # use default if available
+                if p.default is not None:
+                    valid_values = p.default
+
                 args[n] = valid_values
             elif p.type.lower() == 'multichoice':
                 args[n] = p.valid_values
             elif p.type.lower() == 'keyvaluelist':
                 args[n] = '<KeyValueArray>'
-            elif n in ['api_access_id', 'api_secret_key']:
+            elif n in ['api_access_id', 'api_secret_key']:  # pragma: no cover
                 # leave these parameters set to the value defined in defaults
                 pass
             else:
                 types = '|'.join(p.playbook_data_type)
                 if types:
                     args[n] = p.default or f'<{types}>'
-                else:
+                else:  # pragma: no cover
                     args[n] = p.default or ''
         return args
 
@@ -187,3 +212,11 @@ class InstallJson:
     def validate(self) -> InstallJsonValidate:
         """Validate install.json."""
         return InstallJsonValidate(ij=self)
+
+    def write(self) -> None:
+        """Write current data file."""
+        data = self.data.json(
+            by_alias=True, exclude_defaults=True, exclude_none=True, indent=2, sort_keys=True
+        )
+        with self.fqfn.open(mode='w') as fh:
+            fh.write(f'{data}\n')

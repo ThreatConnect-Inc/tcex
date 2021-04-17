@@ -3,11 +3,10 @@
 import os
 import uuid
 from enum import Enum
-from functools import lru_cache
 from typing import List, Optional, Union
 
 # third-party
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from pydantic.types import constr
 
 # first-party
@@ -194,8 +193,8 @@ def get_commit_hash() -> Optional[str]:
     if os.path.isfile(branch_file):
         with open(branch_file) as f:
             try:
-                branch = f.read().strip().split('/')[2]
-            except IndexError:
+                branch = '/'.join(f.read().strip().split('/')[2:])
+            except IndexError:  # pragma: no cover
                 pass
 
         # get commit hash
@@ -214,7 +213,7 @@ class InstallJsonModel(BaseModel):
     allow_run_as_user: Optional[bool]
     api_user_token_param: Optional[bool]
     app_id: str = uuid.uuid5(uuid.NAMESPACE_X500, os.path.basename(os.getcwd()).lower())
-    commit_hash: Optional[str] = get_commit_hash()
+    commit_hash: Optional[str] = Field(default_factory=get_commit_hash)
     display_name: constr(min_length=3, max_length=100)
     display_path: Optional[constr(min_length=3, max_length=100)]
     docker_image: Optional[str]
@@ -250,21 +249,6 @@ class InstallJsonModel(BaseModel):
         if self.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
             return 'Trigger'
         return 'App'
-
-    @property
-    def app_prefix(self) -> str:
-        """Return the appropriate output var type for the current App."""
-        if self.runtime_level.lower() == 'organization':
-            return 'TC_-_'
-        if self.runtime_level.lower() == 'playbook':
-            return 'TCPB_-_'
-        if self.runtime_level.lower() == 'apiservice':
-            return 'TCVA_-_'
-        if self.runtime_level.lower() == 'triggerservice':
-            return 'TCVC_-_'
-        if self.runtime_level.lower() == 'webhooktriggerservice':
-            return 'TCVW-_'
-        return ''
 
     def filter_params(
         self,
@@ -323,43 +307,36 @@ class InstallJsonModel(BaseModel):
         return self.params_dict.get(name) or NoneModel()
 
     @property
-    @lru_cache
     def optional_params(self) -> dict[str, ParamsModel]:
         """Return params as name/data model."""
         return {p.name: p for p in self.params if p.required is False}
 
     @property
-    @lru_cache
     def param_names(self) -> List[str]:
         """Return the "name" field from all params."""
         return [p.name for p in self.params]
 
     @property
-    @lru_cache
     def params_dict(self) -> dict[str, ParamsModel]:
         """Return params as name/data dict."""
         return {p.name: p for p in self.params}
 
     @property
-    @lru_cache
     def playbook_outputs(self) -> dict[str, ParamsModel]:
         """Return outputs as name/data model."""
         return {o.name: o for o in self.playbook.output_variables}
 
     @property
-    @lru_cache
     def required_params(self) -> dict[str, ParamsModel]:
         """Return params as name/data dict."""
         return {p.name: p for p in self.params if p.required is True}
 
     @property
-    @lru_cache
     def service_config_params(self) -> dict[str, ParamsModel]:
         """Return params as name/data dict."""
         return {p.name: p for p in self.params if p.service_config is True}
 
     @property
-    @lru_cache
     def service_playbook_params(self) -> dict[str, ParamsModel]:
         """Return params as name/data dict."""
         return {p.name: p for p in self.params if p.service_config is False}
