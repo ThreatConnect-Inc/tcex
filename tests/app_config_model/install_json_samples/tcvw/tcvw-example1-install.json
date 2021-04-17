@@ -31,7 +31,6 @@
     {
       "label": "Service String Optional",
       "name": "service_string_optional",
-      "required": false,
       "sequence": 2,
       "serviceConfig": true,
       "type": "String",
@@ -44,7 +43,6 @@
       "hidden": true,
       "label": "Service String Hidden",
       "name": "service_string_hidden",
-      "required": false,
       "sequence": 3,
       "serviceConfig": true,
       "type": "String",
@@ -57,7 +55,6 @@
       "encrypt": true,
       "label": "Service String Encrypted",
       "name": "service_string_encrypted",
-      "required": false,
       "sequence": 4,
       "serviceConfig": true,
       "type": "String",
@@ -67,7 +64,7 @@
       ]
     },
     {
-      "allow_multiple": false,
+      "allowMultiple": true,
       "label": "Service String Allow Multiple",
       "name": "service_string_allow_multiple",
       "sequence": 5,
@@ -92,7 +89,6 @@
     {
       "label": "Service Choice Optional",
       "name": "service_choice_optional",
-      "required": false,
       "sequence": 7,
       "serviceConfig": true,
       "type": "Choice",
@@ -117,7 +113,6 @@
     {
       "label": "Service MultiChoice Optional",
       "name": "service_multi_choice_optional",
-      "required": false,
       "sequence": 9,
       "serviceConfig": true,
       "type": "MultiChoice",
@@ -136,7 +131,6 @@
       "type": "Boolean"
     },
     {
-      "default": false,
       "label": "Service Boolean Optional",
       "name": "service_boolean_optional",
       "sequence": 11,
@@ -148,7 +142,7 @@
       "name": "string_required",
       "note": "A required string input.",
       "required": true,
-      "sequence": 1,
+      "sequence": 12,
       "type": "String",
       "validValues": [
         "${USER:TEXT}",
@@ -159,8 +153,7 @@
       "label": "String Optional",
       "name": "string_optional",
       "note": "An optional string input.",
-      "required": false,
-      "sequence": 2,
+      "sequence": 13,
       "type": "String",
       "validValues": [
         "${USER:TEXT}",
@@ -172,8 +165,7 @@
       "label": "String Hidden",
       "name": "string_hidden",
       "note": "A hidden string input.",
-      "required": false,
-      "sequence": 3,
+      "sequence": 14,
       "type": "String",
       "validValues": [
         "${USER:TEXT}",
@@ -185,8 +177,7 @@
       "label": "String Encrypted",
       "name": "string_encrypted",
       "note": "An encrypted string input.",
-      "required": false,
-      "sequence": 4,
+      "sequence": 15,
       "type": "String",
       "validValues": [
         "${USER:KEYCHAIN}",
@@ -194,11 +185,11 @@
       ]
     },
     {
-      "allow_multiple": false,
+      "allowMultiple": true,
       "label": "String Allow Multiple",
       "name": "string_allow_multiple",
       "note": "A string input with allow multi-choice.",
-      "sequence": 5,
+      "sequence": 16,
       "type": "String",
       "validValues": [
         "${USER:TEXT}",
@@ -212,7 +203,7 @@
       "label": "String Intel Type",
       "name": "string_intel_type",
       "note": "A string input with intel type.",
-      "sequence": 5,
+      "sequence": 17,
       "type": "String",
       "validValues": [
         "${USER:TEXT}",
@@ -224,7 +215,7 @@
       "name": "choice_required",
       "note": "A required choice input.",
       "required": true,
-      "sequence": 6,
+      "sequence": 18,
       "type": "Choice",
       "validValues": [
         "${OWNERS}"
@@ -234,8 +225,7 @@
       "label": "Choice Optional",
       "name": "choice_optional",
       "note": "An optional choice input.",
-      "required": false,
-      "sequence": 7,
+      "sequence": 19,
       "type": "Choice",
       "validValues": [
         "${OWNERS}"
@@ -247,7 +237,7 @@
       "name": "multi_choice_required",
       "note": "A required multi-choice input.",
       "required": true,
-      "sequence": 8,
+      "sequence": 20,
       "type": "MultiChoice",
       "validValues": [
         "choice1",
@@ -259,8 +249,7 @@
       "label": "MultiChoice Optional",
       "name": "multi_choice_optional",
       "note": "An optional multi-choice input.",
-      "required": false,
-      "sequence": 9,
+      "sequence": 21,
       "type": "MultiChoice",
       "validValues": [
         "choice1",
@@ -273,15 +262,14 @@
       "label": "Boolean Required",
       "name": "boolean_required",
       "note": "A required boolean input.",
-      "sequence": 10,
+      "sequence": 22,
       "type": "Boolean"
     },
     {
-      "default": false,
       "label": "Boolean Optional",
       "name": "boolean_optional",
       "note": "An optional boolean input.",
-      "sequence": 11,
+      "sequence": 23,
       "type": "Boolean"
     }
   ],

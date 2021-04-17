@@ -32,7 +32,6 @@
     {
       "label": "Service String Optional",
       "name": "service_string_optional",
-      "required": false,
       "sequence": 2,
       "serviceConfig": true,
       "type": "String",
@@ -45,7 +44,6 @@
       "hidden": true,
       "label": "Service String Hidden",
       "name": "service_string_hidden",
-      "required": false,
       "sequence": 3,
       "serviceConfig": true,
       "type": "String",
@@ -58,7 +56,6 @@
       "encrypt": true,
       "label": "Service String Encrypted",
       "name": "service_string_encrypted",
-      "required": false,
       "sequence": 4,
       "serviceConfig": true,
       "type": "String",
@@ -68,7 +65,7 @@
       ]
     },
     {
-      "allow_multiple": false,
+      "allowMultiple": true,
       "label": "Service String Allow Multiple",
       "name": "service_string_allow_multiple",
       "sequence": 5,
@@ -93,7 +90,6 @@
     {
       "label": "Service Choice Optional",
       "name": "service_choice_optional",
-      "required": false,
       "sequence": 7,
       "serviceConfig": true,
       "type": "Choice",
@@ -118,7 +114,6 @@
     {
       "label": "Service MultiChoice Optional",
       "name": "service_multi_choice_optional",
-      "required": false,
       "sequence": 9,
       "serviceConfig": true,
       "type": "MultiChoice",
@@ -137,7 +132,6 @@
       "type": "Boolean"
     },
     {
-      "default": false,
       "label": "Service Boolean Optional",
       "name": "service_boolean_optional",
       "sequence": 11,

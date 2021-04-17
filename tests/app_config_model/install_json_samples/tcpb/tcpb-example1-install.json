@@ -40,8 +40,7 @@
       "sequence": 1,
       "type": "String",
       "validValues": [
-        "${USER:TEXT}",
-        "${ORGANIZATION:TEXT}"
+        "${TEXT}"
       ]
     },
     {
@@ -51,12 +50,10 @@
       "playbookDataType": [
         "Any"
       ],
-      "required": false,
       "sequence": 2,
       "type": "String",
       "validValues": [
-        "${USER:TEXT}",
-        "${ORGANIZATION:TEXT}"
+        "${TEXT}"
       ]
     },
     {
@@ -64,12 +61,13 @@
       "label": "String Hidden",
       "name": "string_hidden",
       "note": "A hidden string input.",
-      "required": false,
+      "playbookDataType": [
+        "String"
+      ],
       "sequence": 3,
       "type": "String",
       "validValues": [
-        "${USER:TEXT}",
-        "${ORGANIZATION:TEXT}"
+        "${TEXT}"
       ]
     },
     {
@@ -80,24 +78,24 @@
       "playbookDataType": [
         "Any"
       ],
-      "required": false,
       "sequence": 4,
       "type": "String",
       "validValues": [
-        "${USER:KEYCHAIN}",
-        "${ORGANIZATION:KEYCHAIN}"
+        "${KEYCHAIN}"
       ]
     },
     {
-      "allow_multiple": false,
+      "allowMultiple": true,
       "label": "String Allow Multiple",
       "name": "string_allow_multiple",
       "note": "A string input with allow multi-choice.",
+      "playbookDataType": [
+        "String"
+      ],
       "sequence": 5,
       "type": "String",
       "validValues": [
-        "${USER:TEXT}",
-        "${ORGANIZATION:TEXT}"
+        "${TEXT}"
       ]
     },
     {
@@ -107,11 +105,13 @@
       "label": "String Intel Type",
       "name": "string_intel_type",
       "note": "A string input with intel type.",
-      "sequence": 5,
+      "playbookDataType": [
+        "String"
+      ],
+      "sequence": 6,
       "type": "String",
       "validValues": [
-        "${USER:TEXT}",
-        "${ORGANIZATION:TEXT}"
+        "${TEXT}"
       ]
     },
     {
@@ -119,7 +119,7 @@
       "name": "choice_required",
       "note": "A required choice input.",
       "required": true,
-      "sequence": 6,
+      "sequence": 7,
       "type": "Choice",
       "validValues": [
         "${OWNERS}"
@@ -129,8 +129,7 @@
       "label": "Choice Optional",
       "name": "choice_optional",
       "note": "An optional choice input.",
-      "required": false,
-      "sequence": 7,
+      "sequence": 8,
       "type": "Choice",
       "validValues": [
         "${OWNERS}"
@@ -142,7 +141,7 @@
       "name": "multi_choice_required",
       "note": "A required multi-choice input.",
       "required": true,
-      "sequence": 8,
+      "sequence": 9,
       "type": "MultiChoice",
       "validValues": [
         "choice1",
@@ -154,8 +153,7 @@
       "label": "MultiChoice Optional",
       "name": "multi_choice_optional",
       "note": "An optional multi-choice input.",
-      "required": false,
-      "sequence": 9,
+      "sequence": 10,
       "type": "MultiChoice",
       "validValues": [
         "choice1",
@@ -168,15 +166,14 @@
       "label": "Boolean Required",
       "name": "boolean_required",
       "note": "A required boolean input.",
-      "sequence": 10,
+      "sequence": 11,
       "type": "Boolean"
     },
     {
-      "default": false,
       "label": "Boolean Optional",
       "name": "boolean_optional",
       "note": "An optional boolean input.",
-      "sequence": 11,
+      "sequence": 12,
       "type": "Boolean"
     },
     {
@@ -186,8 +183,7 @@
       "playbookDataType": [
         "Any"
       ],
-      "required": false,
-      "sequence": 12,
+      "sequence": 13,
       "type": "KeyValueList",
       "validValues": [
         "${KEYCHAIN}",
@@ -202,7 +198,7 @@
       "playbookDataType": [
         "String"
       ],
-      "sequence": 13,
+      "sequence": 14,
       "type": "KeyValueList",
       "validValues": [
         "${TEXT}"
@@ -251,8 +247,8 @@
     ],
     "retry": {
       "allowed": true,
-      "defaultDelayMinutes": 1,
-      "defaultMaxRetries": 1
+      "defaultDelayMinutes": 2,
+      "defaultMaxRetries": 10
     },
     "type": "Utility"
   },

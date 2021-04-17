@@ -1,6 +1,6 @@
 """Advanced Settings Model"""
 # standard library
-from typing import Optional
+from typing import Any, Optional
 
 # third-party
 from pydantic import BaseModel, Extra
@@ -16,7 +16,7 @@ class AdvancedSettingsModel(BaseModel):
     """
 
     # the http body for the request
-    tc_adv_req_body: Optional[any]
+    tc_adv_req_body: Optional[Any]
 
     # if True, exclude null parameters from query params
     tc_adv_req_exclude_null_params: bool = False

@@ -15,14 +15,14 @@
       "deprecation": [
         {
           "confidenceAmount": 3,
-          "deleteAtMinimum": false,
+          "deleteAtMinimum": true,
           "indicatorType": "Host",
           "intervalDays": 11,
-          "percentage": false
+          "percentage": true
         }
       ],
       "documentStorageLimitMb": 10000,
-      "enableBulkJson": false,
+      "enableBulkJson": true,
       "firstRunParams": [
         {
           "param": "last_run",
@@ -59,7 +59,6 @@
     {
       "label": "String Optional",
       "name": "string_optional",
-      "required": false,
       "sequence": 2,
       "type": "String",
       "validValues": [
@@ -71,7 +70,6 @@
       "hidden": true,
       "label": "String Hidden",
       "name": "string_hidden",
-      "required": false,
       "sequence": 3,
       "type": "String",
       "validValues": [
@@ -83,7 +81,6 @@
       "encrypt": true,
       "label": "String Encrypted",
       "name": "string_encrypted",
-      "required": false,
       "sequence": 4,
       "type": "String",
       "validValues": [
@@ -92,7 +89,7 @@
       ]
     },
     {
-      "allow_multiple": false,
+      "allowMultiple": true,
       "label": "String Allow Multiple",
       "name": "string_allow_multiple",
       "sequence": 5,
@@ -115,7 +112,6 @@
     {
       "label": "Choice Optional",
       "name": "choice_optional",
-      "required": false,
       "sequence": 7,
       "type": "Choice",
       "validValues": [
@@ -138,7 +134,6 @@
     {
       "label": "MultiChoice Optional",
       "name": "multi_choice_optional",
-      "required": false,
       "sequence": 9,
       "type": "MultiChoice",
       "validValues": [
@@ -155,7 +150,6 @@
       "type": "Boolean"
     },
     {
-      "default": false,
       "label": "Boolean Optional",
       "name": "boolean_optional",
       "sequence": 11,

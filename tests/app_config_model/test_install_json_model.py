@@ -1,7 +1,10 @@
 """Test the InstallJson Config"""
 # standard library
-import os
+import json
 from pathlib import Path
+
+# third-party
+from deepdiff import DeepDiff
 
 # first-party
 from tcex.app_config.install_json import InstallJson
@@ -13,87 +16,60 @@ class TestInstallJsonModel:
     # @staticmethod
     # def test_dev_testing():
     #     """."""
-    #     tcpb_path = Path('tests/app_config_model/install_json_samples/tcpb')
-    #     for filename in sorted(tcpb_path.glob('**/*')):
-    #         try:
-    #             ij = InstallJson(filename=os.path.basename(filename), path=str(tcpb_path))
-    #             assert True
-    #         except Exception as ex:
-    #             assert False, f'Failed parsing file {os.path.basename(filename)} ({ex})'
+    #     fqfn = Path('tests/app_config_model/install_json_samples/tcpb/tcpb-example1-install.json')
+    #     try:
+    #         ij = InstallJson(filename=fqfn.name, path=fqfn.parent)
+    #     except Exception as ex:
+    #         assert False, f'Failed parsing file {fqfn.name} ({ex})'
 
-    #         print('\nfilename', filename)
-    #         print('commit_hash', ij.data.commit_hash)
-    #         print('runtime_level', ij.data.runtime_level)
-    #         print('app-prefix', ij.data.app_prefix)
-    #         # for param in ij.data.params:
-    #         #     # print('param.playbookDataType', type(param))
-    #         #     print('param.playbookDataType', '|'.join(param.playbook_data_type))
-    #         print('duplicate-outputs', ij.validate_duplicate_output())
-    #         print('duplicate-sequence', ij.validate_duplicate_sequence())
+    #     print('\nfilename', filename)
+    #     print('commit_hash', ij.data.commit_hash)
+    #     print('runtime_level', ij.data.runtime_level)
 
-    #         # print('required-params', ij.data.required_params)
-    #         # print('dict', ij.data.dict(by_alias=True))
-
-    #         print('ij.data.features', ij.data.features)
-    #         print('data.cache_info', InstallJson.data.fget.cache_info())
-    #         print('ij.update', ij.update())
-    #         print('data.cache_info', InstallJson.data.fget.cache_info())
-    #         print('ij.data.features', ij.data.features)
-    #         print('ij.data.display_name', ij.data.display_name)
-
-    #         break
+    #     print('data.cache_info', InstallJson.data.fget.cache_info())
+    #     print('ij.update', ij.update())
+    #     print('data.cache_info', InstallJson.data.fget.cache_info())
+    #     print('ij.data.features', ij.data.features)
+    #     print('ij.data.display_name', ij.data.display_name)
 
     @staticmethod
-    def test_tc_support():
-        """."""
-        tcpb_path = Path('tests/app_config_model/install_json_samples/tc')
-        for filename in sorted(tcpb_path.glob('**/*')):
-            try:
-                InstallJson(filename=os.path.basename(filename), path=str(tcpb_path)).data
-                assert True
-            except Exception as ex:
-                assert False, f'Failed parsing file {os.path.basename(filename)} ({ex})'
+    def input_model_validate(path: str) -> None:
+        """Validate input model in and out."""
+        ij_path = Path(path)
+        for fqfn in sorted(ij_path.glob('**/*.json')):
+            fqfn = Path(fqfn)
+            with fqfn.open() as fh:
+                json_dict = json.load(fh)
 
-    @staticmethod
-    def test_tcpb_support():
-        """."""
-        tcpb_path = Path('tests/app_config_model/install_json_samples/tcpb')
-        for filename in sorted(tcpb_path.glob('**/*')):
             try:
-                InstallJson(filename=os.path.basename(filename), path=str(tcpb_path)).data
-                assert True
+                ij = InstallJson(filename=fqfn.name, path=fqfn.parent)
+                # ij.update.multiple()
             except Exception as ex:
-                assert False, f'Failed parsing file {os.path.basename(filename)} ({ex})'
+                assert False, f'Failed parsing file {fqfn.name} ({ex})'
 
-    @staticmethod
-    def test_tcva_support():
-        """."""
-        tcpb_path = Path('tests/app_config_model/install_json_samples/tcva')
-        for filename in sorted(tcpb_path.glob('**/*')):
-            try:
-                InstallJson(filename=os.path.basename(filename), path=str(tcpb_path)).data
-                assert True
-            except Exception as ex:
-                assert False, f'Failed parsing file {os.path.basename(filename)} ({ex})'
+            ddiff = DeepDiff(
+                json_dict,
+                ij.data.dict(by_alias=True, exclude_defaults=True, exclude_none=True),
+                ignore_order=True,
+            )
+            assert ddiff == {}, f'Failed validation of file {fqfn.name}'
 
-    @staticmethod
-    def test_tcvc_support():
-        """."""
-        tcpb_path = Path('tests/app_config_model/install_json_samples/tcvc')
-        for filename in sorted(tcpb_path.glob('**/*')):
-            try:
-                InstallJson(filename=os.path.basename(filename), path=str(tcpb_path)).data
-                assert True
-            except Exception as ex:
-                assert False, f'Failed parsing file {os.path.basename(filename)} ({ex})'
+    def test_tc_support(self) -> None:
+        """Validate install.json files."""
+        self.input_model_validate('tests/app_config_model/install_json_samples/tc')
 
-    @staticmethod
-    def test_tcvw_support():
-        """."""
-        tcpb_path = Path('tests/app_config_model/install_json_samples/tcvw')
-        for filename in sorted(tcpb_path.glob('**/*')):
-            try:
-                InstallJson(filename=os.path.basename(filename), path=str(tcpb_path)).data
-                assert True
-            except Exception as ex:
-                assert False, f'Failed parsing file {os.path.basename(filename)} ({ex})'
+    def test_tcpb_support(self) -> None:
+        """Validate install.json files."""
+        self.input_model_validate('tests/app_config_model/install_json_samples/tcpb')
+
+    def test_tcva_support(self) -> None:
+        """Validate install.json files."""
+        self.input_model_validate('tests/app_config_model/install_json_samples/tcva')
+
+    def test_tcvc_support(self) -> None:
+        """Validate install.json files."""
+        self.input_model_validate('tests/app_config_model/install_json_samples/tcvc')
+
+    def test_tcvw_support(self) -> None:
+        """Validate install.json files."""
+        self.input_model_validate('tests/app_config_model/install_json_samples/tcvw')

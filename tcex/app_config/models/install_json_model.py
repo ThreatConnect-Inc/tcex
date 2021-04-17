@@ -26,7 +26,7 @@ class DeprecationModel(BaseModel):
     """Model for install_json.deprecation"""
 
     indicator_type: Optional[str]
-    interval_says: Optional[int]
+    interval_days: Optional[int]
     confidence_amount: Optional[int]
     delete_at_minimum: bool = False
     percentage: bool = False
@@ -109,7 +109,7 @@ class ParamsModel(BaseModel):
     label: str
     name: str
     note: Optional[str]
-    playbook_data_type: Optional[List[str]]
+    playbook_data_type: Optional[List[str]] = []
     required: bool = False
     sequence: Optional[int]
     service_config: bool = False
@@ -339,54 +339,6 @@ class InstallJsonModel(BaseModel):
     def params_dict(self) -> dict[str, ParamsModel]:
         """Return params as name/data dict."""
         return {p.name: p for p in self.params}
-
-    def params_to_args(
-        self,
-        name: Optional[str] = None,
-        hidden: Optional[bool] = None,
-        required: Optional[bool] = None,
-        service_config: Optional[bool] = None,
-        _type: Optional[str] = None,
-        input_permutations: Optional[List] = None,
-    ) -> dict[str, any]:
-        """Return params as cli args.
-
-        Args:
-            name: The name of the input to return. Defaults to None.
-            required: If set the inputs will be filtered based on required field.
-            service_config: If set the inputs will be filtered based on serviceConfig field.
-            _type: The type of input to return. Defaults to None.
-            input_permutations: A list of valid input names for provided permutation.
-
-        Returns:
-            dict: All args for current filter
-        """
-        args = {}
-        for n, p in self.filter_params(
-            name, hidden, required, service_config, _type, input_permutations
-        ).items():
-            if p.type.lower() == 'boolean':
-                args[n] = self._to_bool(p.get('default', False))
-            elif p.type.lower() == 'choice':
-                # use the value from input_permutations if available or provide valid values
-                valid_values = f"[{'|'.join(self.expand_valid_values(p.valid_values))}]"
-                if input_permutations is not None:
-                    valid_values = input_permutations.get(n, valid_values)
-                args[n] = valid_values
-            elif p.type.lower() == 'multichoice':
-                args[n] = p.valid_values
-            elif p.type.lower() == 'keyvaluelist':
-                args[n] = '<KeyValueArray>'
-            elif n in ['api_access_id', 'api_secret_key']:
-                # leave these parameters set to the value defined in defaults
-                pass
-            else:
-                types = '|'.join(p.playbook_data_type)
-                if types:
-                    args[n] = p.default or f'<{types}>'
-                else:
-                    args[n] = p.default or ''
-        return args
 
     @property
     @lru_cache
