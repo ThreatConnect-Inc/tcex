@@ -136,7 +136,9 @@ class Validate(Bin):
 
     def check_feed_files(self):
         """Validate feed files for feed job apps."""
-        package_name = f'{self.tj.package_app_name}_v{self.ij.data.program_version.split(".")[0]}'
+        package_name = (
+            f'''{self.tj.data.package.app_name}_v{self.ij.data.program_version.split('.')[0]}'''
+        )
         package_name = package_name.replace('_', ' ')
         if self.ij.data.runtime_level == 'Organization':
 
@@ -318,27 +320,26 @@ class Validate(Bin):
 
         # do not track hidden or serviceConfig inputs as they should not be in layouts.json
         ij_input_names = [
-            p.get('name')
-            for p in self.ij.data.filter_params_dict(service_config=False, hidden=False).values()
+            p.name for p in self.ij.data.filter_params(service_config=False, hidden=False)
         ]
         ij_output_names = [o.name for o in self.ij.data.playbook.output_variables]
 
         # Check for duplicate inputs
-        for name in self.ij.validate.validate_duplicate_input_names():
+        for name in self.ij.validate.validate_duplicate_input():
             self.validation_data['errors'].append(
                 f'Duplicate input name found in install.json ({name})'
             )
             status = False
 
         # Check for duplicate sequence numbers
-        for sequence in self.ij.validate.validate_duplicate_sequences():
+        for sequence in self.ij.validate.validate_duplicate_sequence():
             self.validation_data['errors'].append(
                 f'Duplicate sequence number found in install.json ({sequence})'
             )
             status = False
 
         # Check for duplicate outputs variables
-        for output in self.ij.validate.validate_duplicate_outputs():
+        for output in self.ij.validate.validate_duplicate_output():
             self.validation_data['errors'].append(
                 f'Duplicate output variable name found in install.json ({output})'
             )
@@ -346,13 +347,13 @@ class Validate(Bin):
 
         if 'sqlite3' in sys.modules:
             # create temporary inputs tables
-            self.permutations.db_create_table(self.permutations.input_table, ij_input_names)
+            self.permutations.db_create_table(self.permutations._input_table, ij_input_names)
 
         # inputs
         status = True
-        for i in self.lj.inputs:
-            for p in i.get('parameters'):
-                if p.get('name') not in ij_input_names:
+        for i in self.lj.data.inputs:
+            for p in i.parameters:
+                if p.name not in ij_input_names:
                     # update validation data errors
                     self.validation_data['errors'].append(
                         'Layouts input.parameters[].name validations failed '
@@ -365,17 +366,17 @@ class Validate(Bin):
                     ij_input_names.remove(p.get('name'))
 
                 if 'sqlite3' in sys.modules:
-                    if p.get('display'):
+                    if p.display:
                         display_query = (
-                            f'''SELECT * FROM {self.permutations.input_table}'''  # nosec
-                            f''' WHERE {p.get('display')}'''
+                            f'''SELECT * FROM {self.permutations._input_table}'''  # nosec
+                            f''' WHERE {p.display}'''
                         )
                         try:
                             self.permutations.db_conn.execute(display_query.replace('"', ''))
                         except sqlite3.Error:
                             self.validation_data['errors'].append(
                                 '''Layouts input.parameters[].display validations failed '''
-                                f'''("{p.get('display')}" query is an invalid statement).'''
+                                f'''("{p.display}" query is an invalid statement).'''
                             )
                             status = False
 
@@ -393,26 +394,26 @@ class Validate(Bin):
 
         # outputs
         status = True
-        for o in self.lj.outputs:
-            if o.get('name') not in ij_output_names:
+        for o in self.lj.data.outputs:
+            if o.name not in ij_output_names:
                 # update validation data errors
                 self.validation_data['errors'].append(
-                    f'''Layouts output validations failed ({o.get('name')} is defined '''
+                    f'''Layouts output validations failed ({o.name} is defined '''
                     '''in layout.json, but not found in install.json).'''
                 )
                 status = False
 
             if 'sqlite3' in sys.modules:
-                if o.get('display'):
+                if o.display:
                     display_query = (
-                        f'''SELECT * FROM {self.permutations.input_table} '''  # nosec
-                        f'''WHERE {o.get('display')}'''
+                        f'''SELECT * FROM {self.permutations._input_table} '''  # nosec
+                        f'''WHERE {o.display}'''
                     )
                     try:
                         self.permutations.db_conn.execute(display_query.replace('"', ''))
                     except sqlite3.Error:
                         self.validation_data['errors'].append(
-                            f"""Layouts outputs.display validations failed ("{o.get('display')}" """
+                            f"""Layouts outputs.display validations failed ("{o.display}" """
                             f"""query is an invalid statement)."""
                         )
                         status = False

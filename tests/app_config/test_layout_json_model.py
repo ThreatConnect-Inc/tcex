@@ -1,4 +1,4 @@
-"""Test the LayoutJson Config"""
+"""Test LayoutJson"""
 # pylint: disable=R1710
 # standard library
 import json
@@ -16,13 +16,13 @@ from tcex.app_config.layout_json import LayoutJson
 from tcex.app_config.models.layout_json_model import OutputsModel, ParametersModel
 
 
-class TestLayoutJsonModel:
-    """Test the TcEx App Feature Advance Request Module."""
+class TestLayoutJson:
+    """App Config LayoutJson testing."""
 
     # @staticmethod
     # def test_dev_testing():
     #     """."""
-    #     fqfn = Path('tests/app_config_model/layout_json_samples/tcpb/tcpb-example1-layout.json')
+    #     fqfn = Path('tests/app_config/layout_json_samples/tcpb/tcpb-example1-layout.json')
     #     try:
     #         lj = LayoutJson(filename=fqfn.name, path=fqfn.parent)
     #     except Exception as ex:
@@ -30,7 +30,7 @@ class TestLayoutJsonModel:
 
     #     # ij = InstallJson(
     #     #     filename='tcpb_-_blackberry_optics-install.json',
-    #     #     path='tests/app_config_model/install_json_samples/tcpb',
+    #     #     path='tests/app_config/install_json_samples/tcpb',
     #     # )
     #     print('\nfilename', filename)
     #     # lj.create(inputs=ij.data.params, outputs=ij.data.playbook.output_variables)
@@ -40,7 +40,7 @@ class TestLayoutJsonModel:
     @staticmethod
     def ij(app_type: str):
         """Return install.json instance."""
-        base_path = f'tests/app_config_model/install_json_samples/{app_type}'
+        base_path = f'tests/app_config/install_json_samples/{app_type}'
         fqfn = Path(os.path.join(base_path, f'{app_type}-example1-install.json'))
         try:
             return InstallJson(filename=fqfn.name, path=fqfn.parent)
@@ -51,7 +51,7 @@ class TestLayoutJsonModel:
     def lj(app_type: str, filename: Optional[str] = None):
         """Return layout.json instance."""
         filename = filename or f'{app_type}-example1-layout.json'
-        base_path = f'tests/app_config_model/layout_json_samples/{app_type}'
+        base_path = f'tests/app_config/layout_json_samples/{app_type}'
         fqfn = Path(os.path.join(base_path, filename))
         try:
             return LayoutJson(filename=fqfn.name, path=fqfn.parent)
@@ -61,7 +61,7 @@ class TestLayoutJsonModel:
     @staticmethod
     def lj_bad(app_type: str):
         """Return layout.json instance with "bad" file."""
-        base_path = f'tests/app_config_model/layout_json_samples/{app_type}'
+        base_path = f'tests/app_config/layout_json_samples/{app_type}'
         shutil.copy2(
             os.path.join(base_path, f'{app_type}-example1-layout-bad-template.json'),
             os.path.join(base_path, f'{app_type}-example1-layout-bad.json'),
@@ -126,8 +126,8 @@ class TestLayoutJsonModel:
 
     def test_tcpb_support(self):
         """Validate layout.json files."""
-        self.model_validate('tests/app_config_model/layout_json_samples/tcpb')
+        self.model_validate('tests/app_config/layout_json_samples/tcpb')
 
     def test_tcvc_support(self):
         """Validate layout.json files."""
-        self.model_validate('tests/app_config_model/layout_json_samples/tcvc')
+        self.model_validate('tests/app_config/layout_json_samples/tcvc')

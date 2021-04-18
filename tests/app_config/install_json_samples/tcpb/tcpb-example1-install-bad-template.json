@@ -52,6 +52,7 @@
       "validValues": [
         "${USER:TEXT}",
         "${ORGANIZATION:TEXT}",
+        "${FILE}",
         "${TEXT}"
       ]
     },

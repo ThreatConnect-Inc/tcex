@@ -54,6 +54,7 @@ lib*
 local-*
 log/*
 requirements.txt
+permutations.json
 tcex.json
 tcex.d
 templates

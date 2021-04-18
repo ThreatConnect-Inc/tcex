@@ -7,8 +7,9 @@ import sys
 # third-party
 import colorama as c
 
-from ..app_config import InstallJson, LayoutJson, TcexJson
-from ..app_config.permutations import Permutations
+# first-party
+from tcex.app_config import InstallJson, LayoutJson, TcexJson
+from tcex.app_config.permutation import Permutation
 
 
 class Bin:
@@ -31,7 +32,7 @@ class Bin:
         self.exit_code = 0
         self.ij = InstallJson()
         self.lj = LayoutJson()
-        self.permutations = Permutations()
+        self.permutations = Permutation()
         self.tj = TcexJson()
 
         # initialize colorama

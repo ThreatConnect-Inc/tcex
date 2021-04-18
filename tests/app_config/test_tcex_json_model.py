@@ -1,4 +1,4 @@
-"""Test the LayoutJson Config"""
+"""Test TcexJson"""
 # pylint: disable=R1710
 # standard library
 import json
@@ -13,13 +13,13 @@ from deepdiff import DeepDiff
 from tcex.app_config import InstallJson, TcexJson
 
 
-class TestLayoutJsonModel:
-    """Test the TcEx App Feature Advance Request Module."""
+class TestTcexJson:
+    """App Config TcexJson testing."""
 
     # @staticmethod
     # def test_dev_testing():
     #     """."""
-    #     fqfn = Path('tests/app_config_model/tcex_json_samples/example1-tcex.json')
+    #     fqfn = Path('tests/app_config/tcex_json_samples/example1-tcex.json')
     #     try:
     #         tj = TcexJson(filename=fqfn.name, path=fqfn.parent)
     #     except Exception as ex:
@@ -33,7 +33,7 @@ class TestLayoutJsonModel:
     @staticmethod
     def ij(app_type: str):
         """Return install.json instance."""
-        base_path = f'tests/app_config_model/install_json_samples/{app_type}'
+        base_path = f'tests/app_config/install_json_samples/{app_type}'
         fqfn = Path(os.path.join(base_path, f'{app_type}-example1-install.json'))
         try:
             return InstallJson(filename=fqfn.name, path=fqfn.parent)
@@ -43,7 +43,7 @@ class TestLayoutJsonModel:
     @staticmethod
     def tj():
         """Return tcex.json instance."""
-        base_path = 'tests/app_config_model/tcex_json_samples'
+        base_path = 'tests/app_config/tcex_json_samples'
         fqfn = Path(f'{base_path}/example1-tcex.json')
         try:
             return TcexJson(filename=fqfn.name, path=fqfn.parent)
@@ -53,7 +53,7 @@ class TestLayoutJsonModel:
     @staticmethod
     def tj_bad():
         """Return tcex.json instance with "bad" file."""
-        base_path = 'tests/app_config_model/tcex_json_samples'
+        base_path = 'tests/app_config/tcex_json_samples'
         shutil.copy2(
             f'{base_path}/example1-tcex-bad-template.json',
             f'{base_path}/example1-tcex-bad.json',
@@ -110,4 +110,4 @@ class TestLayoutJsonModel:
 
     def test_support(self):
         """Validate tcex.json files."""
-        self.model_validate('tests/app_config_model/tcex_json_samples')
+        self.model_validate('tests/app_config/tcex_json_samples')

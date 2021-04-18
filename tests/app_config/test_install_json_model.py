@@ -1,4 +1,4 @@
-"""Test the InstallJson Config"""
+"""Test InstallJson"""
 # pylint: disable=R1710
 # standard library
 import json
@@ -13,13 +13,13 @@ from deepdiff import DeepDiff
 from tcex.app_config.install_json import InstallJson
 
 
-class TestInstallJsonModel:
-    """Test the TcEx App Feature Advance Request Module."""
+class TestInstallJson:
+    """App Config InstallJson testing."""
 
     # @staticmethod
     # def test_dev_testing():
     #     """."""
-    #     fqfn = Path('tests/app_config_model/install_json_samples/tcpb/tcpb-example1-install.json')
+    #     fqfn = Path('tests/app_config/install_json_samples/tcpb/tcpb-example1-install.json')
     #     try:
     #         ij = InstallJson(filename=fqfn.name, path=fqfn.parent)
     #     except Exception as ex:
@@ -38,7 +38,7 @@ class TestInstallJsonModel:
     @staticmethod
     def ij(app_type: str):
         """Return install.json instance."""
-        base_path = f'tests/app_config_model/install_json_samples/{app_type}'
+        base_path = f'tests/app_config/install_json_samples/{app_type}'
         fqfn = Path(os.path.join(base_path, f'{app_type}-example1-install.json'))
         try:
             return InstallJson(filename=fqfn.name, path=fqfn.parent)
@@ -48,7 +48,7 @@ class TestInstallJsonModel:
     @staticmethod
     def ij_bad(app_type: str):
         """Return install.json instance with "bad" file."""
-        base_path = f'tests/app_config_model/install_json_samples/{app_type}'
+        base_path = f'tests/app_config/install_json_samples/{app_type}'
         shutil.copy2(
             os.path.join(base_path, f'{app_type}-example1-install-bad-template.json'),
             os.path.join(base_path, f'{app_type}-example1-install-bad.json'),
@@ -274,20 +274,20 @@ class TestInstallJsonModel:
 
     def test_tc_support(self) -> None:
         """Validate install.json files."""
-        self.model_validate('tests/app_config_model/install_json_samples/tc')
+        self.model_validate('tests/app_config/install_json_samples/tc')
 
     def test_tcpb_support(self) -> None:
         """Validate install.json files."""
-        self.model_validate('tests/app_config_model/install_json_samples/tcpb')
+        self.model_validate('tests/app_config/install_json_samples/tcpb')
 
     def test_tcva_support(self) -> None:
         """Validate install.json files."""
-        self.model_validate('tests/app_config_model/install_json_samples/tcva')
+        self.model_validate('tests/app_config/install_json_samples/tcva')
 
     def test_tcvc_support(self) -> None:
         """Validate install.json files."""
-        self.model_validate('tests/app_config_model/install_json_samples/tcvc')
+        self.model_validate('tests/app_config/install_json_samples/tcvc')
 
     def test_tcvw_support(self) -> None:
         """Validate install.json files."""
-        self.model_validate('tests/app_config_model/install_json_samples/tcvw')
+        self.model_validate('tests/app_config/install_json_samples/tcvw')

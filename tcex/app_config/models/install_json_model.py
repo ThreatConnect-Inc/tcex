@@ -302,7 +302,7 @@ class InstallJsonModel(BaseModel):
             params.setdefault(p.name, p)
         return params
 
-    def get_param(self, name: str) -> ParamsModel:
+    def get_param(self, name: str) -> Union[NoneModel, ParamsModel]:
         """Return param for the matching name or {}."""
         return self.params_dict.get(name) or NoneModel()
 
