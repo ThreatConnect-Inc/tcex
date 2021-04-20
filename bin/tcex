@@ -1,0 +1,169 @@
+#!/usr/bin/env python
+"""TcEx framework CLI command"""
+# standard library
+from typing import Optional
+
+# third-party
+import typer
+
+# first-party
+from tcex.bin import Dep, Validate
+
+app = typer.Typer()
+
+
+@app.command()
+def init(
+    type_: Optional[str] = typer.Option(..., '--type', help='The App type being initialized.'),
+    template: Optional[str] = typer.Option(..., help='The App template to be used.'),
+    branch: Optional[str] = typer.Option(
+        'master', help='The git branch of the tcex-app-template repository to use.'
+    ),
+    layout: Optional[bool] = typer.Option(
+        False, help='If True, a layout.json file will be created.'
+    ),
+):
+    """Initialize a new App from a template.
+
+    Templates can be found at: https://github.com/ThreatConnect-Inc/tcex-app-templates
+    """
+    import time
+
+    with typer.progressbar(range(100)) as progress:
+        total = 0
+        for value in progress:
+            # Fake processing time
+            time.sleep(0.01)
+            total += 1
+        typer.echo(f'Using branch: {branch}')
+        typer.echo(f'Creating layout: {layout}')
+        typer.echo(f'App type: {type_}')
+        typer.echo(f'App template: {template}')
+
+
+@app.command()
+def update(
+    template: Optional[str] = typer.Option(
+        None, help='Only provide this value if changing the saved value.'
+    ),
+):
+    """Update an project with latest template files.
+
+    The template name will be pulled from tcex.json by default. If the template option
+    is provided it will be used instead of the value in the tcex.json file. The tcex.json
+    file will also be updated with new values.
+    """
+    typer.echo(f'App template: {template}')
+
+
+@app.command()
+def deps(
+    branch: Optional[str] = typer.Option(
+        'master',
+        help=(
+            'The git branch of the tcex repository to use. '
+            'This override what is in the requirements.txt file.',
+        ),
+    ),
+    no_cache_dir: Optional[bool] = typer.Option(False, help='Do not use pip cache directory.'),
+    proxy_host: Optional[str] = typer.Option(
+        None, help='(Advanced) Hostname for the proxy server.'
+    ),
+    proxy_port: Optional[int] = typer.Option(
+        None, help='(Advanced) Port number for the proxy server.'
+    ),
+    proxy_user: Optional[int] = typer.Option(
+        None, help='(Advanced) Username for the proxy server.'
+    ),
+    proxy_pass: Optional[int] = typer.Option(
+        None, help='(Advanced) Password for the proxy server.'
+    ),
+):
+    """Install dependencies defined in the requirements.txt file.
+
+
+    If not Python version defined in the tcex.json file the version of Python calling this
+    command will be used to create the lib_X.X.X directory. If multiple versions of Python
+    are defined in the tcex.json file then there will be multiple lib_X.X.X directories.
+    """
+    try:
+        tcl = Dep(None, branch, no_cache_dir, proxy_host, proxy_port, proxy_user, proxy_pass)
+
+        # configure proxy settings
+        tcl.configure_proxy()
+
+        if branch != 'master':
+            # create temp requirements.txt file pointing to tcex branch
+            tcl.create_temp_requirements()
+
+        # install debs
+        tcl.install_deps()
+        # raise typer.Exit(code=tcl.exit_code)
+    except Exception as ex:
+        typer.echo(f'Validate Exception: {ex}')
+        raise typer.Exit(code=1)
+
+
+@app.command()
+def package(
+    excludes: Optional[str] = typer.Option(None, help='File and directories to exclude from build'),
+    ignore_validation: Optional[bool] = typer.Option(
+        False, help='If true, validation errors will not prevent package.'
+    ),
+    json_output: Optional[bool] = typer.Option(
+        False, help='If true, the output of the validation will be returned in JSON format.'
+    ),
+    output_dir: Optional[int] = typer.Option(
+        'target', help='(Advanced) Directory to write the outfile.'
+    ),
+):
+    """."""
+    typer.echo(f'Excludes: {excludes}')
+    typer.echo(f'Ignore Validation: {ignore_validation}')
+    typer.echo(f'JSON Output: {json_output}')
+    typer.echo(f'Target: {output_dir}')
+
+
+@app.command()
+def validate(
+    ignore_validation: Optional[bool] = typer.Option(
+        False, help='If true, validation errors will not cause an exit.'
+    ),
+    # install_json: Optional[str] = typer.Option(
+    #     'install.json', help='(Advanced) The install.json file to validate.'
+    # ),
+    interactive: Optional[bool] = typer.Option(
+        False, help='(Advanced) If true, this command will not exit until passed an exit string.'
+    ),
+):
+    """Run validation of the current App.
+
+    Validations:
+    * validate Python files have valid syntax
+    * validate all imports are available in lib_ directories
+    * validate the install.json is valid syntax
+    * validate the layout.json is valid syntax
+    * validate the feed files are valid
+    """
+    try:
+        tcv = Validate(None, ignore_validation)
+        tcv.update_system_path()
+        # run in interactive
+        if interactive:
+            print('type', type(tcv))
+            tcv.interactive()
+        else:
+            tcv.check_syntax()
+            tcv.check_imports()
+            tcv.check_install_json()
+            tcv.check_layout_json()
+            tcv.check_job_json()
+            tcv.print_results()
+    except Exception as ex:
+        typer.echo(f'Validate Exception: {ex}')
+        # raise typer.Exit(code=1)
+        raise
+
+
+if __name__ == '__main__':
+    app()
