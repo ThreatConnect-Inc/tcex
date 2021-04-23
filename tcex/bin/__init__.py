@@ -1,7 +1,7 @@
 """Bin module for TcEx Framework"""
 # flake8: noqa
+from .dep import Dep
 from .init import Init
-from .lib import Lib
 from .package import Package
-from .test import Test
+from .template import Template
 from .validate import Validate

@@ -8,20 +8,20 @@ import os
 import sys
 import traceback
 from collections import deque
+from pathlib import Path
+from typing import Dict, Union
 
 # third-party
 import colorama as c
-from jsonschema import SchemaError, ValidationError, validate
+
+# from jsonschema import SchemaError, ValidationError, validate
+from pydantic import ValidationError
 from stdlib_list import stdlib_list
 
-from .bin import Bin
+# first-party
+from tcex.app_config import InstallJson, JobJson, LayoutJson, TcexJson
 
-try:
-    # third-party
-    import pkg_resources
-except PermissionError:
-    # this module is only required for certain CLI commands
-    pass
+from .bin import Bin
 
 try:
     # standard library
@@ -38,41 +38,28 @@ class Validate(Bin):
     * Python import modules
     * install.json schema
     * layout.json schema
-
-    Args:
-        _args (namespace): The argparser args Namespace.
     """
 
-    def __init__(self, _args):
-        """Init Class properties.
-
-        Args:
-            _args (namespace): The argparser args Namespace.
-        """
-        super().__init__(_args)
+    def __init__(self, ignore_validation: bool) -> None:
+        """Initialize Class properties."""
+        super().__init__()
+        self.ignore_validation = ignore_validation
 
         # class properties
         self._app_packages = []
         self._install_json_schema = None
         self._layout_json_schema = None
         self.config = {}
+        self.ij = InstallJson()
+        self.invalid_json_files = []
+        self.lj = LayoutJson()
+        self.tj = TcexJson()
 
-        if 'pkg_resources' in sys.modules:
-            # only set these if pkg_resource module is available
-            pkg_path = pkg_resources.resource_filename(__name__, '').rstrip('bin')
-            self.install_json_schema_file = os.path.join(
-                pkg_path, 'schemas', 'install-json-schema.json'
-            )
-            self.layout_json_schema_file = os.path.join(
-                pkg_path, 'schemas', 'layout-json-schema.json'
-            )
-        else:
-            self.install_json_schema_file = None
-            self.layout_json_schema_file = None
+        # initialize validation data
         self.validation_data = self._validation_data
 
     @property
-    def _validation_data(self):
+    def _validation_data(self) -> Dict[str, list]:
         """Return structure for validation data."""
         return {
             'errors': [],
@@ -83,7 +70,8 @@ class Validate(Bin):
             'feeds': [],
         }
 
-    def _check_node_import(self, node, filename):
+    def _check_node_import(self, node: Union[ast.Import, ast.ImportFrom], filename: str) -> None:
+        """."""
         if isinstance(node, ast.Import):
             for n in node.names:
                 m = n.name.split('.')[0]
@@ -91,8 +79,8 @@ class Validate(Bin):
                     m_status = self.check_imported(m)
                     if not m_status:
                         self.validation_data['errors'].append(
-                            f"""Module validation failed for {filename} """
-                            f"""(module "{m}" could not be imported)."""
+                            f'Module validation failed for {filename} '
+                            f'module "{m}" could not be imported).'
                         )
                     self.validation_data['moduleImports'].append(
                         {'filename': filename, 'module': m, 'status': m_status}
@@ -103,14 +91,14 @@ class Validate(Bin):
                 m_status = self.check_imported(m)
                 if not m_status:
                     self.validation_data['errors'].append(
-                        f"""Module validation failed for {filename} """
-                        f"""(module "{m}" could not be imported)."""
+                        f'Module validation failed for {filename} '
+                        f'module "{m}" could not be imported).'
                     )
                 self.validation_data['moduleImports'].append(
                     {'filename': filename, 'module': m, 'status': m_status}
                 )
 
-    def check_imports(self):
+    def check_imports(self) -> None:
         """Check the projects top level directory for missing imports.
 
         This method will check only files ending in **.py** and does not handle imports validation
@@ -122,11 +110,11 @@ class Validate(Bin):
 
             fq_path = os.path.join(self.app_path, filename)
             with open(fq_path, 'rb') as f:
-                # TODO: fix this
+                # TODO: [low] is there a better way?
                 code_lines = deque([(f.read(), 1)])
 
                 while code_lines:
-                    code, lineno = code_lines.popleft()  # pylint: disable=unused-variable
+                    code, _ = code_lines.popleft()  # pylint: disable=unused-variable
                     try:
                         parsed_code = ast.parse(code)
                         for node in ast.walk(parsed_code):
@@ -134,68 +122,12 @@ class Validate(Bin):
                     except SyntaxError:
                         pass
 
-    def check_feed_files(self):
-        """Validate feed files for feed job apps."""
-        package_name = (
-            f'''{self.tj.data.package.app_name}_v{self.ij.data.program_version.split('.')[0]}'''
-        )
-        package_name = package_name.replace('_', ' ')
-        if self.ij.data.runtime_level == 'Organization':
-
-            for i, feed in enumerate(self.ij.data.feeds):
-                passed = True
-                feed_name = f'(feeds[{i}]) {feed.source_name}'
-                job_file = feed.job_file
-                if not os.path.isfile(feed.job_file):
-                    self.validation_data['errors'].append(
-                        f'Feed validation failed '
-                        f'(Feed {i} references non-existent job-file {job_file})'
-                    )
-                    passed = False
-                else:
-                    try:
-                        job = json.load(open(job_file))
-
-                        if 'programName' not in job:
-                            self.validation_data['errors'].append(
-                                f'Feed file validation failed for {job_file} '
-                                f'({job_file} does not contain required field \'programNme\')'
-                            )
-                            passed = False
-
-                        else:
-                            job_program_name = job.get('programName')
-                            if job_program_name != package_name:
-                                self.validation_data['errors'].append(
-                                    f'Feed file validation failed for {job_file} '
-                                    f'(programName in file name does not match package name '
-                                    f'{package_name})'
-                                )
-                                passed = False
-
-                    except json.decoder.JSONDecodeError as j:
-                        self.validation_data['errors'].append(
-                            f'Feed file validation failed for {job_file} '
-                            f'({job_file} is not valid JSON: {j})'
-                        )
-                        passed = False
-
-                if feed.attributes_file and not os.path.isfile(feed.attributes_file):
-                    self.validation_data['errors'].append(
-                        f'Feed validation failed '
-                        f'(Feed {i} references non-existent attributes file '
-                        f'{feed.get("attributesFile")})'
-                    )
-                    passed = False
-
-                self.validation_data['feeds'].append({'name': feed_name, 'status': passed})
-
     @staticmethod
-    def check_import_stdlib(module):
+    def check_import_stdlib(module: str) -> bool:
         """Check if module is in Python stdlib.
 
         Args:
-            module (str): The name of the module to check.
+            module: The name of the module to check.
 
         Returns:
             bool: Returns True if the module is in the stdlib or template.
@@ -210,11 +142,11 @@ class Validate(Bin):
         return False
 
     @staticmethod
-    def check_imported(module):
+    def check_imported(module: str) -> bool:
         """Check whether the provide module can be imported (package installed).
 
         Args:
-            module (str): The name of the module to check availability.
+            module: The name of the module to check availability.
 
         Returns:
             bool: True if the module can be imported, False otherwise.
@@ -229,86 +161,121 @@ class Validate(Bin):
         found = find_spec is not None
         if found is True:
             # if dist-packages|site-packages in module_path the import doesn't count
-            if 'dist-packages' in find_spec.origin:
-                found = False
-            if 'site-packages' in find_spec.origin:
-                found = False
-        return found
-
-    def check_install_json(self):
-        """Check all install.json files for valid schema."""
-        if self.install_json_schema is None:
-            return
-
-        contents = os.listdir(self.app_path)
-        if self.args.install_json is not None:
-            contents = [self.args.install_json]
-
-        for install_json in sorted(contents):
-            # skip files that are not install.json files
-            if 'install.json' not in install_json:
-                continue
-
-            error = None
-            status = True
+            try:
+                if 'dist-packages' in find_spec.origin:
+                    found = False
+            except TypeError:
+                pass
 
             try:
-                # loading explicitly here to keep all error catching in this file
-                with open(install_json) as fh:
-                    data = json.loads(fh.read())
-                validate(data, self.install_json_schema)
-            except SchemaError as e:
-                status = False
-                error = e
-            except ValidationError as e:
-                status = False
-                error = e.message
-            except ValueError:
-                # any JSON decode error will be caught during syntax validation
-                return
+                if 'site-packages' in find_spec.origin:
+                    found = False
+            except TypeError:
+                pass
+        return found
 
-            if error:
-                # update validation data errors
-                self.validation_data['errors'].append(
-                    f'Schema validation failed for {install_json} ({error}).'
-                )
-
-            # update validation data for module
-            self.validation_data['schema'].append({'filename': install_json, 'status': status})
-
-    def check_layout_json(self):
-        """Check all layout.json files for valid schema."""
-        # the install.json files can't be validates if the schema file is not present
-        layout_json_file = 'layout.json'
-        if self.layout_json_schema is None or not os.path.isfile(layout_json_file):
+    def check_install_json(self) -> None:
+        """Check all install.json files for valid schema."""
+        if 'install.json' in self.invalid_json_files:
             return
 
-        error = None
         status = True
         try:
-            # loading explicitly here to keep all error catching in this file
-            with open(layout_json_file) as fh:
-                data = json.loads(fh.read())
-            validate(data, self.layout_json_schema)
-        except SchemaError as e:
+            self.ij.data
+        except ValidationError as ex:
+            self.invalid_json_files.append(self.ij.fqfn.name)
             status = False
-            error = e
-        except ValidationError as e:
-            status = False
-            error = e.message
+            for error in json.loads(ex.json()):
+                location = [str(location) for location in error.get('loc')]
+                self.validation_data['errors'].append(
+                    '''Schema validation failed for install.json. '''
+                    f'''{error.get('msg')}: {' -> '.join(location)}'''
+                )
         except ValueError:
             # any JSON decode error will be caught during syntax validation
             return
 
-        # update validation data for module
-        self.validation_data['schema'].append({'filename': layout_json_file, 'status': status})
+        self.validation_data['schema'].append({'filename': self.ij.fqfn.name, 'status': status})
 
-        if error:
-            # update validation data errors
-            self.validation_data['errors'].append(
-                f'Schema validation failed for {layout_json_file} ({error}).'
-            )
-        else:
+    def check_job_json(self) -> None:
+        """Validate feed files for feed job apps."""
+        if 'install.json' in self.invalid_json_files:
+            # can't proceed if install.json can't be read
+            return
+
+        # use developer defined app version (deprecated) or package_version from InstallJson model
+        app_version = self.tj.data.package.app_version or self.ij.data.package_version
+        program_name = (f'''{self.tj.data.package.app_name}_{app_version}''').replace('_', ' ')
+        status = True
+        for feed in self.ij.data.feeds:
+            if feed.job_file in self.invalid_json_files:
+                # no need to check if schema if json is invalid
+                continue
+
+            jj = JobJson(filename=feed.job_file)
+
+            # validate the job file exists
+            if not jj.fqfn.is_file():
+                self.validation_data['errors'].append(
+                    f'''Schema validation failed for {feed.job_file}. '''
+                    f'''The job.json file could not be found.'''
+                )
+                continue
+
+            try:
+                # validate the schema
+                jj.data
+            except ValidationError as ex:
+                status = False
+                for error in json.loads(ex.json()):
+                    location = [str(location) for location in error.get('loc')]
+                    self.validation_data['errors'].append(
+                        f'''Schema validation failed for {feed.job_file}. '''
+                        f'''{error.get('msg')}: {' -> '.join(location)}'''
+                    )
+
+            # validate program name
+            if status is True and jj.data.program_name != program_name:
+                status = False
+                self.validation_data['errors'].append(
+                    f'''Schema validation failed for {feed.job_file}. '''
+                    f'''The job.json programName {jj.data.program_name} != {program_name}.'''
+                )
+
+            # validate program version
+            if status is True and jj.data.program_version != self.ij.data.program_version:
+                status = False
+                self.validation_data['errors'].append(
+                    f'''Schema validation failed for {feed.job_file}. The job.json program'''
+                    f'''Version {jj.data.program_version} != {self.ij.data.program_version}.'''
+                )
+
+            self.validation_data['schema'].append({'filename': feed.job_file, 'status': status})
+
+    def check_layout_json(self):
+        """Check all layout.json files for valid schema."""
+        if not self.lj.has_layout or 'layout.json' in self.invalid_json_files:
+            return
+
+        status = True
+        try:
+            self.lj.data
+        except ValidationError as ex:
+            self.invalid_json_files.append(self.ij.fqfn.name)
+            status = False
+            for error in json.loads(ex.json()):
+                location = [str(location) for location in error.get('loc')]
+                self.validation_data['errors'].append(
+                    f'''Schema validation failed for layout.json. '''
+                    f'''{error.get('msg')}: {' -> '.join(location)}'''
+                )
+        except ValueError:
+            # any JSON decode error will be caught during syntax validation
+            return
+
+        self.validation_data['schema'].append({'filename': self.lj.fqfn.name, 'status': status})
+
+        if status is True:
             self.check_layout_params()
 
     def check_layout_params(self):
@@ -317,11 +284,8 @@ class Validate(Bin):
         The layout.json files references the params.name from the install.json file.  The method
         will validate that no reference appear for inputs in install.json that don't exist.
         """
-
         # do not track hidden or serviceConfig inputs as they should not be in layouts.json
-        ij_input_names = [
-            p.name for p in self.ij.data.filter_params(service_config=False, hidden=False)
-        ]
+        ij_input_names = list(self.ij.data.filter_params(service_config=False, hidden=False))
         ij_output_names = [o.name for o in self.ij.data.playbook.output_variables]
 
         # Check for duplicate inputs
@@ -357,13 +321,13 @@ class Validate(Bin):
                     # update validation data errors
                     self.validation_data['errors'].append(
                         'Layouts input.parameters[].name validations failed '
-                        f"""("{p.get('name')}" is defined in layout.json, """
+                        f'''("{p.get('name')}" is defined in layout.json, '''
                         'but hidden or not found in install.json).'
                     )
                     status = False
                 else:
                     # any item in list afterwards is a problem
-                    ij_input_names.remove(p.get('name'))
+                    ij_input_names.remove(p.name)
 
                 if 'sqlite3' in sys.modules:
                     if p.display:
@@ -427,28 +391,31 @@ class Validate(Bin):
         Args:
             app_path (str, optional): Defaults to None. The path of Python files.
         """
-        app_path = app_path or '.'
+        fqpn = Path(app_path or os.getcwd())
 
-        for filename in sorted(os.listdir(app_path)):
+        for fqfn in sorted(fqpn.iterdir()):
             error = None
             status = True
-            if filename.endswith('.py'):
+            if fqfn.name.endswith('.py'):
                 try:
-                    with open(filename, 'rb') as f:
-                        ast.parse(f.read(), filename=filename)
+                    with fqfn.open(mode='rb') as fh:
+                        ast.parse(fh.read(), filename=fqfn.name)
                 except SyntaxError:
                     status = False
+
                     # cleanup output
                     e = []
                     for line in traceback.format_exc().split('\n')[-5:-2]:
                         e.append(line.strip())
                     error = ' '.join(e)
 
-            elif filename.endswith('.json'):
+            elif fqfn.name.endswith('.json'):
                 try:
-                    with open(filename) as fh:
+                    with fqfn.open() as fh:
                         json.load(fh)
                 except ValueError as e:
+                    # update tracker for common files
+                    self.invalid_json_files.append(fqfn.name)
                     status = False
                     error = e
             else:
@@ -458,28 +425,14 @@ class Validate(Bin):
             if error:
                 # update validation data errors
                 self.validation_data['errors'].append(
-                    f'Syntax validation failed for {filename} ({error}).'
+                    f'Syntax validation failed for {fqfn.name} ({error}).'
                 )
 
             # store status for this file
-            self.validation_data['fileSyntax'].append({'filename': filename, 'status': status})
+            self.validation_data['fileSyntax'].append({'filename': fqfn.name, 'status': status})
 
-    @property
-    def install_json_schema(self):
-        """Load install.json schema file."""
-        if self._install_json_schema is None and self.install_json_schema_file is not None:
-            # remove old schema file
-            if os.path.isfile('tcex_json_schema.json'):
-                # this file is now part of tcex.
-                os.remove('tcex_json_schema.json')
-
-            if os.path.isfile(self.install_json_schema_file):
-                with open(self.install_json_schema_file) as fh:
-                    self._install_json_schema = json.load(fh)
-        return self._install_json_schema
-
-    def interactive(self):
-        """Run in interactive mode."""
+    def interactive(self) -> None:
+        """[App Builder] Run in interactive mode."""
         while True:
             line = sys.stdin.readline().strip()
             if line == 'quit':
@@ -489,29 +442,20 @@ class Validate(Bin):
                 self.check_imports()
                 self.check_install_json()
                 self.check_layout_json()
-                self.check_feed_files()
+                self.check_job_json()
                 self.print_json()
 
             # reset validation_data
             self.validation_data = self._validation_data
 
-    @property
-    def layout_json_schema(self):
-        """Load layout.json schema file."""
-        if self._layout_json_schema is None and self.layout_json_schema_file is not None:
-            if os.path.isfile(self.layout_json_schema_file):
-                with open(self.layout_json_schema_file) as fh:
-                    self._layout_json_schema = json.load(fh)
-        return self._layout_json_schema
-
     def print_json(self):
-        """Print JSON output."""
+        """[App Builder] Print JSON output."""
         print(json.dumps({'validation_data': self.validation_data}))
 
     def _print_file_syntax_results(self):
         if self.validation_data.get('fileSyntax'):
             print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Validated File Syntax:')
-            print(f"{c.Style.BRIGHT}{'File:'!s:<60}{'Status:'!s:<25}")
+            print(f'''{c.Style.BRIGHT}{'File:'!s:<60}{'Status:'!s:<25}''')
             for f in self.validation_data.get('fileSyntax'):
                 status_color = self.status_color(f.get('status'))
                 status_value = self.status_value(f.get('status'))
@@ -520,28 +464,28 @@ class Validate(Bin):
     def _print_imports_results(self):
         if self.validation_data.get('moduleImports'):
             print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Validated Imports:')
-            print(f"{c.Style.BRIGHT}{'File:'!s:<30}{'Module:'!s:<30}{'Status:'!s:<25}")
+            print(f'''{c.Style.BRIGHT}{'File:'!s:<30}{'Module:'!s:<30}{'Status:'!s:<25}''')
             for f in self.validation_data.get('moduleImports'):
                 status_color = self.status_color(f.get('status'))
                 status_value = self.status_value(f.get('status'))
                 print(
-                    f"{f.get('filename')!s:<30}{c.Fore.WHITE}"
-                    f"{f.get('module')!s:<30}{status_color}{status_value!s:<25}"
+                    f'''{f.get('filename')!s:<30}{c.Fore.WHITE}'''
+                    f'''{f.get('module')!s:<30}{status_color}{status_value!s:<25}'''
                 )
 
     def _print_schema_results(self):
         if self.validation_data.get('schema'):
             print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Validated Schema:')
-            print(f"{c.Style.BRIGHT}{'File:'!s:<60}{'Status:'!s:<25}")
+            print(f'''{c.Style.BRIGHT}{'File:'!s:<60}{'Status:'!s:<25}''')
             for f in self.validation_data.get('schema'):
                 status_color = self.status_color(f.get('status'))
                 status_value = self.status_value(f.get('status'))
-                print(f"{f.get('filename')!s:<60}{status_color}{status_value!s:<25}")
+                print(f'''{f.get('filename')!s:<60}{status_color}{status_value!s:<25}''')
 
     def _print_layouts_results(self):
         if self.validation_data.get('layouts'):
             print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Validated Layouts:')
-            print(f"{c.Style.BRIGHT}{'Params:'!s:<60}{'Status:'!s:<25}")
+            print(f'''{c.Style.BRIGHT}{'Params:'!s:<60}{'Status:'!s:<25}''')
             for f in self.validation_data.get('layouts'):
                 status_color = self.status_color(f.get('status'))
                 status_value = self.status_value(f.get('status'))
@@ -550,7 +494,7 @@ class Validate(Bin):
     def _print_feed_results(self):
         if self.validation_data.get('feeds'):
             print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Validated Feed Jobs:')
-            print(f"{c.Style.BRIGHT}{'Feeds:'!s:<60}{'Status:'!s:<25}")
+            print(f'''{c.Style.BRIGHT}{'Feeds:'!s:<60}{'Status:'!s:<25}''')
             for f in self.validation_data.get('feeds'):
                 status_color = self.status_color(f.get('status'))
                 status_value = self.status_value(f.get('status'))
@@ -564,10 +508,10 @@ class Validate(Bin):
             print(f'* {c.Fore.RED}{error}')
 
             # ignore exit code
-            if not self.args.ignore_validation:
+            if not self.ignore_validation:
                 self.exit_code = 1
 
-    def print_results(self):
+    def print_results(self) -> None:
         """Print results."""
         # Validating Syntax
         self._print_file_syntax_results()

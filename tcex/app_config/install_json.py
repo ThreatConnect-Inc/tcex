@@ -57,7 +57,7 @@ class InstallJson:
             try:
                 with self.fqfn.open() as fh:
                     contents = json.load(fh, object_pairs_hook=OrderedDict)
-            except OSError:  # pragma: no cover
+            except (OSError, ValueError):  # pragma: no cover
                 self.log.error(
                     f'feature=install-json, exception=failed-reading-file, filename={self.fqfn}'
                 )

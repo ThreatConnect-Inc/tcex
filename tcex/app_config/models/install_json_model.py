@@ -6,8 +6,9 @@ from enum import Enum
 from typing import List, Optional, Union
 
 # third-party
-from pydantic import BaseModel, Field
-from pydantic.types import constr
+from pydantic import BaseModel, Field, validator
+from pydantic.types import UUID5, constr
+from semantic_version import Version
 
 # first-party
 from tcex.pleb import NoneModel
@@ -57,7 +58,7 @@ class FeedsModel(BaseModel):
     deprecation: Optional[List[DeprecationModel]]
     document_storage_limit_mb: int
     enable_bulk_json: bool = False
-    firstRunParams: Optional[List[FirstRunParamsModel]]
+    first_run_params: Optional[List[FirstRunParamsModel]]
     indicator_limit: int
     job_file: str
     source_category: str
@@ -212,17 +213,17 @@ class InstallJsonModel(BaseModel):
     allow_on_demand: bool
     allow_run_as_user: Optional[bool]
     api_user_token_param: Optional[bool]
-    app_id: str = uuid.uuid5(uuid.NAMESPACE_X500, os.path.basename(os.getcwd()).lower())
+    app_id: UUID5 = uuid.uuid5(uuid.NAMESPACE_X500, os.path.basename(os.getcwd()).lower())
     commit_hash: Optional[str] = Field(default_factory=get_commit_hash)
     display_name: constr(min_length=3, max_length=100)
     display_path: Optional[constr(min_length=3, max_length=100)]
     docker_image: Optional[str]
     features: List
-    feeds: Optional[List[FeedsModel]]
+    feeds: List[FeedsModel] = []
     labels: Optional[List]
     language_version: Optional[str]
     list_delimiter: str
-    min_server_version: Optional[str]
+    min_server_version: Optional[Version]
     note: Optional[str]
     params: Optional[List[ParamsModel]]
     playbook: Optional[PlaybookModel]
@@ -230,17 +231,26 @@ class InstallJsonModel(BaseModel):
     program_language: str
     program_main: str
     program_name: Optional[str]
-    program_version: str
+    program_version: Version
     publish_out_files: Optional[List]
     repeating_minutes: Optional[List]
     runtime_context: Optional[List]
     runtime_level: Union[List, str]
     service: Optional[ServiceModel]
 
+    @validator('min_server_version', 'program_version', pre=True)
+    def version(cls, v):  # pylint: disable=E0213,R0201
+        """Return a version object for "version" fields."""
+        if v is not None:
+            return Version(v)
+        return v
+
     class Config:
         """DataModel Config"""
 
         alias_generator = snake_to_camel
+        arbitrary_types_allowed = True
+        json_encoders = {Version: lambda v: str(v)}  # pylint: disable=W0108
         validate_assignment = True
 
     @property
@@ -310,6 +320,11 @@ class InstallJsonModel(BaseModel):
     def optional_params(self) -> dict[str, ParamsModel]:
         """Return params as name/data model."""
         return {p.name: p for p in self.params if p.required is False}
+
+    @property
+    def package_version(self):
+        """Return the major version of the App."""
+        return f'v{self.program_version.major}'
 
     @property
     def param_names(self) -> List[str]:

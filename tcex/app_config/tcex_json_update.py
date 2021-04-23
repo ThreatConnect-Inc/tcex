@@ -21,7 +21,7 @@ class TcexJsonUpdate:
         self.update_package_app_name()
 
         # update deprecated fields
-        self.update_deprecated_fields()
+        # self.update_deprecated_fields()
 
         # update package excludes
         self.update_package_excludes()
@@ -59,11 +59,11 @@ class TcexJsonUpdate:
             # update App name
             self.tj.data.package.app_name = _app_name
 
-    def update_deprecated_fields(self) -> None:
-        """Update deprecated fields in the tcex.json file."""
-        deprecated_fields = ['profile_include_dirs']
-        for d in deprecated_fields:
-            setattr(self.tj.data, d, None)
+    # def update_deprecated_fields(self) -> None:
+    #     """Update deprecated fields in the tcex.json file."""
+    #     deprecated_fields = ['profile_include_dirs']
+    #     for d in deprecated_fields:
+    #         setattr(self.tj.data, d, None)
 
     def update_package_excludes(self) -> None:
         """Update the excludes values in the tcex.json file."""

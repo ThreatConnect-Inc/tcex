@@ -25,7 +25,6 @@ class Dep(Bin):
 
     def __init__(
         self,
-        _args,
         branch: str,
         no_cache_dir: bool,
         proxy_host: str,
@@ -34,7 +33,7 @@ class Dep(Bin):
         proxy_pass: str,
     ):
         """Initialize Class properties."""
-        super().__init__(_args)
+        super().__init__()
         self.branch = branch
         self.no_cache_dir = no_cache_dir
         self.proxy_host = proxy_host
@@ -54,7 +53,7 @@ class Dep(Bin):
         # update tcex.json
         self.tj.update.multiple()
 
-    def _build_command(self, python_executable: str, lib_dir: str) -> str:
+    def _build_command(self, python_executable: Path, lib_dir: Path) -> str:
         """Build the pip command for installing dependencies.
 
         Args:
@@ -65,7 +64,7 @@ class Dep(Bin):
             list: The Python pip command with all required args.
         """
         exe_command = [
-            os.path.expanduser(python_executable),
+            str(python_executable),
             '-m',
             'pip',
             'install',
@@ -74,7 +73,7 @@ class Dep(Bin):
             '--ignore-installed',
             '--quiet',
             '--target',
-            lib_dir,
+            lib_dir.name,
         ]
         if self.no_cache_dir:
             exe_command.append('--no-cache-dir')
@@ -175,9 +174,7 @@ class Dep(Bin):
                 continue
 
             print(f'Building Lib Dir: {c.Style.BRIGHT}{c.Fore.CYAN}{lib_version.lib_dir.name}')
-            exe_command = self._build_command(
-                lib_version.python_executable, lib_version.lib_dir.name
-            )
+            exe_command = self._build_command(lib_version.python_executable, lib_version.lib_dir)
 
             print(f'''Running: {c.Style.BRIGHT}{c.Fore.GREEN}{' '.join(exe_command)}''')
             # recommended -> https://pip.pypa.io/en/latest/user_guide/#using-pip-from-your-program
@@ -195,6 +192,7 @@ class Dep(Bin):
                 print(f'''{c.Style.BRIGHT}{c.Fore.RED}{err.decode('utf-8')}''')
                 sys.exit(f'''ERROR: {err.decode('utf-8')}''')
 
+            # TODO: [low] can this be updated to use version from model?
             # version comparison
             try:
                 python_version = lib_version.lib_dir.name.split('_', 1)[1]
@@ -202,13 +200,14 @@ class Dep(Bin):
                 python_version = None
                 self.handle_error('Could not determine version from lib string.')
 
+            # TODO: [low] investigate using sematic_version package
             # track the latest Python version
             if self.latest_version is None or StrictVersion(python_version) > StrictVersion(
                 self.latest_version
             ):
                 self.latest_version = python_version
 
-        if self.branch:
+        if self.branch != 'master':
             # remove temp requirements.txt file
             self.requirements_fqfn.unlink()
 

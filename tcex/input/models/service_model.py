@@ -39,6 +39,8 @@ class ServiceModel(BaseModel):
 
     # the Broker auth token
     tc_svc_broker_token: str
+    # TODO: [med] switch ot use of SecretStr
+    # tc_svc_broker_token: Optional[SecretStr]
 
     # the Broker client topic (messages to core)
     tc_svc_client_topic: str

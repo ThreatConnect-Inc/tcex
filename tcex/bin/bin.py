@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 """TcEx Framework Bin Command Base Module."""
 # standard library
+import logging
 import os
 import sys
+from functools import lru_cache
+from pathlib import Path
 
 # third-party
 import colorama as c
@@ -10,23 +13,15 @@ import colorama as c
 # first-party
 from tcex.app_config import InstallJson, LayoutJson, TcexJson
 from tcex.app_config.permutation import Permutation
+from tcex.logger import RotatingFileHandlerCustom
+from tcex.logger.trace_logger import TraceLogger
 
 
 class Bin:
-    """Base Class for ThreatConnect command line tools.
+    """Base Class for ThreatConnect command line tools."""
 
-    Args:
-        _args (namespace): The argparser args Namespace.
-    """
-
-    def __init__(self, _args):
-        """Initialize Class properties.
-
-        Args:
-            _args (namespace): The argparser args Namespace.
-        """
-        self.args = _args
-
+    def __init__(self):
+        """Initialize Class properties."""
         # properties
         self.app_path = os.getcwd()
         self.exit_code = 0
@@ -37,6 +32,14 @@ class Bin:
 
         # initialize colorama
         c.init(autoreset=True, strip=False)
+
+    @property
+    @lru_cache
+    def cli_out_path(self) -> Path:
+        """Return the path to the tcex cli comman out directory."""
+        _out_path = Path(os.path.expanduser('~/.tcex'))
+        _out_path.mkdir(exist_ok=True, parents=True)
+        return _out_path
 
     @staticmethod
     def handle_error(err, halt=True):
@@ -49,6 +52,48 @@ class Bin:
         print(f'{c.Style.BRIGHT}{c.Fore.RED}{err}')
         if halt:
             sys.exit(1)
+
+    @property
+    @lru_cache
+    def log(self):
+        """Return the configured logger."""
+        # create logger based on custom TestLogger
+        logging.setLoggerClass(TraceLogger)
+
+        # init logger
+        logger = logging.getLogger('tcex-cli-Logger')
+
+        # set logger level
+        logger.setLevel(logging.TRACE)
+
+        # create rotation filehandler
+        lfh = RotatingFileHandlerCustom(
+            backupCount=3,
+            filename=f'{self.cli_out_path}/tcex.log',
+            maxBytes=10_000,
+        )
+
+        # get logging level from OS env or default to debug
+        logging_level = logging.getLevelName('DEBUG')
+
+        # set handler logging level
+        lfh.setLevel(logging_level)
+
+        # create formatter
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        if logging_level < 10:
+            formatter = logging.Formatter(
+                '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+                '(%(filename)s:%(funcName)s:%(lineno)d:%(threadName)s)'
+            )
+
+        # set formatter
+        lfh.setFormatter(formatter)
+
+        # add handler
+        logger.addHandler(lfh)
+
+        return logger
 
     @staticmethod
     def print_message(message, line_bright=False, line_color=None, line_limit=150):

@@ -1,59 +1,20 @@
 #!/usr/bin/env python
 """TcEx framework CLI command"""
 # standard library
+import os
+import traceback
+from pathlib import Path
 from typing import Optional
 
 # third-party
+import colorama as c
 import typer
 
 # first-party
-from tcex.bin import Dep, Validate
+from tcex.bin import Dep, Package, Template, Validate
+
 
 app = typer.Typer()
-
-
-@app.command()
-def init(
-    type_: Optional[str] = typer.Option(..., '--type', help='The App type being initialized.'),
-    template: Optional[str] = typer.Option(..., help='The App template to be used.'),
-    branch: Optional[str] = typer.Option(
-        'master', help='The git branch of the tcex-app-template repository to use.'
-    ),
-    layout: Optional[bool] = typer.Option(
-        False, help='If True, a layout.json file will be created.'
-    ),
-):
-    """Initialize a new App from a template.
-
-    Templates can be found at: https://github.com/ThreatConnect-Inc/tcex-app-templates
-    """
-    import time
-
-    with typer.progressbar(range(100)) as progress:
-        total = 0
-        for value in progress:
-            # Fake processing time
-            time.sleep(0.01)
-            total += 1
-        typer.echo(f'Using branch: {branch}')
-        typer.echo(f'Creating layout: {layout}')
-        typer.echo(f'App type: {type_}')
-        typer.echo(f'App template: {template}')
-
-
-@app.command()
-def update(
-    template: Optional[str] = typer.Option(
-        None, help='Only provide this value if changing the saved value.'
-    ),
-):
-    """Update an project with latest template files.
-
-    The template name will be pulled from tcex.json by default. If the template option
-    is provided it will be used instead of the value in the tcex.json file. The tcex.json
-    file will also be updated with new values.
-    """
-    typer.echo(f'App template: {template}')
 
 
 @app.command()
@@ -87,7 +48,7 @@ def deps(
     are defined in the tcex.json file then there will be multiple lib_X.X.X directories.
     """
     try:
-        tcl = Dep(None, branch, no_cache_dir, proxy_host, proxy_port, proxy_user, proxy_pass)
+        tcl = Dep(branch, no_cache_dir, proxy_host, proxy_port, proxy_user, proxy_pass)
 
         # configure proxy settings
         tcl.configure_proxy()
@@ -95,6 +56,7 @@ def deps(
         if branch != 'master':
             # create temp requirements.txt file pointing to tcex branch
             tcl.create_temp_requirements()
+            raise typer.Exit(code=1)
 
         # install debs
         tcl.install_deps()
@@ -105,7 +67,63 @@ def deps(
 
 
 @app.command()
+def init(
+    type_: str = typer.Option(..., '--type', help='The App type being initialized.'),
+    template: str = typer.Option(..., help='The App template to be used.'),
+    # branch: Optional[str] = typer.Option(
+    #     'master', help='The git branch of the tcex-app-template repository to use.'
+    # ),
+    # layout: Optional[bool] = typer.Option(
+    #     False, help='If True, a layout.json file will be created.'
+    # ),
+):
+    """Initialize a new App from a template.
+
+    Templates can be found at: https://github.com/ThreatConnect-Inc/tcex-app-templates
+    """
+    if os.listdir(os.getcwd()):
+        typer.echo(
+            'The current directory does not appear to be empty. Apps should '
+            'be initialized in an empty directory. If attempting to update an'
+            'existing App the please try using the "tcex update" command instead.'
+        )
+        raise typer.Exit(code=1)
+
+    tt = Template()
+    try:
+        downloads = tt.init(type_, template)
+        with typer.progressbar(downloads) as progress:
+            for item in progress:
+                tt.download_template_file(item)
+        tt.update_tcex_json()
+    except Exception as ex:
+        typer.echo(f'Failed initializing App ({ex}).')
+        raise typer.Exit(code=1)
+
+
+@app.command()
+def list(
+    type_: Optional[str] = typer.Option(None, '--type', help='The App type being initialized.'),
+):
+    """List templates
+
+    The template name will be pulled from tcex.json by default. If the template option
+    is provided it will be used instead of the value in the tcex.json file. The tcex.json
+    file will also be updated with new values.
+    """
+    tt = Template()
+    try:
+        tt.list(type_)
+        tt.print_list()
+        tt.print_error_message()
+    except Exception as ex:
+        typer.echo(f'Failed getting App templates: {ex}')
+        raise typer.Exit(code=1)
+
+
+@app.command()
 def package(
+    # TODO: [high] figure out how to get a list for this input
     excludes: Optional[str] = typer.Option(None, help='File and directories to exclude from build'),
     ignore_validation: Optional[bool] = typer.Option(
         False, help='If true, validation errors will not prevent package.'
@@ -113,15 +131,69 @@ def package(
     json_output: Optional[bool] = typer.Option(
         False, help='If true, the output of the validation will be returned in JSON format.'
     ),
-    output_dir: Optional[int] = typer.Option(
-        'target', help='(Advanced) Directory to write the outfile.'
+    output_dir: Path = typer.Option(
+        'target', help='(Advanced) Directory name (relative to App) to write the App package.'
     ),
 ):
-    """."""
-    typer.echo(f'Excludes: {excludes}')
-    typer.echo(f'Ignore Validation: {ignore_validation}')
-    typer.echo(f'JSON Output: {json_output}')
-    typer.echo(f'Target: {output_dir}')
+    """Package the current App.
+
+    This command will write an <app name>.tcx file to the output_dir (default: target). This
+    App package can be directly installed into ThreatConnect.
+    """
+    try:
+        # validate App
+        tcv = Validate(ignore_validation)
+        tcv.update_system_path()
+        tcv.check_syntax()
+        tcv.check_imports()
+        tcv.check_install_json()
+        tcv.check_layout_json()
+        tcv.check_job_json()
+        if not json_output:
+            tcv.print_results()
+        if tcv.exit_code != 0:
+            raise typer.Exit(code=tcv.exit_code)
+
+        # package App
+        tcp = Package(excludes, ignore_validation, output_dir)
+        tcp.validation_data = tcv.validation_data
+        tcp.package()
+        if json_output:
+            tcp.print_json()
+        else:
+            tcp.print_results()
+    except Exception:
+        print(f'{c.Style.BRIGHT}{c.Fore.RED}{traceback.format_exc()}')
+        raise typer.Exit(code=tcv.exit_code)
+
+
+@app.command()
+def update(
+    template: Optional[str] = typer.Option(
+        None, help='Only provide this value if changing the saved value.'
+    ),
+    default: Optional[bool] = typer.Option(
+        False, help='(Advanced) If true, this command will not exit until passed an exit string.'
+    ),
+):
+    """Update an project with latest template files.
+
+    Templates can be found at: https://github.com/ThreatConnect-Inc/tcex-app-templates
+
+    The template name will be pulled from tcex.json by default. If the template option
+    is provided it will be used instead of the value in the tcex.json file. The tcex.json
+    file will also be updated with new values.
+    """
+    tt = Template()
+    try:
+        downloads = tt.update(template)
+        with typer.progressbar(downloads) as progress:
+            for item in progress:
+                tt.download_template_file(item)
+    except Exception as ex:
+        typer.echo(f'Failed updating App ({ex}).')
+        # raise typer.Exit(code=1)
+        raise
 
 
 @app.command()
@@ -146,7 +218,7 @@ def validate(
     * validate the feed files are valid
     """
     try:
-        tcv = Validate(None, ignore_validation)
+        tcv = Validate(ignore_validation)
         tcv.update_system_path()
         # run in interactive
         if interactive:
@@ -161,8 +233,7 @@ def validate(
             tcv.print_results()
     except Exception as ex:
         typer.echo(f'Validate Exception: {ex}')
-        # raise typer.Exit(code=1)
-        raise
+        raise typer.Exit(code=1)
 
 
 if __name__ == '__main__':

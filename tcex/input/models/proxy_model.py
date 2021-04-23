@@ -32,6 +32,8 @@ class ProxyModel(BaseModel):
     # the proxy server password
     # supported runtimeLevel: [Organization, Playbook, WebhookTriggerService]
     tc_proxy_password: Optional[str]
+    # TODO: [med] switch ot use of SecretStr
+    # tc_proxy_password: Optional[SecretStr]
 
     # if True, external API connections should be proxied
     # supported runtimeLevel: [Organization, Playbook, WebhookTriggerService]

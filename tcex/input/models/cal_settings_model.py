@@ -20,6 +20,8 @@ class CalSettingsModel(BaseModel):
 
     # the ThreatConnect CAL API token
     tc_cal_token: str
+    # TODO: [med] switch ot use of SecretStr
+    # tc_cal_token: Optional[SecretStr]
 
     # the ThreatConnect CAL API token timestamp
     tc_cal_timestamp: int

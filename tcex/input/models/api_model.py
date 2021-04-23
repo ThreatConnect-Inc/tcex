@@ -30,6 +30,8 @@ class ApiModel(BaseModel):
     # a token for the ThreatConnect API
     # exceptions: [ApiService, TriggerService, WebhookTriggerService]
     tc_token: Optional[str]
+    # TODO: [med] switch ot use of SecretStr
+    # tc_token: Optional[SecretStr]
 
     # the expiration epoch time for tc_token
     # exceptions: [ApiService, TriggerService, WebhookTriggerService]
@@ -44,6 +46,8 @@ class ApiModel(BaseModel):
 
     # alternate authentication credential when tc_token is not passed
     tc_api_secret_key: Optional[str]
+    # TODO: [med] switch ot use of SecretStr
+    # tc_api_secret_key: Optional[SecretStr]
 
     # whether or not to verify the ThreatConnect API SSL cert
     tc_verify: Optional[bool] = False

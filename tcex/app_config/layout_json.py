@@ -30,18 +30,18 @@ class LayoutJson:
     @property
     @lru_cache()
     def contents(self) -> dict:
-        """Return install.json file contents."""
+        """Return layout.json file contents."""
         contents = {}
         if self.fqfn.is_file():
             try:
                 with self.fqfn.open() as fh:
                     contents = json.load(fh, object_pairs_hook=OrderedDict)
-            except OSError:  # pragma: no cover
+            except (OSError, ValueError):  # pragma: no cover
                 self.log.error(
-                    f'feature=install-json, exception=failed-reading-file, filename={self.fqfn}'
+                    f'feature=layout-json, exception=failed-reading-file, filename={self.fqfn}'
                 )
         else:  # pragma: no cover
-            self.log.error(f'feature=install-json, exception=file-not-found, filename={self.fqfn}')
+            self.log.error(f'feature=layout-json, exception=file-not-found, filename={self.fqfn}')
         return contents
 
     def create(self, inputs: 'ParamsModel', outputs: 'OutputVariablesModel'):

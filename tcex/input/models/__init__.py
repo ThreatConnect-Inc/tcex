@@ -6,6 +6,7 @@ from .aot_execution_enabled_model import AotExecutionEnabledModel
 from .api_model import ApiModel
 from .batch_model import BatchModel
 from .cal_settings_model import CalSettingsModel
+from .key_value_model import KeyValueModel
 from .logging_model import LoggingModel
 from .model_map import feature_map, runtime_level_map
 from .organization_model import OrganizationModel
@@ -15,3 +16,4 @@ from .playbook_model import PlaybookModel
 from .proxy_model import ProxyModel
 from .service_model import ServiceModel
 from .smtp_settings_model import SmtpSettingsModel
+from .tcentity_model import TCEntityModel

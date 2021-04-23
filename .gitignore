@@ -8,6 +8,7 @@
 # Language Exclusions
 #-------------------------------------------------
 __pycache__
+.pytest_cache
 *.env
 *.pyc
 .coverage
@@ -60,8 +61,8 @@ tcex.d
 templates
 threatconnect*
 tests/reports/*
+TODO.md
 
 #-------------------------------------------------
 # Other Nonsense
 #-------------------------------------------------
-.pytest_cache

@@ -21,6 +21,8 @@ class SmtpSettingsModel(BaseModel):
 
     # the smtp password
     tc_smtp_password: str
+    # TODO: [med] switch ot use of SecretStr
+    # tc_smtp_password: Optional[SecretStr]
 
     # the smtp port
     tc_smtp_port: int
