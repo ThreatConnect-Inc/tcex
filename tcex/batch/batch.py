@@ -58,6 +58,7 @@ class Batch:
         attribute_write_type: Optional[str] = 'Replace',
         halt_on_error: Optional[bool] = True,
         playbook_triggers_enabled: Optional[bool] = False,
+        **kwargs,
     ):
         """Initialize Class properties.
 
@@ -65,9 +66,11 @@ class Batch:
             tcex: An instance of TcEx object.
             owner: The ThreatConnect owner for Batch action.
             action: Action for the batch job ['Create', 'Delete'].
-            attribute_write_type: Write type for Indicator attributes ['Append', 'Replace'].
-            halt_on_error: If True any batch error will halt the batch job.
-            playbook_triggers_enabled: **DEPRECATED**
+            attribute_write_type: Write type for attributes ['Append', 'Replace'].
+            halt_on_error: If True, any batch error will halt the batch job.
+            playbook_triggers_enabled: If True, Playbook will be triggered when TI data is created.
+            security_label_write_type (str: kwargs): Write type for labels ['Append', 'Replace'].
+            tag_write_type (str: kwargs): Write type for tags ['Append', 'Replace'].
         """
         self.tcex = tcex
         self._action = action
@@ -75,6 +78,8 @@ class Batch:
         self._halt_on_error = halt_on_error
         self._owner = owner
         self._playbook_triggers_enabled = playbook_triggers_enabled
+        self._security_label_write_type = kwargs.get('security_label_write_typ', 'Replace')
+        self._tag_write_type = kwargs.get('tag_write_type', 'Replace')
 
         # properties
         self._batch_max_chunk = 5000
@@ -1492,17 +1497,28 @@ class Batch:
             fh.write(f'{xid}\n')
 
     @property
+    def security_label_write_type(self):
+        """Return batch security label write type."""
+        return self._attribute_write_type
+
+    @security_label_write_type.setter
+    def security_label_write_type(self, write_type: str):
+        """Set batch security label write type."""
+        self._security_label_write_type = write_type
+
+    @property
     def settings(self) -> dict:
         """Return batch job settings."""
         _settings = {
             'action': self._action,
-            # not supported in v2 batch
-            # 'attributeWriteType': self._attribute_write_type,
-            'attributeWriteType': 'Replace',
+            'attributeWriteType': self.attribute_write_type,
             'haltOnError': str(self._halt_on_error).lower(),
             'owner': self._owner,
+            'securityLabelWriteType': self.security_label_write_type,
+            'tagWriteType': self.tag_write_type,
             'version': 'V2',
         }
+
         if self._playbook_triggers_enabled is not None:
             _settings['playbookTriggersEnabled'] = str(self._playbook_triggers_enabled).lower()
         if self._hash_collision_mode is not None:
@@ -2072,6 +2088,16 @@ class Batch:
         except Exception:
             self.tcex.log.trace(traceback.format_exc())
         return t
+
+    @property
+    def tag_write_type(self):
+        """Return batch tag write type."""
+        return self._attribute_write_type
+
+    @tag_write_type.setter
+    def tag_write_type(self, write_type: str):
+        """Set batch tag write type."""
+        self._tag_write_type = write_type
 
     def threat(self, name: str, **kwargs) -> Threat:
         """Add Threat data to Batch object
