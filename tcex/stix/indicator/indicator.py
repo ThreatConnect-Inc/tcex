@@ -144,6 +144,15 @@ class StixIndicator(StixModel):
             batch_xid_array += [collection_id]
         try:
             indicators = self.stix_parser.parse(stix_data.get('pattern'))
+            filtered_indicators = []
+            for indicator in indicators:
+                if not hasattr(indicator, 'path'):
+                    self.logger.log.info(
+                        f'''Pattern not supported. Ignoring tree indicators for id: {stix_data.get('id')}.'''
+                    )
+                    continue
+                filtered_indicators.append(indicator)
+            indicators = filtered_indicators
             mappings = [
                 self._default_consume_handler(indicators, batch_xid_array),
                 self._ip_consume_handler(indicators, batch_xid_array),
