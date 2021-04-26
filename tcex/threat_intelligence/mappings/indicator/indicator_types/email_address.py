@@ -5,7 +5,7 @@ from ..indicator import Indicator
 class EmailAddress(Indicator):
     """Unique API calls for Email Address API Endpoints"""
 
-    def __init__(self, tcex, **kwargs):
+    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -19,7 +19,7 @@ class EmailAddress(Indicator):
             xid (str, kwargs): The external id for this Indicator.
         """
         super().__init__(
-            tcex,
+            ti,
             sub_type='Email Address',
             api_entity='emailAddress',
             api_branch='emailAddresses',

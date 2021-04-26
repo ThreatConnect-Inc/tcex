@@ -5,7 +5,7 @@ from ..indicator import Indicator
 class Address(Indicator):
     """Unique API calls for Address API Endpoints"""
 
-    def __init__(self, tcex, **kwargs):
+    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -19,7 +19,7 @@ class Address(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
         """
         super().__init__(
-            tcex, sub_type='Address', api_entity='address', api_branch='addresses', **kwargs
+            ti, sub_type='Address', api_entity='address', api_branch='addresses', **kwargs
         )
         self.unique_id = kwargs.get('unique_id', kwargs.get('ip'))
         self.data['ip'] = self.unique_id
@@ -40,7 +40,6 @@ class Address(Indicator):
         """
         return not self.data.get('ip') is None
 
-    # TODO: @burdy - is this correct for address?
     def dns_resolution(self):
         """Update the DNS resolution.
 
@@ -48,7 +47,7 @@ class Address(Indicator):
 
         """
         if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
         return self.tc_requests.dns_resolution(
             self.api_type, self.api_branch, self.unique_id, owner=self.owner
         )

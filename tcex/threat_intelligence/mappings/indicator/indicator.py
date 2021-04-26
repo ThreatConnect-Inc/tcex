@@ -24,11 +24,11 @@ def custom_indicator_class_factory(
                 metadata_map[manipulated_value] = value
         return metadata_map
 
-    def init(self, tcex, **kwargs):  # pylint: disable=possibly-unused-variable
+    def init(self, ti, **kwargs):  # pylint: disable=possibly-unused-variable
         """Init method for Custom Indicator Types with one value"""
         base_class.__init__(
             self,
-            tcex,
+            ti,
             sub_type=indicator_type,
             api_entity=entity_type,
             api_branch=branch_type,
@@ -96,10 +96,10 @@ def custom_indicator_class_factory(
 class Indicator(Mappings):
     """Unique API calls for Indicator API Endpoints"""
 
-    def __init__(self, tcex, **kwargs):
+    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
         """Initialize Class Properties."""
         super().__init__(
-            tcex,
+            ti,
             'Indicator',
             'indicators',
             kwargs.pop('sub_type', None),
@@ -185,7 +185,7 @@ class Indicator(Mappings):
         Returns:
         """
         if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
         if not status and not cal_status:
             return None
         request_data = {}
@@ -212,7 +212,7 @@ class Indicator(Mappings):
             value:
         """
         if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
         request_data = {'rating': value}
         return self.tc_requests.update(
             self.api_type, self.api_branch, self.unique_id, request_data, owner=self.owner
@@ -225,7 +225,7 @@ class Indicator(Mappings):
             value:
         """
         if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
         request_data = {'confidence': value}
         return self.tc_requests.update(
             self.api_type, self.api_branch, self.unique_id, request_data, owner=self.owner
@@ -234,7 +234,7 @@ class Indicator(Mappings):
     def owners(self):
         """Return owners"""
         if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
         return self.tc_requests.owners(
             self.api_type, self.api_branch, self.unique_id, owner=self.owner
         )
@@ -248,7 +248,7 @@ class Indicator(Mappings):
 
         """
         if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         data = {
             'count': count,
@@ -268,7 +268,7 @@ class Indicator(Mappings):
 
         """
         if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
         return self.tc_requests.observation_count(
             self.api_type, self.api_branch, self.unique_id, owner=self.owner
         )
@@ -276,7 +276,7 @@ class Indicator(Mappings):
     def add_false_positive(self):
         """Add a Indicator FalsePositive."""
         if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         return self.tc_requests.add_false_positive(
             self.api_type, self.api_branch, self.unique_id, owner=self.owner
@@ -289,7 +289,7 @@ class Indicator(Mappings):
             [type]: [description]
         """
         if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
         return self.tc_requests.observations(
             self.api_type, self.api_branch, self.unique_id, owner=self.owner
         )

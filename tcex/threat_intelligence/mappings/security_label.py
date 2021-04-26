@@ -1,5 +1,4 @@
 """ThreatConnect TI Security Label"""
-
 from .mappings import Mappings
 
 # import local modules for dynamic reference
@@ -9,16 +8,10 @@ module = __import__(__name__)
 class SecurityLabel(Mappings):
     """Unique API calls for SecurityLabel API Endpoints"""
 
-    def __init__(self, tcex, name, **kwargs):
-        """
-
-        Args:
-            tcex:
-            name:
-            **kwargs:
-        """
+    def __init__(self, ti: 'ThreatIntelligenc', name, **kwargs):
+        """."""
         super().__init__(
-            tcex,
+            ti,
             main_type='SecurityLabel',
             api_type='securitylabels',
             sub_type=None,
@@ -61,10 +54,10 @@ class SecurityLabel(Mappings):
     def add_key_value(self, key, value):
         """Converts the value and adds it as a data field.
 
-          Args:
-              key:
-              value:
-          """
+        Args:
+            key:
+            value:
+        """
         self._data[key] = value
 
     def name(self, name):

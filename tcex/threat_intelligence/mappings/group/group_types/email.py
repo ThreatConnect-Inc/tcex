@@ -6,7 +6,6 @@ class Email(Group):
     """Unique API calls for Email API Endpoints
 
     Args:
-        tcex (TcEx): An instantiated instance of TcEx object.
         body (str): The body for this Email.
         from_addr (str, kwargs): The **from** address for this Email.
         header (str): The header for this Email.
@@ -16,6 +15,6 @@ class Email(Group):
         to (str, kwargs): The **to** address for this Email.
     """
 
-    def __init__(self, tcex, **kwargs):
+    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
         """Initialize Class properties."""
-        super().__init__(tcex, sub_type='Email', api_entity='email', api_branch='emails', **kwargs)
+        super().__init__(ti, sub_type='Email', api_entity='email', api_branch='emails', **kwargs)

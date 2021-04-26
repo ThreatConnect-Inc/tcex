@@ -9,13 +9,19 @@ import re
 import signal
 import sys
 import threading
+from functools import lru_cache
 from typing import Optional, Union
 from urllib.parse import quote
 
 from .app_config_object import InstallJson
 from .inputs import Inputs
-from .logger import Logger
+from .logger import Logger, TraceLogger
 from .tokens import Tokens
+
+# init tcex logger
+logging.setLoggerClass(TraceLogger)
+logger = logging.getLogger('tcex')
+logger.setLevel(logging.TRACE)  # pylint: disable=E1101
 
 
 class TcEx:
@@ -32,12 +38,11 @@ class TcEx:
 
     def __init__(self, **kwargs):
         """Initialize Class Properties."""
-        # catch interupt signals
-        if threading.current_thread().name == 'MainThread':
-            signal.signal(signal.SIGINT, self._signal_handler)
-            if platform.system() != 'Windows':
-                signal.signal(signal.SIGHUP, self._signal_handler)
-            signal.signal(signal.SIGTERM, self._signal_handler)
+        # catch interupt signals specifically based on thread name
+        signal.signal(signal.SIGINT, self._signal_handler)
+        if platform.system() != 'Windows':
+            signal.signal(signal.SIGHUP, self._signal_handler)
+        signal.signal(signal.SIGTERM, self._signal_handler)
 
         # Property defaults
         self._config: dict = kwargs.get('config') or {}
@@ -57,9 +62,9 @@ class TcEx:
         self._session_external = None
         self._stix_model = None
         self._utils = None
-        self._ti = None
         self._token = None
         self.ij = InstallJson()
+        self.main_os_pid = os.getpid()
 
         # add custom logger if provided
         self._log: object = kwargs.get('logger')
@@ -100,8 +105,11 @@ class TcEx:
         self.log.error(
             f'App interrupted - file: {call_file}, method: {call_module}, line: {call_line}.'
         )
-        if signal_interupt in (2, 15):
-            self.exit(1, 'The App received an interrupt signal and will now exit.')
+        exit_code = 0
+        if threading.current_thread().name == 'MainThread' and signal_interupt in (2, 15):
+            exit_code = 1
+
+        self.exit(exit_code, 'The App received an interrupt signal and will now exit.')
 
     def advanced_request(
         self, session: object, timeout: Optional[int] = 600, output_prefix: Optional[str] = None
@@ -158,6 +166,52 @@ class TcEx:
         return Batch(
             self, owner, action, attribute_write_type, halt_on_error, playbook_triggers_enabled
         )
+
+    def batch_submit(
+        self,
+        owner: str,
+        action: Optional[str] = 'Create',
+        attribute_write_type: Optional[str] = 'Replace',
+        halt_on_error: Optional[bool] = False,
+        playbook_triggers_enabled: Optional[bool] = False,
+    ) -> 'BatchSubmit':  # noqa: F821
+        """Return instance of Batch
+
+        Args:
+            tcex: An instance of TcEx object.
+            owner: The ThreatConnect owner for Batch action.
+            action: Action for the batch job ['Create', 'Delete'].
+            attribute_write_type: Write type for TI attributes ['Append', 'Replace'].
+            halt_on_error: If True any batch error will halt the batch job.
+            playbook_triggers_enabled: Deprecated input, will not be used.
+
+        Returns:
+            object: An instance of the Batch Class.
+        """
+        from .batch.batch_submit import BatchSubmit
+
+        return BatchSubmit(
+            self, owner, action, attribute_write_type, halt_on_error, playbook_triggers_enabled
+        )
+
+    def batch_writer(self, output_dir: str, **kwargs) -> 'BatchWriter':  # noqa: F821
+        """Return instance of Batch
+
+        Args:
+            tcex: An instance of TcEx object.
+            output_dir: Deprecated input, will not be used.
+            output_extension (kwargs: str): Append this extension to output files.
+            write_callback (kwargs: Callable): A callback method to call when a batch json file
+                is written. The callback will be passed the fully qualified name of the written
+                file.
+            write_callback_kwargs (kwargs: dict): Additional values to send to callback method.
+
+        Returns:
+            object: An instance of the Batch Class.
+        """
+        from .batch.batch_writer import BatchWriter
+
+        return BatchWriter(self, output_dir, **kwargs)
 
     def cache(
         self,
@@ -329,6 +383,51 @@ class TcEx:
             indicator_list = [indicator]
 
         return indicator_list
+
+    # TODO: [high] testing ... organize this later
+    def get_session(self) -> 'TcSession':  # noqa: F821
+        """Return an instance of Requests Session configured for the ThreatConnect API."""
+        from .sessions import TcSession
+
+        _session = TcSession(
+            logger=self.log,
+            api_access_id=self.default_args.api_access_id,
+            api_secret_key=self.default_args.api_secret_key,
+            base_url=self.default_args.tc_api_path,
+        )
+
+        # set verify
+        _session.verify = self.default_args.tc_verify
+
+        # set token
+        _session.token = self.token
+
+        # update User-Agent
+        _session.headers.update({'User-Agent': f'TcEx: {__import__(__name__).__version__}'})
+
+        # add proxy support if requested
+        if self.default_args.tc_proxy_tc:
+            _session.proxies = self.proxies
+            self.log.info(
+                f'Using proxy host {self.args.tc_proxy_host}:'
+                f'{self.args.tc_proxy_port} for ThreatConnect session.'
+            )
+
+        # enable curl logging if tc_log_curl param is set.
+        if self.default_args.tc_log_curl:
+            _session.log_curl = True
+
+        # return session
+        return _session
+
+    def get_ti(self) -> 'ThreatIntelligence':  # noqa: F821
+        """Include the Threat Intel Module.
+
+        .. Note:: Threat Intel methods can be accessed using ``tcex.ti.<method>``.
+        """
+        from .threat_intelligence import ThreatIntelligence
+
+        return ThreatIntelligence(session=self.get_session())
 
     @property
     def group_types(self) -> list:
@@ -503,8 +602,7 @@ class TcEx:
     def logger(self) -> Logger:
         """Return logger."""
         if self._logger is None:
-            logger_name = self._config.get('tc_logger_name', 'tcex')
-            self._logger = Logger(self, logger_name)
+            self._logger = Logger(self, 'tcex')
             self._logger.add_cache_handler('cache')
         return self._logger
 
@@ -848,37 +946,7 @@ class TcEx:
     def session(self) -> 'TcSession':  # noqa: F821
         """Return an instance of Requests Session configured for the ThreatConnect API."""
         if self._session is None:
-            from .sessions import TcSession
-
-            self._session = TcSession(
-                logger=self.log,
-                api_access_id=self.default_args.api_access_id,
-                api_secret_key=self.default_args.api_secret_key,
-                base_url=self.default_args.tc_api_path,
-            )
-
-            # set verify
-            self._session.verify = self.default_args.tc_verify
-
-            # set token
-            self._session.token = self.token
-
-            # update User-Agent
-            self._session.headers.update(
-                {'User-Agent': f'TcEx: {__import__(__name__).__version__}'}
-            )
-
-            # add proxy support if requested
-            if self.default_args.tc_proxy_tc:
-                self._session.proxies = self.proxies
-                self.log.info(
-                    f'Using proxy host {self.args.tc_proxy_host}:'
-                    f'{self.args.tc_proxy_port} for ThreatConnect session.'
-                )
-
-            # enable curl logging if tc_log_curl param is set.
-            if self.default_args.tc_log_curl:
-                self._session.log_curl = True
+            self._session = self.get_session()
         return self._session
 
     @property
@@ -919,16 +987,13 @@ class TcEx:
         return self._stix_model
 
     @property
+    @lru_cache()
     def ti(self) -> 'ThreatIntelligence':  # noqa: F821
         """Include the Threat Intel Module.
 
-        .. Note:: Threat Intell methods can be accessed using ``tcex.ti.<method>``.
+        .. Note:: Threat Intel methods can be accessed using ``tcex.ti.<method>``.
         """
-        if self._ti is None:
-            from .threat_intelligence import ThreatIntelligence
-
-            self._ti = ThreatIntelligence(self)
-        return self._ti
+        return self.get_ti()
 
     @property
     def token(self) -> Tokens:

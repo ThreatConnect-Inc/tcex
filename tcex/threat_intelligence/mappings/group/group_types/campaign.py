@@ -6,16 +6,15 @@ class Campaign(Group):
     """Unique API calls for Campaign API Endpoints
 
     Args:
-        tcex (TcEx): An instantiated instance of TcEx object.
         name (str, kwargs): [Required for Create] The name for this Group.
         owner (str, kwargs): The name for this Group. Default to default Org when not provided
         first_seen (str, kwargs): The first seen datetime expression for this Group.
     """
 
-    def __init__(self, tcex, **kwargs):
+    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
         """Initialize Class Properties."""
         super().__init__(
-            tcex, sub_type='Campaign', api_entity='campaign', api_branch='campaigns', **kwargs
+            ti, sub_type='Campaign', api_entity='campaign', api_branch='campaigns', **kwargs
         )
 
     def first_seen(self, first_seen):
@@ -28,7 +27,7 @@ class Campaign(Group):
             requests.Response: The response from the API call.
         """
         if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         first_seen = self._utils.datetime.format_datetime(
             first_seen, date_format='%Y-%m-%dT%H:%M:%SZ'

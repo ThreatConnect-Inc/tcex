@@ -98,6 +98,7 @@ class CommonService:
         """Return the command map for the current Service type."""
         return {
             'acknowledged': self.process_acknowledged_command,
+            'brokercheck': self.process_broker_check,
             'heartbeat': self.process_heartbeat_command,
             'loggingchange': self.process_logging_change_command,
             'shutdown': self.process_shutdown_command,
@@ -116,13 +117,31 @@ class CommonService:
         """Start heartbeat process."""
         self.service_thread(name='heartbeat', target=self.heartbeat_monitor)
 
+    def heartbeat_broker_check(self) -> None:
+        """Send self check message to ensure communications with message broker."""
+        message = {
+            'command': 'BrokerCheck',
+            'date': str(datetime.now()),
+            'heartbeat_watchdog': self.heartbeat_watchdog,
+        }
+        self.message_broker.publish(
+            message=json.dumps(message), topic=self.args.tc_svc_server_topic
+        )
+
+        # allow time for message to be received
+        time.sleep(5)
+
     def heartbeat_monitor(self) -> None:
         """Publish heartbeat on timer."""
         self.log.info('feature=service, event=heartbeat-monitor-started')
         while True:
+            # check heartbeat is not missed
             if self.heartbeat_watchdog > (
                 int(self.args.tc_svc_hb_timeout_seconds) / int(self.heartbeat_sleep_time)
             ):
+                # send self check message
+                self.heartbeat_broker_check()
+
                 self.log.error(
                     'feature=service, event=missed-heartbeat, action=shutting-service-down'
                 )
@@ -231,6 +250,22 @@ class CommonService:
             trigger_id=trigger_id,
         )
 
+    def process_broker_check(self, message: dict) -> None:
+        """Implement parent method to log a broker check message.
+
+        .. code-block:: python
+            :linenos:
+            :lineno-start: 1
+
+            {
+                "command": "BrokerCheck",
+            }
+
+        Args:
+            message: The message payload from the server topic.
+        """
+        self.log.warning(f'feature=service, event=broker-check, message={message}')
+
     def process_heartbeat_command(self, message: dict) -> None:  # pylint: disable=unused-argument
         """Process the HeartBeat command.
 
@@ -330,9 +365,10 @@ class CommonService:
         # update shutdown flag
         self.message_broker.shutdown = True
 
-        # delay shutdown to give App time to cleanup
-        time.sleep(5)
-        self.tcex.exit(0)  # final shutdown in case App did not
+        # TODO: [review] this doesn't help if MainThread does not die.
+        # # delay shutdown to give App time to cleanup
+        # time.sleep(5)
+        # self.tcex.exit(0)  # final shutdown in case App did not
 
     @property
     def ready(self) -> bool:

@@ -12,16 +12,15 @@ class Event(Group):
     + No Further Action
 
     Args:
-        tcex (TcEx): An instantiated instance of TcEx object.
         event_date (str, kwargs): The event "event date" datetime expression for this Group.
         name (str, kwargs): [Required for Create] The name for this Group.
         owner (str, kwargs): The name for this Group. Default to default Org when not provided
         status (str, kwargs): The status for this Group.
     """
 
-    def __init__(self, tcex, **kwargs):
+    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
         """Initialize Class Properties."""
-        super().__init__(tcex, sub_type='Event', api_entity='event', api_branch='events', **kwargs)
+        super().__init__(ti, sub_type='Event', api_entity='event', api_branch='events', **kwargs)
 
     def event_date(self, event_date):
         """Update the event date for the Event.
@@ -33,7 +32,7 @@ class Event(Group):
             requests.Response: The response from the API call.
         """
         if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         event_date = self._utils.datetime.format_datetime(
             event_date, date_format='%Y-%m-%dT%H:%M:%SZ'
@@ -58,7 +57,7 @@ class Event(Group):
             requests.Response: The response from the API call.
         """
         if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         self._data['status'] = status
         request = {'status': status}

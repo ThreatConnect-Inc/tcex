@@ -8,7 +8,7 @@ from .mappings import Mappings
 class Task(Mappings):
     """Unique API calls for Tasks API Endpoints"""
 
-    def __init__(self, tcex, **kwargs):
+    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
         """Initialize Class Properties.
 
         Valid status:
@@ -19,7 +19,6 @@ class Task(Mappings):
         + Deferred
 
         Args:
-            tcex (TcEx): An instantiated instance of TcEx object.
             name (str, kwargs): [Required for Create] The name for this Group.
             owner (str, kwargs): The name for this Group. Default to default Org when not provided
             status (str, kwargs): Not started, In Progress, Completed, Waiting on Someone, Deferred
@@ -29,7 +28,7 @@ class Task(Mappings):
         """
 
         super().__init__(
-            tcex,
+            ti,
             main_type='Task',
             api_type='tasks',
             sub_type=None,
@@ -132,14 +131,14 @@ class Task(Mappings):
                 ADD if not provided.
         """
         if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         return self.tc_requests.assignee(self.api_type, self.unique_id, assignee, action=action)
 
     def assignees(self):
         """Yield the Assignee Users"""
         if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         return self.tc_requests.assignees(self.api_type, self.unique_id)
 
@@ -184,7 +183,7 @@ class Task(Mappings):
             due_date: Converted to %Y-%m-%dT%H:%M:%SZ date format
         """
         if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         due_date = self._utils.datetime.format_datetime(due_date, date_format='%Y-%m-%dT%H:%M:%SZ')
         self._data['dueDate'] = due_date
@@ -206,14 +205,14 @@ class Task(Mappings):
 
         """
         if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         return self.tc_requests.escalatee(self.api_type, self.unique_id, escalatee, action=action)
 
     def escalatees(self):
         """Yield the Escalatees Users"""
         if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         return self.tc_requests.escalatees(self.api_type, self.unique_id)
 
@@ -224,7 +223,7 @@ class Task(Mappings):
             escalation_date: Converted to %Y-%m-%dT%H:%M:%SZ date format
         """
         if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         escalation_date = self._utils.datetime.format_datetime(
             escalation_date, date_format='%Y-%m-%dT%H:%M:%SZ'
@@ -264,7 +263,7 @@ class Task(Mappings):
             reminder_date: Converted to %Y-%m-%dT%H:%M:%SZ date format
         """
         if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         reminder_date = self._utils.datetime.format_datetime(
             reminder_date, date_format='%Y-%m-%dT%H:%M:%SZ'
@@ -287,7 +286,7 @@ class Task(Mappings):
             status: Not Started, In Progress, Completed, Waiting on Someone, Deferred
         """
         if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         self._data['status'] = status
         request = {'status': status}

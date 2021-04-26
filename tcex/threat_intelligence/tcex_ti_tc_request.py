@@ -1,22 +1,33 @@
 """ThreatConnect Threat Intelligence Module"""
 # standard library
 import hashlib
+import logging
+from functools import lru_cache
+from typing import Optional
 from urllib.parse import quote
+
+# third-party
+from requests import Session
+
+# first-party
+from tcex.tcex_error_codes import TcExErrorCodes
 
 # import local modules for dynamic reference
 module = __import__(__name__)
 
+# get tcex logger
+logger = logging.getLogger('tcex')
+
 
 class TiTcRequest:
-    """Common API calls to ThreatConnect
+    """Common API calls to ThreatConnect"""
 
-    Args:
-        tcex ([type]): [description]
-    """
-
-    def __init__(self, tcex):
+    def __init__(self, session: Session) -> None:
         """Initialize Class properties."""
-        self.tcex = tcex
+        self.session = session
+
+        # properties
+        self.log = logger
         self.result_limit = 10000
 
     def _delete(self, url, params=None):
@@ -24,39 +35,74 @@ class TiTcRequest:
         params = params or {}
         params['createActivityLog'] = params.get('createActivityLog') or 'false'
 
-        r = self.tcex.session.delete(url, params=params)
-        self.tcex.log.debug(
+        r = self.session.delete(url, params=params)
+        self.log.debug(
             f'Method: ({r.request.method.upper()}), '
             f'Params: ({params}), '
             f'Status Code: {r.status_code}, '
             f'URL: ({r.url})'
         )
         if len(r.content) < 500:
-            self.tcex.log.trace(f'response: {r.text}')
+            self.log.trace(f'response: {r.text}')
         if not r.ok:
             err = r.text or r.reason
-            self.tcex.log.error(f'Error deleting data ({err}')
+            self.log.error(f'Error deleting data ({err}')
         return r
+
+    @property
+    @lru_cache()
+    def _error_codes(self) -> TcExErrorCodes:  # noqa: F821
+        """Return TcEx error codes."""
+        return TcExErrorCodes()
 
     def _get(self, url, params=None):
         """Delete data from API."""
         params = params or {}
         params['createActivityLog'] = params.get('createActivityLog') or 'false'
 
-        r = self.tcex.session.get(url, params=params)
+        r = self.session.get(url, params=params)
 
-        self.tcex.log.debug(
+        self.log.debug(
             f'Method: ({r.request.method.upper()}), '
             f'Params: ({params}), '
             f'Status Code: {r.status_code}, '
             f'URL: ({r.url})'
         )
         if len(r.content) < 500:
-            self.tcex.log.trace(f'response: {r.text}')
+            self.log.trace(f'response: {r.text}')
         if not r.ok:
             err = r.text or r.reason
-            self.tcex.log.error(f'Error getting data ({err}')
+            self.log.error(f'Error getting data ({err}')
         return r
+
+    def _handle_error(
+        self, code: int, message_values: Optional[list] = None, raise_error: Optional[bool] = True
+    ) -> None:
+        """Raise RuntimeError
+
+        Args:
+            code: The error code from API or SDK.
+            message: The error message from API or SDK.
+            raise_error: Raise a Runtime error. Defaults to True.
+
+        Raises:
+            RuntimeError: Raised a defined error.
+        """
+        try:
+            if message_values is None:
+                message_values = []
+            message = self._error_codes.message(code).format(*message_values)
+            self.log.error(f'Error code: {code}, {message}')
+        except AttributeError:
+            self.log.error(f'Incorrect error code provided ({code}).')
+            raise RuntimeError(100, 'Generic Failure, see logs for more details.')
+        except IndexError:
+            self.log.error(
+                f'Incorrect message values provided for error code {code} ({message_values}).'
+            )
+            raise RuntimeError(100, 'Generic Failure, see logs for more details.')
+        if raise_error:
+            raise RuntimeError(code, message)
 
     def _iterate(self, url, params, api_entity):
         """Iterate over API pagination."""
@@ -68,13 +114,13 @@ class TiTcRequest:
             result_start = int(result_start)
         except Exception:
             result_start = 0
-            self.tcex.log.error('Invalid ResultStart Param. Starting at 0')
+            self.log.error('Invalid ResultStart Param. Starting at 0')
         while should_iterate:
             params['resultStart'] = result_start
             r = self._get(url, params=params)
             if not self.success(r):
                 err = r.text or r.reason
-                self.tcex.handle_error(950, [r.status_code, err, r.url])
+                self._handle_error(950, [r.status_code, err, r.url])
             data = r.json().get('data', {})
             if api_entity:
                 data = data.get(api_entity, [])
@@ -90,20 +136,20 @@ class TiTcRequest:
         params = params or {}
         params['createActivityLog'] = params.get('createActivityLog') or 'false'
 
-        r = self.tcex.session.post(url, data=data, params=params)
-        self.tcex.log.debug(
+        r = self.session.post(url, data=data, params=params)
+        self.log.debug(
             f'Method: ({r.request.method.upper()}), '
             f'Params: ({params}), '
             f'Status Code: {r.status_code}, '
             f'URL: ({r.url})'
         )
         if len(data) < 50 and not isinstance(data, bytes):
-            self.tcex.log.trace(f'body: {data}')
+            self.log.trace(f'body: {data}')
         if len(r.content) < 500:
-            self.tcex.log.trace(f'response: {r.text}')
+            self.log.trace(f'response: {r.text}')
         if not r.ok:
             err = r.text or r.reason
-            self.tcex.log.error(f'Error posting data ({err}')
+            self.log.error(f'Error posting data ({err}')
         return r
 
     def _post_json(self, url, json_data, params=None):
@@ -111,19 +157,19 @@ class TiTcRequest:
         params = params or {}
         params['createActivityLog'] = params.get('createActivityLog') or 'false'
 
-        r = self.tcex.session.post(url, json=json_data, params=params)
-        self.tcex.log.debug(
+        r = self.session.post(url, json=json_data, params=params)
+        self.log.debug(
             f'Method: ({r.request.method.upper()}), '
             f'Params: ({params}), '
             f'Status Code: {r.status_code}, '
             f'URL: ({r.url})'
         )
-        self.tcex.log.trace(f'body: {json_data}')
+        self.log.trace(f'body: {json_data}')
         if len(r.content) < 500:
-            self.tcex.log.trace(f'response: {r.text}')
+            self.log.trace(f'response: {r.text}')
         if not r.ok:
             err = r.text or r.reason
-            self.tcex.log.error(f'Error posting data ({err}')
+            self.log.error(f'Error posting data ({err}')
         return r
 
     def _put_json(self, url, json_data, params=None):
@@ -131,20 +177,20 @@ class TiTcRequest:
         params = params or {}
         params['createActivityLog'] = params.get('createActivityLog') or 'false'
 
-        r = self.tcex.session.put(url, json=json_data, params=params)
-        self.tcex.log.debug(
+        r = self.session.put(url, json=json_data, params=params)
+        self.log.debug(
             f'Method: ({r.request.method.upper()}), '
             f'Params: ({params}), '
             f'Status Code: {r.status_code}, '
             f'URL: ({r.url})'
         )
         if len(json_data) < 50 and not isinstance(json_data, bytes):
-            self.tcex.log.trace(f'body: {json_data}')
+            self.log.trace(f'body: {json_data}')
         if len(r.content) < 500:
-            self.tcex.log.trace(f'response: {r.text}')
+            self.log.trace(f'response: {r.text}')
         if not r.ok:
             err = r.text or r.reason
-            self.tcex.log.error(f'Error updating data ({err}')
+            self.log.error(f'Error updating data ({err}')
         return r
 
     def add_adversary_handle_asset(self, unique_id, value):
@@ -753,8 +799,8 @@ class TiTcRequest:
         url = f'/v2/{main_type}/{sub_type}/{unique_id}/falsePositive'
 
         r = self._post(url, {}, params)
-        self.tcex.log.debug(f'status code: {r.status_code}')
-        self.tcex.log.trace(f'url: {r.request.url}')
+        self.log.debug(f'status code: {r.status_code}')
+        self.log.trace(f'url: {r.request.url}')
         return r
 
     def owners(self, main_type, sub_type, unique_id, owner=None):
@@ -776,8 +822,8 @@ class TiTcRequest:
             url = f'/v2/{main_type}/{sub_type}/{unique_id}/owners'
 
         r = self._get(url, params=params)
-        self.tcex.log.debug(f'status code: {r.status_code}')
-        self.tcex.log.trace(f'url: {r.request.url}')
+        self.log.debug(f'status code: {r.status_code}')
+        self.log.trace(f'url: {r.request.url}')
         return r
 
     def add_observations(self, main_type, sub_type, unique_id, data, owner=None):
@@ -798,8 +844,8 @@ class TiTcRequest:
 
         url = f'/v2/{main_type}/{sub_type}/{unique_id}/observations'
         r = self._post_json(url, data, params)
-        self.tcex.log.debug(f'status code: {r.status_code}')
-        self.tcex.log.trace(f'url: {r.request.url}')
+        self.log.debug(f'status code: {r.status_code}')
+        self.log.trace(f'url: {r.request.url}')
         return r
 
     def observation_count(self, main_type, sub_type, unique_id, owner=None):
@@ -822,8 +868,8 @@ class TiTcRequest:
             url = f'/v2/{main_type}/{sub_type}/{unique_id}/observationCount'
 
         r = self._get(url, params)
-        self.tcex.log.debug(f'status code: {r.status_code}')
-        self.tcex.log.trace(f'url: {r.request.url}')
+        self.log.debug(f'status code: {r.status_code}')
+        self.log.trace(f'url: {r.request.url}')
         return r
 
     def observations(self, main_type, sub_type, unique_id, owner=None, params=None):
@@ -850,8 +896,8 @@ class TiTcRequest:
             url = f'/v2/{type}/{sub_type}/{unique_id}/observations'
 
         r = self._get(url, params)
-        self.tcex.log.debug(f'status code: {r.status_code}')
-        self.tcex.log.trace(f'url: {r.request.url}')
+        self.log.debug(f'status code: {r.status_code}')
+        self.log.trace(f'url: {r.request.url}')
         return r
 
     def dns_resolution(self, main_type, sub_type, unique_id, owner=None):
@@ -874,30 +920,30 @@ class TiTcRequest:
             url = f'/v2/{main_type}/{sub_type}/{unique_id}/dnsResolution'
 
         r = self._get(url, params)
-        self.tcex.log.debug(f'status code: {r.status_code}')
-        self.tcex.log.trace(f'url: {r.request.url}')
+        self.log.debug(f'status code: {r.status_code}')
+        self.log.trace(f'url: {r.request.url}')
         return r
 
     def set_dns_resolution(self, main_type, sub_type, unique_id, value, owner=None):
         """
 
-         Args:
-             value:
-             owner:
-             main_type:
-             sub_type:
-             unique_id:
+        Args:
+            value:
+            owner:
+            main_type:
+            sub_type:
+            unique_id:
 
-         Return:
+        Return:
 
-         """
+        """
         params = {'owner': owner} if owner else {}
 
         data = {}
         if self.is_true(value) or self.is_false(value):
             data['dnsActive'] = self.is_true(value)
         else:
-            self.tcex.handle_error(925, ['option', 'dns value', 'value', value])
+            self._handle_error(925, ['option', 'dns value', 'value', value])
 
         if not sub_type:
             url = f'/v2/{main_type}/{unique_id}'
@@ -905,30 +951,30 @@ class TiTcRequest:
             url = f'/v2/{main_type}/{sub_type}/{unique_id}'
 
         r = self._put_json(url, data, params)
-        self.tcex.log.debug(f'status code: {r.status_code}')
-        self.tcex.log.trace(f'url: {r.request.url}')
+        self.log.debug(f'status code: {r.status_code}')
+        self.log.trace(f'url: {r.request.url}')
         return r
 
     def set_whois(self, main_type, sub_type, unique_id, value, owner=None):
         """
 
-          Args:
-              value:
-              owner:
-              main_type:
-              sub_type:
-              unique_id:
+        Args:
+            value:
+            owner:
+            main_type:
+            sub_type:
+            unique_id:
 
-          Return:
+        Return:
 
-          """
+        """
         params = {'owner': owner} if owner else {}
 
         data = {}
         if self.is_true(value) or self.is_false(value):
             data['whoisActive'] = self.is_true(value)
         else:
-            self.tcex.handle_error(925, ['option', 'whois value', 'value', value])
+            self._handle_error(925, ['option', 'whois value', 'value', value])
 
         if not sub_type:
             url = f'/v2/{main_type}/{unique_id}'
@@ -936,8 +982,8 @@ class TiTcRequest:
             url = f'/v2/{main_type}/{sub_type}/{unique_id}'
 
         r = self._put_json(url, data, params)
-        self.tcex.log.debug(f'status code: {r.status_code}')
-        self.tcex.log.trace(f'url: {r.request.url}')
+        self.log.debug(f'status code: {r.status_code}')
+        self.log.trace(f'url: {r.request.url}')
         return r
 
     @staticmethod
@@ -990,7 +1036,7 @@ class TiTcRequest:
 
         if not self.success(r):
             err = r.text or r.reason
-            self.tcex.handle_error(950, [r.status_code, err, r.url])
+            self._handle_error(950, [r.status_code, err, r.url])
 
         data = r.json().get('data', {}).get('indicator', [])
 
@@ -1042,14 +1088,14 @@ class TiTcRequest:
 
     def indicators_from_tag(self, indicator, tag_name, filters=None, owner=None, params=None):
         """
-                Args:
-                    owner:
-                    indicator:
-                    tag_name:
-                    filters:
-                    params:
+        Args:
+            owner:
+            indicator:
+            tag_name:
+            filters:
+            params:
 
-                Return:
+        Return:
 
         """
         params = params or {}
@@ -1204,17 +1250,17 @@ class TiTcRequest:
         params=None,
     ):
         """
-                Args:
-                    owner:
-                    main_type:
-                    sub_type:
-                    unique_id:
-                    target:
-                    api_branch:
-                    api_entity:
-                    params:
+        Args:
+            owner:
+            main_type:
+            sub_type:
+            unique_id:
+            target:
+            api_branch:
+            api_entity:
+            params:
 
-                Return:
+        Return:
 
         """
         params = params or {}
@@ -1357,11 +1403,11 @@ class TiTcRequest:
         elif action == 'DELETE':
             r = self._delete(url, params)
         else:
-            self.tcex.log.error('associations error')
+            self.log.error('associations error')
 
         if r is not None:
-            self.tcex.log.debug(f'status code: {r.status_code}')
-            self.tcex.log.trace(f'url: {r.request.url}')
+            self.log.debug(f'status code: {r.status_code}')
+            self.log.trace(f'url: {r.request.url}')
         return r
 
     def victim(self, main_type, sub_type, unique_id, victim_id, params=None):
@@ -1440,7 +1486,7 @@ class TiTcRequest:
         else:
             hashed_file = hashlib.md5()  # nosec
 
-        with self.tcex.session.get(url, stream=True) as r:
+        with self.session.get(url, stream=True) as r:
             for chunk in r.iter_content(chunk_size=4096):
                 if chunk:  # filter out keep-alive new chunks
                     hashed_file.update(chunk)
@@ -1600,7 +1646,7 @@ class TiTcRequest:
         elif action == 'GET':
             response = self._get(url, params)
         else:
-            self.tcex.log.error('_tags error')
+            self.log.error('_tags error')
         return response
 
     def add_tag(self, main_type, sub_type, unique_id, tag, owner=None):

@@ -17,16 +17,15 @@ class Incident(Group):
     + Stalled
 
     Args:
-        tcex (TcEx): An instantiated instance of TcEx object.
         event_date (str, kwargs): The incident event date expression for this Group.
         name (str, kwargs): [Required for Create] The name for this Group.
         status (str, kwargs): The status for this Group.
     """
 
-    def __init__(self, tcex, **kwargs):
+    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
         """Initialize Class Properties."""
         super().__init__(
-            tcex, sub_type='Incident', api_entity='incident', api_branch='incidents', **kwargs
+            ti, sub_type='Incident', api_entity='incident', api_branch='incidents', **kwargs
         )
 
     def event_date(self, event_date):
@@ -39,7 +38,7 @@ class Incident(Group):
 
         """
         if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         event_date = self._utils.datetime.format_datetime(
             event_date, date_format='%Y-%m-%dT%H:%M:%SZ'
@@ -70,7 +69,7 @@ class Incident(Group):
 
         """
         if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         self._data['status'] = status
         request = {'status': status}

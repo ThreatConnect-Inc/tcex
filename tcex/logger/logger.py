@@ -338,6 +338,7 @@ class Logger:
     def _log_platform(self) -> None:
         """Log the current Platform."""
         self.log.info(f'platform="{platform.platform()}"')
+        self.log.info(f'pid={os.getpid()}')
 
     def _log_python_version(self) -> None:
         """Log the current Python version."""

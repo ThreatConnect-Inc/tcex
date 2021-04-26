@@ -8,7 +8,7 @@ from ..indicator import Indicator
 class Host(Indicator):
     """Unique API calls for Host API Endpoints"""
 
-    def __init__(self, tcex, **kwargs):
+    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -23,7 +23,7 @@ class Host(Indicator):
             dns_active (bool, kwargs): If True DNS active is enabled for this indicator.
             whois_active (bool, kwargs): If True WhoIs active is enabled for this indicator.
         """
-        super().__init__(tcex, sub_type='Host', api_entity='host', api_branch='hosts', **kwargs)
+        super().__init__(ti, sub_type='Host', api_entity='host', api_branch='hosts', **kwargs)
         self.unique_id = kwargs.get('unique_id', self._data.get('hostName'))
         self._data['hostName'] = self.unique_id
         if self.unique_id:
@@ -52,7 +52,7 @@ class Host(Indicator):
 
         """
         if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         return self.tc_requests.dns_resolution(
             self.api_type, self.api_branch, self.unique_id, owner=self.owner
@@ -65,7 +65,7 @@ class Host(Indicator):
 
         """
         if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         return self.tc_requests.set_dns_resolution(
             self.api_type, self.api_branch, self.unique_id, value, owner=self.owner
@@ -78,7 +78,7 @@ class Host(Indicator):
             value:
         """
         if not self.can_update():
-            self._tcex.handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
         return self.tc_requests.set_whois(
             self.api_type, self.api_branch, self.unique_id, value, owner=self.owner
         )

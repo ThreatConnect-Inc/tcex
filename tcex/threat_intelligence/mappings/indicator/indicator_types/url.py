@@ -8,7 +8,7 @@ from ..indicator import Indicator
 class URL(Indicator):
     """Unique API calls for URL API Endpoints"""
 
-    def __init__(self, tcex, **kwargs):
+    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -22,7 +22,7 @@ class URL(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        super().__init__(tcex, sub_type='URL', api_entity='url', api_branch='urls', **kwargs)
+        super().__init__(ti, sub_type='URL', api_entity='url', api_branch='urls', **kwargs)
         self.unique_id = kwargs.get('unique_id', kwargs.get('text'))
         self.data['text'] = self.unique_id
         if self.unique_id:
