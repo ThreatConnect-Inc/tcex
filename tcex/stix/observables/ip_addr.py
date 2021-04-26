@@ -93,7 +93,7 @@ class StixIPv4Object(StixIPBase):
 
         parse_map = {
             'id': '@.id',
-            'value': f'@.{indicator_field}',
+            'summary': f'@.{indicator_field}',
             'spec_version': '2.1',
             'type': f'{ip_type}-addr',
         }
@@ -109,7 +109,7 @@ class StixIPv4Object(StixIPBase):
 
         parse_map = {
             'id': '@.id',
-            'value': f'@.{indicator_field}',
+            'summary': f'@.{indicator_field}',
             'spec_version': '2.1',
             'type': f'{ip_type}-addr',
         }
@@ -154,7 +154,7 @@ class StixIPv6Object(StixIPBase):
 
         mapper = {
             'id': '@.id',
-            'value': f'@.{indicator_field}',
+            'summary': f'@.{indicator_field}',
             'spec_version': '2.1',
             'type': 'ipv6-addr',
         }
