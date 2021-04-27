@@ -148,7 +148,8 @@ class StixIndicator(StixModel):
             for indicator in indicators:
                 if not hasattr(indicator, 'path'):
                     self.logger.log.info(
-                        f'''Pattern not supported. Ignoring tree indicators for id: {stix_data.get('id')}.'''
+                        '''Pattern not supported. '''
+                        f'''Ignoring tree indicators for id: {stix_data.get('id')}.'''
                     )
                     continue
                 filtered_indicators.append(indicator)
