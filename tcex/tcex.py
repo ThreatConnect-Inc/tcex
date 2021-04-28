@@ -409,8 +409,8 @@ class TcEx:
         if self.default_args.tc_proxy_tc:
             _session.proxies = self.proxies
             self.log.info(
-                f'Using proxy host {self.args.tc_proxy_host}:'
-                f'{self.args.tc_proxy_port} for ThreatConnect session.'
+                f'Using proxy host {self.default_args.tc_proxy_host}:'
+                f'{self.default_args.tc_proxy_port} for ThreatConnect session.'
             )
 
         # enable curl logging if tc_log_curl param is set.
@@ -966,8 +966,8 @@ class TcEx:
             if self.default_args.tc_proxy_external:
                 self._session_external.proxies = self.proxies
                 self.log.info(
-                    f'Using proxy host {self.args.tc_proxy_host}:'
-                    f'{self.args.tc_proxy_port} for external session.'
+                    f'Using proxy host {self.default_args.tc_proxy_host}:'
+                    f'{self.default_args.tc_proxy_port} for external session.'
                 )
 
             if self.default_args.tc_log_curl:

@@ -46,6 +46,6 @@ class ThreadFileHandler(RotatingFileHandler):
             record: The record to be logged.
         """
         # handler_key and thread_key are added in logger.add_thread_file_handler() method
-        if hasattr(threading.current_thread(), self.thread_key):
+        if self.thread_key is not None and hasattr(threading.current_thread(), self.thread_key):
             if self.handler_key == getattr(threading.current_thread(), self.thread_key):
                 RotatingFileHandler.emit(self, record)

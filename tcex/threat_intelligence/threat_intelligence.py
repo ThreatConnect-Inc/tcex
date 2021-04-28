@@ -270,7 +270,7 @@ class ThreatIntelligence:
 
         # return correct indicator object
         indicator_object = indicator_type_map.get(indicator_type)
-        return indicator_object(**kwargs)
+        return indicator_object(self, **kwargs)
 
     def group(self, group_type=None, owner=None, **kwargs):
         """Create the Group TI object.
@@ -308,7 +308,7 @@ class ThreatIntelligence:
 
         # return correct group object
         group_object = group_type_map.get(group_type)
-        return group_object(**kwargs)
+        return group_object(self, **kwargs)
 
     def adversary(self, **kwargs):
         """Create the Adversary TI object.

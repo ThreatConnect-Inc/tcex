@@ -3,6 +3,23 @@
 Release Notes
 #############
 
+2.0.20
+======
++ APP-76 [Batch] Added tagWriteType and securityLabelWriteType to batch module (settings).
++ APP-2469 [Batch] Added batch writer and batch submit modules to support Web API Service Apps.
++ APP-2329 [STIX] Updated module to parse `threat-actor` from STIX object.
++ APP-2437 [STIX] Updated module to write https url indicator to batch files.
++ APP-2438 [STIX] Updated module to parse objects with multiple simultaneous patterns.
++ APP-2462 [tcpackage] Updated ``tcpackage`` CLI command to retain smtpSettings feature.
++ APP-2463 [Service] Improved API Service response body handling.
++ APP-2467 [Service] Added broker test message for Service Apps when heartbeats are missed.
++ APP-2457 [Session] Updated session methods to use default_args instead of args.
++ APP-2465 [Session] Added methods for sessions for multiprocess support in Apps.
++ APP-2466 [Signal] Updated signal handling logic to not exit with error when thread is not MainThread.
++ APP-2464 [TI] Updated TI module to work in forked instance.
++ APP-2305 [Testing] Added hash_eq operator to testing framework.
++ APP-2459 [Testing] Updated testing framework to properly support Apps using multi-choice inputs and permutations.
+
 2.0.19
 ======
 + APP-2044 - [Testing] When generating test profiles with --negative, environments will be copied from base profile and "negative" appended.
