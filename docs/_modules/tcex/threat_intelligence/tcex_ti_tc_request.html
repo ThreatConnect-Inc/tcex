@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>tcex.threat_intelligence.tcex_ti_tc_request &mdash; TcEx 2.0.19 documentation</title>
+  <title>tcex.threat_intelligence.tcex_ti_tc_request &mdash; TcEx 2.0.20 documentation</title>
 
 
 
@@ -62,7 +62,7 @@
 
 
               <div class="version">
-                2.0.19
+                2.0.20
               </div>
 
 
@@ -187,22 +187,33 @@
 <span></span><span class="sd">&quot;&quot;&quot;ThreatConnect Threat Intelligence Module&quot;&quot;&quot;</span>
 <span class="c1"># standard library</span>
 <span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 <span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">quote</span>
+
+<span class="c1"># third-party</span>
+<span class="kn">from</span> <span class="nn">requests</span> <span class="kn">import</span> <span class="n">Session</span>
+
+<span class="c1"># first-party</span>
+<span class="kn">from</span> <span class="nn">tcex.tcex_error_codes</span> <span class="kn">import</span> <span class="n">TcExErrorCodes</span>
 
 <span class="c1"># import local modules for dynamic reference</span>
 <span class="n">module</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
+<span class="c1"># get tcex logger</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;tcex&#39;</span><span class="p">)</span>
+
 
 <div class="viewcode-block" id="TiTcRequest"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest">[docs]</a><span class="k">class</span> <span class="nc">TiTcRequest</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Common API calls to ThreatConnect</span>
+    <span class="sd">&quot;&quot;&quot;Common API calls to ThreatConnect&quot;&quot;&quot;</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        tcex ([type]): [description]</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="n">Session</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class properties.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span> <span class="o">=</span> <span class="n">tcex</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">session</span>
+
+        <span class="c1"># properties</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">logger</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">result_limit</span> <span class="o">=</span> <span class="mi">10000</span>
 
 <div class="viewcode-block" id="TiTcRequest._delete"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest._delete">[docs]</a>    <span class="k">def</span> <span class="nf">_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -210,39 +221,74 @@
         <span class="n">params</span> <span class="o">=</span> <span class="n">params</span> <span class="ow">or</span> <span class="p">{}</span>
         <span class="n">params</span><span class="p">[</span><span class="s1">&#39;createActivityLog&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;createActivityLog&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;false&#39;</span>
 
-        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;Method: (</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s1">), &#39;</span>
             <span class="sa">f</span><span class="s1">&#39;Params: (</span><span class="si">{</span><span class="n">params</span><span class="si">}</span><span class="s1">), &#39;</span>
             <span class="sa">f</span><span class="s1">&#39;Status Code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">, &#39;</span>
             <span class="sa">f</span><span class="s1">&#39;URL: (</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">)&#39;</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">500</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;response: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;response: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
             <span class="n">err</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="ow">or</span> <span class="n">r</span><span class="o">.</span><span class="n">reason</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error deleting data (</span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error deleting data (</span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
+
+    <span class="nd">@property</span>
+    <span class="nd">@lru_cache</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">_error_codes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TcExErrorCodes</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
+        <span class="sd">&quot;&quot;&quot;Return TcEx error codes.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">TcExErrorCodes</span><span class="p">()</span>
 
 <div class="viewcode-block" id="TiTcRequest._get"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest._get">[docs]</a>    <span class="k">def</span> <span class="nf">_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Delete data from API.&quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="n">params</span> <span class="ow">or</span> <span class="p">{}</span>
         <span class="n">params</span><span class="p">[</span><span class="s1">&#39;createActivityLog&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;createActivityLog&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;false&#39;</span>
 
-        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;Method: (</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s1">), &#39;</span>
             <span class="sa">f</span><span class="s1">&#39;Params: (</span><span class="si">{</span><span class="n">params</span><span class="si">}</span><span class="s1">), &#39;</span>
             <span class="sa">f</span><span class="s1">&#39;Status Code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">, &#39;</span>
             <span class="sa">f</span><span class="s1">&#39;URL: (</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">)&#39;</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">500</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;response: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;response: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
             <span class="n">err</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="ow">or</span> <span class="n">r</span><span class="o">.</span><span class="n">reason</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error getting data (</span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error getting data (</span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
+
+<div class="viewcode-block" id="TiTcRequest._handle_error"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest._handle_error">[docs]</a>    <span class="k">def</span> <span class="nf">_handle_error</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message_values</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">raise_error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Raise RuntimeError</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            code: The error code from API or SDK.</span>
+<span class="sd">            message: The error message from API or SDK.</span>
+<span class="sd">            raise_error: Raise a Runtime error. Defaults to True.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: Raised a defined error.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">message_values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">message_values</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_codes</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="n">code</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">message_values</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error code: </span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Incorrect error code provided (</span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;Generic Failure, see logs for more details.&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Incorrect message values provided for error code </span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">message_values</span><span class="si">}</span><span class="s1">).&#39;</span>
+            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;Generic Failure, see logs for more details.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">raise_error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TiTcRequest._iterate"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest._iterate">[docs]</a>    <span class="k">def</span> <span class="nf">_iterate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">api_entity</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Iterate over API pagination.&quot;&quot;&quot;</span>
@@ -254,13 +300,13 @@
             <span class="n">result_start</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">result_start</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="n">result_start</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Invalid ResultStart Param. Starting at 0&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Invalid ResultStart Param. Starting at 0&#39;</span><span class="p">)</span>
         <span class="k">while</span> <span class="n">should_iterate</span><span class="p">:</span>
             <span class="n">params</span><span class="p">[</span><span class="s1">&#39;resultStart&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result_start</span>
             <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
                 <span class="n">err</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="ow">or</span> <span class="n">r</span><span class="o">.</span><span class="n">reason</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">950</span><span class="p">,</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">url</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">950</span><span class="p">,</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">url</span><span class="p">])</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span>
             <span class="k">if</span> <span class="n">api_entity</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">api_entity</span><span class="p">,</span> <span class="p">[])</span>
@@ -276,20 +322,20 @@
         <span class="n">params</span> <span class="o">=</span> <span class="n">params</span> <span class="ow">or</span> <span class="p">{}</span>
         <span class="n">params</span><span class="p">[</span><span class="s1">&#39;createActivityLog&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;createActivityLog&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;false&#39;</span>
 
-        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;Method: (</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s1">), &#39;</span>
             <span class="sa">f</span><span class="s1">&#39;Params: (</span><span class="si">{</span><span class="n">params</span><span class="si">}</span><span class="s1">), &#39;</span>
             <span class="sa">f</span><span class="s1">&#39;Status Code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">, &#39;</span>
             <span class="sa">f</span><span class="s1">&#39;URL: (</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">)&#39;</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">50</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;body: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;body: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">500</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;response: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;response: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
             <span class="n">err</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="ow">or</span> <span class="n">r</span><span class="o">.</span><span class="n">reason</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error posting data (</span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error posting data (</span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 <div class="viewcode-block" id="TiTcRequest._post_json"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest._post_json">[docs]</a>    <span class="k">def</span> <span class="nf">_post_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">json_data</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -297,19 +343,19 @@
         <span class="n">params</span> <span class="o">=</span> <span class="n">params</span> <span class="ow">or</span> <span class="p">{}</span>
         <span class="n">params</span><span class="p">[</span><span class="s1">&#39;createActivityLog&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;createActivityLog&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;false&#39;</span>
 
-        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">json_data</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">json_data</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;Method: (</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s1">), &#39;</span>
             <span class="sa">f</span><span class="s1">&#39;Params: (</span><span class="si">{</span><span class="n">params</span><span class="si">}</span><span class="s1">), &#39;</span>
             <span class="sa">f</span><span class="s1">&#39;Status Code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">, &#39;</span>
             <span class="sa">f</span><span class="s1">&#39;URL: (</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">)&#39;</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;body: </span><span class="si">{</span><span class="n">json_data</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;body: </span><span class="si">{</span><span class="n">json_data</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">500</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;response: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;response: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
             <span class="n">err</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="ow">or</span> <span class="n">r</span><span class="o">.</span><span class="n">reason</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error posting data (</span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error posting data (</span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 <div class="viewcode-block" id="TiTcRequest._put_json"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest._put_json">[docs]</a>    <span class="k">def</span> <span class="nf">_put_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">json_data</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -317,20 +363,20 @@
         <span class="n">params</span> <span class="o">=</span> <span class="n">params</span> <span class="ow">or</span> <span class="p">{}</span>
         <span class="n">params</span><span class="p">[</span><span class="s1">&#39;createActivityLog&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;createActivityLog&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;false&#39;</span>
 
-        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">json_data</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">json_data</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;Method: (</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s1">), &#39;</span>
             <span class="sa">f</span><span class="s1">&#39;Params: (</span><span class="si">{</span><span class="n">params</span><span class="si">}</span><span class="s1">), &#39;</span>
             <span class="sa">f</span><span class="s1">&#39;Status Code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">, &#39;</span>
             <span class="sa">f</span><span class="s1">&#39;URL: (</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">)&#39;</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">json_data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">50</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">json_data</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;body: </span><span class="si">{</span><span class="n">json_data</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;body: </span><span class="si">{</span><span class="n">json_data</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">500</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;response: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;response: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
             <span class="n">err</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="ow">or</span> <span class="n">r</span><span class="o">.</span><span class="n">reason</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error updating data (</span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error updating data (</span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.add_adversary_handle_asset"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.add_adversary_handle_asset">[docs]</a>    <span class="k">def</span> <span class="nf">add_adversary_handle_asset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -939,8 +985,8 @@
         <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{</span><span class="n">main_type</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">sub_type</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">unique_id</span><span class="si">}</span><span class="s1">/falsePositive&#39;</span>
 
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="p">{},</span> <span class="n">params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;status code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;url: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;status code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;url: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.owners"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.owners">[docs]</a>    <span class="k">def</span> <span class="nf">owners</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -962,8 +1008,8 @@
             <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{</span><span class="n">main_type</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">sub_type</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">unique_id</span><span class="si">}</span><span class="s1">/owners&#39;</span>
 
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;status code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;url: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;status code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;url: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.add_observations"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.add_observations">[docs]</a>    <span class="k">def</span> <span class="nf">add_observations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -984,8 +1030,8 @@
 
         <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{</span><span class="n">main_type</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">sub_type</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">unique_id</span><span class="si">}</span><span class="s1">/observations&#39;</span>
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post_json</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;status code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;url: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;status code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;url: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.observation_count"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.observation_count">[docs]</a>    <span class="k">def</span> <span class="nf">observation_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -1008,8 +1054,8 @@
             <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{</span><span class="n">main_type</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">sub_type</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">unique_id</span><span class="si">}</span><span class="s1">/observationCount&#39;</span>
 
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;status code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;url: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;status code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;url: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.observations"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.observations">[docs]</a>    <span class="k">def</span> <span class="nf">observations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -1036,8 +1082,8 @@
             <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{</span><span class="nb">type</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">sub_type</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">unique_id</span><span class="si">}</span><span class="s1">/observations&#39;</span>
 
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;status code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;url: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;status code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;url: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.dns_resolution"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.dns_resolution">[docs]</a>    <span class="k">def</span> <span class="nf">dns_resolution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -1060,30 +1106,30 @@
             <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{</span><span class="n">main_type</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">sub_type</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">unique_id</span><span class="si">}</span><span class="s1">/dnsResolution&#39;</span>
 
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;status code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;url: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;status code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;url: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.set_dns_resolution"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.set_dns_resolution">[docs]</a>    <span class="k">def</span> <span class="nf">set_dns_resolution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">         Args:</span>
-<span class="sd">             value:</span>
-<span class="sd">             owner:</span>
-<span class="sd">             main_type:</span>
-<span class="sd">             sub_type:</span>
-<span class="sd">             unique_id:</span>
+<span class="sd">        Args:</span>
+<span class="sd">            value:</span>
+<span class="sd">            owner:</span>
+<span class="sd">            main_type:</span>
+<span class="sd">            sub_type:</span>
+<span class="sd">            unique_id:</span>
 
-<span class="sd">         Return:</span>
+<span class="sd">        Return:</span>
 
-<span class="sd">         &quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;owner&#39;</span><span class="p">:</span> <span class="n">owner</span><span class="p">}</span> <span class="k">if</span> <span class="n">owner</span> <span class="k">else</span> <span class="p">{}</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_true</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_false</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
             <span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnsActive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_true</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">925</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;option&#39;</span><span class="p">,</span> <span class="s1">&#39;dns value&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">925</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;option&#39;</span><span class="p">,</span> <span class="s1">&#39;dns value&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
             <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{</span><span class="n">main_type</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">unique_id</span><span class="si">}</span><span class="s1">&#39;</span>
@@ -1091,30 +1137,30 @@
             <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{</span><span class="n">main_type</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">sub_type</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">unique_id</span><span class="si">}</span><span class="s1">&#39;</span>
 
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_put_json</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;status code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;url: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;status code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;url: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.set_whois"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.set_whois">[docs]</a>    <span class="k">def</span> <span class="nf">set_whois</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">          Args:</span>
-<span class="sd">              value:</span>
-<span class="sd">              owner:</span>
-<span class="sd">              main_type:</span>
-<span class="sd">              sub_type:</span>
-<span class="sd">              unique_id:</span>
+<span class="sd">        Args:</span>
+<span class="sd">            value:</span>
+<span class="sd">            owner:</span>
+<span class="sd">            main_type:</span>
+<span class="sd">            sub_type:</span>
+<span class="sd">            unique_id:</span>
 
-<span class="sd">          Return:</span>
+<span class="sd">        Return:</span>
 
-<span class="sd">          &quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;owner&#39;</span><span class="p">:</span> <span class="n">owner</span><span class="p">}</span> <span class="k">if</span> <span class="n">owner</span> <span class="k">else</span> <span class="p">{}</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_true</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_false</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
             <span class="n">data</span><span class="p">[</span><span class="s1">&#39;whoisActive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_true</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">925</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;option&#39;</span><span class="p">,</span> <span class="s1">&#39;whois value&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">925</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;option&#39;</span><span class="p">,</span> <span class="s1">&#39;whois value&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_type</span><span class="p">:</span>
             <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{</span><span class="n">main_type</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">unique_id</span><span class="si">}</span><span class="s1">&#39;</span>
@@ -1122,8 +1168,8 @@
             <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{</span><span class="n">main_type</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">sub_type</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">unique_id</span><span class="si">}</span><span class="s1">&#39;</span>
 
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_put_json</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;status code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;url: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;status code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;url: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.is_false"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.is_false">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -1176,7 +1222,7 @@
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
             <span class="n">err</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="ow">or</span> <span class="n">r</span><span class="o">.</span><span class="n">reason</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">950</span><span class="p">,</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">url</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">950</span><span class="p">,</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">url</span><span class="p">])</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;indicator&#39;</span><span class="p">,</span> <span class="p">[])</span>
 
@@ -1228,14 +1274,14 @@
 
 <div class="viewcode-block" id="TiTcRequest.indicators_from_tag"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.indicators_from_tag">[docs]</a>    <span class="k">def</span> <span class="nf">indicators_from_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indicator</span><span class="p">,</span> <span class="n">tag_name</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">                Args:</span>
-<span class="sd">                    owner:</span>
-<span class="sd">                    indicator:</span>
-<span class="sd">                    tag_name:</span>
-<span class="sd">                    filters:</span>
-<span class="sd">                    params:</span>
+<span class="sd">        Args:</span>
+<span class="sd">            owner:</span>
+<span class="sd">            indicator:</span>
+<span class="sd">            tag_name:</span>
+<span class="sd">            filters:</span>
+<span class="sd">            params:</span>
 
-<span class="sd">                Return:</span>
+<span class="sd">        Return:</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="n">params</span> <span class="ow">or</span> <span class="p">{}</span>
@@ -1390,17 +1436,17 @@
         <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">                Args:</span>
-<span class="sd">                    owner:</span>
-<span class="sd">                    main_type:</span>
-<span class="sd">                    sub_type:</span>
-<span class="sd">                    unique_id:</span>
-<span class="sd">                    target:</span>
-<span class="sd">                    api_branch:</span>
-<span class="sd">                    api_entity:</span>
-<span class="sd">                    params:</span>
+<span class="sd">        Args:</span>
+<span class="sd">            owner:</span>
+<span class="sd">            main_type:</span>
+<span class="sd">            sub_type:</span>
+<span class="sd">            unique_id:</span>
+<span class="sd">            target:</span>
+<span class="sd">            api_branch:</span>
+<span class="sd">            api_entity:</span>
+<span class="sd">            params:</span>
 
-<span class="sd">                Return:</span>
+<span class="sd">        Return:</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="n">params</span> <span class="ow">or</span> <span class="p">{}</span>
@@ -1543,11 +1589,11 @@
         <span class="k">elif</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;DELETE&#39;</span><span class="p">:</span>
             <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delete</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;associations error&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;associations error&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;status code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;url: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;status code: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;url: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.victim"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.victim">[docs]</a>    <span class="k">def</span> <span class="nf">victim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">victim_id</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -1626,7 +1672,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">hashed_file</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">()</span>  <span class="c1"># nosec</span>
 
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">iter_content</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">4096</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">chunk</span><span class="p">:</span>  <span class="c1"># filter out keep-alive new chunks</span>
                     <span class="n">hashed_file</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
@@ -1786,7 +1832,7 @@
         <span class="k">elif</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;GET&#39;</span><span class="p">:</span>
             <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;_tags error&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;_tags error&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">response</span></div>
 
 <div class="viewcode-block" id="TiTcRequest.add_tag"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.add_tag">[docs]</a>    <span class="k">def</span> <span class="nf">add_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

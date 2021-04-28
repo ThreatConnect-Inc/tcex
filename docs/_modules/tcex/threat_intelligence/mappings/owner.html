@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>tcex.threat_intelligence.mappings.owner &mdash; TcEx 2.0.19 documentation</title>
+  <title>tcex.threat_intelligence.mappings.owner &mdash; TcEx 2.0.20 documentation</title>
 
 
 
@@ -62,7 +62,7 @@
 
 
               <div class="version">
-                2.0.19
+                2.0.20
               </div>
 
 
@@ -185,26 +185,21 @@
 
   <h1>Source code for tcex.threat_intelligence.mappings.owner</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;ThreatConnect TI Generic Mappings Object&quot;&quot;&quot;</span>
-<span class="c1"># first-party</span>
-<span class="kn">from</span> <span class="nn">tcex.utils</span> <span class="kn">import</span> <span class="n">Utils</span>
-
 <span class="kn">from</span> <span class="nn">..tcex_ti_tc_request</span> <span class="kn">import</span> <span class="n">TiTcRequest</span>
 
 
 <div class="viewcode-block" id="Owner"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.owner.Owner">[docs]</a><span class="k">class</span> <span class="nc">Owner</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Common API calls for for Indicators/SecurityLabels/Groups and Victims&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ti</span><span class="p">:</span> <span class="s1">&#39;ThreatIntelligenc&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class properties.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span> <span class="o">=</span> <span class="n">tcex</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_type</span> <span class="o">=</span> <span class="s1">&#39;Owner&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_type</span> <span class="o">=</span> <span class="s1">&#39;owners&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;owner&#39;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span> <span class="o">=</span> <span class="n">Utils</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_requests</span> <span class="o">=</span> <span class="n">TiTcRequest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_requests</span> <span class="o">=</span> <span class="n">TiTcRequest</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">session</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -264,7 +259,11 @@
 
 <div class="viewcode-block" id="Owner.single"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.owner.Owner.single">[docs]</a>    <span class="k">def</span> <span class="nf">single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return main type.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">single</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">single</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span>
+            <span class="kc">None</span><span class="p">,</span>
+            <span class="n">unique_id</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Owner.many"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.owner.Owner.many">[docs]</a>    <span class="k">def</span> <span class="nf">many</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get all of the owners available.</span>

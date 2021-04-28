@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>tcex.batch.batch &mdash; TcEx 2.0.19 documentation</title>
+  <title>tcex.batch.batch &mdash; TcEx 2.0.20 documentation</title>
 
 
 
@@ -62,7 +62,7 @@
 
 
               <div class="version">
-                2.0.19
+                2.0.20
               </div>
 
 
@@ -192,7 +192,7 @@
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">shelve</span>
+<span class="kn">import</span> <span class="nn">shelve</span>  <span class="c1"># nosec</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">import</span> <span class="nn">time</span>
@@ -244,6 +244,8 @@
         <span class="n">attribute_write_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Replace&#39;</span><span class="p">,</span>
         <span class="n">halt_on_error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">playbook_triggers_enabled</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">tag_write_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Replace&#39;</span><span class="p">,</span>
+        <span class="n">security_label_write_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Replace&#39;</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class properties.</span>
 
@@ -251,9 +253,11 @@
 <span class="sd">            tcex: An instance of TcEx object.</span>
 <span class="sd">            owner: The ThreatConnect owner for Batch action.</span>
 <span class="sd">            action: Action for the batch job [&#39;Create&#39;, &#39;Delete&#39;].</span>
-<span class="sd">            attribute_write_type: Write type for Indicator attributes [&#39;Append&#39;, &#39;Replace&#39;].</span>
-<span class="sd">            halt_on_error: If True any batch error will halt the batch job.</span>
-<span class="sd">            playbook_triggers_enabled: **DEPRECATED**</span>
+<span class="sd">            attribute_write_type: Write type for attributes [&#39;Append&#39;, &#39;Replace&#39;].</span>
+<span class="sd">            halt_on_error: If True, any batch error will halt the batch job.</span>
+<span class="sd">            playbook_triggers_enabled: If True, Playbook will be triggered when TI data is created.</span>
+<span class="sd">            security_label_write_type: Write type for labels [&#39;Append&#39;, &#39;Replace&#39;].</span>
+<span class="sd">            tag_write_type: Write type for tags [&#39;Append&#39;, &#39;Replace&#39;].</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span> <span class="o">=</span> <span class="n">tcex</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_action</span> <span class="o">=</span> <span class="n">action</span>
@@ -261,9 +265,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_halt_on_error</span> <span class="o">=</span> <span class="n">halt_on_error</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_owner</span> <span class="o">=</span> <span class="n">owner</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_playbook_triggers_enabled</span> <span class="o">=</span> <span class="n">playbook_triggers_enabled</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_security_label_write_type</span> <span class="o">=</span> <span class="n">security_label_write_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tag_write_type</span> <span class="o">=</span> <span class="n">tag_write_type</span>
 
         <span class="c1"># properties</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_batch_max_chunk</span> <span class="o">=</span> <span class="mi">5000</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_batch_max_chunk</span> <span class="o">=</span> <span class="mi">5_000</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_batch_max_size</span> <span class="o">=</span> <span class="mi">75_000_000</span>  <span class="c1"># max size in bytes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_file_merge_mode</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_file_threads</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1027,10 +1033,9 @@
                 <span class="k">for</span> <span class="n">error_msg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_critical_failures</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">error_msg</span><span class="p">,</span> <span class="n">error_reason</span><span class="p">):</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">10500</span><span class="p">,</span> <span class="p">[</span><span class="n">error_reason</span><span class="p">],</span> <span class="n">halt_on_error</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">errors</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">560</span><span class="p">,</span> <span class="p">[</span><span class="n">e</span><span class="p">],</span> <span class="n">halt_on_error</span><span class="p">)</span>
-            <span class="k">return</span> <span class="kc">None</span></div>
+        <span class="k">return</span> <span class="n">errors</span></div>
 
 <div class="viewcode-block" id="Batch.event"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.event">[docs]</a>    <span class="k">def</span> <span class="nf">event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Event</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Add Event data to Batch object.</span>
@@ -1156,7 +1161,7 @@
     <span class="k">def</span> <span class="nf">groups_shelf</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return dictionary of all Groups data.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groups_shelf</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_groups_shelf</span> <span class="o">=</span> <span class="n">shelve</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">group_shelf_fqfn</span><span class="p">,</span> <span class="n">writeback</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_groups_shelf</span> <span class="o">=</span> <span class="n">shelve</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">group_shelf_fqfn</span><span class="p">,</span> <span class="n">writeback</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># nosec</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groups_shelf</span>
 
     <span class="nd">@property</span>
@@ -1300,7 +1305,9 @@
     <span class="k">def</span> <span class="nf">indicators_shelf</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return dictionary of all Indicator data.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicators_shelf</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_indicators_shelf</span> <span class="o">=</span> <span class="n">shelve</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indicator_shelf_fqfn</span><span class="p">,</span> <span class="n">writeback</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_indicators_shelf</span> <span class="o">=</span> <span class="n">shelve</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>  <span class="c1"># nosec</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">indicator_shelf_fqfn</span><span class="p">,</span> <span class="n">writeback</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicators_shelf</span>
 
 <div class="viewcode-block" id="Batch.intrusion_set"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.intrusion_set">[docs]</a>    <span class="k">def</span> <span class="nf">intrusion_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IntrusionSet</span><span class="p">:</span>
@@ -1678,19 +1685,29 @@
             <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">xid</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">security_label_write_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return batch security label write type.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attribute_write_type</span>
+
+    <span class="nd">@security_label_write_type</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">security_label_write_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">write_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set batch security label write type.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_security_label_write_type</span> <span class="o">=</span> <span class="n">write_type</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return batch job settings.&quot;&quot;&quot;</span>
         <span class="n">_settings</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_action</span><span class="p">,</span>
-            <span class="c1"># not supported in v2 batch</span>
-            <span class="c1"># &#39;attributeWriteType&#39;: self._attribute_write_type,</span>
-            <span class="s1">&#39;attributeWriteType&#39;</span><span class="p">:</span> <span class="s1">&#39;Replace&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;attributeWriteType&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">attribute_write_type</span><span class="p">,</span>
             <span class="s1">&#39;haltOnError&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_halt_on_error</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
             <span class="s1">&#39;owner&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_owner</span><span class="p">,</span>
+            <span class="s1">&#39;playbookTriggersEnabled&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_playbook_triggers_enabled</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+            <span class="s1">&#39;securityLabelWriteType&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">security_label_write_type</span><span class="p">,</span>
+            <span class="s1">&#39;tagWriteType&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tag_write_type</span><span class="p">,</span>
             <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="s1">&#39;V2&#39;</span><span class="p">,</span>
         <span class="p">}</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_playbook_triggers_enabled</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">_settings</span><span class="p">[</span><span class="s1">&#39;playbookTriggersEnabled&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_playbook_triggers_enabled</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash_collision_mode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">_settings</span><span class="p">[</span><span class="s1">&#39;hashCollisionMode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash_collision_mode</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_merge_mode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1794,7 +1811,12 @@
             <span class="c1"># submit file data after batch job is complete</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_file_threads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">submit_thread</span><span class="p">(</span>
-                    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;submit-files&#39;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">submit_files</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">file_data</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="p">,),</span>
+                    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;submit-files&#39;</span><span class="p">,</span>
+                    <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">submit_files</span><span class="p">,</span>
+                    <span class="n">args</span><span class="o">=</span><span class="p">(</span>
+                        <span class="n">file_data</span><span class="p">,</span>
+                        <span class="n">halt_on_error</span><span class="p">,</span>
+                    <span class="p">),</span>
                 <span class="p">)</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">batch_data</span></div>
@@ -1893,7 +1915,10 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">submit_thread</span><span class="p">(</span>
                         <span class="n">name</span><span class="o">=</span><span class="s1">&#39;submit-files&#39;</span><span class="p">,</span>
                         <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">submit_files</span><span class="p">,</span>
-                        <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">file_data</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="p">,),</span>
+                        <span class="n">args</span><span class="o">=</span><span class="p">(</span>
+                            <span class="n">file_data</span><span class="p">,</span>
+                            <span class="n">halt_on_error</span><span class="p">,</span>
+                        <span class="p">),</span>
                     <span class="p">)</span>
                 <span class="p">)</span>
             <span class="n">batch_data_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">batch_data</span><span class="p">)</span>
@@ -2004,7 +2029,12 @@
         <span class="k">if</span> <span class="n">file_data</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_file_threads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">submit_thread</span><span class="p">(</span>
-                    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;submit-files&#39;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">submit_files</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">file_data</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="p">,),</span>
+                    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;submit-files&#39;</span><span class="p">,</span>
+                    <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">submit_files</span><span class="p">,</span>
+                    <span class="n">args</span><span class="o">=</span><span class="p">(</span>
+                        <span class="n">file_data</span><span class="p">,</span>
+                        <span class="n">halt_on_error</span><span class="p">,</span>
+                    <span class="p">),</span>
                 <span class="p">)</span>
             <span class="p">)</span>
 
@@ -2258,6 +2288,16 @@
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">t</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tag_write_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return batch tag write type.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attribute_write_type</span>
+
+    <span class="nd">@tag_write_type</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">tag_write_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">write_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set batch tag write type.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tag_write_type</span> <span class="o">=</span> <span class="n">write_type</span>
 
 <div class="viewcode-block" id="Batch.threat"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.batch.Batch.threat">[docs]</a>    <span class="k">def</span> <span class="nf">threat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Threat</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Add Threat data to Batch object</span>

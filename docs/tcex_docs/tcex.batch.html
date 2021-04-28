@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Batch Module &mdash; TcEx 2.0.19 documentation</title>
+  <title>Batch Module &mdash; TcEx 2.0.20 documentation</title>
 
 
 
@@ -64,7 +64,7 @@
 
 
               <div class="version">
-                2.0.19
+                2.0.20
               </div>
 
 
@@ -227,7 +227,7 @@
 <p>ThreatConnect Batch Import Module.</p>
 <dl class="py class">
 <dt id="tcex.batch.batch.Batch">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">tcex.batch.batch.</span></code><code class="sig-name descname"><span class="pre">Batch</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcex</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">owner</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'Create'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute_write_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'Replace'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halt_on_error</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">playbook_triggers_enabled</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/batch/batch.html#Batch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.batch.batch.Batch" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">tcex.batch.batch.</span></code><code class="sig-name descname"><span class="pre">Batch</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcex</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">owner</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'Create'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute_write_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'Replace'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halt_on_error</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">playbook_triggers_enabled</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag_write_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'Replace'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">security_label_write_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'Replace'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/batch/batch.html#Batch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.batch.batch.Batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>ThreatConnect Batch Import Module</p>
 <dl class="py method">
@@ -1256,6 +1256,12 @@ the data will still be accessible from list in memory.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="tcex.batch.batch.Batch.security_label_write_type">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">security_label_write_type</span></code><a class="headerlink" href="#tcex.batch.batch.Batch.security_label_write_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return batch security label write type.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="tcex.batch.batch.Batch.settings">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">settings</span></code><a class="headerlink" href="#tcex.batch.batch.Batch.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return batch job settings.</p>
@@ -1510,6 +1516,12 @@ should halt if any errors are encountered.</p></li>
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tcex.batch.batch.Batch.tag_write_type">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">tag_write_type</span></code><a class="headerlink" href="#tcex.batch.batch.Batch.tag_write_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return batch tag write type.</p>
 </dd></dl>
 
 <dl class="py method">

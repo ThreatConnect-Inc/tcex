@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>tcex.services.common_service &mdash; TcEx 2.0.19 documentation</title>
+  <title>tcex.services.common_service &mdash; TcEx 2.0.20 documentation</title>
 
 
 
@@ -62,7 +62,7 @@
 
 
               <div class="version">
-                2.0.19
+                2.0.20
               </div>
 
 
@@ -284,6 +284,7 @@
         <span class="sd">&quot;&quot;&quot;Return the command map for the current Service type.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="s1">&#39;acknowledged&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_acknowledged_command</span><span class="p">,</span>
+            <span class="s1">&#39;brokercheck&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_broker_check</span><span class="p">,</span>
             <span class="s1">&#39;heartbeat&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_heartbeat_command</span><span class="p">,</span>
             <span class="s1">&#39;loggingchange&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_logging_change_command</span><span class="p">,</span>
             <span class="s1">&#39;shutdown&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_shutdown_command</span><span class="p">,</span>
@@ -302,13 +303,31 @@
         <span class="sd">&quot;&quot;&quot;Start heartbeat process.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">service_thread</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;heartbeat&#39;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">heartbeat_monitor</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="CommonService.heartbeat_broker_check"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.common_service.CommonService.heartbeat_broker_check">[docs]</a>    <span class="k">def</span> <span class="nf">heartbeat_broker_check</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Send self check message to ensure communications with message broker.&quot;&quot;&quot;</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;command&#39;</span><span class="p">:</span> <span class="s1">&#39;BrokerCheck&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()),</span>
+            <span class="s1">&#39;heartbeat_watchdog&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">heartbeat_watchdog</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message_broker</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span>
+            <span class="n">message</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">message</span><span class="p">),</span> <span class="n">topic</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_svc_server_topic</span>
+        <span class="p">)</span>
+
+        <span class="c1"># allow time for message to be received</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="CommonService.heartbeat_monitor"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.common_service.CommonService.heartbeat_monitor">[docs]</a>    <span class="k">def</span> <span class="nf">heartbeat_monitor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Publish heartbeat on timer.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;feature=service, event=heartbeat-monitor-started&#39;</span><span class="p">)</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="c1"># check heartbeat is not missed</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">heartbeat_watchdog</span> <span class="o">&gt;</span> <span class="p">(</span>
                 <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_svc_hb_timeout_seconds</span><span class="p">)</span> <span class="o">/</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">heartbeat_sleep_time</span><span class="p">)</span>
             <span class="p">):</span>
+                <span class="c1"># send self check message</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">heartbeat_broker_check</span><span class="p">()</span>
+
                 <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
                     <span class="s1">&#39;feature=service, event=missed-heartbeat, action=shutting-service-down&#39;</span>
                 <span class="p">)</span>
@@ -417,6 +436,22 @@
             <span class="n">trigger_id</span><span class="o">=</span><span class="n">trigger_id</span><span class="p">,</span>
         <span class="p">)</span></div>
 
+<div class="viewcode-block" id="CommonService.process_broker_check"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.common_service.CommonService.process_broker_check">[docs]</a>    <span class="k">def</span> <span class="nf">process_broker_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Implement parent method to log a broker check message.</span>
+
+<span class="sd">        .. code-block:: python</span>
+<span class="sd">            :linenos:</span>
+<span class="sd">            :lineno-start: 1</span>
+
+<span class="sd">            {</span>
+<span class="sd">                &quot;command&quot;: &quot;BrokerCheck&quot;,</span>
+<span class="sd">            }</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            message: The message payload from the server topic.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;feature=service, event=broker-check, message=</span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="CommonService.process_heartbeat_command"><a class="viewcode-back" href="../../../tcex_docs/tcex.services.html#tcex.services.common_service.CommonService.process_heartbeat_command">[docs]</a>    <span class="k">def</span> <span class="nf">process_heartbeat_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pylint: disable=unused-argument</span>
         <span class="sd">&quot;&quot;&quot;Process the HeartBeat command.</span>
 
@@ -514,11 +549,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">message_broker</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
 
         <span class="c1"># update shutdown flag</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">message_broker</span><span class="o">.</span><span class="n">shutdown</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message_broker</span><span class="o">.</span><span class="n">shutdown</span> <span class="o">=</span> <span class="kc">True</span></div>
 
-        <span class="c1"># delay shutdown to give App time to cleanup</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># final shutdown in case App did not</span></div>
+        <span class="c1"># TODO: [review] this doesn&#39;t help if MainThread does not die.</span>
+        <span class="c1"># # delay shutdown to give App time to cleanup</span>
+        <span class="c1"># time.sleep(5)</span>
+        <span class="c1"># self.tcex.exit(0)  # final shutdown in case App did not</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">ready</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>

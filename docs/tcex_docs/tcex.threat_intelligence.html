@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Threat Intelligence Module &mdash; TcEx 2.0.19 documentation</title>
+  <title>Threat Intelligence Module &mdash; TcEx 2.0.20 documentation</title>
 
 
 
@@ -64,7 +64,7 @@
 
 
               <div class="version">
-                2.0.19
+                2.0.20
               </div>
 
 
@@ -230,7 +230,7 @@
 <p>ThreatConnect Threat Intelligence Module</p>
 <dl class="py class">
 <dt id="tcex.threat_intelligence.threat_intelligence.ThreatIntelligence">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">tcex.threat_intelligence.threat_intelligence.</span></code><code class="sig-name descname"><span class="pre">ThreatIntelligence</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcex</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/threat_intelligence.html#ThreatIntelligence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">tcex.threat_intelligence.threat_intelligence.</span></code><code class="sig-name descname"><span class="pre">ThreatIntelligence</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">requests.sessions.Session</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/threat_intelligence.html#ThreatIntelligence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>ThreatConnect Threat Intelligence Module</p>
 <dl class="py method">
@@ -249,6 +249,24 @@
 <li><p><strong>name</strong> (<em>str</em>) – The name of the method.</p></li>
 <li><p><strong>custom_class</strong> (<em>object</em>) – The class to add.</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tcex.threat_intelligence.threat_intelligence.ThreatIntelligence._handle_error">
+<code class="sig-name descname"><span class="pre">_handle_error</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_values</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_error</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/threat_intelligence.html#ThreatIntelligence._handle_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence._handle_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raise RuntimeError</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>code</strong> – The error code from API or SDK.</p></li>
+<li><p><strong>message</strong> – The error message from API or SDK.</p></li>
+<li><p><strong>raise_error</strong> – Raise a Runtime error. Defaults to True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>RuntimeError</strong> – Raised a defined error.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -524,7 +542,7 @@ modified.</p></li>
 
 <dl class="py method">
 <dt id="tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.filters">
-<code class="sig-name descname"><span class="pre">filters</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/threat_intelligence.html#ThreatIntelligence.filters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.filters" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">filters</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/threat_intelligence.html#ThreatIntelligence.filters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.filters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a Filters TI object</p>
 </dd></dl>
 
@@ -764,14 +782,9 @@ modified.</p></li>
 <p>ThreatConnect Threat Intelligence Module</p>
 <dl class="py class">
 <dt id="tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">tcex.threat_intelligence.tcex_ti_tc_request.</span></code><code class="sig-name descname"><span class="pre">TiTcRequest</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcex</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/tcex_ti_tc_request.html#TiTcRequest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">tcex.threat_intelligence.tcex_ti_tc_request.</span></code><code class="sig-name descname"><span class="pre">TiTcRequest</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">requests.sessions.Session</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/tcex_ti_tc_request.html#TiTcRequest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Common API calls to ThreatConnect</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>tcex</strong> (<em>[</em><em>type</em><em>]</em>) – [description]</p>
-</dd>
-</dl>
 <dl class="py method">
 <dt id="tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest._association">
 <code class="sig-name descname"><span class="pre">_association</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">main_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sub_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_sub_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_unique_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ADD'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">owner</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/tcex_ti_tc_request.html#TiTcRequest._association"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest._association" title="Permalink to this definition">¶</a></dt>
@@ -801,6 +814,24 @@ modified.</p></li>
 <dt id="tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest._get">
 <code class="sig-name descname"><span class="pre">_get</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/tcex_ti_tc_request.html#TiTcRequest._get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest._get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete data from API.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest._handle_error">
+<code class="sig-name descname"><span class="pre">_handle_error</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_values</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_error</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/tcex_ti_tc_request.html#TiTcRequest._handle_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest._handle_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raise RuntimeError</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>code</strong> – The error code from API or SDK.</p></li>
+<li><p><strong>message</strong> – The error message from API or SDK.</p></li>
+<li><p><strong>raise_error</strong> – Raise a Runtime error. Defaults to True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>RuntimeError</strong> – Raised a defined error.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -2522,7 +2553,7 @@ modified.</p></li>
 <p>ThreatConnect Threat Intelligence Filter Module</p>
 <dl class="py class">
 <dt id="tcex.threat_intelligence.mappings.filters.Filters">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">tcex.threat_intelligence.mappings.filters.</span></code><code class="sig-name descname"><span class="pre">Filters</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcex</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/mappings/filters.html#Filters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.mappings.filters.Filters" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">tcex.threat_intelligence.mappings.filters.</span></code><code class="sig-name descname"><span class="pre">Filters</span></code><a class="reference internal" href="../_modules/tcex/threat_intelligence/mappings/filters.html#Filters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.mappings.filters.Filters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Filters module for Threat Intelligence</p>
 <dl class="py method">
@@ -2557,13 +2588,31 @@ modified.</p></li>
 <p>ThreatConnect TI Generic Mappings Object</p>
 <dl class="py class">
 <dt id="tcex.threat_intelligence.mappings.mappings.Mappings">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">tcex.threat_intelligence.mappings.mappings.</span></code><code class="sig-name descname"><span class="pre">Mappings</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">main_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sub_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_entity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_branch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">owner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/mappings/mappings.html#Mappings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.mappings.mappings.Mappings" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">tcex.threat_intelligence.mappings.mappings.</span></code><code class="sig-name descname"><span class="pre">Mappings</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ti</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">ThreatIntelligence</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">main_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sub_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_entity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_branch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">owner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/mappings/mappings.html#Mappings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.mappings.mappings.Mappings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Common API calls for for Indicators/SecurityLabels/Groups and Victims</p>
 <dl class="py method">
 <dt id="tcex.threat_intelligence.mappings.mappings.Mappings.__str__">
 <code class="sig-name descname"><span class="pre">__str__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/mappings/mappings.html#Mappings.__str__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.mappings.mappings.Mappings.__str__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return string representation of object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tcex.threat_intelligence.mappings.mappings.Mappings._handle_error">
+<code class="sig-name descname"><span class="pre">_handle_error</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_values</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_error</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/mappings/mappings.html#Mappings._handle_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.mappings.mappings.Mappings._handle_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raise RuntimeError</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>code</strong> – The error code from API or SDK.</p></li>
+<li><p><strong>message</strong> – The error message from API or SDK.</p></li>
+<li><p><strong>raise_error</strong> – Raise a Runtime error. Defaults to True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>RuntimeError</strong> – Raised a defined error.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -3063,7 +3112,7 @@ modified.</p></li>
 <p>ThreatConnect TI Generic Mappings Object</p>
 <dl class="py class">
 <dt id="tcex.threat_intelligence.mappings.owner.Owner">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">tcex.threat_intelligence.mappings.owner.</span></code><code class="sig-name descname"><span class="pre">Owner</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcex</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/mappings/owner.html#Owner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.mappings.owner.Owner" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">tcex.threat_intelligence.mappings.owner.</span></code><code class="sig-name descname"><span class="pre">Owner</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ti</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">ThreatIntelligenc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/mappings/owner.html#Owner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.mappings.owner.Owner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Common API calls for for Indicators/SecurityLabels/Groups and Victims</p>
 <dl class="py method">
@@ -3132,7 +3181,7 @@ modified.</p></li>
 <p>ThreatConnect TI Security Label</p>
 <dl class="py class">
 <dt id="tcex.threat_intelligence.mappings.security_label.SecurityLabel">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">tcex.threat_intelligence.mappings.security_label.</span></code><code class="sig-name descname"><span class="pre">SecurityLabel</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/mappings/security_label.html#SecurityLabel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.mappings.security_label.SecurityLabel" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">tcex.threat_intelligence.mappings.security_label.</span></code><code class="sig-name descname"><span class="pre">SecurityLabel</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ti</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">ThreatIntelligenc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/mappings/security_label.html#SecurityLabel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.mappings.security_label.SecurityLabel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.threat_intelligence.mappings.mappings.Mappings" title="tcex.threat_intelligence.mappings.mappings.Mappings"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.threat_intelligence.mappings.mappings.Mappings</span></code></a></p>
 <p>Unique API calls for SecurityLabel API Endpoints</p>
 <dl class="py method">
@@ -3222,7 +3271,7 @@ returns that the SecurityLabel cannot be created.</p>
 <p>ThreatConnect TI Security Label</p>
 <dl class="py class">
 <dt id="tcex.threat_intelligence.mappings.tag.Tag">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">tcex.threat_intelligence.mappings.tag.</span></code><code class="sig-name descname"><span class="pre">Tag</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/mappings/tag.html#Tag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.mappings.tag.Tag" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">tcex.threat_intelligence.mappings.tag.</span></code><code class="sig-name descname"><span class="pre">Tag</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ti</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">ThreatIntelligenc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/mappings/tag.html#Tag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.mappings.tag.Tag" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Unique API calls for Tag API Endpoints</p>
 <dl class="field-list simple">
@@ -3296,7 +3345,7 @@ returns that the SecurityLabel cannot be created.</p>
 <p>ThreatConnect TI Adversary</p>
 <dl class="py class">
 <dt id="tcex.threat_intelligence.mappings.task.Task">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">tcex.threat_intelligence.mappings.task.</span></code><code class="sig-name descname"><span class="pre">Task</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcex</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/mappings/task.html#Task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.mappings.task.Task" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">tcex.threat_intelligence.mappings.task.</span></code><code class="sig-name descname"><span class="pre">Task</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ti</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">ThreatIntelligenc</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/mappings/task.html#Task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.mappings.task.Task" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.threat_intelligence.mappings.mappings.Mappings" title="tcex.threat_intelligence.mappings.mappings.Mappings"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.threat_intelligence.mappings.mappings.Mappings</span></code></a></p>
 <p>Unique API calls for Tasks API Endpoints</p>
 <dl class="py method">
@@ -3561,7 +3610,7 @@ ADD if not provided.</p></li>
 <p>ThreatConnect TI Victim</p>
 <dl class="py class">
 <dt id="tcex.threat_intelligence.mappings.victim.Victim">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">tcex.threat_intelligence.mappings.victim.</span></code><code class="sig-name descname"><span class="pre">Victim</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcex</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/mappings/victim.html#Victim"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.mappings.victim.Victim" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">tcex.threat_intelligence.mappings.victim.</span></code><code class="sig-name descname"><span class="pre">Victim</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ti</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">ThreatIntelligenc</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/mappings/victim.html#Victim"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.mappings.victim.Victim" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.threat_intelligence.mappings.mappings.Mappings" title="tcex.threat_intelligence.mappings.mappings.Mappings"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.threat_intelligence.mappings.mappings.Mappings</span></code></a></p>
 <p>Unique API calls for Victim API Endpoints</p>
 <dl class="py method">

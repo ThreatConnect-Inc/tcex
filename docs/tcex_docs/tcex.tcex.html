@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>TcEx &mdash; TcEx 2.0.19 documentation</title>
+  <title>TcEx &mdash; TcEx 2.0.20 documentation</title>
 
 
 
@@ -64,7 +64,7 @@
 
 
               <div class="version">
-                2.0.19
+                2.0.20
               </div>
 
 
@@ -306,6 +306,55 @@ tcex logger.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt id="tcex.tcex.TcEx.batch_submit">
+<code class="sig-name descname"><span class="pre">batch_submit</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">owner</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'Create'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute_write_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'Replace'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halt_on_error</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">playbook_triggers_enabled</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">BatchSubmit</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.batch_submit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.tcex.TcEx.batch_submit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return instance of Batch</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tcex</strong> – An instance of TcEx object.</p></li>
+<li><p><strong>owner</strong> – The ThreatConnect owner for Batch action.</p></li>
+<li><p><strong>action</strong> – Action for the batch job [‘Create’, ‘Delete’].</p></li>
+<li><p><strong>attribute_write_type</strong> – Write type for TI attributes [‘Append’, ‘Replace’].</p></li>
+<li><p><strong>halt_on_error</strong> – If True any batch error will halt the batch job.</p></li>
+<li><p><strong>playbook_triggers_enabled</strong> – Deprecated input, will not be used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of the Batch Class.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tcex.tcex.TcEx.batch_writer">
+<code class="sig-name descname"><span class="pre">batch_writer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">BatchWriter</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.batch_writer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.tcex.TcEx.batch_writer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return instance of Batch</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tcex</strong> – An instance of TcEx object.</p></li>
+<li><p><strong>output_dir</strong> – Deprecated input, will not be used.</p></li>
+<li><p><strong>(</strong><strong>kwargs</strong> (<em>write_callback_kwargs</em>) – str): Append this extension to output files.</p></li>
+<li><p><strong>(</strong><strong>kwargs</strong> – Callable): A callback method to call when a batch json file
+is written. The callback will be passed the fully qualified name of the written
+file.</p></li>
+<li><p><strong>(</strong><strong>kwargs</strong> – dict): Additional values to send to callback method.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of the Batch Class.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="tcex.tcex.TcEx.cache">
 <code class="sig-name descname"><span class="pre">cache</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ttl_seconds</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapping</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Cache</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.tcex.TcEx.cache" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get instance of the Cache module.</p>
@@ -428,6 +477,22 @@ during the call of this method.</p>
 <dd class="field-odd"><p>(list)</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tcex.tcex.TcEx.get_session">
+<code class="sig-name descname"><span class="pre">get_session</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">TcSession</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.get_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.tcex.TcEx.get_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an instance of Requests Session configured for the ThreatConnect API.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tcex.tcex.TcEx.get_ti">
+<code class="sig-name descname"><span class="pre">get_ti</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">ThreatIntelligence</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.get_ti"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.tcex.TcEx.get_ti" title="Permalink to this definition">¶</a></dt>
+<dd><p>Include the Threat Intel Module.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Threat Intel methods can be accessed using <code class="docutils literal notranslate"><span class="pre">tcex.ti.&lt;method&gt;</span></code>.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -861,7 +926,7 @@ method will store the values for TC to read and put into the Database.</p>
 <dd><p>Include the Threat Intel Module.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Threat Intell methods can be accessed using <code class="docutils literal notranslate"><span class="pre">tcex.ti.&lt;method&gt;</span></code>.</p>
+<p>Threat Intel methods can be accessed using <code class="docutils literal notranslate"><span class="pre">tcex.ti.&lt;method&gt;</span></code>.</p>
 </div>
 </dd></dl>
 

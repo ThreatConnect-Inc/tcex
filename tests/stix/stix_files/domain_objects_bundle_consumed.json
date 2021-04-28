@@ -84,7 +84,6 @@
     "xid": "fe45df3e70a93f274ea90522d4a29e7c02ba0dbad8991e84e48a7ef36c858460"
   },
   {
-    "summary": "john@example.com",
     "attribute": [
       {
         "displayed": true,
@@ -92,6 +91,7 @@
         "value": "Object ID: email-addr--2d77a846-6264-5d51-b586-e43822ea1ea3\nCollection ID: collection_id\nCollection Name: collection_name\nCollection Path: collection_path/\nObject Path: collection_path/objects/email-addr--2d77a846-6264-5d51-b586-e43822ea1ea3/"
       }
     ],
+    "summary": "john@example.com",
     "type": "EmailAddress",
     "xid": "7a6d28f19afaf34f16bc208a894e9c5ea07ee4f9b691e819bb964345dd29f869"
   },

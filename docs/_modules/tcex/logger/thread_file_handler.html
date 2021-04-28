@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>tcex.logger.thread_file_handler &mdash; TcEx 2.0.19 documentation</title>
+  <title>tcex.logger.thread_file_handler &mdash; TcEx 2.0.20 documentation</title>
 
 
 
@@ -62,7 +62,7 @@
 
 
               <div class="version">
-                2.0.19
+                2.0.20
               </div>
 
 
@@ -232,7 +232,7 @@
 <span class="sd">            record: The record to be logged.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># handler_key and thread_key are added in logger.add_thread_file_handler() method</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">current_thread</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread_key</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">current_thread</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread_key</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler_key</span> <span class="o">==</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">current_thread</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread_key</span><span class="p">):</span>
                 <span class="n">RotatingFileHandler</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">)</span></div></div>
 </pre></div>

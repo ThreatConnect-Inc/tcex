@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>tcex.logger.api_handler &mdash; TcEx 2.0.19 documentation</title>
+  <title>tcex.logger.api_handler &mdash; TcEx 2.0.20 documentation</title>
 
 
 
@@ -62,7 +62,7 @@
 
 
               <div class="version">
-                2.0.19
+                2.0.20
               </div>
 
 
@@ -217,6 +217,8 @@
 <span class="sd">        Args:</span>
 <span class="sd">            record (obj): The record to be logged.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: [low] switch this after testing</span>
+        <span class="c1"># if not threading.current_thread() is threading.main_thread():  # pragma: no cover</span>
         <span class="k">if</span> <span class="n">threading</span><span class="o">.</span><span class="n">current_thread</span><span class="p">()</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;MainThread&#39;</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
             <span class="k">return</span>
 

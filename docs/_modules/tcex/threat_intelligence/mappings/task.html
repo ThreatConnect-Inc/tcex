@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>tcex.threat_intelligence.mappings.task &mdash; TcEx 2.0.19 documentation</title>
+  <title>tcex.threat_intelligence.mappings.task &mdash; TcEx 2.0.20 documentation</title>
 
 
 
@@ -62,7 +62,7 @@
 
 
               <div class="version">
-                2.0.19
+                2.0.20
               </div>
 
 
@@ -194,7 +194,7 @@
 <div class="viewcode-block" id="Task"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.task.Task">[docs]</a><span class="k">class</span> <span class="nc">Task</span><span class="p">(</span><span class="n">Mappings</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Unique API calls for Tasks API Endpoints&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ti</span><span class="p">:</span> <span class="s1">&#39;ThreatIntelligenc&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
 
 <span class="sd">        Valid status:</span>
@@ -205,7 +205,6 @@
 <span class="sd">        + Deferred</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            tcex (TcEx): An instantiated instance of TcEx object.</span>
 <span class="sd">            name (str, kwargs): [Required for Create] The name for this Group.</span>
 <span class="sd">            owner (str, kwargs): The name for this Group. Default to default Org when not provided</span>
 <span class="sd">            status (str, kwargs): Not started, In Progress, Completed, Waiting on Someone, Deferred</span>
@@ -215,7 +214,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">tcex</span><span class="p">,</span>
+            <span class="n">ti</span><span class="p">,</span>
             <span class="n">main_type</span><span class="o">=</span><span class="s1">&#39;Task&#39;</span><span class="p">,</span>
             <span class="n">api_type</span><span class="o">=</span><span class="s1">&#39;tasks&#39;</span><span class="p">,</span>
             <span class="n">sub_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -318,14 +317,14 @@
 <span class="sd">                ADD if not provided.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">assignee</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">assignee</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Task.assignees"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.task.Task.assignees">[docs]</a>    <span class="k">def</span> <span class="nf">assignees</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Yield the Assignee Users&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">assignees</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">)</span></div>
 
@@ -370,7 +369,7 @@
 <span class="sd">            due_date: Converted to %Y-%m-%dT%H:%M:%SZ date format</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="n">due_date</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="n">due_date</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;dueDate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">due_date</span>
@@ -392,14 +391,14 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">escalatee</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">escalatee</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Task.escalatees"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.task.Task.escalatees">[docs]</a>    <span class="k">def</span> <span class="nf">escalatees</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Yield the Escalatees Users&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">escalatees</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">)</span></div>
 
@@ -410,7 +409,7 @@
 <span class="sd">            escalation_date: Converted to %Y-%m-%dT%H:%M:%SZ date format</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="n">escalation_date</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
             <span class="n">escalation_date</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span>
@@ -450,7 +449,7 @@
 <span class="sd">            reminder_date: Converted to %Y-%m-%dT%H:%M:%SZ date format</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="n">reminder_date</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
             <span class="n">reminder_date</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span>
@@ -473,7 +472,7 @@
 <span class="sd">            status: Not Started, In Progress, Completed, Waiting on Someone, Deferred</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">status</span>
         <span class="n">request</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">status</span><span class="p">}</span>

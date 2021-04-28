@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>tcex.threat_intelligence.mappings.tag &mdash; TcEx 2.0.19 documentation</title>
+  <title>tcex.threat_intelligence.mappings.tag &mdash; TcEx 2.0.20 documentation</title>
 
 
 
@@ -62,7 +62,7 @@
 
 
               <div class="version">
-                2.0.19
+                2.0.20
               </div>
 
 
@@ -201,17 +201,18 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ti</span><span class="p">:</span> <span class="s1">&#39;ThreatIntelligenc&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span> <span class="o">=</span> <span class="n">tcex</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_type</span> <span class="o">=</span> <span class="s1">&#39;tags&#39;</span>
+
+        <span class="c1"># properties</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;tag&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_sub_type</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_type</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;tag&#39;</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_requests</span> <span class="o">=</span> <span class="n">TiTcRequest</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">session</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_type</span> <span class="o">=</span> <span class="s1">&#39;tags&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span> <span class="o">=</span> <span class="n">Utils</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_requests</span> <span class="o">=</span> <span class="n">TiTcRequest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ti</span> <span class="o">=</span> <span class="n">ti</span>
 
 <div class="viewcode-block" id="Tag.is_tag"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.tag.Tag.is_tag">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">is_tag</span><span class="p">():</span>
@@ -227,9 +228,9 @@
 <span class="sd">            group_type:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">group_type</span> <span class="ow">and</span> <span class="n">group_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;task&#39;</span><span class="p">:</span>
-            <span class="n">group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">task</span><span class="p">()</span>
+            <span class="n">group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">task</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="p">)</span>
+            <span class="n">group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">groups_from_tag</span><span class="p">(</span>
             <span class="n">group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
         <span class="p">)</span></div>
@@ -242,14 +243,14 @@
 <span class="sd">            filters:</span>
 <span class="sd">            indicator_type:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">indicator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="p">)</span>
+        <span class="n">indicator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="p">)</span>
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">indicators_from_tag</span><span class="p">(</span>
             <span class="n">indicator</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Tag.victims"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.tag.Tag.victims">[docs]</a>    <span class="k">def</span> <span class="nf">victims</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get  all victims from a tag.&quot;&quot;&quot;</span>
-        <span class="n">victim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">victim</span><span class="p">()</span>
+        <span class="n">victim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">victim</span><span class="p">()</span>
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">victims_from_tag</span><span class="p">(</span>
             <span class="n">victim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
         <span class="p">)</span></div>

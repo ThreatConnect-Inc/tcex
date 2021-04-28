@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>tcex.threat_intelligence.mappings.mappings &mdash; TcEx 2.0.19 documentation</title>
+  <title>tcex.threat_intelligence.mappings.mappings &mdash; TcEx 2.0.20 documentation</title>
 
 
 
@@ -62,7 +62,7 @@
 
 
               <div class="version">
-                2.0.19
+                2.0.20
               </div>
 
 
@@ -187,40 +187,55 @@
 <span></span><span class="sd">&quot;&quot;&quot;ThreatConnect TI Generic Mappings Object&quot;&quot;&quot;</span>
 <span class="c1"># standard library</span>
 <span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 <span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">unquote</span>
 
 <span class="c1"># first-party</span>
+<span class="kn">from</span> <span class="nn">tcex.tcex_error_codes</span> <span class="kn">import</span> <span class="n">TcExErrorCodes</span>
+<span class="kn">from</span> <span class="nn">tcex.threat_intelligence.tcex_ti_tc_request</span> <span class="kn">import</span> <span class="n">TiTcRequest</span>
 <span class="kn">from</span> <span class="nn">tcex.utils</span> <span class="kn">import</span> <span class="n">Utils</span>
 
-<span class="kn">from</span> <span class="nn">..tcex_ti_tc_request</span> <span class="kn">import</span> <span class="n">TiTcRequest</span>
+<span class="c1"># get tcex logger</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;tcex&#39;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Mappings"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings">[docs]</a><span class="k">class</span> <span class="nc">Mappings</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Common API calls for for Indicators/SecurityLabels/Groups and Victims&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">api_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">api_entity</span><span class="p">,</span> <span class="n">api_branch</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            tcex:</span>
-<span class="sd">            main_type:</span>
-<span class="sd">            api_type:</span>
-<span class="sd">            sub_type:</span>
-<span class="sd">            api_entity:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span> <span class="o">=</span> <span class="n">tcex</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="p">{}</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_owner</span> <span class="o">=</span> <span class="n">owner</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_type</span> <span class="o">=</span> <span class="n">main_type</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">ti</span><span class="p">:</span> <span class="s1">&#39;ThreatIntelligence&#39;</span><span class="p">,</span>
+        <span class="n">main_type</span><span class="p">,</span>
+        <span class="n">api_type</span><span class="p">,</span>
+        <span class="n">sub_type</span><span class="p">,</span>
+        <span class="n">api_entity</span><span class="p">,</span>
+        <span class="n">api_branch</span><span class="p">,</span>
+        <span class="n">owner</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class Properties&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="n">api_branch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="n">api_entity</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_sub_type</span> <span class="o">=</span> <span class="n">sub_type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_type</span> <span class="o">=</span> <span class="n">api_type</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_unique_id</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="n">api_entity</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="n">api_branch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_owner</span> <span class="o">=</span> <span class="n">owner</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">session</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ti</span> <span class="o">=</span> <span class="n">ti</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_type</span> <span class="o">=</span> <span class="n">main_type</span>
 
+        <span class="c1"># properties</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">logger</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_requests</span> <span class="o">=</span> <span class="n">TiTcRequest</span><span class="p">(</span><span class="n">ti</span><span class="o">.</span><span class="n">session</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unique_id</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span> <span class="o">=</span> <span class="n">Utils</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_requests</span> <span class="o">=</span> <span class="n">TiTcRequest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@lru_cache</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">_error_codes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TcExErrorCodes</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
+        <span class="sd">&quot;&quot;&quot;Return TcEx error codes.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">TcExErrorCodes</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_excluded_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -228,6 +243,35 @@
 <span class="sd">        Returns a list of properties to exclude when creating a dict of the children Classes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;tcex&#39;</span><span class="p">,</span> <span class="s1">&#39;kwargs&#39;</span><span class="p">,</span> <span class="s1">&#39;api_endpoint&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Mappings._handle_error"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings._handle_error">[docs]</a>    <span class="k">def</span> <span class="nf">_handle_error</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message_values</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">raise_error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Raise RuntimeError</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            code: The error code from API or SDK.</span>
+<span class="sd">            message: The error message from API or SDK.</span>
+<span class="sd">            raise_error: Raise a Runtime error. Defaults to True.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: Raised a defined error.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">message_values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">message_values</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_codes</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="n">code</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">message_values</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error code: </span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Incorrect error code provided (</span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;Generic Failure, see logs for more details.&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Incorrect message values provided for error code </span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">message_values</span><span class="si">}</span><span class="s1">).&#39;</span>
+            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;Generic Failure, see logs for more details.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">raise_error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">as_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
@@ -413,7 +457,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_create</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">920</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">920</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">)</span>
 
@@ -427,7 +471,7 @@
 <span class="sd">        Deletes the Indicator/Group/Victim or Security Label</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_delete</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">915</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">915</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span>
@@ -438,7 +482,7 @@
 <span class="sd">        Updates the Indicator/Group/Victim or Security Label</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">905</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">905</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span>
@@ -455,7 +499,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">single</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span>
@@ -511,18 +555,18 @@
 
 <div class="viewcode-block" id="Mappings.tags"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.tags">[docs]</a>    <span class="k">def</span> <span class="nf">tags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">         Gets the tags from a Indicator/Group/Victim/Security Labels</span>
-<span class="sd">         Args:</span>
-<span class="sd">             filters:</span>
-<span class="sd">             owner:</span>
-<span class="sd">             params: parameters to pass in to get the objects</span>
+<span class="sd">        Gets the tags from a Indicator/Group/Victim/Security Labels</span>
+<span class="sd">        Args:</span>
+<span class="sd">            filters:</span>
+<span class="sd">            owner:</span>
+<span class="sd">            params: parameters to pass in to get the objects</span>
 
-<span class="sd">         Yields: A tag json</span>
+<span class="sd">        Yields: A tag json</span>
 
-<span class="sd">         &quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">tags</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span>
@@ -535,18 +579,18 @@
 
 <div class="viewcode-block" id="Mappings.tag"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.tag">[docs]</a>    <span class="k">def</span> <span class="nf">tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;ADD&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">         Adds a tag to a Indicator/Group/Victim/Security Label</span>
-<span class="sd">         Args:</span>
-<span class="sd">             params:</span>
-<span class="sd">             action:</span>
-<span class="sd">             name: The name of the tag</span>
+<span class="sd">        Adds a tag to a Indicator/Group/Victim/Security Label</span>
+<span class="sd">        Args:</span>
+<span class="sd">            params:</span>
+<span class="sd">            action:</span>
+<span class="sd">            name: The name of the tag</span>
 
-<span class="sd">         &quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">925</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;tag&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">925</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;tag&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="n">action</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;ADD&#39;</span><span class="p">,</span> <span class="s1">&#39;DELETE&#39;</span><span class="p">]:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span>
@@ -558,45 +602,45 @@
                 <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span>
                 <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
             <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">925</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="s1">&#39;tag&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="n">action</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">925</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="s1">&#39;tag&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="n">action</span><span class="p">])</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="Mappings.add_tag"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.add_tag">[docs]</a>    <span class="k">def</span> <span class="nf">add_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">         Adds a tag to a Indicator/Group/Victim/Security Label</span>
-<span class="sd">         Args:</span>
-<span class="sd">             name: The name of the tag</span>
+<span class="sd">        Adds a tag to a Indicator/Group/Victim/Security Label</span>
+<span class="sd">        Args:</span>
+<span class="sd">            name: The name of the tag</span>
 
-<span class="sd">         &quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;ADD&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Mappings.get_tag"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.get_tag">[docs]</a>    <span class="k">def</span> <span class="nf">get_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">         Gets a tag from a Indicator/Group/Victim/Security Label</span>
-<span class="sd">         Args:</span>
-<span class="sd">             name: The name of the tag</span>
-<span class="sd">             params:</span>
-<span class="sd">         &quot;&quot;&quot;</span>
+<span class="sd">        Gets a tag from a Indicator/Group/Victim/Security Label</span>
+<span class="sd">        Args:</span>
+<span class="sd">            name: The name of the tag</span>
+<span class="sd">            params:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Mappings.delete_tag"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.delete_tag">[docs]</a>    <span class="k">def</span> <span class="nf">delete_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">         Deletes a tag from a Indicator/Group/Victim/Security Label</span>
-<span class="sd">         Args:</span>
-<span class="sd">             name: The name of the tag</span>
-<span class="sd">         &quot;&quot;&quot;</span>
+<span class="sd">        Deletes a tag from a Indicator/Group/Victim/Security Label</span>
+<span class="sd">        Args:</span>
+<span class="sd">            name: The name of the tag</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;DELETE&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Mappings.labels"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.labels">[docs]</a>    <span class="k">def</span> <span class="nf">labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">         Gets the security labels from a Indicator/Group/Victim</span>
+<span class="sd">        Gets the security labels from a Indicator/Group/Victim</span>
 
-<span class="sd">         Yields: A Security label</span>
+<span class="sd">        Yields: A Security label</span>
 
-<span class="sd">         &quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">labels</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span>
@@ -609,22 +653,22 @@
 
 <div class="viewcode-block" id="Mappings.label"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.label">[docs]</a>    <span class="k">def</span> <span class="nf">label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;ADD&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">         Adds a Security Label to a Indicator/Group or Victim</span>
-<span class="sd">         Args:</span>
-<span class="sd">             params:</span>
-<span class="sd">             label: The name of the Security Label</span>
-<span class="sd">             action:</span>
+<span class="sd">        Adds a Security Label to a Indicator/Group or Victim</span>
+<span class="sd">        Args:</span>
+<span class="sd">            params:</span>
+<span class="sd">            label: The name of the Security Label</span>
+<span class="sd">            action:</span>
 
-<span class="sd">         &quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">label</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">925</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="s1">&#39;Security Label&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="n">label</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">925</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="s1">&#39;Security Label&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="n">label</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;GET&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">get_label</span><span class="p">(</span>
@@ -646,43 +690,43 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span>
             <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">925</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="n">action</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">925</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="n">action</span><span class="p">])</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="Mappings.add_label"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.add_label">[docs]</a>    <span class="k">def</span> <span class="nf">add_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">         Adds a label to a Indicator/Group/Victim</span>
-<span class="sd">         Args:</span>
-<span class="sd">             label: The name of the Security Label</span>
-<span class="sd">         &quot;&quot;&quot;</span>
+<span class="sd">        Adds a label to a Indicator/Group/Victim</span>
+<span class="sd">        Args:</span>
+<span class="sd">            label: The name of the Security Label</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;ADD&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Mappings.get_label"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.get_label">[docs]</a>    <span class="k">def</span> <span class="nf">get_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">         Gets a security label from a Indicator/Group/Victim</span>
-<span class="sd">         Args:</span>
-<span class="sd">             label: The name of the Security Label</span>
-<span class="sd">             params:</span>
-<span class="sd">         &quot;&quot;&quot;</span>
+<span class="sd">        Gets a security label from a Indicator/Group/Victim</span>
+<span class="sd">        Args:</span>
+<span class="sd">            label: The name of the Security Label</span>
+<span class="sd">            params:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Mappings.delete_label"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.delete_label">[docs]</a>    <span class="k">def</span> <span class="nf">delete_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">         Deletes a security label from a Indicator/Group/Victim</span>
-<span class="sd">         Args:</span>
-<span class="sd">             label: The name of the Security Label</span>
-<span class="sd">         &quot;&quot;&quot;</span>
+<span class="sd">        Deletes a security label from a Indicator/Group/Victim</span>
+<span class="sd">        Args:</span>
+<span class="sd">            label: The name of the Security Label</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;DELETE&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Mappings.indicator_associations"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.indicator_associations">[docs]</a>    <span class="k">def</span> <span class="nf">indicator_associations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">         Gets the indicator association from a Indicator/Group/Victim</span>
+<span class="sd">        Gets the indicator association from a Indicator/Group/Victim</span>
 
-<span class="sd">         Yields: Indicator Association</span>
+<span class="sd">        Yields: Indicator Association</span>
 
-<span class="sd">         &quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
@@ -693,16 +737,16 @@
 
 <div class="viewcode-block" id="Mappings.group_associations"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.group_associations">[docs]</a>    <span class="k">def</span> <span class="nf">group_associations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">         Gets the group association from a Indicator/Group/Victim</span>
+<span class="sd">        Gets the group association from a Indicator/Group/Victim</span>
 
-<span class="sd">         Yields: Group Association</span>
+<span class="sd">        Yields: Group Association</span>
 
-<span class="sd">         &quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">group_associations</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
@@ -710,15 +754,15 @@
 
 <div class="viewcode-block" id="Mappings.victim_asset_associations"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.victim_asset_associations">[docs]</a>    <span class="k">def</span> <span class="nf">victim_asset_associations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">         Gets the victim asset association from a Indicator/Group/Victim</span>
+<span class="sd">        Gets the victim asset association from a Indicator/Group/Victim</span>
 
-<span class="sd">         Yields: Victim Association json</span>
+<span class="sd">        Yields: Victim Association json</span>
 
-<span class="sd">         &quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">victim_asset_associations</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
@@ -742,9 +786,9 @@
         <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
-        <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="p">)</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="p">)</span>
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">indicator_associations_types</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span>
@@ -772,10 +816,9 @@
         <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
-        <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="p">)</span>
-
+        <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="p">)</span>
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">group_associations_types</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span>
@@ -801,7 +844,7 @@
         <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">victim_asset_associations</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span>
@@ -829,10 +872,10 @@
         <span class="n">api_branch</span> <span class="o">=</span> <span class="n">api_branch</span> <span class="ow">or</span> <span class="n">target</span><span class="o">.</span><span class="n">api_branch</span>
         <span class="n">unique_id</span> <span class="o">=</span> <span class="n">unique_id</span> <span class="ow">or</span> <span class="n">target</span><span class="o">.</span><span class="n">unique_id</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">target</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="n">target</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="n">target</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">add_association</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span>
@@ -861,10 +904,10 @@
         <span class="n">api_branch</span> <span class="o">=</span> <span class="n">api_branch</span> <span class="ow">or</span> <span class="n">target</span><span class="o">.</span><span class="n">api_branch</span>
         <span class="n">unique_id</span> <span class="o">=</span> <span class="n">unique_id</span> <span class="ow">or</span> <span class="n">target</span><span class="o">.</span><span class="n">unique_id</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">target</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="n">target</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="n">target</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">delete_association</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span>
@@ -886,7 +929,7 @@
         <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
@@ -909,7 +952,7 @@
             <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">action</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;GET&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span>
@@ -926,7 +969,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">attribute_id</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span>
             <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">925</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="s1">&#39;attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="n">action</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">925</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="s1">&#39;attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="n">action</span><span class="p">])</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="Mappings.add_attribute"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.add_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">add_attribute</span><span class="p">(</span>
@@ -947,7 +990,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
@@ -982,7 +1025,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
@@ -1011,7 +1054,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">delete_attribute</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">attribute_id</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span>
@@ -1027,7 +1070,7 @@
         <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">attribute_labels</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span>
@@ -1053,7 +1096,7 @@
         <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;GET&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">get_attribute_label</span><span class="p">(</span>
@@ -1075,7 +1118,7 @@
                 <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span>
             <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">925</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="s1">&#39;attribute_label&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="n">action</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">925</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="s1">&#39;attribute_label&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="n">action</span><span class="p">])</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="Mappings.add_attribute_label"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.add_attribute_label">[docs]</a>    <span class="k">def</span> <span class="nf">add_attribute_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute_id</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
@@ -1089,7 +1132,7 @@
 <span class="sd">        Returns: A response json</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_update</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">910</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tc_requests</span><span class="o">.</span><span class="n">add_attribute_label</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">api_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">attribute_id</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span>

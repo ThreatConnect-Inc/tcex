@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Services Module &mdash; TcEx 2.0.19 documentation</title>
+  <title>Services Module &mdash; TcEx 2.0.20 documentation</title>
 
 
 
@@ -64,7 +64,7 @@
 
 
               <div class="version">
-                2.0.19
+                2.0.20
               </div>
 
 
@@ -387,6 +387,12 @@
 </dd></dl>
 
 <dl class="py method">
+<dt id="tcex.services.common_service.CommonService.heartbeat_broker_check">
+<code class="sig-name descname"><span class="pre">heartbeat_broker_check</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.heartbeat_broker_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.heartbeat_broker_check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send self check message to ensure communications with message broker.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="tcex.services.common_service.CommonService.heartbeat_monitor">
 <code class="sig-name descname"><span class="pre">heartbeat_monitor</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.heartbeat_monitor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.heartbeat_monitor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Publish heartbeat on timer.</p>
@@ -451,6 +457,24 @@
 <dt id="tcex.services.common_service.CommonService.process_acknowledged_command">
 <code class="sig-name descname"><span class="pre">process_acknowledged_command</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.process_acknowledged_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.process_acknowledged_command" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process the Acknowledge command.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>message</strong> – The message payload from the server topic.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tcex.services.common_service.CommonService.process_broker_check">
+<code class="sig-name descname"><span class="pre">process_broker_check</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.process_broker_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.process_broker_check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement parent method to log a broker check message.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="s2">&quot;BrokerCheck&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>message</strong> – The message payload from the server topic.</p>

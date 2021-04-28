@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>tcex.threat_intelligence.threat_intelligence &mdash; TcEx 2.0.19 documentation</title>
+  <title>tcex.threat_intelligence.threat_intelligence &mdash; TcEx 2.0.20 documentation</title>
 
 
 
@@ -62,7 +62,7 @@
 
 
               <div class="version">
-                2.0.19
+                2.0.20
               </div>
 
 
@@ -185,8 +185,18 @@
 
   <h1>Source code for tcex.threat_intelligence.threat_intelligence</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;ThreatConnect Threat Intelligence Module&quot;&quot;&quot;</span>
+<span class="c1"># standard library</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+
 <span class="c1"># third-party</span>
 <span class="kn">import</span> <span class="nn">inflect</span>
+<span class="kn">from</span> <span class="nn">requests</span> <span class="kn">import</span> <span class="n">Session</span>
+
+<span class="c1"># first-party</span>
+<span class="kn">from</span> <span class="nn">tcex.tcex_error_codes</span> <span class="kn">import</span> <span class="n">TcExErrorCodes</span>
+<span class="kn">from</span> <span class="nn">tcex.utils</span> <span class="kn">import</span> <span class="n">Utils</span>
 
 <span class="kn">from</span> <span class="nn">.mappings.filters</span> <span class="kn">import</span> <span class="n">Filters</span>
 <span class="kn">from</span> <span class="nn">.mappings.group.group</span> <span class="kn">import</span> <span class="n">Group</span>
@@ -216,15 +226,121 @@
 <span class="c1"># import local modules for dynamic reference</span>
 <span class="n">module</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
+<span class="c1"># get tcex logger</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;tcex&#39;</span><span class="p">)</span>
+
 
 <div class="viewcode-block" id="ThreatIntelligence"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence">[docs]</a><span class="k">class</span> <span class="nc">ThreatIntelligence</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Threat Intelligence Module&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="n">Session</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class properties.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span> <span class="o">=</span> <span class="n">tcex</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">session</span>
+
+        <span class="c1"># properties</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_custom_indicator_classes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">logger</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">utils</span> <span class="o">=</span> <span class="n">Utils</span><span class="p">()</span>
+
+        <span class="c1"># generate custom ioc classes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_gen_indicator_class</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@lru_cache</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">_error_codes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TcExErrorCodes</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
+        <span class="sd">&quot;&quot;&quot;Return TcEx error codes.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">TcExErrorCodes</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_group_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return all defined ThreatConnect Group types.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (list): A list of ThreatConnect Group types.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="s1">&#39;Adversary&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Campaign&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Document&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Email&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Event&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Incident&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Intrusion Set&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Signature&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Report&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Threat&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Task&#39;</span><span class="p">,</span>
+        <span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_group_types_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return supported ThreatConnect Group types.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;Adversary&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;adversaries&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;adversary&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Campaign&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;campaigns&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;campaign&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Document&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;documents&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;document&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Email&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;emails&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;email&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Event&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;events&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;event&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Incident&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;incidents&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;incident&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Intrusion Set&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;intrusionSets&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;intrusionSet&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Report&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;reports&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;report&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Signature&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;signatures&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;signature&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Threat&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;threats&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;threat&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Task&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;tasks&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;task&#39;</span><span class="p">},</span>
+        <span class="p">}</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@lru_cache</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">_indicator_types_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return ThreatConnect indicator types data.</span>
+
+<span class="sd">        Retrieve the data from the API if it hasn&#39;t already been retrieved.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (dict): A dictionary of ThreatConnect Indicator data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_indicator_types_data</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># retrieve data from API</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/v2/types/indicatorTypes&#39;</span><span class="p">)</span>
+
+        <span class="c1"># TODO: use handle error instead</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Could not retrieve indicator types from ThreatConnect API.&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">itd</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;indicatorType&#39;</span><span class="p">):</span>
+            <span class="n">_indicator_types_data</span><span class="p">[</span><span class="n">itd</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">itd</span>
+
+        <span class="k">return</span> <span class="n">_indicator_types_data</span>
+
+<div class="viewcode-block" id="ThreatIntelligence._handle_error"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence._handle_error">[docs]</a>    <span class="k">def</span> <span class="nf">_handle_error</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message_values</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">raise_error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Raise RuntimeError</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            code: The error code from API or SDK.</span>
+<span class="sd">            message: The error message from API or SDK.</span>
+<span class="sd">            raise_error: Raise a Runtime error. Defaults to True.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: Raised a defined error.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">message_values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">message_values</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_codes</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="n">code</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">message_values</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error code: </span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Incorrect error code provided (</span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;Generic Failure, see logs for more details.&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Incorrect message values provided for error code </span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">message_values</span><span class="si">}</span><span class="s1">).&#39;</span>
+            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;Generic Failure, see logs for more details.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">raise_error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ThreatIntelligence.address"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.address">[docs]</a>    <span class="k">def</span> <span class="nf">address</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return an Address TI object.</span>
@@ -242,7 +358,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            obj: An instance of Address.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Address</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Address</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ThreatIntelligence.url"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.url">[docs]</a>    <span class="k">def</span> <span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create the URL TI object.</span>
@@ -254,7 +370,7 @@
 <span class="sd">        Return:</span>
 <span class="sd">            obj: An instance of URL.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">URL</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">URL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ThreatIntelligence.email_address"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.email_address">[docs]</a>    <span class="k">def</span> <span class="nf">email_address</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create the Email Address TI object.</span>
@@ -266,7 +382,7 @@
 <span class="sd">        Return:</span>
 <span class="sd">            obj: An instance of EmailAddress.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">EmailAddress</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">EmailAddress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ThreatIntelligence.file"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.file">[docs]</a>    <span class="k">def</span> <span class="nf">file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create the File TI object.</span>
@@ -277,7 +393,7 @@
 <span class="sd">        Return:</span>
 <span class="sd">            obj: An instance of File.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">File</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">File</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ThreatIntelligence.host"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.host">[docs]</a>    <span class="k">def</span> <span class="nf">host</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create the Host TI object.</span>
@@ -289,11 +405,12 @@
 <span class="sd">        Return:</span>
 <span class="sd">            obj: An instance of Host.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Host</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Host</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ThreatIntelligence.filters"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.filters">[docs]</a>    <span class="k">def</span> <span class="nf">filters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ThreatIntelligence.filters"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.filters">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">filters</span><span class="p">():</span>
         <span class="sd">&quot;&quot;&quot;Create a Filters TI object&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Filters</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Filters</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="ThreatIntelligence.indicator"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.indicator">[docs]</a>    <span class="k">def</span> <span class="nf">indicator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indicator_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return an TI object.</span>
@@ -314,7 +431,7 @@
 <span class="sd">            obj: An instance of Indicator or specific indicator type.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">indicator_type</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">Indicator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Indicator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="n">indicator_type_map</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;address&#39;</span><span class="p">:</span> <span class="n">Address</span><span class="p">,</span>
@@ -336,11 +453,10 @@
 
         <span class="c1"># update kwargs</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;owner&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">owner</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;tcex&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span>
 
         <span class="c1"># return correct indicator object</span>
         <span class="n">indicator_object</span> <span class="o">=</span> <span class="n">indicator_type_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">indicator_type</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">indicator_object</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">indicator_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ThreatIntelligence.group"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.group">[docs]</a>    <span class="k">def</span> <span class="nf">group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create the Group TI object.</span>
@@ -350,7 +466,7 @@
 <span class="sd">            group_type: The type of group object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">group_type</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">Group</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="n">owner</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="n">group_type_map</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;adversary&#39;</span><span class="p">:</span> <span class="n">Adversary</span><span class="p">,</span>
@@ -375,11 +491,10 @@
 
         <span class="c1"># update kwargs</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;owner&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">owner</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;tcex&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span>
 
         <span class="c1"># return correct group object</span>
         <span class="n">group_object</span> <span class="o">=</span> <span class="n">group_type_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">group_type</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">group_object</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">group_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ThreatIntelligence.adversary"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.adversary">[docs]</a>    <span class="k">def</span> <span class="nf">adversary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create the Adversary TI object.</span>
@@ -391,7 +506,7 @@
 <span class="sd">        Return:</span>
 <span class="sd">            ti.Adversary: An instance of Adversary.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Adversary</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Adversary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ThreatIntelligence.campaign"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.campaign">[docs]</a>    <span class="k">def</span> <span class="nf">campaign</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create the Campaign TI object.</span>
@@ -404,7 +519,7 @@
 <span class="sd">        Return:</span>
 <span class="sd">            ti.Campaign: An instance of Campaign.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Campaign</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Campaign</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ThreatIntelligence.document"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.document">[docs]</a>    <span class="k">def</span> <span class="nf">document</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create the Document TI object.</span>
@@ -419,7 +534,7 @@
 <span class="sd">        Return:</span>
 <span class="sd">            ti.Document: An instance of Document.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Document</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Document</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ThreatIntelligence.email"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.email">[docs]</a>    <span class="k">def</span> <span class="nf">email</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create the Email TI object.</span>
@@ -436,7 +551,7 @@
 <span class="sd">        Return:</span>
 <span class="sd">            ti.Email: An instance of Email.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Email</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Email</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ThreatIntelligence.event"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.event">[docs]</a>    <span class="k">def</span> <span class="nf">event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create the Event TI object.</span>
@@ -450,7 +565,7 @@
 <span class="sd">        Return:</span>
 <span class="sd">            ti.Event: An instance of Event.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Event</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ThreatIntelligence.incident"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.incident">[docs]</a>    <span class="k">def</span> <span class="nf">incident</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create the Incident TI object.</span>
@@ -463,7 +578,7 @@
 <span class="sd">        Return:</span>
 <span class="sd">            ti.Incident: An instance of Incident.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Incident</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Incident</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ThreatIntelligence.intrusion_set"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.intrusion_set">[docs]</a>    <span class="k">def</span> <span class="nf">intrusion_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create the Intrustion Set TI object.</span>
@@ -475,7 +590,7 @@
 <span class="sd">        Return:</span>
 <span class="sd">            ti.IntrusionSet: An instance of IntrusionSet.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">IntrusionSet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">IntrusionSet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ThreatIntelligence.report"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.report">[docs]</a>    <span class="k">def</span> <span class="nf">report</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create the Report TI object.</span>
@@ -485,7 +600,7 @@
 <span class="sd">            name:</span>
 <span class="sd">            **kwargs:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Report</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Report</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ThreatIntelligence.signature"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.signature">[docs]</a>    <span class="k">def</span> <span class="nf">signature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create the Signature TI object.</span>
@@ -501,7 +616,7 @@
 <span class="sd">        Return:</span>
 <span class="sd">            obj: An instance of Signature.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Signature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Signature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ThreatIntelligence.task"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.task">[docs]</a>    <span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create the Task TI object.</span>
@@ -517,7 +632,7 @@
 <span class="sd">        Return:</span>
 <span class="sd">            obj: An instance of Task</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ThreatIntelligence.threat"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.threat">[docs]</a>    <span class="k">def</span> <span class="nf">threat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create the Threat TI object.</span>
@@ -527,7 +642,7 @@
 <span class="sd">            name:</span>
 <span class="sd">            **kwargs:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Threat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Threat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ThreatIntelligence.victim"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.victim">[docs]</a>    <span class="k">def</span> <span class="nf">victim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create the Victim TI object.</span>
@@ -538,15 +653,15 @@
 <span class="sd">            **kwargs:</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Victim</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Victim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ThreatIntelligence.tag"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.tag">[docs]</a>    <span class="k">def</span> <span class="nf">tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create the Tag TI object.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Tag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ThreatIntelligence.owner"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.owner">[docs]</a>    <span class="k">def</span> <span class="nf">owner</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create the Owner object.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Owner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Owner</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ThreatIntelligence.create_entity"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.create_entity">[docs]</a>    <span class="k">def</span> <span class="nf">create_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Given a Entity and a Owner, creates a indicator/group in ThreatConnect&quot;&quot;&quot;</span>
@@ -714,18 +829,22 @@
             <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">value</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">keys</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">resource_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">group_types</span><span class="p">):</span>
-                <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="o">=</span><span class="n">resource_type</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">resource_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_types</span><span class="p">):</span>
+                <span class="c1"># @bpurdy - is this okay?</span>
+                <span class="c1"># r = self.tcex.ti.group(group_type=resource_type, name=d.get(&#39;name&#39;))</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="o">=</span><span class="n">resource_type</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">resource_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">indicator_types</span><span class="p">):</span>
-                <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="o">=</span><span class="n">resource_type</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">resource_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_types_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                <span class="c1"># @bpurdy - is this okay?</span>
+                <span class="c1"># r = self.tcex.ti.indicator(indicator_type=resource_type)</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="o">=</span><span class="n">resource_type</span><span class="p">)</span>
                 <span class="n">r</span><span class="o">.</span><span class="n">_set_unique_id</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">unique_id</span>
             <span class="k">elif</span> <span class="n">resource_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;victim&#39;</span><span class="p">]:</span>
-                <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">victim</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">victim</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">925</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;entities&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">925</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;entities&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">])</span>
 
             <span class="k">if</span> <span class="s1">&#39;summary&#39;</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
                 <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">))</span>
@@ -811,11 +930,11 @@
 <div class="viewcode-block" id="ThreatIntelligence._gen_indicator_class"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence._gen_indicator_class">[docs]</a>    <span class="k">def</span> <span class="nf">_gen_indicator_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generate Custom Indicator Classes.&quot;&quot;&quot;</span>
 
-        <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">indicator_types_data</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_types_data</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">name</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
             <span class="n">class_name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
             <span class="c1"># temp fix for API issue where boolean are returned as strings</span>
-            <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;custom&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">to_bool</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;custom&#39;</span><span class="p">))</span>
+            <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;custom&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">to_bool</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;custom&#39;</span><span class="p">))</span>
 
             <span class="k">if</span> <span class="n">class_name</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">():</span>
                 <span class="c1"># skip Indicator Type if a class already exists</span>
@@ -862,12 +981,12 @@
 <span class="sd">            custom_class (object): The class to add.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">method_name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-        <span class="n">tcex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span>
+        <span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span>
 
         <span class="c1"># Add Method for each Custom Indicator class</span>
         <span class="k">def</span> <span class="nf">method_1</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c1"># pylint: disable=possibly-unused-variable</span>
             <span class="sd">&quot;&quot;&quot;Add Custom Indicator data to Batch object&quot;&quot;&quot;</span>
-            <span class="k">return</span> <span class="n">custom_class</span><span class="p">(</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">custom_class</span><span class="p">(</span><span class="n">ti</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="n">method</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()[</span><span class="s1">&#39;method_1&#39;</span><span class="p">]</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method_name</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span></div></div>
