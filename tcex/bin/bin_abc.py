@@ -4,11 +4,13 @@
 import logging
 import os
 import sys
+from abc import ABC
 from functools import lru_cache
 from pathlib import Path
+from typing import Optional
 
 # third-party
-import colorama as c
+import typer
 
 # first-party
 from tcex.app_config import InstallJson, LayoutJson, TcexJson
@@ -17,10 +19,10 @@ from tcex.logger import RotatingFileHandlerCustom
 from tcex.logger.trace_logger import TraceLogger
 
 
-class Bin:
+class BinABC(ABC):
     """Base Class for ThreatConnect command line tools."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize Class properties."""
         # properties
         self.app_path = os.getcwd()
@@ -29,9 +31,6 @@ class Bin:
         self.lj = LayoutJson()
         self.permutations = Permutation()
         self.tj = TcexJson()
-
-        # initialize colorama
-        c.init(autoreset=True, strip=False)
 
     @property
     @lru_cache
@@ -42,20 +41,20 @@ class Bin:
         return _out_path
 
     @staticmethod
-    def handle_error(err, halt=True):
+    def handle_error(err, halt: Optional[bool] = True) -> None:
         """Print errors message and optionally exit.
 
         Args:
             err (str): The error message to print.
             halt (bool, optional): Defaults to True. If True the script will exit.
         """
-        print(f'{c.Style.BRIGHT}{c.Fore.RED}{err}')
+        typer.secho(err, fg=typer.colors.RED, err=True)
         if halt:
             sys.exit(1)
 
     @property
     @lru_cache
-    def log(self):
+    def log(self) -> logging.Logger:
         """Return the configured logger."""
         # create logger based on custom TestLogger
         logging.setLoggerClass(TraceLogger)
@@ -96,19 +95,21 @@ class Bin:
         return logger
 
     @staticmethod
-    def print_message(message, line_bright=False, line_color=None, line_limit=150):
-        """Print the message ensuring lines don't exceed line limit."""
-        bright = ''
-        if line_bright:
-            bright = c.Style.BRIGHT
-        message_line = ''
-        for word in message.split(' '):
-            if len(message_line) + len(word) < line_limit:
-                message_line += f'{word} '
-            else:
-                print(f'{bright}{line_color}{message_line.rstrip()}')
-                message_line = f'{word} '
-        print(f'{bright}{line_color}{message_line.rstrip()}')
+    def print_setting(label: str, value: str, **kwargs) -> None:
+        """Print Setting."""
+        # get foreground color
+        fg_color = kwargs.get('fg_color')
+        if fg_color is None:
+            fg_color = typer.colors.CYAN
+        else:
+            fg_color = getattr(typer.colors, fg_color.upper())
+
+        # get bold settings
+        bold = kwargs.get('bold', True)
+
+        # display proxy setting
+        value_display = typer.style(f'{value}', fg=fg_color, bold=bold)
+        typer.echo(f'{label:<20}: {value_display}')
 
     @staticmethod
     def update_system_path():

@@ -321,7 +321,7 @@ class StixModel:
 
         return {
             'type': 'Host',
-            'hostName': '@.value',
+            'summary': '@.value',
             'confidence': '@.confidence',
         }
 
@@ -338,7 +338,7 @@ class StixModel:
 
         return {
             'type': 'EmailAddress',
-            'address': '@.value',
+            'summary': '@.value',
             'confidence': '@.confidence',
         }
 
@@ -358,13 +358,13 @@ class StixModel:
         if cidr_suffix == str(full_block_size):
             return {
                 'type': 'Address',
-                'ip': '@.value',
+                'summary': '@.value',
                 'confidence': '@.confidence',
             }
         return {
             'confidence': '@.confidence',
             'type': 'CIDR',
-            'block': '@.value',
+            'summary': '@.value',
         }
 
     # pylint: disable=unused-argument,no-self-use
@@ -404,7 +404,7 @@ class StixModel:
             A indicator mappings.
         """
 
-        return {'type': 'URL', 'text': '@.value', 'confidence': '@.confidence'}
+        return {'type': 'URL', 'summary': '@.value', 'confidence': '@.confidence'}
 
     # pylint: disable=unused-argument,no-self-use
     def registry_key_mapping(self, stix_data):

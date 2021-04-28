@@ -77,8 +77,6 @@ class TcexJson:
 
     def write(self) -> None:
         """Write current data file."""
-        data = self.data.json(
-            by_alias=True, exclude_defaults=True, exclude_none=True, indent=2, sort_keys=True
-        )
+        data = self.data.json(exclude_defaults=True, exclude_none=True, indent=2, sort_keys=True)
         with self.fqfn.open(mode='w') as fh:
             fh.write(f'{data}\n')

@@ -5,7 +5,6 @@ import json
 import os
 import shutil
 from pathlib import Path
-from typing import Optional
 
 # third-party
 from deepdiff import DeepDiff
@@ -38,35 +37,34 @@ class TestLayoutJson:
     #     # print('lj.data.outputs', lj.data.outputs)
 
     @staticmethod
-    def ij(app_type: str):
+    def ij(app_name: str = 'app_1', app_type: str = 'tcpb'):
         """Return install.json instance."""
-        base_path = f'tests/app_config/install_json_samples/{app_type}'
-        fqfn = Path(os.path.join(base_path, f'{app_type}-example1-install.json'))
+        ij_fqfn = os.path.join('tests', 'app_config', 'apps', app_type, app_name, 'install.json')
+        fqfn = Path(ij_fqfn)
         try:
             return InstallJson(filename=fqfn.name, path=fqfn.parent)
         except Exception as ex:
             assert False, f'Failed parsing file {fqfn.name} ({ex})'
 
     @staticmethod
-    def lj(app_type: str, filename: Optional[str] = None):
+    def lj(app_name: str = 'app_1', app_type: str = 'tcpb'):
         """Return layout.json instance."""
-        filename = filename or f'{app_type}-example1-layout.json'
-        base_path = f'tests/app_config/layout_json_samples/{app_type}'
-        fqfn = Path(os.path.join(base_path, filename))
+        lj_fqfn = os.path.join('tests', 'app_config', 'apps', app_type, app_name, 'layout.json')
+        fqfn = Path(lj_fqfn)
         try:
             return LayoutJson(filename=fqfn.name, path=fqfn.parent)
         except Exception as ex:
             assert False, f'Failed parsing file {fqfn.name} ({ex})'
 
     @staticmethod
-    def lj_bad(app_type: str):
+    def lj_bad(app_name: str = 'app_bad_layout_json', app_type: str = 'tcpb'):
         """Return layout.json instance with "bad" file."""
-        base_path = f'tests/app_config/layout_json_samples/{app_type}'
+        base_fqpn = os.path.join('tests', 'app_config', 'apps', app_type, app_name)
         shutil.copy2(
-            os.path.join(base_path, f'{app_type}-example1-layout-bad-template.json'),
-            os.path.join(base_path, f'{app_type}-example1-layout-bad.json'),
+            os.path.join(base_fqpn, 'layout-template.json'),
+            os.path.join(base_fqpn, 'layout.json'),
         )
-        fqfn = Path(os.path.join(base_path, f'{app_type}-example1-layout-bad.json'))
+        fqfn = Path(os.path.join(base_fqpn, 'layout.json'))
         try:
             return LayoutJson(filename=fqfn.name, path=fqfn.parent)
         except Exception as ex:
@@ -83,21 +81,22 @@ class TestLayoutJson:
 
             try:
                 lj = LayoutJson(filename=fqfn.name, path=fqfn.parent)
-                lj.update.multiple()
+                # lj.update.multiple()
             except Exception as ex:
                 assert False, f'Failed parsing file {fqfn.name} ({ex})'
 
             ddiff = DeepDiff(
                 json_dict,
-                lj.data.dict(by_alias=True, exclude_defaults=True, exclude_none=True),
+                # template requires json dump to serialize certain fields
+                json.loads(lj.data.json(by_alias=True, exclude_defaults=True, exclude_none=True)),
                 ignore_order=True,
             )
             assert ddiff == {}, f'Failed validation of file {fqfn.name}'
 
     def test_create(self):
         """Test method"""
-        ij = self.ij('tcpb')
-        lj = self.lj('tcpb', 'tcpb-layout-create.json')
+        ij = self.ij(app_type='tcpb')
+        lj = self.lj(app_name='app_create_layout', app_type='tcpb')
         lj.create(inputs=ij.data.params, outputs=ij.data.playbook.output_variables)
         assert lj.fqfn.is_file()
 
@@ -106,28 +105,40 @@ class TestLayoutJson:
 
     def test_has_layout(self):
         """Test method"""
-        assert self.lj('tcpb').has_layout
+        assert self.lj().has_layout
 
     def test_model_get_param(self):
         """Test method"""
-        assert isinstance(self.lj('tcpb').data.get_param('tc_action'), ParametersModel)
+        assert isinstance(self.lj().data.get_param('tc_action'), ParametersModel)
 
     def test_model_get_output(self):
         """Test method"""
-        assert isinstance(self.lj('tcpb').data.get_output('test1.output'), OutputsModel)
+        assert isinstance(self.lj().data.get_output('action_1.binary.output1'), OutputsModel)
 
     def test_model_output_(self):
         """Test method"""
-        assert isinstance(self.lj('tcpb').data.outputs_, dict)
+        assert isinstance(self.lj().data.outputs_, dict)
 
     def test_model_param_names(self):
         """Test method"""
-        assert isinstance(self.lj('tcpb').data.param_names, list)
+        assert isinstance(self.lj().data.param_names, list)
+
+    def test_update(self):
+        """Test method"""
+        ij = self.lj_bad()
+        try:
+            ij.update.multiple()
+            assert True
+        except Exception as ex:
+            assert False, f'Failed to update install.json file ({ex}).'
+        finally:
+            # cleanup temp file
+            ij.fqfn.unlink()
 
     def test_tcpb_support(self):
         """Validate layout.json files."""
-        self.model_validate('tests/app_config/layout_json_samples/tcpb')
+        self.model_validate('tests/app_config/app/tcpb')
 
     def test_tcvc_support(self):
         """Validate layout.json files."""
-        self.model_validate('tests/app_config/layout_json_samples/tcvc')
+        self.model_validate('tests/app_config/app/tcvc')

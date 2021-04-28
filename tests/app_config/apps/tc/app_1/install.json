@@ -1,10 +1,9 @@
 {
   "allowOnDemand": true,
-  "allowRunAsUser": true,
   "apiUserTokenParam": true,
   "appId": "f0a3fa03-8df8-52fe-9c64-5970c0bf4cdf",
   "commitHash": "abc123",
-  "displayName": "Organization (Job) App",
+  "displayName": "TcEx TC App 1",
   "features": [
     "fileParams",
     "secureParams"
@@ -30,10 +29,10 @@
         }
       ],
       "indicatorLimit": 50000000,
-      "jobFile": "crowdstrike.job.json",
+      "jobFile": "app_1_job.json",
       "sourceCategory": "Premium",
-      "sourceDescription": "CrowdStrike Falcon Intelligence",
-      "sourceName": "CrowdStrike Falcon Intelligence"
+      "sourceDescription": "TcEx Testing Job App 1",
+      "sourceName": "TcEx Testing"
     }
   ],
   "labels": [

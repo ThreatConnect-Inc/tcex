@@ -14,10 +14,10 @@ import colorama as c
 # first-party
 from tcex.app_config import InstallJson
 
-from .bin import Bin
+from .bin_abc import BinABC
 
 
-class Package(Bin):
+class Package(BinABC):
     """Package ThreatConnect Job or Playbook App for deployment.
 
     This method will package the app for deployment to ThreatConnect. Validation of the

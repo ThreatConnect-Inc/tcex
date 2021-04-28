@@ -12,15 +12,15 @@ from typing import List
 from urllib.parse import quote
 
 # third-party
-import colorama as c
+import typer
 
 # first-party
 from tcex.app_config.models.tcex_json_model import LibVersionModel
 
-from .bin import Bin
+from .bin_abc import BinABC
 
 
-class Dep(Bin):
+class Dep(BinABC):
     """Install dependencies for App."""
 
     def __init__(
@@ -47,6 +47,7 @@ class Dep(Bin):
             f'lib_{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}'
         )
         self.proxy_enabled = False
+        self.proxy_env = {}
         self.requirements_fqfn = Path('requirements.txt')
         self.static_lib_dir = 'lib_latest'
 
@@ -112,21 +113,24 @@ class Dep(Bin):
             return
 
         if self.proxy_host is not None and self.proxy_port is not None:
+            # proxy url without auth
+            proxy_url = f'{self.proxy_host}:{self.proxy_port}'
             if self.proxy_user is not None and self.proxy_pass is not None:
                 proxy_user = quote(self.proxy_user, safe='~')
                 proxy_pass = quote(self.proxy_pass, safe='~')
 
                 # proxy url with auth
-                proxy_url = f'{proxy_user}:{proxy_pass}@{self.proxy_host}:{self.proxy_port}'
-            else:
-                # proxy url without auth
-                proxy_url = f'{self.proxy_host}:{self.proxy_port}'
+                proxy_url = f'{proxy_user}:{proxy_pass}@{proxy_url}'
 
-            os.putenv('HTTP_PROXY', f'http://{proxy_url}')
-            os.putenv('HTTPS_PROXY', f'https://{proxy_url}')
-
-            print(f'Using Proxy Server: {c.Fore.CYAN}{self.proxy_host}:{self.proxy_port}.')
+            # update proxy properties
             self.proxy_enabled = True
+            self.proxy_env = {
+                'HTTP_PROXY': f'http://{proxy_url}',
+                'HTTPS_PROXY': f'http://{proxy_url}',
+            }
+
+            # display proxy setting
+            self.print_setting('Using Proxy Server', f'{self.proxy_host}:{self.proxy_port}')
 
     def create_temp_requirements(self) -> None:
         """Create a temporary requirements.txt.
@@ -151,6 +155,9 @@ class Dep(Bin):
                 requirements.append(line)
             fh.write('\n'.join(requirements))
 
+        # display branch setting
+        self.print_setting('Using Branch', self.branch)
+
     def install_deps(self) -> None:
         """Install Required Libraries using pip."""
         # check for requirements.txt
@@ -166,17 +173,24 @@ class Dep(Bin):
                 not lib_version.python_executable.is_file()
                 and not lib_version.python_executable.is_symlink()
             ):
-                print(
-                    f'{c.Style.BRIGHT}{c.Fore.RED}The Python executable '
-                    f'({lib_version.python_executable}) could not be found. '
-                    'Skipping building lib directory for this Python version.'
+
+                # display error
+                typer.secho(
+                    f'The Python executable ({lib_version.python_executable}) could not be found. '
+                    'Skipping building lib directory for this Python version.',
+                    fg=typer.colors.YELLOW,
                 )
                 continue
 
-            print(f'Building Lib Dir: {c.Style.BRIGHT}{c.Fore.CYAN}{lib_version.lib_dir.name}')
+            # display lib dir setting
+            self.print_setting('Lib Dir', f'{lib_version.lib_dir.name}')
+
+            # build the sub process command
             exe_command = self._build_command(lib_version.python_executable, lib_version.lib_dir)
 
-            print(f'''Running: {c.Style.BRIGHT}{c.Fore.GREEN}{' '.join(exe_command)}''')
+            # display command setting
+            self.print_setting('Running', f'''{' '.join(exe_command)}''', fg_color='GREEN')
+
             # recommended -> https://pip.pypa.io/en/latest/user_guide/#using-pip-from-your-program
             p = subprocess.Popen(
                 exe_command,
@@ -184,13 +198,18 @@ class Dep(Bin):
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
+                env=self.proxy_env,
             )
             _, err = p.communicate()  # pylint: disable=unused-variable
 
             if p.returncode != 0:
-                print(f'{c.Style.BRIGHT}{c.Fore.RED}FAIL')
-                print(f'''{c.Style.BRIGHT}{c.Fore.RED}{err.decode('utf-8')}''')
-                sys.exit(f'''ERROR: {err.decode('utf-8')}''')
+                # display error
+                err = err.decode('utf-8')
+                failure_display = typer.style(
+                    f'Failure: {err}', fg=typer.colors.WHITE, bg=typer.colors.RED
+                )
+                typer.echo(f'{failure_display}')
+                sys.exit(1)
 
             # TODO: [low] can this be updated to use version from model?
             # version comparison
@@ -218,7 +237,8 @@ class Dep(Bin):
     def lib_versions(self) -> List[LibVersionModel]:
         """Return the lib_version data required to build lib directories."""
         if self.tj.data.lib_versions:
-            print(f'{c.Style.BRIGHT}Using "lib" directories defined in tcex.json file.')
+            self.print_setting('Python Version', 'using version(s) defined in tcex.json')
+
             # return the python versions defined in the tcex.json file
             return self.tj.data.lib_versions
 

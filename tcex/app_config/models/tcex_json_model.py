@@ -66,7 +66,6 @@ class TcexJsonModel(BaseModel):
     template_name: Optional[str] = None
     template_repo_hash: Optional[str] = None
     template_type: Optional[TemplateTypes] = None
-    # template_type: Optional[str] = None
 
     class Config:
         """DataModel Config"""

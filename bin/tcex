@@ -33,10 +33,10 @@ def deps(
     proxy_port: Optional[int] = typer.Option(
         None, help='(Advanced) Port number for the proxy server.'
     ),
-    proxy_user: Optional[int] = typer.Option(
+    proxy_user: Optional[str] = typer.Option(
         None, help='(Advanced) Username for the proxy server.'
     ),
-    proxy_pass: Optional[int] = typer.Option(
+    proxy_pass: Optional[str] = typer.Option(
         None, help='(Advanced) Password for the proxy server.'
     ),
 ):
@@ -56,13 +56,11 @@ def deps(
         if branch != 'master':
             # create temp requirements.txt file pointing to tcex branch
             tcl.create_temp_requirements()
-            raise typer.Exit(code=1)
 
         # install debs
         tcl.install_deps()
-        # raise typer.Exit(code=tcl.exit_code)
     except Exception as ex:
-        typer.echo(f'Validate Exception: {ex}')
+        typer.echo(f'Exception: {ex}', err=True)
         raise typer.Exit(code=1)
 
 
@@ -97,7 +95,7 @@ def init(
                 tt.download_template_file(item)
         tt.update_tcex_json()
     except Exception as ex:
-        typer.echo(f'Failed initializing App ({ex}).')
+        typer.echo(f'Failed initializing App ({ex}).', err=True)
         raise typer.Exit(code=1)
 
 
@@ -117,7 +115,7 @@ def list(
         tt.print_list()
         tt.print_error_message()
     except Exception as ex:
-        typer.echo(f'Failed getting App templates: {ex}')
+        typer.echo(f'Failed getting App templates: {ex}', err=True)
         raise typer.Exit(code=1)
 
 
@@ -163,7 +161,8 @@ def package(
         else:
             tcp.print_results()
     except Exception:
-        print(f'{c.Style.BRIGHT}{c.Fore.RED}{traceback.format_exc()}')
+        # TODO: [med] update this to a more user friendly error message.
+        typer.echo(f'{c.Style.BRIGHT}{c.Fore.RED}{traceback.format_exc()}', err=True)
         raise typer.Exit(code=tcv.exit_code)
 
 
@@ -191,9 +190,8 @@ def update(
             for item in progress:
                 tt.download_template_file(item)
     except Exception as ex:
-        typer.echo(f'Failed updating App ({ex}).')
-        # raise typer.Exit(code=1)
-        raise
+        typer.echo(f'Failed updating App ({ex}).', err=True)
+        raise typer.Exit(code=1)
 
 
 @app.command()
@@ -232,7 +230,7 @@ def validate(
             tcv.check_job_json()
             tcv.print_results()
     except Exception as ex:
-        typer.echo(f'Validate Exception: {ex}')
+        typer.echo(f'Validate Exception: {ex}', err=True)
         raise typer.Exit(code=1)
 
 

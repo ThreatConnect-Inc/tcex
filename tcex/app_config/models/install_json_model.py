@@ -115,7 +115,7 @@ class ParamsModel(BaseModel):
     service_config: bool = False
     setup: bool = False
     type: TypeEnum
-    valid_values: Optional[List[str]]
+    valid_values: Optional[List[str]] = []
 
     class Config:
         """DataModel Config"""
@@ -243,7 +243,7 @@ class InstallJsonModel(BaseModel):
         """Return a version object for "version" fields."""
         if v is not None:
             return Version(v)
-        return v
+        return v  # pragma: no cover
 
     class Config:
         """DataModel Config"""

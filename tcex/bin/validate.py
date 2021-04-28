@@ -21,7 +21,7 @@ from stdlib_list import stdlib_list
 # first-party
 from tcex.app_config import InstallJson, JobJson, LayoutJson, TcexJson
 
-from .bin import Bin
+from .bin_abc import BinABC
 
 try:
     # standard library
@@ -31,7 +31,7 @@ except ModuleNotFoundError:
     pass
 
 
-class Validate(Bin):
+class Validate(BinABC):
     """Validate syntax, imports, and schemas.
 
     * Python and JSON file syntax

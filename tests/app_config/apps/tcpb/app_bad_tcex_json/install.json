@@ -1,9 +1,8 @@
 {
   "allowOnDemand": true,
-  "allowRunAsUser": true,
   "appId": "308206c9-c6ea-51a4-8519-14c25ca2dc6f",
-  "commitHash": "abc123",
-  "displayName": "TcEx TCPB App 1",
+  "commitHash": "ef63c07945f11c8b8645db60cf6fd758321e1da0",
+  "displayName": "TCPB_-_TcEx_App_1",
   "features": [
     "aotExecutionEnabled",
     "appBuilderCompliant",
@@ -17,7 +16,6 @@
   ],
   "languageVersion": "3.6",
   "listDelimiter": "|",
-  "minServerVersion": "6.0.0",
   "note": "A TcEx testing App.",
   "params": [
     {
@@ -66,7 +64,6 @@
       ]
     },
     {
-      "default": true,
       "label": "Boolean Input Required",
       "name": "boolean_input_required",
       "note": "A Required Boolean Input",
@@ -741,17 +738,10 @@
         "type": "TCEntityArray"
       }
     ],
-    "retry": {
-      "allowed": true,
-      "defaultDelayMinutes": 2,
-      "defaultMaxRetries": 10
-    },
     "type": "TcEx Example"
   },
-  "programIcon": "program_icon",
   "programLanguage": "PYTHON",
   "programMain": "run",
-  "programName": "program_name",
   "programVersion": "1.0.0",
   "runtimeLevel": "Playbook"
 }

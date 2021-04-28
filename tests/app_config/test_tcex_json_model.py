@@ -31,34 +31,34 @@ class TestTcexJson:
     #     print('tj.data.template', tj.data.template)
 
     @staticmethod
-    def ij(app_type: str):
+    def ij(app_name: str = 'app_1', app_type: str = 'tcpb'):
         """Return install.json instance."""
-        base_path = f'tests/app_config/install_json_samples/{app_type}'
-        fqfn = Path(os.path.join(base_path, f'{app_type}-example1-install.json'))
+        ij_fqfn = os.path.join('tests', 'app_config', 'apps', app_type, app_name, 'install.json')
+        fqfn = Path(ij_fqfn)
         try:
             return InstallJson(filename=fqfn.name, path=fqfn.parent)
         except Exception as ex:
             assert False, f'Failed parsing file {fqfn.name} ({ex})'
 
     @staticmethod
-    def tj():
+    def tj(app_name: str = 'app_1', app_type: str = 'tcpb'):
         """Return tcex.json instance."""
-        base_path = 'tests/app_config/tcex_json_samples'
-        fqfn = Path(f'{base_path}/example1-tcex.json')
+        tj_fqfn = os.path.join('tests', 'app_config', 'apps', app_type, app_name, 'tcex.json')
+        fqfn = Path(tj_fqfn)
         try:
             return TcexJson(filename=fqfn.name, path=fqfn.parent)
         except Exception as ex:
             assert False, f'Failed parsing file {fqfn.name} ({ex})'
 
     @staticmethod
-    def tj_bad():
+    def tj_bad(app_name: str = 'app_bad_tcex_json', app_type: str = 'tcpb'):
         """Return tcex.json instance with "bad" file."""
-        base_path = 'tests/app_config/tcex_json_samples'
+        base_fqpn = os.path.join('tests', 'app_config', 'apps', app_type, app_name)
         shutil.copy2(
-            f'{base_path}/example1-tcex-bad-template.json',
-            f'{base_path}/example1-tcex-bad.json',
+            f'{base_fqpn}/tcex-template.json',
+            f'{base_fqpn}/tcex.json',
         )
-        fqfn = Path(os.path.join(base_path, 'example1-tcex-bad.json'))
+        fqfn = Path(os.path.join(base_fqpn, 'tcex.json'))
         try:
             return TcexJson(filename=fqfn.name, path=fqfn.parent)
         except Exception as ex:
@@ -68,7 +68,7 @@ class TestTcexJson:
     def model_validate(path: str) -> None:
         """Validate input model in and out."""
         tj_path = Path(path)
-        for fqfn in sorted(tj_path.glob('**/*tcex.json')):
+        for fqfn in tj_path.glob('**/*tcex.json'):
             fqfn = Path(fqfn)
             with fqfn.open() as fh:
                 json_dict = json.load(fh)
@@ -81,7 +81,8 @@ class TestTcexJson:
 
             ddiff = DeepDiff(
                 json_dict,
-                tj.data.dict(by_alias=True, exclude_defaults=True, exclude_none=True),
+                # template requires json dump to serialize certain fields
+                json.loads(tj.data.json(by_alias=True, exclude_defaults=True, exclude_none=True)),
                 ignore_order=True,
             )
             assert ddiff == {}, f'Failed validation of file {fqfn.name}'
@@ -97,17 +98,21 @@ class TestTcexJson:
     def test_update(self):
         """Test method"""
         tj = self.tj_bad()
-        tj.ij = self.ij('tcpb')
+        tj.ij = self.ij(app_name='app_bad_tcex_json', app_type='tcpb')
 
         try:
             tj.update.multiple(template='service_api')
+            # print(tj.data.schema_json())
+            print(tj.data.json(exclude_defaults=False, exclude_none=True, indent=2, sort_keys=True))
             assert True
         except Exception as ex:
             assert False, f'Failed to update tcex.json file ({ex}).'
         finally:
             # cleanup temp file
-            tj.fqfn.unlink()
+            # tj.fqfn.unlink()
+            pass
 
     def test_support(self):
         """Validate tcex.json files."""
-        self.model_validate('tests/app_config/tcex_json_samples')
+        # self.model_validate(self.tj())
+        self.model_validate('tests/app_config/apps/tcpb')

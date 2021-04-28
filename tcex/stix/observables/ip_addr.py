@@ -93,13 +93,14 @@ class StixIPv4Object(StixIPBase):
 
         parse_map = {
             'id': '@.id',
-            'value': f'@.{indicator_field}',
+            'summary': f'@.{indicator_field}',
             'spec_version': '2.1',
             'type': f'{ip_type}-addr',
         }
 
         yield from self._map(
-            tc_data, parse_map,
+            tc_data,
+            parse_map,
         )
 
     def _produce_address(self, tc_data: dict):
@@ -109,13 +110,14 @@ class StixIPv4Object(StixIPBase):
 
         parse_map = {
             'id': '@.id',
-            'value': f'@.{indicator_field}',
+            'summary': f'@.{indicator_field}',
             'spec_version': '2.1',
             'type': f'{ip_type}-addr',
         }
 
         yield from self._map(
-            tc_data, parse_map,
+            tc_data,
+            parse_map,
         )
 
 
@@ -154,7 +156,7 @@ class StixIPv6Object(StixIPBase):
 
         mapper = {
             'id': '@.id',
-            'value': f'@.{indicator_field}',
+            'summary': f'@.{indicator_field}',
             'spec_version': '2.1',
             'type': 'ipv6-addr',
         }

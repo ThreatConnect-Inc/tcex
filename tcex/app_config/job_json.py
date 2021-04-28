@@ -42,15 +42,16 @@ class JobJson:
         return _contents
 
     @property
-    # @lru_cache
+    @lru_cache
     def data(self) -> JobJsonModel:
         """Return the Install JSON model."""
         return JobJsonModel(**self.contents)
 
-    def write(self) -> None:
-        """Write current data file."""
-        data = self.data.json(
-            by_alias=True, exclude_defaults=True, exclude_none=True, indent=2, sort_keys=True
-        )
-        with self.fqfn.open(mode='w') as fh:
-            fh.write(f'{data}\n')
+    # TODO: [low] possibly add auto fix of version and program name and then uncomment this code.
+    # def write(self) -> None:
+    #     """Write current data file."""
+    #     data = self.data.json(
+    #         by_alias=True, exclude_defaults=True, exclude_none=True, indent=2, sort_keys=True
+    #     )
+    #     with self.fqfn.open(mode='w') as fh:
+    #         fh.write(f'{data}\n')

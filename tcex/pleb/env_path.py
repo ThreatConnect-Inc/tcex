@@ -14,7 +14,7 @@ class _EnvPath(type(Path()), Path):  # pylint: disable=E0241
 
 
 class EnvPath(Path):
-    """."""
+    """EnvPath custom pydantic model type."""
 
     @classmethod
     def __modify_schema__(cls, field_schema: Dict[str, Any]) -> None:

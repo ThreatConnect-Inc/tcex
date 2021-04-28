@@ -1,0 +1,23 @@
+{
+  "allowOnDemand": true,
+  "enableNotifications": true,
+  "jobName": "TcEx App 1",
+  "notifyEmail": "integrations@threatconnect.com",
+  "notifyIncludeLogFiles": true,
+  "notifyOnComplete": true,
+  "notifyOnFailure": true,
+  "notifyOnPartialFailure": true,
+  "params": [
+    {
+      "default": "required",
+      "name": "string_required",
+      "preventUpdates": true
+    }
+  ],
+  "programName": "TC - TcEx App v1.0",
+  "programVersion": "1.0.0",
+  "publishAuth": true,
+  "scheduleCronFormat": "00 00 0 * * ? *",
+  "scheduleStartDate": 1484858999000,
+  "scheduleType": "Daily"
+}

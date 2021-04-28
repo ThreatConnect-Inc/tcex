@@ -18,10 +18,10 @@ from tinydb import Query, TinyDB
 from tcex.app_config.models import TemplateConfigModel
 from tcex.backports import cached_property
 
-from .bin import Bin
+from .bin_abc import BinABC
 
 
-class Template(Bin):
+class Template(BinABC):
     """Install dependencies for App."""
 
     def __init__(self):

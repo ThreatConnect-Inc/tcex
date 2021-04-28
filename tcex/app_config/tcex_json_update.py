@@ -67,18 +67,17 @@ class TcexJsonUpdate:
 
     def update_package_excludes(self) -> None:
         """Update the excludes values in the tcex.json file."""
-        self.tj.data.package.excludes.extend(
-            [
-                '.gitignore',
-                '.pre-commit-config.yaml',
-                'local-*',
-                'pyproject.toml',
-                'setup.cfg',
-                'tcex.json',
-                '*.install.json',
-                'tcex.d',
-            ]
-        )
+        for i in [
+            '.gitignore',
+            '.pre-commit-config.yaml',
+            'local-*',
+            'pyproject.toml',
+            'setup.cfg',
+            'tcex.json',
+        ]:
+            if i not in self.tj.data.package.excludes:
+                # TODO: [low] pydantic doesn't seem to allow removing items from list???
+                self.tj.data.package.excludes.append(i)
 
     def update_lib_versions(self) -> None:
         """Update the lib_versions array in the tcex.json file."""

@@ -3,16 +3,16 @@
     "app_name": "TCPB_-_",
     "app_version": "1.0.0",
     "excludes": [
-      "*.install.json",
       ".gitignore",
       ".pre-commit-config.yaml",
       "local-*",
       "pyproject.toml",
       "setup.cfg",
-      "tcex.d",
       "tcex.json",
       "requirements.txt"
-    ]
+    ],
+    "outdir": "target"
   },
-  "template": "service_api"
+  "template_name": "basic",
+  "template_type": "playbook"
 }
