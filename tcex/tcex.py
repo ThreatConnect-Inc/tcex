@@ -147,6 +147,8 @@ class TcEx:
         attribute_write_type: Optional[str] = 'Replace',
         halt_on_error: Optional[bool] = False,
         playbook_triggers_enabled: Optional[bool] = False,
+        tag_write_type: Optional[str] = 'Replace',
+        security_label_write_type: Optional[str] = 'Replace',
     ) -> 'Batch':  # noqa: F821
         """Return instance of Batch
 
@@ -157,6 +159,8 @@ class TcEx:
             attribute_write_type: Write type for TI attributes ['Append', 'Replace'].
             halt_on_error: If True any batch error will halt the batch job.
             playbook_triggers_enabled: Deprecated input, will not be used.
+            security_label_write_type: Write type for labels ['Append', 'Replace'].
+            tag_write_type: Write type for tags ['Append', 'Replace'].
 
         Returns:
             object: An instance of the Batch Class.
@@ -164,7 +168,14 @@ class TcEx:
         from .batch import Batch
 
         return Batch(
-            self, owner, action, attribute_write_type, halt_on_error, playbook_triggers_enabled
+            self,
+            owner,
+            action,
+            attribute_write_type,
+            halt_on_error,
+            playbook_triggers_enabled,
+            tag_write_type,
+            security_label_write_type,
         )
 
     def batch_submit(
@@ -174,6 +185,8 @@ class TcEx:
         attribute_write_type: Optional[str] = 'Replace',
         halt_on_error: Optional[bool] = False,
         playbook_triggers_enabled: Optional[bool] = False,
+        tag_write_type: Optional[str] = 'Replace',
+        security_label_write_type: Optional[str] = 'Replace',
     ) -> 'BatchSubmit':  # noqa: F821
         """Return instance of Batch
 
@@ -184,6 +197,8 @@ class TcEx:
             attribute_write_type: Write type for TI attributes ['Append', 'Replace'].
             halt_on_error: If True any batch error will halt the batch job.
             playbook_triggers_enabled: Deprecated input, will not be used.
+            security_label_write_type: Write type for labels ['Append', 'Replace'].
+            tag_write_type: Write type for tags ['Append', 'Replace'].
 
         Returns:
             object: An instance of the Batch Class.
@@ -191,7 +206,14 @@ class TcEx:
         from .batch.batch_submit import BatchSubmit
 
         return BatchSubmit(
-            self, owner, action, attribute_write_type, halt_on_error, playbook_triggers_enabled
+            self,
+            owner,
+            action,
+            attribute_write_type,
+            halt_on_error,
+            playbook_triggers_enabled,
+            tag_write_type,
+            security_label_write_type,
         )
 
     def batch_writer(self, output_dir: str, **kwargs) -> 'BatchWriter':  # noqa: F821

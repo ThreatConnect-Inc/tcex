@@ -3,6 +3,11 @@
 Release Notes
 #############
 
+2.0.21
+======
++ APP-2475 [Batch] Fixed batch method calls in tcex.py.
++ APP-2476 [Batch] Fixed tag and security label write mode properties in batch submit module.
+
 2.0.20
 ======
 + APP-76 [Batch] Added tagWriteType and securityLabelWriteType to batch module (settings).

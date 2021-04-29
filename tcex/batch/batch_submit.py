@@ -351,7 +351,7 @@ class BatchSubmit:
     @property
     def security_label_write_type(self):
         """Return batch security label write type."""
-        return self._attribute_write_type
+        return self._security_label_write_type
 
     @security_label_write_type.setter
     def security_label_write_type(self, write_type: str):
@@ -453,7 +453,7 @@ class BatchSubmit:
     @property
     def tag_write_type(self):
         """Return batch tag write type."""
-        return self._attribute_write_type
+        return self._tag_write_type
 
     @tag_write_type.setter
     def tag_write_type(self, write_type: str):
