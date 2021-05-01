@@ -16,7 +16,7 @@ class TestApiHandler:
             tcex (TcEx, fixture): An instantiated instance of TcEx object.
         """
         tcex.logger.add_thread_file_handler(
-            name='pytest', filename=logfile, level='trace', path=tcex.default_args.tc_log_path
+            name='pytest', filename=logfile, level='trace', path=tcex.inputs.data.tc_log_path
         )
 
         for _ in range(0, 20):
@@ -34,7 +34,7 @@ class TestApiHandler:
         Args:
             tcex (TcEx, fixture): An instantiated instance of TcEx object.
         """
-        logfile = tcex.default_args.tc_log_file.replace('.log', '-thread.log')
+        logfile = tcex.inputs.data.tc_log_file.replace('.log', '-thread.log')
         t = threading.Thread(name='pytest', target=self.logging_thread, args=(logfile, tcex))
         # standard library
         import time
@@ -44,4 +44,4 @@ class TestApiHandler:
         t.join()
 
         # simple assert to ensure the log file was created
-        assert os.path.exists(os.path.join(tcex.default_args.tc_log_path, logfile))
+        assert os.path.exists(os.path.join(tcex.inputs.data.tc_log_path, logfile))

@@ -3,12 +3,34 @@
 Release Notes
 #############
 
+2.0.21
+======
++ APP-2475 [Batch] Fixed batch method signature in tcex.py.
++ APP-2476 [Batch] Fixed tag and security label write mode properties in batch submit module.
+
+2.0.20
+======
++ APP-76 [Batch] Added tagWriteType and securityLabelWriteType to batch module (settings).
++ APP-2469 [Batch] Added batch writer and batch submit modules to support Web API Service Apps.
++ APP-2329 [STIX] Updated module to parse `threat-actor` from STIX object.
++ APP-2437 [STIX] Updated module to write https url indicator to batch files.
++ APP-2438 [STIX] Updated module to parse objects with multiple simultaneous patterns.
++ APP-2462 [tcpackage] Updated ``tcpackage`` CLI command to retain smtpSettings feature.
++ APP-2463 [Service] Improved API Service response body handling.
++ APP-2467 [Service] Added broker test message for Service Apps when heartbeats are missed.
++ APP-2457 [Session] Updated session methods to use default_args instead of args.
++ APP-2465 [Session] Added methods for sessions for multiprocess support in Apps.
++ APP-2466 [Signal] Updated signal handling logic to not exit with error when thread is not MainThread.
++ APP-2464 [TI] Updated TI module to work in forked instance.
++ APP-2305 [Testing] Added hash_eq operator to testing framework.
++ APP-2459 [Testing] Updated testing framework to properly support Apps using multi-choice inputs and permutations.
+
 2.0.19
 ======
 + APP-2044 - [Testing] When generating test profiles with --negative, environments will be copied from base profile and "negative" appended.
 + APP-2128 - [Playbook] Accept any iterable for array types when creating outputs.
 + APP-2129 - [Playbook] Enhance add_output() to add None values to array types when append=True.
-+ APP-2130 - Add foward-reference type hints.
++ APP-2130 - Add forward-reference type hints.
 + APP-2140 - [tcinit] Add missing file for API Service template.
 + APP-2186 - [KeyValueStore] Add parameter to disable decoding of value read by read().
 + APP-2219 - [tctest] update tctest to allow user to re-enter choice inputs if they enter a bad value.
@@ -29,7 +51,7 @@ Release Notes
 
 2.0.16
 ======
-+ APP-1807, APP-1801  - [STIX] Remove dependency on Dendrol and replace with lark parser.
++ APP-1807, APP-1801  - [STIX] Removed dependency on Dendrol and replaced with lark parser.
 
 2.0.15
 ======
@@ -158,9 +180,9 @@ Testing framework
 + Added ``is_variable()`` method to Playbook module.
 + Updated ReadArgs decorator to return None when arg doesn't exist.
 + Updated ReadArgs to not log input value.
-+ Added new Permutations class to app_config module.
-+ Added new Profile and ProfileInteractive Classes to app_config module.
-+ Added new TcexJson Class to app_config module.
++ Added new Permutations class to app_config_object module.
++ Added new Profile and ProfileInteractive Classes to app_config_object module.
++ Added new TcexJson Class to app_config_object module.
 + Moved all testing template generation/download logic to consolidated templates.py file.
 + Added schema management to InstallJson class.
 + Added schema management to LayoutJson class.

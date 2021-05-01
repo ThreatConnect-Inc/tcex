@@ -66,42 +66,58 @@ def deps(
 
 @app.command()
 def init(
-    type_: str = typer.Option(..., '--type', help='The App type being initialized.'),
-    template: str = typer.Option(..., help='The App template to be used.'),
-    # branch: Optional[str] = typer.Option(
-    #     'master', help='The git branch of the tcex-app-template repository to use.'
-    # ),
-    # layout: Optional[bool] = typer.Option(
-    #     False, help='If True, a layout.json file will be created.'
-    # ),
+    type_: str = typer.Option(..., '--type', help='The App type being initialized.', prompt=True),
+    template: str = typer.Option(..., help='The App template to be used.', prompt=True),
+    branch: Optional[str] = typer.Option(
+        'main', help='The git branch of the tcex-app-template repository to use.'
+    ),
 ):
     """Initialize a new App from a template.
 
     Templates can be found at: https://github.com/ThreatConnect-Inc/tcex-app-templates
     """
+    tt = Template()
     if os.listdir(os.getcwd()):
-        typer.echo(
+        tt.print_block(
             'The current directory does not appear to be empty. Apps should '
-            'be initialized in an empty directory. If attempting to update an'
-            'existing App the please try using the "tcex update" command instead.'
+            'be initialized in an empty directory. If attempting to update an '
+            'existing App then please try using the "tcex update" command instead.',
+            fg_color='yellow',
         )
         raise typer.Exit(code=1)
 
-    tt = Template()
     try:
-        downloads = tt.init(type_, template)
-        with typer.progressbar(downloads) as progress:
+        tt.print_title('Installing template files ...', divider=False, fg_color='white')
+        downloads = tt.init(branch, type_, template)
+        with typer.progressbar(downloads, label='Downloading', width=80) as progress:
+            typer.echo('')  # add additional space before progress bar
             for item in progress:
                 tt.download_template_file(item)
+
+        # update tcex.json file
         tt.update_tcex_json()
+
+        # update manifest
+        tt.template_manifest_write()
+
+        typer.echo('\n')
+        tt.print_title('Installation Summary')
+        tt.print_setting('Template Type', type_)
+        tt.print_setting('Template Name', template)
+        tt.print_setting('Files Downloaded', len(downloads))
+        tt.print_setting('Branch', branch)
     except Exception as ex:
         typer.echo(f'Failed initializing App ({ex}).', err=True)
-        raise typer.Exit(code=1)
+        # raise typer.Exit(code=1)
+        raise
 
 
 @app.command()
 def list(
     type_: Optional[str] = typer.Option(None, '--type', help='The App type being initialized.'),
+    branch: Optional[str] = typer.Option(
+        'main', help='The git branch of the tcex-app-template repository to use.'
+    ),
 ):
     """List templates
 
@@ -111,7 +127,7 @@ def list(
     """
     tt = Template()
     try:
-        tt.list(type_)
+        tt.list(branch, type_)
         tt.print_list()
         tt.print_error_message()
     except Exception as ex:
@@ -121,7 +137,7 @@ def list(
 
 @app.command()
 def package(
-    # TODO: [high] figure out how to get a list for this input
+    # TODO: [high] figure out how to get a list for this input or REMOVE
     excludes: Optional[str] = typer.Option(None, help='File and directories to exclude from build'),
     ignore_validation: Optional[bool] = typer.Option(
         False, help='If true, validation errors will not prevent package.'
@@ -171,8 +187,8 @@ def update(
     template: Optional[str] = typer.Option(
         None, help='Only provide this value if changing the saved value.'
     ),
-    default: Optional[bool] = typer.Option(
-        False, help='(Advanced) If true, this command will not exit until passed an exit string.'
+    branch: Optional[str] = typer.Option(
+        'main', help='The git branch of the tcex-app-template repository to use.'
     ),
 ):
     """Update an project with latest template files.
@@ -185,10 +201,25 @@ def update(
     """
     tt = Template()
     try:
-        downloads = tt.update(template)
-        with typer.progressbar(downloads) as progress:
-            for item in progress:
-                tt.download_template_file(item)
+        downloads = tt.update(branch, template)
+        tt.print_title('Updating template files ...', divider=False, fg_color='white')
+        if not downloads:
+            typer.secho('\nNo files to update.', fg=typer.colors.GREEN)
+        else:
+            with typer.progressbar(downloads, label='Downloading', length=80) as progress:
+                typer.echo('')  # add additional space before progress bar
+                for item in progress:
+                    tt.download_template_file(item)
+
+        # update manifest
+        tt.template_manifest_write()
+
+        typer.echo('\n')
+        tt.print_title('Update Summary')
+        tt.print_setting('Template Type', tt.tj.data.template_type)
+        tt.print_setting('Template Name', tt.tj.data.template_name)
+        tt.print_setting('Files Updated', len(downloads))
+        tt.print_setting('Branch', branch)
     except Exception as ex:
         typer.echo(f'Failed updating App ({ex}).', err=True)
         raise typer.Exit(code=1)
@@ -199,9 +230,6 @@ def validate(
     ignore_validation: Optional[bool] = typer.Option(
         False, help='If true, validation errors will not cause an exit.'
     ),
-    # install_json: Optional[str] = typer.Option(
-    #     'install.json', help='(Advanced) The install.json file to validate.'
-    # ),
     interactive: Optional[bool] = typer.Option(
         False, help='(Advanced) If true, this command will not exit until passed an exit string.'
     ),

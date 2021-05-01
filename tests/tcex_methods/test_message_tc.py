@@ -17,7 +17,7 @@ class TestMessageTc:
             tcex (TcEx, fixture): An instantiated instance of TcEx object.
         """
         # get the current out path from tcex
-        message_tc_file = os.path.join(tcex.default_args.tc_out_path, 'message.tc')
+        message_tc_file = os.path.join(tcex.inputs.data.tc_out_path, 'message.tc')
 
         # cleanup any previous message.tc file
         if os.path.isfile(message_tc_file):
@@ -50,7 +50,7 @@ class TestMessageTc:
             tcex (TcEx, fixture): An instantiated instance of TcEx object.
         """
         # get the current out path from tcex
-        message_tc_file = os.path.join(tcex.default_args.tc_out_path, 'message.tc')
+        message_tc_file = os.path.join(tcex.inputs.data.tc_out_path, 'message.tc')
 
         # cleanup any previous message.tc file
         if os.path.isfile(message_tc_file):
@@ -88,7 +88,7 @@ class TestMessageTc:
             tcex (TcEx, fixture): An instantiated instance of TcEx object.
         """
         # get the current out path from tcex
-        message_tc_file = os.path.join(tcex.default_args.tc_out_path, 'message.tc')
+        message_tc_file = os.path.join(tcex.inputs.data.tc_out_path, 'message.tc')
 
         # cleanup any previous message.tc file
         if os.path.isfile(message_tc_file):

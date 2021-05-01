@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 """TcEx Dependencies Command"""
 # standard library
+import hashlib
 import json
 import os
 from pathlib import Path
 from typing import Dict, List, Optional
 
 # third-party
-import colorama as c
 import yaml
 from pydantic import ValidationError
 from requests import Session
@@ -29,9 +29,6 @@ class Template(BinABC):
         super().__init__()
 
         # properties
-        self.errors = False
-        self.template_configs = {}
-        self.template_data = {}
         self.base_url = os.getenv(
             'TCEX_TEMPLATE_URL',
             'https://api.github.com/repos/ThreatConnect-Inc/tcex-app-templates',
@@ -39,7 +36,11 @@ class Template(BinABC):
         self.base_raw_url = (
             'https://raw.githubusercontent.com/ThreatConnect-Inc/tcex-app-templates/master'
         )
+        self.errors = False
         self.password = os.getenv('TCEX_TEMPLATE_PASSWORD')
+        self.template_configs = {}
+        self.template_data = {}
+        self.template_manifest_fqfn = Path('.template_manifest.json')
         self.username = os.getenv('TCEX_TEMPLATE_USERNAME')
 
     @cached_property
@@ -60,7 +61,7 @@ class Template(BinABC):
         # cache is valid
         return True
 
-    def contents(self, type_: str, template: Optional[str] = None) -> dict:
+    def contents(self, branch: str, type_: str, template: Optional[str] = None) -> dict:
         """Yield template contents."""
         url = f'{self.base_url}/contents/{type_}/{template}'
         if template is None:
@@ -68,7 +69,8 @@ class Template(BinABC):
         elif template == '_app_common':
             url = f'{self.base_url}/contents/{template}'
 
-        r = self.session.get(url)
+        params = {'ref': branch}
+        r = self.session.get(url, params=params)
         if not r.ok:
             self.log.errors(f'Failed retrieving contents for type {url}.')
             self.errors = True
@@ -162,6 +164,19 @@ class Template(BinABC):
         # write destination file
         destination.open(mode='wb').write(r.content)
 
+        # update manifest
+        self.template_manifest[name]['md5'] = self.file_hash(destination)
+
+    @staticmethod
+    def file_hash(fqfn: Path) -> str:
+        """Return the file hash."""
+        md5 = hashlib.md5()  # nosec
+        f = fqfn.open(mode='rb')
+        while chunk := f.read(4096):
+            md5.update(chunk)
+
+        return md5.hexdigest()
+
     def get_template_config(self, type_: str, template: str) -> TemplateConfigModel:
         """Return the data from the template.yaml file."""
         self.log.info(
@@ -180,7 +195,10 @@ class Template(BinABC):
         r = self.session.get(url)
         self.log.debug(f'action=get-template-config, url={url}, status-code={r.status_code}')
         if not r.ok:
-            self.log.error(f'Failed retrieving template.yaml for project {type_} -> {template}.')
+            self.log.error(
+                f'action=get-template-config, type={type_}, template={template}, '
+                f'status-code={r.status_code}, exception=template-not-found'
+            )
             self.errors = True
             return None
 
@@ -203,18 +221,20 @@ class Template(BinABC):
                 self.errors = True
             return None
 
-    def init(self, type_: str, template: str) -> List[dict]:
+    def init(self, branch: str, type_: str, template: str) -> List[dict]:
         """Initialize an App with template files."""
         downloads = {}
         for tp in self.template_parents(type_, template):
-            for item in self.contents(type_, tp):
+            for item in self.contents(branch, type_, tp):
                 if item.get('type') == 'file':
                     # overwrite name if found in later parent
                     downloads[item.get('name')] = item
+                    self.template_manifest.setdefault(item.get('name'), {})
+                    self.template_manifest[item.get('name')]['sha'] = item.get('sha')
 
         return downloads.values()
 
-    def list(self, type_: Optional[str] = None) -> None:
+    def list(self, branch: str, type_: Optional[str] = None) -> None:
         """List template types."""
         template_types = self.template_types
         if type_ is not None:
@@ -223,7 +243,7 @@ class Template(BinABC):
             template_types = [type_]
 
         for selected_type in template_types:
-            for td in self.contents(selected_type):
+            for td in self.contents(branch, selected_type):
                 if td.get('type') == 'dir':
                     template_config = self.get_template_config(selected_type, td.get('name'))
                     if template_config is not None:
@@ -234,18 +254,25 @@ class Template(BinABC):
         """Print error message, if applicable."""
         if self.errors is True:
             print(
-                '''\n\nErrors encountered when running command. Please '''
+                '''\n\nErrors were encountered during command execution. Please '''
                 f'''see logs at {os.path.join(self.cli_out_path, 'tcex.log')}.'''
             )
 
     def print_list(self):
         """Print the list output."""
         for type_, templates in self.template_data.items():
-            print(f'''{type_.replace('_', ' ').title()} Templates''')
+            self.print_title(f'''{type_.replace('_', ' ').title()} Templates''')
             for config in templates:
-                print(f'  Template Name: {config.name}')
-                print(f'    Contributor: {config.contributor}')
-                print(f'    Description: {config.description}')
+                self.print_setting('Template', config.name, fg_color='green', bold=False)
+                self.print_setting('Contributor', config.contributor, fg_color='green', bold=False)
+                self.print_setting('Summary', config.summary, fg_color='green', bold=False)
+                self.print_setting(
+                    'Install Command',
+                    f'tcex init --type {type_} --template {config.name}',
+                    fg_color='white',
+                    bold=False,
+                )
+                self.print_divider()
 
     @cached_property
     def project_sha(self):
@@ -278,10 +305,30 @@ class Template(BinABC):
 
         return session
 
+    @cached_property
+    def template_manifest(self) -> None:
+        """Write the template manifest file."""
+        if self.template_manifest_fqfn.is_file():
+            with self.template_manifest_fqfn.open() as fh:
+                return json.load(fh)
+        return {}
+
+    def template_manifest_write(self) -> None:
+        """Write the template manifest file."""
+        with self.template_manifest_fqfn.open(mode='w') as fh:
+            json.dump(self.template_manifest, fh)
+
     def template_parents(self, type_: str, template: str) -> list:
         """Return all parents for the provided template."""
         # get the config for the requested template
         template_config = self.get_template_config(type_, template)
+
+        # fail if template config can't be found
+        if template_config is None:
+            self.print_failure(
+                f'Failed retrieving template.yaml: type={type_}, template={template}.\n'
+                'Try running "tcex list" to get valid template types and names.'
+            )
 
         # iterate over each parent template
         app_templates = []
@@ -328,41 +375,64 @@ class Template(BinABC):
             'webhook_trigger_service',
         ]
 
-    def update(self, template: str) -> List[dict]:
+    def update(self, branch: str, template: str) -> List[dict]:
         """Initialize an App with template files."""
         template = template or self.tj.data.template_name
         type_ = self.tj.data.template_type
 
-        # download template files
-        downloads = {}
+        # get the final contents after procession all parents
+        contents = {}
         for tp in self.template_parents(type_, template):
             template_config = self.get_template_config(type_, tp)
-            for item in self.contents(type_, tp):
-                name = item.get('name')
+            for item in self.contents(branch, type_, tp):
                 if item.get('type') == 'file':
-                    if name not in template_config.template_files and os.path.isfile(name):
-                        if self.update_prompt(name) is True:
-                            downloads[item.get('name')] = item
-                    else:
-                        downloads[item.get('name')] = item
+                    # determine if file requires user prompt
+                    prompt = True
+                    if item.get('name') in template_config.template_files:
+                        prompt = False
+                    item['prompt'] = prompt
 
-        return downloads.values()
+                    # overwrite name if found in later parent
+                    contents[item.get('name')] = item
+
+        # determine which files should be downloaded
+        downloads = []
+        for item in contents.values():
+            fqfn = Path(item.get('name'))
+            name = item.get('name')
+
+            if fqfn.is_file():
+                file_hash = self.file_hash(fqfn)
+
+            # has the file hash changed since init or last update
+            if self.template_manifest.get(name, {}).get('md5') == file_hash:
+                self.log.debug(
+                    f'action=update, template-file={name}, '
+                    'check=hash-check, result=hash-has-not-changed'
+                )
+                continue
+
+            # # has the repo sha changed since init or last update
+            # if self.template_manifest.get(name, {}).get('sha') == item.get('sha'):
+            #     self.log.debug(
+            #         f'action=update, template-file={name}, '
+            #         'check=sha-check, result=sha-has-not-changed'
+            #     )
+            #     continue
+
+            # is the file a template file and dev says overwrite
+            if item.get('prompt') is True and os.path.isfile(name):
+                response = self.prompt_choice(f'Overwrite: {name}', choices=['y', 'n'], default='n')
+                if response == 'n':
+                    continue
+
+            downloads.append(item)
+            self.template_manifest.setdefault(item.get('name'), {})
+            self.template_manifest[item.get('name')]['sha'] = item.get('sha')
+
+        return downloads
 
     def update_tcex_json(self) -> None:
         """Update the tcex.json file."""
         self.tj.data.template_repo_hash = self.project_sha
         self.tj.write()
-
-    @staticmethod
-    def update_prompt(name: str) -> bool:
-        """Present the update prompt for the user."""
-        overwrite = False
-        print(f'''{c.Style.BRIGHT}{'File:'!s:<15}{c.Fore.CYAN}{name}''')
-        message = (
-            f'{c.Fore.MAGENTA}Replace ' f'{c.Style.BRIGHT}{c.Fore.WHITE}(y/[n]):{c.Fore.RESET} '
-        )
-        response: str = input(message).strip()  # nosec
-        if response in ['y', 'yes']:
-            overwrite = True
-
-        return overwrite

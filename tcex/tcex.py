@@ -16,7 +16,7 @@ from urllib.parse import quote
 # first-party
 from tcex.app_config import InstallJson
 from tcex.input import Input
-from tcex.key_value_store import KeyValueApi, KeyValueRedis, key_value_store
+from tcex.key_value_store import KeyValueApi, KeyValueRedis
 from tcex.logger import Logger, TraceLogger
 from tcex.playbook import Playbook
 from tcex.pleb import Event
@@ -51,7 +51,6 @@ class TcEx:
 
         # Property defaults
         self._config: dict = kwargs.get('config') or {}
-        self._default_args = None
         self._error_codes = None
         self._exit_code = 0
         self._indicator_associations_types_data = {}
@@ -138,16 +137,11 @@ class TcEx:
 
     def aot_rpush(self, exit_code: int) -> None:
         """Push message to AOT action channel."""
-        if self.default_args.tc_playbook_db_type == 'Redis':
+        if self.inputs.data.tc_playbook_db_type == 'Redis':
             try:
-                self.redis_client.rpush(self.default_args.tc_exit_channel, exit_code)
+                self.redis_client.rpush(self.inputs.data.tc_exit_channel, exit_code)
             except Exception as e:  # pragma: no cover
                 self.exit(1, f'Exception during AOT exit push ({e}).')
-
-    @property
-    def args(self) -> 'Namespace':  # noqa: F821
-        """Argparser args Namespace."""
-        return self.inputs.args()
 
     def batch(
         self,
@@ -156,6 +150,8 @@ class TcEx:
         attribute_write_type: Optional[str] = 'Replace',
         halt_on_error: Optional[bool] = False,
         playbook_triggers_enabled: Optional[bool] = False,
+        tag_write_type: Optional[str] = 'Replace',
+        security_label_write_type: Optional[str] = 'Replace',
     ) -> 'Batch':  # noqa: F821
         """Return instance of Batch
 
@@ -166,6 +162,8 @@ class TcEx:
             attribute_write_type: Write type for TI attributes ['Append', 'Replace'].
             halt_on_error: If True any batch error will halt the batch job.
             playbook_triggers_enabled: Deprecated input, will not be used.
+            security_label_write_type: Write type for labels ['Append', 'Replace'].
+            tag_write_type: Write type for tags ['Append', 'Replace'].
 
         Returns:
             object: An instance of the Batch Class.
@@ -173,7 +171,14 @@ class TcEx:
         from .batch import Batch
 
         return Batch(
-            self, owner, action, attribute_write_type, halt_on_error, playbook_triggers_enabled
+            self,
+            owner,
+            action,
+            attribute_write_type,
+            halt_on_error,
+            playbook_triggers_enabled,
+            tag_write_type,
+            security_label_write_type,
         )
 
     def batch_submit(
@@ -183,6 +188,8 @@ class TcEx:
         attribute_write_type: Optional[str] = 'Replace',
         halt_on_error: Optional[bool] = False,
         playbook_triggers_enabled: Optional[bool] = False,
+        tag_write_type: Optional[str] = 'Replace',
+        security_label_write_type: Optional[str] = 'Replace',
     ) -> 'BatchSubmit':  # noqa: F821
         """Return instance of Batch
 
@@ -193,6 +200,8 @@ class TcEx:
             attribute_write_type: Write type for TI attributes ['Append', 'Replace'].
             halt_on_error: If True any batch error will halt the batch job.
             playbook_triggers_enabled: Deprecated input, will not be used.
+            security_label_write_type: Write type for labels ['Append', 'Replace'].
+            tag_write_type: Write type for tags ['Append', 'Replace'].
 
         Returns:
             object: An instance of the Batch Class.
@@ -200,7 +209,14 @@ class TcEx:
         from .batch.batch_submit import BatchSubmit
 
         return BatchSubmit(
-            self, owner, action, attribute_write_type, halt_on_error, playbook_triggers_enabled
+            self,
+            owner,
+            action,
+            attribute_write_type,
+            halt_on_error,
+            playbook_triggers_enabled,
+            tag_write_type,
+            security_label_write_type,
         )
 
     def batch_writer(self, output_dir: str, **kwargs) -> 'BatchWriter':  # noqa: F821
@@ -286,11 +302,6 @@ class TcEx:
         return DataStore(self, domain, data_type, mapping)
 
     @property
-    def default_args(self) -> 'Namespace':  # noqa: F821
-        """Argparser args Namespace."""
-        return self._default_args
-
-    @property
     def error_codes(self) -> 'TcExErrorCodes':  # noqa: F821
         """Return TcEx error codes."""
         if self._error_codes is None:
@@ -317,10 +328,10 @@ class TcEx:
         self.exit_msg_handler(code, msg)
 
         # playbook exit
-        self.exit_playbook_handler()
+        self.exit_playbook_handler(msg)
 
         # aot notify
-        if self.input.data.tc_aot_enabled:
+        if self.inputs.data.tc_aot_enabled:
             # push exit message
             self.aot_rpush(code)
 
@@ -439,13 +450,13 @@ class TcEx:
         """Return an instance of Requests Session configured for the ThreatConnect API."""
         _session = TcSession(
             logger=self.log,
-            api_access_id=self.default_args.api_access_id,
-            api_secret_key=self.default_args.api_secret_key,
-            base_url=self.default_args.tc_api_path,
+            api_access_id=self.inputs.data.api_access_id,
+            api_secret_key=self.inputs.data.api_secret_key,
+            base_url=self.inputs.data.tc_api_path,
         )
 
         # set verify
-        _session.verify = self.default_args.tc_verify
+        _session.verify = self.inputs.data.tc_verify
 
         # set token
         _session.token = self.token
@@ -454,15 +465,15 @@ class TcEx:
         _session.headers.update({'User-Agent': f'TcEx: {__import__(__name__).__version__}'})
 
         # add proxy support if requested
-        if self.default_args.tc_proxy_tc:
+        if self.inputs.data.tc_proxy_tc:
             _session.proxies = self.proxies
             self.log.info(
-                f'Using proxy host {self.args.tc_proxy_host}:'
-                f'{self.args.tc_proxy_port} for ThreatConnect session.'
+                f'Using proxy host {self.inputs.data.tc_proxy_host}:'
+                f'{self.inputs.data.tc_proxy_port} for ThreatConnect session.'
             )
 
         # enable curl logging if tc_log_curl param is set.
-        if self.default_args.tc_log_curl:
+        if self.inputs.data.tc_log_curl:
             _session.log_curl = True
 
         # return session
@@ -611,16 +622,19 @@ class TcEx:
 
     # TODO: [med] update to support scoped instance
     @property
-    def key_value_store(self) -> Union[KeyValueApi, KeyValueRedis]:  # noqa: F821
+    def key_value_store(self) -> Union[KeyValueApi, KeyValueRedis]:
         """Return the correct KV store for this execution.
 
         The TCKeyValueAPI KV store is limited to two operations (create and read),
         while the Redis kvstore wraps a few other Redis methods.
         """
-        try:
-            return key_value_store(self.inputs.data.tc_kvstore_type)
-        except RuntimeError as ex:
-            self.exit(1, f'Failed to get instance of KeyValue Store ({ex}).')
+        if self.inputs.data.tc_kvstore_type == 'Redis':
+            return KeyValueRedis(self.redis_client)
+
+        if self.inputs.data.tc_kvstore_type == 'TCKeyValueAPI':
+            return KeyValueApi(self.session)
+
+        raise RuntimeError(f'Invalid KV Store Type: ({self.inputs.data.tc_kvstore_type})')
 
     @property
     def log(self) -> 'TraceLogger':  # noqa: F821
@@ -681,8 +695,8 @@ class TcEx:
         if not isinstance(message, str):
             message = str(message)
 
-        if os.access(self.default_args.tc_out_path, os.W_OK):
-            message_file = os.path.join(self.default_args.tc_out_path, 'message.tc')
+        if os.access(self.inputs.data.tc_out_path, os.W_OK):
+            message_file = os.path.join(self.inputs.data.tc_out_path, 'message.tc')
         else:
             message_file = 'message.tc'
 
@@ -737,32 +751,27 @@ class TcEx:
         """
         proxies = {}
         if (
-            self.default_args.tc_proxy_host is not None
-            and self.default_args.tc_proxy_port is not None
+            self.inputs.data.tc_proxy_host is not None
+            and self.inputs.data.tc_proxy_port is not None
         ):
 
             if (
-                self.default_args.tc_proxy_username is not None
-                and self.default_args.tc_proxy_password is not None
+                self.inputs.data.tc_proxy_username is not None
+                and self.inputs.data.tc_proxy_password is not None
             ):
-                tc_proxy_username = quote(self.default_args.tc_proxy_username, safe='~')
-                tc_proxy_password = quote(self.default_args.tc_proxy_password, safe='~')
+                tc_proxy_username = quote(self.inputs.data.tc_proxy_username, safe='~')
+                tc_proxy_password = quote(self.inputs.data.tc_proxy_password, safe='~')
 
                 # proxy url with auth
                 proxy_url = (
                     f'{tc_proxy_username}:{tc_proxy_password}'
-                    f'@{self.default_args.tc_proxy_host}:{self.default_args.tc_proxy_port}'
+                    f'@{self.inputs.data.tc_proxy_host}:{self.inputs.data.tc_proxy_port}'
                 )
             else:
                 # proxy url without auth
-                proxy_url = f'{self.default_args.tc_proxy_host}:{self.default_args.tc_proxy_port}'
+                proxy_url = f'{self.inputs.data.tc_proxy_host}:{self.inputs.data.tc_proxy_port}'
             proxies = {'http': f'http://{proxy_url}', 'https': f'http://{proxy_url}'}
         return proxies
-
-    @property
-    def rargs(self) -> 'Namespace':  # noqa: F821
-        """Return argparser args Namespace with Playbook args automatically resolved."""
-        return self.inputs.resolved_args()
 
     @staticmethod
     def rc(host, port, db=0, blocking=False, **kwargs) -> 'RedisClient':  # noqa: F821
@@ -795,8 +804,8 @@ class TcEx:
             from .key_value_store import RedisClient
 
             self._redis_client = RedisClient(
-                host=self.default_args.tc_playbook_db_path,
-                port=self.default_args.tc_playbook_db_port,
+                host=self.inputs.data.tc_playbook_db_path,
+                port=self.inputs.data.tc_playbook_db_port,
                 db=0,
             ).client
 
@@ -812,8 +821,8 @@ class TcEx:
             key: The data key to be stored.
             value: The data value to be stored.
         """
-        if os.access(self.default_args.tc_out_path, os.W_OK):
-            results_file = f'{self.default_args.tc_out_path}/results.tc'
+        if os.access(self.inputs.data.tc_out_path, os.W_OK):
+            results_file = f'{self.inputs.data.tc_out_path}/results.tc'
         else:
             results_file = 'results.tc'
 
@@ -981,14 +990,14 @@ class TcEx:
             )
 
             # add proxy support if requested
-            if self.default_args.tc_proxy_external:
+            if self.inputs.data.tc_proxy_external:
                 self._session_external.proxies = self.proxies
                 self.log.info(
-                    f'Using proxy host {self.args.tc_proxy_host}:'
-                    f'{self.args.tc_proxy_port} for external session.'
+                    f'Using proxy host {self.inputs.data.tc_proxy_host}:'
+                    f'{self.inputs.data.tc_proxy_port} for external session.'
                 )
 
-            if self.default_args.tc_log_curl:
+            if self.inputs.data.tc_log_curl:
                 self._session_external.log_curl = True
         return self._session_external
 
@@ -1020,7 +1029,7 @@ class TcEx:
         if self._token is None:
             sleep_interval = int(os.getenv('TC_TOKEN_SLEEP_INTERVAL', '30'))
             self._token = Tokens(
-                self.default_args.tc_api_path, sleep_interval, self.default_args.tc_verify, self.log
+                self.inputs.data.tc_api_path, sleep_interval, self.inputs.data.tc_verify, self.log
             )
         return self._token
 
@@ -1033,7 +1042,7 @@ class TcEx:
         if self._utils is None:
             from .utils import Utils
 
-            self._utils = Utils(temp_path=self.default_args.tc_temp_path)
+            self._utils = Utils(temp_path=self.inputs.data.tc_temp_path)
         return self._utils
 
     @property

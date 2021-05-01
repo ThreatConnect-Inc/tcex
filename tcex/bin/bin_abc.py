@@ -11,6 +11,7 @@ from typing import Optional
 
 # third-party
 import typer
+from click import Choice
 
 # first-party
 from tcex.app_config import InstallJson, LayoutJson, TcexJson
@@ -69,7 +70,7 @@ class BinABC(ABC):
         lfh = RotatingFileHandlerCustom(
             backupCount=3,
             filename=f'{self.cli_out_path}/tcex.log',
-            maxBytes=10_000,
+            maxBytes=100_000,
         )
 
         # get logging level from OS env or default to debug
@@ -95,21 +96,73 @@ class BinABC(ABC):
         return logger
 
     @staticmethod
+    def print_block(text: str, max_length: Optional[int] = 80, **kwargs) -> None:
+        """Print Divider."""
+        bold = kwargs.get('bold', False)
+        fg_color = getattr(typer.colors, kwargs.get('fg_color', 'white').upper())
+
+        # split text
+        text_wrapped = ''
+        for word in text.split(' '):
+            if len(text_wrapped) + len(word) < max_length:
+                text_wrapped += f'{word} '
+            else:
+                typer.secho(text_wrapped, fg=fg_color, bold=bold)
+                text_wrapped = f'{word} '
+        typer.secho(text_wrapped, fg=fg_color, bold=bold)
+
+    @staticmethod
+    def print_divider(char: Optional[str] = '-', count: Optional[int] = 80, **kwargs) -> None:
+        """Print Divider."""
+        bold = kwargs.get('bold', False)
+        fg_color = getattr(typer.colors, kwargs.get('fg_color', 'bright_white').upper())
+
+        # print divider
+        typer.secho(char * count, fg=fg_color, bold=bold)
+
+    @staticmethod
+    def print_failure(message: str, exit_: Optional[bool] = True) -> None:
+        """Print Failure."""
+        typer.secho(message, fg=typer.colors.RED, bold=True)
+        if exit_ is True:
+            sys.exit(1)
+
+    @staticmethod
     def print_setting(label: str, value: str, **kwargs) -> None:
         """Print Setting."""
-        # get foreground color
-        fg_color = kwargs.get('fg_color')
-        if fg_color is None:
-            fg_color = typer.colors.CYAN
-        else:
-            fg_color = getattr(typer.colors, fg_color.upper())
-
-        # get bold settings
         bold = kwargs.get('bold', True)
+        fg_color = getattr(typer.colors, kwargs.get('fg_color', 'magenta').upper())
+        indent = ' ' * kwargs.get('indent', 0)
 
-        # display proxy setting
+        # print setting
         value_display = typer.style(f'{value}', fg=fg_color, bold=bold)
-        typer.echo(f'{label:<20}: {value_display}')
+        typer.echo(f'{indent}{label:<20}: {value_display}')
+
+    @staticmethod
+    def print_title(title: str, divider: Optional[bool] = True, **kwargs) -> None:
+        """Print Title."""
+        bold = kwargs.get('bold', True)
+        fg_color = getattr(typer.colors, kwargs.get('fg_color', 'cyan').upper())
+
+        # print title
+        typer.secho(title, fg=fg_color, bold=bold)
+        if divider is True:
+            typer.secho('=' * len(title), fg=fg_color, bold=bold)
+
+    @staticmethod
+    def prompt_choice(text: str, choices: list, default: str, **kwargs) -> bool:
+        """Present a prompt with a bool response."""
+        bold = kwargs.get('bold', True)
+        fg_color = getattr(typer.colors, kwargs.get('fg_color', 'cyan').upper())
+
+        text = typer.style(f'{text}', fg=fg_color, bold=bold)
+        choice = Choice(choices)
+
+        return typer.prompt(
+            text=text,
+            default=default,
+            type=choice,
+        )
 
     @staticmethod
     def update_system_path():

@@ -31,7 +31,7 @@ class CommonService:
         # properties
         self._ready = False
         self._start_time = datetime.now()
-        self.args: object = tcex.default_args
+        self.args: object = tcex.inputs.data
         self.configs = {}
         self.heartbeat_max_misses = 3
         self.heartbeat_sleep_time = 1

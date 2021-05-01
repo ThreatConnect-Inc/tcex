@@ -3,6 +3,9 @@
 from typing import Any
 from urllib.parse import quote
 
+# first-party
+from tcex.app_config import InstallJson
+
 
 class KeyValueApi:
     """TcEx Key Value API Module.
@@ -12,10 +15,12 @@ class KeyValueApi:
         runtime_level: The runtime level of the App.
     """
 
-    def __init__(self, session: object, runtime_level: str):
+    def __init__(self, session: object) -> None:
         """Initialize the Class properties."""
-        self._runtime_level = runtime_level
         self._session = session
+
+        # properties
+        self.ij = InstallJson()
 
     def create(self, context: str, key: str, value: Any) -> str:
         """Create key/value pair in remote KV store.
@@ -34,8 +39,13 @@ class KeyValueApi:
         # this conditional is only required while there are TC instances < 6.0.7 in the wild.
         # once all TC instance are > 6.0.7 the context endpoint should work for PB Apps.
         url = f'/internal/playbooks/keyValue/{key}'
-        if self._runtime_level in ['apiservice', 'triggerservice', 'webhooktriggerservice']:
+        if self.ij.data.runtime_level.lower() in [
+            'apiservice',
+            'triggerservice',
+            'webhooktriggerservice',
+        ]:
             url = f'/internal/playbooks/keyValue/{context}/{key}'
+
         r = self._session.put(url, data=value, headers=headers)
         return r.content
 
@@ -54,7 +64,11 @@ class KeyValueApi:
         # this conditional is only required while there are TC instances < 6.0.7 in the wild.
         # once all TC instance are > 6.0.7 the context endpoint should work for PB Apps.
         url = f'/internal/playbooks/keyValue/{key}'
-        if self._runtime_level in ['apiservice', 'triggerservice', 'webhooktriggerservice']:
+        if self.ij.data.runtime_level.lower() in [
+            'apiservice',
+            'triggerservice',
+            'webhooktriggerservice',
+        ]:
             url = f'/internal/playbooks/keyValue/{context}/{key}'
         r = self._session.get(url)
         data = r.content

@@ -77,7 +77,7 @@ class TestTcexCliList:
     def test_tcex_list_playbook_basic(self) -> None:
         """Test Case"""
         result = self._run_command(['list', '--type', 'playbook'])
-        assert result.exit_code == 0, result.stdout
+        assert result.exit_code == 0, f'{result.stdout}'
 
         # spot check a few lines of outputs
         assert 'basic' in result.stdout
