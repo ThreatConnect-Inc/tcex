@@ -5,23 +5,38 @@ import inspect
 import logging
 import os
 import platform
-import re
 import signal
 import sys
 import threading
-from functools import lru_cache
 from typing import Optional, Union
 from urllib.parse import quote
 
+# third-party
+from requests import Session
+
 # first-party
 from tcex.app_config import InstallJson
+from tcex.app_feature import AdvancedRequest
+from tcex.backports import cached_property
+from tcex.batch import Batch, BatchSubmit, BatchWriter
+from tcex.case_management import CaseManagement
+from tcex.datastore import Cache, DataStore
 from tcex.input import Input
-from tcex.key_value_store import KeyValueApi, KeyValueRedis
+from tcex.key_value_store import KeyValueApi, KeyValueRedis, RedisClient
 from tcex.logger import Logger, TraceLogger
+from tcex.metrics import Metrics
+from tcex.notifications import Notifications
 from tcex.playbook import Playbook
 from tcex.pleb import Event
-from tcex.sessions import TcSession
+from tcex.services.api_service import ApiService
+from tcex.services.common_service_trigger import CommonServiceTrigger
+from tcex.services.webhook_trigger_service import WebhookTriggerService
+from tcex.sessions import ExternalSession, TcSession
+from tcex.stix import StixModel
+from tcex.tcex_error_codes import TcExErrorCodes
+from tcex.threat_intelligence import ThreatIntelligence
 from tcex.tokens import Tokens
+from tcex.utils import Utils
 
 # init tcex logger
 logging.setLoggerClass(TraceLogger)
@@ -51,20 +66,11 @@ class TcEx:
 
         # Property defaults
         self._config: dict = kwargs.get('config') or {}
-        self._error_codes = None
         self._exit_code = 0
-        self._indicator_associations_types_data = {}
-        self._indicator_types = None
-        self._indicator_types_data = None
         self._jobs = None
         self._logger = None
         self._redis_client = None
         self._service = None
-        self._session = None
-        self._session_external = None
-        self._stix_model = None
-        self._utils = None
-        self._token = None
         self.event = Event()
         self.ij = InstallJson()
         self.main_os_pid = os.getpid()
@@ -72,40 +78,16 @@ class TcEx:
         # add custom logger if provided
         self._log: object = kwargs.get('logger')
 
-        # init args (needs logger)
+        # init inputs
         self.inputs = Input(self._config, kwargs.get('config_file'))
 
         # method subscription for Event module
         self.event.subscribe(channel='exit', callback=self.exit)
         self.event.subscribe(channel='exit_code', callback=self.exit_code)
+        self.event.subscribe(channel='handle_error', callback=self.handle_error)
         self.event.subscribe(channel='register_token', callback=self.token.register_token)
 
-    def _association_types(self):
-        """Retrieve Custom Indicator Associations types from the ThreatConnect API."""
-        # Dynamically create custom indicator class
-        r: object = self.session.get('/v2/types/associationTypes')
-
-        # check for bad status code and response that is not JSON
-        if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-            self.log.warning('feature=tcex, event=association-types-download, status=failure')
-            return
-
-        # validate successful API results
-        data: dict = r.json()
-        if data.get('status') != 'Success':
-            self.log.warning('feature=tcex, event=association-types-download, status=failure')
-            return
-
-        try:
-            # Association Type Name is not a unique value at this time, but should be.
-            for association in data.get('data', {}).get('associationType', []):
-                self._indicator_associations_types_data[association.get('name')] = association
-        except Exception as e:
-            self.handle_error(200, [e])
-
-    def _signal_handler(
-        self, signal_interupt: int, frame: object  # pylint: disable=unused-argument
-    ) -> None:
+    def _signal_handler(self, signal_interupt: int, _) -> None:
         """Handle singal interrupt."""
         call_file: str = os.path.basename(inspect.stack()[1][0].f_code.co_filename)
         call_module: str = inspect.stack()[1][0].f_globals['__name__'].lstrip('Functions.')
@@ -120,19 +102,15 @@ class TcEx:
         self.exit(exit_code, 'The App received an interrupt signal and will now exit.')
 
     def advanced_request(
-        self, session: object, timeout: Optional[int] = 600, output_prefix: Optional[str] = None
-    ) -> 'AdvancedRequest':  # noqa: F821
+        self, session: Session, timeout: Optional[int] = 600, output_prefix: Optional[str] = None
+    ) -> AdvancedRequest:
         """Return instance of AdvancedRequest.
 
         Args:
-            session (object): An instance of requests.Session.
-            timeout (int): The number of second before timing out the request.
-
-        Returns:
-            object: An instance of AdvancedRequest
+            session: An instance of requests.Session.
+            timeout: The number of second before timing out the request.
+            output_prefix: A value to prepend to outputs.
         """
-        from .app_feature import AdvancedRequest
-
         return AdvancedRequest(session, self, timeout, output_prefix)
 
     def aot_rpush(self, exit_code: int) -> None:
@@ -152,7 +130,7 @@ class TcEx:
         playbook_triggers_enabled: Optional[bool] = False,
         tag_write_type: Optional[str] = 'Replace',
         security_label_write_type: Optional[str] = 'Replace',
-    ) -> 'Batch':  # noqa: F821
+    ) -> Batch:
         """Return instance of Batch
 
         Args:
@@ -164,12 +142,7 @@ class TcEx:
             playbook_triggers_enabled: Deprecated input, will not be used.
             security_label_write_type: Write type for labels ['Append', 'Replace'].
             tag_write_type: Write type for tags ['Append', 'Replace'].
-
-        Returns:
-            object: An instance of the Batch Class.
         """
-        from .batch import Batch
-
         return Batch(
             self,
             owner,
@@ -190,7 +163,7 @@ class TcEx:
         playbook_triggers_enabled: Optional[bool] = False,
         tag_write_type: Optional[str] = 'Replace',
         security_label_write_type: Optional[str] = 'Replace',
-    ) -> 'BatchSubmit':  # noqa: F821
+    ) -> BatchSubmit:
         """Return instance of Batch
 
         Args:
@@ -202,12 +175,7 @@ class TcEx:
             playbook_triggers_enabled: Deprecated input, will not be used.
             security_label_write_type: Write type for labels ['Append', 'Replace'].
             tag_write_type: Write type for tags ['Append', 'Replace'].
-
-        Returns:
-            object: An instance of the Batch Class.
         """
-        from .batch.batch_submit import BatchSubmit
-
         return BatchSubmit(
             self,
             owner,
@@ -219,7 +187,7 @@ class TcEx:
             security_label_write_type,
         )
 
-    def batch_writer(self, output_dir: str, **kwargs) -> 'BatchWriter':  # noqa: F821
+    def batch_writer(self, output_dir: str, **kwargs) -> BatchWriter:
         """Return instance of Batch
 
         Args:
@@ -230,12 +198,7 @@ class TcEx:
                 is written. The callback will be passed the fully qualified name of the written
                 file.
             write_callback_kwargs (kwargs: dict): Additional values to send to callback method.
-
-        Returns:
-            object: An instance of the Batch Class.
         """
-        from .batch.batch_writer import BatchWriter
-
         return BatchWriter(self, output_dir, **kwargs)
 
     def cache(
@@ -244,7 +207,7 @@ class TcEx:
         data_type: str,
         ttl_seconds: Optional[int] = None,
         mapping: Optional[dict] = None,
-    ) -> 'Cache':  # noqa: F821
+    ) -> Cache:
         """Get instance of the Cache module.
 
         Args:
@@ -255,35 +218,20 @@ class TcEx:
             data_type: The data type descriptor (e.g., tc:whois:cache).
             ttl_seconds: The number of seconds the cache is valid.
             mapping: Advanced - The datastore mapping if required.
-
-        Returns:
-            object: An instance of the Cache Class.
         """
-        from .datastore import Cache
-
         return Cache(self, domain, data_type, ttl_seconds, mapping)
 
     @property
-    def case_management(self) -> 'CaseManagement':  # noqa: F821
-        """Include the Threat Intel Module.
-
-        .. Note:: Threat Intell methods can be accessed using ``tcex.ti.<method>``.
-
-        Returns:
-            object: An instance of the CaseManagement Class.
-        """
-        from .case_management import CaseManagement
-
+    def case_management(self) -> CaseManagement:
+        """Return a case management instance."""
         return CaseManagement(self)
 
     @property
-    def cm(self) -> 'CaseManagement':  # noqa: F821
-        """Include the Case Management Module."""
+    def cm(self) -> CaseManagement:
+        """Alias for case_management."""
         return self.case_management
 
-    def datastore(
-        self, domain: str, data_type: str, mapping: Optional[dict] = None
-    ) -> 'DataStore':  # noqa: F821
+    def datastore(self, domain: str, data_type: str, mapping: Optional[dict] = None) -> DataStore:
         """Get instance of the DataStore module.
 
         Args:
@@ -293,22 +241,13 @@ class TcEx:
                 should not be used in almost all cases.
             data_type: The data type descriptor (e.g., tc:whois:cache).
             mapping: ElasticSearch mappings data.
-
-        Returns:
-            object: An instance of the DataStore Class.
         """
-        from .datastore import DataStore
-
         return DataStore(self, domain, data_type, mapping)
 
-    @property
-    def error_codes(self) -> 'TcExErrorCodes':  # noqa: F821
+    @cached_property
+    def error_codes(self) -> TcExErrorCodes:  # pylint: disable=no-self-use
         """Return TcEx error codes."""
-        if self._error_codes is None:
-            from .tcex_error_codes import TcExErrorCodes
-
-            self._error_codes = TcExErrorCodes()
-        return self._error_codes
+        return TcExErrorCodes()
 
     def exit(self, code: Optional[int] = None, msg: Optional[str] = None) -> None:
         """Application exit method with proper exit code
@@ -342,10 +281,10 @@ class TcEx:
         sys.exit(code)
 
     def exit_code_handler(self, code: int) -> int:
-        """."""
-        if code is None:
-            code = self.exit_code
-        elif code == 3 and self.ij.data.runtime_level.lower() == 'playbook':
+        """Return a valid exit code based on the App Type"""
+        code = code or self.exit_code
+
+        if code == 3 and self.ij.data.runtime_level.lower() == 'playbook':
             self.log.info('Changing exit code from 3 to 0 for Playbook App.')
             code = 0
         elif code in [0, 1, 3]:
@@ -357,8 +296,7 @@ class TcEx:
         return code
 
     def exit_msg_handler(self, code: int, msg: str) -> None:
-        """."""
-        # add exit message to message.tc file and log
+        """Handle exit message. Write to both log and message_tc."""
         if msg is not None:
             if code in [0, 3] or (code is None and self.exit_code in [0, 3]):
                 self.log.info(msg)
@@ -367,7 +305,7 @@ class TcEx:
             self.message_tc(msg)
 
     def exit_playbook_handler(self, msg: str) -> None:
-        """."""
+        """Perform special action for PB Apps before exit."""
         # write outputs before exiting
         self.playbook.write_output()
 
@@ -397,41 +335,6 @@ class TcEx:
         else:
             self.log.warning('Invalid exit code')
 
-    @staticmethod
-    def expand_indicators(indicator: str) -> list:
-        """Process indicators expanding file hashes/custom indicators into multiple entries.
-
-        Args:
-            indicator: An " : " delimited string.
-
-        Returns:
-            (list): a list of indicators split on " : ".
-        """
-        if indicator.count(' : ') > 0:
-            # handle all multi-valued indicators types (file hashes and custom indicators)
-            indicator_list = []
-
-            # group 1 - lazy capture everything to first <space>:<space> or end of line
-            iregx_pattern = r'^(.*?(?=\s\:\s|$))?'
-            iregx_pattern += r'(?:\s\:\s)?'  # remove <space>:<space>
-            # group 2 - look behind for <space>:<space>, lazy capture everything
-            #           to look ahead (optional <space>):<space> or end of line
-            iregx_pattern += r'((?<=\s\:\s).*?(?=(?:\s)?\:\s|$))?'
-            iregx_pattern += r'(?:(?:\s)?\:\s)?'  # remove (optional <space>):<space>
-            # group 3 - look behind for <space>:<space>, lazy capture everything
-            #           to look ahead end of line
-            iregx_pattern += r'((?<=\s\:\s).*?(?=$))?$'
-            iregx = re.compile(iregx_pattern)
-
-            indicators = iregx.search(indicator)
-            if indicators is not None:
-                indicator_list = list(indicators.groups())
-        else:
-            # handle all single valued indicator types (address, host, etc)
-            indicator_list = [indicator]
-
-        return indicator_list
-
     def get_playbook(
         self, context: Optional[str] = None, output_variables: Optional[list] = None
     ) -> Playbook:
@@ -443,10 +346,58 @@ class TcEx:
             output_variables: The requested output variables. For PB Apps outputs are provided on
                 startup, but for service Apps each request gets different outputs.
         """
-        return Playbook(self.inputs, context, output_variables)
+        return Playbook(self.inputs, self.key_value_store, context, output_variables)
+
+    @staticmethod
+    def get_redis_client(host, port, db=0, blocking=False, **kwargs) -> RedisClient:
+        """Return a *new* instance of Redis client.
+
+        For a full list of kwargs see https://redis-py.readthedocs.io/en/latest/#redis.Connection.
+
+        Args:
+            host (str, optional): The REDIS host. Defaults to localhost.
+            port (int, optional): The REDIS port. Defaults to 6379.
+            db (int, optional): The REDIS db. Defaults to 0.
+            blocking_pool (bool): Use BlockingConnectionPool instead of ConnectionPool.
+            errors (str, kwargs): The REDIS errors policy (e.g. strict).
+            max_connections (int, kwargs): The maximum number of connections to REDIS.
+            password (str, kwargs): The REDIS password.
+            socket_timeout (int, kwargs): The REDIS socket timeout.
+            timeout (int, kwargs): The REDIS Blocking Connection Pool timeout value.
+
+        Returns:
+            Redis.client: An instance of redis client.
+        """
+        return RedisClient(host=host, port=port, db=db, blocking=blocking, **kwargs).client
+
+    def get_session_external(self) -> ExternalSession:
+        """Return an instance of Requests Session configured for the ThreatConnect API."""
+        _session_external = ExternalSession(logger=self.log)
+
+        # add User-Agent to headers
+        _session_external.headers.update(
+            {
+                'User-Agent': (
+                    f'TcEx App: {self.ij.data.display_name} - {self.ij.data.program_version}'
+                )
+            }
+        )
+
+        # add proxy support if requested
+        if self.inputs.data.tc_proxy_external:
+            _session_external.proxies = self.proxies
+            self.log.info(
+                f'Using proxy host {self.inputs.data.tc_proxy_host}:'
+                f'{self.inputs.data.tc_proxy_port} for external session.'
+            )
+
+        if self.inputs.data.tc_log_curl:
+            _session_external.log_curl = True
+
+        return _session_external
 
     # TODO: [high] testing ... organize this later
-    def get_session(self) -> TcSession:  # noqa: F821
+    def get_session(self) -> TcSession:
         """Return an instance of Requests Session configured for the ThreatConnect API."""
         _session = TcSession(
             logger=self.log,
@@ -479,69 +430,9 @@ class TcEx:
         # return session
         return _session
 
-    def get_ti(self) -> 'ThreatIntelligence':  # noqa: F821
-        """Include the Threat Intel Module.
-
-        .. Note:: Threat Intel methods can be accessed using ``tcex.ti.<method>``.
-        """
-        from .threat_intelligence import ThreatIntelligence
-
+    def get_ti(self) -> ThreatIntelligence:
+        """Include the Threat Intel Module."""
         return ThreatIntelligence(session=self.get_session())
-
-    @property
-    def group_types(self) -> list:
-        """Return all defined ThreatConnect Group types.
-
-        Returns:
-            (list): A list of ThreatConnect Group types.
-        """
-        return [
-            'Adversary',
-            'Campaign',
-            'Document',
-            'Email',
-            'Event',
-            'Incident',
-            'Intrusion Set',
-            'Signature',
-            'Report',
-            'Threat',
-            'Task',
-        ]
-
-    @property
-    def group_types_data(self) -> dict:
-        """Return supported ThreatConnect Group types."""
-        return {
-            'Adversary': {'apiBranch': 'adversaries', 'apiEntity': 'adversary'},
-            'Campaign': {'apiBranch': 'campaigns', 'apiEntity': 'campaign'},
-            'Document': {'apiBranch': 'documents', 'apiEntity': 'document'},
-            'Email': {'apiBranch': 'emails', 'apiEntity': 'email'},
-            'Event': {'apiBranch': 'events', 'apiEntity': 'event'},
-            'Incident': {'apiBranch': 'incidents', 'apiEntity': 'incident'},
-            'Intrusion Set': {'apiBranch': 'intrusionSets', 'apiEntity': 'intrusionSet'},
-            'Report': {'apiBranch': 'reports', 'apiEntity': 'report'},
-            'Signature': {'apiBranch': 'signatures', 'apiEntity': 'signature'},
-            'Threat': {'apiBranch': 'threats', 'apiEntity': 'threat'},
-            'Task': {'apiBranch': 'tasks', 'apiEntity': 'task'},
-        }
-
-    def get_type_from_api_entity(self, api_entity: dict) -> Optional[str]:
-        """Return the object type as a string given a api entity.
-
-        Args:
-            api_entity: A TCEntity object.
-
-        Returns:
-            str, None: The type value or None.
-
-        """
-        merged = self.group_types_data.copy()
-        merged.update(self.indicator_types_data)
-        for key, value in merged.items():
-            if value.get('apiEntity') == api_entity:
-                return key
-        return None
 
     def handle_error(
         self, code: int, message_values: Optional[list] = None, raise_error: Optional[bool] = True
@@ -572,54 +463,6 @@ class TcEx:
         if raise_error:
             raise RuntimeError(code, message)
 
-    @property
-    def indicator_associations_types_data(self) -> dict:
-        """Return ThreatConnect associations type data.
-
-        Retrieve the data from the API if it hasn't already been retrieved.
-
-        Returns:
-            (dict): A dictionary of ThreatConnect associations types.
-        """
-        if not self._indicator_associations_types_data:
-            self._association_types()  # load custom indicator associations
-        return self._indicator_associations_types_data
-
-    @property
-    def indicator_types(self) -> list:
-        """Return ThreatConnect Indicator types.
-
-        Retrieve the data from the API if it hasn't already been retrieved.
-
-        Returns:
-            (list): A list of ThreatConnect Indicator types.
-        """
-        if not self._indicator_types:
-            self._indicator_types = self.indicator_types_data.keys()
-        return self._indicator_types
-
-    @property
-    def indicator_types_data(self) -> dict:
-        """Return ThreatConnect indicator types data.
-
-        Retrieve the data from the API if it hasn't already been retrieved.
-
-        Returns:
-            (dict): A dictionary of ThreatConnect Indicator data.
-        """
-        if not self._indicator_types_data:
-            self._indicator_types_data = {}
-
-            # retrieve data from API
-            r = self.session.get('/v2/types/indicatorTypes')
-            # TODO: use handle error instead
-            if not r.ok:
-                raise RuntimeError('Could not retrieve indicator types from ThreatConnect API.')
-
-            for itd in r.json().get('data', {}).get('indicatorType'):
-                self._indicator_types_data[itd.get('name')] = itd
-        return self._indicator_types_data
-
     # TODO: [med] update to support scoped instance
     @property
     def key_value_store(self) -> Union[KeyValueApi, KeyValueRedis]:
@@ -637,7 +480,7 @@ class TcEx:
         raise RuntimeError(f'Invalid KV Store Type: ({self.inputs.data.tc_kvstore_type})')
 
     @property
-    def log(self) -> 'TraceLogger':  # noqa: F821
+    def log(self) -> TraceLogger:
         """Return a valid logger."""
         if self._log is None:
             self._log = self.logger.log
@@ -664,7 +507,7 @@ class TcEx:
         data_type: str,
         interval: str,
         keyed: Optional[bool] = False,
-    ) -> 'Metrics':  # noqa: F821
+    ) -> Metrics:
         """Get instance of the Metrics module.
 
         Args:
@@ -673,12 +516,7 @@ class TcEx:
             data_type: The type of metric: Sum, Count, Min, Max, First, Last, and Average.
             interval: The metric interval: Hourly, Daily, Weekly, Monthly, and Yearly.
             keyed: Indicates whether the data will have a keyed value.
-
-        Returns:
-            (object): An instance of the Metrics Class.
         """
-        from .metrics import Metrics
-
         return Metrics(self, name, description, data_type, interval, keyed)
 
     def message_tc(self, message: str, max_length: Optional[int] = 255) -> None:
@@ -710,31 +548,22 @@ class TcEx:
             # write last <max_length> characters to file
             mh.write(message[-max_length:])
 
-    def notification(self) -> 'Notifications':  # noqa: F821
-        """Get instance of the Notification module.
-
-        Returns:
-            (object): An instance of the Notification Class.
-        """
-        from .notifications import Notifications
-
+    def notification(self) -> Notifications:
+        """Get instance of the Notification module."""
         return Notifications(self)
 
-    @property
-    @lru_cache
+    @cached_property
     def playbook(self) -> Playbook:
         """Return an instance of Playbooks module.
 
         This property defaults context and outputvariables to arg values.
-
-        .. Note:: Playbook methods can be accessed using ``tcex.playbook.<method>``.
 
         Returns:
             tcex.playbook.Playbooks: An instance of Playbooks
         """
         return self.get_playbook()
 
-    @property
+    @cached_property
     def proxies(self) -> dict:
         """Format the proxy configuration for Python Requests module.
 
@@ -773,43 +602,15 @@ class TcEx:
             proxies = {'http': f'http://{proxy_url}', 'https': f'http://{proxy_url}'}
         return proxies
 
-    @staticmethod
-    def rc(host, port, db=0, blocking=False, **kwargs) -> 'RedisClient':  # noqa: F821
-        """Return a *new* instance of Redis client.
-
-        For a full list of kwargs see https://redis-py.readthedocs.io/en/latest/#redis.Connection.
-
-        Args:
-            host (str, optional): The REDIS host. Defaults to localhost.
-            port (int, optional): The REDIS port. Defaults to 6379.
-            db (int, optional): The REDIS db. Defaults to 0.
-            blocking_pool (bool): Use BlockingConnectionPool instead of ConnectionPool.
-            errors (str, kwargs): The REDIS errors policy (e.g. strict).
-            max_connections (int, kwargs): The maximum number of connections to REDIS.
-            password (str, kwargs): The REDIS password.
-            socket_timeout (int, kwargs): The REDIS socket timeout.
-            timeout (int, kwargs): The REDIS Blocking Connection Pool timeout value.
-
-        Returns:
-            Redis.client: An instance of redis client.
-        """
-        from .key_value_store import RedisClient
-
-        return RedisClient(host=host, port=port, db=db, blocking=blocking, **kwargs).client
-
-    @property
-    def redis_client(self) -> 'RedisClient':  # noqa: F821
+    # TODO: [med] update to support scoped instance
+    @cached_property
+    def redis_client(self) -> RedisClient:
         """Return redis client instance configure for Playbook/Service Apps."""
-        if self._redis_client is None:
-            from .key_value_store import RedisClient
-
-            self._redis_client = RedisClient(
-                host=self.inputs.data.tc_playbook_db_path,
-                port=self.inputs.data.tc_playbook_db_port,
-                db=0,
-            ).client
-
-        return self._redis_client
+        return self.get_redis_client(
+            host=self.inputs.data.tc_playbook_db_path,
+            port=self.inputs.data.tc_playbook_db_port,
+            db=0,
+        )
 
     def results_tc(self, key: str, value: str) -> None:
         """Write data to results_tc file in TcEX specified directory.
@@ -849,213 +650,54 @@ class TcEx:
             fh.write(results)
             fh.truncate()
 
-    @staticmethod
-    def safe_indicator(indicator: str) -> str:
-        """Format indicator value for safe HTTP request.
+    # TODO: [med] update to support scoped instance
+    @cached_property
+    def service(self) -> Union[ApiService, CommonServiceTrigger, WebhookTriggerService]:
+        """Include the Service Module."""
+        if self.ij.data.runtime_level.lower() == 'apiservice':
+            from .services import ApiService as Service
+        elif self.ij.data.runtime_level.lower() == 'triggerservice':
+            from .services import CommonServiceTrigger as Service
+        elif self.ij.data.runtime_level.lower() == 'webhooktriggerservice':
+            from .services import WebhookTriggerService as Service
+        else:
+            self.exit(1, 'Could not determine the service type.')
 
-        Args:
-            indicator: Indicator to URL Encode
-
-        Returns:
-            (str): The urlencoded string
-        """
-        if indicator is not None:
-            indicator = quote(indicator, safe='~')
-        return indicator
-
-    @staticmethod
-    def safe_rt(resource_type: str, lower: Optional[bool] = False) -> str:
-        """Format the Resource Type.
-
-        Takes Custom Indicator types with a space character and return a *safe* string.
-
-        (e.g. *User Agent* is converted to User_Agent or user_agent.)
-
-        Args:
-           resource_type: The resource type to format.
-           lower: Return type in all lower case
-
-        Returns:
-            (str): The formatted resource type.
-        """
-        if resource_type is not None:
-            resource_type = resource_type.replace(' ', '_')
-            if lower:
-                resource_type = resource_type.lower()
-        return resource_type
-
-    @staticmethod
-    def safe_group_name(
-        group_name: str, group_max_length: Optional[int] = 100, ellipsis: Optional[bool] = True
-    ) -> str:
-        """Truncate group name to match limit breaking on space and optionally add an ellipsis.
-
-        .. note:: Currently the ThreatConnect group name limit is 100 characters.
-
-        Args:
-           group_name: The raw group name to be truncated.
-           group_max_length: The max length of the group name.
-           ellipsis: If true the truncated name will have '...' appended.
-
-        Returns:
-            (str): The truncated group name with optional ellipsis.
-        """
-        ellipsis_value = ''
-        if ellipsis:
-            ellipsis_value = ' ...'
-
-        if group_name is not None and len(group_name) > group_max_length:
-            # split name by spaces and reset group_name
-            group_name_array = group_name.split(' ')
-            group_name = ''
-            for word in group_name_array:
-                word = f'{word}'
-                if (len(group_name) + len(word) + len(ellipsis_value)) >= group_max_length:
-                    group_name = f'{group_name}{ellipsis_value}'
-                    group_name = group_name.lstrip(' ')
-                    break
-                group_name += f' {word}'
-        return group_name
-
-    @staticmethod
-    def safe_tag(tag: str) -> str:
-        """Encode and truncate tag to match limit (128 characters) of ThreatConnect API.
-
-        Args:
-           tag: The tag to be truncated
-
-        Returns:
-            (str): The truncated and quoted tag.
-        """
-        if tag is not None:
-            tag = quote(tag[:128], safe='~')
-        return tag
-
-    @staticmethod
-    def safe_url(url: str) -> str:
-        """Encode value for safe HTTP request.
-
-        Args:
-            url (str): The string to URL Encode.
-
-        Returns:
-            (str): The urlencoded string.
-        """
-        if url is not None:
-            url: str = quote(url, safe='~')
-        return url
-
-    @property
-    def service(self) -> 'CommonService':  # noqa: F821
-        """Include the Service Module.
-
-        .. Note:: Service methods can be accessed using ``tcex.service.<method>``.
-        """
-        if self._service is None:
-            if self.ij.data.runtime_level.lower() == 'apiservice':
-                from .services import ApiService as Service
-            elif self.ij.data.runtime_level.lower() == 'triggerservice':
-                from .services import CommonServiceTrigger as Service
-            elif self.ij.data.runtime_level.lower() == 'webhooktriggerservice':
-                from .services import WebhookTriggerService as Service
-            else:
-                self.exit(1, 'Could not determine the service type.')
-
-            self._service = Service(self)
-        return self._service
+        return Service(self)
 
     # TODO: [med] update to support scoped instance
-    @property
-    def session(self) -> 'TcSession':  # noqa: F821
+    @cached_property
+    def session(self) -> TcSession:
         """Return an instance of Requests Session configured for the ThreatConnect API."""
-        if self._session is None:
-            self._session = self.get_session()
-        return self._session
-
-    @property
-    def session_external(self) -> 'ExternalSession':  # noqa: F821
-        """Return an instance of Requests Session configured for the ThreatConnect API."""
-        if self._session_external is None:
-            from .sessions import ExternalSession
-
-            self._session_external = ExternalSession(logger=self.log)
-
-            # add User-Agent to headers
-            self._session_external.headers.update(
-                {
-                    'User-Agent': (
-                        f'TcEx App: {self.ij.data.display_name} - {self.ij.data.program_version}'
-                    )
-                }
-            )
-
-            # add proxy support if requested
-            if self.inputs.data.tc_proxy_external:
-                self._session_external.proxies = self.proxies
-                self.log.info(
-                    f'Using proxy host {self.inputs.data.tc_proxy_host}:'
-                    f'{self.inputs.data.tc_proxy_port} for external session.'
-                )
-
-            if self.inputs.data.tc_log_curl:
-                self._session_external.log_curl = True
-        return self._session_external
-
-    @property
-    def stix_model(self) -> 'StixModel':  # noqa: F821
-        """Include the Threat Intel Module.
-
-        .. Note:: Threat Intell methods can be accessed using ``tcex.ti.<method>``.
-        """
-        if self._stix_model is None:
-            from .stix import StixModel
-
-            self._stix_model = StixModel(self.logger)
-        return self._stix_model
+        return self.get_session()
 
     # TODO: [med] update to support scoped instance
-    @property
-    @lru_cache()
-    def ti(self) -> 'ThreatIntelligence':  # noqa: F821
-        """Include the Threat Intel Module.
+    @cached_property
+    def session_external(self) -> ExternalSession:
+        """Return an instance of Requests Session configured for the ThreatConnect API."""
+        return self.get_session_external()
 
-        .. Note:: Threat Intel methods can be accessed using ``tcex.ti.<method>``.
-        """
+    # TODO: [med] update to support scoped instance
+    @cached_property
+    def stix_model(self) -> StixModel:
+        """Include the Threat Intel Module."""
+        return StixModel(self.logger)
+
+    # TODO: [med] update to support scoped instance
+    @cached_property
+    def ti(self) -> ThreatIntelligence:
+        """Include the Threat Intel Module."""
         return self.get_ti()
 
-    @property
+    @cached_property
     def token(self) -> Tokens:
         """Return token object."""
-        if self._token is None:
-            sleep_interval = int(os.getenv('TC_TOKEN_SLEEP_INTERVAL', '30'))
-            self._token = Tokens(
-                self.inputs.data.tc_api_path, sleep_interval, self.inputs.data.tc_verify, self.log
-            )
-        return self._token
+        sleep_interval = int(os.getenv('TC_TOKEN_SLEEP_INTERVAL', '30'))
+        return Tokens(
+            self.inputs.data.tc_api_path, sleep_interval, self.inputs.data.tc_verify, self.log
+        )
 
-    @property
-    def utils(self) -> 'Utils':  # noqa: F821
-        """Include the Utils module.
-
-        .. Note:: Utils methods can be accessed using ``tcex.utils.<method>``.
-        """
-        if self._utils is None:
-            from .utils import Utils
-
-            self._utils = Utils(temp_path=self.inputs.data.tc_temp_path)
-        return self._utils
-
-    @property
-    def victim_asset_types(self) -> list:
-        """Return all defined ThreatConnect Asset types.
-
-        Returns:
-            (list): A list of ThreatConnect Asset types.
-        """
-        return [
-            'EmailAddress',
-            'SocialNetwork',
-            'NetworkAccount',
-            'WebSite',
-            'Phone',
-        ]
+    @cached_property
+    def utils(self) -> Utils:
+        """Include the Utils module."""
+        return Utils(temp_path=self.inputs.data.tc_temp_path)

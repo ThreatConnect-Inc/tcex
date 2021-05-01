@@ -1,10 +1,14 @@
 """TcEx Framework Playbook module"""
 # standard library
 import re
-from typing import Optional
+from ast import List
+from typing import Any, Optional, Union
 
 # third-party
 from pydantic import BaseModel
+
+# first-party
+from tcex.key_value_store import KeyValueApi, KeyValueRedis
 
 from .playbook_abc import PlaybookABC
 
@@ -13,6 +17,8 @@ class Playbook(PlaybookABC):
     """Playbook methods for accessing key value store.
 
     Args:
+        inputs: The instance of App inputs.
+        key_value_store: A KV store instance.
         context: The KV Store context/session_id. For PB Apps the context is provided on
             startup, but for service Apps each request gets a different context.
         output_variables: The requested output variables. For PB Apps outputs are provided on
@@ -22,16 +28,19 @@ class Playbook(PlaybookABC):
     def __init__(
         self,
         inputs: BaseModel,
+        key_value_store: Union[KeyValueApi, KeyValueRedis],
         context: Optional[str] = None,
         output_variables: Optional[list] = None,
-    ):
+    ) -> None:
         """Initialize the class properties."""
-        super().__init__(inputs, context, output_variables)
+        super().__init__(inputs, key_value_store, context, output_variables)
 
         # properties
         self.output_data = {}
 
-    def add_output(self, key, value, variable_type, append_array=True):
+    def add_output(
+        self, key: str, value: Any, variable_type: str, append_array: Optional[bool] = True
+    ) -> None:
         """Dynamically add output to output_data dictionary to be written to DB later.
 
         This method provides an alternative and more dynamic way to create output variables in an
@@ -70,11 +79,10 @@ class Playbook(PlaybookABC):
             }
 
         Args:
-            key (str): The variable name to write to storage.
-            value (any): The value to write to storage.
-            variable_type (str): The variable type being written.
-            append_array (bool): If True arrays will be appended instead of being overwritten.
-
+            key: The variable name to write to storage.
+            value: The value to write to storage.
+            variable_type: The variable type being written.
+            append_array: If True arrays will be appended instead of being overwritten.
         """
         index = f'{key}-{variable_type}'
         self.output_data.setdefault(index, {})
@@ -96,21 +104,21 @@ class Playbook(PlaybookABC):
         else:
             self.output_data[index] = {'key': key, 'type': variable_type, 'value': value}
 
-    def check_output_variable(self, variable):
+    def check_output_variable(self, variable: str) -> bool:
         """Check to see if output variable was requested by downstream app.
 
         Using the auto generated dictionary of output variables check to see if provided
         variable was requested by downstream app.
 
         Args:
-            variable (str): The variable name, not the full variable.
+            variable: The variable name, not the full variable.
 
         Returns:
-            (boolean): Boolean value indicator whether a match was found.
+            (bool): True, if match found.
         """
         return variable in self.output_variables_by_name
 
-    def create(self, key, value):
+    def create(self, key: str, value: Any) -> str:
         """Create method of CRUD operation for working with KeyValue DB.
 
         This method will automatically determine the variable type and
@@ -118,8 +126,8 @@ class Playbook(PlaybookABC):
         type is provided the data will be written as RAW data.
 
         Args:
-            key (str): The variable to write to the DB.
-            value (any): The data to write to the DB.
+            key: The variable to write to the DB.
+            value: The data to write to the DB.
 
         Returns:
             (str): Result string of DB write.
@@ -143,12 +151,12 @@ class Playbook(PlaybookABC):
                 data = self.create_raw(key, value)
         return data
 
-    def create_binary(self, key, value):
+    def create_binary(self, key: str, value: bytes) -> str:
         """Create method of CRUD operation for binary data.
 
         Args:
-            key (str): The variable to write to the Key Value Store.
-            value (any): The data to write to the Key Value Store.
+            key: The variable to write to the Key Value Store.
+            value: The data to write to the Key Value Store.
 
         Returns:
             (str): Result of Key Value Store write.
@@ -158,12 +166,12 @@ class Playbook(PlaybookABC):
             raise RuntimeError(f'The key provided ({key}) is not a {supported_variable_type} key.')
         return self._create(key, value)
 
-    def create_binary_array(self, key, value):
+    def create_binary_array(self, key: str, value: List[bytes]) -> str:
         """Create method of CRUD operation for binary array data.
 
         Args:
-            key (str): The variable to write to the Key Value Store.
-            value (any): The data to write to the Key Value Store.
+            key: The variable to write to the Key Value Store.
+            value: The data to write to the Key Value Store.
 
         Returns:
             (str): Result of Key Value Store write.
@@ -173,12 +181,12 @@ class Playbook(PlaybookABC):
             raise RuntimeError(f'The key provided ({key}) is not a {supported_variable_type} key.')
         return self._create_array(key, value)
 
-    def create_key_value(self, key, value):
+    def create_key_value(self, key: str, value: Any) -> str:
         """Create method of CRUD operation for key/value data.
 
         Args:
-            key (str): The variable to write to the DB.
-            value (any): The data to write to the DB.
+            key: The variable to write to the DB.
+            value: The data to write to the DB.
 
         Returns:
             (str): Result of DB write
@@ -188,12 +196,12 @@ class Playbook(PlaybookABC):
             raise RuntimeError(f'The key provided ({key}) is not a {supported_variable_type} key.')
         return self._create(key, value)
 
-    def create_key_value_array(self, key, value):
+    def create_key_value_array(self, key: str, value: List[Any]) -> str:
         """Create method of CRUD operation for key/value array data.
 
         Args:
-            key (str): The variable to write to the DB.
-            value (any): The data to write to the DB.
+            key: The variable to write to the DB.
+            value: The data to write to the DB.
 
         Returns:
             (str): Result of DB write.
@@ -203,12 +211,12 @@ class Playbook(PlaybookABC):
             raise RuntimeError(f'The key provided ({key}) is not a {supported_variable_type} key.')
         return self._create_array(key, value)
 
-    def create_string(self, key, value):
+    def create_string(self, key: str, value: str) -> str:
         """Create method of CRUD operation for string data.
 
         Args:
-            key (str): The variable to write to the DB.
-            value (any): The data to write to the DB.
+            key: The variable to write to the DB.
+            value: The data to write to the DB.
 
         Returns:
             (str): Result of DB write.
@@ -218,12 +226,12 @@ class Playbook(PlaybookABC):
             raise RuntimeError(f'The key provided ({key}) is not a {supported_variable_type} key.')
         return self._create(key, value)
 
-    def create_string_array(self, key, value):
+    def create_string_array(self, key: str, value: List[str]) -> str:
         """Create method of CRUD operation for string array data.
 
         Args:
-            key (str): The variable to write to the DB.
-            value (any): The data to write to the DB.
+            key: The variable to write to the DB.
+            value: The data to write to the DB.
 
         Returns:
             (str): Result of DB write.
@@ -233,12 +241,12 @@ class Playbook(PlaybookABC):
             raise RuntimeError(f'The key provided ({key}) is not a {supported_variable_type} key.')
         return self._create_array(key, value)
 
-    def create_tc_entity(self, key, value):
+    def create_tc_entity(self, key: str, value: dict) -> str:
         """Create method of CRUD operation for TC entity data.
 
         Args:
-            key (str): The variable to write to the DB.
-            value (any): The data to write to the DB.
+            key: The variable to write to the DB.
+            value: The data to write to the DB.
 
         Returns:
             (str): Result of DB write.
@@ -248,12 +256,12 @@ class Playbook(PlaybookABC):
             raise RuntimeError(f'The key provided ({key}) is not a {supported_variable_type} key.')
         return self._create(key, value)
 
-    def create_tc_entity_array(self, key, value):
+    def create_tc_entity_array(self, key: str, value: List[dict]) -> str:
         """Create method of CRUD operation for TC entity array data.
 
         Args:
-            key (str): The variable to write to the DB.
-            value (any): The data to write to the DB.
+            key: The variable to write to the DB.
+            value: The data to write to the DB.
 
         Returns:
             (str): Result of DB write.
@@ -263,16 +271,16 @@ class Playbook(PlaybookABC):
             raise RuntimeError(f'The key provided ({key}) is not a {supported_variable_type} key.')
         return self._create_array(key, value)
 
-    def create_output(self, key, value, variable_type=None):
+    def create_output(self, key: str, value: Any, variable_type: Optional[str] = None) -> str:
         """Alias for Create method of CRUD operation for working with KeyValue DB.
 
         This method will automatically check to see if provided variable was requested by
         a downstream app and if so create the data in the KeyValue DB.
 
         Args:
-            key (str): The variable to write to the DB.
-            value (any): The data to write to the DB.
-            variable_type (str): The variable type being written.
+            key: The variable to write to the DB.
+            value: The data to write to the DB.
+            variable_type: The variable type being written.
 
         Returns:
             (str): Result string of DB write.
@@ -309,13 +317,13 @@ class Playbook(PlaybookABC):
 
         return results
 
-    def delete(self, key):
+    def delete(self, key: str) -> str:
         """Delete method of CRUD operation for all data types.
 
         This method is only supported when using key_value_redis.
 
         Args:
-            key (str): The variable to write to the DB.
+            key: The variable to write to the DB.
 
         Returns:
             (str): Result of DB write.
@@ -327,7 +335,7 @@ class Playbook(PlaybookABC):
             self.log.warning('The key field was None.')
         return data
 
-    def is_variable(self, key):
+    def is_variable(self, key: str) -> bool:
         """Return True if provided key is a properly formatted variable."""
         if not isinstance(key, str):
             return False
@@ -336,20 +344,20 @@ class Playbook(PlaybookABC):
         return False
 
     @property
-    def output_variables_by_name(self):
+    def output_variables_by_name(self) -> dict:
         """Return output variables stored as name dict."""
         if self._output_variables_by_name is None:
             self._parse_output_variables()
         return self._output_variables_by_name
 
     @property
-    def output_variables_by_type(self):
+    def output_variables_by_type(self) -> dict:
         """Return output variables stored as name-type dict."""
         if self._output_variables_by_type is None:
             self._parse_output_variables()
         return self._output_variables_by_type
 
-    def parse_variable(self, variable):
+    def parse_variable(self, variable: str) -> dict:
         """Parse an input or output variable.
 
         **Example Variable**::
@@ -357,10 +365,10 @@ class Playbook(PlaybookABC):
         #App:1234:output!String
 
         Args:
-            variable (str): The variable name to parse.
+            variable: The variable name to parse.
 
         Returns:
-            (dictionary): Result of parsed string.
+            (dict): Result of parsed string.
         """
         data = None
         if variable is not None:
@@ -375,7 +383,7 @@ class Playbook(PlaybookABC):
                 }
         return data
 
-    def read(self, key, array=False, embedded=True):
+    def read(self, key: str, array: Optional[bool] = False, embedded: Optional[bool] = True) -> Any:
         """Read method of CRUD operation for working with KeyValue DB.
 
         This method will automatically check to see if a single variable is passed
@@ -383,9 +391,9 @@ class Playbook(PlaybookABC):
         automatically determine the variable type to read.
 
         Args:
-            key (str): The variable to read from the DB.
-            array (boolean): Convert string/dict to Array/List before returning.
-            embedded (boolean): Resolve embedded variables.
+            key: The variable to read from the DB.
+            array: Convert string/dict to Array/List before returning.
+            embedded: Resolve embedded variables.
 
         Returns:
             (any): Results retrieved from DB
@@ -426,19 +434,19 @@ class Playbook(PlaybookABC):
 
         return value
 
-    def _entity_field(self, key, field, entity_type=None, default=None):
+    def _entity_field(
+        self, key: str, field: str, entity_type: Optional[Any] = None, default: Optional[Any] = None
+    ) -> list:
         """Read the value of the given key and return the data at the given field of the value.
 
         This method is used by functions designed to make it easier to get
         data from a particular field from TC(Enhanced)Entity(Array).
 
         Args:
-            key (str): The variable to read from the DB.
-            field (str): The field to find in the data.
-            entity_type (Any): Default is None. The type of data being collected (valid values:
-                ['groups', 'indicators']).
-            default (Any): Default is None. The value to use for malformed TCEntities or
-                TCEnhancedEntities.
+            key: The variable to read from the DB.
+            field: The field to find in the data.
+            entity_type: The type of data being collected (valid values: ['groups', 'indicators']).
+            default: The value to use for malformed TCEntities or TCEnhancedEntities.
 
         Returns:
             (list): A list of strings containing the desired values.
@@ -482,7 +490,7 @@ class Playbook(PlaybookABC):
 
         return values
 
-    def read_indicator_values(self, key, default=None):
+    def read_indicator_values(self, key: str, default: Optional[Any] = None) -> list:
         """Read the value of the given key and return indicators from the value.
 
         This method will call the `read` method and then will process the data so as to return a
@@ -490,48 +498,45 @@ class Playbook(PlaybookABC):
         ["foo.example.com", "bar.example.com"]).
 
         Args:
-            key (str): The variable to read from the DB.
-            default (Any): Default is None. The value to use for malformed TCEntities or
-                TCEnhancedEntities.
+            key: The variable to read from the DB.
+            default: The value to use for malformed TCEntities or TCEnhancedEntities.
 
         Returns:
             (list): A list of strings containing the indicators
         """
         return self._entity_field(key, 'value', entity_type='indicator', default=default)
 
-    def read_group_values(self, key, default=None):
+    def read_group_values(self, key: str, default: Optional[Any] = None) -> list:
         """Read the value of the given key and return group names from the value.
 
         This method will call the `read` method and then will process the data
         so as to return a list of strings where each string is a group name.
 
         Args:
-            key (str): The variable to read from the DB.
-            default (Any): Default is None. The value to use for malformed TCEntities or
-                TCEnhancedEntities.
+            key: The variable to read from the DB.
+            default: The value to use for malformed TCEntities or TCEnhancedEntities.
 
         Returns:
             (list): A list of strings containing the group names
         """
         return self._entity_field(key, 'value', entity_type='group', default=default)
 
-    def read_group_ids(self, key, default=None):
+    def read_group_ids(self, key: str, default: Optional[Any] = None) -> list:
         """Read the value of the given key and return group ids from the value.
 
         This method will call the `read` method and then will process the data
         so as to return a list of strings where each string is a group id.
 
         Args:
-            key (str): The variable to read from the DB.
-            default (Any): Default is None. The value to use for malformed TCEntities or
-                TCEnhancedEntities.
+            key: The variable to read from the DB.
+            default: The value to use for malformed TCEntities or TCEnhancedEntities.
 
         Returns:
             (list): A list of strings containing the group ids
         """
         return self._entity_field(key, 'id', entity_type='group', default=default)
 
-    def read_choice(self, key, alt_key):
+    def read_choice(self, key: str, alt_key: str) -> Optional[str]:
         """Read method for choice inputs.
 
         Behavior:
@@ -540,11 +545,8 @@ class Playbook(PlaybookABC):
         * Else return resolved value for key.
 
         Args:
-            key (str): The variable to read from KeyValue Store.
-            alt_key (str): The alternate variable to read from the KeyValue Store.
-
-        Returns:
-            (None|str): Results retrieved from KeyValue Store
+            key: The variable to read from KeyValue Store.
+            alt_key: The alternate variable to read from the KeyValue Store.
         """
         if key is None:
             return None
@@ -557,117 +559,94 @@ class Playbook(PlaybookABC):
 
         return self.read(key)
 
-    def read_array(self, key, embedded=True):
+    def read_array(self, key: str, embedded: Optional[bool] = True) -> List[Any]:
         """Read playbook variable and return array for any variable type.
 
         Args:
-            key (str): The variable to read from the DB.
-            embedded (boolean): Resolve embedded variables.
-
-        Returns:
-            (any): Results retrieved from DB
+            key: The variable to read from the DB.
+            embedded: Resolve embedded variables.
         """
         return self.read(key, True, embedded)
 
-    def read_binary(self, key, b64decode=True, decode=False):
+    def read_binary(
+        self, key: str, b64decode: Optional[bool] = True, decode: Optional[bool] = False
+    ) -> Union[bytes, str]:
         """Read method of CRUD operation for binary data.
 
         Args:
-            key (str): The variable to read from the DB.
-            b64decode (bool): If true the data will be base64 decoded.
-            decode (bool): If true the data will be decoded to a String.
-
-        Returns:
-            (bytes|string): Results retrieved from DB.
+            key: The variable to read from the DB.
+            b64decode: If true the data will be base64 decoded.
+            decode: If true the data will be decoded to a String.
         """
         return self._read(key, b64decode=b64decode, decode=decode)
 
-    def read_binary_array(self, key, b64decode=True, decode=False):
+    def read_binary_array(
+        self, key: str, b64decode: Optional[bool] = True, decode: Optional[bool] = False
+    ) -> List[Union[bytes, str]]:
         """Read method of CRUD operation for binary array data.
 
         Args:
-            key (str): The variable to read from the DB.
-            b64decode (bool): If true the data will be base64 decoded.
-            decode (bool): If true the data will be decoded to a String.
-
-        Returns:
-            (list): Results retrieved from DB.
+            key: The variable to read from the DB.
+            b64decode: If true the data will be base64 decoded.
+            decode: If true the data will be decoded to a String.
         """
         return self._read_array(key, b64decode=b64decode, decode=decode)
 
-    def read_key_value(self, key, embedded=True):
+    def read_key_value(self, key: str, embedded: Optional[bool] = True) -> dict:
         """Read method of CRUD operation for key/value data.
 
         Args:
-            key (str): The variable to read from the DB.
-            embedded (boolean): Resolve embedded variables.
-
-        Returns:
-            (dictionary): Results retrieved from DB.
+            key: The variable to read from the DB.
+            embedded: Resolve embedded variables.
         """
         return self._read(key, embedded=embedded)
 
-    def read_key_value_array(self, key, embedded=True):
+    def read_key_value_array(self, key: str, embedded: Optional[bool] = True) -> List[dict]:
         """Read method of CRUD operation for key/value array data.
 
         Args:
-            key (str): The variable to read from the DB.
-            embedded (boolean): Resolve embedded variables.
-
-        Returns:
-            (list): Results retrieved from DB.
+            key: The variable to read from the DB.
+            embedded: Resolve embedded variables.
         """
         return self._read_array(key, embedded=embedded)
 
-    def read_string(self, key, embedded=True):
+    def read_string(self, key: str, embedded: Optional[bool] = True) -> str:
         """Read method of CRUD operation for string data.
 
         Args:
-            key (str): The variable to read from the DB.
-            embedded (boolean): Resolve embedded variables.
-
-        Returns:
-            (str): Results retrieved from DB.
+            key: The variable to read from the DB.
+            embedded: Resolve embedded variables.
         """
         return self._read(key, embedded=embedded)
 
-    def read_string_array(self, key, embedded=True):
+    def read_string_array(self, key: str, embedded: Optional[bool] = True) -> List[str]:
         """Read method of CRUD operation for string array data.
 
         Args:
-            key (str): The variable to read from the DB.
-            embedded (boolean): Resolve embedded variables.
-
-        Returns:
-            (list): Results retrieved from DB.
+            key: The variable to read from the DB.
+            embedded: Resolve embedded variables.
         """
         return self._read_array(key, embedded=embedded)
 
-    def read_tc_entity(self, key, embedded=True):
+    def read_tc_entity(self, key: str, embedded: Optional[bool] = True) -> dict:
         """Read method of CRUD operation for TC entity data.
 
         Args:
-            key (str): The variable to read from the DB.
-            embedded (boolean): Resolve embedded variables.
-
-        Returns:
-            (dictionary): Results retrieved from DB.
+            key: The variable to read from the DB.
+            embedded: Resolve embedded variables.
         """
         return self._read(key, embedded=embedded)
 
-    def read_tc_entity_array(self, key, embedded=True):
+    def read_tc_entity_array(self, key: str, embedded: Optional[bool] = True) -> List[dict]:
         """Read method of CRUD operation for TC entity array data.
 
         Args:
-            key (str): The variable to read from the DB.
-            embedded (boolean): Resolve embedded variables.
-
-        Returns:
-            (list): Results retrieved from DB.
+            key: The variable to read from the DB.
+            embedded: Resolve embedded variables.
         """
         return self._read_array(key, embedded=embedded)
 
-    def variable_type(self, variable):
+    def variable_type(self, variable: str) -> str:
         """Get the Type from the variable string or default to String type.
 
         The default type is "String" for those cases when the input variable is
@@ -682,10 +661,7 @@ class Playbook(PlaybookABC):
             "My Data" returns **String**
 
         Args:
-            variable (str): The variable to be parsed
-
-        Returns:
-            (str): The variable type.
+            variable: The variable to be parsed
         """
         var_type = 'String'
         if isinstance(variable, str):

@@ -7,14 +7,14 @@ import re
 from abc import ABC
 from collections import OrderedDict
 from collections.abc import Iterable
-from functools import lru_cache
-from typing import Optional, Union
+from typing import Any, List, Optional, Union
 
 # third-party
 from pydantic import BaseModel
 
 # first-party
-from tcex.key_value_store import RedisClient, key_value_store
+from tcex.backports import cached_property
+from tcex.key_value_store import KeyValueApi, KeyValueRedis, RedisClient
 
 # get tcex logger
 logger = logging.getLogger('tcex')
@@ -24,6 +24,8 @@ class PlaybookABC(ABC):
     """Playbook ABC
 
     Args:
+        inputs: The instance of App inputs.
+        key_value_store: A KV store instance.
         context: The KV Store context/session_id. For PB Apps the context is provided on
             startup, but for service Apps each request gets a different context.
         output_variables: The requested output variables. For PB Apps outputs are provided on
@@ -33,13 +35,15 @@ class PlaybookABC(ABC):
     def __init__(
         self,
         inputs: BaseModel,
+        key_value_store: Union[KeyValueApi, KeyValueRedis],
         context: Optional[str] = None,
         output_variables: Optional[list] = None,
     ):
         """Initialize the class properties."""
+        self._context = context or inputs.data.tc_playbook_kvstore_context
+        self._output_variables = output_variables or inputs.data.tc_playbook_out_variables
         self.inputs = inputs
-        self._context = context or self.inputs.data.tc_playbook_kvstore_context
-        self._output_variables = output_variables or self.inputs.data.tc_playbook_out_variables
+        self.key_value_store = key_value_store
 
         # properties
         self._output_variables_by_name = None
@@ -301,7 +305,7 @@ class PlaybookABC(ABC):
         embedded: Optional[bool] = True,
         b64decode: Optional[bool] = True,
         decode: Optional[bool] = False,
-    ):
+    ) -> List[Any]:
         """Create the value in Redis if applicable."""
         if key is None:  # pragma: no cover
             self.log.warning('The null value for key was provided.')
@@ -357,7 +361,7 @@ class PlaybookABC(ABC):
         # self.log.trace(f'pb create - context: {self._context}, key: {key}, value: {value}')
         return value
 
-    def _read_embedded(self, value):
+    def _read_embedded(self, value: str) -> str:
         """Read method for "embedded" variables.
 
         .. Note:: The ``read()`` method will automatically determine if the input is a variable or
@@ -420,7 +424,7 @@ class PlaybookABC(ABC):
 
             if v is not None:
                 # only replace variable if a non-null value is returned from kv store
-                # APP-1030 need to revisit this to handle variable references in kv/kvarrays that
+                # APP-1030 need to revisit this to handle variable references in kv/kv_arrays that
                 # are None.  Would like to be able to say if value is just the variable reference,
                 # sub None value, else insert '' in string.  That would require a kv-specific
                 # version of this method that gets the entire list/dict instead of just the string.
@@ -428,21 +432,22 @@ class PlaybookABC(ABC):
         return value
 
     @property
-    def _variable_pattern(self):
+    def _variable_pattern(self) -> str:
         """Regex pattern to match and parse a playbook variable."""
-        variable_pattern = r'#([A-Za-z]+)'  # match literal (#App,#Trigger) at beginning of String
-        variable_pattern += r':([\d]+)'  # app id (:7979)
-        variable_pattern += r':([A-Za-z0-9_\.\-\[\]]+)'  # variable name (:variable_name)
-        variable_pattern += r'!(StringArray|BinaryArray|KeyValueArray'  # variable type (array)
-        variable_pattern += r'|TCEntityArray|TCEnhancedEntityArray'  # variable type (array)
-        variable_pattern += r'|String|Binary|KeyValue|TCEntity|TCEnhancedEntity'  # variable type
-        variable_pattern += r'|(?:(?!String)(?!Binary)(?!KeyValue)'  # non matching for custom
-        variable_pattern += r'(?!TCEntity)(?!TCEnhancedEntity)'  # non matching for custom
-        variable_pattern += r'[A-Za-z0-9_-]+))'  # variable type (custom)
-        return variable_pattern
+        return (
+            r'#([A-Za-z]+)'  # match literal (#App,#Trigger) at beginning of String
+            r':([\d]+)'  # app id (:7979)
+            r':([A-Za-z0-9_\.\-\[\]]+)'  # variable name (:variable_name)
+            r'!(StringArray|BinaryArray|KeyValueArray'  # variable type (array)
+            r'|TCEntityArray|TCEnhancedEntityArray'  # variable type (array)
+            r'|String|Binary|KeyValue|TCEntity|TCEnhancedEntity'  # variable type
+            r'|(?:(?!String)(?!Binary)(?!KeyValue)'  # non matching for custom
+            r'(?!TCEntity)(?!TCEnhancedEntity)'  # non matching for custom
+            r'[A-Za-z0-9_-]+))'  # variable type (custom)
+        )
 
     @property
-    def _variable_array_types(self):
+    def _variable_array_types(self) -> List[str]:
         """Return list of standard playbook array variable types."""
         return [
             'BinaryArray',
@@ -453,7 +458,7 @@ class PlaybookABC(ABC):
         ]
 
     @property
-    def _variable_single_types(self):
+    def _variable_single_types(self) -> List[str]:
         """Return list of standard playbook single variable types."""
         return [
             'Binary',
@@ -464,18 +469,15 @@ class PlaybookABC(ABC):
         ]
 
     @property
-    def _variable_types(self):
-        """Return list of standard playbook variable typesd."""
+    def _variable_types(self) -> List[str]:
+        """Return list of standard playbook variable types."""
         return self._variable_single_types + self._variable_array_types
 
-    def _wrap_embedded_keyvalue(self, data):
+    def _wrap_embedded_keyvalue(self, data: str) -> str:
         """Wrap keyvalue embedded variable in double quotes.
 
         Args:
-            data (str): The data with embedded variables.
-
-        Returns:
-            (str): Results retrieved from DB
+            data: The data with embedded variables.
         """
         # TODO: need to verify if core still sends improper JSON for KeyValueArrays
         if data is not None:  # pragma: no cover
@@ -491,18 +493,15 @@ class PlaybookABC(ABC):
                 data = data.replace(var, f'": "{variable_string}"')
         return data
 
-    def create_raw(self, key, value):
+    def create_raw(self, key: str, value: Union[bytes, int, str]) -> str:
         """Create method of CRUD operation for raw data.
 
-        ..important:: Raw data can only be a byte, str or int. Other data structures
-            (dict, list, etc) must be serialized.
+        Raw data can only be a byte, str or int. Other data
+        structures (dict, list, etc) must be serialized.
 
         Args:
-            key (str): The variable to write to the DB.
-            value (bytes|int|string): The data to write to the DB.
-
-        Returns:
-            (str): Result of DB write.
+            key: The variable to write to the DB.
+            value: The data to write to the DB.
         """
         data = None
         if key is not None and value is not None:
@@ -514,23 +513,14 @@ class PlaybookABC(ABC):
             self.log.warning('The key or value field was None.')
         return data
 
-    @property
-    @lru_cache
-    def key_value_store(self):
-        """Return instance of key value store"""
-        return key_value_store(self.inputs.data.tc_kvstore_type)
-
-    def read_raw(self, key):
+    def read_raw(self, key: str) -> str:
         """Read method of CRUD operation for raw data.
 
-        ..important:: Bytes input will be returned a as string as there is
-            no way to determine data from redis originated as bytes or string.
+        Bytes input will be returned a as string as there is no way
+        to determine data from redis originated as bytes or string.
 
         Args:
-            key (str): The variable to read from the DB.
-
-        Returns:
-            (str): Results retrieved from DB.
+            key: The variable to read from the DB.
         """
         value = None
         if key is not None:
@@ -539,16 +529,17 @@ class PlaybookABC(ABC):
             self.log.warning('The key field was None.')
         return value
 
-    def parse_variable(self, variable):  # pragma: no cover
+    def parse_variable(self, variable: str) -> dict:  # pragma: no cover
         """Set placeholder for child method."""
         raise NotImplementedError('Implemented in child class')
 
-    def read(self, key, array=False, embedded=True):  # pragma: no cover
+    def read(
+        self, key: str, array: Optional[bool] = False, embedded: Optional[bool] = True
+    ) -> Any:  # pragma: no cover
         """Set placeholder for child method."""
         raise NotImplementedError('Implemented in child class')
 
-    @property
-    @lru_cache
+    @cached_property
     def redis_client(self):
         """Return an instance of redis client."""
         # get an instance of redis client
@@ -558,6 +549,6 @@ class PlaybookABC(ABC):
             db=0,
         ).client
 
-    def variable_type(self, variable):  # pragma: no cover
+    def variable_type(self, variable: str) -> str:  # pragma: no cover
         """Set placeholder for child method."""
         raise NotImplementedError('Implemented in child class')
