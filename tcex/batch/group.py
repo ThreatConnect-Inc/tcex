@@ -4,10 +4,11 @@ import json
 import uuid
 from typing import Any, Callable, Optional, Union
 
-from ..utils import Utils
-from .attribute import Attribute
-from .security_label import SecurityLabel
-from .tag import Tag
+# first-party
+from tcex.batch.attribute import Attribute
+from tcex.batch.security_label import SecurityLabel
+from tcex.batch.tag import Tag
+from tcex.utils import Utils
 
 
 class Group:
@@ -29,7 +30,7 @@ class Group:
         'status',
     ]
 
-    def __init__(self, group_type: str, name: str, **kwargs):
+    def __init__(self, group_type: str, name: str, **kwargs) -> None:
         """Initialize Class Properties.
 
         Args:
@@ -193,7 +194,7 @@ class Group:
         return self._group_data.get('dateAdded')
 
     @date_added.setter
-    def date_added(self, date_added: str):
+    def date_added(self, date_added: str) -> None:
         """Set Indicator dateAdded."""
         self._group_data['dateAdded'] = self._utils.datetime.format_datetime(
             date_added, date_format='%Y-%m-%dT%H:%M:%SZ'
@@ -222,7 +223,7 @@ class Group:
         return self._processed
 
     @processed.setter
-    def processed(self, processed: bool):
+    def processed(self, processed: bool) -> None:
         """Set processed."""
         self._processed = processed
 
@@ -290,7 +291,7 @@ class Adversary(Group):
 
     __slots__ = []
 
-    def __init__(self, name: str, **kwargs):
+    def __init__(self, name: str, **kwargs) -> None:
         """Initialize Class Properties.
 
         Args:
@@ -306,7 +307,7 @@ class Campaign(Group):
 
     __slots__ = []
 
-    def __init__(self, name: str, **kwargs):
+    def __init__(self, name: str, **kwargs) -> None:
         """Initialize Class Properties.
 
         Args:
@@ -323,7 +324,7 @@ class Campaign(Group):
         return self._group_data.get('firstSeen')
 
     @first_seen.setter
-    def first_seen(self, first_seen: str):
+    def first_seen(self, first_seen: str) -> None:
         """Set Document first seen."""
         self._group_data['firstSeen'] = self._utils.datetime.format_datetime(
             first_seen, date_format='%Y-%m-%dT%H:%M:%SZ'
@@ -335,7 +336,7 @@ class Document(Group):
 
     __slots__ = ['_file_data', '_group_data']
 
-    def __init__(self, name: str, file_name: str, **kwargs):
+    def __init__(self, name: str, file_name: str, **kwargs) -> None:
         """Initialize Class Properties.
 
         Args:
@@ -378,7 +379,7 @@ class Document(Group):
         return self._group_data.get('password', False)
 
     @password.setter
-    def password(self, password: str):
+    def password(self, password: str) -> None:
         """Set Document password."""
         self._group_data['password'] = password
 
@@ -388,7 +389,7 @@ class Email(Group):
 
     __slots__ = []
 
-    def __init__(self, name: str, subject: str, header: str, body: str, **kwargs):
+    def __init__(self, name: str, subject: str, header: str, body: str, **kwargs) -> None:
         """Initialize Class Properties.
 
         Args:
@@ -413,7 +414,7 @@ class Email(Group):
         return self._group_data.get('to')
 
     @from_addr.setter
-    def from_addr(self, from_addr: str):
+    def from_addr(self, from_addr: str) -> None:
         """Set Email from."""
         self._group_data['from'] = from_addr
 
@@ -423,7 +424,7 @@ class Email(Group):
         return self._group_data.get('score')
 
     @score.setter
-    def score(self, score: str):
+    def score(self, score: str) -> None:
         """Set Email from."""
         self._group_data['score'] = score
 
@@ -433,7 +434,7 @@ class Email(Group):
         return self._group_data.get('to')
 
     @to_addr.setter
-    def to_addr(self, to_addr: str):
+    def to_addr(self, to_addr: str) -> None:
         """Set Email to."""
         self._group_data['to'] = to_addr
 
@@ -443,7 +444,7 @@ class Event(Group):
 
     __slots__ = []
 
-    def __init__(self, name: str, **kwargs):
+    def __init__(self, name: str, **kwargs) -> None:
         """Initialize Class Properties.
 
         Valid Values:
@@ -467,7 +468,7 @@ class Event(Group):
         return self._group_data.get('firstSeen')
 
     @event_date.setter
-    def event_date(self, event_date: str):
+    def event_date(self, event_date: str) -> None:
         """Set the Events "event date" value."""
         self._group_data['eventDate'] = self._utils.datetime.format_datetime(
             event_date, date_format='%Y-%m-%dT%H:%M:%SZ'
@@ -479,7 +480,7 @@ class Event(Group):
         return self._group_data.get('status')
 
     @status.setter
-    def status(self, status: str):
+    def status(self, status: str) -> None:
         """Set the Events status value."""
         self._group_data['status'] = status
 
@@ -489,7 +490,7 @@ class Incident(Group):
 
     __slots__ = []
 
-    def __init__(self, name: str, **kwargs):
+    def __init__(self, name: str, **kwargs) -> None:
         """Initialize Class Properties.
 
         Valid Values:
@@ -518,7 +519,7 @@ class Incident(Group):
         return self._group_data.get('eventDate')
 
     @event_date.setter
-    def event_date(self, event_date: str):
+    def event_date(self, event_date: str) -> None:
         """Set Incident event_date."""
         self._group_data['eventDate'] = self._utils.datetime.format_datetime(
             event_date, date_format='%Y-%m-%dT%H:%M:%SZ'
@@ -530,7 +531,7 @@ class Incident(Group):
         return self._group_data.get('status')
 
     @status.setter
-    def status(self, status: str):
+    def status(self, status: str) -> None:
         """Set Incident status.
 
         Valid Values:
@@ -552,7 +553,7 @@ class IntrusionSet(Group):
 
     __slots__ = []
 
-    def __init__(self, name: str, **kwargs):
+    def __init__(self, name: str, **kwargs) -> None:
         """Initialize Class Properties.
 
         Args:
@@ -568,7 +569,7 @@ class Report(Group):
 
     __slots__ = []
 
-    def __init__(self, name, **kwargs):
+    def __init__(self, name, **kwargs) -> None:
         """Initialize Class Properties.
 
         Args:
@@ -599,7 +600,7 @@ class Report(Group):
         return self._group_data.get('publishDate')
 
     @publish_date.setter
-    def publish_date(self, publish_date: str):
+    def publish_date(self, publish_date: str) -> None:
         """Set Report publish date"""
         self._group_data['publishDate'] = self._utils.datetime.format_datetime(
             publish_date, date_format='%Y-%m-%dT%H:%M:%SZ'
@@ -611,7 +612,7 @@ class Signature(Group):
 
     __slots__ = []
 
-    def __init__(self, name: str, file_name: str, file_type: str, file_text: str, **kwargs):
+    def __init__(self, name: str, file_name: str, file_type: str, file_text: str, **kwargs) -> None:
         """Initialize Class Properties.
 
         Valid file_types:
@@ -644,7 +645,7 @@ class Threat(Group):
 
     __slots__ = []
 
-    def __init__(self, name: str, **kwargs):
+    def __init__(self, name: str, **kwargs) -> None:
         """Initialize Class Properties.
 
         Args:

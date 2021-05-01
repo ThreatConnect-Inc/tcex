@@ -9,7 +9,9 @@ class SecurityLabel:
 
     __slots__ = ['_label_data']
 
-    def __init__(self, name: str, description: Optional[str] = None, color: Optional[str] = None):
+    def __init__(
+        self, name: str, description: Optional[str] = None, color: Optional[str] = None
+    ) -> None:
         """Initialize Class Properties.
 
         Args:
@@ -30,7 +32,7 @@ class SecurityLabel:
         return self._label_data.get('color')
 
     @color.setter
-    def color(self, color: str):
+    def color(self, color: str) -> None:
         """Set Security Label color."""
         self._label_data['color'] = color
 
@@ -45,7 +47,7 @@ class SecurityLabel:
         return self._label_data.get('description')
 
     @description.setter
-    def description(self, description: str):
+    def description(self, description: str) -> None:
         """Set Security Label description."""
         self._label_data['description'] = description
 
