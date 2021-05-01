@@ -30,15 +30,19 @@ class Attribute:
         self._attribute_data = {'type': attr_type}
         if displayed:
             self._attribute_data['displayed'] = displayed
+
         # format the value
         if formatter is not None:
             attr_value = formatter(attr_value)
         self._attribute_data['value'] = attr_value
+
         # add source if provided
         if source is not None:
             self._attribute_data['source'] = source
+
         # is attr_value not null or ''
         self._valid = True
+
         # check for None and '' value only.
         if attr_value in [None, '']:
             self._valid = False

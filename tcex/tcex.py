@@ -111,7 +111,7 @@ class TcEx:
             timeout: The number of second before timing out the request.
             output_prefix: A value to prepend to outputs.
         """
-        return AdvancedRequest(session, self, timeout, output_prefix)
+        return AdvancedRequest(self.inputs, self.playbook, session, timeout, output_prefix)
 
     def aot_rpush(self, exit_code: int) -> None:
         """Push message to AOT action channel."""

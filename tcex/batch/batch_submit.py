@@ -6,7 +6,7 @@ import logging
 import math
 import re
 import time
-from typing import Optional
+from typing import Dict, List, Optional
 
 # third-party
 from requests import Session
@@ -33,7 +33,7 @@ class BatchSubmit:
         playbook_triggers_enabled: Optional[bool] = False,
         tag_write_type: Optional[str] = 'Replace',
         security_label_write_type: Optional[str] = 'Replace',
-    ):
+    ) -> None:
         """Initialize Class properties.
 
         Args:
@@ -74,7 +74,7 @@ class BatchSubmit:
         self._poll_timeout = 3600
 
     @property
-    def _critical_failures(self):  # pragma: no cover
+    def _critical_failures(self) -> List[str]:  # pragma: no cover
         """Return Batch critical failure messages."""
         return [
             'Encountered an unexpected Exception while processing batch job',
@@ -82,22 +82,22 @@ class BatchSubmit:
         ]
 
     @property
-    def action(self):
+    def action(self) -> str:
         """Return batch action."""
         return self._action
 
     @action.setter
-    def action(self, action):
+    def action(self, action) -> None:
         """Set batch action."""
         self._action = action
 
     @property
-    def attribute_write_type(self):
+    def attribute_write_type(self) -> str:
         """Return batch attribute write type."""
         return self._attribute_write_type
 
     @attribute_write_type.setter
-    def attribute_write_type(self, write_type: str):
+    def attribute_write_type(self, write_type: str) -> None:
         """Set batch attribute write type."""
         self._attribute_write_type = write_type
 
@@ -142,7 +142,7 @@ class BatchSubmit:
         return data.get('data', {}).get('batchId')
 
     @property
-    def error_codes(self):
+    def error_codes(self) -> Dict[str, str]:
         """Return static list of Batch error codes and short description"""
         return {
             '0x1001': 'General Error',
@@ -219,7 +219,7 @@ class BatchSubmit:
         return self._halt_on_error
 
     @halt_on_error.setter
-    def halt_on_error(self, halt_on_error: bool):
+    def halt_on_error(self, halt_on_error: bool) -> None:
         """Set batch halt on error setting."""
         self._halt_on_error = halt_on_error
 
@@ -229,7 +229,7 @@ class BatchSubmit:
         return self._halt_on_batch_error
 
     @halt_on_batch_error.setter
-    def halt_on_batch_error(self, value: bool):
+    def halt_on_batch_error(self, value: bool) -> None:
         """Set batch halt on batch error value."""
         if isinstance(value, bool):
             self._halt_on_batch_error = value
@@ -240,12 +240,12 @@ class BatchSubmit:
         return self._halt_on_poll_error
 
     @halt_on_poll_error.setter
-    def halt_on_poll_error(self, value: bool):
+    def halt_on_poll_error(self, value: bool) -> None:
         """Set batch halt on poll error value."""
         if isinstance(value, bool):
             self._halt_on_poll_error = value
 
-    def hash_collision_mode(self, value: str):
+    def hash_collision_mode(self, value: str) -> str:
         """Set the file hash collision mode for the entire batch job.
 
         Args:
@@ -391,22 +391,22 @@ class BatchSubmit:
         return self._poll_timeout
 
     @poll_timeout.setter
-    def poll_timeout(self, seconds: int):
+    def poll_timeout(self, seconds: int) -> None:
         """Set the poll timeout value."""
         self._poll_timeout = int(seconds)
 
     @property
-    def security_label_write_type(self):
+    def security_label_write_type(self) -> str:
         """Return batch security label write type."""
         return self._security_label_write_type
 
     @security_label_write_type.setter
-    def security_label_write_type(self, write_type: str):
+    def security_label_write_type(self, write_type: str) -> None:
         """Set batch security label write type."""
         self._security_label_write_type = write_type
 
     @property
-    def settings(self) -> dict:
+    def settings(self) -> Dict[str, str]:
         """Return batch job settings."""
         _settings = {
             'action': self._action,
@@ -512,11 +512,11 @@ class BatchSubmit:
         return None
 
     @property
-    def tag_write_type(self):
+    def tag_write_type(self) -> str:
         """Return batch tag write type."""
         return self._tag_write_type
 
     @tag_write_type.setter
-    def tag_write_type(self, write_type: str):
+    def tag_write_type(self, write_type: str) -> None:
         """Set batch tag write type."""
         self._tag_write_type = write_type

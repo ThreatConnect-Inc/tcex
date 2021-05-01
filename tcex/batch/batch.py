@@ -11,10 +11,10 @@ from collections import deque
 from typing import Any, Callable, Optional, Tuple, Union
 
 # third-party
-from requests import Session
+from requests import Response, Session
 
 # first-party
-from tcex.batch import BatchSubmit, BatchWriter
+from tcex.batch import BatchSubmit, BatchWriter, GroupType, IndicatorType
 from tcex.input import Input
 
 
@@ -44,7 +44,7 @@ class Batch(BatchWriter, BatchSubmit):
         playbook_triggers_enabled: Optional[bool] = False,
         tag_write_type: Optional[str] = 'Replace',
         security_label_write_type: Optional[str] = 'Replace',
-    ):
+    ) -> None:
         """Initialize Class properties."""
         BatchWriter.__init__(self, inputs=inputs, session=session, output_dir='')
         BatchSubmit.__init__(
@@ -103,16 +103,16 @@ class Batch(BatchWriter, BatchSubmit):
         self.debug_path_xids = os.path.join(self.debug_path, 'xids-saved')
 
     def _group(
-        self, group_data: Union[dict, object], store: Optional[bool] = True
-    ) -> Union[dict, object]:
+        self, group_data: Union[dict, GroupType], store: Optional[bool] = True
+    ) -> Union[dict, GroupType]:
         """Return previously stored group or new group.
 
         Args:
-            group_data: An Group dict or instance of Group object.
+            group_data: An Group dict or instance of GroupType.
             store: If True the group data will be stored in instance list.
 
         Returns:
-            Union[dict, object]: The new Group dict/object or the previously stored dict/object.
+            (dict|GroupType): The new Group dict/GroupType or the previously stored dict/GroupType.
         """
         if store is False:
             return group_data
@@ -121,7 +121,7 @@ class Batch(BatchWriter, BatchSubmit):
             # get xid from dict
             xid = group_data.get('xid')
         else:
-            # get xid from object
+            # get xid from GroupType
             xid = group_data.xid
 
         if self.groups.get(xid) is not None:
@@ -136,16 +136,13 @@ class Batch(BatchWriter, BatchSubmit):
         return group_data
 
     def _indicator(
-        self, indicator_data: Union[dict, object], store: Optional[bool] = True
-    ) -> Union[dict, object]:
+        self, indicator_data: Union[dict, IndicatorType], store: Optional[bool] = True
+    ) -> Union[dict, IndicatorType]:
         """Return previously stored indicator or new indicator.
 
         Args:
-            indicator_data: An Indicator dict or instance of Indicator object.
+            indicator_data: An Indicator dict or instance of IndicatorType.
             store: If True the indicator data will be stored in instance list.
-
-        Returns:
-            Union[dict, object]: The new Indicator dict/object or the previously stored dict/object.
         """
         if store is False:
             return indicator_data
@@ -154,7 +151,7 @@ class Batch(BatchWriter, BatchSubmit):
             # get xid from dict
             xid = indicator_data.get('xid')
         else:
-            # get xid from object
+            # get xid from IndicatorType
             xid = indicator_data.xid
 
         if self.indicators.get(xid) is not None:
@@ -188,7 +185,7 @@ class Batch(BatchWriter, BatchSubmit):
                 os.remove(self.indicator_shelf_fqfn)
 
     @property
-    def data(self):
+    def data(self) -> dict:
         """Return the batch indicator/group and file data to be sent to the ThreatConnect API.
 
         **Processing Order:**
@@ -259,15 +256,15 @@ class Batch(BatchWriter, BatchSubmit):
                 tracker['count'] += 1
                 tracker['bytes'] += sys.getsizeof(json.dumps(group_data))
 
-                # extend xids with any groups associated with the same object
+                # extend xids with any groups associated with the same GroupType
                 xids.extend(group_data.get('associatedGroupXid', []))
 
     @staticmethod
-    def data_group_type(group_data: Union[dict, object]) -> Tuple[dict, dict]:
+    def data_group_type(group_data: Union[dict, GroupType]) -> Tuple[dict, dict]:
         """Return dict representation of group data and file data.
 
         Args:
-            group_data: The group data dict or object.
+            group_data: The group data dict or GroupType.
 
         Returns:
             Tuple[dict, dict]: A tuple containing file_data and group_data.
@@ -283,7 +280,7 @@ class Batch(BatchWriter, BatchSubmit):
                     'type': group_data.get('type'),
                 }
         else:
-            # get the file data from the object and return dict format of object
+            # get the file data from the GroupType and return dict format of GroupType
             if group_data.data.get('type') in ['Document', 'Report']:
                 file_data = group_data.file_data
             group_data = group_data.data
@@ -303,9 +300,9 @@ class Batch(BatchWriter, BatchSubmit):
             bool: True if max values have been hit, else False.
         """
         # convert groups.keys() to a list to prevent dictionary change error caused by
-        # the data_group_association function deleting items from the object.
+        # the data_group_association function deleting items from the GroupType.
 
-        # process group objects
+        # process the group
         for xid in list(groups.keys()):
             # get association from group data
             self.data_group_association(data, tracker, xid)
@@ -341,7 +338,7 @@ class Batch(BatchWriter, BatchSubmit):
         Returns:
             bool: True if max values have been hit, else False.
         """
-        # process indicator objects
+        # process the indicators
         for xid, indicator_data in list(indicators.items()):
             if not isinstance(indicator_data, dict):
                 indicator_data = indicator_data.data
@@ -971,7 +968,7 @@ class Batch(BatchWriter, BatchSubmit):
         headers: dict,
         params: dict,
         halt_on_error: Optional[bool] = True,
-    ) -> object:
+    ) -> Response:
         """Submit File Content for Documents and Reports to ThreatConnect API.
 
         Args:
@@ -983,7 +980,7 @@ class Batch(BatchWriter, BatchSubmit):
             halt_on_error: If True any exception will raise an error.
 
         Returns:
-            requests.models.Response: The response from the request.
+            Response: The response from the request.
         """
         r = None
         try:
@@ -1094,7 +1091,7 @@ class Batch(BatchWriter, BatchSubmit):
         return self.group_len + self.indicator_len
 
     def __str__(self) -> str:  # pragma: no cover
-        """Return string represtentation of object."""
+        """Return string represtentation of batch."""
         groups = []
         for group_data in self.groups.values():
             if isinstance(group_data, dict):
