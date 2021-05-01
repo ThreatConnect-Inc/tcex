@@ -3,16 +3,21 @@
 import gzip
 import hashlib
 import json
+import logging
 import os
 import re
-import shelve
+import shelve  # nosec
 import sys
 import time
 import uuid
 from collections import deque
 from typing import Optional, Tuple, Union
 
-from .group import (
+# third-party
+from requests import Session
+
+# first-party
+from tcex.batch.group import (
     Adversary,
     Campaign,
     Document,
@@ -25,7 +30,7 @@ from .group import (
     Signature,
     Threat,
 )
-from .indicator import (
+from tcex.batch.indicator import (
     ASN,
     CIDR,
     URL,
@@ -39,19 +44,34 @@ from .indicator import (
     UserAgent,
     custom_indicator_class_factory,
 )
+from tcex.input import Input
+from tcex.threat_intelligence import ThreatIntelCommon
+from tcex.utils import Utils
 
 # import local modules for dynamic reference
 module = __import__(__name__)
 
+# get tcex logger
+logger = logging.getLogger('tcex')
+
 
 class BatchWriter:
-    """ThreatConnect Batch Import Module"""
+    """ThreatConnect Batch Import Module
 
-    def __init__(self, tcex: 'TcEx', output_dir: str, **kwargs) -> None:  # noqa: F821
+    Args:
+        inputs: The App inputs.
+        session: The ThreatConnect API session.
+        output_dir: The directory to write the batch JSON data.
+    """
+
+    def __init__(
+        self, inputs: Input, session: Session, output_dir: str, **kwargs
+    ) -> None:  # noqa: F821
         """Initialize Class properties."""
-        self.tcex = tcex
+        self.inputs = inputs
         self.output_dir = output_dir
         self.output_extension = kwargs.get('output_extension')
+        self.session = session
         self.write_callback = kwargs.get('write_callback')
         self.write_callback_kwargs = kwargs.get('write_callback_kwargs', {})
 
@@ -60,7 +80,9 @@ class BatchWriter:
         self._batch_max_chunk = 100_000
         self._batch_size = 0  # track current batch size
         self._batch_max_size = 75_000_000  # max size in bytes
-        # self._batch_max_size = 7_500_000  # max size in bytes
+        self.log = logger()
+        self.tic = ThreatIntelCommon(self.session)
+        self.utils = Utils()
 
         # shelf settings
         self._group_shelf_fqfn = None
@@ -77,11 +99,11 @@ class BatchWriter:
 
     def _gen_indicator_class(self):  # pragma: no cover
         """Generate Custom Indicator Classes."""
-        for entry in self.tcex.indicator_types_data.values():
+        for entry in self.tic.indicator_types_data.values():
             name = entry.get('name')
             class_name = name.replace(' ', '')
             # temp fix for API issue where boolean are returned as strings
-            entry['custom'] = self.tcex.utils.to_bool(entry.get('custom'))
+            entry['custom'] = self.utils.to_bool(entry.get('custom'))
 
             if class_name in globals():
                 # skip Indicator Type if a class already exists
@@ -454,16 +476,14 @@ class BatchWriter:
             self.groups_shelf.close()
             os.unlink(self.group_shelf_fqfn)
         except Exception as ex:
-            self.tcex.log.warning(
-                f'action=batch-close, filename={self.group_shelf_fqfn} exception={ex}'
-            )
+            self.log.warning(f'action=batch-close, filename={self.group_shelf_fqfn} exception={ex}')
 
         # cleanup shelf files
         try:
             self.indicators_shelf.close()
             os.unlink(self.indicator_shelf_fqfn)
         except Exception as ex:
-            self.tcex.log.warning(
+            self.log.warning(
                 f'action=batch-close, filename={self.indicator_shelf_fqfn} exception={ex}'
             )
 
@@ -483,7 +503,7 @@ class BatchWriter:
             dict: A dictionary of group, indicators, and/or file data.
         """
         data = {'file': {}, 'group': [], 'indicator': []}
-        tracker = {'count': 0, 'bytes': 0}
+        tracker = {'count': 0}
 
         # process group from memory, returning if max values have been reached
         if self.data_groups(data, self.groups, tracker) is True:
@@ -511,8 +531,7 @@ class BatchWriter:
 
         Args:
             data: The data dict to update with group and file data.
-            tracker: A dict containing total count of all entities collected and
-                the total size in bytes of all entities collected.
+            tracker: A dict containing total count of all entities collected.
             xid: The xid of the group to retrieve associations.
         """
         xids = deque()
@@ -537,7 +556,6 @@ class BatchWriter:
 
                 # update entity trackers
                 tracker['count'] += 1
-                # tracker['bytes'] += sys.getsizeof(json.dumps(group_data))
 
                 # extend xids with any groups associated with the same object
                 xids.extend(group_data.get('associatedGroupXid', []))
@@ -576,8 +594,7 @@ class BatchWriter:
         Args:
             data: The data dict to update with group and file data.
             groups: The list of groups to process.
-            tracker: A dict containing total count of all entities collected and
-                the total size in bytes of all entities collected.
+            tracker: A dict containing total count of all entities collected.
 
         Returns:
             bool: True if max values have been hit, else False.
@@ -592,9 +609,8 @@ class BatchWriter:
 
             if tracker.get('count') % 10_000 == 0:
                 # log count/size at a sane level
-                self.tcex.log.debug(
-                    '''feature=batch, action=data-groups, '''
-                    f'''count={tracker.get('count'):,}, bytes={tracker.get('bytes'):,}'''
+                self.log.debug(
+                    '''feature=batch, action=data-groups, ''' f'''count={tracker.get('count'):,}'''
                 )
 
         return False
@@ -605,8 +621,7 @@ class BatchWriter:
         Args:
             data: The data dict to update with group and file data.
             indicators: The list of indicators to process.
-            tracker: A dict containing total count of all entities collected and
-                the total size in bytes of all entities collected.
+            tracker: A dict containing total count of all entities collected.
 
         Returns:
             bool: True if max values have been hit, else False.
@@ -620,13 +635,12 @@ class BatchWriter:
 
             # update entity trackers
             tracker['count'] += 1
-            # tracker['bytes'] += sys.getsizeof(json.dumps(indicator_data))
 
             if tracker.get('count') % 10_000 == 0:
                 # log count/size at a sane level
-                self.tcex.log.debug(
+                self.log.debug(
                     '''feature=batch, action=data-indicators, '''
-                    f'''count={tracker.get('count'):,}, bytes={tracker.get('bytes'):,}'''
+                    f'''count={tracker.get('count'):,}'''
                 )
 
         return False
@@ -663,14 +677,14 @@ class BatchWriter:
         self.write_batch_json(content)
 
         # store the length of the batch data to use for poll interval calculations
-        self.tcex.log.info(
+        self.log.info(
             '''feature=batch, event=dump, type=group, ''' f'''count={len(content.get('group')):,}'''
         )
-        self.tcex.log.info(
+        self.log.info(
             '''feature=batch, event=dump, type=indicator, '''
             f'''count={len(content.get('indicator')):,}'''
         )
-        self.tcex.log.info(f'''feature=batch, event=dump, type=batch, size={self._batch_size:,}''')
+        self.log.info(f'''feature=batch, event=dump, type=batch, size={self._batch_size:,}''')
 
         # reset batch size after dump
         self._batch_size = 0
@@ -811,7 +825,7 @@ class BatchWriter:
         if self._group_shelf_fqfn is None:
             # new shelf file
             self._group_shelf_fqfn = os.path.join(
-                self.tcex.args.tc_temp_path, f'groups-{str(uuid.uuid4())}'
+                self.inputs.data.tc_temp_path, f'groups-{str(uuid.uuid4())}'
             )
         return self._group_shelf_fqfn
 
@@ -827,7 +841,7 @@ class BatchWriter:
     def groups_shelf(self) -> object:
         """Return dictionary of all Groups data."""
         if self._groups_shelf is None:
-            self._groups_shelf = shelve.open(self.group_shelf_fqfn, writeback=False)
+            self._groups_shelf = shelve.open(self.group_shelf_fqfn, writeback=False)  # nosec
         return self._groups_shelf
 
     def host(self, hostname: str, **kwargs) -> Host:
@@ -899,7 +913,7 @@ class BatchWriter:
         if self._indicator_shelf_fqfn is None:
             # new shelf file
             self._indicator_shelf_fqfn = os.path.join(
-                self.tcex.args.tc_temp_path, f'indicators-{str(uuid.uuid4())}'
+                self.inputs.data.tc_temp_path, f'indicators-{str(uuid.uuid4())}'
             )
         return self._indicator_shelf_fqfn
 
@@ -915,7 +929,9 @@ class BatchWriter:
     def indicators_shelf(self) -> object:
         """Return dictionary of all Indicator data."""
         if self._indicators_shelf is None:
-            self._indicators_shelf = shelve.open(self.indicator_shelf_fqfn, writeback=False)
+            self._indicators_shelf = shelve.open(  # nosec
+                self.indicator_shelf_fqfn, writeback=False
+            )
         return self._indicators_shelf
 
     def intrusion_set(self, name: str, **kwargs) -> IntrusionSet:
@@ -1017,7 +1033,7 @@ class BatchWriter:
         if resource_type is not None and xid is not None:
             saved = True
 
-            if resource_type in self.tcex.group_types:
+            if resource_type in self.tic.group_types:
                 try:
                     # groups
                     self.groups_shelf[xid] = resource
@@ -1030,7 +1046,7 @@ class BatchWriter:
                     except KeyError:
                         # if group was saved twice it would already be delete
                         pass
-            elif resource_type in self.tcex.indicator_types_data.keys():
+            elif resource_type in self.tic.indicator_types_data.keys():
                 try:
                     # indicators
                     self.indicators_shelf[xid] = resource

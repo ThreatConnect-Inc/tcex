@@ -2,10 +2,21 @@
 # standard library
 import gzip
 import json
+import logging
 import math
 import re
 import time
 from typing import Optional
+
+# third-party
+from requests import Session
+
+# first-party
+from tcex.input import Input
+from tcex.pleb import Event
+
+# get tcex logger
+logger = logging.getLogger('tcex')
 
 
 class BatchSubmit:
@@ -13,7 +24,8 @@ class BatchSubmit:
 
     def __init__(
         self,
-        tcex: object,
+        inputs: Input,
+        session: Session,
         owner: str,
         action: Optional[str] = 'Create',
         attribute_write_type: Optional[str] = 'Replace',
@@ -25,7 +37,8 @@ class BatchSubmit:
         """Initialize Class properties.
 
         Args:
-            tcex: An instance of TcEx object.
+            inputs: The App inputs.
+            session: The ThreatConnect API session.
             owner: The ThreatConnect owner for Batch action.
             action: Action for the batch job ['Create', 'Delete'].
             attribute_write_type: Write type for Indicator attributes ['Append', 'Replace'].
@@ -34,7 +47,8 @@ class BatchSubmit:
             security_label_write_type: Write type for labels ['Append', 'Replace'].
             tag_write_type: Write type for tags ['Append', 'Replace'].
         """
-        self.tcex = tcex
+        self.inputs = inputs
+        self.session = session
         self._action = action
         self._attribute_write_type = attribute_write_type
         self._halt_on_error = halt_on_error
@@ -46,6 +60,8 @@ class BatchSubmit:
         # properties
         self._file_merge_mode = None
         self._hash_collision_mode = None
+        self.event = Event()
+        self.log = logger()
 
         # global overrides on batch/file errors
         self._halt_on_batch_error = None
@@ -99,18 +115,30 @@ class BatchSubmit:
             halt_on_error = self.halt_on_batch_error
 
         try:
-            r = self.tcex.session.post('/v2/batch', json=self.settings)
+            r = self.session.post('/v2/batch', json=self.settings)
         except Exception as e:
-            self.tcex.handle_error(10505, [e], halt_on_error)
+            self.event.send(
+                'handle_error', code=10505, message_values=[e], raise_error=halt_on_error
+            )
 
         if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-            self.tcex.handle_error(10510, [r.status_code, r.text], halt_on_error)
+            self.event.send(
+                'handle_error',
+                code=10510,
+                message_values=[r.status_code, r.text],
+                raise_error=halt_on_error,
+            )
 
         data = r.json()
         if data.get('status') != 'Success':
-            self.tcex.handle_error(10510, [r.status_code, r.text], halt_on_error)
+            self.event.send(
+                'handle_error',
+                code=10510,
+                message_values=[r.status_code, r.text],
+                raise_error=halt_on_error,
+            )
 
-        self.tcex.log.debug(f'feature=batch, event=submit-job, status={data}')
+        self.log.debug(f'feature=batch, event=submit-job, status={data}')
         return data.get('data', {}).get('batchId')
 
     @property
@@ -155,8 +183,8 @@ class BatchSubmit:
         """
         errors = []
         try:
-            self.tcex.log.debug(f'feature=batch, event=retrieve-errors, batch-id={batch_id}')
-            r = self.tcex.session.get(f'/v2/batch/{batch_id}/errors')
+            self.log.debug(f'feature=batch, event=retrieve-errors, batch-id={batch_id}')
+            r = self.session.get(f'/v2/batch/{batch_id}/errors')
             # API does not return correct content type
             if r.ok:
                 errors = json.loads(r.text)
@@ -166,9 +194,14 @@ class BatchSubmit:
                 error_reason = error.get('errorReason')
                 for error_msg in self._critical_failures:
                     if re.findall(error_msg, error_reason):
-                        self.tcex.handle_error(10500, [error_reason], halt_on_error)
+                        self.event.send(
+                            'handle_error',
+                            code=10500,
+                            message_values=[error_reason],
+                            raise_error=halt_on_error,
+                        )
         except Exception as e:
-            self.tcex.handle_error(560, [e], halt_on_error)
+            self.event.send('handle_error', code=560, message_values=[e], raise_error=halt_on_error)
 
         return errors
 
@@ -290,18 +323,30 @@ class BatchSubmit:
             poll_count += 1
             poll_time_total += self._poll_interval
             time.sleep(self._poll_interval)
-            self.tcex.log.info(f'feature=batch, event=progress, poll-time={poll_time_total}')
+            self.log.info(f'feature=batch, event=progress, poll-time={poll_time_total}')
             try:
                 # retrieve job status
-                r = self.tcex.session.get(f'/v2/batch/{batch_id}', params=params)
+                r = self.session.get(f'/v2/batch/{batch_id}', params=params)
                 if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-                    self.tcex.handle_error(545, [r.status_code, r.text], halt_on_error)
+                    self.event.send(
+                        'handle_error',
+                        code=545,
+                        message_values=[r.status_code, r.text],
+                        raise_error=halt_on_error,
+                    )
                     return data
                 data = r.json()
                 if data.get('status') != 'Success':
-                    self.tcex.handle_error(545, [r.status_code, r.text], halt_on_error)
+                    self.event.send(
+                        'handle_error',
+                        code=545,
+                        message_values=[r.status_code, r.text],
+                        raise_error=halt_on_error,
+                    )
             except Exception as e:
-                self.tcex.handle_error(540, [e], halt_on_error)
+                self.event.send(
+                    'handle_error', code=540, message_values=[e], raise_error=halt_on_error
+                )
 
             if data.get('data', {}).get('batchStatus', {}).get('status') == 'Completed':
                 # store last 5 poll times to use in calculating average poll time
@@ -326,7 +371,7 @@ class BatchSubmit:
                     # if completed on first poll, reduce poll interval.
                     self._poll_interval = self._poll_interval * 0.85
 
-                self.tcex.log.debug(f'feature=batch, poll-time={poll_time_total}, status={data}')
+                self.log.debug(f'feature=batch, poll-time={poll_time_total}, status={data}')
                 return data
 
             # update poll_interval for retry with max poll time of 20 seconds
@@ -336,7 +381,9 @@ class BatchSubmit:
 
             # time out poll to prevent App running indefinitely
             if poll_time_total >= timeout:
-                self.tcex.handle_error(550, [timeout], True)
+                self.event.send(
+                    'handle_error', code=550, message_values=[timeout], raise_error=True
+                )
 
     @property
     def poll_timeout(self) -> int:
@@ -394,11 +441,11 @@ class BatchSubmit:
             halt_on_error = self.halt_on_batch_error
 
         # store the length of the batch data to use for poll interval calculations
-        self.tcex.log.info(
+        self.log.info(
             '''feature=batch, event=submit-create-and-upload, type=group, '''
             f'''count={len(content.get('group')):,}'''
         )
-        self.tcex.log.info(
+        self.log.info(
             '''feature=batch, event=submit-create-and-upload, type=indicator, '''
             f'''count={len(content.get('indicator')):,}'''
         )
@@ -406,12 +453,19 @@ class BatchSubmit:
         files = (('config', json.dumps(self.settings)), ('content', json.dumps(content)))
         params = {'includeAdditional': 'true'}
         try:
-            r = self.tcex.session.post('/v2/batch/createAndUpload', files=files, params=params)
+            r = self.session.post('/v2/batch/createAndUpload', files=files, params=params)
             if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-                self.tcex.handle_error(10510, [r.status_code, r.text], halt_on_error)
+                self.event.send(
+                    'handle_error',
+                    code=10510,
+                    message_values=[r.status_code, r.text],
+                    raise_error=halt_on_error,
+                )
             return r.json()
         except Exception as e:
-            self.tcex.handle_error(10505, [e], halt_on_error)
+            self.event.send(
+                'handle_error', code=10505, message_values=[e], raise_error=halt_on_error
+            )
 
         return {}
 
@@ -435,18 +489,25 @@ class BatchSubmit:
 
         # store the length of the batch data to use for poll interval calculations
         # self._batch_data_count = len(content.get('group')) + len(content.get('indicator'))
-        # self.tcex.log.info(
+        # self.log.info(
         #     f'feature=batch, action=submit-data, batch-size={self._batch_data_count:,}'
         # )
 
         headers = {'Content-Type': 'application/octet-stream'}
         try:
-            r = self.tcex.session.post(f'/v2/batch/{batch_id}', headers=headers, data=content)
+            r = self.session.post(f'/v2/batch/{batch_id}', headers=headers, data=content)
             if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-                self.tcex.handle_error(10525, [r.status_code, r.text], halt_on_error)
+                self.event.send(
+                    'handle_error',
+                    code=10525,
+                    message_values=[r.status_code, r.text],
+                    raise_error=halt_on_error,
+                )
             return r.json()
         except Exception as e:
-            self.tcex.handle_error(10520, [e], halt_on_error)
+            self.event.send(
+                'handle_error', code=10520, message_values=[e], raise_error=halt_on_error
+            )
 
         return None
 
@@ -459,18 +520,3 @@ class BatchSubmit:
     def tag_write_type(self, write_type: str):
         """Set batch tag write type."""
         self._tag_write_type = write_type
-
-    # def write_error_json(self, errors: list) -> None:
-    #     """Write the errors to a JSON file for debuging purposes.
-
-    #     Args:
-    #         errors: A list of errors to write out.
-    #     """
-    #     if self.debug:
-    #         if not errors:
-    #             errors = []
-    #         # get timestamp as a string without decimal place and consistent length
-    #         timestamp = str(round(time.time() * 10000000))
-    #         error_json_file = os.path.join(self.debug_path_batch, f'errors-{timestamp}.json.gz')
-    #         with gzip.open(error_json_file, mode='wt', encoding='utf-8') as fh:
-    #             json.dump(errors, fh)

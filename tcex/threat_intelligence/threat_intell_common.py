@@ -16,7 +16,7 @@ from tcex.pleb import Event
 logger = logging.getLogger('tcex')
 
 
-class TiCommon:
+class ThreatIntelCommon:
     """Threat Intelligence Common Methods"""
 
     def __init__(self, session: Session) -> None:
@@ -136,13 +136,17 @@ class TiCommon:
 
         # check for bad status code and response that is not JSON
         if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-            self.log.warning('feature=tcex, event=association-types-download, status=failure')
+            self.log.warning(
+                'feature=threat-intel-common, event=association-types-download, status=failure'
+            )
             return _association_types
 
         # validate successful API results
         data: dict = r.json()
         if data.get('status') != 'Success':
-            self.log.warning('feature=tcex, event=association-types-download, status=failure')
+            self.log.warning(
+                'feature=threat-intel-common, event=association-types-download, status=failure'
+            )
             return _association_types
 
         # TODO: [low] make an Model for this data and return model?
