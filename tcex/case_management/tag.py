@@ -1,9 +1,11 @@
 """ThreatConnect Tag"""
-from .api_endpoints import ApiEndpoints
-from .common_case_management import CommonCaseManagement
-from .common_case_management_collection import CommonCaseManagementCollection
-from .filter import Filter
-from .tql import TQL
+# first-party
+from tcex.case_management.api_endpoints import ApiEndpoints
+from tcex.case_management.case import FilterCases
+from tcex.case_management.common_case_management import CommonCaseManagement
+from tcex.case_management.common_case_management_collection import CommonCaseManagementCollection
+from tcex.case_management.filter import Filter
+from tcex.case_management.tql import TQL
 
 
 class Tags(CommonCaseManagementCollection):
@@ -23,8 +25,8 @@ class Tags(CommonCaseManagementCollection):
     Args:
         tcex (TcEx): An instantiated instance of TcEx object.
         initial_response (dict, optional): Initial data in
-            Case Object for Tag. Defaults to None.
-        tql_filters (list, optional): List of TQL filters. Defaults to None.
+            Case Object for Tag.
+        tql_filters (list, optional): List of TQL filters.
         params(dict, optional): Dict of the params to be sent while
             retrieving the Tag objects.
     """
@@ -171,8 +173,6 @@ class FilterTags(Filter):
     @property
     def has_case(self):
         """Return **FilterCases** for further filtering."""
-        from .case import FilterCases
-
         cases = FilterCases(ApiEndpoints.CASES, self._tcex, TQL())
         self._tql.add_filter('hasCase', TQL.Operator.EQ, cases, TQL.Type.SUB_QUERY)
         return cases

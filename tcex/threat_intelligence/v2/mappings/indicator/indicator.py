@@ -301,8 +301,8 @@ class Indicator(Mappings):
 
         Args:
             deleted_since ([type]): [description]
-            filters ([type], optional): [description]. Defaults to None.
-            params ([type], optional): [description]. Defaults to None.
+            filters ([type], optional): [description].
+            params ([type], optional): [description].
 
         Returns:
             [type]: [description]
@@ -321,9 +321,9 @@ class Indicator(Mappings):
         """Construct an indicator summary given va1, va2, val3.
 
         Args:
-            val1 (str, optional): Indicator value. Defaults to None.
-            val2 (str, optional): Indicator value. Defaults to None.
-            val3 (str, optional): Indicator value. Defaults to None.
+            val1 (str, optional): Indicator value.
+            val2 (str, optional): Indicator value.
+            val3 (str, optional): Indicator value.
 
         Returns:
             str: <space><colon><space> delimeted indicator summary.

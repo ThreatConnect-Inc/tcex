@@ -16,8 +16,7 @@ import typer
 
 # first-party
 from tcex.app_config.models.tcex_json_model import LibVersionModel
-
-from .bin_abc import BinABC
+from tcex.bin.bin_abc import BinABC
 
 
 class Dep(BinABC):
@@ -31,7 +30,7 @@ class Dep(BinABC):
         proxy_port: int,
         proxy_user: str,
         proxy_pass: str,
-    ):
+    ) -> None:
         """Initialize Class properties."""
         super().__init__()
         self.branch = branch

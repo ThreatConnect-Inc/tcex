@@ -1,4 +1,6 @@
 """ThreatConnect Assignee Module"""
+# standard library
+from typing import Dict, List, Optional, Union
 
 
 class User:
@@ -6,14 +8,14 @@ class User:
 
     Args:
         first_name (str, kwargs): The first name of the user.
-        id (id, kwargs): The id of the user.
+        id (int, kwargs): The id of the user.
         last_name (str, kwargs): The last name of the user.
         pseudonym (str, kwargs): The pseudonym of the user.
         role (str, kwargs): The role of the user.
         user_name (str, kwargs): The user name of the user.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         """Initialize Class properties."""
         self._transform_kwargs(kwargs)
         self._first_name = kwargs.get('first_name', None)
@@ -23,7 +25,7 @@ class User:
         self._role = kwargs.get('role', None)
         self._user_name = kwargs.get('user_name', None)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Printable version of Object"""
         printable_string = ''
         for key, value in sorted(vars(self).items()):
@@ -37,7 +39,7 @@ class User:
         return printable_string
 
     @property
-    def _metadata_map(self):
+    def _metadata_map(self) -> Dict[str, str]:
         """Return a mapping of kwargs to expected args."""
         return {
             'dateAdded': 'date_added',
@@ -46,19 +48,19 @@ class User:
             'userName': 'user_name',
         }
 
-    def _transform_kwargs(self, kwargs):
+    def _transform_kwargs(self, kwargs: dict) -> None:
         """Map the provided kwargs to expected arguments."""
         for key in dict(kwargs):
             new_key = self._metadata_map.get(key, key)
             kwargs[new_key] = kwargs.pop(key)
 
     @property
-    def body(self):
+    def body(self) -> dict:
         """Return a dict representation of the Creator class."""
         return self.as_dict
 
     @property
-    def as_dict(self):
+    def as_dict(self) -> dict:
         """Return a dict representation of the Creator class."""
         properties = vars(self)
         as_dict = {}
@@ -74,67 +76,67 @@ class User:
         return as_dict
 
     @property
-    def as_entity(self):
+    def as_entity(self) -> Dict[str, str]:
         """Return the USER as a entity."""
         return {'type': 'User', 'value': self.user_name, 'id': self.id}
 
     @property
-    def first_name(self):
+    def first_name(self) -> str:
         """Return the First Name for the Case Creator."""
         return self._first_name
 
     @first_name.setter
-    def first_name(self, first_name):
+    def first_name(self, first_name: str) -> None:
         """Set the First Name for the Case Creator."""
         self._first_name = first_name
 
     @property
-    def id(self):
+    def id(self) -> int:
         """Return the ID for the Case Creator."""
         return self._id
 
     @id.setter
-    def id(self, creator_id):
+    def id(self, creator_id: int) -> None:
         """Set the ID for the Case Creator."""
         self._id = creator_id
 
     @property
-    def last_name(self):
+    def last_name(self) -> str:
         """Return the **Last Name** for the User Object."""
         return self._last_name
 
     @last_name.setter
-    def last_name(self, last_name):
+    def last_name(self, last_name: str) -> None:
         """Set the **Last Name** for the User Object."""
         self._last_name = last_name
 
     @property
-    def pseudonym(self):
+    def pseudonym(self) -> str:
         """Return the Pseudonym for the Case Creator."""
         return self._pseudonym
 
     @pseudonym.setter
-    def pseudonym(self, pseudonym):
+    def pseudonym(self, pseudonym: str) -> None:
         """Set the Pseudonym for the Case Creator."""
         self._pseudonym = pseudonym
 
     @property
-    def role(self):
+    def role(self) -> str:
         """Return the Role for the Case Creator."""
         return self._role
 
     @role.setter
-    def role(self, role):
+    def role(self, role: str) -> None:
         """Set the Role for the Case Creator."""
         self._role = role
 
     @property
-    def user_name(self):
+    def user_name(self) -> str:
         """Return the User Name for the Case Creator."""
         return self._user_name
 
     @user_name.setter
-    def user_name(self, user_name):
+    def user_name(self, user_name: str) -> None:
         """Set the User Name for the Case Creator."""
         self._user_name = user_name
 
@@ -146,10 +148,9 @@ class Users:
         users (list): A array of user data
     """
 
-    def __init__(self, users=None):
+    def __init__(self, users: Optional[Union[dict, User]] = None) -> None:
         """Initialize Class properties."""
-        if users is None:
-            users = []
+        users = users or []
         self._users = []
 
         for user in users:
@@ -159,17 +160,17 @@ class Users:
                 self._users.append(User(**user))
 
     @property
-    def users(self):
+    def users(self) -> List[User]:
         """Return the **Users**."""
         return self._users
 
     @users.setter
-    def users(self, users):
+    def users(self, users: List[User]) -> None:
         """Set the **Users**."""
         self._users = users
 
     @property
-    def as_dict(self):
+    def as_dict(self) -> dict:
         """Return a dict representation of the UsersData class."""
         data = []
         for user in self.users:
@@ -178,7 +179,7 @@ class Users:
         return {'data': data}
 
     @property
-    def body(self):
+    def body(self) -> dict:
         """Return a body representation of the Creator class."""
         body = []
         for user in self.users:
@@ -204,14 +205,16 @@ class Assignee(User):
         type (str, kwargs): The assignee type. Default to User.
     """
 
-    def __init__(self, type='User', **kwargs):  # pylint: disable=redefined-builtin
+    def __init__(  # pylint: disable=redefined-builtin
+        self, type: Optional[str] = 'User', **kwargs
+    ) -> None:
         """Initialize Class properties."""
         self._name = kwargs.get('name')
         self._type = type
         super().__init__(**kwargs)
 
     @property
-    def as_dict(self):
+    def as_dict(self) -> dict:
         """Return a dict representation of the Assignee class."""
         user_data = super().as_dict
         del user_data['type']

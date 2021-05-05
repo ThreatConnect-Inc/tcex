@@ -20,8 +20,7 @@ from stdlib_list import stdlib_list
 
 # first-party
 from tcex.app_config import InstallJson, JobJson, LayoutJson, TcexJson
-
-from .bin_abc import BinABC
+from tcex.bin.bin_abc import BinABC
 
 try:
     # standard library
@@ -252,7 +251,7 @@ class Validate(BinABC):
 
             self.validation_data['schema'].append({'filename': feed.job_file, 'status': status})
 
-    def check_layout_json(self):
+    def check_layout_json(self) -> None:
         """Check all layout.json files for valid schema."""
         if not self.lj.has_layout or 'layout.json' in self.invalid_json_files:
             return
@@ -278,7 +277,7 @@ class Validate(BinABC):
         if status is True:
             self.check_layout_params()
 
-    def check_layout_params(self):
+    def check_layout_params(self) -> None:
         """Check that the layout.json is consistent with install.json.
 
         The layout.json files references the params.name from the install.json file.  The method
@@ -385,11 +384,11 @@ class Validate(BinABC):
         # update validation data for module
         self.validation_data['layouts'].append({'params': 'outputs', 'status': status})
 
-    def check_syntax(self, app_path=None):
+    def check_syntax(self, app_path=None) -> None:
         """Run syntax on each ".py" and ".json" file.
 
         Args:
-            app_path (str, optional): Defaults to None. The path of Python files.
+            app_path (str, optional): The path of Python files.
         """
         fqpn = Path(app_path or os.getcwd())
 
@@ -448,11 +447,13 @@ class Validate(BinABC):
             # reset validation_data
             self.validation_data = self._validation_data
 
-    def print_json(self):
+    def print_json(self) -> None:
         """[App Builder] Print JSON output."""
         print(json.dumps({'validation_data': self.validation_data}))
 
-    def _print_file_syntax_results(self):
+    # TODO: [low] switch to typer echo?
+    def _print_file_syntax_results(self) -> None:
+        """Print file syntax results."""
         if self.validation_data.get('fileSyntax'):
             print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Validated File Syntax:')
             print(f'''{c.Style.BRIGHT}{'File:'!s:<60}{'Status:'!s:<25}''')
@@ -461,7 +462,8 @@ class Validate(BinABC):
                 status_value = self.status_value(f.get('status'))
                 print(f"{f.get('filename')!s:<60}{status_color}{status_value!s:<25}")
 
-    def _print_imports_results(self):
+    def _print_imports_results(self) -> None:
+        """Print import results."""
         if self.validation_data.get('moduleImports'):
             print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Validated Imports:')
             print(f'''{c.Style.BRIGHT}{'File:'!s:<30}{'Module:'!s:<30}{'Status:'!s:<25}''')
@@ -473,7 +475,8 @@ class Validate(BinABC):
                     f'''{f.get('module')!s:<30}{status_color}{status_value!s:<25}'''
                 )
 
-    def _print_schema_results(self):
+    def _print_schema_results(self) -> None:
+        """Print schema results."""
         if self.validation_data.get('schema'):
             print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Validated Schema:')
             print(f'''{c.Style.BRIGHT}{'File:'!s:<60}{'Status:'!s:<25}''')
@@ -482,7 +485,8 @@ class Validate(BinABC):
                 status_value = self.status_value(f.get('status'))
                 print(f'''{f.get('filename')!s:<60}{status_color}{status_value!s:<25}''')
 
-    def _print_layouts_results(self):
+    def _print_layouts_results(self) -> None:
+        """Print layout results."""
         if self.validation_data.get('layouts'):
             print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Validated Layouts:')
             print(f'''{c.Style.BRIGHT}{'Params:'!s:<60}{'Status:'!s:<25}''')
@@ -491,7 +495,8 @@ class Validate(BinABC):
                 status_value = self.status_value(f.get('status'))
                 print(f"{f.get('params')!s:<60}{status_color}{status_value!s:<25}")
 
-    def _print_feed_results(self):
+    def _print_feed_results(self) -> None:
+        """Print feed results."""
         if self.validation_data.get('feeds'):
             print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Validated Feed Jobs:')
             print(f'''{c.Style.BRIGHT}{'Feeds:'!s:<60}{'Status:'!s:<25}''')
@@ -500,7 +505,8 @@ class Validate(BinABC):
                 status_value = self.status_value(f.get('status'))
                 print(f"{f.get('name')!s:<60}{status_color}{status_value!s:<25}")
 
-    def _print_errors(self):
+    def _print_errors(self) -> None:
+        """Print errors results."""
         if self.validation_data.get('errors'):
             print('\n')  # separate errors from normal output
         for error in self.validation_data.get('errors'):
@@ -531,11 +537,11 @@ class Validate(BinABC):
         self._print_errors()
 
     @staticmethod
-    def status_color(status):
+    def status_color(status) -> str:
         """Return the appropriate status color."""
         return c.Fore.GREEN if status else c.Fore.RED
 
     @staticmethod
-    def status_value(status):
+    def status_value(status) -> str:
         """Return the appropriate status color."""
         return 'passed' if status else 'failed'

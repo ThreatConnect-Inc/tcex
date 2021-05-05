@@ -53,13 +53,13 @@ class IterateOnArg:
         arg (str): The arg name from the App which contains the input. This input can be
             a Binary, BinaryArray, KeyValue, KeyValueArray, String, StringArray, TCEntity, or
             TCEntityArray.
-        default (str, kwargs): Defaults to None. Default value to pass to method if arg
+        default (str, kwargs): Default value to pass to method if arg
             value is None. Only supported for String or StringArray.
         fail_enabled (boolean|str, kwargs): Accepts a boolean or string value.  If a boolean value
             is provided that value will control enabling/disabling this feature. A string
             value should reference an item in the args namespace which resolves to a boolean.
             The value of this boolean will control enabling/disabling this feature.
-        fail_on (list, kwargs): Defaults to None. Fail if data read from Redis is in list.
+        fail_on (list, kwargs): Fail if data read from Redis is in list.
     """
 
     def __init__(self, arg, **kwargs):

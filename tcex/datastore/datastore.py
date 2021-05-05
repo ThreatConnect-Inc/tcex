@@ -28,7 +28,7 @@ class DataStore:
         tcex (TcEx): An instance of TcEx.
         domain (str): A value of “system”, “organization”, or “local”.
         data_type (str): A free form type name for the data.
-        mapping (Optional[dict] = None): Defaults to None. Elasticsearch mappings data.
+        mapping (Optional[dict] = None): Elasticsearch mappings data.
     """
 
     def __init__(self, tcex: object, domain: str, data_type: str, mapping: Optional[dict] = None):

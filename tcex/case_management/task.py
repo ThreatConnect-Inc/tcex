@@ -1,10 +1,16 @@
 """ThreatConnect Task"""
-from .api_endpoints import ApiEndpoints
-from .assignee import Assignee
-from .common_case_management import CommonCaseManagement
-from .common_case_management_collection import CommonCaseManagementCollection
-from .filter import Filter
-from .tql import TQL
+# first-party
+from tcex.case_management.api_endpoints import ApiEndpoints
+from tcex.case_management.artifact import FilterArtifacts
+from tcex.case_management.assignee import Assignee
+from tcex.case_management.case import FilterCases
+from tcex.case_management.common_case_management import CommonCaseManagement
+
+# pylint: disable=cyclic-import
+from tcex.case_management.common_case_management_collection import CommonCaseManagementCollection
+from tcex.case_management.filter import Filter
+from tcex.case_management.note import FilterNotes
+from tcex.case_management.tql import TQL
 
 
 class Tasks(CommonCaseManagementCollection):
@@ -24,8 +30,8 @@ class Tasks(CommonCaseManagementCollection):
     Args:
         tcex (TcEx): An instantiated instance of TcEx object.
         initial_response (dict, optional): Initial data in
-            Case Object for Task. Defaults to None.
-        tql_filters (list, optional): List of TQL filters. Defaults to None.
+            Case Object for Task.
+        tql_filters (list, optional): List of TQL filters.
         params(dict, optional): Dict of the params to be sent while
             retrieving the Task objects.
     """
@@ -526,8 +532,6 @@ class FilterTasks(Filter):
     @property
     def has_artifact(self):  # pragma: no cover
         """Return **FilterArtifacts** for further filtering."""
-        from .artifact import FilterArtifacts
-
         artifacts = FilterArtifacts(ApiEndpoints.ARTIFACTS, self._tcex, TQL())
         self._tql.add_filter('hasArtifact', TQL.Operator.EQ, artifacts, TQL.Type.SUB_QUERY)
         return artifacts
@@ -535,8 +539,6 @@ class FilterTasks(Filter):
     @property
     def has_case(self):
         """Return **FilterCases** for further filtering."""
-        from .case import FilterCases
-
         cases = FilterCases(ApiEndpoints.CASES, self._tcex, TQL())
         self._tql.add_filter('hasCase', TQL.Operator.EQ, cases, TQL.Type.SUB_QUERY)
         return cases
@@ -544,8 +546,6 @@ class FilterTasks(Filter):
     @property
     def has_note(self):
         """Return **FilterNotes** for further filtering."""
-        from .note import FilterNotes
-
         notes = FilterNotes(ApiEndpoints.NOTES, self._tcex, TQL())
         self._tql.add_filter('hasNote', TQL.Operator.EQ, notes, TQL.Type.SUB_QUERY)
         return notes

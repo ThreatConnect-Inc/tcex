@@ -1,9 +1,10 @@
 """ThreatConnect Workflow Template"""
-from .api_endpoints import ApiEndpoints
-from .common_case_management import CommonCaseManagement
-from .common_case_management_collection import CommonCaseManagementCollection
-from .filter import Filter
-from .tql import TQL
+# first-party
+from tcex.case_management.api_endpoints import ApiEndpoints
+from tcex.case_management.common_case_management import CommonCaseManagement
+from tcex.case_management.common_case_management_collection import CommonCaseManagementCollection
+from tcex.case_management.filter import Filter
+from tcex.case_management.tql import TQL
 
 
 class WorkflowTemplates(CommonCaseManagementCollection):
@@ -23,8 +24,8 @@ class WorkflowTemplates(CommonCaseManagementCollection):
     Args:
         tcex (TcEx): An instantiated instance of TcEx object.
         initial_response (dict, optional): Initial data in
-            Case Object for Workflow Template. Defaults to None.
-        tql_filters (list, optional): List of TQL filters. Defaults to None.
+            Case Object for Workflow Template.
+        tql_filters (list, optional): List of TQL filters.
         params(dict, optional): Dict of the params to be sent while
             retrieving the Workflow Event objects.
     """

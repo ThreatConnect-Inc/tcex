@@ -195,7 +195,7 @@ class TestToken:
             key (str): The thread key.
             sleep (bool, optional): If true add sleep interval to wait for token renewal.
             register_thread (bool, optional): If true register the thread. Defaults to True.
-            old_token (str, optional): The generated token before renewal. Defaults to None.
+            old_token (str, optional): The generated token before renewal.
         """
         # if register_thread:
         #     tcex.token.register_thread(key, self.thread_name)

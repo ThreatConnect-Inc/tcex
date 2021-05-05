@@ -1,2 +1,3 @@
 """ThreatConnect Case Management Module."""
-from .case_management import CaseManagement  # noqa: F401
+# flake8: noqa
+from .case_management import CaseManagement

@@ -66,7 +66,7 @@ class ReadArg:
             TCEntityArray.
         array (bool, kwargs): Defaults to False. If True the arg value will always be
             returned as an array.
-        default (str, kwargs): Defaults to None. Default value to pass to method if arg
+        default (str, kwargs): Default value to pass to method if arg
             value is None. Only supported for String or StringArray.
         equal_to (Union[Any, List[Any], Dict[str, Any], kwargs):  Verifies that the arg value is
             equal to the given compare_to value.
@@ -74,7 +74,7 @@ class ReadArg:
             is provided that value will control enabling/disabling this feature. A string
             value should reference an item in the args namespace which resolves to a boolean.
             The value of this boolean will control enabling/disabling this feature.
-        fail_on (list, kwargs): Defaults to None. Fail if data read from Redis is in list.
+        fail_on (list, kwargs): Fail if data read from Redis is in list.
         greater_than (Union[Any, List[Any], Dict[str, Any], kwargs):  Verifies that the arg value is
             greater than the given compare_to value.
         greater_than_or_equal (Union[Any, List[Any], Dict[str, Any], kwargs):  Verifies that the arg

@@ -240,7 +240,7 @@ class TiTcRequest:
 
         Args:
             unique_id (str): The unique ID of the Adversary
-            params (dict, optional): The query params for the request. Defaults to None.
+            params (dict, optional): The query params for the request.
 
         Yields:
             requests.Response: A request Response object.
@@ -257,7 +257,7 @@ class TiTcRequest:
             unique_id (str): The unique ID of the Adversary
             asset_id: (str) The ID of the asset.
             action: (str): The HTTP method (e.g., DELETE or GET)
-            params (dict, optional): The query params for the request. Defaults to None.
+            params (dict, optional): The query params for the request.
 
         Returns:
             requests.Response: A request Response object.
@@ -277,7 +277,7 @@ class TiTcRequest:
 
         Args:
             unique_id (str): The unique ID of the Adversary
-            params (dict, optional): The query params for the request. Defaults to None.
+            params (dict, optional): The query params for the request.
 
         Yields:
             requests.Response: A request Response object.
@@ -294,7 +294,7 @@ class TiTcRequest:
             unique_id (str): The unique ID of the Adversary
             asset_id: (str) The ID of the asset.
             action: (str): The HTTP method (e.g., DELETE or GET)
-            params (dict, optional): The query params for the request. Defaults to None.
+            params (dict, optional): The query params for the request.
 
         Returns:
             requests.Response: A request Response object.
@@ -314,7 +314,7 @@ class TiTcRequest:
 
         Args:
             unique_id (str): The unique ID of the Adversary
-            params (dict, optional): The query params for the request. Defaults to None.
+            params (dict, optional): The query params for the request.
 
         Yields:
             requests.Response: A request Response object.
@@ -331,7 +331,7 @@ class TiTcRequest:
             unique_id (str): The unique ID of the Adversary
             asset_id: (str) The ID of the asset.
             action: (str): The HTTP method (e.g., DELETE or GET)
-            params (dict, optional): The query params for the request. Defaults to None.
+            params (dict, optional): The query params for the request.
 
         Returns:
             requests.Response: A request Response object.
@@ -351,7 +351,7 @@ class TiTcRequest:
 
         Args:
             unique_id (str): The unique ID of the Adversary
-            params (dict, optional): The query params for the request. Defaults to None.
+            params (dict, optional): The query params for the request.
 
         Yields:
             requests.Response: A request Response object.
@@ -539,9 +539,9 @@ class TiTcRequest:
             sub_type ([type]): [description]
             result_limit ([type]): [description]
             result_start ([type]): [description]
-            owner ([type], optional): [description]. Defaults to None.
-            filters ([type], optional): [description]. Defaults to None.
-            params ([type], optional): [description]. Defaults to None.
+            owner ([type], optional): [description].
+            filters ([type], optional): [description].
+            params ([type], optional): [description].
 
         Returns:
             [type]: [description]

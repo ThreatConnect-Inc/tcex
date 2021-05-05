@@ -1,9 +1,33 @@
 """ThreatConnect Common Case Management"""
+# standard library
+from typing import TYPE_CHECKING, List, Optional, Union
+
 # third-party
+from requests import Response
 from requests.exceptions import ProxyError
 
 # first-party
+from tcex.case_management.api_endpoints import ApiEndpoints
 from tcex.case_management.common_case_management_collection import CommonCaseManagementCollection
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.case_management.artifact import Artifact
+    from tcex.case_management.case import Case
+    from tcex.case_management.note import Note
+    from tcex.case_management.tag import Tag
+    from tcex.case_management.task import Task
+    from tcex.case_management.workflow_event import WorkflowEvent
+
+    # Case Management Types
+    CaseManagementType = Union[
+        Artifact,
+        Case,
+        Note,
+        Tag,
+        Task,
+        WorkflowEvent,
+    ]
 
 
 class CommonCaseManagement:
@@ -11,24 +35,24 @@ class CommonCaseManagement:
 
     Args:
         tcex (TcEx): An instance of tcex.
-        api_endpoint (str): The path to the API endpoint.
+        api_endpoint: The path to the API endpoint.
     """
 
-    def __init__(self, tcex, api_endpoint, kwargs):
+    def __init__(self, tcex, api_endpoint: ApiEndpoints, kwargs) -> None:
         """Initialize Class properties."""
         self.tcex = tcex
         self.api_endpoint = api_endpoint.value
 
         # properties
         self._fields = None
-        self._id = kwargs.get('id', None)
+        self._id: int = kwargs.get('id')
         self._properties = None
         self._tql = None
 
         # process kwargs
         self._transform_kwargs(kwargs)
 
-    def __str__(self):
+    def __str__(self) -> None:
         """Printable version of Object"""
         printable_string = ''
         for key, value in sorted(vars(self).items()):
@@ -45,7 +69,7 @@ class CommonCaseManagement:
                 printable_string += f'{key:.<40} {"<object>":<50}\n'
         return printable_string
 
-    def _camel_case_key(self, key):
+    def _camel_case_key(self, key: str) -> str:
         """Map key to it's appropriate Core/Test value."""
         if key in ['staged_artifact_type', 'stagedArtifactType']:  # pragma: no cover
             # used in testing when staging data
@@ -53,7 +77,7 @@ class CommonCaseManagement:
         return self.tcex.utils.camel_to_snake(key)
 
     @property
-    def _doc_string(self):
+    def _doc_string(self) -> str:
         """Return a doc string current object."""
         docstring = (
             f'\n{" " * 4}"""{self.__class__.__name__} object for Case Management.\n\n'
@@ -131,7 +155,7 @@ class CommonCaseManagement:
         return docstring
 
     @property
-    def _excluded_properties(self):
+    def _excluded_properties(self) -> List[str]:
         """Return a list of properties to exclude when creating a dict of the children class."""
         return [
             'api_endpoint',
@@ -149,7 +173,7 @@ class CommonCaseManagement:
             'workflow_event_filter',
         ]
 
-    def _reverse_transform(self, kwargs):
+    def _reverse_transform(self, kwargs: dict) -> dict:
         """Reverse mapping of the _metadata_map method."""
 
         def reverse_transform(current_kwargs):
@@ -169,18 +193,18 @@ class CommonCaseManagement:
 
         return reverse_transform(kwargs)
 
-    def _transform_kwargs(self, kwargs):
+    def _transform_kwargs(self, kwargs: dict) -> dict:
         """Map the provided kwargs to expected arguments."""
         for key in dict(kwargs):
             kwargs[self._camel_case_key(key)] = kwargs.pop(key)
 
     @property
-    def as_entity(self):  # pragma: no cover
+    def as_entity(self) -> None:  # pragma: no cover
         """Return the object as an entity."""
         raise NotImplementedError('Child class must implement this method.')
 
     @property
-    def as_dict(self):
+    def as_dict(self) -> Optional[dict]:
         """Return the dict representation of the CM object."""
         properties = vars(self)
         as_dict = {}
@@ -213,7 +237,7 @@ class CommonCaseManagement:
         return as_dict
 
     @property
-    def body(self):
+    def body(self) -> Optional[dict]:
         """Return the body representation of the CM object."""
         properties = vars(self)
         built_body = {}
@@ -252,12 +276,12 @@ class CommonCaseManagement:
         return self._reverse_transform(built_body)
 
     @property
-    def available_fields(self):
+    def available_fields(self) -> List[str]:
         """Return the available query param field names for this object."""
         return [fd.get('name') for fd in self.fields]
 
     @property
-    def fields(self):
+    def fields(self) -> dict:
         """Return the field data for this object."""
         if self._fields is None:
             r = self.tcex.session.options(f'{self.api_endpoint}/fields', params={})
@@ -265,7 +289,7 @@ class CommonCaseManagement:
                 self._fields = r.json()['data']
         return self._fields
 
-    def delete(self):
+    def delete(self) -> None:
         """Delete the Case Management Object.
 
         If no id is present in the obj then returns immediately.
@@ -298,11 +322,16 @@ class CommonCaseManagement:
             self.tcex.handle_error(950, [r.status_code, err, r.url])
         return
 
-    def entity_mapper(self, entity):  # pragma: no cover
+    def entity_mapper(self, entity: dict) -> None:  # pragma: no cover
         """Stub for entity mapper"""
         raise NotImplementedError('Child class must implement this method.')
 
-    def get(self, all_available_fields=False, case_management_id=None, params=None):
+    def get(
+        self,
+        all_available_fields: Optional[bool] = False,
+        case_management_id: Optional[int] = None,
+        params: Optional[dict] = None,
+    ) -> 'CaseManagementType':
         """Get the Case Management Object.
 
         .. code-block:: python
@@ -317,14 +346,9 @@ class CommonCaseManagement:
             }
 
         Args:
-            all_available_fields (bool): If True all available fields will be returned.
-            case_management_id (int): The id of the case management object to be returned.
-            retry_count (int, optional): [description]. Defaults to 0.
-            params(dict, optional): Dict of the params to be sent while
-                retrieving the Artifacts objects.
-
-        Returns:
-            Object: A artifact, case, note, task, tag, or workflow object.
+            all_available_fields: If True all available fields will be returned.
+            case_management_id: The id of the case management object to be returned.
+            params: Dict of the params to be sent while retrieving the Artifacts objects.
         """
         if params is None:
             params = {}
@@ -373,17 +397,17 @@ class CommonCaseManagement:
         return r
 
     @property
-    def id(self):
+    def id(self) -> int:
         """Return the id of the case management object."""
         return self._id
 
     @id.setter
-    def id(self, cm_id):
+    def id(self, cm_id: int) -> None:
         """Set the id of the case management object."""
         self._id = cm_id
 
     @property
-    def implemented_properties(self):
+    def implemented_properties(self) -> List[str]:
         """Return implemented Object properties."""
         properties = []
         for key in vars(self):
@@ -396,7 +420,7 @@ class CommonCaseManagement:
         return properties
 
     @property
-    def put_properties(self):
+    def put_properties(self) -> List[str]:
         """Return all the properties available in PUT requests."""
         put_properties = []
         for p, pd in sorted(self.properties.items()):
@@ -410,7 +434,7 @@ class CommonCaseManagement:
         return put_properties
 
     @property
-    def post_properties(self):
+    def post_properties(self) -> List[str]:
         """Return all the properties available in POST requests."""
         post_properties = []
         for p, pd in sorted(self.properties.items()):
@@ -421,7 +445,7 @@ class CommonCaseManagement:
         return post_properties
 
     @property
-    def properties(self):
+    def properties(self) -> dict:
         """Return defined API properties for the current object."""
         if self._properties is None:
             try:
@@ -435,7 +459,7 @@ class CommonCaseManagement:
         return self._properties
 
     @property
-    def required_properties(self):
+    def required_properties(self) -> List[str]:
         """Return a list of required fields for current object."""
         rp = []
         for p, pd in self.properties.items():
@@ -443,7 +467,7 @@ class CommonCaseManagement:
                 rp.append(p)
         return rp
 
-    def submit(self):
+    def submit(self) -> Response:
         """Create or Update the Case Management object.
 
         This is determined based on if the id is already present in the object.
@@ -486,11 +510,11 @@ class CommonCaseManagement:
         return r
 
     @staticmethod
-    def success(r):
+    def success(r: Response) -> bool:
         """Validate the response is valid.
 
         Args:
-            r (requests.response): The response object.
+            r: The response object.
 
         Returns:
             bool: True if status is "ok"

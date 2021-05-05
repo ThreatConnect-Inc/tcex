@@ -17,14 +17,13 @@ from tinydb import Query, TinyDB
 # first-party
 from tcex.app_config.models import TemplateConfigModel
 from tcex.backports import cached_property
-
-from .bin_abc import BinABC
+from tcex.bin.bin_abc import BinABC
 
 
 class Template(BinABC):
     """Install dependencies for App."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize class properties."""
         super().__init__()
 
@@ -44,7 +43,7 @@ class Template(BinABC):
         self.username = os.getenv('TCEX_TEMPLATE_USERNAME')
 
     @cached_property
-    def cache_valid(self):
+    def cache_valid(self) -> bool:
         """Return the current commit sha for the tcex-app-templates project."""
         if self.project_sha is None:
             return False
@@ -146,7 +145,7 @@ class Template(BinABC):
             self.errors = True
             return None
 
-    def download_template_file(self, item: dict):
+    def download_template_file(self, item: dict) -> None:
         """Download the provided source file to the provided destination."""
         download_url = item.get('download_url')
         name = item.get('name')
@@ -250,7 +249,7 @@ class Template(BinABC):
                         self.template_data.setdefault(selected_type, [])
                         self.template_data[selected_type].append(template_config)
 
-    def print_error_message(self):
+    def print_error_message(self) -> None:
         """Print error message, if applicable."""
         if self.errors is True:
             print(
@@ -258,7 +257,7 @@ class Template(BinABC):
                 f'''see logs at {os.path.join(self.cli_out_path, 'tcex.log')}.'''
             )
 
-    def print_list(self):
+    def print_list(self) -> None:
         """Print the list output."""
         for type_, templates in self.template_data.items():
             self.print_title(f'''{type_.replace('_', ' ').title()} Templates''')
@@ -275,7 +274,7 @@ class Template(BinABC):
                 self.print_divider()
 
     @cached_property
-    def project_sha(self):
+    def project_sha(self) -> str:
         """Return the current commit sha for the tcex-app-templates project."""
         params = {'perPage': '1'}
         r = self.session.get(f'{self.base_url}/commits', params=params)

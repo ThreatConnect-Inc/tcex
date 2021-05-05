@@ -1,13 +1,14 @@
 """ThreatConnect Case Management"""
-from .artifact import Artifact, Artifacts
-from .artifact_type import ArtifactType, ArtifactTypes
-from .assignee import Assignee, User, Users
-from .case import Case, Cases
-from .note import Note, Notes
-from .tag import Tag, Tags
-from .task import Task, Tasks
-from .workflow_event import WorkflowEvent, WorkflowEvents
-from .workflow_template import WorkflowTemplate, WorkflowTemplates
+# first-party
+from tcex.case_management.artifact import Artifact, Artifacts
+from tcex.case_management.artifact_type import ArtifactType, ArtifactTypes
+from tcex.case_management.assignee import Assignee, User, Users
+from tcex.case_management.case import Case, Cases
+from tcex.case_management.note import Note, Notes
+from tcex.case_management.tag import Tag, Tags
+from tcex.case_management.task import Task, Tasks
+from tcex.case_management.workflow_event import WorkflowEvent, WorkflowEvents
+from tcex.case_management.workflow_template import WorkflowTemplate, WorkflowTemplates
 
 
 class CaseManagement:
@@ -17,11 +18,11 @@ class CaseManagement:
         tcex (TcEx): An instantiated instance of TcEx object.
     """
 
-    def __init__(self, tcex):
+    def __init__(self, tcex) -> None:
         """Initialize Class properties."""
         self.tcex = tcex
 
-    def artifact(self, **kwargs):
+    def artifact(self, **kwargs) -> Artifact:
         """Return a instance of Artifact object.
 
         Args:
@@ -46,14 +47,14 @@ class CaseManagement:
             parent_case (Case, kwargs): [Read-Only] The **Parent Case** for the Artifact.
             source (str, kwargs): The **Source** for the Artifact.
             summary (str, kwargs): [Required] The **Summary** for the Artifact.
-            task (case_management.task.Task, kwargs): [Read-Only] The **Task** for the Artifact.
+            task (Task, kwargs): [Read-Only] The **Task** for the Artifact.
             task_id (int, kwargs): the ID of the task which the Artifact references
             task_xid (str, kwargs): the XID of the task which the Artifact references
             type (str, kwargs): [Required] The **Type** for the Artifact.
         """
         return Artifact(self.tcex, **kwargs)
 
-    def artifacts(self, **kwargs):
+    def artifacts(self, **kwargs) -> Artifacts:
         """Return a instance of Artifacts object.
 
         .. code-block:: python
@@ -70,14 +71,14 @@ class CaseManagement:
         Args:
             tcex (TcEx): An instantiated instance of TcEx object.
             initial_response (dict, optional): Initial data in
-                Case Object for Artifact. Defaults to None.
-            tql_filters (list, optional): List of TQL filters. Defaults to None.
+                Case Object for Artifact.
+            tql_filters (list, optional): List of TQL filters.
             params(dict, optional): Dict of the params to be sent while
                 retrieving the Artifacts objects.
         """
         return Artifacts(self.tcex, **kwargs)
 
-    def artifact_type(self, **kwargs):
+    def artifact_type(self, **kwargs) -> ArtifactType:
         """Return a instance of Artifact Type object.
 
         Args:
@@ -89,7 +90,7 @@ class CaseManagement:
         """
         return ArtifactType(self.tcex, **kwargs)
 
-    def artifact_types(self, **kwargs):
+    def artifact_types(self, **kwargs) -> ArtifactTypes:
         """Return a instance of Artifact Types object.
 
         .. code-block:: python
@@ -106,15 +107,15 @@ class CaseManagement:
         Args:
             tcex (TcEx): An instantiated instance of TcEx object.
             initial_response (dict, optional): Initial data in
-                Case Object for Artifact. Defaults to None.
-            tql_filters (list, optional): List of TQL filters. Defaults to None.
+                Case Object for Artifact.
+            tql_filters (list, optional): List of TQL filters.
             params(dict, optional): Dict of the params to be sent
                 while retrieving the Artifact Type objects.
         """
         return ArtifactTypes(self.tcex, **kwargs)
 
     @staticmethod
-    def assignee(**kwargs):
+    def assignee(**kwargs) -> Assignee:
         """Return a instance of Assignee object.
 
         For User type the user_name or id fields is required and
@@ -132,7 +133,7 @@ class CaseManagement:
         """
         return Assignee(**kwargs)
 
-    def case(self, **kwargs):
+    def case(self, **kwargs) -> Case:
         """Return a instance of Case object.
 
         Args:
@@ -149,10 +150,10 @@ class CaseManagement:
             resolution (str, kwargs): The **Resolution** for the Case.
             severity (str, kwargs): [Required] The **Severity** for the Case.
             status (str, kwargs): [Required] The **Status** for the Case.
-            tags (tcex.case_management.tag.Tag, kwargs): a list of Tags corresponding to the Case
+            tags (Tag, kwargs): a list of Tags corresponding to the Case
                 (NOTE: Setting this parameter will replace any existing tag(s) with
                 the one(s) specified)
-            tasks (case_management.task.Task, kwargs): a list of Tasks corresponding to the Case
+            tasks (Task, kwargs): a list of Tasks corresponding to the Case
             user_access (User, kwargs): a list of Users that, when defined, are the only
                 ones allowed to view or edit the Case
             workflow_events (WorkflowEvent, kwargs): The **Events** for the Case.
@@ -162,7 +163,7 @@ class CaseManagement:
         """
         return Case(self.tcex, **kwargs)
 
-    def cases(self, **kwargs):
+    def cases(self, **kwargs) -> Cases:
         """Return a instance of Cases object.
 
         .. code-block:: python
@@ -179,14 +180,14 @@ class CaseManagement:
         Args:
             tcex (TcEx): An instantiated instance of TcEx object.
             initial_response (dict, optional): Initial data in
-                Case Object for Artifact. Defaults to None.
-            tql_filters (list, optional): List of TQL filters. Defaults to None.
+                Case Object for Artifact.
+            tql_filters (list, optional): List of TQL filters.
             params(dict, optional): Dict of the params to be sent while
                 retrieving the Case objects.
         """
         return Cases(self.tcex, **kwargs)
 
-    def create_entity(self, entity, owner):
+    def create_entity(self, entity: dict, owner: str) -> dict:
         """Create a CM object provided a dict and owner."""
         entity_type = entity.get('type').lower()
         entity_type = entity_type.replace(' ', '_')
@@ -205,7 +206,7 @@ class CaseManagement:
 
         return data
 
-    def note(self, **kwargs):
+    def note(self, **kwargs) -> Note:
         """Return a instance of Note object.
 
         Args:
@@ -220,7 +221,7 @@ class CaseManagement:
             last_modified (str, kwargs): [Read-Only] The **Last Modified** for the Note.
             parent_case (Case, kwargs): [Read-Only] The **Parent Case** for the Note.
             summary (str, kwargs): [Read-Only] The **Summary** for the Note.
-            task (case_management.task.Task, kwargs): [Read-Only] The **Task** for the Note.
+            task (Task, kwargs): [Read-Only] The **Task** for the Note.
             task_id (int, kwargs): the ID of the Task on which to apply the Note
             task_xid (str, kwargs): the XID of the Task on which to apply the Note
             text (str, kwargs): [Required] The **Text** for the Note.
@@ -229,7 +230,7 @@ class CaseManagement:
         """
         return Note(self.tcex, **kwargs)
 
-    def notes(self, **kwargs):
+    def notes(self, **kwargs) -> Notes:
         """Return a instance of Notes object.
 
         .. code-block:: python
@@ -246,14 +247,14 @@ class CaseManagement:
         Args:
             tcex (TcEx): An instantiated instance of TcEx object.
             initial_response (dict, optional): Initial data in
-                Case Object for Note. Defaults to None.
-            tql_filters (list, optional): List of TQL filters. Defaults to None.
+                Case Object for Note.
+            tql_filters (list, optional): List of TQL filters.
             params(dict, optional): Dict of the params to be sent while
                 retrieving the Notes objects.
         """
         return Notes(self.tcex, **kwargs)
 
-    def tag(self, **kwargs):
+    def tag(self, **kwargs) -> Tag:
         """Return a instance of Tag object.
 
         Args:
@@ -266,7 +267,7 @@ class CaseManagement:
         """
         return Tag(self.tcex, **kwargs)
 
-    def tags(self, **kwargs):
+    def tags(self, **kwargs) -> Tags:
         """Return a instance of Tags object.
 
         .. code-block:: python
@@ -283,14 +284,14 @@ class CaseManagement:
         Args:
             tcex (TcEx): An instantiated instance of TcEx object.
             initial_response (dict, optional): Initial data in
-                Case Object for Tag. Defaults to None.
-            tql_filters (list, optional): List of TQL filters. Defaults to None.
+                Case Object for Tag.
+            tql_filters (list, optional): List of TQL filters.
             params(dict, optional): Dict of the params to be sent while
                 retrieving the Tag objects.
         """
         return Tags(self.tcex, **kwargs)
 
-    def task(self, **kwargs):
+    def task(self, **kwargs) -> Task:
         """Return a instance of Task object.
 
         Args:
@@ -319,7 +320,7 @@ class CaseManagement:
         """
         return Task(self.tcex, **kwargs)
 
-    def tasks(self, **kwargs):
+    def tasks(self, **kwargs) -> Tasks:
         """Return a instance of Tasks object.
 
         .. code-block:: python
@@ -336,15 +337,15 @@ class CaseManagement:
         Args:
             tcex (TcEx): An instantiated instance of TcEx object.
             initial_response (dict, optional): Initial data in
-                Case Object for Task. Defaults to None.
-            tql_filters (list, optional): List of TQL filters. Defaults to None.
+                Case Object for Task.
+            tql_filters (list, optional): List of TQL filters.
             params(dict, optional): Dict of the params to be sent while
                 retrieving the Task objects.
         """
         return Tasks(self.tcex, **kwargs)
 
     @staticmethod
-    def user(**kwargs):
+    def user(**kwargs) -> User:
         """Return a instance of User object.
 
         Args:
@@ -358,7 +359,7 @@ class CaseManagement:
         return User(**kwargs)
 
     @staticmethod
-    def users(users):
+    def users(users) -> Users:
         """Sub class of the Cases object. Used to map the users to.
 
         Args:
@@ -366,7 +367,7 @@ class CaseManagement:
         """
         return Users(users)
 
-    def workflow_event(self, **kwargs):
+    def workflow_event(self, **kwargs) -> WorkflowEvent:
         """Return a instance of Workflow Event object.
 
         Args:
@@ -390,7 +391,7 @@ class CaseManagement:
         """
         return WorkflowEvent(self.tcex, **kwargs)
 
-    def workflow_events(self, **kwargs):
+    def workflow_events(self, **kwargs) -> WorkflowEvents:
         """Return a instance of Workflow Events object.
 
         .. code-block:: python
@@ -407,14 +408,14 @@ class CaseManagement:
         Args:
             tcex (TcEx): An instantiated instance of TcEx object.
             initial_response (dict, optional): Initial data in
-                Case Object for Artifact. Defaults to None.
-            tql_filters (list, optional): List of TQL filters. Defaults to None.
+                Case Object for Artifact.
+            tql_filters (list, optional): List of TQL filters.
             params(dict, optional): Dict of the params to be sent while
                 retrieving the Workflow Event objects.
         """
         return WorkflowEvents(self.tcex, **kwargs)
 
-    def workflow_template(self, **kwargs):
+    def workflow_template(self, **kwargs) -> WorkflowTemplate:
         """Return a instance of Workflow Template object.
 
         Args:
@@ -434,7 +435,7 @@ class CaseManagement:
         """
         return WorkflowTemplate(self.tcex, **kwargs)
 
-    def workflow_templates(self, **kwargs):
+    def workflow_templates(self, **kwargs) -> WorkflowTemplates:
         """Return a instance of Workflow Templates object.
 
         .. code-block:: python
@@ -451,8 +452,8 @@ class CaseManagement:
         Args:
             tcex (TcEx): An instantiated instance of TcEx object.
             initial_response (dict, optional): Initial data in
-                Case Object for Workflow Template. Defaults to None.
-            tql_filters (list, optional): List of TQL filters. Defaults to None.
+                Case Object for Workflow Template.
+            tql_filters (list, optional): List of TQL filters.
             params(dict, optional): Dict of the params to be sent while
                 retrieving the Workflow Event objects.
         """

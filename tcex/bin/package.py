@@ -4,7 +4,6 @@
 import json
 import os
 import shutil
-from functools import lru_cache
 from pathlib import Path
 from typing import List
 
@@ -13,8 +12,8 @@ import colorama as c
 
 # first-party
 from tcex.app_config import InstallJson
-
-from .bin_abc import BinABC
+from tcex.backports import cached_property
+from tcex.bin.bin_abc import BinABC
 
 
 class Package(BinABC):
@@ -66,9 +65,8 @@ class Package(BinABC):
             'tests',  # pytest test directory
         ]
 
-    @property
-    @lru_cache()
-    def excludes(self):
+    @cached_property
+    def excludes(self) -> List[str]:
         """Return all excludes."""
         # build exclude file/directory list
         excludes = self.default_excludes
@@ -79,17 +77,15 @@ class Package(BinABC):
         self.package_data['package'].append({'action': 'Excluded Files:', 'output': excludes})
         return excludes
 
-    @property
-    @lru_cache()
-    def build_fqpn(self):
+    @cached_property
+    def build_fqpn(self) -> Path:
         """Return the fully qualified path name of the build directory."""
         build_fqpn = Path(os.path.join(self.app_path, self.output_dir.name, 'build'))
         build_fqpn.mkdir(exist_ok=True, parents=True)
         return build_fqpn
 
-    @property
-    @lru_cache()
-    def template_fqpn(self):
+    @cached_property
+    def template_fqpn(self) -> Path:
         """Return the fully qualified path name of the template directory."""
         template_fqpn = Path(os.path.join(self.build_fqpn, 'template'))
         if os.access(template_fqpn, os.W_OK):
@@ -142,13 +138,13 @@ class Package(BinABC):
         # cleanup build directory
         shutil.rmtree(app_path_fqpn)
 
-    def print_json(self):
+    def print_json(self) -> None:
         """[App Builder] Print JSON output containing results of the package command."""
         print(
             json.dumps({'package_data': self.package_data, 'validation_data': self.validation_data})
         )
 
-    def print_results(self):
+    def print_results(self) -> None:
         """Print results of the package command."""
         # Updates
         if self.package_data.get('updates'):

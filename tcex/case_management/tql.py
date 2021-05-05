@@ -2,7 +2,8 @@
 # standard library
 from enum import Enum
 
-from .filter import Filter
+# first-party
+from tcex.case_management.filter import Filter
 
 
 class TQL:

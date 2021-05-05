@@ -28,8 +28,8 @@ class MockApp:
     Args:
         runtime_level (str): The runtime level of the Mock App.
         clear_argv (bool, optional): [description]. Defaults to True.
-        config_data ([type], optional): [description]. Defaults to None.
-        ij_data ([type], optional): [description]. Defaults to None.
+        config_data ([type], optional): [description].
+        ij_data ([type], optional): [description].
     """
 
     def __init__(self, runtime_level, **kwargs):
@@ -265,7 +265,7 @@ class MockApp:
 
         Args:
             key (str): The key value.
-            default (str, optional): The default value to return if not found. Defaults to None.
+            default (str, optional): The default value to return if not found.
             boolean (bool, optional): If true return the result as a bool. Defaults to False.
 
         Returns:

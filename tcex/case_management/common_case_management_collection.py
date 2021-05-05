@@ -1,8 +1,36 @@
 """ThreatConnect Case Management Collection"""
+# standard library
+import logging
+from typing import TYPE_CHECKING, Optional, Union
+
 # third-party
+from requests import Response
 from requests.exceptions import ProxyError
 
-from .tql import TQL
+# first-party
+from tcex.case_management.tql import TQL
+
+# get tcex logger
+logger = logging.getLogger('tcex')
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.case_management.artifact import Artifact
+    from tcex.case_management.case import Case
+    from tcex.case_management.note import Note
+    from tcex.case_management.tag import Tag
+    from tcex.case_management.task import Task
+    from tcex.case_management.workflow_event import WorkflowEvent
+
+    # Case Management Types
+    CaseManagementType = Union[
+        Artifact,
+        Case,
+        Note,
+        Tag,
+        Task,
+        WorkflowEvent,
+    ]
 
 
 class CommonCaseManagementCollection:
@@ -22,12 +50,10 @@ class CommonCaseManagementCollection:
         }
 
     Args:
-        tcex ([type]): [description]
-        api_endpoint ([type]): [description]
-        tql_filters ([type], optional): [description]. Defaults to None.
-        initial_response ([type], optional): [description]. Defaults to None.
-        params(dict, optional): Dict of the params to be sent while
-                    retrieving the Case Management objects.
+        api_endpoint: The API endpoint.
+        tql_filters: List of TQL filters.
+        initial_response: Any initial response if this was a retrieve.
+        params: Dict of the params to be sent while retrieving the Case Management objects.
 
     Returns:
         [type]: [description]
@@ -37,7 +63,12 @@ class CommonCaseManagementCollection:
     """
 
     def __init__(
-        self, tcex, api_endpoint, tql_filters=None, initial_response=None, params=None,
+        self,
+        tcex,
+        api_endpoint: str,
+        tql_filters: Optional[list] = None,
+        initial_response: Optional[dict] = None,
+        params: Optional[dict] = None,
     ):
         """Initialize Class properties."""
 
@@ -50,7 +81,10 @@ class CommonCaseManagementCollection:
         self.tcex = tcex
         self.tql = TQL()
 
-    def __len__(self):
+        # properties
+        self.log = logger
+
+    def __len__(self) -> int:
         """Return the length of the collection."""
         parameters = self.params
         parameters['result_limit'] = 1
@@ -70,7 +104,7 @@ class CommonCaseManagementCollection:
         r = self.tcex.session.get(self.api_endpoint, params=parameters)
         return r.json().get('count')
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Object iterator"""
         printable_string = ''
         for obj in self.iterate(initial_response=self.initial_response):
@@ -79,8 +113,8 @@ class CommonCaseManagementCollection:
         return printable_string
 
     @property
-    def _filter_map_method(self):
-        """Return a property for keywork mapping."""
+    def _filter_map_method(self) -> str:
+        """Return a property for keyword mapping."""
         method_data = (
             f'\n{" " * 4}@property\n'
             f'\n{" " * 4}def keyword_map(self):\n'
@@ -94,8 +128,8 @@ class CommonCaseManagementCollection:
         return method_data
 
     @property
-    def _filter_class(self):
-        """Return a Filter Class current object."""
+    def _filter_class(self) -> str:
+        """Return a Filter Class for current object."""
         filter_class = (
             f'\nclass Filter{self.__class__.__name__}(Filter):\n'
             f'{" " * 4}"""Filter Object for {self.__class__.__name__}"""\n'
@@ -124,7 +158,7 @@ class CommonCaseManagementCollection:
             if keyword_snake == 'has_artifact':
                 filter_class += (
                     f'\n{" " * 4}@property\n'
-                    f'{" " * 4}def has_artifact(self):\n'
+                    f'{" " * 4}def has_artifact(self) -> FilterArtifacts:\n'
                     f'{" " * 8}"""Return **FilterArtifacts** for further filtering."""\n'
                     f'{" " * 8}from .artifact import FilterArtifacts\n\n'
                     f'{" " * 8}artifacts = FilterArtifacts'
@@ -136,7 +170,7 @@ class CommonCaseManagementCollection:
             elif keyword_snake == 'has_case':
                 filter_class += (
                     f'\n{" " * 4}@property\n'
-                    f'{" " * 4}def has_case(self):\n'
+                    f'{" " * 4}def has_case(self) -> FilterCases:\n'
                     f'{" " * 8}"""Return **FilterCases** for further filtering."""\n'
                     f'{" " * 8}from .case import FilterCases  # pylint: disable=cyclic-import\n\n'
                     f'{" " * 8}cases = FilterCases(ApiEndpoints.CASES, self._tcex, TQL())\n'
@@ -147,7 +181,7 @@ class CommonCaseManagementCollection:
             elif keyword_snake == 'has_note':
                 filter_class += (
                     f'\n{" " * 4}@property\n'
-                    f'{" " * 4}def has_note(self):\n'
+                    f'{" " * 4}def has_note(self) -> FilterNotes:\n'
                     f'{" " * 8}"""Return **FilterNotes** for further filtering."""\n'
                     f'{" " * 8}from .note import FilterNotes\n\n'
                     f'{" " * 8}notes = FilterNotes(ApiEndpoints.NOTES, self._tcex, TQL())\n'
@@ -158,7 +192,7 @@ class CommonCaseManagementCollection:
             elif keyword_snake == 'has_tag':
                 filter_class += (
                     f'\n{" " * 4}@property\n'
-                    f'{" " * 4}def has_tag(self):\n'
+                    f'{" " * 4}def has_tag(self) -> FilterTags:\n'
                     f'{" " * 8}"""Return **FilterTags** for further filtering."""\n'
                     f'{" " * 8}from .tag import FilterTags\n\n'
                     f'{" " * 8}tags = FilterTags(ApiEndpoints.TAGS, self._tcex, TQL())\n'
@@ -169,7 +203,7 @@ class CommonCaseManagementCollection:
             elif keyword_snake == 'has_task':
                 filter_class += (
                     f'\n{" " * 4}@property\n'
-                    f'{" " * 4}def has_task(self):\n'
+                    f'{" " * 4}def has_task(self) -> FilterTasks:\n'
                     f'{" " * 8}"""Return **FilterTask** for further filtering."""\n'
                     f'{" " * 8}from .task import FilterTasks\n'
                     f'{" " * 8}tasks = FilterTasks(ApiEndpoints.TASKS, self._tcex, TQL())\n'
@@ -193,34 +227,34 @@ class CommonCaseManagementCollection:
         return filter_class
 
     @property
-    def added_items(self):
+    def added_items(self) -> list:
         """Return the added items to the collection"""
         return self._added_items
 
     @added_items.setter
-    def added_items(self, added_items):
+    def added_items(self, added_items: list) -> None:
         """Set the added items to the collection"""
         self._added_items = added_items
 
-    def entity_map(self, entity):  # pragma: no cover
+    def entity_map(self, entity) -> None:  # pragma: no cover
         """Stub for common method."""
         raise NotImplementedError('Child class must implement this method.')
 
     @property
-    def filter(self):  # pragma: no cover
+    def filter(self) -> None:  # pragma: no cover
         """Return filter method."""
         raise NotImplementedError('Child class must implement this method.')
 
     @property
-    def initial_response(self):
+    def initial_response(self) -> dict:
         """Return the initial response of the case management object collection."""
         return self._initial_response
 
-    def iterate(self, initial_response=None):
+    def iterate(self, initial_response: Optional[dict] = None) -> 'CaseManagementType':
         """Iterate over the case management object collection objects.
 
         Args:
-            initial_response ([type], optional): [description]. Defaults to None.
+            initial_response ([type], optional): [description].
 
         Yields:
             [type]: [description]
@@ -255,12 +289,12 @@ class CommonCaseManagementCollection:
             r = None
             try:
                 r = self.tcex.session.get(url, params=parameters)
-                self.tcex.log.debug(
+                self.log.debug(
                     f'Method: ({r.request.method.upper()}), '
                     f'Status Code: {r.status_code}, '
                     f'URl: ({r.url})'
                 )
-                self.tcex.log.trace(f'response: {r.text}')
+                self.log.trace(f'response: {r.text}')
             except (ConnectionError, ProxyError):  # pragma: no cover
                 self.tcex.handle_error(
                     951, ['OPTIONS', 407, '{\"message\": \"Connection Error\"}', self.api_endpoint]
@@ -279,12 +313,13 @@ class CommonCaseManagementCollection:
             for result in data:
                 yield self.entity_map(result)
 
+            # TODO: @bpurdy - what is this for?
             if not url:
                 yield from self.added_items
                 break
 
     @staticmethod
-    def list_as_dict(added_items):
+    def list_as_dict(added_items: 'CaseManagementType') -> dict:
         """Return the dict representation of the case management collection object."""
         as_dict = {'data': []}
         for item in added_items:
@@ -292,17 +327,17 @@ class CommonCaseManagementCollection:
         return as_dict
 
     @property
-    def params(self):
+    def params(self) -> dict:
         """Return the parameters of the case management object collection."""
         return self._params
 
     @params.setter
-    def params(self, params):
+    def params(self, params: dict) -> None:
         """Set the parameters of the case management object collection."""
         self._params = params
 
     @staticmethod
-    def success(r):
+    def success(r: Response) -> bool:
         """Validate the response is valid.
 
         Args:
@@ -323,17 +358,17 @@ class CommonCaseManagementCollection:
         return status
 
     @property
-    def timeout(self):
+    def timeout(self) -> int:
         """Return the timeout of the case management object collection."""
         return self._timeout
 
     @timeout.setter
-    def timeout(self, timeout):
+    def timeout(self, timeout: int) -> None:
         """Set the timeout of the case management object collection."""
         self._timeout = timeout
 
     @property
-    def tql_data(self):
+    def tql_data(self) -> dict:
         """Return TQL data keywords."""
         if self._tql_data is None:
             r = self.tcex.session.options(f'{self.api_endpoint}/tql', params={})

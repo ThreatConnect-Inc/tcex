@@ -26,7 +26,7 @@ class FailOnOutput:
             The value of this boolean will control enabling/disabling this feature.
         fail_msg (str, kwargs): The message to log when raising RuntimeError.
         fail_msg_property (str, kwargs): The App property containting the dynamic exit message.
-        fail_on (list, kwargs): Defaults to None.
+        fail_on (list, kwargs):
             Fail if return value from App method is in the list.
         write_output (bool, kwargs): Defaults to True.
             If true, will call App.write_outputs() before failing on matched fail_on value.

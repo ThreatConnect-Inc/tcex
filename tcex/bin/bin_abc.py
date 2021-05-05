@@ -165,7 +165,7 @@ class BinABC(ABC):
         )
 
     @staticmethod
-    def update_system_path():
+    def update_system_path() -> None:
         """Update the system path to ensure project modules and dependencies can be found."""
         cwd = os.getcwd()
         lib_dir = os.path.join(os.getcwd(), 'lib_')

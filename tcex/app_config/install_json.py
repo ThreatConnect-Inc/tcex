@@ -155,10 +155,10 @@ class InstallJson:
         """Return params as cli args.
 
         Args:
-            name: The name of the input to return. Defaults to None.
+            name: The name of the input to return.
             required: If set the inputs will be filtered based on required field.
             service_config: If set the inputs will be filtered based on serviceConfig field.
-            _type: The type of input to return. Defaults to None.
+            _type: The type of input to return.
             input_permutations: A list of valid input names for provided permutation.
 
         Returns:

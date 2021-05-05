@@ -1,9 +1,23 @@
 """ThreatConnect Note"""
-from .api_endpoints import ApiEndpoints
-from .common_case_management import CommonCaseManagement
-from .common_case_management_collection import CommonCaseManagementCollection
-from .filter import Filter
-from .tql import TQL
+# standard library
+from typing import TYPE_CHECKING, Optional
+
+# first-party
+from tcex.case_management.api_endpoints import ApiEndpoints
+from tcex.case_management.artifact import FilterArtifacts
+from tcex.case_management.case import FilterCases  # pylint: disable=cyclic-import
+from tcex.case_management.common_case_management import CommonCaseManagement
+from tcex.case_management.common_case_management_collection import CommonCaseManagementCollection
+from tcex.case_management.filter import Filter
+from tcex.case_management.task import FilterTasks
+from tcex.case_management.tql import TQL
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.case_management.artifact import Artifact
+    from tcex.case_management.case import Case
+    from tcex.case_management.task import Task
+    from tcex.case_management.workflow_event import WorkflowEvent
 
 
 class Notes(CommonCaseManagementCollection):
@@ -22,14 +36,18 @@ class Notes(CommonCaseManagementCollection):
 
     Args:
         tcex (TcEx): An instantiated instance of TcEx object.
-        initial_response (dict, optional): Initial data in
-            Case Object for Note. Defaults to None.
-        tql_filters (list, optional): List of TQL filters. Defaults to None.
-        params(dict, optional): Dict of the params to be sent while
-            retrieving the Notes objects.
+        initial_response: Initial data in Case Object for Note.
+        tql_filters: List of TQL filters.
+        params: Dict of the params to be sent while retrieving the Notes objects.
     """
 
-    def __init__(self, tcex, initial_response=None, tql_filters=None, params=None):
+    def __init__(
+        self,
+        tcex,
+        initial_response: Optional[dict] = None,
+        tql_filters: Optional[list] = None,
+        params: Optional[dict] = None,
+    ) -> None:
         """Initialize Class properties."""
         super().__init__(
             tcex,
@@ -42,11 +60,11 @@ class Notes(CommonCaseManagementCollection):
             for item in initial_response.get('data', []):
                 self.added_items.append(Note(tcex, **item))
 
-    def __iter__(self):
+    def __iter__(self) -> 'Note':
         """Object iterator"""
         return self.iterate(initial_response=self.initial_response)
 
-    def add_note(self, note):
+    def add_note(self, note: 'Note') -> None:
         """Add a Note.
 
         Args:
@@ -54,16 +72,16 @@ class Notes(CommonCaseManagementCollection):
         """
         self.added_items.append(note)
 
-    def entity_map(self, entity):
+    def entity_map(self, entity: dict) -> 'Note':
         """Update current object with provided object properties.
 
         Args:
-            entity (dict): The dict to map self too.
+            entity: The dict to map self too.
         """
         return Note(self.tcex, **entity)
 
     @property
-    def filter(self):
+    def filter(self) -> 'FilterNotes':
         """Return instance of FilterNotes Object."""
         return FilterNotes(ApiEndpoints.NOTES, self.tcex, self.tql)
 
@@ -79,11 +97,11 @@ class Note(CommonCaseManagement):
         case_id (int, kwargs): [Required (alt: caseXid)] The **Case Id** for the Note.
         case_xid (str, kwargs): [Required (alt: caseId)]
         date_added (str, kwargs): [Read-Only] The **Date Added** for the Note.
-        edited (boolean, kwargs): [Read-Only] The **Edited** for the Note.
+        edited (bool, kwargs): [Read-Only] The **Edited** for the Note.
         last_modified (str, kwargs): [Read-Only] The **Last Modified** for the Note.
         parent_case (Case, kwargs): [Read-Only] The **Parent Case** for the Note.
         summary (str, kwargs): [Read-Only] The **Summary** for the Note.
-        task (case_management.task.Task, kwargs): [Read-Only] The **Task** for the Note.
+        task (Task, kwargs): [Read-Only] The **Task** for the Note.
         task_id (int, kwargs): the ID of the Task on which to apply the Note
         task_xid (str, kwargs): the XID of the Task on which to apply the Note
         text (str, kwargs): [Required] The **Text** for the Note.
@@ -95,22 +113,22 @@ class Note(CommonCaseManagement):
         """Initialize class properties."""
         super().__init__(tcex, ApiEndpoints.NOTES, kwargs)
 
-        self._artifact = kwargs.get('artifact', None)
-        self._artifact_id = kwargs.get('artifact_id', None)
-        self._author = kwargs.get('author', None)
-        self._case_id = kwargs.get('case_id', None)
-        self._case_xid = kwargs.get('case_xid', None)
-        self._date_added = kwargs.get('date_added')
-        self._edited = kwargs.get('edited', None)
-        self._last_modified = kwargs.get('last_modified', None)
-        self._parent_case = kwargs.get('parent_case', None)
-        self._summary = kwargs.get('summary', None)
-        self._task = kwargs.get('task', None)
-        self._task_id = kwargs.get('task_id', None)
-        self._task_xid = kwargs.get('task_xid', None)
-        self._text = kwargs.get('text', None)
-        self._workflow_event = kwargs.get('workflow_event', None)
-        self._workflow_event_id = kwargs.get('workflow_event_id', None)
+        self._artifact: 'Artifact' = kwargs.get('artifact', None)
+        self._artifact_id: int = kwargs.get('artifact_id', None)
+        self._author: int = kwargs.get('author', None)
+        self._case_id: int = kwargs.get('case_id', None)
+        self._case_xid: str = kwargs.get('case_xid', None)
+        self._date_added: str = kwargs.get('date_added')
+        self._edited: bool = kwargs.get('edited', None)
+        self._last_modified: str = kwargs.get('last_modified', None)
+        self._parent_case: 'Case' = kwargs.get('parent_case', None)
+        self._summary: str = kwargs.get('summary', None)
+        self._task: 'Task' = kwargs.get('task', None)
+        self._task_id: int = kwargs.get('task_id', None)
+        self._task_xid: str = kwargs.get('task_xid', None)
+        self._text: str = kwargs.get('text', None)
+        self._workflow_event: 'WorkflowEvent' = kwargs.get('workflow_event', None)
+        self._workflow_event_id: int = kwargs.get('workflow_event_id', None)
 
     @property
     def artifact(self):
@@ -292,8 +310,6 @@ class FilterNotes(Filter):
     @property
     def has_artifact(self):
         """Return **FilterArtifacts** for further filtering."""
-        from .artifact import FilterArtifacts
-
         artifacts = FilterArtifacts(ApiEndpoints.ARTIFACTS, self._tcex, TQL())
         self._tql.add_filter('hasArtifact', TQL.Operator.EQ, artifacts, TQL.Type.SUB_QUERY)
         return artifacts
@@ -301,8 +317,6 @@ class FilterNotes(Filter):
     @property
     def has_case(self):
         """Return **FilterCases** for further filtering."""
-        from .case import FilterCases
-
         cases = FilterCases(ApiEndpoints.CASES, self._tcex, TQL())
         self._tql.add_filter('hasCase', TQL.Operator.EQ, cases, TQL.Type.SUB_QUERY)
         return cases
@@ -310,8 +324,6 @@ class FilterNotes(Filter):
     @property
     def has_task(self):
         """Return **FilterTask** for further filtering."""
-        from .task import FilterTasks  # pylint: disable=cyclic-import
-
         tasks = FilterTasks(ApiEndpoints.TASKS, self._tcex, TQL())
         self._tql.add_filter('hasTask', TQL.Operator.EQ, tasks, TQL.Type.SUB_QUERY)
         return tasks
