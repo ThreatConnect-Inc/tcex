@@ -8,14 +8,18 @@ import threading
 import time
 import traceback
 from collections import deque
-from typing import Any, Callable, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Callable, Optional, Tuple, Union
 
 # third-party
 from requests import Response, Session
 
 # first-party
-from tcex.batch import BatchSubmit, BatchWriter, GroupType, IndicatorType
-from tcex.input import Input
+from tcex.batch.batch_submit import BatchSubmit
+from tcex.batch.batch_writer import BatchWriter, GroupType, IndicatorType
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.input import Input
 
 
 class Batch(BatchWriter, BatchSubmit):
@@ -35,7 +39,7 @@ class Batch(BatchWriter, BatchSubmit):
 
     def __init__(
         self,
-        inputs: Input,
+        inputs: 'Input',
         session: Session,
         owner: str,
         action: Optional[str] = 'Create',

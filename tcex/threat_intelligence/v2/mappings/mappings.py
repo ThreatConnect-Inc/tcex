@@ -3,14 +3,17 @@
 import json
 import logging
 from functools import lru_cache
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 from urllib.parse import unquote
 
 # first-party
 from tcex.tcex_error_codes import TcExErrorCodes
-from tcex.threat_intelligence.v2 import ThreatIntelligence
 from tcex.threat_intelligence.v2.tcex_ti_tc_request import TiTcRequest
 from tcex.utils import Utils
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.threat_intelligence.v2.threat_intelligence import ThreatIntelligence
 
 # get tcex logger
 logger = logging.getLogger('tcex')
@@ -21,7 +24,7 @@ class Mappings:
 
     def __init__(
         self,
-        ti: ThreatIntelligence,
+        ti: 'ThreatIntelligence',
         main_type,
         api_type,
         sub_type,

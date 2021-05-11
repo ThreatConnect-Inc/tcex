@@ -1,24 +1,29 @@
 """Model Map"""
 
-from .advanced_settings_model import AdvancedSettingsModel
-from .aot_execution_enabled_model import AotExecutionEnabledModel
-from .api_model import ApiModel
-from .batch_model import BatchModel
-from .cal_settings_model import CalSettingsModel
-from .logging_model import LoggingModel
-from .organization_model import OrganizationModel
-from .path_model import PathModel
-from .playbook_common_model import PlaybookCommonModel
-from .playbook_model import PlaybookModel
-from .proxy_model import ProxyModel
-from .service_model import ServiceModel
-from .smtp_settings_model import SmtpSettingsModel
+# first-party
+from tcex.input.models.advanced_settings_model import AdvancedSettingsModel
+from tcex.input.models.aot_execution_enabled_model import AotExecutionEnabledModel
+from tcex.input.models.api_model import ApiModel
+from tcex.input.models.batch_model import BatchModel
+from tcex.input.models.cal_settings_model import CalSettingsModel
+from tcex.input.models.logging_model import LoggingModel
+from tcex.input.models.organization_model import OrganizationModel
+from tcex.input.models.path_model import PathModel
+from tcex.input.models.playbook_common_model import PlaybookCommonModel
+from tcex.input.models.playbook_model import PlaybookModel
+from tcex.input.models.proxy_model import ProxyModel
+from tcex.input.models.service_model import ServiceModel
+from tcex.input.models.smtp_settings_model import SmtpSettingsModel
 
 # define feature to model map
 feature_map = {
     'aotExecutionEnabled': [AotExecutionEnabledModel],
+    'appBuilderCompliant': [],
     'advancedRequest': [AdvancedSettingsModel],
     'CALSettings': [CalSettingsModel],
+    'fileParams': [],
+    'layoutEnabledApp': [],
+    'secureParams': [],
     'smtpSettings': [SmtpSettingsModel],
 }
 
@@ -54,7 +59,7 @@ runtime_level_map = {
         PlaybookCommonModel,
         PlaybookModel,
         ProxyModel,
-        ServiceModel,
+        # ServiceModel,
     ],
     'triggerservice': [
         ApiModel,

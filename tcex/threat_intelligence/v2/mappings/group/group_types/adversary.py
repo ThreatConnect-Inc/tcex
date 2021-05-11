@@ -1,13 +1,19 @@
 """ThreatConnect TI Adversary"""
+# standard library
+from typing import TYPE_CHECKING
+
 # first-party
-from tcex.threat_intelligence.v2 import ThreatIntelligence
 from tcex.threat_intelligence.v2.mappings.group import Group
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.threat_intelligence.v2 import ThreatIntelligence
 
 
 class Adversary(Group):
     """Unique API calls for Adversary API Endpoints"""
 
-    def __init__(self, ti: ThreatIntelligence, **kwargs):
+    def __init__(self, ti: 'ThreatIntelligence', **kwargs):
         """Initialize Class properties"""
         super().__init__(
             ti, sub_type='Adversary', api_entity='adversary', api_branch='adversaries', **kwargs

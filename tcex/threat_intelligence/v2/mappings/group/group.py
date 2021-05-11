@@ -1,16 +1,20 @@
 """ThreatConnect TI Group"""
 # standard library
+from typing import TYPE_CHECKING
 from urllib.parse import quote_plus
 
 # first-party
-from tcex.threat_intelligence.v2 import ThreatIntelligence
 from tcex.threat_intelligence.v2.mappings import Mappings
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.threat_intelligence.v2 import ThreatIntelligence
 
 
 class Group(Mappings):
     """Unique API calls for Group API Endpoints"""
 
-    def __init__(self, ti: ThreatIntelligence, **kwargs):
+    def __init__(self, ti: 'ThreatIntelligence', **kwargs):
         """Initialize Class properties."""
         super().__init__(
             ti,

@@ -1,13 +1,19 @@
 """ThreatConnect TI Address"""
+# standard library
+from typing import TYPE_CHECKING
+
 # first-party
-from tcex.threat_intelligence.v2 import ThreatIntelligence
 from tcex.threat_intelligence.v2.mappings.indicator import Indicator
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.threat_intelligence.v2 import ThreatIntelligence
 
 
 class Address(Indicator):
     """Unique API calls for Address API Endpoints"""
 
-    def __init__(self, ti: ThreatIntelligence, **kwargs):
+    def __init__(self, ti: 'ThreatIntelligence', **kwargs):
         """Initialize Class Properties.
 
         Args:

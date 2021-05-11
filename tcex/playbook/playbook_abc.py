@@ -9,12 +9,8 @@ from collections import OrderedDict
 from collections.abc import Iterable
 from typing import Any, List, Optional, Union
 
-# third-party
-from pydantic import BaseModel
-
 # first-party
-from tcex.backports import cached_property
-from tcex.key_value_store import KeyValueApi, KeyValueRedis, RedisClient
+from tcex.key_value_store import KeyValueApi, KeyValueRedis
 
 # get tcex logger
 logger = logging.getLogger('tcex')
@@ -24,7 +20,6 @@ class PlaybookABC(ABC):
     """Playbook ABC
 
     Args:
-        inputs: The instance of App inputs.
         key_value_store: A KV store instance.
         context: The KV Store context/session_id. For PB Apps the context is provided on
             startup, but for service Apps each request gets a different context.
@@ -34,15 +29,13 @@ class PlaybookABC(ABC):
 
     def __init__(
         self,
-        inputs: BaseModel,
         key_value_store: Union[KeyValueApi, KeyValueRedis],
-        context: Optional[str] = None,
-        output_variables: Optional[list] = None,
+        context: str,
+        output_variables: list,
     ):
         """Initialize the class properties."""
-        self._context = context or inputs.data.tc_playbook_kvstore_context
-        self._output_variables = output_variables or inputs.data.tc_playbook_out_variables
-        self.inputs = inputs
+        self._context = context
+        self._output_variables = output_variables
         self.key_value_store = key_value_store
 
         # properties
@@ -538,16 +531,6 @@ class PlaybookABC(ABC):
     ) -> Any:  # pragma: no cover
         """Set placeholder for child method."""
         raise NotImplementedError('Implemented in child class')
-
-    @cached_property
-    def redis_client(self):
-        """Return an instance of redis client."""
-        # get an instance of redis client
-        return RedisClient(
-            host=self.inputs.data.tc_kvstore_host,
-            port=self.inputs.data.tc_kvstore_port,
-            db=0,
-        ).client
 
     def variable_type(self, variable: str) -> str:  # pragma: no cover
         """Set placeholder for child method."""

@@ -1,11 +1,7 @@
 """TcEx Framework Playbook module"""
 # standard library
 import re
-from ast import List
-from typing import Any, Optional, Union
-
-# third-party
-from pydantic import BaseModel
+from typing import Any, List, Optional, Union
 
 # first-party
 from tcex.key_value_store import KeyValueApi, KeyValueRedis
@@ -17,7 +13,6 @@ class Playbook(PlaybookABC):
     """Playbook methods for accessing key value store.
 
     Args:
-        inputs: The instance of App inputs.
         key_value_store: A KV store instance.
         context: The KV Store context/session_id. For PB Apps the context is provided on
             startup, but for service Apps each request gets a different context.
@@ -27,13 +22,12 @@ class Playbook(PlaybookABC):
 
     def __init__(
         self,
-        inputs: BaseModel,
         key_value_store: Union[KeyValueApi, KeyValueRedis],
         context: Optional[str] = None,
         output_variables: Optional[list] = None,
     ) -> None:
         """Initialize the class properties."""
-        super().__init__(inputs, key_value_store, context, output_variables)
+        super().__init__(key_value_store, context, output_variables)
 
         # properties
         self.output_data = {}

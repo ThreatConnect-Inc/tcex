@@ -1,7 +1,13 @@
 """ThreatConnect TI Incident"""
+# standard library
+from typing import TYPE_CHECKING
+
 # first-party
-from tcex.threat_intelligence.v2 import ThreatIntelligence
 from tcex.threat_intelligence.v2.mappings.group import Group
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.threat_intelligence.v2 import ThreatIntelligence
 
 
 class Incident(Group):
@@ -24,7 +30,7 @@ class Incident(Group):
         status (str, kwargs): The status for this Group.
     """
 
-    def __init__(self, ti: ThreatIntelligence, **kwargs):
+    def __init__(self, ti: 'ThreatIntelligence', **kwargs):
         """Initialize Class Properties."""
         super().__init__(
             ti, sub_type='Incident', api_entity='incident', api_branch='incidents', **kwargs

@@ -14,7 +14,7 @@ class PlaybookCommonModel(BaseModel):
     """
 
     # the KvStore cache id (db id)
-    tc_cache_kvstore_id: int
+    tc_cache_kvstore_id: int = 10
 
     # the KvStore hostname
     tc_kvstore_host: str = Field('localhost', alias='tc_playbook_db_path')
@@ -26,4 +26,4 @@ class PlaybookCommonModel(BaseModel):
     tc_kvstore_type: str = Field('Redis', alias='tc_playbook_db_type')
 
     # the KvStore id (db id)
-    tc_playbook_kvstore_id: int
+    tc_playbook_kvstore_id: int = 0

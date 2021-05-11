@@ -94,7 +94,7 @@ class InstallJson:
         return f'#{self.data.app_output_var_type}:{job_id}:{var_name}!{var_type}'
 
     @property
-    # @lru_cache
+    @lru_cache
     def data(self) -> InstallJsonModel:
         """Return the Install JSON model."""
         return InstallJsonModel(**self.contents)

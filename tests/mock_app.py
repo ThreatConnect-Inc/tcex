@@ -4,12 +4,14 @@ import json
 import os
 import sys
 import uuid
+from typing import Dict, Optional, Union
 
 # third-party
 from requests import Session
 
 # first-party
 from tcex import TcEx
+from tcex.app_config import InstallJson
 from tcex.sessions.tc_session import HmacAuth
 from tcex.utils import Utils
 
@@ -26,40 +28,44 @@ class MockApp:
     tcex = service_app(runtime_level='WebhookTriggerService').tcex
 
     Args:
-        runtime_level (str): The runtime level of the Mock App.
-        clear_argv (bool, optional): [description]. Defaults to True.
-        config_data ([type], optional): [description].
-        ij_data ([type], optional): [description].
+        runtime_level: The runtime level of the Mock App.
+        clear_argv (bool, kwargs): [description]. Defaults to True.
+        config_data (dict, kwargs): [description].
+        ij_data (dict, kwargs): [description].
     """
 
-    def __init__(self, runtime_level, **kwargs):
+    def __init__(self, runtime_level: str, **kwargs) -> None:
         """Initialize class properties."""
         self.runtime_level = runtime_level
-        self.cd = kwargs.get('config_data', {})  # configuration data for tcex instance
-        self.clear_argv = kwargs.get('clear_argv', True)  # clear sys.argv
-        self.ijd = kwargs.get('ij_data', {})  # install.json data
+        self.cd: dict = kwargs.get('config_data', {})  # configuration data for tcex instance
+        self.clear_argv: bool = kwargs.get('clear_argv', True)  # clear sys.argv
+        self.ijd: dict = kwargs.get('ij_data', {})  # install.json data
 
         # properties
-        api_access_id = os.getenv('API_ACCESS_ID')
-        api_secret_key = os.getenv('API_SECRET_KEY')
-        self._config_data = None
+        self.ij = InstallJson()
         self.tc_api_path = os.getenv('TC_API_PATH')
         self.tc_token_url = os.getenv('TC_TOKEN_URL')
         self.tc_token_svc_id = os.getenv('TC_TOKEN_SVC_ID')
-
-        # get a requests session and set hmac auth to use in retrieving tokens.
-        self.session = Session()
-        self.session.auth = HmacAuth(api_access_id, api_secret_key)
-
-        # utils method
         self.utils = Utils()
 
         # create install.json file
-        self._create_install_json()
+        self.mock_install_json()
 
-    def _build_config_data(self):
+    @property
+    def _config_api(self) -> Dict[str, str]:
+        return {
+            # 'tc_token': self.service_token,
+            'tc_token': self.api_token,
+            'tc_token_expires': '1700000000',
+            # hmac auth (for session tests)
+            'api_access_id': self.getenv('api_access_id'),
+            'api_secret_key': self.getenv('api_secret_key'),
+        }
+
+    @property
+    def _config_common(self) -> Dict[str, str]:
         """Return config data for mocked App."""
-        config = {
+        return {
             # default
             'api_default_org': self.getenv('api_default_org'),
             'tc_owner': self.getenv('tc_owner', 'TCI'),
@@ -77,40 +83,33 @@ class MockApp:
             'tc_proxy_external': self.getenv('tc_proxy_external', 'false', True),
         }
 
-        # add specific config shared between job and playbook Apps
-        if self.runtime_level.lower() in ['job', 'playbook']:
-            # 'tc_token': self.service_token,
-            config['tc_token'] = self.api_token
-            config['tc_token_expires'] = '1700000000'
-            # hmac auth (for session tests)
-            config['api_access_id'] = self.getenv('api_access_id')
-            config['api_secret_key'] = self.getenv('api_secret_key')
+    @property
+    def _config_playbook(self) -> Dict[str, str]:
+        """Return config data for mocked App."""
+        return {
+            'tc_action_channel': 'action-channel',
+            'tc_aot_enabled': False,
+            'tc_exit_channel': 'exit-channel',
+            'tc_terminate_seconds': 30,
+        }
 
-        # add specific config options for playbook and service Apps
-        if self.runtime_level.lower() in [
-            'apiservice',
-            'playbook',
-            'triggerservice',
-            'webhooktriggerservice',
-        ]:
-            config['tc_playbook_db_type'] = self.getenv('tc_playbook_db_type', 'Redis')
-            config['tc_playbook_db_context'] = self.getenv(
-                'tc_playbook_db_context', str(uuid.uuid4())
-            )
-            config['tc_playbook_db_path'] = self.getenv('tc_playbook_db_path', 'localhost')
-            config['tc_playbook_db_port'] = self.getenv('tc_playbook_db_port', '6379')
+    @property
+    def _config_playbook_common(self) -> Dict[str, str]:
+        """Return config data for mocked App."""
+        return {
+            'tc_playbook_kvstore_context': self.getenv(
+                'tc_playbook_kvstore_context', str(uuid.uuid4())
+            ),
+            'tc_kvstore_host': self.getenv('tc_playbook_db_path', 'localhost'),
+            'tc_kvstore_port': self.getenv('tc_playbook_db_port', 6379),
+            'tc_kvstore_type': self.getenv('tc_kvstore_type', 'Redis'),
+            'tc_playbook_kvstore_id': self.getenv('tc_playbook_kvstore_id', 0),
+        }
 
-        # add specific config options for service Apps
-        if self.runtime_level.lower() in [
-            'apiservice',
-            'triggerservice',
-            'webhooktriggerservice',
-        ]:
-            config['tc_svc_client_topic'] = self.getenv(
-                'tc_playbook_db_port', 'svc-client-cc66d36344787779ccaa8dbb5e09a7ab'
-            )
-
-        # add proxy config options if appropriate
+    @property
+    def _config_proxy(self) -> Dict[str, str]:
+        """Return config data for mocked App."""
+        config = {}
         if self.getenv('tc_proxy_host'):
             config['tc_proxy_host'] = self.getenv('tc_proxy_host')
         if self.getenv('tc_proxy_port'):
@@ -120,17 +119,99 @@ class MockApp:
         if self.getenv('tc_proxy_password'):
             config['tc_proxy_password'] = self.getenv('tc_proxy_password')
 
-        # create log structure for feature/test (e.g., args/test_args.log)
-        config['tc_log_file'] = self.tcex_log_file
-
-        # anything remaning in self.cd would be an arg to add.
-        for k, v in self.cd.items():
-            config[k] = v
-
         return config
 
-    def _create_app_params_file(self, config):
-        """Create the app param file for service Apps."""
+    @property
+    def _config_service(self) -> Dict[str, str]:
+        """Return config data for mocked App."""
+        return {
+            'tc_svc_client_topic': self.getenv(
+                'tc_svc_client_topic', 'svc-client-cc66d36344787779ccaa8dbb5e09a7ab'
+            )
+        }
+
+    @property
+    def _ij_common(self) -> Dict[str, str]:
+        """Return install.json data for mocked App."""
+        return {
+            'allowOnDemand': True,
+            'commitHash': 'abc-123',
+            'displayName': self.ijd.get('display_name') or 'Pytest',
+            'features': self.ijd.get('features')
+            or [
+                'aotExecutionEnabled',
+                'appBuilderCompliant',
+                'layoutEnabledApp',
+                'fileParams',
+                'secureParams',
+            ],
+            'languageVersion': '3.6',
+            'listDelimiter': '|',
+            'note': 'TcEx Testing',
+            'programLanguage': 'PYTHON',
+            'programMain': 'run',
+            'programVersion': '1.0.0',
+            'runtimeLevel': self.runtime_level,
+        }
+
+    @property
+    def _ij_playbook_common(self) -> Dict[str, str]:
+        """Return install.json data for mocked App."""
+        return {
+            'params': self.ijd.get('params')
+            or [
+                {
+                    'label': 'My Bool',
+                    'name': 'my_bool',
+                    'note': '',
+                    'required': True,
+                    'sequence': 1,
+                    'type': 'Boolean',
+                },
+                {
+                    'label': 'My Multi',
+                    'name': 'my_multi',
+                    'note': '',
+                    'required': False,
+                    'sequence': 2,
+                    'type': 'MultiChoice',
+                    'validValues': ['one', 'two'],
+                },
+                {
+                    'label': 'Colors',
+                    'name': 'colors',
+                    'note': '',
+                    'required': False,
+                    'sequence': 3,
+                    'type': 'String',
+                },
+                {
+                    'label': 'Color',
+                    'name': 'color',
+                    'note': '',
+                    'required': False,
+                    'sequence': 4,
+                    'type': 'String',
+                },
+                {
+                    'label': 'Fruit',
+                    'name': 'fruit',
+                    'note': '',
+                    'required': False,
+                    'sequence': 4,
+                    'type': 'String',
+                },
+            ],
+            'playbook': self.ijd.get('playbook')
+            or {
+                'outputPrefix': 'pytest',
+                'outputVariables': [],
+                'type': 'TcEx Test',
+            },
+        }
+
+    def _write_file_params_encrypted_file(self, config: dict) -> None:
+        """Write the App encrypted fileParams file."""
         config_data = json.dumps(config).encode()
         config_key = self.utils.random_string(16)
         config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'app_params.aes')
@@ -146,91 +227,14 @@ class MockApp:
         os.environ['TC_APP_PARAM_FILE'] = config_file
         os.environ['TC_APP_PARAM_KEY'] = config_key
 
-    def _create_install_json(self):
-        """Create a mock install.json file."""
+    @staticmethod
+    def _write_install_json(data: dict) -> None:
+        """Write the App install.json file."""
         with open('install.json', 'w') as fh:
-            json.dump(self._mock_install_json, fh, indent=2)
+            json.dump(data, fh, indent=2, sort_keys=True)
 
     @property
-    def _mock_install_json(self):
-        """Return install.json data for mocked App."""
-        display_name = self.ijd.get('display_name', 'Pytest')
-        features = self.ijd.get('features') or [
-            'aotExecutionEnabled',
-            'appBuilderCompliant',
-            'layoutEnabledApp',
-            'secureParams',
-        ]
-        params = self.ijd.get('params') or [
-            {
-                'label': 'My Bool',
-                'name': 'my_bool',
-                'note': '',
-                'required': True,
-                'sequence': 1,
-                'type': 'Boolean',
-            },
-            {
-                'label': 'My Multi',
-                'name': 'my_multi',
-                'note': '',
-                'required': False,
-                'sequence': 2,
-                'type': 'MultiChoice',
-                'validValues': ['one', 'two'],
-            },
-            {
-                'label': 'Colors',
-                'name': 'colors',
-                'note': '',
-                'required': False,
-                'sequence': 3,
-                'type': 'String',
-            },
-            {
-                'label': 'Color',
-                'name': 'color',
-                'note': '',
-                'required': False,
-                'sequence': 4,
-                'type': 'String',
-            },
-            {
-                'label': 'Fruit',
-                'name': 'fruit',
-                'note': '',
-                'required': False,
-                'sequence': 4,
-                'type': 'String',
-            },
-        ]
-        playbook = self.ijd.get('playbook') or {
-            'outputPrefix': 'pytest',
-            'outputVariables': [],
-            'type': 'Utility',
-        }
-
-        ij = {
-            'allowOnDemand': True,
-            'commitHash': 'abc-123',
-            'displayName': display_name,
-            'features': features,
-            'languageVersion': '3.6',
-            'listDelimiter': '|',
-            'note': '',
-            'params': params,
-            'programLanguage': 'PYTHON',
-            'programMain': 'run',
-            'programVersion': '1.0.0',
-            'runtimeLevel': self.runtime_level,
-        }
-        if self.runtime_level.lower() != 'job':
-            ij['playbook'] = playbook
-
-        return ij
-
-    @property
-    def api_token(self):
+    def api_token(self) -> str:
         """Return a valid API token."""
         r = self.session.post(f'{self.tc_api_path}{self.tc_token_url}api', verify=False)
         if r.status_code != 200:
@@ -240,23 +244,9 @@ class MockApp:
             )
         return r.json().get('data')
 
-    @property
-    def config_data(self):
-        """Return the configuration data for that App or write to app_param."""
-        if self._config_data is None:
-            self._config_data = self._build_config_data()
-            if self.runtime_level.lower() in [
-                'apiservice',
-                'triggerservice',
-                'webhooktriggerservice',
-            ]:
-                # add the config to the encrypted file and send TC empty dict
-                self._create_app_params_file(self._config_data)
-                self._config_data = {}
-
-        return self._config_data
-
-    def getenv(self, key, default=None, boolean=False):
+    def getenv(
+        self, key: str, default: Optional[str] = None, boolean: Optional[bool] = False
+    ) -> Union[bool, str]:
         """Get the appropriate **config value**.
 
         Use config_data value provided to Class,
@@ -264,9 +254,9 @@ class MockApp:
         else use default value
 
         Args:
-            key (str): The key value.
-            default (str, optional): The default value to return if not found.
-            boolean (bool, optional): If true return the result as a bool. Defaults to False.
+            key: The key value.
+            default: The default value to return if not found.
+            boolean: If true return the result as a bool.
 
         Returns:
             bool|str: The value found in config date, env var, or default.
@@ -281,8 +271,66 @@ class MockApp:
             cv = str(cv).lower() in ['true']
         return cv
 
+    def mock_file_params(self) -> dict:
+        """Return the configuration data for that App or write to app_param."""
+        # add common config items
+        _config = self._config_common
+
+        # add proxy config
+        _config.update(self._config_proxy)
+
+        # create log structure for feature/test (e.g., args/test_args.log)
+        _config['tc_log_file'] = self.tcex_log_file
+
+        # add job and playbook configs
+        if self.runtime_level.lower() in ['job', 'playbook']:
+            _config.update(self._config_api)
+
+        if self.runtime_level.lower() == 'playbook':
+            _config.update(self._config_playbook)
+
+        # add playbook and service configs
+        if self.runtime_level.lower() in [
+            'apiservice',
+            'playbook',
+            'triggerservice',
+            'webhooktriggerservice',
+        ]:
+            _config.update(self._config_playbook_common)
+
+        # add service configs
+        if self.runtime_level.lower() in [
+            'apiservice',
+            'triggerservice',
+            'webhooktriggerservice',
+        ]:
+            _config.update(self._config_service)
+
+        # anything remaning in self.cd would be an arg to add.
+        for k, v in self.cd.items():
+            _config[k] = v
+
+        # create encrypted file (fileParam feature)
+        self._write_file_params_encrypted_file(_config)
+
+    def mock_install_json(self) -> dict:
+        """Return install.json data for mocked App."""
+        _install_json = self._ij_common
+
+        # add playbook and service configs
+        if self.runtime_level.lower() in [
+            'apiservice',
+            'playbook',
+            'triggerservice',
+            'webhooktriggerservice',
+        ]:
+            _install_json.update(self._ij_playbook_common)
+
+        # create install.json file
+        self._write_install_json(_install_json)
+
     @property
-    def service_token(self):
+    def service_token(self) -> str:
         """Get a valid TC service token.
 
         TC_TOKEN_SVC_ID is the ID field from the appcatalogitem table for a service App.
@@ -295,13 +343,22 @@ class MockApp:
         return r.json().get('data')
 
     @property
-    def tcex(self):
+    def session(self) -> Session:
+        """Return Session configured for TC API."""
+        _session = Session()
+        _session.auth = HmacAuth(os.getenv('API_ACCESS_ID'), os.getenv('API_SECRET_KEY'))
+        return _session
+
+    @property
+    def tcex(self) -> TcEx:
         """Return an instance of tcex."""
         # clear sys.argv to avoid invalid arguments
         if self.clear_argv:
             sys.argv = sys.argv[:1]
 
-        tcex = TcEx(config=self.config_data)
+        # write file params and initialize new tcex instance
+        self.mock_file_params()
+        tcex = TcEx()
 
         # cleanup environment variables
         if os.getenv('TC_APP_PARAM_FILE', None):
@@ -312,7 +369,7 @@ class MockApp:
         return tcex
 
     @property
-    def tcex_log_file(self):
+    def tcex_log_file(self) -> str:
         """Return log file name for current test case."""
         try:
             test_data = os.getenv('PYTEST_CURRENT_TEST').split(' ')[0].split('::')

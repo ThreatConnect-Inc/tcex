@@ -11,8 +11,8 @@ class ServiceModel(BaseModel):
 
     Supported runtimeLevel:
     * ApiService
-    * WebhookTriggerService
     * TriggerService
+    * WebhookTriggerService
     """
 
     #

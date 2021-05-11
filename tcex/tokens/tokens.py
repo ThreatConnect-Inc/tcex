@@ -1,5 +1,6 @@
 """TcEx Framework Service module"""
 # standard library
+import logging
 import threading
 import time
 from typing import Optional
@@ -9,7 +10,11 @@ from requests import Session, exceptions
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-from ..utils import Utils
+# first-party
+from tcex.utils import Utils
+
+# get tcex logger
+logger = logging.getLogger('tcex')
 
 
 def retry_session(retries=3, backoff_factor=0.8, status_forcelist=(500, 502, 504)):
@@ -33,30 +38,27 @@ def retry_session(retries=3, backoff_factor=0.8, status_forcelist=(500, 502, 504
 class Tokens:
     """Service methods for customer Service (e.g., Triggers)."""
 
-    def __init__(self, token_url: str, sleep_interval: int, verify: bool, logger: object):
+    def __init__(self, token_url: str, sleep_interval: int, verify: bool):
         """Initialize the Class properties.
 
         Args:
             token_url: The ThreatConnect URL for token renewal.
             sleep_interval: Token monitor sleep interval.
             verify: A boolean to enable/disable SSL verification.
-            logger: An pre-configured instance of a logger.
         """
         self.token_url = token_url
         self.sleep_interval = sleep_interval
-        self.log = logger
         self.verify = verify
 
         # properties
         self.lock = threading.Lock()
+        self.log = logger
         # session with retry for token renewal
         self.session: Session = retry_session()
-        # shutdown boolean
-        self.shutdown = False
+        self.shutdown = False  # shutdown boolean
         # token map for storing keys -> tokens -> threads
         self.token_map = {}
-        # amount of seconds to pad before token renewal
-        self.token_window = 60
+        self.token_window = 60  # seconds to pad before token renewal
         self.utils = Utils
 
         # start token renewal process
@@ -174,7 +176,7 @@ class Tokens:
                 sleep_seconds = (
                     token_data.get('token_expires') - int(time.time()) - self.token_window
                 )
-                self.log.debug(
+                self.log.trace(
                     '''feature=token, '''
                     f'''event=token-status, key={key}, '''
                     f'''token="{self.utils.printable_cred(token_data.get('token'), 10)}", '''
@@ -223,7 +225,7 @@ class Tokens:
         """Unregister a token.
 
         Args:
-            key (str): The key used to identify a token.
+            key: The key used to identify a token.
         """
         try:
             del self.token_map[key]

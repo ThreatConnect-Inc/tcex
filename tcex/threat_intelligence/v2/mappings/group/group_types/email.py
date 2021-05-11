@@ -1,7 +1,13 @@
 """ThreatConnect TI Email"""
+# standard library
+from typing import TYPE_CHECKING
+
 # first-party
-from tcex.threat_intelligence.v2 import ThreatIntelligence
 from tcex.threat_intelligence.v2.mappings.group import Group
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.threat_intelligence.v2 import ThreatIntelligence
 
 
 class Email(Group):
@@ -17,6 +23,6 @@ class Email(Group):
         to (str, kwargs): The **to** address for this Email.
     """
 
-    def __init__(self, ti: ThreatIntelligence, **kwargs):
+    def __init__(self, ti: 'ThreatIntelligence', **kwargs):
         """Initialize Class properties."""
         super().__init__(ti, sub_type='Email', api_entity='email', api_branch='emails', **kwargs)

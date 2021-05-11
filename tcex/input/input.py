@@ -4,18 +4,21 @@ import json
 import logging
 import os
 import threading
-from functools import lru_cache
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 # third-party
 from pydantic import BaseModel, Extra
 
 # first-party
 from tcex.app_config.install_json import InstallJson
-from tcex.pleb import Event
-
-from .models import feature_map, runtime_level_map
+from tcex.backports import cached_property
+from tcex.input.models import feature_map, runtime_level_map
+from tcex.key_value_store import KeyValueApi, KeyValueRedis, RedisClient
+from tcex.playbook import Playbook
+from tcex.pleb import Event, NoneModel, proxies
+from tcex.sessions import TcSession
+from tcex.utils import Utils
 
 # get tcex logger
 logger = logging.getLogger('tcex')
@@ -57,6 +60,7 @@ class Input:
         self.event = Event()
         self.ij = InstallJson()
         self.log = logger
+        self.utils = Utils()
 
     def _load_aot_params(
         self,
@@ -73,8 +77,6 @@ class Input:
             return params
 
         if tc_kvstore_type == 'Redis':
-            # first-party
-            from tcex.key_value_store import RedisClient
 
             # get an instance of redis client
             redis_client = RedisClient(
@@ -177,14 +179,15 @@ class Input:
         """Add additional input models."""
         self._models.extend(models)
 
-        # clear cache for models property
-        Input.models.fget.cache_clear()
-
         # clear cache for data property
-        Input.data.fget.cache_clear()
+        del Input.__dict__['data']
+        # Input.data.fget.cache_clear()
 
-    @property
-    @lru_cache
+        # clear cache for models property
+        del Input.__dict__['models']
+        # Input.models.fget.cache_clear()
+
+    @cached_property
     def contents(self) -> dict:
         """Load configuration data from file."""
         _contents = {}
@@ -206,57 +209,47 @@ class Input:
                 tc_kvstore_type=_contents.get('tc_kvstore_type'),
                 tc_kvstore_host=_contents.get('tc_kvstore_host'),
                 tc_kvstore_port=_contents.get('tc_kvstore_port'),
+                tc_action_channel=_contents.get('tc_action_channel'),
+                tc_terminate_seconds=_contents.get('tc_terminate_seconds'),
             )
         )
-
-        # update contents
-        self.contents_update(_contents)
-
-        # resolve contents
-        if self.ij.runtime_level.lower() != 'playbook':
-            self.contents_resolve(
-                _contents, self.custom_model(_contents, runtime_level_map.get('playbook'))
-            )
 
         # register token
         self.register_token(_contents.get('tc_token'), _contents.get('tc_token_expires'))
 
         return _contents
 
-    def contents_resolve(self, params: dict, custom_model: BaseModel) -> dict:
-        """Resolve all playbook params.
+    @cached_property
+    def contents_resolved(self) -> dict:
+        """Resolve all playbook params."""
+        _inputs = self.contents
+        if self.ij.data.runtime_level.lower() == 'playbook':
+            for name, value in _inputs.items():
+                # model properties at this point are the default fields passed by ThreatConnect
+                # these should not be playbook variables and will not need to be resolved.
+                if name in self.model_properties:
+                    continue
 
-        Returns:
-            dict: A dictionary of all resolved params.
-        """
-        # first-party
-        from tcex.playbook import Playbook
+                if isinstance(value, list):
+                    # list could contain variables, try to resolve the value
+                    updated_value_array = []
+                    for v in value:
+                        if isinstance(v, str):
+                            updated_value_array.append(self.playbook.read(v))
+                    _inputs[name] = updated_value_array
+                elif isinstance(value, str):
+                    # strings could be a variable, try to resolve the value
+                    _inputs[name] = self.playbook.read(value)
 
-        playbooks = Playbook(custom_model)
-        for name, value in params.items():
-            # model properties at this point are the default fields passed by ThreatConnect
-            # these should not be playbook variables and will not need to be resolved.
-            if name in self.model_properties:
-                continue
+        # update contents
+        self.contents_update(_inputs)
 
-            if isinstance(value, list):
-                # list could contain variables, try to resolve the value
-                updated_value_array = []
-                for v in value:
-                    if isinstance(v, str):
-                        updated_value_array.append(playbooks.read(v))
-                params[name] = updated_value_array
-            elif isinstance(value, str):
-                # strings could be a variable, try to resolve the value
-                params[name] = playbooks.read(value)
+        return _inputs
 
-    def contents_update(self, params: dict) -> None:
-        """Update params provided by AOT be of the proper value and type.
-
-        Args:
-            params: The input params provided to the App.
-        """
-        for name, value in params.items():
+    # TODO: [high] - can this be replaced with a pydantic root validator?
+    def contents_update(self, inputs: dict) -> None:
+        """Update inputs provided by AOT to be of the proper value and type."""
+        for name, value in inputs.items():
             # model properties at this point are the default fields passed by ThreatConnect
             # these should not be playbook variables and will not need to be resolved.
             if name in self.model_properties:
@@ -266,39 +259,50 @@ class Input:
             # MultiChoice data should be represented as JSON array and Boolean values should be a
             # JSON boolean and not a string.
             param = self.ij.data.get_param(name)
+            if isinstance(param, NoneModel):
+                # skip over "default" inputs not defined in the install.json file
+                continue
 
             if param.type.lower() == 'multichoice' or param.allow_multiple:
-                # update delimited value to an array for params that have type of MultiChoice.
+                # update delimited value to an array for inputs that have type of MultiChoice
                 if value is not None and not isinstance(value, list):
-                    params[name] = value.split(self.ij.list_delimiter or '|')
+                    inputs[name] = value.split(self.ij.data.list_delimiter or '|')
             elif param.type == 'boolean' and isinstance(value, str):
                 # convert boolean input that are passed in as a string ("true" -> True)
-                params[name] = str(value).lower() == 'true'
-            # elif name in self.tc_bool_args:
-            #     # convert default boolean args that are passed in as a string ("true" -> True)
-            #     params[name] = str(value).lower() == 'true'
+                inputs[name] = str(value).lower() == 'true'
 
-    def custom_input(data: dict, models: list) -> BaseModel:
-        """Return a custom model with provided models and data."""
+    # @staticmethod
+    # def custom_model(contents: dict, models: list) -> BaseModel:
+    #     """Return a custom model with provided models and data."""
+    #     return input_model(models)(**contents)
 
-        class CustomInput:
-            data = input_model(**models)(**data)
-
-        return CustomInput
-
-    @property
-    @lru_cache
+    @cached_property
     def data(self) -> BaseModel:
         """Return the Input Model."""
-        return input_model(**self.models)(**self.contents)
+        return input_model(self.models)(**self.contents_resolved)
+
+    @cached_property
+    def data_unresolved(self) -> BaseModel:
+        """Return the Input Model using contents (no resolved values)."""
+        return input_model(self.models)(**self.contents)
+
+    @cached_property
+    def key_value_store(self) -> Union[KeyValueApi, KeyValueRedis]:
+        """Return the correct KV store for this execution."""
+        if self.data_unresolved.tc_kvstore_type == 'Redis':
+            return KeyValueRedis(self.redis_client)
+
+        if self.data_unresolved.tc_kvstore_type == 'TCKeyValueAPI':
+            return KeyValueApi(self.session)
+
+        raise RuntimeError(f'''Invalid KV Store Type: ({self.data_unresolved.tc_kvstore_type})''')
 
     # @property
     # def model_fields(self) -> list:
     #     """Return all current fields of the model."""
     #     self.data.dict().keys()
 
-    @property
-    @lru_cache
+    @cached_property
     def models(self) -> list:
         """Return all models for inputs."""
         # add all models for any supported features of the App
@@ -310,8 +314,8 @@ class Input:
 
         return self._models
 
-    @property
-    @lru_cache
+    # TODO: [low] is this needed or can Field value be set to tc_property=True?
+    @cached_property
     def model_properties(self) -> set:
         """Return only defined properties from model (exclude additional)."""
         properties = set()
@@ -320,16 +324,60 @@ class Input:
 
         return properties
 
+    @cached_property
+    def playbook(self) -> Playbook:
+        """Return instance of Playbook."""
+        return Playbook(
+            key_value_store=self.key_value_store,
+            context=self.data_unresolved.tc_playbook_kvstore_contex,
+            output_variables=self.data_unresolved.tc_playbook_out_variables,
+        )
+
+    @cached_property
+    def redis_client(self) -> RedisClient:
+        """Return redis client instance configure for Playbook/Service Apps."""
+        return RedisClient(
+            host=self.data_unresolved.tc_kvstore_host,
+            port=self.data_unresolved.tc_kvstore_port,
+            db=self.data_unresolved.tc_playbook_kvstore_id,
+        ).client
+
     def register_token(self, tc_token: str, tc_token_expires: str) -> None:
         """Register token if provided in args (non-service Apps)"""
         if all([tc_token, tc_token_expires]):
-            self.event(
+            self.event.send(
                 channel='register_token',
                 # key='MainThread',
                 key=threading.current_thread().name,
                 token=tc_token,
                 expires=tc_token_expires,
             )
+
+    @cached_property
+    def session(self) -> TcSession:
+        """Return Session configured for ThreatConnect API."""
+        _session = TcSession(
+            api_access_id=self.data_unresolved.api_access_id,
+            api_secret_key=self.data_unresolved.api_secret_key,
+            base_url=self.data_unresolved.tc_api_path,
+        )
+
+        # set verify
+        _session.verify = self.data_unresolved.tc_verify
+
+        # set token - this token will never require renewal
+        _session.token = self.data_unresolved.tc_token
+
+        # add proxy support if requested
+        if self.data_unresolved.tc_proxy_tc:
+            _session.proxies = proxies(
+                proxy_host=self.data_unresolved.tc_proxy_host,
+                proxy_port=self.data_unresolved.tc_proxy_port,
+                proxy_user=self.data_unresolved.tc_proxy_username,
+                proxy_pass=self.data_unresolved.tc_proxy_password,
+            )
+
+        return _session
 
     # TODO: [med] once logging is figured out see if this is still needed
     def update_logging(self):

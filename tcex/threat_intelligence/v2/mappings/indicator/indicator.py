@@ -1,11 +1,15 @@
 """ThreatConnect TI Indicator"""
 # standard library
 import json
+from typing import TYPE_CHECKING
 from urllib.parse import quote, unquote
 
 # first-party
-from tcex.threat_intelligence.v2 import ThreatIntelligence
 from tcex.threat_intelligence.v2.mappings import Mappings
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.threat_intelligence.v2 import ThreatIntelligence
 
 # import local modules for dynamic reference
 module = __import__(__name__)
@@ -98,7 +102,7 @@ def custom_indicator_class_factory(
 class Indicator(Mappings):
     """Unique API calls for Indicator API Endpoints"""
 
-    def __init__(self, ti: ThreatIntelligence, **kwargs):
+    def __init__(self, ti: 'ThreatIntelligence', **kwargs):
         """Initialize Class Properties."""
         super().__init__(
             ti,

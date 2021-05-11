@@ -14,11 +14,12 @@ from .mock_app import MockApp
 #
 
 
-@pytest.fixture()
-def config_data():
-    """Return tcex config data."""
-    app = MockApp(runtime_level='Playbook')
-    return app.config_data
+# TODO: [med] this is not longer support, where is it needed?
+# @pytest.fixture()
+# def config_data():
+#     """Return tcex config data."""
+#     app = MockApp(runtime_level='Playbook')
+#     return app.config_data
 
 
 @pytest.fixture()

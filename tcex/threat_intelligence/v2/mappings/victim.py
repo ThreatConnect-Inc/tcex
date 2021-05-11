@@ -1,7 +1,13 @@
 """ThreatConnect TI Victim"""
+# standard library
+from typing import TYPE_CHECKING
+
 # first-party
-from tcex.threat_intelligence.v2 import ThreatIntelligence
 from tcex.threat_intelligence.v2.mappings import Mappings
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.threat_intelligence.v2 import ThreatIntelligence
 
 # import local modules for dynamic reference
 module = __import__(__name__)
@@ -10,7 +16,7 @@ module = __import__(__name__)
 class Victim(Mappings):
     """Unique API calls for Victim API Endpoints"""
 
-    def __init__(self, ti: ThreatIntelligence, **kwargs):
+    def __init__(self, ti: 'ThreatIntelligence', **kwargs):
         """Initialize Class properties.
 
         Args:

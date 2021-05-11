@@ -9,7 +9,6 @@ import signal
 import sys
 import threading
 from typing import Optional, Union
-from urllib.parse import quote
 
 # third-party
 from requests import Session
@@ -18,7 +17,9 @@ from requests import Session
 from tcex.app_config import InstallJson
 from tcex.app_feature import AdvancedRequest
 from tcex.backports import cached_property
-from tcex.batch import Batch, BatchSubmit, BatchWriter
+from tcex.batch.batch import Batch
+from tcex.batch.batch_submit import BatchSubmit
+from tcex.batch.batch_writer import BatchWriter
 from tcex.case_management import CaseManagement
 from tcex.datastore import Cache, DataStore
 from tcex.input import Input
@@ -27,7 +28,7 @@ from tcex.logger import Logger, TraceLogger
 from tcex.metrics import Metrics
 from tcex.notifications import Notifications
 from tcex.playbook import Playbook
-from tcex.pleb import Event
+from tcex.pleb import Event, proxies
 from tcex.services.api_service import ApiService
 from tcex.services.common_service_trigger import CommonServiceTrigger
 from tcex.services.webhook_trigger_service import WebhookTriggerService
@@ -224,7 +225,7 @@ class TcEx:
     @property
     def case_management(self) -> CaseManagement:
         """Return a case management instance."""
-        return CaseManagement(self)
+        return CaseManagement(self.session)
 
     @property
     def cm(self) -> CaseManagement:
@@ -346,7 +347,7 @@ class TcEx:
             output_variables: The requested output variables. For PB Apps outputs are provided on
                 startup, but for service Apps each request gets different outputs.
         """
-        return Playbook(self.inputs, self.key_value_store, context, output_variables)
+        return Playbook(self.key_value_store, context, output_variables)
 
     @staticmethod
     def get_redis_client(host, port, db=0, blocking=False, **kwargs) -> RedisClient:
@@ -369,6 +370,40 @@ class TcEx:
             Redis.client: An instance of redis client.
         """
         return RedisClient(host=host, port=port, db=db, blocking=blocking, **kwargs).client
+
+    # TODO: [high] testing ... organize this later
+    def get_session(self) -> TcSession:
+        """Return an instance of Requests Session configured for the ThreatConnect API."""
+        _session = TcSession(
+            api_access_id=self.inputs.data.api_access_id,
+            api_secret_key=self.inputs.data.api_secret_key,
+            base_url=self.inputs.data.tc_api_path,
+            logger=self.log,
+        )
+
+        # set verify
+        _session.verify = self.inputs.data.tc_verify
+
+        # set token
+        _session.token = self.token
+
+        # update User-Agent
+        _session.headers.update({'User-Agent': f'TcEx: {__import__(__name__).__version__}'})
+
+        # add proxy support if requested
+        if self.inputs.data.tc_proxy_tc:
+            _session.proxies = self.proxies
+            self.log.info(
+                f'Using proxy host {self.inputs.data.tc_proxy_host}:'
+                f'{self.inputs.data.tc_proxy_port} for ThreatConnect session.'
+            )
+
+        # enable curl logging if tc_log_curl param is set.
+        if self.inputs.data.tc_log_curl:
+            _session.log_curl = True
+
+        # return session
+        return _session
 
     def get_session_external(self) -> ExternalSession:
         """Return an instance of Requests Session configured for the ThreatConnect API."""
@@ -395,40 +430,6 @@ class TcEx:
             _session_external.log_curl = True
 
         return _session_external
-
-    # TODO: [high] testing ... organize this later
-    def get_session(self) -> TcSession:
-        """Return an instance of Requests Session configured for the ThreatConnect API."""
-        _session = TcSession(
-            logger=self.log,
-            api_access_id=self.inputs.data.api_access_id,
-            api_secret_key=self.inputs.data.api_secret_key,
-            base_url=self.inputs.data.tc_api_path,
-        )
-
-        # set verify
-        _session.verify = self.inputs.data.tc_verify
-
-        # set token
-        _session.token = self.token
-
-        # update User-Agent
-        _session.headers.update({'User-Agent': f'TcEx: {__import__(__name__).__version__}'})
-
-        # add proxy support if requested
-        if self.inputs.data.tc_proxy_tc:
-            _session.proxies = self.proxies
-            self.log.info(
-                f'Using proxy host {self.inputs.data.tc_proxy_host}:'
-                f'{self.inputs.data.tc_proxy_port} for ThreatConnect session.'
-            )
-
-        # enable curl logging if tc_log_curl param is set.
-        if self.inputs.data.tc_log_curl:
-            _session.log_curl = True
-
-        # return session
-        return _session
 
     def get_ti(self) -> ThreatIntelligence:
         """Include the Threat Intel Module."""
@@ -561,7 +562,10 @@ class TcEx:
         Returns:
             tcex.playbook.Playbooks: An instance of Playbooks
         """
-        return self.get_playbook()
+        return self.get_playbook(
+            context=self.inputs.data.tc_playbook_kvstore_contex,
+            output_variables=self.inputs.data.tc_playbook_out_variables,
+        )
 
     @cached_property
     def proxies(self) -> dict:
@@ -578,29 +582,12 @@ class TcEx:
         Returns:
            (dict): Dictionary of proxy settings
         """
-        proxies = {}
-        if (
-            self.inputs.data.tc_proxy_host is not None
-            and self.inputs.data.tc_proxy_port is not None
-        ):
-
-            if (
-                self.inputs.data.tc_proxy_username is not None
-                and self.inputs.data.tc_proxy_password is not None
-            ):
-                tc_proxy_username = quote(self.inputs.data.tc_proxy_username, safe='~')
-                tc_proxy_password = quote(self.inputs.data.tc_proxy_password, safe='~')
-
-                # proxy url with auth
-                proxy_url = (
-                    f'{tc_proxy_username}:{tc_proxy_password}'
-                    f'@{self.inputs.data.tc_proxy_host}:{self.inputs.data.tc_proxy_port}'
-                )
-            else:
-                # proxy url without auth
-                proxy_url = f'{self.inputs.data.tc_proxy_host}:{self.inputs.data.tc_proxy_port}'
-            proxies = {'http': f'http://{proxy_url}', 'https': f'http://{proxy_url}'}
-        return proxies
+        return proxies(
+            proxy_host=self.inputs.data.tc_proxy_host,
+            proxy_port=self.inputs.data.tc_proxy_port,
+            proxy_user=self.inputs.data.tc_proxy_username,
+            proxy_pass=self.inputs.data.tc_proxy_password,
+        )
 
     # TODO: [med] update to support scoped instance
     @cached_property
@@ -693,9 +680,7 @@ class TcEx:
     def token(self) -> Tokens:
         """Return token object."""
         sleep_interval = int(os.getenv('TC_TOKEN_SLEEP_INTERVAL', '30'))
-        return Tokens(
-            self.inputs.data.tc_api_path, sleep_interval, self.inputs.data.tc_verify, self.log
-        )
+        return Tokens(self.inputs.data.tc_api_path, sleep_interval, self.inputs.data.tc_verify)
 
     @cached_property
     def utils(self) -> Utils:

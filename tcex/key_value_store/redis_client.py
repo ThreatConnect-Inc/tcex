@@ -1,6 +1,12 @@
 """TcEx Framework Redis Module"""
+# standard library
+from typing import Optional
+
 # third-party
 import redis
+
+# first-party
+from tcex.backports import cached_property
 
 
 class RedisClient:
@@ -10,10 +16,10 @@ class RedisClient:
     For a full list of kwargs see https://redis-py.readthedocs.io/en/latest/#redis.Connection.
 
     Args:
-        host (str, optional): The REDIS host. Defaults to localhost.
-        port (int, optional): The REDIS port. Defaults to 6379.
-        db (int, optional): The REDIS db. Defaults to 0.
-        blocking_pool (bool): Use BlockingConnectionPool instead of ConnectionPool.
+        host: The REDIS host. Defaults to localhost.
+        port: The REDIS port. Defaults to 6379.
+        db: The REDIS db. Defaults to 0.
+        blocking_pool: Use BlockingConnectionPool instead of ConnectionPool.
         errors (str, kwargs): The REDIS errors policy (e.g. strict).
         max_connections (int, kwargs): The maximum number of connections to REDIS.
         password (str, kwargs): The REDIS password.
@@ -21,17 +27,21 @@ class RedisClient:
         timeout (int, kwargs): The REDIS Blocking Connection Pool timeout value.
     """
 
-    def __init__(self, host='localhost', port=6379, db=0, blocking_pool=False, **kwargs):
+    def __init__(
+        self,
+        host: Optional[str] = 'localhost',
+        port: Optional[int] = 6379,
+        db: Optional[int] = 0,
+        blocking_pool: Optional[bool] = False,
+        **kwargs
+    ) -> None:
         """Initialize class properties"""
-        self._client = None
         pool = redis.ConnectionPool
         if blocking_pool:
             pool = redis.BlockingConnectionPool
         self.pool = pool(host=host, port=port, db=db, **kwargs)
 
-    @property
-    def client(self):
+    @cached_property
+    def client(self) -> redis.Redis:
         """Return an instance of redis.client.Redis."""
-        if self._client is None:
-            self._client = redis.Redis(connection_pool=self.pool)
-        return self._client
+        return redis.Redis(connection_pool=self.pool)

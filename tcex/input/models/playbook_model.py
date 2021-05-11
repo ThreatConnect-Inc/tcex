@@ -14,7 +14,7 @@ class PlaybookModel(BaseModel):
     """
 
     # the KvStore context
-    tc_playbook_kvstore_context: str = Field(None, alias='tc_playbook_db_context')
+    tc_playbook_kvstore_context: str = Field(None, alias='tc_playbook_db_context', tc_input=True)
 
     # a csv list of output variables
     tc_playbook_out_variables: Optional[list]

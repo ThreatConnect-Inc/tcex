@@ -8,10 +8,11 @@ import time
 
 # third-party
 import urllib3
-from requests import Session, adapters, auth
+from requests import Session, adapters, auth, request
 from urllib3.util.retry import Retry
 
-from ..utils import Utils
+# first-party
+from tcex.utils import Utils
 
 # disable ssl warning message
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -20,13 +21,13 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 class HmacAuth(auth.AuthBase):
     """ThreatConnect HMAC Authorization"""
 
-    def __init__(self, access_id, secret_key):
+    def __init__(self, access_id: str, secret_key: str) -> None:
         """Initialize the Class properties."""
         super().__init__()
         self._access_id = access_id
         self._secret_key = secret_key
 
-    def __call__(self, r):
+    def __call__(self, r: request) -> request:
         """Override of parent __call__ method."""
         timestamp = int(time.time())
         signature = f'{r.path_url}:{r.method}:{timestamp}'
@@ -49,7 +50,17 @@ class TokenAuth(auth.AuthBase):
 
     def __call__(self, r):
         """Override of parent __call__ method."""
-        r.headers['Authorization'] = f'TC-Token {self.token.token}'
+        # TODO: [high] the token module requires some though for v3
+        if hasattr(self.token, 'token'):
+            # the token module has a property of "token" that returns the appropriate token
+            token = self.token.token
+        elif callable(self.token):
+            # handle case where self.token is a callable
+            token = self.token()
+        else:
+            token = self.token
+
+        r.headers['Authorization'] = f'TC-Token {token}'
         return r
 
 
@@ -65,7 +76,7 @@ class TcSession(Session):
         self.log = logger or logging.getLogger('session')
 
         # properties
-        self._log_curl: bool = False
+        self._log_curl = False
         self._token = None
         self.auth = None
         self.utils = Utils()
