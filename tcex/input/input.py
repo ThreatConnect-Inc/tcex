@@ -329,7 +329,7 @@ class Input:
         """Return instance of Playbook."""
         return Playbook(
             key_value_store=self.key_value_store,
-            context=self.data_unresolved.tc_playbook_kvstore_contex,
+            context=self.data_unresolved.tc_playbook_kvstore_context,
             output_variables=self.data_unresolved.tc_playbook_out_variables,
         )
 
