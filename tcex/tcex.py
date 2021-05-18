@@ -220,7 +220,7 @@ class TcEx:
             ttl_seconds: The number of seconds the cache is valid.
             mapping: Advanced - The datastore mapping if required.
         """
-        return Cache(self, domain, data_type, ttl_seconds, mapping)
+        return Cache(self.session, domain, data_type, ttl_seconds, mapping)
 
     @property
     def case_management(self) -> CaseManagement:
@@ -243,7 +243,7 @@ class TcEx:
             data_type: The data type descriptor (e.g., tc:whois:cache).
             mapping: ElasticSearch mappings data.
         """
-        return DataStore(self, domain, data_type, mapping)
+        return DataStore(self.session, domain, data_type, mapping)
 
     @cached_property
     def error_codes(self) -> TcExErrorCodes:  # pylint: disable=no-self-use

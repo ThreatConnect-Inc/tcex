@@ -1,9 +1,17 @@
 """TcEx Framework Module for working with DataStore in the ThreatConnect Platform."""
 # standard library
-from typing import Optional
+import logging
+from typing import TYPE_CHECKING, Optional
 
-# third-party
-from requests.models import Response
+# first-party
+from tcex.pleb import Event
+
+if TYPE_CHECKING:
+    # third-party
+    from requests import Response, Session
+
+# get tcex logger
+logger = logging.getLogger('tcex')
 
 
 class DataStore:
@@ -25,68 +33,72 @@ class DataStore:
     passed directly to ElasticSearch.
 
     Args:
-        tcex (TcEx): An instance of TcEx.
-        domain (str): A value of “system”, “organization”, or “local”.
-        data_type (str): A free form type name for the data.
-        mapping (Optional[dict] = None): Elasticsearch mappings data.
+        session: A requests.Session instance with auth configured for the ThreatConnect API.
+        domain: A value of “system”, “organization”, or “local”.
+        data_type: A free form type name for the data.
+        mapping: Elasticsearch mappings data.
     """
 
-    def __init__(self, tcex: object, domain: str, data_type: str, mapping: Optional[dict] = None):
+    def __init__(
+        self, session: 'Session', domain: str, data_type: str, mapping: Optional[dict] = None
+    ) -> None:
         """Initialize class properties."""
-        self.tcex: object = tcex
-        self.domain: str = domain
-        self.data_type: str = data_type
-        self.mapping: Optional[dict] = mapping or {'dynamic': False}
+        self.domain = domain
+        self.data_type = data_type
+        self.mapping = mapping or {'dynamic': False}
+        self.session = session
+
+        # properties
+        self.event = Event()
+        self.log = logger
 
         # setup
         self._create_index()  # create the initial index.
         self._update_mappings()  # update mappings
 
-    def _create_index(self):
+    def _create_index(self) -> None:
         """Create index if it doesn't exist."""
         if not self.index_exists:
             rid = 'temp-index-create'
             index_settings = {}
             headers = {'Content-Type': 'application/json', 'DB-Method': 'POST'}
             url = f'/v2/exchange/db/{self.domain}/{self.data_type}/{rid}'
-            r: Response = self.tcex.session.post(url, json=index_settings, headers=headers)
+            r: 'Response' = self.session.post(url, json=index_settings, headers=headers)
 
             if not r.ok:
                 error: str = r.text or r.reason
-                self.tcex.handle_error(800, [r.status_code, error])
-            self.tcex.log.debug(
-                f'creating index. status_code: {r.status_code}, response: "{r.text}".'
-            )
+                self.event.send('handle_error', code=800, message_values=[r.status_code, error])
+            self.log.debug(f'creating index. status_code: {r.status_code}, response: "{r.text}".')
             # delete temporary record
             self.delete(rid, False)
 
-    def _token_available(self):
+    def _token_available(self) -> None:
         """Raise an error if token is not available.
 
         This check needs to be made after args are parsed to ensure token module has initialized.
         """
         # This module requires a token.
-        if self.tcex.token.token is None:  # pragma: no cover
+        if self.session.token.token is None:  # pragma: no cover
             raise RuntimeError(
                 'The DataModel TcEx Module requires a Token to '
                 'interact with the ThreatConnect platform.'
             )
 
-    def _update_mappings(self):
+    def _update_mappings(self) -> None:
         """Update the mappings for the current index."""
         headers = {'Content-Type': 'application/json', 'DB-Method': 'PUT'}
         url = f'/v2/exchange/db/{self.domain}/{self.data_type}/_mappings'
-        r: Response = self.tcex.session.post(url, json=self.mapping, headers=headers)
-        self.tcex.log.debug(f'update mapping. status_code: {r.status_code}, response: "{r.text}".')
+        r: 'Response' = self.session.post(url, json=self.mapping, headers=headers)
+        self.log.debug(f'update mapping. status_code: {r.status_code}, response: "{r.text}".')
 
     @property
     def index_exists(self) -> bool:
         """Check to see if index exists."""
         headers = {'Content-Type': 'application/json', 'DB-Method': 'GET'}
         url = f'/v2/exchange/db/{self.domain}/{self.data_type}/_search'
-        r: Response = self.tcex.session.post(url, headers=headers)
+        r: 'Response' = self.session.post(url, headers=headers)
         if not r.ok:
-            self.tcex.log.warning(f'The provided index was not found ({r.text}).')
+            self.log.warning(f'The provided index was not found ({r.text}).')
             return False
         return True
 
@@ -94,10 +106,9 @@ class DataStore:
         """Write data to the DataStore. Alias for post() method.
 
         Args:
-            rid (str): The record identifier.
-            data (dict): The record data.
-            raise_on_error (Optional[bool] = True): If True and not r.ok this
-                method will raise a RunTimeError.
+            rid: The record identifier.
+            data: The record data.
+            raise_on_error: If True and not r.ok this method will raise a RunTimeError.
 
         Returns:
             dict : The response data.
@@ -127,9 +138,8 @@ class DataStore:
             }
 
         Args:
-            rid (str): The record identifier.
-            raise_on_error (Optional[bool] = True): If True and not r.ok this
-                method will raise a RunTimeError.
+            rid: The record identifier.
+            raise_on_error: If True and not r.ok this method will raise a RunTimeError.
 
         Returns:
             dict : The response data.
@@ -139,13 +149,18 @@ class DataStore:
         response_data = None
         headers = {'Content-Type': 'application/json', 'DB-Method': 'DELETE'}
         url = f'/v2/exchange/db/{self.domain}/{self.data_type}/{rid}'
-        r: Response = self.tcex.session.post(url, headers=headers)
-        self.tcex.log.debug(f'datastore delete status code: {r.status_code}')
+        r: 'Response' = self.session.post(url, headers=headers)
+        self.log.debug(f'datastore delete status code: {r.status_code}')
         if r.ok and 'application/json' in r.headers.get('content-type', ''):
             response_data: dict = r.json()
         else:
             error: str = r.text or r.reason
-            self.tcex.handle_error(805, ['delete', r.status_code, error], raise_on_error)
+            self.event.send(
+                'handle_error',
+                code=805,
+                message_values=['delete', r.status_code, error],
+                raise_error=raise_on_error,
+            )
         return response_data
 
     def get(
@@ -172,10 +187,9 @@ class DataStore:
             }
 
         Args:
-            rid (Optional[str] = None): The record identifier.
-            data (Optional[dict] = None): A search query
-            raise_on_error (Optional[bool] = True): If True and not r.ok this
-                method will raise a RunTimeError.
+            rid: The record identifier.
+            data: The search query.
+            raise_on_error: If True and not r.ok this method will raise a RunTimeError.
 
         Returns:
             dict : Python request response.
@@ -188,21 +202,26 @@ class DataStore:
             url = f'/v2/exchange/db/{self.domain}/{self.data_type}/'
         else:
             url = f'/v2/exchange/db/{self.domain}/{self.data_type}/{rid}'
-        r: Response = self.tcex.session.post(url, json=data, headers=headers)
-        self.tcex.log.debug(f'datastore get status code: {r.status_code}')
+        r: 'Response' = self.session.post(url, json=data, headers=headers)
+        self.log.debug(f'datastore get status code: {r.status_code}')
         if 'application/json' in r.headers.get('content-type', ''):
             # as long as the content is JSON set the value
             try:
                 response_data: dict = r.json()
             except Exception as e:  # pragma: no cover
                 # This issue should be addressed by core in a future release.
-                self.tcex.log.warning(
+                self.log.warning(
                     'DataStore API returned a non-JSON response, even though '
                     f'content-type was application/json: {r.content} error: {e}'
                 )
         if not r.ok:
             error: str = r.text or r.reason
-            self.tcex.handle_error(805, ['get', r.status_code, error], raise_on_error)
+            self.event.send(
+                'handle_error',
+                code=805,
+                message_values=['get', r.status_code, error],
+                raise_error=raise_on_error,
+            )
         return response_data
 
     def post(self, rid: str, data: str, raise_on_error: Optional[bool] = True) -> dict:
@@ -228,11 +247,10 @@ class DataStore:
             }
 
         Args:
-            rid (str): The record identifier. If a value of None is passed an identifier elastic
+            rid: The record identifier. If a value of None is passed an identifier elastic
                 search will automatically generate a id.
-            data (dict): The record data.
-            raise_on_error (Optional[bool] = True): If True and not r.ok this
-                method will raise a RunTimeError.
+            data: The record data.
+            raise_on_error: If True and not r.ok this method will raise a RunTimeError.
 
         Returns:
             dict : The response data.
@@ -245,14 +263,19 @@ class DataStore:
         if rid is not None:
             url = f'{url}{rid}'
 
-        r: Response = self.tcex.session.post(url, json=data, headers=headers)
-        self.tcex.log.debug(f'datastore post status code: {r.status_code}')
+        r: 'Response' = self.session.post(url, json=data, headers=headers)
+        self.log.debug(f'datastore post status code: {r.status_code}')
 
         if r.ok and 'application/json' in r.headers.get('content-type', ''):
             response_data: dict = r.json()
         else:
             error: str = r.text or r.reason
-            self.tcex.handle_error(805, ['post', r.status_code, error], raise_on_error)
+            self.event.send(
+                'handle_error',
+                code=805,
+                message_values=['post', r.status_code, error],
+                raise_error=raise_on_error,
+            )
         return response_data
 
     def put(self, rid: str, data: dict, raise_on_error: Optional[bool] = True) -> dict:
@@ -278,10 +301,9 @@ class DataStore:
             }
 
         Args:
-            rid (str): The record identifier.
-            data (dict): A search query
-            raise_on_error (Optional[bool] = True): If True and not r.ok this
-                method will raise a RunTimeError.
+            rid: The record identifier.
+            data: A search query
+            raise_on_error: If True and not r.ok this method will raise a RunTimeError.
 
         Returns:
             dict : The response dict.
@@ -292,24 +314,28 @@ class DataStore:
         headers = {'Content-Type': 'application/json', 'DB-Method': 'PUT'}
         url = f'/v2/exchange/db/{self.domain}/{self.data_type}/{rid}'
 
-        r: Response = self.tcex.session.post(url, json=data, headers=headers)
-        self.tcex.log.debug(f'datastore put status code: {r.status_code}')
+        r: 'Response' = self.session.post(url, json=data, headers=headers)
+        self.log.debug(f'datastore put status code: {r.status_code}')
 
         if r.ok and 'application/json' in r.headers.get('content-type', ''):
             response_data: dict = r.json()
         else:
             error: str = r.text or r.reason
-            self.tcex.handle_error(805, ['put', r.status_code, error], raise_on_error)
+            self.event.send(
+                'handle_error',
+                code=805,
+                message_values=['put', r.status_code, error],
+                raise_error=raise_on_error,
+            )
         return response_data
 
-    def update(self, rid: str, data: dict, raise_on_error: Optional[bool] = True):
+    def update(self, rid: str, data: dict, raise_on_error: Optional[bool] = True) -> dict:
         """Update the for the provided Id. Alias for put() method.
 
         Args:
-            rid (str): The record identifier.
-            data (dict): The record data.
-            raise_on_error (Optional[bool] = True): If True and not r.ok this
-                method will raise a RunTimeError.
+            rid: The record identifier.
+            data: The record data.
+            raise_on_error: If True and not r.ok this method will raise a RunTimeError.
 
         Returns:
             dict : The response data.

@@ -1,34 +1,46 @@
-"""TcEx Framework Module for working with Cache in the ThreatConnect Platform."""
+"""Cache"""
 # standard library
+import logging
 from datetime import datetime, timedelta
 from typing import Callable, Optional
+
+# third-party
+from requests import Session
+
+# first-party
+from tcex.datastore.datastore import DataStore
+from tcex.utils import Utils
+
+# get tcex logger
+logger = logging.getLogger('tcex')
 
 
 class Cache:
     """TcEx Cache Class.
 
     Args:
-        tcex (TcEx): An instance of TcEx.
-        domain (str): A value of "organization" or "local".
-        data_type (str): A free form type name for the data.
-        ttl_seconds (Optional[int] = None): Number of seconds the cache is valid.
-        mapping (Optional[dict] = None): ElasticSearch mappings data.
+        session: A requests.Session instance with auth configured for the ThreatConnect API.
+        domain: A value of “system”, “organization”, or “local”.
+        data_type: A free form type name for the data.
+        ttl_seconds: Number of seconds the cache is valid.
+        mapping: Elasticsearch mappings data.
     """
 
     def __init__(
         self,
-        tcex: object,
+        session: Session,
         domain: str,
         data_type: str,
         ttl_seconds: Optional[int] = None,
         mapping: Optional[dict] = None,
     ):
         """Initialize class properties."""
-        self.tcex: object = tcex
 
         # properties
+        self.ds = DataStore(session, domain, data_type, mapping)
+        self.log = logger
         self.ttl_seconds: Optional[int] = ttl_seconds
-        self.ds: 'tcex.datastore' = self.tcex.datastore(domain, data_type, mapping)
+        self.utils = Utils()
 
         # Warranty void if any of these are changed.  Don't touch.
         self._cache_data_key: str = 'cache-data'
@@ -57,10 +69,9 @@ class Cache:
             }
 
         Args:
-            rid (str): The record identifier.
-            data (dict): The record data.
-            raise_on_error (Optional[bool] = True): If True and not r.ok this
-                method will raise a RunTimeError.
+            rid: The record identifier.
+            data: The record data.
+            raise_on_error: If True and not r.ok this method will raise a RunTimeError.
 
         Returns:
             dict : The response dict
@@ -94,9 +105,8 @@ class Cache:
             }
 
         Args:
-            rid (str): The record identifier.
-            raise_on_error (Optional[bool] = True): If True and not r.ok this
-                 method will raise a RunTimeError.
+            rid: The record identifier.
+            raise_on_error: If True and not r.ok this method will raise a RunTimeError.
 
         Returns:
             dict : The response dict.
@@ -123,13 +133,12 @@ class Cache:
             }
 
         Args:
-            rid (str): The record identifier.
-            data_callback (Optional[Callable] = None): A method that will return the data.
-            raise_on_error (Optional[bool] = True): If True and not r.ok this
-                method will raise a RunTimeError.
+            rid: The record identifier.
+            data_callback: A method that will return the data.
+            raise_on_error: If True and not r.ok this method will raise a RunTimeError.
 
         Returns:
-            dict : The cached data.
+            dict: The cached data.
         """
         cache_data = None
         ds_data: dict = self.ds.get(rid, raise_on_error=False)
@@ -146,20 +155,20 @@ class Cache:
                 if self._is_cache_expired(cache_date):
                     cache_data = None
                     expired = True
-                    self.tcex.log.debug(f'Cached data is expired for ({rid}).')
+                    self.log.debug(f'Cached data is expired for ({rid}).')
 
             if expired or ds_data.get('found') is False:
                 # when cache is expired or does not exist use callback to get data if possible
                 if callable(data_callback):
                     # cache_data = self._encode_data(data_callback(rid))
                     cache_data: Optional[dict] = data_callback(rid)
-                    self.tcex.log.debug(f'Using callback data for ({rid}).')
+                    self.log.debug(f'Using callback data for ({rid}).')
                     if cache_data:
                         cache_data = self.update(
                             rid, cache_data, raise_on_error
                         )  # update the cache data
             else:
-                self.tcex.log.debug(f'Using cached data for ({rid}).')
+                self.log.debug(f'Using cached data for ({rid}).')
 
         return cache_data
 
@@ -178,10 +187,9 @@ class Cache:
             }
 
         Args:
-            rid (str): The record identifier.
-            data (dict): The record data.
-            raise_on_error (Optional[bool] = True): If True and not r.ok this
-               method will raise a RunTimeError.
+            rid: The record identifier.
+            data): The record data.
+            raise_on_error: If True and not r.ok this method will raise a RunTimeError.
 
         Returns:
             dict : The cached data.
@@ -196,7 +204,7 @@ class Cache:
         """Return True if the provided cache data is expired.
 
         Args:
-            cached_date (str): The cache date value.
+            cached_date: The cache date value.
 
         Returns:
             bool: True if cache data is expired.
@@ -205,6 +213,6 @@ class Cache:
         if self.ttl_seconds is None or self.ttl_seconds == 0:
             return True  # if ttl_is 0 or None, all cached data is always invalid.
 
-        cached_datetime = self.tcex.utils.datetime.any_to_datetime(cached_date)
+        cached_datetime = self.utils.datetime.any_to_datetime(cached_date)
         cache_expires = (cached_datetime + timedelta(seconds=self.ttl_seconds)).timestamp()
         return cache_expires < datetime.utcnow().timestamp()
