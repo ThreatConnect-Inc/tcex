@@ -12,6 +12,7 @@ from stix2.base import _STIXBase
 # first-party
 from tcex.batch import Batch
 from tcex.logger import Logger
+from tcex.utils.date_utils import DatetimeUtils
 
 
 class StixModel:
@@ -325,6 +326,178 @@ class StixModel:
             'confidence': '@.confidence',
         }
 
+    def sanitize_date(self, date):
+        """Clean up timestamp and ensures it is the correct format"""
+        datetime = self.DatetimeUtils()
+        date = datetime.any_to_datetime(date)
+        date = date.replace(microsecond=0).isoformat()
+        date += '.000'
+        if '+' in date:
+            date = date.split('+')[0] + 'Z'
+        if not date.endswith('Z'):
+            date += 'Z'
+        return date
+
+    # pylint: disable=unused-argument,no-self-use
+    def campaign_mapping(self, stix_data):
+        aliases = ''
+        for x in stix_data.get('aliases', []):
+            aliases += f'* {x}\n'
+        mapping = {
+            'type': 'Campaign',
+            'name': '@.name',
+            'attribute': [
+                {'type': 'Aliases', 'value': aliases},
+                {'type': 'Campaign Objective', 'value': '@.objective'},
+            ],
+        }
+        if stix_data.get('last_seen'):
+            mapping['attribute'].append(
+                {'type': 'Last Seen', 'value': self.sanitize_date(stix_data.get('last_seen'))}
+            )
+        return mapping
+
+    def intrusion_set_mapping(
+        self, stix_data: Union[list, dict]
+    ):  # pylint: disable=unused-argument, no-self-use
+        """Convert a STIX object to a TC Intrusion Set.
+
+        Args:
+            stix_data: the data to convert
+        """
+        goals = ''
+        aliases = ''
+        for x in stix_data.get('goals', []):
+            goals += f'* {x}\n'
+        for x in stix_data.get('aliases', []):
+            aliases += f'* {x}\n'
+
+        mapping = {
+            'type': 'Intrusion Set',
+            'name': '@.name',
+            'attribute': [
+                {'type': 'Aliases', 'value': aliases},
+                {'type': 'Goals', 'value': goals},
+                {'type': 'Resource Level', 'value': '@.resource_level'},
+                {'type': 'Adversary Motivation Type', 'value': '@.primary_motivation'},
+            ],
+        }
+        for x in stix_data.get('secondary_motivations', []):
+            secondary_motivation_type = self.get_secondary_motivation_type(x)
+            if secondary_motivation_type:
+                mapping['attribute'].append(
+                    {
+                        'type': 'Secondary Motivation',
+                        'value': secondary_motivation_type
+                    }
+                )
+        if stix_data.get('last_seen'):
+            mapping['attribute'].append(
+                {'type': 'Last Seen', 'value': self.sanitize_date(stix_data.get('last_seen'))}
+            )
+        return mapping
+
+    def report_mapping(self, stix_data: Union[list, dict]):
+        """Convert a STIX object to a TC Report.
+
+        Args:
+            stix_data: the data to convert
+        """
+        mapping = {
+            'type': 'Report',
+            'name': '@.name',
+            'attribute': [{'type': 'Publish Date', 'value': '@.published'}],
+        }
+
+        for x in stix_data.get('report_types', []):
+            mapping['attribute'].append({'type': 'Report Type', 'value': x.strip()})
+        return mapping
+
+    def threat_actor_mapping(self, stix_data: Union[list, dict]):
+        """Convert a STIX object to a TC Threat.
+
+        Args:
+            stix_data: the data to convert
+        """
+        goals = ''
+        aliases = ''
+        for x in stix_data.get('goals', []):
+            goals += f'* {x}\n'
+        for x in stix_data.get('aliases', []):
+            aliases += f'* {x}\n'
+
+        mapping = {
+            'type': 'Adversary',
+            'name': '@.name',
+            'attribute': [
+                {'type': 'Aliases', 'value': aliases},
+                {'type': 'Resource Level', 'value': '@.resource_level'},
+                {'type': 'Adversary Motivation Type', 'value': '@.primary_motivation'},
+            ],
+        }
+        motivations = stix_data.get('secondary_motivations', []) + stix_data.get('personal_motivations', [])
+        for x in motivations:
+            secondary_motivation_type = self.get_secondary_motivation_type(x)
+            if secondary_motivation_type:
+                mapping['attribute'].append(
+                    {
+                        'type': 'Secondary Motivation',
+                        'value': secondary_motivation_type
+                    }
+                )
+        if stix_data.get('last_seen'):
+            mapping['attribute'].append(
+                {'type': 'Last Seen', 'value': self.sanitize_date(stix_data.get('last_seen'))}
+            )
+        if goals:
+            mapping['attribute'].append({'type': 'Goals', 'value': goals})
+        for x in stix_data.get('threat_actor_types', []):
+            mapping['attribute'].append({'type': 'Adversary Type', 'value': x})
+
+        return mapping
+
+    def get_secondary_motivation_type(self, motivation_type):
+        if not motivation_type:
+            return None
+        secondary_motivation_types = {
+            'accidental': 'Accidental',
+            'coercion': 'Coercion',
+            'dominance': 'Dominance',
+            'ideology': 'Ideological',
+            'notoriety': 'Notoriety',
+            'organizational-gain': 'Organizational Gain',
+            'personal-gain': 'Personal Gain',
+            'personal-satisfaction': 'Personal Satisfaction',
+            'revenge': 'Revenge',
+            'unpredictable': 'Unpredictable',
+        }
+        return secondary_motivation_types.get(motivation_type.lower())
+
+    def tool_mapping(self, stix_data: Union[list, dict]):
+        """Convert a STIX object to a TC Threat.
+
+        Args:
+            stix_data: the data to convert
+        """
+        aliases = ''
+        if 'aliases' in stix_data:
+            for x in stix_data.get('aliases'):
+                aliases += f'* {x}\n'
+        mapping = {
+            'type': 'Threat',
+            'name': '@.name',
+            'attribute': [
+                {'type': 'Aliases', 'value': aliases},
+                {'type': 'Malicious Tool Version', 'value': '@.tool_version'},
+                {'type': 'Threat Type', 'value': 'Tool'},
+            ],
+        }
+        for x in stix_data.get('tool_types', []):
+            mapping['attribute'].append({'type': 'Malicious Tool Variety', 'value': x})
+
+        return mapping
+
+
     # pylint: disable=unused-argument,no-self-use
     def email_address_mapping(self, stix_data):
         """Produce ThreatConnect EmailAddress mappings from a STIX 2.1 JSON object.
@@ -460,7 +633,11 @@ class StixModel:
             'ipv4-addr': self.ipv4_mapping,
             'ipv6-addr': self.ipv6_mapping,
             'windows-registry-key': self.registry_key_mapping,
-            'url': self.url_mapping,
+            'campaign': self.campaign_mapping,
+            'intrusion-set': self.intrusion_set_mapping,
+            'report': self.report_mapping,
+            'threat-actor': self.threat_actor_mapping,
+            'tool': self.tool_mapping,
         }
         type_mapping.update(custom_type_mapping or {})
         visitor_mapping = {'relationship': self.relationship}

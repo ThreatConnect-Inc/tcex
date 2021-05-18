@@ -3,6 +3,10 @@
 Release Notes
 #############
 
+2.0.22
+======
++ APP-2662 [STIX] Add several STIX object mapping types in model.py.
+
 2.0.21
 ======
 + APP-2475 [Batch] Fixed batch method signature in tcex.py.
