@@ -41,7 +41,7 @@ pattern: observation_expressions
 ?comparison_expression_and: comparison_expression_and "and"i comparison_expression_and
     | prop_test
 
-?prop_test: object_path NOT EQ primitive_literal
+?prop_test: object_path NOT EQ primitive_literal -> nothing
     | object_path (NOT NEQ|EQ) primitive_literal -> indicator
     | object_path NOT? (GT|LT|GE|LE) orderable_literal
     | object_path "in"i set_literal -> indicator_list

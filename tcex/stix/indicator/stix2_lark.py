@@ -6,7 +6,9 @@
 import os
 
 # third-party
-from lark import Lark, Transformer, v_args
+from typing import Union
+
+from lark import Lark, Transformer, v_args, Tree
 
 
 class Indicator:
@@ -81,6 +83,11 @@ class Stix2IndicatorTransformer(Transformer):
         return indicators
 
     pattern = extract_indicators  # pattern productions = all indicators
+
+    @staticmethod
+    def nothing(*args):
+        """An ignored indicator"""
+        return []
 
     @staticmethod
     def object_path(*args):
@@ -160,6 +167,8 @@ class Stix2IndicatorTransformer(Transformer):
 
     observation_expression_or = chain_left_right
     observation_expression_and = chain_left_right
+    comparison_expression = chain_left_right
+    comparison_expression_and = chain_left_right
 
 
 class Stix2IndicatorParser:
@@ -177,13 +186,24 @@ class Stix2IndicatorParser:
             grammar, parser='lalr', start='pattern', transformer=Stix2IndicatorTransformer()
         )
 
-    def parse(self, stix2pattern):
-        """Parse Stix2 Pattern, pulling out indicators.
-
-        Returns a list of Indicator objects
-        """
-
-        result = self.parser.parse(stix2pattern)
-        self.result = result
-
+    def extract_indicators(self, tree: Union[Tree, list, Indicator]) -> list:
+        """Walk the tree or list and return all indicators found"""
+        result = []
+        if isinstance(tree, Indicator):
+            result.append(tree)
+        elif isinstance(tree, list):
+            for obj in tree:
+                result.extend(self.extract_indicators(obj))
+        elif isinstance(tree, Tree):
+            for child in tree.children:
+                result.extend(self.extract_indicators(child))
         return result
+
+    def parse(self, stix2pattern):
+        """Parses Stix2 Pattern, pulling out indicators.
+        Returns a list of Indicator objects"""
+        result = self.extract_indicators(self.parser.parse(stix2pattern))
+
+        self.result = result
+        return result
+
