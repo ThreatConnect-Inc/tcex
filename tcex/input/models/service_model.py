@@ -3,7 +3,7 @@
 from typing import Optional
 
 # third-party
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, SecretStr
 
 
 class ServiceModel(BaseModel):
@@ -15,57 +15,76 @@ class ServiceModel(BaseModel):
     * WebhookTriggerService
     """
 
-    #
-    # ThreatConnect Provided Inputs
-    #
-
-    # the Broker SSL CA (full chain) certificate
-    tc_svc_broker_cacert_file: str
-
-    # the Broker SSL Server certificate
-    tc_svc_broker_cert_file: str
-
-    # the Broker service hostname.
-    tc_svc_broker_host: str
-
-    # this is for Java Apps
-    tc_svc_broker_jks_file: Optional[str] = 'Unused'
-
-    # this is for Java Apps
-    tc_svc_broker_jks_pwd: Optional[str] = 'Unused'
-
-    # the Broker service port
-    tc_svc_broker_port: int
-
-    # the Broker auth token
-    tc_svc_broker_token: str
-    # TODO: [med] switch ot use of SecretStr
-    # tc_svc_broker_token: Optional[SecretStr]
-
-    # the Broker client topic (messages to core)
-    tc_svc_client_topic: str
-
-    # the heartbeat interval in seconds
-    tc_svc_hb_timeout_seconds: int = 20
-
-    # the Broker server topic (messages to App)
-    tc_svc_server_topic: str
-
-    #
-    # TcEx Specific
-    #
-
-    # the broker connection timeout
-    tc_svc_broker_conn_timeout: int = 60
-
-    # the broker server, either mqtt (default) or redis (deprecated)
-    tc_svc_broker_service: Optional[str] = 'mqtt'
-
-    # the broker service timeout in seconds
-    tc_svc_broker_timeout: int = 60
-
-    # the unique service id
-    tc_svc_id: int
-
-    # the testing framework context
-    tcex_testing_context: Optional[str]
+    tc_svc_broker_cacert_file: str = Field(
+        None,
+        description='The Broker SSL CA (full chain) certificate.',
+        inclusion_reason='runtimeLevel',
+    )
+    tc_svc_broker_cert_file: str = Field(
+        None,
+        description='The Broker SSL Server certificate.',
+        inclusion_reason='runtimeLevel',
+    )
+    tc_svc_broker_conn_timeout: int = Field(
+        60,
+        description='The broker connection startup timeout in seconds.',
+        inclusion_reason='runtimeLevel',
+        requires_definition=True,
+    )
+    tc_svc_broker_host: str = Field(
+        None,
+        description='The Broker service hostname.',
+        inclusion_reason='runtimeLevel',
+    )
+    tc_svc_broker_jks_file: Optional[str] = Field(
+        'Unused',
+        description='Input for Java Apps.',
+        inclusion_reason='runtimeLevel',
+    )
+    tc_svc_broker_jks_pwd: Optional[str] = Field(
+        'Unused',
+        description='Input for Java Apps.',
+        inclusion_reason='runtimeLevel',
+    )
+    tc_svc_broker_port: int = Field(
+        None,
+        description='The Broker service port number.',
+        inclusion_reason='runtimeLevel',
+    )
+    tc_svc_broker_timeout: int = Field(
+        60,
+        description='The broker service timeout in seconds.',
+        inclusion_reason='runtimeLevel',
+        requires_definition=True,
+    )
+    tc_svc_broker_token: SecretStr = Field(
+        None,
+        description='The Broker auth token.',
+        inclusion_reason='runtimeLevel',
+    )
+    tc_svc_client_topic: str = Field(
+        None,
+        description='The Broker client topic (App -> Core).',
+        inclusion_reason='runtimeLevel',
+    )
+    tc_svc_hb_timeout_seconds: int = Field(
+        20,
+        description='The heartbeat timeout interval in seconds.',
+        inclusion_reason='runtimeLevel',
+    )
+    tc_svc_id: int = Field(
+        None,
+        description='The unique ID for the current service.',
+        inclusion_reason='runtimeLevel',
+        requires_definition=True,
+    )
+    tc_svc_server_topic: str = Field(
+        None,
+        description='The Broker server topic (Core -> App).',
+        inclusion_reason='runtimeLevel',
+    )
+    tcex_testing_context: Optional[str] = Field(
+        None,
+        description='[Testing] The testing framework context.',
+        inclusion_reason='runtimeLevel',
+    )

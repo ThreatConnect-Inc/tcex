@@ -3,7 +3,7 @@
 from typing import Optional
 
 # third-party
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, SecretStr
 
 
 class ApiModel(BaseModel):
@@ -13,41 +13,47 @@ class ApiModel(BaseModel):
     * ApiService
     * Playbook
     * Organization
-    * WebhookTriggerService
     * TriggerService
+    * WebhookTriggerService
     """
 
-    #
-    # ThreatConnect Provided Inputs
-    #
-
-    # the default ThreatConnect Org for the API user [job, pb]
-    api_default_org: Optional[str]
-
-    # the API url for ThreatConnect
-    tc_api_path: str = 'https://api.threatconnect.com'
-
-    # a token for the ThreatConnect API
-    # exceptions: [ApiService, TriggerService, WebhookTriggerService]
-    tc_token: Optional[str]
-    # TODO: [med] switch ot use of SecretStr
-    # tc_token: Optional[SecretStr]
-
-    # the expiration epoch time for tc_token
-    # exceptions: [ApiService, TriggerService, WebhookTriggerService]
-    tc_token_expires: Optional[int]
-
-    #
-    # TcEx Specific
-    #
-
+    api_default_org: Optional[str] = Field(
+        None,
+        description='The default ThreatConnect Org for the current API user.',
+        inclusion_reason='runtimeLevel',
+    )
     # alternate authentication credential when tc_token is not passed
-    tc_api_access_id: Optional[str]
-
+    tc_api_access_id: Optional[str] = Field(
+        None,
+        description='A ThreatConnect API Access Id.',
+        inclusion_reason='runtimeLevel',
+        requires_definition=True,
+    )
+    tc_api_path: str = Field(
+        'https://api.threatconnect.com',
+        description='The URL for the ThreatConnect API.',
+        inclusion_reason='runtimeLevel',
+    )
     # alternate authentication credential when tc_token is not passed
-    tc_api_secret_key: Optional[str]
-    # TODO: [med] switch ot use of SecretStr
-    # tc_api_secret_key: Optional[SecretStr]
-
-    # whether or not to verify the ThreatConnect API SSL cert
-    tc_verify: Optional[bool] = False
+    tc_api_secret_key: Optional[SecretStr] = Field(
+        None,
+        description='A ThreatConnect API Secret Key.',
+        inclusion_reason='runtimeLevel',
+        requires_definition=True,
+    )
+    tc_token: Optional[SecretStr] = Field(
+        None,
+        description='A ThreatConnect API token.',
+        inclusion_reason='runtimeLevel',
+    )
+    tc_token_expires: Optional[int] = Field(
+        None,
+        description='The expiration timestamp in epoch for tc_token.',
+        inclusion_reason='runtimeLevel',
+    )
+    tc_verify: Optional[bool] = Field(
+        True,
+        description='Flag to enable SSL validation for API requests.',
+        inclusion_reason='runtimeLevel',
+        requires_definition=True,
+    )

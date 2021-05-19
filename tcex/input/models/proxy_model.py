@@ -3,7 +3,7 @@
 from typing import Optional
 
 # third-party
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, SecretStr
 
 
 class ProxyModel(BaseModel):
@@ -17,28 +17,33 @@ class ProxyModel(BaseModel):
     * TriggerService
     """
 
-    # the proxy server hostname or ip address
-    # supported runtimeLevel: [Organization, Playbook, WebhookTriggerService]
-    tc_proxy_host: Optional[str]
-
-    # the proxy server port
-    # supported runtimeLevel: [Organization, Playbook, WebhookTriggerService]
-    tc_proxy_port: Optional[int]
-
-    # the proxy server username
-    # supported runtimeLevel: [Organization, Playbook, WebhookTriggerService]
-    tc_proxy_username: Optional[str]
-
-    # the proxy server password
-    # supported runtimeLevel: [Organization, Playbook, WebhookTriggerService]
-    tc_proxy_password: Optional[str]
-    # TODO: [med] switch ot use of SecretStr
-    # tc_proxy_password: Optional[SecretStr]
-
-    # if True, external API connections should be proxied
-    # supported runtimeLevel: [Organization, Playbook, WebhookTriggerService]
-    tc_proxy_external: Optional[bool] = False
-
-    # if True, connections to the ThreatConnect API should be proxied
-    # supported runtimeLevel: [Organization, Playbook, WebhookTriggerService]
-    tc_proxy_tc: Optional[bool] = False
+    tc_proxy_host: Optional[str] = Field(
+        None,
+        description='The proxy hostname.',
+        inclusion_reason='runtimeLevel',
+    )
+    tc_proxy_port: Optional[int] = Field(
+        None,
+        description='The proxy port number.',
+        inclusion_reason='runtimeLevel',
+    )
+    tc_proxy_username: Optional[str] = Field(
+        None,
+        description='The proxy username.',
+        inclusion_reason='runtimeLevel',
+    )
+    tc_proxy_password: Optional[SecretStr] = Field(
+        None,
+        description='The proxy password',
+        inclusion_reason='runtimeLevel',
+    )
+    tc_proxy_external: Optional[bool] = Field(
+        False,
+        description='Flag to enable proxy for external connections.',
+        inclusion_reason='runtimeLevel',
+    )
+    tc_proxy_tc: Optional[bool] = Field(
+        False,
+        description='Flag to enable proxy for ThreatConnect connection.',
+        inclusion_reason='runtimeLevel',
+    )

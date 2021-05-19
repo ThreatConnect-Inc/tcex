@@ -3,7 +3,7 @@
 from typing import Optional
 
 # third-party
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class OrganizationModel(BaseModel):
@@ -13,5 +13,8 @@ class OrganizationModel(BaseModel):
     * Organization
     """
 
-    # the current job id for the App
-    tc_job_id: Optional[int]
+    tc_job_id: Optional[int] = Field(
+        None,
+        description='The Job Id for the current App execution.',
+        inclusion_reason='runtimeLevel',
+    )

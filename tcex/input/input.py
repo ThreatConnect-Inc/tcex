@@ -109,6 +109,31 @@ class Input:
 
         return params
 
+    def _load_config_file(self):
+        """Load config file params provided passed to inputs."""
+        # default file contents
+        file_content = {}
+        if self.config_file is None:
+            return file_content
+
+        # self.config_file should be a fully qualified file name
+        fqfn = Path(self.config_file)
+        if not fqfn.is_file():
+            self.log.error(
+                'feature=inputs, event=load-config-file, '
+                f'exception=file-not-found, filename={fqfn.name}'
+            )
+            return file_content
+
+        # read file contents
+        try:
+            # read encrypted file from "in" directory
+            with fqfn.open(mode='rb') as fh:
+                return json.load(fh)
+        except Exception:  # pragma: no cover
+            self.log.error(f'feature=inputs, event=config-parse-failure, filename={fqfn.name}')
+            return file_content
+
     def _load_file_params(self):
         """Load file params provided by the core platform."""
         # default file contents
@@ -150,31 +175,6 @@ class Input:
 
         return file_content
 
-    def _load_config_file(self):
-        """Load config file params provided passed to inputs."""
-        # default file contents
-        file_content = {}
-        if self.config_file is None:
-            return file_content
-
-        # self.config_file should be a fully qualified file name
-        fqfn = Path(self.config_file)
-        if not fqfn.is_file():
-            self.log.error(
-                'feature=inputs, event=load-config-file, '
-                f'exception=file-not-found, filename={fqfn.name}'
-            )
-            return file_content
-
-        # read file contents
-        try:
-            # read encrypted file from "in" directory
-            with fqfn.open(mode='rb') as fh:
-                return json.load(fh)
-        except Exception:  # pragma: no cover
-            self.log.error(f'feature=inputs, event=config-parse-failure, filename={fqfn.name}')
-            return file_content
-
     def add_models(self, models: list) -> None:
         """Add additional input models."""
         self._models.extend(models)
@@ -189,7 +189,7 @@ class Input:
 
     @cached_property
     def contents(self) -> dict:
-        """Load configuration data from file."""
+        """Return contents of inputs from all locations."""
         _contents = {}
 
         # config
@@ -271,11 +271,6 @@ class Input:
                 # convert boolean input that are passed in as a string ("true" -> True)
                 inputs[name] = str(value).lower() == 'true'
 
-    # @staticmethod
-    # def custom_model(contents: dict, models: list) -> BaseModel:
-    #     """Return a custom model with provided models and data."""
-    #     return input_model(models)(**contents)
-
     @cached_property
     def data(self) -> BaseModel:
         """Return the Input Model."""
@@ -295,12 +290,7 @@ class Input:
         if self.data_unresolved.tc_kvstore_type == 'TCKeyValueAPI':
             return KeyValueApi(self.session)
 
-        raise RuntimeError(f'''Invalid KV Store Type: ({self.data_unresolved.tc_kvstore_type})''')
-
-    # @property
-    # def model_fields(self) -> list:
-    #     """Return all current fields of the model."""
-    #     self.data.dict().keys()
+        raise RuntimeError(f'Invalid KV Store Type: ({self.data_unresolved.tc_kvstore_type})')
 
     @cached_property
     def models(self) -> list:

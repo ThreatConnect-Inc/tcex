@@ -1,6 +1,6 @@
 """AOT Execution Enabled Model"""
 # third-party
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class AotExecutionEnabledModel(BaseModel):
@@ -12,14 +12,23 @@ class AotExecutionEnabledModel(BaseModel):
     * Playbook
     """
 
-    # the AOT channel to monitor for action [pb]
-    tc_action_channel: str
-
-    # if True, AOT execution is enabled [pb]
-    tc_aot_enabled: bool = False
-
-    # the AOT channel to send exit messages [pb]
-    tc_exit_channel: str
-
-    # the number of seconds to wait for action message [pb]
-    tc_terminate_seconds: int
+    tc_action_channel: str = Field(
+        None,
+        description='The AOT channel to monitor for incoming action.',
+        inclusion_reason='feature (aotExecutionEnabled)',
+    )
+    tc_aot_enabled: bool = Field(
+        False,
+        description='Flag to enable AOT mode for the App.',
+        inclusion_reason='feature (aotExecutionEnabled)',
+    )
+    tc_exit_channel: str = Field(
+        None,
+        description='The AOT channel to send the exit message.',
+        inclusion_reason='feature (aotExecutionEnabled)',
+    )
+    tc_terminate_seconds: int = Field(
+        None,
+        description='The max number of second to wait for action message.',
+        inclusion_reason='feature (aotExecutionEnabled)',
+    )

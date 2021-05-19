@@ -1,9 +1,10 @@
 """Path Model"""
 # standard library
 import tempfile
+from pathlib import Path
 
 # third-party
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class PathModel(BaseModel):
@@ -21,14 +22,23 @@ class PathModel(BaseModel):
     # ThreatConnect Provided Inputs
     #
 
-    # the path to the Apps "in" directory
-    tc_in_path: str = tempfile.gettempdir() or '/tmp'  # nosec
-
-    # the path to the App "log" directory
-    tc_log_path: str = tempfile.gettempdir() or '/tmp'  # nosec
-
-    # the path to the Apps "out" directory
-    tc_out_path: str = tempfile.gettempdir() or '/tmp'  # nosec
-
-    # the path to the Apps "tmp" directory
-    tc_temp_path: str = tempfile.gettempdir() or '/tmp'  # nosec
+    tc_in_path: Path = Field(
+        Path(tempfile.gettempdir() or '/tmp'),  # nosec
+        description='The path to the Apps "in" directory.',
+        inclusion_reason='runtimeLevel',
+    )
+    tc_log_path: Path = Field(
+        Path(tempfile.gettempdir() or '/tmp'),  # nosec
+        description='The path to the Apps "log" directory.',
+        inclusion_reason='runtimeLevel',
+    )
+    tc_out_path: Path = Field(
+        Path(tempfile.gettempdir() or '/tmp'),  # nosec
+        description='The path to the Apps "out" directory.',
+        inclusion_reason='runtimeLevel',
+    )
+    tc_temp_path: Path = Field(
+        Path(tempfile.gettempdir() or '/tmp'),  # nosec
+        description='The path to the Apps "tmp" directory.',
+        inclusion_reason='runtimeLevel',
+    )

@@ -1,6 +1,6 @@
 """Logging Model"""
 # third-party
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class LoggingModel(BaseModel):
@@ -14,29 +14,40 @@ class LoggingModel(BaseModel):
     * TriggerService
     """
 
-    #
-    # ThreatConnect Provided Inputs
-    #
-
-    # the logging level for the App (job Apps have to collect this manually)
-    tc_log_level: str = 'info'
-
-    # if True, enable logging to ThreatConnect API
-    # exceptions: [ApiService, WebhookTriggerService, TriggerService]
-    tc_log_to_api: bool = False
-
-    #
-    # TcEx Specific
-    #
-
-    # the maximum number of log files to retain
-    tc_log_backup_count: int = 25  # target 50Mb in total log size (1x10Mb + 25x~1.6Mb = ~50Mb)
-
-    # if True, log message showing how to make API calls with curl are enabled
-    tc_log_curl: bool = False
-
-    # the name of the App log file
-    tc_log_file: str = 'app.log'
-
-    # the maximum size of the App log file before rotation
-    tc_log_max_bytes: int = 10_485_760  # 10Mb
+    # target 50Mb in total log size (1x10Mb + 25x~1.6Mb = ~50Mb)
+    tc_log_backup_count: int = Field(
+        25,
+        description='The maximum number of log files to retain for an App.',
+        inclusion_reason='runtimeLevel',
+        requires_definition=True,
+    )
+    tc_log_curl: bool = Field(
+        False,
+        description='Flag to enable logging curl commands.',
+        inclusion_reason='runtimeLevel',
+        requires_definition=True,
+    )
+    tc_log_file: str = Field(
+        'app.log',
+        description='The default name of the App\'s log file.',
+        inclusion_reason='runtimeLevel',
+        requires_definition=True,
+    )
+    # job Apps have to collect tc_log_level manually
+    tc_log_level: str = Field(
+        'info',
+        description='The logging level for the App.',
+        inclusion_reason='runtimeLevel',
+        # requires_definition=True, # this is true for only Organization runtimeLevel
+    )
+    tc_log_max_bytes: int = Field(
+        10_485_760,
+        description='The maximum size of the App log file before rotation.',
+        inclusion_reason='runtimeLevel',
+        requires_definition=True,
+    )
+    tc_log_to_api: bool = Field(
+        False,
+        description='Flag to enable API logging for the App.',
+        inclusion_reason='runtimeLevel',
+    )

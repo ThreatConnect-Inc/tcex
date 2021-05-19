@@ -9,21 +9,35 @@ class PlaybookCommonModel(BaseModel):
     Supported for the following runtimeLevel:
     * ApiService
     * Playbook
-    * WebhookTriggerService
     * TriggerService
+    * WebhookTriggerService
     """
 
-    # the KvStore cache id (db id)
-    tc_cache_kvstore_id: int = 10
-
-    # the KvStore hostname
-    tc_kvstore_host: str = Field('localhost', alias='tc_playbook_db_path')
-
-    # the KvStore port number
-    tc_kvstore_port: int = Field(6379, alias='tc_playbook_db_port')
-
-    # the KvStore type (Redis or TCKeyValueAPI)
-    tc_kvstore_type: str = Field('Redis', alias='tc_playbook_db_type')
-
-    # the KvStore id (db id)
-    tc_playbook_kvstore_id: int = 0
+    tc_cache_kvstore_id: int = Field(
+        10,
+        description='The KV Store cache DB Id.',
+        inclusion_reason='runtimeLevel',
+    )
+    tc_kvstore_host: str = Field(
+        'localhost',
+        alias='tc_playbook_db_path',
+        description='The KV Store hostname.',
+        inclusion_reason='runtimeLevel',
+    )
+    tc_kvstore_port: int = Field(
+        6379,
+        alias='tc_playbook_db_port',
+        description='The KV Store port number.',
+        inclusion_reason='runtimeLevel',
+    )
+    tc_kvstore_type: str = Field(
+        'Redis',
+        alias='tc_playbook_db_type',
+        description='The KV Store type (Redis or TCKeyValueAPI).',
+        inclusion_reason='runtimeLevel',
+    )
+    tc_playbook_kvstore_id: int = Field(
+        0,
+        description='The KV Store playbook DB Id.',
+        inclusion_reason='runtimeLevel',
+    )

@@ -25,6 +25,15 @@ feature_map = {
     'layoutEnabledApp': [],
     'secureParams': [],
     'smtpSettings': [SmtpSettingsModel],
+    # features for TC App loop prevention
+    'CreatesGroup': [],
+    'CreatesIndicator': [],
+    'CreatesSecurityLabel': [],
+    'CreatesTag': [],
+    'DeletesGroup': [],
+    'DeletesIndicator': [],
+    'DeletesSecurityLabel': [],
+    'DeletesTag': [],
 }
 
 # define runtime level to model map

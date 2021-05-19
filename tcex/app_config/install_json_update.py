@@ -96,6 +96,15 @@ class InstallJsonUpdate:
                 'smtpSettings',
                 'webhookResponseMarshall',
                 'webhookServiceEndpoint',
+                # features for TC App loop prevention
+                'CreatesGroup',
+                'CreatesIndicator',
+                'CreatesSecurityLabel',
+                'CreatesTag',
+                'DeletesGroup',
+                'DeletesIndicator',
+                'DeletesSecurityLabel',
+                'DeletesTag',
             ]:
                 features.append(feature)
 

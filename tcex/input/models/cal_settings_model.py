@@ -1,6 +1,6 @@
 """CAL Settings Model"""
 # third-party
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, SecretStr
 
 
 class CalSettingsModel(BaseModel):
@@ -15,13 +15,22 @@ class CalSettingsModel(BaseModel):
     * TriggerService
     """
 
-    # the ThreatConnect CAL hostname
-    tc_cal_host: str
+    #
+    # ThreatConnect Provided Inputs
+    #
 
-    # the ThreatConnect CAL API token
-    tc_cal_token: str
-    # TODO: [med] switch ot use of SecretStr
-    # tc_cal_token: Optional[SecretStr]
-
-    # the ThreatConnect CAL API token timestamp
-    tc_cal_timestamp: int
+    tc_cal_host: str = Field(
+        ...,
+        description='The hostname for CAL.',
+        inclusion_reason='feature (CALSettings)',
+    )
+    tc_cal_token: SecretStr = Field(
+        ...,
+        description='The token for CAL.',
+        inclusion_reason='feature (CALSettings)',
+    )
+    tc_cal_timestamp: int = Field(
+        ...,
+        description='The expiration timestamp in epoch for tc_cal_token.',
+        inclusion_reason='feature (CALSettings)',
+    )

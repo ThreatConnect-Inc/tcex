@@ -1,6 +1,6 @@
 """SMTP Settings Model"""
 # third-party
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, SecretStr
 
 
 class SmtpSettingsModel(BaseModel):
@@ -16,19 +16,28 @@ class SmtpSettingsModel(BaseModel):
     * TriggerService
     """
 
-    # the smtp host
-    tc_smtp_host: str
-
-    # the smtp password
-    tc_smtp_password: str
-    # TODO: [med] switch ot use of SecretStr
-    # tc_smtp_password: Optional[SecretStr]
-
-    # the smtp port
-    tc_smtp_port: int
-
-    # the smtp username
-    tc_smtp_username: str
-
-    # the system level email
-    tc_sys_email: str
+    tc_smtp_host: str = Field(
+        None,
+        description='The SMTP server hostname.',
+        inclusion_reason='feature (smtpSettings)',
+    )
+    tc_smtp_password: SecretStr = Field(
+        None,
+        description='The SMTP server password.',
+        inclusion_reason='feature (smtpSettings)',
+    )
+    tc_smtp_port: int = Field(
+        None,
+        description='The SMTP server port number.',
+        inclusion_reason='feature (smtpSettings)',
+    )
+    tc_smtp_username: str = Field(
+        None,
+        description='The SMTP server username.',
+        inclusion_reason='feature (smtpSettings)',
+    )
+    tc_sys_email: str = Field(
+        None,
+        description='The system level email address.',
+        inclusion_reason='feature (smtpSettings)',
+    )
