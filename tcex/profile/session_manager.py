@@ -93,6 +93,16 @@ class SessionManager:
             """Intercept method for Session.request."""
             params = kwargs.get('params') or {}
             parm_list = []
+            if isinstance(params, str):
+                # APP-2665
+                new_params = {}
+                params = str(params).split('&')
+                for param in params:
+                    parts = param.split('=')
+                    if len(parts) != 2:
+                        continue
+                    new_params[parts[0]] = parts[1]
+                params = new_params
             params_keys = sorted(params.keys())
             for key in params_keys:
                 if key in blur:
