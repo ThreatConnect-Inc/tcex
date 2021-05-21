@@ -613,6 +613,7 @@ class StixModel:
         collection_name,
         collection_path,
         custom_type_mapping: dict = None,
+        additional_known_mapping: list[str] = [],
     ):
         """Convert stix_data (in parsed JSON format) into ThreatConnect objects.
 
@@ -622,20 +623,32 @@ class StixModel:
             collection_name: the collection name
             collection_id: the collection id
             custom_type_mapping: stix type to a mapping function which takes stix_data as a param.
+            additional_known_mapping: provide a str of the known supported mapping to use.
+            Supported known mappings are
+            [
+              'email-addr', 'autonomous-system', 'domain-name', 'ipv4-addr', 'ipv6-addr',
+              'window-registry-key', 'url'
+            ]
+
 
         Yields:
             ThreatConnect objects
         """
+        if additional_known_mapping is None:
+            additional_known_mapping = []
+        additional_known_mappings = {
+            # Per a conversation with Richard Cody only indicators from
+            # stix type: indicator should be mapped to.
+            'email-addr': self.email_address_mapping,
+            'autonomous-system': self.as_object_mapping,
+            'domain-name': self.domain_name_mapping,
+            'ipv4-addr': self.ipv4_mapping,
+            'ipv6-addr': self.ipv6_mapping,
+            'windows-registry-key': self.registry_key_mapping,
+            'url': self.url_mapping,
+        }
         type_mapping = {
-            # Per a conversation with Rich only indicators from stix type: indicator
-            # should be mapped to.
-            # 'email-addr': self.email_address_mapping,
-            # 'autonomous-system': self.as_object_mapping,
-            # 'domain-name': self.domain_name_mapping,
-            # 'ipv4-addr': self.ipv4_mapping,
-            # 'ipv6-addr': self.ipv6_mapping,
-            # 'windows-registry-key': self.registry_key_mapping,
-            # 'url': self.url_mapping,
+
             'campaign': self.campaign_mapping,
             'intrusion-set': self.intrusion_set_mapping,
             'report': self.report_mapping,
@@ -643,6 +656,13 @@ class StixModel:
             'tool': self.tool_mapping,
         }
         type_mapping.update(custom_type_mapping or {})
+        for mapping in additional_known_mapping:
+            additional_mapping = additional_known_mappings.get(mapping)
+            if mapping:
+                self.logger.log.warning(
+                    f'provided additional mapping: {mapping} is not supported'
+                )
+            type_mapping[mapping] = additional_mapping
         visitor_mapping = {'relationship': self.relationship}
 
         tc_data = []
