@@ -627,13 +627,15 @@ class StixModel:
             ThreatConnect objects
         """
         type_mapping = {
-            'email-addr': self.email_address_mapping,
-            'autonomous-system': self.as_object_mapping,
-            'domain-name': self.domain_name_mapping,
-            'ipv4-addr': self.ipv4_mapping,
-            'ipv6-addr': self.ipv6_mapping,
-            'windows-registry-key': self.registry_key_mapping,
-            'url': self.url_mapping,
+            # Per a conversation with Rich only indicators from stix type: indicator
+            # should be mapped to.
+            # 'email-addr': self.email_address_mapping,
+            # 'autonomous-system': self.as_object_mapping,
+            # 'domain-name': self.domain_name_mapping,
+            # 'ipv4-addr': self.ipv4_mapping,
+            # 'ipv6-addr': self.ipv6_mapping,
+            # 'windows-registry-key': self.registry_key_mapping,
+            # 'url': self.url_mapping,
             'campaign': self.campaign_mapping,
             'intrusion-set': self.intrusion_set_mapping,
             'report': self.report_mapping,
