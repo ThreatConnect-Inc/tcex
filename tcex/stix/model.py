@@ -633,6 +633,7 @@ class StixModel:
             'ipv4-addr': self.ipv4_mapping,
             'ipv6-addr': self.ipv6_mapping,
             'windows-registry-key': self.registry_key_mapping,
+            'url': self.url_mapping,
             'campaign': self.campaign_mapping,
             'intrusion-set': self.intrusion_set_mapping,
             'report': self.report_mapping,
