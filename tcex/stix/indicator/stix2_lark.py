@@ -4,11 +4,10 @@
 
 # standard library
 import os
-
-# third-party
 from typing import Union
 
-from lark import Lark, Transformer, v_args, Tree
+# third-party
+from lark import Lark, Transformer, Tree, v_args
 
 
 class Indicator:
@@ -85,8 +84,9 @@ class Stix2IndicatorTransformer(Transformer):
     pattern = extract_indicators  # pattern productions = all indicators
 
     @staticmethod
+    # pylint: disable=unused-argument
     def nothing(*args):
-        """An ignored indicator"""
+        """Ignore the indicator"""
         return []
 
     @staticmethod
@@ -200,10 +200,11 @@ class Stix2IndicatorParser:
         return result
 
     def parse(self, stix2pattern):
-        """Parses Stix2 Pattern, pulling out indicators.
-        Returns a list of Indicator objects"""
+        """Parse Stix2 Pattern, pulling out indicators.
+
+        Return a list of Indicator objects
+        """
         result = self.extract_indicators(self.parser.parse(stix2pattern))
 
         self.result = result
         return result
-

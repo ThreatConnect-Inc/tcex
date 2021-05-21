@@ -48,5 +48,6 @@ class StixDomainNameObject(StixModel):
         parse_map.update(self.default_map)
 
         yield from self._map(
-            stix_data, parse_map,
+            stix_data,
+            parse_map,
         )

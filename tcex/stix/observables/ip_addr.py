@@ -99,7 +99,8 @@ class StixIPv4Object(StixIPBase):
         }
 
         yield from self._map(
-            tc_data, parse_map,
+            tc_data,
+            parse_map,
         )
 
     def _produce_address(self, tc_data: dict):
@@ -115,7 +116,8 @@ class StixIPv4Object(StixIPBase):
         }
 
         yield from self._map(
-            tc_data, parse_map,
+            tc_data,
+            parse_map,
         )
 
 

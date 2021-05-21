@@ -328,7 +328,7 @@ class StixModel:
 
     def sanitize_date(self, date):
         """Clean up timestamp and ensures it is the correct format"""
-        datetime = self.DatetimeUtils()
+        datetime = DatetimeUtils()
         date = datetime.any_to_datetime(date)
         date = date.replace(microsecond=0).isoformat()
         date += '.000'
@@ -340,6 +340,11 @@ class StixModel:
 
     # pylint: disable=unused-argument,no-self-use
     def campaign_mapping(self, stix_data):
+        """Convert a STIX object to a TC Campaign.
+
+        Args:
+            stix_data: the data to convert
+        """
         aliases = ''
         for x in stix_data.get('aliases', []):
             aliases += f'* {x}\n'
@@ -386,10 +391,7 @@ class StixModel:
             secondary_motivation_type = self.get_secondary_motivation_type(x)
             if secondary_motivation_type:
                 mapping['attribute'].append(
-                    {
-                        'type': 'Secondary Motivation',
-                        'value': secondary_motivation_type
-                    }
+                    {'type': 'Secondary Motivation', 'value': secondary_motivation_type}
                 )
         if stix_data.get('last_seen'):
             mapping['attribute'].append(
@@ -435,15 +437,14 @@ class StixModel:
                 {'type': 'Adversary Motivation Type', 'value': '@.primary_motivation'},
             ],
         }
-        motivations = stix_data.get('secondary_motivations', []) + stix_data.get('personal_motivations', [])
+        motivations = stix_data.get('secondary_motivations', []) + stix_data.get(
+            'personal_motivations', []
+        )
         for x in motivations:
             secondary_motivation_type = self.get_secondary_motivation_type(x)
             if secondary_motivation_type:
                 mapping['attribute'].append(
-                    {
-                        'type': 'Secondary Motivation',
-                        'value': secondary_motivation_type
-                    }
+                    {'type': 'Secondary Motivation', 'value': secondary_motivation_type}
                 )
         if stix_data.get('last_seen'):
             mapping['attribute'].append(
@@ -457,6 +458,7 @@ class StixModel:
         return mapping
 
     def get_secondary_motivation_type(self, motivation_type):
+        """Retrieve the secondary motivation type."""
         if not motivation_type:
             return None
         secondary_motivation_types = {
@@ -496,7 +498,6 @@ class StixModel:
             mapping['attribute'].append({'type': 'Malicious Tool Variety', 'value': x})
 
         return mapping
-
 
     # pylint: disable=unused-argument,no-self-use
     def email_address_mapping(self, stix_data):
@@ -613,7 +614,7 @@ class StixModel:
         collection_name,
         collection_path,
         custom_type_mapping: dict = None,
-        additional_known_mapping: list[str] = [],
+        additional_known_mapping=None,
     ):
         """Convert stix_data (in parsed JSON format) into ThreatConnect objects.
 
@@ -623,8 +624,8 @@ class StixModel:
             collection_name: the collection name
             collection_id: the collection id
             custom_type_mapping: stix type to a mapping function which takes stix_data as a param.
-            additional_known_mapping: provide a str of the known supported mapping to use.
-            Supported known mappings are
+            additional_known_mapping (list[str]): provide a str of the known supported mapping
+            to use. Supported known mappings are
             [
               'email-addr', 'autonomous-system', 'domain-name', 'ipv4-addr', 'ipv6-addr',
               'window-registry-key', 'url'
@@ -634,6 +635,8 @@ class StixModel:
         Yields:
             ThreatConnect objects
         """
+        if additional_known_mapping is None:
+            additional_known_mapping = []
         if additional_known_mapping is None:
             additional_known_mapping = []
         additional_known_mappings = {
@@ -648,7 +651,6 @@ class StixModel:
             'url': self.url_mapping,
         }
         type_mapping = {
-
             'campaign': self.campaign_mapping,
             'intrusion-set': self.intrusion_set_mapping,
             'report': self.report_mapping,
@@ -659,9 +661,7 @@ class StixModel:
         for mapping in additional_known_mapping:
             additional_mapping = additional_known_mappings.get(mapping)
             if mapping:
-                self.logger.log.warning(
-                    f'provided additional mapping: {mapping} is not supported'
-                )
+                self.logger.log.warning(f'provided additional mapping: {mapping} is not supported')
             type_mapping[mapping] = additional_mapping
         visitor_mapping = {'relationship': self.relationship}
 
