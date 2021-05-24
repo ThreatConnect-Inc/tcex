@@ -176,37 +176,23 @@ class StixIndicator(StixModel):
         """
         file_indicators = list(filter(lambda i: 'file:hashes' in i.path, indicators))
 
-        sha256_indicators = list(filter(lambda i: 'SHA-156' in i.path.upper(), file_indicators))
-        sha2_indicators = list(filter(lambda i: 'SHA-1' in i.path.upper(), file_indicators))
-        md5_indicators = list(filter(lambda i: 'MD5' in i.path.upper(), file_indicators))
-
         if len(file_indicators) <= 0:
             return []
         batch_xid_array.append('File')
         mappings = []
-        if (
-            len(file_indicators) <= 3
-            and len(sha256_indicators) <= 1
-            and len(sha2_indicators) <= 1
-            and len(md5_indicators) <= 1
-        ):
-            value = ' : '.join([v.value for v in file_indicators])
-            mappings.append(
-                {
-                    'type': 'File',
-                    'summary': value,
-                    'confidence': '@.confidence',
-                    'xid': Batch.generate_xid(batch_xid_array + [value]),
-                }
-            )
-        else:
-            for i in file_indicators:
+        # Changed logic to handle: APP-2560
+        for i in file_indicators:
+            for value in i.value.split(':'):
+                if not value:
+                    continue
+                value = value.upper()
+                value = value.strip()
                 mappings.append(
                     {
                         'type': 'File',
-                        'summary': i.value,
+                        'summary': value,
                         'confidence': '@.confidence',
-                        'xid': Batch.generate_xid(batch_xid_array + [i.value]),
+                        'xid': Batch.generate_xid(batch_xid_array + [value]),
                     }
                 )
         return mappings
