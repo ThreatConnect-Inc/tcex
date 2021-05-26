@@ -161,7 +161,9 @@ class StixIndicator(StixModel):
             ]
             mappings = list(itertools.chain(*mappings))
         except Exception:
-            self.logger.log.trace(f'''Error occurred parsing pattern: {stix_data.get('pattern')}''')
+            self.logger.log.trace(
+                f'''Pattern for Stix Object: {stix_data.get('id')} not parsed.'''
+            )
         return mappings
 
     @staticmethod
@@ -182,19 +184,14 @@ class StixIndicator(StixModel):
         mappings = []
         # Changed logic to handle: APP-2560
         for i in file_indicators:
-            for value in i.value.split(':'):
-                if not value:
-                    continue
-                value = value.upper()
-                value = value.strip()
-                mappings.append(
-                    {
-                        'type': 'File',
-                        'summary': value,
-                        'confidence': '@.confidence',
-                        'xid': Batch.generate_xid(batch_xid_array + [value]),
-                    }
-                )
+            mappings.append(
+                {
+                    'type': 'File',
+                    'summary': i.value,
+                    'confidence': '@.confidence',
+                    'xid': Batch.generate_xid(batch_xid_array + [i.value]),
+                }
+            )
         return mappings
 
     @staticmethod
