@@ -136,40 +136,6 @@ class Stix2IndicatorTransformer(Transformer):
                 result.append(str(arg)[1:-1])
         return result
 
-    @staticmethod
-    def indicator_list(path, values):
-        """Do indicator_list production"""
-
-        indicators = [Indicator(path, value) for value in values]
-        return indicators
-
-    @staticmethod
-    def chain_left_right(left, right):
-        """Chain together the left and right"""
-
-        # Glue together the left & right hand lists
-
-        if not right:
-            return left
-
-        if not isinstance(left, list):
-            left = [
-                left,
-            ]
-
-        if not isinstance(right, list):
-            right = [
-                right,
-            ]
-
-        left.extend(right)
-        return left
-
-    observation_expression_or = chain_left_right
-    observation_expression_and = chain_left_right
-    comparison_expression = chain_left_right
-    comparison_expression_and = chain_left_right
-
 
 class Stix2IndicatorParser:
     """STIX2 Parser using Lark.
@@ -186,25 +152,12 @@ class Stix2IndicatorParser:
             grammar, parser='lalr', start='pattern', transformer=Stix2IndicatorTransformer()
         )
 
-    def extract_indicators(self, tree: Union[Tree, list, Indicator]) -> list:
-        """Walk the tree or list and return all indicators found"""
-        result = []
-        if isinstance(tree, Indicator):
-            result.append(tree)
-        elif isinstance(tree, list):
-            for obj in tree:
-                result.extend(self.extract_indicators(obj))
-        elif isinstance(tree, Tree):
-            for child in tree.children:
-                result.extend(self.extract_indicators(child))
-        return result
-
     def parse(self, stix2pattern):
         """Parse Stix2 Pattern, pulling out indicators.
 
         Return a list of Indicator objects
         """
-        result = self.extract_indicators(self.parser.parse(stix2pattern))
+        result = self.parser.parse(stix2pattern)
 
         self.result = result
         return result

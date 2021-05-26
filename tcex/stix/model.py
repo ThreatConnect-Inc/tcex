@@ -660,7 +660,7 @@ class StixModel:
         type_mapping.update(custom_type_mapping or {})
         for mapping in additional_known_mapping:
             additional_mapping = additional_known_mappings.get(mapping)
-            if mapping:
+            if not additional_mapping:
                 self.logger.log.warning(f'provided additional mapping: {mapping} is not supported')
             type_mapping[mapping] = additional_mapping
         visitor_mapping = {'relationship': self.relationship}

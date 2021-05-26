@@ -18,46 +18,9 @@
 // Important!  Lark enforces case on rules (lowercase) vs TERMINALS
 // (uppercase)
 
-pattern: observation_expressions
+pattern: "[" comparison_expression "]"
 
-?observation_expressions: observation_expressions "followedby"i observation_expressions
-    | observation_expression_or
-
-?observation_expression_or: observation_expression_or "or"i observation_expression_or
-    | observation_expression_and
-
-?observation_expression_and: observation_expression_and "and"i observation_expression_and
-    | observation_expression
-
-?observation_expression: "[" comparison_expression "]"
-    | "(" observation_expressions ")"
-    | observation_expression start_stop_qualifier
-    | observation_expression within_qualifier
-    | observation_expression repeated_qualifier
-
-?comparison_expression: comparison_expression "or"i comparison_expression
-    | comparison_expression_and
-
-?comparison_expression_and: comparison_expression_and "and"i comparison_expression_and
-    | prop_test
-
-?prop_test: object_path NOT EQ primitive_literal -> nothing
-    | object_path (NOT NEQ|EQ) primitive_literal -> indicator
-    | object_path NOT? (GT|LT|GE|LE) orderable_literal
-    | object_path "in"i set_literal -> indicator_list
-    | object_path NOT "in"i set_literal
-    | object_path NOT? "like"i STRING_LITERAL
-    | object_path NOT? "matches"i STRING_LITERAL
-    | object_path NOT? "issubset"i STRING_LITERAL
-    | object_path NOT? "issuperset"i STRING_LITERAL
-    | "(" comparison_expression ")"
-    | "exists"i object_path
-
-start_stop_qualifier: "start"i timestamp_literal "stop"i timestamp_literal
-
-within_qualifier: "within"i (INT_POS_LITERAL|FLOAT_POS_LITERAL) "seconds"i
-
-repeated_qualifier: "repeats"i INT_POS_LITERAL "times"i
+?comparison_expression: object_path EQ primitive_literal -> indicator
 
 ?object_path: object_type ":" first_path_component object_path_component?
 
@@ -70,9 +33,6 @@ repeated_qualifier: "repeats"i INT_POS_LITERAL "times"i
 ?object_path_component: object_path_component object_path_component  -> path_step
     | "." (IDENTIFIER_WITHOUT_HYPHEN | STRING_LITERAL)     -> key_path_step
     | "[" (INT_POS_LITERAL|INT_NEG_LITERAL|"*") "]"         -> index_path_step
-
-?set_literal: "(" ")"
-    | "(" primitive_literal ("," primitive_literal)* ")"
 
 ?primitive_literal: orderable_literal
     | bool_literal
