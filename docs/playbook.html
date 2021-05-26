@@ -1,60 +1,56 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Playbooks &mdash; TcEx 0.8.26 documentation</title>
+  <title>Playbooks &mdash; TcEx 0.8.29 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+
+  
   
 
   
   
-  
-  
 
   
 
   
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.8.26 documentation" href="index.html"/>
-        <link rel="next" title="Proxies" href="proxies.html"/>
-        <link rel="prev" title="Parser / Args" href="parser.html"/> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Proxies" href="proxies.html" />
+    <link rel="prev" title="Parser / Args" href="parser.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -68,7 +64,7 @@
             
             
               <div class="version">
-                0.8.26
+                0.8.29
               </div>
             
           
@@ -85,6 +81,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -128,13 +125,14 @@
             
           
         </div>
+        
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">TcEx</a>
@@ -142,10 +140,13 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
+
+
 
 
 
@@ -165,14 +166,14 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Playbooks</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
         
       </li>
     
@@ -186,7 +187,7 @@
             
   <div class="section" id="playbooks">
 <span id="id1"></span><h1>Playbooks<a class="headerlink" href="#playbooks" title="Permalink to this headline">¶</a></h1>
-<p>The ThreatConnect ™ TcEx App Framework provides common <em>helper</em> methods to write a Playbooks App.  The <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook" title="tcex.tcex_playbook.TcExPlaybook"><code class="xref py py-mod docutils literal"><span class="pre">TcExPlaybook</span></code></a> module provides all required methods to communicate with upstream and downstream Apps.</p>
+<p>The ThreatConnect ™ TcEx App Framework provides common <em>helper</em> methods to write a Playbooks App.  The <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook" title="tcex.tcex_playbook.TcExPlaybook"><code class="xref py py-mod docutils literal notranslate"><span class="pre">TcExPlaybook</span></code></a> module provides all required methods to communicate with upstream and downstream Apps.</p>
 <div class="section" id="understanding-playbooks">
 <h2>Understanding Playbooks<a class="headerlink" href="#understanding-playbooks" title="Permalink to this headline">¶</a></h2>
 <p>A Playbook App is a single component of a Playbook.  These Apps are intended to be reusable standalone components with minimum functionality to solve a single purpose.  Multiple Playbook Apps will make up a Playbook that solves a use case.  For more information on Playbook methodology and functionality refer to the Playbooks documentation.</p>
@@ -195,75 +196,66 @@
 <h2>Playbook Flow<a class="headerlink" href="#playbook-flow" title="Permalink to this headline">¶</a></h2>
 <p>As a Playbook starts execution each App will have input and output variables.  The input variables can be user provided data or output from an upstream App.  The Apps input and output variables are defined in the <a class="reference internal" href="install_json.html#install-json"><span class="std std-ref">Install JSON</span></a> file of the App.  A downstream App has access to all output variables from any upstream Apps.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Upstream Apps are app that have completed execution previous to the current Apps execution.</p>
+<p class="admonition-title">Note</p>
+<p>Upstream Apps are app that have completed execution previous to the current Apps execution.</p>
 </div>
 </div>
 <div class="section" id="input-variables">
 <h2>Input Variables<a class="headerlink" href="#input-variables" title="Permalink to this headline">¶</a></h2>
-<p>Inputs to an App can be static user data or dynamic output variables from a trigger or upstream App.  The <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook" title="tcex.tcex_playbook.TcExPlaybook"><code class="xref py py-mod docutils literal"><span class="pre">TcExPlaybook</span></code></a> module provides the <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read" title="tcex.tcex_playbook.TcExPlaybook.read"><code class="xref py py-mod docutils literal"><span class="pre">read</span></code></a> method for pulling dynamic data from an upstream App. The <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read" title="tcex.tcex_playbook.TcExPlaybook.read"><code class="xref py py-mod docutils literal"><span class="pre">read</span></code></a> method will automatically determine the variable type for the App developer. If user data was passed instead of the output variable the <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read" title="tcex.tcex_playbook.TcExPlaybook.read"><code class="xref py py-mod docutils literal"><span class="pre">read</span></code></a> will return the unaltered string.</p>
+<p>Inputs to an App can be static user data or dynamic output variables from a trigger or upstream App.  The <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook" title="tcex.tcex_playbook.TcExPlaybook"><code class="xref py py-mod docutils literal notranslate"><span class="pre">TcExPlaybook</span></code></a> module provides the <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read" title="tcex.tcex_playbook.TcExPlaybook.read"><code class="xref py py-mod docutils literal notranslate"><span class="pre">read</span></code></a> method for pulling dynamic data from an upstream App. The <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read" title="tcex.tcex_playbook.TcExPlaybook.read"><code class="xref py py-mod docutils literal notranslate"><span class="pre">read</span></code></a> method will automatically determine the variable type for the App developer. If user data was passed instead of the output variable the <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read" title="tcex.tcex_playbook.TcExPlaybook.read"><code class="xref py py-mod docutils literal notranslate"><span class="pre">read</span></code></a> will return the unaltered string.</p>
 <div class="admonition tip">
-<p class="first admonition-title">Tip</p>
-<p class="last">The <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read" title="tcex.tcex_playbook.TcExPlaybook.read"><code class="xref py py-mod docutils literal"><span class="pre">read</span></code></a> method will also handle mixed type data by automatically calling the <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_embedded" title="tcex.tcex_playbook.TcExPlaybook.read_embedded"><code class="xref py py-mod docutils literal"><span class="pre">read_embedded</span></code></a> method when a mixed type variable is identified.</p>
+<p class="admonition-title">Tip</p>
+<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read" title="tcex.tcex_playbook.TcExPlaybook.read"><code class="xref py py-mod docutils literal notranslate"><span class="pre">read</span></code></a> method will also handle mixed type data by automatically calling the <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_embedded" title="tcex.tcex_playbook.TcExPlaybook.read_embedded"><code class="xref py py-mod docutils literal notranslate"><span class="pre">read_embedded</span></code></a> method when a mixed type variable is identified.</p>
 </div>
 </div>
 <div class="section" id="output-variables">
 <h2>Output Variables<a class="headerlink" href="#output-variables" title="Permalink to this headline">¶</a></h2>
-<p>Playbook Apps write output variables for downstream Apps.  The <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook" title="tcex.tcex_playbook.TcExPlaybook"><code class="xref py py-mod docutils literal"><span class="pre">TcExPlaybook</span></code></a> module provides the <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.create" title="tcex.tcex_playbook.TcExPlaybook.create"><code class="xref py py-mod docutils literal"><span class="pre">create</span></code></a> method for writing output variables.  However, output variables should only be written when requested by a downstream App.  The requested variables are passed in the <code class="docutils literal"><span class="pre">args.tc_playbook_out_variables</span></code> argument as a CSV string.  The <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook" title="tcex.tcex_playbook.TcExPlaybook"><code class="xref py py-mod docutils literal"><span class="pre">TcExPlaybook</span></code></a> module provides the <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.create_output" title="tcex.tcex_playbook.TcExPlaybook.create_output"><code class="xref py py-mod docutils literal"><span class="pre">create_output</span></code></a> method that will validate that a downstream App requested the output variable before writing.</p>
+<p>Playbook Apps write output variables for downstream Apps.  The <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook" title="tcex.tcex_playbook.TcExPlaybook"><code class="xref py py-mod docutils literal notranslate"><span class="pre">TcExPlaybook</span></code></a> module provides the <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.create" title="tcex.tcex_playbook.TcExPlaybook.create"><code class="xref py py-mod docutils literal notranslate"><span class="pre">create</span></code></a> method for writing output variables.  However, output variables should only be written when requested by a downstream App.  The requested variables are passed in the <code class="docutils literal notranslate"><span class="pre">args.tc_playbook_out_variables</span></code> argument as a CSV string.  The <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook" title="tcex.tcex_playbook.TcExPlaybook"><code class="xref py py-mod docutils literal notranslate"><span class="pre">TcExPlaybook</span></code></a> module provides the <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.create_output" title="tcex.tcex_playbook.TcExPlaybook.create_output"><code class="xref py py-mod docutils literal notranslate"><span class="pre">create_output</span></code></a> method that will validate that a downstream App requested the output variable before writing.</p>
 <div class="admonition hint">
-<p class="first admonition-title">Hint</p>
-<p class="last">In most cases the <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.create_output" title="tcex.tcex_playbook.TcExPlaybook.create_output"><code class="xref py py-mod docutils literal"><span class="pre">create_output</span></code></a> method is the best way to write output variables.</p>
+<p class="admonition-title">Hint</p>
+<p>In most cases the <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.create_output" title="tcex.tcex_playbook.TcExPlaybook.create_output"><code class="xref py py-mod docutils literal notranslate"><span class="pre">create_output</span></code></a> method is the best way to write output variables.</p>
 </div>
 </div>
 <div class="section" id="variable-types">
 <h2>Variable Types<a class="headerlink" href="#variable-types" title="Permalink to this headline">¶</a></h2>
-<p>When output variables are passed to the input of an App the variable type is defined.  In some cases it is useful to know the type of variable passed. The <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook" title="tcex.tcex_playbook.TcExPlaybook"><code class="xref py py-mod docutils literal"><span class="pre">TcExPlaybook</span></code></a> module provides the <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.variable_type" title="tcex.tcex_playbook.TcExPlaybook.variable_type"><code class="xref py py-mod docutils literal"><span class="pre">variable_type</span></code></a> method that will return the variable type.</p>
+<p>When output variables are passed to the input of an App the variable type is defined.  In some cases it is useful to know the type of variable passed. The <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook" title="tcex.tcex_playbook.TcExPlaybook"><code class="xref py py-mod docutils literal notranslate"><span class="pre">TcExPlaybook</span></code></a> module provides the <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.variable_type" title="tcex.tcex_playbook.TcExPlaybook.variable_type"><code class="xref py py-mod docutils literal notranslate"><span class="pre">variable_type</span></code></a> method that will return the variable type.</p>
 <ul class="simple">
-<li>Binary</li>
-<li>BinaryArray</li>
-<li>KeyValue</li>
-<li>KeyValueArray</li>
-<li>String</li>
-<li>StringArray</li>
-<li>TCEntity</li>
-<li>TCEntityArray</li>
+<li><p>Binary</p></li>
+<li><p>BinaryArray</p></li>
+<li><p>KeyValue</p></li>
+<li><p>KeyValueArray</p></li>
+<li><p>String</p></li>
+<li><p>StringArray</p></li>
+<li><p>TCEntity</p></li>
+<li><p>TCEntityArray</p></li>
 </ul>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">For more information on Playbook variable types or updated type please see the Playbooks documentation.</p>
+<p class="admonition-title">Note</p>
+<p>For more information on Playbook variable types or updated type please see the Playbooks documentation.</p>
 </div>
 </div>
 </div>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="proxies.html" class="btn btn-neutral float-right" title="Proxies" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="parser.html" class="btn btn-neutral" title="Parser / Args" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="proxies.html" class="btn btn-neutral float-right" title="Proxies" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="parser.html" class="btn btn-neutral float-left" title="Parser / Args" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, ThreatConnect Inc.
+        &#169; Copyright 2016, ThreatConnect Inc.
 
     </p>
   </div> 
 
 </footer>
-
         </div>
       </div>
 
@@ -272,37 +264,15 @@
   </div>
   
 
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.8.26',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

@@ -6,6 +6,10 @@ Release Notes
 0.8.x
 =====
 
+0.8.29
+------
++ Update to fix SSL error when using proxy and new urllib3 module.
+
 0.8.28
 ------
 + Updated ``resource`` module to turn off activity logging.

@@ -1,60 +1,56 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Parser / Args &mdash; TcEx 0.8.26 documentation</title>
+  <title>Parser / Args &mdash; TcEx 0.8.29 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+
+  
   
 
   
   
-  
-  
 
   
 
   
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.8.26 documentation" href="index.html"/>
-        <link rel="next" title="Playbooks" href="playbook.html"/>
-        <link rel="prev" title="Notifications" href="notifications.html"/> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Playbooks" href="playbook.html" />
+    <link rel="prev" title="Notifications" href="notifications.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -68,7 +64,7 @@
             
             
               <div class="version">
-                0.8.26
+                0.8.29
               </div>
             
           
@@ -85,6 +81,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -128,13 +125,14 @@
             
           
         </div>
+        
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">TcEx</a>
@@ -142,10 +140,13 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
+
+
 
 
 
@@ -165,14 +166,14 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Parser / Args</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
         
       </li>
     
@@ -186,47 +187,47 @@
             
   <div class="section" id="parser-args">
 <span id="parser"></span><h1>Parser / Args<a class="headerlink" href="#parser-args" title="Permalink to this headline">¶</a></h1>
-<p>The ThreatConnect ™ TcEx App Framework provides the <code class="xref py py-mod docutils literal"><span class="pre">parser</span></code> property which returns and instance of <code class="docutils literal"><span class="pre">argparser.ArgParser</span></code>. This argparser instance is an extension of the Python argparser method with predefined arguments specifically for ThreatConnect Exchange Apps. Once all custom arguments are added <code class="docutils literal"><span class="pre">args</span></code> can be access with the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.args" title="tcex.tcex.TcEx.args"><code class="xref py py-mod docutils literal"><span class="pre">args</span></code></a> property.</p>
+<p>The ThreatConnect ™ TcEx App Framework provides the <code class="xref py py-mod docutils literal notranslate"><span class="pre">parser</span></code> property which returns and instance of <code class="docutils literal notranslate"><span class="pre">argparser.ArgParser</span></code>. This argparser instance is an extension of the Python argparser method with predefined arguments specifically for ThreatConnect Exchange Apps. Once all custom arguments are added <code class="docutils literal notranslate"><span class="pre">args</span></code> can be access with the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.args" title="tcex.tcex.TcEx.args"><code class="xref py py-mod docutils literal notranslate"><span class="pre">args</span></code></a> property.</p>
 <div class="section" id="api-arguments">
 <h2>API Arguments<a class="headerlink" href="#api-arguments" title="Permalink to this headline">¶</a></h2>
-<p>Argument in the API argument section are provided for authorization to the ThreatConnect API.  If the <code class="docutils literal"><span class="pre">tc_token</span></code> argument is passed it has priority over the HMAC arguments. The TcEx Framework automatically handles all these arguments and makes them available via the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.args" title="tcex.tcex.TcEx.args"><code class="xref py py-mod docutils literal"><span class="pre">args</span></code></a> property.</p>
+<p>Argument in the API argument section are provided for authorization to the ThreatConnect API.  If the <code class="docutils literal notranslate"><span class="pre">tc_token</span></code> argument is passed it has priority over the HMAC arguments. The TcEx Framework automatically handles all these arguments and makes them available via the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.args" title="tcex.tcex.TcEx.args"><code class="xref py py-mod docutils literal notranslate"><span class="pre">args</span></code></a> property.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The <code class="docutils literal"><span class="pre">api_access_id</span></code> and <code class="docutils literal"><span class="pre">api_secret_key</span></code> arguments have to be configured in the <a class="reference internal" href="install_json.html#install-json"><span class="std std-ref">Install JSON</span></a> configuration file and configured in each job to be passed to the app.  The <code class="docutils literal"><span class="pre">tc_token</span></code> will automatically be passed for Apps running in the ThreatConnect Exchange Platform.</p>
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">api_access_id</span></code> and <code class="docutils literal notranslate"><span class="pre">api_secret_key</span></code> arguments have to be configured in the <a class="reference internal" href="install_json.html#install-json"><span class="std std-ref">Install JSON</span></a> configuration file and configured in each job to be passed to the app.  The <code class="docutils literal notranslate"><span class="pre">tc_token</span></code> will automatically be passed for Apps running in the ThreatConnect Exchange Platform.</p>
 </div>
-<p>The list of API args can be found in the <code class="xref py py-meth docutils literal"><span class="pre">_api_arguments()</span></code> method.</p>
+<p>The list of API args can be found in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">_api_arguments()</span></code> method.</p>
 </div>
 <div class="section" id="batch-arguments">
 <h2>Batch Arguments<a class="headerlink" href="#batch-arguments" title="Permalink to this headline">¶</a></h2>
-<p>The ThreatConnect batch API endpoint requires a few arguments for setting the batch job.  These arguments have sane default values and are not often required to be added to the <code class="docutils literal"><span class="pre">install.json</span></code> configuration file.  These default values can also be overridden with methods provided in the <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob" title="tcex.tcex_job.TcExJob"><code class="xref py py-mod docutils literal"><span class="pre">TcExJob</span></code></a> module.</p>
-<p>The list of Batch args can be found in the <code class="xref py py-meth docutils literal"><span class="pre">_batch_arguments()</span></code> method.</p>
+<p>The ThreatConnect batch API endpoint requires a few arguments for setting the batch job.  These arguments have sane default values and are not often required to be added to the <code class="docutils literal notranslate"><span class="pre">install.json</span></code> configuration file.  These default values can also be overridden with methods provided in the <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob" title="tcex.tcex_job.TcExJob"><code class="xref py py-mod docutils literal notranslate"><span class="pre">TcExJob</span></code></a> module.</p>
+<p>The list of Batch args can be found in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">_batch_arguments()</span></code> method.</p>
 </div>
 <div class="section" id="playbook-arguments">
 <h2>Playbook Arguments<a class="headerlink" href="#playbook-arguments" title="Permalink to this headline">¶</a></h2>
 <p>Playbook Apps have a standard set of arguments. All of these argument will be passed by the ThreatConnect Exchange Platform for all Playbook apps.</p>
-<p>The list of Playbook args can be found in the <code class="xref py py-meth docutils literal"><span class="pre">_playbook_arguments()</span></code> method.</p>
+<p>The list of Playbook args can be found in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">_playbook_arguments()</span></code> method.</p>
 </div>
 <div class="section" id="standard-arguments">
 <h2>Standard Arguments<a class="headerlink" href="#standard-arguments" title="Permalink to this headline">¶</a></h2>
-<p>The ThreatConnect Platform passes all apps a set of standard arguments.  Some of these arguments are depended on App settings and others on System settings.  The TcEx Framework automatically handles all these arguments and makes them available via the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.args" title="tcex.tcex.TcEx.args"><code class="xref py py-mod docutils literal"><span class="pre">args</span></code></a> property.</p>
-<p>The list of standard args can be found in the <code class="xref py py-meth docutils literal"><span class="pre">_standard_arguments()</span></code> method.</p>
+<p>The ThreatConnect Platform passes all apps a set of standard arguments.  Some of these arguments are depended on App settings and others on System settings.  The TcEx Framework automatically handles all these arguments and makes them available via the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.args" title="tcex.tcex.TcEx.args"><code class="xref py py-mod docutils literal notranslate"><span class="pre">args</span></code></a> property.</p>
+<p>The list of standard args can be found in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">_standard_arguments()</span></code> method.</p>
 </div>
 <div class="section" id="custom-argument">
 <h2>Custom Argument<a class="headerlink" href="#custom-argument" title="Permalink to this headline">¶</a></h2>
-<p>Custom arguments can be added to the <code class="docutils literal"><span class="pre">argparser.ArgParser</span></code> instance of <code class="xref py py-mod docutils literal"><span class="pre">parser</span></code></p>
+<p>Custom arguments can be added to the <code class="docutils literal notranslate"><span class="pre">argparser.ArgParser</span></code> instance of <code class="xref py py-mod docutils literal notranslate"><span class="pre">parser</span></code></p>
 <p><strong>Example</strong></p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4
-5
-6
-7
-8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">TcEx</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">TcEx</span>
 
 <span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
 <span class="hll"><span class="n">parser</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">parser</span>
-</span><span class="hll"><span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--myarg&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;My Custom Argument&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</span><span class="hll"><span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--myarg&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;My Custom Argument&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span class="hll"><span class="n">args</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">args</span>
 </span>
 <span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
@@ -237,33 +238,24 @@
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="playbook.html" class="btn btn-neutral float-right" title="Playbooks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="notifications.html" class="btn btn-neutral" title="Notifications" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="playbook.html" class="btn btn-neutral float-right" title="Playbooks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="notifications.html" class="btn btn-neutral float-left" title="Notifications" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, ThreatConnect Inc.
+        &#169; Copyright 2016, ThreatConnect Inc.
 
     </p>
   </div> 
 
 </footer>
-
         </div>
       </div>
 
@@ -272,37 +264,15 @@
   </div>
   
 
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.8.26',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

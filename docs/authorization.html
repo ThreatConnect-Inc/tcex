@@ -1,60 +1,56 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Authorization (Token / HMAC) &mdash; TcEx 0.8.26 documentation</title>
+  <title>Authorization (Token / HMAC) &mdash; TcEx 0.8.29 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+
+  
   
 
   
   
-  
-  
 
   
 
   
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.8.26 documentation" href="index.html"/>
-        <link rel="next" title="Batch" href="batch.html"/>
-        <link rel="prev" title="ThreatConnect App Framework (TcEx)" href="index.html"/> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Batch" href="batch.html" />
+    <link rel="prev" title="ThreatConnect App Framework (TcEx)" href="index.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -68,7 +64,7 @@
             
             
               <div class="version">
-                0.8.26
+                0.8.29
               </div>
             
           
@@ -85,6 +81,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -125,13 +122,14 @@
             
           
         </div>
+        
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">TcEx</a>
@@ -139,10 +137,13 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
+
+
 
 
 
@@ -162,14 +163,14 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Authorization (Token / HMAC)</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
         
       </li>
     
@@ -183,21 +184,21 @@
             
   <div class="section" id="authorization-token-hmac">
 <span id="authorization"></span><h1>Authorization (Token / HMAC)<a class="headerlink" href="#authorization-token-hmac" title="Permalink to this headline">¶</a></h1>
-<p>In general when communication with the ThreatConnect ™ API using the TcEx Framework the App developer does not need to handle authorization.  If using any of the Resource Classes in <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#module-tcex.tcex_resources" title="tcex.tcex_resources"><code class="xref py py-mod docutils literal"><span class="pre">tcex_resources</span></code></a> the authorization headers are automatically added.  This allows the App to run from within the ThreatConnect Platform or the Integration Server without having to change any code.</p>
-<p>The <a class="reference internal" href="tcex_docs/tcex.tcex.html#module-tcex.tcex" title="tcex.tcex"><code class="xref py py-meth docutils literal"><span class="pre">tcex()</span></code></a> module also has the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.session" title="tcex.tcex.TcEx.session"><code class="xref py py-mod docutils literal"><span class="pre">session</span></code></a> property which is a Python Requests Session with ThreatConnect Authorization added.  API call to the ThreatConnect API can be made with the native Requests interface with authorization and token renewal built-in.</p>
+<p>In general when communication with the ThreatConnect ™ API using the TcEx Framework the App developer does not need to handle authorization.  If using any of the Resource Classes in <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#module-tcex.tcex_resources" title="tcex.tcex_resources"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tcex_resources</span></code></a> the authorization headers are automatically added.  This allows the App to run from within the ThreatConnect Platform or the Integration Server without having to change any code.</p>
+<p>The <a class="reference internal" href="tcex_docs/tcex.tcex.html#module-tcex.tcex" title="tcex.tcex"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tcex()</span></code></a> module also has the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.session" title="tcex.tcex.TcEx.session"><code class="xref py py-mod docutils literal notranslate"><span class="pre">session</span></code></a> property which is a Python Requests Session with ThreatConnect Authorization added.  API call to the ThreatConnect API can be made with the native Requests interface with authorization and token renewal built-in.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The latest version of the ThreatConnect Platform supports both Token based and HMAC authorization.  The MEO server supports HMAC or Token based authorization depending on the version.</p>
+<p class="admonition-title">Note</p>
+<p>The latest version of the ThreatConnect Platform supports both Token based and HMAC authorization.  The MEO server supports HMAC or Token based authorization depending on the version.</p>
 </div>
 <div class="section" id="token-refresh">
 <h2>Token Refresh<a class="headerlink" href="#token-refresh" title="Permalink to this headline">¶</a></h2>
-<p>Token based authorization requires that the Token be renewed upon token expiration.  The ThreatConnect Platform passes the <code class="docutils literal"><span class="pre">tc_token</span></code> and <code class="docutils literal"><span class="pre">tc_token_expires</span></code> arguments to the App.  The TcEx Framework automatically handles the Token refresh when using the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.authorization" title="tcex.tcex.TcEx.authorization"><code class="xref py py-meth docutils literal"><span class="pre">authorization()</span></code></a> or <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.session" title="tcex.tcex.TcEx.session"><code class="xref py py-mod docutils literal"><span class="pre">session</span></code></a> features.</p>
+<p>Token based authorization requires that the Token be renewed upon token expiration.  The ThreatConnect Platform passes the <code class="docutils literal notranslate"><span class="pre">tc_token</span></code> and <code class="docutils literal notranslate"><span class="pre">tc_token_expires</span></code> arguments to the App.  The TcEx Framework automatically handles the Token refresh when using the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.authorization" title="tcex.tcex.TcEx.authorization"><code class="xref py py-meth docutils literal notranslate"><span class="pre">authorization()</span></code></a> or <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.session" title="tcex.tcex.TcEx.session"><code class="xref py py-mod docutils literal notranslate"><span class="pre">session</span></code></a> features.</p>
 </div>
 <div class="section" id="hmac-authorization">
 <h2>HMAC Authorization<a class="headerlink" href="#hmac-authorization" title="Permalink to this headline">¶</a></h2>
-<p>Generation of the Authorization headers when using HMAC will utilize the <code class="docutils literal"><span class="pre">api_access_id</span></code> and <code class="docutils literal"><span class="pre">api_secret_key</span></code> arguments.  These arguments are not automatically sent by the ThreatConnect Platform and are required to be added to the :ref:install_json file.  In the ThreatConnect UI these inputs will be automatically hidden in favor of Token based authorization.  However, on the certain versions of the MEO server these arguments could be required.</p>
+<p>Generation of the Authorization headers when using HMAC will utilize the <code class="docutils literal notranslate"><span class="pre">api_access_id</span></code> and <code class="docutils literal notranslate"><span class="pre">api_secret_key</span></code> arguments.  These arguments are not automatically sent by the ThreatConnect Platform and are required to be added to the :ref:install_json file.  In the ThreatConnect UI these inputs will be automatically hidden in favor of Token based authorization.  However, on the certain versions of the MEO server these arguments could be required.</p>
 <p>Example install.json param section:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
 <span class="p">{</span>
   <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;ThreatConnect API Access ID&quot;</span><span class="p">,</span>
   <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;api_access_id&quot;</span><span class="p">,</span>
@@ -229,33 +230,24 @@
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="batch.html" class="btn btn-neutral float-right" title="Batch" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="index.html" class="btn btn-neutral" title="ThreatConnect App Framework (TcEx)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="batch.html" class="btn btn-neutral float-right" title="Batch" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="ThreatConnect App Framework (TcEx)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, ThreatConnect Inc.
+        &#169; Copyright 2016, ThreatConnect Inc.
 
     </p>
   </div> 
 
 </footer>
-
         </div>
       </div>
 
@@ -264,37 +256,15 @@
   </div>
   
 
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.8.26',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

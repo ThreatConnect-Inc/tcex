@@ -1,61 +1,56 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>tcex.tcex_data_filter module &mdash; TcEx 0.8.26 documentation</title>
+  <title>tcex.tcex_data_filter module &mdash; TcEx 0.8.29 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+
+  
   
 
   
   
-  
-  
 
   
 
   
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
 
-  
-
-  
-  
-    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="../genindex.html"/>
-        <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.8.26 documentation" href="../index.html"/>
-        <link rel="up" title="tcex package" href="tcex.html"/>
-        <link rel="next" title="tcex.tcex_job module" href="tcex.tcex_job.html"/>
-        <link rel="prev" title="tcex.tcex_batch_v2 module" href="tcex.tcex_batch_v2.html"/> 
-
-  
-  <script src="../_static/js/modernizr.min.js"></script>
-
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="tcex.tcex_job module" href="tcex.tcex_job.html" />
+    <link rel="prev" title="tcex.tcex_batch_v2 module" href="tcex.tcex_batch_v2.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -69,7 +64,7 @@
             
             
               <div class="version">
-                0.8.26
+                0.8.29
               </div>
             
           
@@ -86,6 +81,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -145,13 +141,14 @@
             
           
         </div>
+        
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">TcEx</a>
@@ -159,10 +156,13 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
+
+
 
 
 
@@ -182,7 +182,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="modules.html">tcex</a> &raquo;</li>
         
@@ -193,7 +193,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
         
       </li>
     
@@ -208,184 +208,169 @@
   <div class="section" id="module-tcex.tcex_data_filter">
 <span id="tcex-tcex-data-filter-module"></span><h1>tcex.tcex_data_filter module<a class="headerlink" href="#module-tcex.tcex_data_filter" title="Permalink to this headline">¶</a></h1>
 <p>Data Filter Module</p>
-<dl class="class">
+<dl class="py class">
 <dt id="tcex.tcex_data_filter.DataFilter">
-<em class="property">class </em><code class="descclassname">tcex.tcex_data_filter.</code><code class="descname">DataFilter</code><span class="sig-paren">(</span><em>tcex</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_data_filter.html#DataFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_data_filter.DataFilter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">tcex.tcex_data_filter.</span></code><code class="sig-name descname"><span class="pre">DataFilter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_data_filter.html#DataFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.tcex_data_filter.DataFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Filter Single Level List of Dictionaries (JSON Object)</p>
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex_data_filter.DataFilter._build_indexes">
-<code class="descname">_build_indexes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_data_filter.html#DataFilter._build_indexes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_data_filter.DataFilter._build_indexes" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">_build_indexes</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_data_filter.html#DataFilter._build_indexes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.tcex_data_filter.DataFilter._build_indexes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build indexes from data for fast filtering of data.</p>
 <p>Building indexes of data when possible.  This is only supported when dealing with a
 List of Dictionaries with String values.</p>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="py method">
 <dt id="tcex.tcex_data_filter.DataFilter._in">
-<em class="property">static </em><code class="descname">_in</code><span class="sig-paren">(</span><em>field</em>, <em>filter_value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_data_filter.html#DataFilter._in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_data_filter.DataFilter._in" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">_in</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_data_filter.html#DataFilter._in"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.tcex_data_filter.DataFilter._in" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate field <strong>IN</strong> string or list.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filter_value</strong> (<em>string | list</em>) – A string or list of values.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results of check</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(boolean)</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filter_value</strong> (<em>string | list</em>) – A string or list of values.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Results of check</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(boolean)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="py method">
 <dt id="tcex.tcex_data_filter.DataFilter._index_filter">
-<em class="property">static </em><code class="descname">_index_filter</code><span class="sig-paren">(</span><em>index_data</em>, <em>filter_value</em>, <em>filter_operator</em>, <em>field_converter=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_data_filter.html#DataFilter._index_filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_data_filter.DataFilter._index_filter" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">_index_filter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_operator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_converter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_data_filter.html#DataFilter._index_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.tcex_data_filter.DataFilter._index_filter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Post Filter</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>index_data</strong> (<em>dictionary</em>) – The indexed data for the provided field.</li>
-<li><strong>field</strong> (<em>string</em>) – The field to filter on.</li>
-<li><strong>filter_value</strong> (<em>string | list</em>) – The value to match.</li>
-<li><strong>filter_operator</strong> (<em>string</em>) – The operator for comparison.</li>
-<li><strong>field_converter</strong> (<em>method</em>) – A method used to convert the field before comparison.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index_data</strong> (<em>dictionary</em>) – The indexed data for the provided field.</p></li>
+<li><p><strong>field</strong> (<em>string</em>) – The field to filter on.</p></li>
+<li><p><strong>filter_value</strong> (<em>string | list</em>) – The value to match.</p></li>
+<li><p><strong>filter_operator</strong> (<em>string</em>) – The operator for comparison.</p></li>
+<li><p><strong>field_converter</strong> (<em>method</em>) – A method used to convert the field before comparison.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Matching data objects</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(list)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Matching data objects</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(list)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex_data_filter.DataFilter._loop_filter">
-<code class="descname">_loop_filter</code><span class="sig-paren">(</span><em>field</em>, <em>filter_value</em>, <em>filter_operator</em>, <em>field_converter=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_data_filter.html#DataFilter._loop_filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_data_filter.DataFilter._loop_filter" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>index_data</strong> (<em>dictionary</em>) – The indexed data for the provided field.</li>
-<li><strong>filter_value</strong> (<em>string</em>) – </li>
-<li><strong>filter_operator</strong> (<em>string</em>) – </li>
-<li><strong>fv_converter</strong> (<em>method</em>) – </li>
+<code class="sig-name descname"><span class="pre">_loop_filter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_operator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_converter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_data_filter.html#DataFilter._loop_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.tcex_data_filter.DataFilter._loop_filter" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index_data</strong> (<em>dictionary</em>) – The indexed data for the provided field.</p></li>
+<li><p><strong>filter_value</strong> (<em>string</em>) – </p></li>
+<li><p><strong>filter_operator</strong> (<em>string</em>) – </p></li>
+<li><p><strong>fv_converter</strong> (<em>method</em>) – </p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="py method">
 <dt id="tcex.tcex_data_filter.DataFilter._ni">
-<em class="property">static </em><code class="descname">_ni</code><span class="sig-paren">(</span><em>field</em>, <em>filter_value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_data_filter.html#DataFilter._ni"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_data_filter.DataFilter._ni" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">_ni</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_data_filter.html#DataFilter._ni"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.tcex_data_filter.DataFilter._ni" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate field <strong>NOT IN</strong> string or list.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filter_value</strong> (<em>string | list</em>) – A string or list of values.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results of validation</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(boolean)</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filter_value</strong> (<em>string | list</em>) – A string or list of values.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Results of validation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(boolean)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="py method">
 <dt id="tcex.tcex_data_filter.DataFilter._starts_with">
-<em class="property">static </em><code class="descname">_starts_with</code><span class="sig-paren">(</span><em>field</em>, <em>filter_value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_data_filter.html#DataFilter._starts_with"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_data_filter.DataFilter._starts_with" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">_starts_with</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_data_filter.html#DataFilter._starts_with"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.tcex_data_filter.DataFilter._starts_with" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate field starts with provided value.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filter_value</strong> (<em>string</em>) – A string or list of values.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results of validation</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(boolean)</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filter_value</strong> (<em>string</em>) – A string or list of values.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Results of validation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(boolean)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex_data_filter.DataFilter.filter_data">
-<code class="descname">filter_data</code><span class="sig-paren">(</span><em>field</em>, <em>filter_value</em>, <em>filter_operator</em>, <em>field_converter=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_data_filter.html#DataFilter.filter_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_data_filter.DataFilter.filter_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">filter_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_operator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_converter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_data_filter.html#DataFilter.filter_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.tcex_data_filter.DataFilter.filter_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Filter the data given the provided.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>field</strong> (<em>string</em>) – The field to filter on.</li>
-<li><strong>filter_value</strong> (<em>string | list</em>) – The value to match.</li>
-<li><strong>filter_operator</strong> (<em>string</em>) – The operator for comparison.</li>
-<li><strong>field_converter</strong> (<em>method</em>) – A method used to convert the field before comparison.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field</strong> (<em>string</em>) – The field to filter on.</p></li>
+<li><p><strong>filter_value</strong> (<em>string | list</em>) – The value to match.</p></li>
+<li><p><strong>filter_operator</strong> (<em>string</em>) – The operator for comparison.</p></li>
+<li><p><strong>field_converter</strong> (<em>method</em>) – A method used to convert the field before comparison.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">List of matching data objects</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(set)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of matching data objects</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(set)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py method">
 <dt id="tcex.tcex_data_filter.DataFilter.operator">
-<code class="descname">operator</code><a class="headerlink" href="#tcex.tcex_data_filter.DataFilter.operator" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">operator</span></code><a class="headerlink" href="#tcex.tcex_data_filter.DataFilter.operator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Supported Filter Operators</p>
 <ul class="simple">
-<li>EQ - Equal To</li>
-<li>NE - Not Equal To</li>
-<li>GT - Greater Than</li>
-<li>GE - Greater Than or Equal To</li>
-<li>LT - Less Than</li>
-<li>LE - Less Than or Equal To</li>
-<li>SW - Starts With</li>
-<li>IN - In String or Array</li>
-<li>NI - Not in String or Array</li>
+<li><p>EQ - Equal To</p></li>
+<li><p>NE - Not Equal To</p></li>
+<li><p>GT - Greater Than</p></li>
+<li><p>GE - Greater Than or Equal To</p></li>
+<li><p>LT - Less Than</p></li>
+<li><p>LE - Less Than or Equal To</p></li>
+<li><p>SW - Starts With</p></li>
+<li><p>IN - In String or Array</p></li>
+<li><p>NI - Not in String or Array</p></li>
 </ul>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="py method">
 <dt id="tcex.tcex_data_filter.DataFilter.results">
-<em class="property">static </em><code class="descname">results</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_data_filter.html#DataFilter.results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_data_filter.DataFilter.results" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">results</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_data_filter.html#DataFilter.results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.tcex_data_filter.DataFilter.results" title="Permalink to this definition">¶</a></dt>
 <dd><p>Results</p>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="tcex.tcex_data_filter.DataObj">
-<em class="property">class </em><code class="descclassname">tcex.tcex_data_filter.</code><code class="descname">DataObj</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_data_filter.html#DataObj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_data_filter.DataObj" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">tcex.tcex_data_filter.</span></code><code class="sig-name descname"><span class="pre">DataObj</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_data_filter.html#DataObj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.tcex_data_filter.DataObj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Data Object</p>
-<dl class="method">
+<dl class="py method">
 <dt id="tcex.tcex_data_filter.DataObj.__str__">
-<code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_data_filter.html#DataObj.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_data_filter.DataObj.__str__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__str__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_data_filter.html#DataObj.__str__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.tcex_data_filter.DataObj.__str__" title="Permalink to this definition">¶</a></dt>
 <dd><p>The data as a string</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py method">
 <dt id="tcex.tcex_data_filter.DataObj.data">
-<code class="descname">data</code><a class="headerlink" href="#tcex.tcex_data_filter.DataObj.data" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">data</span></code><a class="headerlink" href="#tcex.tcex_data_filter.DataObj.data" title="Permalink to this definition">¶</a></dt>
 <dd><p>The data value</p>
 </dd></dl>
 
@@ -395,33 +380,24 @@ List of Dictionaries with String values.</p>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="tcex.tcex_job.html" class="btn btn-neutral float-right" title="tcex.tcex_job module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="tcex.tcex_batch_v2.html" class="btn btn-neutral" title="tcex.tcex_batch_v2 module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="tcex.tcex_job.html" class="btn btn-neutral float-right" title="tcex.tcex_job module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tcex.tcex_batch_v2.html" class="btn btn-neutral float-left" title="tcex.tcex_batch_v2 module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, ThreatConnect Inc.
+        &#169; Copyright 2016, ThreatConnect Inc.
 
     </p>
   </div> 
 
 </footer>
-
         </div>
       </div>
 
@@ -430,37 +406,15 @@ List of Dictionaries with String values.</p>
   </div>
   
 
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../',
-            VERSION:'0.8.26',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/underscore.js"></script>
-      <script type="text/javascript" src="../_static/doctools.js"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

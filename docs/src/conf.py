@@ -18,6 +18,7 @@
 #
 import os
 import sys
+
 # sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath('../../'))
 
@@ -32,12 +33,7 @@ from tcex import __version__
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = [
-    'reno.sphinxext',
-    'sphinx.ext.autodoc',
-    'sphinx.ext.napoleon',
-    'sphinx.ext.viewcode'
-]
+extensions = ['reno.sphinxext', 'sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.viewcode']
 
 napoleon_google_docstring = True
 napoleon_numpy_docstring = True
@@ -68,6 +64,7 @@ templates_path = ['_templates']
 # source_suffix = '.rst'
 
 from recommonmark.parser import CommonMarkParser
+
 source_parsers = {
     '.md': CommonMarkParser,
 }
@@ -278,29 +275,25 @@ htmlhelp_basename = 'TcExdoc'
 # -- Options for LaTeX output ---------------------------------------------
 
 latex_elements = {
-     # The paper size ('letterpaper' or 'a4paper').
-     #
-     # 'papersize': 'letterpaper',
-
-     # The font size ('10pt', '11pt' or '12pt').
-     #
-     # 'pointsize': '10pt',
-
-     # Additional stuff for the LaTeX preamble.
-     #
-     # 'preamble': '',
-
-     # Latex figure (float) alignment
-     #
-     # 'figure_align': 'htbp',
+    # The paper size ('letterpaper' or 'a4paper').
+    #
+    # 'papersize': 'letterpaper',
+    # The font size ('10pt', '11pt' or '12pt').
+    #
+    # 'pointsize': '10pt',
+    # Additional stuff for the LaTeX preamble.
+    #
+    # 'preamble': '',
+    # Latex figure (float) alignment
+    #
+    # 'figure_align': 'htbp',
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'TcEx.tex', u'TcEx Documentation',
-     u'ThreatConnect Inc.', 'manual'),
+    (master_doc, 'TcEx.tex', u'TcEx Documentation', u'ThreatConnect Inc.', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -334,10 +327,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    (master_doc, 'tcex', u'TcEx Documentation',
-     [author], 1)
-]
+man_pages = [(master_doc, 'tcex', u'TcEx Documentation', [author], 1)]
 
 # If true, show URL addresses after external links.
 #
@@ -350,9 +340,15 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'TcEx', u'TcEx Documentation',
-     author, 'TcEx', 'ThreatConnect App Framework.',
-     'Miscellaneous'),
+    (
+        master_doc,
+        'TcEx',
+        u'TcEx Documentation',
+        author,
+        'TcEx',
+        'ThreatConnect App Framework.',
+        'Miscellaneous',
+    ),
 ]
 
 # Documents to append as an appendix to all manuals.

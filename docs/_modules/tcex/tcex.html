@@ -1,59 +1,54 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>tcex.tcex &mdash; TcEx 0.8.26 documentation</title>
+  <title>tcex.tcex &mdash; TcEx 0.8.29 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+
+  
   
 
   
   
-  
-  
 
   
 
   
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-
-  
-  
-    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../genindex.html"/>
-        <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.8.26 documentation" href="../../index.html"/>
-        <link rel="up" title="Module code" href="../index.html"/> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -67,7 +62,7 @@
             
             
               <div class="version">
-                0.8.26
+                0.8.29
               </div>
             
           
@@ -84,6 +79,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -120,13 +116,14 @@
             
           
         </div>
+        
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">TcEx</a>
@@ -134,10 +131,13 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
+
+
 
 
 
@@ -157,7 +157,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
@@ -165,8 +165,6 @@
     
     
       <li class="wy-breadcrumbs-aside">
-        
-            
         
       </li>
     
@@ -181,7 +179,7 @@
   <h1>Source code for tcex.tcex</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot; TcEx Framework &quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="nb">str</span>
+<span class="kn">from</span> <span class="nn">builtins</span> <span class="kn">import</span> <span class="nb">str</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -192,17 +190,17 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">urllib</span> <span class="k">import</span> <span class="n">quote</span>  <span class="c1"># Python 2</span>
+    <span class="kn">from</span> <span class="nn">urllib</span> <span class="kn">import</span> <span class="n">quote</span>  <span class="c1"># Python 2</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="k">import</span> <span class="n">quote</span>  <span class="c1"># Python 3</span>
+    <span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">quote</span>  <span class="c1"># Python 3</span>
 
-<span class="kn">from</span> <span class="nn">.tcex_argparser</span> <span class="k">import</span> <span class="n">TcExArgParser</span>
+<span class="kn">from</span> <span class="nn">.tcex_argparser</span> <span class="kn">import</span> <span class="n">TcExArgParser</span>
 
 
 <div class="viewcode-block" id="TcEx"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx">[docs]</a><span class="k">class</span> <span class="nc">TcEx</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Provides basic functionality for all types of TxEx Apps.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.&quot;&quot;&quot;</span>
         <span class="c1"># catch interupt signals</span>
         <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signal_handler</span><span class="p">)</span>
@@ -368,7 +366,7 @@
 
 <div class="viewcode-block" id="TcEx._log_platform"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._log_platform">[docs]</a>    <span class="k">def</span> <span class="nf">_log_platform</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Log the current Platform.&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">platform</span> <span class="k">import</span> <span class="n">platform</span>
+        <span class="kn">from</span> <span class="nn">platform</span> <span class="kn">import</span> <span class="n">platform</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Platform: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">platform</span><span class="p">()))</span></div>
 
 <div class="viewcode-block" id="TcEx._log_python_version"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._log_python_version">[docs]</a>    <span class="k">def</span> <span class="nf">_log_python_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -433,7 +431,7 @@
 
 <div class="viewcode-block" id="TcEx._logger_api"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._logger_api">[docs]</a>    <span class="k">def</span> <span class="nf">_logger_api</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add API logging handler.&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.tcex_logger</span> <span class="k">import</span> <span class="n">TcExLogHandler</span><span class="p">,</span> <span class="n">TcExLogFormatter</span>
+        <span class="kn">from</span> <span class="nn">.tcex_logger</span> <span class="kn">import</span> <span class="n">TcExLogHandler</span><span class="p">,</span> <span class="n">TcExLogFormatter</span>
         <span class="n">api</span> <span class="o">=</span> <span class="n">TcExLogHandler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">)</span>
         <span class="n">api</span><span class="o">.</span><span class="n">set_name</span><span class="p">(</span><span class="s1">&#39;api&#39;</span><span class="p">)</span>
         <span class="n">api</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
@@ -485,7 +483,7 @@
 <span class="sd">        .. Note:: Resource Classes can be accessed using ``tcex.resources.&lt;Class&gt;`` or using</span>
 <span class="sd">                  tcex.resource(&#39;&lt;resource name&gt;&#39;).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">importlib</span> <span class="k">import</span> <span class="n">import_module</span>
+        <span class="kn">from</span> <span class="nn">importlib</span> <span class="kn">import</span> <span class="n">import_module</span>
         <span class="c1"># create resource object</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">resources</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="s1">&#39;tcex.tcex_resources&#39;</span><span class="p">)</span>
 
@@ -597,7 +595,7 @@
 <span class="sd">        .. Note:: Utils methods can be accessed using ``tcex.utils.&lt;method&gt;``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">.tcex_utils</span> <span class="k">import</span> <span class="n">TcExUtils</span>
+            <span class="kn">from</span> <span class="nn">.tcex_utils</span> <span class="kn">import</span> <span class="n">TcExUtils</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span> <span class="o">=</span> <span class="n">TcExUtils</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span>
 
@@ -690,7 +688,7 @@
 <div class="viewcode-block" id="TcEx.batch"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.batch">[docs]</a>    <span class="k">def</span> <span class="nf">batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attribute_write_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
               <span class="n">playbook_triggers_enabled</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return instance of Batch&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.tcex_batch_v2</span> <span class="k">import</span> <span class="n">TcExBatch</span>
+        <span class="kn">from</span> <span class="nn">.tcex_batch_v2</span> <span class="kn">import</span> <span class="n">TcExBatch</span>
         <span class="k">return</span> <span class="n">TcExBatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">attribute_write_type</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="p">,</span> <span class="n">playbook_triggers_enabled</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcEx.bulk_enabled"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.bulk_enabled">[docs]</a>    <span class="k">def</span> <span class="nf">bulk_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">api_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">authorization</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -745,7 +743,7 @@
 <span class="sd">            (object): An instance of DataFilter Class</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">.tcex_data_filter</span> <span class="k">import</span> <span class="n">DataFilter</span>
+            <span class="kn">from</span> <span class="nn">.tcex_data_filter</span> <span class="kn">import</span> <span class="n">DataFilter</span>
             <span class="k">return</span> <span class="n">DataFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">warn</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Required Module is not installed (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
@@ -772,7 +770,7 @@
     <span class="k">def</span> <span class="nf">error_codes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;ThreatConnect error codes.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_codes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">.tcex_error_codes</span> <span class="k">import</span> <span class="n">TcExErrorCodes</span>
+            <span class="kn">from</span> <span class="nn">.tcex_error_codes</span> <span class="kn">import</span> <span class="n">TcExErrorCodes</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_error_codes</span> <span class="o">=</span> <span class="n">TcExErrorCodes</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_codes</span>
 
@@ -995,7 +993,7 @@
 <span class="sd">                     tcex.batch instead.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Jobs module will be deprecated in TcEx version 0.9.0.&#39;</span><span class="p">)</span>
-        <span class="kn">from</span> <span class="nn">.tcex_job</span> <span class="k">import</span> <span class="n">TcExJob</span>
+        <span class="kn">from</span> <span class="nn">.tcex_job</span> <span class="kn">import</span> <span class="n">TcExJob</span>
         <span class="k">return</span> <span class="n">TcExJob</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
@@ -1006,7 +1004,7 @@
 <span class="sd">                     tcex.batch instead.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_jobs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">.tcex_job</span> <span class="k">import</span> <span class="n">TcExJob</span>
+            <span class="kn">from</span> <span class="nn">.tcex_job</span> <span class="kn">import</span> <span class="n">TcExJob</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_jobs</span> <span class="o">=</span> <span class="n">TcExJob</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_jobs</span>
 
@@ -1023,7 +1021,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            (object): An instance of the Metrics Class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.tcex_metrics_v2</span> <span class="k">import</span> <span class="n">TcExMetricsV2</span>
+        <span class="kn">from</span> <span class="nn">.tcex_metrics_v2</span> <span class="kn">import</span> <span class="n">TcExMetricsV2</span>
         <span class="k">return</span> <span class="n">TcExMetricsV2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">keyed</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcEx.notification"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.notification">[docs]</a>    <span class="k">def</span> <span class="nf">notification</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1032,7 +1030,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            (object): An instance of the Notification Class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.tcex_notification_v2</span> <span class="k">import</span> <span class="n">TcExNotificationV2</span>
+        <span class="kn">from</span> <span class="nn">.tcex_notification_v2</span> <span class="kn">import</span> <span class="n">TcExNotificationV2</span>
         <span class="k">return</span> <span class="n">TcExNotificationV2</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcEx.message_tc"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.message_tc">[docs]</a>    <span class="k">def</span> <span class="nf">message_tc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">):</span>
@@ -1066,7 +1064,7 @@
 <span class="sd">        .. Note:: Playbook methods can be accessed using ``tcex.playbook.&lt;method&gt;``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_playbook</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">.tcex_playbook</span> <span class="k">import</span> <span class="n">TcExPlaybook</span>
+            <span class="kn">from</span> <span class="nn">.tcex_playbook</span> <span class="kn">import</span> <span class="n">TcExPlaybook</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_playbook</span> <span class="o">=</span> <span class="n">TcExPlaybook</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_playbook</span>
 
@@ -1098,7 +1096,7 @@
                     <span class="s1">&#39;http&#39;</span><span class="p">:</span> <span class="s1">&#39;http://</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">@</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">tc_proxy_username</span><span class="p">,</span> <span class="n">tc_proxy_password</span><span class="p">,</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">),</span>
-                    <span class="s1">&#39;https&#39;</span><span class="p">:</span> <span class="s1">&#39;https://</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">@</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="s1">&#39;https&#39;</span><span class="p">:</span> <span class="s1">&#39;http://</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">@</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">tc_proxy_username</span><span class="p">,</span> <span class="n">tc_proxy_password</span><span class="p">,</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">)</span>
                 <span class="p">}</span>
@@ -1106,7 +1104,7 @@
                 <span class="n">proxies</span> <span class="o">=</span> <span class="p">{</span>
                     <span class="s1">&#39;http&#39;</span><span class="p">:</span> <span class="s1">&#39;http://</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">),</span>
-                    <span class="s1">&#39;https&#39;</span><span class="p">:</span> <span class="s1">&#39;https://</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="s1">&#39;https&#39;</span><span class="p">:</span> <span class="s1">&#39;http://</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">)</span>
                 <span class="p">}</span>
         <span class="k">return</span> <span class="n">proxies</span>
@@ -1122,7 +1120,7 @@
 <span class="sd">            (object): An instance of Request Class</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">.tcex_request</span> <span class="k">import</span> <span class="n">TcExRequest</span>
+            <span class="kn">from</span> <span class="nn">.tcex_request</span> <span class="kn">import</span> <span class="n">TcExRequest</span>
             <span class="k">return</span> <span class="n">TcExRequest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">105</span><span class="p">,</span> <span class="p">[</span><span class="n">e</span><span class="p">])</span></div>
@@ -1313,8 +1311,8 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            (int): A integer representing epoch seconds.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
-        <span class="kn">from</span> <span class="nn">dateutil.relativedelta</span> <span class="k">import</span> <span class="n">relativedelta</span>
+        <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+        <span class="kn">from</span> <span class="nn">dateutil.relativedelta</span> <span class="kn">import</span> <span class="n">relativedelta</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;This App is using a deprecated method (epoch seconds).&#39;</span><span class="p">)</span>
         <span class="n">epoch</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">delta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1420,7 +1418,7 @@
         <span class="k">if</span> <span class="n">tag</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="c1"># handle unicode characters and url encode tag value</span>
-                <span class="n">tag</span> <span class="o">=</span> <span class="n">quote</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">s</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">),</span> <span class="n">safe</span><span class="o">=</span><span class="s1">&#39;~&#39;</span><span class="p">)[:</span><span class="mi">128</span><span class="p">]</span>
+                <span class="n">tag</span> <span class="o">=</span> <span class="n">quote</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">s</span><span class="p">(</span><span class="n">tag</span><span class="p">[:</span><span class="mi">128</span><span class="p">],</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">),</span> <span class="n">safe</span><span class="o">=</span><span class="s1">&#39;~&#39;</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="n">warn</span> <span class="o">=</span> <span class="s1">&#39;Failed converting tag to safetag (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">warn</span><span class="p">)</span>
@@ -1443,7 +1441,7 @@
     <span class="k">def</span> <span class="nf">session</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return an instance of Requests Session configured for the ThreatConnect API.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">.tcex_session</span> <span class="k">import</span> <span class="n">TcExSession</span>
+            <span class="kn">from</span> <span class="nn">.tcex_session</span> <span class="kn">import</span> <span class="n">TcExSession</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="o">=</span> <span class="n">TcExSession</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span>
 
@@ -1467,24 +1465,20 @@
 </pre></div>
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, ThreatConnect Inc.
+        &#169; Copyright 2016, ThreatConnect Inc.
 
     </p>
   </div> 
 
 </footer>
-
         </div>
       </div>
 
@@ -1493,37 +1487,15 @@
   </div>
   
 
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'0.8.26',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

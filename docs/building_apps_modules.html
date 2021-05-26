@@ -1,58 +1,54 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Usage &mdash; TcEx 0.8.26 documentation</title>
+  <title>Usage &mdash; TcEx 0.8.29 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+
+  
   
 
   
   
-  
-  
 
   
 
   
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.8.26 documentation" href="index.html"/> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -66,7 +62,7 @@
             
             
               <div class="version">
-                0.8.26
+                0.8.29
               </div>
             
           
@@ -83,6 +79,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -119,13 +116,14 @@
             
           
         </div>
+        
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">TcEx</a>
@@ -133,10 +131,13 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
+
+
 
 
 
@@ -156,14 +157,14 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Usage</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
         
       </li>
     
@@ -175,94 +176,90 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <p id="building-apps-modules">Running <code class="docutils literal"><span class="pre">tclib</span></code> will download/install all required Python dependencies defined in the Apps <strong>requirements.txt</strong> file to a local <code class="docutils literal"><span class="pre">lib_&lt;version&gt;</span></code> directory.</p>
+  <p id="building-apps-modules">Running <code class="docutils literal notranslate"><span class="pre">tclib</span></code> will download/install all required Python dependencies defined in the Apps <strong>requirements.txt</strong> file to a local <code class="docutils literal notranslate"><span class="pre">lib_&lt;version&gt;</span></code> directory.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Typically calling <code class="docutils literal"><span class="pre">tclib</span></code> with no arguments is the most common use case.  If building an App for distribution then using a configuration file to define the lib structure is preferable.  The alternative is to run tclib using each Python version the App should support.</p>
+<p class="admonition-title">Note</p>
+<p>Typically calling <code class="docutils literal notranslate"><span class="pre">tclib</span></code> with no arguments is the most common use case.  If building an App for distribution then using a configuration file to define the lib structure is preferable.  The alternative is to run tclib using each Python version the App should support.</p>
 </div>
 <div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p>If you are using <strong>macOS</strong> and have Python installed via Homebrew, there is a <a class="reference external" href="https://stackoverflow.com/questions/24257803/distutilsoptionerror-must-supply-either-home-or-prefix-exec-prefix-not-both">known bug</a> that requires you to create a <code class="docutils literal"><span class="pre">setup.cfg</span></code> file in the same directory as the <code class="docutils literal"><span class="pre">requirements.txt</span></code>. The <code class="docutils literal"><span class="pre">setup.cfg</span></code> file should have the following code at minimum:</p>
-<div class="last highlight-python"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">install</span><span class="p">]</span>
+<p class="admonition-title">Warning</p>
+<p>If you are using <strong>macOS</strong> and have Python installed via Homebrew, there is a <a class="reference external" href="https://stackoverflow.com/questions/24257803/distutilsoptionerror-must-supply-either-home-or-prefix-exec-prefix-not-both">known bug</a> that requires you to create a <code class="docutils literal notranslate"><span class="pre">setup.cfg</span></code> file in the same directory as the <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code>. The <code class="docutils literal notranslate"><span class="pre">setup.cfg</span></code> file should have the following code at minimum:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">install</span><span class="p">]</span>
 <span class="n">prefix</span><span class="o">=</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="usage">
 <h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
-<div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">tclib</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">app_name</span> <span class="n">APP_NAME</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">app_path</span> <span class="n">APP_PATH</span><span class="p">]</span>
-             <span class="p">[</span><span class="o">--</span><span class="n">config</span> <span class="n">CONFIG</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">no_cache_dir</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">tcex_develop</span><span class="p">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage: tclib <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--app_name APP_NAME<span class="o">]</span> <span class="o">[</span>--app_path APP_PATH<span class="o">]</span>
+             <span class="o">[</span>--config CONFIG<span class="o">]</span> <span class="o">[</span>--no_cache_dir<span class="o">]</span> <span class="o">[</span>--tcex_develop<span class="o">]</span>
 
-<span class="n">optional</span> <span class="n">arguments</span><span class="p">:</span>
-  <span class="o">-</span><span class="n">h</span><span class="p">,</span> <span class="o">--</span><span class="n">help</span>           <span class="n">show</span> <span class="n">this</span> <span class="n">help</span> <span class="n">message</span> <span class="ow">and</span> <span class="n">exit</span>
-  <span class="o">--</span><span class="n">app_name</span> <span class="n">APP_NAME</span>  <span class="n">Fully</span> <span class="n">qualified</span> <span class="n">path</span> <span class="n">of</span> <span class="n">App</span><span class="o">.</span>
-  <span class="o">--</span><span class="n">app_path</span> <span class="n">APP_PATH</span>  <span class="n">Fully</span> <span class="n">qualified</span> <span class="n">path</span> <span class="n">of</span> <span class="n">App</span><span class="o">.</span>
-  <span class="o">--</span><span class="n">config</span> <span class="n">CONFIG</span>      <span class="n">Configuration</span> <span class="n">file</span> <span class="k">for</span> <span class="n">gen</span> <span class="n">lib</span><span class="o">.</span> <span class="p">(</span><span class="n">Default</span><span class="p">:</span> <span class="n">tcex</span><span class="o">.</span><span class="n">json</span><span class="p">)</span>
-  <span class="o">--</span><span class="n">no_cache_dir</span>       <span class="n">Do</span> <span class="ow">not</span> <span class="n">use</span> <span class="n">pip</span> <span class="n">cache</span> <span class="n">directory</span><span class="o">.</span>
-  <span class="o">--</span><span class="n">tcex_develop</span>       <span class="n">Replace</span> <span class="n">tcex</span> <span class="n">version</span> <span class="ow">in</span> <span class="n">config</span> <span class="k">with</span> <span class="n">github</span> <span class="n">develop</span> <span class="n">branch</span><span class="o">.</span>
+optional arguments:
+  -h, --help           show this <span class="nb">help</span> message and <span class="nb">exit</span>
+  --app_name APP_NAME  Fully qualified path of App.
+  --app_path APP_PATH  Fully qualified path of App.
+  --config CONFIG      Configuration file <span class="k">for</span> gen lib. <span class="o">(</span>Default: tcex.json<span class="o">)</span>
+  --no_cache_dir       Do not use pip cache directory.
+  --tcex_develop       Replace tcex version <span class="k">in</span> config with github develop branch.
 </pre></div>
 </div>
 </div>
 <div class="section" id="using-configuration-file">
 <h1>Using Configuration File<a class="headerlink" href="#using-configuration-file" title="Permalink to this headline">¶</a></h1>
-<p>By default the <strong>tcex.json</strong> configuration file will be loaded if it exists.  If the configuration includes the <code class="docutils literal"><span class="pre">lib_versions</span></code> parameter array the <code class="docutils literal"><span class="pre">tclib</span></code> command will use the values defined in the configuration to build the lib directories.  For ease of management when building multiple Apps the tcex.json file can contain environment vars defining the Python version (e.g., $env.PY36 for <code class="docutils literal"><span class="pre">export</span> <span class="pre">PY36='3.6.5'</span></code>).</p>
+<p>By default the <strong>tcex.json</strong> configuration file will be loaded if it exists.  If the configuration includes the <code class="docutils literal notranslate"><span class="pre">lib_versions</span></code> parameter array the <code class="docutils literal notranslate"><span class="pre">tclib</span></code> command will use the values defined in the configuration to build the lib directories.  For ease of management when building multiple Apps the tcex.json file can contain environment vars defining the Python version (e.g., $env.PY36 for <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">PY36='3.6.5'</span></code>).</p>
 <p><strong>Linux</strong></p>
-<div class="code javascript highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
-<span class="s2">&quot;lib_versions&quot;</span><span class="p">:</span> <span class="p">[{</span>
-    <span class="s2">&quot;lib_dir&quot;</span><span class="p">:</span> <span class="s2">&quot;lib_2.7.13&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;python_executable&quot;</span><span class="p">:</span> <span class="s2">&quot;~/.pyenv/versions/2.7.13/bin/python&quot;</span>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="p">...</span><span class="nx">snipped</span><span class="o">&gt;</span>
+<span class="s2">&quot;lib_versions&quot;</span><span class="o">:</span> <span class="p">[{</span>
+    <span class="s2">&quot;lib_dir&quot;</span><span class="o">:</span> <span class="s2">&quot;lib_2.7.13&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;python_executable&quot;</span><span class="o">:</span> <span class="s2">&quot;~/.pyenv/versions/2.7.13/bin/python&quot;</span>
   <span class="p">},</span>
   <span class="p">{</span>
-    <span class="s2">&quot;lib_dir&quot;</span><span class="p">:</span> <span class="s2">&quot;lib_3.4.6&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;python_executable&quot;</span><span class="p">:</span> <span class="s2">&quot;~/.pyenv/versions/3.4.6/bin/python&quot;</span>
+    <span class="s2">&quot;lib_dir&quot;</span><span class="o">:</span> <span class="s2">&quot;lib_3.4.6&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;python_executable&quot;</span><span class="o">:</span> <span class="s2">&quot;~/.pyenv/versions/3.4.6/bin/python&quot;</span>
   <span class="p">},</span>
   <span class="p">{</span>
-    <span class="s2">&quot;lib_dir&quot;</span><span class="p">:</span> <span class="s2">&quot;lib_3.5.3&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;python_executable&quot;</span><span class="p">:</span> <span class="s2">&quot;~/.pyenv/versions/3.5.3/bin/python&quot;</span>
+    <span class="s2">&quot;lib_dir&quot;</span><span class="o">:</span> <span class="s2">&quot;lib_3.5.3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;python_executable&quot;</span><span class="o">:</span> <span class="s2">&quot;~/.pyenv/versions/3.5.3/bin/python&quot;</span>
   <span class="p">},</span>
   <span class="p">{</span>
-    <span class="s2">&quot;lib_dir&quot;</span><span class="p">:</span> <span class="s2">&quot;lib_$env.PY36&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;python_executable&quot;</span><span class="p">:</span> <span class="s2">&quot;~/.pyenv/versions/$env.PY36/bin/python&quot;</span>
+    <span class="s2">&quot;lib_dir&quot;</span><span class="o">:</span> <span class="s2">&quot;lib_$env.PY36&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;python_executable&quot;</span><span class="o">:</span> <span class="s2">&quot;~/.pyenv/versions/$env.PY36/bin/python&quot;</span>
   <span class="p">}</span>
 <span class="p">],</span>
-<span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
+<span class="o">&lt;</span><span class="nx">snipped</span><span class="p">...</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <p><strong>Windows</strong></p>
-<div class="code javascript highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
-<span class="s2">&quot;lib_versions&quot;</span><span class="p">:</span> <span class="p">[{</span>
-    <span class="s2">&quot;lib_dir&quot;</span><span class="p">:</span> <span class="s2">&quot;lib_2.7.13&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;python_executable&quot;</span><span class="p">:</span> <span class="s2">&quot;~</span><span class="se">\\</span><span class="s2">AppData</span><span class="se">\\</span><span class="s2">Local</span><span class="se">\\</span><span class="s2">Programs</span><span class="se">\\</span><span class="s2">Python</span><span class="se">\\</span><span class="s2">Python27</span><span class="se">\\</span><span class="s2">python.exe&quot;</span>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="p">...</span><span class="nx">snipped</span><span class="o">&gt;</span>
+<span class="s2">&quot;lib_versions&quot;</span><span class="o">:</span> <span class="p">[{</span>
+    <span class="s2">&quot;lib_dir&quot;</span><span class="o">:</span> <span class="s2">&quot;lib_2.7.13&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;python_executable&quot;</span><span class="o">:</span> <span class="s2">&quot;~\\AppData\\Local\\Programs\\Python\\Python27\\python.exe&quot;</span>
   <span class="p">},</span> <span class="p">{</span>
-    <span class="s2">&quot;lib_dir&quot;</span><span class="p">:</span> <span class="s2">&quot;lib_3.6.2&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;python_executable&quot;</span><span class="p">:</span> <span class="s2">&quot;~</span><span class="se">\\</span><span class="s2">AppData</span><span class="se">\\</span><span class="s2">Local</span><span class="se">\\</span><span class="s2">Programs</span><span class="se">\\</span><span class="s2">Python</span><span class="se">\\</span><span class="s2">Python36</span><span class="se">\\</span><span class="s2">python.exe&quot;</span>
+    <span class="s2">&quot;lib_dir&quot;</span><span class="o">:</span> <span class="s2">&quot;lib_3.6.2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;python_executable&quot;</span><span class="o">:</span> <span class="s2">&quot;~\\AppData\\Local\\Programs\\Python\\Python36\\python.exe&quot;</span>
   <span class="p">}</span>
 <span class="p">],</span>
-<span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
+<span class="o">&lt;</span><span class="nx">snipped</span><span class="p">...</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 </div>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, ThreatConnect Inc.
+        &#169; Copyright 2016, ThreatConnect Inc.
 
     </p>
   </div> 
 
 </footer>
-
         </div>
       </div>
 
@@ -271,37 +268,15 @@
   </div>
   
 
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.8.26',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

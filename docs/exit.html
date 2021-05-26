@@ -1,60 +1,56 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Exit &mdash; TcEx 0.8.26 documentation</title>
+  <title>Exit &mdash; TcEx 0.8.29 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+
+  
   
 
   
   
-  
-  
 
   
 
   
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.8.26 documentation" href="index.html"/>
-        <link rel="next" title="Examples" href="examples.html"/>
-        <link rel="prev" title="Development Tools" href="development_tools.html"/> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Examples" href="examples.html" />
+    <link rel="prev" title="Development Tools" href="development_tools.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -68,7 +64,7 @@
             
             
               <div class="version">
-                0.8.26
+                0.8.29
               </div>
             
           
@@ -85,6 +81,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -135,13 +132,14 @@
             
           
         </div>
+        
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">TcEx</a>
@@ -149,10 +147,13 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
+
+
 
 
 
@@ -172,14 +173,14 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Exit</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
         
       </li>
     
@@ -193,33 +194,33 @@
             
   <div class="section" id="exit">
 <span id="id1"></span><h1>Exit<a class="headerlink" href="#exit" title="Permalink to this headline">¶</a></h1>
-<p>All ThreatConnect ™ Exchange Apps should deliberately exit with the appropriate exit code on successful or failed execution. The <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><code class="xref py py-mod docutils literal"><span class="pre">TcEx</span></code></a> Framework provides the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal"><span class="pre">exit()</span></code></a> method and <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit_code" title="tcex.tcex.TcEx.exit_code"><code class="xref py py-mod docutils literal"><span class="pre">exit_code</span></code></a> property to handle exit codes.  All Apps should end with the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal"><span class="pre">exit()</span></code></a> method.</p>
-<p>The <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal"><span class="pre">exit()</span></code></a> method supports and optional <code class="docutils literal"><span class="pre">msg</span></code> parameter.  If provided the <code class="docutils literal"><span class="pre">msg</span></code> value will be logged and written to the <code class="docutils literal"><span class="pre">message_tc</span></code> file as the App exit message.</p>
+<p>All ThreatConnect ™ Exchange Apps should deliberately exit with the appropriate exit code on successful or failed execution. The <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><code class="xref py py-mod docutils literal notranslate"><span class="pre">TcEx</span></code></a> Framework provides the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">exit()</span></code></a> method and <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit_code" title="tcex.tcex.TcEx.exit_code"><code class="xref py py-mod docutils literal notranslate"><span class="pre">exit_code</span></code></a> property to handle exit codes.  All Apps should end with the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">exit()</span></code></a> method.</p>
+<p>The <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">exit()</span></code></a> method supports and optional <code class="docutils literal notranslate"><span class="pre">msg</span></code> parameter.  If provided the <code class="docutils literal notranslate"><span class="pre">msg</span></code> value will be logged and written to the <code class="docutils literal notranslate"><span class="pre">message_tc</span></code> file as the App exit message.</p>
 <div class="admonition important">
-<p class="first admonition-title">Important</p>
-<p class="last">Providing a proper exit code for Playbook Apps is important for execution of downstream Apps. Supported exit codes for Playbook Apps are 0 (success) and 1 (failure).</p>
+<p class="admonition-title">Important</p>
+<p>Providing a proper exit code for Playbook Apps is important for execution of downstream Apps. Supported exit codes for Playbook Apps are 0 (success) and 1 (failure).</p>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The exit methods automatically logs the exit code using the <a class="reference internal" href="logging.html#logging"><span class="std std-ref">Logging</span></a> functionality of the TcEx Framework.</p>
+<p class="admonition-title">Note</p>
+<p>The exit methods automatically logs the exit code using the <a class="reference internal" href="logging.html#logging"><span class="std std-ref">Logging</span></a> functionality of the TcEx Framework.</p>
 </div>
 <div class="section" id="setting-exit-code">
 <h2>Setting Exit Code<a class="headerlink" href="#setting-exit-code" title="Permalink to this headline">¶</a></h2>
-<p>Some failures do not warrant an immediate exit.  In such case the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit_code" title="tcex.tcex.TcEx.exit_code"><code class="xref py py-mod docutils literal"><span class="pre">exit_code</span></code></a> property allows an exit code to be set for when the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal"><span class="pre">exit()</span></code></a> method is called.  This allows the app to continue execution and still notify the ThreatConnect Platform that a failure occurred.</p>
+<p>Some failures do not warrant an immediate exit.  In such case the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit_code" title="tcex.tcex.TcEx.exit_code"><code class="xref py py-mod docutils literal notranslate"><span class="pre">exit_code</span></code></a> property allows an exit code to be set for when the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">exit()</span></code></a> method is called.  This allows the app to continue execution and still notify the ThreatConnect Platform that a failure occurred.</p>
 <div class="section" id="job-app-example">
 <h3>Job App Example<a class="headerlink" href="#job-app-example" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
 
 <span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
 <span class="k">try</span><span class="p">:</span>
@@ -236,18 +237,18 @@
 </div>
 <div class="section" id="playbook-app-example">
 <h3>Playbook App Example<a class="headerlink" href="#playbook-app-example" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
 
 <span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
 <span class="k">try</span><span class="p">:</span>
@@ -265,19 +266,19 @@
 </div>
 <div class="section" id="immediate-exit-on-failure">
 <h2>Immediate Exit on Failure<a class="headerlink" href="#immediate-exit-on-failure" title="Permalink to this headline">¶</a></h2>
-<p>Certain failures require that the App exit immediately.  In these cases calling the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal"><span class="pre">exit()</span></code></a> method while passing the exit code will immediately halt execution of the App and notify the ThreatConnect Platform of a failure.</p>
+<p>Certain failures require that the App exit immediately.  In these cases calling the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">exit()</span></code></a> method while passing the exit code will immediately halt execution of the App and notify the ThreatConnect Platform of a failure.</p>
 <div class="section" id="id2">
 <h3>Job App Example<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
 
 <span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
 <span class="k">try</span><span class="p">:</span>
@@ -292,16 +293,16 @@
 </div>
 <div class="section" id="id3">
 <h3>Playbook App Example<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
 
 <span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
 <span class="k">try</span><span class="p">:</span>
@@ -318,49 +319,40 @@
 <div class="section" id="job-app-exit-codes">
 <h2>Job App Exit Codes<a class="headerlink" href="#job-app-exit-codes" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>0 - Successful execution of App</li>
-<li>1 - Failed execution of App</li>
-<li>3 - Partial failure of App</li>
+<li><p>0 - Successful execution of App</p></li>
+<li><p>1 - Failed execution of App</p></li>
+<li><p>3 - Partial failure of App</p></li>
 </ul>
 </div>
 <div class="section" id="playbook-app-exit-codes">
 <h2>Playbook App Exit Codes<a class="headerlink" href="#playbook-app-exit-codes" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>0 - Successful execution of App</li>
-<li>1 - Failed execution of App</li>
+<li><p>0 - Successful execution of App</p></li>
+<li><p>1 - Failed execution of App</p></li>
 </ul>
 </div>
 </div>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="development_tools.html" class="btn btn-neutral" title="Development Tools" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="development_tools.html" class="btn btn-neutral float-left" title="Development Tools" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, ThreatConnect Inc.
+        &#169; Copyright 2016, ThreatConnect Inc.
 
     </p>
   </div> 
 
 </footer>
-
         </div>
       </div>
 
@@ -369,37 +361,15 @@
   </div>
   
 
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.8.26',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

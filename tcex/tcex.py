@@ -917,7 +917,7 @@ class TcEx(object):
                     'http': 'http://{}:{}@{}:{}'.format(
                         tc_proxy_username, tc_proxy_password,
                         self.default_args.tc_proxy_host, self.default_args.tc_proxy_port),
-                    'https': 'https://{}:{}@{}:{}'.format(
+                    'https': 'http://{}:{}@{}:{}'.format(
                         tc_proxy_username, tc_proxy_password,
                         self.default_args.tc_proxy_host, self.default_args.tc_proxy_port)
                 }
@@ -925,7 +925,7 @@ class TcEx(object):
                 proxies = {
                     'http': 'http://{}:{}'.format(
                         self.default_args.tc_proxy_host, self.default_args.tc_proxy_port),
-                    'https': 'https://{}:{}'.format(
+                    'https': 'http://{}:{}'.format(
                         self.default_args.tc_proxy_host, self.default_args.tc_proxy_port)
                 }
         return proxies
