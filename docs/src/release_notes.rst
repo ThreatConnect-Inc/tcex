@@ -6,6 +6,7 @@ Release Notes
 2.0.22
 ======
 + APP-2662 [STIX] Add several STIX object mapping types in model.py.
++ APP-2711 [STIX] Update STIX parser to only support single pattern indicators.
 
 2.0.21
 ======
