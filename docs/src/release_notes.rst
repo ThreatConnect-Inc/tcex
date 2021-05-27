@@ -7,6 +7,7 @@ Release Notes
 ======
 + APP-2662 [STIX] Add several STIX object mapping types in model.py.
 + APP-2711 [STIX] Update STIX parser to only support single pattern indicators.
++ APP-2712 [TcEx] Updated adding of signal handler to catch when added to non-main thread.
 
 2.0.21
 ======
