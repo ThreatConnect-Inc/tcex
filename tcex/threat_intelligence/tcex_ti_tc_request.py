@@ -106,7 +106,8 @@ class TiTcRequest:
 
     def _iterate(self, url, params, api_entity):
         """Iterate over API pagination."""
-        params['resultLimit'] = self.result_limit
+        safe_params = params.copy()
+        safe_params['resultLimit'] = self.result_limit
 
         should_iterate = True
         result_start = params.get('resultStart', 0)
@@ -116,8 +117,8 @@ class TiTcRequest:
             result_start = 0
             self.log.error('Invalid ResultStart Param. Starting at 0')
         while should_iterate:
-            params['resultStart'] = result_start
-            r = self._get(url, params=params)
+            safe_params['resultStart'] = result_start
+            r = self._get(url, params=safe_params)
             if not self.success(r):
                 err = r.text or r.reason
                 self._handle_error(950, [r.status_code, err, r.url])
