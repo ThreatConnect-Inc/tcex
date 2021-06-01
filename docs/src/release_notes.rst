@@ -7,6 +7,7 @@ Release Notes
 ======
 + APP-2662 [STIX] Add several STIX object mapping types in model.py.
 + APP-2711 [STIX] Update STIX parser to only support single pattern indicators.
++ APP-2717 [TI] Update the pagination for TI module.
 
 2.0.21
 ======
