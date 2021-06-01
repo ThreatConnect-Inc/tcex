@@ -38,11 +38,14 @@ class TcEx:
 
     def __init__(self, **kwargs):
         """Initialize Class Properties."""
-        # catch interupt signals specifically based on thread name
-        signal.signal(signal.SIGINT, self._signal_handler)
-        if platform.system() != 'Windows':
-            signal.signal(signal.SIGHUP, self._signal_handler)
-        signal.signal(signal.SIGTERM, self._signal_handler)
+        try:
+            # catch interupt signals specifically based on thread name
+            signal.signal(signal.SIGINT, self._signal_handler)
+            if platform.system() != 'Windows':
+                signal.signal(signal.SIGHUP, self._signal_handler)
+            signal.signal(signal.SIGTERM, self._signal_handler)
+        except ValueError:  # catch signal being added to thread that is not main
+            pass
 
         # Property defaults
         self._config: dict = kwargs.get('config') or {}
