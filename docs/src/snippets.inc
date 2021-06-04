@@ -407,7 +407,7 @@ Search
     :linenos:
     :lineno-start: 1
 
-    search = {"query": {"match_all": {}}}
+    search = {"size": 100, "query": {"match_all": {}}}
     response = ds.get(rid="_search", data=search)
 
 

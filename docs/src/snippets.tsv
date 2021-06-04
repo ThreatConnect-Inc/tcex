@@ -31,7 +31,7 @@ DataStore	Add	response = ds.add(rid="one", data={"one": 1})\n
 DataStore	Add (dynamic id)	response = ds.add(rid=None, data={"one": 1})\n
 DataStore	Put	response = ds.put(rid="one", data={"one": 1})\n
 DataStore	Delete	response = ds.delete(rid="one")\n
-DataStore	Search	search = {"query": {"match_all": {}}}\nresponse = ds.get(rid="_search", data=search)\n
+DataStore	Search	search = {"size": 100, "query": {"match_all": {}}}\nresponse = ds.get(rid="_search", data=search)\n
 Exit	Set exit message	self.exit_message = f"Created {indicator_count} indicators."\n
 Exit	Set exit code	# set the exit code and allow App to continue to process\nself.tcex.playbook.exit_code = 1\n
 Exit	Exit with error	# exit the App immediately with the provided exit message\nself.tcex.playbook.exit(code=1, msg="Failed to add indicators to Owner.")\n

@@ -69,7 +69,7 @@ The ``get()`` method also allows a search to be performed.
     :lineno-start: 1
 
     ds = self.tcex.datastore('local', 'myNumbers')
-    search = {'query': {'match_all': {}}}
+    search = {'size': 100, 'query': {'match_all': {}}}
     response = ds.get(rid='_search', data=search)
 
 

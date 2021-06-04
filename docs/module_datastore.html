@@ -248,7 +248,7 @@
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">ds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">datastore</span><span class="p">(</span><span class="s1">&#39;local&#39;</span><span class="p">,</span> <span class="s1">&#39;myNumbers&#39;</span><span class="p">)</span>
-<span class="n">search</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;query&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;match_all&#39;</span><span class="p">:</span> <span class="p">{}}}</span>
+<span class="n">search</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="s1">100</span><span class="p">,</span> <span class="s1">&#39;query&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;match_all&#39;</span><span class="p">:</span> <span class="p">{}}}</span>
 <span class="n">response</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rid</span><span class="o">=</span><span class="s1">&#39;_search&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">search</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
