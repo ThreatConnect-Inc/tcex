@@ -5,9 +5,9 @@ Release Notes
 
 2.0.22
 ======
-+ APP-2662 [STIX] Add several STIX object mapping types in model.py.
-+ APP-2711 [STIX] Update STIX parser to only support single pattern indicators.
-+ APP-2717 [TI] Update the pagination for TI module.
++ APP-2662 [STIX] Added several STIX object mapping types in model.py.
++ APP-2711 [STIX] Updated STIX parser to only support single pattern indicators.
++ APP-2717 [TI] Updated pagination logic for TI module.
 + APP-2712 [TcEx] Updated adding of signal handler to catch when added to non-main thread.
 
 2.0.21
