@@ -14,7 +14,7 @@ class Document(Group):
         password (str, kwargs): If malware is true a password for the zip archive is required.
     """
 
-    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
+    def __init__(self, ti: 'ThreatIntelligence', **kwargs):
         """Initialize Class properties."""
         super().__init__(
             ti, sub_type='Document', api_entity='document', api_branch='documents', **kwargs

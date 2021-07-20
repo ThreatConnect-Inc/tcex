@@ -12,4 +12,10 @@ class CourseOfAction(Group):
 
     def __init__(self, ti: 'ThreatIntelligence', **kwargs):
         """Initialize Class properties."""
-        super().__init__(ti, sub_type='Course of Action', api_entity='courseofAction', api_branch='coursesofaction', **kwargs)
+        super().__init__(
+            ti,
+            sub_type='Course of Action',
+            api_entity='courseofAction',
+            api_branch='coursesofaction',
+            **kwargs
+        )

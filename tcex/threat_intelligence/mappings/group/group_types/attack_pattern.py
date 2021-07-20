@@ -1,4 +1,6 @@
 """ThreatConnect TI Email"""
+from tcex import ThreatIntelligence
+
 from ..group import Group
 
 
@@ -12,4 +14,10 @@ class AttackPattern(Group):
 
     def __init__(self, ti: 'ThreatIntelligence', **kwargs):
         """Initialize Class properties."""
-        super().__init__(ti, sub_type='Attack Pattern', api_entity='attackPattern', api_branch='attackpatterns', **kwargs)
+        super().__init__(
+            ti,
+            sub_type='Attack Pattern',
+            api_entity='attackPattern',
+            api_branch='attackpatterns',
+            **kwargs
+        )

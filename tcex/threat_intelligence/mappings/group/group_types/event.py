@@ -18,7 +18,7 @@ class Event(Group):
         status (str, kwargs): The status for this Group.
     """
 
-    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
+    def __init__(self, ti: 'ThreatIntelligence', **kwargs):
         """Initialize Class Properties."""
         super().__init__(ti, sub_type='Event', api_entity='event', api_branch='events', **kwargs)
 

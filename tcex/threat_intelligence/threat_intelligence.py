@@ -14,22 +14,22 @@ from tcex.utils import Utils
 
 from .mappings.filters import Filters
 from .mappings.group.group import Group
-from .mappings.group.group_types.attack_pattern import AttackPattern
-from .mappings.group.group_types.malware import Malware
-from .mappings.group.group_types.vulnerability import Vulnerability
-from .mappings.group.group_types.tactic import Tactic
-from .mappings.group.group_types.tool import Tool
-from .mappings.group.group_types.course_of_action import CourseOfAction
 from .mappings.group.group_types.adversary import Adversary
+from .mappings.group.group_types.attack_pattern import AttackPattern
 from .mappings.group.group_types.campaign import Campaign
+from .mappings.group.group_types.course_of_action import CourseOfAction
 from .mappings.group.group_types.document import Document
 from .mappings.group.group_types.email import Email
 from .mappings.group.group_types.event import Event
 from .mappings.group.group_types.incident import Incident
 from .mappings.group.group_types.intrusion_set import IntrusionSet
+from .mappings.group.group_types.malware import Malware
 from .mappings.group.group_types.report import Report
 from .mappings.group.group_types.signature import Signature
+from .mappings.group.group_types.tactic import Tactic
 from .mappings.group.group_types.threat import Threat
+from .mappings.group.group_types.tool import Tool
+from .mappings.group.group_types.vulnerability import Vulnerability
 from .mappings.indicator.indicator import Indicator, custom_indicator_class_factory
 from .mappings.indicator.indicator_types.address import Address
 from .mappings.indicator.indicator_types.email_address import EmailAddress

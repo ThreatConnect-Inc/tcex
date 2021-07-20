@@ -11,7 +11,7 @@ class Report(Group):
         publish_date (str, kwargs): The publish datetime expression for this Group.
     """
 
-    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
+    def __init__(self, ti: 'ThreatIntelligence', **kwargs):
         """Initialize Class Properties."""
 
         super().__init__(ti, sub_type='Report', api_entity='report', api_branch='reports', **kwargs)

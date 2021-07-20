@@ -24,7 +24,7 @@ class Signature(Group):
         file_text (str, kwargs): The signature content for this Group.
     """
 
-    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
+    def __init__(self, ti: 'ThreatIntelligence', **kwargs):
         """Initialize Class Properties."""
         super().__init__(
             ti, sub_type='Signature', api_entity='signature', api_branch='signatures', **kwargs

@@ -11,7 +11,7 @@ class Campaign(Group):
         first_seen (str, kwargs): The first seen datetime expression for this Group.
     """
 
-    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
+    def __init__(self, ti: 'ThreatIntelligence', **kwargs):
         """Initialize Class Properties."""
         super().__init__(
             ti, sub_type='Campaign', api_entity='campaign', api_branch='campaigns', **kwargs

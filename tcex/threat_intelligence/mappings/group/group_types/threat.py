@@ -5,7 +5,7 @@ from ..group import Group
 class Threat(Group):
     """Unique API calls for Threat API Endpoints"""
 
-    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
+    def __init__(self, ti: 'ThreatIntelligence', **kwargs):
         """Initialize Class Properties.
 
         Args:

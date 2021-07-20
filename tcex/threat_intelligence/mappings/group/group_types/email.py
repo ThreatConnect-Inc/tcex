@@ -15,6 +15,6 @@ class Email(Group):
         to (str, kwargs): The **to** address for this Email.
     """
 
-    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
+    def __init__(self, ti: 'ThreatIntelligence', **kwargs):
         """Initialize Class properties."""
         super().__init__(ti, sub_type='Email', api_entity='email', api_branch='emails', **kwargs)

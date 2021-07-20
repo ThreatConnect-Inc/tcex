@@ -22,7 +22,7 @@ class Incident(Group):
         status (str, kwargs): The status for this Group.
     """
 
-    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
+    def __init__(self, ti: 'ThreatIntelligence', **kwargs):
         """Initialize Class Properties."""
         super().__init__(
             ti, sub_type='Incident', api_entity='incident', api_branch='incidents', **kwargs

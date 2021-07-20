@@ -10,7 +10,7 @@ class IntrusionSet(Group):
         owner (str, kwargs): The name for this Group. Default to default Org when not provided
     """
 
-    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
+    def __init__(self, ti: 'ThreatIntelligence', **kwargs):
         """Initialize Class Properties."""
         super().__init__(
             ti,
