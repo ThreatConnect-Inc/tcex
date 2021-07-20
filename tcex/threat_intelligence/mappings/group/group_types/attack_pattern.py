@@ -1,6 +1,4 @@
 """ThreatConnect TI Email"""
-from tcex import ThreatIntelligence
-
 from ..group import Group
 
 
