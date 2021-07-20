@@ -14,6 +14,12 @@ from tcex.utils import Utils
 
 from .mappings.filters import Filters
 from .mappings.group.group import Group
+from .mappings.group.group_types.attack_pattern import AttackPattern
+from .mappings.group.group_types.malware import Malware
+from .mappings.group.group_types.vulnerability import Vulnerability
+from .mappings.group.group_types.tactic import Tactic
+from .mappings.group.group_types.tool import Tool
+from .mappings.group.group_types.course_of_action import CourseOfAction
 from .mappings.group.group_types.adversary import Adversary
 from .mappings.group.group_types.campaign import Campaign
 from .mappings.group.group_types.document import Document
@@ -84,6 +90,12 @@ class ThreatIntelligence:
             'Report',
             'Threat',
             'Task',
+            'Attack Pattern',
+            'Malware',
+            'Vulnerability',
+            'Tactic',
+            'Tool',
+            'Course of Action',
         ]
 
     @property
@@ -101,6 +113,12 @@ class ThreatIntelligence:
             'Signature': {'apiBranch': 'signatures', 'apiEntity': 'signature'},
             'Threat': {'apiBranch': 'threats', 'apiEntity': 'threat'},
             'Task': {'apiBranch': 'tasks', 'apiEntity': 'task'},
+            'Attack Pattern': {'apiBranch': 'attackpatterns', 'apiEntity': 'attackPattern'},
+            'Malware': {'apiBranch': 'malware', 'apiEntity': 'malware'},
+            'Vulnerability': {'apiBranch': 'vulnerabilities', 'apiEntity': 'vulnerability'},
+            'Tactic': {'apiBranch': 'tactics', 'apiEntity': 'tactic'},
+            'Tool': {'apiBranch': 'tools', 'apiEntity': 'tool'},
+            'Course of Action': {'apiBranch': 'coursesofaction', 'apiEntity': 'courseofAction'},
         }
 
     @property
@@ -293,6 +311,12 @@ class ThreatIntelligence:
             'report': Report,
             'signature': Signature,
             'threat': Threat,
+            'attack pattern': AttackPattern,
+            'malware': Malware,
+            'vulnerability': Vulnerability,
+            'tactic': Tactic,
+            'tool': Tool,
+            'course of action': CourseOfAction,
         }
 
         # if "name" is not in kwargs
@@ -309,6 +333,78 @@ class ThreatIntelligence:
         # return correct group object
         group_object = group_type_map.get(group_type)
         return group_object(self, **kwargs)
+
+    def attack_pattern(self, **kwargs):
+        """Create the Attack Pattern TI object.
+
+        Args:
+            name (str, kwargs): [Required for Create] The name for this Group.
+            owner (str, kwargs): The name for this Group. Default to default Org when not provided
+
+        Return:
+            ti.AttackPattern: An instance of AttackPattern.
+        """
+        return AttackPattern(self, **kwargs)
+
+    def malware(self, **kwargs):
+        """Create the Malware TI object.
+
+        Args:
+            name (str, kwargs): [Required for Create] The name for this Group.
+            owner (str, kwargs): The name for this Group. Default to default Org when not provided
+
+        Return:
+            ti.Malware: An instance of Malware.
+        """
+        return Malware(self, **kwargs)
+
+    def vulnerability(self, **kwargs):
+        """Create the Vulnerability TI object.
+
+        Args:
+            name (str, kwargs): [Required for Create] The name for this Group.
+            owner (str, kwargs): The name for this Group. Default to default Org when not provided
+
+        Return:
+            ti.Vulnerability: An instance of Vulnerability.
+        """
+        return Vulnerability(self, **kwargs)
+
+    def tactic(self, **kwargs):
+        """Create the Tactic TI object.
+
+        Args:
+            name (str, kwargs): [Required for Create] The name for this Group.
+            owner (str, kwargs): The name for this Group. Default to default Org when not provided
+
+        Return:
+            ti.Tactic: An instance of Tactic.
+        """
+        return Tactic(self, **kwargs)
+
+    def tool(self, **kwargs):
+        """Create the Tool TI object.
+
+        Args:
+            name (str, kwargs): [Required for Create] The name for this Group.
+            owner (str, kwargs): The name for this Group. Default to default Org when not provided
+
+        Return:
+            ti.Tool: An instance of Tool.
+        """
+        return Tool(self, **kwargs)
+
+    def course_of_action(self, **kwargs):
+        """Create the Course of Action TI object.
+
+        Args:
+            name (str, kwargs): [Required for Create] The name for this Group.
+            owner (str, kwargs): The name for this Group. Default to default Org when not provided
+
+        Return:
+            ti.CourseOfAction: An instance of CourseOfAction.
+        """
+        return CourseOfAction(self, **kwargs)
 
     def adversary(self, **kwargs):
         """Create the Adversary TI object.
