@@ -473,6 +473,12 @@ class TcEx:
             'Report',
             'Threat',
             'Task',
+            'Attack Pattern',
+            'Malware',
+            'Vulnerability',
+            'Tactic',
+            'Tool',
+            'Course of Action',
         ]
 
     @property
@@ -490,6 +496,12 @@ class TcEx:
             'Signature': {'apiBranch': 'signatures', 'apiEntity': 'signature'},
             'Threat': {'apiBranch': 'threats', 'apiEntity': 'threat'},
             'Task': {'apiBranch': 'tasks', 'apiEntity': 'task'},
+            'Attack Pattern': {'apiBranch': 'attackpatterns', 'apiEntity': 'attackPattern'},
+            'Malware': {'apiBranch': 'malware', 'apiEntity': 'malware'},
+            'Vulnerability': {'apiBranch': 'vulnerabilities', 'apiEntity': 'vulnerability'},
+            'Tactic': {'apiBranch': 'tactics', 'apiEntity': 'tactic'},
+            'Tool': {'apiBranch': 'tools', 'apiEntity': 'tool'},
+            'Course of Action': {'apiBranch': 'coursesofaction', 'apiEntity': 'courseofAction'},
         }
 
     def get_type_from_api_entity(self, api_entity: dict) -> Optional[str]:
