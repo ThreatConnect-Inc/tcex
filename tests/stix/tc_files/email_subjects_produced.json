@@ -1,0 +1,19 @@
+[
+  {
+    "pattern_type": "stix",
+    "lang": "en",
+    "pattern_version": "2.1",
+    "type": "indicator",
+    "created": "2021-07-13T17:18:01.000Z",
+    "valid_from": "2021-07-13T17:18:01.000Z",
+    "modified": "2021-07-13T17:18:01.000Z",
+    "name": "[bnp] Email Subject",
+    "pattern": "[email-message:subject = '[bnp] Email Subject']",
+    "description": "",
+    "indicator_types": [
+      "malicious-activity"
+    ],
+    "confidence": 0,
+    "id": "indicator--d6a4674e-9077-57c0-ad5d-61b85a6ecfb1"
+  }
+]

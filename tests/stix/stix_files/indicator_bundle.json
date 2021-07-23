@@ -202,6 +202,27 @@
       "type": "indicator",
       "valid_from": "2015-05-15T09:12:16.432678Z"
     },
+        {
+      "created": "2015-05-15T09:12:16.432Z",
+      "description": "Test description.",
+      "id": "indicator--031778a4-057f-48e6-9db9-c8d72b81ccd5",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "kill_chain_phases": [
+        {
+          "kill_chain_name": "mandiant-attack-lifecycle-model",
+          "phase_name": "establish-foothold"
+        }
+      ],
+      "modified": "2015-05-15T09:12:16.432Z",
+      "name": "bnp test email subject",
+      "pattern": "[email-message:subject = 'random email subject']",
+      "pattern_type": "stix",
+      "spec_version": "2.1",
+      "type": "indicator",
+      "valid_from": "2015-05-15T09:12:16.432678Z"
+    },
     {
       "created": "2015-05-15T09:12:16.432Z",
       "description": "Test description.",

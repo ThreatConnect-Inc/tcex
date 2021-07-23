@@ -99,6 +99,7 @@ class StixModel:
                 host_stix_pattern_producer,
                 registery_key_stix_pattern_producer,
                 url_stix_pattern_producer,
+                email_subject_stix_pattern_producer
             )
 
             self._indicator_type_details = {
@@ -141,6 +142,11 @@ class StixModel:
                     'lambda': registery_key_stix_pattern_producer,
                     'api_branch': 'registryKey',
                     'fields': ['Key Name', 'Value Name', 'Value Type'],
+                },
+                'email subject': {
+                    'lambda': email_subject_stix_pattern_producer,
+                    'api_branch': 'emailSubject',
+                    'fields': ['Subject'],
                 },
             }
         return self._indicator_type_details

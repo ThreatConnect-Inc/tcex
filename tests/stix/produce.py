@@ -31,6 +31,14 @@ class TestStixProducer:
                 './tests/stix/tc_files/registry_key.json',
                 './tests/stix/tc_files/registry_key_produced.json',
             ),
+            (
+                    './tests/stix/tc_files/email_addresses.json',
+                    './tests/stix/tc_files/email_addresses_produced.json',
+            ),
+            (
+                    './tests/stix/tc_files/email_subjects.json',
+                    './tests/stix/tc_files/email_subjects_produced.json',
+            ),
         ],
     )
     def test_indicator_bundle(self, in_file_path, out_file_path, tcex):

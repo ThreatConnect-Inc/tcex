@@ -252,6 +252,7 @@ class StixIndicator(StixModel):
             'email-addr:value': 'EmailAddress',
             'domain-name:value': 'Host',
             'autonomous-system:name': 'ASN',
+            'email-message:subject': 'EmailSubject'
         }
 
         mappings = []

@@ -53,6 +53,11 @@ def host_stix_pattern_producer(data):
     return f"[domain-name:value = '{data.get('summary')}']"
 
 
+def email_subject_stix_pattern_producer(data):
+    """Convert a host from TC to a STIX pattern."""
+    return f"[email-message:subject = '{data.get('summary')}']"
+
+
 def registery_key_stix_pattern_producer(data):
     """Convert a Registry Key from TC to a STIX pattern."""
     key_name, value_name, value_type = data.get('summary').split(':')
