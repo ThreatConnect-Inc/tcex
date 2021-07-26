@@ -39,10 +39,18 @@ class Package(Bin):
     @property
     def _build_excludes(self):
         """Return a list of files and folders that should be excluded during the build process."""
-        return [
-            'tcex.json',
+        # glob files/directories
+        files = [
             self.args.outdir,
             '__pycache__',
+            '.pytest_cache',  # pytest cache directory
+            '*.iml',  # PyCharm files
+            '*.pyc',  # any pyc file
+        ]
+
+        # base directory files/directories
+        for file in [
+            'tcex.json',
             '.cache',  # local cache directory
             '.c9',  # C9 IDE
             '.coverage',  # coverage file
@@ -50,18 +58,17 @@ class Package(Bin):
             '.git',  # git directory
             '.gitmodules',  # git modules
             '.idea',  # PyCharm
-            '.pytest_cache',  # pytest cache directory
-            '*.iml',  # PyCharm files
-            '*.pyc',  # any pyc file
             '.python-version',  # pyenv
             '.vscode',  # Visual Studio Code
-            'artifacts',  # pytest in BB Pipelines
+            'artifacts',  # pytest in CI/CD
             'assets',  # pytest in BB Pipelines
             'local-*',  # log directory
             'log',  # log directory
-            'test-reports',  # pytest in BB Pipelines
+            'test-reports',  # pytest in CI/CD
             'tests',  # pytest test directory
-        ]
+        ]:
+            files.append(os.path.join(os.getcwd(), file))
+        return files
 
     def bundle(self, bundle_name):
         """Bundle multiple Job or Playbook Apps into a single zip file.
