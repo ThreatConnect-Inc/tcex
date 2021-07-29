@@ -3,6 +3,12 @@
 Release Notes
 #############
 
+2.0.23
+======
++ APP-2942 [TI] - Added support for 6 new group types (supported in TC 6.3).
++ APP-2943 [CLI] - Updated tcpackage to fix issue with erroneous excludes.
++ APP-2944 [STIX] - Added support for Email Subject indicator type in STIX module.
+
 2.0.22
 ======
 + APP-2662 [STIX] Added several STIX object mapping types in model.py.
@@ -38,13 +44,13 @@ Release Notes
 + APP-2044 - [Testing] When generating test profiles with --negative, environments will be copied from base profile and "negative" appended.
 + APP-2128 - [Playbook] Accept any iterable for array types when creating outputs.
 + APP-2129 - [Playbook] Enhance add_output() to add None values to array types when append=True.
-+ APP-2130 - Add foward-reference type hints.
++ APP-2130 - Add forward-reference type hints.
 + APP-2140 - [tcinit] Add missing file for API Service template.
 + APP-2186 - [KeyValueStore] Add parameter to disable decoding of value read by read().
 + APP-2219 - [tctest] update tctest to allow user to re-enter choice inputs if they enter a bad value.
 + APP-2228 - [tcvalidate] Add several validations for feed job apps.
 + APP-2179 - [Service] Add support for Acknowledge commands.
-+ APP-2180 - [Input] Updated resovled_args method to properly handle resolving arguments that come in as a list.
++ APP-2180 - [Input] Updated resolved_args method to properly handle resolving arguments that come in as a list.
 + APP-1940 - [Profile] Updated merge_inputs method to resolve playbook variables for permutation check.
 
 2.0.18

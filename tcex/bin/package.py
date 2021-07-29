@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """TcEx Framework Package Module."""
 # standard library
+import fnmatch
 import json
 import os
 import re
@@ -37,38 +38,47 @@ class Package(Bin):
         self.validation_data = {}
 
     @property
-    def _build_excludes(self):
+    def _build_excludes_glob(self):
         """Return a list of files and folders that should be excluded during the build process."""
         # glob files/directories
-        files = [
-            self.args.outdir,
+        return [
             '__pycache__',
             '.pytest_cache',  # pytest cache directory
             '*.iml',  # PyCharm files
             '*.pyc',  # any pyc file
         ]
 
+    @property
+    def _build_excludes_base(self):
+        """Return a list of files/folders that should be excluded in the App base directory."""
         # base directory files/directories
-        for file in [
-            'tcex.json',
+        excludes = [
+            self.args.outdir,
             '.cache',  # local cache directory
             '.c9',  # C9 IDE
             '.coverage',  # coverage file
             '.coveragerc',  # coverage configuration file file
             '.git',  # git directory
+            '.gitlab-ci.yml',  # gitlab ci file
             '.gitmodules',  # git modules
             '.idea',  # PyCharm
             '.python-version',  # pyenv
             '.vscode',  # Visual Studio Code
+            'app.yaml',  # requirements builder configuration file
             'artifacts',  # pytest in CI/CD
             'assets',  # pytest in BB Pipelines
             'local-*',  # log directory
             'log',  # log directory
+            'JIRA.html',  # documentation file
+            'JIRA.md',  # documentation file
+            'README.html',  # documentation file
+            # 'tcex.json',
             'test-reports',  # pytest in CI/CD
             'tests',  # pytest test directory
-        ]:
-            files.append(os.path.join(os.getcwd(), file))
-        return files
+        ]
+        excludes.extend(self.args.exclude)
+        excludes.extend(self.tj.package_excludes)
+        return excludes
 
     def bundle(self, bundle_name):
         """Bundle multiple Job or Playbook Apps into a single zip file.
@@ -117,6 +127,20 @@ class Package(Bin):
         )
         z.close()
 
+    def exclude_files(self, src: str, names: list):
+        """Ignore exclude files in shutil.copytree (callback)."""
+        exclude_list = self._build_excludes_glob
+        if src == os.getcwd():
+            # get excludes that are specific to the Apps base directory
+            exclude_list = self._build_excludes_base
+
+        excluded_files = []
+        for n in names:
+            for e in exclude_list:
+                if fnmatch.fnmatch(n, e):
+                    excluded_files.append(n)
+        return excluded_files
+
     def package(self):
         """Build the App package for deployment to ThreatConnect Exchange."""
         # create build directory
@@ -136,16 +160,14 @@ class Package(Bin):
         )
 
         # build exclude file/directory list
-        excludes = list(self._build_excludes)
-        excludes.extend(self.args.exclude)
-        excludes.extend(self.tj.package_excludes)
+        excludes = list(self._build_excludes_glob)
+        excludes.extend(list(self._build_excludes_base))
 
         # update package data
         self.package_data['package'].append({'action': 'Excluded Files:', 'output': excludes})
 
         # copy project directory to temp location to use as template for multiple builds
-        ignore_patterns = shutil.ignore_patterns(*excludes)
-        shutil.copytree(self.app_path, template_app_path, False, ignore_patterns)
+        shutil.copytree(self.app_path, template_app_path, False, ignore=self.exclude_files)
 
         # build list of app json files
         contents = os.listdir(self.app_path)

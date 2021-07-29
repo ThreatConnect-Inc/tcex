@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>tcex.bin.package &mdash; TcEx 2.0.20 documentation</title>
+  <title>tcex.bin.package &mdash; TcEx 2.0.23 documentation</title>
 
 
 
@@ -62,7 +62,7 @@
 
 
               <div class="version">
-                2.0.20
+                2.0.23
               </div>
 
 
@@ -187,6 +187,7 @@
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="sd">&quot;&quot;&quot;TcEx Framework Package Module.&quot;&quot;&quot;</span>
 <span class="c1"># standard library</span>
+<span class="kn">import</span> <span class="nn">fnmatch</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
@@ -223,31 +224,47 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_build_excludes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_build_excludes_glob</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a list of files and folders that should be excluded during the build process.&quot;&quot;&quot;</span>
+        <span class="c1"># glob files/directories</span>
         <span class="k">return</span> <span class="p">[</span>
-            <span class="s1">&#39;tcex.json&#39;</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">outdir</span><span class="p">,</span>
             <span class="s1">&#39;__pycache__&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;.pytest_cache&#39;</span><span class="p">,</span>  <span class="c1"># pytest cache directory</span>
+            <span class="s1">&#39;*.iml&#39;</span><span class="p">,</span>  <span class="c1"># PyCharm files</span>
+            <span class="s1">&#39;*.pyc&#39;</span><span class="p">,</span>  <span class="c1"># any pyc file</span>
+        <span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_build_excludes_base</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a list of files/folders that should be excluded in the App base directory.&quot;&quot;&quot;</span>
+        <span class="c1"># base directory files/directories</span>
+        <span class="n">excludes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">outdir</span><span class="p">,</span>
             <span class="s1">&#39;.cache&#39;</span><span class="p">,</span>  <span class="c1"># local cache directory</span>
             <span class="s1">&#39;.c9&#39;</span><span class="p">,</span>  <span class="c1"># C9 IDE</span>
             <span class="s1">&#39;.coverage&#39;</span><span class="p">,</span>  <span class="c1"># coverage file</span>
             <span class="s1">&#39;.coveragerc&#39;</span><span class="p">,</span>  <span class="c1"># coverage configuration file file</span>
             <span class="s1">&#39;.git&#39;</span><span class="p">,</span>  <span class="c1"># git directory</span>
+            <span class="s1">&#39;.gitlab-ci.yml&#39;</span><span class="p">,</span>  <span class="c1"># gitlab ci file</span>
             <span class="s1">&#39;.gitmodules&#39;</span><span class="p">,</span>  <span class="c1"># git modules</span>
             <span class="s1">&#39;.idea&#39;</span><span class="p">,</span>  <span class="c1"># PyCharm</span>
-            <span class="s1">&#39;.pytest_cache&#39;</span><span class="p">,</span>  <span class="c1"># pytest cache directory</span>
-            <span class="s1">&#39;*.iml&#39;</span><span class="p">,</span>  <span class="c1"># PyCharm files</span>
-            <span class="s1">&#39;*.pyc&#39;</span><span class="p">,</span>  <span class="c1"># any pyc file</span>
             <span class="s1">&#39;.python-version&#39;</span><span class="p">,</span>  <span class="c1"># pyenv</span>
             <span class="s1">&#39;.vscode&#39;</span><span class="p">,</span>  <span class="c1"># Visual Studio Code</span>
-            <span class="s1">&#39;artifacts&#39;</span><span class="p">,</span>  <span class="c1"># pytest in BB Pipelines</span>
+            <span class="s1">&#39;app.yaml&#39;</span><span class="p">,</span>  <span class="c1"># requirements builder configuration file</span>
+            <span class="s1">&#39;artifacts&#39;</span><span class="p">,</span>  <span class="c1"># pytest in CI/CD</span>
             <span class="s1">&#39;assets&#39;</span><span class="p">,</span>  <span class="c1"># pytest in BB Pipelines</span>
             <span class="s1">&#39;local-*&#39;</span><span class="p">,</span>  <span class="c1"># log directory</span>
             <span class="s1">&#39;log&#39;</span><span class="p">,</span>  <span class="c1"># log directory</span>
-            <span class="s1">&#39;test-reports&#39;</span><span class="p">,</span>  <span class="c1"># pytest in BB Pipelines</span>
+            <span class="s1">&#39;JIRA.html&#39;</span><span class="p">,</span>  <span class="c1"># documentation file</span>
+            <span class="s1">&#39;JIRA.md&#39;</span><span class="p">,</span>  <span class="c1"># documentation file</span>
+            <span class="s1">&#39;README.html&#39;</span><span class="p">,</span>  <span class="c1"># documentation file</span>
+            <span class="c1"># &#39;tcex.json&#39;,</span>
+            <span class="s1">&#39;test-reports&#39;</span><span class="p">,</span>  <span class="c1"># pytest in CI/CD</span>
             <span class="s1">&#39;tests&#39;</span><span class="p">,</span>  <span class="c1"># pytest test directory</span>
         <span class="p">]</span>
+        <span class="n">excludes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">exclude</span><span class="p">)</span>
+        <span class="n">excludes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tj</span><span class="o">.</span><span class="n">package_excludes</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">excludes</span>
 
 <div class="viewcode-block" id="Package.bundle"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.package.Package.bundle">[docs]</a>    <span class="k">def</span> <span class="nf">bundle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bundle_name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Bundle multiple Job or Playbook Apps into a single zip file.</span>
@@ -296,6 +313,20 @@
         <span class="p">)</span>
         <span class="n">z</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
+<div class="viewcode-block" id="Package.exclude_files"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.package.Package.exclude_files">[docs]</a>    <span class="k">def</span> <span class="nf">exclude_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">names</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Ignore exclude files in shutil.copytree (callback).&quot;&quot;&quot;</span>
+        <span class="n">exclude_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_excludes_glob</span>
+        <span class="k">if</span> <span class="n">src</span> <span class="o">==</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">():</span>
+            <span class="c1"># get excludes that are specific to the Apps base directory</span>
+            <span class="n">exclude_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_excludes_base</span>
+
+        <span class="n">excluded_files</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">exclude_list</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">fnmatch</span><span class="o">.</span><span class="n">fnmatch</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+                    <span class="n">excluded_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">excluded_files</span></div>
+
 <div class="viewcode-block" id="Package.package"><a class="viewcode-back" href="../../../tcex_docs/tcex.bin.html#tcex.bin.package.Package.package">[docs]</a>    <span class="k">def</span> <span class="nf">package</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Build the App package for deployment to ThreatConnect Exchange.&quot;&quot;&quot;</span>
         <span class="c1"># create build directory</span>
@@ -315,16 +346,14 @@
         <span class="p">)</span>
 
         <span class="c1"># build exclude file/directory list</span>
-        <span class="n">excludes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_build_excludes</span><span class="p">)</span>
-        <span class="n">excludes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">exclude</span><span class="p">)</span>
-        <span class="n">excludes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tj</span><span class="o">.</span><span class="n">package_excludes</span><span class="p">)</span>
+        <span class="n">excludes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_build_excludes_glob</span><span class="p">)</span>
+        <span class="n">excludes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_build_excludes_base</span><span class="p">))</span>
 
         <span class="c1"># update package data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">package_data</span><span class="p">[</span><span class="s1">&#39;package&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;Excluded Files:&#39;</span><span class="p">,</span> <span class="s1">&#39;output&#39;</span><span class="p">:</span> <span class="n">excludes</span><span class="p">})</span>
 
         <span class="c1"># copy project directory to temp location to use as template for multiple builds</span>
-        <span class="n">ignore_patterns</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">ignore_patterns</span><span class="p">(</span><span class="o">*</span><span class="n">excludes</span><span class="p">)</span>
-        <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">,</span> <span class="n">template_app_path</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">ignore_patterns</span><span class="p">)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">,</span> <span class="n">template_app_path</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">exclude_files</span><span class="p">)</span>
 
         <span class="c1"># build list of app json files</span>
         <span class="n">contents</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">)</span>

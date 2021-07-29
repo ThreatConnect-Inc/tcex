@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>tcex.threat_intelligence.tcex_ti_tc_request &mdash; TcEx 2.0.20 documentation</title>
+  <title>tcex.threat_intelligence.tcex_ti_tc_request &mdash; TcEx 2.0.23 documentation</title>
 
 
 
@@ -62,7 +62,7 @@
 
 
               <div class="version">
-                2.0.20
+                2.0.23
               </div>
 
 
@@ -292,7 +292,8 @@
 
 <div class="viewcode-block" id="TiTcRequest._iterate"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest._iterate">[docs]</a>    <span class="k">def</span> <span class="nf">_iterate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">api_entity</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Iterate over API pagination.&quot;&quot;&quot;</span>
-        <span class="n">params</span><span class="p">[</span><span class="s1">&#39;resultLimit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_limit</span>
+        <span class="n">safe_params</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">safe_params</span><span class="p">[</span><span class="s1">&#39;resultLimit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_limit</span>
 
         <span class="n">should_iterate</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">result_start</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;resultStart&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
@@ -302,8 +303,8 @@
             <span class="n">result_start</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Invalid ResultStart Param. Starting at 0&#39;</span><span class="p">)</span>
         <span class="k">while</span> <span class="n">should_iterate</span><span class="p">:</span>
-            <span class="n">params</span><span class="p">[</span><span class="s1">&#39;resultStart&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result_start</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+            <span class="n">safe_params</span><span class="p">[</span><span class="s1">&#39;resultStart&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result_start</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">safe_params</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
                 <span class="n">err</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="ow">or</span> <span class="n">r</span><span class="o">.</span><span class="n">reason</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="mi">950</span><span class="p">,</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">url</span><span class="p">])</span>

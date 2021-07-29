@@ -98,4 +98,3 @@ class TestAttackPatternGroups(TestThreatIntelligence):
     def tests_ti_attack_pattern_update(self, request):
         """Test updating group metadata."""
         super().group_update(request)
-
