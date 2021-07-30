@@ -486,22 +486,22 @@ class TcEx:
         """Return supported ThreatConnect Group types."""
         return {
             'Adversary': {'apiBranch': 'adversaries', 'apiEntity': 'adversary'},
+            'Attack Pattern': {'apiBranch': 'attackPatterns', 'apiEntity': 'attackPattern'},
             'Campaign': {'apiBranch': 'campaigns', 'apiEntity': 'campaign'},
+            'Course of Action': {'apiBranch': 'coursesOfAction', 'apiEntity': 'courseOfAction'},
             'Document': {'apiBranch': 'documents', 'apiEntity': 'document'},
             'Email': {'apiBranch': 'emails', 'apiEntity': 'email'},
             'Event': {'apiBranch': 'events', 'apiEntity': 'event'},
             'Incident': {'apiBranch': 'incidents', 'apiEntity': 'incident'},
             'Intrusion Set': {'apiBranch': 'intrusionSets', 'apiEntity': 'intrusionSet'},
+            'Malware': {'apiBranch': 'malware', 'apiEntity': 'malware'},
             'Report': {'apiBranch': 'reports', 'apiEntity': 'report'},
             'Signature': {'apiBranch': 'signatures', 'apiEntity': 'signature'},
-            'Threat': {'apiBranch': 'threats', 'apiEntity': 'threat'},
-            'Task': {'apiBranch': 'tasks', 'apiEntity': 'task'},
-            'Attack Pattern': {'apiBranch': 'attackpatterns', 'apiEntity': 'attackPattern'},
-            'Malware': {'apiBranch': 'malware', 'apiEntity': 'malware'},
-            'Vulnerability': {'apiBranch': 'vulnerabilities', 'apiEntity': 'vulnerability'},
             'Tactic': {'apiBranch': 'tactics', 'apiEntity': 'tactic'},
+            'Task': {'apiBranch': 'tasks', 'apiEntity': 'task'},
+            'Threat': {'apiBranch': 'threats', 'apiEntity': 'threat'},
             'Tool': {'apiBranch': 'tools', 'apiEntity': 'tool'},
-            'Course of Action': {'apiBranch': 'coursesofaction', 'apiEntity': 'courseofAction'},
+            'Vulnerability': {'apiBranch': 'vulnerabilities', 'apiEntity': 'vulnerability'},
         }
 
     def get_type_from_api_entity(self, api_entity: dict) -> Optional[str]:

@@ -15,7 +15,7 @@ class CourseOfAction(Group):
         super().__init__(
             ti,
             sub_type='Course of Action',
-            api_entity='courseofAction',
-            api_branch='coursesofaction',
+            api_entity='courseOfAction',
+            api_branch='coursesOfAction',
             **kwargs
         )
