@@ -8,6 +8,7 @@ Release Notes
 + APP-2942 [TI] - Added support for 6 new group types (supported in TC 6.3).
 + APP-2943 [CLI] - Updated tcpackage to fix issue with erroneous excludes.
 + APP-2944 [STIX] - Added support for Email Subject indicator type in STIX module.
++ APP-2958 [CLI] - Updated the tcvalidate command to support the new EditChoice input type (supported in TC 6.3).
 
 2.0.22
 ======
