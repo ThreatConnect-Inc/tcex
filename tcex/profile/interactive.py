@@ -387,7 +387,7 @@ class Interactive:
         # convert to int or recollect input
         try:
             input_value = int(input_value)
-            is_between = input_value <= len(valid_values) <= 0
+            is_between = 0 <= input_value <= (len(valid_values) - 1)
             if not is_between:
                 self.print_invalid_index(f'0-{len(valid_values)}')
                 return self.collect_editchoice(**kwargs)
