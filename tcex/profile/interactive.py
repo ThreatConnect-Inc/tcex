@@ -145,15 +145,21 @@ class Interactive:
             valid_values.extend(
                 [
                     'Adversary',
+                    'Attack Pattern',
                     'Campaign',
+                    'Course of Action',
                     'Document',
                     'Email',
                     'Event',
                     'Incident',
                     'Intrusion Set',
+                    'Malware',
                     'Signature',
+                    'Tactic',
                     'Task',
                     'Threat',
+                    'Tool',
+                    'Vulnerability',
                 ]
             )
         elif '${INDICATOR_TYPES}' in valid_values:
