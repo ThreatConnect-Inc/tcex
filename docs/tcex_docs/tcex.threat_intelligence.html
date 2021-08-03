@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Threat Intelligence Module &mdash; TcEx 2.0.20 documentation</title>
+  <title>Threat Intelligence Module &mdash; TcEx 2.0.23 documentation</title>
 
 
 
@@ -64,7 +64,7 @@
 
 
               <div class="version">
-                2.0.20
+                2.0.23
               </div>
 
 
@@ -318,6 +318,26 @@ modified.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt id="tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.attack_pattern">
+<code class="sig-name descname"><span class="pre">attack_pattern</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/threat_intelligence.html#ThreatIntelligence.attack_pattern"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.attack_pattern" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the Attack Pattern TI object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Required for Create] The name for this Group.</p></li>
+<li><p><strong>owner</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The name for this Group. Default to default Org when not provided</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of AttackPattern.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ti.AttackPattern</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.campaign">
 <code class="sig-name descname"><span class="pre">campaign</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/threat_intelligence.html#ThreatIntelligence.campaign"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.campaign" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the Campaign TI object.</p>
@@ -334,6 +354,26 @@ modified.</p></li>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>ti.Campaign</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.course_of_action">
+<code class="sig-name descname"><span class="pre">course_of_action</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/threat_intelligence.html#ThreatIntelligence.course_of_action"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.course_of_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the Course of Action TI object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Required for Create] The name for this Group.</p></li>
+<li><p><strong>owner</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The name for this Group. Default to default Org when not provided</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of CourseOfAction.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ti.CourseOfAction</p>
 </dd>
 </dl>
 </dd></dl>
@@ -650,6 +690,26 @@ modified.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt id="tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.malware">
+<code class="sig-name descname"><span class="pre">malware</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/threat_intelligence.html#ThreatIntelligence.malware"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.malware" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the Malware TI object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Required for Create] The name for this Group.</p></li>
+<li><p><strong>owner</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The name for this Group. Default to default Org when not provided</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of Malware.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ti.Malware</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.owner">
 <code class="sig-name descname"><span class="pre">owner</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/threat_intelligence.html#ThreatIntelligence.owner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.owner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the Owner object.</p>
@@ -690,6 +750,26 @@ modified.</p></li>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>obj</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.tactic">
+<code class="sig-name descname"><span class="pre">tactic</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/threat_intelligence.html#ThreatIntelligence.tactic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.tactic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the Tactic TI object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Required for Create] The name for this Group.</p></li>
+<li><p><strong>owner</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The name for this Group. Default to default Org when not provided</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of Tactic.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ti.Tactic</p>
 </dd>
 </dl>
 </dd></dl>
@@ -740,6 +820,26 @@ modified.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt id="tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.tool">
+<code class="sig-name descname"><span class="pre">tool</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/threat_intelligence.html#ThreatIntelligence.tool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.tool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the Tool TI object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Required for Create] The name for this Group.</p></li>
+<li><p><strong>owner</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The name for this Group. Default to default Org when not provided</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of Tool.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ti.Tool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.url">
 <code class="sig-name descname"><span class="pre">url</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/threat_intelligence.html#ThreatIntelligence.url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.url" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the URL TI object.</p>
@@ -770,6 +870,26 @@ modified.</p></li>
 <li><p><strong>name</strong> – </p></li>
 <li><p><strong>**kwargs</strong> – </p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.vulnerability">
+<code class="sig-name descname"><span class="pre">vulnerability</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/threat_intelligence/threat_intelligence.html#ThreatIntelligence.vulnerability"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.threat_intelligence.threat_intelligence.ThreatIntelligence.vulnerability" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the Vulnerability TI object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>kwargs</em>) – [Required for Create] The name for this Group.</p></li>
+<li><p><strong>owner</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The name for this Group. Default to default Org when not provided</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of Vulnerability.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ti.Vulnerability</p>
 </dd>
 </dl>
 </dd></dl>

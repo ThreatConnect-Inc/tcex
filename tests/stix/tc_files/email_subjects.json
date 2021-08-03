@@ -1,15 +1,15 @@
 {
-    "data": {
-        "emailSubject": [
-            {
-                "id": 12582,
-                "ownerName": "TCI",
-                "type": "Email Subject",
-                "dateAdded": "2021-07-13T17:18:01Z",
-                "lastModified": "2021-07-13T17:18:01Z",
-                "webLink": "https://int-tc-60.tci.ninja/auth/indicators/details/customIndicator.xhtml?id=12582&owner=TCI",
-                "Subject": "[bnp] Email Subject"
-            }
-        ]
-    }
+  "data": {
+    "emailSubject": [
+      {
+        "Subject": "[bnp] Email Subject",
+        "dateAdded": "2021-07-13T17:18:01Z",
+        "id": 12582,
+        "lastModified": "2021-07-13T17:18:01Z",
+        "ownerName": "TCI",
+        "type": "Email Subject",
+        "webLink": "https://int-tc-60.tci.ninja/auth/indicators/details/customIndicator.xhtml?id=12582&owner=TCI"
+      }
+    ]
+  }
 }
