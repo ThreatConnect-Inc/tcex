@@ -53,6 +53,7 @@ class Interactive:
             'keyvaluelist': self.present_key_value_list,
             'multichoice': self.present_multichoice,
             'string': self.present_string,
+            'editchoice': self.present_editchoice,
         }
         # self.user_defaults_filename = os.path.join('tests', '.user_defaults')
 
@@ -351,6 +352,56 @@ class Interactive:
 
         # print user feedback
         self.print_feedback(input_value)
+
+        return input_value
+
+    def collect_editchoice(self, **kwargs) -> str:
+        """Collect edit choice data
+
+        Args:
+            default (str, kwargs): The default value if no value provided by user.
+            option_text (str, kwargs): The text shown to the user.
+            required (str, kwargs): If True the user cannot continue until they provide a value.
+            valid_values (str, kwargs): A list of valid values
+
+        Returns:
+            str: The users selected choice.
+        """
+        # collect input value from user and set default if required
+        input_value: str = self._input_value('EditChoice', kwargs.get('option_text')) or kwargs.get(
+            'default'
+        )
+
+        # ensure input value is provided when input is required
+        if input_value is None and kwargs.get('required') is True:
+            self.print_required()
+            return self.collect_editchoice(**kwargs)
+
+        # if input value is None then there is not need to continue
+        if input_value is None:
+            return input_value
+
+        # set valid values
+        valid_values: list = kwargs.get('valid_values', [])
+
+        # convert to int or recollect input
+        try:
+            input_value = int(input_value)
+            is_between = input_value <= len(valid_values) <= 0
+            if not is_between:
+                self.print_invalid_index(f'0-{len(valid_values)}')
+                return self.collect_editchoice(**kwargs)
+            input_value = valid_values[input_value]
+            if input_value == self._no_selection_text:
+                # special case for when user select no selection
+                input_value = None
+
+        except ValueError:
+            self.print_feedback(f'Using custom input {input_value}.')
+
+        # print user feedback
+        if kwargs.get('feedback', True):
+            self.print_feedback(input_value)
 
         return input_value
 
@@ -737,6 +788,68 @@ class Interactive:
         option_text = f'''({'/'.join(options)})'''
 
         value = self.collect_boolean(default=option_default, option_text=option_text)
+
+        # add input
+        self.add_input(name, data, value)
+
+        return value
+
+    def present_editchoice(self, name: str, data: dict) -> str:
+        """Build a question for editchoice input.
+
+        Args:
+            name: The name of the input field.
+            data: The install.json input param object.
+
+        Returns:
+            str: The user provided input.
+        """
+        # print header information
+        self.print_header(data)
+
+        default = self._default(data)
+        option_index = 0
+        valid_values = self._expand_valid_values(data.get('validValues', []))
+        if data.get('required', False) is False:
+            # add option to invalidate defaults
+            valid_values.insert(0, self._no_selection_text)
+
+        # default value needs to be converted to index
+        if default:
+            try:
+                option_index = valid_values.index(default)
+            except ValueError:
+                # if "magic" variable (e.g., ${GROUP_TYPES}) was not expanded then use index 0.
+                # there is no way to tell if the default value is be part of the expansion.
+                if any(re.match(r'^\${.*}$', v) for v in valid_values):
+                    option_index = 0
+                else:
+                    print(
+                        f'''{c.Fore.RED}Invalid value of ({default}) for {data.get('name')}, '''
+                        'check that default value and validValues match in install.json.'
+                    )
+                    sys.exit()
+        option_text = f'[{option_index}]'
+
+        # build options list to display to the user in two columns
+        options = []
+        for i, v in enumerate(valid_values):
+            options.append(f'{i}. {v}')
+
+        # display options list into two columns
+        left, right = self._split_list(options)
+        for i, _ in enumerate(left):
+            ld = left[i]
+            try:
+                rd = right[i]
+            except IndexError:
+                rd = ''
+            print(f'{ld:40} {rd:40}')
+
+        # collect user input
+        value = self.collect_editchoice(
+            default=option_index, option_text=option_text, valid_values=valid_values
+        )
 
         # add input
         self.add_input(name, data, value)
