@@ -154,6 +154,7 @@ class Interactive:
                     'Incident',
                     'Intrusion Set',
                     'Malware',
+                    'Report'
                     'Signature',
                     'Tactic',
                     'Task',
