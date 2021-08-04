@@ -1070,6 +1070,7 @@ class TiTcRequest:
             url = f'/v2/tags/{tag_name}/{api_type}/{sub_type}'
         else:
             url = f'/v2/tags/{tag_name}/{api_type}/'
+        print(url)
         return self._iterate(url, params, api_entity)
 
     def groups_from_tag(self, group, tag_name, filters=None, owner=None, params=None):

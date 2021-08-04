@@ -73,6 +73,9 @@ class PlaybooksBase:
 
             if validate and not isinstance(value, str):
                 raise RuntimeError('Invalid data provided for String.')
+        elif variable_type == 'TCBatch':
+            if validate and (not isinstance(value, dict) or not self._is_tc_batch(value)):
+                raise RuntimeError('Invalid data provided for TcBatch.')
         elif variable_type == 'TCEntity':
             if validate and (not isinstance(value, dict) or not self._is_tc_entity(value)):
                 raise RuntimeError('Invalid data provided for TcEntity.')
@@ -170,6 +173,13 @@ class PlaybooksBase:
             if not self._is_key_value(d):
                 return False
         return True
+
+    @staticmethod
+    def _is_tc_batch(data):
+        """Return True if provided data has proper structure for TC Batch."""
+        if data is None:
+            return False
+        return all(x in data for x in ['indicators', 'groups'])
 
     @staticmethod
     def _is_tc_entity(data):
@@ -426,6 +436,7 @@ class PlaybooksBase:
             'Binary',
             'KeyValue',
             'String',
+            'TCBatch',
             'TCEntity',
             'TCEnhancedEntity',
         ]
