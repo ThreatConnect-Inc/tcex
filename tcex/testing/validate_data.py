@@ -503,7 +503,9 @@ class Validator:
         except ValueError:
             return False, f'Invalid JSON data provide ({test_data}).'
 
-        exclude = kwargs.pop('exclude', [])
+        exclude = []
+        if 'exclude' in kwargs:
+            exclude = kwargs.pop('exclude')
         if isinstance(app_data, list) and isinstance(test_data, list):
             app_data = [self.operator_json_eq_exclude(ad, exclude) for ad in app_data]
             test_data = [self.operator_json_eq_exclude(td, exclude) for td in test_data]
@@ -737,7 +739,8 @@ class Validator:
 
         path_0 = paths[0]
         if len(paths) == 1:
-            dict_1.pop(path_0, None)
+            if path_0 in dict_1:
+                dict_1.pop(path_0)
             return dict_1
         self.remove_excludes(dict_1.get(path_0, {}), paths[1:])
         return dict_1
