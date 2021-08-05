@@ -5,6 +5,7 @@ import json
 import re
 from collections import OrderedDict
 from collections.abc import Iterable
+import json
 
 
 class PlaybooksBase:
@@ -74,7 +75,7 @@ class PlaybooksBase:
             if validate and not isinstance(value, str):
                 raise RuntimeError('Invalid data provided for String.')
         elif variable_type == 'TCBatch':
-            if validate and (not isinstance(value, dict) or not self._is_tc_batch(value)):
+            if validate and (not isinstance(value, str) or not self._is_tc_batch(value)):
                 raise RuntimeError('Invalid data provided for TcBatch.')
         elif variable_type == 'TCEntity':
             if validate and (not isinstance(value, dict) or not self._is_tc_entity(value)):
@@ -177,9 +178,11 @@ class PlaybooksBase:
     @staticmethod
     def _is_tc_batch(data):
         """Return True if provided data has proper structure for TC Batch."""
-        if data is None:
+        try:
+            json_ = json.loads(data)
+            return all(x in json_ for x in ['indicators', 'groups'])
+        except:
             return False
-        return all(x in data for x in ['indicators', 'groups'])
 
     @staticmethod
     def _is_tc_entity(data):

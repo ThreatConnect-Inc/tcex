@@ -938,7 +938,7 @@ class Redis:
             app_data = self.provider.tcex.playbook.read_binary(variable, False, False)
         elif variable.endswith('BinaryArray'):
             app_data = self.provider.tcex.playbook.read_binary_array(variable, False, False)
-        elif variable.endswith('TCEnhancedEntity') or variable.endswith('TCEntity'):
+        elif variable.endswith('TCEnhancedEntity') or variable.endswith('TCEntity') or variable.endswith('TCBatch'):
             app_data = self.provider.tcex.playbook.read(variable)
             try:
                 app_data = json.loads(app_data)
