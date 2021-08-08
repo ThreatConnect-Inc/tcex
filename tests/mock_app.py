@@ -2,7 +2,6 @@
 # standard library
 import json
 import os
-import sys
 import uuid
 from typing import Dict, Optional, Union
 
@@ -29,16 +28,14 @@ class MockApp:
 
     Args:
         runtime_level: The runtime level of the Mock App.
-        clear_argv (bool, kwargs): [description]. Defaults to True.
-        config_data (dict, kwargs): [description].
-        ij_data (dict, kwargs): [description].
+        config_data (dict, kwargs): Additional App inputs.
+        ij_data (dict, kwargs): Additional install.json data.
     """
 
     def __init__(self, runtime_level: str, **kwargs) -> None:
         """Initialize class properties."""
         self.runtime_level = runtime_level
         self.cd: dict = kwargs.get('config_data', {})  # configuration data for tcex instance
-        self.clear_argv: bool = kwargs.get('clear_argv', True)  # clear sys.argv
         self.ijd: dict = kwargs.get('ij_data', {})  # install.json data
 
         # properties
@@ -48,8 +45,10 @@ class MockApp:
         self.tc_token_svc_id = os.getenv('TC_TOKEN_SVC_ID')
         self.utils = Utils()
 
-        # create install.json file
-        self.mock_install_json()
+        # External Apps don't require an install.json file
+        if self.runtime_level.lower() != 'external':
+            # create install.json file
+            self.mock_install_json()
 
     @property
     def _config_api(self) -> Dict[str, str]:
@@ -58,8 +57,8 @@ class MockApp:
             'tc_token': self.api_token,
             'tc_token_expires': '1700000000',
             # hmac auth (for session tests)
-            'api_access_id': self.getenv('api_access_id'),
-            'api_secret_key': self.getenv('api_secret_key'),
+            'tc_api_access_id': self.getenv('tc_api_access_id'),
+            'tc_api_secret_key': self.getenv('tc_api_secret_key'),
         }
 
     @property
@@ -100,8 +99,8 @@ class MockApp:
             'tc_playbook_kvstore_context': self.getenv(
                 'tc_playbook_kvstore_context', str(uuid.uuid4())
             ),
-            'tc_kvstore_host': self.getenv('tc_playbook_db_path', 'localhost'),
-            'tc_kvstore_port': self.getenv('tc_playbook_db_port', 6379),
+            'tc_kvstore_host': self.getenv('tc_kvstore_host', 'localhost'),
+            'tc_kvstore_port': self.getenv('tc_kvstore_port', 6379),
             'tc_kvstore_type': self.getenv('tc_kvstore_type', 'Redis'),
             'tc_playbook_kvstore_id': self.getenv('tc_playbook_kvstore_id', 0),
         }
@@ -244,35 +243,9 @@ class MockApp:
             )
         return r.json().get('data')
 
-    def getenv(
-        self, key: str, default: Optional[str] = None, boolean: Optional[bool] = False
-    ) -> Union[bool, str]:
-        """Get the appropriate **config value**.
-
-        Use config_data value provided to Class,
-        else use environment variable data,
-        else use default value
-
-        Args:
-            key: The key value.
-            default: The default value to return if not found.
-            boolean: If true return the result as a bool.
-
-        Returns:
-            bool|str: The value found in config date, env var, or default.
-        """
-        cv = os.getenv(key.upper(), default)
-        if hasattr(self.cd, key):
-            # check if it exist so None can be set
-            cv = self.cd.pop(key)
-
-        if boolean:
-            # convert string response to boolean
-            cv = str(cv).lower() in ['true']
-        return cv
-
-    def mock_file_params(self) -> dict:
-        """Return the configuration data for that App or write to app_param."""
+    @property
+    def config_data(self) -> dict:
+        """Return the complete input config for Mock App."""
         # add common config items
         _config = self._config_common
 
@@ -310,8 +283,39 @@ class MockApp:
         for k, v in self.cd.items():
             _config[k] = v
 
+        return _config
+
+    def getenv(
+        self, key: str, default: Optional[str] = None, boolean: Optional[bool] = False
+    ) -> Union[bool, str]:
+        """Get the appropriate **config value**.
+
+        Use config_data value provided to Class,
+        else use environment variable data,
+        else use default value
+
+        Args:
+            key: The key value.
+            default: The default value to return if not found.
+            boolean: If true return the result as a bool.
+
+        Returns:
+            bool|str: The value found in config date, env var, or default.
+        """
+        cv = os.getenv(key.upper(), default)
+        if hasattr(self.cd, key):
+            # check if it exist so None can be set
+            cv = self.cd.pop(key)
+
+        if boolean:
+            # convert string response to boolean
+            cv = str(cv).lower() in ['true']
+        return cv
+
+    def mock_file_params(self) -> dict:
+        """Return the configuration data for that App or write to app_param."""
         # create encrypted file (fileParam feature)
-        self._write_file_params_encrypted_file(_config)
+        self._write_file_params_encrypted_file(self.config_data)
 
     def mock_install_json(self) -> dict:
         """Return install.json data for mocked App."""
@@ -346,16 +350,12 @@ class MockApp:
     def session(self) -> Session:
         """Return Session configured for TC API."""
         _session = Session()
-        _session.auth = HmacAuth(os.getenv('API_ACCESS_ID'), os.getenv('API_SECRET_KEY'))
+        _session.auth = HmacAuth(os.getenv('TC_API_ACCESS_ID'), os.getenv('TC_API_SECRET_KEY'))
         return _session
 
     @property
     def tcex(self) -> TcEx:
         """Return an instance of tcex."""
-        # clear sys.argv to avoid invalid arguments
-        if self.clear_argv:
-            sys.argv = sys.argv[:1]
-
         # write file params and initialize new tcex instance
         self.mock_file_params()
         tcex = TcEx()

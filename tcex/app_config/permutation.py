@@ -125,7 +125,12 @@ class Permutation:
         return None
 
     def db_create_table(self, table_name: str, columns: List[str]) -> None:
-        """Create a temporary DB table."""
+        """Create a temporary DB table.
+
+        Args:
+            table_name: The DB table name.
+            columns: The DB column names.
+        """
         columns = ', '.join([f'''"{c.strip('"').strip("'")}" text''' for c in set(columns)])
         sql = f'CREATE TABLE IF NOT EXISTS {table_name} ({columns});'
         try:
@@ -135,7 +140,11 @@ class Permutation:
             self.handle_error(f'SQL create db failed - SQL: "{sql}", Error: "{e}"')
 
     def db_drop_table(self, table_name: str) -> None:
-        """Drop a DB table."""
+        """Drop a DB table.
+
+        Args:
+            table_name: The DB table name.
+        """
         sql = f'DROP TABLE IF EXISTS {table_name};'
         try:
             cr = self.db_conn.cursor()
@@ -148,6 +157,10 @@ class Permutation:
 
         A single row will all values as None so that values can be updated one at a
         time during parsing. The row and values will be used to determine permutations.
+
+        Args:
+            table_name: The DB table name.
+            columns: The DB column names.
         """
         bindings = ', '.join(['?'] * len(columns))
         columns_string = ', '.join([f'''"{c.strip('"').strip("'")}"''' for c in set(columns)])
@@ -160,7 +173,13 @@ class Permutation:
             self.handle_error(f'SQL insert failed - SQL: "{sql}", Error: "{e}"')
 
     def db_update_record(self, table_name: str, column: str, value: str) -> None:
-        """Update a single column in the row-column create in db_insert_record."""
+        """Update a single column in the row-column create in db_insert_record.
+
+        Args:
+            table_name: The DB table name.
+            column: The DB column names.
+            value: The DB values to store (row data).
+        """
         # escape any single quotes in value
         if isinstance(value, str):
             value = value.replace('\'', '\\')
@@ -229,7 +248,11 @@ class Permutation:
 
     @property
     def input_names(self) -> List[list]:
-        """Return all input permutation names for current App."""
+        """Return all input permutation names for current App.
+
+        Returns:
+            list: List of Lists of input names.
+        """
         if self._input_names is None and self.lj.has_layout:
             self._input_names = []
             for permutation in self.input_permutations:
@@ -242,6 +265,9 @@ class Permutation:
 
         self._input_permutations is an array of permutations arrays.
         [[<perm obj #1], [<perm obj #2]]
+
+        Returns:
+            list: List of Lists of valid input permutations.
         """
         if self._input_permutations is None and self.lj.has_layout:
             self.init_permutations()
@@ -249,7 +275,11 @@ class Permutation:
 
     @property
     def output_permutations(self) -> List[List[dict]]:
-        """Return all output permutations for current App."""
+        """Return all output permutations for current App.
+
+        Returns:
+            list: List of Lists of valid outputs permutations.
+        """
         if self._output_permutations is None:
             self.init_permutations()
         return self._output_permutations
@@ -259,6 +289,9 @@ class Permutation:
 
         Args:
             inputs: The args/inputs dict.
+
+        Returns:
+            list: List of Lists of valid outputs objects.
         """
         table = f'temp_{random.randint(100,999)}'  # nosec
         self.db_create_table(table, self.ij.data.param_names)
@@ -356,8 +389,8 @@ class Permutation:
         """Check to see if the display condition passes.
 
         Args:
-            table (str): The name of the DB table which hold the App data.
-            display_condition (str): The "where" clause of the DB SQL statement.
+            table: The name of the DB table which hold the App data.
+            display_condition: The "where" clause of the DB SQL statement.
 
         Returns:
             bool: True if the row count is greater than 0.

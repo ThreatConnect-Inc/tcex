@@ -36,7 +36,7 @@ Release Notes
 + APP-2219 - [tctest] update tctest to allow user to re-enter choice inputs if they enter a bad value.
 + APP-2228 - [tcvalidate] Add several validations for feed job apps.
 + APP-2179 - [Service] Add support for Acknowledge commands.
-+ APP-2180 - [Input] Updated resovled_args method to properly handle resolving arguments that come in as a list.
++ APP-2180 - [Input] Updated resolved_args method to properly handle resolving arguments that come in as a list.
 + APP-1940 - [Profile] Updated merge_inputs method to resolve playbook variables for permutation check.
 
 2.0.18
@@ -86,7 +86,7 @@ Release Notes
 + APP-1262 - [App Feature] Update advanced_request module to take output_prefix as an arg.
 + APP-1263 - [Session] Update session module to only log curl command when request receives an invalid response or enabled globally.
 + APP-1264 - [Logger] - Update logger modules to set default encoding to "UTF-8" when no value set at the OS level.
-+ APP-1266 - [Utils] Update utils datetime module to include a chunk_date_range method to be used in job Apps that need to break request into smaller timeframes.
++ APP-1266 - [Utils] Update utils datetime module to include a chunk_date_range method to be used in job Apps that need to break request into smaller time frames.
 + APP-1267 - [Batch] Add batch callback method to batch module to allow downloading/processing of data while batch job polls for status.
 + APP-1268 - Update the default temp directory to use an OS appropriate value.
 + APP-1272 - [App Feature] - Remove feature to update install.json and layout.json for advanced_request.
@@ -129,7 +129,7 @@ Testing framework
 2.0.7
 =====
 + APP-780 - Added truncate method to Utils module.
-+ APP-786 - Updated logger to addres TypeError exception.
++ APP-786 - Updated logger to address TypeError exception.
 + APP-789 - Updated pre-commit configuration for App templates.
 + APP-790 - Added new Advance Request feature for App that utilize a remote API.
 + APP-791 - Updated session and session_external to not require an instance of tcex.
@@ -152,7 +152,7 @@ Testing framework
 + APP-87 - Added check for invalid values in profile for Boolean inputs.
 + APP-102	- Addded pytest fixture for testing sessions.
 + APP-557	- Added update logic for profiles to convert static String inputs to Staged KVStore variables.
-+ APP-561 - Updated precommit template file to support large files on commit.
++ APP-561 - Updated pre-commit template file to support large files on commit.
 + APP-676 - Updated --interactive mode to support all input types.
 + APP-677 - Added --negative flag to tctest command to auto-generate negative test profiles.
 + Multiple enhancements for testing framework (APP-78, APP-82, APP-83, APP-84, APP-85, APP-86, APP-87, APP-106, APP-219)
@@ -192,7 +192,7 @@ Testing framework
   + Added **--replace_outputs** CLI flag for pytest to replace outputs for test cases
   + Added **--merge_outputs** CLI flag for pytest to merge new outputs with existing outputs for test cases
   + Profile schema is now managed and old profiles will be automatically updated
-  + Changed default run method for Serice Apps to be subprocess instead of thread.
+  + Changed default run method for Service Apps to be subprocess instead of thread.
 + Updated **tcinit** CLI command.
   + Removed **--action** CLI arg
   + Added **--update** CLI arg to enable updates of non-customized template files

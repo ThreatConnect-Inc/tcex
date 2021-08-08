@@ -16,9 +16,9 @@ class RedisClient:
     For a full list of kwargs see https://redis-py.readthedocs.io/en/latest/#redis.Connection.
 
     Args:
-        host: The REDIS host. Defaults to localhost.
-        port: The REDIS port. Defaults to 6379.
-        db: The REDIS db. Defaults to 0.
+        host: The Redis host. Defaults to localhost.
+        port: The Redis port. Defaults to 6379.
+        db: The Redis db. Defaults to 0.
         blocking_pool: Use BlockingConnectionPool instead of ConnectionPool.
         errors (str, kwargs): The REDIS errors policy (e.g. strict).
         max_connections (int, kwargs): The maximum number of connections to REDIS.

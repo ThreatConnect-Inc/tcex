@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 """TcEx Framework Package Module."""
 # standard library
+import fnmatch
 import json
 import os
 import shutil
 from pathlib import Path
-from typing import List
 
 # third-party
 import colorama as c
@@ -35,47 +35,108 @@ class Package(BinABC):
         self.package_data = {'errors': [], 'updates': [], 'package': []}
         self.validation_data = {}
 
-    @property
-    def default_excludes(self) -> List[str]:
+    @cached_property
+    def _build_excludes_glob(self):
         """Return a list of files and folders that should be excluded during the build process."""
+        # glob files/directories
         return [
-            'tcex.json',
-            self.output_dir.name,
             '__pycache__',
+            '.pytest_cache',  # pytest cache directory
+            '*.iml',  # PyCharm files
+            '*.pyc',  # any pyc file
+        ]
+
+    @cached_property
+    def _build_excludes_base(self):
+        """Return a list of files/folders that should be excluded in the App base directory."""
+        # base directory files/directories
+        excludes = [
+            self.args.outdir,
             '.cache',  # local cache directory
             '.c9',  # C9 IDE
             '.coverage',  # coverage file
             '.coveragerc',  # coverage configuration file file
             '.git',  # git directory
+            '.gitlab-ci.yml',  # gitlab ci file
             '.gitmodules',  # git modules
             '.idea',  # PyCharm
-            '.pytest_cache',  # pytest cache directory
-            '*.iml',  # PyCharm files
-            '*.pyc',  # any pyc file
             '.python-version',  # pyenv
             '.vscode',  # Visual Studio Code
-            'artifacts',  # pytest in BB Pipelines
+            'app.yaml',  # requirements builder configuration file
+            'artifacts',  # pytest in CI/CD
             'assets',  # pytest in BB Pipelines
-            'JIRA.html',
-            'JIRA.md',
             'local-*',  # log directory
             'log',  # log directory
-            'README.html',
-            'test-reports',  # pytest in BB Pipelines
+            'JIRA.html',  # documentation file
+            'JIRA.md',  # documentation file
+            'README.html',  # documentation file
+            # 'tcex.json',
+            'test-reports',  # pytest in CI/CD
             'tests',  # pytest test directory
         ]
-
-    @cached_property
-    def excludes(self) -> List[str]:
-        """Return all excludes."""
-        # build exclude file/directory list
-        excludes = self.default_excludes
-        excludes.extend(self._excludes)
-        excludes.extend(self.tj.data.package.excludes)
-
-        # update package data
-        self.package_data['package'].append({'action': 'Excluded Files:', 'output': excludes})
+        excludes.extend(self.args.exclude)
+        excludes.extend(self.tj.package_excludes)
         return excludes
+
+    # @property
+    # def excludes_glob(self) -> List[str]:
+    #     """Return a list of files and folders that should be excluded during the build process."""
+    #     # glob files/directories
+    #     return [
+    #         '__pycache__',
+    #         '.pytest_cache',  # pytest cache directory
+    #         '*.iml',  # PyCharm files
+    #         '*.pyc',  # any pyc file
+    #     ]
+
+    # @cached_property
+    # def excludes_base(self) -> List[str]:
+    #     """Return a list of files/folders that should be excluded in the App base directory."""
+    #     # base directory files/directories
+    #     excludes = [
+    #         self.output_dir.name,  # the build directory (typically target)
+    #         '.cache',  # local cache directory
+    #         '.c9',  # C9 IDE
+    #         '.coverage',  # coverage file
+    #         '.coveragerc',  # coverage configuration file file
+    #         '.git',  # git directory
+    #         '.gitlab-ci.yml',  # gitlab ci file
+    #         '.gitmodules',  # git modules
+    #         '.idea',  # PyCharm
+    #         '.python-version',  # pyenv
+    #         '.vscode',  # Visual Studio Code
+    #         'app.yaml',  # requirements builder configuration file
+    #         'artifacts',  # pytest in CI/CD
+    #         'assets',  # pytest in BB Pipelines
+    #         'JIRA.html',  # documentation file
+    #         'JIRA.md',  # documentation file
+    #         'local-*',  # log directory
+    #         'log',  # log directory
+    #         'README.html',  # documentation file
+    #         # 'tcex.json',
+    #         'test-reports',  # pytest in CI/CD
+    #         'tests',  # pytest test directory
+    #     ]
+    #     excludes.extend(self._excludes)
+    #     excludes.extend(self.tj.data.package.excludes)
+
+    #     # update package data
+    #     self.package_data['package'].append({'action': 'Excluded Files:', 'output': excludes})
+    #     return excludes
+
+    def exclude_files(self, src: str, names: list):
+        """Ignore exclude files in shutil.copytree (callback)."""
+        exclude_list = self._build_excludes_glob
+        if src == os.getcwd():
+            # get excludes that are specific to the Apps base directory
+            exclude_list = self._build_excludes_base
+
+        excluded_files = []
+        for n in names:
+            for e in exclude_list:
+                if fnmatch.fnmatch(n, e):
+                    excluded_files.append(n)
+        return excluded_files
 
     @cached_property
     def build_fqpn(self) -> Path:
@@ -101,8 +162,7 @@ class Package(BinABC):
     def package(self) -> None:
         """Build the App package for deployment to ThreatConnect Exchange."""
         # copy project directory to temp location to use as template for multiple builds
-        ignore_patterns = shutil.ignore_patterns(*self.excludes)
-        shutil.copytree(self.app_path, self.template_fqpn, False, ignore_patterns)
+        shutil.copytree(self.app_path, self.template_fqpn, False, ignore=self.exclude_files)
 
         # update package data
         self.package_data['package'].append(

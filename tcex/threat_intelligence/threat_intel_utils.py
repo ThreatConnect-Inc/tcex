@@ -16,7 +16,7 @@ from tcex.pleb import Event
 logger = logging.getLogger('tcex')
 
 
-class ThreatIntelCommon:
+class ThreatIntelUtils:
     """Threat Intelligence Common Methods"""
 
     def __init__(self, session: Session) -> None:
@@ -91,16 +91,22 @@ class ThreatIntelCommon:
         """Return supported ThreatConnect Group types."""
         return {
             'Adversary': {'apiBranch': 'adversaries', 'apiEntity': 'adversary'},
+            'Attack Pattern': {'apiBranch': 'attackPatterns', 'apiEntity': 'attackPattern'},
             'Campaign': {'apiBranch': 'campaigns', 'apiEntity': 'campaign'},
+            'Course of Action': {'apiBranch': 'coursesOfAction', 'apiEntity': 'courseOfAction'},
             'Document': {'apiBranch': 'documents', 'apiEntity': 'document'},
             'Email': {'apiBranch': 'emails', 'apiEntity': 'email'},
             'Event': {'apiBranch': 'events', 'apiEntity': 'event'},
             'Incident': {'apiBranch': 'incidents', 'apiEntity': 'incident'},
             'Intrusion Set': {'apiBranch': 'intrusionSets', 'apiEntity': 'intrusionSet'},
+            'Malware': {'apiBranch': 'malware', 'apiEntity': 'malware'},
             'Report': {'apiBranch': 'reports', 'apiEntity': 'report'},
             'Signature': {'apiBranch': 'signatures', 'apiEntity': 'signature'},
-            'Threat': {'apiBranch': 'threats', 'apiEntity': 'threat'},
+            'Tactic': {'apiBranch': 'tactics', 'apiEntity': 'tactic'},
             'Task': {'apiBranch': 'tasks', 'apiEntity': 'task'},
+            'Threat': {'apiBranch': 'threats', 'apiEntity': 'threat'},
+            'Tool': {'apiBranch': 'tools', 'apiEntity': 'tool'},
+            'Vulnerability': {'apiBranch': 'vulnerabilities', 'apiEntity': 'vulnerability'},
         }
 
     def get_type_from_api_entity(self, api_entity: dict) -> Optional[str]:
@@ -168,7 +174,7 @@ class ThreatIntelCommon:
         Returns:
             (list): A list of ThreatConnect Indicator types.
         """
-        return self.indicator_types_data.keys()
+        return list(self.indicator_types_data.keys())
 
     @cached_property
     def indicator_types_data(self) -> dict:

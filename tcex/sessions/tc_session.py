@@ -17,6 +17,9 @@ from tcex.utils import Utils
 # disable ssl warning message
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+# get tcex logger
+logger = logging.getLogger('tcex')
+
 
 class HmacAuth(auth.AuthBase):
     """ThreatConnect HMAC Authorization"""
@@ -67,13 +70,13 @@ class TokenAuth(auth.AuthBase):
 class TcSession(Session):
     """ThreatConnect REST API Requests Session"""
 
-    def __init__(self, api_access_id, api_secret_key, base_url, logger=None):
+    def __init__(self, tc_api_access_id, tc_api_secret_key, base_url):
         """Initialize the Class properties."""
         super().__init__()
-        self.api_access_id = api_access_id
-        self.api_secret_key = api_secret_key
+        self.tc_api_access_id = tc_api_access_id
+        self.tc_api_secret_key = tc_api_secret_key
         self.base_url = base_url.strip('/')
-        self.log = logger or logging.getLogger('session')
+        self.log = logger
 
         # properties
         self._log_curl = False
@@ -87,14 +90,15 @@ class TcSession(Session):
     def _configure_auth(self):
         """Return Auth property for session."""
         # Add ThreatConnect Authorization
-        if self.token_available:
+        # if self.token_available:
+        if self.token:
             # service Apps only use tokens and playbook/runtime Apps will use token if available
             self.auth = TokenAuth(self.token)
             self.log.debug('feature=tc-session, event=auth, type=token')
-        elif self.api_access_id and self.api_secret_key:
+        elif self.tc_api_access_id and self.tc_api_secret_key:
             try:
                 # for external Apps or testing Apps locally
-                self.auth = HmacAuth(self.api_access_id, self.api_secret_key)
+                self.auth = HmacAuth(self.tc_api_access_id, self.tc_api_secret_key)
                 self.log.debug('feature=tc-session, event=auth, type=hmac')
             except AttributeError:  # pragma: no cover
                 raise RuntimeError('No valid ThreatConnect API credentials provided.')
@@ -121,14 +125,14 @@ class TcSession(Session):
         """Set token."""
         self._token = token
 
-    @property
-    def token_available(self):
-        """Return true if the current App is a service App."""
-        return (
-            self.token is not None
-            and self.token.token is not None
-            and self.token.token_expires is not None
-        )
+    # @property
+    # def token_available(self):
+    #     """Return true if the current App is a service App."""
+    #     return (
+    #         self.token is not None
+    #         and self.token.token is not None
+    #         and self.token.token_expires is not None
+    #     )
 
     def request(self, method, url, **kwargs):  # pylint: disable=arguments-differ
         """Override request method disabling verify on token renewal if disabled on session."""

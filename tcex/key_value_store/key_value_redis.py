@@ -1,6 +1,10 @@
 """TcEx Framework Key Value Redis Module"""
 # standard library
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Any, Optional
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.key_value_store.redis_client import RedisClient
 
 
 class KeyValueRedis:
@@ -10,7 +14,7 @@ class KeyValueRedis:
         redis_client (redis.Client): An instance of redis client.
     """
 
-    def __init__(self, redis_client: object):
+    def __init__(self, redis_client: 'RedisClient'):
         """Initialize the Class properties."""
         self._redis_client = redis_client
 

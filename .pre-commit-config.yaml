@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.4.0
+    rev: v4.0.1
     hooks:
       - id: check-added-large-files
       - id: check-builtin-literals
@@ -34,15 +34,15 @@ repos:
               ^tests/
           )
   - repo: https://github.com/psf/black
-    rev: 20.8b1
+    rev: 21.7b0
     hooks:
       - id: black
   - repo: https://gitlab.com/pycqa/flake8
-    rev: 3.9.0
+    rev: 3.9.2
     hooks:
       - id: flake8
   - repo: https://github.com/pre-commit/mirrors-isort
-    rev: v5.8.0
+    rev: v5.9.3
     hooks:
       - id: isort
         exclude: |
@@ -50,7 +50,7 @@ repos:
               ^app_init/
           )
   - repo: https://github.com/pycqa/pydocstyle
-    rev: 6.0.0
+    rev: 6.1.1
     hooks:
       - id: pydocstyle
         args:
@@ -62,7 +62,7 @@ repos:
               ^tests/
           )
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.12.0
+    rev: v2.23.3
     hooks:
       - id: pyupgrade
         args:

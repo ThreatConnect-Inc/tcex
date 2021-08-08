@@ -14,6 +14,7 @@ class TestTask(TestThreatIntelligence):
     ti = None
     ti_helper = None
     tcex = None
+    tc_api_access_id = os.getenv('TC_API_ACCESS_ID')
 
     def setup_method(self):
         """Configure setup before all tests."""
@@ -310,9 +311,9 @@ class TestTask(TestThreatIntelligence):
         """Test retrieving all task assignees."""
         helper_ti = self.ti_helper.create_task()
         assignees_len = 0
-        helper_ti.add_assignee(os.getenv('API_ACCESS_ID'))
+        helper_ti.add_assignee(self.tc_api_access_id)
         for assignee in helper_ti.assignees():
-            assert assignee.get('userName') == os.getenv('API_ACCESS_ID')
+            assert assignee.get('userName') == self.tc_api_access_id
             assignees_len += 1
         assert assignees_len == 1, f'{assignees_len} assignees got added instead of 1.'
 
@@ -332,7 +333,7 @@ class TestTask(TestThreatIntelligence):
     def tests_ti_task_assignee_add(self):
         """Test adding assignee to a task."""
         helper_ti = self.ti_helper.create_task()
-        r = helper_ti.add_assignee(os.getenv('API_ACCESS_ID'))
+        r = helper_ti.add_assignee(self.tc_api_access_id)
         assert r.status_code == 200
 
     def tests_ti_task_assignee_add_invalid(self):
@@ -343,7 +344,7 @@ class TestTask(TestThreatIntelligence):
         }
         ti = self.ti.task(**task_data)
         try:
-            ti.add_assignee(os.getenv('API_ACCESS_ID'))
+            ti.add_assignee(self.tc_api_access_id)
             assert False, 'failed to catch assignee add on an task with no id.'
         except RuntimeError:
             assert True, 'caught assignee add on an task with no id.'
@@ -351,8 +352,8 @@ class TestTask(TestThreatIntelligence):
     def tests_ti_task_assignee_delete(self):
         """Test deleting assignee of a task."""
         helper_ti = self.ti_helper.create_task()
-        helper_ti.add_assignee(os.getenv('API_ACCESS_ID'))
-        r = helper_ti.delete_assignee(os.getenv('API_ACCESS_ID'))
+        helper_ti.add_assignee(self.tc_api_access_id)
+        r = helper_ti.delete_assignee(self.tc_api_access_id)
         assert r.status_code == 200
 
     def tests_ti_task_assignee_delete_invalid(self):
@@ -363,7 +364,7 @@ class TestTask(TestThreatIntelligence):
         }
         ti = self.ti.task(**task_data)
         try:
-            ti.delete_assignee(os.getenv('API_ACCESS_ID'))
+            ti.delete_assignee(self.tc_api_access_id)
             assert False, 'failed to catch assignee delete on an task with no id.'
         except RuntimeError:
             assert True, 'caught assignee delete on an task with no id.'
@@ -371,8 +372,8 @@ class TestTask(TestThreatIntelligence):
     def tests_ti_task_assignee_get(self):
         """Test retrieving assignee of a task."""
         helper_ti = self.ti_helper.create_task()
-        helper_ti.add_assignee(os.getenv('API_ACCESS_ID'))
-        r = helper_ti.get_assignee(os.getenv('API_ACCESS_ID'))
+        helper_ti.add_assignee(self.tc_api_access_id)
+        r = helper_ti.get_assignee(self.tc_api_access_id)
         assert r.status_code == 200
 
     def tests_ti_task_assignee_get_invalid(self):
@@ -383,7 +384,7 @@ class TestTask(TestThreatIntelligence):
         }
         ti = self.ti.task(**task_data)
         try:
-            ti.get_assignee(os.getenv('API_ACCESS_ID'))
+            ti.get_assignee(self.tc_api_access_id)
             assert False, 'failed to catch assignee get on an task with no id.'
         except RuntimeError:
             assert True, 'caught assignee get on an task with no id.'
@@ -414,9 +415,9 @@ class TestTask(TestThreatIntelligence):
         """Test retrieving all task escalatees."""
         helper_ti = self.ti_helper.create_task()
         escalatees_len = 0
-        helper_ti.add_escalatee(os.getenv('API_ACCESS_ID'))
+        helper_ti.add_escalatee(self.tc_api_access_id)
         for escalatee in helper_ti.escalatees():
-            assert escalatee.get('userName') == os.getenv('API_ACCESS_ID')
+            assert escalatee.get('userName') == self.tc_api_access_id
             escalatees_len += 1
         assert escalatees_len == 1, f'{escalatees_len} got created instead of 1.'
 
@@ -437,10 +438,10 @@ class TestTask(TestThreatIntelligence):
     def tests_ti_task_escalatee_add(self):
         """Test adding escalatee to a task."""
         helper_ti = self.ti_helper.create_task()
-        r = helper_ti.add_escalatee(os.getenv('API_ACCESS_ID'))
+        r = helper_ti.add_escalatee(self.tc_api_access_id)
         assert r.status_code == 200
         for escalatee in helper_ti.escalatees():
-            assert escalatee.get('userName') == os.getenv('API_ACCESS_ID')
+            assert escalatee.get('userName') == self.tc_api_access_id
 
     def tests_ti_task_escalatee_add_invalid(self):
         """Test adding escalatee to a task without task id."""
@@ -450,7 +451,7 @@ class TestTask(TestThreatIntelligence):
         }
         ti = self.ti.task(**task_data)
         try:
-            ti.add_escalatee(os.getenv('API_ACCESS_ID'))
+            ti.add_escalatee(self.tc_api_access_id)
             assert False, 'failed to catch escalatee add on an task with no id.'
         except RuntimeError:
             assert True, 'caught escalatee add on an task with no id.'
@@ -458,8 +459,8 @@ class TestTask(TestThreatIntelligence):
     def tests_ti_task_escalatee_delete(self):
         """Test deleting escalatee of a task."""
         helper_ti = self.ti_helper.create_task()
-        helper_ti.add_escalatee(os.getenv('API_ACCESS_ID'))
-        r = helper_ti.delete_escalatee(os.getenv('API_ACCESS_ID'))
+        helper_ti.add_escalatee(self.tc_api_access_id)
+        r = helper_ti.delete_escalatee(self.tc_api_access_id)
         assert r.status_code == 200
         escalatees_len = 0
         for escalatee in helper_ti.escalatees():  # pylint: disable=unused-variable
@@ -474,7 +475,7 @@ class TestTask(TestThreatIntelligence):
         }
         ti = self.ti.task(**task_data)
         try:
-            ti.delete_escalatee(os.getenv('API_ACCESS_ID'))
+            ti.delete_escalatee(self.tc_api_access_id)
             assert False, 'failed to catch escalatee delete on an task with no id.'
         except RuntimeError:
             assert True, 'caught escalatee delete on an task with no id.'
@@ -482,8 +483,8 @@ class TestTask(TestThreatIntelligence):
     def tests_ti_task_escalatee_get(self):
         """Test retrieving escalatee of a task."""
         helper_ti = self.ti_helper.create_task()
-        helper_ti.add_escalatee(os.getenv('API_ACCESS_ID'))
-        r = helper_ti.get_escalatee(os.getenv('API_ACCESS_ID'))
+        helper_ti.add_escalatee(self.tc_api_access_id)
+        r = helper_ti.get_escalatee(self.tc_api_access_id)
         assert r.status_code == 200
 
     def tests_ti_task_escalatee_get_invalid(self):
@@ -494,7 +495,7 @@ class TestTask(TestThreatIntelligence):
         }
         ti = self.ti.task(**task_data)
         try:
-            ti.get_escalatee(os.getenv('API_ACCESS_ID'))
+            ti.get_escalatee(self.tc_api_access_id)
             assert False, 'failed to catch escalatee get on an task with no id.'
         except RuntimeError:
             assert True, 'caught escalatee get on an task with no id.'

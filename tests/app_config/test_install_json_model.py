@@ -105,15 +105,21 @@ class TestInstallJson:
         valid_values = ij.expand_valid_values(['${GROUP_TYPES}'])
         assert valid_values == [
             'Adversary',
+            'Attack Pattern',
             'Campaign',
+            'Course of Action',
             'Document',
             'Email',
             'Event',
             'Incident',
             'Intrusion Set',
+            'Malware',
             'Signature',
+            'Tactic',
             'Task',
+            'Tool',
             'Threat',
+            'Vulnerability',
         ]
 
         # test OWNERS

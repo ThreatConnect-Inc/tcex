@@ -20,12 +20,28 @@ pytest -n 12 --cov=tcex/ --cov-report=term-missing tests
 # 5 failed, 875 passed, 28 warnings in 105.23s (0:01:45)
 
 # Coverage on Single Module
+
+## Test the app_config module: install.json, job.json, layout.json, and tcex.json
+
+> **Note:** Due to creating temp files this test suite cannot be run in parallel.
+
+pytest --cov=tcex/app_config/ --cov-report=term-missing tests/app_config/
+
+
 pytest --cov=tcex/app_feature/ --cov-report=term-missing tests/app_feature/
 pytest -n auto --cov=tcex/batch/ --cov-report=term-missing tests/batch/
 pytest -n auto --cov=tcex/case_management/ --cov-report=term-missing tests/case_management/
 pytest --cov=tcex/datastore/ --cov-report=term-missing tests/datastore/
 pytest -n auto --cov=tcex/decorators/ --cov-report=term-missing tests/decorators/
-pytest -n auto --cov=tcex/inputs/ --cov-report=term-missing tests/inputs/
+
+
+## Test the input module: Inputs and Field Types
+
+> **Note:** Due to creating install.json and app_config.json this test suite cannon be run in parallel.
+
+pytest --cov=tcex/input/ --cov-report=term-missing tests/input/
+
+
 pytest --cov=tcex/logger/ --cov-report=term-missing tests/logger/
 pytest -n auto --cov=tcex/metrics/ --cov-report=term-missing tests/metrics/
 pytest -n auto --cov=tcex/notifications/ --cov-report=term-missing tests/notifications/

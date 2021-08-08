@@ -1,6 +1,7 @@
 """Service module for TcEx Framework"""
 # flake8: noqa
-from .api_service import ApiService
-from .common_service_trigger import CommonServiceTrigger
-from .mqtt_message_broker import MqttMessageBroker
-from .webhook_trigger_service import WebhookTriggerService
+# first-party
+from tcex.services.api_service import ApiService
+from tcex.services.common_service_trigger import CommonServiceTrigger
+from tcex.services.mqtt_message_broker import MqttMessageBroker
+from tcex.services.webhook_trigger_service import WebhookTriggerService

@@ -86,7 +86,9 @@ class TcEx:
         self.event.subscribe(channel='exit', callback=self.exit)
         self.event.subscribe(channel='exit_code', callback=self.exit_code)
         self.event.subscribe(channel='handle_error', callback=self.handle_error)
-        self.event.subscribe(channel='register_token', callback=self.token.register_token)
+        # support external Apps that will not use tokens
+        if self.ij.fqfn.is_file():
+            self.event.subscribe(channel='register_token', callback=self.token.register_token)
 
     def _signal_handler(self, signal_interupt: int, _) -> None:
         """Handle singal interrupt."""
@@ -375,10 +377,9 @@ class TcEx:
     def get_session(self) -> TcSession:
         """Return an instance of Requests Session configured for the ThreatConnect API."""
         _session = TcSession(
-            api_access_id=self.inputs.data.api_access_id,
-            api_secret_key=self.inputs.data.api_secret_key,
-            base_url=self.inputs.data.tc_api_path,
-            logger=self.log,
+            tc_api_access_id=self.inputs.data.tc_api_access_id,
+            tc_api_secret_key=self.inputs.data.tc_api_secret_key,
+            tc_base_url=self.inputs.data.tc_api_path,
         )
 
         # set verify
@@ -402,7 +403,6 @@ class TcEx:
         if self.inputs.data.tc_log_curl:
             _session.log_curl = True
 
-        # return session
         return _session
 
     def get_session_external(self) -> ExternalSession:

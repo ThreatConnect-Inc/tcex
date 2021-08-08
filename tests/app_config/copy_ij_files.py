@@ -1,4 +1,4 @@
-"""."""
+"""Tool to copy all install.json files from App to testing directory."""
 # standard library
 import os
 from shutil import copyfile

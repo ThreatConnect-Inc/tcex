@@ -11,8 +11,7 @@ class KeyValueApi:
     """TcEx Key Value API Module.
 
     Args:
-        session (request.Session): A configured requests session for TC API (tcex.session).
-        runtime_level: The runtime level of the App.
+        session: A configured requests session for TC API (tcex.session).
     """
 
     def __init__(self, session: object) -> None:

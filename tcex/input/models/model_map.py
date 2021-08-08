@@ -25,7 +25,7 @@ feature_map = {
     'layoutEnabledApp': [],
     'secureParams': [],
     'smtpSettings': [SmtpSettingsModel],
-    # features for TC App loop prevention
+    # features for TC Playbook loop prevention
     'CreatesGroup': [],
     'CreatesIndicator': [],
     'CreatesSecurityLabel': [],

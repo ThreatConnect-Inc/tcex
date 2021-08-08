@@ -13,15 +13,19 @@ from pydantic import BaseModel, Extra
 # first-party
 from tcex.app_config.install_json import InstallJson
 from tcex.backports import cached_property
+from tcex.input.field_types import Sensitive
 from tcex.input.models import feature_map, runtime_level_map
 from tcex.key_value_store import KeyValueApi, KeyValueRedis, RedisClient
 from tcex.playbook import Playbook
 from tcex.pleb import Event, NoneModel, proxies
-from tcex.sessions import TcSession
+from tcex.sessions import TcSessionSingleton
 from tcex.utils import Utils
 
 # get tcex logger
 logger = logging.getLogger('tcex')
+
+# define JSON encoders
+json_encoders = {Sensitive: lambda v: str(v)}
 
 
 def input_model(models: list) -> BaseModel:
@@ -43,6 +47,7 @@ def input_model(models: list) -> BaseModel:
 
             extra = Extra.allow
             validate_assignment = True
+            json_encoders = json_encoders
 
     return InputModel
 
@@ -175,17 +180,23 @@ class Input:
 
         return file_content
 
-    def add_models(self, models: list) -> None:
+    def add_model(self, model: BaseModel) -> None:
         """Add additional input models."""
-        self._models.extend(models)
+        # TODO: [high] @paco - for some custom defined field types we need to make API calls
+        #       (e.g., indicator types). In order to do this we need a session object in
+        #       the custom field types, so we use a singleton Session object that needs
+        #       to get instantiated before the datamodel parses the App inputs, but after
+        #       the "base" inputs are loaded into the model.
+        _ = self.session
+
+        self._models.insert(0, model)
 
         # clear cache for data property
-        del Input.__dict__['data']
-        # Input.data.fget.cache_clear()
+        if 'data' in self.__dict__:
+            del self.__dict__['data']
 
-        # clear cache for models property
-        del Input.__dict__['models']
-        # Input.models.fget.cache_clear()
+        # force data model to load so that validation is done at this EXACT point
+        _ = self.data
 
     @cached_property
     def contents(self) -> dict:
@@ -223,6 +234,11 @@ class Input:
     def contents_resolved(self) -> dict:
         """Resolve all playbook params."""
         _inputs = self.contents
+
+        # support external Apps that don't have an install.json
+        if not self.ij.fqfn.is_file():
+            return _inputs
+
         if self.ij.data.runtime_level.lower() == 'playbook':
             for name, value in _inputs.items():
                 # model properties at this point are the default fields passed by ThreatConnect
@@ -235,7 +251,8 @@ class Input:
                     updated_value_array = []
                     for v in value:
                         if isinstance(v, str):
-                            updated_value_array.append(self.playbook.read(v))
+                            v = self.playbook.read(v)
+                        updated_value_array.append(v)
                     _inputs[name] = updated_value_array
                 elif isinstance(value, str):
                     # strings could be a variable, try to resolve the value
@@ -244,7 +261,7 @@ class Input:
         # update contents
         self.contents_update(_inputs)
 
-        return _inputs
+        return dict(sorted(_inputs.items()))
 
     # TODO: [high] - can this be replaced with a pydantic root validator?
     def contents_update(self, inputs: dict) -> None:
@@ -295,6 +312,10 @@ class Input:
     @cached_property
     def models(self) -> list:
         """Return all models for inputs."""
+        # support external Apps that don't have an install.json
+        if not self.ij.fqfn.is_file():
+            return runtime_level_map.get('external')
+
         # add all models for any supported features of the App
         for feature in self.ij.data.features:
             self._models.extend(feature_map.get(feature))
@@ -344,19 +365,17 @@ class Input:
             )
 
     @cached_property
-    def session(self) -> TcSession:
+    def session(self) -> TcSessionSingleton:
         """Return Session configured for ThreatConnect API."""
-        _session = TcSession(
-            api_access_id=self.data_unresolved.api_access_id,
-            api_secret_key=self.data_unresolved.api_secret_key,
+
+        _session = TcSessionSingleton(
             base_url=self.data_unresolved.tc_api_path,
+            tc_token=self.data_unresolved.tc_token,
+            tc_token_expires=self.data_unresolved.tc_token_expires,
         )
 
         # set verify
         _session.verify = self.data_unresolved.tc_verify
-
-        # set token - this token will never require renewal
-        _session.token = self.data_unresolved.tc_token
 
         # add proxy support if requested
         if self.data_unresolved.tc_proxy_tc:

@@ -6,7 +6,7 @@ import os
 from collections import OrderedDict
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, List, Optional
+from typing import List, Optional
 
 from .install_json_update import InstallJsonUpdate
 from .install_json_validate import InstallJsonValidate
@@ -120,15 +120,21 @@ class InstallJson:
             valid_values.extend(
                 [
                     'Adversary',
+                    'Attack Pattern',
                     'Campaign',
+                    'Course of Action',
                     'Document',
                     'Email',
                     'Event',
                     'Incident',
                     'Intrusion Set',
+                    'Malware',
                     'Signature',
+                    'Tactic',
                     'Task',
+                    'Tool',
                     'Threat',
+                    'Vulnerability',
                 ]
             )
 
@@ -143,60 +149,61 @@ class InstallJson:
         """Return True if App has the provided feature."""
         return feature.lower() in [f.lower() for f in self.data.features]
 
-    def params_to_args(
-        self,
-        name: Optional[str] = None,
-        hidden: Optional[bool] = None,
-        required: Optional[bool] = None,
-        service_config: Optional[bool] = None,
-        _type: Optional[str] = None,
-        input_permutations: Optional[list] = None,
-    ) -> dict[str, Any]:
-        """Return params as cli args.
+    # TODO: [med] if this is not needed by the testing framework it can be removed.
+    # def params_to_args(
+    #     self,
+    #     name: Optional[str] = None,
+    #     hidden: Optional[bool] = None,
+    #     required: Optional[bool] = None,
+    #     service_config: Optional[bool] = None,
+    #     _type: Optional[str] = None,
+    #     input_permutations: Optional[list] = None,
+    # ) -> dict[str, Any]:
+    #     """Return params as cli args.
 
-        Args:
-            name: The name of the input to return.
-            required: If set the inputs will be filtered based on required field.
-            service_config: If set the inputs will be filtered based on serviceConfig field.
-            _type: The type of input to return.
-            input_permutations: A list of valid input names for provided permutation.
+    #     Args:
+    #         name: The name of the input to return.
+    #         required: If set the inputs will be filtered based on required field.
+    #         service_config: If set the inputs will be filtered based on serviceConfig field.
+    #         _type: The type of input to return.
+    #         input_permutations: A list of valid input names for provided permutation.
 
-        Returns:
-            dict: All args for current filter
-        """
-        args = {}
-        for n, p in self.data.filter_params(
-            name, hidden, required, service_config, _type, input_permutations
-        ).items():
-            if p.type.lower() == 'boolean':
-                args[n] = p.default
-            elif p.type.lower() == 'choice':
-                # provide all options by default
-                valid_values = f"[{'|'.join(self.expand_valid_values(p.valid_values))}]"
+    #     Returns:
+    #         dict: All args for current filter
+    #     """
+    #     args = {}
+    #     for n, p in self.data.filter_params(
+    #         name, hidden, required, service_config, _type, input_permutations
+    #     ).items():
+    #         if p.type.lower() == 'boolean':
+    #             args[n] = p.default
+    #         elif p.type.lower() == 'choice':
+    #             # provide all options by default
+    #             valid_values = f"[{'|'.join(self.expand_valid_values(p.valid_values))}]"
 
-                # use the value from input_permutations if available or provide valid values
-                if input_permutations is not None:
-                    valid_values = input_permutations.get(n, valid_values)
+    #             # use the value from input_permutations if available or provide valid values
+    #             if input_permutations is not None:
+    #                 valid_values = input_permutations.get(n, valid_values)
 
-                # use default if available
-                if p.default is not None:
-                    valid_values = p.default
+    #             # use default if available
+    #             if p.default is not None:
+    #                 valid_values = p.default
 
-                args[n] = valid_values
-            elif p.type.lower() == 'multichoice':
-                args[n] = p.valid_values
-            elif p.type.lower() == 'keyvaluelist':
-                args[n] = '<KeyValueArray>'
-            elif n in ['api_access_id', 'api_secret_key']:  # pragma: no cover
-                # leave these parameters set to the value defined in defaults
-                pass
-            else:
-                types = '|'.join(p.playbook_data_type)
-                if types:
-                    args[n] = p.default or f'<{types}>'
-                else:  # pragma: no cover
-                    args[n] = p.default or ''
-        return args
+    #             args[n] = valid_values
+    #         elif p.type.lower() == 'multichoice':
+    #             args[n] = p.valid_values
+    #         elif p.type.lower() == 'keyvaluelist':
+    #             args[n] = '<KeyValueArray>'
+    #         elif n in ['tc_api_access_id', 'tc_api_secret_key']:  # pragma: no cover
+    #             # leave these parameters set to the value defined in defaults
+    #             pass
+    #         else:
+    #             types = '|'.join(p.playbook_data_type)
+    #             if types:
+    #                 args[n] = p.default or f'<{types}>'
+    #             else:  # pragma: no cover
+    #                 args[n] = p.default or ''
+    #     return args
 
     @property
     def tc_playbook_out_variables(self) -> list:

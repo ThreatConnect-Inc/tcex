@@ -90,6 +90,7 @@ class TypeEnum(str, Enum):
 
     Boolean = 'Boolean'
     Choice = 'Choice'
+    EditChoice = 'EditChoice'
     KeyValueList = 'KeyValueList'
     MultiChoice = 'MultiChoice'
     String = 'String'
@@ -116,6 +117,7 @@ class ParamsModel(BaseModel):
     setup: bool = False
     type: TypeEnum
     valid_values: Optional[List[str]] = []
+    view_rows: Optional[int]
 
     class Config:
         """DataModel Config"""

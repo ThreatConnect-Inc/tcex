@@ -151,7 +151,13 @@ def pytest_sessionfinish(session, exitstatus):  # pylint: disable=unused-argumen
 def pytest_unconfigure(config):  # pylint: disable=unused-argument
     """Execute uncofigure logic before test process is exited."""
     try:
-        # remove temp install.json directory
+        # remove temp app_config.json file
+        os.remove('app_config.json')
+    except OSError:
+        pass
+
+    try:
+        # remove temp install.json file
         os.remove('install.json')
     except OSError:
         pass

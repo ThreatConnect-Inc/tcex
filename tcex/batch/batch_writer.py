@@ -45,7 +45,7 @@ from tcex.batch.indicator import (
     custom_indicator_class_factory,
 )
 from tcex.input import Input
-from tcex.threat_intelligence import ThreatIntelCommon
+from tcex.threat_intelligence import ThreatIntelUtils
 from tcex.utils import Utils
 
 # import local modules for dynamic reference
@@ -109,7 +109,7 @@ class BatchWriter:
         self._batch_size = 0  # track current batch size
         self._batch_max_size = 75_000_000  # max size in bytes
         self.log = logger()
-        self.tic = ThreatIntelCommon(self.session)
+        self.tic = ThreatIntelUtils(self.session)
         self.utils = Utils()
 
         # shelf settings
