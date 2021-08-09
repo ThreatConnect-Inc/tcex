@@ -1,10 +1,13 @@
 """ThreatConnect Case Management Filter Module"""
 # standard library
-from typing import List
+from typing import TYPE_CHECKING, List
 
 # first-party
 from tcex.case_management.api_endpoints import ApiEndpoints
-from tcex.case_management.tql import TQL
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.case_management.tql import TQL
 
 
 class Filter:
@@ -14,7 +17,7 @@ class Filter:
         tql: Instance of TQL Class.
     """
 
-    def __init__(self, api_endpoint: ApiEndpoints, tcex, tql: TQL):
+    def __init__(self, api_endpoint: ApiEndpoints, tcex, tql: 'TQL'):
         """Initialize Class properties"""
         self._api_endpoint = api_endpoint.value
         self._tcex = tcex

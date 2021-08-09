@@ -1,15 +1,10 @@
 """ThreatConnect Task"""
 # first-party
 from tcex.case_management.api_endpoints import ApiEndpoints
-from tcex.case_management.artifact import FilterArtifacts
 from tcex.case_management.assignee import Assignee
-from tcex.case_management.case import FilterCases
 from tcex.case_management.common_case_management import CommonCaseManagement
-
-# pylint: disable=cyclic-import
 from tcex.case_management.common_case_management_collection import CommonCaseManagementCollection
 from tcex.case_management.filter import Filter
-from tcex.case_management.note import FilterNotes
 from tcex.case_management.tql import TQL
 
 
@@ -529,23 +524,32 @@ class FilterTasks(Filter):
         self._tql.add_filter('dueDate', operator, due_date, TQL.Type.STRING)
 
     # there is not way to add an **actual** artifact to a task through the API.
+    # TODO: [low] can't add typing hint return
     @property
     def has_artifact(self):  # pragma: no cover
         """Return **FilterArtifacts** for further filtering."""
+        from tcex.case_management.artifact import FilterArtifacts
+
         artifacts = FilterArtifacts(ApiEndpoints.ARTIFACTS, self._tcex, TQL())
         self._tql.add_filter('hasArtifact', TQL.Operator.EQ, artifacts, TQL.Type.SUB_QUERY)
         return artifacts
 
+    # TODO: [low] can't add typing hint return
     @property
     def has_case(self):
         """Return **FilterCases** for further filtering."""
+        from tcex.case_management.case import FilterCases
+
         cases = FilterCases(ApiEndpoints.CASES, self._tcex, TQL())
         self._tql.add_filter('hasCase', TQL.Operator.EQ, cases, TQL.Type.SUB_QUERY)
         return cases
 
+    # TODO: [low] can't add typing hint return
     @property
     def has_note(self):
         """Return **FilterNotes** for further filtering."""
+        from tcex.case_management.note import FilterNotes
+
         notes = FilterNotes(ApiEndpoints.NOTES, self._tcex, TQL())
         self._tql.add_filter('hasNote', TQL.Operator.EQ, notes, TQL.Type.SUB_QUERY)
         return notes

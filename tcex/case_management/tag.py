@@ -1,7 +1,6 @@
 """ThreatConnect Tag"""
 # first-party
 from tcex.case_management.api_endpoints import ApiEndpoints
-from tcex.case_management.case import FilterCases
 from tcex.case_management.common_case_management import CommonCaseManagement
 from tcex.case_management.common_case_management_collection import CommonCaseManagementCollection
 from tcex.case_management.filter import Filter
@@ -170,9 +169,12 @@ class FilterTags(Filter):
         """
         self._tql.add_filter('description', operator, description, TQL.Type.STRING)
 
+    # TODO: [low] can't add typing hint return
     @property
     def has_case(self):
         """Return **FilterCases** for further filtering."""
+        from tcex.case_management.case import FilterCases
+
         cases = FilterCases(ApiEndpoints.CASES, self._tcex, TQL())
         self._tql.add_filter('hasCase', TQL.Operator.EQ, cases, TQL.Type.SUB_QUERY)
         return cases

@@ -12,6 +12,8 @@ from .cm_helpers import CMHelper, TestCaseManagement
 class TestWorkflowEvent(TestCaseManagement):
     """Test TcEx CM Workflow Event Interface."""
 
+    tc_api_access_id = os.getenv('TC_API_ACCESS_ID')
+
     def setup_method(self):
         """Configure setup before all tests."""
         self.cm_helper = CMHelper('workflow_event')
@@ -179,7 +181,7 @@ class TestWorkflowEvent(TestCaseManagement):
         # run assertions on returned data
         assert workflow_event.case_id == workflow_event_data.get('case_id')
         assert workflow_event.case_xid == workflow_event_data.get('case_xid')
-        assert workflow_event.user.user_name == os.getenv('API_ACCESS_ID')
+        assert workflow_event.user.user_name == self.tc_api_access_id
         assert workflow_event.date_added
         assert workflow_event_data.get('event_date')[:17] in workflow_event.event_date
         assert workflow_event.id == workflow_event.id
@@ -192,7 +194,7 @@ class TestWorkflowEvent(TestCaseManagement):
         #     assert False, 'Note not found'
         assert workflow_event.parent_case.id == case.id
         assert workflow_event.summary == workflow_event_data.get('summary')
-        assert workflow_event.user.user_name == os.getenv('API_ACCESS_ID')
+        assert workflow_event.user.user_name == self.tc_api_access_id
         assert workflow_event.as_entity.get('value') == workflow_event_data.get('summary')
         # TODO: @mj - confirm the status of these fields
         assert workflow_event.deleted is None
@@ -357,7 +359,7 @@ class TestWorkflowEvent(TestCaseManagement):
     #     workflow_events = self.cm.workflow_events()
     #     workflow_events.filter.deleted(TQL.Operator.EQ, True)
     #     workflow_events.filter.deleted_reason(
-    #         TQL.Operator.EQ, f"Deleted through API by User:{os.getenv('API_ACCESS_ID')}"
+    #         TQL.Operator.EQ, f"Deleted through API by User:{self.tc_api_access_id}"
     #     )
 
     #     for we in workflow_events:
@@ -551,7 +553,7 @@ class TestWorkflowEvent(TestCaseManagement):
         # retrieve workflow event using TQL
         workflow_events = self.cm.workflow_events()
         workflow_events.filter.case_id(TQL.Operator.EQ, case.id)
-        workflow_events.filter.user_name(TQL.Operator.EQ, os.getenv('API_ACCESS_ID'))
+        workflow_events.filter.user_name(TQL.Operator.EQ, self.tc_api_access_id)
 
         for we in workflow_events:
             # more than one workflow event will always be returned

@@ -5,13 +5,9 @@ from typing import TYPE_CHECKING, Optional
 
 # first-party
 from tcex.case_management.api_endpoints import ApiEndpoints
-from tcex.case_management.artifact import FilterArtifacts
 from tcex.case_management.common_case_management import CommonCaseManagement
 from tcex.case_management.common_case_management_collection import CommonCaseManagementCollection
 from tcex.case_management.filter import Filter
-from tcex.case_management.note import FilterNotes
-from tcex.case_management.tag import FilterTags
-from tcex.case_management.task import FilterTasks
 from tcex.case_management.tql import TQL
 
 if TYPE_CHECKING:
@@ -397,30 +393,42 @@ class FilterCases(Filter):
         """
         self._tql.add_filter('description', operator, description, TQL.Type.STRING)
 
+    # TODO: [low] can't add typing hint return
     @property
-    def has_artifact(self) -> 'FilterArtifacts':
+    def has_artifact(self):
         """Return **FilterArtifacts** for further filtering."""
+        from tcex.case_management.artifact import FilterArtifacts
+
         artifacts = FilterArtifacts(ApiEndpoints.ARTIFACTS, self._tcex, TQL())
         self._tql.add_filter('hasArtifact', TQL.Operator.EQ, artifacts, TQL.Type.SUB_QUERY)
         return artifacts
 
+    # TODO: [low] can't add typing hint return
     @property
-    def has_note(self) -> 'FilterNotes':
+    def has_note(self):
         """Return **FilterNotes** for further filtering."""
+        from tcex.case_management.note import FilterNotes
+
         notes = FilterNotes(ApiEndpoints.NOTES, self._tcex, TQL())
         self._tql.add_filter('hasNote', TQL.Operator.EQ, notes, TQL.Type.SUB_QUERY)
         return notes
 
+    # TODO: [low] can't add typing hint return
     @property
-    def has_tag(self) -> 'FilterTags':
+    def has_tag(self):
         """Return **FilterTags** for further filtering."""
+        from tcex.case_management.tag import FilterTags
+
         tags = FilterTags(ApiEndpoints.TAGS, self._tcex, TQL())
         self._tql.add_filter('hasTag', TQL.Operator.EQ, tags, TQL.Type.SUB_QUERY)
         return tags
 
+    # TODO: [low] can't add typing hint return
     @property
-    def has_task(self) -> 'FilterTasks':
+    def has_task(self):
         """Return **FilterTask** for further filtering."""
+        from tcex.case_management.task import FilterTasks
+
         tasks = FilterTasks(ApiEndpoints.TASKS, self._tcex, TQL())
         self._tql.add_filter('hasTask', TQL.Operator.EQ, tasks, TQL.Type.SUB_QUERY)
         return tasks

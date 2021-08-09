@@ -14,6 +14,8 @@ from .cm_helpers import CMHelper, TestCaseManagement
 class TestTask(TestCaseManagement):
     """Test TcEx CM Task Interface."""
 
+    tc_api_access_id = os.getenv('TC_API_ACCESS_ID')
+
     def setup_method(self):
         """Configure setup before all tests."""
         self.cm_helper = CMHelper('task')
@@ -187,7 +189,7 @@ class TestTask(TestCaseManagement):
         task = self.cm.task(**task_data)
 
         # add assignee
-        assignee_data = {'type': 'User', 'data': {'userName': os.getenv('API_ACCESS_ID')}}
+        assignee_data = {'type': 'User', 'data': {'userName': self.tc_api_access_id}}
         task.assignee = assignee_data
 
         # add note
@@ -230,7 +232,7 @@ class TestTask(TestCaseManagement):
         task.submit()
         # artifact data updated
         task_data = {
-            'assignee': {'user_name': os.getenv('API_ACCESS_ID')},
+            'assignee': {'user_name': self.tc_api_access_id},
             'description': f'a updated description from {request.node.name}',
             'due_date': (datetime.now() + timedelta(days=3)).isoformat(),
             'name': f'updated-name-{request.node.name}',
@@ -334,7 +336,7 @@ class TestTask(TestCaseManagement):
         task.add_artifact(**artifact_data)
 
         # add assignee
-        assignee = self.cm.assignee(type='User', user_name=os.getenv('API_ACCESS_ID'))
+        assignee = self.cm.assignee(type='User', user_name=self.tc_api_access_id)
         task.assignee = assignee
 
         # add note
@@ -347,7 +349,7 @@ class TestTask(TestCaseManagement):
         task.get(all_available_fields=True)
 
         # run assertions on returned data
-        assert task.assignee.user_name == os.getenv('API_ACCESS_ID')
+        assert task.assignee.user_name == self.tc_api_access_id
         assert task.case_id == task_data.get('case_id')
         assert task.case_xid is None  # note returned with task data
         assert task_data.get('completed_date')[:10] in task.completed_date
@@ -799,7 +801,7 @@ class TestTask(TestCaseManagement):
         case = self.cm_helper.create_case()
 
         # task data
-        assignee = self.cm.assignee(type='User', user_name=os.getenv('API_ACCESS_ID'))
+        assignee = self.cm.assignee(type='User', user_name=self.tc_api_access_id)
         task_data = {
             'assignee': assignee,
             'case_id': case.id,
@@ -831,7 +833,7 @@ class TestTask(TestCaseManagement):
         case = self.cm_helper.create_case()
 
         # task data
-        assignee = self.cm.assignee(type='User', user_name=os.getenv('API_ACCESS_ID'))
+        assignee = self.cm.assignee(type='User', user_name=self.tc_api_access_id)
         task_data = {
             'assignee': assignee,
             'case_id': case.id,

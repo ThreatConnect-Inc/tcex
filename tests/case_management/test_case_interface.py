@@ -17,6 +17,8 @@ from .cm_helpers import CMHelper, TestCaseManagement
 class TestCase(TestCaseManagement):
     """Test TcEx CM Case Interface."""
 
+    tc_api_access_id = os.getenv('TC_API_ACCESS_ID')
+
     def setup_method(self):
         """Configure setup before all tests."""
         self.cm_helper = CMHelper('case')
@@ -212,10 +214,10 @@ class TestCase(TestCaseManagement):
         )
         # task data
         user = self.cm.user()
-        user.user_name = os.getenv('API_ACCESS_ID')
+        user.user_name = self.tc_api_access_id
         case.user_access.users.append(user)
         case.user_access.users = [user]
-        case.assignee = self.cm.assignee(type='User', user_name=os.getenv('API_ACCESS_ID'))
+        case.assignee = self.cm.assignee(type='User', user_name=self.tc_api_access_id)
         user_2 = self.cm.user()
         user_2.user_name = user_data.get('user_name')
         assert user_2.user_name == user_data.get('user_name')
@@ -292,10 +294,10 @@ class TestCase(TestCaseManagement):
             assert artifact.type == artifact_data.get('type')
         for tag in case.tags:
             assert tag.name == tag_data.get('name')
-        assert case.assignee.user_name == os.getenv('API_ACCESS_ID')
+        assert case.assignee.user_name == self.tc_api_access_id
         assert len(case.user_access.users) == 1
-        assert case.user_access.users[0].user_name == os.getenv('API_ACCESS_ID')
-        assert case.created_by.user_name == os.getenv('API_ACCESS_ID')
+        assert case.user_access.users[0].user_name == self.tc_api_access_id
+        assert case.created_by.user_name == self.tc_api_access_id
         try:
             parse(case.date_added)
         except ValueError:
@@ -335,7 +337,7 @@ class TestCase(TestCaseManagement):
         # retrieve note using TQL
         cases = self.cm.cases()
         cases.filter.id(TQL.Operator.EQ, case.id)
-        cases.filter.created_by(TQL.Operator.EQ, os.getenv('API_ACCESS_ID'))
+        cases.filter.created_by(TQL.Operator.EQ, self.tc_api_access_id)
 
         for case in cases:
             assert case.name == request.node.name
@@ -402,7 +404,7 @@ class TestCase(TestCaseManagement):
         case_data = {
             'description': f'case description for {request.node.name}',
             'name': f'case-{request.node.name}',
-            'assignee': {'user_name': os.getenv('API_ACCESS_ID')},
+            'assignee': {'user_name': self.tc_api_access_id},
             'user_access': {'data': []},
             'resolution': random.choice(
                 [
@@ -427,7 +429,7 @@ class TestCase(TestCaseManagement):
         case.severity = case_data.get('severity')
         case.status = case_data.get('status')
         user = self.cm.user()
-        user.user_name = os.getenv('API_ACCESS_ID')
+        user.user_name = self.tc_api_access_id
         case.user_access.users.append(user)
         case.user_access.users = [user]
 
@@ -441,7 +443,7 @@ class TestCase(TestCaseManagement):
         assert case.severity == case_data.get('severity')
         assert case.status == case_data.get('status')
         assert len(case.user_access.users) == 1
-        assert case.user_access.users[0].user_name == os.getenv('API_ACCESS_ID')
+        assert case.user_access.users[0].user_name == self.tc_api_access_id
         assert case.as_dict
 
     def test_case_get_by_tql_filter_has_artifact(self, request):
@@ -695,7 +697,7 @@ class TestCase(TestCaseManagement):
     def test_case_get_by_tql_filter_target_id(self, request):
         """Test Case Get by TQL"""
         # create case
-        assignee = self.cm.assignee(type='User', user_name=os.getenv('API_ACCESS_ID'))
+        assignee = self.cm.assignee(type='User', user_name=self.tc_api_access_id)
         case = self.cm_helper.create_case(assignee=assignee)
 
         # retrieve note using TQL
@@ -712,7 +714,7 @@ class TestCase(TestCaseManagement):
     def test_case_get_by_tql_filter_target_type(self, request):
         """Test Case Get by TQL"""
         # create case
-        assignee = self.cm.assignee(type='User', user_name=os.getenv('API_ACCESS_ID'))
+        assignee = self.cm.assignee(type='User', user_name=self.tc_api_access_id)
         case = self.cm_helper.create_case(assignee=assignee)
 
         # retrieve note using TQL

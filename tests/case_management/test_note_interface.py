@@ -13,6 +13,8 @@ from .cm_helpers import CMHelper, TestCaseManagement
 class TestNote(TestCaseManagement):
     """Test TcEx CM Note Interface."""
 
+    tc_api_access_id = os.getenv('TC_API_ACCESS_ID')
+
     def setup_method(self):
         """Configure setup before all tests."""
         self.cm_helper = CMHelper('note')
@@ -331,7 +333,7 @@ class TestNote(TestCaseManagement):
         assert note.case_xid == case.xid
 
         # read-only
-        assert note.author == os.getenv('API_ACCESS_ID')
+        assert note.author == self.tc_api_access_id
         assert note.edited is False
 
         # test as_entity
@@ -489,7 +491,7 @@ class TestNote(TestCaseManagement):
         # retrieve note using TQL
         notes = self.cm.notes()
         notes.filter.case_id(TQL.Operator.EQ, case.id)
-        notes.filter.author(TQL.Operator.EQ, os.getenv('API_ACCESS_ID'))
+        notes.filter.author(TQL.Operator.EQ, self.tc_api_access_id)
 
         for note in notes:
             assert note.text == note_data.get('text')
