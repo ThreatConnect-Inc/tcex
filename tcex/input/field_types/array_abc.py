@@ -1,8 +1,10 @@
 """Abstract Array classes containing base validation behavior"""
 
-
-from typing import Any, Generator, Union
+# standard library
 from abc import ABC, abstractmethod
+from typing import Any, Generator, Union
+
+# first-party
 from .exception import EmptyArrayException, InvalidMemberException, HeterogenousArrayException
 
 
