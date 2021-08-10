@@ -1,37 +1,35 @@
 """Always Array Validator"""
 # standard library
-from typing import Callable, Union
+from typing import Any
 
 # first-party
-from tcex.input.field_types.utils import array_validator
+from .array_abc import Array
 
 
-class StringArray(str):
-    """Ensure an array is always returned for the input."""
+class StringArray(Array):
+    """StringArray Field Type"""
 
     __input_type__ = 'String'
     __playbook_data_type__ = ['String', 'StringArray']
     _optional = False
 
     @classmethod
-    def __get_validators__(cls) -> Callable:
-        """Define one or more validators for Pydantic custom type."""
-        yield cls._validate
+    def is_empty_member(cls, value: Any):
+        """Implementation of abstract method in Array parent class.
+
+        An empty member of StringArray is ''
+        """
+        return value == ''
 
     @classmethod
-    def _validate(cls, value: Union[dict, list]) -> list[dict]:
-        """Ensure an list is always returned.
+    def is_array_member(cls, value: Any):
+        """Implementation of abstract method in Array parent class.
 
-        Due to the way that pydantic does validation the
-        method will never be called if value is None.
+        A member of StringArray is a string instance
         """
-        # Coerce provided value to list type if required
-        if not isinstance(value, list):
-            return [value]
+        return isinstance(value, str)
 
-        # validate data if type is not Optional
-        if cls._optional is False:
-            array_validator(value)
 
-        # TODO: [med] should content be validated for isinstance str?
-        return cls(value)
+class StringArrayOptional(StringArray):
+    """StringArrayOptional Field Type"""
+    _optional = True

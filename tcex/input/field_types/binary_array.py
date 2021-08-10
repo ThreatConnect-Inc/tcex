@@ -7,7 +7,7 @@ from .array_abc import Array
 
 
 class BinaryArray(Array):
-    """BinaryArray Field Types"""
+    """BinaryArray Field Type"""
 
     __input_type__ = 'String'
     __playbook_data_type__ = ['Binary', 'BinaryArray']
@@ -17,7 +17,7 @@ class BinaryArray(Array):
     def is_empty_member(cls, value: Any):
         """Implementation of abstract method in Array parent class.
 
-        A empty member of BinaryArray is b''
+        An empty member of BinaryArray is b''
         """
         return value == b''
 
@@ -31,5 +31,5 @@ class BinaryArray(Array):
 
 
 class BinaryArrayOptional(BinaryArray):
-    """BinaryArray Field Types"""
+    """BinaryArrayOptional Field Type"""
     _optional = True
