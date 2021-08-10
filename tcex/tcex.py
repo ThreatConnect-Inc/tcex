@@ -563,7 +563,7 @@ class TcEx:
             tcex.playbook.Playbooks: An instance of Playbooks
         """
         return self.get_playbook(
-            context=self.inputs.data.tc_playbook_kvstore_contex,
+            context=self.inputs.data.tc_playbook_kvstore_context,
             output_variables=self.inputs.data.tc_playbook_out_variables,
         )
 
