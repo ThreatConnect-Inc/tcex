@@ -39,11 +39,6 @@ from tcex.threat_intelligence import ThreatIntelligence
 from tcex.tokens import Tokens
 from tcex.utils import Utils
 
-# init tcex logger
-logging.setLoggerClass(TraceLogger)
-logger = logging.getLogger('tcex')
-logger.setLevel(logging.TRACE)  # pylint: disable=E1101
-
 
 class TcEx:
     """Provides basic functionality for all types of TxEx Apps.

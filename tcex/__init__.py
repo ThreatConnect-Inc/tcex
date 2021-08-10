@@ -1,4 +1,13 @@
 """TcEx Framework module init file."""
+import logging
+
+from tcex.logger import TraceLogger
+
+# init tcex logger
+logging.setLoggerClass(TraceLogger)
+logger = logging.getLogger('tcex')
+logger.setLevel(logging.TRACE)  # pylint: disable=E1101
+
 # flake8: noqa
 from .__metadata__ import (
     __author__,
