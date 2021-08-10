@@ -2,7 +2,6 @@
 # standard library
 from typing import Any
 
-# first-party
 from .array_abc import Array
 
 
@@ -15,7 +14,7 @@ class StringArray(Array):
 
     @classmethod
     def is_empty_member(cls, value: Any):
-        """Implementation of abstract method in Array parent class.
+        """Implement abstract method in Array parent class.
 
         An empty member of StringArray is ''
         """
@@ -23,7 +22,7 @@ class StringArray(Array):
 
     @classmethod
     def is_array_member(cls, value: Any):
-        """Implementation of abstract method in Array parent class.
+        """Implement abstract method in Array parent class.
 
         A member of StringArray is a string instance
         """
@@ -32,4 +31,5 @@ class StringArray(Array):
 
 class StringArrayOptional(StringArray):
     """StringArrayOptional Field Type"""
+
     _optional = True

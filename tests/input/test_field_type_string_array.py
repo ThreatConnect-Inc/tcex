@@ -3,11 +3,12 @@
 from typing import TYPE_CHECKING, Optional
 
 # third-party
-from pydantic import BaseModel, ValidationError
 import pytest
+from pydantic import BaseModel, ValidationError
 
 # first-party
 from tcex.input.field_types import StringArray, StringArrayOptional
+
 from .input_test import InputTest
 
 if TYPE_CHECKING:
@@ -56,9 +57,7 @@ class TestInputsFieldTypeStringArray(InputTest):
         config_data = {'my_string': '#App:1234:my_string!StringArray'}
         app = playbook_app(config_data=config_data)
         tcex = app.tcex
-        self._stage_key_value(
-            'my_string', '#App:1234:my_string!StringArray', ['string'], tcex
-        )
+        self._stage_key_value('my_string', '#App:1234:my_string!StringArray', ['string'], tcex)
         tcex.inputs.add_model(PytestModel)
 
         assert tcex.inputs.data.my_string == ['string']

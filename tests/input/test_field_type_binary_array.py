@@ -3,11 +3,12 @@
 from typing import TYPE_CHECKING, Optional
 
 # third-party
-from pydantic import BaseModel, ValidationError
 import pytest
+from pydantic import BaseModel, ValidationError
 
 # first-party
 from tcex.input.field_types import BinaryArray, BinaryArrayOptional
+
 from .input_test import InputTest
 
 if TYPE_CHECKING:

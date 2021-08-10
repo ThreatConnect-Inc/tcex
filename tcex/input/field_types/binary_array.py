@@ -2,7 +2,6 @@
 # standard library
 from typing import Any
 
-# first-party
 from .array_abc import Array
 
 
@@ -15,7 +14,7 @@ class BinaryArray(Array):
 
     @classmethod
     def is_empty_member(cls, value: Any):
-        """Implementation of abstract method in Array parent class.
+        """Implement abstract method in Array parent class.
 
         An empty member of BinaryArray is b''
         """
@@ -23,7 +22,7 @@ class BinaryArray(Array):
 
     @classmethod
     def is_array_member(cls, value: Any):
-        """Implementation of abstract method in Array parent class.
+        """Implement abstract method in Array parent class.
 
         A member of BinaryArray is a bytes instance
         """
@@ -32,4 +31,5 @@ class BinaryArray(Array):
 
 class BinaryArrayOptional(BinaryArray):
     """BinaryArrayOptional Field Type"""
+
     _optional = True

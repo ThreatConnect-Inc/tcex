@@ -4,12 +4,12 @@
 from abc import ABC, abstractmethod
 from typing import Any, Generator, Union
 
-# first-party
-from .exception import EmptyArrayException, InvalidMemberException, HeterogenousArrayException
+from .exception import EmptyArrayException, HeterogenousArrayException, InvalidMemberException
 
 
 class Array(list, ABC):
     """Abstract Array class that Array implementations should inherit from"""
+
     _optional = False
 
     @classmethod
@@ -150,10 +150,7 @@ class Array(list, ABC):
     @classmethod
     def __get_validators__(cls) -> Generator:
         """Define one or more validators for Pydantic custom type."""
-        yield from [
-            cls.assert_type,
-            cls.wrap
-        ]
+        yield from [cls.assert_type, cls.wrap]
 
     @classmethod
     def wrap(cls, value: Any) -> list[Any]:

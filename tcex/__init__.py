@@ -1,6 +1,8 @@
 """TcEx Framework module init file."""
+# standard library
 import logging
 
+# first-party
 from tcex.logger import TraceLogger
 
 # init tcex logger
