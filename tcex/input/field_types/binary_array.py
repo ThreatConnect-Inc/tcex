@@ -1,12 +1,12 @@
 """Always Array Validator"""
 # standard library
-from typing import Callable, Union
+from typing import Any
 
 # first-party
-from tcex.input.field_types.utils import array_validator
+from .array_abc import Array
 
 
-class BinaryArray(list):
+class BinaryArray(Array):
     """BinaryArray Field Types"""
 
     __input_type__ = 'String'
@@ -14,24 +14,22 @@ class BinaryArray(list):
     _optional = False
 
     @classmethod
-    def __get_validators__(cls) -> Callable:
-        """Define one or more validators for Pydantic custom type."""
-        yield cls._validate
+    def is_empty_member(cls, value: Any):
+        """Implementation of abstract method in Array parent class.
+
+        A empty member of BinaryArray is b''
+        """
+        return value == b''
 
     @classmethod
-    def _validate(cls, value: Union[bytes, list]) -> list[bytes]:
-        """Ensure an list is always returned.
+    def is_array_member(cls, value: Any):
+        """Implementation of abstract method in Array parent class.
 
-        Due to the way that pydantic does validation the
-        method will never be called if value is None.
+        A member of BinaryArray is a bytes instance
         """
-        # Coerce provided value to list type if required
-        if not isinstance(value, list):
-            return [value]
+        return isinstance(value, bytes)
 
-        # validate data if type is not Optional
-        if cls._optional is False:
-            array_validator(value)
 
-        # TODO: [med] should content be validated to be bytes?
-        return cls(value)
+class BinaryArrayOptional(BinaryArray):
+    """BinaryArray Field Types"""
+    _optional = True
