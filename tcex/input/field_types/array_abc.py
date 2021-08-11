@@ -7,7 +7,7 @@ from typing import Any, Generator, Union
 from .exception import EmptyArrayException, HeterogenousArrayException, InvalidMemberException
 
 
-class Array(list, ABC):
+class AbstractArray(list, ABC):
     """Abstract Array class that Array implementations should inherit from"""
 
     _optional = False
@@ -156,3 +156,7 @@ class Array(list, ABC):
     def wrap(cls, value: Any) -> list[Any]:
         """Wrap value in Array (list) if not already an Array."""
         return [value] if not cls.is_array(value) else value
+
+
+class AbstractEntityArray(AbstractArray):
+    """Abstract class that provides extra Entity functionality"""

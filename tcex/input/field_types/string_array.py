@@ -1,11 +1,11 @@
-"""Always Array Validator"""
+"""StringArray Types"""
 # standard library
 from typing import Any
 
-from .array_abc import Array
+from .array_abc import AbstractArray
 
 
-class StringArray(Array):
+class StringArray(AbstractArray):
     """StringArray Field Type"""
 
     __input_type__ = 'String'

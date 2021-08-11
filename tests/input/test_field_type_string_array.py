@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 class TestInputsFieldTypeStringArray(InputTest):
     """Test TcEx StringArray and StringArrayOptional Inputs"""
 
-    def test_field_type_string_array_input_string_string_staged(self, playbook_app: 'MockApp'):
+    def test_field_type_string_array_input_string_staged(self, playbook_app: 'MockApp'):
         """Test StringArray field type with string input.
 
         Input value staged in key value store.
@@ -62,8 +62,8 @@ class TestInputsFieldTypeStringArray(InputTest):
 
         assert tcex.inputs.data.my_string == ['string']
 
-    def test_field_type_string_array_input_object(self, playbook_app: 'MockApp'):
-        """Test StringArray field type with string input.
+    def test_field_type_string_array_input_invalid(self, playbook_app: 'MockApp'):
+        """Test StringArray field type with non-string input.
 
         Exception expected, as value is not a string value
 
@@ -86,7 +86,7 @@ class TestInputsFieldTypeStringArray(InputTest):
         err_msg = str(exc_info.value)
         assert 'Value "{}"' in err_msg and "not of Array's type" in err_msg
 
-    def test_field_type_string_array_input_non_string_array(self, playbook_app: 'MockApp'):
+    def test_field_type_string_array_input_invalid_array(self, playbook_app: 'MockApp'):
         """Test StringArray field type with array that contains non-string member.
 
         Exception expected, as value is not a string array
@@ -111,8 +111,8 @@ class TestInputsFieldTypeStringArray(InputTest):
         assert 'Value "{}"' in err_msg and "not of Array's type" in err_msg
 
     @staticmethod
-    def test_field_type_string_array_input_empty(playbook_app: 'MockApp'):
-        """Test StringArray field type with empty input.
+    def test_field_type_string_array_input_empty_array(playbook_app: 'MockApp'):
+        """Test StringArray field type with empty array input.
 
         This test is expected to fail, as StringArrayOptional type is not used when
         defining my_string.
@@ -136,7 +136,7 @@ class TestInputsFieldTypeStringArray(InputTest):
 
     @staticmethod
     def test_field_type_string_array_optional_input_empty_array(playbook_app: 'MockApp'):
-        """Test StringArray field type with empty input.
+        """Test StringArray field type with empty array input.
 
         No Exception is expected, as StringArrayOptional type is used
 

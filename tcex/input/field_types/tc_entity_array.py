@@ -1,13 +1,12 @@
-"""Always Array Validator"""
+"""TCEntityArray Types"""
 # standard library
-from typing import Callable, Union
+from typing import Any
 
-# first-party
-from tcex.input.field_types.utils import array_validator
+from .array_abc import AbstractEntityArray
 
 
-class TcEntityArray(str):
-    """Ensure an array is always returned for the input."""
+class TCEntityArray(AbstractEntityArray):
+    """TCEntityArray Field Type"""
 
     # TODO: [high] this could be an issue as KeyValueArray will also come in from KeyValueList
     __input_type__ = 'String'
@@ -15,24 +14,33 @@ class TcEntityArray(str):
     _optional = False
 
     @classmethod
-    def __get_validators__(cls) -> Callable:
-        """Define one or more validators for Pydantic custom type."""
-        yield cls._validate
+    def is_empty_member(cls, value: Any):
+        """Implement abstract method in Array parent class.
+
+        An empty member of TCEntityArray is a value that passes the checks defined in
+        TCEntityArray.is_array_member and whose 'value' key maps to an empty string or to None.
+        """
+        # use explicit checks for None and '' to circumvent ambiguity caused by other falsy values
+        return cls.is_array_member(value) and (value['value'] is None or value['value'] == '')
 
     @classmethod
-    def _validate(cls, value: Union[dict, list]) -> list[dict]:
-        """Ensure an list is always returned.
+    def is_array_member(cls, value: Any):
+        """Implement abstract method in Array parent class.
 
-        Due to the way that pydantic does validation the
-        method will never be called if value is None.
+        A member of TCEntityArray is a dictionary that must contain 'type' and 'value' keys.
+        The 'id' key is not explicitly checked for, as Attribute TCEntities do not have it.
+        Additionally, the 'type' key should always map to a non-empty string.
         """
-        # Coerce provided value to list type if required
-        if not isinstance(value, list):
-            return [value]
+        required_keys = ['type', 'value']
+        return (
+            isinstance(value, dict)
+            and all([key in value for key in required_keys])
+            and isinstance(value['type'], str)
+            and value['type'] != ''
+        )
 
-        # validate data if type is not Optional
-        if cls._optional is False:
-            array_validator(value)
 
-        # TODO: [med] should content be validated for id, type, and value fields?
-        return cls(value)
+class TCEntityArrayOptional(TCEntityArray):
+    """TCEntityArrayOptional Field Type"""
+
+    _optional = True

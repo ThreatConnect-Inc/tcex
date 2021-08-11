@@ -64,7 +64,7 @@ class TestInputsFieldTypeBinaryArray(InputTest):
 
         assert tcex.inputs.data.my_binary == [b'binary string']
 
-    def test_field_type_binary_array_input_non_binary_string(self, playbook_app: 'MockApp'):
+    def test_field_type_binary_array_input_invalid(self, playbook_app: 'MockApp'):
         """Test BinaryArray field type with string input.
 
         Exception expected, as value is not a binary value
@@ -88,7 +88,7 @@ class TestInputsFieldTypeBinaryArray(InputTest):
         err_msg = str(exc_info.value)
         assert 'Value "regular string"' in err_msg and "not of Array's type" in err_msg
 
-    def test_field_type_binary_array_input_non_binary_array(self, playbook_app: 'MockApp'):
+    def test_field_type_binary_array_input_invalid_array(self, playbook_app: 'MockApp'):
         """Test BinaryArray field type with array that contains non-binary member.
 
         Exception expected, as value is not a binary array
@@ -113,8 +113,8 @@ class TestInputsFieldTypeBinaryArray(InputTest):
         assert 'Value "regular string"' in err_msg and "not of Array's type" in err_msg
 
     @staticmethod
-    def test_field_type_binary_array_input_empty(playbook_app: 'MockApp'):
-        """Test BinaryArray field type with empty input.
+    def test_field_type_binary_array_input_empty_array(playbook_app: 'MockApp'):
+        """Test BinaryArray field type with empty array input.
 
         This test is expected to fail, as BinaryArrayOptional type is not used when
         defining my_binary.
@@ -138,7 +138,7 @@ class TestInputsFieldTypeBinaryArray(InputTest):
 
     @staticmethod
     def test_field_type_binary_array_optional_input_empty_array(playbook_app: 'MockApp'):
-        """Test BinaryArray field type with empty input.
+        """Test BinaryArray field type with empty array input.
 
         No Exception is expected, as BinaryArrayOptional type is used
 
