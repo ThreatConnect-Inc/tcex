@@ -9,7 +9,7 @@ from pydantic import BaseModel, ValidationError
 # first-party
 from tcex.input.field_types import BinaryArray, BinaryArrayOptional
 
-from .input_test import InputTest
+from .utils import InputTest
 
 if TYPE_CHECKING:
     from ..mock_app import MockApp
@@ -226,9 +226,6 @@ class TestInputsFieldTypeBinaryArray(InputTest):
     @staticmethod
     def test_field_type_binary_array_optional_input_null(playbook_app: 'MockApp'):
         """Test BinaryArray field type with null input.
-
-        Note: this setup is useful in the scenario where an empty b'' is allowed, but we
-        want to guarantee that the value will not be None.
 
         Args:
             playbook_app (fixture): An instance of MockApp.

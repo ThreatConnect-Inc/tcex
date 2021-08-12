@@ -1,4 +1,4 @@
-"""Abstract Array classes containing base validation behavior"""
+"""Abstract Array class containing base validation behavior"""
 
 # standard library
 from abc import ABC, abstractmethod
@@ -72,23 +72,27 @@ class AbstractArray(list, ABC):
             )
 
     @classmethod
-    def is_array(cls, value: Any):
+    def is_array(cls, value: Any) -> bool:
         """Return True if value is Array (list), False otherwise."""
         return isinstance(value, list)
 
     @classmethod
     @abstractmethod
-    def is_array_member(cls, value: Any):
+    def is_array_member(cls, value: Any) -> bool:
         """Check if value is of the StringArray's type.
 
         Each Array implementation must define its own version of this method.
         Return True if value is considered to be a member of the Array implementation
         (is of the Array's type), False otherwise.
-
         """
+        # inheriting from ABC and list causes abstractmethod to not be enforced. Safety check added.
+        # abstractmethod decorator still used, as it provides helpful IDE cues.
+        raise NotImplementedError(
+            'is_array_member method must be implemented by child class of AbstractArray'
+        )
 
     @classmethod
-    def is_empty(cls, value: list):
+    def is_empty(cls, value: list) -> bool:
         """Check if Array is empty. Return True if empty, False otherwise.
 
         This method asserts that the passed-in value is an Array (list). A ValueError will
@@ -105,7 +109,7 @@ class AbstractArray(list, ABC):
 
     @classmethod
     @abstractmethod
-    def is_empty_member(cls, value: Any):
+    def is_empty_member(cls, value: Any) -> bool:
         """Check if value is equal to what is considered the empty value of the Array's Type
 
         Example, for StringArray, the empty value would be considered an empty string: ''.
@@ -116,6 +120,11 @@ class AbstractArray(list, ABC):
 
         Return True if value equal to the Array's empty value, False otherwise.
         """
+        # inheriting from ABC and list causes abstractmethod to not be enforced. Safety check added.
+        # abstractmethod decorator still used, as it provides helpful IDE cues.
+        raise NotImplementedError(
+            'is_empty_member method must be implemented by child class of AbstractArray'
+        )
 
     @classmethod
     def assert_type(cls, value: Any) -> Union[Any, list[Any]]:
@@ -156,7 +165,3 @@ class AbstractArray(list, ABC):
     def wrap(cls, value: Any) -> list[Any]:
         """Wrap value in Array (list) if not already an Array."""
         return [value] if not cls.is_array(value) else value
-
-
-class AbstractEntityArray(AbstractArray):
-    """Abstract class that provides extra Entity functionality"""

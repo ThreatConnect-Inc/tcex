@@ -9,7 +9,7 @@ from pydantic import BaseModel, ValidationError
 # first-party
 from tcex.input.field_types import TCEntityArray, TCEntityArrayOptional
 
-from .input_test import InputTest
+from .utils import InputTest
 
 if TYPE_CHECKING:
     from ..mock_app import MockApp
@@ -80,28 +80,48 @@ class TestInputsFieldTypeTCEntityArray(InputTest):
 
         invalid_entity = 'not a tc entity'
         # has no value key
-        invalid_entity2 = {'type': 'Address'}
+        invalid_entity2 = {'type': 'Address', 'id': '10001'}
         # has no type key
-        invalid_entity3 = {'value': '8.8.8.8'}
+        invalid_entity3 = {'value': '8.8.8.8', 'id': '10001'}
         # type is empty string
-        invalid_entity4 = {'type': '', 'value': '8.8.8.8'}
+        invalid_entity4 = {'type': '', 'value': '8.8.8.8', 'id': '10001'}
         # type is None
-        invalid_entity5 = {'type': None, 'value': '8.8.8.8'}
+        invalid_entity5 = {'type': None, 'value': '8.8.8.8', 'id': '10001'}
         # type is anything else
-        invalid_entity6 = {'type': [], 'value': '8.8.8.8'}
+        invalid_entity6 = {'type': [], 'value': '8.8.8.8', 'id': '10001'}
+        # value is not a string (check covers, indicators, groups, etc.)
+        invalid_entity7 = {'type': 'Address', 'value': [], 'id': '10001'}
+        # Indicator has no id
+        invalid_entity8 = {'type': 'Address', 'value': '8.8.8.8'}
+        # Indicator id is not string
+        invalid_entity9 = {'type': 'Address', 'value': '8.8.8.8', 'id': []}
+        # Group has no id
+        invalid_entity10 = {'type': 'Adversary', 'value': 'Adversary Name'}
+        # Group id is not string
+        invalid_entity11 = {'type': 'Adversary', 'value': 'Adversary Name', 'id': []}
 
         # same scenarios as above, except using array inputs
-        invalid_entity7 = ['not a tc entity']
+        invalid_entity12 = ['not a tc entity']
         # has no value key
-        invalid_entity8 = [{'type': 'Address'}]
+        invalid_entity13 = [{'type': 'Address', 'id': '10001'}]
         # has no type key
-        invalid_entity9 = [{'value': '8.8.8.8'}]
+        invalid_entity14 = [{'value': '8.8.8.8', 'id': '10001'}]
         # type is empty string
-        invalid_entity10 = [{'type': '', 'value': '8.8.8.8'}]
+        invalid_entity15 = [{'type': '', 'value': '8.8.8.8', 'id': '10001'}]
         # type is None
-        invalid_entity11 = [{'type': None, 'value': '8.8.8.8'}]
+        invalid_entity16 = [{'type': None, 'value': '8.8.8.8', 'id': '10001'}]
         # type is anything else
-        invalid_entity12 = [{'type': [], 'value': '8.8.8.8'}]
+        invalid_entity17 = [{'type': [], 'value': '8.8.8.8', 'id': '10001'}]
+        # value is not a string (check covers, indicators, groups, etc.)
+        invalid_entity18 = [{'type': 'Address', 'value': [], 'id': '10001'}]
+        # Indicator has no id
+        invalid_entity19 = [{'type': 'Address', 'value': '8.8.8.8'}]
+        # Indicator id is not string
+        invalid_entity20 = [{'type': 'Address', 'value': '8.8.8.8', 'id': []}]
+        # Group has no id
+        invalid_entity21 = [{'type': 'Adversary', 'value': 'Adversary Name'}]
+        # Group id is not string
+        invalid_entity22 = [{'type': 'Adversary', 'value': 'Adversary Name', 'id': []}]
 
         class PytestModel(BaseModel):
             """Test Model for Inputs"""
@@ -118,6 +138,16 @@ class TestInputsFieldTypeTCEntityArray(InputTest):
             my_entity10: TCEntityArray
             my_entity11: TCEntityArray
             my_entity12: TCEntityArray
+            my_entity13: TCEntityArray
+            my_entity14: TCEntityArray
+            my_entity15: TCEntityArray
+            my_entity16: TCEntityArray
+            my_entity17: TCEntityArray
+            my_entity18: TCEntityArray
+            my_entity19: TCEntityArray
+            my_entity20: TCEntityArray
+            my_entity21: TCEntityArray
+            my_entity22: TCEntityArray
 
         config_data = {
             'my_entity': invalid_entity,
@@ -131,7 +161,17 @@ class TestInputsFieldTypeTCEntityArray(InputTest):
             'my_entity9': invalid_entity9,
             'my_entity10': invalid_entity10,
             'my_entity11': invalid_entity11,
-            'my_entity12': invalid_entity12
+            'my_entity12': invalid_entity12,
+            'my_entity13': invalid_entity13,
+            'my_entity14': invalid_entity14,
+            'my_entity15': invalid_entity15,
+            'my_entity16': invalid_entity16,
+            'my_entity17': invalid_entity17,
+            'my_entity18': invalid_entity18,
+            'my_entity19': invalid_entity19,
+            'my_entity20': invalid_entity20,
+            'my_entity21': invalid_entity21,
+            'my_entity22': invalid_entity22,
         }
         app = playbook_app(config_data=config_data)
         tcex = app.tcex
@@ -144,8 +184,8 @@ class TestInputsFieldTypeTCEntityArray(InputTest):
         # all TCEntityArray definitions in model resulted in error
         assert all(entity in err_msg for entity in config_data.keys())
 
-        # all 12 TCEntityArray definitions resulted in the same error
-        assert err_msg.count("not of Array's type") == 12
+        # all TCEntityArray definitions resulted in the same error
+        assert err_msg.count("not of Array's type") == len(config_data.keys())
 
     @staticmethod
     def test_field_type_entity_array_input_empty_array(playbook_app: 'MockApp'):
@@ -199,40 +239,32 @@ class TestInputsFieldTypeTCEntityArray(InputTest):
 
         Per TCEntityArray.is_empty_member, an empty entity is considered to be a
         dictionary that contains "type" and "value" keys and whose "value" key is an
-        empty string or None. The "type" key must be a non-empty string in order for the
+        empty string. The "type" key must be a non-empty string in order for the
         value to be considered an Entity.
 
         Args:
             playbook_app (fixture): An instance of MockApp.
         """
         entity = {'type': 'Address', 'value': '', 'id': '1000'}
-        entity2 = {'type': 'Address', 'value': None, 'id': '1000'}
 
         class PytestModel(BaseModel):
             """Test Model for Inputs"""
 
             # test for both empty cases
             my_entity: Optional[TCEntityArray]
-            my_entity2: Optional[TCEntityArray]
 
-        config_data = {
-            'my_entity': '#App:1234:my_entity!TCEntity',
-            'my_entity2': '#App:1234:my_entity2!TCEntity'
-        }
+        config_data = {'my_entity': '#App:1234:my_entity!TCEntity'}
         app = playbook_app(config_data=config_data)
         tcex = app.tcex
         self._stage_key_value('my_entity', '#App:1234:my_entity!TCEntity', entity, tcex)
-        self._stage_key_value('my_entity2', '#App:1234:my_entity2!TCEntity', entity2, tcex)
 
         with pytest.raises(ValidationError) as exc_info:
             tcex.inputs.add_model(PytestModel)
 
         err_msg = str(exc_info.value)
 
-        # validate both empty tc entity cases were caught by validation
-        assert 'my_entity' in err_msg and 'my_entity2' in err_msg
-        # validate both cases produced the same error
-        assert err_msg.count('may not be empty') == 2
+        assert 'my_entity' in err_msg
+        assert 'may not be empty' in err_msg
 
     def test_field_type_entity_array_optional_input_empty_entity(self, playbook_app: 'MockApp'):
         """Test TCEntityArray field type with empty input.
@@ -241,7 +273,7 @@ class TestInputsFieldTypeTCEntityArray(InputTest):
 
         Per TCEntityArray.is_empty_member, an empty entity is considered to be a
         dictionary that contains "type" and "value" keys and whose "value" key is an
-        empty string or None. The "type" key must be a non-empty string in order for the
+        empty string. The "type" key must be a non-empty string in order for the
         value to be considered an Entity.
 
         Args:
@@ -249,28 +281,23 @@ class TestInputsFieldTypeTCEntityArray(InputTest):
         """
 
         entity = {'type': 'File', 'value': '', 'id': '1000'}
-        entity2 = {'type': 'File', 'value': None, 'id': '1000'}
 
         class PytestModel(BaseModel):
             """Test Model for Inputs"""
 
             # test for both empty cases
             my_entity: Optional[TCEntityArrayOptional]
-            my_entity2: Optional[TCEntityArrayOptional]
 
         config_data = {
             'my_entity': '#App:1234:my_entity!TCEntity',
-            'my_entity2': '#App:1234:my_entity2!TCEntity'
         }
         app = playbook_app(config_data=config_data)
         tcex = app.tcex
         self._stage_key_value('my_entity', '#App:1234:my_entity!TCEntity', entity, tcex)
-        self._stage_key_value('my_entity2', '#App:1234:my_entity2!TCEntity', entity2, tcex)
         tcex.inputs.add_model(PytestModel)
 
         # values coerced to Arrays (list)
         assert tcex.inputs.data.my_entity == [entity]
-        assert tcex.inputs.data.my_entity2 == [entity2]
 
     @staticmethod
     def test_field_type_entity_array_input_null(playbook_app: 'MockApp'):
@@ -295,9 +322,6 @@ class TestInputsFieldTypeTCEntityArray(InputTest):
     @staticmethod
     def test_field_type_entity_array_optional_input_null(playbook_app: 'MockApp'):
         """Test TCEntityArray field type with null input.
-
-        Note: this setup is useful in the scenario where an empty '' is allowed, but we
-        want to guarantee that the value will not be None.
 
         Args:
             playbook_app (fixture): An instance of MockApp.

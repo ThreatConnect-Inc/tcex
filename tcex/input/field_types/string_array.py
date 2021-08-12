@@ -10,10 +10,9 @@ class StringArray(AbstractArray):
 
     __input_type__ = 'String'
     __playbook_data_type__ = ['String', 'StringArray']
-    _optional = False
 
     @classmethod
-    def is_empty_member(cls, value: Any):
+    def is_empty_member(cls, value: Any) -> bool:
         """Implement abstract method in Array parent class.
 
         An empty member of StringArray is ''
@@ -21,7 +20,7 @@ class StringArray(AbstractArray):
         return value == ''
 
     @classmethod
-    def is_array_member(cls, value: Any):
+    def is_array_member(cls, value: Any) -> bool:
         """Implement abstract method in Array parent class.
 
         A member of StringArray is a string instance

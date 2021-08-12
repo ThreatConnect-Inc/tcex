@@ -10,10 +10,9 @@ class BinaryArray(AbstractArray):
 
     __input_type__ = 'String'
     __playbook_data_type__ = ['Binary', 'BinaryArray']
-    _optional = False
 
     @classmethod
-    def is_empty_member(cls, value: Any):
+    def is_empty_member(cls, value: Any) -> bool:
         """Implement abstract method in Array parent class.
 
         An empty member of BinaryArray is b''
@@ -21,7 +20,7 @@ class BinaryArray(AbstractArray):
         return value == b''
 
     @classmethod
-    def is_array_member(cls, value: Any):
+    def is_array_member(cls, value: Any) -> bool:
         """Implement abstract method in Array parent class.
 
         A member of BinaryArray is a bytes instance
