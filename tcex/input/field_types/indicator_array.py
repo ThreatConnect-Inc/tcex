@@ -37,6 +37,6 @@ class IndicatorArray(IntelArray):
 
 
 class IndicatorArrayOptional(IndicatorArray):
-    """Optional IndicatorArray Field Type"""
+    """IndicatorArrayOptional Field Type"""
 
     _optional = True

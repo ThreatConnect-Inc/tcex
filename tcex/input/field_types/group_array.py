@@ -37,6 +37,6 @@ class GroupArray(IntelArray):
 
 
 class GroupArrayOptional(GroupArray):
-    """Optional GroupArray Field Type"""
+    """GroupArrayOptional Field Type"""
 
     _optional = True

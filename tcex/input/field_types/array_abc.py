@@ -149,7 +149,6 @@ class AbstractArray(list, ABC):
         """
         if cls.is_array(value):
             cls.assert_not_empty(value)
-            # could add hook here that filters Array for only value of Array implementation's type
             cls.assert_homogenous(value)
         else:
             cls.assert_not_empty_member(value)
