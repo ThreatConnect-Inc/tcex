@@ -1,30 +1,22 @@
 """IndicatorArray Types"""
 # standard library
-from typing import Any, Union
+from typing import Any
 
 # first-party
-from tcex.input.field_types import StringArray, TCEntityArray
-from tcex.input.field_types.hybrid_array_abc import AbstractHybridArray
+from tcex.input.field_types.intel_array import IntelArray
 from tcex.input.field_types.utils import ti_utils
 
 
-class IndicatorArray(AbstractHybridArray):
+class IndicatorArray(IntelArray):
     """IndicatorArray Field Type
 
-    This type is a hybrid type of StringArray and TCEntityArray. This means that IndicatorArray
-    may hold both String and TCEntity types.
+    This type is a descendant of IntelArray. This means that IndicatorArray is a HybridArray that
+    may hold both String and TCEntity types as IntelArray does, except that IndicatorArray
+    further checks that TCEntities have a 'type' that is a valid indicator type.
     """
 
     __input_type__ = 'String'
     __playbook_data_type__ = ['String', 'StringArray', 'TCEntity', 'TCEntityArray']
-
-    @classmethod
-    def _type_compositions(cls) -> list[Union[StringArray, TCEntityArray]]:
-        """Implement abstract method in Array parent class.
-
-        IndicatorArray is a HybridArray composed of StringArray and TCEntityArray.
-        """
-        return [StringArray, TCEntityArray]
 
     @classmethod
     def is_array_member(cls, value: Any) -> bool:

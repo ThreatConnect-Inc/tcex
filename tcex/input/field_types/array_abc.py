@@ -157,11 +157,11 @@ class AbstractArray(list, ABC):
         return value
 
     @classmethod
+    def wrap(cls, value: Any) -> list[Any]:
+        """Wrap value in Array (list) if not already an Array."""
+        return cls([value]) if not cls.is_array(value) else cls(value)
+
+    @classmethod
     def __get_validators__(cls) -> Generator:
         """Define one or more validators for Pydantic custom type."""
         yield from [cls.assert_type, cls.wrap]
-
-    @classmethod
-    def wrap(cls, value: Any) -> list[Any]:
-        """Wrap value in Array (list) if not already an Array."""
-        return [value] if not cls.is_array(value) else value

@@ -487,3 +487,26 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
         tcex.inputs.add_model(PytestModel)
 
         assert tcex.inputs.data.my_indicator is None
+
+    @staticmethod
+    def test_field_type_indicator_array_retrieval_methods(playbook_app: 'MockApp'):
+        """Test 'entities' and 'values' methods inherited from IntelArray."""
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_indicator_array: IndicatorArray
+
+        entity = {'type': 'Address', 'value': '1.1.1.1', 'id': '500'}
+        ind_array = ['8.8.8.8', entity]
+        config_data = {'my_indicator_array': ind_array}
+        tcex = playbook_app(config_data=config_data).tcex
+        tcex.inputs.add_model(PytestModel)
+
+        assert tcex.inputs.data.my_indicator_array == ind_array
+
+        # entities method returns only TCEntity members
+        assert list(tcex.inputs.data.my_indicator_array.entities()) == [entity]
+
+        # values method returns string members as well as 'value' key of TCEntity members
+        assert list(tcex.inputs.data.my_indicator_array.values()) == ['8.8.8.8', '1.1.1.1']
