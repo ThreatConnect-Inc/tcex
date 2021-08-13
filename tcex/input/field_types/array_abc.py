@@ -4,7 +4,12 @@
 from abc import ABC, abstractmethod
 from typing import Any, Generator, Union
 
-from .exception import EmptyArrayException, HeterogenousArrayException, InvalidMemberException
+from .exception import (
+    EmptyArrayException,
+    EmptyMemberException,
+    HeterogenousArrayException,
+    InvalidMemberException,
+)
 
 
 class AbstractArray(list, ABC):
@@ -66,7 +71,7 @@ class AbstractArray(list, ABC):
         cls.assert_is_member(value)
 
         if not cls._optional and cls.is_empty_member(value):
-            raise InvalidMemberException(
+            raise EmptyMemberException(
                 f'Value "{value}" may not be empty. Consider using Optional field '
                 'definition if empty values are necessary.'
             )

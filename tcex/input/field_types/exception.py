@@ -10,4 +10,8 @@ class EmptyArrayException(ValueError):
 
 
 class InvalidMemberException(ValueError):
-    """Raised when Array is found to contain a member that is not of Array's type or is empty"""
+    """Raised when Array is found to contain a member that is not of Array's type"""
+
+
+class EmptyMemberException(ValueError):
+    """Raised when Array is found to contain a member that is of Array's type but is empty"""

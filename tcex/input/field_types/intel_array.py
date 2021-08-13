@@ -3,8 +3,9 @@
 from typing import Union
 
 # first-party
-from tcex.input.field_types import StringArray, TCEntityArray
 from tcex.input.field_types.hybrid_array_abc import AbstractHybridArray
+from tcex.input.field_types.string_array import StringArray
+from tcex.input.field_types.tc_entity_array import TCEntityArray
 
 
 class IntelArray(AbstractHybridArray):
