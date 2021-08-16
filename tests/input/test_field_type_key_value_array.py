@@ -29,11 +29,11 @@ class TestInputsFieldTypeKeyValueArray(InputTest):
             # value is Binary TODO: figure out how to pass binary data as 'value' for testing
             # ({'key': 'binary', 'value': '#App:1234:my_binary!Binary'},
             #  '#App:1234:my_key_value!KeyValue'),
-            # value is Binary TODO: figure out how to pass binary data as 'value' for testing
-            (
-                {'key': 'binary_array', 'value': '#App:1234:my_binary!BinaryArray'},
-                '#App:1234:my_key_value!KeyValue',
-            ),
+            # value is Binary Array TODO: figure out how to pass binary data as 'value' for testing
+            # (
+            #     {'key': 'binary_array', 'value': '#App:1234:my_binary!BinaryArray'},
+            #     '#App:1234:my_key_value!KeyValue',
+            # ),
             # value is a TCEntity
             (
                 {'key': 'entity', 'value': {'type': 'Address', 'value': '8.8.8.8', 'id': '1000'}},
@@ -47,6 +47,14 @@ class TestInputsFieldTypeKeyValueArray(InputTest):
             # value is a KeyValue
             (
                 {'key': 'nested', 'value': {'key': 'username', 'value': 'test-user'}},
+                '#App:1234:my_key_value!KeyValue',
+            ),
+            # value is a KeyValue with optional variableType key
+            (
+                {
+                    'key': 'nested',
+                    'value': {'key': 'username', 'value': 'test-user', 'variableType': 'custom'},
+                },
                 '#App:1234:my_key_value!KeyValue',
             ),
             # value is a KeyValueArray
@@ -85,9 +93,33 @@ class TestInputsFieldTypeKeyValueArray(InputTest):
                 [{'key': 'nested', 'value': {'key': 'username', 'value': 'test-user'}}],
                 '#App:1234:my_key_value!KeyValueArray',
             ),
+            # value is a KeyValue with optional variableType key
+            (
+                {
+                    'key': 'nested',
+                    'value': [{'key': 'username', 'value': 'test-user', 'variableType': 'custom'}],
+                },
+                '#App:1234:my_key_value!KeyValue',
+            ),
             # value is a KeyValueArray
             (
                 [{'key': 'nested', 'value': [{'key': 'username', 'value': 'test-user'}]}],
+                '#App:1234:my_key_value!KeyValueArray',
+            ),
+            # value is a KeyValueArray, KeyValueArray has a KeyValue with a nested KeyValue
+            (
+                # start of outermost KeyValueArray
+                [
+                    # first member of outermost KeyValueArray
+                    {
+                        'key': 'nested',
+                        # 'value' is itself a KeyValueArray
+                        'value': [
+                            # KeyValue within KeyValueArray has a 'value' that is also a KeyValue
+                            {'key': 'nested', 'value': {'key': 'username', 'value': 'test-user'}}
+                        ],
+                    }
+                ],
                 '#App:1234:my_key_value!KeyValueArray',
             ),
         ],
@@ -113,7 +145,6 @@ class TestInputsFieldTypeKeyValueArray(InputTest):
 
             my_key_value: KeyValueArray
 
-        # key_value = {'key': 'username', 'value': 'test-user'}
         config_data = {'my_key_value': variable_name}
         app = playbook_app(config_data=config_data)
         tcex = app.tcex
@@ -130,6 +161,200 @@ class TestInputsFieldTypeKeyValueArray(InputTest):
         parsed_input = tcex.inputs.data.my_key_value
 
         # input will be wrapped in list if not already a list
+        assert parsed_input == [key_value] if not isinstance(key_value, list) else key_value
+
+    @pytest.mark.parametrize(
+        'key_value',
+        [
+            # single KeyValue inputs
+            # KeyValue missing 'key' field
+            {'value': 'test-user'},
+            # KeyValue missing 'value' field
+            {'key': 'username'},
+            # KeyValue has extra fields (therefore not a KeyValue)
+            {'key': 'username', 'value': 'test-user', 'other': 'other'},
+            # 'value' is a KeyValue that is missing 'key'
+            {'key': 'username', 'value': {'value': 'test-user'}},
+            # 'value' is a KeyValue that is missing 'value'
+            {'key': 'username', 'value': {'key': 'username'}},
+            # 'value' is a KeyValue that has extra fields (therefore not a KeyValue)
+            {
+                'key': 'username',
+                'value': {'key': 'username', 'value': 'test-user', 'other': 'other'},
+            },
+            # 'value' is a KeyValueArray with KeyValue that is missing 'key'
+            {'key': 'username', 'value': [{'value': 'test-user'}]},
+            # 'value' is a KeyValueArray with KeyValue that is missing 'value'
+            {'key': 'username', 'value': [{'key': 'username'}]},
+            # 'value' is a KeyValueArray with KeyValue that has extra fields
+            {
+                'key': 'username',
+                'value': [{'key': 'username', 'value': 'test-user', 'other': 'other'}],
+            },
+            # scenarios defined above, but with KeyValueArray inputs
+            # KeyValue missing 'key' field
+            [{'value': 'test-user'}],
+            # KeyValue missing 'value' field
+            [{'key': 'username'}],
+            # KeyValue has extra fields (therefore not a KeyValue)
+            [{'key': 'username', 'value': 'test-user', 'other': 'other'}],
+            # 'value' is a KeyValue that is missing 'key'
+            [{'key': 'username', 'value': {'value': 'test-user'}}],
+            # 'value' is a KeyValue that is missing 'value'
+            [{'key': 'username', 'value': {'key': 'username'}}],
+            # 'value' is a KeyValue that has extra fields (therefore not a KeyValue)
+            [
+                {
+                    'key': 'username',
+                    'value': {'key': 'username', 'value': 'test-user', 'other': 'other'},
+                }
+            ],
+            # 'value' is a KeyValueArray with KeyValue that is missing 'key'
+            [{'key': 'username', 'value': [{'value': 'test-user'}]}],
+            # 'value' is a KeyValueArray with KeyValue that is missing 'value'
+            [{'key': 'username', 'value': [{'key': 'username'}]}],
+            # 'value' is a KeyValueArray with KeyValue that has extra fields
+            [
+                {
+                    'key': 'username',
+                    'value': [{'key': 'username', 'value': 'test-user', 'other': 'other'}],
+                }
+            ],
+        ],
+    )
+    def test_field_type_key_value_array_input_invalid(self, playbook_app: 'MockApp', key_value):
+        """Test KeyValueArray field type with input that is considered invalid.
+
+        Input value cannot be staged, as TCEX will not let use insert bad KeyValue data into
+        KeyValue store.
+
+        Args:
+            playbook_app (fixture): An instance of MockApp.
+            key_value: A KeyValue or KeyValueArray
+        """
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_key_value: KeyValueArray
+
+        config_data = {'my_key_value': key_value}
+        app = playbook_app(config_data=config_data)
+        tcex = app.tcex
+
+        with pytest.raises(ValueError) as exc_info:
+            tcex.inputs.add_model(PytestModel)
+
+        assert "is not of Array's type" in str(exc_info.value)
+
+    @pytest.mark.parametrize(
+        'key_value,variable_name',
+        [
+            # KeyValue input
+            # value is an empty String
+            ({'key': 'username', 'value': ''}, '#App:1234:my_key_value!KeyValue'),
+            # value is an empty String
+            ({'key': 'username', 'value': None}, '#App:1234:my_key_value!KeyValue'),
+            # value is Binary TODO: figure out how to pass binary data as 'value' for testing
+            # ({'key': 'binary', 'value': '#App:1234:my_binary!Binary'},
+            #  '#App:1234:my_key_value!KeyValue'),
+            # value is an empty array
+            (
+                {'key': 'nested', 'value': []},
+                '#App:1234:my_key_value!KeyValue',
+            ),
+        ],
+    )
+    def test_field_type_key_value_array_input_empty_key_value(
+        self, playbook_app: 'MockApp', key_value, variable_name
+    ):
+        """Test KeyValueArray field type with KeyValue input that is considered empty. Error
+        expected because emptiness checks are performed when KeyValueArray is initialized with
+        an single KeyValue that is considered empty.
+
+        see KeyValueArray.is_empty_member for information on what is considered an empty KeyValue.
+
+        Input value staged in key value store.
+
+        Args:
+            playbook_app (fixture): An instance of MockApp.
+            key_value: A KeyValue or KeyValueArray
+            variable_name: the variable to use to stage the key_value
+        """
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_key_value: KeyValueArray
+
+        config_data = {'my_key_value': variable_name}
+        app = playbook_app(config_data=config_data)
+        tcex = app.tcex
+
+        # stage Binary data into variable name set in KeyValue's value
+        # if key_value['key'] == 'binary':
+        #     self._stage_key_value('my_binary', key_value.get('value'), b'binary', tcex)
+        # if key_value['key'] == 'binary_array':
+        #     self._stage_key_value('my_binary', key_value.get('value'), [b'binary'], tcex)
+
+        self._stage_key_value('my_key_value', variable_name, key_value, tcex)
+        with pytest.raises(ValueError) as exc_info:
+            tcex.inputs.add_model(PytestModel)
+
+        assert 'may not be empty' in str(exc_info.value)
+
+    @pytest.mark.parametrize(
+        'key_value,variable_name',
+        [
+            # KeyValue input
+            # value is an empty String
+            ({'key': 'username', 'value': ''}, '#App:1234:my_key_value!KeyValue'),
+            # value is an empty String
+            ({'key': 'username', 'value': None}, '#App:1234:my_key_value!KeyValue'),
+            # value is Binary TODO: figure out how to pass binary data as 'value' for testing
+            # ({'key': 'binary', 'value': '#App:1234:my_binary!Binary'},
+            #  '#App:1234:my_key_value!KeyValue'),
+            # value is an empty array
+            (
+                {'key': 'nested', 'value': []},
+                '#App:1234:my_key_value!KeyValue',
+            ),
+        ],
+    )
+    def test_field_type_key_value_array_optional_input_empty_key_value(
+        self, playbook_app: 'MockApp', key_value, variable_name
+    ):
+        """Test KeyValueArrayOptional field type with KeyValue input that is considered empty.
+        Empty KeyValues allowed through, as KeyValueArrayOptional type is used.
+
+        See KeyValueArray.is_empty_member for information on what is considered an empty KeyValue.
+
+        Input value staged in key value store.
+
+        Args:
+            playbook_app (fixture): An instance of MockApp.
+            key_value: A KeyValue or KeyValueArray
+            variable_name: the variable to use to stage the key_value
+        """
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_key_value: KeyValueArrayOptional
+
+        config_data = {'my_key_value': variable_name}
+        app = playbook_app(config_data=config_data)
+        tcex = app.tcex
+
+        # stage Binary data into variable name set in KeyValue's value
+        # if key_value['key'] == 'binary':
+        #     self._stage_key_value('my_binary', key_value.get('value'), b'binary', tcex)
+        # if key_value['key'] == 'binary_array':
+        #     self._stage_key_value('my_binary', key_value.get('value'), [b'binary'], tcex)
+
+        self._stage_key_value('my_key_value', variable_name, key_value, tcex)
+        tcex.inputs.add_model(PytestModel)
+        parsed_input = tcex.inputs.data.my_key_value
         assert parsed_input == [key_value] if not isinstance(key_value, list) else key_value
 
     @staticmethod

@@ -23,17 +23,27 @@ class KeyValueArray(AbstractArray):
         """Implement abstract method in Array parent class.
 
         An empty member of KeyValueArray is a value that passes the checks defined in
-        KeyValueArray.is_array_member and is either None, or has a 'value' that is either None
-        or is considered to be an empty member of StringArray, BinaryArray, or TCEntityArray.
+        KeyValueArray.is_array_member and either is None, or is a KeyValue that has a 'value' that
+        is None, an empty list, or is considered to be an empty member of StringArray or
+        BinaryArray.
+
+        If the passed-in value is a KeyValue whose 'value' is another KeyValue or a TCEntity,
+        the KeyValue/TCEntity found in the 'value' portion are not checked for emptiness. The
+        passed-in KeyValue is considered non-empty in these cases.
         """
         is_member = cls.is_array_member(value)
 
         if is_member:
-            key_value = value.get('value')
-            if value is None or key_value is None:
+            if value is None:
                 return True
 
-            other_allowed_types = [StringArray, BinaryArray, TCEntityArray]
+            key_value = value.get('value')
+            # 'value' of KeyValue is set to None or empty list
+            if key_value in [None, []]:
+                return True
+
+            # 'value' of KeyValue is set to empty member of StringArray or BinaryArray
+            other_allowed_types = [StringArray, BinaryArray]
             if any(_type.is_empty_member(key_value) for _type in other_allowed_types):
                 return True
         else:
