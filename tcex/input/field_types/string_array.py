@@ -23,9 +23,9 @@ class StringArray(AbstractArray):
     def is_array_member(cls, value: Any) -> bool:
         """Implement abstract method in Array parent class.
 
-        A member of StringArray is a string instance
+        A member of StringArray is a string instance or None
         """
-        return isinstance(value, str)
+        return isinstance(value, (str, type(None)))
 
 
 class StringArrayOptional(StringArray):

@@ -8,6 +8,7 @@ from pydantic import BaseModel, ValidationError
 
 # first-party
 from tcex.input.field_types import StringArray, StringArrayOptional
+from tcex.input.field_types.customizable import custom_string_array
 
 from .utils import InputTest
 
@@ -284,3 +285,88 @@ class TestInputsFieldTypeStringArray(InputTest):
         tcex.inputs.add_model(PytestModel)
 
         assert tcex.inputs.data.my_string is None
+
+    def test_field_type_string_array_input_array_with_empty_and_null_members(
+            self, playbook_app: 'MockApp'
+    ):
+        """Test StringArray field type with Array input that contains empty and null members.
+
+        An empty member of StringArray is considered to be ''.
+        A null member of StringArray is considered to be None.
+
+        By default, StringArray only checks that list used to initialize Array type is not empty.
+        Null and empty members are allowed to be in the array by default, so no error expected.
+        """
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_string: StringArray
+
+        config_data = {'my_string': '#App:1234:my_string!StringArray'}
+        app = playbook_app(config_data=config_data)
+        tcex = app.tcex
+        self._stage_key_value('my_string', '#App:1234:my_string!StringArray', ['', None], tcex)
+        tcex.inputs.add_model(PytestModel)
+
+        # empty and null members are ok
+        assert tcex.inputs.data.my_string == ['', None]
+
+    def test_field_type_string_array_input_array_with_empty_and_null_members_empty_not_allowed(
+            self, playbook_app: 'MockApp'
+    ):
+        """Test StringArray field type with Array input that contains empty and null members.
+
+        An empty member of StringArray is considered to be ''.
+        A null member of StringArray is considered to be None.
+
+        By default, StringArray only checks that list used to initialize Array type is not empty.
+        Null and empty members are allowed to be in the array by default.
+
+        StringArray is configured to not accept empty members, so an error is expected due to
+        '' being in the input.
+        """
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_string: custom_string_array(allow_empty_members=False)
+
+        config_data = {'my_string': '#App:1234:my_string!StringArray'}
+        app = playbook_app(config_data=config_data)
+        tcex = app.tcex
+        self._stage_key_value('my_string', '#App:1234:my_string!StringArray', ['', None], tcex)
+        with pytest.raises(ValueError) as exc_info:
+            tcex.inputs.add_model(PytestModel)
+
+        # error due to '' being in input
+        assert 'may not be empty' in str(exc_info.value)
+
+    def test_field_type_string_array_input_array_with_empty_and_null_members_null_not_allowed(
+            self, playbook_app: 'MockApp'
+    ):
+        """Test StringArray field type with Array input that contains empty and/or null members.
+
+        An empty member of StringArray is considered to be ''.
+        A null member of StringArray is considered to be None.
+
+        By default, StringArray only checks that list used to initialize Array type is not empty.
+        Null and empty members are allowed to be in the array by default.
+
+        StringArray is configured to not accept null members, so an error is expected due to
+        None being in the input.
+        """
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_string: custom_string_array(allow_null_members=False)
+
+        config_data = {'my_string': '#App:1234:my_string!StringArray'}
+        app = playbook_app(config_data=config_data)
+        tcex = app.tcex
+        self._stage_key_value('my_string', '#App:1234:my_string!StringArray', ['', None], tcex)
+        with pytest.raises(ValueError) as exc_info:
+            tcex.inputs.add_model(PytestModel)
+
+        # error due to None being in input
+        assert 'may not be null' in str(exc_info.value)
