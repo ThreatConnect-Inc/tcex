@@ -13,13 +13,24 @@ class TCEntityArray(AbstractArray):
     __playbook_data_type__ = ['TCEntity', 'TCEntityArray']
 
     @classmethod
+    def is_null_member(cls, value: Any) -> bool:
+        """Extend basic null member check with checks specific to TCEntity.
+
+        On top of the is_null_member check in Array parent class, a TCEntity is considered null
+        when its 'value' key is None.
+        """
+        return (
+            super().is_null_member(value) or cls.is_array_member(value) and value['value'] is None
+        )
+
+    @classmethod
     def is_empty_member(cls, value: Any) -> bool:
         """Implement abstract method in Array parent class.
 
         An empty member of TCEntityArray is a value that passes the checks defined in
         TCEntityArray.is_array_member and whose 'value' key maps to an empty string.
         """
-        # use explicit checks for None and '' to circumvent ambiguity caused by other falsy values
+        # use explicit checks for '' to circumvent ambiguity caused by other falsy values
         return cls.is_array_member(value) and value['value'] == ''
 
     @classmethod
@@ -29,26 +40,34 @@ class TCEntityArray(AbstractArray):
         A member of TCEntityArray is a dictionary that must contain 'id', 'type', and 'value' keys.
         Additionally, the 'type' and 'id' keys should always map to a non-empty string.
 
-        The 'value' key is not checked to be a non-empty string, as the TCEntityArray could be
-        marked as optional. The check for an empty 'value' key is performed in is_empty_member.
+        The 'value' key is checked to be either an empty string or None.  The check for an empty
+        'value' key is performed in is_empty_member. The check for a null 'value' key is performed
+        in is_null_member.
         """
         is_array_member = True
         required_keys = ['type', 'value', 'id']
 
+        if value is None:
+            return True
+
         if isinstance(value, dict):
+            if len(value.keys()) != len(required_keys):
+                is_array_member = False
+
             for key in required_keys:
                 if key not in value:
                     is_array_member = False
 
                 key_value = value.get(key)
 
-                # value[key] must be a string
-                if not isinstance(key_value, str):
-                    is_array_member = False
-
-                # value[key] must be non-empty string if key is not 'value' (could be optional)
-                if key != 'value' and key_value == '':
-                    is_array_member = False
+                if key == 'value':
+                    # 'value' key must map to a string or None
+                    if not isinstance(key_value, (str, type(None))):
+                        is_array_member = False
+                else:
+                    # other keys must map to non-empty strings
+                    if not isinstance(key_value, str) or key_value == '':
+                        is_array_member = False
         else:
             # anything not a dictionary cannot be a member of TCEntityArray
             is_array_member = False

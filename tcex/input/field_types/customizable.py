@@ -1,11 +1,12 @@
 """Functions that allow customization of existing types"""
+# first-party
 from tcex.input.field_types.binary_array import BinaryArray
-from tcex.input.field_types.string_array import StringArray
-from tcex.input.field_types.tc_entity_array import TCEntityArray
-from tcex.input.field_types.key_value_array import KeyValueArray
-from tcex.input.field_types.intel_array import IntelArray
 from tcex.input.field_types.group_array import GroupArray
 from tcex.input.field_types.indicator_array import IndicatorArray
+from tcex.input.field_types.intel_array import IntelArray
+from tcex.input.field_types.key_value_array import KeyValueArray
+from tcex.input.field_types.string_array import StringArray
+from tcex.input.field_types.tc_entity_array import TCEntityArray
 
 
 def custom_array(array_type, namespace=None, **kwargs):

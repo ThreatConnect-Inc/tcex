@@ -9,7 +9,7 @@ from .exception import (
     EmptyMemberException,
     HeterogenousArrayException,
     InvalidMemberException,
-    NullMemberException
+    NullMemberException,
 )
 
 

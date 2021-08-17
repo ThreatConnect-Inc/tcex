@@ -287,7 +287,7 @@ class TestInputsFieldTypeStringArray(InputTest):
         assert tcex.inputs.data.my_string is None
 
     def test_field_type_string_array_input_array_with_empty_and_null_members(
-            self, playbook_app: 'MockApp'
+        self, playbook_app: 'MockApp'
     ):
         """Test StringArray field type with Array input that contains empty and null members.
 
@@ -297,6 +297,7 @@ class TestInputsFieldTypeStringArray(InputTest):
         By default, StringArray only checks that list used to initialize Array type is not empty.
         Null and empty members are allowed to be in the array by default, so no error expected.
         """
+
         class PytestModel(BaseModel):
             """Test Model for Inputs"""
 
@@ -312,7 +313,7 @@ class TestInputsFieldTypeStringArray(InputTest):
         assert tcex.inputs.data.my_string == ['', None]
 
     def test_field_type_string_array_input_array_with_empty_and_null_members_empty_not_allowed(
-            self, playbook_app: 'MockApp'
+        self, playbook_app: 'MockApp'
     ):
         """Test StringArray field type with Array input that contains empty and null members.
 
@@ -342,7 +343,7 @@ class TestInputsFieldTypeStringArray(InputTest):
         assert 'may not be empty' in str(exc_info.value)
 
     def test_field_type_string_array_input_array_with_empty_and_null_members_null_not_allowed(
-            self, playbook_app: 'MockApp'
+        self, playbook_app: 'MockApp'
     ):
         """Test StringArray field type with Array input that contains empty and/or null members.
 
