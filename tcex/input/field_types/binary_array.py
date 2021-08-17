@@ -23,9 +23,9 @@ class BinaryArray(AbstractArray):
     def is_array_member(cls, value: Any) -> bool:
         """Implement abstract method in Array parent class.
 
-        A member of BinaryArray is a bytes instance
+        A member of BinaryArray is a bytes instance or None
         """
-        return isinstance(value, bytes)
+        return isinstance(value, (bytes, type(None)))
 
 
 class BinaryArrayOptional(BinaryArray):
