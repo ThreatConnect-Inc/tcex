@@ -15,3 +15,7 @@ class InvalidMemberException(ValueError):
 
 class EmptyMemberException(ValueError):
     """Raised when Array is found to contain a member that is of Array's type but is empty"""
+
+
+class NullMemberException(ValueError):
+    """Raised when Array is found to contain a member that is of Array's type but is Null"""

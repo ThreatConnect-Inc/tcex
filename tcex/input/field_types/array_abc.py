@@ -9,6 +9,7 @@ from .exception import (
     EmptyMemberException,
     HeterogenousArrayException,
     InvalidMemberException,
+    NullMemberException
 )
 
 
@@ -16,6 +17,10 @@ class AbstractArray(list, ABC):
     """Abstract Array class that Array implementations should inherit from"""
 
     _optional = False
+    # if array is initialized with a list, this flag decides if the list may contain empty members
+    _allow_empty_array_members = True
+    # if array is initialized with a list, this flag decides if the list may contain null members
+    _allow_null_array_members = True
 
     @classmethod
     def assert_homogenous(cls, value: list):
@@ -132,6 +137,19 @@ class AbstractArray(list, ABC):
         )
 
     @classmethod
+    def is_null_member(cls, value: Any) -> bool:
+        """Check if value is considered null.
+
+        The passed-in value should be confirmed to be a member of the array before checking
+        if it is considered null.
+
+        This default implementation simply checks if the passed value is None; however, more
+        complex types may require a more thorough check. For example, an Array member that is a
+        dictionary may be considered null if a particular key on the dictionary is None.
+        """
+        return cls.is_array_member(value) and value is None
+
+    @classmethod
     def assert_type(cls, value: Any) -> Union[Any, list[Any]]:
         """Assert that the value is either an Array or an Array member.
 
@@ -155,6 +173,7 @@ class AbstractArray(list, ABC):
         if cls.is_array(value):
             cls.assert_not_empty(value)
             cls.assert_homogenous(value)
+            cls._validate_list_members(value)
         else:
             cls.assert_not_empty_member(value)
 
@@ -164,6 +183,40 @@ class AbstractArray(list, ABC):
     def wrap(cls, value: Any) -> list[Any]:
         """Wrap value in Array (list) if not already an Array."""
         return cls([value]) if not cls.is_array(value) else cls(value)
+
+    @classmethod
+    def _validate_list_members(cls, value):
+        """Check for empty and null list members depending on class configuration.
+
+        When the Array type is initialized with a list, this internal method checks for null
+        and empty members within said list.
+
+        If _allow_empty_array_members is False and an empty member is found, EmptyMemberException
+        will be raised.
+
+        if _allow_null_array_members is False and a null member is found, NullMemberException
+        will be raised.
+
+        is_empty_member and is_null_member methods will be used to determine if a member is
+        empty or null.
+
+        :param value: The list used to initialize the Array type.
+        """
+
+        for member in value:
+            if not cls._allow_empty_array_members and cls.is_empty_member(member):
+                raise EmptyMemberException(
+                    f'Array member "{member}" may not be empty. Consider updating value so that '
+                    'it is not considered empty by Array implementation or set '
+                    '_allow_empty_array_members to True'
+                )
+
+            if not cls._allow_null_array_members and cls.is_null_member(member):
+                raise NullMemberException(
+                    f'Array member "{member}" may not be null. Consider updating value so that '
+                    'it is not considered null by Array implementation or set '
+                    '_allow_null_array_members to True'
+                )
 
     @classmethod
     def __get_validators__(cls) -> Generator:
