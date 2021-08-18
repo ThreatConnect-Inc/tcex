@@ -17,6 +17,7 @@ class StringArray(AbstractArray):
 
         An empty member of StringArray is ''
         """
+        cls.assert_is_member(value)
         return value == ''
 
     @classmethod

@@ -122,13 +122,16 @@ class AbstractArray(list, ABC):
     def is_empty_member(cls, value: Any) -> bool:
         """Check if value is equal to what is considered the empty value of the Array's Type
 
+        The passed-in value should be confirmed to be a member of the array before checking
+        if it is considered empty. If not a member, InvalidMemberException should be raised.
+
         Example, for StringArray, the empty value would be considered an empty string: ''.
         This method would return True if the passed-in value is equal to '' in a StringArray
         implementation. Value can be easily checked against multiple empty values using the "in"
         keyword, as in "return value in ['', ...]". Each Array implementation must define
         its own version of this method.
 
-        Return True if value equal to the Array's empty value, False otherwise.
+        Return True if value is considered an empty member, False otherwise.
         """
         # inheriting from ABC and list causes abstractmethod to not be enforced. Safety check added.
         # abstractmethod decorator still used, as it provides helpful IDE cues.
@@ -141,13 +144,14 @@ class AbstractArray(list, ABC):
         """Check if value is considered null.
 
         The passed-in value should be confirmed to be a member of the array before checking
-        if it is considered null.
+        if it is considered null. If not a member, InvalidMemberException should be raised.
 
         This default implementation simply checks if the passed value is None; however, more
         complex types may require a more thorough check. For example, an Array member that is a
         dictionary may be considered null if a particular key on the dictionary is None.
         """
-        return cls.is_array_member(value) and value is None
+        cls.assert_is_member(value)
+        return value is None
 
     @classmethod
     def assert_type(cls, value: Any) -> Union[Any, list[Any]]:
@@ -172,7 +176,6 @@ class AbstractArray(list, ABC):
         """
         if cls.is_array(value):
             cls.assert_not_empty(value)
-            cls.assert_homogenous(value)
             cls._validate_list_members(value)
         else:
             cls.assert_not_empty_member(value)
@@ -199,6 +202,9 @@ class AbstractArray(list, ABC):
 
         is_empty_member and is_null_member methods will be used to determine if a member is
         empty or null.
+
+        Note: This method also detects when a value is not of the Array's type via is_null_member
+        or is_empty_member. Proper exception is raised in that case.
 
         :param value: The list used to initialize the Array type.
         """

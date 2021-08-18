@@ -20,7 +20,7 @@ class TCEntityArray(AbstractArray):
         when its 'value' key is None.
         """
         return (
-            super().is_null_member(value) or cls.is_array_member(value) and value['value'] is None
+            super().is_null_member(value) or value['value'] is None
         )
 
     @classmethod
@@ -30,8 +30,10 @@ class TCEntityArray(AbstractArray):
         An empty member of TCEntityArray is a value that passes the checks defined in
         TCEntityArray.is_array_member and whose 'value' key maps to an empty string.
         """
+        cls.assert_is_member(value)
+        # None is a null member and not an empty member
         # use explicit checks for '' to circumvent ambiguity caused by other falsy values
-        return cls.is_array_member(value) and value is not None and value['value'] == ''
+        return value is not None and value['value'] == ''
 
     @classmethod
     def is_array_member(cls, value: Any) -> bool:

@@ -25,11 +25,8 @@ class KeyValueArray(AbstractArray):
         A null member of KeyValueArray is a value that passes the checks defined in
         KeyValueArray.is_array_member and is either None or has a 'value' key that is None.
         """
-        is_member = cls.is_array_member(value)
 
-        return (
-            is_member and value is None or (isinstance(value, dict) and value.get('value') is None)
-        )
+        return super().is_null_member(value) or value.get('value') is None
 
     @classmethod
     def is_empty_member(cls, value: Any) -> bool:
@@ -45,22 +42,32 @@ class KeyValueArray(AbstractArray):
         'value' portion is a non-empty list, the members of said list are not checked for emptiness.
         The passed-in KeyValue is considered non-empty in these cases.
         """
-        is_member = cls.is_array_member(value)
+        cls.assert_is_member(value)
 
         # None is a null member, not an empty member
         if value is None:
             return False
 
-        if is_member:
-            key_value = value.get('value')
-            if isinstance(key_value, list) and not key_value:
+        key_value = value.get('value')
+        if isinstance(key_value, list):
+            # KeyValue's 'value' is empty list, makes KeyValue an empty member
+            if not key_value:
+                return True
+                # KeyValue's 'value' is non-empty list, KeyValue not an empty member
+            else:
                 return True
 
-            # 'value' of KeyValue is set to empty member of StringArray or BinaryArray
-            other_allowed_types = [StringArray, BinaryArray]
-            if any(_type.is_empty_member(key_value) for _type in other_allowed_types):
-                return True
+        for _type in [StringArray, BinaryArray]:
+            try:
+                # 'value' of KeyValue is set to empty member of StringArray or BinaryArray
+                if _type.is_empty_member(key_value):
+                    return True
+            except InvalidMemberException:
+                # member is not of _type's Type
+                pass
         else:
+            # 'value' of passed-in KeyValue is either TCEntity or another KeyValue, which
+            # makes passed-in KeyValue not empty
             return False
 
     @classmethod

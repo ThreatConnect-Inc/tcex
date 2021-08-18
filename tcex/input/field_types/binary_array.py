@@ -17,6 +17,7 @@ class BinaryArray(AbstractArray):
 
         An empty member of BinaryArray is b''
         """
+        cls.assert_is_member(value)
         return value == b''
 
     @classmethod

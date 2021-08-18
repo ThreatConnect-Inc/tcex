@@ -5,6 +5,7 @@ from abc import abstractmethod
 from typing import Any
 
 from .array_abc import AbstractArray
+from .exception import InvalidMemberException
 
 
 class AbstractHybridArray(AbstractArray):
@@ -49,12 +50,26 @@ class AbstractHybridArray(AbstractArray):
 
         In order for a value to be considered an empty member of HybridArray, it must first pass
         the checks performed in is_array_member (must first be determined to be a member of
-        HybridArray). Once the value is determined to be a member of HybridArray, it must then
-        be considered empty by at least one of the HybridArray's type compositions.
+        HybridArray).
+        Once the value is determined to be a member of HybridArray, it must then be considered empty
+        by at least one of the HybridArray's type compositions.
         """
-        return cls.is_array_member(value) and (
-            any([composition.is_empty_member(value) for composition in cls._type_compositions()])
-        )
+        # cannot rely solely on checking if value is considered member of one of the compositions
+        # via below for loop because child class may have extended is_array_member to further define
+        # what is considered a member of this Array. Must call assert_is_member first.
+        cls.assert_is_member(value)
+        is_empty_member = False
+
+        for composition in cls._type_compositions():
+            try:
+                if composition.is_empty_member(value):
+                    is_empty_member = True
+                    break
+            except InvalidMemberException:
+                # value is not a member of the current composition
+                pass
+
+        return is_empty_member
 
     @classmethod
     def is_null_member(cls, value: Any) -> bool:
@@ -62,10 +77,24 @@ class AbstractHybridArray(AbstractArray):
 
         In order for a value to be considered a null member of HybridArray, it must first pass
         the checks performed in is_array_member (must first be determined to be a member of
-        HybridArray). Once the value is determined to be a member of HybridArray, it must then
-        be considered null by at least one of the HybridArray's type compositions.
+        HybridArray).
+        Once the value is determined to be a member of HybridArray, it must then be considered null
+        by at least one of the HybridArray's type compositions.
         """
-        return cls.is_array_member(value) and (
-            super().is_null_member(value)
-            or any([composition.is_null_member(value) for composition in cls._type_compositions()])
-        )
+        # cannot rely solely on checking if value is considered member of one of the compositions
+        # via below for loop because child class may have extended is_array_member to further define
+        # what is considered a member of this Array. Must call assert_is_member first.
+        cls.assert_is_member(value)
+        is_null_member = False
+
+        for composition in cls._type_compositions():
+            try:
+                if composition.is_null_member(value):
+                    is_null_member = True
+                    break
+            except InvalidMemberException:
+                # value is not a member of the current composition
+                pass
+
+        return is_null_member
+
