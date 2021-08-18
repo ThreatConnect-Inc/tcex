@@ -510,17 +510,27 @@ class TestInputsFieldTypeGroupArray(InputTest):
     @pytest.mark.parametrize(
         'groups',
         [
-            # empty string
-            [''],
-            # entity that is considered empty as it has empty value
-            [{'type': 'Adversary', 'value': '', 'id': '1000'}],
             # None, and entity that is considered empty as it has empty value
             [None, {'type': 'Adversary', 'value': '', 'id': '1000'}],
-            # same as above, but in reverse order
+            # same as above, but reverse order
             [{'type': 'Adversary', 'value': '', 'id': '1000'}, None],
+            # entity that is considered null due to 'value' being None
+            # and entity that is considered empty
+            [
+                {'type': 'Adversary', 'value': None, 'id': '1000'},
+                {'type': 'Adversary', 'value': '', 'id': '1000'},
+            ],
+            [
+                {'type': 'Adversary', 'value': '', 'id': '1000'},
+                {'type': 'Adversary', 'value': None, 'id': '1000'},
+            ],
+            # entity that is considered null due to 'value' being None
+            # and empty string
+            [{'type': 'Adversary', 'value': None, 'id': '1000'}, ''],
+            ['', {'type': 'Adversary', 'value': None, 'id': '1000'}],
             # None and empty string
-            [None, ''],
             ['', None],
+            [None, ''],
         ],
     )
     def test_field_type_group_array_input_array_with_empty_and_null_members_empty_not_allowed(
@@ -559,14 +569,24 @@ class TestInputsFieldTypeGroupArray(InputTest):
     @pytest.mark.parametrize(
         'groups',
         [
-            # null entity
-            [None],
             # None, and entity that is considered empty as it has empty value
             [None, {'type': 'Adversary', 'value': '', 'id': '1000'}],
             # same as above, but reverse order
             [{'type': 'Adversary', 'value': '', 'id': '1000'}, None],
             # entity that is considered null due to 'value' being None
-            [{'type': 'Adversary', 'value': None, 'id': '1000'}],
+            # and entity that is considered empty
+            [
+                {'type': 'Adversary', 'value': None, 'id': '1000'},
+                {'type': 'Adversary', 'value': '', 'id': '1000'},
+            ],
+            [
+                {'type': 'Adversary', 'value': '', 'id': '1000'},
+                {'type': 'Adversary', 'value': None, 'id': '1000'},
+            ],
+            # entity that is considered null due to 'value' being None
+            # and empty string
+            [{'type': 'Adversary', 'value': None, 'id': '1000'}, ''],
+            ['', {'type': 'Adversary', 'value': None, 'id': '1000'}],
             # None and empty string
             ['', None],
             [None, ''],
