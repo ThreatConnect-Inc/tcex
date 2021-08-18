@@ -8,6 +8,7 @@ from pydantic import BaseModel, ValidationError
 
 # first-party
 from tcex.input.field_types import GroupArray, GroupArrayOptional
+from tcex.input.field_types.customizable import custom_group_array
 
 from .utils import InputTest
 
@@ -110,7 +111,56 @@ class TestInputsFieldTypeGroupArray(InputTest):
 
         assert tcex.inputs.data.my_group == string
 
-    def test_field_type_group_array_input_invalid(self, playbook_app: 'MockApp'):
+    @pytest.mark.parametrize(
+        'invalid_group',
+        [
+            # binary is not a valid Group type (not String and not TCEntity),
+            b'not valid group',
+            # has no value key
+            {'type': 'Adversary', 'id': '100'},
+            # has no type key
+            {'value': 'Adversary Name', 'id': '100'},
+            # type is empty string
+            {'type': '', 'value': 'Adversary Name', 'id': '100'},
+            # type is None
+            {'type': None, 'value': 'Adversary Name', 'id': '100'},
+            # type is not one of the valid Group types
+            {'type': 'Address', 'value': '8.8.8.8', 'id': '100'},
+            # type is anything else
+            {'type': [], 'value': 'Adversary Name', 'id': '100'},
+            # missing id
+            {'type': 'Adversary', 'value': 'Adversary Name'},
+            # id is blank
+            {'type': 'Adversary', 'value': 'Adversary Name', 'id': ''},
+            # id is None
+            {'type': 'Adversary', 'value': 'Adversary Name', 'id': None},
+            # value must be a string
+            {'type': [], 'value': [], 'id': '100'},
+            # same scenarios as above, except using array inputs
+            [b'not valid group'],
+            # has no value key
+            [{'type': 'Adversary', 'id': '100'}],
+            # has no type key
+            [{'value': 'Adversary Name', 'id': '100'}],
+            # type is empty string
+            [{'type': '', 'value': 'Adversary Name', 'id': '100'}],
+            # type is None
+            [{'type': None, 'value': 'Adversary Name', 'id': '100'}],
+            # type is not one of the valid Group types
+            [{'type': 'Address', 'value': '8.8.8.8', 'id': '100'}],
+            # type is anything else
+            [{'type': [], 'value': 'Adversary Name', 'id': '100'}],
+            # missing id
+            [{'type': 'Adversary', 'value': 'Adversary Name'}],
+            # id is blank
+            [{'type': 'Adversary', 'value': 'Adversary Name', 'id': ''}],
+            # id is None
+            [{'type': 'Adversary', 'value': 'Adversary Name', 'id': None}],
+            # value must be a string
+            [{'type': [], 'value': [], 'id': '100'}],
+        ],
+    )
+    def test_field_type_group_array_input_invalid(self, playbook_app: 'MockApp', invalid_group):
         """Test GroupArray field type with input that is neither String or TCEntity
 
         Exception expected, as values are not valid string or TCEntity values
@@ -122,121 +172,35 @@ class TestInputsFieldTypeGroupArray(InputTest):
             playbook_app (fixture): An instance of MockApp.
         """
 
-        # binary is not a valid Group type (not String and not TCEntity)
-        invalid_group = b'not valid group'
-        # has no value key
-        invalid_group2 = {'type': 'Adversary', 'id': '100'}
-        # has no type key
-        invalid_group3 = {'value': 'Adversary Name', 'id': '100'}
-        # type is empty string
-        invalid_group4 = {'type': '', 'value': 'Adversary Name', 'id': '100'}
-        # type is None
-        invalid_group5 = {'type': None, 'value': 'Adversary Name', 'id': '100'}
-        # type is not one of the valid Group types
-        invalid_group6 = {'type': 'Address', 'value': '8.8.8.8', 'id': '100'}
-        # type is anything else
-        invalid_group7 = {'type': [], 'value': 'Adversary Name', 'id': '100'}
-        # missing id
-        invalid_group8 = {'type': 'Adversary', 'value': 'Adversary Name'}
-        # id is blank
-        invalid_group9 = {'type': 'Adversary', 'value': 'Adversary Name', 'id': ''}
-        # id is None
-        invalid_group10 = {'type': 'Adversary', 'value': 'Adversary Name', 'id': None}
-        # value must be a string
-        invalid_group11 = {'type': [], 'value': [], 'id': '100'}
-
-        # same scenarios as above, except using array inputs
-        invalid_group12 = [b'not valid group']
-        # has no value key
-        invalid_group13 = [{'type': 'Adversary', 'id': '100'}]
-        # has no type key
-        invalid_group14 = [{'value': 'Adversary Name', 'id': '100'}]
-        # type is empty string
-        invalid_group15 = [{'type': '', 'value': 'Adversary Name', 'id': '100'}]
-        # type is None
-        invalid_group16 = [{'type': None, 'value': 'Adversary Name', 'id': '100'}]
-        # type is not one of the valid Group types
-        invalid_group17 = [{'type': 'Address', 'value': '8.8.8.8', 'id': '100'}]
-        # type is anything else
-        invalid_group18 = [{'type': [], 'value': 'Adversary Name', 'id': '100'}]
-        # missing id
-        invalid_group19 = [{'type': 'Adversary', 'value': 'Adversary Name'}]
-        # id is blank
-        invalid_group20 = [{'type': 'Adversary', 'value': 'Adversary Name', 'id': ''}]
-        # id is None
-        invalid_group21 = [{'type': 'Adversary', 'value': 'Adversary Name', 'id': None}]
-        # value must be a string
-        invalid_group22 = [{'type': [], 'value': [], 'id': '100'}]
-
         class PytestModel(BaseModel):
             """Test Model for Inputs"""
 
             my_group: GroupArray
-            my_group2: GroupArray
-            my_group3: GroupArray
-            my_group4: GroupArray
-            my_group5: GroupArray
-            my_group6: GroupArray
-            my_group7: GroupArray
-            my_group8: GroupArray
-            my_group9: GroupArray
-            my_group10: GroupArray
-            my_group11: GroupArray
-            my_group12: GroupArray
-            my_group13: GroupArray
-            my_group14: GroupArray
-            my_group15: GroupArray
-            my_group16: GroupArray
-            my_group17: GroupArray
-            my_group18: GroupArray
-            my_group19: GroupArray
-            my_group20: GroupArray
-            my_group21: GroupArray
-            my_group22: GroupArray
 
-        config_data = {
-            'my_group': '#App:1234:my_group!Binary',
-            'my_group2': invalid_group2,
-            'my_group3': invalid_group3,
-            'my_group4': invalid_group4,
-            'my_group5': invalid_group5,
-            'my_group6': invalid_group6,
-            'my_group7': invalid_group7,
-            'my_group8': invalid_group8,
-            'my_group9': invalid_group9,
-            'my_group10': invalid_group10,
-            'my_group11': invalid_group11,
-            'my_group12': '#App:1234:my_group12!Binary',
-            'my_group13': invalid_group13,
-            'my_group14': invalid_group14,
-            'my_group15': invalid_group15,
-            'my_group16': invalid_group16,
-            'my_group17': invalid_group17,
-            'my_group18': invalid_group18,
-            'my_group19': invalid_group19,
-            'my_group20': invalid_group20,
-            'my_group21': invalid_group21,
-            'my_group22': invalid_group22,
-        }
+        config_item = invalid_group
+
+        if isinstance(invalid_group, bytes):
+            config_item = '#App:1234:my_group!Binary'
+
+        if isinstance(invalid_group, list) and isinstance(invalid_group[0], bytes):
+            config_item = '#App:1234:my_group!BinaryArray'
+
+        config_data = {'my_group': config_item}
         app = playbook_app(config_data=config_data)
         tcex = app.tcex
 
         # must stage binary values
-        self._stage_key_value('my_group', '#App:1234:my_group!Binary', invalid_group, tcex)
-        self._stage_key_value(
-            'my_group12', '#App:1234:my_group12!BinaryArray', invalid_group12, tcex
-        )
+        if isinstance(invalid_group, bytes):
+            self._stage_key_value('my_group', '#App:1234:my_group!Binary', invalid_group, tcex)
+
+        if isinstance(invalid_group, list) and isinstance(invalid_group[0], bytes):
+            self._stage_key_value('my_group', '#App:1234:my_group!BinaryArray', invalid_group, tcex)
 
         with pytest.raises(ValidationError) as exc_info:
             tcex.inputs.add_model(PytestModel)
 
         err_msg = str(exc_info.value)
-
-        # all GroupArray definitions in model resulted in error
-        assert all(entity in err_msg for entity in config_data.keys())
-
-        # all GroupArray definitions resulted in the same error
-        assert err_msg.count("not of Array's type") == len(config_data.keys())
+        assert "not of Array's type" in err_msg
 
     @staticmethod
     def test_field_type_group_array_input_empty_array(playbook_app: 'MockApp'):
@@ -508,3 +472,134 @@ class TestInputsFieldTypeGroupArray(InputTest):
 
         # values method returns string members as well as 'value' key of TCEntity members
         assert list(tcex.inputs.data.my_group_array.values()) == ['Adversary Name', 'Adversary 2']
+
+    @pytest.mark.parametrize(
+        'groups',
+        [
+            # None, entity that is considered empty as it has empty value, and empty string
+            [None, {'type': 'Adversary', 'value': '', 'id': '1000'}, ''],
+            # None, entity that is considered null as it has None value, and empty string
+            [None, {'type': 'Adversary', 'value': None, 'id': '1000'}, ''],
+        ],
+    )
+    def test_field_type_group_array_input_array_with_empty_and_null_members(
+        self, playbook_app: 'MockApp', groups
+    ):
+        """Test GroupArray field type with Array input that contains empty and null members.
+
+        See GroupArray.is_empty_member and GroupArray.is_null_member for information on
+        what is considered to be empty and null members of GroupArray.
+
+        By default, GroupArray only checks that list used to initialize Array type is not empty.
+        Null and empty members are allowed to be in the array by default, so no error expected.
+        """
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_groups: GroupArray
+
+        config_data = {'my_groups': groups}
+        app = playbook_app(config_data=config_data)
+        tcex = app.tcex
+        tcex.inputs.add_model(PytestModel)
+
+        # empty and null members are ok
+        assert tcex.inputs.data.my_groups == groups
+
+    @pytest.mark.parametrize(
+        'groups',
+        [
+            # empty string
+            [''],
+            # entity that is considered empty as it has empty value
+            [{'type': 'Adversary', 'value': '', 'id': '1000'}],
+            # None, and entity that is considered empty as it has empty value
+            [None, {'type': 'Adversary', 'value': '', 'id': '1000'}],
+            # same as above, but in reverse order
+            [{'type': 'Adversary', 'value': '', 'id': '1000'}, None],
+            # None and empty string
+            [None, ''],
+            ['', None],
+        ],
+    )
+    def test_field_type_group_array_input_array_with_empty_and_null_members_empty_not_allowed(
+        self, playbook_app: 'MockApp', groups
+    ):
+        """Test GroupArray field type with Array input that contains empty and null members.
+
+        See GroupArray.is_empty_member and GroupArray.is_null_member for information on
+        what is considered to be empty and null members of GroupArray.
+
+        By default, GroupArray only checks that list used to initialize Array type is not empty.
+        Null and empty members are allowed to be in the array by default.
+
+        GroupArray is configured to not accept empty members, so an error is expected due to
+        empty members being in the input.
+        """
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_groups: custom_group_array(allow_empty_members=False)
+
+        config_data = {'my_groups': groups}
+        app = playbook_app(config_data=config_data)
+        tcex = app.tcex
+        with pytest.raises(ValueError) as exc_info:
+            tcex.inputs.add_model(PytestModel)
+
+        err_msg = str(exc_info.value)
+
+        # assert None did not cause the issue
+        assert 'None' not in err_msg
+        # error due to empty members being in input
+        assert 'may not be empty' in err_msg
+
+    @pytest.mark.parametrize(
+        'groups',
+        [
+            # null entity
+            [None],
+            # None, and entity that is considered empty as it has empty value
+            [None, {'type': 'Adversary', 'value': '', 'id': '1000'}],
+            # same as above, but reverse order
+            [{'type': 'Adversary', 'value': '', 'id': '1000'}, None],
+            # entity that is considered null due to 'value' being None
+            [{'type': 'Adversary', 'value': None, 'id': '1000'}],
+            # None and empty string
+            ['', None],
+            [None, ''],
+        ],
+    )
+    def test_field_type_group_array_input_array_with_empty_and_null_members_null_not_allowed(
+        self, playbook_app: 'MockApp', groups
+    ):
+        """Test GroupArray field type with Array input that contains empty and/or null members.
+
+        See GroupArray.is_empty_member and GroupArray.is_null_member for information on
+        what is considered to be empty and null members of GroupArray.
+
+        By default, GroupArray only checks that list used to initialize Array type is not empty.
+        Null and empty members are allowed to be in the array by default.
+
+        GroupArray is configured to not accept null members, so an error is expected due to
+        None or null members being in the input.
+        """
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_groups: custom_group_array(allow_null_members=False)
+
+        config_data = {'my_groups': groups}
+        app = playbook_app(config_data=config_data)
+        tcex = app.tcex
+        with pytest.raises(ValueError) as exc_info:
+            tcex.inputs.add_model(PytestModel)
+
+        err_msg = str(exc_info.value)
+
+        # error due to None being in input
+        assert 'None' in err_msg
+        assert 'may not be null' in err_msg

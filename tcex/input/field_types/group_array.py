@@ -29,11 +29,10 @@ class GroupArray(IntelArray):
         # ensure value is a valid member of StringArray or TCEntityArray
         is_member = super().is_array_member(value)
 
-        return is_member and (
-            # ensure type is a Group type if value is TCEntity
-            isinstance(value, str)
-            or value.get('type') in ti_utils().group_types
-        )
+        if is_member and isinstance(value, dict):
+            is_member = value.get('type') in ti_utils().group_types
+
+        return is_member
 
 
 class GroupArrayOptional(GroupArray):
