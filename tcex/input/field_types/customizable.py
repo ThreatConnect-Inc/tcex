@@ -69,7 +69,7 @@ def custom_tc_entity_array(**kwargs):
     return custom_array(TCEntityArray, namespace, **kwargs)
 
 
-def custom_keyvalue_array(**kwargs):
+def custom_key_value_array(**kwargs):
     """Allow for dynamic configuration of a BinaryArray.
 
     Builds a namespace with configuration items found in kwargs. This method only inspects kwargs

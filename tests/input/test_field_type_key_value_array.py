@@ -8,6 +8,7 @@ from pydantic import BaseModel, ValidationError
 
 # first-party
 from tcex.input.field_types import KeyValueArray, KeyValueArrayOptional
+from tcex.input.field_types.customizable import custom_key_value_array
 
 from .utils import InputTest
 
@@ -253,9 +254,7 @@ class TestInputsFieldTypeKeyValueArray(InputTest):
             # KeyValue input
             # value is an empty String
             ({'key': 'username', 'value': ''}, '#App:1234:my_key_value!KeyValue'),
-            # value is an empty String
-            ({'key': 'username', 'value': None}, '#App:1234:my_key_value!KeyValue'),
-            # value is Binary TODO: figure out how to pass binary data as 'value' for testing
+            # value is empty Binary TODO: figure out how to pass binary data as 'value' for testing
             # ({'key': 'binary', 'value': '#App:1234:my_binary!Binary'},
             #  '#App:1234:my_key_value!KeyValue'),
             # value is an empty array
@@ -485,3 +484,202 @@ class TestInputsFieldTypeKeyValueArray(InputTest):
         tcex.inputs.add_model(PytestModel)
 
         assert tcex.inputs.data.my_key_value is None
+
+    @pytest.mark.parametrize(
+        'key_values',
+        [
+            # todo: need empty binary test after Bracey allows embedded binary support
+            # None, keyvalue that is considered empty as it has empty value
+            [
+                None,
+                {'key': 'username', 'value': ''},
+            ],
+            # None, keyvalue that is considered empty as it has empty list
+            [
+                None,
+                {'key': 'username', 'value': []},
+            ],
+            # None, keyvalue that is considered null as it has None value
+            [
+                None,
+                {'key': 'username', 'value': None},
+            ],
+        ],
+    )
+    def test_field_type_key_value_array_input_array_with_empty_and_null_members(
+        self, playbook_app: 'MockApp', key_values
+    ):
+        """Test KeyValueArray field type with Array input that contains empty and null members.
+
+        See KeyValueArray.is_empty_member and KeyValueArray.is_null_member for information on
+        what is considered to be empty and null members of KeyValueArray.
+
+        By default, KeyValueArray only checks that list used to initialize Array type is not empty.
+        Null and empty members are allowed to be in the array by default, so no error expected.
+        """
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_key_values: KeyValueArray
+
+        config_data = {'my_key_values': key_values}
+        app = playbook_app(config_data=config_data)
+        tcex = app.tcex
+        tcex.inputs.add_model(PytestModel)
+
+        # empty and null members are ok
+        assert tcex.inputs.data.my_key_values == key_values
+
+    @pytest.mark.parametrize(
+        'key_values',
+        [
+            # todo: need empty binary test after Bracey allows embedded binary support
+            # None, keyvalue that is considered empty as it has empty value
+            [
+                None,
+                {'key': 'username', 'value': ''},
+            ],
+            [
+                {'key': 'username', 'value': ''},
+                None,
+            ],
+            # None, keyvalue that is considered empty as it has empty list
+            [
+                None,
+                {'key': 'username', 'value': []},
+            ],
+            [
+                {'key': 'username', 'value': []},
+                None,
+            ],
+            # keyvalue that is considered empty as it has empty list,
+            # keyvalue that is considered null as it has None value
+            [
+                {'key': 'username', 'value': []},
+                {'key': 'username', 'value': None},
+            ],
+            [
+                {'key': 'username', 'value': None},
+                {'key': 'username', 'value': []},
+            ],
+            # keyvalue that is considered empty as it has empty string,
+            # keyvalue that is considered null as it has None value
+            [
+                {'key': 'username', 'value': ''},
+                {'key': 'username', 'value': None},
+            ],
+            [
+                {'key': 'username', 'value': None},
+                {'key': 'username', 'value': ''},
+            ],
+        ],
+    )
+    def test_field_type_key_value_array_input_array_with_empty_and_null_members_empty_not_allowed(
+        self, playbook_app: 'MockApp', key_values
+    ):
+        """Test KeyValueArray field type with Array input that contains empty and null members.
+
+        See KeyValueArray.is_empty_member and KeyValueArray.is_null_member for information on
+        what is considered to be empty and null members of KeyValueArray.
+
+        By default, KeyValueArray only checks that list used to initialize Array type is not empty.
+        Null and empty members are allowed to be in the array by default.
+
+        KeyValueArray is configured to not accept empty members, so an error is expected due to
+        empty members being in the input.
+        """
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_key_values: custom_key_value_array(allow_empty_members=False)
+
+        config_data = {'my_key_values': key_values}
+        app = playbook_app(config_data=config_data)
+        tcex = app.tcex
+        with pytest.raises(ValueError) as exc_info:
+            tcex.inputs.add_model(PytestModel)
+
+        err_msg = str(exc_info.value)
+
+        # assert None did not cause the issue
+        assert 'None' not in err_msg
+        # error due to empty members being in input
+        assert 'may not be empty' in err_msg
+
+    @pytest.mark.parametrize(
+        'key_values',
+        [
+            # todo: need empty binary test after Bracey allows embedded binary support
+            # None, keyvalue that is considered empty as it has empty value
+            [
+                None,
+                {'key': 'username', 'value': ''},
+            ],
+            [
+                {'key': 'username', 'value': ''},
+                None,
+            ],
+            # None, keyvalue that is considered empty as it has empty list
+            [
+                None,
+                {'key': 'username', 'value': []},
+            ],
+            [
+                {'key': 'username', 'value': []},
+                None,
+            ],
+            # keyvalue that is considered empty as it has empty list,
+            # keyvalue that is considered null as it has None value
+            [
+                {'key': 'username', 'value': []},
+                {'key': 'username', 'value': None},
+            ],
+            [
+                {'key': 'username', 'value': None},
+                {'key': 'username', 'value': []},
+            ],
+            # keyvalue that is considered empty as it has empty string,
+            # keyvalue that is considered null as it has None value
+            [
+                {'key': 'username', 'value': ''},
+                {'key': 'username', 'value': None},
+            ],
+            [
+                {'key': 'username', 'value': None},
+                {'key': 'username', 'value': ''},
+            ],
+        ],
+    )
+    def test_field_type_key_value_array_input_array_with_empty_and_null_members_null_not_allowed(
+        self, playbook_app: 'MockApp', key_values
+    ):
+        """Test KeyValueArray field type with Array input that contains empty and/or null members.
+
+        See KeyValueArray.is_empty_member and KeyValueArray.is_null_member for information on
+        what is considered to be empty and null members of KeyValueArray.
+
+        By default, KeyValueArray only checks that list used to initialize Array type is not empty.
+        Null and empty members are allowed to be in the array by default.
+
+        KeyValueArray is configured to not accept null members, so an error is expected due to
+        None or null members being in the input.
+        """
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_key_values: custom_key_value_array(allow_null_members=False)
+
+        config_data = {'my_key_values': key_values}
+        app = playbook_app(config_data=config_data)
+        tcex = app.tcex
+        with pytest.raises(ValueError) as exc_info:
+            tcex.inputs.add_model(PytestModel)
+
+        err_msg = str(exc_info.value)
+
+        # error due to None being in input
+        assert 'None' in err_msg
+        assert 'may not be null' in err_msg

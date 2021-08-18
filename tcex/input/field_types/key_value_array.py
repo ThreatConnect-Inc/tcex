@@ -19,27 +19,41 @@ class KeyValueArray(AbstractArray):
     _optional = False
 
     @classmethod
+    def is_null_member(cls, value: Any) -> bool:
+        """Extend method in Array parent class.
+
+        A null member of KeyValueArray is a value that passes the checks defined in
+        KeyValueArray.is_array_member and is either None or has a 'value' key that is None.
+        """
+        is_member = cls.is_array_member(value)
+
+        return (
+            is_member and value is None or (isinstance(value, dict) and value.get('value') is None)
+        )
+
+    @classmethod
     def is_empty_member(cls, value: Any) -> bool:
         """Implement abstract method in Array parent class.
 
         An empty member of KeyValueArray is a value that passes the checks defined in
-        KeyValueArray.is_array_member and either is None, or is a KeyValue that has a 'value' that
-        is None, an empty list, or is considered to be an empty member of StringArray or
+        KeyValueArray.is_array_member and is a KeyValue that has a 'value' that
+        is an empty list  or is considered to be an empty member of StringArray or
         BinaryArray.
 
         If the passed-in value is a KeyValue whose 'value' is another KeyValue or a TCEntity,
-        the KeyValue/TCEntity found in the 'value' portion are not checked for emptiness. The
-        passed-in KeyValue is considered non-empty in these cases.
+        the KeyValue/TCEntity found in the 'value' portion are not checked for emptiness. If the
+        'value' portion is a non-empty list, the members of said list are not checked for emptiness.
+        The passed-in KeyValue is considered non-empty in these cases.
         """
         is_member = cls.is_array_member(value)
 
-        if is_member:
-            if value is None:
-                return True
+        # None is a null member, not an empty member
+        if value is None:
+            return False
 
+        if is_member:
             key_value = value.get('value')
-            # 'value' of KeyValue is set to None or empty list
-            if key_value in [None, []]:
+            if isinstance(key_value, list) and not key_value:
                 return True
 
             # 'value' of KeyValue is set to empty member of StringArray or BinaryArray
@@ -54,7 +68,8 @@ class KeyValueArray(AbstractArray):
         """Implement abstract method in Array parent class.
 
         A member of KeyValueArray is a dictionary that has 'key' and 'value' keys. An optional
-        'variableType' key may be included, which must be a non-empty string if present.
+        'variableType' key may be included, which must be a non-empty string if present. None
+        is also a valid member of KeyValueArray.
 
         The 'key' key must be a non-empty string.
 
