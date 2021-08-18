@@ -210,22 +210,18 @@ class AbstractArray(list, ABC):
         """
 
         for member in value:
-            # nested ifs cannot be simplified with logical 'and'. We want to avoid passing None/Null
-            # values to is_empty_member. That method doesn't always perform a simple equality check
-            if cls.is_null_member(member):
-                if not cls._allow_null_array_members:
-                    raise NullMemberException(
-                        f'Array member "{member}" may not be null. Consider updating value so that '
-                        'it is not considered null by Array implementation or set '
-                        '_allow_null_array_members to True'
-                    )
-            elif cls.is_empty_member(member):
-                if not cls._allow_empty_array_members:
-                    raise EmptyMemberException(
-                        f'Array member "{member}" may not be empty. Consider updating value so '
-                        'that it is not considered empty by Array implementation or set '
-                        '_allow_empty_array_members to True'
-                    )
+            if cls.is_null_member(member) and not cls._allow_null_array_members:
+                raise NullMemberException(
+                    f'Array member "{member}" may not be null. Consider updating value so that '
+                    'it is not considered null by Array implementation or set '
+                    '_allow_null_array_members to True'
+                )
+            if cls.is_empty_member(member) and not cls._allow_empty_array_members:
+                raise EmptyMemberException(
+                    f'Array member "{member}" may not be empty. Consider updating value so '
+                    'that it is not considered empty by Array implementation or set '
+                    '_allow_empty_array_members to True'
+                )
 
     @classmethod
     def __get_validators__(cls) -> Generator:

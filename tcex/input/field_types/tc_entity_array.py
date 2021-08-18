@@ -19,9 +19,7 @@ class TCEntityArray(AbstractArray):
         On top of the is_null_member check in Array parent class, a TCEntity is considered null
         when its 'value' key is None.
         """
-        return (
-            super().is_null_member(value) or value['value'] is None
-        )
+        return super().is_null_member(value) or value['value'] is None
 
     @classmethod
     def is_empty_member(cls, value: Any) -> bool:

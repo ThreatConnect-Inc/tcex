@@ -55,7 +55,7 @@ class KeyValueArray(AbstractArray):
                 return True
                 # KeyValue's 'value' is non-empty list, KeyValue not an empty member
             else:
-                return True
+                return False
 
         for _type in [StringArray, BinaryArray]:
             try:

@@ -97,4 +97,3 @@ class AbstractHybridArray(AbstractArray):
                 pass
 
         return is_null_member
-
