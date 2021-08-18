@@ -380,12 +380,19 @@ class TestInputsFieldTypeTCEntityArray(InputTest):
     @pytest.mark.parametrize(
         'entity',
         [
-            # entity that is considered empty as it has empty value
-            [{'type': 'Address', 'value': '', 'id': '1000'}],
             # None, and entity that is considered empty as it has empty value
             [None, {'type': 'Address', 'value': '', 'id': '1000'}],
             # same as above, but in reverse order
             [{'type': 'Address', 'value': '', 'id': '1000'}, None],
+            # empty entity and entity that is considered null
+            [
+                {'type': 'Address', 'value': '', 'id': '1000'},
+                {'type': 'Address', 'value': None, 'id': '1000'},
+            ],
+            [
+                {'type': 'Address', 'value': None, 'id': '1000'},
+                {'type': 'Address', 'value': '', 'id': '1000'},
+            ],
         ],
     )
     def test_field_type_tc_entity_array_input_array_with_empty_and_null_members_empty_not_allowed(
@@ -424,14 +431,19 @@ class TestInputsFieldTypeTCEntityArray(InputTest):
     @pytest.mark.parametrize(
         'entity',
         [
-            # null entity
-            [None],
             # None, and entity that is considered empty as it has empty value
             [None, {'type': 'Address', 'value': '', 'id': '1000'}],
-            # same as above, but reverse order
+            # same as above, but in reverse order
             [{'type': 'Address', 'value': '', 'id': '1000'}, None],
-            # entity that is considered null due to 'value' being None
-            [{'type': 'Address', 'value': None, 'id': '1000'}],
+            # empty entity and entity that is considered null
+            [
+                {'type': 'Address', 'value': '', 'id': '1000'},
+                {'type': 'Address', 'value': None, 'id': '1000'},
+            ],
+            [
+                {'type': 'Address', 'value': None, 'id': '1000'},
+                {'type': 'Address', 'value': '', 'id': '1000'},
+            ],
         ],
     )
     def test_field_type_tc_entity_array_input_array_with_empty_and_null_members_null_not_allowed(
