@@ -339,8 +339,12 @@ class TestInputsFieldTypeStringArray(InputTest):
         with pytest.raises(ValueError) as exc_info:
             tcex.inputs.add_model(PytestModel)
 
-        # error due to '' being in input
-        assert 'may not be empty' in str(exc_info.value)
+        err_msg = str(exc_info.value)
+
+        # assert None did not cause the issue
+        assert 'None' not in err_msg
+        # error due to empty members being in input
+        assert 'may not be empty' in err_msg
 
     def test_field_type_string_array_input_array_with_empty_and_null_members_null_not_allowed(
         self, playbook_app: 'MockApp'
@@ -369,5 +373,8 @@ class TestInputsFieldTypeStringArray(InputTest):
         with pytest.raises(ValueError) as exc_info:
             tcex.inputs.add_model(PytestModel)
 
+        err_msg = str(exc_info.value)
+
         # error due to None being in input
-        assert 'may not be null' in str(exc_info.value)
+        assert 'None' in err_msg
+        assert 'may not be null' in err_msg

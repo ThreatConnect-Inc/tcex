@@ -348,7 +348,7 @@ class TestInputsFieldTypeTCEntityArray(InputTest):
         [
             # None, and entity that is considered empty as it has empty value
             [None, {'type': 'Address', 'value': '', 'id': '1000'}],
-            # None, and entity that is considered empty as it has None value
+            # None, and entity that is considered null as it has None value
             [None, {'type': 'Address', 'value': None, 'id': '1000'}],
         ],
     )
@@ -414,8 +414,12 @@ class TestInputsFieldTypeTCEntityArray(InputTest):
         with pytest.raises(ValueError) as exc_info:
             tcex.inputs.add_model(PytestModel)
 
-        # error due to b'' being in input
-        assert 'may not be empty' in str(exc_info.value)
+        err_msg = str(exc_info.value)
+
+        # assert None did not cause the issue
+        assert 'None' not in err_msg
+        # error due to empty members being in input
+        assert 'may not be empty' in err_msg
 
     @pytest.mark.parametrize(
         'entity',
@@ -456,5 +460,8 @@ class TestInputsFieldTypeTCEntityArray(InputTest):
         with pytest.raises(ValueError) as exc_info:
             tcex.inputs.add_model(PytestModel)
 
+        err_msg = str(exc_info.value)
+
         # error due to None being in input
-        assert 'may not be null' in str(exc_info.value)
+        assert 'None' in err_msg
+        assert 'may not be null' in err_msg

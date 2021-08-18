@@ -55,3 +55,17 @@ class AbstractHybridArray(AbstractArray):
         return cls.is_array_member(value) and (
             any([composition.is_empty_member(value) for composition in cls._type_compositions()])
         )
+
+    @classmethod
+    def is_null_member(cls, value: Any) -> bool:
+        """Extend implementation of method in Array parent class.
+
+        In order for a value to be considered a null member of HybridArray, it must first pass
+        the checks performed in is_array_member (must first be determined to be a member of
+        HybridArray). Once the value is determined to be a member of HybridArray, it must then
+        be considered null by at least one of the HybridArray's type compositions.
+        """
+        return cls.is_array_member(value) and (
+            super().is_null_member(value)
+            or any([composition.is_null_member(value) for composition in cls._type_compositions()])
+        )

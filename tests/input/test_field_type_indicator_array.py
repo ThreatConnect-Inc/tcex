@@ -8,6 +8,7 @@ from pydantic import BaseModel, ValidationError
 
 # first-party
 from tcex.input.field_types import IndicatorArray, IndicatorArrayOptional
+from tcex.input.field_types.customizable import custom_indicator_array
 
 from .utils import InputTest
 
@@ -110,7 +111,58 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
 
         assert tcex.inputs.data.my_indicator == string
 
-    def test_field_type_indicator_array_input_invalid(self, playbook_app: 'MockApp'):
+    @pytest.mark.parametrize(
+        'invalid_indicator',
+        [
+            # binary is not a valid indicator type (not String and not TCEntity),
+            b'not valid indicator',
+            # has no value key
+            {'type': 'Address', 'id': '100'},
+            # has no type key
+            {'value': '8.8.8.8', 'id': '100'},
+            # type is empty string
+            {'type': '', 'value': '8.8.8.8', 'id': '100'},
+            # type is None
+            {'type': None, 'value': '8.8.8.8', 'id': '100'},
+            # type is not one of the valid indicator types
+            {'type': 'Adversary', 'value': 'Adversary Name', 'id': '100'},
+            # type is anything else
+            {'type': [], 'value': '8.8.8.8', 'id': '100'},
+            # missing id
+            {'type': 'Address', 'value': '8.8.8.8'},
+            # id is blank
+            {'type': 'Address', 'value': '8.8.8.8', 'id': ''},
+            # id is None
+            {'type': 'Address', 'value': '8.8.8.8', 'id': None},
+            # value must be a string
+            {'type': [], 'value': [], 'id': '100'},
+            # same scenarios as above, except using array inputs
+            [b'not valid indicator'],
+            # has no value key
+            [{'type': 'Address', 'id': '100'}],
+            # has no type key
+            [{'value': '8.8.8.8', 'id': '100'}],
+            # type is empty string
+            [{'type': '', 'value': '8.8.8.8', 'id': '100'}],
+            # type is None
+            [{'type': None, 'value': '8.8.8.8', 'id': '100'}],
+            # type is not one of the valid indicator types
+            [{'type': 'Adversary', 'value': 'Adversary Name', 'id': '100'}],
+            # type is anything else
+            [{'type': [], 'value': '8.8.8.8', 'id': '100'}],
+            # missing id
+            [{'type': 'Address', 'value': '8.8.8.8'}],
+            # id is blank
+            [{'type': 'Address', 'value': '8.8.8.8', 'id': ''}],
+            # id is None
+            [{'type': 'Address', 'value': '8.8.8.8', 'id': None}],
+            # value must be a string
+            [{'type': [], 'value': [], 'id': '100'}],
+        ],
+    )
+    def test_field_type_indicator_array_input_invalid(
+        self, playbook_app: 'MockApp', invalid_indicator
+    ):
         """Test IndicatorArray field type with input that is neither String or TCEntity
 
         Exception expected, as values are not valid string or TCEntity values
@@ -122,112 +174,33 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
             playbook_app (fixture): An instance of MockApp.
         """
 
-        # binary is not a valid indicator type (not String and not TCEntity)
-        invalid_indicator = b'not valid indicator'
-        # has no value key
-        invalid_indicator2 = {'type': 'Address', 'id': '100'}
-        # has no type key
-        invalid_indicator3 = {'value': '8.8.8.8', 'id': '100'}
-        # type is empty string
-        invalid_indicator4 = {'type': '', 'value': '8.8.8.8', 'id': '100'}
-        # type is None
-        invalid_indicator5 = {'type': None, 'value': '8.8.8.8', 'id': '100'}
-        # type is not one of the valid indicator types
-        invalid_indicator6 = {'type': 'Adversary', 'value': 'Adversary Name', 'id': '100'}
-        # type is anything else
-        invalid_indicator7 = {'type': [], 'value': '8.8.8.8', 'id': '100'}
-        # missing id
-        invalid_indicator8 = {'type': 'Address', 'value': '8.8.8.8'}
-        # id is blank
-        invalid_indicator9 = {'type': 'Address', 'value': '8.8.8.8', 'id': ''}
-        # id is None
-        invalid_indicator10 = {'type': 'Address', 'value': '8.8.8.8', 'id': None}
-        # value must be a string
-        invalid_indicator11 = {'type': [], 'value': [], 'id': '100'}
-
-        # same scenarios as above, except using array inputs
-        invalid_indicator12 = [b'not valid indicator']
-        # has no value key
-        invalid_indicator13 = [{'type': 'Address', 'id': '100'}]
-        # has no type key
-        invalid_indicator14 = [{'value': '8.8.8.8', 'id': '100'}]
-        # type is empty string
-        invalid_indicator15 = [{'type': '', 'value': '8.8.8.8', 'id': '100'}]
-        # type is None
-        invalid_indicator16 = [{'type': None, 'value': '8.8.8.8', 'id': '100'}]
-        # type is not one of the valid indicator types
-        invalid_indicator17 = [{'type': 'Adversary', 'value': 'Adversary Name', 'id': '100'}]
-        # type is anything else
-        invalid_indicator18 = [{'type': [], 'value': '8.8.8.8', 'id': '100'}]
-        # missing id
-        invalid_indicator19 = [{'type': 'Address', 'value': '8.8.8.8'}]
-        # id is blank
-        invalid_indicator20 = [{'type': 'Address', 'value': '8.8.8.8', 'id': ''}]
-        # id is None
-        invalid_indicator21 = [{'type': 'Address', 'value': '8.8.8.8', 'id': None}]
-        # value must be a string
-        invalid_indicator22 = [{'type': [], 'value': [], 'id': '100'}]
-
         class PytestModel(BaseModel):
             """Test Model for Inputs"""
 
             my_indicator: IndicatorArray
-            my_indicator2: IndicatorArray
-            my_indicator3: IndicatorArray
-            my_indicator4: IndicatorArray
-            my_indicator5: IndicatorArray
-            my_indicator6: IndicatorArray
-            my_indicator7: IndicatorArray
-            my_indicator8: IndicatorArray
-            my_indicator9: IndicatorArray
-            my_indicator10: IndicatorArray
-            my_indicator11: IndicatorArray
-            my_indicator12: IndicatorArray
-            my_indicator13: IndicatorArray
-            my_indicator14: IndicatorArray
-            my_indicator15: IndicatorArray
-            my_indicator16: IndicatorArray
-            my_indicator17: IndicatorArray
-            my_indicator18: IndicatorArray
-            my_indicator19: IndicatorArray
-            my_indicator20: IndicatorArray
-            my_indicator21: IndicatorArray
-            my_indicator22: IndicatorArray
 
-        config_data = {
-            'my_indicator': '#App:1234:my_indicator!Binary',
-            'my_indicator2': invalid_indicator2,
-            'my_indicator3': invalid_indicator3,
-            'my_indicator4': invalid_indicator4,
-            'my_indicator5': invalid_indicator5,
-            'my_indicator6': invalid_indicator6,
-            'my_indicator7': invalid_indicator7,
-            'my_indicator8': invalid_indicator8,
-            'my_indicator9': invalid_indicator9,
-            'my_indicator10': invalid_indicator10,
-            'my_indicator11': invalid_indicator11,
-            'my_indicator12': '#App:1234:my_indicator12!Binary',
-            'my_indicator13': invalid_indicator13,
-            'my_indicator14': invalid_indicator14,
-            'my_indicator15': invalid_indicator15,
-            'my_indicator16': invalid_indicator16,
-            'my_indicator17': invalid_indicator17,
-            'my_indicator18': invalid_indicator18,
-            'my_indicator19': invalid_indicator19,
-            'my_indicator20': invalid_indicator20,
-            'my_indicator21': invalid_indicator21,
-            'my_indicator22': invalid_indicator22,
-        }
+        config_item = invalid_indicator
+
+        if isinstance(invalid_indicator, bytes):
+            config_item = '#App:1234:my_indicator!Binary'
+
+        if isinstance(invalid_indicator, list) and isinstance(invalid_indicator[0], bytes):
+            config_item = '#App:1234:my_indicator!BinaryArray'
+
+        config_data = {'my_indicator': config_item}
         app = playbook_app(config_data=config_data)
         tcex = app.tcex
 
         # must stage binary values
-        self._stage_key_value(
-            'my_indicator', '#App:1234:my_indicator!Binary', invalid_indicator, tcex
-        )
-        self._stage_key_value(
-            'my_indicator12', '#App:1234:my_indicator12!BinaryArray', invalid_indicator12, tcex
-        )
+        if isinstance(invalid_indicator, bytes):
+            self._stage_key_value(
+                'my_indicator', '#App:1234:my_indicator!Binary', invalid_indicator, tcex
+            )
+
+        if isinstance(invalid_indicator, list) and isinstance(invalid_indicator[0], bytes):
+            self._stage_key_value(
+                'my_indicator', '#App:1234:my_indicator!BinaryArray', invalid_indicator, tcex
+            )
 
         with pytest.raises(ValidationError) as exc_info:
             tcex.inputs.add_model(PytestModel)
@@ -510,3 +483,134 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
 
         # values method returns string members as well as 'value' key of TCEntity members
         assert list(tcex.inputs.data.my_indicator_array.values()) == ['8.8.8.8', '1.1.1.1']
+
+    @pytest.mark.parametrize(
+        'indicators',
+        [
+            # None, entity that is considered empty as it has empty value, and empty string
+            [None, {'type': 'Address', 'value': '', 'id': '1000'}, ''],
+            # None, entity that is considered null as it has None value, and empty string
+            [None, {'type': 'Address', 'value': None, 'id': '1000'}, ''],
+        ],
+    )
+    def test_field_type_indicator_array_input_array_with_empty_and_null_members(
+        self, playbook_app: 'MockApp', indicators
+    ):
+        """Test IndicatorArray field type with Array input that contains empty and null members.
+
+        See IndicatorArray.is_empty_member and IndicatorArray.is_null_member for information on
+        what is considered to be empty and null members of IndicatorArray.
+
+        By default, IndicatorArray only checks that list used to initialize Array type is not empty.
+        Null and empty members are allowed to be in the array by default, so no error expected.
+        """
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_indicators: IndicatorArray
+
+        config_data = {'my_indicators': indicators}
+        app = playbook_app(config_data=config_data)
+        tcex = app.tcex
+        tcex.inputs.add_model(PytestModel)
+
+        # empty and null members are ok
+        assert tcex.inputs.data.my_indicators == indicators
+
+    @pytest.mark.parametrize(
+        'indicators',
+        [
+            # empty string
+            [''],
+            # entity that is considered empty as it has empty value
+            [{'type': 'Address', 'value': '', 'id': '1000'}],
+            # None, and entity that is considered empty as it has empty value
+            [None, {'type': 'Address', 'value': '', 'id': '1000'}],
+            # same as above, but in reverse order
+            [{'type': 'Address', 'value': '', 'id': '1000'}, None],
+            # None and empty string
+            [None, ''],
+            ['', None],
+        ],
+    )
+    def test_field_type_indicator_array_input_array_with_empty_and_null_members_empty_not_allowed(
+        self, playbook_app: 'MockApp', indicators
+    ):
+        """Test IndicatorArray field type with Array input that contains empty and null members.
+
+        See IndicatorArray.is_empty_member and IndicatorArray.is_null_member for information on
+        what is considered to be empty and null members of IndicatorArray.
+
+        By default, IndicatorArray only checks that list used to initialize Array type is not empty.
+        Null and empty members are allowed to be in the array by default.
+
+        IndicatorArray is configured to not accept empty members, so an error is expected due to
+        empty members being in the input.
+        """
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_indicators: custom_indicator_array(allow_empty_members=False)
+
+        config_data = {'my_indicators': indicators}
+        app = playbook_app(config_data=config_data)
+        tcex = app.tcex
+        with pytest.raises(ValueError) as exc_info:
+            tcex.inputs.add_model(PytestModel)
+
+        err_msg = str(exc_info.value)
+
+        # assert None did not cause the issue
+        assert 'None' not in err_msg
+        # error due to empty members being in input
+        assert 'may not be empty' in err_msg
+
+    @pytest.mark.parametrize(
+        'indicators',
+        [
+            # null entity
+            [None],
+            # None, and entity that is considered empty as it has empty value
+            [None, {'type': 'Address', 'value': '', 'id': '1000'}],
+            # same as above, but reverse order
+            [{'type': 'Address', 'value': '', 'id': '1000'}, None],
+            # entity that is considered null due to 'value' being None
+            [{'type': 'Address', 'value': None, 'id': '1000'}],
+            # None and empty string
+            ['', None],
+            [None, ''],
+        ],
+    )
+    def test_field_type_indicator_array_input_array_with_empty_and_null_members_null_not_allowed(
+        self, playbook_app: 'MockApp', indicators
+    ):
+        """Test IndicatorArray field type with Array input that contains empty and/or null members.
+
+        See IndicatorArray.is_empty_member and IndicatorArray.is_null_member for information on
+        what is considered to be empty and null members of IndicatorArray.
+
+        By default, IndicatorArray only checks that list used to initialize Array type is not empty.
+        Null and empty members are allowed to be in the array by default.
+
+        IndicatorArray is configured to not accept null members, so an error is expected due to
+        None or null members being in the input.
+        """
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_indicators: custom_indicator_array(allow_null_members=False)
+
+        config_data = {'my_indicators': indicators}
+        app = playbook_app(config_data=config_data)
+        tcex = app.tcex
+        with pytest.raises(ValueError) as exc_info:
+            tcex.inputs.add_model(PytestModel)
+
+        err_msg = str(exc_info.value)
+
+        # error due to None being in input
+        assert 'None' in err_msg
+        assert 'may not be null' in err_msg
