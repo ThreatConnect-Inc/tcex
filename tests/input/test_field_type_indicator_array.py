@@ -516,14 +516,22 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
     @pytest.mark.parametrize(
         'indicators',
         [
-            # empty string
-            [''],
-            # entity that is considered empty as it has empty value
-            [{'type': 'Address', 'value': '', 'id': '1000'}],
             # None, and entity that is considered empty as it has empty value
             [None, {'type': 'Address', 'value': '', 'id': '1000'}],
             # same as above, but in reverse order
             [{'type': 'Address', 'value': '', 'id': '1000'}, None],
+            # entity that is considered null an entity that is considered empty
+            [
+                {'type': 'Address', 'value': None, 'id': '1000'},
+                {'type': 'Address', 'value': '', 'id': '1000'},
+            ],
+            [
+                {'type': 'Address', 'value': '', 'id': '1000'},
+                {'type': 'Address', 'value': None, 'id': '1000'},
+            ],
+            # entity that is considered null and empty string
+            [{'type': 'Address', 'value': None, 'id': '1000'}, ''],
+            ['', {'type': 'Address', 'value': None, 'id': '1000'}],
             # None and empty string
             [None, ''],
             ['', None],
@@ -565,17 +573,25 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
     @pytest.mark.parametrize(
         'indicators',
         [
-            # null entity
-            [None],
             # None, and entity that is considered empty as it has empty value
             [None, {'type': 'Address', 'value': '', 'id': '1000'}],
-            # same as above, but reverse order
+            # same as above, but in reverse order
             [{'type': 'Address', 'value': '', 'id': '1000'}, None],
-            # entity that is considered null due to 'value' being None
-            [{'type': 'Address', 'value': None, 'id': '1000'}],
+            # entity that is considered null an entity that is considered empty
+            [
+                {'type': 'Address', 'value': None, 'id': '1000'},
+                {'type': 'Address', 'value': '', 'id': '1000'},
+            ],
+            [
+                {'type': 'Address', 'value': '', 'id': '1000'},
+                {'type': 'Address', 'value': None, 'id': '1000'},
+            ],
+            # entity that is considered null and empty string
+            [{'type': 'Address', 'value': None, 'id': '1000'}, ''],
+            ['', {'type': 'Address', 'value': None, 'id': '1000'}],
             # None and empty string
-            ['', None],
             [None, ''],
+            ['', None],
         ],
     )
     def test_field_type_indicator_array_input_array_with_empty_and_null_members_null_not_allowed(
