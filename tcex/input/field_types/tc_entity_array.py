@@ -31,7 +31,7 @@ class TCEntityArray(AbstractArray):
         TCEntityArray.is_array_member and whose 'value' key maps to an empty string.
         """
         # use explicit checks for '' to circumvent ambiguity caused by other falsy values
-        return cls.is_array_member(value) and value['value'] == ''
+        return cls.is_array_member(value) and value is not None and value['value'] == ''
 
     @classmethod
     def is_array_member(cls, value: Any) -> bool:
