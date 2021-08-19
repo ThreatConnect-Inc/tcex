@@ -742,7 +742,8 @@ class Validator:
             if path_0 in dict_1:
                 dict_1.pop(path_0)
             return dict_1
-        self.remove_excludes(dict_1.get(path_0, {}), paths[1:])
+        if not isinstance(dict_1, list):
+            self.remove_excludes(dict_1.get(path_0, {}), paths[1:])
         return dict_1
 
     @property
