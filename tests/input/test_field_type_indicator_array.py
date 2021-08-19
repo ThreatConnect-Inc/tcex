@@ -9,6 +9,7 @@ from pydantic import BaseModel, ValidationError
 # first-party
 from tcex.input.field_types import IndicatorArray, IndicatorArrayOptional
 from tcex.input.field_types.customizable import custom_indicator_array
+from tcex.input.field_types.exception import ConfigurationException
 
 from .utils import InputTest
 
@@ -625,3 +626,65 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
         # error due to None being in input
         assert 'None' in err_msg
         assert 'may not be null' in err_msg
+
+    @pytest.mark.parametrize(
+        'types',
+        [
+            # contains group
+            ['Adversary'],
+            # contains random string
+            ['other'],
+            # contains something other than string
+            [{}],
+            # contains None
+            [None],
+            # is not a list
+            {},
+        ],
+    )
+    def test_field_type_group_array_custom_entity_filters_invalid(
+        self, playbook_app: 'MockApp', types
+    ):
+        """Test the entity_filter_types customization option of custom_indicator_array.
+
+        The parameter should not allow anything that is not a list of valid indicator types.
+        """
+        # ensure session singleton is loaded
+        app = playbook_app(config_data={})
+        tcex = app.tcex
+        _ = tcex.inputs.session
+
+        # should raise exception on custom group array config
+        with pytest.raises(ConfigurationException):
+            custom_indicator_array(entity_filter_types=types)
+
+    @pytest.mark.parametrize('types', [['Host'], ['Address'], ['Host', 'Address']])
+    def test_field_type_indicator_array_custom_entity_filters_valid(
+        self, playbook_app: 'MockApp', types
+    ):
+        """Test the entity_filter_types customization option of custom_indicator_array.
+
+        The parameter should not allow anything that is not a list of valid indicator types.
+        """
+        indicators = [
+            {'type': 'Host', 'value': 'domain.com', 'id': '1000'},
+            {'type': 'Address', 'value': '1.1.1.1', 'id': '1000'},
+        ]
+
+        config_data = {'my_indicators': indicators}
+        app = playbook_app(config_data=config_data)
+        tcex = app.tcex
+
+        # ensure session singleton is loaded
+        _ = tcex.inputs.session
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_indicators: custom_indicator_array(entity_filter_types=types)
+
+        tcex.inputs.add_model(PytestModel)
+        entities = list(tcex.inputs.data.my_indicators.entities())
+
+        # should only contain entities with type that is in configured filter types
+        assert all([entity['type'] in types for entity in entities])

@@ -19,6 +19,9 @@ logger = logging.getLogger('tcex')
 class ThreatIntelUtils:
     """Threat Intelligence Common Methods"""
 
+    INDICATOR = 'Indicator'
+    GROUP = 'Group'
+
     def __init__(self, session: Session) -> None:
         """Initialize class properties."""
         self.session = session
@@ -307,3 +310,29 @@ class ThreatIntelUtils:
             'WebSite',
             'Phone',
         ]
+
+    def validate_intel_types(self, types_list: list[str], restrict_to: Optional[str] = None):
+        """Validate that Types contained in types_list are valid Intel Types.
+
+        :param types_list: list of types to validate. An exception is raised if a member of this
+        list is not a valid intel type.
+
+        :param restrict_to: If None, types_list will be validated to contain valid Indicator
+        or Group types. If not None, this value must be set to self.INDICATOR or self.GROUP,
+        and types_list will be validated to contain only Indicators or Groups depending on this
+        value.
+        """
+
+        if restrict_to is not None and restrict_to not in [self.INDICATOR, self.GROUP]:
+            raise ValueError(f'restrict_to must be {self.INDICATOR} or {self.GROUP}')
+
+        if not isinstance(types_list, list):
+            raise TypeError(f'types_list must be a a list.')
+
+        if restrict_to:
+            valid_types = self.group_types if restrict_to == self.GROUP else self.indicator_types
+        else:
+            valid_types = self.indicator_types + self.group_types
+
+        if any([_type not in valid_types for _type in types_list]):
+            raise ValueError(f'Type list "{types_list}" contains invalid Intel Type.')

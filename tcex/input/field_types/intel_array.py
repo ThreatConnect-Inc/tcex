@@ -17,6 +17,9 @@ class IntelArray(AbstractHybridArray):
 
     __input_type__ = 'String'
     __playbook_data_type__ = ['String', 'StringArray', 'TCEntity', 'TCEntityArray']
+    # if used, _entity_filter_types should be set to a list of group/indicator types that are
+    # used to provide automatic filtering capability within the entities() method.
+    _entity_filter_types = None
 
     @classmethod
     def _type_compositions(cls) -> list[Union[StringArray, TCEntityArray]]:
@@ -30,7 +33,11 @@ class IntelArray(AbstractHybridArray):
         """Return only TCEntity members of this HybridArray"""
         for member in self:
             if isinstance(member, dict):
-                yield member
+                if self._entity_filter_types is not None:
+                    if member.get('type') in self._entity_filter_types:
+                        yield member
+                else:
+                    yield member
 
     def values(self):
         """Return String members of this HybridArray as well as 'value' key of TCEntity members"""

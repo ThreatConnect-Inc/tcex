@@ -1,6 +1,10 @@
 """Field type exception classes"""
 
 
+class ConfigurationException(ValueError):
+    """Raised when unexpected configuration values are received by functions in customizable.py"""
+
+
 class HeterogenousArrayException(ValueError):
     """Raised when Array implementation is found to be not homogenous within assertion method"""
 
