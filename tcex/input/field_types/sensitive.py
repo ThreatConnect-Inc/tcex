@@ -29,7 +29,7 @@ class Sensitive:
         )
 
     @classmethod
-    def __get_validators__(cls) -> 'Callable':
+    def __get_validators__(cls) -> Callable:
         """Define one or more validators for Pydantic custom type."""
         yield cls.validate
 

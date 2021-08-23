@@ -169,10 +169,13 @@ class Template(BinABC):
     @staticmethod
     def file_hash(fqfn: Path) -> str:
         """Return the file hash."""
-        md5 = hashlib.md5()  # nosec
-        f = fqfn.open(mode='rb')
-        while chunk := f.read(4096):
-            md5.update(chunk)
+        with fqfn.open(mode='rb') as fh:
+            md5 = hashlib.md5()  # nosec
+            while True:
+                chunk = fh.read(8192)
+                if not chunk:
+                    break
+                md5.update(chunk)
 
         return md5.hexdigest()
 

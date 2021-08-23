@@ -1,5 +1,6 @@
 """Python Backports"""
 
+# flake8: noqa
 try:
     # standard library
     from functools import cached_property

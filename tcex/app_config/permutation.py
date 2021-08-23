@@ -7,7 +7,7 @@ import os
 import random
 import sys
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 try:
     # standard library
@@ -284,7 +284,7 @@ class Permutation:
             self.init_permutations()
         return self._output_permutations
 
-    def outputs_by_inputs(self, inputs: dict[str, str]) -> List[List[dict]]:
+    def outputs_by_inputs(self, inputs: Dict[str, str]) -> List[List[dict]]:
         """Return all output based on provided inputs
 
         Args:

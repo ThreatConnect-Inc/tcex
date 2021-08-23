@@ -1,6 +1,6 @@
 """Layout JSON Model"""
 # standard library
-from typing import List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 # third-party
 from pydantic import BaseModel
@@ -79,7 +79,7 @@ class LayoutJsonModel(BaseModel):
         return self.outputs_.get(name) or NoneModel
 
     @property
-    def outputs_(self) -> dict[str, OutputsModel]:
+    def outputs_(self) -> Dict[str, OutputsModel]:
         """Return layout.json outputs in a flattened dict with name param as key."""
         return {o.name: o for o in self.outputs}
 
@@ -89,7 +89,7 @@ class LayoutJsonModel(BaseModel):
         return list(self.params.keys())
 
     @property
-    def params(self) -> dict[str, ParametersModel]:
+    def params(self) -> Dict[str, ParametersModel]:
         """Return layout.json params in a flattened dict with name param as key."""
         parameters = {}
         for i in self.inputs:

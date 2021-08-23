@@ -36,7 +36,7 @@ class Package(BinABC):
         self.validation_data = {}
 
     @cached_property
-    def _build_excludes_glob(self):
+    def _build_excludes_glob(self):  # pylint: disable=no-self-use
         """Return a list of files and folders that should be excluded during the build process."""
         # glob files/directories
         return [
@@ -51,7 +51,7 @@ class Package(BinABC):
         """Return a list of files/folders that should be excluded in the App base directory."""
         # base directory files/directories
         excludes = [
-            self.args.outdir,
+            self.output_dir,
             '.cache',  # local cache directory
             '.c9',  # C9 IDE
             '.coverage',  # coverage file
@@ -74,8 +74,8 @@ class Package(BinABC):
             'test-reports',  # pytest in CI/CD
             'tests',  # pytest test directory
         ]
-        excludes.extend(self.args.exclude)
-        excludes.extend(self.tj.package_excludes)
+        excludes.extend(self._excludes)
+        excludes.extend(self.tj.data.package.excludes)
         return excludes
 
     # @property

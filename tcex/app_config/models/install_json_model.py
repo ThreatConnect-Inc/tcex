@@ -3,7 +3,7 @@
 import os
 import uuid
 from enum import Enum
-from typing import List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 # third-party
 from pydantic import BaseModel, Field, validator
@@ -270,7 +270,7 @@ class InstallJsonModel(BaseModel):
         service_config: Optional[bool] = None,
         _type: Optional[str] = None,
         input_permutations: Optional[List] = None,
-    ) -> dict[str, ParamsModel]:
+    ) -> Dict[str, ParamsModel]:
         """Return params as name/data dict.
 
         Args:
@@ -319,7 +319,7 @@ class InstallJsonModel(BaseModel):
         return self.params_dict.get(name) or NoneModel()
 
     @property
-    def optional_params(self) -> dict[str, ParamsModel]:
+    def optional_params(self) -> Dict[str, ParamsModel]:
         """Return params as name/data model."""
         return {p.name: p for p in self.params if p.required is False}
 
@@ -334,26 +334,26 @@ class InstallJsonModel(BaseModel):
         return [p.name for p in self.params]
 
     @property
-    def params_dict(self) -> dict[str, ParamsModel]:
+    def params_dict(self) -> Dict[str, ParamsModel]:
         """Return params as name/data dict."""
         return {p.name: p for p in self.params}
 
     @property
-    def playbook_outputs(self) -> dict[str, ParamsModel]:
+    def playbook_outputs(self) -> Dict[str, ParamsModel]:
         """Return outputs as name/data model."""
         return {o.name: o for o in self.playbook.output_variables}
 
     @property
-    def required_params(self) -> dict[str, ParamsModel]:
+    def required_params(self) -> Dict[str, ParamsModel]:
         """Return params as name/data dict."""
         return {p.name: p for p in self.params if p.required is True}
 
     @property
-    def service_config_params(self) -> dict[str, ParamsModel]:
+    def service_config_params(self) -> Dict[str, ParamsModel]:
         """Return params as name/data dict."""
         return {p.name: p for p in self.params if p.service_config is True}
 
     @property
-    def service_playbook_params(self) -> dict[str, ParamsModel]:
+    def service_playbook_params(self) -> Dict[str, ParamsModel]:
         """Return params as name/data dict."""
         return {p.name: p for p in self.params if p.service_config is False}
