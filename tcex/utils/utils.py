@@ -219,9 +219,10 @@ class Utils:
         Returns:
             str: The reformatted token.
         """
-        mask_char = mask_char or '*'
-        if cred is not None and len(cred) >= visible * 2:
-            cred = f'{cred[:visible]}{mask_char * mask_char_count}{cred[-visible:]}'
+        if isinstance(cred, str):
+            mask_char = mask_char or '*'
+            if cred is not None and len(cred) >= visible * 2:
+                cred = f'{cred[:visible]}{mask_char * mask_char_count}{cred[-visible:]}'
         return cred
 
     @staticmethod

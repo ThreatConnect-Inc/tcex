@@ -70,12 +70,12 @@ class TokenAuth(auth.AuthBase):
 class TcSession(Session):
     """ThreatConnect REST API Requests Session"""
 
-    def __init__(self, tc_api_access_id, tc_api_secret_key, base_url):
+    def __init__(self, tc_api_access_id, tc_api_secret_key, tc_base_url):
         """Initialize the Class properties."""
         super().__init__()
         self.tc_api_access_id = tc_api_access_id
         self.tc_api_secret_key = tc_api_secret_key
-        self.base_url = base_url.strip('/')
+        self.tc_base_url = tc_base_url.strip('/')
         self.log = logger
 
         # properties
@@ -141,7 +141,7 @@ class TcSession(Session):
 
         # accept path for API calls instead of full URL
         if not url.startswith('https'):
-            url = f'{self.base_url}{url}'
+            url = f'{self.tc_base_url}{url}'
         response = super().request(method, url, **kwargs)
 
         # don't show curl message for logging commands

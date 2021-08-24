@@ -3,7 +3,10 @@
 from typing import Optional
 
 # third-party
-from pydantic import BaseModel, Field, SecretStr
+from pydantic import BaseModel, Field
+
+# first-party
+from tcex.input.field_types.sensitive import Sensitive
 
 
 class ServiceModel(BaseModel):
@@ -57,7 +60,7 @@ class ServiceModel(BaseModel):
         inclusion_reason='runtimeLevel',
         requires_definition=True,
     )
-    tc_svc_broker_token: SecretStr = Field(
+    tc_svc_broker_token: Sensitive = Field(
         None,
         description='The Broker auth token.',
         inclusion_reason='runtimeLevel',

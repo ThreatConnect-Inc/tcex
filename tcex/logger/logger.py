@@ -111,6 +111,9 @@ class Logger:
                     self._logger.handle(event)
                 break
 
+        # remove the cache handler
+        self.remove_handler_by_name(handler_name=handler_name)
+
     def shutdown(self) -> None:
         """Close all handlers.
 

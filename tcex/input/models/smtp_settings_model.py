@@ -1,6 +1,9 @@
 """SMTP Settings Model"""
 # third-party
-from pydantic import BaseModel, Field, SecretStr
+from pydantic import BaseModel, Field
+
+# first-party
+from tcex.input.field_types.sensitive import Sensitive
 
 
 class SmtpSettingsModel(BaseModel):
@@ -21,7 +24,7 @@ class SmtpSettingsModel(BaseModel):
         description='The SMTP server hostname.',
         inclusion_reason='feature (smtpSettings)',
     )
-    tc_smtp_password: SecretStr = Field(
+    tc_smtp_password: Sensitive = Field(
         None,
         description='The SMTP server password.',
         inclusion_reason='feature (smtpSettings)',

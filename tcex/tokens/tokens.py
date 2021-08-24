@@ -85,17 +85,14 @@ class Tokens:
         """
         if token is None or expires is None:  # pragma: no cover
             self.log.error(
-                'feature=token, event=invalid-token-data, '
-                f'token="{self.utils.printable_cred(token, 10)}", '
-                f'expires={expires}.'
+                'feature=token, event=invalid-token-data, ' f'token="{token}", expires={expires}.'
             )
             return
 
         self.token_map[key] = {'token': token, 'token_expires': int(expires)}
         self.log.info(
             f'feature=token, action=token-register, key={key}, '
-            f'token="{self.utils.printable_cred(token, 10)}", '
-            f'expiration={expires}'
+            f'token={token}, expiration={expires}'
         )
 
     def renew_token(self, token: str) -> None:
@@ -119,8 +116,7 @@ class Tokens:
                 err_reason = r.text or r.reason
                 err_msg = (
                     f'feature=token, event=token-retry-error, status_code={r.status_code}, '
-                    f'api-message={err_reason}, '
-                    f'token="{self.utils.printable_cred(token, 10)}".'
+                    f'api-message={err_reason}, token={token}.'
                 )
                 self.log.error(err_msg)
                 raise RuntimeError(1042, err_msg)
@@ -179,7 +175,7 @@ class Tokens:
                 self.log.trace(
                     '''feature=token, '''
                     f'''event=token-status, key={key}, '''
-                    f'''token="{self.utils.printable_cred(token_data.get('token'), 10)}", '''
+                    f'''token={token_data.get('token')}, '''
                     f'''expires={token_data.get('token_expires')}, '''
                     f'''sleep-seconds={sleep_seconds}'''
                 )
@@ -196,8 +192,8 @@ class Tokens:
                             api_token_data['apiTokenExpires']
                         )
                         self.log.info(
-                            f'''feature=token, action=token-renewed, key={key}, token='''
-                            f'''"{self.utils.printable_cred(api_token_data['apiToken'], 10)}", '''
+                            f'''feature=token, action=token-renewed, key={key}, '''
+                            f'''token={api_token_data['apiToken']}, '''
                             f'''expires={api_token_data['apiTokenExpires']}'''
                         )
                     except RuntimeError as e:

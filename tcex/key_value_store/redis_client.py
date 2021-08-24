@@ -38,6 +38,7 @@ class RedisClient:
         """Initialize class properties"""
         pool = redis.ConnectionPool
         if blocking_pool:
+            kwargs.pop('blocking_pool')  # remove blocking_pool key
             pool = redis.BlockingConnectionPool
         self.pool = pool(host=host, port=port, db=db, **kwargs)
 

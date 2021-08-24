@@ -1,6 +1,9 @@
 """CAL Settings Model"""
 # third-party
-from pydantic import BaseModel, Field, SecretStr
+from pydantic import BaseModel, Field
+
+# first-party
+from tcex.input.field_types.sensitive import Sensitive
 
 
 class CalSettingsModel(BaseModel):
@@ -24,7 +27,7 @@ class CalSettingsModel(BaseModel):
         description='The hostname for CAL.',
         inclusion_reason='feature (CALSettings)',
     )
-    tc_cal_token: SecretStr = Field(
+    tc_cal_token: Sensitive = Field(
         ...,
         description='The token for CAL.',
         inclusion_reason='feature (CALSettings)',

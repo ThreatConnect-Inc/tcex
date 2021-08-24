@@ -3,7 +3,6 @@
 import json
 import logging
 import os
-import threading
 from pathlib import Path
 from typing import Dict, Optional, Union
 
@@ -225,9 +224,6 @@ class Input:
             )
         )
 
-        # register token
-        self.register_token(_contents.get('tc_token'), _contents.get('tc_token_expires'))
-
         return _contents
 
     @cached_property
@@ -352,17 +348,6 @@ class Input:
             port=self.data_unresolved.tc_kvstore_port,
             db=self.data_unresolved.tc_playbook_kvstore_id,
         ).client
-
-    def register_token(self, tc_token: str, tc_token_expires: str) -> None:
-        """Register token if provided in args (non-service Apps)"""
-        if all([tc_token, tc_token_expires]):
-            self.event.send(
-                channel='register_token',
-                # key='MainThread',
-                key=threading.current_thread().name,
-                token=tc_token,
-                expires=tc_token_expires,
-            )
 
     @cached_property
     def session(self) -> TcSessionSingleton:

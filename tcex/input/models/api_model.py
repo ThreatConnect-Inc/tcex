@@ -3,10 +3,11 @@
 from typing import Optional
 
 # third-party
-from pydantic import BaseModel, Field, SecretStr, validator
+from pydantic import BaseModel, Field, validator
 
 # first-party
 from tcex.app_config.install_json import InstallJson
+from tcex.input.field_types.sensitive import Sensitive
 
 
 class ApiModel(BaseModel):
@@ -38,14 +39,13 @@ class ApiModel(BaseModel):
         inclusion_reason='runtimeLevel',
     )
     # alternate authentication credential when tc_token is not passed
-    # TODO: [med] switch out SecretStr for Sensitive Field type input/field_types/sensitive.py
-    tc_api_secret_key: Optional[SecretStr] = Field(
+    tc_api_secret_key: Optional[Sensitive] = Field(
         None,
         description='A ThreatConnect API Secret Key.',
         inclusion_reason='runtimeLevel',
         requires_definition=True,
     )
-    tc_token: Optional[SecretStr] = Field(
+    tc_token: Optional[Sensitive] = Field(
         None,
         description='A ThreatConnect API token.',
         inclusion_reason='runtimeLevel',

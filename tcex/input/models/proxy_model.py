@@ -3,7 +3,10 @@
 from typing import Optional
 
 # third-party
-from pydantic import BaseModel, Field, SecretStr
+from pydantic import BaseModel, Field
+
+# first-party
+from tcex.input.field_types.sensitive import Sensitive
 
 
 class ProxyModel(BaseModel):
@@ -32,7 +35,7 @@ class ProxyModel(BaseModel):
         description='The proxy username.',
         inclusion_reason='runtimeLevel',
     )
-    tc_proxy_password: Optional[SecretStr] = Field(
+    tc_proxy_password: Optional[Sensitive] = Field(
         None,
         description='The proxy password',
         inclusion_reason='runtimeLevel',

@@ -352,16 +352,18 @@ class TcEx:
         return Playbook(self.key_value_store, context, output_variables)
 
     @staticmethod
-    def get_redis_client(host, port, db=0, blocking=False, **kwargs) -> RedisClient:
+    def get_redis_client(
+        host: str, port: int, db: int = 0, blocking_pool: bool = False, **kwargs
+    ) -> RedisClient:
         """Return a *new* instance of Redis client.
 
         For a full list of kwargs see https://redis-py.readthedocs.io/en/latest/#redis.Connection.
 
         Args:
-            host (str, optional): The REDIS host. Defaults to localhost.
-            port (int, optional): The REDIS port. Defaults to 6379.
-            db (int, optional): The REDIS db. Defaults to 0.
-            blocking_pool (bool): Use BlockingConnectionPool instead of ConnectionPool.
+            host: The REDIS host. Defaults to localhost.
+            port: The REDIS port. Defaults to 6379.
+            db: The REDIS db. Defaults to 0.
+            blocking_pool: Use BlockingConnectionPool instead of ConnectionPool.
             errors (str, kwargs): The REDIS errors policy (e.g. strict).
             max_connections (int, kwargs): The maximum number of connections to REDIS.
             password (str, kwargs): The REDIS password.
@@ -371,7 +373,9 @@ class TcEx:
         Returns:
             Redis.client: An instance of redis client.
         """
-        return RedisClient(host=host, port=port, db=db, blocking=blocking, **kwargs).client
+        return RedisClient(
+            host=host, port=port, db=db, blocking_pool=blocking_pool, **kwargs
+        ).client
 
     # TODO: [high] testing ... organize this later
     def get_session(self) -> TcSession:
@@ -511,6 +515,10 @@ class TcEx:
             max_bytes=self.inputs.data.tc_log_max_bytes,
             level=self.inputs.data.tc_log_level,
         )
+
+        # set logging level
+        _logger.update_handler_level(level=self.inputs.data.tc_log_level)
+        _logger.log.setLevel(_logger.log_level(self.inputs.data.tc_log_level))
 
         # replay cached log events
         _logger.replay_cached_events(handler_name='cache')
@@ -699,7 +707,16 @@ class TcEx:
     def token(self) -> Tokens:
         """Return token object."""
         sleep_interval = int(os.getenv('TC_TOKEN_SLEEP_INTERVAL', '30'))
-        return Tokens(self.inputs.data.tc_api_path, sleep_interval, self.inputs.data.tc_verify)
+        _tokens = Tokens(self.inputs.data.tc_api_path, sleep_interval, self.inputs.data.tc_verify)
+
+        # register token for Apps that pass token on start
+        if all([self.inputs.data.tc_token, self.inputs.data.tc_token_expires]):
+            _tokens.register_token(
+                key=threading.current_thread().name,
+                token=self.inputs.data.tc_token,
+                expires=self.inputs.data.tc_token_expires,
+            )
+        return _tokens
 
     @cached_property
     def utils(self) -> Utils:

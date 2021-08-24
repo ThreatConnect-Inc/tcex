@@ -1,7 +1,11 @@
 """."""
 # TODO: [high] update docstrings
 # standard library
+import logging
 from typing import Any, Callable, Dict, Optional
+
+# get tcex logger
+logger = logging.getLogger('tcex')
 
 
 def _update_not_none(mapping: Dict[Any, Any], **update: Any) -> None:
@@ -16,6 +20,19 @@ class Sensitive:
     min_length: Optional[int] = None
     max_length: Optional[int] = None
 
+    def __init__(self, value: str):
+        """Initialize the Sensitive object."""
+        self._sensitive_value = value
+
+    @classmethod
+    def __get_validators__(cls) -> Callable:
+        """Define one or more validators for Pydantic custom type."""
+        yield cls._validate
+
+    def __len__(self) -> int:
+        """Return the length of the sensitive value."""
+        return len(self._sensitive_value)
+
     @classmethod
     def __modify_schema__(cls, field_schema: Dict[str, Any]) -> None:
         """."""
@@ -28,35 +45,30 @@ class Sensitive:
             maxLength=cls.max_length,
         )
 
-    @classmethod
-    def __get_validators__(cls) -> Callable:
-        """Define one or more validators for Pydantic custom type."""
-        yield cls.validate
-
-    @classmethod
-    def validate(cls, value: Any) -> 'Sensitive':
-        """."""
-        if isinstance(value, cls):
-            return value
-        return cls(value)
-
-    def __init__(self, value: str):
-        """."""
-        self._sensitive_value = value
-
     def __repr__(self) -> str:
         """."""
         return f'''Sensitive('{self}')'''
 
     def __str__(self) -> str:
-        """."""
-        return '**********' if self._sensitive_value else ''
+        """Return the value masked.
 
-    def __len__(self) -> int:
-        """."""
-        return len(self._sensitive_value)
+        If App is running in > DEBUG logging level and the sensitive data is greater
+        than X, then show the first and last character of the value. This is very
+        helpful in debugging App where the incorrect creds could have been passed.
+        """
+        if self._sensitive_value and logger.getEffectiveLevel() >= 10:  # DEBUG
+            if self.value and len(self.value) >= 10:
+                return f'''{self.value[:1]}{'*' * 4}{self.value[-1:]}'''
+        return '**********' if self.value else ''
+
+    @classmethod
+    def _validate(cls, value: Any) -> 'Sensitive':
+        """Pydantic validate method."""
+        if isinstance(value, cls):
+            return value
+        return cls(value)
 
     @property
     def value(self) -> str:
-        """."""
+        """Return the actual value."""
         return self._sensitive_value
