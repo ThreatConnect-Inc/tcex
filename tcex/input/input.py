@@ -387,8 +387,3 @@ class Input:
             )
 
         return _session
-
-    # TODO: [med] once logging is figured out see if this is still needed
-    def update_logging(self):
-        """."""
-        self.log.trace('update_logging')

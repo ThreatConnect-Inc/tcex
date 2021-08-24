@@ -1473,7 +1473,7 @@ class TiTcRequest:
         yield from self._iterate(url, params, 'fileOccurrence')
 
     def get_file_hash(self, main_type, sub_type, unique_id, hash_type='sha256'):
-        """ Gets the hash of a file. """
+        """Gets the hash of a file."""
         if not sub_type:
             url = f'/v2/{main_type}/{unique_id}/download'
         else:

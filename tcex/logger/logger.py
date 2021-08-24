@@ -7,29 +7,27 @@ import platform
 import sys
 from typing import Optional
 
+# third-party
+from pydantic import BaseModel
+from requests import Session
+
 # first-party
 from tcex.app_config.install_json import InstallJson
-
-from .api_handler import ApiHandler, ApiHandlerFormatter
-from .cache_handler import CacheHandler
-from .pattern_file_handler import PatternFileHandler
-from .rotating_file_handler_custom import RotatingFileHandlerCustom
-from .thread_file_handler import ThreadFileHandler
-from .trace_logger import TraceLogger
+from tcex.logger.api_handler import ApiHandler, ApiHandlerFormatter
+from tcex.logger.cache_handler import CacheHandler
+from tcex.logger.pattern_file_handler import PatternFileHandler
+from tcex.logger.rotating_file_handler_custom import RotatingFileHandlerCustom
+from tcex.logger.thread_file_handler import ThreadFileHandler
+from tcex.logger.trace_logger import TraceLogger
 
 
 class Logger:
     """Framework logger module."""
 
-    def __init__(self, tcex: object, logger_name: str):
-        """Initialize Class Properties.
-
-        Args:
-            tcex: Instance of TcEx class.
-            logger_name: The name of the logger.
-        """
-        self.tcex = tcex
+    def __init__(self, logger_name: str, session: Session) -> None:
+        """Initialize Class Properties."""
         self.logger_name = logger_name
+        self.session = session
 
         # properties
         self.ij = InstallJson()
@@ -146,7 +144,7 @@ class Logger:
             level: The level value as a string.
         """
         self.remove_handler_by_name(name)
-        api = ApiHandler(self.tcex.session)
+        api = ApiHandler(self.session)
         api.set_name(name)
         api.setLevel(self.log_level(level))
         api.setFormatter(ApiHandlerFormatter())
@@ -314,18 +312,18 @@ class Logger:
     # App info logging
     #
 
-    def log_info(self, args: object) -> None:
+    def log_info(self, inputs: BaseModel) -> None:
         """Send System and App data to logs.
 
         Args:
-            args: The args namespace for App.
+            inputs: The inputs model.
         """
         self._log_platform()
         self._log_app_data()
         self._log_python_version()
         self._log_tcex_version()
         self._log_tcex_path()
-        self._log_tc_proxy(args)
+        self._log_tc_proxy(inputs)
 
     def _log_app_data(self) -> None:
         """Log the App data information as a best effort."""
@@ -354,14 +352,14 @@ class Logger:
             f'{sys.version_info.micro}'
         )
 
-    def _log_tc_proxy(self, args: object) -> None:
+    def _log_tc_proxy(self, inputs: BaseModel) -> None:
         """Log the proxy settings.
 
         Args:
-            args: The args namespace for App.
+            inputs: The inputs model.
         """
-        if args.tc_proxy_tc:
-            self.log.info(f'proxy-server-tc={args.tc_proxy_host}:{args.tc_proxy_port}')
+        if inputs.tc_proxy_tc:
+            self.log.info(f'proxy-server-tc={inputs.tc_proxy_host}:{inputs.tc_proxy_port}')
 
     def _log_tcex_version(self) -> None:
         """Log the current TcEx version number."""

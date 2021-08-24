@@ -3,7 +3,7 @@
 from typing import Optional
 
 # third-party
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 
 
 class PlaybookModel(BaseModel):
@@ -24,3 +24,10 @@ class PlaybookModel(BaseModel):
         description='The list of requested output variables.',
         inclusion_reason='runtimeLevel',
     )
+
+    @validator('tc_playbook_out_variables', pre=True)
+    def parse_tc_playbook_out_variables(cls, v):
+        """Ensure value is an array."""
+        if isinstance(v, str):
+            v = v.split(',')
+        return v

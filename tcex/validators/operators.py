@@ -7,7 +7,10 @@ from .validation_exception import ValidationError
 
 
 def _operator(
-    operator_call: Callable, compare_to: Any, message_posfix: str, allow_none=False,
+    operator_call: Callable,
+    compare_to: Any,
+    message_posfix: str,
+    allow_none=False,
 ) -> Callable[..., None]:
     def _validate(value: Any, arg_name: str, label: str):
         """Run validation on input data.
@@ -79,7 +82,10 @@ def less_than_or_equal(compare_to: Any, allow_none=False) -> Callable[..., None]
     """
     formatted_value = f'"{compare_to}"' if isinstance(compare_to, str) else compare_to
     return _operator(
-        operator.le, compare_to, f'is not less than or equal to {formatted_value}', allow_none,
+        operator.le,
+        compare_to,
+        f'is not less than or equal to {formatted_value}',
+        allow_none,
     )
 
 
@@ -113,5 +119,8 @@ def greater_than_or_equal(compare_to: Any, allow_none=False) -> Callable[..., No
     """
     formatted_value = f'"{compare_to}"' if isinstance(compare_to, str) else compare_to
     return _operator(
-        operator.ge, compare_to, f'is not greater than or equal to {formatted_value}', allow_none,
+        operator.ge,
+        compare_to,
+        f'is not greater than or equal to {formatted_value}',
+        allow_none,
     )

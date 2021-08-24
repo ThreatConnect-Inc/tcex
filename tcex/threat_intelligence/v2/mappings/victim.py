@@ -76,7 +76,7 @@ class Victim(Mappings):
         return self.add_asset('EMAIL', asset_data)
 
     def add_key_value(self, key, value):
-        """Add the key-value to the Victim. """
+        """Add the key-value to the Victim."""
         key = self._metadata_map.get(key, key)
         if key in ['unique_id', 'id']:
             self._unique_id = str(value)

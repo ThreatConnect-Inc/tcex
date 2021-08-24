@@ -515,8 +515,8 @@ class ThreatIntelligence:
             data['main_type'] = ti.type
             data['sub_type'] = ti.api_sub_type
             data['api_type'] = ti.api_sub_type
-            data['api_entity']: ti.api_entity
-            data['api_branch']: ti.api_branch
+            data['api_entity'] = ti.api_entity
+            data['api_branch'] = ti.api_branch
             data['owner'] = owner
             data['attributes'] = []
             data['tags'] = []

@@ -957,45 +957,45 @@ class Mappings:
         )
 
     def can_create(self):  # pylint: disable=no-self-use
-        """ Determines if the object can be created. """
+        """Determines if the object can be created."""
         return True
 
     def can_delete(self):
-        """ Determines if the object can be deleted. """
+        """Determines if the object can be deleted."""
         return self.unique_id is not None
 
     def can_update(self):
-        """ Determines if the object can be updated. """
+        """Determines if the object can be updated."""
         return self.unique_id is not None
 
     @staticmethod
     def is_indicator():
-        """ Determines if the object is a Indicator. """
+        """Determines if the object is a Indicator."""
         return False
 
     @staticmethod
     def is_group():
-        """ Determines if the object is a Group. """
+        """Determines if the object is a Group."""
         return False
 
     @staticmethod
     def is_victim():
-        """ Determines if the object is a Victim. """
+        """Determines if the object is a Victim."""
         return False
 
     @staticmethod
     def is_tag():
-        """ Determines if the object is a Tag. """
+        """Determines if the object is a Tag."""
         return False
 
     @staticmethod
     def is_security_label():
-        """ Determines if the object is a Security Label. """
+        """Determines if the object is a Security Label."""
         return False
 
     @staticmethod
     def is_task():
-        """ Determines if the object is a Task. """
+        """Determines if the object is a Task."""
         return False
 
     @staticmethod
@@ -1018,7 +1018,7 @@ class Mappings:
         return uri
 
     def _set_unique_id(self, json_response):
-        """ Sets the Unique Id given a json """
+        """Sets the Unique Id given a json"""
         self.unique_id = json_response.get('id')
 
     def __str__(self):

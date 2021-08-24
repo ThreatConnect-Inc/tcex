@@ -40,6 +40,9 @@ from tcex.tokens import Tokens
 from tcex.utils import Utils
 
 
+# TODO: [high] any passed in logger would have to support TRACE, which could be an issue.
+#       allowing a logger was intended for external Apps that may already have a logger.
+#       it may be possible to inject a trace method that just logs debug?
 class TcEx:
     """Provides basic functionality for all types of TxEx Apps.
 
@@ -64,7 +67,6 @@ class TcEx:
         self._config: dict = kwargs.get('config') or {}
         self._exit_code = 0
         self._jobs = None
-        self._logger = None
         self._redis_client = None
         self._service = None
         self.event = Event()
@@ -308,7 +310,10 @@ class TcEx:
         self.playbook.write_output()
 
         # required only for tcex testing framework
-        if self.inputs.data.tcex_testing_context is not None:  # pragma: no cover
+        if (
+            hasattr(self.inputs.data, 'tcex_testing_context')
+            and self.inputs.data.tcex_testing_context is not None
+        ):  # pragma: no cover
             self.redis_client.hset(self.inputs.data.tcex_testing_context, '_exit_message', msg)
 
     @property
@@ -488,13 +493,32 @@ class TcEx:
         if isinstance(log, logging.Logger):
             self._log = log
 
-    @property
+    @cached_property
     def logger(self) -> Logger:
         """Return logger."""
-        if self._logger is None:
-            self._logger = Logger(self, 'tcex')
-            self._logger.add_cache_handler('cache')
-        return self._logger
+        _logger = Logger(logger_name='tcex', session=self.get_session())
+
+        # add api handler
+        if self.inputs.data.tc_token is not None and self.inputs.data.tc_log_to_api:
+            _logger.add_api_handler(level=self.inputs.data.tc_log_level)
+
+        # add rotating log handler
+        _logger.add_rotating_file_handler(
+            name='rfh',
+            filename=self.inputs.data.tc_log_file,
+            path=self.inputs.data.tc_log_path,
+            backup_count=self.inputs.data.tc_log_backup_count,
+            max_bytes=self.inputs.data.tc_log_max_bytes,
+            level=self.inputs.data.tc_log_level,
+        )
+
+        # replay cached log events
+        _logger.replay_cached_events(handler_name='cache')
+
+        # log standard App data
+        _logger.log_info(self.inputs.data)
+
+        return _logger
 
     def metric(
         self,
@@ -589,8 +613,8 @@ class TcEx:
     def redis_client(self) -> RedisClient:
         """Return redis client instance configure for Playbook/Service Apps."""
         return self.get_redis_client(
-            host=self.inputs.data.tc_playbook_db_path,
-            port=self.inputs.data.tc_playbook_db_port,
+            host=self.inputs.data.tc_kvstore_host,
+            port=self.inputs.data.tc_kvstore_port,
             db=0,
         )
 
