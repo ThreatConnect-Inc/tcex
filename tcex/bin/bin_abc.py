@@ -5,7 +5,6 @@ import logging
 import os
 import sys
 from abc import ABC
-from functools import lru_cache
 from pathlib import Path
 from typing import Optional
 
@@ -16,8 +15,8 @@ from click import Choice
 # first-party
 from tcex.app_config import InstallJson, LayoutJson, TcexJson
 from tcex.app_config.permutation import Permutation
-from tcex.logger import RotatingFileHandlerCustom
-from tcex.logger.trace_logger import TraceLogger
+from tcex.backports import cached_property
+from tcex.logger import RotatingFileHandlerCustom, TraceLogger
 
 
 class BinABC(ABC):
@@ -33,9 +32,8 @@ class BinABC(ABC):
         self.permutations = Permutation()
         self.tj = TcexJson()
 
-    @property
-    @lru_cache
-    def cli_out_path(self) -> Path:
+    @cached_property
+    def cli_out_path(self) -> Path:  # pylint: disable=no-self-use
         """Return the path to the tcex cli comman out directory."""
         _out_path = Path(os.path.expanduser('~/.tcex'))
         _out_path.mkdir(exist_ok=True, parents=True)
@@ -53,8 +51,7 @@ class BinABC(ABC):
         if halt:
             sys.exit(1)
 
-    @property
-    @lru_cache
+    @cached_property
     def log(self) -> logging.Logger:
         """Return the configured logger."""
         # create logger based on custom TestLogger

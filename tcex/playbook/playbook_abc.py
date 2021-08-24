@@ -182,7 +182,7 @@ class PlaybookABC(ABC):
             return False
         return all(x in data for x in ['key', 'value'])
 
-    def _is_key_value_array(self, data: list[dict]) -> bool:
+    def _is_key_value_array(self, data: List[dict]) -> bool:
         """Return True if provided data has proper structure for Key Value Array."""
         for d in data:
             if not self._is_key_value(d):
@@ -196,7 +196,7 @@ class PlaybookABC(ABC):
             return False
         return all(x in data for x in ['id', 'value', 'type'])
 
-    def _is_tc_entity_array(self, data: list[dict]) -> bool:
+    def _is_tc_entity_array(self, data: List[dict]) -> bool:
         """Return True if provided data has proper structure for TC Entity Array."""
         for d in data:
             if not self._is_tc_entity(d):

@@ -4,11 +4,12 @@ import json
 import logging
 import os
 from collections import OrderedDict
-from functools import lru_cache
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from .models import LayoutJsonModel
+# first-party
+from tcex.app_config.models import LayoutJsonModel
+from tcex.backports import cached_property
 
 if TYPE_CHECKING:  # pragma: no cover
     # first-party
@@ -27,8 +28,7 @@ class LayoutJson:
         # properties
         self.fqfn = Path(os.path.join(path, filename))
 
-    @property
-    @lru_cache()
+    @cached_property
     def contents(self) -> dict:
         """Return layout.json file contents."""
         contents = {}
@@ -82,8 +82,7 @@ class LayoutJson:
         )
         self.write(data)
 
-    @property
-    # @lru_cache()
+    @cached_property
     def data(self) -> LayoutJsonModel:
         """Return the Install JSON model."""
         return LayoutJsonModel(**self.contents)

@@ -4,13 +4,14 @@ import json
 import logging
 import os
 from collections import OrderedDict
-from functools import lru_cache
 from pathlib import Path
 from typing import List, Optional
 
-from .install_json_update import InstallJsonUpdate
-from .install_json_validate import InstallJsonValidate
-from .models import InstallJsonModel
+# first-party
+from tcex.app_config.install_json_update import InstallJsonUpdate
+from tcex.app_config.install_json_validate import InstallJsonValidate
+from tcex.app_config.models import InstallJsonModel
+from tcex.backports import cached_property
 
 __all__ = ['InstallJson']
 
@@ -48,8 +49,7 @@ class InstallJson:
             'webhooktriggerservice': 'TCVW_-_',
         }
 
-    @property
-    @lru_cache
+    @cached_property
     def contents(self) -> dict:
         """Return install.json file contents."""
         contents = {'runtimeLevel': 'external'}
@@ -93,8 +93,7 @@ class InstallJson:
         """
         return f'#{self.data.app_output_var_type}:{job_id}:{var_name}!{var_type}'
 
-    @property
-    @lru_cache
+    @cached_property
     def data(self) -> InstallJsonModel:
         """Return the Install JSON model."""
         return InstallJsonModel(**self.contents)
@@ -158,7 +157,7 @@ class InstallJson:
     #     service_config: Optional[bool] = None,
     #     _type: Optional[str] = None,
     #     input_permutations: Optional[list] = None,
-    # ) -> dict[str, Any]:
+    # ) -> Dict[str, Any]:
     #     """Return params as cli args.
 
     #     Args:

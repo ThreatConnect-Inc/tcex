@@ -2,7 +2,7 @@
 
 # standard library
 from abc import abstractmethod
-from typing import Any
+from typing import Any, List
 
 from .array_abc import AbstractArray
 from .exception import InvalidMemberException
@@ -24,7 +24,7 @@ class AbstractHybridArray(AbstractArray):
 
     @classmethod
     @abstractmethod
-    def _type_compositions(cls) -> list[AbstractArray]:
+    def _type_compositions(cls) -> List[AbstractArray]:
         """Return list of Types that make up the HybridArray implementation
 
         Types contained in the returned list should inherit from HybridArray.
@@ -42,7 +42,7 @@ class AbstractHybridArray(AbstractArray):
         In order for a value to be considered a member of HybridArray, it must be considered
         a member of at least one of the HybridArray's type compositions.
         """
-        return any([composition.is_array_member(value) for composition in cls._type_compositions()])
+        return any(composition.is_array_member(value) for composition in cls._type_compositions())
 
     @classmethod
     def is_empty_member(cls, value: Any) -> bool:

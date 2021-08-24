@@ -1,6 +1,6 @@
 """IntelArray Types"""
 # standard library
-from typing import Union
+from typing import List, Union
 
 # first-party
 from tcex.input.field_types.hybrid_array_abc import AbstractHybridArray
@@ -22,7 +22,7 @@ class IntelArray(AbstractHybridArray):
     _entity_filter_types = None
 
     @classmethod
-    def _type_compositions(cls) -> list[Union[StringArray, TCEntityArray]]:
+    def _type_compositions(cls) -> List[Union[StringArray, TCEntityArray]]:
         """Implement abstract method in Array parent class.
 
         IntelArray is a HybridArray composed of StringArray and TCEntityArray.

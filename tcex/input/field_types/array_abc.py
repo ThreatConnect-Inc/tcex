@@ -2,7 +2,7 @@
 
 # standard library
 from abc import ABC, abstractmethod
-from typing import Any, Generator, Union
+from typing import Any, Generator, List, Union
 
 from .exception import (
     EmptyArrayException,
@@ -154,7 +154,7 @@ class AbstractArray(list, ABC):
         return value is None
 
     @classmethod
-    def assert_type(cls, value: Any) -> Union[Any, list[Any]]:
+    def assert_type(cls, value: Any) -> Union[Any, List[Any]]:
         """Assert that the value is either an Array or an Array member.
 
         if Array implementation is not marked as optional and the passed-in value is an Array, this
@@ -183,7 +183,7 @@ class AbstractArray(list, ABC):
         return value
 
     @classmethod
-    def wrap(cls, value: Any) -> list[Any]:
+    def wrap(cls, value: Any) -> List[Any]:
         """Wrap value in Array (list) if not already an Array."""
         return cls([value]) if not cls.is_array(value) else cls(value)
 

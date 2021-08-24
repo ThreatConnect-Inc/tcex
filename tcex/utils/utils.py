@@ -249,7 +249,7 @@ class Utils:
             request (object): The response.request object.
             mask_headers (Optional[bool] = True): If True then
                 values for certain header key will be masked.
-            mask_patterns (list[str] = None): A list of patterns
+            mask_patterns (List[str] = None): A list of patterns
                 if found in headers the value will be masked.
             body_limit (int, kwargs): The size limit for the body value.
             mask_body (bool, kwargs): If True the body will be masked.

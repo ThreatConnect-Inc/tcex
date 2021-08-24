@@ -5,7 +5,7 @@ import logging
 import os
 import threading
 from pathlib import Path
-from typing import Optional, Union
+from typing import Dict, Optional, Union
 
 # third-party
 from pydantic import BaseModel, Extra
@@ -75,7 +75,7 @@ class Input:
         tc_kvstore_port: int,
         tc_action_channel: str,
         tc_terminate_seconds: int,
-    ) -> dict[str, any]:
+    ) -> Dict[str, any]:
         """Subscribe to AOT action channel."""
         params = {}
         if tc_aot_enabled is not True:

@@ -4,10 +4,11 @@ import json
 import logging
 import os
 from collections import OrderedDict
-from functools import lru_cache
 from pathlib import Path
 
-from .models import JobJsonModel
+# first-party
+from tcex.app_config.models import JobJsonModel
+from tcex.backports import cached_property
 
 
 class JobJson:
@@ -22,8 +23,7 @@ class JobJson:
         # properties
         self.fqfn = Path(os.path.join(path, filename))
 
-    @property
-    @lru_cache
+    @cached_property
     def contents(self) -> dict:
         """Return tcex.json file contents."""
         _contents = {}
@@ -41,8 +41,7 @@ class JobJson:
 
         return _contents
 
-    @property
-    @lru_cache
+    @cached_property
     def data(self) -> JobJsonModel:
         """Return the Install JSON model."""
         return JobJsonModel(**self.contents)
