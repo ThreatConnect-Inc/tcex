@@ -2,7 +2,7 @@
 # standard library
 import logging
 import re
-from typing import Optional
+from typing import Dict, List, Optional
 from urllib.parse import quote
 
 # third-party
@@ -34,14 +34,14 @@ class ThreatIntelUtils:
         """Retrieve Custom Indicator Associations types from the ThreatConnect API."""
 
     @staticmethod
-    def expand_indicators(indicator: str) -> list:
+    def expand_indicators(indicator: str) -> List[str]:
         """Process indicators expanding file hashes/custom indicators into multiple entries.
 
         Args:
             indicator: A " : " delimited string.
 
         Returns:
-            (list): a list of indicators split on " : ".
+            A list of indicators split on " : ".
         """
         if indicator.count(' : ') > 0:
             # handle all multi-valued indicators types (file hashes and custom indicators)
@@ -69,11 +69,11 @@ class ThreatIntelUtils:
         return indicator_list
 
     @property
-    def group_types(self) -> list:
+    def group_types(self) -> List[str]:
         """Return all defined ThreatConnect Group types.
 
         Returns:
-            (list): A list of ThreatConnect Group types.
+            A list of ThreatConnect Group types.
         """
         return [
             'Adversary',
@@ -90,7 +90,7 @@ class ThreatIntelUtils:
         ]
 
     @property
-    def group_types_data(self) -> dict:
+    def group_types_data(self) -> Dict[str, dict]:
         """Return supported ThreatConnect Group types."""
         return {
             'Adversary': {'apiBranch': 'adversaries', 'apiEntity': 'adversary'},
@@ -130,7 +130,7 @@ class ThreatIntelUtils:
         return None
 
     @cached_property
-    def indicator_associations_types_data(self) -> dict:
+    def indicator_associations_types_data(self) -> Dict[str, dict]:
         """Return ThreatConnect associations type data.
 
         Retrieve the data from the API if it hasn't already been retrieved.
@@ -169,7 +169,7 @@ class ThreatIntelUtils:
         return _association_types
 
     @cached_property
-    def indicator_types(self) -> list:
+    def indicator_types(self) -> List[str]:
         """Return ThreatConnect Indicator types.
 
         Retrieve the data from the API if it hasn't already been retrieved.
@@ -180,7 +180,7 @@ class ThreatIntelUtils:
         return list(self.indicator_types_data.keys())
 
     @cached_property
-    def indicator_types_data(self) -> dict:
+    def indicator_types_data(self) -> Dict[str, dict]:
         """Return ThreatConnect indicator types data.
 
         Retrieve the data from the API if it hasn't already been retrieved.
@@ -311,7 +311,7 @@ class ThreatIntelUtils:
             'Phone',
         ]
 
-    def validate_intel_types(self, types_list: list[str], restrict_to: Optional[str] = None):
+    def validate_intel_types(self, types_list: List[str], restrict_to: Optional[str] = None):
         """Validate that Types contained in types_list are valid Intel Types.
 
         :param types_list: list of types to validate. An exception is raised if a member of this
@@ -327,12 +327,12 @@ class ThreatIntelUtils:
             raise ValueError(f'restrict_to must be {self.INDICATOR} or {self.GROUP}')
 
         if not isinstance(types_list, list):
-            raise TypeError(f'types_list must be a a list.')
+            raise TypeError('types_list must be a a list.')
 
         if restrict_to:
             valid_types = self.group_types if restrict_to == self.GROUP else self.indicator_types
         else:
             valid_types = self.indicator_types + self.group_types
 
-        if any([_type not in valid_types for _type in types_list]):
+        if any(_type not in valid_types for _type in types_list):
             raise ValueError(f'Type list "{types_list}" contains invalid Intel Type.')
