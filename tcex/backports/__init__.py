@@ -6,4 +6,4 @@ try:
     from functools import cached_property
 except ImportError:
     # third-party
-    from backports.cached_property import cached_property
+    from .backport_cached_property import cached_property
