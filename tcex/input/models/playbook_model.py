@@ -25,8 +25,9 @@ class PlaybookModel(BaseModel):
         inclusion_reason='runtimeLevel',
     )
 
+    @staticmethod
     @validator('tc_playbook_out_variables', pre=True)
-    def parse_tc_playbook_out_variables(cls, v):
+    def parse_tc_playbook_out_variables(v):
         """Ensure value is an array."""
         if isinstance(v, str):
             v = v.split(',')

@@ -65,7 +65,8 @@ class TestInputsFieldTypeBinaryArray(InputTest):
 
         assert tcex.inputs.data.my_binary == [b'binary string']
 
-    def test_field_type_binary_array_input_invalid(self, playbook_app: 'MockApp'):
+    @staticmethod
+    def test_field_type_binary_array_input_invalid(playbook_app: 'MockApp'):
         """Test BinaryArray field type with string input.
 
         Exception expected, as value is not a binary value
@@ -89,7 +90,8 @@ class TestInputsFieldTypeBinaryArray(InputTest):
         err_msg = str(exc_info.value)
         assert 'Value "regular string"' in err_msg and "not of Array's type" in err_msg
 
-    def test_field_type_binary_array_input_invalid_array(self, playbook_app: 'MockApp'):
+    @staticmethod
+    def test_field_type_binary_array_input_invalid_array(playbook_app: 'MockApp'):
         """Test BinaryArray field type with array that contains non-binary member.
 
         Exception expected, as value is not a binary array

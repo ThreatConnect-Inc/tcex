@@ -25,7 +25,7 @@ from tcex.utils import Utils
 logger = logging.getLogger('tcex')
 
 # define JSON encoders
-json_encoders = {Sensitive: lambda v: str(v)}
+json_encoders = {Sensitive: lambda v: str(v)}  # pylint: disable=W0108
 
 
 def input_model(models: list) -> BaseModel:

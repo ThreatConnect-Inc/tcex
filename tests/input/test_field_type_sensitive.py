@@ -1,5 +1,6 @@
 """Testing TcEx Input module field types."""
 # standard library
+from typing import TYPE_CHECKING
 
 # third-party
 from pydantic import BaseModel
@@ -7,7 +8,8 @@ from pydantic import BaseModel
 # first-party
 from tcex.input.field_types import Sensitive
 
-from ..mock_app import MockApp
+if TYPE_CHECKING:
+    from ..mock_app import MockApp
 
 
 class TestInputsFieldTypeSensitive:

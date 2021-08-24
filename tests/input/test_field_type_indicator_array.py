@@ -319,7 +319,8 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
         # value coerced to Array (list)
         assert tcex.inputs.data.my_indicator == [indicator]
 
-    def test_field_type_indicator_array_input_empty_string(self, playbook_app: 'MockApp'):
+    @staticmethod
+    def test_field_type_indicator_array_input_empty_string(playbook_app: 'MockApp'):
         """Test IndicatorArray field type with empty input.
 
         Exception expected, as value is empty and IndicatorArrayOptional type is not used.
@@ -348,7 +349,8 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
         assert 'my_indicator' in err_msg
         assert 'may not be empty' in err_msg
 
-    def test_field_type_indicator_array_optional_input_empty_string(self, playbook_app: 'MockApp'):
+    @staticmethod
+    def test_field_type_indicator_array_optional_input_empty_string(playbook_app: 'MockApp'):
         """Test IndicatorArrayOptional field type with empty input.
 
         No Exception is expected, as IndicatorArrayOptional type is used.
@@ -480,6 +482,7 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
         # values method returns string members as well as 'value' key of TCEntity members
         assert list(tcex.inputs.data.my_indicator_array.values()) == ['8.8.8.8', '1.1.1.1']
 
+    @staticmethod
     @pytest.mark.parametrize(
         'indicators',
         [
@@ -490,7 +493,7 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
         ],
     )
     def test_field_type_indicator_array_input_array_with_empty_and_null_members(
-        self, playbook_app: 'MockApp', indicators
+        playbook_app: 'MockApp', indicators
     ):
         """Test IndicatorArray field type with Array input that contains empty and null members.
 
@@ -514,6 +517,7 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
         # empty and null members are ok
         assert tcex.inputs.data.my_indicators == indicators
 
+    @staticmethod
     @pytest.mark.parametrize(
         'indicators',
         [
@@ -539,7 +543,7 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
         ],
     )
     def test_field_type_indicator_array_input_array_with_empty_and_null_members_empty_not_allowed(
-        self, playbook_app: 'MockApp', indicators
+        playbook_app: 'MockApp', indicators
     ):
         """Test IndicatorArray field type with Array input that contains empty and null members.
 
@@ -571,6 +575,7 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
         # error due to empty members being in input
         assert 'may not be empty' in err_msg
 
+    @staticmethod
     @pytest.mark.parametrize(
         'indicators',
         [
@@ -596,7 +601,7 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
         ],
     )
     def test_field_type_indicator_array_input_array_with_empty_and_null_members_null_not_allowed(
-        self, playbook_app: 'MockApp', indicators
+        playbook_app: 'MockApp', indicators
     ):
         """Test IndicatorArray field type with Array input that contains empty and/or null members.
 
@@ -627,6 +632,7 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
         assert 'None' in err_msg
         assert 'may not be null' in err_msg
 
+    @staticmethod
     @pytest.mark.parametrize(
         'types',
         [
@@ -642,9 +648,7 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
             {},
         ],
     )
-    def test_field_type_group_array_custom_entity_filters_invalid(
-        self, playbook_app: 'MockApp', types
-    ):
+    def test_field_type_group_array_custom_entity_filters_invalid(playbook_app: 'MockApp', types):
         """Test the entity_filter_types customization option of custom_indicator_array.
 
         The parameter should not allow anything that is not a list of valid indicator types.
@@ -658,10 +662,9 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
         with pytest.raises(ConfigurationException):
             custom_indicator_array(entity_filter_types=types)
 
+    @staticmethod
     @pytest.mark.parametrize('types', [['Host'], ['Address'], ['Host', 'Address']])
-    def test_field_type_indicator_array_custom_entity_filters_valid(
-        self, playbook_app: 'MockApp', types
-    ):
+    def test_field_type_indicator_array_custom_entity_filters_valid(playbook_app: 'MockApp', types):
         """Test the entity_filter_types customization option of custom_indicator_array.
 
         The parameter should not allow anything that is not a list of valid indicator types.
@@ -687,4 +690,4 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
         entities = list(tcex.inputs.data.my_indicators.entities())
 
         # should only contain entities with type that is in configured filter types
-        assert all([entity['type'] in types for entity in entities])
+        assert all(entity['type'] in types for entity in entities)

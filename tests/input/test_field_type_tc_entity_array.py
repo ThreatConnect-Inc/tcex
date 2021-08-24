@@ -65,6 +65,7 @@ class TestInputsFieldTypeTCEntityArray(InputTest):
 
         assert tcex.inputs.data.my_entity == entity
 
+    @staticmethod
     @pytest.mark.parametrize(
         'invalid_entity',
         [
@@ -117,7 +118,7 @@ class TestInputsFieldTypeTCEntityArray(InputTest):
             [{'type': 'Adversary', 'value': 'Adversary Name', 'id': '1001', 'other': 'another'}],
         ],
     )
-    def test_field_type_entity_array_input_invalid(self, playbook_app: 'MockApp', invalid_entity):
+    def test_field_type_entity_array_input_invalid(playbook_app: 'MockApp', invalid_entity):
         """Test TCEntityArray field type with non-TCEntity input.
 
         Exception expected, as values are not TCEntity values (multiple variants tested).
@@ -343,6 +344,7 @@ class TestInputsFieldTypeTCEntityArray(InputTest):
 
         assert tcex.inputs.data.my_entity is None
 
+    @staticmethod
     @pytest.mark.parametrize(
         'entity',
         [
@@ -353,7 +355,7 @@ class TestInputsFieldTypeTCEntityArray(InputTest):
         ],
     )
     def test_field_type_tc_entity_array_input_array_with_empty_and_null_members(
-        self, playbook_app: 'MockApp', entity
+        playbook_app: 'MockApp', entity
     ):
         """Test TCEntityArray field type with Array input that contains empty and null members.
 
@@ -377,6 +379,7 @@ class TestInputsFieldTypeTCEntityArray(InputTest):
         # empty and null members are ok
         assert tcex.inputs.data.my_entity == entity
 
+    @staticmethod
     @pytest.mark.parametrize(
         'entity',
         [
@@ -396,7 +399,7 @@ class TestInputsFieldTypeTCEntityArray(InputTest):
         ],
     )
     def test_field_type_tc_entity_array_input_array_with_empty_and_null_members_empty_not_allowed(
-        self, playbook_app: 'MockApp', entity
+        playbook_app: 'MockApp', entity
     ):
         """Test TCEntityArray field type with Array input that contains empty and null members.
 
@@ -428,6 +431,7 @@ class TestInputsFieldTypeTCEntityArray(InputTest):
         # error due to empty members being in input
         assert 'may not be empty' in err_msg
 
+    @staticmethod
     @pytest.mark.parametrize(
         'entity',
         [
@@ -447,7 +451,7 @@ class TestInputsFieldTypeTCEntityArray(InputTest):
         ],
     )
     def test_field_type_tc_entity_array_input_array_with_empty_and_null_members_null_not_allowed(
-        self, playbook_app: 'MockApp', entity
+        playbook_app: 'MockApp', entity
     ):
         """Test TCEntityArray field type with Array input that contains empty and/or null members.
 

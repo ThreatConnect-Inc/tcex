@@ -2,6 +2,8 @@
 
 
 class InputTest:
+    """Class that contains shared logic used by Input test suites"""
+
     @staticmethod
     def _stage_key_value(config_key, variable_name, value, tcex):
         """Write values to key value store. Expects dictionary of variable_name: value"""

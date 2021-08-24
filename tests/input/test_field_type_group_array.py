@@ -313,7 +313,8 @@ class TestInputsFieldTypeGroupArray(InputTest):
         # value coerced to Array (list)
         assert tcex.inputs.data.my_group == [group]
 
-    def test_field_type_group_array_input_empty_string(self, playbook_app: 'MockApp'):
+    @staticmethod
+    def test_field_type_group_array_input_empty_string(playbook_app: 'MockApp'):
         """Test GroupArray field type with empty input.
 
         Exception expected, as value is empty and GroupArrayOptional type is not used.
@@ -342,7 +343,8 @@ class TestInputsFieldTypeGroupArray(InputTest):
         assert 'my_group' in err_msg
         assert 'may not be empty' in err_msg
 
-    def test_field_type_group_array_optional_input_empty_string(self, playbook_app: 'MockApp'):
+    @staticmethod
+    def test_field_type_group_array_optional_input_empty_string(playbook_app: 'MockApp'):
         """Test GroupArrayOptional field type with empty input.
 
         No Exception is expected, as GroupArrayOptional type is used.
@@ -474,6 +476,7 @@ class TestInputsFieldTypeGroupArray(InputTest):
         # values method returns string members as well as 'value' key of TCEntity members
         assert list(tcex.inputs.data.my_group_array.values()) == ['Adversary Name', 'Adversary 2']
 
+    @staticmethod
     @pytest.mark.parametrize(
         'groups',
         [
@@ -484,7 +487,7 @@ class TestInputsFieldTypeGroupArray(InputTest):
         ],
     )
     def test_field_type_group_array_input_array_with_empty_and_null_members(
-        self, playbook_app: 'MockApp', groups
+        playbook_app: 'MockApp', groups
     ):
         """Test GroupArray field type with Array input that contains empty and null members.
 
@@ -508,6 +511,7 @@ class TestInputsFieldTypeGroupArray(InputTest):
         # empty and null members are ok
         assert tcex.inputs.data.my_groups == groups
 
+    @staticmethod
     @pytest.mark.parametrize(
         'groups',
         [
@@ -535,7 +539,7 @@ class TestInputsFieldTypeGroupArray(InputTest):
         ],
     )
     def test_field_type_group_array_input_array_with_empty_and_null_members_empty_not_allowed(
-        self, playbook_app: 'MockApp', groups
+        playbook_app: 'MockApp', groups
     ):
         """Test GroupArray field type with Array input that contains empty and null members.
 
@@ -567,6 +571,7 @@ class TestInputsFieldTypeGroupArray(InputTest):
         # error due to empty members being in input
         assert 'may not be empty' in err_msg
 
+    @staticmethod
     @pytest.mark.parametrize(
         'groups',
         [
@@ -594,7 +599,7 @@ class TestInputsFieldTypeGroupArray(InputTest):
         ],
     )
     def test_field_type_group_array_input_array_with_empty_and_null_members_null_not_allowed(
-        self, playbook_app: 'MockApp', groups
+        playbook_app: 'MockApp', groups
     ):
         """Test GroupArray field type with Array input that contains empty and/or null members.
 
@@ -625,6 +630,7 @@ class TestInputsFieldTypeGroupArray(InputTest):
         assert 'None' in err_msg
         assert 'may not be null' in err_msg
 
+    @staticmethod
     @pytest.mark.parametrize(
         'types',
         [
@@ -640,9 +646,7 @@ class TestInputsFieldTypeGroupArray(InputTest):
             {},
         ],
     )
-    def test_field_type_group_array_custom_entity_filters_invalid(
-        self, playbook_app: 'MockApp', types
-    ):
+    def test_field_type_group_array_custom_entity_filters_invalid(playbook_app: 'MockApp', types):
         """Test the entity_filter_types customization option of custom_group_array.
 
         The parameter should not allow anything that is not a list of valid group types.
@@ -656,10 +660,9 @@ class TestInputsFieldTypeGroupArray(InputTest):
         with pytest.raises(ConfigurationException):
             custom_group_array(entity_filter_types=types)
 
+    @staticmethod
     @pytest.mark.parametrize('types', [['Adversary'], ['Campaign'], ['Adversary', 'Campaign']])
-    def test_field_type_group_array_custom_entity_filters_valid(
-        self, playbook_app: 'MockApp', types
-    ):
+    def test_field_type_group_array_custom_entity_filters_valid(playbook_app: 'MockApp', types):
         """Test the entity_filter_types customization option of custom_group_array.
 
         The parameter should not allow anything that is not a list of valid group types.
@@ -685,4 +688,4 @@ class TestInputsFieldTypeGroupArray(InputTest):
         entities = list(tcex.inputs.data.my_groups.entities())
 
         # should only contain entities with type that is in configured filter types
-        assert all([entity['type'] in types for entity in entities])
+        assert all(entity['type'] in types for entity in entities)

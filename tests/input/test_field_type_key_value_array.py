@@ -164,6 +164,7 @@ class TestInputsFieldTypeKeyValueArray(InputTest):
         # input will be wrapped in list if not already a list
         assert parsed_input == [key_value] if not isinstance(key_value, list) else key_value
 
+    @staticmethod
     @pytest.mark.parametrize(
         'key_value',
         [
@@ -223,7 +224,7 @@ class TestInputsFieldTypeKeyValueArray(InputTest):
             ],
         ],
     )
-    def test_field_type_key_value_array_input_invalid(self, playbook_app: 'MockApp', key_value):
+    def test_field_type_key_value_array_input_invalid(playbook_app: 'MockApp', key_value):
         """Test KeyValueArray field type with input that is considered invalid.
 
         Input value cannot be staged, as TCEX will not let use insert bad KeyValue data into
@@ -485,6 +486,7 @@ class TestInputsFieldTypeKeyValueArray(InputTest):
 
         assert tcex.inputs.data.my_key_value is None
 
+    @staticmethod
     @pytest.mark.parametrize(
         'key_values',
         [
@@ -507,7 +509,7 @@ class TestInputsFieldTypeKeyValueArray(InputTest):
         ],
     )
     def test_field_type_key_value_array_input_array_with_empty_and_null_members(
-        self, playbook_app: 'MockApp', key_values
+        playbook_app: 'MockApp', key_values
     ):
         """Test KeyValueArray field type with Array input that contains empty and null members.
 
@@ -531,6 +533,7 @@ class TestInputsFieldTypeKeyValueArray(InputTest):
         # empty and null members are ok
         assert tcex.inputs.data.my_key_values == key_values
 
+    @staticmethod
     @pytest.mark.parametrize(
         'key_values',
         [
@@ -576,7 +579,7 @@ class TestInputsFieldTypeKeyValueArray(InputTest):
         ],
     )
     def test_field_type_key_value_array_input_array_with_empty_and_null_members_empty_not_allowed(
-        self, playbook_app: 'MockApp', key_values
+        playbook_app: 'MockApp', key_values
     ):
         """Test KeyValueArray field type with Array input that contains empty and null members.
 
@@ -608,6 +611,7 @@ class TestInputsFieldTypeKeyValueArray(InputTest):
         # error due to empty members being in input
         assert 'may not be empty' in err_msg
 
+    @staticmethod
     @pytest.mark.parametrize(
         'key_values',
         [
@@ -653,7 +657,7 @@ class TestInputsFieldTypeKeyValueArray(InputTest):
         ],
     )
     def test_field_type_key_value_array_input_array_with_empty_and_null_members_null_not_allowed(
-        self, playbook_app: 'MockApp', key_values
+        playbook_app: 'MockApp', key_values
     ):
         """Test KeyValueArray field type with Array input that contains empty and/or null members.
 

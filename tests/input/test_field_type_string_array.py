@@ -63,7 +63,8 @@ class TestInputsFieldTypeStringArray(InputTest):
 
         assert tcex.inputs.data.my_string == ['string']
 
-    def test_field_type_string_array_input_invalid(self, playbook_app: 'MockApp'):
+    @staticmethod
+    def test_field_type_string_array_input_invalid(playbook_app: 'MockApp'):
         """Test StringArray field type with non-string input.
 
         Exception expected, as value is not a string value
@@ -87,7 +88,8 @@ class TestInputsFieldTypeStringArray(InputTest):
         err_msg = str(exc_info.value)
         assert 'Value "{}"' in err_msg and "not of Array's type" in err_msg
 
-    def test_field_type_string_array_input_invalid_array(self, playbook_app: 'MockApp'):
+    @staticmethod
+    def test_field_type_string_array_input_invalid_array(playbook_app: 'MockApp'):
         """Test StringArray field type with array that contains non-string member.
 
         Exception expected, as value is not a string array
