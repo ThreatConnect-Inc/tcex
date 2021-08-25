@@ -8,7 +8,9 @@ from functools import reduce
 from io import BytesIO
 from typing import Any
 
-from .common_service import CommonService
+# first-party
+from tcex.input.field_types.sensitive import Sensitive
+from tcex.services.common_service import CommonService
 
 
 class ApiService(CommonService):
@@ -155,7 +157,7 @@ class ApiService(CommonService):
         """
         # register config apiToken (before any logging)
         self.token.register_token(
-            self.thread_name, message.get('apiToken'), message.get('expireSeconds')
+            self.thread_name, Sensitive(message.get('apiToken')), message.get('expireSeconds')
         )
         self.log.info(f'feature=api-service, event=runservice-command, message="{message}"')
 

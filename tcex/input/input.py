@@ -188,7 +188,8 @@ class Input:
         #       the "base" inputs are loaded into the model.
         _ = self.session
 
-        self._models.insert(0, model)
+        if model:
+            self._models.insert(0, model)
 
         # clear cache for data property
         if 'data' in self.__dict__:

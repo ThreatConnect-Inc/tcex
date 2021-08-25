@@ -12,6 +12,7 @@ from requests import Session, adapters, auth, request
 from urllib3.util.retry import Retry
 
 # first-party
+from tcex.input.field_types.sensitive import Sensitive
 from tcex.utils import Utils
 
 # disable ssl warning message
@@ -24,7 +25,7 @@ logger = logging.getLogger('tcex')
 class HmacAuth(auth.AuthBase):
     """ThreatConnect HMAC Authorization"""
 
-    def __init__(self, access_id: str, secret_key: str) -> None:
+    def __init__(self, access_id: str, secret_key: Sensitive) -> None:
         """Initialize the Class properties."""
         super().__init__()
         self._access_id = access_id
@@ -35,7 +36,7 @@ class HmacAuth(auth.AuthBase):
         timestamp = int(time.time())
         signature = f'{r.path_url}:{r.method}:{timestamp}'
         hmac_signature = hmac.new(
-            self._secret_key.encode(), signature.encode(), digestmod=hashlib.sha256
+            self._secret_key.value.encode(), signature.encode(), digestmod=hashlib.sha256
         ).digest()
         authorization = f'TC {self._access_id}:{base64.b64encode(hmac_signature).decode()}'
         r.headers['Authorization'] = authorization
@@ -55,8 +56,9 @@ class TokenAuth(auth.AuthBase):
         """Override of parent __call__ method."""
         # TODO: [high] the token module requires some though for v3
         if hasattr(self.token, 'token'):
-            # the token module has a property of "token" that returns the appropriate token
-            token = self.token.token
+            # the token module has a property of "token" that
+            # returns the appropriate token (type: Sensitive)
+            token = self.token.token.value
         elif callable(self.token):
             # handle case where self.token is a callable
             token = self.token()

@@ -11,6 +11,7 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 # first-party
+from tcex.input.field_types.sensitive import Sensitive
 from tcex.utils import Utils
 
 # get tcex logger
@@ -75,7 +76,7 @@ class Tokens:
             key: str = self.trigger_id
         return key
 
-    def register_token(self, key: str, token: str, expires: int) -> None:
+    def register_token(self, key: str, token: Sensitive, expires: int) -> None:
         """Register a token.
 
         Args:
@@ -95,7 +96,7 @@ class Tokens:
             f'token={token}, expiration={expires}'
         )
 
-    def renew_token(self, token: str) -> None:
+    def renew_token(self, token: Sensitive) -> None:
         """Renew expired ThreatConnect Token.
 
         This method will renew a token and update the token_map with new token and expiration.
@@ -108,7 +109,7 @@ class Tokens:
 
         # log token information
         try:
-            params = {'expiredToken': token}
+            params = {'expiredToken': token.value}
             url = f'{self.token_url}/appAuth'
             r = self.session.get(url, params=params, verify=self.verify)
 
@@ -139,12 +140,12 @@ class Tokens:
         return threading.current_thread().name
 
     @property
-    def token(self) -> Optional[str]:
+    def token(self) -> Optional[Sensitive]:
         """Return token for current thread."""
         return self.token_map.get(self.key, {}).get('token')
 
     @token.setter
-    def token(self, token: str) -> None:
+    def token(self, token: Sensitive) -> None:
         """Set token for current thread."""
         self.token_map.setdefault(self.key, {})['token'] = token
 
@@ -187,7 +188,7 @@ class Tokens:
                 with self.lock:
                     try:
                         api_token_data = self.renew_token(token_data.get('token'))
-                        self.token_map[key]['token'] = api_token_data['apiToken']
+                        self.token_map[key]['token'] = Sensitive(api_token_data['apiToken'])
                         self.token_map[key]['token_expires'] = int(
                             api_token_data['apiTokenExpires']
                         )

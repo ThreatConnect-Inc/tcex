@@ -1,6 +1,7 @@
 """TcEx Framework Service Common module"""
 # standard library
 import json
+import logging
 import threading
 import time
 import traceback
@@ -8,7 +9,11 @@ import uuid
 from datetime import datetime
 from typing import Callable, Optional, Union
 
-from .mqtt_message_broker import MqttMessageBroker
+# first-party
+from tcex.services.mqtt_message_broker import MqttMessageBroker
+
+# get tcex logger
+logger = logging.getLogger('tcex')
 
 
 class CommonService:
@@ -38,7 +43,7 @@ class CommonService:
         self.heartbeat_watchdog = 0
         self.ij = tcex.ij
         self.key_value_store = self.tcex.key_value_store
-        self.log = tcex.log
+        self.log = logger
         self.logger = tcex.logger
         self.message_broker = MqttMessageBroker(
             broker_host=self.args.tc_svc_broker_host,
@@ -46,7 +51,6 @@ class CommonService:
             broker_timeout=self.args.tc_svc_broker_conn_timeout,
             broker_token=self.args.tc_svc_broker_token,
             broker_cacert=self.args.tc_svc_broker_cacert_file,
-            logger=tcex.log,
         )
         self.ready = False
         self.redis_client = self.tcex.redis_client

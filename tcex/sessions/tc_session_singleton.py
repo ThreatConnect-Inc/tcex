@@ -1,5 +1,6 @@
 """Session singleton"""
 # first-party
+from tcex.input.field_types.sensitive import Sensitive
 from tcex.sessions.tc_session import TcSession
 
 
@@ -23,11 +24,11 @@ class TcSessionSingleton(metaclass=Singleton):
     token will need to be renewed.
     """
 
-    def __init__(self, base_url: str, tc_token: str, tc_token_expires: int) -> None:
+    def __init__(self, base_url: str, tc_token: Sensitive, tc_token_expires: int) -> None:
         """Initialize class properties."""
         # TODO: [high] how to handle token renewal?
         self.tc_token_expires = tc_token_expires
 
         # properties
         self.session = TcSession(None, None, base_url)
-        self.session.token = tc_token.get_secret_value()
+        self.session.token = tc_token.value

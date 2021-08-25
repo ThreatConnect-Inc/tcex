@@ -3,12 +3,15 @@
 from typing import Optional
 from urllib.parse import quote
 
+# first-party
+from tcex.input.field_types.sensitive import Sensitive
+
 
 def proxies(
     proxy_host: Optional[str],
     proxy_port: Optional[int],
     proxy_user: Optional[str],
-    proxy_pass: Optional[str],
+    proxy_pass: Optional[Sensitive],
 ) -> dict:
     """Format the proxy configuration for Python Requests module.
 
@@ -25,7 +28,7 @@ def proxies(
         proxy_auth = ''
         if proxy_user is not None and proxy_pass is not None:
             proxy_user = quote(proxy_user, safe='~')
-            proxy_pass = quote(proxy_pass, safe='~')
+            proxy_pass = quote(proxy_pass.value, safe='~')
 
             # proxy url with auth
             proxy_auth = f'{proxy_user}:{proxy_pass}@'

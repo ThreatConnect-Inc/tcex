@@ -217,7 +217,7 @@ class Utils:
             mask_char_count: How many mask character to insert (obscure cred length).
 
         Returns:
-            str: The reformatted token.
+            str: The reformatted credential.
         """
         if isinstance(cred, str):
             mask_char = mask_char or '*'
@@ -279,8 +279,8 @@ class Utils:
                     'password',
                     'secret',
                     'session',
-                    'username',
                     'token',
+                    'username',
                 ]
                 if isinstance(mask_patterns, list):
                     # add user defined mask patterns

@@ -108,7 +108,7 @@ class InstallJsonUpdate:
             ]:
                 features.append(feature)
 
-        self.ij.data.features = sorted(features)
+        self.ij.data.features = sorted(list(set(features)))
 
     def update_program_main(self) -> None:
         """Update program main."""

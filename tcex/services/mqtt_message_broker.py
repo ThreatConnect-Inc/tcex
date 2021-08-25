@@ -1,5 +1,6 @@
 """TcEx Framework MQTT message broker module."""
 # standard library
+import logging
 import ssl
 import time
 import traceback
@@ -7,6 +8,12 @@ from typing import List, Optional
 
 # third-party
 import paho.mqtt.client as mqtt
+
+# first-party
+from tcex.input.field_types.sensitive import Sensitive
+
+# get tcex logger
+logger = logging.getLogger('tcex')
 
 
 class MqttMessageBroker:
@@ -17,8 +24,7 @@ class MqttMessageBroker:
         broker_host: str,
         broker_port: int,
         broker_timeout: int,
-        logger: object,
-        broker_token: Optional[str] = None,
+        broker_token: Optional[Sensitive] = None,
         broker_cacert: Optional[str] = None,
     ):
         """Initialize the Class properties.
@@ -36,7 +42,6 @@ class MqttMessageBroker:
         self.broker_timeout = int(broker_timeout)
         self.broker_token = broker_token
         self.broker_cacert = broker_cacert
-        self.log = logger
 
         # properties
         self._client = None
@@ -48,6 +53,7 @@ class MqttMessageBroker:
         self._on_publish_callbacks: List[callable] = []
         self._on_subscribe_callbacks: List[callable] = []
         self._on_unsubscribe_callbacks: List[callable] = []
+        self.log = logger
         self.shutdown = False  # used in service App for shutdown flag
 
     def add_on_connect_callback(self, callback: callable, index: Optional[int] = None) -> None:
@@ -139,12 +145,12 @@ class MqttMessageBroker:
                         tls_version=ssl.PROTOCOL_TLSv1_2,
                     )
                     self._client.tls_insecure_set(False)
-                # add logger
-                # if self.log.getEffectiveLevel() == 5:
-                #     self._client.enable_logger(logger=self.log)
+                # add logger when logging in TRACE
+                if self.log.getEffectiveLevel() == 5:
+                    self._client.enable_logger(logger=self.log)
                 # username must be a empty string
                 if self.broker_token is not None:
-                    self._client.username_pw_set('', password=self.broker_token)
+                    self._client.username_pw_set('', password=self.broker_token.value)
             except Exception as e:
                 self.log.error(f'feature=message-broker, event=failed-connection, error="""{e}"""')
                 self.log.trace(traceback.format_exc())
