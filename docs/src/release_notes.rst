@@ -3,6 +3,11 @@
 Release Notes
 #############
 
+2.0.24
+======
++ APP-3016 [Session] Updated tc_session to better evaluate the auth method.
++ APP-3017 [Testing] Added support for TCBatch to the testing framework.
+
 2.0.23
 ======
 + APP-2942 [TI] - Added support for 6 new group types (supported in TC 6.3).
