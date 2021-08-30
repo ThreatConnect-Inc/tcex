@@ -76,6 +76,13 @@ class TcSession(Session):
     def _configure_auth(self):
         """Return Auth property for session."""
         # Add ThreatConnect Authorization
+        if (
+            isinstance(self.auth, HmacAuth)
+            or isinstance(self.auth, TokenAuth)
+            and self.token_available
+        ):
+            return
+
         if self.token_available:
             # service Apps only use tokens and playbook/runtime Apps will use token if available
             self.auth = TokenAuth(self.token)
@@ -121,8 +128,7 @@ class TcSession(Session):
 
     def request(self, method, url, **kwargs):  # pylint: disable=arguments-differ
         """Override request method disabling verify on token renewal if disabled on session."""
-        if self.auth is None:
-            self._configure_auth()
+        self._configure_auth()
 
         # accept path for API calls instead of full URL
         if not url.startswith('https'):

@@ -46,6 +46,7 @@ class Package(Bin):
             '.pytest_cache',  # pytest cache directory
             '*.iml',  # PyCharm files
             '*.pyc',  # any pyc file
+            '*.zip',  # any zip file
         ]
 
     @property
