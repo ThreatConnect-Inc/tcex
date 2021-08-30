@@ -180,7 +180,7 @@ class PlaybooksBase:
         """Return True if provided data has proper structure for TC Batch."""
         try:
             json_ = json.loads(data)
-            return all(x in json_ for x in ['indicators', 'groups'])
+            return all(x in json_ for x in ['indicator', 'group'])
         except:
             return False
 
