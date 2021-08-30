@@ -276,7 +276,7 @@ class PlaybooksBase:
 
             # coerce string values
             value = self._coerce_string_value(self._load_value(value))
-        elif variable_type == 'TCEntity':
+        elif variable_type in ['TCEntity', 'TCBatch']:
             value = self._load_value(value)
 
         return value
