@@ -7,6 +7,7 @@ Release Notes
 ======
 + APP-3016 [Session] Updated tc_session to better evaluate the auth method.
 + APP-3017 [Testing] Added support for TCBatch to the testing framework.
++ APP-3023 [CLI] Updated tcpackage command to remove any nested zip files in a project.
 
 2.0.23
 ======
