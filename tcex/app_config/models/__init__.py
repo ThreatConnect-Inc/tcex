@@ -1,8 +1,8 @@
 """Config Models"""
 
 # flake8:noqa
-from .install_json_model import InstallJsonModel
-from .job_json_model import JobJsonModel
-from .layout_json_model import LayoutJsonModel
-from .tcex_json_model import TcexJsonModel
-from .template_config_model import TemplateConfigModel
+from tcex.app_config.models.install_json_model import InstallJsonModel
+from tcex.app_config.models.job_json_model import JobJsonModel
+from tcex.app_config.models.layout_json_model import LayoutJsonModel
+from tcex.app_config.models.tcex_json_model import TcexJsonModel
+from tcex.app_config.models.template_config_model import TemplateConfigModel

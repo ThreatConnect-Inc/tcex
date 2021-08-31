@@ -135,7 +135,8 @@ class Validate(BinABC):
             module in stdlib_list('3.6')
             or module in stdlib_list('3.7')
             or module in stdlib_list('3.8')
-            or module in ['app', 'args', 'job_app', 'playbook_app', 'run', 'service_app']
+            or module
+            in ['app', 'args', 'base_app_input', 'job_app', 'playbook_app', 'run', 'service_app']
         ):
             return True
         return False

@@ -1,6 +1,6 @@
 """Common Class Module"""
 
 # flake8:noqa
-from .event import Event
-from .none_model import NoneModel
-from .proxies import proxies
+from tcex.pleb.event import Event
+from tcex.pleb.none_model import NoneModel
+from tcex.pleb.proxies import proxies

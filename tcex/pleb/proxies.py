@@ -1,17 +1,18 @@
 """Proxies"""
 # standard library
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 from urllib.parse import quote
 
-# first-party
-from tcex.input.field_types.sensitive import Sensitive
+if TYPE_CHECKING:
+    # first-party
+    from tcex.input.field_types.sensitive import Sensitive
 
 
 def proxies(
     proxy_host: Optional[str],
     proxy_port: Optional[int],
     proxy_user: Optional[str],
-    proxy_pass: Optional[Sensitive],
+    proxy_pass: Optional['Sensitive'],
 ) -> dict:
     """Format the proxy configuration for Python Requests module.
 

@@ -5,6 +5,7 @@ import hashlib
 import hmac
 import logging
 import time
+from typing import TYPE_CHECKING
 
 # third-party
 import urllib3
@@ -12,8 +13,11 @@ from requests import Session, adapters, auth, request
 from urllib3.util.retry import Retry
 
 # first-party
-from tcex.input.field_types.sensitive import Sensitive
 from tcex.utils import Utils
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.input.field_types.sensitive import Sensitive
 
 # disable ssl warning message
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -25,7 +29,7 @@ logger = logging.getLogger('tcex')
 class HmacAuth(auth.AuthBase):
     """ThreatConnect HMAC Authorization"""
 
-    def __init__(self, access_id: str, secret_key: Sensitive) -> None:
+    def __init__(self, access_id: str, secret_key: 'Sensitive') -> None:
         """Initialize the Class properties."""
         super().__init__()
         self._access_id = access_id

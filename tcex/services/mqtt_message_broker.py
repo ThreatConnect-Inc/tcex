@@ -4,13 +4,14 @@ import logging
 import ssl
 import time
 import traceback
-from typing import List, Optional
+from typing import List, Optional, TYPE_CHECKING
 
 # third-party
 import paho.mqtt.client as mqtt
 
-# first-party
-from tcex.input.field_types.sensitive import Sensitive
+if TYPE_CHECKING:
+    # first-party
+    from tcex.input.field_types.sensitive import Sensitive
 
 # get tcex logger
 logger = logging.getLogger('tcex')

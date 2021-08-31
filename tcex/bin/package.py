@@ -44,6 +44,7 @@ class Package(BinABC):
             '.pytest_cache',  # pytest cache directory
             '*.iml',  # PyCharm files
             '*.pyc',  # any pyc file
+            '*.zip',  # any zip file
         ]
 
     @cached_property
@@ -77,52 +78,6 @@ class Package(BinABC):
         excludes.extend(self._excludes)
         excludes.extend(self.tj.data.package.excludes)
         return excludes
-
-    # @property
-    # def excludes_glob(self) -> List[str]:
-    #     """Return a list of files and folders that should be excluded during the build process."""
-    #     # glob files/directories
-    #     return [
-    #         '__pycache__',
-    #         '.pytest_cache',  # pytest cache directory
-    #         '*.iml',  # PyCharm files
-    #         '*.pyc',  # any pyc file
-    #     ]
-
-    # @cached_property
-    # def excludes_base(self) -> List[str]:
-    #     """Return a list of files/folders that should be excluded in the App base directory."""
-    #     # base directory files/directories
-    #     excludes = [
-    #         self.output_dir.name,  # the build directory (typically target)
-    #         '.cache',  # local cache directory
-    #         '.c9',  # C9 IDE
-    #         '.coverage',  # coverage file
-    #         '.coveragerc',  # coverage configuration file file
-    #         '.git',  # git directory
-    #         '.gitlab-ci.yml',  # gitlab ci file
-    #         '.gitmodules',  # git modules
-    #         '.idea',  # PyCharm
-    #         '.python-version',  # pyenv
-    #         '.vscode',  # Visual Studio Code
-    #         'app.yaml',  # requirements builder configuration file
-    #         'artifacts',  # pytest in CI/CD
-    #         'assets',  # pytest in BB Pipelines
-    #         'JIRA.html',  # documentation file
-    #         'JIRA.md',  # documentation file
-    #         'local-*',  # log directory
-    #         'log',  # log directory
-    #         'README.html',  # documentation file
-    #         # 'tcex.json',
-    #         'test-reports',  # pytest in CI/CD
-    #         'tests',  # pytest test directory
-    #     ]
-    #     excludes.extend(self._excludes)
-    #     excludes.extend(self.tj.data.package.excludes)
-
-    #     # update package data
-    #     self.package_data['package'].append({'action': 'Excluded Files:', 'output': excludes})
-    #     return excludes
 
     def exclude_files(self, src: str, names: list):
         """Ignore exclude files in shutil.copytree (callback)."""
