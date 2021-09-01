@@ -33,7 +33,6 @@ from tcex.services.api_service import ApiService
 from tcex.services.common_service_trigger import CommonServiceTrigger
 from tcex.services.webhook_trigger_service import WebhookTriggerService
 from tcex.sessions import ExternalSession, TcSession
-from tcex.stix import StixModel
 from tcex.tcex_error_codes import TcExErrorCodes
 from tcex.threat_intelligence import ThreatIntelligence
 from tcex.tokens import Tokens
@@ -690,12 +689,6 @@ class TcEx:
     def session_external(self) -> ExternalSession:
         """Return an instance of Requests Session configured for the ThreatConnect API."""
         return self.get_session_external()
-
-    # TODO: [med] update to support scoped instance
-    @cached_property
-    def stix_model(self) -> StixModel:
-        """Include the Threat Intel Module."""
-        return StixModel(self.logger)
 
     # TODO: [med] update to support scoped instance
     @cached_property
