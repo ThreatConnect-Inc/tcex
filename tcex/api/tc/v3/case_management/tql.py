@@ -3,7 +3,7 @@
 from enum import Enum
 
 # first-party
-from tcex.case_management.filter_abc import FilterABC
+from tcex.api.tc.v3.case_management.filter_abc import FilterABC
 
 
 class TQL:

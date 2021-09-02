@@ -3,11 +3,11 @@
 from typing import TYPE_CHECKING
 
 # first-party
-from tcex.threat_intelligence.v2.tcex_ti_tc_request import TiTcRequest
+from tcex.api.tc.v2.threat_intelligence.tcex_ti_tc_request import TiTcRequest
 
 if TYPE_CHECKING:
     # first-party
-    from tcex.threat_intelligence.v2 import ThreatIntelligence
+    from tcex.api.tc.v2.threat_intelligence import ThreatIntelligence
 
 
 class Owner:

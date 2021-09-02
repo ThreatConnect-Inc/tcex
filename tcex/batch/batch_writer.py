@@ -17,6 +17,7 @@ from typing import Optional, Tuple, Union
 from requests import Session
 
 # first-party
+from tcex.api.tc.utils.threat_intel_utils import ThreatIntelUtils
 from tcex.batch.group import (
     Adversary,
     Campaign,
@@ -45,7 +46,6 @@ from tcex.batch.indicator import (
     custom_indicator_class_factory,
 )
 from tcex.input import Input
-from tcex.threat_intelligence import ThreatIntelUtils
 from tcex.utils import Utils
 
 # import local modules for dynamic reference

@@ -8,10 +8,11 @@ from requests import Session
 
 # first-party
 from tcex.security.filters.filter_user_group import FilterUserGroup
-from tcex.case_management.api_endpoints import ApiEndpoints
+from tcex.api.tc.v3.case_management.api_endpoints import ApiEndpoints
 from tcex.security.security_abc import SecurityABC
 from tcex.security.security_collection_abc import SecurityCollectionABC
 from tcex.security.models.user_group_model import UserGroupModel, UserGroupsModel
+
 
 class UserGroups(SecurityCollectionABC):
     """Tags Class for Case Management Collection
@@ -35,9 +36,7 @@ class UserGroups(SecurityCollectionABC):
 
     def __init__(self, **kwargs) -> None:
         super().__init__(
-            kwargs.pop('session', None),
-            kwargs.pop('tql_filter', None),
-            kwargs.pop('params', None)
+            kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
         )
         self._model = UserGroupsModel(**kwargs)
 
@@ -72,8 +71,4 @@ class UserGroup(SecurityABC):
     def as_entity(self) -> dict:
         """Return the entity representation of the Case."""
 
-        return {
-            'type': 'UserGroup',
-            'id': self.model.id,
-            'value': self.model.name
-        }
+        return {'type': 'UserGroup', 'id': self.model.id, 'value': self.model.name}

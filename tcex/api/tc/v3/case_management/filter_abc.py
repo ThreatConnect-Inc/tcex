@@ -11,7 +11,7 @@ from tcex.backports import cached_property
 
 if TYPE_CHECKING:
     # first-party
-    from tcex.case_management.tql import TQL
+    from tcex.api.tc.v3.case_management.tql import TQL
 
 
 class FilterABC(ABC):

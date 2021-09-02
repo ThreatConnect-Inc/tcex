@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Optional, Union
 
 from requests.exceptions import ProxyError
 
-from tcex.case_management.tql import TQL
+from tcex.api.tc.v3.case_management.tql import TQL
 
 # third-party
 from requests import Response
@@ -16,13 +16,13 @@ from tcex.pleb import Event
 
 if TYPE_CHECKING:
     # first-party
-    from tcex.case_management.artifact import Artifact
-    from tcex.case_management.case import Case
-    from tcex.case_management.case_management import CaseManagement
-    from tcex.case_management.note import Note
-    from tcex.case_management.tag import Tag
-    from tcex.case_management.task import Task
-    from tcex.case_management.workflow_event import WorkflowEvent
+    from tcex.api.tc.v3.case_management.artifact import Artifact
+    from tcex.api.tc.v3.case_management.case import Case
+    from tcex.api.tc.v3.case_management.case_management import CaseManagement
+    from tcex.api.tc.v3.case_management.note import Note
+    from tcex.api.tc.v3.case_management.tag import Tag
+    from tcex.api.tc.v3.case_management.task import Task
+    from tcex.api.tc.v3.case_management.workflow_event import WorkflowEvent
 
     # Case Management Types
     CaseManagementType = Union[
@@ -90,6 +90,7 @@ class SecurityCollectionABC(ABC):
 
         r = self._session.get(self._api_endpoint, params=parameters)
         return r.json().get('count')
+
     # def __str__(self) -> str:
     #     """Object iterator"""
     #     printable_string = ''

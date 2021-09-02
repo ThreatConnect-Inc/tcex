@@ -27,10 +27,7 @@ class NotesModel(
 
 
 class NoteData(
-    BaseModel,
-    title='Note Data',
-    alias_generator=Utils().snake_to_camel,
-    validate_assignment=True
+    BaseModel, title='Note Data', alias_generator=Utils().snake_to_camel, validate_assignment=True
 ):
     """Note Data"""
 
@@ -47,7 +44,7 @@ class NoteModel(
     title='Note Model',
     alias_generator=Utils().snake_to_camel,
     extra=Extra.allow,
-    validate_assignment=True
+    validate_assignment=True,
 ):
     """Note Model"""
 
@@ -206,10 +203,10 @@ class NoteModel(
 
 
 # first-party
-from tcex.case_management.models.artifact_model import ArtifactModel
-from tcex.case_management.models.case_model import CaseModel
-from tcex.case_management.models.task_model import TaskModel
-from tcex.case_management.models.workflow_event_model import WorkflowEventModel
+from tcex.api.tc.v3.case_management.models.artifact_model import ArtifactModel
+from tcex.api.tc.v3.case_management.models.case_model import CaseModel
+from tcex.api.tc.v3.case_management.models.task_model import TaskModel
+from tcex.api.tc.v3.case_management.models.workflow_event_model import WorkflowEventModel
 
 
 # add forward references

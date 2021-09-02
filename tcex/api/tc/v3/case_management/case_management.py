@@ -3,17 +3,17 @@
 from requests import Session
 
 # first-party
-from tcex.case_management.artifact import Artifact, Artifacts
-from tcex.case_management.artifact_type import ArtifactType, ArtifactTypes
-from tcex.case_management.assignee import Assignee
+from tcex.api.tc.v3.case_management.artifact import Artifact, Artifacts
+from tcex.api.tc.v3.case_management.artifact_type import ArtifactType, ArtifactTypes
+from tcex.api.tc.v3.case_management.assignee import Assignee
 
-# from tcex.case_management.case import Case, Cases
-from tcex.case_management.case import Case, Cases
-from tcex.case_management.note import Note, Notes
-from tcex.case_management.tag import Tag, Tags
-from tcex.case_management.task import Task, Tasks
-from tcex.case_management.workflow_event import WorkflowEvent, WorkflowEvents
-from tcex.case_management.workflow_template import WorkflowTemplate, WorkflowTemplates
+# from tcex.api.tc.v3.case_management.case import Case, Cases
+from tcex.api.tc.v3.case_management.case import Case, Cases
+from tcex.api.tc.v3.case_management.note import Note, Notes
+from tcex.api.tc.v3.case_management.tag import Tag, Tags
+from tcex.api.tc.v3.case_management.task import Task, Tasks
+from tcex.api.tc.v3.case_management.workflow_event import WorkflowEvent, WorkflowEvents
+from tcex.api.tc.v3.case_management.workflow_template import WorkflowTemplate, WorkflowTemplates
 
 
 class CaseManagement:
@@ -31,7 +31,7 @@ class CaseManagement:
         """Return a instance of Artifact object.
 
         Model Schema:
-        >>> from tcex.case_management.models.artifact_model import ArtifactModel
+        >>> from tcex.api.tc.v3.case_management.models.artifact_model import ArtifactModel
         >>> print(ArtifactModel.schema_json(by_alias=False, indent=2))
 
         Args:

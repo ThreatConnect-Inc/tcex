@@ -29,20 +29,20 @@ logger = logging.getLogger('tcex')
 class HmacAuth(auth.AuthBase):
     """ThreatConnect HMAC Authorization"""
 
-    def __init__(self, access_id: str, secret_key: 'Sensitive') -> None:
+    def __init__(self, tc_api_access_id: str, tc_api_secret_key: 'Sensitive') -> None:
         """Initialize the Class properties."""
         super().__init__()
-        self._access_id = access_id
-        self._secret_key = secret_key
+        self.tc_api_access_id = tc_api_access_id
+        self.tc_api_secret_key = tc_api_secret_key
 
     def __call__(self, r: request) -> request:
         """Override of parent __call__ method."""
         timestamp = int(time.time())
         signature = f'{r.path_url}:{r.method}:{timestamp}'
         hmac_signature = hmac.new(
-            self._secret_key.value.encode(), signature.encode(), digestmod=hashlib.sha256
+            self.tc_api_secret_key.value.encode(), signature.encode(), digestmod=hashlib.sha256
         ).digest()
-        authorization = f'TC {self._access_id}:{base64.b64encode(hmac_signature).decode()}'
+        authorization = f'TC {self.tc_api_access_id}:{base64.b64encode(hmac_signature).decode()}'
         r.headers['Authorization'] = authorization
         r.headers['Timestamp'] = timestamp
         return r

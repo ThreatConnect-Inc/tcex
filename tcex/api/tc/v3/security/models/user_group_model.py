@@ -28,7 +28,7 @@ class UserGroupData(
     BaseModel,
     title='UserGroup Data',
     alias_generator=Utils().snake_to_camel,
-    validate_assignment=True
+    validate_assignment=True,
 ):
     """User Group Data"""
 
@@ -44,7 +44,7 @@ class UserGroupModel(
     title='UserGroup Model',
     alias_generator=Utils().snake_to_camel,
     extra=Extra.allow,
-    validate_assignment=True
+    validate_assignment=True,
 ):
     """User Group Model"""
 
@@ -85,7 +85,7 @@ class UserGroupModel(
 
 
 # first-party
-from tcex.security.models.user_model import UsersModel
+from tcex.api.tc.v3.security.models.user_model import UsersModel
 
 
 # add forward references

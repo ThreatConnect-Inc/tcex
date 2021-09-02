@@ -8,12 +8,12 @@ from urllib.parse import unquote
 
 # first-party
 from tcex.tcex_error_codes import TcExErrorCodes
-from tcex.threat_intelligence.v2.tcex_ti_tc_request import TiTcRequest
+from tcex.api.tc.v2.threat_intelligence.tcex_ti_tc_request import TiTcRequest
 from tcex.utils import Utils
 
 if TYPE_CHECKING:
     # first-party
-    from tcex.threat_intelligence.v2.threat_intelligence import ThreatIntelligence
+    from tcex.api.tc.v2.threat_intelligence.threat_intelligence import ThreatIntelligence
 
 # get tcex logger
 logger = logging.getLogger('tcex')

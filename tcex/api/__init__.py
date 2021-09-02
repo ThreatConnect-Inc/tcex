@@ -1,2 +1,2 @@
-"""Batch module for TcEx Framework"""
+"""API modules"""
 # flake8: noqa

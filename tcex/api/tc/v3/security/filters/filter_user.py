@@ -3,9 +3,9 @@
 from enum import Enum
 
 # first-party
-from tcex.case_management.api_endpoints import ApiEndpoints
+from tcex.api.tc.v3.case_management.api_endpoints import ApiEndpoints
 from tcex.security.filters.filter_abc import FilterABC
-from tcex.case_management.tql import TQL
+from tcex.api.tc.v3.case_management.tql import TQL
 
 
 class FilterUser(FilterABC):

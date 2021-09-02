@@ -1,12 +1,14 @@
 """Case Management Artifact"""
 # first-party
-from tcex.case_management.api_endpoints import ApiEndpoints
-from tcex.case_management.case_management_abc import CaseManagementABC
-from tcex.case_management.case_management_collection_abc import CaseManagementCollectionABC
-from tcex.case_management.filter_artifact import FilterArtifact
-from tcex.case_management.models.artifact_model import ArtifactModel, ArtifactsModel
-from tcex.case_management.models.note_model import NoteModel
-from tcex.case_management.tql import TQL
+from tcex.api.tc.v3.case_management.api_endpoints import ApiEndpoints
+from tcex.api.tc.v3.case_management.case_management_abc import CaseManagementABC
+from tcex.api.tc.v3.case_management.case_management_collection_abc import (
+    CaseManagementCollectionABC,
+)
+from tcex.api.tc.v3.case_management.filter_artifact import FilterArtifact
+from tcex.api.tc.v3.case_management.models.artifact_model import ArtifactModel, ArtifactsModel
+from tcex.api.tc.v3.case_management.models.note_model import NoteModel
+from tcex.api.tc.v3.case_management.tql import TQL
 
 
 class Artifacts(CaseManagementCollectionABC):
@@ -80,7 +82,7 @@ class Artifact(CaseManagementABC):
     def notes(self):
         """Return a notes collection."""
         # first-party
-        from tcex.case_management.note import Notes
+        from tcex.api.tc.v3.case_management.note import Notes
 
         yield from self._iterate_over_sublist(Notes)
 

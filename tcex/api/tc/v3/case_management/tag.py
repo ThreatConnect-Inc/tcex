@@ -8,11 +8,13 @@ from pydantic import BaseModel, Extra, Field, PrivateAttr
 from requests import Session
 
 # first-party
-from tcex.case_management.api_endpoints import ApiEndpoints
-from tcex.case_management.case_management_abc import CaseManagementABC
-from tcex.case_management.case_management_collection_abc import CaseManagementCollectionABC
-from tcex.case_management.filter_tag import FilterTag
-from tcex.case_management.models.tag_model import TagModel, TagsModel
+from tcex.api.tc.v3.case_management.api_endpoints import ApiEndpoints
+from tcex.api.tc.v3.case_management.case_management_abc import CaseManagementABC
+from tcex.api.tc.v3.case_management.case_management_collection_abc import (
+    CaseManagementCollectionABC,
+)
+from tcex.api.tc.v3.case_management.filter_tag import FilterTag
+from tcex.api.tc.v3.case_management.models.tag_model import TagModel, TagsModel
 
 
 class Tags(CaseManagementCollectionABC):
@@ -53,7 +55,7 @@ class Tag(CaseManagementABC):
     @property
     def cases(self):
         # first-party
-        from tcex.case_management.case import Cases
+        from tcex.api.tc.v3.case_management.case import Cases
 
         yield from self._iterate_over_sublist(Cases)
 

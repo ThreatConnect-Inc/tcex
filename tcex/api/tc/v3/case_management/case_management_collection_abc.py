@@ -9,19 +9,19 @@ from requests import Response
 from requests.exceptions import ProxyError
 
 # first-party
-from tcex.case_management.tql import TQL
+from tcex.api.tc.v3.case_management.tql import TQL
 from tcex.pleb import Event
 from tcex.utils import Utils
 
 if TYPE_CHECKING:
     # first-party
-    from tcex.case_management.artifact import Artifact
-    from tcex.case_management.case import Case
-    from tcex.case_management.case_management import CaseManagement
-    from tcex.case_management.note import Note
-    from tcex.case_management.tag import Tag
-    from tcex.case_management.task import Task
-    from tcex.case_management.workflow_event import WorkflowEvent
+    from tcex.api.tc.v3.case_management.artifact import Artifact
+    from tcex.api.tc.v3.case_management.case import Case
+    from tcex.api.tc.v3.case_management.case_management import CaseManagement
+    from tcex.api.tc.v3.case_management.note import Note
+    from tcex.api.tc.v3.case_management.tag import Tag
+    from tcex.api.tc.v3.case_management.task import Task
+    from tcex.api.tc.v3.case_management.workflow_event import WorkflowEvent
 
     # Case Management Types
     CaseManagementType = Union[

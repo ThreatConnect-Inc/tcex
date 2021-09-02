@@ -1,4 +1,4 @@
 """ThreatConnect Case Management Module."""
 # flake8: noqa
 # first-party
-from tcex.case_management.case_management import CaseManagement
+from tcex.api.tc.v3.case_management.case_management import CaseManagement

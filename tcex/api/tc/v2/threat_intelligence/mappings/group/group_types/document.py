@@ -3,11 +3,11 @@
 from typing import TYPE_CHECKING
 
 # first-party
-from tcex.threat_intelligence.v2.mappings.group import Group
+from tcex.api.tc.v2.threat_intelligence.mappings.group import Group
 
 if TYPE_CHECKING:
     # first-party
-    from tcex.threat_intelligence.v2 import ThreatIntelligence
+    from tcex.api.tc.v2.threat_intelligence import ThreatIntelligence
 
 
 class Document(Group):

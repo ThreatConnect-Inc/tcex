@@ -30,7 +30,7 @@ class WorkflowEventData(
     BaseModel,
     title='WorkflowEvent Data',
     alias_generator=Utils().snake_to_camel,
-    validate_assignment=True
+    validate_assignment=True,
 ):
     """Workflow Event Data"""
 
@@ -47,7 +47,7 @@ class WorkflowEventModel(
     title='WorkflowEvent Model',
     alias_generator=Utils().snake_to_camel,
     extra=Extra.allow,
-    validate_assignment=True
+    validate_assignment=True,
 ):
     """Workflow Event Model"""
 
@@ -178,9 +178,9 @@ class WorkflowEventModel(
 
 
 # first-party
-from tcex.case_management.models.case_model import CaseModel
-from tcex.case_management.models.note_model import NotesModel
-from tcex.security.models.user_model import UserModel
+from tcex.api.tc.v3.case_management.models.case_model import CaseModel
+from tcex.api.tc.v3.case_management.models.note_model import NotesModel
+from tcex.api.tc.v3.security.models.user_model import UserModel
 
 
 # add forward references

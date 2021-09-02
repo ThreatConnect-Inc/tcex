@@ -3,11 +3,11 @@
 from typing import TYPE_CHECKING
 
 # first-party
-from tcex.threat_intelligence.v2.mappings import Mappings
+from tcex.api.tc.v2.threat_intelligence.mappings import Mappings
 
 if TYPE_CHECKING:
     # first-party
-    from tcex.threat_intelligence.v2 import ThreatIntelligence
+    from tcex.api.tc.v2.threat_intelligence import ThreatIntelligence
 
 # import local modules for dynamic reference
 module = __import__(__name__)

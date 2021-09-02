@@ -29,7 +29,7 @@ class WorkflowTemplateData(
     BaseModel,
     title='WorkflowTemplate Data',
     alias_generator=Utils().snake_to_camel,
-    validate_assignment=True
+    validate_assignment=True,
 ):
     """Workflow Template Data"""
 
@@ -46,7 +46,7 @@ class WorkflowTemplateModel(
     title='WorkflowTemplate Model',
     alias_generator=Utils().snake_to_camel,
     extra=Extra.allow,
-    validate_assignment=True
+    validate_assignment=True,
 ):
     """Workflow Template Model"""
 
@@ -139,8 +139,8 @@ class WorkflowTemplateModel(
 
 
 # first-party
-from tcex.case_management.assignee import Assignee
-from tcex.case_management.models.case_model import CasesModel
+from tcex.api.tc.v3.case_management.assignee import Assignee
+from tcex.api.tc.v3.case_management.models.case_model import CasesModel
 
 
 # add forward references

@@ -1,13 +1,15 @@
 """Case Management Task"""
 # first-party
-from tcex.case_management.api_endpoints import ApiEndpoints
-from tcex.case_management.case_management_abc import CaseManagementABC
-from tcex.case_management.case_management_collection_abc import CaseManagementCollectionABC
-from tcex.case_management.filter_task import FilterTask
-from tcex.case_management.models.artifact_model import ArtifactModel
-from tcex.case_management.models.note_model import NoteModel
-from tcex.case_management.models.task_model import TaskModel, TasksModel
-from tcex.case_management.tql import TQL
+from tcex.api.tc.v3.case_management.api_endpoints import ApiEndpoints
+from tcex.api.tc.v3.case_management.case_management_abc import CaseManagementABC
+from tcex.api.tc.v3.case_management.case_management_collection_abc import (
+    CaseManagementCollectionABC,
+)
+from tcex.api.tc.v3.case_management.filter_task import FilterTask
+from tcex.api.tc.v3.case_management.models.artifact_model import ArtifactModel
+from tcex.api.tc.v3.case_management.models.note_model import NoteModel
+from tcex.api.tc.v3.case_management.models.task_model import TaskModel, TasksModel
+from tcex.api.tc.v3.case_management.tql import TQL
 
 
 class Tasks(CaseManagementCollectionABC):
@@ -77,7 +79,7 @@ class Task(CaseManagementABC):
     @property
     def artifacts(self):
         # first-party
-        from tcex.case_management.artifact import Artifacts
+        from tcex.api.tc.v3.case_management.artifact import Artifacts
 
         yield from self._iterate_over_sublist(Artifacts)
 
@@ -88,7 +90,7 @@ class Task(CaseManagementABC):
     @property
     def notes(self):
         # first-party
-        from tcex.case_management.note import Notes
+        from tcex.api.tc.v3.case_management.note import Notes
 
         yield from self._iterate_over_sublist(Notes)
 

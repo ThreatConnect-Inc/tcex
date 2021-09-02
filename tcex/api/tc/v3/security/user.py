@@ -2,10 +2,10 @@
 
 # first-party
 from tcex.security.filters.filter_user import FilterUser
-from tcex.case_management.api_endpoints import ApiEndpoints
+from tcex.api.tc.v3.case_management.api_endpoints import ApiEndpoints
 from tcex.security.security_abc import SecurityABC
 from tcex.security.security_collection_abc import SecurityCollectionABC
-from tcex.security.models.user_model import UserModel, UsersModel
+from tcex.api.tc.v3.security.models.user_model import UserModel, UsersModel
 
 
 class Users(SecurityCollectionABC):
@@ -30,9 +30,7 @@ class Users(SecurityCollectionABC):
 
     def __init__(self, **kwargs) -> None:
         super().__init__(
-            kwargs.pop('session', None),
-            kwargs.pop('tql_filter', None),
-            kwargs.pop('params', None)
+            kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
         )
         self._model = UsersModel(**kwargs)
 
@@ -50,13 +48,13 @@ class Users(SecurityCollectionABC):
         """Return instance of FilterArtifact Object."""
         return FilterUser(self._session, self.tql)
 
+
 class User(SecurityABC):
     def __init__(self, **kwargs) -> None:
         """Initialize Class properties"""
         # Might need to save id for submit request. Might be able to do a try catch though in parent.
         super().__init__(kwargs.pop('session', None))
         self._model = UserModel(**kwargs)
-
 
     @property
     def _api_endpoint(self) -> str:
@@ -72,4 +70,3 @@ class User(SecurityABC):
             'id': self.model.id,
             'value': self.model.user_name,
         }
-

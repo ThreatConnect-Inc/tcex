@@ -3,12 +3,14 @@
 from pydantic import BaseModel
 
 # first-party
-from tcex.case_management.api_endpoints import ApiEndpoints
-from tcex.case_management.case_management_abc import CaseManagementABC
-from tcex.case_management.case_management_collection_abc import CaseManagementCollectionABC
-from tcex.case_management.filter_note import FilterNote  # pylint: disable=cyclic-import
-from tcex.case_management.models.note_model import NoteData, NoteModel, NotesModel
-from tcex.case_management.tql import TQL
+from tcex.api.tc.v3.case_management.api_endpoints import ApiEndpoints
+from tcex.api.tc.v3.case_management.case_management_abc import CaseManagementABC
+from tcex.api.tc.v3.case_management.case_management_collection_abc import (
+    CaseManagementCollectionABC,
+)
+from tcex.api.tc.v3.case_management.filter_note import FilterNote  # pylint: disable=cyclic-import
+from tcex.api.tc.v3.case_management.models.note_model import NoteData, NoteModel, NotesModel
+from tcex.api.tc.v3.case_management.tql import TQL
 
 
 class Notes(CaseManagementCollectionABC):

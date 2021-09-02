@@ -45,7 +45,7 @@ try:
         WriteOutput,
     )
     from .tcex import TcEx
-    from .threat_intelligence import ThreatIntelligence
 except ImportError as e:
     print(f'Error: {e}')
     print('Try running tclib')
+    raise

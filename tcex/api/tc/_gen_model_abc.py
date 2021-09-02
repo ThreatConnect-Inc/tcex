@@ -77,7 +77,7 @@ class GenerateModelABC(ABC):
                 'requirement': {
                     'from': 'first-party-forward-reference',
                     'import': (
-                        'from tcex.case_management.models.artifact_model import ArtifactModel'
+                        'from tcex.api.tc.v3.case_management.models.artifact_model import ArtifactModel'
                     ),
                 },
                 'type': '\'Optional[ArtifactModel]\'',
@@ -94,7 +94,7 @@ class GenerateModelABC(ABC):
                 'requirement': {
                     'from': 'first-party-forward-reference',
                     'import': (
-                        'from tcex.case_management.models.artifact_model import ArtifactsModel'
+                        'from tcex.api.tc.v3.case_management.models.artifact_model import ArtifactsModel'
                     ),
                 },
                 'type': '\'Optional[ArtifactsModel]\'',
@@ -111,7 +111,7 @@ class GenerateModelABC(ABC):
                 'requirement': {
                     'from': 'first-party-forward-reference',
                     'import': (
-                        'from tcex.case_management.models.artifact_type_model '
+                        'from tcex.api.tc.v3.case_management.models.artifact_type_model '
                         'import ArtifactTypeModel'
                     ),
                 },
@@ -130,7 +130,7 @@ class GenerateModelABC(ABC):
                 'requirement': {
                     'from': 'first-party-forward-reference',
                     'import': (
-                        'from tcex.case_management.models.attribute_model import AttributesModel'
+                        'from tcex.api.tc.v3.case_management.models.attribute_model import AttributesModel'
                     ),
                 },
                 'type': '\'Optional[AttributesModel]\'',
@@ -146,7 +146,7 @@ class GenerateModelABC(ABC):
             'Case': {
                 'requirement': {
                     'from': 'first-party-forward-reference',
-                    'import': 'from tcex.case_management.models.case_model import CaseModel',
+                    'import': 'from tcex.api.tc.v3.case_management.models.case_model import CaseModel',
                 },
                 'type': '\'Optional[CaseModel]\'',
                 'validator': [
@@ -161,7 +161,7 @@ class GenerateModelABC(ABC):
             'Cases': {
                 'requirement': {
                     'from': 'first-party-forward-reference',
-                    'import': 'from tcex.case_management.models.case_model import CasesModel',
+                    'import': 'from tcex.api.tc.v3.case_management.models.case_model import CasesModel',
                 },
                 'type': '\'Optional[CasesModel]\'',
                 'validator': [
@@ -176,7 +176,7 @@ class GenerateModelABC(ABC):
             'Note': {
                 'requirement': {
                     'from': 'first-party-forward-reference',
-                    'import': 'from tcex.case_management.models.note_model import NoteModel',
+                    'import': 'from tcex.api.tc.v3.case_management.models.note_model import NoteModel',
                 },
                 'type': '\'Optional[NoteModel]\'',
                 'validator': [
@@ -191,7 +191,7 @@ class GenerateModelABC(ABC):
             'Notes': {
                 'requirement': {
                     'from': 'first-party-forward-reference',
-                    'import': 'from tcex.case_management.models.note_model import NotesModel',
+                    'import': 'from tcex.api.tc.v3.case_management.models.note_model import NotesModel',
                 },
                 'type': '\'Optional[NotesModel]\'',
                 'validator': [
@@ -206,7 +206,7 @@ class GenerateModelABC(ABC):
             'Tag': {
                 'requirement': {
                     'from': 'first-party-forward-reference',
-                    'import': 'from tcex.case_management.models.tag_model import TagModel',
+                    'import': 'from tcex.api.tc.v3.case_management.models.tag_model import TagModel',
                 },
                 'type': '\'Optional[TagModel]\'',
                 'validator': [
@@ -221,7 +221,7 @@ class GenerateModelABC(ABC):
             'Tags': {
                 'requirement': {
                     'from': 'first-party-forward-reference',
-                    'import': 'from tcex.case_management.models.tag_model import TagsModel',
+                    'import': 'from tcex.api.tc.v3.case_management.models.tag_model import TagsModel',
                 },
                 'type': '\'Optional[TagsModel]\'',
                 'validator': [
@@ -236,7 +236,7 @@ class GenerateModelABC(ABC):
             'Task': {
                 'requirement': {
                     'from': 'first-party-forward-reference',
-                    'import': 'from tcex.case_management.models.task_model import TaskModel',
+                    'import': 'from tcex.api.tc.v3.case_management.models.task_model import TaskModel',
                 },
                 'type': '\'Optional[TaskModel]\'',
                 'validator': [
@@ -251,7 +251,7 @@ class GenerateModelABC(ABC):
             'Tasks': {
                 'requirement': {
                     'from': 'first-party-forward-reference',
-                    'import': 'from tcex.case_management.models.task_model import TasksModel',
+                    'import': 'from tcex.api.tc.v3.case_management.models.task_model import TasksModel',
                 },
                 'type': '\'Optional[TasksModel]\'',
                 'validator': [
@@ -267,7 +267,7 @@ class GenerateModelABC(ABC):
                 'requirement': {
                     'from': 'first-party-forward-reference',
                     'import': (
-                        'from tcex.case_management.models.workflow_event_model '
+                        'from tcex.api.tc.v3.case_management.models.workflow_event_model '
                         'import WorkflowEventModel'
                     ),
                 },
@@ -285,7 +285,7 @@ class GenerateModelABC(ABC):
                 'requirement': {
                     'from': 'first-party-forward-reference',
                     'import': (
-                        'from tcex.case_management.models.workflow_event_model '
+                        'from tcex.api.tc.v3.case_management.models.workflow_event_model '
                         'import WorkflowEventsModel'
                     ),
                 },
@@ -303,7 +303,7 @@ class GenerateModelABC(ABC):
                 'requirement': {
                     'from': 'first-party-forward-reference',
                     'import': (
-                        'from tcex.case_management.models.workflow_template_model '
+                        'from tcex.api.tc.v3.case_management.models.workflow_template_model '
                         'import WorkflowTemplateModel'
                     ),
                 },
@@ -325,14 +325,14 @@ class GenerateModelABC(ABC):
             'Assignee': {
                 'requirement': {
                     'from': 'first-party-forward-reference',
-                    'import': ('from tcex.case_management.assignee import Assignee'),
+                    'import': ('from tcex.api.tc.v3.case_management.assignee import Assignee'),
                 },
                 'type': '\'Optional[Assignee]\'',
             },
             'User': {
                 'requirement': {
                     'from': 'first-party-forward-reference',
-                    'import': 'from tcex.security.models.user_model import UserModel',
+                    'import': 'from tcex.api.tc.v3.security.models.user_model import UserModel',
                 },
                 'type': '\'Optional[UserModel]\'',
                 'validator': [
@@ -347,7 +347,7 @@ class GenerateModelABC(ABC):
             'Users': {
                 'requirement': {
                     'from': 'first-party-forward-reference',
-                    'import': 'from tcex.security.models.user_model import UsersModel',
+                    'import': 'from tcex.api.tc.v3.security.models.user_model import UsersModel',
                 },
                 'type': '\'Optional[UsersModel]\'',
                 'validator': [

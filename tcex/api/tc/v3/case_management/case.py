@@ -1,15 +1,17 @@
 """ThreatConnect Case"""
 # first-party
-from tcex.case_management.api_endpoints import ApiEndpoints
-from tcex.case_management.case_management_abc import CaseManagementABC
-from tcex.case_management.case_management_collection_abc import CaseManagementCollectionABC
-from tcex.case_management.filter_case import FilterCase
-from tcex.case_management.models.artifact_model import ArtifactModel, ArtifactsModel
-from tcex.case_management.models.case_model import CaseData, CaseModel
-from tcex.case_management.models.note_model import NoteModel, NotesModel
-from tcex.case_management.models.tag_model import TagModel, TagsModel
-from tcex.case_management.models.task_model import TaskModel, TasksModel
-from tcex.case_management.tql import TQL
+from tcex.api.tc.v3.case_management.api_endpoints import ApiEndpoints
+from tcex.api.tc.v3.case_management.case_management_abc import CaseManagementABC
+from tcex.api.tc.v3.case_management.case_management_collection_abc import (
+    CaseManagementCollectionABC,
+)
+from tcex.api.tc.v3.case_management.filter_case import FilterCase
+from tcex.api.tc.v3.case_management.models.artifact_model import ArtifactModel, ArtifactsModel
+from tcex.api.tc.v3.case_management.models.case_model import CaseData, CaseModel
+from tcex.api.tc.v3.case_management.models.note_model import NoteModel, NotesModel
+from tcex.api.tc.v3.case_management.models.tag_model import TagModel, TagsModel
+from tcex.api.tc.v3.case_management.models.task_model import TaskModel, TasksModel
+from tcex.api.tc.v3.case_management.tql import TQL
 
 
 class Cases(CaseManagementCollectionABC):
@@ -61,21 +63,21 @@ class Case(CaseManagementABC):
     @property
     def artifacts(self):
         # first-party
-        from tcex.case_management.artifact import Artifacts
+        from tcex.api.tc.v3.case_management.artifact import Artifacts
 
         yield from self._iterate_over_sublist(Artifacts)
 
     @property
     def notes(self):
         # first-party
-        from tcex.case_management.note import Notes
+        from tcex.api.tc.v3.case_management.note import Notes
 
         yield from self._iterate_over_sublist(Notes)
 
     @property
     def tags(self):
         # first-party
-        from tcex.case_management.tag import Tags
+        from tcex.api.tc.v3.case_management.tag import Tags
 
         yield from self._iterate_over_sublist(Tags)
 

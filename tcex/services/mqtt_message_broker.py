@@ -25,7 +25,7 @@ class MqttMessageBroker:
         broker_host: str,
         broker_port: int,
         broker_timeout: int,
-        broker_token: Optional[Sensitive] = None,
+        broker_token: Optional['Sensitive'] = None,
         broker_cacert: Optional[str] = None,
     ):
         """Initialize the Class properties.

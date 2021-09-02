@@ -27,10 +27,7 @@ class TasksModel(
 
 
 class TaskData(
-    BaseModel,
-    title='Task Data',
-    alias_generator=Utils().snake_to_camel,
-    validate_assignment=True
+    BaseModel, title='Task Data', alias_generator=Utils().snake_to_camel, validate_assignment=True
 ):
     """Task Data"""
 
@@ -47,7 +44,7 @@ class TaskModel(
     title='Task Model',
     alias_generator=Utils().snake_to_camel,
     extra=Extra.allow,
-    validate_assignment=True
+    validate_assignment=True,
 ):
     """Task Model"""
 
@@ -235,10 +232,10 @@ class TaskModel(
 
 
 # first-party
-from tcex.case_management.assignee import Assignee
-from tcex.case_management.models.artifact_model import ArtifactsModel
-from tcex.case_management.models.case_model import CaseModel
-from tcex.case_management.models.note_model import NotesModel
+from tcex.api.tc.v3.case_management.assignee import Assignee
+from tcex.api.tc.v3.case_management.models.artifact_model import ArtifactsModel
+from tcex.api.tc.v3.case_management.models.case_model import CaseModel
+from tcex.api.tc.v3.case_management.models.note_model import NotesModel
 
 
 # add forward references

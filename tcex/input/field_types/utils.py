@@ -1,8 +1,8 @@
 """Field Type Validator methods"""
 
 # first-party
+from tcex.api.tc.utils.threat_intel_utils import ThreatIntelUtils
 from tcex.sessions import TcSessionSingleton
-from tcex.threat_intelligence import ThreatIntelUtils
 
 from .exception import ConfigurationException
 

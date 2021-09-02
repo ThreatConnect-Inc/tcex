@@ -27,10 +27,7 @@ class TagsModel(
 
 
 class TagData(
-    BaseModel,
-    title='Tag Data',
-    alias_generator=Utils().snake_to_camel,
-    validate_assignment=True
+    BaseModel, title='Tag Data', alias_generator=Utils().snake_to_camel, validate_assignment=True
 ):
     """Tag Data"""
 
@@ -47,7 +44,7 @@ class TagModel(
     title='Tag Model',
     alias_generator=Utils().snake_to_camel,
     extra=Extra.allow,
-    validate_assignment=True
+    validate_assignment=True,
 ):
     """Tag Model"""
 
@@ -106,7 +103,7 @@ class TagModel(
 
 
 # first-party
-from tcex.case_management.models.case_model import CasesModel
+from tcex.api.tc.v3.case_management.models.case_model import CasesModel
 
 
 # add forward references

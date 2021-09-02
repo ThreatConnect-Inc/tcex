@@ -30,7 +30,7 @@ class ArtifactData(
     BaseModel,
     title='Artifact Data',
     alias_generator=Utils().snake_to_camel,
-    validate_assignment=True
+    validate_assignment=True,
 ):
     """Artifact Data"""
 
@@ -47,7 +47,7 @@ class ArtifactModel(
     title='Artifact Model',
     alias_generator=Utils().snake_to_camel,
     extra=Extra.allow,
-    validate_assignment=True
+    validate_assignment=True,
 ):
     """Artifact Model"""
 
@@ -263,10 +263,10 @@ class ArtifactModel(
 
 
 # first-party
-from tcex.case_management.models.artifact_type_model import ArtifactTypeModel
-from tcex.case_management.models.case_model import CaseModel
-from tcex.case_management.models.note_model import NotesModel
-from tcex.case_management.models.task_model import TaskModel
+from tcex.api.tc.v3.case_management.models.artifact_type_model import ArtifactTypeModel
+from tcex.api.tc.v3.case_management.models.case_model import CaseModel
+from tcex.api.tc.v3.case_management.models.note_model import NotesModel
+from tcex.api.tc.v3.case_management.models.task_model import TaskModel
 
 
 # add forward references

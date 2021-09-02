@@ -3,9 +3,9 @@
 from enum import Enum
 
 # first-party
-from tcex.case_management.api_endpoints import ApiEndpoints
-from tcex.case_management.filter_abc import FilterABC
-from tcex.case_management.tql import TQL
+from tcex.api.tc.v3.case_management.api_endpoints import ApiEndpoints
+from tcex.api.tc.v3.case_management.filter_abc import FilterABC
+from tcex.api.tc.v3.case_management.tql import TQL
 
 
 class FilterCase(FilterABC):
@@ -57,7 +57,7 @@ class FilterCase(FilterABC):
     def has_artifact(self):
         """Return **FilterArtifacts** for further filtering."""
         # first-party
-        from tcex.case_management.filter_artifact import FilterArtifact
+        from tcex.api.tc.v3.case_management.filter_artifact import FilterArtifact
 
         artifacts = FilterArtifact(self._session, TQL())
         self._tql.add_filter('hasArtifact', TQL.Operator.EQ, artifacts, TQL.Type.SUB_QUERY)
@@ -68,7 +68,7 @@ class FilterCase(FilterABC):
     def has_note(self):
         """Return **FilterNotes** for further filtering."""
         # first-party
-        from tcex.case_management.filter_note import FilterNote
+        from tcex.api.tc.v3.case_management.filter_note import FilterNote
 
         notes = FilterNote(self._session, TQL())
         self._tql.add_filter('hasNote', TQL.Operator.EQ, notes, TQL.Type.SUB_QUERY)
@@ -79,7 +79,7 @@ class FilterCase(FilterABC):
     def has_tag(self):
         """Return **FilterTags** for further filtering."""
         # first-party
-        from tcex.case_management.filter_tag import FilterTag
+        from tcex.api.tc.v3.case_management.filter_tag import FilterTag
 
         tags = FilterTag(self._session, TQL())
         self._tql.add_filter('hasTag', TQL.Operator.EQ, tags, TQL.Type.SUB_QUERY)
@@ -90,7 +90,7 @@ class FilterCase(FilterABC):
     def has_group(self):
         """Return **FilterTags** for further filtering."""
         # first-party
-        from tcex.case_management.filter_tag import FilterTag
+        from tcex.api.tc.v3.case_management.filter_tag import FilterTag
 
         tags = FilterTag(self._session, TQL())
         self._tql.add_filter('hasGroup', TQL.Operator.EQ, tags, TQL.Type.SUB_QUERY)
@@ -101,7 +101,7 @@ class FilterCase(FilterABC):
     def has_indicator(self):
         """Return **FilterTags** for further filtering."""
         # first-party
-        from tcex.case_management.filter_tag import FilterTag
+        from tcex.api.tc.v3.case_management.filter_tag import FilterTag
 
         tags = FilterTag(self._session, TQL())
         self._tql.add_filter('hasIndicator', TQL.Operator.EQ, tags, TQL.Type.SUB_QUERY)
@@ -112,7 +112,7 @@ class FilterCase(FilterABC):
     def has_task(self):
         """Return **FilterTask** for further filtering."""
         # first-party
-        from tcex.case_management.filter_task import FilterTask
+        from tcex.api.tc.v3.case_management.filter_task import FilterTask
 
         tasks = FilterTask(self._session, TQL())
         self._tql.add_filter('hasTask', TQL.Operator.EQ, tasks, TQL.Type.SUB_QUERY)

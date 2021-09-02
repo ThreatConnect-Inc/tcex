@@ -1,7 +1,7 @@
 """Case Model"""
 # standard library
 from datetime import datetime
-from typing import Optional, List
+from typing import Dict, List, Optional
 
 # third-party
 from pydantic import BaseModel, Extra, Field, validator
@@ -27,10 +27,7 @@ class CasesModel(
 
 
 class CaseData(
-    BaseModel,
-    title='Case Data',
-    alias_generator=Utils().snake_to_camel,
-    validate_assignment=True
+    BaseModel, title='Case Data', alias_generator=Utils().snake_to_camel, validate_assignment=True
 ):
     """Case Data"""
 
@@ -47,11 +44,11 @@ class CaseModel(
     title='Case Model',
     alias_generator=Utils().snake_to_camel,
     extra=Extra.allow,
-    validate_assignment=True
+    validate_assignment=True,
 ):
     """Case Model"""
 
-    artifacts: 'Optional[ArtifactsModel]' = Field(
+    artifacts: Optional['ArtifactsModel'] = Field(
         None,
         description='A list of Artifacts corresponding to the Case.',
         methods=['POST', 'PUT'],
@@ -66,7 +63,7 @@ class CaseModel(
         read_only=False,
         title='assignee',
     )
-    attributes: CaseAttributeDatas = Field(
+    attributes: Optional[Dict] = Field(
         None,
         description='A list of Attributes corresponding to the Case.',
         methods=['POST', 'PUT'],
@@ -321,15 +318,15 @@ class CaseModel(
 
 
 # first-party
-from tcex.case_management.assignee import Assignee
-from tcex.case_management.models.artifact_model import ArtifactsModel
-from tcex.case_management.models.note_model import NotesModel
-from tcex.case_management.models.tag_model import TagsModel
-from tcex.case_management.models.task_model import TasksModel
-from tcex.case_management.models.workflow_event_model import WorkflowEventsModel
-from tcex.case_management.models.workflow_template_model import WorkflowTemplateModel
-from tcex.security.models.user_model import UserModel
-from tcex.security.models.user_model import UsersModel
+from tcex.api.tc.v3.case_management.assignee import Assignee
+from tcex.api.tc.v3.case_management.models.artifact_model import ArtifactsModel
+from tcex.api.tc.v3.case_management.models.note_model import NotesModel
+from tcex.api.tc.v3.case_management.models.tag_model import TagsModel
+from tcex.api.tc.v3.case_management.models.task_model import TasksModel
+from tcex.api.tc.v3.case_management.models.workflow_event_model import WorkflowEventsModel
+from tcex.api.tc.v3.case_management.models.workflow_template_model import WorkflowTemplateModel
+from tcex.api.tc.v3.security.models.user_model import UserModel
+from tcex.api.tc.v3.security.models.user_model import UsersModel
 
 
 # add forward references

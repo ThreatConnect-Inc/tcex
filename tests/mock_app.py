@@ -10,6 +10,7 @@ from requests import Session
 
 # first-party
 from tcex import TcEx
+from tcex.input.field_types.sensitive import Sensitive
 from tcex.app_config import InstallJson
 from tcex.sessions.tc_session import HmacAuth
 from tcex.utils import Utils
@@ -350,7 +351,10 @@ class MockApp:
     def session(self) -> Session:
         """Return Session configured for TC API."""
         _session = Session()
-        _session.auth = HmacAuth(os.getenv('TC_API_ACCESS_ID'), os.getenv('TC_API_SECRET_KEY'))
+        _session.auth = HmacAuth(
+            os.getenv('TC_API_ACCESS_ID'),
+            Sensitive(os.getenv('TC_API_SECRET_KEY')),
+        )
         return _session
 
     @property

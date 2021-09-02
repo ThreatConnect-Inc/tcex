@@ -14,19 +14,20 @@ from typing import Optional, Union
 from requests import Session
 
 # first-party
+from tcex.api.tc.v2.threat_intelligence import ThreatIntelligence
+from tcex.api.tc.v2.metrics import Metrics
+from tcex.api.tc.v2.notifications import Notifications
+from tcex.api.tc.v3.case_management import CaseManagement
 from tcex.app_config import InstallJson
 from tcex.app_feature import AdvancedRequest
 from tcex.backports import cached_property
 from tcex.batch.batch import Batch
 from tcex.batch.batch_submit import BatchSubmit
 from tcex.batch.batch_writer import BatchWriter
-from tcex.case_management import CaseManagement
 from tcex.datastore import Cache, DataStore
 from tcex.input import Input
 from tcex.key_value_store import KeyValueApi, KeyValueRedis, RedisClient
 from tcex.logger import Logger, TraceLogger
-from tcex.metrics import Metrics
-from tcex.notifications import Notifications
 from tcex.playbook import Playbook
 from tcex.pleb import Event, proxies
 from tcex.services.api_service import ApiService
@@ -34,7 +35,6 @@ from tcex.services.common_service_trigger import CommonServiceTrigger
 from tcex.services.webhook_trigger_service import WebhookTriggerService
 from tcex.sessions import ExternalSession, TcSession
 from tcex.tcex_error_codes import TcExErrorCodes
-from tcex.threat_intelligence import ThreatIntelligence
 from tcex.tokens import Tokens
 from tcex.utils import Utils
 

@@ -3,9 +3,9 @@
 from enum import Enum
 
 # first-party
-from tcex.case_management.api_endpoints import ApiEndpoints
-from tcex.case_management.filter_abc import FilterABC
-from tcex.case_management.tql import TQL
+from tcex.api.tc.v3.case_management.api_endpoints import ApiEndpoints
+from tcex.api.tc.v3.case_management.filter_abc import FilterABC
+from tcex.api.tc.v3.case_management.tql import TQL
 
 
 class FilterNote(FilterABC):
@@ -57,7 +57,7 @@ class FilterNote(FilterABC):
     def has_artifact(self):
         """Return **FilterArtifacts** for further filtering."""
         # first-party
-        from tcex.case_management.filter_artifact import FilterArtifact
+        from tcex.api.tc.v3.case_management.filter_artifact import FilterArtifact
 
         artifacts = FilterArtifact(self._session, TQL())
         self._tql.add_filter('hasArtifact', TQL.Operator.EQ, artifacts, TQL.Type.SUB_QUERY)
@@ -68,7 +68,7 @@ class FilterNote(FilterABC):
     def has_case(self):
         """Return **FilterCases** for further filtering."""
         # first-party
-        from tcex.case_management.filter_case import FilterCase
+        from tcex.api.tc.v3.case_management.filter_case import FilterCase
 
         cases = FilterCase(self._session, TQL())
         self._tql.add_filter('hasCase', TQL.Operator.EQ, cases, TQL.Type.SUB_QUERY)
@@ -79,7 +79,7 @@ class FilterNote(FilterABC):
     def has_task(self):
         """Return **FilterTask** for further filtering."""
         # first-party
-        from tcex.case_management.filter_task import FilterTask
+        from tcex.api.tc.v3.case_management.filter_task import FilterTask
 
         tasks = FilterTask(self._session, TQL())
         self._tql.add_filter('hasTask', TQL.Operator.EQ, tasks, TQL.Type.SUB_QUERY)

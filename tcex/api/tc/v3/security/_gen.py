@@ -56,7 +56,7 @@ class GenerateDoc(GenerateDocABC):
         """Import the appropriate model."""
         if self.type_ == 'user':
             # first-party
-            from tcex.security.models.user_model import UserModel as Model
+            from tcex.api.tc.v3.security.models.user_model import UserModel as Model
         elif self.type_ == 'user_group':
             # first-party
             from tcex.security.models.user_group_model import UserGroupModel as Model

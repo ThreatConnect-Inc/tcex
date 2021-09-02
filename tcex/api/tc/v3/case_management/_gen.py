@@ -11,7 +11,7 @@ import typer
 from requests import Session
 
 # first-party
-from tcex.case_management.api_endpoints import ApiEndpoints
+from tcex.api.tc.v3.case_management.api_endpoints import ApiEndpoints
 from tcex.tc_api._gen_doc_abc import GenerateDocABC
 from tcex.tc_api._gen_model_abc import GenerateModelABC
 
@@ -58,34 +58,38 @@ class GenerateDoc(GenerateDocABC):
         """Import the appropriate model."""
         if self.type_ == 'artifact':
             # first-party
-            from tcex.case_management.models.artifact_model import ArtifactModel as Model
+            from tcex.api.tc.v3.case_management.models.artifact_model import ArtifactModel as Model
         elif self.type_ == 'artifact_type':
             # first-party
-            from tcex.case_management.models.artifact_type_model import ArtifactTypeModel as Model
+            from tcex.api.tc.v3.case_management.models.artifact_type_model import (
+                ArtifactTypeModel as Model,
+            )
         elif self.type_ == 'case':
             # first-party
-            from tcex.case_management.models.case_model import CaseModel as Model
+            from tcex.api.tc.v3.case_management.models.case_model import CaseModel as Model
         elif self.type_ == 'note':
             # first-party
-            from tcex.case_management.models.note_model import NoteModel as Model
+            from tcex.api.tc.v3.case_management.models.note_model import NoteModel as Model
         elif self.type_ == 'tag':
             # first-party
-            from tcex.case_management.models.tag_model import TagModel as Model
+            from tcex.api.tc.v3.case_management.models.tag_model import TagModel as Model
         elif self.type_ == 'task':
             # first-party
-            from tcex.case_management.models.task_model import TaskModel as Model
+            from tcex.api.tc.v3.case_management.models.task_model import TaskModel as Model
         elif self.type_ == 'user':
             # first-party
-            from tcex.security.models.user_model import UserModel as Model
+            from tcex.api.tc.v3.security.models.user_model import UserModel as Model
         elif self.type_ == 'user_group':
             # first-party
             from tcex.security.models.user_group_model import UserGroupModel as Model
         elif self.type_ == 'workflow_event':
             # first-party
-            from tcex.case_management.models.workflow_event_model import WorkflowEventModel as Model
+            from tcex.api.tc.v3.case_management.models.workflow_event_model import (
+                WorkflowEventModel as Model,
+            )
         elif self.type_ == 'workflow_template':
             # first-party
-            from tcex.case_management.models.workflow_template_model import (
+            from tcex.api.tc.v3.case_management.models.workflow_template_model import (
                 WorkflowTemplateModel as Model,
             )
 

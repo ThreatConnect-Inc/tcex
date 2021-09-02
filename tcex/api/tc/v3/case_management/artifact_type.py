@@ -3,12 +3,17 @@
 from typing import Dict
 
 # first-party
-from tcex.case_management.api_endpoints import ApiEndpoints
-from tcex.case_management.case_management_abc import CaseManagementABC
-from tcex.case_management.case_management_collection_abc import CaseManagementCollectionABC
-from tcex.case_management.filter_artifact_type import FilterArtifactType
-from tcex.case_management.models.artifact_type_model import ArtifactTypeData, ArtifactTypeModel
-from tcex.case_management.tql import TQL
+from tcex.api.tc.v3.case_management.api_endpoints import ApiEndpoints
+from tcex.api.tc.v3.case_management.case_management_abc import CaseManagementABC
+from tcex.api.tc.v3.case_management.case_management_collection_abc import (
+    CaseManagementCollectionABC,
+)
+from tcex.api.tc.v3.case_management.filter_artifact_type import FilterArtifactType
+from tcex.api.tc.v3.case_management.models.artifact_type_model import (
+    ArtifactTypeData,
+    ArtifactTypeModel,
+)
+from tcex.api.tc.v3.case_management.tql import TQL
 
 
 class ArtifactTypes(CaseManagementCollectionABC):

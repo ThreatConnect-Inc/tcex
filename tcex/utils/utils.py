@@ -13,8 +13,8 @@ from urllib.parse import urlsplit
 # third-party
 import jmespath
 import pyaes
+from requests import Request
 
-from .date_utils import DatetimeUtils
 from .mitre_attack_utils import MitreAttackUtils
 
 
@@ -22,7 +22,7 @@ class Utils:
     """TcEx framework Utils Class
 
     Args:
-        temp_path (Optional[str] = None): The path to write temp files.
+        temp_path: The path to write temp files.
     """
 
     def __init__(self, temp_path: Optional[str] = None):
@@ -39,10 +39,7 @@ class Utils:
         """Return snake case string from a camel case string.
 
         Args:
-            camel_string (str): The camel case input string.
-
-        Returns:
-            str: The snake case representation of input string.
+            camel_string: The camel case input string.
         """
         return self._camel_pattern.sub('_', camel_string).lower()
 
@@ -50,22 +47,9 @@ class Utils:
         """Return space case string from a camel case string.
 
         Args:
-            camel_string (str): The camel case input string.
-
-        Returns:
-            str: The space representation of input string.
+            camel_string: The camel case input string.
         """
         return self._camel_pattern.sub(' ', camel_string).lower()
-
-    @property
-    def datetime(self) -> DatetimeUtils:
-        """Return an instance of DatetimeUtils."""
-        return DatetimeUtils()
-
-    @property
-    def mitre_attack(self) -> MitreAttackUtils:
-        """Return an instance of MitreAttackUtils."""
-        return MitreAttackUtils()
 
     @staticmethod
     def decrypt_aes_cbc(
@@ -74,12 +58,9 @@ class Utils:
         """Return AES CBC decrypted string.
 
         Args:
-            key (bytes): The encryption key.
-            ciphertext (Optional[bytes] = None): The ciphertext to decrypt.
-            iv (bytes, optional): The CBC initial vector.
-
-        Returns:
-            bytes: The encoded string.
+            key: The encryption key.
+            ciphertext: The ciphertext to decrypt.
+            iv: The CBC initial vector.
         """
         iv = iv or b'\0' * 16
 
@@ -103,12 +84,9 @@ class Utils:
         """Return AES CBC encrypted string.
 
         Args:
-            key (bytes): The encryption key.
-            plaintext (Union[bytes, str]): The text to encrypt.
-            iv (Optional[bytes] = None): The CBC initial vector.
-
-        Returns:
-            bytes: The encoded string.
+            key: The encryption key.
+            plaintext: The text to encrypt.
+            iv: The CBC initial vector.
         """
         iv = iv or b'\0' * 16
 
@@ -135,12 +113,6 @@ class Utils:
 
         Will work for lists of lists to arbitrary depth
         and for lists with a mix of lists and single values
-
-        Args:
-            lst (list): The list to flatten
-
-        Returns:
-            list: the flattened list
         """
         flat_list = []
         for sublist in lst:
@@ -149,7 +121,6 @@ class Utils:
                     flat_list.append(item)
             else:
                 flat_list.append(sublist)
-
         return flat_list
 
     @property
@@ -167,10 +138,7 @@ class Utils:
         """Return True if the provided value is a valid CIDR block.
 
         Args:
-            possible_cidr_range (str): The cidr value to validate.
-
-        Returns:
-            bool: True if input is a valid CIDR.
+            possible_cidr_range: The cidr value to validate.
         """
         try:
             ipaddress.ip_address(possible_cidr_range)
@@ -189,10 +157,7 @@ class Utils:
         """Return True if the provided value is a valid IP address.
 
         Args:
-            possible_ip (str): The IP value to validate.
-
-        Returns:
-            bool: True if input is a valid IP.
+            possible_ip: The IP value to validate.
         """
         try:
             ipaddress.ip_address(possible_ip)
@@ -200,6 +165,45 @@ class Utils:
             return False
         else:
             return True
+
+    def mapper(self, data: Union[list, dict], mapping: dict):
+        """Yield something ..."""
+        # TODO [high] - @bpurdy - update docstring with description of what this is?
+        if isinstance(data, dict):
+            data = [data]
+        try:
+            for d in data:
+                mapped_obj = mapping.copy()
+                for key, value in mapping.items():
+                    if isinstance(value, list):
+                        new_list = []
+                        for item in value:
+                            if isinstance(item, dict):
+                                new_list.append(list(self.mapper(d, item))[0])
+                            else:
+                                if not item.startswith('@'):
+                                    new_list.append(item)
+                                else:
+                                    new_list.append(
+                                        jmespath.search(f'{item}', jmespath.search('@', d))
+                                    )
+
+                        mapped_obj[key] = new_list
+                    elif isinstance(value, dict):
+                        mapped_obj[key] = list(self.mapper(d, mapped_obj[key]))[0]
+                    else:
+                        if not value.startswith('@'):
+                            mapped_obj[key] = value
+                        else:
+                            mapped_obj[key] = jmespath.search(f'{value}', jmespath.search('@', d))
+                yield mapped_obj
+        except Exception:  # nosec
+            pass
+
+    @property
+    def mitre_attack(self) -> MitreAttackUtils:
+        """Return an instance of MitreAttackUtils."""
+        return MitreAttackUtils()
 
     @staticmethod
     def printable_cred(
@@ -215,9 +219,6 @@ class Utils:
             visible: The number of characters at the beginning and ending of the cred to not mask.
             mask_char: The character to use in the mask.
             mask_char_count: How many mask character to insert (obscure cred length).
-
-        Returns:
-            str: The reformatted credential.
         """
         if isinstance(cred, str):
             mask_char = mask_char or '*'
@@ -230,37 +231,28 @@ class Utils:
         """Generate a random string of fixed length
 
         Args:
-            string_length (Optional[int] = 10): The length of the string.
-
-        Returns:
-            str: A random string
+            string_length: The length of the string.
         """
         return ''.join(random.choice(string.ascii_letters) for _ in range(string_length))  # nosec
 
     def requests_to_curl(
         self,
-        request: object,
+        request: 'Request',
         mask_headers: Optional[bool] = True,
         mask_patterns: List[str] = None,
         **kwargs: Union[bool, dict],
     ) -> str:
-        """Return converted PreparedRequest to a curl command.
+        """Return converted Prepared Request to a curl command.
 
         Args:
-            request (object): The response.request object.
-            mask_headers (Optional[bool] = True): If True then
-                values for certain header key will be masked.
-            mask_patterns (List[str] = None): A list of patterns
-                if found in headers the value will be masked.
-            body_limit (int, kwargs): The size limit for the body value.
-            mask_body (bool, kwargs): If True the body will be masked.
-            proxies (dict, kwargs): A dict containing the proxy configuration.
-            verify (bool, kwargs): If False the curl command will include --insecure flag.
-            write_file (bool, kwargs): If True and the body is
-                binary it will be written as a temp file.
-
-        Returns:
-            str: The curl command.
+            request: The response.request object.
+            mask_headers: If True then values for certain header key will be masked.
+            mask_patterns: A list of patterns if found in headers the value will be masked.
+            body_limit: The size limit for the body value.
+            mask_body: If True the body will be masked.
+            proxies: A dict containing the proxy configuration.
+            verify: If False the curl command will include --insecure flag.
+            write_file: If True and the body is binary it will be written as a temp file.
         """
         body_limit: int = kwargs.get('body_limit', 100)
         proxies: dict = kwargs.get('proxies', {})
@@ -355,10 +347,7 @@ class Utils:
         """Convert snake_case to camelCase
 
         Args:
-            snake_string (str): The snake case input string.
-
-        Returns:
-            str: The camel case string.
+            snake_string: The snake case input string.
         """
         components = snake_string.split('_')
         return components[0] + ''.join(x.title() for x in components[1:])
@@ -368,10 +357,7 @@ class Utils:
         """Return the ASN formatted for ThreatConnect.
 
         Args:
-            asn (str): The asn value to standardize.
-
-        Returns:
-            str: The standardized asn value.
+            asn: The asn value to standardize.
         """
         numbers = re.findall('[0-9]+', asn)
         if len(numbers) == 1:
@@ -383,10 +369,7 @@ class Utils:
         """Convert value to bool.
 
         Args:
-            value (Union[bool, int, str]): The value to convert to boolean.
-
-        Returns:
-            bool: The boolean value
+            value: The value to convert to boolean.
         """
         return str(value).lower() in ['1', 't', 'true', 'y', 'yes']
 
@@ -400,15 +383,12 @@ class Utils:
         """Truncate a string to a given length.
 
         Args:
-            t_string (str): The input string to truncate.
-            length (int): The length of the truncated string.
-            append_chars (Optional[str] = ''): Any character that should be appended to the
+            t_string: The input string to truncate.
+            length: The length of the truncated string.
+            append_chars: Any character that should be appended to the
                 string. Typically used for ellipsis (e.g. ...).
-            spaces (Optional[bool] = False): If True truncation will be done at the
+            spaces: If True truncation will be done at the
                 nearest space before the truncation length to avoid chopping words.
-
-        Returns:
-            str: The truncated string.
         """
         if t_string is None:
             t_string = ''
@@ -440,10 +420,7 @@ class Utils:
         #App:9876:string.operation!String -> string_operation_string
 
         Args:
-            variable (string): The variable name to convert.
-
-        Returns:
-            (str): Method name
+            variable: The variable name to convert.
         """
         method_name = None
         if variable is not None:
@@ -474,8 +451,8 @@ class Utils:
         """Write content to a temporary file.
 
         Args:
-            content (bytes): The file content.
-            filename (Optional[str] = None): The filename to use when writing the file.
+            content: The file content.
+            filename: The filename to use when writing the file.
 
         Returns:
             str: Fully qualified path name for the file.
@@ -490,9 +467,9 @@ class Utils:
         If passing binary data the mode needs to be set to 'wb'.
 
         Args:
-            content (Union[bytes, str]): The file content.
-            filename (Optional[str] = None): The filename to use when writing the file.
-            mode (Optional[str] = 'w'): The write mode ('w' or 'wb').
+            content: The file content.
+            filename: The filename to use when writing the file.
+            mode: The write mode ('w' or 'wb').
 
         Returns:
             str: Fully qualified path name for the file.
@@ -504,37 +481,3 @@ class Utils:
         with open(fqpn, mode) as fh:
             fh.write(content)
         return fqpn
-
-    def mapper(self, data: Union[list, dict], mapping: dict):
-        """Yield something ..."""
-        # TODO - @bpurdy - update docstring
-        if isinstance(data, dict):
-            data = [data]
-        try:
-            for d in data:
-                mapped_obj = mapping.copy()
-                for key, value in mapping.items():
-                    if isinstance(value, list):
-                        new_list = []
-                        for item in value:
-                            if isinstance(item, dict):
-                                new_list.append(list(self.mapper(d, item))[0])
-                            else:
-                                if not item.startswith('@'):
-                                    new_list.append(item)
-                                else:
-                                    new_list.append(
-                                        jmespath.search(f'{item}', jmespath.search('@', d))
-                                    )
-
-                        mapped_obj[key] = new_list
-                    elif isinstance(value, dict):
-                        mapped_obj[key] = list(self.mapper(d, mapped_obj[key]))[0]
-                    else:
-                        if not value.startswith('@'):
-                            mapped_obj[key] = value
-                        else:
-                            mapped_obj[key] = jmespath.search(f'{value}', jmespath.search('@', d))
-                yield mapped_obj
-        except Exception:  # nosec
-            pass
