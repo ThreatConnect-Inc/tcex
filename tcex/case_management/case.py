@@ -70,6 +70,14 @@ class Case(CommonCaseManagement):
         tcex (TcEx): An instantiated instance of TcEx object.
         artifacts (Artifact, kwargs): a list of Artifacts corresponding to the Case
         assignee (Assignee, kwargs): the user or group Assignee object for the Case
+        case_close_time (str, kwargs): [Read-Only] The date and time that the Case was closed.
+        case_close_user (User, kwargs): [Read-Only] The user that closed the Case.
+        case_detection_time (str, kwargs): The date and time that ends the user initiated Case duration.
+        case_detection_user (User, kwargs): [Read-Only] The user that stopped the clock on Case duration.
+        case_occurrence_time (str, kwargs): The date and time that starts the user initiated Case duration.
+        case_occurrence_user (User, kwargs): [Read-Only] The user that started the clock on Case duration.
+        case_open_time (str, kwargs): The date and time that the Case was first opened.
+        case_open_user (User, kwargs): [Read-Only] The user that opened the Case.
         created_by (User, kwargs): [Read-Only] The **Created By** for the Case.
         date_added (str, kwargs): [Read-Only] The **Date Added** for the Case.
         description (str, kwargs): The **Description** for the Case.
@@ -99,8 +107,17 @@ class Case(CommonCaseManagement):
             {'keyword': 'caseid', 'operator': TQL.Operator.EQ, 'value': self.id, 'type': 'integer'}
         ]
 
+        self._attributes = kwargs.get('attributes', None)
         self._artifacts = kwargs.get('artifacts', None)
         self._assignee = kwargs.get('assignee', None)
+        self._case_close_time = kwargs.get('case_close_time', None)
+        self._case_close_user = kwargs.get('case_close_user', None)
+        self._case_detection_time = kwargs.get('case_detection_time', None)
+        self._case_detection_user = kwargs.get('case_detection_user', None)
+        self._case_occurrence_time = kwargs.get('case_occurrence_time', None)
+        self._case_occurrence_user = kwargs.get('case_occurrence_user', None)
+        self._case_open_time = kwargs.get('case_open_time', None)
+        self._case_open_user = kwargs.get('case_open_user', None)
         self._created_by = kwargs.get('created_by', None)
         self._date_added = kwargs.get('date_added', None)
         self._description = kwargs.get('description', None)
@@ -117,6 +134,10 @@ class Case(CommonCaseManagement):
         self._workflow_events = kwargs.get('workflow_events', None)
         self._workflow_template = kwargs.get('workflow_template', None)
         self._xid = kwargs.get('xid', None)
+
+    def add_attribute(self, **kwargs):
+        """Add a Artifact to a Case."""
+        self.attributes.add_attribute(self.tcex.cm.attribute(**kwargs))
 
     def add_artifact(self, **kwargs):
         """Add a Artifact to a Case."""
@@ -143,6 +164,16 @@ class Case(CommonCaseManagement):
                 initial_response=artifacts, tql_filters=self.case_filter
             )
         return self._artifacts
+
+    @property
+    def attributes(self):
+        """Return the **Artifacts** for the Case."""
+        if self._attributes is None or isinstance(self._attributes, dict):
+            attributes = self._attributes or {}
+            self._attributes = self.tcex.cm.attributes(
+                initial_response=attributes, tql_filters=self.case_filter
+            )
+        return self._attributes
 
     @artifacts.setter
     def artifacts(self, artifacts):
@@ -171,6 +202,54 @@ class Case(CommonCaseManagement):
     def as_entity(self):
         """Return the entity representation of the Case."""
         return {'type': 'Case', 'id': self.id, 'value': self.name}
+
+    @property
+    def case_close_time(self):
+        """Return the **Case Close Time** for the Case."""
+        return self._case_close_time
+
+    @property
+    def case_close_user(self):
+        """Return the **Case Close User** for the Case."""
+        if self._case_close_user:
+            return self.tcex.cm.user(**self._case_close_user)
+        return self._case_close_user
+
+    @property
+    def case_detection_time(self):
+        """Return the **Case Detection Time** for the Case."""
+        return self._case_close_time
+
+    @property
+    def case_detection_user(self):
+        """Return the **Case Detection User** for the Case."""
+        if self._case_detection_user:
+            return self.tcex.cm.user(**self._case_detection_user)
+        return self._case_detection_user
+
+    @property
+    def case_occurrence_time(self):
+        """Return the **Case Occurrence Time** for the Case."""
+        return self._case_occurrence_time
+
+    @property
+    def case_occurrence_user(self):
+        """Return the **Case Occurrence User** for the Case."""
+        if self._case_occurrence_user:
+            return self.tcex.cm.user(**self._case_occurrence_user)
+        return self._case_occurrence_user
+
+    @property
+    def case_open_time(self):
+        """Return the **Case Open Time** for the Case."""
+        return self._case_open_time
+
+    @property
+    def case_open_user(self):
+        """Return the **Case Open User** for the Case."""
+        if self._case_open_user:
+            return self.tcex.cm.user(**self._case_open_user)
+        return self._case_open_user
 
     @property
     def created_by(self):

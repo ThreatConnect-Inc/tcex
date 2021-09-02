@@ -1,5 +1,6 @@
 """ThreatConnect Case Management"""
 from .artifact import Artifact, Artifacts
+from .attribute import Attribute, Attributes
 from .artifact_type import ArtifactType, ArtifactTypes
 from .assignee import Assignee, User, Users
 from .case import Case, Cases
@@ -20,6 +21,12 @@ class CaseManagement:
     def __init__(self, tcex):
         """Initialize Class properties."""
         self.tcex = tcex
+
+    def attribute(self, **kwargs):
+        return Attribute(self.tcex, **kwargs)
+
+    def attributes(self, **kwargs):
+        return Attributes(self.tcex, **kwargs)
 
     def artifact(self, **kwargs):
         """Return a instance of Artifact object.

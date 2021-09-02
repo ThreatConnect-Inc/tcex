@@ -15,3 +15,4 @@ class ApiEndpoints(Enum):
     TASKS = '/v3/tasks'
     WORKFLOW_EVENTS = '/v3/workflowEvents'
     WORKFLOW_TEMPLATES = '/v3/workflowTemplates'
+    ATTRIBUTES = '/v3/caseAttributes'
