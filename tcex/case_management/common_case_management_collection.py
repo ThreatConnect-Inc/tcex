@@ -254,8 +254,6 @@ class CommonCaseManagementCollection:
         while True:
             r = None
             try:
-                print(url)
-                print(parameters)
                 r = self.tcex.session.get(url, params=parameters)
                 self.tcex.log.debug(
                     f'Method: ({r.request.method.upper()}), '

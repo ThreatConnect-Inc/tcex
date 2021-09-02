@@ -23,9 +23,13 @@ class CaseManagement:
         self.tcex = tcex
 
     def attribute(self, **kwargs):
+        """Return a instance of Attribute object."""
+
         return Attribute(self.tcex, **kwargs)
 
     def attributes(self, **kwargs):
+        """Return a instance of Attributes object."""
+
         return Attributes(self.tcex, **kwargs)
 
     def artifact(self, **kwargs):
