@@ -45,7 +45,7 @@ from tcex.batch.indicator import (
     UserAgent,
     custom_indicator_class_factory,
 )
-from tcex.input import Input
+from tcex.input.input import Input
 from tcex.utils import Utils
 
 # import local modules for dynamic reference

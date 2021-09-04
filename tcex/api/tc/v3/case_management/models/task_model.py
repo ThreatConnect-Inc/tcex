@@ -27,7 +27,10 @@ class TasksModel(
 
 
 class TaskData(
-    BaseModel, title='Task Data', alias_generator=Utils().snake_to_camel, validate_assignment=True
+    BaseModel,
+    title='Task Data',
+    alias_generator=Utils().snake_to_camel,
+    validate_assignment=True,
 ):
     """Task Data"""
 
@@ -48,7 +51,7 @@ class TaskModel(
 ):
     """Task Model"""
 
-    artifacts: 'Optional[ArtifactsModel]' = Field(
+    artifacts: Optional['ArtifactsModel'] = Field(
         None,
         description='A list of Artifacts corresponding to the Task.',
         methods=['POST', 'PUT'],
@@ -56,7 +59,7 @@ class TaskModel(
         read_only=False,
         title='artifacts',
     )
-    assignee: 'Optional[Assignee]' = Field(
+    assignee: Optional['Assignee'] = Field(
         None,
         description='The user or group Assignee object for the Task.',
         methods=['POST', 'PUT'],
@@ -156,7 +159,7 @@ class TaskModel(
         read_only=False,
         title='name',
     )
-    notes: 'Optional[NotesModel]' = Field(
+    notes: Optional['NotesModel'] = Field(
         None,
         description='A list of Notes corresponding to the Task.',
         methods=['POST', 'PUT'],
@@ -164,7 +167,7 @@ class TaskModel(
         read_only=False,
         title='notes',
     )
-    parent_case: 'Optional[CaseModel]' = Field(
+    parent_case: Optional['CaseModel'] = Field(
         None,
         allow_mutation=False,
         description='The **parent case** for the Task.',

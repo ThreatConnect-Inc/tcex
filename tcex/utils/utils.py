@@ -15,7 +15,9 @@ import jmespath
 import pyaes
 from requests import Request
 
-from .mitre_attack_utils import MitreAttackUtils
+# first-party
+from tcex.backports import cached_property
+from tcex.utils.mitre_attack_utils import MitreAttackUtils
 
 
 class Utils:
@@ -31,9 +33,47 @@ class Utils:
 
         # properties
         self._camel_pattern = re.compile(r'(?<!^)(?=[A-Z])')
-        self._inflect = None
         self.variable_match = re.compile(fr'^{self.variable_pattern}$')
         self.variable_parse = re.compile(self.variable_pattern)
+
+    def camel_string(self, string: str) -> 'CamelString':
+        """Return custom str with custom properties/methods."""
+
+        # methods for class
+        inflect = self.inflect
+        camel_to_snake = self.camel_to_snake
+        camel_to_space = self.camel_to_space
+
+        class CamelString(str):
+            """Power String"""
+
+            def pascal_case(self):
+                """Return camel case version of string."""
+                return CamelString(camel_to_space(self).title().replace(' ', ''))
+
+            def plural(self):
+                """Return inflect.singular_noun spelling of string."""
+                return CamelString(inflect.plural(self.singular()))
+
+            def singular(self):
+                """Return inflect.singular_noun spelling of string."""
+                _singular = inflect.singular_noun(self)
+                if _singular is False:
+                    _singular = self
+                return CamelString(_singular)
+
+            def snake_case(self):
+                """Return camel case version of string."""
+                return CamelString(camel_to_snake(self))
+
+            def space_case(self):
+                """Return string snake to camel."""
+                return CamelString(camel_to_space(self))
+
+        # add forward references
+        # CamelString.update_forward_refs()
+
+        return CamelString(string)
 
     def camel_to_snake(self, camel_string: str) -> str:
         """Return snake case string from a camel case string.
@@ -123,15 +163,13 @@ class Utils:
                 flat_list.append(sublist)
         return flat_list
 
-    @property
+    @cached_property
     def inflect(self) -> 'inflect.engine':
         """Return instance of inflect."""
-        if self._inflect is None:
-            # third-party
-            import inflect
+        # third-party
+        import inflect
 
-            self._inflect = inflect.engine()
-        return self._inflect
+        return inflect.engine()
 
     @staticmethod
     def is_cidr(possible_cidr_range: str) -> bool:
@@ -341,6 +379,54 @@ class Utils:
         cmd.append(request.url)
 
         return ' '.join(cmd)
+
+    def snake_string(self, string: str) -> 'SnakeString':
+        """Return custom str with custom properties/methods."""
+
+        # methods for class
+        inflect = self.inflect
+        snake_to_camel = self.snake_to_camel
+        snake_to_pascal = self.snake_to_pascal
+
+        class SnakeString(str):
+            """Power String"""
+
+            def camel_case(self):
+                """Return camel case version of string."""
+                return SnakeString(snake_to_camel(self))
+
+            def pascal_case(self):
+                """Return camel case version of string."""
+                return SnakeString(snake_to_pascal(self))
+
+            def plural(self):
+                """Return inflect.singular_noun spelling of string."""
+                return SnakeString(inflect.plural(self.singular()))
+
+            def singular(self):
+                """Return inflect.singular_noun spelling of string."""
+                _singular = inflect.singular_noun(self)
+                if _singular is False:
+                    _singular = self
+                return SnakeString(_singular)
+
+            def title(self):
+                """Return string snake to camel."""
+                return SnakeString(self.replace('_', ' ').title())
+
+        # add forward references
+        # SnakeString.update_forward_refs()
+
+        return SnakeString(string)
+
+    @staticmethod
+    def snake_to_pascal(snake_string: str) -> str:
+        """Convert snake_case to PascalCase
+
+        Args:
+            snake_string: The snake case input string.
+        """
+        return snake_string.replace('_', ' ').title().replace(' ', '')
 
     @staticmethod
     def snake_to_camel(snake_string: str) -> str:

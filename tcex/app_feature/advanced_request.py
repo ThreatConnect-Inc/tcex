@@ -10,7 +10,7 @@ import requests
 
 # first-party
 from tcex.app_config.install_json import InstallJson
-from tcex.input import Input
+from tcex.input.input import Input
 from tcex.playbook import Playbook
 
 # get tcex logger

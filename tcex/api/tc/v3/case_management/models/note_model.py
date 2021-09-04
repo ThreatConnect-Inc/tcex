@@ -27,7 +27,10 @@ class NotesModel(
 
 
 class NoteData(
-    BaseModel, title='Note Data', alias_generator=Utils().snake_to_camel, validate_assignment=True
+    BaseModel,
+    title='Note Data',
+    alias_generator=Utils().snake_to_camel,
+    validate_assignment=True,
 ):
     """Note Data"""
 
@@ -48,7 +51,7 @@ class NoteModel(
 ):
     """Note Model"""
 
-    artifact: 'Optional[ArtifactModel]' = Field(
+    artifact: Optional['ArtifactModel'] = Field(
         None,
         allow_mutation=False,
         description='The **artifact** for the Note.',
@@ -115,7 +118,7 @@ class NoteModel(
         read_only=True,
         title='lastModified',
     )
-    parent_case: 'Optional[CaseModel]' = Field(
+    parent_case: Optional['CaseModel'] = Field(
         None,
         allow_mutation=False,
         description='The **parent case** for the Note.',
@@ -129,7 +132,7 @@ class NoteModel(
         read_only=True,
         title='summary',
     )
-    task: 'Optional[TaskModel]' = Field(
+    task: Optional['TaskModel'] = Field(
         None,
         allow_mutation=False,
         description='The **task** for the Note.',
@@ -161,7 +164,7 @@ class NoteModel(
         read_only=False,
         title='text',
     )
-    workflow_event: 'Optional[WorkflowEventModel]' = Field(
+    workflow_event: Optional['WorkflowEventModel'] = Field(
         None,
         allow_mutation=False,
         description='The **workflow event** for the Note.',

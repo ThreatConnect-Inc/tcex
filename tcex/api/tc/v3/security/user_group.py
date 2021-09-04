@@ -8,7 +8,7 @@ from requests import Session
 
 # first-party
 from tcex.security.filters.filter_user_group import FilterUserGroup
-from tcex.api.tc.v3.case_management.api_endpoints import ApiEndpoints
+from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.security.security_abc import SecurityABC
 from tcex.security.security_collection_abc import SecurityCollectionABC
 from tcex.security.models.user_group_model import UserGroupModel, UserGroupsModel

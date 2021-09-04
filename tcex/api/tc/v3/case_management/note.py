@@ -3,7 +3,7 @@
 from pydantic import BaseModel
 
 # first-party
-from tcex.api.tc.v3.case_management.api_endpoints import ApiEndpoints
+from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.case_management.case_management_abc import CaseManagementABC
 from tcex.api.tc.v3.case_management.case_management_collection_abc import (
     CaseManagementCollectionABC,

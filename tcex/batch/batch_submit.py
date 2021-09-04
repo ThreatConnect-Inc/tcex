@@ -12,7 +12,7 @@ from typing import Dict, List, Optional
 from requests import Session
 
 # first-party
-from tcex.input import Input
+from tcex.input.input import Input
 from tcex.pleb import Event
 
 # get tcex logger

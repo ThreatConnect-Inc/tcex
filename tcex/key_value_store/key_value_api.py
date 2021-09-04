@@ -4,7 +4,7 @@ from typing import Any
 from urllib.parse import quote
 
 # first-party
-from tcex.app_config import InstallJson
+from tcex.app_config.install_json import InstallJson
 
 
 class KeyValueApi:

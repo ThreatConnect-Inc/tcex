@@ -2,7 +2,7 @@
 
 # first-party
 from tcex.security.filters.filter_user import FilterUser
-from tcex.api.tc.v3.case_management.api_endpoints import ApiEndpoints
+from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.security.security_abc import SecurityABC
 from tcex.security.security_collection_abc import SecurityCollectionABC
 from tcex.api.tc.v3.security.models.user_model import UserModel, UsersModel

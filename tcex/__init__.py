@@ -44,7 +44,7 @@ try:
         ReadArg,
         WriteOutput,
     )
-    from .tcex import TcEx
+    from tcex.tcex import TcEx
 except ImportError as e:
     print(f'Error: {e}')
     print('Try running tclib')

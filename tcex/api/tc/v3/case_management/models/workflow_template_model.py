@@ -57,14 +57,14 @@ class WorkflowTemplateModel(
         read_only=True,
         title='active',
     )
-    assignee: 'Optional[Assignee]' = Field(
+    assignee: Optional['Assignee'] = Field(
         None,
         allow_mutation=False,
         description='The **assignee** for the WorkflowTemplate.',
         read_only=True,
         title='assignee',
     )
-    cases: 'Optional[CasesModel]' = Field(
+    cases: Optional['CasesModel'] = Field(
         None,
         allow_mutation=False,
         description='The **cases** for the WorkflowTemplate.',

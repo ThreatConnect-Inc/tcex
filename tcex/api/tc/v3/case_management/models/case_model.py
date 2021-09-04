@@ -1,7 +1,7 @@
 """Case Model"""
 # standard library
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Optional, List
 
 # third-party
 from pydantic import BaseModel, Extra, Field, validator
@@ -27,7 +27,10 @@ class CasesModel(
 
 
 class CaseData(
-    BaseModel, title='Case Data', alias_generator=Utils().snake_to_camel, validate_assignment=True
+    BaseModel,
+    title='Case Data',
+    alias_generator=Utils().snake_to_camel,
+    validate_assignment=True,
 ):
     """Case Data"""
 
@@ -56,14 +59,14 @@ class CaseModel(
         read_only=False,
         title='artifacts',
     )
-    assignee: 'Optional[Assignee]' = Field(
+    assignee: Optional['Assignee'] = Field(
         None,
         description='The user or group Assignee object for the Case.',
         methods=['POST', 'PUT'],
         read_only=False,
         title='assignee',
     )
-    attributes: Optional[Dict] = Field(
+    attributes: Optional['AttributesModel'] = Field(
         None,
         description='A list of Attributes corresponding to the Case.',
         methods=['POST', 'PUT'],
@@ -77,7 +80,7 @@ class CaseModel(
         read_only=True,
         title='caseCloseTime',
     )
-    case_close_user: 'Optional[UserModel]' = Field(
+    case_close_user: Optional['UserModel'] = Field(
         None,
         allow_mutation=False,
         description='The user that closed the Case.',
@@ -91,7 +94,7 @@ class CaseModel(
         read_only=False,
         title='caseDetectionTime',
     )
-    case_detection_user: 'Optional[UserModel]' = Field(
+    case_detection_user: Optional['UserModel'] = Field(
         None,
         allow_mutation=False,
         description='The user that stopped the clock on Case duration.',
@@ -105,7 +108,7 @@ class CaseModel(
         read_only=False,
         title='caseOccurrenceTime',
     )
-    case_occurrence_user: 'Optional[UserModel]' = Field(
+    case_occurrence_user: Optional['UserModel'] = Field(
         None,
         allow_mutation=False,
         description='The user that started the clock on Case duration.',
@@ -119,14 +122,14 @@ class CaseModel(
         read_only=True,
         title='caseOpenTime',
     )
-    case_open_user: 'Optional[UserModel]' = Field(
+    case_open_user: Optional['UserModel'] = Field(
         None,
         allow_mutation=False,
         description='The user that opened the Case.',
         read_only=True,
         title='caseOpenUser',
     )
-    created_by: 'Optional[UserModel]' = Field(
+    created_by: Optional['UserModel'] = Field(
         None,
         allow_mutation=False,
         description='The **created by** for the Case.',
@@ -164,7 +167,7 @@ class CaseModel(
         read_only=False,
         title='name',
     )
-    notes: 'Optional[NotesModel]' = Field(
+    notes: Optional['NotesModel'] = Field(
         None,
         description='A list of Notes corresponding to the Case.',
         methods=['POST', 'PUT'],
@@ -179,7 +182,7 @@ class CaseModel(
         read_only=True,
         title='owner',
     )
-    related: 'Optional[CasesModel]' = Field(
+    related: Optional['CasesModel'] = Field(
         None,
         allow_mutation=False,
         description='The **related** for the Case.',
@@ -207,7 +210,7 @@ class CaseModel(
         read_only=False,
         title='status',
     )
-    tags: 'Optional[TagsModel]' = Field(
+    tags: Optional['TagsModel'] = Field(
         None,
         description=(
             'A list of Tags corresponding to the Case (NOTE: Setting this parameter will replace '
@@ -218,7 +221,7 @@ class CaseModel(
         read_only=False,
         title='tags',
     )
-    tasks: 'Optional[TasksModel]' = Field(
+    tasks: Optional['TasksModel'] = Field(
         None,
         description='A list of Tasks corresponding to the Case.',
         methods=['POST', 'PUT'],
@@ -226,7 +229,7 @@ class CaseModel(
         read_only=False,
         title='tasks',
     )
-    user_access: 'Optional[UsersModel]' = Field(
+    user_access: Optional['UsersModel'] = Field(
         None,
         description=(
             'A list of Users that, when defined, are the only ones allowed to view or edit the '
@@ -236,7 +239,7 @@ class CaseModel(
         read_only=False,
         title='userAccess',
     )
-    workflow_events: 'Optional[WorkflowEventsModel]' = Field(
+    workflow_events: Optional['WorkflowEventsModel'] = Field(
         None,
         description='A list of workflowEvents (timeline) corresponding to the Case.',
         methods=['POST', 'PUT'],
@@ -244,7 +247,7 @@ class CaseModel(
         read_only=False,
         title='workflowEvents',
     )
-    workflow_template: 'Optional[WorkflowTemplateModel]' = Field(
+    workflow_template: Optional['WorkflowTemplateModel'] = Field(
         None,
         description='The Template that the Case is populated by.',
         methods=['POST', 'PUT'],
@@ -266,6 +269,12 @@ class CaseModel(
     def _validate_artifacts(cls, v):
         if not v:
             return ArtifactsModel()
+        return v
+
+    @validator('attributes', always=True)
+    def _validate_attributes(cls, v):
+        if not v:
+            return AttributesModel()
         return v
 
     @validator('related', always=True)
@@ -320,6 +329,7 @@ class CaseModel(
 # first-party
 from tcex.api.tc.v3.case_management.assignee import Assignee
 from tcex.api.tc.v3.case_management.models.artifact_model import ArtifactsModel
+from tcex.api.tc.v3.case_management.models.attribute_model import AttributesModel
 from tcex.api.tc.v3.case_management.models.note_model import NotesModel
 from tcex.api.tc.v3.case_management.models.tag_model import TagsModel
 from tcex.api.tc.v3.case_management.models.task_model import TasksModel

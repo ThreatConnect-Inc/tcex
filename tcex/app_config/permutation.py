@@ -16,7 +16,8 @@ except ImportError:  # pragma: no cover
     pass  # sqlite3 is only required for local development
 
 # first-party
-from tcex.app_config import InstallJson, LayoutJson
+from tcex.app_config.install_json import InstallJson
+from tcex.app_config.layout_json import LayoutJson
 from tcex.app_config.models.install_json_model import ParamsModel
 from tcex.app_config.models.layout_json_model import OutputsModel, ParametersModel
 from tcex.backports import cached_property

@@ -3,7 +3,7 @@
 from typing import Optional, List
 
 # third-party
-from pydantic import BaseModel, Extra, Field, validator
+from pydantic import BaseModel, Extra, Field
 
 # first-party
 from tcex.utils import Utils
@@ -29,7 +29,7 @@ class ArtifactTypeData(
     BaseModel,
     title='ArtifactType Data',
     alias_generator=Utils().snake_to_camel,
-    validate_assignment=True
+    validate_assignment=True,
 ):
     """Artifact Type Data"""
 
@@ -46,7 +46,7 @@ class ArtifactTypeModel(
     title='ArtifactType Model',
     alias_generator=Utils().snake_to_camel,
     extra=Extra.allow,
-    validate_assignment=True
+    validate_assignment=True,
 ):
     """Artifact Type Model"""
 

@@ -86,7 +86,7 @@ class ArtifactModel(
         read_only=True,
         title='analyticsType',
     )
-    artifact_type: 'Optional[ArtifactTypeModel]' = Field(
+    artifact_type: Optional['ArtifactTypeModel'] = Field(
         None,
         allow_mutation=False,
         description='The **artifact type** for the Artifact.',
@@ -172,7 +172,7 @@ class ArtifactModel(
         read_only=True,
         title='links',
     )
-    notes: 'Optional[NotesModel]' = Field(
+    notes: Optional['NotesModel'] = Field(
         None,
         description='A list of Notes corresponding to the Artifact.',
         methods=['POST', 'PUT'],
@@ -180,7 +180,7 @@ class ArtifactModel(
         read_only=False,
         title='notes',
     )
-    parent_case: 'Optional[CaseModel]' = Field(
+    parent_case: Optional['CaseModel'] = Field(
         None,
         allow_mutation=False,
         description='The **parent case** for the Artifact.',
@@ -205,7 +205,7 @@ class ArtifactModel(
         read_only=False,
         title='summary',
     )
-    task: 'Optional[TaskModel]' = Field(
+    task: Optional['TaskModel'] = Field(
         None,
         allow_mutation=False,
         description='The **task** for the Artifact.',

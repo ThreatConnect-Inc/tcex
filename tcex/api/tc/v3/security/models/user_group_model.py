@@ -17,9 +17,10 @@ class UserGroupsModel(
 ):
     """User Groups Model"""
 
-    data: 'Optional[List[UserGroupModel]]' = Field(
+    data: Optional[List['UserGroupModel']] = Field(
         [],
         description='The data for the UserGroup.',
+        methods=['POST', 'PUT'],
         title='data',
     )
 
@@ -32,9 +33,10 @@ class UserGroupData(
 ):
     """User Group Data"""
 
-    data: 'Optional[UserGroupModel]' = Field(
+    data: Optional['UserGroupModel'] = Field(
         None,
         description='The data for the UserGroup.',
+        methods=['POST', 'PUT'],
         title='data',
     )
 
@@ -57,7 +59,6 @@ class UserGroupModel(
     )
     id: Optional[int] = Field(
         None,
-        allow_mutation=False,
         description='The id of the **Object**.',
         read_only=True,
         title='id',
@@ -69,7 +70,7 @@ class UserGroupModel(
         read_only=True,
         title='name',
     )
-    users: 'Optional[UsersModel]' = Field(
+    users: Optional['UsersModel'] = Field(
         None,
         allow_mutation=False,
         description='The **users** for the UserGroup.',

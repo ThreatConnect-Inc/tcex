@@ -119,7 +119,7 @@ class WorkflowEventModel(
         read_only=True,
         title='linkText',
     )
-    notes: 'Optional[NotesModel]' = Field(
+    notes: Optional['NotesModel'] = Field(
         None,
         description='A list of Notes corresponding to the Event.',
         methods=['POST', 'PUT'],
@@ -127,7 +127,7 @@ class WorkflowEventModel(
         read_only=False,
         title='notes',
     )
-    parent_case: 'Optional[CaseModel]' = Field(
+    parent_case: Optional['CaseModel'] = Field(
         None,
         allow_mutation=False,
         description='The **parent case** for the WorkflowEvent.',
@@ -150,7 +150,7 @@ class WorkflowEventModel(
         read_only=True,
         title='systemGenerated',
     )
-    user: 'Optional[UserModel]' = Field(
+    user: Optional['UserModel'] = Field(
         None,
         allow_mutation=False,
         description='The **user** for the WorkflowEvent.',

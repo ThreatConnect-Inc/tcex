@@ -18,14 +18,14 @@ from tcex.api.tc.v2.threat_intelligence import ThreatIntelligence
 from tcex.api.tc.v2.metrics import Metrics
 from tcex.api.tc.v2.notifications import Notifications
 from tcex.api.tc.v3.case_management import CaseManagement
-from tcex.app_config import InstallJson
+from tcex.app_config.install_json import InstallJson
 from tcex.app_feature import AdvancedRequest
 from tcex.backports import cached_property
 from tcex.batch.batch import Batch
 from tcex.batch.batch_submit import BatchSubmit
 from tcex.batch.batch_writer import BatchWriter
 from tcex.datastore import Cache, DataStore
-from tcex.input import Input
+from tcex.input.input import Input
 from tcex.key_value_store import KeyValueApi, KeyValueRedis, RedisClient
 from tcex.logger import Logger, TraceLogger
 from tcex.playbook import Playbook

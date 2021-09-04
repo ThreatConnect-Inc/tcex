@@ -17,9 +17,10 @@ class UsersModel(
 ):
     """Users Model"""
 
-    data: 'Optional[List[UserModel]]' = Field(
+    data: Optional[List['UserModel']] = Field(
         [],
         description='The data for the User.',
+        methods=['POST', 'PUT'],
         title='data',
     )
 
@@ -28,13 +29,14 @@ class UserData(
     BaseModel,
     title='User Data',
     alias_generator=Utils().snake_to_camel,
-    validate_assignment=True
+    validate_assignment=True,
 ):
     """User Data"""
 
-    data: 'Optional[UserModel]' = Field(
+    data: Optional['UserModel'] = Field(
         None,
         description='The data for the User.',
+        methods=['POST', 'PUT'],
         title='data',
     )
 
@@ -44,7 +46,7 @@ class UserModel(
     title='User Model',
     alias_generator=Utils().snake_to_camel,
     extra=Extra.allow,
-    validate_assignment=True
+    validate_assignment=True,
 ):
     """User Model"""
 
@@ -57,7 +59,6 @@ class UserModel(
     )
     id: Optional[int] = Field(
         None,
-        allow_mutation=False,
         description='The id of the **Object**.',
         read_only=True,
         title='id',
@@ -92,6 +93,7 @@ class UserModel(
     )
 
 
+# add forward references
 UserData.update_forward_refs()
 UserModel.update_forward_refs()
 UsersModel.update_forward_refs()

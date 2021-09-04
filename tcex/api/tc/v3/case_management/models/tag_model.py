@@ -27,7 +27,10 @@ class TagsModel(
 
 
 class TagData(
-    BaseModel, title='Tag Data', alias_generator=Utils().snake_to_camel, validate_assignment=True
+    BaseModel,
+    title='Tag Data',
+    alias_generator=Utils().snake_to_camel,
+    validate_assignment=True,
 ):
     """Tag Data"""
 
@@ -48,7 +51,7 @@ class TagModel(
 ):
     """Tag Model"""
 
-    cases: 'Optional[CasesModel]' = Field(
+    cases: Optional['CasesModel'] = Field(
         None,
         allow_mutation=False,
         description='The **cases** for the Tag.',
