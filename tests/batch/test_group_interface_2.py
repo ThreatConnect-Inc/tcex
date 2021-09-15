@@ -35,6 +35,28 @@ class TestGroup2:
     @pytest.mark.parametrize(
         'name,description,label,tag',
         [
+            ('pytest-attack-pattern-i2-001', 'Example #1', 'PYTEST1', 'PyTest1'),
+            ('pytest-attack-pattern-i2-002', 'Example #2', 'PYTEST2', 'PyTest2'),
+            ('pytest-attack-pattern-i2-003', 'Example #3', 'PYTEST3', 'PyTest3'),
+            ('pytest-attack-pattern-i2-004', 'Example #4', 'PYTEST4', 'PyTest4'),
+        ],
+    )
+    def test_attack_pattern(self, name, description, label, tag, tcex):
+        """Test attack pattern creation"""
+        batch = tcex.batch(owner='TCI')
+        xid = batch.generate_xid(['pytest', 'attack_pattern', name])
+        ti = batch.group(group_type='Attack Pattern', name=name, xid=xid)
+        ti.attribute(attr_type='Description', attr_value=description, displayed=True)
+        ti.security_label(name=label, description='Pytest Label Description', color='ffc0cb')
+        ti.tag(name=tag)
+        batch.save(ti)
+        batch_status = batch.submit_all()
+        assert batch_status[0].get('status') == 'Completed'
+        assert batch_status[0].get('successCount') == 1
+
+    @pytest.mark.parametrize(
+        'name,description,label,tag',
+        [
             ('pytest-campaign-i2-001', 'Example #1', 'PYTEST:1', 'PyTest1'),
             ('pytest-campaign-i2-002', 'Example #2', 'PYTEST:2', 'PyTest2'),
             ('pytest-campaign-i2-003', 'Example #3', 'PYTEST:3', 'PyTest3'),
@@ -46,6 +68,28 @@ class TestGroup2:
         batch = tcex.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'campaign', name])
         ti = batch.group(group_type='Campaign', name=name, xid=xid)
+        ti.attribute(attr_type='Description', attr_value=description, displayed=True)
+        ti.security_label(name=label, description='Pytest Label Description', color='ffc0cb')
+        ti.tag(name=tag)
+        batch.save(ti)
+        batch_status = batch.submit_all()
+        assert batch_status[0].get('status') == 'Completed'
+        assert batch_status[0].get('successCount') == 1
+
+    @pytest.mark.parametrize(
+        'name,description,label,tag',
+        [
+            ('pytest-course-of-action-i2-001', 'Example #1', 'PYTEST1', 'PyTest1'),
+            ('pytest-course-of-action-i2-002', 'Example #2', 'PYTEST2', 'PyTest2'),
+            ('pytest-course-of-action-i2-003', 'Example #3', 'PYTEST3', 'PyTest3'),
+            ('pytest-course-of-action-i2-004', 'Example #4', 'PYTEST4', 'PyTest4'),
+        ],
+    )
+    def test_course_of_action(self, name, description, label, tag, tcex):
+        """Test course-of-action creation"""
+        batch = tcex.batch(owner='TCI')
+        xid = batch.generate_xid(['pytest', 'course-of-action', name])
+        ti = batch.group(group_type='Course of Action', name=name, xid=xid)
         ti.attribute(attr_type='Description', attr_value=description, displayed=True)
         ti.security_label(name=label, description='Pytest Label Description', color='ffc0cb')
         ti.tag(name=tag)
@@ -200,6 +244,28 @@ class TestGroup2:
     @pytest.mark.parametrize(
         'name,description,label,tag',
         [
+            ('pytest-malware-i2-001', 'Example #1', 'PYTEST1', 'PyTest1'),
+            ('pytest-malware-i2-002', 'Example #2', 'PYTEST2', 'PyTest2'),
+            ('pytest-malware-i2-003', 'Example #3', 'PYTEST3', 'PyTest3'),
+            ('pytest-malware-i2-004', 'Example #4', 'PYTEST4', 'PyTest4'),
+        ],
+    )
+    def test_malware(self, name, description, label, tag, tcex):
+        """Test malware creation"""
+        batch = tcex.batch(owner='TCI')
+        xid = batch.generate_xid(['pytest', 'malware', name])
+        ti = batch.group(group_type='Malware', name=name, xid=xid)
+        ti.attribute(attr_type='Description', attr_value=description, displayed=True)
+        ti.security_label(name=label, description='Pytest Label Description', color='ffc0cb')
+        ti.tag(name=tag)
+        batch.save(ti)
+        batch_status = batch.submit_all()
+        assert batch_status[0].get('status') == 'Completed'
+        assert batch_status[0].get('successCount') == 1
+
+    @pytest.mark.parametrize(
+        'name,description,label,tag',
+        [
             ('pytest-report-i2-001', 'Example #1', 'PYTEST:1', 'PyTest1'),
             ('pytest-report-i2-002', 'Example #2', 'PYTEST:2', 'PyTest2'),
             ('pytest-report-i2-003', 'Example #3', 'PYTEST:3', 'PyTest3'),
@@ -258,6 +324,28 @@ class TestGroup2:
     @pytest.mark.parametrize(
         'name,description,label,tag',
         [
+            ('pytest-tactic-i2-001', 'Example #1', 'PYTEST1', 'PyTest1'),
+            ('pytest-tactic-i2-002', 'Example #2', 'PYTEST2', 'PyTest2'),
+            ('pytest-tactic-i2-003', 'Example #3', 'PYTEST3', 'PyTest3'),
+            ('pytest-tactic-i2-004', 'Example #4', 'PYTEST4', 'PyTest4'),
+        ],
+    )
+    def test_tactic(self, name, description, label, tag, tcex):
+        """Test tactic creation"""
+        batch = tcex.batch(owner='TCI')
+        xid = batch.generate_xid(['pytest', 'tactic', name])
+        ti = batch.group(group_type='Tactic', name=name, xid=xid)
+        ti.attribute(attr_type='Description', attr_value=description, displayed=True)
+        ti.security_label(name=label, description='Pytest Label Description', color='ffc0cb')
+        ti.tag(name=tag)
+        batch.save(ti)
+        batch_status = batch.submit_all()
+        assert batch_status[0].get('status') == 'Completed'
+        assert batch_status[0].get('successCount') == 1
+
+    @pytest.mark.parametrize(
+        'name,description,label,tag',
+        [
             ('pytest-threat-i2-001', 'Example #1', 'PYTEST:1', 'PyTest1'),
             ('pytest-threat-i2-002', 'Example #2', 'PYTEST:2', 'PyTest2'),
             ('pytest-threat-i2-003', 'Example #3', 'PYTEST:3', 'PyTest3'),
@@ -269,6 +357,50 @@ class TestGroup2:
         batch = tcex.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'threat', name])
         ti = batch.group(group_type='Threat', name=name, xid=xid)
+        ti.attribute(attr_type='Description', attr_value=description, displayed=True)
+        ti.security_label(name=label, description='Pytest Label Description', color='ffc0cb')
+        ti.tag(name=tag)
+        batch.save(ti)
+        batch_status = batch.submit_all()
+        assert batch_status[0].get('status') == 'Completed'
+        assert batch_status[0].get('successCount') == 1
+
+    @pytest.mark.parametrize(
+        'name,description,label,tag',
+        [
+            ('pytest-tool-i2-001', 'Example #1', 'PYTEST1', 'PyTest1'),
+            ('pytest-tool-i2-002', 'Example #2', 'PYTEST2', 'PyTest2'),
+            ('pytest-tool-i2-003', 'Example #3', 'PYTEST3', 'PyTest3'),
+            ('pytest-tool-i2-004', 'Example #4', 'PYTEST4', 'PyTest4'),
+        ],
+    )
+    def test_tool(self, name, description, label, tag, tcex):
+        """Test tool creation"""
+        batch = tcex.batch(owner='TCI')
+        xid = batch.generate_xid(['pytest', 'tool', name])
+        ti = batch.group(group_type='Tool', name=name, xid=xid)
+        ti.attribute(attr_type='Description', attr_value=description, displayed=True)
+        ti.security_label(name=label, description='Pytest Label Description', color='ffc0cb')
+        ti.tag(name=tag)
+        batch.save(ti)
+        batch_status = batch.submit_all()
+        assert batch_status[0].get('status') == 'Completed'
+        assert batch_status[0].get('successCount') == 1
+
+    @pytest.mark.parametrize(
+        'name,description,label,tag',
+        [
+            ('pytest-vulnerability-i2-001', 'Example #1', 'PYTEST1', 'PyTest1'),
+            ('pytest-vulnerability-i2-002', 'Example #2', 'PYTEST2', 'PyTest2'),
+            ('pytest-vulnerability-i2-003', 'Example #3', 'PYTEST3', 'PyTest3'),
+            ('pytest-vulnerability-i2-004', 'Example #4', 'PYTEST4', 'PyTest4'),
+        ],
+    )
+    def test_vulnerability(self, name, description, label, tag, tcex):
+        """Test vulnerability creation"""
+        batch = tcex.batch(owner='TCI')
+        xid = batch.generate_xid(['pytest', 'vulnerability', name])
+        ti = batch.group(group_type='Vulnerability', name=name, xid=xid)
         ti.attribute(attr_type='Description', attr_value=description, displayed=True)
         ti.security_label(name=label, description='Pytest Label Description', color='ffc0cb')
         ti.tag(name=tag)

@@ -2160,7 +2160,7 @@ class Batch:
     @property
     def tag_write_type(self):
         """Return batch tag write type."""
-        return self._attribute_write_type
+        return self._tag_write_type
 
     @tag_write_type.setter
     def tag_write_type(self, write_type: str):
