@@ -461,25 +461,7 @@ class TcEx:
         Returns:
             (list): A list of ThreatConnect Group types.
         """
-        return [
-            'Adversary',
-            'Campaign',
-            'Document',
-            'Email',
-            'Event',
-            'Incident',
-            'Intrusion Set',
-            'Signature',
-            'Report',
-            'Threat',
-            'Task',
-            'Attack Pattern',
-            'Malware',
-            'Vulnerability',
-            'Tactic',
-            'Tool',
-            'Course of Action',
-        ]
+        return list(self.group_types_data.keys())
 
     @property
     def group_types_data(self) -> dict:
@@ -842,7 +824,7 @@ class TcEx:
             results_file = 'results.tc'
 
         new = True
-        open(results_file, 'a').close()  # ensure file exists
+        open(results_file, 'a').close()  # pylint: disable=consider-using-with
         with open(results_file, 'r+') as fh:
             results = ''
             for line in fh.read().strip().split('\n'):
