@@ -39,6 +39,8 @@ class Attributes(CommonCaseManagementCollection):
             tql_filters=tql_filters,
             params=params,
         )
+        # self.params.setdefault('fields', []).append('dateAdded')
+        # self.params.setdefault('fields', []).append('lastModified')
 
         if initial_response:
             for item in initial_response.get('data', []):
@@ -93,19 +95,83 @@ class Attribute(CommonCaseManagement):
             }
         ]
 
+        self._source = kwargs.get('source', None)
+        self._date_added = kwargs.get('date_added', None)
+        self._last_modified = kwargs.get('last_modified', None)
+        self._displayed = kwargs.get('displayed', None)
         self._type = kwargs.get('type', None)
         self._value = kwargs.get('value', None)
+        self.case_id = kwargs.get('case_id', None)
 
     @property
     def body(self):
         """Return the body representation of the CM object."""
-        if self.id:
-            return {'value': self.value}
-
-        return {
+        body = {
             'type': self.type,
             'value': self.value,
+            'source': self.source,
+            'date_added': self.date_added,
+            'displayed': self.displayed,
+            'lastModified': self.last_modified,
+            'caseId': self.case_id,
         }
+
+        if self.id:
+            body.pop('type')
+
+        body = {k: v for k, v in body.items() if v is not None}
+
+        return body
+
+    @property
+    def case_id(self):
+        """Return the **Source** for the Attribute."""
+        return self._case_id
+
+    @case_id.setter
+    def case_id(self, case_id):
+        """Return the **CaseId** for the Attribute."""
+        self._case_id = case_id
+
+    @property
+    def source(self):
+        """Return the **Source** for the Attribute."""
+        return self._source
+
+    @source.setter
+    def source(self, source):
+        """Return the **Source** for the Attribute."""
+        self._source = source
+
+    @property
+    def date_added(self):
+        """Return the **dateAdded** for the Attribute."""
+        return self._date_added
+
+    @date_added.setter
+    def date_added(self, date_added):
+        """Return the **dateAdded** for the Attribute."""
+        self._date_added = date_added
+
+    @property
+    def last_modified(self):
+        """Return the **lastModified** for the Attribute."""
+        return self._last_modified
+
+    @last_modified.setter
+    def last_modified(self, last_modified):
+        """Return the **lastModified** for the Attribute."""
+        self._last_modified = last_modified
+
+    @property
+    def displayed(self):
+        """Return the **Displayed** for the Attribute."""
+        return self._displayed
+
+    @displayed.setter
+    def displayed(self, displayed):
+        """Return the **Displayed** for the Attribute."""
+        self._displayed = displayed
 
     @property
     def type(self):
