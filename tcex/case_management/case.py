@@ -218,7 +218,7 @@ class Case(CommonCaseManagement):
     @property
     def case_detection_time(self):
         """Return the **Case Detection Time** for the Case."""
-        return self._case_close_time
+        return self._case_detection_time
 
     @property
     def case_detection_user(self):
@@ -267,6 +267,16 @@ class Case(CommonCaseManagement):
     def description(self, description):
         """Set the **Description** for the Case."""
         self._description = description
+
+    @case_detection_time.setter
+    def case_detection_time(self, case_detection_time):
+        """Set the **Description** for the Case."""
+        self._case_detection_time = case_detection_time
+
+    @case_occurrence_time.setter
+    def case_occurrence_time(self, case_occurrence_time):
+        """Set the **Description** for the Case."""
+        self._case_detection_time = case_occurrence_time
 
     @property
     def date_added(self):
