@@ -301,6 +301,22 @@ class Adversary(Group):
         super().__init__('Adversary', name, **kwargs)
 
 
+class AttackPattern(Group):
+    """ThreatConnect Batch Attack Pattern Object"""
+
+    __slots__ = []
+
+    def __init__(self, name: str, **kwargs):
+        """Initialize Class Properties.
+
+        Args:
+            name: The name for this Group.
+            date_added (str, kwargs): The date timestamp the Indicator was created.
+            xid (str, kwargs): The external id for this Group.
+        """
+        super().__init__('Attack Pattern', name, **kwargs)
+
+
 class Campaign(Group):
     """ThreatConnect Batch Campaign Object"""
 
@@ -328,6 +344,22 @@ class Campaign(Group):
         self._group_data['firstSeen'] = self._utils.datetime.format_datetime(
             first_seen, date_format='%Y-%m-%dT%H:%M:%SZ'
         )
+
+
+class CourseOfAction(Group):
+    """ThreatConnect Batch Course Of Action Object"""
+
+    __slots__ = []
+
+    def __init__(self, name: str, **kwargs):
+        """Initialize Class Properties.
+
+        Args:
+            name: The name for this Group.
+            date_added (str, kwargs): The date timestamp the Indicator was created.
+            xid (str, kwargs): The external id for this Group.
+        """
+        super().__init__('Course of Action', name, **kwargs)
 
 
 class Document(Group):
@@ -548,7 +580,7 @@ class Incident(Group):
 
 
 class IntrusionSet(Group):
-    """ThreatConnect Batch Adversary Object"""
+    """ThreatConnect Batch Intrusion Set Object"""
 
     __slots__ = []
 
@@ -561,6 +593,22 @@ class IntrusionSet(Group):
             xid (str, kwargs): The external id for this Group.
         """
         super().__init__('Intrusion Set', name, **kwargs)
+
+
+class Malware(Group):
+    """ThreatConnect Batch Malware Object"""
+
+    __slots__ = []
+
+    def __init__(self, name: str, **kwargs):
+        """Initialize Class Properties.
+
+        Args:
+            name: The name for this Group.
+            date_added (str, kwargs): The date timestamp the Indicator was created.
+            xid (str, kwargs): The external id for this Group.
+        """
+        super().__init__('Malware', name, **kwargs)
 
 
 class Report(Group):
@@ -639,6 +687,22 @@ class Signature(Group):
         self._group_data['fileText'] = file_text
 
 
+class Tactic(Group):
+    """ThreatConnect Batch Tactic Object"""
+
+    __slots__ = []
+
+    def __init__(self, name: str, **kwargs):
+        """Initialize Class Properties.
+
+        Args:
+            name: The name for this Group.
+            date_added (str, kwargs): The date timestamp the Indicator was created.
+            xid (str, kwargs): The external id for this Group.
+        """
+        super().__init__('Tactic', name, **kwargs)
+
+
 class Threat(Group):
     """ThreatConnect Batch Threat Object"""
 
@@ -653,3 +717,35 @@ class Threat(Group):
             xid (str, kwargs): The external id for this Group.
         """
         super().__init__('Threat', name, **kwargs)
+
+
+class Tool(Group):
+    """ThreatConnect Batch Tool Object"""
+
+    __slots__ = []
+
+    def __init__(self, name: str, **kwargs):
+        """Initialize Class Properties.
+
+        Args:
+            name: The name for this Group.
+            date_added (str, kwargs): The date timestamp the Indicator was created.
+            xid (str, kwargs): The external id for this Group.
+        """
+        super().__init__('Tool', name, **kwargs)
+
+
+class Vulnerability(Group):
+    """ThreatConnect Batch Vulnerability Object"""
+
+    __slots__ = []
+
+    def __init__(self, name: str, **kwargs):
+        """Initialize Class Properties.
+
+        Args:
+            name: The name for this Group.
+            date_added (str, kwargs): The date timestamp the Indicator was created.
+            xid (str, kwargs): The external id for this Group.
+        """
+        super().__init__('Vulnerability', name, **kwargs)
