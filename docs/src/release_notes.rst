@@ -3,11 +3,16 @@
 Release Notes
 #############
 
+2.0.25
+======
++ APP-3069 - [batch] Added support for new group types.
++ APP-3133 - [dependencies] Limited tzlocal dependency < 3.0.
++ APP-2981 - [CM] Added support for attributes.
+
 2.0.24
 ======
 + APP-3016 [Session] Updated tc_session to better evaluate the auth method.
 + APP-3017 [Testing] Added support for TCBatch to the testing framework.
-+ APP-2981 [CM] Added support for Attributes on the Case object.
 + APP-3023 [CLI] Updated tcpackage command to remove any nested zip files in a project.
 
 2.0.23
