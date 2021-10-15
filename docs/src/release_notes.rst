@@ -3,6 +3,10 @@
 Release Notes
 #############
 
+2.0.26
+======
++ APP-3130 - [TI] - Added ability to iterate over all Tags currently in system.
+
 2.0.25
 ======
 + APP-3069 - [batch] Added support for new group types.

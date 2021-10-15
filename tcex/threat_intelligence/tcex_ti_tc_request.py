@@ -1698,14 +1698,11 @@ class TiTcRequest:
 
         return self.tag(main_type, sub_type, unique_id, tag, owner=owner, params=params)
 
-    def tags(self, main_type, sub_type, unique_id, owner=None, filters=None, params=None):
+    def tags(self, owners=None, filters=None, params=None):
         """
 
         Args:
-            main_type:
-            sub_type:
-            unique_id:
-            owner:
+            owners:
             filters:
             params:
 
@@ -1714,14 +1711,11 @@ class TiTcRequest:
         """
         params = params or {}
 
-        if owner:
-            params['owner'] = owner
+        if owners:
+            params['owner'] = owners
         if filters and filters.filters:
             params['filters'] = filters.filters_string
-        if not sub_type:
-            url = f'/v2/{main_type}/{unique_id}/tags'
-        else:
-            url = f'/v2/{main_type}/{sub_type}/{unique_id}/tags'
+        url = f'/v2/tags'
 
         yield from self._iterate(url, params, 'tag')
 

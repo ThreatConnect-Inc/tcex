@@ -38,6 +38,7 @@ from .mappings.indicator.indicator_types.host import Host
 from .mappings.indicator.indicator_types.url import URL
 from .mappings.owner import Owner
 from .mappings.tag import Tag
+from .mappings.tags import Tags
 from .mappings.task import Task
 from .mappings.victim import Victim
 
@@ -564,6 +565,10 @@ class ThreatIntelligence:
 
         """
         return Victim(self, **kwargs)
+
+    def tags(self):
+        """Create the Tag TI object."""
+        return Tags(self)
 
     def tag(self, name):
         """Create the Tag TI object."""
