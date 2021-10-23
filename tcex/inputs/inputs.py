@@ -2,11 +2,26 @@
 # standard library
 import json
 import os
+import re
 import sys
 from argparse import Namespace
+from base64 import b64decode
+from typing import Union
 
 from ..utils import Utils
 from .argument_parser import TcArgumentParser
+
+
+class Sensitive(str):
+    """Sensitive Values Can't be formatted"""
+
+    def __format__(self, format_str):
+        """Override standard format to return masked value."""
+        return '***'
+
+    def __rmod__(self, left_string):
+        """Override standard format to return masked value."""
+        return left_string % '***'
 
 
 class Inputs:
@@ -37,6 +52,7 @@ class Inputs:
         self._parsed = False
         self._parsed_resolved = False
         self.utils = Utils()
+        self.variable_pattern = re.compile(r'&\{(?P<provider>\w+):(?P<type>\w+):(?P<key>.*)\}')
 
         # parser
         self.parser = TcArgumentParser(conflict_handler='resolve')  # APP-964 allow duplicate args
@@ -146,6 +162,42 @@ class Inputs:
             )
             self.config(updated_params)
 
+    def _resolve_variable(self, provider: str, key: str, type_: str) -> Union[bytes, str]:
+        """Resolve TEXT/KEYCHAIN/FILE variables.
+
+        Feature: PLAT-2688
+
+        Data Format:
+        {
+            "data": "value"
+        }
+        """
+        data = None
+
+        # TODO: [high] handle API request failure
+        # retrieve value from API
+        r = self.tcex.session.get(f'/internal/variable/runtime/{provider}/{key}')
+        if r.ok:
+            try:
+                data = r.json().get('data')
+
+                if type_.lower() == 'file':
+                    data = b64decode(data)  # returns bytes
+                elif type_.lower() == 'keychain':
+                    # TODO: [high] will the developer know this is sensitive
+                    #              and access the "value" property
+                    data = Sensitive(data)
+            except Exception as ex:
+                raise RuntimeError(
+                    f'Could not retrieve variable: provider={provider}, key={key}, type={type_}.'
+                ) from ex
+        else:
+            raise RuntimeError(
+                f'Could not retrieve variable: provider={provider}, key={key}, type={type_}.'
+            )
+
+        return data
+
     def _results_tc_args(self):  # pragma: no cover
         """Read data from results_tc file from previous run of app.
 
@@ -233,7 +285,9 @@ class Inputs:
             if not self._default_args.tc_job_id and self._default_args.tc_token is not None:
                 # get the job id from the token
                 setattr(
-                    self._default_args, 'tc_job_id', self._default_args.tc_token.split(':')[-2],
+                    self._default_args,
+                    'tc_job_id',
+                    self._default_args.tc_token.split(':')[-2],
                 )
 
             # set parsed bool to ensure args are only parsed once
@@ -241,6 +295,31 @@ class Inputs:
 
             # log unknown arguments
             self.unknown_args()
+
+            # iterate over Args and resolve FILE, KEYCHAIN, or TEXT variables
+            for name in vars(self._default_args):
+                value = getattr(self._default_args, name)
+                if isinstance(value, str):
+                    # strings could be a variable, try to resolve the value
+                    if self.variable_pattern.match(value):
+                        m = self.variable_pattern.search(value)
+                        if not any(
+                            [
+                                m.group('provider'),
+                                m.group('key'),
+                                m.group('type'),
+                            ]
+                        ):
+                            # TODO: [med] should this an exit
+                            raise RuntimeError(f'Could not parse variable {value}.')
+
+                        setattr(
+                            self._default_args_resolved,
+                            name,
+                            self._resolve_variable(
+                                m.group('provider'), m.group('key'), m.group('type')
+                            ),
+                        )
 
         return self._default_args
 

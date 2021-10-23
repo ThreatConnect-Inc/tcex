@@ -6,6 +6,7 @@ Release Notes
 2.0.26
 ======
 + APP-3130 - [TI] - Added ability to iterate over all Tags currently in system.
++ APP-3149 - [Inputs] - Added support for resolving FILE, TEXT, and KEYCHAIN values.
 
 2.0.25
 ======

@@ -419,12 +419,13 @@ class InstallJson:
         """Update feature set based on App type."""
         features = self.features
         if self.runtime_level.lower() in ['organization']:
-            features = ['fileParams', 'secureParams']
+            features = ['fileParams', 'runtimeVariables', 'secureParams']
         elif self.runtime_level.lower() in ['playbook']:
             features = [
                 'aotExecutionEnabled',
                 'appBuilderCompliant',
                 'fileParams',
+                'runtimeVariables',
                 'secureParams',
             ]
         elif self.runtime_level.lower() in [
@@ -432,7 +433,7 @@ class InstallJson:
             'triggerservice',
             'webhooktriggerservice',
         ]:
-            features = ['appBuilderCompliant', 'fileParams']
+            features = ['appBuilderCompliant', 'fileParams', 'runtimeVariables']
 
         # add layoutEnabledApp if layout.json file exists in project
         if os.path.isfile(os.path.join(self._path, 'layout.json')):
@@ -443,9 +444,19 @@ class InstallJson:
             if feature in [
                 'advancedRequest',
                 'CALSettings',
+                'layoutEnabledApp',
                 'smtpSettings',
                 'webhookResponseMarshall',
                 'webhookServiceEndpoint',
+                # features for TC App loop prevention
+                'CreatesGroup',
+                'CreatesIndicator',
+                'CreatesSecurityLabel',
+                'CreatesTag',
+                'DeletesGroup',
+                'DeletesIndicator',
+                'DeletesSecurityLabel',
+                'DeletesTag',
             ]:
                 features.append(feature)
 
