@@ -174,7 +174,6 @@ class Inputs:
         """
         data = None
 
-        # TODO: [high] handle API request failure
         # retrieve value from API
         r = self.tcex.session.get(f'/internal/variable/runtime/{provider}/{key}')
         if r.ok:
@@ -184,8 +183,6 @@ class Inputs:
                 if type_.lower() == 'file':
                     data = b64decode(data)  # returns bytes
                 elif type_.lower() == 'keychain':
-                    # TODO: [high] will the developer know this is sensitive
-                    #              and access the "value" property
                     data = Sensitive(data)
             except Exception as ex:
                 raise RuntimeError(
