@@ -11,7 +11,7 @@ from requests import Session
 # first-party
 from tcex import TcEx
 from tcex.input.field_types.sensitive import Sensitive
-from tcex.app_config import InstallJson
+from tcex.app_config.install_json import InstallJson
 from tcex.sessions.tc_session import HmacAuth
 from tcex.utils import Utils
 
