@@ -100,7 +100,7 @@ class KeyValueArray(AbstractArray):
                 # should be homogenous (add 'cls' because 'value' could be a list of KeyValues)
                 for _type in [StringArray, BinaryArray, TCEntityArray, cls]:
                     try:
-                        _type.assert_homogenous(key_value)
+                        _type._assert_homogenous(key_value)
                     except HeterogenousArrayException:
                         # 'value' part of KeyValue is not homogenous array of current _type
                         pass

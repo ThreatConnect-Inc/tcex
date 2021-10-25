@@ -23,23 +23,6 @@ class AbstractArray(list, ABC):
     _allow_null_array_members = True
 
     @classmethod
-    def assert_homogenous(cls, value: list):
-        """Assert that Array contains only members of Array implementation's type.
-
-        An empty Array will not raise a ValueError.
-
-        This method relies on is_array_member, which is specific to the current Array
-        implementation.
-        """
-        for member in value:
-            try:
-                cls.assert_is_member(member)
-            except InvalidMemberException as ex:
-                raise HeterogenousArrayException(
-                    f'Value {value} contains invalid member. {ex}'
-                ) from ex
-
-    @classmethod
     def assert_is_array(cls, value: Any):
         """Assert that value is an Array"""
         if not cls.is_array(value):
@@ -154,7 +137,29 @@ class AbstractArray(list, ABC):
         return value is None
 
     @classmethod
-    def assert_type(cls, value: Any) -> Union[Any, List[Any]]:
+    def _assert_homogenous(cls, value: list):
+        """Assert that Array contains only members of Array implementation's type.
+
+        An empty Array will not raise a ValueError.
+
+        Note: This method does not take the following into account:
+
+        _allow_empty_array_members
+        _allow_null_array_members
+
+        This method relies on is_array_member, which is specific to the current Array
+        implementation.
+        """
+        for member in value:
+            try:
+                cls.assert_is_member(member)
+            except InvalidMemberException as ex:
+                raise HeterogenousArrayException(
+                    f'Value {value} contains invalid member. {ex}'
+                ) from ex
+
+    @classmethod
+    def _assert_type(cls, value: Any) -> Union[Any, List[Any]]:
         """Assert that the value is either an Array or an Array member.
 
         if Array implementation is not marked as optional and the passed-in value is an Array, this
@@ -181,11 +186,6 @@ class AbstractArray(list, ABC):
             cls.assert_not_empty_member(value)
 
         return value
-
-    @classmethod
-    def _wrap(cls, value: Any) -> List[Any]:
-        """Wrap value in Array (list) if not already an Array."""
-        return cls([value]) if not cls.is_array(value) else cls(value)
 
     @classmethod
     def _validate_list_members(cls, value):
@@ -224,6 +224,12 @@ class AbstractArray(list, ABC):
                 )
 
     @classmethod
+    def _wrap(cls, value: Any) -> List[Any]:
+        """Wrap value in Array (list) if not already an Array."""
+        return cls([value]) if not cls.is_array(value) else cls(value)
+
+
+    @classmethod
     def __get_validators__(cls) -> Generator:
         """Define one or more validators for Pydantic custom type."""
-        yield from [cls.assert_type, cls._wrap]
+        yield from [cls._assert_type, cls._wrap]
