@@ -41,24 +41,16 @@ class AbstractArray(list, ABC):
 
     @classmethod
     def assert_not_empty(cls, value: list):
-        """Assert that Array is an Array and is not empty.
-
-        if Array implementation is marked as optional, this method only asserts that the passed-in
-        value is an Array (list) and will not assert that the value is not empty.
-        """
-        if cls.is_empty(value) and not cls._optional:
+        """Assert that Array is an Array and is not empty."""
+        if cls.is_empty(value):
             raise EmptyArrayException('Array must have at least one element.')
 
     @classmethod
     def assert_not_empty_member(cls, value: Any):
-        """Assert that value is of Array's type and that it is not empty.
-
-        If Array implementation is marked as optional, this method only asserts that the value is of
-        the Array's type and will not assert that the value is not empty.
-        """
+        """Assert that value is of Array's type and that it is not empty."""
         cls.assert_is_member(value)
 
-        if not cls._optional and cls.is_empty_member(value):
+        if cls.is_empty_member(value):
             raise EmptyMemberException(
                 f'Value "{value}" may not be empty. Consider using Optional field '
                 'definition if empty values are necessary.'
@@ -72,7 +64,7 @@ class AbstractArray(list, ABC):
     @classmethod
     @abstractmethod
     def is_array_member(cls, value: Any) -> bool:
-        """Check if value is of the StringArray's type.
+        """Check if value is of the Array's type.
 
         Each Array implementation must define its own version of this method.
         Return True if value is considered to be a member of the Array implementation
@@ -180,10 +172,14 @@ class AbstractArray(list, ABC):
         to conform to Pydantic validator behavior
         """
         if cls.is_array(value):
-            cls.assert_not_empty(value)
+            if not cls._optional:
+                cls.assert_not_empty(value)
             cls._validate_list_members(value)
         else:
-            cls.assert_not_empty_member(value)
+            if not cls._optional:
+                cls.assert_not_empty_member(value)
+            else:
+                cls.assert_is_member(value)
 
         return value
 
