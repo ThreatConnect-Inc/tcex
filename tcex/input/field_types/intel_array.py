@@ -22,7 +22,7 @@ class IntelArray(AbstractHybridArray):
     _entity_filter_types = None
 
     @classmethod
-    def _type_compositions(cls) -> List[Union[StringArray, TCEntityArray]]:
+    def type_compositions(cls) -> List[Union[StringArray, TCEntityArray]]:
         """Implement abstract method in Array parent class.
 
         IntelArray is a HybridArray composed of StringArray and TCEntityArray.
