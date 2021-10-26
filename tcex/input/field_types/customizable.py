@@ -6,9 +6,14 @@ from tcex.input.field_types.group_array import GroupArray
 from tcex.input.field_types.indicator_array import IndicatorArray
 from tcex.input.field_types.intel_array import IntelArray
 from tcex.input.field_types.key_value_array import KeyValueArray
-from tcex.input.field_types.string_array import StringArray
+from tcex.input.field_types.string_array import StringArray, StringArrayOptional
 from tcex.input.field_types.tc_entity_array import TCEntityArray
 from tcex.input.field_types.utils import ConfigurationUtils
+
+
+def _is_optional(kwargs):
+    """Check kwargs for optional value"""
+    return kwargs.pop('optional', False)
 
 
 def _custom_array(array_type, namespace=None, **kwargs):
@@ -56,7 +61,9 @@ def custom_string_array(**kwargs):
     """
     # placeholder set in place in case customizations specific to this Array Type are needed
     namespace = {}
-    return _custom_array(StringArray, namespace, **kwargs)
+    return _custom_array(
+        StringArrayOptional if _is_optional(kwargs) else StringArray, namespace, **kwargs
+    )
 
 
 def custom_tc_entity_array(**kwargs):

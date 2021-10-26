@@ -380,3 +380,100 @@ class TestInputsFieldTypeStringArray(InputTest):
         # error due to None being in input
         assert 'None' in err_msg
         assert 'may not be null' in err_msg
+
+    def test_field_type_string_array_opt_input_array_with_empty_and_null_members_empty_not_allowed(
+        self, playbook_app: 'MockApp'
+    ):
+        """Test StringArrayOptional field type with Array input that has empty and null members.
+
+        By passing optional=True to custom_string_array, we receive a customized version of
+        StringArrayOptional instead of a customized version of StringArray.
+
+        An empty member of StringArray is considered to be ''.
+        A null member of StringArray is considered to be None.
+
+        By default, StringArrayOptional allows empty/null values to be in the array.
+
+        StringArrayOptional is configured to not accept empty members, so an error is expected due
+        to '' being in the input.
+        """
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_string: custom_string_array(allow_empty_members=False, optional=True)
+
+        config_data = {'my_string': '#App:1234:my_string!StringArray'}
+        app = playbook_app(config_data=config_data)
+        tcex = app.tcex
+        self._stage_key_value('my_string', '#App:1234:my_string!StringArray', ['', None], tcex)
+        with pytest.raises(ValueError) as exc_info:
+            tcex.inputs.add_model(PytestModel)
+
+        err_msg = str(exc_info.value)
+
+        # assert None did not cause the issue
+        assert 'None' not in err_msg
+        # error due to empty members being in input
+        assert 'may not be empty' in err_msg
+
+    def test_field_type_string_array_opt_input_array_with_empty_and_null_members_null_not_allowed(
+        self, playbook_app: 'MockApp'
+    ):
+        """Test StringArrayOptional field type with Array input that has empty and/or null members.
+
+        By passing optional=True to custom_string_array, we receive a customized version of
+        StringArrayOptional instead of a customized version of StringArray.
+
+        An empty member of StringArray is considered to be ''.
+        A null member of StringArray is considered to be None.
+
+        By default, StringArrayOptional allows empty/null values to be in the array.
+
+        StringArrayOptional is configured to not accept null members, so an error is expected due to
+        None being in the input.
+        """
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_string: custom_string_array(allow_null_members=False, optional=True)
+
+        config_data = {'my_string': '#App:1234:my_string!StringArray'}
+        app = playbook_app(config_data=config_data)
+        tcex = app.tcex
+        self._stage_key_value('my_string', '#App:1234:my_string!StringArray', ['', None], tcex)
+        with pytest.raises(ValueError) as exc_info:
+            tcex.inputs.add_model(PytestModel)
+
+        err_msg = str(exc_info.value)
+
+        # error due to None being in input
+        assert 'None' in err_msg
+        assert 'may not be null' in err_msg
+
+    def test_field_type_string_array_optional_customization_with_good_values(
+        self, playbook_app: 'MockApp'
+    ):
+        """Test StringArrayOptional field type with Array input that has empty and/or null members.
+
+        By passing optional=True to custom_string_array, we receive a customized version of
+        StringArrayOptional instead of a customized version of StringArray.
+
+        This test simply asserts that passing the optional kwarg to custom_string_array indeed
+        returns StringArrayOptional.
+        """
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_string: custom_string_array(optional=True)
+
+        config_data = {'my_string': '#App:1234:my_string!String'}
+        app = playbook_app(config_data=config_data)
+        tcex = app.tcex
+        self._stage_key_value('my_string', '#App:1234:my_string!String', '', tcex)
+        tcex.inputs.add_model(PytestModel)
+
+        assert tcex.inputs.data.my_string == ['']
+        assert type(tcex.inputs.data.my_string).__name__ == 'StringArrayOptionalCustom'
