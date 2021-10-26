@@ -478,22 +478,71 @@ class TestInputsFieldTypeStringArray(InputTest):
         assert tcex.inputs.data.my_string == ['']
         assert type(tcex.inputs.data.my_string).__name__ == 'StringArrayOptionalCustom'
 
-    def test_field_type_string_array_customization_with_none_initializer(
+    def test_field_type_string_array_customization_that_handles_csv_string(
         self, playbook_app: 'MockApp'
     ):
-        """Test customized StringArray field type with input that is None.
+        """Test customized StringArray field type with input that is CSV string.
 
-        This test ensures that the return value of a custom Array factory method can be
-        wrapped with Optional typing, which means that None is a valid initializer.
+        StringArray is customized to handle CSV strings, and will split the string on comma.
         """
 
         class PytestModel(BaseModel):
             """Test Model for Inputs"""
 
-            my_string: Optional[custom_string_array()]
+            my_string: custom_string_array(split_on=',')
 
-        config_data = {'my_string': None}
-        tcex = playbook_app(config_data=config_data).tcex
+        config_data = {'my_string': '#App:1234:my_string!String'}
+        app = playbook_app(config_data=config_data)
+        tcex = app.tcex
+        self._stage_key_value('my_string', '#App:1234:my_string!String', 'one, two,three , ', tcex)
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_string is None
+        # note that since strip_on_split is True (the default), any empty values that are empty
+        # after the split operation are filtered out.
+        assert tcex.inputs.data.my_string == ['one', 'two', 'three']
+
+    def test_field_type_string_array_customization_that_handles_csv_string_no_split(
+        self, playbook_app: 'MockApp'
+    ):
+        """Test customized StringArray field type with input that is CSV string.
+
+        StringArray is customized to handle CSV strings, and will split the string on comma.
+        strip_on_split is False
+        """
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_string: custom_string_array(split_on=',', strip_on_split=False)
+
+        config_data = {'my_string': '#App:1234:my_string!String'}
+        app = playbook_app(config_data=config_data)
+        tcex = app.tcex
+        self._stage_key_value('my_string', '#App:1234:my_string!String', 'one, two,three , ', tcex)
+        tcex.inputs.add_model(PytestModel)
+
+        assert tcex.inputs.data.my_string == ['one', ' two', 'three ', ' ']
+
+    def test_field_type_string_array_split_oncustomization_no_effect_on_array_input(
+        self, playbook_app: 'MockApp'
+    ):
+        """Test customized StringArray field type with input that is Array.
+
+        StringArray is customized to handle CSV strings. No effect since input is Array.
+        """
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_string: custom_string_array(split_on=',', strip_on_split=True)
+
+        config_data = {'my_string': '#App:1234:my_string!StringArray'}
+        app = playbook_app(config_data=config_data)
+        tcex = app.tcex
+        self._stage_key_value(
+            'my_string', '#App:1234:my_string!StringArray', [' one, two,three , '], tcex
+        )
+        tcex.inputs.add_model(PytestModel)
+
+        # input simply wrapped in list, no split operation since input is a StringArray
+        assert tcex.inputs.data.my_string == [' one, two,three , ']

@@ -129,6 +129,11 @@ class AbstractArray(list, ABC):
         return value is None
 
     @classmethod
+    def pre_validation_processor(cls, value: Any) -> Any:
+        """Perform any processing on the value prior to it being validated"""
+        return value
+
+    @classmethod
     def _assert_homogenous(cls, value: list):
         """Assert that Array contains only members of Array implementation's type.
 
@@ -228,4 +233,4 @@ class AbstractArray(list, ABC):
     @classmethod
     def __get_validators__(cls) -> Generator:
         """Define one or more validators for Pydantic custom type."""
-        yield from [cls._assert_type, cls._wrap]
+        yield from [cls.pre_validation_processor, cls._assert_type, cls._wrap]
