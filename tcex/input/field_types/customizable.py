@@ -11,7 +11,7 @@ from tcex.input.field_types.tc_entity_array import TCEntityArray
 from tcex.input.field_types.utils import ConfigurationUtils
 
 
-def custom_array(array_type, namespace=None, **kwargs):
+def _custom_array(array_type, namespace=None, **kwargs):
     """Allow for dynamic configuration of an Array type.
 
     This method contains the logic to override configuration items that apply to all Array
@@ -44,7 +44,7 @@ def custom_binary_array(**kwargs):
     """
     # placeholder set in place in case customizations specific to this Array Type are needed
     namespace = {}
-    return custom_array(BinaryArray, namespace, **kwargs)
+    return _custom_array(BinaryArray, namespace, **kwargs)
 
 
 def custom_string_array(**kwargs):
@@ -56,7 +56,7 @@ def custom_string_array(**kwargs):
     """
     # placeholder set in place in case customizations specific to this Array Type are needed
     namespace = {}
-    return custom_array(StringArray, namespace, **kwargs)
+    return _custom_array(StringArray, namespace, **kwargs)
 
 
 def custom_tc_entity_array(**kwargs):
@@ -68,7 +68,7 @@ def custom_tc_entity_array(**kwargs):
     """
     # placeholder set in place in case customizations specific to this Array Type are needed
     namespace = {}
-    return custom_array(TCEntityArray, namespace, **kwargs)
+    return _custom_array(TCEntityArray, namespace, **kwargs)
 
 
 def custom_key_value_array(**kwargs):
@@ -80,7 +80,7 @@ def custom_key_value_array(**kwargs):
     """
     # placeholder set in place in case customizations specific to this Array Type are needed
     namespace = {}
-    return custom_array(KeyValueArray, namespace, **kwargs)
+    return _custom_array(KeyValueArray, namespace, **kwargs)
 
 
 def custom_intel_array(intel_array_descendant=None, namespace=None, **kwargs):
@@ -113,7 +113,7 @@ def custom_intel_array(intel_array_descendant=None, namespace=None, **kwargs):
         utils.validate_intel_types('entity_filter_types', types)
         _namespace['_entity_filter_types'] = types
 
-    return custom_array(intel_array_descendant or IntelArray, _namespace, **kwargs)
+    return _custom_array(intel_array_descendant or IntelArray, _namespace, **kwargs)
 
 
 def custom_indicator_array(**kwargs):
