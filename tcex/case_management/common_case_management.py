@@ -137,6 +137,7 @@ class CommonCaseManagement:
             'api_endpoint',
             'artifact_filter',
             'case_filter',
+            'attribute_filter',
             'filter',
             'fields',
             'kwargs',
