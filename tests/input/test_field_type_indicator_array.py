@@ -691,3 +691,29 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
 
         # should only contain entities with type that is in configured filter types
         assert all(entity['type'] in types for entity in entities)
+
+    @staticmethod
+    def test_field_type_custom_indicator_array_optional(playbook_app: 'MockApp'):
+        """Test IndicatorArrayOptional field type with empty array input.
+
+        This test simply asserts that passing optional=True to the custom Array factory function
+        returns a custom Optional variant
+
+        Args:
+            playbook_app (fixture): An instance of MockApp.
+        """
+
+        config_data = {'my_indicator': []}
+        tcex = playbook_app(config_data=config_data).tcex
+
+        # ensure session singleton is loaded
+        _ = tcex.inputs.session
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_indicator: Optional[custom_indicator_array(optional=True)]
+
+        tcex.inputs.add_model(PytestModel)
+
+        assert type(tcex.inputs.data.my_indicator).__name__ == 'IndicatorArrayOptionalCustom'
