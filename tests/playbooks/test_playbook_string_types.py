@@ -103,7 +103,8 @@ class TestUtils:
         assert tcex.playbook.read(variable) is None
 
     @pytest.mark.parametrize(
-        'variable,value', [('#App:0003:sa5!StringArray', 'foobar')],
+        'variable,value',
+        [('#App:0003:sa5!StringArray', 'foobar')],
     )
     def test_playbook_string_array_string(self, variable, value, tcex):
         """Test the string array method of Playbook module with string input (should fail)
@@ -148,7 +149,8 @@ class TestUtils:
     #
 
     @pytest.mark.parametrize(
-        'variable,value', [('#App:0002:s1!String', None)],
+        'variable,value',
+        [('#App:0002:s1!String', None)],
     )
     def test_playbook_string_none(self, variable, value, tcex):
         """Test the string array method of Playbook module.
@@ -163,7 +165,8 @@ class TestUtils:
         assert tcex.playbook.read(variable) is None
 
     @pytest.mark.parametrize(
-        'variable,value', [('#App:0003:sa1!StringArray', None)],
+        'variable,value',
+        [('#App:0003:sa1!StringArray', None)],
     )
     def test_playbook_string_array_none(self, variable, value, tcex):
         """Test the string array method of Playbook module.

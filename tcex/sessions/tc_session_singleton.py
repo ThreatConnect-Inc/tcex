@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 # first-party
 from tcex.sessions.tc_session import TcSession
 
-
 if TYPE_CHECKING:
     # first-party
     from tcex.input.field_types.sensitive import Sensitive

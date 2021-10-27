@@ -1,4 +1,4 @@
-"""."""
+"""Sensitive Field Type"""
 # TODO: [high] update docstrings
 # standard library
 import logging
@@ -22,7 +22,10 @@ class Sensitive:
 
     def __init__(self, value: str):
         """Initialize the Sensitive object."""
-        self._sensitive_value = value
+        if isinstance(value, Sensitive):
+            self._sensitive_value = value.value
+        else:
+            self._sensitive_value = value
 
     @classmethod
     def __get_validators__(cls) -> Callable:

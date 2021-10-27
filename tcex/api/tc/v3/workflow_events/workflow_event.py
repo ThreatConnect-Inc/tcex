@@ -1,0 +1,114 @@
+"""WorkflowEvent / WorkflowEvents Object"""
+# standard library
+from typing import TYPE_CHECKING
+
+# first-party
+from tcex.api.tc.v3.api_endpoints import ApiEndpoints
+from tcex.api.tc.v3.notes.note_model import NoteModel
+from tcex.api.tc.v3.object_abc import ObjectABC
+from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
+from tcex.api.tc.v3.tql.tql_operator import TqlOperator
+from tcex.api.tc.v3.workflow_events.workflow_event_filter import WorkflowEventFilter
+from tcex.api.tc.v3.workflow_events.workflow_event_model import (
+    WorkflowEventModel,
+    WorkflowEventsModel,
+)
+
+if TYPE_CHECKING:  # pragma: no cover
+    # first-party
+    from tcex.api.tc.v3.notes.note import Note
+
+
+class WorkflowEvents(ObjectCollectionABC):
+    """WorkflowEvents Collection.
+
+    # Example of params input
+    {
+        'result_limit': 100,  # Limit the retrieved results.
+        'result_start': 10,  # Starting count used for pagination.
+        'fields': ['caseId', 'summary']  # Select additional return fields.
+    }
+
+    Args:
+        session (Session): Session object configured with TC API Auth.
+        tql_filters (list): List of TQL filters.
+        params (dict): Additional query params (see example above).
+    """
+
+    def __init__(self, **kwargs) -> None:
+        """Initialize class properties."""
+        super().__init__(
+            kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
+        )
+        self._model = WorkflowEventsModel(**kwargs)
+        self._type = 'workflow_events'
+
+    def __iter__(self) -> 'WorkflowEvent':
+        """Iterate over CM objects."""
+        return self.iterate(base_class=WorkflowEvent)
+
+    @property
+    def _api_endpoint(self) -> str:
+        """Return the type specific API endpoint."""
+        return ApiEndpoints.WORKFLOW_EVENTS.value
+
+    @property
+    def filter(self) -> 'WorkflowEventFilter':
+        """Return the type specific filter object."""
+        return WorkflowEventFilter(self.tql)
+
+
+class WorkflowEvent(ObjectABC):
+    """WorkflowEvents Object.
+
+    Args:
+        case_id (int, kwargs): The **case id** for the Workflow_Event.
+        case_xid (str, kwargs): The **case xid** for the Workflow_Event.
+        deleted_reason (str, kwargs): The reason for deleting the event (required input for DELETE
+            operation only).
+        event_date (str, kwargs): The time that the Event is logged.
+        notes (Notes, kwargs): A list of Notes corresponding to the Event.
+        summary (str, kwargs): The **summary** for the Workflow_Event.
+    """
+
+    def __init__(self, **kwargs) -> None:
+        """Initialize class properties."""
+        super().__init__(kwargs.pop('session', None))
+        self._model = WorkflowEventModel(**kwargs)
+        self._type = 'workflow_event'
+
+    @property
+    def _api_endpoint(self) -> str:
+        """Return the type specific API endpoint."""
+        return ApiEndpoints.WORKFLOW_EVENTS.value
+
+    @property
+    def _base_filter(self) -> dict:
+        """Return the default filter."""
+        return {
+            'keyword': 'workflow_event_id',
+            'operator': TqlOperator.EQ,
+            'value': self.model.id,
+            'type_': 'integer',
+        }
+
+    @property
+    def as_entity(self) -> dict:
+        """Return the entity representation of the object."""
+        return {'type': 'WorkflowEvent', 'id': self.model.id, 'value': self.model.summary}
+
+    def add_note(self, **kwargs) -> None:
+        """Add note to the object.
+
+        Args:
+            text (str, kwargs): The **text** for the Note.
+        """
+        self.model.notes.data.append(NoteModel(**kwargs))
+
+    @property
+    def notes(self) -> 'Note':
+        """Yield Note from Notes."""
+        # first-party
+        from tcex.api.tc.v3.notes.note import Notes
+
+        yield from self._iterate_over_sublist(Notes)

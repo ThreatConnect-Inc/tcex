@@ -4,7 +4,7 @@ import logging
 import ssl
 import time
 import traceback
-from typing import List, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Optional
 
 # third-party
 import paho.mqtt.client as mqtt

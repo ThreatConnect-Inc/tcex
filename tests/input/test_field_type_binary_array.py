@@ -13,7 +13,8 @@ from tcex.input.field_types.customizable import custom_binary_array
 from .utils import InputTest
 
 if TYPE_CHECKING:
-    from ..mock_app import MockApp
+    # first-party
+    from tests.mock_app import MockApp
 
 
 class TestInputsFieldTypeBinaryArray(InputTest):

@@ -7,17 +7,20 @@ import re
 import string
 import tempfile
 import uuid
-from typing import Any, List, Optional, Union
+from typing import TYPE_CHECKING, Any, List, Optional, Union
 from urllib.parse import urlsplit
 
 # third-party
 import jmespath
 import pyaes
-from requests import Request
 
 # first-party
 from tcex.backports import cached_property
 from tcex.utils.mitre_attack_utils import MitreAttackUtils
+
+if TYPE_CHECKING:
+    # third-party
+    from requests import Request
 
 
 class Utils:
@@ -36,7 +39,7 @@ class Utils:
         self.variable_match = re.compile(fr'^{self.variable_pattern}$')
         self.variable_parse = re.compile(self.variable_pattern)
 
-    def camel_string(self, string: str) -> 'CamelString':
+    def camel_string(self, string_: str) -> Any:
         """Return custom str with custom properties/methods."""
 
         # methods for class
@@ -70,10 +73,7 @@ class Utils:
                 """Return string snake to camel."""
                 return CamelString(camel_to_space(self))
 
-        # add forward references
-        # CamelString.update_forward_refs()
-
-        return CamelString(string)
+        return CamelString(string_)
 
     def camel_to_snake(self, camel_string: str) -> str:
         """Return snake case string from a camel case string.
@@ -164,7 +164,7 @@ class Utils:
         return flat_list
 
     @cached_property
-    def inflect(self) -> 'inflect.engine':
+    def inflect(self) -> 'inflect.engine':  # pylint: disable=no-self-use
         """Return instance of inflect."""
         # third-party
         import inflect
@@ -380,7 +380,7 @@ class Utils:
 
         return ' '.join(cmd)
 
-    def snake_string(self, string: str) -> 'SnakeString':
+    def snake_string(self, string_: str) -> Any:
         """Return custom str with custom properties/methods."""
 
         # methods for class
@@ -410,14 +410,11 @@ class Utils:
                     _singular = self
                 return SnakeString(_singular)
 
-            def title(self):
-                """Return string snake to camel."""
-                return SnakeString(self.replace('_', ' ').title())
+            # def title(self):
+            #     """Return string snake to camel."""
+            #     return SnakeString(self.replace('_', ' ').title())
 
-        # add forward references
-        # SnakeString.update_forward_refs()
-
-        return SnakeString(string)
+        return SnakeString(string_)
 
     @staticmethod
     def snake_to_pascal(snake_string: str) -> str:

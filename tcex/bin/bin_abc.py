@@ -13,8 +13,10 @@ import typer
 from click import Choice
 
 # first-party
-from tcex.app_config import InstallJson, LayoutJson, TcexJson
+from tcex.app_config.install_json import InstallJson
+from tcex.app_config.layout_json import LayoutJson
 from tcex.app_config.permutation import Permutation
+from tcex.app_config.tcex_json import TcexJson
 from tcex.backports import cached_property
 from tcex.logger import RotatingFileHandlerCustom, TraceLogger
 
@@ -61,7 +63,7 @@ class BinABC(ABC):
         logger = logging.getLogger('tcex-cli-Logger')
 
         # set logger level
-        logger.setLevel(logging.TRACE)
+        logger.setLevel(logging.TRACE)  # pylint: disable=no-member
 
         # create rotation filehandler
         lfh = RotatingFileHandlerCustom(

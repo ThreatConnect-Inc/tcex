@@ -1,18 +1,19 @@
 """Case Management Filter Abstract Base Class"""
 # standard library
 from abc import ABC
-from typing import List
+from typing import TYPE_CHECKING, List
 
-# third-party
-from tcex.api.tql import TQL
+if TYPE_CHECKING:
+    # first-party
+    from tcex.api.tc.v3.tql.tql import Tql
 
 
 class FilterABC(ABC):
     """Case Management Filter Abstract Base Class"""
 
-    def __init__(self):
+    def __init__(self, tql: 'Tql'):
         """Initialize Class properties"""
-        self._tql = TQL()
+        self._tql = tql
 
     @property
     def _api_endpoint(self):
@@ -30,12 +31,8 @@ class FilterABC(ABC):
         return keywords
 
     @property
-    def keywords(self) -> List[str]:
-        """Return supported TQL keywords."""
-        return [td.get('keyword') for td in self.tql_data]
-
-    @property
-    def tql(self):
+    def tql(self) -> 'Tql':
+        """Return the current TQL instance."""
         return self._tql
 
     @tql.setter
@@ -48,4 +45,5 @@ class FilterABC(ABC):
         self.tql.set_raw_tql(tql)
 
     def __str__(self) -> str:
+        """Return string representation of TQL."""
         return self.tql.raw_tql or self.tql.as_str
