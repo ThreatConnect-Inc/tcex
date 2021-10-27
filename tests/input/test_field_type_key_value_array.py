@@ -687,3 +687,25 @@ class TestInputsFieldTypeKeyValueArray(InputTest):
         # error due to None being in input
         assert 'None' in err_msg
         assert 'may not be null' in err_msg
+
+    @staticmethod
+    def test_custom_field_type_key_value_array_optional_keyword(playbook_app: 'MockApp'):
+        """Test KeyValueArrayOptional field type with empty array input.
+
+        This test simply asserts that passing optional=True to the custom Array factory function
+        returns a custom Optional variant
+
+        Args:
+            playbook_app (fixture): An instance of MockApp.
+        """
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_key_value: Optional[custom_key_value_array(optional=True)]
+
+        config_data = {'my_key_value': []}
+        tcex = playbook_app(config_data=config_data).tcex
+        tcex.inputs.add_model(PytestModel)
+
+        assert type(tcex.inputs.data.my_key_value).__name__ == 'KeyValueArrayOptionalCustom'
