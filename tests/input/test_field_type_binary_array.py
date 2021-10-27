@@ -383,3 +383,26 @@ class TestInputsFieldTypeBinaryArray(InputTest):
         # error due to None being in input
         assert 'None' in err_msg
         assert 'may not be null' in err_msg
+
+    def test_optional_custom_field_type_binary_array(self, playbook_app: 'MockApp'):
+        """Test custom BinaryArray field type with optional input.
+
+        This test simply asserts that passing optional=True to the custom Array factory function
+        returns a custom Optional variant
+
+        Args:
+            playbook_app (fixture): An instance of MockApp.
+        """
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_binary: custom_binary_array(optional=True)
+
+        config_data = {'my_binary': '#App:1234:my_binary!Binary'}
+        app = playbook_app(config_data=config_data)
+        tcex = app.tcex
+        self._stage_key_value('my_binary', '#App:1234:my_binary!Binary', b'', tcex)
+        tcex.inputs.add_model(PytestModel)
+
+        assert type(tcex.inputs.data.my_binary).__name__ == 'BinaryArrayOptionalCustom'
