@@ -19,6 +19,7 @@ class Sensitive:
 
     min_length: Optional[int] = None
     max_length: Optional[int] = None
+    _optional = False
 
     def __init__(self, value: str):
         """Initialize the Sensitive object."""
@@ -60,7 +61,7 @@ class Sensitive:
         helpful in debugging App where the incorrect creds could have been passed.
         """
         if self._sensitive_value and logger.getEffectiveLevel() >= 10:  # DEBUG
-            if self.value and len(self.value) >= 10:
+            if isinstance(self.value, str) and len(self.value) >= 10:
                 return f'''{self.value[:1]}{'*' * 4}{self.value[-1:]}'''
         return '**********' if self.value else ''
 
@@ -69,9 +70,26 @@ class Sensitive:
         """Pydantic validate method."""
         if isinstance(value, cls):
             return value
+
+        if not isinstance(value, (bytes, str)):
+            raise ValueError(
+                f'Sensitive Type expects String or Bytes values, received: {type(value)}'
+            )
+
+        if (value == '' or value == b'') and not cls._optional:
+            raise ValueError(
+                f'Sensitive value may not be empty. Consider using Optional field variant '
+                'definition if empty values are necessary.'
+            )
+
         return cls(value)
 
     @property
     def value(self) -> str:
         """Return the actual value."""
         return self._sensitive_value
+
+
+class SensitiveOptional(Sensitive):
+    """Optional Field Type to hold sensitive data."""
+    _optional = True

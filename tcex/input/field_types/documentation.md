@@ -654,3 +654,26 @@ from the empty space after `three,`).
 
 If `strip_on_split` is `False`, then the end result would be: `['one ', 'two', ' three', ' ']`, which is simply the
 result of the `split` operation.
+
+## Singular Types
+
+### Sensitive
+
+This type should be used when an Integration requires sensitive data as an input, such as passwords, etc. Usage
+of this type is as follows:
+
+```
+    class MyAction(BaseModel):
+        """Model that defines inputs for Action 'My Action'"""
+        
+        # Define the expected type of input "My Input".
+        my_sensitive_input: Sensitive
+```
+
+Within integration code, direct usage of `my_sensitive_input` results in a masked value (as in `******`). This is done
+to prevent accidental logging of sensitive data. In order to access the real value of this field, one must access its
+`value` property like so: `my_sensitive_input.value`. 
+
+This type may be initialized with String and Binary instances only. 
+
+This input type also has an `Optional` variant. See the `Usage` section of this document for more details about `Optional` variants.
