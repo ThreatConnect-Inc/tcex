@@ -546,3 +546,27 @@ class TestInputsFieldTypeStringArray(InputTest):
 
         # input simply wrapped in list, no split operation since input is a StringArray
         assert tcex.inputs.data.my_string == [' one, two,three , ']
+
+    @staticmethod
+    def test_optional_field_type_custom_string_array(playbook_app: 'MockApp'):
+        """Test custom_string_array field type with optional input.
+
+        This behavior is expected because Pydantic does not run validators on None input.
+
+        This test asserts that the return value of custom_string_array can also be wrapped
+        with Optional[]
+
+        Args:
+            playbook_app (fixture): An instance of MockApp.
+        """
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_string: Optional[custom_string_array()]
+
+        config_data = {'my_string': None}
+        tcex = playbook_app(config_data=config_data).tcex
+        tcex.inputs.add_model(PytestModel)
+
+        assert tcex.inputs.data.my_string is None
