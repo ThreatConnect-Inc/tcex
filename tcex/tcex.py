@@ -27,7 +27,8 @@ from tcex.batch.batch_writer import BatchWriter
 from tcex.datastore import Cache, DataStore
 from tcex.input.input import Input
 from tcex.key_value_store import KeyValueApi, KeyValueRedis, RedisClient
-from tcex.logger import Logger, TraceLogger
+from tcex.logger.logger import Logger
+from tcex.logger.trace_logger import TraceLogger
 from tcex.playbook import Playbook
 from tcex.pleb import Event, proxies
 from tcex.services.api_service import ApiService

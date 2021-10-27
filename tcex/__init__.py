@@ -4,7 +4,8 @@
 import logging
 
 # first-party
-from tcex.logger import CacheHandler, TraceLogger
+from tcex.logger.cache_handler import CacheHandler
+from tcex.logger.trace_logger import TraceLogger
 
 # init logger before instantiating tcex
 logging.setLoggerClass(TraceLogger)
