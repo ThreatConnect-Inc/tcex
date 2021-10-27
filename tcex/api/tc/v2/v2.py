@@ -13,4 +13,3 @@ class V2:
     def __init__(self, session: Session) -> None:
         """Initialize Class properties."""
         self.session = session
-

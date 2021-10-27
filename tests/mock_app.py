@@ -9,11 +9,11 @@ from typing import Dict, Optional, Union
 from requests import Session
 
 # first-party
-from tcex import TcEx
-from tcex.input.field_types.sensitive import Sensitive
 from tcex.app_config.install_json import InstallJson
+from tcex.input.field_types.sensitive import Sensitive
 from tcex.sessions.tc_session import HmacAuth
-from tcex.utils import Utils
+from tcex.tcex import TcEx
+from tcex.utils.utils import Utils
 
 
 class MockApp:
@@ -377,7 +377,7 @@ class MockApp:
         """Return log file name for current test case."""
         try:
             test_data = os.getenv('PYTEST_CURRENT_TEST').split(' ')[0].split('::')
-            test_feature = test_data[0].split('/')[1].replace('/', '-')
+            test_feature = '-'.join(test_data[0].split('/')[1:-1])
             test_name = test_data[-1].replace('/', '-').replace('[', '-')
         except AttributeError:
             # TODO: remove this once tcex_init file is removed

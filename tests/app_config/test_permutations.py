@@ -6,7 +6,9 @@ from pathlib import Path
 from typing import List
 
 # first-party
-from tcex.app_config import InstallJson, LayoutJson, Permutation
+from tcex.app_config.install_json import InstallJson
+from tcex.app_config.layout_json import LayoutJson
+from tcex.app_config.permutation import Permutation
 from tcex.backports import cached_property
 
 

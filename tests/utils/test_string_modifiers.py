@@ -99,7 +99,8 @@ class TestStringModifiers:
         assert result == expected, f'Input {input_} result of {result} != {expected}'
 
     @pytest.mark.parametrize(
-        'string_length', [(0), (1), (55), (100), (1000)],
+        'string_length',
+        [(0), (1), (55), (100), (1000)],
     )
     def test_utils_random_string(self, tcex, string_length):
         """Test **camel_to_snake** method of TcEx Utils module.

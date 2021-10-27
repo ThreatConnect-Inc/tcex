@@ -14,7 +14,7 @@ logger.setLevel(logging.TRACE)  # pylint: disable=E1101
 # add TEMP cache handler, which will be removed in tcex.py (we don't know log path here)
 cache = CacheHandler()
 cache.set_name('cache')
-cache.setLevel(logging.TRACE)
+cache.setLevel(logging.TRACE)  # pylint: disable=no-member
 cache.setFormatter(
     '%(asctime)s - %(name)s - %(levelname)8s - %(message)s '
     '(%(filename)s:%(funcName)s:%(lineno)d)'
@@ -33,17 +33,7 @@ from .__metadata__ import (
 )
 
 try:
-    from .decorators import (
-        Benchmark,
-        Debug,
-        FailOnOutput,
-        IterateOnArg,
-        OnException,
-        OnSuccess,
-        Output,
-        ReadArg,
-        WriteOutput,
-    )
+    # first-party
     from tcex.tcex import TcEx
 except ImportError as e:
     print(f'Error: {e}')

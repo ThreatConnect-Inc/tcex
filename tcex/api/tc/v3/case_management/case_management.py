@@ -3,17 +3,7 @@
 from requests import Session
 
 # first-party
-from tcex.api.tc.v3.case_management.artifact import Artifact, Artifacts
-from tcex.api.tc.v3.case_management.artifact_type import ArtifactType, ArtifactTypes
 from tcex.api.tc.v3.case_management.assignee import Assignee
-
-# from tcex.api.tc.v3.case_management.case import Case, Cases
-from tcex.api.tc.v3.case_management.case import Case, Cases
-from tcex.api.tc.v3.case_management.note import Note, Notes
-from tcex.api.tc.v3.case_management.tag import Tag, Tags
-from tcex.api.tc.v3.case_management.task import Task, Tasks
-from tcex.api.tc.v3.case_management.workflow_event import WorkflowEvent, WorkflowEvents
-from tcex.api.tc.v3.case_management.workflow_template import WorkflowTemplate, WorkflowTemplates
 
 
 class CaseManagement:
@@ -27,7 +17,7 @@ class CaseManagement:
         """Initialize Class properties."""
         self.session = session
 
-    def artifact(self, **kwargs) -> Artifact:
+    def artifact(self, **kwargs) -> 'Artifact':
         """Return a instance of Artifact object.
 
         Model Schema:
@@ -51,7 +41,7 @@ class CaseManagement:
         """
         return Artifact(session=self.session, **kwargs)
 
-    def artifacts(self, **kwargs) -> Artifacts:
+    def artifacts(self, **kwargs) -> 'Artifacts':
         """Return a instance of Artifacts object.
 
         .. code-block:: python
@@ -72,7 +62,7 @@ class CaseManagement:
         """
         return Artifacts(session=self.session, **kwargs)
 
-    def artifact_type(self, **kwargs) -> ArtifactType:
+    def artifact_type(self, **kwargs) -> 'ArtifactType':
         """Return a instance of Artifact Type object.
 
         Args:
@@ -84,7 +74,7 @@ class CaseManagement:
         """
         return ArtifactType(session=self.session, **kwargs)
 
-    def artifact_types(self, **kwargs) -> ArtifactTypes:
+    def artifact_types(self, **kwargs) -> 'ArtifactTypes':
         """Return a instance of Artifact Types object.
 
         .. code-block:: python
@@ -127,7 +117,7 @@ class CaseManagement:
         # TODO: Figure out how/where the model for this should be.
         return Assignee(session=self.session, **kwargs)
 
-    def case(self, **kwargs) -> Case:
+    def case(self, **kwargs) -> 'Case':
         """Return a instance of Case object.
 
         Args:
@@ -152,7 +142,7 @@ class CaseManagement:
         """
         return Case(session=self.session, **kwargs)
 
-    def cases(self, **kwargs) -> Cases:
+    def cases(self, **kwargs) -> 'Cases':
         """Return a instance of Cases object.
 
         .. code-block:: python
@@ -195,7 +185,7 @@ class CaseManagement:
 
         return data
 
-    def note(self, **kwargs) -> Note:
+    def note(self, **kwargs) -> 'Note':
         """Return a instance of Note object.
 
         Args:
@@ -219,7 +209,7 @@ class CaseManagement:
         """
         return Note(session=self.session, **kwargs)
 
-    def notes(self, **kwargs) -> Notes:
+    def notes(self, **kwargs) -> 'Notes':
         """Return a instance of Notes object.
 
         .. code-block:: python
@@ -243,7 +233,7 @@ class CaseManagement:
         """
         return Notes(session=self.session, **kwargs)
 
-    def tag(self, **kwargs) -> Tag:
+    def tag(self, **kwargs) -> 'Tag':
         """Return a instance of Tag object.
 
         Args:
@@ -256,7 +246,7 @@ class CaseManagement:
         """
         return Tag(session=self.session, **kwargs)
 
-    def tags(self, **kwargs) -> Tags:
+    def tags(self, **kwargs) -> 'Tags':
         """Return a instance of Tags object.
 
         .. code-block:: python
@@ -280,7 +270,7 @@ class CaseManagement:
         """
         return Tags(session=self.session, **kwargs)
 
-    def task(self, **kwargs) -> Task:
+    def task(self, **kwargs) -> 'Task':
         """Return a instance of Task object.
 
         Args:
@@ -309,7 +299,7 @@ class CaseManagement:
         """
         return Task(session=self.session, **kwargs)
 
-    def tasks(self, **kwargs) -> Tasks:
+    def tasks(self, **kwargs) -> 'Tasks':
         """Return a instance of Tasks object.
 
         .. code-block:: python
@@ -356,7 +346,7 @@ class CaseManagement:
     #     """
     #     return Users(users)
 
-    def workflow_event(self, **kwargs) -> WorkflowEvent:
+    def workflow_event(self, **kwargs) -> 'WorkflowEvent':
         """Return a instance of Workflow Event object.
 
         Args:
@@ -380,7 +370,7 @@ class CaseManagement:
         """
         return WorkflowEvent(session=self.session, **kwargs)
 
-    def workflow_events(self, **kwargs) -> WorkflowEvents:
+    def workflow_events(self, **kwargs) -> 'WorkflowEvents':
         """Return a instance of Workflow Events object.
 
         .. code-block:: python
@@ -404,7 +394,7 @@ class CaseManagement:
         """
         return WorkflowEvents(session=self.session, **kwargs)
 
-    def workflow_template(self, **kwargs) -> WorkflowTemplate:
+    def workflow_template(self, **kwargs) -> 'WorkflowTemplate':
         """Return a instance of Workflow Template object.
 
         Args:
@@ -424,7 +414,7 @@ class CaseManagement:
         """
         return WorkflowTemplate(session=self.session, **kwargs)
 
-    def workflow_templates(self, **kwargs) -> WorkflowTemplates:
+    def workflow_templates(self, **kwargs) -> 'WorkflowTemplates':
         """Return a instance of Workflow Templates object.
 
         .. code-block:: python
@@ -447,3 +437,14 @@ class CaseManagement:
                 retrieving the Workflow Event objects.
         """
         return WorkflowTemplates(session=self.session, **kwargs)
+
+
+# first-party
+from tcex.api.tc.v3.artifact_types.artifact_type import ArtifactType, ArtifactTypes
+from tcex.api.tc.v3.artifacts.artifact import Artifact, Artifacts
+from tcex.api.tc.v3.cases.case import Case, Cases
+from tcex.api.tc.v3.notes.note import Note, Notes
+from tcex.api.tc.v3.tags.tag import Tag, Tags
+from tcex.api.tc.v3.tasks.task import Task, Tasks
+from tcex.api.tc.v3.workflow_events.workflow_event import WorkflowEvent, WorkflowEvents
+from tcex.api.tc.v3.workflow_templates.workflow_template import WorkflowTemplate, WorkflowTemplates

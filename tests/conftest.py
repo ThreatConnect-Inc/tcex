@@ -87,8 +87,7 @@ def tcex():
 
 @pytest.fixture()
 def tcex_hmac():
-    """Return an instance of tcex."""
-    # create log structure for feature/test (e.g., args/test_args.log)
+    """Return an instance of tcex with hmac auth."""
     config_data_ = {
         'tc_token': None,
         'tc_token_expires': None,
@@ -100,11 +99,10 @@ def tcex_hmac():
 # @pytest.fixture(scope='module')
 @pytest.fixture()
 def tcex_proxy():
-    """Return an instance of tcex.
+    """Return an instance of tcex with proxy configured.
 
     mitmproxy -p 4242 --ssl-insecure
     """
-    # create log structure for feature/test (e.g., args/test_args.log)
     config_data_ = {
         'tc_proxy_tc': True,
         'tc_proxy_external': True,
@@ -149,7 +147,7 @@ def pytest_sessionfinish(session, exitstatus):  # pylint: disable=unused-argumen
 
 
 def pytest_unconfigure(config):  # pylint: disable=unused-argument
-    """Execute uncofigure logic before test process is exited."""
+    """Execute unconfigure logic before test process is exited."""
     try:
         # remove temp app_config.json file
         os.remove('app_config.json')

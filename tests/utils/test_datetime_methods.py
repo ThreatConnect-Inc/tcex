@@ -270,7 +270,11 @@ class TestUtils:
                     'timedelta': {'days': 1},
                 },
             ),
-            ('eod tuesday', 'UTC', {'operator': operator.add, 'strftime': '%Y-', 'timedelta': {}},),
+            (
+                'eod tuesday',
+                'UTC',
+                {'operator': operator.add, 'strftime': '%Y-', 'timedelta': {}},
+            ),
             (
                 'eoy',
                 'UTC',
@@ -280,7 +284,11 @@ class TestUtils:
                     'timedelta': {},
                 },
             ),
-            ('eom', 'UTC', {'operator': operator.add, 'strftime': '%Y-%m-', 'timedelta': {}},),
+            (
+                'eom',
+                'UTC',
+                {'operator': operator.add, 'strftime': '%Y-%m-', 'timedelta': {}},
+            ),
             (
                 'in 5 minutes',
                 'UTC',

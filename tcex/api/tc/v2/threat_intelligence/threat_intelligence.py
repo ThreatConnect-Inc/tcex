@@ -9,7 +9,6 @@ import inflect
 from requests import Session
 
 # first-party
-from tcex.tcex_error_codes import TcExErrorCodes
 from tcex.api.tc.v2.threat_intelligence.mappings.filters import Filters
 from tcex.api.tc.v2.threat_intelligence.mappings.group.group import Group
 from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.adversary import Adversary
@@ -37,6 +36,7 @@ from tcex.api.tc.v2.threat_intelligence.mappings.owner import Owner
 from tcex.api.tc.v2.threat_intelligence.mappings.tag import Tag
 from tcex.api.tc.v2.threat_intelligence.mappings.task import Task
 from tcex.api.tc.v2.threat_intelligence.mappings.victim import Victim
+from tcex.tcex_error_codes import TcExErrorCodes
 from tcex.utils import Utils
 
 p = inflect.engine()

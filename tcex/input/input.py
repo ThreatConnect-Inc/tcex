@@ -3,6 +3,8 @@
 import json
 import logging
 import os
+import re
+from base64 import b64decode
 from pathlib import Path
 from typing import Dict, Optional, Union
 
@@ -65,6 +67,7 @@ class Input:
         self.ij = InstallJson()
         self.log = logger
         self.utils = Utils()
+        self.variable_pattern = re.compile(r'&\{(?P<provider>\w+):(?P<type>\w+):(?P<key>.*)\}')
 
     def _load_aot_params(
         self,
@@ -179,6 +182,41 @@ class Input:
 
         return file_content
 
+    def _resolve_variable(self, provider: str, key: str, type_: str) -> Union[bytes, str]:
+        """Resolve TEXT/KEYCHAIN/FILE variables.
+
+        Feature: PLAT-2688
+
+        Data Format:
+        {
+            "data": "value"
+        }
+        """
+        data = None
+
+        # retrieve value from API
+        r = self.session.get(f'/internal/variable/runtime/{provider}/{key}')
+        if r.ok:
+            try:
+                data = r.json().get('data')
+
+                if type_.lower() == 'file':
+                    data = b64decode(data)  # returns bytes
+                elif type_.lower() == 'keychain':
+                    # TODO: [high] will the developer know this is sensitive
+                    #              and access the "value" property
+                    data = Sensitive(data)
+            except Exception as ex:
+                raise RuntimeError(
+                    f'Could not retrieve variable: provider={provider}, key={key}, type={type_}.'
+                ) from ex
+        else:
+            raise RuntimeError(
+                f'Could not retrieve variable: provider={provider}, key={key}, type={type_}.'
+            )
+
+        return data
+
     def add_model(self, model: BaseModel) -> None:
         """Add additional input models."""
         # TODO: [high] @paco - for some custom defined field types we need to make API calls
@@ -229,21 +267,23 @@ class Input:
 
     @cached_property
     def contents_resolved(self) -> dict:
-        """Resolve all playbook params."""
+        """Resolve all file, keychain, playbook, and text variables."""
         _inputs = self.contents
 
         # support external Apps that don't have an install.json
         if not self.ij.fqfn.is_file():
             return _inputs
 
-        if self.ij.data.runtime_level.lower() == 'playbook':
-            for name, value in _inputs.items():
-                # model properties at this point are the default fields passed by ThreatConnect
-                # these should not be playbook variables and will not need to be resolved.
-                if name in self.model_properties:
-                    continue
+        for name, value in _inputs.items():
+            # model properties at this point are the default fields passed by ThreatConnect
+            # these should not be playbook variables and will not need to be resolved.
+            if name in self.model_properties:
+                continue
 
-                if isinstance(value, list):
+            if isinstance(value, list):
+                # TODO: [low] are playbooks the only App type that can get a list?
+                #             is this condition needed?
+                if self.ij.data.runtime_level.lower() == 'playbook':
                     # list could contain variables, try to resolve the value
                     updated_value_array = []
                     for v in value:
@@ -251,8 +291,25 @@ class Input:
                             v = self.playbook.read(v)
                         updated_value_array.append(v)
                     _inputs[name] = updated_value_array
-                elif isinstance(value, str):
-                    # strings could be a variable, try to resolve the value
+            elif isinstance(value, str):
+                # strings could be a variable, try to resolve the value
+                if self.variable_pattern.match(value):
+                    m = self.variable_pattern.search(value)
+                    if not any(
+                        [
+                            m.group('provider'),
+                            m.group('key'),
+                            m.group('type'),
+                        ]
+                    ):
+                        # TODO: [med] should this an exit
+                        raise RuntimeError(f'Could not parse variable {value}.')
+
+                    _inputs[name] = self._resolve_variable(
+                        m.group('provider'), m.group('key'), m.group('type')
+                    )
+                    # _inputs[name] = self._resolve_variable(**m.groupdict())
+                elif self.ij.data.runtime_level.lower() == 'playbook':
                     _inputs[name] = self.playbook.read(value)
 
         # update contents

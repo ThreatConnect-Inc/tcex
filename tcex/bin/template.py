@@ -70,6 +70,7 @@ class Template(BinABC):
 
         params = {'ref': branch}
         r = self.session.get(url, params=params)
+        print(r.request.url)
         if not r.ok:
             self.log.errors(f'Failed retrieving contents for type {url}.')
             self.errors = True
