@@ -7,6 +7,7 @@ Release Notes
 ======
 + APP-3130 - [TI] - Added ability to iterate over all Tags currently in system.
 + APP-3149 - [Inputs] - Added support for resolving FILE, TEXT, and KEYCHAIN values.
++ APP-3147 - [CM] - Added the artifact_filter property to be excluded when using the to_dict method
 
 2.0.25
 ======
