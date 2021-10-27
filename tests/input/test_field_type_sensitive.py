@@ -8,8 +8,8 @@ from pydantic import BaseModel, ValidationError
 
 # first-party
 from tcex.input.field_types import Sensitive, SensitiveOptional
-from .utils import InputTest
 
+from .utils import InputTest
 
 if TYPE_CHECKING:
     from ..mock_app import MockApp
@@ -137,9 +137,7 @@ class TestInputsFieldTypeSensitive(InputTest):
         config_data = {'my_sensitive_field': '#App:1234:my_sensitive_field!String'}
         app = playbook_app(config_data=config_data)
         tcex = app.tcex
-        self._stage_key_value(
-            'my_sensitive_field', '#App:1234:my_sensitive_field!String', '', tcex
-        )
+        self._stage_key_value('my_sensitive_field', '#App:1234:my_sensitive_field!String', '', tcex)
         with pytest.raises(ValidationError) as exc_info:
             tcex.inputs.add_model(PytestModel)
 
@@ -182,9 +180,7 @@ class TestInputsFieldTypeSensitive(InputTest):
         config_data = {'my_sensitive_field': '#App:1234:my_sensitive_field!String'}
         app = playbook_app(config_data=config_data)
         tcex = app.tcex
-        self._stage_key_value(
-            'my_sensitive_field', '#App:1234:my_sensitive_field!String', '', tcex
-        )
+        self._stage_key_value('my_sensitive_field', '#App:1234:my_sensitive_field!String', '', tcex)
         tcex.inputs.add_model(PytestModel)
 
         assert tcex.inputs.data.my_sensitive_field.value == ''
@@ -209,7 +205,7 @@ class TestInputsFieldTypeSensitive(InputTest):
         assert tcex.inputs.data.my_sensitive_field is None
 
     @staticmethod
-    def test_field_type_sensitive_input_blank_binary_not_allowed(playbook_app: 'MockApp'):
+    def test_field_type_sensitive_bad_initializer(playbook_app: 'MockApp'):
         """Test Sensitive field type with blank binary input.
 
         Bad initializer value. Sensitive only takes String and Binary values.
@@ -230,6 +226,3 @@ class TestInputsFieldTypeSensitive(InputTest):
             tcex.inputs.add_model(PytestModel)
 
         assert 'Sensitive Type expects String or Bytes values' in str(exc_info.value)
-
-
-

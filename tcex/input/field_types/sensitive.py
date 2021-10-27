@@ -76,9 +76,9 @@ class Sensitive:
                 f'Sensitive Type expects String or Bytes values, received: {type(value)}'
             )
 
-        if (value == '' or value == b'') and not cls._optional:
+        if value in ('', b'') and not cls._optional:
             raise ValueError(
-                f'Sensitive value may not be empty. Consider using Optional field variant '
+                'Sensitive value may not be empty. Consider using Optional field variant '
                 'definition if empty values are necessary.'
             )
 
@@ -92,4 +92,5 @@ class Sensitive:
 
 class SensitiveOptional(Sensitive):
     """Optional Field Type to hold sensitive data."""
+
     _optional = True

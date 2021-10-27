@@ -489,7 +489,7 @@ class TestInputsFieldTypeStringArray(InputTest):
         class PytestModel(BaseModel):
             """Test Model for Inputs"""
 
-            my_string: custom_string_array(split_on=',')
+            my_string: custom_string_array(split_on=',')  # noqa: F722
 
         config_data = {'my_string': '#App:1234:my_string!String'}
         app = playbook_app(config_data=config_data)
@@ -513,7 +513,7 @@ class TestInputsFieldTypeStringArray(InputTest):
         class PytestModel(BaseModel):
             """Test Model for Inputs"""
 
-            my_string: custom_string_array(split_on=',', strip_on_split=False)
+            my_string: custom_string_array(split_on=',', strip_on_split=False)  # noqa: F722
 
         config_data = {'my_string': '#App:1234:my_string!String'}
         app = playbook_app(config_data=config_data)
@@ -534,7 +534,7 @@ class TestInputsFieldTypeStringArray(InputTest):
         class PytestModel(BaseModel):
             """Test Model for Inputs"""
 
-            my_string: custom_string_array(split_on=',', strip_on_split=True)
+            my_string: custom_string_array(split_on=',', strip_on_split=True)  # noqa: F722
 
         config_data = {'my_string': '#App:1234:my_string!StringArray'}
         app = playbook_app(config_data=config_data)

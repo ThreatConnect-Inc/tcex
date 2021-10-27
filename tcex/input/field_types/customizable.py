@@ -86,10 +86,7 @@ def custom_string_array(**kwargs):
             f'Received type: {type(_split_on)}'
         )
 
-    namespace = {
-        '_split_on': _split_on,
-        '_strip_on_split': _strip
-    }
+    namespace = {'_split_on': _split_on, '_strip_on_split': _strip}
     return _custom_array(
         StringArrayOptional if _is_optional(kwargs) else StringArray, namespace, **kwargs
     )

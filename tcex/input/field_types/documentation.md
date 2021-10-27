@@ -30,7 +30,7 @@ The input definition for our sample Action would be defined as follows:
 ```
     class MyAction(BaseModel):
         """Model that defines inputs for Action 'My Action'"""
-        
+
         # Define the expected type of input "My Input".
         # Note that, even though this input takes both String and an Array of Strings, only StringArray is needed.
         # Single String values will be automatically converted to an Array of one String.
@@ -43,8 +43,8 @@ on default Array behavior and how to customize it, see the `Customizable Arrays`
 
 
 By default, the above definition would accept neither an empty String nor an empty Array as an initialization value. Input
-types come with `Optional` variants, which allow empty values. `Optional` variants have class names equal to their 
-non-optional counterparts, but with "Optional" appended to the name. For example, the `Optional` variant of StringArray 
+types come with `Optional` variants, which allow empty values. `Optional` variants have class names equal to their
+non-optional counterparts, but with "Optional" appended to the name. For example, the `Optional` variant of StringArray
 would be StringArrayOptional.
 
 The following definition would now accept both empty Strings and an empty Arrays as initialization values:
@@ -52,12 +52,12 @@ The following definition would now accept both empty Strings and an empty Arrays
 ```
     class MyAction(BaseModel):
         """Model that defines inputs for Action 'My Action'"""
-        
+
         # Can now be initialized with empty values
         my_input: StringArrayOptional
 ```
 
-Neither of the two examples above can be initialized with a `None` value. The `Optional` type hint must be used if 
+Neither of the two examples above can be initialized with a `None` value. The `Optional` type hint must be used if
 initializing an input with `None` is desired:
 
 The following definition allows either `None` or non-empty values as valid initialization values for `my_input`:
@@ -66,7 +66,7 @@ The following definition allows either `None` or non-empty values as valid initi
 
     class MyAction(BaseModel):
         """Model that defines inputs for Action 'My Action'"""
-        
+
         # This input can now be initialized with a None value, but not with any empty values
         my_input: Optional[StringArray]
 ```
@@ -77,7 +77,7 @@ The following definition allows either `None` and empty values as valid initiali
 
     class MyAction(BaseModel):
         """Model that defines inputs for Action 'My Action'"""
-        
+
         # This input can now be initialized with a None value and also with values considered empty
         my_input: Optional[StringArrayOptional]
 ```
@@ -94,7 +94,7 @@ function as follows:
 
     class MyAction(BaseModel):
         """Model that defines inputs for Action 'My Action'"""
-        
+
         # This input can no longer be initialized with a list that contains empty/null values.
         my_input: custom_string_array(
             allow_empty_members=False,
@@ -120,7 +120,7 @@ truly belong in the input's configured array type when the application executes.
 ##### Methods
 
 Note that some of AbstractArray's public methods rely on abstract methods, which must be implemented by a child of AbstractArray.
-It is a best practice to call the methods described below from the Array type that the user currently desires to work with. 
+It is a best practice to call the methods described below from the Array type that the user currently desires to work with.
 For example,if the user desires to work with Strings, the user should call the below methods from the StringArray class or from
 a StringArray instance in order to produce accurate results.
 
@@ -143,9 +143,9 @@ Parameters:
 
 - `value`: The value upon which the `is_array_member` assertion should be performed.
 
-This method passes `value` to the `is_array_member` method and raises an `InvalidMemberException` if `is_array_member` returns `False`. 
+This method passes `value` to the `is_array_member` method and raises an `InvalidMemberException` if `is_array_member` returns `False`.
 
-Note that `is_array_member` is an abstract method and must be implemented by a child of this class. 
+Note that `is_array_member` is an abstract method and must be implemented by a child of this class.
 
 See `is_array_member` method documentation for more details.
 
@@ -168,7 +168,7 @@ Parameters:
 
 - `value`: The value upon which the `is_empty_member` assertion should be performed.
 
-This method passes `value` to the `is_empty_member` method and raises an `EmptyMemberException` if `is_empty_member` returns `True`. 
+This method passes `value` to the `is_empty_member` method and raises an `EmptyMemberException` if `is_empty_member` returns `True`.
 
 Note that `value` is first passed to `assert_is_member`, which can result in an `InvalidMemberException` if `value` is not
 considered a member of the Array type from which this method is called.
@@ -215,8 +215,8 @@ Parameters:
 This method checks if `value` is equal to what is considered the empty value of the Array from which this method is called.
 
 This method is an abstract method that should be implemented by a child of this class, as each Array implementation will have
-its own definition of what is considered an empty Array member. The general contract that a child class must fulfill when 
-implementing this method is to return `True` if `value` is considered a empty member of the Array. `False` should be returned 
+its own definition of what is considered an empty Array member. The general contract that a child class must fulfill when
+implementing this method is to return `True` if `value` is considered a empty member of the Array. `False` should be returned
 if `value` is not an empty member of the Array.
 
 `value` should be confirmed to be a member of the array before checking if it is considered empty. This should be done
@@ -252,19 +252,19 @@ implementation of this method simply returns `value` as received.
 #### AbstractHybridArray
 
 AbstractHybridArray comes in handy when there is a need for a new Array type that is allowed to hold values that are
-considered members of already existing Array types. For example, an Array implementation that is allowed to hold both 
+considered members of already existing Array types. For example, an Array implementation that is allowed to hold both
 String and Binary types could be implemented by inheriting from this abstract class. By leveraging AbstractHybridArray
 to create the aforementioned Array type, the logic within AbstractHybridArray would know to reuse the `is_array_member`,
 `is_empty_member`, and `is_null_member` logic from StringArray and BinaryArray. While StringArray can only hold String types
 and BinaryArray can only hold Binary types, the new String/Binary Hybrid described here would be allowed to hold both
-String and Binary types. 
+String and Binary types.
 
-In short, inheriting from AbstractHybridArray allows the user to combine the type-enforcement logic from existing Array 
+In short, inheriting from AbstractHybridArray allows the user to combine the type-enforcement logic from existing Array
 types into a new Hybrid type without needing to duplicate logic.
 
 The only thing a user is responsible for when defining a new HybridArray is defining which existing Array types will
 make up the new HybridArray. This is achieved by implementing the abstract `type_compositions` method when inheriting
-from this class. Afterward, the logic within AbstractHybridArray will automatically know how to properly handle the new 
+from this class. Afterward, the logic within AbstractHybridArray will automatically know how to properly handle the new
 hybrid type-enforcement logic. See the `type_compositions` method documentation for details.
 
 ##### Methods
@@ -275,7 +275,7 @@ Parameters:
 
 - `value`: The value that will be checked for Array membership.
 
-In order for a value to be considered a member of a HybridArray, it must be considered a member of at least one of the 
+In order for a value to be considered a member of a HybridArray, it must be considered a member of at least one of the
 HybridArray's type compositions. This method iterates through the different types that compose the current HybridArray
 implementation being used and passes `value` to each composition's `is_array_member` method. If any of the aforementioned
 calls return `True`, then `value` is considered a member of the HybridArray from which this method is being called. This
@@ -289,10 +289,10 @@ Parameters:
 
 - `value`: The value that will be checked for Array membership.
 
-In order for a value to be considered a member of a HybridArray, it must be considered a member of at least one of the 
+In order for a value to be considered a member of a HybridArray, it must be considered a member of at least one of the
 HybridArray's type compositions. This method iterates through the different types that compose the current HybridArray
 implementation being used and passes `value` to each composition's `is_array_member` method. If any of the aforementioned
-calls return `True`, then `value` is considered a member of the HybridArray from which this method is being called. 
+calls return `True`, then `value` is considered a member of the HybridArray from which this method is being called.
 
 This logic is already implemented within AbstractHybridArray; however, a user can always choose to extend this logic within
 a child of AbstractHybridArray. If the user should choose to extend this logic, the user should ensure to call the superclass
@@ -332,7 +332,7 @@ implementation of this method in order to not lose the Hybrid functionality (`su
 
 ###### type_compositions
 
-Abstract method that must be implemented when defining a new HybridArray type. This method should return a list of Array types 
+Abstract method that must be implemented when defining a new HybridArray type. This method should return a list of Array types
 that make up the HybridArray implementation. In other words, this method should return a list of classes that inherit from
 AbstractArray.
 
@@ -404,7 +404,7 @@ included, which must be a non-empty string if present. None is also a valid memb
 The 'key' key must be a non-empty string.
 
 The 'value' key may be a String, StringArray, Binary, BinaryArray, TCEntity, TCEntityArray, and it also may be another
-KeyValue or a KeyValueArray. Note that this means that the value may be a single value or a list (Array) type. If the 
+KeyValue or a KeyValueArray. Note that this means that the value may be a single value or a list (Array) type. If the
 'value' key is a list type, then it must be a homogenous list. That is, the list may contain only Strings, only Binaries,
 only TCEntities, or only KeyValues.
 
@@ -418,11 +418,11 @@ Parameters:
 
 - `value`: The value that will be checked.
 
-An empty member of KeyValueArray is a value that passes the checks defined in `is_array_member` and is a 
+An empty member of KeyValueArray is a value that passes the checks defined in `is_array_member` and is a
 KeyValue that has a 'value' that is an empty list or is considered to be an empty member of StringArray or BinaryArray.
 
-If the passed-in value is a KeyValue whose 'value' is another KeyValue or a TCEntity, the nested KeyValue/TCEntity found 
-in the 'value' portion of the outer KeyValue are not checked for emptiness. If the 'value' portion is a non-empty list, 
+If the passed-in value is a KeyValue whose 'value' is another KeyValue or a TCEntity, the nested KeyValue/TCEntity found
+in the 'value' portion of the outer KeyValue are not checked for emptiness. If the 'value' portion is a non-empty list,
 the members of said list are not checked for emptiness. The passed-in KeyValue is considered non-empty in these cases.
 
 This method raises and `InvalidMemberException` if `value` is not considered to be a member of KeyValueArray. Otherwise,
@@ -436,7 +436,7 @@ Parameters:
 
 - `value`: The value that will be checked.
 
-A null member of KeyValueArray is a value that passes the checks defined in `is_array_member` and is either `None` or has 
+A null member of KeyValueArray is a value that passes the checks defined in `is_array_member` and is either `None` or has
 a 'value' key that is `None`.
 
 This method raises and `InvalidMemberException` if `value` is not considered to be a member of KeyValueArray. Otherwise,
@@ -457,7 +457,7 @@ Parameters:
 A member of TCEntityArray is a dictionary that must contain 'id', 'type', and 'value' keys. Additionally, the 'type' and
 'id' keys should always map to a non-empty string.
 
-The 'value' key is checked to be either an empty string or `None`.  The check for an empty 'value' key is performed in 
+The 'value' key is checked to be either an empty string or `None`.  The check for an empty 'value' key is performed in
 `is_empty_member`. The check for a null 'value' key is performed in `is_null_member`.
 
 This method raises and `InvalidMemberException` if `value` is not considered to be a member of TCEntityArray. Otherwise,
@@ -469,7 +469,7 @@ Parameters:
 
 - `value`: The value that will be checked.
 
-An empty member of TCEntityArray is a value that passes the checks defined in `is_array_member` and whose 'value' key 
+An empty member of TCEntityArray is a value that passes the checks defined in `is_array_member` and whose 'value' key
 maps to an empty string.
 
 This method raises and `InvalidMemberException` if `value` is not considered to be a member of TCEntityArray. Otherwise,
@@ -483,7 +483,7 @@ Parameters:
 
 - `value`: The value that will be checked.
 
-A null member of TCEntityArray is a value that passes the checks defined in `is_array_member` and is either `None` or has 
+A null member of TCEntityArray is a value that passes the checks defined in `is_array_member` and is either `None` or has
 a 'value' key that is `None`.
 
 This method raises and `InvalidMemberException` if `value` is not considered to be a member of TCEntityArray. Otherwise,
@@ -497,7 +497,7 @@ both String and TCEntity instances.
 ##### Abstract Method Implementations
 
 As IntelArray extends from AbstractHybridArray, the only abstract method that this class implements is the
-`type_compositions` method. 
+`type_compositions` method.
 
 ###### type_compositions
 
@@ -523,39 +523,39 @@ TCEntity would be yielded. In the end, this method produces a generator that is 
 
 #### Group Array
 
-This type is a descendant of IntelArray. This means that GroupArray is a HybridArray that may hold both String and 
-TCEntity types as IntelArray does, except that GroupArray further checks that TCEntities have a 'type' that is a valid 
+This type is a descendant of IntelArray. This means that GroupArray is a HybridArray that may hold both String and
+TCEntity types as IntelArray does, except that GroupArray further checks that TCEntities have a 'type' that is a valid
 Group type.
 
 ##### Methods Extended From Superclass
 
 ###### is_array_member
 
-In addition to passing the checks provided in `AbstractHybridArray.is_array_member`, a value must also contain a 'type' 
+In addition to passing the checks provided in `AbstractHybridArray.is_array_member`, a value must also contain a 'type'
 key that is one of the valid Group types (if value is a TCEntity) in order to be considered a member of GroupArray.
 
 #### Indicator Array
 
 This type is a descendant of IntelArray. This means that IndicatorArray is a HybridArray that may hold both String and
-TCEntity types as IntelArray does, except that IndicatorArray further checks that TCEntities have a 'type' that is a 
+TCEntity types as IntelArray does, except that IndicatorArray further checks that TCEntities have a 'type' that is a
 valid Indicator type.
 
 ##### Methods Extended From Superclass
 
 ###### is_array_member
 
-In addition to passing the checks provided in `AbstractHybridArray.is_array_member`, a value must also contain a 'type' 
-key that is one of the valid Indicator types (if value is a TCEntity) in order to be considered a member of 
+In addition to passing the checks provided in `AbstractHybridArray.is_array_member`, a value must also contain a 'type'
+key that is one of the valid Indicator types (if value is a TCEntity) in order to be considered a member of
 IndicatorArray.
 
-#### Customizable Arrays 
+#### Customizable Arrays
 
 Customizable Arrays allow the user to change the default behavior of Arrays. Some settings apply to all Array types, and
-some settings are specific to certain Array types. Customizable Arrays are created using factory functions. The settings 
+some settings are specific to certain Array types. Customizable Arrays are created using factory functions. The settings
 that a user desires to customize should be passed as keyword arguments to the desired custom Array factory function.
 
 There exists a customization factory function for each built-in Array type. If the user desires to customize a StringArray,
-then `custom_string_array` should be used. If the user desires to customize a BinaryArray, then `custom_binary_array` 
+then `custom_string_array` should be used. If the user desires to customize a BinaryArray, then `custom_binary_array`
 should be used, and so on.
 
 The return type of custom Array factory functions are of the type that corresponds to each factory function, except
@@ -575,8 +575,8 @@ This customization keyword argument takes a boolean value and is `True` by defau
 Array is initialized with a list value, this flag decides if the list may contain empty members. The emptiness check
 is different for each Array type. See `is_empty_member` method documentation of different Array types for details.
 
-For example, if a StringArray is initialized with `['']`, then `allow_empty_members` would deem the aforementioned list 
-value as valid by default; however, if `allow_empty_members` is `False`, then a `ValueError` would be raised during 
+For example, if a StringArray is initialized with `['']`, then `allow_empty_members` would deem the aforementioned list
+value as valid by default; however, if `allow_empty_members` is `False`, then a `ValueError` would be raised during
 initialization.
 
 Note that this option simply denotes whether the framework should inspect the values of a list that is used to initialize
@@ -592,15 +592,15 @@ This customization keyword argument takes a boolean value and is `True` by defau
 Array is initialized with a list value, this flag decides if the list may contain empty members. The null check
 is different for each Array type. See `is_null_member` method documentation of different Array types for details.
 
-For example, if a StringArray is initialized with `[None]`, then `allow_null_members` would deem the aforementioned list 
-value as valid by default; however, if `allow_empty_members` is `False`, then a `ValueError` would be raised during 
+For example, if a StringArray is initialized with `[None]`, then `allow_null_members` would deem the aforementioned list
+value as valid by default; however, if `allow_empty_members` is `False`, then a `ValueError` would be raised during
 initialization.
 
 Note that this option simply denotes whether the framework should inspect the values of a list that is used to initialize
 an Array for null members. This value has no effect on whether the Array type will accept a null member.
 
-Controlling whether the Array type will accept a null member (Typically `None`, but can vary depending on Array type. 
-See `is_null_member` method of different Array types for more details.) is described in the `Usage` section of this 
+Controlling whether the Array type will accept a null member (Typically `None`, but can vary depending on Array type.
+See `is_null_member` method of different Array types for more details.) is described in the `Usage` section of this
 document.
 
 ###### optional
@@ -616,7 +616,7 @@ to a StringArrayCustom type. For more information on `Optional` variants, see th
 
 A list of String instances or `None`. By default, this option is set to `None`. If this value is not `None`, it must be
 a list of String instances, and the String instances must all be valid Indicator or Group types. This customization
-option alters the behavior of the `entities` method available in the IntelArray class (and available in GroupArray and 
+option alters the behavior of the `entities` method available in the IntelArray class (and available in GroupArray and
 IndicatorArray by process of inheritance). See the `entities` method for more information.
 
 ##### GroupArray Customizations
@@ -645,7 +645,7 @@ which could also be a comma-separated values String. In the case of a CSV String
 
 ###### strip_on_split
 
-This customization option only has an effect when `split_on` is not `None`. This option takes a boolean value and is 
+This customization option only has an effect when `split_on` is not `None`. This option takes a boolean value and is
 `True` by default. If this option is `True`, then `strip` will be called on the Strings that result from the `split`
 operation. Therefore, if `split_on` is set to `,` and a StringArray is initialized with `one ,two, three, `, then the
 StringArray will contain `['one', 'two', 'three']` in the end. Note that this has the additional side effect of removing
@@ -665,15 +665,15 @@ of this type is as follows:
 ```
     class MyAction(BaseModel):
         """Model that defines inputs for Action 'My Action'"""
-        
+
         # Define the expected type of input "My Input".
         my_sensitive_input: Sensitive
 ```
 
 Within integration code, direct usage of `my_sensitive_input` results in a masked value (as in `******`). This is done
 to prevent accidental logging of sensitive data. In order to access the real value of this field, one must access its
-`value` property like so: `my_sensitive_input.value`. 
+`value` property like so: `my_sensitive_input.value`.
 
-This type may be initialized with String and Binary instances only. 
+This type may be initialized with String and Binary instances only.
 
 This input type also has an `Optional` variant. See the `Usage` section of this document for more details about `Optional` variants.

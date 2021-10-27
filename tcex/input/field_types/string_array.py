@@ -39,8 +39,8 @@ class StringArray(AbstractArray):
         if isinstance(value, str) and value != '' and cls._split_on is not None:
             if cls._strip_on_split:
                 return [val.strip() for val in value.split(cls._split_on) if val.strip()]
-            else:
-                return value.split(cls._split_on)
+
+            return value.split(cls._split_on)
 
         return value
 
