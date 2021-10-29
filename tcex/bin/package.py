@@ -6,6 +6,7 @@ import json
 import os
 import shutil
 from pathlib import Path
+from typing import List, Optional
 
 # third-party
 import colorama as c
@@ -23,7 +24,9 @@ class Package(BinABC):
     install.json file or files will be automatically run before packaging the app.
     """
 
-    def __init__(self, excludes: str, ignore_validation: bool, output_dir: Path) -> None:
+    def __init__(
+        self, excludes: Optional[List[str]], ignore_validation: bool, output_dir: Path
+    ) -> None:
         """Initialize Class properties."""
         super().__init__()
         self._excludes = excludes or []

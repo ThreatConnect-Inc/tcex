@@ -69,9 +69,10 @@ class Template(BinABC):
             url = f'{self.base_url}/contents/{template}'
 
         params = {'ref': branch}
+        self.log.warning(f'Using branch for templates: {branch} ==> {url}')
         r = self.session.get(url, params=params)
         if not r.ok:
-            self.log.errors(f'Failed retrieving contents for type {url}.')
+            self.log.error(f'Failed retrieving contents for type {url}.')
             self.errors = True
 
         for content in r.json():
@@ -377,7 +378,7 @@ class Template(BinABC):
             'webhook_trigger_service',
         ]
 
-    def update(self, branch: str, template: str) -> List[dict]:
+    def update(self, branch: str, template: str, ignore_hash=False) -> List[dict]:
         """Initialize an App with template files."""
         template = template or self.tj.data.template_name
         type_ = self.tj.data.template_type
@@ -407,7 +408,7 @@ class Template(BinABC):
                 file_hash = self.file_hash(fqfn)
 
             # has the file hash changed since init or last update
-            if self.template_manifest.get(name, {}).get('md5') == file_hash:
+            if not ignore_hash and self.template_manifest.get(name, {}).get('md5') == file_hash:
                 self.log.debug(
                     f'action=update, template-file={name}, '
                     'check=hash-check, result=hash-has-not-changed'

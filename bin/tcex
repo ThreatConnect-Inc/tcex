@@ -89,8 +89,8 @@ def init(
     try:
         tt.print_title('Installing template files ...', divider=False, fg_color='white')
         downloads = tt.init(branch, type_, template)
+        typer.echo('')  # add additional space before progress bar
         with typer.progressbar(downloads, label='Downloading', width=80) as progress:
-            typer.echo('')  # add additional space before progress bar
             for item in progress:
                 tt.download_template_file(item)
 
@@ -137,8 +137,9 @@ def list(
 
 @app.command()
 def package(
-    # TODO: [high] figure out how to get a list for this input or REMOVE
-    excludes: Optional[str] = typer.Option(None, help='File and directories to exclude from build'),
+    excludes: Optional[str] = typer.Option(
+        None,
+        help='File and directories to exclude from build in a comma-seperated list.'),
     ignore_validation: Optional[bool] = typer.Option(
         False, help='If true, validation errors will not prevent package.'
     ),
@@ -154,6 +155,9 @@ def package(
     This command will write an <app name>.tcx file to the output_dir (default: target). This
     App package can be directly installed into ThreatConnect.
     """
+    if excludes:
+        excludes = [e.strip() for e in excludes.split(',')]
+
     try:
         # validate App
         tcv = Validate(ignore_validation)
@@ -182,6 +186,7 @@ def package(
         raise typer.Exit(code=tcv.exit_code)
 
 
+# TODO --force
 @app.command()
 def update(
     template: Optional[str] = typer.Option(
@@ -190,6 +195,8 @@ def update(
     branch: Optional[str] = typer.Option(
         'main', help='The git branch of the tcex-app-template repository to use.'
     ),
+    force: bool = typer.Option(
+        False, help="Update files from template even if they haven't changed.")
 ):
     """Update an project with latest template files.
 
@@ -201,7 +208,7 @@ def update(
     """
     tt = Template()
     try:
-        downloads = tt.update(branch, template)
+        downloads = tt.update(branch, template, force)
         tt.print_title('Updating template files ...', divider=False, fg_color='white')
         if not downloads:
             typer.secho('\nNo files to update.', fg=typer.colors.GREEN)
