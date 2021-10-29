@@ -321,11 +321,10 @@ class Logger:
         Args:
             inputs: The inputs model.
         """
-        self._log_platform()
         self._log_app_data()
+        self._log_platform()
         self._log_python_version()
         self._log_tcex_version()
-        self._log_tcex_path()
         self._log_tc_proxy(inputs)
 
     def _log_app_data(self) -> None:
@@ -333,12 +332,13 @@ class Logger:
         try:
             self.log.info(f'app-name="{self.ij.data.display_name}"')
             if self.ij.data.features:
-                self.log.info(f'app-features={self.ij.data.features}')
+                self.log.info(f'''app-features={','.join(self.ij.data.features)}''')
             self.log.info(f'app-minimum-threatconnect-version={self.ij.data.min_server_version}')
             self.log.info(f'app-runtime-level={self.ij.data.runtime_level}')
-            self.log.info(f'app-version={self.ij.data.program_version}')
+            app_version = f'app-version={self.ij.data.program_version}'
             if self.ij.data.commit_hash is not None:
-                self.log.info(f'app-commit-hash={self.ij.data.commit_hash}')
+                app_version += f', app-commit-hash={self.ij.data.commit_hash}'
+            self.log.info(app_version)  # version and commit hash
         except Exception:  # nosec; pragma: no cover
             pass
 
@@ -366,11 +366,7 @@ class Logger:
 
     def _log_tcex_version(self) -> None:
         """Log the current TcEx version number."""
-        self.log.info(f'tcex-version={__import__(__name__).__version__}')
-
-    def _log_tcex_path(self) -> None:
-        """Log the current TcEx path."""
         app_path = str(pathlib.Path().parent.absolute())
         full_path = str(pathlib.Path(__file__).parent.absolute())
         tcex_path = os.path.dirname(full_path.replace(app_path, ''))
-        self.log.info(f'tcex-path="{tcex_path}"')
+        self.log.info(f'tcex-version={__import__(__name__).__version__}, tcex-path="{tcex_path}"')

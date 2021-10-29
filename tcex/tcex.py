@@ -14,10 +14,10 @@ from typing import Optional, Union
 from requests import Session
 
 # first-party
-from tcex.api.tc.v2.threat_intelligence import ThreatIntelligence
 from tcex.api.tc.v2.metrics import Metrics
 from tcex.api.tc.v2.notifications import Notifications
-from tcex.api.tc.v3.case_management import CaseManagement
+from tcex.api.tc.v2.threat_intelligence import ThreatIntelligence
+from tcex.api.tc.v3.case_management.case_management import CaseManagement
 from tcex.app_config.install_json import InstallJson
 from tcex.app_feature import AdvancedRequest
 from tcex.backports import cached_property
@@ -27,7 +27,8 @@ from tcex.batch.batch_writer import BatchWriter
 from tcex.datastore import Cache, DataStore
 from tcex.input.input import Input
 from tcex.key_value_store import KeyValueApi, KeyValueRedis, RedisClient
-from tcex.logger import Logger, TraceLogger
+from tcex.logger.logger import Logger
+from tcex.logger.trace_logger import TraceLogger
 from tcex.playbook import Playbook
 from tcex.pleb import Event, proxies
 from tcex.services.api_service import ApiService
@@ -85,6 +86,9 @@ class TcEx:
         # support external Apps that will not use tokens
         if self.ij.fqfn.is_file():
             self.event.subscribe(channel='register_token', callback=self.token.register_token)
+
+        # log standard App info early so it shows at the top of the logfile
+        self.logger.log_info(self.inputs.data)
 
     def _signal_handler(self, signal_interupt: int, _) -> None:
         """Handle singal interrupt."""
@@ -521,9 +525,6 @@ class TcEx:
 
         # replay cached log events
         _logger.replay_cached_events(handler_name='cache')
-
-        # log standard App data
-        _logger.log_info(self.inputs.data)
 
         return _logger
 

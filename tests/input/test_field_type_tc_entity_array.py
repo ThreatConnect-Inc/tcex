@@ -481,3 +481,31 @@ class TestInputsFieldTypeTCEntityArray(InputTest):
         # error due to None being in input
         assert 'None' in err_msg
         assert 'may not be null' in err_msg
+
+    def test_custom_field_type_entity_array_optional_keyword(self, playbook_app: 'MockApp'):
+        """Test TCEntityArray field type with empty input.
+
+        This test simply asserts that passing optional=True to the custom Array factory function
+        returns a custom Optional variant
+
+        Args:
+            playbook_app (fixture): An instance of MockApp.
+        """
+
+        entity = {'type': 'File', 'value': '', 'id': '1000'}
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            # test for both empty cases
+            my_entity: Optional[custom_tc_entity_array(optional=True)]
+
+        config_data = {
+            'my_entity': '#App:1234:my_entity!TCEntity',
+        }
+        app = playbook_app(config_data=config_data)
+        tcex = app.tcex
+        self._stage_key_value('my_entity', '#App:1234:my_entity!TCEntity', entity, tcex)
+        tcex.inputs.add_model(PytestModel)
+
+        assert type(tcex.inputs.data.my_entity).__name__ == 'TCEntityArrayOptionalCustom'

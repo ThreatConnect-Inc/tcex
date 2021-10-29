@@ -12,7 +12,7 @@ from typing import List, Optional
 import colorama as c
 
 # first-party
-from tcex.app_config import InstallJson
+from tcex.app_config.install_json import InstallJson
 from tcex.backports import cached_property
 from tcex.bin.bin_abc import BinABC
 

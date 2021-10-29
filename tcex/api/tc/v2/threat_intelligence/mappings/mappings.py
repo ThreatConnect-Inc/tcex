@@ -7,8 +7,8 @@ from typing import TYPE_CHECKING, Optional
 from urllib.parse import unquote
 
 # first-party
-from tcex.tcex_error_codes import TcExErrorCodes
 from tcex.api.tc.v2.threat_intelligence.tcex_ti_tc_request import TiTcRequest
+from tcex.tcex_error_codes import TcExErrorCodes
 from tcex.utils import Utils
 
 if TYPE_CHECKING:
@@ -57,9 +57,7 @@ class Mappings:
 
     @property
     def _excluded_properties(self):
-        """
-        Returns a list of properties to exclude when creating a dict of the children Classes.
-        """
+        """Return a list of properties to exclude when creating a dict of the children Classes."""
         return ['tcex', 'kwargs', 'api_endpoint']
 
     def _handle_error(
@@ -98,9 +96,7 @@ class Mappings:
 
     @property
     def as_dict(self):
-        """
-        Returns the dict representation of the case management object.
-        """
+        """Return the dict representation of the case management object."""
         properties = vars(self)
         as_dict = {}
         for key, value in properties.items():
@@ -164,8 +160,8 @@ class Mappings:
 
     @api_branch.setter
     def api_branch(self, api_branch):
-        """
-        Sets the Api Entity
+        """Set the Api Entity
+
         Args:
             api_branch:
 
@@ -176,8 +172,8 @@ class Mappings:
 
     @api_entity.setter
     def api_entity(self, api_entity):
-        """
-        Sets the Api Entity
+        """Set the Api Entity
+
         Args:
             api_entity:
 
@@ -188,8 +184,8 @@ class Mappings:
 
     @api_type.setter
     def api_type(self, api_type):
-        """
-        Sets the Api Type
+        """Set the Api Type
+
         Args:
             api_type:
 
@@ -200,8 +196,8 @@ class Mappings:
 
     @tc_requests.setter
     def tc_requests(self, tc_requests):
-        """
-        Sets the Tc Request Object
+        """Set the Tc Request Object
+
         Args:
             tc_requests:
 
@@ -212,8 +208,8 @@ class Mappings:
 
     @api_sub_type.setter
     def api_sub_type(self, sub_type):
-        """
-        Sets the Api Sub Type
+        """Set the Api Sub Type
+
         Args:
             sub_type:
 
@@ -224,8 +220,8 @@ class Mappings:
 
     @unique_id.setter
     def unique_id(self, unique_id):
-        """
-        Sets the Unique Id
+        """Set the Unique Id
+
         Args:
             unique_id:
 
@@ -241,8 +237,8 @@ class Mappings:
 
     @data.setter
     def data(self, data):
-        """
-        Sets the data
+        """Set the data
+
         Args:
             data:
 
@@ -254,8 +250,8 @@ class Mappings:
             self._set_unique_id(data)
 
     def set(self, **kwargs):
-        """
-        A generic way to update the attributes of a TC data object.
+        """Set attributes of a TC data object.
+
         Args:
             **kwargs:
 
@@ -269,8 +265,7 @@ class Mappings:
                 self._data[arg] = value
 
     def create(self):
-        """
-        Creates the Indicator/Group/Victim or Security Label given Owner
+        """Create the Indicator/Group/Victim or Security Label given Owner
 
         Args:
         """
@@ -285,9 +280,7 @@ class Mappings:
         return response
 
     def delete(self):
-        """
-        Deletes the Indicator/Group/Victim or Security Label
-        """
+        """Delete the Indicator/Group/Victim or Security Label"""
         if not self.can_delete():
             self._handle_error(915, [self.type])
 
@@ -296,9 +289,7 @@ class Mappings:
         )
 
     def update(self):
-        """
-        Updates the Indicator/Group/Victim or Security Label
-        """
+        """Update the Indicator/Group/Victim or Security Label"""
         if not self.can_update():
             self._handle_error(905, [self.type])
 
@@ -307,8 +298,8 @@ class Mappings:
         )
 
     def single(self, filters=None, params=None):
-        """
-        Gets the Indicator/Group/Victim or Security Label
+        """Get the Indicator/Group/Victim or Security Label
+
         Args:
             filters:
             params: parameters to pass in to get the object
@@ -329,8 +320,8 @@ class Mappings:
         )
 
     def many(self, filters=None, params=None):
-        """
-        Gets the Indicator/Group/Victim or Security Labels
+        """Get the Indicator/Group/Victim or Security Labels
+
         Args:
             filters:
             owner:
@@ -349,8 +340,8 @@ class Mappings:
         )
 
     def request(self, result_limit, result_start, filters=None, params=None):
-        """
-        Gets the Indicator/Group/Victim or Security Labels
+        """Get the Indicator/Group/Victim or Security Labels
+
         Args:
             filters:
             owner:
@@ -372,8 +363,8 @@ class Mappings:
         )
 
     def tags(self, filters=None, params=None):
-        """
-        Gets the tags from a Indicator/Group/Victim/Security Labels
+        """Get the tags from a Indicator/Group/Victim/Security Labels
+
         Args:
             filters:
             owner:
@@ -396,13 +387,12 @@ class Mappings:
         )
 
     def tag(self, name, action='ADD', params=None):
-        """
-        Adds a tag to a Indicator/Group/Victim/Security Label
+        """Add a tag to a Indicator/Group/Victim/Security Label
+
         Args:
             params:
             action:
             name: The name of the tag
-
         """
         if not name:
             self._handle_error(925, ['name', 'tag', 'name', 'name', name])
@@ -424,17 +414,16 @@ class Mappings:
         return None
 
     def add_tag(self, name):
-        """
-        Adds a tag to a Indicator/Group/Victim/Security Label
+        """Add a tag to a Indicator/Group/Victim/Security Label
+
         Args:
             name: The name of the tag
-
         """
         return self.tag(name, action='ADD')
 
     def get_tag(self, name, params=None):
-        """
-        Gets a tag from a Indicator/Group/Victim/Security Label
+        """Get a tag from a Indicator/Group/Victim/Security Label
+
         Args:
             name: The name of the tag
             params:
@@ -442,20 +431,17 @@ class Mappings:
         return self.tag(name, action='GET', params=params)
 
     def delete_tag(self, name):
-        """
-        Deletes a tag from a Indicator/Group/Victim/Security Label
+        """Delete a tag from a Indicator/Group/Victim/Security Label
+
         Args:
             name: The name of the tag
         """
-
         return self.tag(name, action='DELETE')
 
     def labels(self, filters=None, params=None):
-        """
-        Gets the security labels from a Indicator/Group/Victim
+        """Get the security labels from a Indicator/Group/Victim
 
         Yields: A Security label
-
         """
         if not self.can_update():
             self._handle_error(910, [self.type])
@@ -470,15 +456,13 @@ class Mappings:
         )
 
     def label(self, label, action='ADD', params=None):
-        """
-        Adds a Security Label to a Indicator/Group or Victim
+        """Add a Security Label to a Indicator/Group or Victim
+
         Args:
             params:
             label: The name of the Security Label
             action:
-
         """
-
         if params is None:
             params = {}
 
@@ -512,16 +496,16 @@ class Mappings:
         return None
 
     def add_label(self, label):
-        """
-        Adds a label to a Indicator/Group/Victim
+        """Add a label to a Indicator/Group/Victim
+
         Args:
             label: The name of the Security Label
         """
         return self.label(label, action='ADD')
 
     def get_label(self, label, params=None):
-        """
-        Gets a security label from a Indicator/Group/Victim
+        """Get a security label from a Indicator/Group/Victim
+
         Args:
             label: The name of the Security Label
             params:
@@ -529,19 +513,17 @@ class Mappings:
         return self.label(label, action='GET', params=params)
 
     def delete_label(self, label):
-        """
-        Deletes a security label from a Indicator/Group/Victim
+        """Delete a security label from a Indicator/Group/Victim
+
         Args:
             label: The name of the Security Label
         """
         return self.label(label, action='DELETE')
 
     def indicator_associations(self, params=None):
-        """
-        Gets the indicator association from a Indicator/Group/Victim
+        """Get the indicator association from a Indicator/Group/Victim
 
         Yields: Indicator Association
-
         """
         if not self.can_update():
             self._handle_error(910, [self.type])
@@ -554,11 +536,9 @@ class Mappings:
         )
 
     def group_associations(self, params=None):
-        """
-        Gets the group association from a Indicator/Group/Victim
+        """Get the group association from a Indicator/Group/Victim
 
         Yields: Group Association
-
         """
         if params is None:
             params = {}
@@ -571,11 +551,9 @@ class Mappings:
         )
 
     def victim_asset_associations(self, params=None):
-        """
-        Gets the victim asset association from a Indicator/Group/Victim
+        """Get the victim asset association from a Indicator/Group/Victim
 
         Yields: Victim Association json
-
         """
         if params is None:
             params = {}
@@ -589,8 +567,7 @@ class Mappings:
     def indicator_associations_types(
         self, indicator_type, api_entity=None, api_branch=None, params=None
     ):
-        """
-        Gets the indicator association from a Indicator/Group/Victim
+        """Get the indicator association from a Indicator/Group/Victim
 
         Args:
             indicator_type:
@@ -619,8 +596,7 @@ class Mappings:
         )
 
     def group_associations_types(self, group_type, api_entity=None, api_branch=None, params=None):
-        """
-        Gets the group association from a Indicator/Group/Victim
+        """Get the group association from a Indicator/Group/Victim
 
         Args:
             group_type:
@@ -649,8 +625,7 @@ class Mappings:
         )
 
     def victim_asset_associations_type(self, victim_asset_type, params=None):
-        """
-        Gets the victim association from a Indicator/Group/Victim
+        """Get the victim association from a Indicator/Group/Victim
 
         Args:
             victim_asset_type:
@@ -674,8 +649,7 @@ class Mappings:
         )
 
     def add_association(self, target, api_type=None, api_branch=None, unique_id=None):
-        """
-        Adds a association to a Indicator/Group/Victim
+        """Add a association to a Indicator/Group/Victim
 
         Args:
             target:
@@ -706,8 +680,7 @@ class Mappings:
         )
 
     def delete_association(self, target, api_type=None, api_branch=None, unique_id=None):
-        """
-        Deletes a association from a Indicator/Group/Victim
+        """Delete a association from a Indicator/Group/Victim
 
         Args:
             target:
@@ -738,8 +711,7 @@ class Mappings:
         )
 
     def attributes(self, params=None):
-        """
-        Gets the attributes from a Group/Indicator or Victim
+        """Get the attributes from a Group/Indicator or Victim
 
         Yields: attribute json
 
@@ -754,8 +726,7 @@ class Mappings:
         )
 
     def attribute(self, attribute_id, action='GET', params=None):
-        """
-        Gets the attribute from a Group/Indicator or Victim
+        """Get the attribute from a Group/Indicator or Victim
 
 
         Args:
@@ -793,9 +764,7 @@ class Mappings:
     def add_attribute(
         self, attribute_type, attribute_value, source=None, displayed=None, params=None
     ):
-        """
-        Adds a attribute to a Group/Indicator or Victim
-
+        """Add a attribute to a Group/Indicator or Victim
 
         Args:
             source:
@@ -805,7 +774,6 @@ class Mappings:
             attribute_value:
 
         Returns: attribute json
-
         """
         if not self.can_update():
             self._handle_error(910, [self.type])
@@ -828,9 +796,7 @@ class Mappings:
     def update_attribute(
         self, attribute_value, attribute_id, source=None, displayed=None, params=None
     ):
-        """
-        Adds a attribute to a Group/Indicator or Victim
-
+        """Add a attribute to a Group/Indicator or Victim
 
         Args:
             source:
@@ -840,7 +806,6 @@ class Mappings:
             attribute_value:
 
         Returns: attribute json
-
         """
         if not self.can_update():
             self._handle_error(910, [self.type])
@@ -861,9 +826,7 @@ class Mappings:
         )
 
     def delete_attribute(self, attribute_id):
-        """
-        Deletes a attribute from a Group/Indicator or Victim
-
+        """Delete a attribute from a Group/Indicator or Victim
 
         Args:
             attribute_id:
@@ -879,8 +842,7 @@ class Mappings:
         )
 
     def attribute_labels(self, attribute_id, params=None):
-        """
-        Gets the security labels from a attribute
+        """Get the security labels from a attribute
 
         Yields: Security label json
 
@@ -900,17 +862,7 @@ class Mappings:
         )
 
     def attribute_label(self, attribute_id, label, action='GET', params=None):
-        """
-        Gets a security labels from a attribute
-
-        Args:
-            attribute_id:
-            label:
-            action:
-            params:
-
-        Returns: Security label json
-        """
+        """Get a security labels from a attribute"""
         if params is None:
             params = {}
         if not self.can_update():
@@ -940,12 +892,11 @@ class Mappings:
         return None
 
     def add_attribute_label(self, attribute_id, label):
-        """
-        Adds a security labels to a attribute
+        """Add a security labels to a attribute
 
         Args:
-            attribute_id:
-            label:
+            attribute_id: The attribute Id
+            label: The attribute label
 
         Returns: A response json
         """
@@ -957,68 +908,68 @@ class Mappings:
         )
 
     def can_create(self):  # pylint: disable=no-self-use
-        """Determines if the object can be created."""
+        """Determine if the object can be created."""
         return True
 
     def can_delete(self):
-        """Determines if the object can be deleted."""
+        """Determine if the object can be deleted."""
         return self.unique_id is not None
 
     def can_update(self):
-        """Determines if the object can be updated."""
+        """Determine if the object can be updated."""
         return self.unique_id is not None
 
     @staticmethod
     def is_indicator():
-        """Determines if the object is a Indicator."""
+        """Determine if the object is a Indicator."""
         return False
 
     @staticmethod
     def is_group():
-        """Determines if the object is a Group."""
+        """Determine if the object is a Group."""
         return False
 
     @staticmethod
     def is_victim():
-        """Determines if the object is a Victim."""
+        """Determine if the object is a Victim."""
         return False
 
     @staticmethod
     def is_tag():
-        """Determines if the object is a Tag."""
+        """Determine if the object is a Tag."""
         return False
 
     @staticmethod
     def is_security_label():
-        """Determines if the object is a Security Label."""
+        """Determine if the object is a Security Label."""
         return False
 
     @staticmethod
     def is_task():
-        """Determines if the object is a Task."""
+        """Determine if the object is a Task."""
         return False
 
     @staticmethod
     def is_encoded(uri):
-        """Determines if a uri is currently encoded"""
+        """Determine if a uri is currently encoded"""
         uri = uri or ''
 
         return uri != unquote(uri)
 
     def fully_decode_uri(self, uri):
-        """Decodes a url till it is no longer encoded."""
-        saftey_valve = 0
+        """Decode a url till it is no longer encoded."""
+        safety_valve = 0
 
         while self.is_encoded(uri):
             uri = unquote(uri)
-            saftey_valve += 1
-            if saftey_valve > 10:
+            safety_valve += 1
+            if safety_valve > 10:
                 break
 
         return uri
 
     def _set_unique_id(self, json_response):
-        """Sets the Unique Id given a json"""
+        """Set the Unique Id given a json"""
         self.unique_id = json_response.get('id')
 
     def __str__(self):

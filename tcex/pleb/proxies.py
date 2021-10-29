@@ -1,6 +1,6 @@
 """Proxies"""
 # standard library
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 from urllib.parse import quote
 
 if TYPE_CHECKING:

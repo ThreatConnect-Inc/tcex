@@ -19,51 +19,19 @@ pytest -n 12 --ignore-glob='*tokens*' --cov=tcex/ --cov-report=term-missing test
 pytest -n 12 --cov=tcex/ --cov-report=term-missing tests
 # 5 failed, 875 passed, 28 warnings in 105.23s (0:01:45)
 
-# Coverage on Single Module
+# Module Testing
 
-## Test the app_config module: install.json, job.json, layout.json, and tcex.json
+## api/tc
 
-> **Note:** Due to creating temp files this test suite cannot be run in parallel.
+### v2
 
-pytest --cov=tcex/app_config/ --cov-report=term-missing tests/app_config/
+### v3
 
+#### artifacts
+pytest --cov=tcex/api/tc/v3/artifacts --cov-report=term-missing tests/api/tc/v3/artifacts/test_artifact_interface.py
 
-pytest --cov=tcex/app_feature/ --cov-report=term-missing tests/app_feature/
-pytest -n auto --cov=tcex/batch/ --cov-report=term-missing tests/batch/
-pytest -n auto --cov=tcex/case_management/ --cov-report=term-missing tests/case_management/
-pytest --cov=tcex/datastore/ --cov-report=term-missing tests/datastore/
-pytest -n auto --cov=tcex/decorators/ --cov-report=term-missing tests/decorators/
-
-
-## Test the input module: Inputs and Field Types
-
-> **Note:** Due to creating install.json and app_config.json this test suite cannon be run in parallel.
-
-pytest --cov=tcex/input/ --cov-report=term-missing tests/input/
-
-
-pytest --cov=tcex/logger/ --cov-report=term-missing tests/logger/
-pytest -n auto --cov=tcex/metrics/ --cov-report=term-missing tests/metrics/
-pytest -n auto --cov=tcex/notifications/ --cov-report=term-missing tests/notifications/
-pytest -n auto --cov=tcex/playbooks/ --cov-report=term-missing tests/playbooks/
-pytest --cov=tcex/profile/ --cov-report=term-missing tests/profile/
-pytest --cov=tcex/sessions/ --cov-report=term-missing tests/sessions/
-pytest -n auto --cov=tcex/ --cov-report=term-missing tests/tcex_methods/
-pytest -n auto --cov=tcex/api/tc/v2/threat_intelligence/ --cov-report=term-missing tests/threat_intelligence/
-pytest --cov=tcex/tokens/ --cov-report=term-missing tests/tokens/
-pytest -n auto --cov=tcex/utils/ --cov-report=term-missing tests/utils/
-pytest -n auto --cov=tcex/validators/ --cov-report=term-missing tests/validators/
-
-# Release Testing Run
-# normal - in 1526.29s
-pytest --cov=. --cov-report=term-missing --cov-report=html:tests/reports/cov-report --html=tests/reports/tcex-report.html --self-contained-html tests/
-# concurrent normal - in 170.33s (0:02:50)
-pytest -n 12 --cov=. --cov-report=term-missing --cov-report=html:tests/reports/cov-report --html=tests/reports/tcex-report.html --self-contained-html tests/
-# concurrent loadscope - in 196.37s (0:03:16)
-pytest -n 12 --dist=loadscope --cov=. --cov-report=term-missing --cov-report=html:tests/reports/cov-report --html=tests/reports/tcex-report.html --self-contained-html tests/
-# concurrent loadfile - in 210.22s (0:03:30)
-pytest -n 12 --dist=loadfile --cov=. --cov-report=term-missing --cov-report=html:tests/reports/cov-report --html=tests/reports/tcex-report.html --self-contained-html tests/
-
+# testing - delete
+pytest tests/api/tc/v3/artifacts/test_artifact_interface.py -s -k test_artifact_create_and_retrieve_nested_types
 # Case Management Error Codes
 
 ```

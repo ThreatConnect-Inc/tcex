@@ -10,7 +10,8 @@ from pathlib import Path
 from deepdiff import DeepDiff
 
 # first-party
-from tcex.app_config import InstallJson, TcexJson
+from tcex.app_config.install_json import InstallJson
+from tcex.app_config.tcex_json import TcexJson
 
 
 class TestTcexJson:

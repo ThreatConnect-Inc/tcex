@@ -9,7 +9,7 @@ from pathlib import Path
 from deepdiff import DeepDiff
 
 # first-party
-from tcex.app_config import JobJson
+from tcex.app_config.job_json import JobJson
 
 
 class TestJobJson:

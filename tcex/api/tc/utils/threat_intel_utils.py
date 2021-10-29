@@ -47,16 +47,18 @@ class ThreatIntelUtils:
             # handle all multi-valued indicators types (file hashes and custom indicators)
             indicator_list = []
 
-            # group 1 - lazy capture everything to first <space>:<space> or end of line
-            iregx_pattern = r'^(.*?(?=\s\:\s|$))?'
-            iregx_pattern += r'(?:\s\:\s)?'  # remove <space>:<space>
-            # group 2 - look behind for <space>:<space>, lazy capture everything
-            # to look ahead (optional <space>):<space> or end of line
-            iregx_pattern += r'((?<=\s\:\s).*?(?=(?:\s)?\:\s|$))?'
-            iregx_pattern += r'(?:(?:\s)?\:\s)?'  # remove (optional <space>):<space>
-            # group 3 - look behind for <space>:<space>, lazy capture everything
-            # to look ahead end of line
-            iregx_pattern += r'((?<=\s\:\s).*?(?=$))?$'
+            iregx_pattern = (
+                # group 1 - lazy capture everything to first <space>:<space> or end of line
+                r'^(.*?(?=\s\:\s|$))?'
+                r'(?:\s\:\s)?'  # remove <space>:<space>
+                # group 2 - look behind for <space>:<space>, lazy capture everything
+                # to look ahead (optional <space>):<space> or end of line
+                r'((?<=\s\:\s).*?(?=(?:\s)?\:\s|$))?'
+                r'(?:(?:\s)?\:\s)?'  # remove (optional <space>):<space>
+                # group 3 - look behind for <space>:<space>, lazy capture everything
+                # to look ahead end of line
+                r'((?<=\s\:\s).*?(?=$))?$'
+            )
             iregx = re.compile(iregx_pattern)
 
             indicators = iregx.search(indicator)

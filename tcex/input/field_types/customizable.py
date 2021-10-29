@@ -1,17 +1,22 @@
 """Functions that allow customization of existing types"""
 # first-party
-from tcex.input.field_types.binary_array import BinaryArray
+from tcex.input.field_types.binary_array import BinaryArray, BinaryArrayOptional
 from tcex.input.field_types.exception import ConfigurationException
-from tcex.input.field_types.group_array import GroupArray
-from tcex.input.field_types.indicator_array import IndicatorArray
-from tcex.input.field_types.intel_array import IntelArray
-from tcex.input.field_types.key_value_array import KeyValueArray
-from tcex.input.field_types.string_array import StringArray
-from tcex.input.field_types.tc_entity_array import TCEntityArray
+from tcex.input.field_types.group_array import GroupArray, GroupArrayOptional
+from tcex.input.field_types.indicator_array import IndicatorArray, IndicatorArrayOptional
+from tcex.input.field_types.intel_array import IntelArray, IntelArrayOptional
+from tcex.input.field_types.key_value_array import KeyValueArray, KeyValueArrayOptional
+from tcex.input.field_types.string_array import StringArray, StringArrayOptional
+from tcex.input.field_types.tc_entity_array import TCEntityArray, TCEntityArrayOptional
 from tcex.input.field_types.utils import ConfigurationUtils
 
 
-def custom_array(array_type, namespace=None, **kwargs):
+def _is_optional(kwargs):
+    """Check kwargs for optional value"""
+    return kwargs.pop('optional', False)
+
+
+def _custom_array(array_type, namespace=None, **kwargs):
     """Allow for dynamic configuration of an Array type.
 
     This method contains the logic to override configuration items that apply to all Array
@@ -41,10 +46,14 @@ def custom_binary_array(**kwargs):
     Builds a namespace with configuration items found in kwargs. This method only inspects kwargs
     for configuration items that are specific to this Array Type. Other kwargs are passed through
     to the base custom_array function.
+
+    :kwarg optional: Boolean denoting whether to return an Optional variant of the Array or not.
     """
     # placeholder set in place in case customizations specific to this Array Type are needed
     namespace = {}
-    return custom_array(BinaryArray, namespace, **kwargs)
+    return _custom_array(
+        BinaryArrayOptional if _is_optional(kwargs) else BinaryArray, namespace, **kwargs
+    )
 
 
 def custom_string_array(**kwargs):
@@ -53,10 +62,34 @@ def custom_string_array(**kwargs):
     Builds a namespace with configuration items found in kwargs. This method only inspects kwargs
     for configuration items that are specific to this Array Type. Other kwargs are passed through
     to the base custom_array function.
+
+    :kwarg optional: Boolean denoting whether to return an Optional variant of the Array or not.
+    :kwarg split_on: String value upon which the value that initializes StringArray should be
+    split on. This has an effect if StringArray is initialized with a single String. If StringArray
+    is initialized with a StringArray, this option has no effect.
+    :kwarg strip_on_split: Boolean value that denotes whether the Strings that result from the
+    split operation on split_on should be stripped.
     """
-    # placeholder set in place in case customizations specific to this Array Type are needed
-    namespace = {}
-    return custom_array(StringArray, namespace, **kwargs)
+    _split_on = kwargs.pop('split_on', None)
+    _strip = kwargs.pop('strip_on_split', True)
+    _strip = True if _strip is None else _strip
+
+    if _split_on is not None and not isinstance(_split_on, str):
+        raise ConfigurationException(
+            'Value of "split_on" customization option must be a String or None. '
+            f'Received type: {type(_split_on)}'
+        )
+
+    if not isinstance(_strip, bool):
+        raise ConfigurationException(
+            'Value of "strip_on_split" customization option must be a boolean or None. '
+            f'Received type: {type(_split_on)}'
+        )
+
+    namespace = {'_split_on': _split_on, '_strip_on_split': _strip}
+    return _custom_array(
+        StringArrayOptional if _is_optional(kwargs) else StringArray, namespace, **kwargs
+    )
 
 
 def custom_tc_entity_array(**kwargs):
@@ -65,10 +98,14 @@ def custom_tc_entity_array(**kwargs):
     Builds a namespace with configuration items found in kwargs. This method only inspects kwargs
     for configuration items that are specific to this Array Type. Other kwargs are passed through
     to the base custom_array function.
+
+    :kwarg optional: Boolean denoting whether to return an Optional variant of the Array or not.
     """
     # placeholder set in place in case customizations specific to this Array Type are needed
     namespace = {}
-    return custom_array(TCEntityArray, namespace, **kwargs)
+    return _custom_array(
+        TCEntityArrayOptional if _is_optional(kwargs) else TCEntityArray, namespace, **kwargs
+    )
 
 
 def custom_key_value_array(**kwargs):
@@ -77,10 +114,14 @@ def custom_key_value_array(**kwargs):
     Builds a namespace with configuration items found in kwargs. This method only inspects kwargs
     for configuration items that are specific to this Array Type. Other kwargs are passed through
     to the base custom_array function.
+
+    :kwarg optional: Boolean denoting whether to return an Optional variant of the Array or not.
     """
     # placeholder set in place in case customizations specific to this Array Type are needed
     namespace = {}
-    return custom_array(KeyValueArray, namespace, **kwargs)
+    return _custom_array(
+        KeyValueArrayOptional if _is_optional(kwargs) else KeyValueArray, namespace, **kwargs
+    )
 
 
 def custom_intel_array(intel_array_descendant=None, namespace=None, **kwargs):
@@ -96,6 +137,7 @@ def custom_intel_array(intel_array_descendant=None, namespace=None, **kwargs):
     :param namespace: namespace passed in from a function that customizes a descendant of
     IntelArray. This value is only used when a descendant of IntelArray is passed in via
     intel_array_descendant.
+    :kwarg optional: Boolean denoting whether to return an Optional variant of the Array or not.
     """
     _namespace = {}
     utils = ConfigurationUtils()
@@ -113,7 +155,9 @@ def custom_intel_array(intel_array_descendant=None, namespace=None, **kwargs):
         utils.validate_intel_types('entity_filter_types', types)
         _namespace['_entity_filter_types'] = types
 
-    return custom_array(intel_array_descendant or IntelArray, _namespace, **kwargs)
+    intel_array_variant = IntelArrayOptional if _is_optional(kwargs) else IntelArray
+
+    return _custom_array(intel_array_descendant or intel_array_variant, _namespace, **kwargs)
 
 
 def custom_indicator_array(**kwargs):
@@ -122,6 +166,8 @@ def custom_indicator_array(**kwargs):
     Builds a namespace with configuration items found in kwargs. This method only inspects kwargs
     for configuration items that are specific to this Array Type. Other kwargs are passed through
     to the custom_intel_array function.
+
+    :kwarg optional: Boolean denoting whether to return an Optional variant of the Array or not.
     """
     utils = ConfigurationUtils()
     namespace = {}
@@ -132,7 +178,9 @@ def custom_indicator_array(**kwargs):
     if types is not None:
         utils.validate_intel_types('entity_filter_types', types, restrict_to=utils.INDICATOR)
 
-    return custom_intel_array(IndicatorArray, namespace, **kwargs)
+    return custom_intel_array(
+        IndicatorArrayOptional if _is_optional(kwargs) else IndicatorArray, namespace, **kwargs
+    )
 
 
 def custom_group_array(**kwargs):
@@ -141,6 +189,8 @@ def custom_group_array(**kwargs):
     Builds a namespace with configuration items found in kwargs. This method only inspects kwargs
     for configuration items that are specific to this Array Type. Other kwargs are passed through
     to the custom_intel_array function.
+
+    :kwarg optional: Boolean denoting whether to return an Optional variant of the Array or not.
     """
     utils = ConfigurationUtils()
     namespace = {}
@@ -151,4 +201,6 @@ def custom_group_array(**kwargs):
     if types is not None:
         utils.validate_intel_types('entity_filter_types', types, restrict_to=utils.GROUP)
 
-    return custom_intel_array(GroupArray, namespace, **kwargs)
+    return custom_intel_array(
+        GroupArrayOptional if _is_optional(kwargs) else GroupArray, namespace, **kwargs
+    )
