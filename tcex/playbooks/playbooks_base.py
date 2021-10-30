@@ -5,7 +5,6 @@ import json
 import re
 from collections import OrderedDict
 from collections.abc import Iterable
-import json
 
 
 class PlaybooksBase:
@@ -181,7 +180,7 @@ class PlaybooksBase:
         try:
             json_ = json.loads(data)
             return all(x in json_ for x in ['indicators', 'groups'])
-        except:
+        except Exception:
             return False
 
     @staticmethod
@@ -389,8 +388,15 @@ class PlaybooksBase:
         if value is None:  # pragma: no cover
             return value
 
-        for variable in (v.group(0) for v in re.finditer(self._variable_parse, str(value))):
-            v = self.read(variable)
+        for match in re.finditer(self._variable_expansion_pattern, str(value)):
+            variable = match.group(0)  # the full variable pattern
+            if match.group('origin') == '#':  # pb-variable
+                v = self.read(variable)
+            elif match.group('origin') == '&':  # tc-variable
+                v = self.tcex.resolve_variable(
+                    match.group('provider'), match.group('key'), match.group('type')
+                )
+
             self.log.trace(f'embedded variable: {variable}, value: {v}')
             if isinstance(v, (dict, list)):
                 v = json.dumps(v)
@@ -410,16 +416,35 @@ class PlaybooksBase:
     @property
     def _variable_pattern(self):
         """Regex pattern to match and parse a playbook variable."""
-        variable_pattern = r'#([A-Za-z]+)'  # match literal (#App,#Trigger) at beginning of String
-        variable_pattern += r':([\d]+)'  # app id (:7979)
-        variable_pattern += r':([A-Za-z0-9_\.\-\[\]]+)'  # variable name (:variable_name)
-        variable_pattern += r'!(StringArray|BinaryArray|KeyValueArray'  # variable type (array)
-        variable_pattern += r'|TCEntityArray|TCEnhancedEntityArray'  # variable type (array)
-        variable_pattern += r'|String|Binary|KeyValue|TCEntity|TCEnhancedEntity'  # variable type
-        variable_pattern += r'|(?:(?!String)(?!Binary)(?!KeyValue)'  # non matching for custom
-        variable_pattern += r'(?!TCEntity)(?!TCEnhancedEntity)'  # non matching for custom
-        variable_pattern += r'[A-Za-z0-9_-]+))'  # variable type (custom)
-        return variable_pattern
+        return (
+            r'#([A-Za-z]+)'  # match literal (#App,#Trigger) at beginning of String
+            r':([\d]+)'  # app id (:7979)
+            r':([A-Za-z0-9_\.\-\[\]]+)'  # variable name (:variable_name)
+            r'!(StringArray|BinaryArray|KeyValueArray'  # variable type (array)
+            r'|TCEntityArray|TCEnhancedEntityArray'  # variable type (array)
+            r'|String|Binary|KeyValue|TCEntity|TCEnhancedEntity'  # variable type
+            r'|(?:(?!String)(?!Binary)(?!KeyValue)'  # non matching for custom
+            r'(?!TCEntity)(?!TCEnhancedEntity)'  # non matching for custom
+            r'[A-Za-z0-9_-]+))'  # variable type (custom)
+        )
+
+    @property
+    def _variable_expansion_pattern(self):
+        """Regex pattern to match and parse a playbook variable."""
+        return re.compile(
+            # Origin: "#" -> PB-Variable "&" -> TC-Variable
+            r'(?P<origin>#|&)'
+            r'(?:\{)?'  # drop "{"
+            # Provider: PB-Variable -> literal "App" or TC-Variable -> provider (e.g. TC|Vault)
+            r'(?P<provider>[A-Za-z]+):'
+            # ID: PB-Variable -> App ID or TC-Variable -> FILE|KEYCHAIN|TEXT
+            r'(?P<id>[\w]+):'
+            # Lookup: PB-Variable -> variable name or TC-Variable -> variable identifier
+            r'(?P<lookup>[A-Za-z0-9_\.\-\[\]]+)'
+            r'(?:\})?'  # drop "}"
+            # Type: PB-Variable -> variable type (e.g., String|StringArray)
+            r'(?:!(?P<type>[A-Za-z0-9_-]+))?'
+        )
 
     @property
     def _variable_array_types(self):

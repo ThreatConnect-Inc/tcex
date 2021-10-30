@@ -9,6 +9,7 @@ import re
 import signal
 import sys
 import threading
+from base64 import b64decode
 from functools import lru_cache
 from typing import Optional, Union
 from urllib.parse import quote
@@ -807,6 +808,38 @@ class TcEx:
             ).client
 
         return self._redis_client
+
+    def resolve_variable(self, provider: str, key: str, type_: str) -> Union[bytes, str]:
+        """Resolve TEXT/KEYCHAIN/FILE variables.
+
+        Feature: PLAT-2688
+
+        Data Format:
+        {
+            "data": "value"
+        }
+        """
+        data = None
+
+        # retrieve value from API
+        r = self.session.get(f'/internal/variable/runtime/{provider}/{key}')
+        if r.ok:
+            try:
+                data = r.json().get('data')
+
+                if type_.lower() == 'file':
+                    data = b64decode(data)  # returns bytes
+                # elif type_.lower() == 'keychain' and self.sensitive_enabled is True:
+            except Exception as ex:
+                raise RuntimeError(
+                    f'Could not retrieve variable: provider={provider}, key={key}, type={type_}.'
+                ) from ex
+        else:
+            raise RuntimeError(
+                f'Could not retrieve variable: provider={provider}, key={key}, type={type_}.'
+            )
+
+        return data
 
     def results_tc(self, key: str, value: str) -> None:
         """Write data to results_tc file in TcEX specified directory.

@@ -5,23 +5,9 @@ import os
 import re
 import sys
 from argparse import Namespace
-from base64 import b64decode
-from typing import Union
 
 from ..utils import Utils
 from .argument_parser import TcArgumentParser
-
-
-class Sensitive(str):
-    """Sensitive Values Can't be formatted"""
-
-    def __format__(self, format_str):
-        """Override standard format to return masked value."""
-        return '***'
-
-    def __rmod__(self, left_string):
-        """Override standard format to return masked value."""
-        return left_string % '***'
 
 
 class Inputs:
@@ -51,8 +37,15 @@ class Inputs:
         # properties
         self._parsed = False
         self._parsed_resolved = False
+        self._variable_expansion_pattern = re.compile(
+            # Provider: TC-Variable -> provider (e.g. TC|Vault)
+            r'&\{(?P<provider>\w+):'
+            # ID: TC-Variable -> FILE|KEYCHAIN|TEXT
+            r'(?P<id>\w+):'
+            # Lookup: TC-Variable -> variable identifier to lookup
+            r'(?P<lookup>(.*?))\}'
+        )
         self.utils = Utils()
-        self.variable_pattern = re.compile(r'&\{(?P<provider>\w+):(?P<type>\w+):(?P<key>.*)\}')
 
         # parser
         self.parser = TcArgumentParser(conflict_handler='resolve')  # APP-964 allow duplicate args
@@ -162,39 +155,6 @@ class Inputs:
             )
             self.config(updated_params)
 
-    def _resolve_variable(self, provider: str, key: str, type_: str) -> Union[bytes, str]:
-        """Resolve TEXT/KEYCHAIN/FILE variables.
-
-        Feature: PLAT-2688
-
-        Data Format:
-        {
-            "data": "value"
-        }
-        """
-        data = None
-
-        # retrieve value from API
-        r = self.tcex.session.get(f'/internal/variable/runtime/{provider}/{key}')
-        if r.ok:
-            try:
-                data = r.json().get('data')
-
-                if type_.lower() == 'file':
-                    data = b64decode(data)  # returns bytes
-                elif type_.lower() == 'keychain':
-                    data = Sensitive(data)
-            except Exception as ex:
-                raise RuntimeError(
-                    f'Could not retrieve variable: provider={provider}, key={key}, type={type_}.'
-                ) from ex
-        else:
-            raise RuntimeError(
-                f'Could not retrieve variable: provider={provider}, key={key}, type={type_}.'
-            )
-
-        return data
-
     def _results_tc_args(self):  # pragma: no cover
         """Read data from results_tc file from previous run of app.
 
@@ -298,25 +258,14 @@ class Inputs:
                 value = getattr(self._default_args, name)
                 if isinstance(value, str):
                     # strings could be a variable, try to resolve the value
-                    if self.variable_pattern.match(value):
-                        m = self.variable_pattern.search(value)
-                        if not any(
-                            [
-                                m.group('provider'),
-                                m.group('key'),
-                                m.group('type'),
-                            ]
-                        ):
-                            # TODO: [med] should this an exit
-                            raise RuntimeError(f'Could not parse variable {value}.')
-
-                        setattr(
-                            self._default_args_resolved,
-                            name,
-                            self._resolve_variable(
-                                m.group('provider'), m.group('key'), m.group('type')
-                            ),
+                    for match in re.finditer(self._variable_expansion_pattern, str(value)):
+                        variable = match.group(0)  # the full variable pattern
+                        v = self.tcex.resolve_variable(
+                            match.group('provider'), match.group('key'), match.group('type')
                         )
+                        value = re.sub(variable, v, value)
+
+                    setattr(self._default_args_resolved, name, value)
 
         return self._default_args
 
