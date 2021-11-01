@@ -255,10 +255,6 @@ class Inputs:
 
             # iterate over Args and resolve FILE, KEYCHAIN, or TEXT variables
             for name in vars(self._default_args):
-                # param_data = self.tcex.ij.params_dict.get(name) or {}
-                # if param_data.get('encrypt') is True:
-                #     self.logger.filter_sensitive.add(name)
-
                 value = getattr(self._default_args, name)
                 if isinstance(value, str):
                     # strings could be a variable, try to resolve the value
@@ -269,7 +265,7 @@ class Inputs:
                         )
                         value = re.sub(variable, v, value)
 
-                    setattr(self._default_args_resolved, name, value)
+                    setattr(self._default_args, name, value)
 
         return self._default_args
 
