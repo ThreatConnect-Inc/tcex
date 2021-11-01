@@ -11,6 +11,7 @@ from .api_handler import ApiHandler, ApiHandlerFormatter
 from .cache_handler import CacheHandler
 from .pattern_file_handler import PatternFileHandler
 from .rotating_file_handler_custom import RotatingFileHandlerCustom
+from .sensitive_filter import SensitiveFilter
 from .thread_file_handler import ThreadFileHandler
 from .trace_logger import TraceLogger
 
@@ -27,6 +28,7 @@ class Logger:
         """
         self.tcex = tcex
         self.logger_name = logger_name
+        self.filter_sensitive = SensitiveFilter(name='sensitive_filter')
 
     @property
     def _logger(self) -> logging.Logger:
@@ -34,6 +36,7 @@ class Logger:
         logging.setLoggerClass(TraceLogger)
         logger = logging.getLogger(self.logger_name)
         logger.setLevel(logging.TRACE)
+        logger.addFilter(self.filter_sensitive)
         return logger
 
     @property

@@ -829,7 +829,9 @@ class TcEx:
 
                 if type_.lower() == 'file':
                     data = b64decode(data)  # returns bytes
-                # elif type_.lower() == 'keychain' and self.sensitive_enabled is True:
+                elif type_.lower() == 'keychain':
+                    self.logger.filter_sensitive.add(data)
+
             except Exception as ex:
                 raise RuntimeError(
                     f'Could not retrieve variable: provider={provider}, key={key}, type={type_}.'

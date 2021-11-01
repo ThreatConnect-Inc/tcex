@@ -394,7 +394,7 @@ class PlaybooksBase:
                 v = self.read(variable)
             elif match.group('origin') == '&':  # tc-variable
                 v = self.tcex.resolve_variable(
-                    match.group('provider'), match.group('key'), match.group('type')
+                    match.group('provider'), match.group('lookup'), match.group('id')
                 )
 
             self.log.trace(f'embedded variable: {variable}, value: {v}')
