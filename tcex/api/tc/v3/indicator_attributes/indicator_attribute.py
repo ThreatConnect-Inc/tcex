@@ -1,15 +1,15 @@
-"""ArtifactType / ArtifactTypes Object"""
+"""IndicatorAttribute / IndicatorAttributes Object"""
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
-from tcex.api.tc.v3.artifact_types.artifact_type_filter import ArtifactTypeFilter
-from tcex.api.tc.v3.artifact_types.artifact_type_model import ArtifactTypeModel, ArtifactTypesModel
+from tcex.api.tc.v3.indicator_attributes.indicator_attribute_filter import IndicatorAttributeFilter
+from tcex.api.tc.v3.indicator_attributes.indicator_attribute_model import IndicatorAttributeModel, IndicatorAttributesModel
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 
 
-class ArtifactTypes(ObjectCollectionABC):
-    """ArtifactTypes Collection.
+class IndicatorAttributes(ObjectCollectionABC):
+    """IndicatorAttributes Collection.
 
     # Example of params input
     {
@@ -29,46 +29,47 @@ class ArtifactTypes(ObjectCollectionABC):
         super().__init__(
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
         )
-        self._model = ArtifactTypesModel(**kwargs)
-        self._type = 'artifact_types'
+        self._model = IndicatorAttributesModel(**kwargs)
+        self._type = 'indicator_attributes'
 
-    def __iter__(self) -> 'ArtifactType':
+    def __iter__(self) -> 'IndicatorAttribute':
         """Iterate over CM objects."""
-        return self.iterate(base_class=ArtifactType)
+        return self.iterate(base_class=IndicatorAttribute)
 
     @property
     def _api_endpoint(self) -> str:
         """Return the type specific API endpoint."""
-        return ApiEndpoints.ARTIFACT_TYPES.value
+        return ApiEndpoints.INDICATOR_ATTRIBUTES.value
 
     @property
-    def filter(self) -> 'ArtifactTypeFilter':
+    def filter(self) -> 'IndicatorAttributeFilter':
         """Return the type specific filter object."""
-        return ArtifactTypeFilter(self.tql)
+        return IndicatorAttributeFilter(self.tql)
 
 
-class ArtifactType(ObjectABC):
-    """ArtifactTypes Object.
+class IndicatorAttribute(ObjectABC):
+    """IndicatorAttributes Object.
 
-
+    Args:
+        data (array, kwargs): The data for the IndicatorAttributes.
     """
 
     def __init__(self, **kwargs) -> None:
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
-        self._model = ArtifactTypeModel(**kwargs)
-        self.type_ = 'Artifact Type'
+        self._model = IndicatorAttributeModel(**kwargs)
+        self.type_ = 'Indicator Attribute'
 
     @property
     def _api_endpoint(self) -> str:
         """Return the type specific API endpoint."""
-        return ApiEndpoints.ARTIFACT_TYPES.value
+        return ApiEndpoints.INDICATOR_ATTRIBUTES.value
 
     @property
     def _base_filter(self) -> dict:
         """Return the default filter."""
         return {
-            'keyword': 'artifact_type_id',
+            'keyword': 'indicator_attribute_id',
             'operator': TqlOperator.EQ,
             'value': self.model.id,
             'type_': 'integer',

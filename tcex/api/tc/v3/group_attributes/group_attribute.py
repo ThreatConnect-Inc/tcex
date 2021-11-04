@@ -1,15 +1,15 @@
-"""ArtifactType / ArtifactTypes Object"""
+"""GroupAttribute / GroupAttributes Object"""
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
-from tcex.api.tc.v3.artifact_types.artifact_type_filter import ArtifactTypeFilter
-from tcex.api.tc.v3.artifact_types.artifact_type_model import ArtifactTypeModel, ArtifactTypesModel
+from tcex.api.tc.v3.group_attributes.group_attribute_filter import GroupAttributeFilter
+from tcex.api.tc.v3.group_attributes.group_attribute_model import GroupAttributeModel, GroupAttributesModel
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 
 
-class ArtifactTypes(ObjectCollectionABC):
-    """ArtifactTypes Collection.
+class GroupAttributes(ObjectCollectionABC):
+    """GroupAttributes Collection.
 
     # Example of params input
     {
@@ -29,46 +29,47 @@ class ArtifactTypes(ObjectCollectionABC):
         super().__init__(
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
         )
-        self._model = ArtifactTypesModel(**kwargs)
-        self._type = 'artifact_types'
+        self._model = GroupAttributesModel(**kwargs)
+        self._type = 'group_attributes'
 
-    def __iter__(self) -> 'ArtifactType':
+    def __iter__(self) -> 'GroupAttribute':
         """Iterate over CM objects."""
-        return self.iterate(base_class=ArtifactType)
+        return self.iterate(base_class=GroupAttribute)
 
     @property
     def _api_endpoint(self) -> str:
         """Return the type specific API endpoint."""
-        return ApiEndpoints.ARTIFACT_TYPES.value
+        return ApiEndpoints.GROUP_ATTRIBUTES.value
 
     @property
-    def filter(self) -> 'ArtifactTypeFilter':
+    def filter(self) -> 'GroupAttributeFilter':
         """Return the type specific filter object."""
-        return ArtifactTypeFilter(self.tql)
+        return GroupAttributeFilter(self.tql)
 
 
-class ArtifactType(ObjectABC):
-    """ArtifactTypes Object.
+class GroupAttribute(ObjectABC):
+    """GroupAttributes Object.
 
-
+    Args:
+        data (array, kwargs): The data for the GroupAttributes.
     """
 
     def __init__(self, **kwargs) -> None:
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
-        self._model = ArtifactTypeModel(**kwargs)
-        self.type_ = 'Artifact Type'
+        self._model = GroupAttributeModel(**kwargs)
+        self.type_ = 'Group Attribute'
 
     @property
     def _api_endpoint(self) -> str:
         """Return the type specific API endpoint."""
-        return ApiEndpoints.ARTIFACT_TYPES.value
+        return ApiEndpoints.GROUP_ATTRIBUTES.value
 
     @property
     def _base_filter(self) -> dict:
         """Return the default filter."""
         return {
-            'keyword': 'artifact_type_id',
+            'keyword': 'group_attribute_id',
             'operator': TqlOperator.EQ,
             'value': self.model.id,
             'type_': 'integer',

@@ -46,3 +46,41 @@ class CaseAttributes(ObjectCollectionABC):
         """Return the type specific filter object."""
         return CaseAttributeFilter(self.tql)
 
+
+class CaseAttribute(ObjectABC):
+    """CaseAttributes Object.
+
+    Args:
+        data (array, kwargs): The data for the CaseAttributes.
+    """
+
+    def __init__(self, **kwargs) -> None:
+        """Initialize class properties."""
+        super().__init__(kwargs.pop('session', None))
+        self._model = CaseAttributeModel(**kwargs)
+        self.type_ = 'Case Attribute'
+
+    @property
+    def _api_endpoint(self) -> str:
+        """Return the type specific API endpoint."""
+        return ApiEndpoints.CASE_ATTRIBUTES.value
+
+    @property
+    def _base_filter(self) -> dict:
+        """Return the default filter."""
+        return {
+            'keyword': 'case_attribute_id',
+            'operator': TqlOperator.EQ,
+            'value': self.model.id,
+            'type_': 'integer',
+        }
+
+    @property
+    def as_entity(self) -> dict:
+        """Return the entity representation of the object."""
+        type_ = self.type_
+        if hasattr(self.model, 'type'):
+            type_ = self.model.type
+
+        return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
+

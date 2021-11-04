@@ -66,7 +66,8 @@ class Indicator(ObjectABC):
         associated_groups (Groups, kwargs): A list of groups that this indicator is associated with.
         associated_indicators (Indicators, kwargs): A list of indicators associated with this
             indicator.
-        attributes (Attributes, kwargs): A list of Attributes corresponding to the Indicator.
+        attributes (IndicatorAttributes, kwargs): A list of Attributes corresponding to the
+            Indicator.
         confidence (int, kwargs): The indicator threat confidence.
         description (str, kwargs): The indicator description text.
         dns_active (bool, kwargs): Is dns active for the indicator?
@@ -92,13 +93,14 @@ class Indicator(ObjectABC):
         value2 (str, kwargs): Custom Indicator summary field value2.
         value3 (str, kwargs): Custom Indicator summary field value3.
         whois_active (bool, kwargs): Is whois active for the indicator?
+        xid (str, kwargs): The xid of the item.
     """
 
     def __init__(self, **kwargs) -> None:
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
         self._model = IndicatorModel(**kwargs)
-        self._type = 'indicator'
+        self.type_ = 'Indicator'
 
     @property
     def _api_endpoint(self) -> str:
@@ -118,7 +120,11 @@ class Indicator(ObjectABC):
     @property
     def as_entity(self) -> dict:
         """Return the entity representation of the object."""
-        return {'type': 'Indicator', 'id': self.model.id, 'value': self.model.summary}
+        type_ = self.type_
+        if hasattr(self.model, 'type'):
+            type_ = self.model.type
+
+        return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
 
     def add_tag(self, **kwargs) -> None:
         """Add tag to the object.
@@ -132,7 +138,7 @@ class Indicator(ObjectABC):
     @property
     def tags(self) -> 'Tag':
         """Yield Tag from Tags."""
-        # first-party
         from tcex.api.tc.v3.tags.tag import Tags
 
         yield from self._iterate_over_sublist(Tags)
+

@@ -48,13 +48,16 @@ class OwnerRoles(ObjectCollectionABC):
 
 
 class OwnerRole(ObjectABC):
-    """OwnerRoles Object."""
+    """OwnerRoles Object.
+
+
+    """
 
     def __init__(self, **kwargs) -> None:
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
         self._model = OwnerRoleModel(**kwargs)
-        self._type = 'owner_role'
+        self.type_ = 'Owner Role'
 
     @property
     def _api_endpoint(self) -> str:
@@ -74,4 +77,9 @@ class OwnerRole(ObjectABC):
     @property
     def as_entity(self) -> dict:
         """Return the entity representation of the object."""
-        return {'type': 'OwnerRole', 'id': self.model.id, 'value': self.model.summary}
+        type_ = self.type_
+        if hasattr(self.model, 'type'):
+            type_ = self.model.type
+
+        return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
+

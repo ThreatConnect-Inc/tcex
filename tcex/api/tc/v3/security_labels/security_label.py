@@ -4,10 +4,7 @@ from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 from tcex.api.tc.v3.security_labels.security_label_filter import SecurityLabelFilter
-from tcex.api.tc.v3.security_labels.security_label_model import (
-    SecurityLabelModel,
-    SecurityLabelsModel,
-)
+from tcex.api.tc.v3.security_labels.security_label_model import SecurityLabelModel, SecurityLabelsModel
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 
 
@@ -64,7 +61,7 @@ class SecurityLabel(ObjectABC):
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
         self._model = SecurityLabelModel(**kwargs)
-        self._type = 'security_label'
+        self.type_ = 'Security Label'
 
     @property
     def _api_endpoint(self) -> str:
@@ -84,4 +81,9 @@ class SecurityLabel(ObjectABC):
     @property
     def as_entity(self) -> dict:
         """Return the entity representation of the object."""
-        return {'type': 'SecurityLabel', 'id': self.model.id, 'value': self.model.summary}
+        type_ = self.type_
+        if hasattr(self.model, 'type'):
+            type_ = self.model.type
+
+        return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
+

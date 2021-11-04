@@ -48,13 +48,16 @@ class Users(ObjectCollectionABC):
 
 
 class User(ObjectABC):
-    """Users Object."""
+    """Users Object.
+
+
+    """
 
     def __init__(self, **kwargs) -> None:
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
         self._model = UserModel(**kwargs)
-        self._type = 'user'
+        self.type_ = 'User'
 
     @property
     def _api_endpoint(self) -> str:
@@ -74,4 +77,9 @@ class User(ObjectABC):
     @property
     def as_entity(self) -> dict:
         """Return the entity representation of the object."""
-        return {'type': 'User', 'id': self.model.id, 'value': self.model.summary}
+        type_ = self.type_
+        if hasattr(self.model, 'type'):
+            type_ = self.model.type
+
+        return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
+

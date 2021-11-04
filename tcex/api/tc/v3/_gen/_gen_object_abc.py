@@ -198,7 +198,6 @@ class GenerateObjectABC(GenerateABC, ABC):
 
             return {'type': 'Artifact', 'id': self.model.id, 'value': self.model.summary}
         """
-        # TODO: Make the type value the indicator type -
         name_entities = ['case', 'tag', 'task', 'workflow template']
         value_type = 'summary'
         if self.type_.lower() in name_entities:
@@ -209,12 +208,12 @@ class GenerateObjectABC(GenerateABC, ABC):
                 f'''{self.i1}@property''',
                 f'''{self.i1}def as_entity(self) -> dict:''',
                 f'''{self.i2}"""Return the entity representation of the object."""''',
-                f'''{self.i2}type = self.type_''',
+                f'''{self.i2}type_ = self.type_''',
                 f'''{self.i2}if hasattr(self.model, 'type'):''',
-                f'''{self.i3}type = self.model.type''',
+                f'''{self.i3}type_ = self.model.type''',
                 '',
                 (
-                    f'''{self.i2}return {{'type': type, 'id': '''
+                    f'''{self.i2}return {{'type': type_, 'id': '''
                     f'''self.model.id, 'value': self.model.{value_type}}}'''
                 ),
                 '',

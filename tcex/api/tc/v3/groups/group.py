@@ -65,7 +65,7 @@ class Group(ObjectABC):
         associated_indicators (Indicators, kwargs): A list of indicators associated with this group.
         associated_victim_assets (VictimAssets, kwargs): A list of victim assets associated with
             this group.
-        attributes (Attributes, kwargs): A list of Attributes corresponding to the Group.
+        attributes (GroupAttributes, kwargs): A list of Attributes corresponding to the Group.
         body (str, kwargs): The email Body.
         due_date (str, kwargs): The date and time that the Task is due.
         escalation_date (str, kwargs): The escalation date and time.
@@ -82,8 +82,6 @@ class Group(ObjectABC):
         name (str, kwargs): The name of the group.
         password (str, kwargs): The password associated with the document (Required if Malware is
             true).
-        phone_numbers (AdversaryAssets, kwargs): A list of phone number adversary assets associated
-            with this group.
         publish_date (str, kwargs): The date and time that the report was first created.
         reminder_date (str, kwargs): The reminder date and time.
         security_labels (SecurityLabels, kwargs): A list of Security Labels corresponding to the
@@ -97,13 +95,14 @@ class Group(ObjectABC):
         to (str, kwargs): The email To field .
         type (str, kwargs): The **type** for the Group.
         urls (AdversaryAssets, kwargs): A list of url adversary assets associated with this group.
+        xid (str, kwargs): The xid of the item.
     """
 
     def __init__(self, **kwargs) -> None:
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
         self._model = GroupModel(**kwargs)
-        self._type = 'group'
+        self.type_ = 'Group'
 
     @property
     def _api_endpoint(self) -> str:
@@ -123,7 +122,11 @@ class Group(ObjectABC):
     @property
     def as_entity(self) -> dict:
         """Return the entity representation of the object."""
-        return {'type': 'Group', 'id': self.model.id, 'value': self.model.summary}
+        type_ = self.type_
+        if hasattr(self.model, 'type'):
+            type_ = self.model.type
+
+        return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
 
     def add_tag(self, **kwargs) -> None:
         """Add tag to the object.
@@ -137,7 +140,7 @@ class Group(ObjectABC):
     @property
     def tags(self) -> 'Tag':
         """Yield Tag from Tags."""
-        # first-party
         from tcex.api.tc.v3.tags.tag import Tags
 
         yield from self._iterate_over_sublist(Tags)
+

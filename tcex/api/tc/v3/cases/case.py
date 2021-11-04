@@ -115,11 +115,11 @@ class Case(ObjectABC):
     @property
     def as_entity(self) -> dict:
         """Return the entity representation of the object."""
-        type = self.type_
+        type_ = self.type_
         if hasattr(self.model, 'type'):
-            type = self.model.type
+            type_ = self.model.type
 
-        return {'type': type, 'id': self.model.id, 'value': self.model.summary}
+        return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
 
     def add_artifact(self, **kwargs) -> None:
         """Add artifact to the object.

@@ -59,14 +59,29 @@ class Victim(ObjectABC):
     """Victims Object.
 
     Args:
-        data (array, kwargs): The data for the Victims.
+        assets (VictimAssets, kwargs): A list of victim assets corresponding to the Victim.
+        associated_groups (Groups, kwargs): A list of groups that this victim is associated with.
+        attributes (Attributes, kwargs): A list of Attributes corresponding to the Victim.
+        description (str, kwargs): Description of the Victim.
+        name (str, kwargs): Name of the Victim.
+        nationality (str, kwargs): Nationality of the Victim.
+        org (str, kwargs): Org of the Victim.
+        security_labels (SecurityLabels, kwargs): A list of Security Labels corresponding to the
+            Intel item (NOTE: Setting this parameter will replace any existing tag(s) with the
+            one(s) specified).
+        suborg (str, kwargs): Suborg of the Victim.
+        tags (Tags, kwargs): A list of Tags corresponding to the item (NOTE: Setting this parameter
+            will replace any existing tag(s) with the one(s) specified).
+        type (str, kwargs): The **type** for the Victim.
+        work_location (str, kwargs): Work location of the Victim.
+        xid (str, kwargs): The xid of the item.
     """
 
     def __init__(self, **kwargs) -> None:
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
         self._model = VictimModel(**kwargs)
-        self._type = 'victim'
+        self.type_ = 'Victim'
 
     @property
     def _api_endpoint(self) -> str:
@@ -86,7 +101,11 @@ class Victim(ObjectABC):
     @property
     def as_entity(self) -> dict:
         """Return the entity representation of the object."""
-        return {'type': 'Victim', 'id': self.model.id, 'value': self.model.summary}
+        type_ = self.type_
+        if hasattr(self.model, 'type'):
+            type_ = self.model.type
+
+        return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
 
     def add_tag(self, **kwargs) -> None:
         """Add tag to the object.
@@ -100,7 +119,7 @@ class Victim(ObjectABC):
     @property
     def tags(self) -> 'Tag':
         """Yield Tag from Tags."""
-        # first-party
         from tcex.api.tc.v3.tags.tag import Tags
 
         yield from self._iterate_over_sublist(Tags)
+
