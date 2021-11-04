@@ -79,7 +79,7 @@ class Artifact(ObjectABC):
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
         self._model = ArtifactModel(**kwargs)
-        self._type = 'artifact'
+        self.type_ = 'Artifact'
 
     @property
     def _api_endpoint(self) -> str:
@@ -99,7 +99,11 @@ class Artifact(ObjectABC):
     @property
     def as_entity(self) -> dict:
         """Return the entity representation of the object."""
-        return {'type': 'Artifact', 'id': self.model.id, 'value': self.model.summary}
+        type = self.type_
+        if hasattr(self.model, 'type'):
+            type = self.model.type
+
+        return {'type': type, 'id': self.model.id, 'value': self.model.summary}
 
     def add_note(self, **kwargs) -> None:
         """Add note to the object.
@@ -112,7 +116,7 @@ class Artifact(ObjectABC):
     @property
     def notes(self) -> 'Note':
         """Yield Note from Notes."""
-        # first-party
         from tcex.api.tc.v3.notes.note import Notes
 
         yield from self._iterate_over_sublist(Notes)
+

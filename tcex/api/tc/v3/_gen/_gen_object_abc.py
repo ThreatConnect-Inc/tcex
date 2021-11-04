@@ -148,7 +148,7 @@ class GenerateObjectABC(GenerateABC, ABC):
                 f'''{self.i2}"""Initialize class properties."""''',
                 f'''{self.i2}super().__init__(kwargs.pop('session', None))''',
                 f'''{self.i2}self._model = {self.type_.singular().pascal_case()}Model(**kwargs)''',
-                f'''{self.i2}self._type = \'{self.type_.singular()}\'''',
+                f'''{self.i2}self.type_ = \'{self.type_.singular().space_case()}\'''',
                 '',
                 '',
             ]
@@ -189,18 +189,33 @@ class GenerateObjectABC(GenerateABC, ABC):
         @property
         def as_entity(self) -> dict:
             '''Return the entity representation of the object.'''
+            case - name
+            notes - summary
+            tag - name
+            task - name
+            workflow_event - summary
+            workflow_template_model - name
 
             return {'type': 'Artifact', 'id': self.model.id, 'value': self.model.summary}
         """
-        # TODO: [high] sometimes self.model.value is summary others self.model.name.
+        # TODO: Make the type value the indicator type -
+        name_entities = ['case', 'tag', 'task', 'workflow template']
+        value_type = 'summary'
+        if self.type_.lower() in name_entities:
+            value_type = 'name'
+
         return '\n'.join(
             [
                 f'''{self.i1}@property''',
                 f'''{self.i1}def as_entity(self) -> dict:''',
                 f'''{self.i2}"""Return the entity representation of the object."""''',
+                f'''{self.i2}type = self.type_''',
+                f'''{self.i2}if hasattr(self.model, 'type'):''',
+                f'''{self.i3}type = self.model.type''',
+                '',
                 (
-                    f'''{self.i2}return {{'type': '{self.type_.singular().pascal_case()}', 'id': '''
-                    '''self.model.id, 'value': self.model.summary}'''
+                    f'''{self.i2}return {{'type': type, 'id': '''
+                    f'''self.model.id, 'value': self.model.{value_type}}}'''
                 ),
                 '',
                 '',

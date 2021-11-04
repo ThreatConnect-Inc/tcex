@@ -4,6 +4,8 @@ import os
 from abc import ABC
 
 # third-party
+from typing import Any
+
 import typer
 from requests import Session
 from requests.exceptions import ProxyError
@@ -18,7 +20,7 @@ from tcex.utils import Utils
 class GenerateABC(ABC):
     """Generate Abstract Base Class"""
 
-    def __init__(self, type_: str) -> None:
+    def __init__(self, type_: Any) -> None:
         """Initialize class properties."""
         self.type_ = type_
 

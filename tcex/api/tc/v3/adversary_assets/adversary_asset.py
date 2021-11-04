@@ -1,10 +1,7 @@
 """AdversaryAsset / AdversaryAssets Object"""
 # first-party
 from tcex.api.tc.v3.adversary_assets.adversary_asset_filter import AdversaryAssetFilter
-from tcex.api.tc.v3.adversary_assets.adversary_asset_model import (
-    AdversaryAssetModel,
-    AdversaryAssetsModel,
-)
+from tcex.api.tc.v3.adversary_assets.adversary_asset_model import AdversaryAssetModel, AdversaryAssetsModel
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
@@ -65,7 +62,7 @@ class AdversaryAsset(ObjectABC):
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
         self._model = AdversaryAssetModel(**kwargs)
-        self._type = 'adversary_asset'
+        self.type_ = 'Adversary Asset'
 
     @property
     def _api_endpoint(self) -> str:
@@ -85,4 +82,9 @@ class AdversaryAsset(ObjectABC):
     @property
     def as_entity(self) -> dict:
         """Return the entity representation of the object."""
-        return {'type': 'AdversaryAsset', 'id': self.model.id, 'value': self.model.summary}
+        type = self.type_
+        if hasattr(self.model, 'type'):
+            type = self.model.type
+
+        return {'type': type, 'id': self.model.id, 'value': self.model.summary}
+

@@ -67,7 +67,7 @@ class Case(ObjectABC):
     Args:
         artifacts (Artifacts, kwargs): A list of Artifacts corresponding to the Case.
         assignee (None, kwargs): The user or group Assignee object for the Case.
-        attributes (Attributes, kwargs): A list of Attributes corresponding to the Case.
+        attributes (CaseAttributes, kwargs): A list of Attributes corresponding to the Case.
         case_close_time (str, kwargs): The date and time that the Case was closed.
         case_detection_time (str, kwargs): The date and time that ends the user initiated Case
             duration.
@@ -95,7 +95,7 @@ class Case(ObjectABC):
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
         self._model = CaseModel(**kwargs)
-        self._type = 'case'
+        self.type_ = 'Case'
 
     @property
     def _api_endpoint(self) -> str:
@@ -115,7 +115,11 @@ class Case(ObjectABC):
     @property
     def as_entity(self) -> dict:
         """Return the entity representation of the object."""
-        return {'type': 'Case', 'id': self.model.id, 'value': self.model.summary}
+        type = self.type_
+        if hasattr(self.model, 'type'):
+            type = self.model.type
+
+        return {'type': type, 'id': self.model.id, 'value': self.model.summary}
 
     def add_artifact(self, **kwargs) -> None:
         """Add artifact to the object.
@@ -163,7 +167,6 @@ class Case(ObjectABC):
     @property
     def artifacts(self) -> 'Artifact':
         """Yield Artifact from Artifacts."""
-        # first-party
         from tcex.api.tc.v3.artifacts.artifact import Artifacts
 
         yield from self._iterate_over_sublist(Artifacts)
@@ -171,7 +174,6 @@ class Case(ObjectABC):
     @property
     def notes(self) -> 'Note':
         """Yield Note from Notes."""
-        # first-party
         from tcex.api.tc.v3.notes.note import Notes
 
         yield from self._iterate_over_sublist(Notes)
@@ -179,7 +181,6 @@ class Case(ObjectABC):
     @property
     def tags(self) -> 'Tag':
         """Yield Tag from Tags."""
-        # first-party
         from tcex.api.tc.v3.tags.tag import Tags
 
         yield from self._iterate_over_sublist(Tags)
@@ -187,7 +188,7 @@ class Case(ObjectABC):
     @property
     def tasks(self) -> 'Task':
         """Yield Task from Tasks."""
-        # first-party
         from tcex.api.tc.v3.tasks.task import Tasks
 
         yield from self._iterate_over_sublist(Tasks)
+

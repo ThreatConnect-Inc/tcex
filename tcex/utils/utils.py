@@ -410,6 +410,13 @@ class Utils:
                     _singular = self
                 return SnakeString(_singular)
 
+            def space_case(self):
+                """Return a space case version of a string
+
+                _ will be replaced with spaces.
+                """
+                return self.replace('_', ' ').title()
+
             # def title(self):
             #     """Return string snake to camel."""
             #     return SnakeString(self.replace('_', ' ').title())

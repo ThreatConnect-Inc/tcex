@@ -39,7 +39,7 @@ class ObjectABC(ABC):
 
         # properties
         self._model = None  # defined in child class
-        self._type = None  # defined in child class
+        self.type_ = None  # defined in child class
         self._utils = Utils()
         self.log = logger
         self.request = None
@@ -259,7 +259,7 @@ class ObjectABC(ABC):
 
         # special parameter for indicators to enable the return the the indicator fields
         # (value1, value2, value3) on std-custom/custom-custom indicator types.
-        if self._type == 'indicator':
+        if self.type_ == 'Indicator':
             params.setdefault('fields', []).append('genericCustomIndicatorValues')
 
         # add fields parameter if provided
