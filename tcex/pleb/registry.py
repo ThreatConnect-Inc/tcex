@@ -4,15 +4,18 @@ import functools
 from collections.abc import Container
 from typing import TYPE_CHECKING, Any, Callable, Tuple, Type, Union
 
+
 if TYPE_CHECKING:
     # third-party
     from redis import Redis
 
     # first-party
+    from tcex.input.input import Input
     from tcex.key_value_store.key_value_api import KeyValueApi
     from tcex.key_value_store.key_value_redis import KeyValueRedis
     from tcex.playbook.playbook import Playbook
     from tcex.sessions.tc_session import TcSession
+    from tcex.tokens import Tokens
 
 
 class Registry(Container):
@@ -117,10 +120,10 @@ class Registry(Container):
 
         raise RuntimeError(f'No provider for type: {key}')
 
-    def __contains__(self, item) -> bool:
+    def __contains__(self, item: object) -> bool:
         """Enable the syntax MyClass in registry."""
         try:
-            self.get(item)
+            self.__getattr__(item)
             return True
         except RuntimeError:
             return False
@@ -153,14 +156,14 @@ class Registry(Container):
     #
 
     @property
-    def session_tc(self) -> 'TcSession':
-        """Return a TcSession."""
-        return self.TcSession
+    def handle_error(self) -> 'Callable':
+        """Return a handle_error function."""
+        return self.__getattr__('handle_error')
 
     @property
-    def redis_client(self) -> 'Redis':
-        """Return a Redis client object (redis.Redis)."""
-        return self.Redis
+    def inputs(self) -> 'Input':
+        """Return an Inputs object."""
+        return self.Input
 
     @property
     def key_value_store(self) -> Union['KeyValueRedis', 'KeyValueApi']:
@@ -173,9 +176,19 @@ class Registry(Container):
         return self.Playbook
 
     @property
-    def handle_error(self) -> 'Callable':
-        """Return a handle_error function."""
-        return self.handle_error
+    def redis_client(self) -> 'Redis':
+        """Return a Redis client object (redis.Redis)."""
+        return self.Redis
+
+    @property
+    def session_tc(self) -> 'TcSession':
+        """Return a TcSession."""
+        return self.TcSession
+
+    @property
+    def token(self) -> 'Tokens':
+        """Return a Tokens."""
+        return self.Tokens
 
 
 registry = Registry()
