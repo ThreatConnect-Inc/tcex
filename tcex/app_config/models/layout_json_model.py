@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from pydantic.types import constr
 
 # first-party
-from tcex.pleb import NoneModel
+from tcex.pleb.none_model import NoneModel
 
 __all__ = ['LayoutJsonModel']
 

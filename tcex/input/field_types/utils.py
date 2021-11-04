@@ -2,9 +2,8 @@
 
 # first-party
 from tcex.api.tc.utils.threat_intel_utils import ThreatIntelUtils
-from tcex.sessions import TcSessionSingleton
-
-from .exception import ConfigurationException
+from tcex.input.field_types.exception import ConfigurationException
+from tcex.pleb.registry import registry
 
 
 def array_validator(value: list) -> None:
@@ -19,7 +18,7 @@ def ti_utils() -> ThreatIntelUtils:
     Use the TC session singleton to initialize TI Utils. At this point
     the singleton should already be initialize so no need to pass args.
     """
-    return ThreatIntelUtils(session=TcSessionSingleton(None, None, None).session)
+    return ThreatIntelUtils(session=registry.session_tc)
 
 
 class ConfigurationUtils:

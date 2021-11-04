@@ -16,10 +16,11 @@ from tcex.app_config.install_json import InstallJson
 from tcex.backports import cached_property
 from tcex.input.field_types import Sensitive
 from tcex.input.models import feature_map, runtime_level_map
-from tcex.key_value_store import KeyValueApi, KeyValueRedis, RedisClient
-from tcex.playbook import Playbook
-from tcex.pleb import Event, NoneModel, proxies
-from tcex.sessions import TcSessionSingleton
+from tcex.key_value_store import RedisClient
+from tcex.pleb.none_model import NoneModel
+from tcex.pleb.registry import registry
+
+# from tcex.tokens import Tokens
 from tcex.utils import Utils
 
 # get tcex logger
@@ -63,11 +64,12 @@ class Input:
 
         # properties
         self._models = []
-        self.event = Event()
         self.ij = InstallJson()
         self.log = logger
         self.utils = Utils()
-        self.variable_pattern = re.compile(r'&\{(?P<provider>\w+):(?P<type>\w+):(?P<key>.*)\}')
+
+        # add methods to registry
+        registry.add_method(self.resolve_variable)
 
     def _load_aot_params(
         self,
@@ -101,7 +103,7 @@ class Input:
 
                 if msg_data is None:  # pragma: no cover
                     # send exit to tcex.exit method
-                    self.event.send('exit', code=1, msg='AOT subscription timeout reached.')
+                    registry.exit(code=1, msg='AOT subscription timeout reached.')
 
                 msg_data = json.loads(msg_data[1])
                 msg_type = msg_data.get('type', 'terminate')
@@ -109,10 +111,10 @@ class Input:
                     params = msg_data.get('params', {})
                 elif msg_type == 'terminate':
                     # send exit to tcex.exit method
-                    self.event.send('exit', code=0, msg='Received AOT terminate message.')
+                    registry.exit(code=0, msg='Received AOT terminate message.')
             except Exception as e:  # pragma: no cover
                 # send exit to tcex.exit method
-                self.event.send('exit', code=1, msg=f'Exception during AOT subscription ({e}).')
+                registry.exit(code=1, msg=f'Exception during AOT subscription ({e}).')
 
         return params
 
@@ -182,50 +184,26 @@ class Input:
 
         return file_content
 
-    def _resolve_variable(self, provider: str, key: str, type_: str) -> Union[bytes, str]:
-        """Resolve TEXT/KEYCHAIN/FILE variables.
-
-        Feature: PLAT-2688
-
-        Data Format:
-        {
-            "data": "value"
-        }
-        """
-        data = None
-
-        # retrieve value from API
-        r = self.session.get(f'/internal/variable/runtime/{provider}/{key}')
-        if r.ok:
-            try:
-                data = r.json().get('data')
-
-                if type_.lower() == 'file':
-                    data = b64decode(data)  # returns bytes
-                elif type_.lower() == 'keychain':
-                    # TODO: [high] will the developer know this is sensitive
-                    #              and access the "value" property
-                    data = Sensitive(data)
-            except Exception as ex:
-                raise RuntimeError(
-                    f'Could not retrieve variable: provider={provider}, key={key}, type={type_}.'
-                ) from ex
-        else:
-            raise RuntimeError(
-                f'Could not retrieve variable: provider={provider}, key={key}, type={type_}.'
-            )
-
-        return data
+    @property
+    def _variable_expansion_pattern(self):
+        """Regex pattern to match and parse a playbook variable."""
+        return re.compile(
+            # Origin: "#" -> PB-Variable "&" -> TC-Variable
+            r'(?P<origin>#|&)'
+            r'(?:\{)?'  # drop "{"
+            # Provider: PB-Variable -> literal "App" or TC-Variable -> provider (e.g. TC|Vault)
+            r'(?P<provider>[A-Za-z]+):'
+            # ID: PB-Variable -> App ID or TC-Variable -> FILE|KEYCHAIN|TEXT
+            r'(?P<id>[\w]+):'
+            # Lookup: PB-Variable -> variable name or TC-Variable -> variable identifier
+            r'(?P<lookup>[A-Za-z0-9_\.\-\[\]]+)'
+            r'(?:\})?'  # drop "}"
+            # Type: PB-Variable -> variable type (e.g., String|StringArray)
+            r'(?:!(?P<type>[A-Za-z0-9_-]+))?'
+        )
 
     def add_model(self, model: BaseModel) -> None:
         """Add additional input models."""
-        # TODO: [high] @paco - for some custom defined field types we need to make API calls
-        #       (e.g., indicator types). In order to do this we need a session object in
-        #       the custom field types, so we use a singleton Session object that needs
-        #       to get instantiated before the datamodel parses the App inputs, but after
-        #       the "base" inputs are loaded into the model.
-        _ = self.session
-
         if model:
             self._models.insert(0, model)
 
@@ -267,7 +245,11 @@ class Input:
 
     @cached_property
     def contents_resolved(self) -> dict:
-        """Resolve all file, keychain, playbook, and text variables."""
+        """Resolve all file, keychain, playbook, and text variables.
+
+        Job, Playbook, and Service Apps call can have a tc-variable, but only
+        Playbook Apps will have a playbook variable.
+        """
         _inputs = self.contents
 
         # support external Apps that don't have an install.json
@@ -280,37 +262,29 @@ class Input:
             if name in self.model_properties:
                 continue
 
-            if isinstance(value, list):
-                # TODO: [low] are playbooks the only App type that can get a list?
-                #             is this condition needed?
-                if self.ij.data.runtime_level.lower() == 'playbook':
-                    # list could contain variables, try to resolve the value
-                    updated_value_array = []
-                    for v in value:
-                        if isinstance(v, str):
-                            v = self.playbook.read(v)
-                        updated_value_array.append(v)
-                    _inputs[name] = updated_value_array
+            if isinstance(value, list) and self.ij.data.runtime_level.lower() == 'playbook':
+                # list could contain playbook variables, try to resolve the value
+                updated_value_array = []
+                for v in value:
+                    if isinstance(v, str):
+                        # v = self.playbook.read(v)
+                        v = registry.playbook.read(v)
+                    updated_value_array.append(v)
+                _inputs[name] = updated_value_array
             elif isinstance(value, str):
-                # strings could be a variable, try to resolve the value
-                if self.variable_pattern.match(value):
-                    m = self.variable_pattern.search(value)
-                    if not any(
-                        [
-                            m.group('provider'),
-                            m.group('key'),
-                            m.group('type'),
-                        ]
-                    ):
-                        # TODO: [med] should this an exit
-                        raise RuntimeError(f'Could not parse variable {value}.')
-
-                    _inputs[name] = self._resolve_variable(
-                        m.group('provider'), m.group('key'), m.group('type')
-                    )
-                    # _inputs[name] = self._resolve_variable(**m.groupdict())
-                elif self.ij.data.runtime_level.lower() == 'playbook':
-                    _inputs[name] = self.playbook.read(value)
+                # replace all embedded pb and tc variables (e.g., #APP:... and &{TC:...})
+                for match in re.finditer(self._variable_expansion_pattern, str(value)):
+                    variable = match.group(0)  # the full variable pattern
+                    if match.group('origin') == '#':  # pb-variable
+                        # v = self.playbook.read(variable)
+                        v = registry.playbook.read(variable)
+                    elif match.group('origin') == '&':  # tc-variable
+                        v = self.resolve_variable(
+                            match.group('provider'), match.group('lookup'), match.group('id')
+                        )
+                    # replace the *variable* with the lookup results (*v*) in the provided *value*
+                    value = re.sub(variable, v, value)
+                _inputs[name] = value
 
         # update contents
         self.contents_update(_inputs)
@@ -353,17 +327,6 @@ class Input:
         return input_model(self.models)(**self.contents)
 
     @cached_property
-    def key_value_store(self) -> Union[KeyValueApi, KeyValueRedis]:
-        """Return the correct KV store for this execution."""
-        if self.data_unresolved.tc_kvstore_type == 'Redis':
-            return KeyValueRedis(self.redis_client)
-
-        if self.data_unresolved.tc_kvstore_type == 'TCKeyValueAPI':
-            return KeyValueApi(self.session)
-
-        raise RuntimeError(f'Invalid KV Store Type: ({self.data_unresolved.tc_kvstore_type})')
-
-    @cached_property
     def models(self) -> list:
         """Return all models for inputs."""
         # support external Apps that don't have an install.json
@@ -389,44 +352,38 @@ class Input:
 
         return properties
 
-    @cached_property
-    def playbook(self) -> Playbook:
-        """Return instance of Playbook."""
-        return Playbook(
-            key_value_store=self.key_value_store,
-            context=self.data_unresolved.tc_playbook_kvstore_context,
-            output_variables=self.data_unresolved.tc_playbook_out_variables,
-        )
+    @staticmethod
+    def resolve_variable(provider: str, key: str, type_: str) -> Union[bytes, str]:
+        """Resolve FILE/KEYCHAIN/TEXT variables.
 
-    @cached_property
-    def redis_client(self) -> RedisClient:
-        """Return redis client instance configure for Playbook/Service Apps."""
-        return RedisClient(
-            host=self.data_unresolved.tc_kvstore_host,
-            port=self.data_unresolved.tc_kvstore_port,
-            db=self.data_unresolved.tc_playbook_kvstore_id,
-        ).client
+        Feature: PLAT-2688
 
-    @cached_property
-    def session(self) -> TcSessionSingleton:
-        """Return Session configured for ThreatConnect API."""
+        Data Format:
+        {
+            "data": "value"
+        }
+        """
+        data = None
 
-        _session = TcSessionSingleton(
-            base_url=self.data_unresolved.tc_api_path,
-            tc_token=self.data_unresolved.tc_token,
-            tc_token_expires=self.data_unresolved.tc_token_expires,
-        )
+        # retrieve value from API
+        r = registry.session_tc.get(f'/internal/variable/runtime/{provider}/{key}')
+        if r.ok:
+            try:
+                data = r.json().get('data')
 
-        # set verify
-        _session.verify = self.data_unresolved.tc_verify
-
-        # add proxy support if requested
-        if self.data_unresolved.tc_proxy_tc:
-            _session.proxies = proxies(
-                proxy_host=self.data_unresolved.tc_proxy_host,
-                proxy_port=self.data_unresolved.tc_proxy_port,
-                proxy_user=self.data_unresolved.tc_proxy_username,
-                proxy_pass=self.data_unresolved.tc_proxy_password,
+                if type_.lower() == 'file':
+                    data = b64decode(data)  # returns bytes
+                elif type_.lower() == 'keychain':
+                    # TODO: [high] will the developer know this is sensitive
+                    #              and access the "value" property
+                    data = Sensitive(data)
+            except Exception as ex:
+                raise RuntimeError(
+                    f'Could not retrieve variable: provider={provider}, key={key}, type={type_}.'
+                ) from ex
+        else:
+            raise RuntimeError(
+                f'Could not retrieve variable: provider={provider}, key={key}, type={type_}.'
             )
 
-        return _session
+        return data

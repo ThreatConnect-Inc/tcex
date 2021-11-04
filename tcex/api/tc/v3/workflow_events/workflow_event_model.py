@@ -147,7 +147,6 @@ class WorkflowEventModel(
         None,
         description='A list of Notes corresponding to the Event.',
         methods=['POST', 'PUT'],
-        max_size=1000,
         read_only=False,
         title='notes',
     )

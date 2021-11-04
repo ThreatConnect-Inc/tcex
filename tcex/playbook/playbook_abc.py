@@ -11,6 +11,7 @@ from typing import Any, List, Optional, Union
 
 # first-party
 from tcex.key_value_store import KeyValueApi, KeyValueRedis
+from tcex.pleb.registry import registry
 
 # get tcex logger
 logger = logging.getLogger('tcex')
@@ -249,7 +250,7 @@ class PlaybookABC(ABC):
         b64decode: Optional[bool] = True,
         decode: Optional[bool] = False,
     ) -> any:
-        """Create the value in Redis if applicable."""
+        """Read the value from Redis if applicable."""
         if key is None:
             self.log.warning('The key is None.')
             return None
@@ -406,8 +407,15 @@ class PlaybookABC(ABC):
         if value is None:  # pragma: no cover
             return value
 
-        for variable in (v.group(0) for v in re.finditer(self._variable_parse, str(value))):
-            v = self.read(variable)
+        for match in re.finditer(self._variable_expansion_pattern, str(value)):
+            variable = match.group(0)  # the full variable pattern
+            if match.group('origin') == '#':  # pb-variable
+                v = self.read(variable)
+            elif match.group('origin') == '&':  # tc-variable
+                v = registry.resolve_variable(
+                    match.group('provider'), match.group('lookup'), match.group('id')
+                )
+
             self.log.trace(f'embedded variable: {variable}, value: {v}')
             if isinstance(v, (dict, list)):
                 v = json.dumps(v)
@@ -425,6 +433,35 @@ class PlaybookABC(ABC):
         return value
 
     @property
+    def _variable_array_types(self) -> List[str]:
+        """Return list of standard playbook array variable types."""
+        return [
+            'BinaryArray',
+            'KeyValueArray',
+            'StringArray',
+            'TCEntityArray',
+            'TCEnhancedEntityArray',
+        ]
+
+    @property
+    def _variable_expansion_pattern(self):
+        """Regex pattern to match and parse a playbook variable."""
+        return re.compile(
+            # Origin: "#" -> PB-Variable "&" -> TC-Variable
+            r'(?P<origin>#|&)'
+            r'(?:\{)?'  # drop "{"
+            # Provider: PB-Variable -> literal "App" or TC-Variable -> provider (e.g. TC|Vault)
+            r'(?P<provider>[A-Za-z]+):'
+            # ID: PB-Variable -> App ID or TC-Variable -> FILE|KEYCHAIN|TEXT
+            r'(?P<id>[\w]+):'
+            # Lookup: PB-Variable -> variable name or TC-Variable -> variable identifier
+            r'(?P<lookup>[A-Za-z0-9_\.\-\[\]]+)'
+            r'(?:\})?'  # drop "}"
+            # Type: PB-Variable -> variable type (e.g., String|StringArray)
+            r'(?:!(?P<type>[A-Za-z0-9_-]+))?'
+        )
+
+    @property
     def _variable_pattern(self) -> str:
         """Regex pattern to match and parse a playbook variable."""
         return (
@@ -438,17 +475,6 @@ class PlaybookABC(ABC):
             r'(?!TCEntity)(?!TCEnhancedEntity)'  # non matching for custom
             r'[A-Za-z0-9_-]+))'  # variable type (custom)
         )
-
-    @property
-    def _variable_array_types(self) -> List[str]:
-        """Return list of standard playbook array variable types."""
-        return [
-            'BinaryArray',
-            'KeyValueArray',
-            'StringArray',
-            'TCEntityArray',
-            'TCEnhancedEntityArray',
-        ]
 
     @property
     def _variable_single_types(self) -> List[str]:

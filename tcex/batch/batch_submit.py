@@ -13,7 +13,7 @@ from requests import Session
 
 # first-party
 from tcex.input.input import Input
-from tcex.pleb import Event
+from tcex.pleb.registry import registry
 
 # get tcex logger
 logger = logging.getLogger('tcex')
@@ -60,7 +60,6 @@ class BatchSubmit:
         # properties
         self._file_merge_mode = None
         self._hash_collision_mode = None
-        self.event = Event()
         self.log = logger()
 
         # global overrides on batch/file errors
@@ -117,13 +116,10 @@ class BatchSubmit:
         try:
             r = self.session.post('/v2/batch', json=self.settings)
         except Exception as e:
-            self.event.send(
-                'handle_error', code=10505, message_values=[e], raise_error=halt_on_error
-            )
+            registry.handle_error(code=10505, message_values=[e], raise_error=halt_on_error)
 
         if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-            self.event.send(
-                'handle_error',
+            registry.handle_error(
                 code=10510,
                 message_values=[r.status_code, r.text],
                 raise_error=halt_on_error,
@@ -131,8 +127,7 @@ class BatchSubmit:
 
         data = r.json()
         if data.get('status') != 'Success':
-            self.event.send(
-                'handle_error',
+            registry.handle_error(
                 code=10510,
                 message_values=[r.status_code, r.text],
                 raise_error=halt_on_error,
@@ -194,14 +189,13 @@ class BatchSubmit:
                 error_reason = error.get('errorReason')
                 for error_msg in self._critical_failures:
                     if re.findall(error_msg, error_reason):
-                        self.event.send(
-                            'handle_error',
+                        registry.handle_error(
                             code=10500,
                             message_values=[error_reason],
                             raise_error=halt_on_error,
                         )
         except Exception as e:
-            self.event.send('handle_error', code=560, message_values=[e], raise_error=halt_on_error)
+            registry.handle_error(code=560, message_values=[e], raise_error=halt_on_error)
 
         return errors
 
@@ -328,8 +322,7 @@ class BatchSubmit:
                 # retrieve job status
                 r = self.session.get(f'/v2/batch/{batch_id}', params=params)
                 if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-                    self.event.send(
-                        'handle_error',
+                    registry.handle_error(
                         code=545,
                         message_values=[r.status_code, r.text],
                         raise_error=halt_on_error,
@@ -337,16 +330,13 @@ class BatchSubmit:
                     return data
                 data = r.json()
                 if data.get('status') != 'Success':
-                    self.event.send(
-                        'handle_error',
+                    registry.handle_error(
                         code=545,
                         message_values=[r.status_code, r.text],
                         raise_error=halt_on_error,
                     )
             except Exception as e:
-                self.event.send(
-                    'handle_error', code=540, message_values=[e], raise_error=halt_on_error
-                )
+                registry.handle_error(code=540, message_values=[e], raise_error=halt_on_error)
 
             if data.get('data', {}).get('batchStatus', {}).get('status') == 'Completed':
                 # store last 5 poll times to use in calculating average poll time
@@ -381,9 +371,7 @@ class BatchSubmit:
 
             # time out poll to prevent App running indefinitely
             if poll_time_total >= timeout:
-                self.event.send(
-                    'handle_error', code=550, message_values=[timeout], raise_error=True
-                )
+                registry.handle_error(code=550, message_values=[timeout], raise_error=True)
 
     @property
     def poll_timeout(self) -> int:
@@ -455,17 +443,14 @@ class BatchSubmit:
         try:
             r = self.session.post('/v2/batch/createAndUpload', files=files, params=params)
             if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-                self.event.send(
-                    'handle_error',
+                registry.handle_error(
                     code=10510,
                     message_values=[r.status_code, r.text],
                     raise_error=halt_on_error,
                 )
             return r.json()
         except Exception as e:
-            self.event.send(
-                'handle_error', code=10505, message_values=[e], raise_error=halt_on_error
-            )
+            registry.handle_error(code=10505, message_values=[e], raise_error=halt_on_error)
 
         return {}
 
@@ -497,17 +482,14 @@ class BatchSubmit:
         try:
             r = self.session.post(f'/v2/batch/{batch_id}', headers=headers, data=content)
             if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-                self.event.send(
-                    'handle_error',
+                registry.handle_error(
                     code=10525,
                     message_values=[r.status_code, r.text],
                     raise_error=halt_on_error,
                 )
             return r.json()
         except Exception as e:
-            self.event.send(
-                'handle_error', code=10520, message_values=[e], raise_error=halt_on_error
-            )
+            registry.handle_error(code=10520, message_values=[e], raise_error=halt_on_error)
 
         return None
 

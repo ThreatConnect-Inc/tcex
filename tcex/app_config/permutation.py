@@ -21,7 +21,7 @@ from tcex.app_config.layout_json import LayoutJson
 from tcex.app_config.models.install_json_model import ParamsModel
 from tcex.app_config.models.layout_json_model import OutputsModel, ParametersModel
 from tcex.backports import cached_property
-from tcex.pleb import NoneModel
+from tcex.pleb.none_model import NoneModel
 
 
 class Permutation:

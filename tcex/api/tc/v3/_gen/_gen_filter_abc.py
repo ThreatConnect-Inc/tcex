@@ -160,40 +160,63 @@ class GenerateFilterABC(GenerateABC, ABC):
     def _gen_code_has_group_method(self) -> str:
         """Return code for has_group TQL filter methods."""
         self._add_tql_imports()
-        return [
+        _code = [
             f'{self.i1}@property',
             f'{self.i1}def has_group(self):',
             f'{self.i2}"""Return **GroupFilter** for further filtering."""',
-            f'{self.i2}# first-party',
-            f'{self.i2}from tcex.api.tc.v3.groups.group_filter import GroupFilter',
-            '',
-            f'{self.i2}groups = GroupFilter(Tql())',
-            (
-                f'''{self.i2}self._tql.add_filter('hasCase', '''
-                '''TqlOperator.EQ, groups, TqlType.SUB_QUERY)'''
-            ),
-            f'{self.i2}return groups',
-            '',
         ]
+        if self.type_ != 'groups':
+            _code.extend(
+                [
+                    f'{self.i2}# first-party',
+                    f'{self.i2}from tcex.api.tc.v3.groups.group_filter import GroupFilter',
+                    '',
+                ]
+            )
+        _code.extend(
+            [
+                f'{self.i2}groups = GroupFilter(Tql())',
+                (
+                    f'''{self.i2}self._tql.add_filter('hasGroup', '''
+                    '''TqlOperator.EQ, groups, TqlType.SUB_QUERY)'''
+                ),
+                f'{self.i2}return groups',
+                '',
+            ]
+        )
+        return _code
 
     def _gen_code_has_indicator_method(self) -> str:
         """Return code for has_indicator TQL filter methods."""
         self._add_tql_imports()
-        return [
+        _code = [
             f'{self.i1}@property',
             f'{self.i1}def has_indicator(self):',
             f'{self.i2}"""Return **IndicatorFilter** for further filtering."""',
-            f'{self.i2}# first-party',
-            f'{self.i2}from tcex.api.tc.v3.indicators.indicator_filter import IndicatorFilter',
-            '',
-            f'{self.i2}indicators = IndicatorFilter(Tql())',
-            (
-                f'''{self.i2}self._tql.add_filter('hasCase', '''
-                '''TqlOperator.EQ, indicators, TqlType.SUB_QUERY)'''
-            ),
-            f'{self.i2}return indicators',
-            '',
         ]
+        if self.type_ != 'indicators':
+            _code.extend(
+                [
+                    f'{self.i2}# first-party',
+                    (
+                        f'{self.i2}from tcex.api.tc.v3.indicators.indicator_filter '
+                        'import IndicatorFilter'
+                    ),
+                    '',
+                ]
+            )
+        _code.extend(
+            [
+                f'{self.i2}indicators = IndicatorFilter(Tql())',
+                (
+                    f'''{self.i2}self._tql.add_filter('hasIndicator', '''
+                    '''TqlOperator.EQ, indicators, TqlType.SUB_QUERY)'''
+                ),
+                f'{self.i2}return indicators',
+                '',
+            ]
+        )
+        return _code
 
     def _gen_code_has_note_method(self) -> str:
         """Return code for has_note TQL filter methods."""

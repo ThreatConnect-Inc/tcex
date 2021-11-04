@@ -79,7 +79,6 @@ class VictimModel(
         None,
         description='A list of victim assets corresponding to the Victim.',
         methods=['POST', 'PUT'],
-        max_size=1000,
         read_only=False,
         title='assets',
     )
@@ -153,7 +152,6 @@ class VictimModel(
             'parameter will replace any existing tag(s) with the one(s) specified).'
         ),
         methods=['POST', 'PUT'],
-        max_size=1000,
         read_only=False,
         title='securityLabels',
     )
@@ -173,7 +171,6 @@ class VictimModel(
             'any existing tag(s) with the one(s) specified).'
         ),
         methods=['POST', 'PUT'],
-        max_size=1000,
         read_only=False,
         title='tags',
     )
@@ -193,6 +190,13 @@ class VictimModel(
         min_length=0,
         read_only=False,
         title='workLocation',
+    )
+    xid: Optional[str] = Field(
+        None,
+        description='The xid of the item.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='xid',
     )
 
     @validator('attributes', always=True)

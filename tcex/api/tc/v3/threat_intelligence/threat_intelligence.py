@@ -87,7 +87,6 @@ class ThreatIntelligence:
         """
         return Groups(session=self.session, **kwargs)
 
-    @property
     def indicator(self, **kwargs) -> 'Indicator':
         """Return a instance of Group object.
 

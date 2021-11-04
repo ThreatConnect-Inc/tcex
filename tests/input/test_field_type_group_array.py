@@ -654,7 +654,7 @@ class TestInputsFieldTypeGroupArray(InputTest):
         # ensure session singleton is loaded
         app = playbook_app(config_data={})
         tcex = app.tcex
-        _ = tcex.inputs.session
+        _ = tcex.session_tc
 
         # should raise exception on custom group array config
         with pytest.raises(ConfigurationException):
@@ -677,7 +677,7 @@ class TestInputsFieldTypeGroupArray(InputTest):
         tcex = app.tcex
 
         # ensure session singleton is loaded
-        _ = tcex.inputs.session
+        _ = tcex.session_tc
 
         class PytestModel(BaseModel):
             """Test Model for Inputs"""

@@ -79,7 +79,6 @@ class CaseModel(
         None,
         description='A list of Artifacts corresponding to the Case.',
         methods=['POST', 'PUT'],
-        max_size=1000,
         read_only=False,
         title='artifacts',
     )
@@ -90,7 +89,7 @@ class CaseModel(
         read_only=False,
         title='assignee',
     )
-    attributes: Optional['AttributesModel'] = Field(
+    attributes: Optional['CaseAttributesModel'] = Field(
         None,
         description='A list of Attributes corresponding to the Case.',
         methods=['POST', 'PUT'],
@@ -195,7 +194,6 @@ class CaseModel(
         None,
         description='A list of Notes corresponding to the Case.',
         methods=['POST', 'PUT'],
-        max_size=1000,
         read_only=False,
         title='notes',
     )
@@ -241,7 +239,6 @@ class CaseModel(
             'any existing tag(s) with the one(s) specified).'
         ),
         methods=['POST', 'PUT'],
-        max_size=1000,
         read_only=False,
         title='tags',
     )
@@ -249,7 +246,6 @@ class CaseModel(
         None,
         description='A list of Tasks corresponding to the Case.',
         methods=['POST', 'PUT'],
-        max_size=1000,
         read_only=False,
         title='tasks',
     )
@@ -267,7 +263,6 @@ class CaseModel(
         None,
         description='A list of workflowEvents (timeline) corresponding to the Case.',
         methods=['POST', 'PUT'],
-        max_size=1000,
         read_only=False,
         title='workflowEvents',
     )
@@ -298,7 +293,7 @@ class CaseModel(
     @validator('attributes', always=True)
     def _validate_attributes(cls, v):
         if not v:
-            return AttributesModel()
+            return CaseAttributesModel()
         return v
 
     @validator('related', always=True)
@@ -352,8 +347,8 @@ class CaseModel(
 
 # first-party
 from tcex.api.tc.v3.artifacts.artifact_model import ArtifactsModel
-from tcex.api.tc.v3.attributes.attribute_model import AttributesModel
-from tcex.api.tc.v3.case_management.assignee import Assignee
+from tcex.api.tc.v3.case_attributes.case_attribute_model import CaseAttributesModel
+from tcex.api.tc.v3.case_management.assignee import Assignee  # pylint: disable=unused-import
 from tcex.api.tc.v3.notes.note_model import NotesModel
 from tcex.api.tc.v3.security.users.user_model import UserModel, UsersModel
 from tcex.api.tc.v3.tags.tag_model import TagsModel

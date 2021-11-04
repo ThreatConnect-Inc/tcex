@@ -4,8 +4,8 @@
 import logging
 
 # first-party
-from tcex.logger.cache_handler import CacheHandler
-from tcex.logger.trace_logger import TraceLogger
+from tcex.logger.cache_handler import CacheHandler  # pylint: disable=no-name-in-module
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 
 # init logger before instantiating tcex
 logging.setLoggerClass(TraceLogger)

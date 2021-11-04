@@ -151,6 +151,7 @@ class WorkflowTemplateModel(
         None,
         description='The **version** for the Workflow_Template.',
         methods=['POST', 'PUT'],
+        minimum=1,
         read_only=False,
         title='version',
     )
@@ -163,7 +164,7 @@ class WorkflowTemplateModel(
 
 
 # first-party
-from tcex.api.tc.v3.case_management.assignee import Assignee
+from tcex.api.tc.v3.case_management.assignee import Assignee  # pylint: disable=unused-import
 from tcex.api.tc.v3.cases.case_model import CasesModel
 
 # add forward references

@@ -1,5 +1,6 @@
 """Generate Models for ThreatConnect API"""
 # standard library
+import json
 import sys
 from abc import ABC
 from textwrap import TextWrapper
@@ -42,6 +43,7 @@ class GenerateModelABC(GenerateABC, ABC):
         _types.update(self._prop_type_custom(type_, field))
 
         # handle types
+        type_ = self._fix_type(type_)  # swap Attribute for specific type (e.g., CaseAttribute)
         type_data = _types.get(type_, {})
         requirement_data = type_data.get('requirement')
 
@@ -57,24 +59,15 @@ class GenerateModelABC(GenerateABC, ABC):
 
         return type_data.get('type', type_)
 
-    @staticmethod
-    def _fix_type(type_: str) -> str:
+    def _fix_type(self, type_: str) -> str:
         """Fix type for when API returns a "bad" type."""
-        # type_map = {
-        #     # 'AttributeDatas': ',
-        #     'CaseAttributeDatas': 'CaseAttributes',
-        #     'GroupAttributeDatas': 'GroupAttributes',
-        #     'IndicatorAttributeDatas': 'IndicatorAttributes',
-        #     'VictimAttributeDatas': 'VictimAttributes',
-        # }
-        # return type_map.get(type_, type_)
-        if type_ in [
-            'AttributeDatas',
-            'CaseAttributeDatas',
-            'GroupAttributeDatas',
-            'IndicatorAttributeDatas',
-            'VictimAttributeDatas',
-        ]:
+        if self.type_ == 'cases' and type_ == 'Attributes':
+            return 'CaseAttributes'
+        if self.type_ == 'groups' and type_ == 'Attributes':
+            return 'GroupAttributes'
+        if self.type_ == 'indicators' and type_ == 'Attributes':
+            return 'IndicatorAttributes'
+        if type_ == 'AttributeDatas':
             return 'Attributes'
         return type_
 
@@ -154,7 +147,7 @@ class GenerateModelABC(GenerateABC, ABC):
 
     def _prop_type_custom(self, type_: str, field: str) -> dict:
         """Return cm types."""
-        type_ = self.utils.snake_string(type_)
+        type_ = self._fix_type(self.utils.snake_string(type_))
         return {
             'AdversaryAssets': {
                 'requirement': self._gen_req_code(type_),
@@ -179,7 +172,10 @@ class GenerateModelABC(GenerateABC, ABC):
             'Assignee': {
                 'requirement': {
                     'from': 'first-party-forward-reference',
-                    'import': 'from tcex.api.tc.v3.case_management.assignee import Assignee',
+                    'import': (
+                        'from tcex.api.tc.v3.case_management.assignee import Assignee'
+                        '  # pylint: disable=unused-import'
+                    ),
                 },
                 'type': 'Optional[\'Assignee\']',
             },
@@ -195,6 +191,17 @@ class GenerateModelABC(GenerateABC, ABC):
             },
             'Case': {
                 'requirement': self._gen_req_code(type_),
+                'type': f'Optional[\'{type_}Model\']',
+                'validator': self._gen_code_validator_method(type_, field),
+            },
+            'CaseAttributes': {
+                'requirement': {
+                    'from': 'first-party-forward-reference',
+                    'import': (
+                        'from tcex.api.tc.v3.case_attributes.case_attribute_model '
+                        'import CaseAttributesModel'
+                    ),
+                },
                 'type': f'Optional[\'{type_}Model\']',
                 'validator': self._gen_code_validator_method(type_, field),
             },
@@ -224,8 +231,30 @@ class GenerateModelABC(GenerateABC, ABC):
                 'type': f'Optional[\'{type_}Model\']',
                 'validator': self._gen_code_validator_method(type_, field),
             },
+            'GroupAttributes': {
+                'requirement': {
+                    'from': 'first-party-forward-reference',
+                    'import': (
+                        'from tcex.api.tc.v3.group_attributes.group_attribute_model '
+                        'import GroupAttributesModel'
+                    ),
+                },
+                'type': f'Optional[\'{type_}Model\']',
+                'validator': self._gen_code_validator_method(type_, field),
+            },
             'Groups': {
                 'requirement': self._gen_req_code(type_),
+                'type': f'Optional[\'{type_}Model\']',
+                'validator': self._gen_code_validator_method(type_, field),
+            },
+            'IndicatorAttributes': {
+                'requirement': {
+                    'from': 'first-party-forward-reference',
+                    'import': (
+                        'from tcex.api.tc.v3.indicator_attributes.indicator_attribute_model '
+                        'import IndicatorAttributesModel'
+                    ),
+                },
                 'type': f'Optional[\'{type_}Model\']',
                 'validator': self._gen_code_validator_method(type_, field),
             },
@@ -520,7 +549,7 @@ class GenerateModelABC(GenerateABC, ABC):
 
         Example field_data:
         "analyticsPriority": {
-            "read-only": true,
+            "readOnly": true,
             "type": "String"
         }
 
@@ -557,9 +586,10 @@ class GenerateModelABC(GenerateABC, ABC):
                     sys.exit(1)
 
                 try:
-                    field_type = self._fix_type(
-                        self.utils.inflect.plural(field_data.get('type'))
-                    )  # change field type to plural
+                    field_type = self.utils.inflect.plural(field_data.get('type'))
+                    # field_type = self._fix_type(
+                    #     self.utils.inflect.plural(field_data.get('type'))
+                    # )  # change field type to plural
                 except TypeError:
                     print(field_name, field_type, field_data)
                     sys.exit(1)
@@ -579,12 +609,16 @@ class GenerateModelABC(GenerateABC, ABC):
                 100,
             )
 
-            field_max_length = field_data.get('max_length')
-            field_min_length = field_data.get('min_length')
-            field_max_size = field_data.get('max_size')
+            field_applies_to = field_data.get('appliesTo')
+            field_conditional_required = field_data.get('conditionalRequired')
+            field_max_length = field_data.get('maxLength')
+            field_min_length = field_data.get('minLength')
+            # field_max_size = field_data.get('maxSize')
+            field_max_value = field_data.get('maxValue')
+            field_min_value = field_data.get('minValue')
             field_methods = []
-            field_read_only = field_data.get('read-only', False)
-            field_required_alt_field = field_data.get('required-alt-field')
+            field_read_only = field_data.get('readOnly', False)
+            field_required_alt_field = field_data.get('requiredAltField')
             field_updatable = field_data.get('updatable')
 
             # method rules
@@ -597,13 +631,23 @@ class GenerateModelABC(GenerateABC, ABC):
             _model.append(f'''{self.i1}{field_name.snake_case()}: {field_hint_type} = Field(''')
             _model.append(f'''{self.i2}None,''')  # the default value
 
-            # allow_mutation / read-only
+            # allow_mutation / readOnly
             if field_read_only is True and field_name != 'id':
-                _model.append(f'''{self.i2}allow_mutation=False,''')  # read-only/mutation setting
+                _model.append(f'''{self.i2}allow_mutation=False,''')  # readOnly/mutation setting
 
             # alias
             if field_alias is not None:
                 _model.append(f'''{self.i2}alias='{field_alias}',''')
+
+            # applies_to
+            if field_applies_to is not None:
+                _model.append(f'''{self.i2}applies_to={json.dumps(field_applies_to)},''')
+
+            # applies_to
+            if field_conditional_required is not None:
+                _model.append(
+                    f'''{self.i2}conditional_required={json.dumps(field_conditional_required)},'''
+                )
 
             # description
             if field_description is not None:
@@ -618,14 +662,22 @@ class GenerateModelABC(GenerateABC, ABC):
                 _model.append(f'''{self.i2}max_length={field_max_length},''')
 
             # max_size
-            if field_max_size is not None:
-                _model.append(f'''{self.i2}max_size={field_max_size},''')
+            # if field_max_size is not None:
+            #     _model.append(f'''{self.i2}max_items={field_max_size},''')
+
+            # max_value
+            if field_max_value is not None:
+                _model.append(f'''{self.i2}maximum={field_max_value},''')
 
             # min_length
             if field_min_length is not None:
                 _model.append(f'''{self.i2}min_length={field_min_length},''')
 
-            # read-only/allow_mutation setting
+            # min_value
+            if field_min_value is not None:
+                _model.append(f'''{self.i2}minimum={field_min_value},''')
+
+            # readOnly/allow_mutation setting
             _model.append(f'''{self.i2}read_only={field_read_only},''')
 
             # required-alt-field

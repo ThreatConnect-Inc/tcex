@@ -11,7 +11,7 @@ from pydantic.types import UUID5, constr
 from semantic_version import Version
 
 # first-party
-from tcex.pleb import NoneModel
+from tcex.pleb.none_model import NoneModel
 
 __all__ = ['InstallJsonModel']
 

@@ -12,11 +12,12 @@ from tcex.app_config.install_json_update import InstallJsonUpdate
 from tcex.app_config.install_json_validate import InstallJsonValidate
 from tcex.app_config.models import InstallJsonModel
 from tcex.backports import cached_property
+from tcex.pleb.singleton import Singleton
 
 __all__ = ['InstallJson']
 
 
-class InstallJson:
+class InstallJson(metaclass=Singleton):
     """Provide a model for the install.json config file."""
 
     def __init__(

@@ -5,8 +5,7 @@ from typing import Any, List, Optional, Union
 
 # first-party
 from tcex.key_value_store import KeyValueApi, KeyValueRedis
-
-from .playbook_abc import PlaybookABC
+from tcex.playbook.playbook_abc import PlaybookABC
 
 
 class Playbook(PlaybookABC):
@@ -454,7 +453,8 @@ class Playbook(PlaybookABC):
         VALID_ENTITY_TYPES = ['group', 'indicator']
 
         # handle the odd format of tcEnhancedEntityArrays which follow the format detailed here:
-        # https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#batch-indicator-input-file-format-v2
+        # https://docs.threatconnect.com/en/latest/rest_api/
+        # indicators/indicators.html#batch-indicator-input-file-format-v2
         if read_results and variable_type == 'tcenhancedentityarray':
             # type specific values
             if entity_type == 'indicator' and field == 'value':

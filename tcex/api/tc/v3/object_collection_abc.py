@@ -11,7 +11,7 @@ from requests.exceptions import ProxyError
 # first-party
 from tcex.api.tc.v3.tql.tql import Tql
 from tcex.backports import cached_property
-from tcex.pleb import Event
+from tcex.pleb.registry import registry
 from tcex.utils import Utils
 
 if TYPE_CHECKING:
@@ -61,7 +61,6 @@ class ObjectCollectionABC(ABC):
         self.log = logger
         self.request = None
         self.tql = Tql()
-        self._event = Event()
         self._model = None
         self._type = None  # defined in child class
         self._utils = Utils()
@@ -69,7 +68,8 @@ class ObjectCollectionABC(ABC):
     def __len__(self) -> int:
         """Return the length of the collection."""
         parameters = self._params
-        parameters['result_limit'] = 1
+        parameters['resultLimit'] = 1
+        parameters['count'] = True
         tql_string = self.tql.raw_tql
         if not self.tql.raw_tql:
             tql_string = self.tql.as_str
@@ -79,12 +79,13 @@ class ObjectCollectionABC(ABC):
         # convert all keys to camel case
         for k, v in list(parameters.items()):
             k = self._utils.snake_to_camel(k)
-            parameters[k] = v
+            # if result_limit and resultLimit both show up use the proper cased version
+            if k not in parameters:
+                parameters[k] = v
 
         r = self._session.get(
             self._api_endpoint, params=parameters, headers={'content-type': 'application/json'}
         )
-        # TODO: [med] check with core team on discrepency on missing count.
         return r.json().get('count', len(r.json().get('data', [])))
 
     @property
@@ -110,6 +111,11 @@ class ObjectCollectionABC(ABC):
         """Iterate over CM/TI objects."""
         parameters = self.params
 
+        # special parameter for indicators to enable the return the the indicator fields
+        # (value1, value2, value3) on std-custom/custom-custom indicator types.
+        if self._type == 'indicators':
+            parameters.setdefault('fields', []).append('genericCustomIndicatorValues')
+
         # convert all keys to camel case
         for k, v in list(parameters.items()):
             k = self._utils.snake_to_camel(k)
@@ -132,8 +138,7 @@ class ObjectCollectionABC(ABC):
                     f'URl: ({self.request.url})'
                 )
             except (ConnectionError, ProxyError):  # pragma: no cover
-                self._event.send(
-                    'handle_error',
+                registry.handle_error(
                     code=951,
                     message_values=[
                         'OPTIONS',
@@ -145,8 +150,7 @@ class ObjectCollectionABC(ABC):
 
             if not self.success(self.request):
                 err = self.request.text or self.request.reason
-                self._event.send(
-                    'handle_error',
+                registry.handle_error(
                     code=950,
                     message_values=[
                         self.request.status_code,

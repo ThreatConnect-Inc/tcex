@@ -18,7 +18,10 @@ from tcex.app_config.layout_json import LayoutJson
 from tcex.app_config.permutation import Permutation
 from tcex.app_config.tcex_json import TcexJson
 from tcex.backports import cached_property
-from tcex.logger import RotatingFileHandlerCustom, TraceLogger
+from tcex.logger.rotating_file_handler_custom import (  # pylint: disable=no-name-in-module
+    RotatingFileHandlerCustom,
+)
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 
 
 class BinABC(ABC):

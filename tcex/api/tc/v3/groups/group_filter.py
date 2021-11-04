@@ -149,8 +149,8 @@ class GroupFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            email_score_includes_body: A true/false indicating if the body was included in the
-                scoring of the email.
+            email_score_includes_body: A true/false indicating if the
+                body was included in the scoring of the email.
         """
         self._tql.add_filter(
             'emailScoreIncludesBody', operator, email_score_includes_body, TqlType.BOOLEAN
@@ -194,15 +194,12 @@ class GroupFilter(FilterABC):
         self._tql.add_filter('hasCase', TqlOperator.EQ, cases, TqlType.SUB_QUERY)
         return cases
 
-    # @property
-    # def has_group(self):
-    #     """Return **GroupFilter** for further filtering."""
-    #     # first-party
-    #     from tcex.api.tc.v3.groups.group_filter import GroupFilter
-
-    #     groups = GroupFilter(Tql())
-    #     self._tql.add_filter('hasCase', TqlOperator.EQ, groups, TqlType.SUB_QUERY)
-    #     return groups
+    @property
+    def has_group(self):
+        """Return **GroupFilter** for further filtering."""
+        groups = GroupFilter(Tql())
+        self._tql.add_filter('hasGroup', TqlOperator.EQ, groups, TqlType.SUB_QUERY)
+        return groups
 
     @property
     def has_indicator(self):
@@ -211,7 +208,7 @@ class GroupFilter(FilterABC):
         from tcex.api.tc.v3.indicators.indicator_filter import IndicatorFilter
 
         indicators = IndicatorFilter(Tql())
-        self._tql.add_filter('hasCase', TqlOperator.EQ, indicators, TqlType.SUB_QUERY)
+        self._tql.add_filter('hasIndicator', TqlOperator.EQ, indicators, TqlType.SUB_QUERY)
         return indicators
 
     @property

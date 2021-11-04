@@ -1,6 +1,7 @@
 """TcEx Framework Service module"""
 # standard library
 import logging
+import os
 import threading
 import time
 from typing import Optional
@@ -12,6 +13,7 @@ from urllib3.util.retry import Retry
 
 # first-party
 from tcex.input.field_types.sensitive import Sensitive
+from tcex.pleb.singleton import Singleton
 from tcex.utils import Utils
 
 # get tcex logger
@@ -36,30 +38,33 @@ def retry_session(retries=3, backoff_factor=0.8, status_forcelist=(500, 502, 504
     return session
 
 
-class Tokens:
+class Tokens(metaclass=Singleton):
     """Service methods for customer Service (e.g., Triggers)."""
 
-    def __init__(self, token_url: str, sleep_interval: int, verify: bool):
+    def __init__(self, token_url: Optional[str], verify: Optional[bool] = True):
         """Initialize the Class properties.
 
         Args:
             token_url: The ThreatConnect URL for token renewal.
-            sleep_interval: Token monitor sleep interval.
             verify: A boolean to enable/disable SSL verification.
         """
         self.token_url = token_url
-        self.sleep_interval = sleep_interval
         self.verify = verify
+
+        # validation for singleton
+        if not token_url:
+            raise ValueError('A value for token_url is required.')
 
         # properties
         self.lock = threading.Lock()
         self.log = logger
         # session with retry for token renewal
         self.session: Session = retry_session()
+        self.sleep_interval = int(os.getenv('TC_TOKEN_SLEEP_INTERVAL', '150'))
         self.shutdown = False  # shutdown boolean
         # token map for storing keys -> tokens -> threads
         self.token_map = {}
-        self.token_window = 60  # seconds to pad before token renewal
+        self.token_window = 300  # seconds to pad before token renewal
         self.utils = Utils
 
         # start token renewal process

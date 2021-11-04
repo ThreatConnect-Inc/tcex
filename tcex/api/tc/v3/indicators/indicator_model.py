@@ -91,6 +91,8 @@ class IndicatorModel(
     )
     address: Optional[str] = Field(
         None,
+        applies_to=['EmailAddress'],
+        conditional_required=['EmailAddress'],
         description=(
             'The email address associated with this indicator (EmailAddress specific summary '
             'field).'
@@ -113,11 +115,10 @@ class IndicatorModel(
         read_only=False,
         title='associatedIndicators',
     )
-    attributes: Optional['AttributesModel'] = Field(
+    attributes: Optional['IndicatorAttributesModel'] = Field(
         None,
         description='A list of Attributes corresponding to the Indicator.',
         methods=['POST', 'PUT'],
-        max_size=1000,
         read_only=False,
         title='attributes',
     )
@@ -125,6 +126,8 @@ class IndicatorModel(
         None,
         description='The indicator threat confidence.',
         methods=['POST', 'PUT'],
+        maximum=100,
+        minimum=0,
         read_only=False,
         title='confidence',
     )
@@ -144,6 +147,7 @@ class IndicatorModel(
     )
     dns_active: bool = Field(
         None,
+        applies_to=['Host'],
         description='Is dns active for the indicator?',
         methods=['POST', 'PUT'],
         read_only=False,
@@ -165,6 +169,8 @@ class IndicatorModel(
     )
     host_name: Optional[str] = Field(
         None,
+        applies_to=['Host'],
+        conditional_required=['Host'],
         description='The host name of the indicator (Host specific summary field).',
         methods=['POST', 'PUT'],
         read_only=False,
@@ -178,6 +184,8 @@ class IndicatorModel(
     )
     ip: Optional[str] = Field(
         None,
+        applies_to=['Address'],
+        conditional_required=['Address'],
         description=(
             'The ip address associated with this indicator (Address specific summary field).'
         ),
@@ -201,6 +209,7 @@ class IndicatorModel(
     )
     md5: Optional[str] = Field(
         None,
+        applies_to=['File'],
         description='The md5 associated with this indicator (File specific summary field).',
         methods=['POST', 'PUT'],
         read_only=False,
@@ -224,6 +233,8 @@ class IndicatorModel(
         None,
         description='The indicator threat rating.',
         methods=['POST', 'PUT'],
+        maximum=5,
+        minimum=0,
         read_only=False,
         title='rating',
     )
@@ -234,12 +245,12 @@ class IndicatorModel(
             'parameter will replace any existing tag(s) with the one(s) specified).'
         ),
         methods=['POST', 'PUT'],
-        max_size=1000,
         read_only=False,
         title='securityLabels',
     )
     sha1: Optional[str] = Field(
         None,
+        applies_to=['File'],
         description='The sha1 associated with this indicator (File specific summary field).',
         methods=['POST', 'PUT'],
         read_only=False,
@@ -247,6 +258,7 @@ class IndicatorModel(
     )
     sha256: Optional[str] = Field(
         None,
+        applies_to=['File'],
         description='The sha256 associated with this indicator (File specific summary field).',
         methods=['POST', 'PUT'],
         read_only=False,
@@ -254,6 +266,7 @@ class IndicatorModel(
     )
     size: Optional[int] = Field(
         None,
+        applies_to=['File'],
         description='The size of the file.',
         methods=['POST', 'PUT'],
         read_only=False,
@@ -280,12 +293,13 @@ class IndicatorModel(
             'any existing tag(s) with the one(s) specified).'
         ),
         methods=['POST', 'PUT'],
-        max_size=1000,
         read_only=False,
         title='tags',
     )
     text: Optional[str] = Field(
         None,
+        applies_to=['URL'],
+        conditional_required=['URL'],
         description='The url text value of the indicator (Url specific summary field).',
         methods=['POST', 'PUT'],
         read_only=False,
@@ -343,22 +357,30 @@ class IndicatorModel(
     )
     whois_active: bool = Field(
         None,
+        applies_to=['Host'],
         description='Is whois active for the indicator?',
         methods=['POST', 'PUT'],
         read_only=False,
         title='whoisActive',
     )
-
-    @validator('attributes', always=True)
-    def _validate_attributes(cls, v):
-        if not v:
-            return AttributesModel()
-        return v
+    xid: Optional[str] = Field(
+        None,
+        description='The xid of the item.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='xid',
+    )
 
     @validator('associated_groups', always=True)
     def _validate_associated_groups(cls, v):
         if not v:
             return GroupsModel()
+        return v
+
+    @validator('attributes', always=True)
+    def _validate_attributes(cls, v):
+        if not v:
+            return IndicatorAttributesModel()
         return v
 
     @validator('associated_indicators', always=True)
@@ -381,8 +403,8 @@ class IndicatorModel(
 
 
 # first-party
-from tcex.api.tc.v3.attributes.attribute_model import AttributesModel
 from tcex.api.tc.v3.groups.group_model import GroupsModel
+from tcex.api.tc.v3.indicator_attributes.indicator_attribute_model import IndicatorAttributesModel
 from tcex.api.tc.v3.security_labels.security_label_model import SecurityLabelsModel
 from tcex.api.tc.v3.tags.tag_model import TagsModel
 

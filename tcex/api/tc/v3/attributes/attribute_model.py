@@ -81,9 +81,10 @@ class AttributeModel(
         read_only=False,
         title='type',
     )
-    value: Optional[int] = Field(
+    value: Optional[str] = Field(
         None,
         description='The attribute value.',
+        methods=['POST', 'PUT'],
         read_only=True,
         title='value',
     )

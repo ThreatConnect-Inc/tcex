@@ -1,4 +1,4 @@
-"""Test the TcEx Case Management Module."""
+"""Test the TcEx API Module."""
 # standard library
 import os
 import time
@@ -14,21 +14,23 @@ from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestCaseManagement, V3Helper
 
 
-class TestArtifact(TestCaseManagement):
-    """Test TcEx CM Artifact Interface."""
+class TestArtifacts(TestCaseManagement):
+    """Test TcEx API Interface."""
+
+    cm = None
 
     def setup_method(self):
         """Configure setup before all tests."""
         print('')  # ensure any following print statements will be on new line
-        self.cm_helper = V3Helper('artifact')
-        self.cm = self.cm_helper.cm
-        self.tcex = self.cm_helper.tcex
+        self.v3_helper = V3Helper('artifacts')
+        self.cm = self.v3_helper.cm
+        self.tcex = self.v3_helper.tcex
 
     def teardown_method(self):
         """Configure teardown before all tests."""
         # TODO: [med] @bpurdy - do you recall what the condition is for?
         if os.getenv('TEARDOWN_METHOD') is None:
-            self.cm_helper.cleanup()
+            self.v3_helper.cleanup()
 
     def test_artifact_api_options(self):
         """Test filter keywords."""
@@ -47,14 +49,14 @@ class TestArtifact(TestCaseManagement):
         super().obj_properties_extra()
 
     def test_artifact_create_and_retrieve_nested_types(self, request: FixtureRequest):
-        """Test Artifact Creation
+        """Test Object Creation
 
         A single test case to hit all sub-type creation (e.g., Notes).
         """
         # [Pre-Requisite] - create case
-        case = self.cm_helper.create_case()
+        case = self.v3_helper.create_case()
 
-        # [Create Testing] define artifact data
+        # [Create Testing] define object data
         artifact_data = {
             'case_id': case.model.id,
             'intel_type': 'indicator-ASN',
@@ -65,20 +67,20 @@ class TestArtifact(TestCaseManagement):
         # [Create Testing] define nested note data
         note_data = {'text': f'sample note for {request.node.name} test case.'}
 
-        # [Create Testing] create the artifact object
+        # [Create Testing] create the object object
         artifact = self.cm.artifact(**artifact_data)
 
-        # [Create Testing] add the note data to the artifact object
+        # [Create Testing] add the note data to the object
         artifact.add_note(**note_data)
 
-        # [Create Testing] submit the artifact ot the TC API
+        # [Create Testing] submit the object to the TC API
         artifact.submit()
 
-        # [Retrieve Testing] create the artifact object with id filter,
-        # using artifact id from the artifact created above
+        # [Retrieve Testing] create the object with id filter,
+        # using object id from the object created above
         artifact = self.cm.artifact(id=artifact.model.id)
 
-        # [Retrieve Testing] get the artifact from the API
+        # [Retrieve Testing] get the object from the API
         artifact.get(params={'fields': 'notes'})
 
         # [Retrieve Testing] test "notes" method
@@ -100,9 +102,9 @@ class TestArtifact(TestCaseManagement):
     def test_artifact_all_filters_on_case(self, request: FixtureRequest):
         """Test TQL Filters for artifact on a Case"""
         # [Pre-Requisite] - create case
-        case = self.cm_helper.create_case()
+        case = self.v3_helper.create_case()
 
-        # [Create Testing] define artifact data
+        # [Create Testing] define object data
         artifact_data = {
             'case_id': case.model.id,
             'intel_type': 'indicator-File',
@@ -114,24 +116,24 @@ class TestArtifact(TestCaseManagement):
         # [Create Testing] define nested note data
         note_data = {'text': f'sample note for {request.node.name} test case.'}
 
-        # [Create Testing] create the artifact object
+        # [Create Testing] create the object
         artifact = self.cm.artifact(**artifact_data)
 
-        # [Create Testing] add the note data to the artifact object
+        # [Create Testing] add the note data to the object
         artifact.add_note(**note_data)
 
-        # [Create Testing] submit the artifact ot the TC API
+        # [Create Testing] submit the object to the TC API
         artifact.submit()
 
-        # [Retrieve Testing] create the artifact object with id filter,
-        # using artifact id from the artifact created above
+        # [Retrieve Testing] create the object with id filter,
+        # using object id from the object created above
         artifact = self.cm.artifact(id=artifact.model.id)
 
-        # [Retrieve Testing] get the artifact from the API
+        # [Retrieve Testing] get the object from the API
         artifact.get(params={'fields': 'notes'})
         note_id = artifact.model.notes.data[0].id
 
-        # [Retrieve Testing] retrieve artifact using tql filters
+        # [Retrieve Testing] retrieve object using tql filters
         artifacts = self.cm.artifacts(params={'fields': 'analytics'})
 
         # [Filter Testing] analytics_score - This works, but
@@ -157,7 +159,7 @@ class TestArtifact(TestCaseManagement):
         # [Filter Testing] has_indicator
         # artifacts.filter.has_indicator.id(TqlOperator.EQ, ???)
 
-        # [Filter Testing] has_note - using artifact_id as it's easily available
+        # [Filter Testing] has_note - using <object>_id as it's easily available
         artifacts.filter.has_note.artifact_id(TqlOperator.EQ, artifact.model.id)
 
         # [Filter Testing] id
@@ -182,7 +184,7 @@ class TestArtifact(TestCaseManagement):
         # [Filter Testing] type_name
         artifacts.filter.type_name(TqlOperator.EQ, artifact_data.get('type'))
 
-        # [Retrieve Testing] get the artifact from the API
+        # [Retrieve Testing] get the object from the API
         # print(f'TQL Filter -> ({artifacts.tql.as_str})')
         for artifact in artifacts:
             assert artifact.model.summary == artifact_data.get('summary')
@@ -193,7 +195,7 @@ class TestArtifact(TestCaseManagement):
     def test_artifact_all_filter_on_task(self, request: FixtureRequest):
         """Test TQL Filters for artifact on a Task"""
         # [Pre-Requisite] - create case
-        case = self.cm_helper.create_case()
+        case = self.v3_helper.create_case()
 
         # [Create Testing] define task data
         task_data = {
@@ -207,7 +209,7 @@ class TestArtifact(TestCaseManagement):
         # [Create Testing] submit the task ot the TC API
         task.submit()
 
-        # [Create Testing] define artifact data
+        # [Create Testing] define object data
         artifact_data = {
             'intel_type': 'indicator-ASN',
             'summary': f'asn{randint(100, 999)}',
@@ -215,13 +217,13 @@ class TestArtifact(TestCaseManagement):
             'type': 'ASN',
         }
 
-        # [Create Testing] create the artifact object
+        # [Create Testing] create the object object
         artifact = self.cm.artifact(**artifact_data)
 
-        # [Create Testing] submit the artifact ot the TC API
+        # [Create Testing] submit the object ot the TC API
         artifact.submit()
 
-        # [Retrieve Testing] retrieve artifact using tql filters
+        # [Retrieve Testing] retrieve object using tql filters
         artifacts = self.cm.artifacts()
 
         # [Filter Testing] has_task -> using id since it's available
@@ -230,7 +232,7 @@ class TestArtifact(TestCaseManagement):
         # [Filter Testing] task_id
         artifacts.filter.task_id(TqlOperator.EQ, task.model.id)
 
-        # [Retrieve Testing] get the artifact from the API
+        # [Retrieve Testing] get the object from the API
         # print(f'TQL Filter -> ({artifacts.tql.as_str})')
         for artifact in artifacts:
             assert artifact.model.summary == artifact_data.get('summary')
@@ -242,9 +244,9 @@ class TestArtifact(TestCaseManagement):
         """Test Artifact Creation"""
         # [Pre-Requisite] - create case and provide a unique xid
         case_xid = f'{request.node.name}-{time.time()}'
-        _ = self.cm_helper.create_case(xid=case_xid)
+        _ = self.v3_helper.create_case(xid=case_xid)
 
-        # [Create Testing] define artifact data
+        # [Create Testing] define object data
         artifact_data = {
             'case_xid': case_xid,
             'intel_type': 'indicator-ASN',
@@ -252,17 +254,17 @@ class TestArtifact(TestCaseManagement):
             'type': 'ASN',
         }
 
-        # [Create Testing] create the artifact object
+        # [Create Testing] create the object
         artifact = self.cm.artifact(**artifact_data)
 
-        # [Create Testing] submit the artifact ot the TC API
+        # [Create Testing] submit the object to the TC API
         artifact.submit()
 
-        # [Retrieve Testing] create the artifact object with id filter,
-        # using artifact id from the artifact created above
+        # [Retrieve Testing] create the object with id filter,
+        # using object id from the object created above
         artifact = self.cm.artifact(id=artifact.model.id)
 
-        # [Retrieve Testing] get the artifact from the API
+        # [Retrieve Testing] get the object from the API
         artifact.get()
 
         # [Retrieve Testing] run assertions on returned data
@@ -273,9 +275,9 @@ class TestArtifact(TestCaseManagement):
     def test_artifact_delete_by_id(self):
         """Test Artifact Deletion"""
         # [Pre-Requisite] - create case and provide a unique xid
-        case = self.cm_helper.create_case()
+        case = self.v3_helper.create_case()
 
-        # [Create Testing] define artifact data
+        # [Create Testing] define object data
         artifact_data = {
             'case_id': case.model.id,
             'intel_type': 'indicator-ASN',
@@ -283,20 +285,20 @@ class TestArtifact(TestCaseManagement):
             'type': 'ASN',
         }
 
-        # [Create Testing] create the artifact object
+        # [Create Testing] create the object
         artifact = self.cm.artifact(**artifact_data)
 
-        # [Create Testing] submit the artifact ot the TC API
+        # [Create Testing] submit the object to the TC API
         artifact.submit()
 
-        # [Retrieve Testing] create the artifact object with id filter,
-        # using artifact id from the artifact created above
+        # [Retrieve Testing] create the object with id filter,
+        # using object id from the object created above
         artifact = self.cm.artifact(id=artifact.model.id)
 
-        # [Delete Testing] remove the artifact
+        # [Delete Testing] remove the object
         artifact.delete()
 
-        # [Delete Testing] validate the artifact is removed
+        # [Delete Testing] validate the object is removed
         with pytest.raises(RuntimeError) as exc_info:
             artifact.get()
 
@@ -307,11 +309,11 @@ class TestArtifact(TestCaseManagement):
     def test_artifact_get_many(self):
         """Test Artifact Get Many"""
         # [Pre-Requisite] - create case
-        case = self.cm_helper.create_case()
+        case = self.v3_helper.create_case()
         artifact_count = 10
         artifact_ids = []
         for _ in range(0, artifact_count):
-            # [Create Testing] define artifact data
+            # [Create Testing] define object data
             artifact_data = {
                 'case_id': case.model.id,
                 'intel_type': 'indicator-ASN',
@@ -319,17 +321,18 @@ class TestArtifact(TestCaseManagement):
                 'type': 'ASN',
             }
 
-            # [Create Testing] create the artifact object
+            # [Create Testing] create the object
             artifact = self.cm.artifact(**artifact_data)
 
-            # [Create Testing] submit the artifact ot the TC API
+            # [Create Testing] submit the object to the TC API
             artifact.submit()
             artifact_ids.append(artifact.model.id)
 
-        # [Retrieve Testing] iterate over all artifact looking for needle
-        artifacts = self.cm.artifacts(params={'result_limit': 5})
+        # [Retrieve Testing] iterate over all object looking for needle
+        artifacts = self.cm.artifacts(params={'resultLimit': 5})
         artifacts.filter.case_id(TqlOperator.EQ, case.model.id)
-        for a in artifacts:
+        for i, a in enumerate(artifacts):
+            print(i)
             assert artifact.model.id in artifact_ids
             artifact_ids.remove(a.model.id)
 
@@ -339,7 +342,7 @@ class TestArtifact(TestCaseManagement):
     def test_artifact_task_get_single_by_id_properties(self, request: FixtureRequest):
         """Test Artifact get single attached to task by id"""
         # [Pre-Requisite] - create case
-        case = self.cm_helper.create_case()
+        case = self.v3_helper.create_case()
 
         # [Create Testing] define task data
         task_data = {
@@ -357,12 +360,12 @@ class TestArtifact(TestCaseManagement):
         # [Create Testing] submit the task ot the TC API
         task.submit()
 
-        # [Create Testing] define the artifact file data
+        # [Create Testing] define the object file data
         file_data = (
             'RmFpbGVkIHRvIGZpbmQgbGliIGRpcmVjdG9yeSAoWydsaWJfbGF0ZXN0JywgJ2xpYl8yLjcuMTUnXSkuCg=='
         )
 
-        # [Create testing] define artifact data
+        # [Create testing] define object data
         artifact_data = {
             'task_id': task.model.id,
             'task_xid': task.model.xid,
@@ -373,7 +376,7 @@ class TestArtifact(TestCaseManagement):
             'note_text': 'artifact note text',
         }
 
-        # [Create Testing] add the note data to the artifact object
+        # [Create Testing] add the note data to the object
         artifact = self.cm.artifact()
 
         # [Create Testing] testing setters on model
@@ -384,18 +387,18 @@ class TestArtifact(TestCaseManagement):
         artifact.model.summary = artifact_data.get('summary')
         artifact.model.type = artifact_data.get('type')
 
-        # [Create Testing] add the note data to the artifact object
+        # [Create Testing] add the note data to the object
         note_data = {'text': artifact_data.get('note_text')}
         artifact.add_note(**note_data)
 
-        # [Create Testing] submit the artifact ot the TC API
+        # [Create Testing] submit the object to the TC API
         artifact.submit()
 
-        # [Retrieve Testing] create the artifact object with id filter,
-        # using artifact id from the artifact created above
+        # [Retrieve Testing] create the object with id filter,
+        # using object id from the object created above
         artifact = self.cm.artifact(id=artifact.model.id)
 
-        # [Retrieve Testing] get the artifact from the API
+        # [Retrieve Testing] get the object from the API
         artifact.get(all_available_fields=True)
 
         # [Retrieve Testing] run assertions on returned data
@@ -427,14 +430,14 @@ class TestArtifact(TestCaseManagement):
     def test_artifact_case_get_single_by_id_properties(self):
         """Test Artifact get single attached to case by id"""
         # [Pre-Requisite] - create case
-        case = self.cm_helper.create_case()
+        case = self.v3_helper.create_case()
 
-        # [Create Testing] define the artifact file data
+        # [Create Testing] define the object file data
         file_data = (
             'RmFpbGVkIHRvIGZpbmQgbGliIGRpcmVjdG9yeSAoWydsaWJfbGF0ZXN0JywgJ2xpYl8yLjcuMTUnXSkuCg=='
         )
 
-        # [Create Testing] define artifact data
+        # [Create Testing] define object data
         artifact_data = {
             'case_id': case.model.id,
             'case_xid': case.model.xid,
@@ -445,7 +448,7 @@ class TestArtifact(TestCaseManagement):
             'note_text': 'artifact note text',
         }
 
-        # [Create Testing] create the artifact object
+        # [Create Testing] create the object
         artifact = self.cm.artifact()
 
         # [Create Testing] using model setters
@@ -456,18 +459,18 @@ class TestArtifact(TestCaseManagement):
         artifact.model.summary = artifact_data.get('summary')
         artifact.model.type = artifact_data.get('type')
 
-        # [Create Testing] add the note data to the artifact object
+        # [Create Testing] add the note data to the object
         notes = {'data': [{'text': artifact_data.get('note_text')}]}
         artifact.model.notes = notes
 
-        # [Create Testing] submit the artifact ot the TC API
+        # [Create Testing] submit the object to the TC API
         artifact.submit()
 
-        # [Retrieve Testing] define the artifact object with id filter,
-        # using artifact id from the artifact created above
+        # [Retrieve Testing] define the object with id filter,
+        # using object id from the object created above
         artifact = self.cm.artifact(id=artifact.model.id)
 
-        # [Retrieve Testing] get the artifact from the API
+        # [Retrieve Testing] get the object from the API
         artifact.get(all_available_fields=True)
 
         # [Retrieve Testing] run assertions on returned data
@@ -500,14 +503,14 @@ class TestArtifact(TestCaseManagement):
     def test_artifact_update_properties(self):
         """Test updating artifacts properties"""
         # [Pre-Requisite] - create case
-        case = self.cm_helper.create_case()
+        case = self.v3_helper.create_case()
 
-        # [Create Testing] define the artifact file data
+        # [Create Testing] define the object file data
         file_data = (
             'FmFpbGVkIHRvIGZpbmQgbGliIGRpcmVjdG9yeSAoWydsaWJfbGF0ZXN0JywgJ2xpYl8yLjcuMTUnXSkuCg=='
         )
 
-        # [Create Testing] define artifact data
+        # [Create Testing] define object data
         artifact_data = {
             'case_id': case.model.id,
             'file_data': f'{file_data}',
@@ -515,33 +518,33 @@ class TestArtifact(TestCaseManagement):
             'type': 'Certificate File',
         }
 
-        # [Create Testing] create the artifact object
+        # [Create Testing] create the object
         artifact = self.cm.artifact(**artifact_data)
 
-        # [Create Testing] submit the artifact ot the TC API
+        # [Create Testing] submit the object to the TC API
         artifact.submit()
 
-        # [Create Testing] define the artifact file data
+        # [Create Testing] define the object file data
         file_data = (
             'GmFpbGVkIHRvIGZpbmQgbGliIGRpcmVjdG9yeSAoWydsaWJfbGF0ZXN0JywgJ2xpYl8yLjcuMTUnXSkuCg=='
         )
 
-        # [Create Testing] define artifact data
+        # [Create Testing] define object data
         artifact_data = {
             'source': 'artifact source',
             'file_data': f'{file_data}',
             'summary': f'asn{randint(100, 999)}',
         }
 
-        # [Update Testing] update artifact properties
+        # [Update Testing] update object properties
         artifact.model.source = artifact_data.get('source')
         artifact.model.summary = artifact_data.get('summary')
         artifact.model.file_data = artifact_data.get('file_data')
 
-        # [Update Testing] submit the artifact ot the TC API
+        # [Update Testing] submit the object to the TC API
         artifact.submit()
 
-        # [Retrieve Testing] get the artifact from the API
+        # [Retrieve Testing] get the object from the API
         artifact.get(all_available_fields=True)
 
         # [Retrieve Testing] run assertions on returned data
@@ -551,11 +554,11 @@ class TestArtifact(TestCaseManagement):
 
     def test_artifact_get_by_tql_filter_fail_tql(self):
         """Test Artifact Get by TQL"""
-        # retrieve artifacts using TQL
+        # retrieve object using TQL
         artifacts = self.cm.artifacts()
         artifacts.filter.tql = 'Invalid TQL'
 
-        # [Fail Testing] validate the artifact is removed
+        # [Fail Testing] validate the object is removed
         with pytest.raises(RuntimeError) as exc_info:
             for _ in artifacts:
                 pass

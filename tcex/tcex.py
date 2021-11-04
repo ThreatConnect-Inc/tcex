@@ -16,8 +16,8 @@ from requests import Session
 # first-party
 from tcex.api.tc.v2.metrics import Metrics
 from tcex.api.tc.v2.notifications import Notifications
-from tcex.api.tc.v2.threat_intelligence import ThreatIntelligence
 from tcex.api.tc.v3.case_management.case_management import CaseManagement
+from tcex.api.tc.v3.threat_intelligence.threat_intelligence import ThreatIntelligence
 from tcex.app_config.install_json import InstallJson
 from tcex.app_feature import AdvancedRequest
 from tcex.backports import cached_property
@@ -27,10 +27,12 @@ from tcex.batch.batch_writer import BatchWriter
 from tcex.datastore import Cache, DataStore
 from tcex.input.input import Input
 from tcex.key_value_store import KeyValueApi, KeyValueRedis, RedisClient
-from tcex.logger.logger import Logger
-from tcex.logger.trace_logger import TraceLogger
+from tcex.logger.logger import Logger  # pylint: disable=no-name-in-module
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 from tcex.playbook import Playbook
-from tcex.pleb import Event, proxies
+from tcex.pleb.proxies import proxies
+from tcex.pleb.registry import registry
+from tcex.pleb.scoped_property import scoped_property
 from tcex.services.api_service import ApiService
 from tcex.services.common_service_trigger import CommonServiceTrigger
 from tcex.services.webhook_trigger_service import WebhookTriggerService
@@ -40,9 +42,6 @@ from tcex.tokens import Tokens
 from tcex.utils import Utils
 
 
-# TODO: [high] any passed in logger would have to support TRACE, which could be an issue.
-#       allowing a logger was intended for external Apps that may already have a logger.
-#       it may be possible to inject a trace method that just logs debug?
 class TcEx:
     """Provides basic functionality for all types of TxEx Apps.
 
@@ -51,8 +50,6 @@ class TcEx:
             external Apps.
         config_file (str, kwargs): A filename containing JSON configuration items typically used
             by external Apps.
-        logger (logging.Logger, kwargs): An pre-configured instance of logger to use instead of
-            tcex logger.
     """
 
     def __init__(self, **kwargs):
@@ -66,32 +63,27 @@ class TcEx:
         # Property defaults
         self._config: dict = kwargs.get('config') or {}
         self._exit_code = 0
+        self._log = None
         self._jobs = None
         self._redis_client = None
         self._service = None
-        self.event = Event()
         self.ij = InstallJson()
         self.main_os_pid = os.getpid()
-
-        # add custom logger if provided
-        self._log: object = kwargs.get('logger')
 
         # init inputs
         self.inputs = Input(self._config, kwargs.get('config_file'))
 
-        # method subscription for Event module
-        self.event.subscribe(channel='exit', callback=self.exit)
-        self.event.subscribe(channel='exit_code', callback=self.exit_code)
-        self.event.subscribe(channel='handle_error', callback=self.handle_error)
-        # support external Apps that will not use tokens
-        if self.ij.fqfn.is_file():
-            self.event.subscribe(channel='register_token', callback=self.token.register_token)
+        # add methods to registry
+        registry.register(self)
+        registry.add_method(self.exit)
+        registry.add_method(self.handle_error)
+        registry.add_service('exit_code', self.exit_code)
 
         # log standard App info early so it shows at the top of the logfile
-        self.logger.log_info(self.inputs.data)
+        self.logger.log_info(self.inputs.data_unresolved)
 
-    def _signal_handler(self, signal_interupt: int, _) -> None:
-        """Handle singal interrupt."""
+    def _signal_handler(self, signal_interrupt: int, _) -> None:
+        """Handle signal interrupt."""
         call_file: str = os.path.basename(inspect.stack()[1][0].f_code.co_filename)
         call_module: str = inspect.stack()[1][0].f_globals['__name__'].lstrip('Functions.')
         call_line: int = inspect.stack()[1][0].f_lineno
@@ -99,10 +91,20 @@ class TcEx:
             f'App interrupted - file: {call_file}, method: {call_module}, line: {call_line}.'
         )
         exit_code = 0
-        if threading.current_thread().name == 'MainThread' and signal_interupt in (2, 15):
+        if threading.current_thread().name == 'MainThread' and signal_interrupt in (2, 15):
             exit_code = 1
 
         self.exit(exit_code, 'The App received an interrupt signal and will now exit.')
+
+    @property
+    def _user_agent(self):
+        """Return a User-Agent string."""
+        return {
+            'User-Agent': (
+                f'TcEx/{__import__(__name__).__version__}, '
+                f'{self.ij.data.display_name}/{self.ij.data.program_version}'
+            )
+        }
 
     def advanced_request(
         self, session: Session, timeout: Optional[int] = 600, output_prefix: Optional[str] = None
@@ -118,9 +120,10 @@ class TcEx:
 
     def aot_rpush(self, exit_code: int) -> None:
         """Push message to AOT action channel."""
-        if self.inputs.data.tc_playbook_db_type == 'Redis':
+        if self.inputs.data_unresolved.tc_playbook_db_type == 'Redis':
             try:
-                self.redis_client.rpush(self.inputs.data.tc_exit_channel, exit_code)
+                # pylint: disable=no-member
+                self.redis_client.rpush(self.inputs.data_unresolved.tc_exit_channel, exit_code)
             except Exception as e:  # pragma: no cover
                 self.exit(1, f'Exception during AOT exit push ({e}).')
 
@@ -222,12 +225,12 @@ class TcEx:
             ttl_seconds: The number of seconds the cache is valid.
             mapping: Advanced - The datastore mapping if required.
         """
-        return Cache(self.session, domain, data_type, ttl_seconds, mapping)
+        return Cache(self.session_tc, domain, data_type, ttl_seconds, mapping)
 
     @property
     def case_management(self) -> CaseManagement:
         """Return a case management instance."""
-        return CaseManagement(self.session)
+        return CaseManagement(self.session_tc)
 
     @property
     def cm(self) -> CaseManagement:
@@ -245,7 +248,7 @@ class TcEx:
             data_type: The data type descriptor (e.g., tc:whois:cache).
             mapping: ElasticSearch mappings data.
         """
-        return DataStore(self.session, domain, data_type, mapping)
+        return DataStore(self.session_tc, domain, data_type, mapping)
 
     @cached_property
     def error_codes(self) -> TcExErrorCodes:  # pylint: disable=no-self-use
@@ -273,7 +276,7 @@ class TcEx:
         self.exit_playbook_handler(msg)
 
         # aot notify
-        if self.inputs.data.tc_aot_enabled:
+        if self.inputs.data_unresolved.tc_aot_enabled:
             # push exit message
             self.aot_rpush(code)
 
@@ -310,14 +313,16 @@ class TcEx:
     def exit_playbook_handler(self, msg: str) -> None:
         """Perform special action for PB Apps before exit."""
         # write outputs before exiting
-        self.playbook.write_output()
+        self.playbook.write_output()  # pylint: disable=no-member
 
         # required only for tcex testing framework
         if (
-            hasattr(self.inputs.data, 'tcex_testing_context')
-            and self.inputs.data.tcex_testing_context is not None
+            hasattr(self.inputs.data_unresolved, 'tcex_testing_context')
+            and self.inputs.data_unresolved.tcex_testing_context is not None
         ):  # pragma: no cover
-            self.redis_client.hset(self.inputs.data.tcex_testing_context, '_exit_message', msg)
+            self.redis_client.hset(  # pylint: disable=no-member
+                self.inputs.data_unresolved.tcex_testing_context, '_exit_message', msg
+            )
 
     @property
     def exit_code(self) -> None:
@@ -380,34 +385,33 @@ class TcEx:
             host=host, port=port, db=db, blocking_pool=blocking_pool, **kwargs
         ).client
 
-    # TODO: [high] testing ... organize this later
-    def get_session(self) -> TcSession:
+    def get_session_tc(self) -> TcSession:
         """Return an instance of Requests Session configured for the ThreatConnect API."""
         _session = TcSession(
-            tc_api_access_id=self.inputs.data.tc_api_access_id,
-            tc_api_secret_key=self.inputs.data.tc_api_secret_key,
-            tc_base_url=self.inputs.data.tc_api_path,
+            tc_api_access_id=self.inputs.data_unresolved.tc_api_access_id,
+            tc_api_secret_key=self.inputs.data_unresolved.tc_api_secret_key,
+            tc_base_url=self.inputs.data_unresolved.tc_api_path,
         )
 
         # set verify
-        _session.verify = self.inputs.data.tc_verify
+        _session.verify = self.inputs.data_unresolved.tc_verify
 
         # set token
         _session.token = self.token
 
         # update User-Agent
-        _session.headers.update({'User-Agent': f'TcEx: {__import__(__name__).__version__}'})
+        _session.headers.update(self._user_agent)
 
         # add proxy support if requested
-        if self.inputs.data.tc_proxy_tc:
+        if self.inputs.data_unresolved.tc_proxy_tc:
             _session.proxies = self.proxies
             self.log.info(
-                f'Using proxy host {self.inputs.data.tc_proxy_host}:'
-                f'{self.inputs.data.tc_proxy_port} for ThreatConnect session.'
+                f'Using proxy host {self.inputs.data_unresolved.tc_proxy_host}:'
+                f'{self.inputs.data_unresolved.tc_proxy_port} for ThreatConnect session.'
             )
 
         # enable curl logging if tc_log_curl param is set.
-        if self.inputs.data.tc_log_curl:
+        if self.inputs.data_unresolved.tc_log_curl:
             _session.log_curl = True
 
         return _session
@@ -417,30 +421,24 @@ class TcEx:
         _session_external = ExternalSession(logger=self.log)
 
         # add User-Agent to headers
-        _session_external.headers.update(
-            {
-                'User-Agent': (
-                    f'TcEx App: {self.ij.data.display_name} - {self.ij.data.program_version}'
-                )
-            }
-        )
+        _session_external.headers.update(self._user_agent)
 
         # add proxy support if requested
-        if self.inputs.data.tc_proxy_external:
+        if self.inputs.data_unresolved.tc_proxy_external:
             _session_external.proxies = self.proxies
             self.log.info(
-                f'Using proxy host {self.inputs.data.tc_proxy_host}:'
-                f'{self.inputs.data.tc_proxy_port} for external session.'
+                f'Using proxy host {self.inputs.data_unresolved.tc_proxy_host}:'
+                f'{self.inputs.data_unresolved.tc_proxy_port} for external session.'
             )
 
-        if self.inputs.data.tc_log_curl:
+        if self.inputs.data_unresolved.tc_log_curl:
             _session_external.log_curl = True
 
         return _session_external
 
-    def get_ti(self) -> ThreatIntelligence:
-        """Include the Threat Intel Module."""
-        return ThreatIntelligence(session=self.get_session())
+    # def get_ti(self) -> ThreatIntelligence:
+    #     """Include the Threat Intel Module."""
+    #     return ThreatIntelligence(session=self.get_session_tc())
 
     def handle_error(
         self, code: int, message_values: Optional[list] = None, raise_error: Optional[bool] = True
@@ -471,21 +469,23 @@ class TcEx:
         if raise_error:
             raise RuntimeError(code, message)
 
-    # TODO: [med] update to support scoped instance
-    @property
+    @registry.factory('KeyValueStore')
+    @scoped_property
     def key_value_store(self) -> Union[KeyValueApi, KeyValueRedis]:
         """Return the correct KV store for this execution.
 
         The TCKeyValueAPI KV store is limited to two operations (create and read),
         while the Redis kvstore wraps a few other Redis methods.
         """
-        if self.inputs.data.tc_kvstore_type == 'Redis':
+        if self.inputs.data_unresolved.tc_kvstore_type == 'Redis':
             return KeyValueRedis(self.redis_client)
 
-        if self.inputs.data.tc_kvstore_type == 'TCKeyValueAPI':
-            return KeyValueApi(self.session)
+        if self.inputs.data_unresolved.tc_kvstore_type == 'TCKeyValueAPI':
+            return KeyValueApi(self.session_tc)
 
-        raise RuntimeError(f'Invalid KV Store Type: ({self.inputs.data.tc_kvstore_type})')
+        raise RuntimeError(
+            f'Invalid KV Store Type: ({self.inputs.data_unresolved.tc_kvstore_type})'
+        )
 
     @property
     def log(self) -> TraceLogger:
@@ -503,25 +503,28 @@ class TcEx:
     @cached_property
     def logger(self) -> Logger:
         """Return logger."""
-        _logger = Logger(logger_name='tcex', session=self.get_session())
+        _logger = Logger(logger_name='tcex', session=self.get_session_tc())
 
         # add api handler
-        if self.inputs.data.tc_token is not None and self.inputs.data.tc_log_to_api:
-            _logger.add_api_handler(level=self.inputs.data.tc_log_level)
+        if (
+            self.inputs.data_unresolved.tc_token is not None
+            and self.inputs.data_unresolved.tc_log_to_api
+        ):
+            _logger.add_api_handler(level=self.inputs.data_unresolved.tc_log_level)
 
         # add rotating log handler
         _logger.add_rotating_file_handler(
             name='rfh',
-            filename=self.inputs.data.tc_log_file,
-            path=self.inputs.data.tc_log_path,
-            backup_count=self.inputs.data.tc_log_backup_count,
-            max_bytes=self.inputs.data.tc_log_max_bytes,
-            level=self.inputs.data.tc_log_level,
+            filename=self.inputs.data_unresolved.tc_log_file,
+            path=self.inputs.data_unresolved.tc_log_path,
+            backup_count=self.inputs.data_unresolved.tc_log_backup_count,
+            max_bytes=self.inputs.data_unresolved.tc_log_max_bytes,
+            level=self.inputs.data_unresolved.tc_log_level,
         )
 
         # set logging level
-        _logger.update_handler_level(level=self.inputs.data.tc_log_level)
-        _logger.log.setLevel(_logger.log_level(self.inputs.data.tc_log_level))
+        _logger.update_handler_level(level=self.inputs.data_unresolved.tc_log_level)
+        _logger.log.setLevel(_logger.log_level(self.inputs.data_unresolved.tc_log_level))
 
         # replay cached log events
         _logger.replay_cached_events(handler_name='cache')
@@ -561,8 +564,8 @@ class TcEx:
         if not isinstance(message, str):
             message = str(message)
 
-        if os.access(self.inputs.data.tc_out_path, os.W_OK):
-            message_file = os.path.join(self.inputs.data.tc_out_path, 'message.tc')
+        if os.access(self.inputs.data_unresolved.tc_out_path, os.W_OK):
+            message_file = os.path.join(self.inputs.data_unresolved.tc_out_path, 'message.tc')
         else:
             message_file = 'message.tc'
 
@@ -580,8 +583,9 @@ class TcEx:
         """Get instance of the Notification module."""
         return Notifications(self)
 
-    @cached_property
-    def playbook(self) -> Playbook:
+    @registry.factory(Playbook)
+    @scoped_property
+    def playbook(self) -> 'Playbook':
         """Return an instance of Playbooks module.
 
         This property defaults context and outputvariables to arg values.
@@ -590,8 +594,8 @@ class TcEx:
             tcex.playbook.Playbooks: An instance of Playbooks
         """
         return self.get_playbook(
-            context=self.inputs.data.tc_playbook_kvstore_context,
-            output_variables=self.inputs.data.tc_playbook_out_variables,
+            context=self.inputs.data_unresolved.tc_playbook_kvstore_context,
+            output_variables=self.inputs.data_unresolved.tc_playbook_out_variables,
         )
 
     @cached_property
@@ -610,19 +614,19 @@ class TcEx:
            (dict): Dictionary of proxy settings
         """
         return proxies(
-            proxy_host=self.inputs.data.tc_proxy_host,
-            proxy_port=self.inputs.data.tc_proxy_port,
-            proxy_user=self.inputs.data.tc_proxy_username,
-            proxy_pass=self.inputs.data.tc_proxy_password,
+            proxy_host=self.inputs.data_unresolved.tc_proxy_host,
+            proxy_port=self.inputs.data_unresolved.tc_proxy_port,
+            proxy_user=self.inputs.data_unresolved.tc_proxy_username,
+            proxy_pass=self.inputs.data_unresolved.tc_proxy_password,
         )
 
-    # TODO: [med] update to support scoped instance
-    @cached_property
-    def redis_client(self) -> RedisClient:
+    @registry.factory(RedisClient)
+    @scoped_property
+    def redis_client(self) -> 'RedisClient':
         """Return redis client instance configure for Playbook/Service Apps."""
         return self.get_redis_client(
-            host=self.inputs.data.tc_kvstore_host,
-            port=self.inputs.data.tc_kvstore_port,
+            host=self.inputs.data_unresolved.tc_kvstore_host,
+            port=self.inputs.data_unresolved.tc_kvstore_port,
             db=0,
         )
 
@@ -636,13 +640,14 @@ class TcEx:
             key: The data key to be stored.
             value: The data value to be stored.
         """
-        if os.access(self.inputs.data.tc_out_path, os.W_OK):
-            results_file = f'{self.inputs.data.tc_out_path}/results.tc'
+        if os.access(self.inputs.data_unresolved.tc_out_path, os.W_OK):
+            results_file = f'{self.inputs.data_unresolved.tc_out_path}/results.tc'
         else:
             results_file = 'results.tc'
 
         new = True
-        open(results_file, 'a').close()  # ensure file exists
+        # ensure file exists
+        open(results_file, 'a').close()  # pylint: disable=consider-using-with
         with open(results_file, 'r+') as fh:
             results = ''
             for line in fh.read().strip().split('\n'):
@@ -664,7 +669,6 @@ class TcEx:
             fh.write(results)
             fh.truncate()
 
-    # TODO: [med] update to support scoped instance
     @cached_property
     def service(self) -> Union[ApiService, CommonServiceTrigger, WebhookTriggerService]:
         """Include the Service Module."""
@@ -679,40 +683,48 @@ class TcEx:
 
         return Service(self)
 
-    # TODO: [med] update to support scoped instance
-    @cached_property
-    def session(self) -> TcSession:
+    @registry.factory(TcSession)
+    @scoped_property
+    def session_tc(self) -> 'TcSession':
         """Return an instance of Requests Session configured for the ThreatConnect API."""
-        return self.get_session()
+        return self.get_session_tc()
 
-    # TODO: [med] update to support scoped instance
-    @cached_property
-    def session_external(self) -> ExternalSession:
+    @scoped_property
+    def session_external(self) -> 'ExternalSession':
         """Return an instance of Requests Session configured for the ThreatConnect API."""
         return self.get_session_external()
 
-    # TODO: [med] update to support scoped instance
-    @cached_property
-    def ti(self) -> ThreatIntelligence:
-        """Include the Threat Intel Module."""
-        return self.get_ti()
+    @property
+    def threat_intelligence(self) -> 'CaseManagement':
+        """Return a case management instance."""
+        return ThreatIntelligence(self.session_tc)
 
+    @property
+    def ti(self) -> 'CaseManagement':
+        """Alias for case_management."""
+        return self.threat_intelligence
+
+    @registry.factory(Tokens, singleton=True)
     @cached_property
-    def token(self) -> Tokens:
+    def token(self) -> 'Tokens':
         """Return token object."""
-        sleep_interval = int(os.getenv('TC_TOKEN_SLEEP_INTERVAL', '30'))
-        _tokens = Tokens(self.inputs.data.tc_api_path, sleep_interval, self.inputs.data.tc_verify)
+        _tokens = Tokens(
+            self.inputs.data_unresolved.tc_api_path,
+            self.inputs.data_unresolved.tc_verify,
+        )
 
         # register token for Apps that pass token on start
-        if all([self.inputs.data.tc_token, self.inputs.data.tc_token_expires]):
+        if all(
+            [self.inputs.data_unresolved.tc_token, self.inputs.data_unresolved.tc_token_expires]
+        ):
             _tokens.register_token(
                 key=threading.current_thread().name,
-                token=self.inputs.data.tc_token,
-                expires=self.inputs.data.tc_token_expires,
+                token=self.inputs.data_unresolved.tc_token,
+                expires=self.inputs.data_unresolved.tc_token_expires,
             )
         return _tokens
 
     @cached_property
-    def utils(self) -> Utils:
+    def utils(self) -> 'Utils':
         """Include the Utils module."""
-        return Utils(temp_path=self.inputs.data.tc_temp_path)
+        return Utils(temp_path=self.inputs.data_unresolved.tc_temp_path)

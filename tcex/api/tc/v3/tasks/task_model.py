@@ -79,7 +79,6 @@ class TaskModel(
         None,
         description='A list of Artifacts corresponding to the Task.',
         methods=['POST', 'PUT'],
-        max_size=1000,
         read_only=False,
         title='artifacts',
     )
@@ -187,7 +186,6 @@ class TaskModel(
         None,
         description='A list of Notes corresponding to the Task.',
         methods=['POST', 'PUT'],
-        max_size=1000,
         read_only=False,
         title='notes',
     )
@@ -216,6 +214,8 @@ class TaskModel(
         None,
         description='The phase of the workflow.',
         methods=['POST'],
+        maximum=127,
+        minimum=0,
         read_only=False,
         title='workflowPhase',
         updatable=False,
@@ -224,6 +224,8 @@ class TaskModel(
         None,
         description='The step of the workflow.',
         methods=['POST'],
+        maximum=127,
+        minimum=1,
         read_only=False,
         title='workflowStep',
         updatable=False,
@@ -260,7 +262,7 @@ class TaskModel(
 
 # first-party
 from tcex.api.tc.v3.artifacts.artifact_model import ArtifactsModel
-from tcex.api.tc.v3.case_management.assignee import Assignee
+from tcex.api.tc.v3.case_management.assignee import Assignee  # pylint: disable=unused-import
 from tcex.api.tc.v3.cases.case_model import CaseModel
 from tcex.api.tc.v3.notes.note_model import NotesModel
 

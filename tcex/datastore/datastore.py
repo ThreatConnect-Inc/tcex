@@ -4,7 +4,7 @@ import logging
 from typing import TYPE_CHECKING, Optional
 
 # first-party
-from tcex.pleb import Event
+from tcex.pleb.registry import registry
 
 if TYPE_CHECKING:
     # third-party
@@ -49,7 +49,6 @@ class DataStore:
         self.session = session
 
         # properties
-        self.event = Event()
         self.log = logger
 
         # setup
@@ -67,7 +66,7 @@ class DataStore:
 
             if not r.ok:
                 error: str = r.text or r.reason
-                self.event.send('handle_error', code=800, message_values=[r.status_code, error])
+                registry.handle_error(code=800, message_values=[r.status_code, error])
             self.log.debug(f'creating index. status_code: {r.status_code}, response: "{r.text}".')
             # delete temporary record
             self.delete(rid, False)
@@ -155,8 +154,7 @@ class DataStore:
             response_data: dict = r.json()
         else:
             error: str = r.text or r.reason
-            self.event.send(
-                'handle_error',
+            registry.handle_error(
                 code=805,
                 message_values=['delete', r.status_code, error],
                 raise_error=raise_on_error,
@@ -216,8 +214,7 @@ class DataStore:
                 )
         if not r.ok:
             error: str = r.text or r.reason
-            self.event.send(
-                'handle_error',
+            registry.handle_error(
                 code=805,
                 message_values=['get', r.status_code, error],
                 raise_error=raise_on_error,
@@ -270,8 +267,7 @@ class DataStore:
             response_data: dict = r.json()
         else:
             error: str = r.text or r.reason
-            self.event.send(
-                'handle_error',
+            registry.handle_error(
                 code=805,
                 message_values=['post', r.status_code, error],
                 raise_error=raise_on_error,
@@ -321,8 +317,7 @@ class DataStore:
             response_data: dict = r.json()
         else:
             error: str = r.text or r.reason
-            self.event.send(
-                'handle_error',
+            registry.handle_error(
                 code=805,
                 message_values=['put', r.status_code, error],
                 raise_error=raise_on_error,

@@ -13,7 +13,7 @@ from requests.exceptions import ProxyError
 
 # first-party
 from tcex.backports import cached_property
-from tcex.pleb import Event
+from tcex.pleb.registry import registry
 from tcex.utils import Utils
 
 if TYPE_CHECKING:
@@ -38,7 +38,7 @@ class ObjectABC(ABC):
         self._session = session
 
         # properties
-        self._event = Event()
+        self._model = None  # defined in child class
         self._type = None  # defined in child class
         self._utils = Utils()
         self.log = logger
@@ -146,7 +146,8 @@ class ObjectABC(ABC):
                     _filtered_body.update({k: v})
             # print('filtered body', _filtered_body)
             return _filtered_body
-        elif isinstance(body, list):
+
+        if isinstance(body, list):
             return [self._generate_body_filtered(schema, method, properties, i) for i in body]
 
         # print('body', body)
@@ -184,8 +185,7 @@ class ObjectABC(ABC):
                 f'URl: ({self.request.url})'
             )
         except (ConnectionError, ProxyError):  # pragma: no cover
-            self._event.send(
-                'handle_error',
+            registry.handle_error(
                 code=951,
                 message_values=[
                     'OPTIONS',
@@ -202,8 +202,7 @@ class ObjectABC(ABC):
         if not self.success(self.request):
             err = self.request.text or self.request.reason
             if self.request.status_code == 404:
-                self._event.send(
-                    'handle_error',
+                registry.handle_error(
                     code=952,
                     message_values=[
                         self.request.request.method.upper(),
@@ -212,8 +211,7 @@ class ObjectABC(ABC):
                         self.request.url,
                     ],
                 )
-            self._event.send(
-                'handle_error',
+            registry.handle_error(
                 code=200,
                 message_values=[self.request.status_code, err, self.request.url],
             )
@@ -259,13 +257,18 @@ class ObjectABC(ABC):
         # convert all keys to camel case
         params = {self._utils.snake_to_camel(k): v for k, v in params.items()}
 
+        # special parameter for indicators to enable the return the the indicator fields
+        # (value1, value2, value3) on std-custom/custom-custom indicator types.
+        if self._type == 'indicator':
+            params.setdefault('fields', []).append('genericCustomIndicatorValues')
+
         # add fields parameter if provided
         if all_available_fields is True:
             params['fields'] = list(self.available_fields)
 
         if not object_id:  # pragma: no cover
             message = '{"message": "No ID provided.", "status": "Error"}'
-            self._event.send('handle_error', code=952, message_values=['GET', '404', message, url])
+            registry.handle_error(code=952, message_values=['GET', '404', message, url])
 
         try:
             self.request = self._session.get(
@@ -277,8 +280,7 @@ class ObjectABC(ABC):
                 f'URl: ({self.request.url})'
             )
         except (ConnectionError, ProxyError):  # pragma: no cover
-            self._event.send(
-                'handle_error',
+            registry.handle_error(
                 code=951,
                 message_values=[
                     'OPTIONS',
@@ -297,13 +299,11 @@ class ObjectABC(ABC):
         if not self.success(self.request):
             err = self.request.text or self.request.reason
             if self.request.status_code == 404:
-                self._event.send(
-                    'handle_error',
+                registry.handle_error(
                     code=952,
                     message_values=['GET', self.request.status_code, err, self.request.url],
                 )
-            self._event.send(
-                'handle_error',
+            registry.handle_error(
                 code=951,
                 message_values=['GET', self.request.status_code, err, self.request.url],
             )
@@ -351,8 +351,7 @@ class ObjectABC(ABC):
             if r.ok:
                 _properties = r.json()
         except (ConnectionError, ProxyError):
-            self._event.send(
-                'handle_error',
+            registry.handle_error(
                 code=951,
                 message_values=[
                     'OPTIONS',
@@ -386,6 +385,41 @@ class ObjectABC(ABC):
                 rp.append(p)
         return rp
 
+    # TODO: [low] WIP
+    # @property
+    # def results(self):
+    #     """Return blah"""
+
+    #     # local scope
+    #     model = self.model
+    #     request = self.request
+    #     post_properties = self.post_properties
+    #     properties = self.properties
+    #     put_properties = self.put_properties
+
+    #     class Results:
+    #         @property
+    #         def writable(self):
+    #             """Return writable fields."""
+    #             _includes = {}
+    #             for field in post_properties:
+    #                 property = properties.get(field)
+    #                 if (
+    #                     property.get('appliesTo')
+    #                     and model.type not in property.get('appliesTo')
+    #                     or property.get('readOnly') is True
+    #                 ):
+    #                     continue
+    #                 _includes[field] = ...
+    #             # return model.dict(include=_includes)
+    #             return model.json(include=_includes, indent=4)
+
+    #         @property
+    #         def raw(self):
+    #             return request.json()
+
+    #     return Results()
+
     def submit(self) -> Response:
         """Create or Update the Case Management object.
 
@@ -417,8 +451,7 @@ class ObjectABC(ABC):
         if not self.success(self.request):  # pragma: no cover
             err = self.request.text or self.request.reason
             if self.request.status_code == 404:
-                self._event.send(
-                    'handle_error',
+                registry.handle_error(
                     code=952,
                     message_values=[
                         self.request.request.method.upper(),
@@ -427,8 +460,7 @@ class ObjectABC(ABC):
                         self.request.url,
                     ],
                 )
-            self._event.send(
-                'handle_error',
+            registry.handle_error(
                 code=951,
                 message_values=[
                     self.request.request.method,
