@@ -17,18 +17,20 @@ from tests.api.tc.v3.v3_helpers import TestCaseManagement, V3Helper
 class TestArtifacts(TestCaseManagement):
     """Test TcEx API Interface."""
 
-    cm = None
+    v3 = None
 
     def setup_method(self):
         """Configure setup before all tests."""
         print('')  # ensure any following print statements will be on new line
         self.v3_helper = V3Helper('artifacts')
-        self.cm = self.v3_helper.cm
+        self.v3 = self.v3_helper.v3
         self.tcex = self.v3_helper.tcex
 
     def teardown_method(self):
         """Configure teardown before all tests."""
         # TODO: [med] @bpurdy - do you recall what the condition is for?
+        # Ya - It was to make testing easier since we were manually verifying the objects were
+        # created correctly and they kept getting deleted which was annoying.
         if os.getenv('TEARDOWN_METHOD') is None:
             self.v3_helper.cleanup()
 
@@ -68,7 +70,7 @@ class TestArtifacts(TestCaseManagement):
         note_data = {'text': f'sample note for {request.node.name} test case.'}
 
         # [Create Testing] create the object object
-        artifact = self.cm.artifact(**artifact_data)
+        artifact = self.v3.artifact(**artifact_data)
 
         # [Create Testing] add the note data to the object
         artifact.add_note(**note_data)
@@ -78,7 +80,7 @@ class TestArtifacts(TestCaseManagement):
 
         # [Retrieve Testing] create the object with id filter,
         # using object id from the object created above
-        artifact = self.cm.artifact(id=artifact.model.id)
+        artifact = self.v3.artifact(id=artifact.model.id)
 
         # [Retrieve Testing] get the object from the API
         artifact.get(params={'fields': 'notes'})
@@ -117,7 +119,7 @@ class TestArtifacts(TestCaseManagement):
         note_data = {'text': f'sample note for {request.node.name} test case.'}
 
         # [Create Testing] create the object
-        artifact = self.cm.artifact(**artifact_data)
+        artifact = self.v3.artifact(**artifact_data)
 
         # [Create Testing] add the note data to the object
         artifact.add_note(**note_data)
@@ -127,14 +129,14 @@ class TestArtifacts(TestCaseManagement):
 
         # [Retrieve Testing] create the object with id filter,
         # using object id from the object created above
-        artifact = self.cm.artifact(id=artifact.model.id)
+        artifact = self.v3.artifact(id=artifact.model.id)
 
         # [Retrieve Testing] get the object from the API
         artifact.get(params={'fields': 'notes'})
         note_id = artifact.model.notes.data[0].id
 
         # [Retrieve Testing] retrieve object using tql filters
-        artifacts = self.cm.artifacts(params={'fields': 'analytics'})
+        artifacts = self.v3.artifacts(params={'fields': 'analytics'})
 
         # [Filter Testing] analytics_score - This works, but
         #     the delay in the score updating takes to long
@@ -204,7 +206,7 @@ class TestArtifacts(TestCaseManagement):
         }
 
         # [Create Testing] create the task object
-        task = self.cm.task(**task_data)
+        task = self.v3.task(**task_data)
 
         # [Create Testing] submit the task ot the TC API
         task.submit()
@@ -218,13 +220,13 @@ class TestArtifacts(TestCaseManagement):
         }
 
         # [Create Testing] create the object object
-        artifact = self.cm.artifact(**artifact_data)
+        artifact = self.v3.artifact(**artifact_data)
 
         # [Create Testing] submit the object ot the TC API
         artifact.submit()
 
         # [Retrieve Testing] retrieve object using tql filters
-        artifacts = self.cm.artifacts()
+        artifacts = self.v3.artifacts()
 
         # [Filter Testing] has_task -> using id since it's available
         artifacts.filter.has_task.id(TqlOperator.EQ, task.model.id)
@@ -255,14 +257,14 @@ class TestArtifacts(TestCaseManagement):
         }
 
         # [Create Testing] create the object
-        artifact = self.cm.artifact(**artifact_data)
+        artifact = self.v3.artifact(**artifact_data)
 
         # [Create Testing] submit the object to the TC API
         artifact.submit()
 
         # [Retrieve Testing] create the object with id filter,
         # using object id from the object created above
-        artifact = self.cm.artifact(id=artifact.model.id)
+        artifact = self.v3.artifact(id=artifact.model.id)
 
         # [Retrieve Testing] get the object from the API
         artifact.get()
@@ -286,14 +288,14 @@ class TestArtifacts(TestCaseManagement):
         }
 
         # [Create Testing] create the object
-        artifact = self.cm.artifact(**artifact_data)
+        artifact = self.v3.artifact(**artifact_data)
 
         # [Create Testing] submit the object to the TC API
         artifact.submit()
 
         # [Retrieve Testing] create the object with id filter,
         # using object id from the object created above
-        artifact = self.cm.artifact(id=artifact.model.id)
+        artifact = self.v3.artifact(id=artifact.model.id)
 
         # [Delete Testing] remove the object
         artifact.delete()
@@ -322,14 +324,14 @@ class TestArtifacts(TestCaseManagement):
             }
 
             # [Create Testing] create the object
-            artifact = self.cm.artifact(**artifact_data)
+            artifact = self.v3.artifact(**artifact_data)
 
             # [Create Testing] submit the object to the TC API
             artifact.submit()
             artifact_ids.append(artifact.model.id)
 
         # [Retrieve Testing] iterate over all object looking for needle
-        artifacts = self.cm.artifacts(params={'resultLimit': 5})
+        artifacts = self.v3.artifacts(params={'resultLimit': 5})
         artifacts.filter.case_id(TqlOperator.EQ, case.model.id)
         for i, a in enumerate(artifacts):
             print(i)
@@ -355,7 +357,7 @@ class TestArtifacts(TestCaseManagement):
         }
 
         # [Create Testing] create the task object
-        task = self.cm.task(**task_data)
+        task = self.v3.task(**task_data)
 
         # [Create Testing] submit the task ot the TC API
         task.submit()
@@ -377,7 +379,7 @@ class TestArtifacts(TestCaseManagement):
         }
 
         # [Create Testing] add the note data to the object
-        artifact = self.cm.artifact()
+        artifact = self.v3.artifact()
 
         # [Create Testing] testing setters on model
         artifact.model.task_id = artifact_data.get('task_id')
@@ -396,7 +398,7 @@ class TestArtifacts(TestCaseManagement):
 
         # [Retrieve Testing] create the object with id filter,
         # using object id from the object created above
-        artifact = self.cm.artifact(id=artifact.model.id)
+        artifact = self.v3.artifact(id=artifact.model.id)
 
         # [Retrieve Testing] get the object from the API
         artifact.get(all_available_fields=True)
@@ -449,7 +451,7 @@ class TestArtifacts(TestCaseManagement):
         }
 
         # [Create Testing] create the object
-        artifact = self.cm.artifact()
+        artifact = self.v3.artifact()
 
         # [Create Testing] using model setters
         artifact.model.case_id = artifact_data.get('case_id')
@@ -468,7 +470,7 @@ class TestArtifacts(TestCaseManagement):
 
         # [Retrieve Testing] define the object with id filter,
         # using object id from the object created above
-        artifact = self.cm.artifact(id=artifact.model.id)
+        artifact = self.v3.artifact(id=artifact.model.id)
 
         # [Retrieve Testing] get the object from the API
         artifact.get(all_available_fields=True)
@@ -519,7 +521,7 @@ class TestArtifacts(TestCaseManagement):
         }
 
         # [Create Testing] create the object
-        artifact = self.cm.artifact(**artifact_data)
+        artifact = self.v3.artifact(**artifact_data)
 
         # [Create Testing] submit the object to the TC API
         artifact.submit()
@@ -555,7 +557,7 @@ class TestArtifacts(TestCaseManagement):
     def test_artifact_get_by_tql_filter_fail_tql(self):
         """Test Artifact Get by TQL"""
         # retrieve object using TQL
-        artifacts = self.cm.artifacts()
+        artifacts = self.v3.artifacts()
         artifacts.filter.tql = 'Invalid TQL'
 
         # [Fail Testing] validate the object is removed
