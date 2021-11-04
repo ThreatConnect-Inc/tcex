@@ -1,9 +1,10 @@
 """Generate Docs for ThreatConnect API"""
 # standard library
+import importlib
 import sys
 from abc import ABC
 from textwrap import TextWrapper
-from typing import Any, Optional
+from typing import Any, Dict, Optional
 
 # first-party
 from tcex.api.tc.v3._gen._gen_abc import GenerateABC
@@ -32,77 +33,105 @@ class GenerateArgsABC(GenerateABC, ABC):
         )
         return '\n'.join(textwrapper.wrap(description))
 
-    def _import_model(self) -> Any:
+    @staticmethod
+    def _import_model(module, class_name) -> Any:
         """Import the appropriate model."""
-        if self.type_ == 'adversary_assets':
-            # first-party
-            from tcex.api.tc.v3.adversary_assets.adversary_asset_model import (
-                AdversaryAssetModel as Model,
-            )
-        elif self.type_ == 'artifact_types':
-            # first-party
-            from tcex.api.tc.v3.artifact_types.artifact_type_model import ArtifactTypeModel as Model
-        elif self.type_ == 'artifacts':
-            # first-party
-            from tcex.api.tc.v3.artifacts.artifact_model import ArtifactModel as Model
-        elif self.type_ == 'cases':
-            # first-party
-            from tcex.api.tc.v3.cases.case_model import CaseModel as Model
-        elif self.type_ == 'groups':
-            # first-party
-            from tcex.api.tc.v3.groups.group_model import GroupModel as Model
-        elif self.type_ == 'indicators':
-            # first-party
-            from tcex.api.tc.v3.indicators.indicator_model import IndicatorModel as Model
-        elif self.type_ == 'notes':
-            # first-party
-            from tcex.api.tc.v3.notes.note_model import NoteModel as Model
-        elif self.type_ == 'owners':
-            # first-party
-            from tcex.api.tc.v3.security.owners.owner_model import OwnerModel as Model
-        elif self.type_ == 'owner_roles':
-            # first-party
-            from tcex.api.tc.v3.security.owner_roles.owner_role_model import OwnerRoleModel as Model
-        elif self.type_ == 'security_labels':
-            # first-party
-            from tcex.api.tc.v3.security_labels.security_label_model import (
-                SecurityLabelModel as Model,
-            )
-        elif self.type_ == 'system_roles':
-            # first-party
-            from tcex.api.tc.v3.security.system_roles.system_role_model import (
-                SystemRoleModel as Model,
-            )
-        elif self.type_ == 'tags':
-            # first-party
-            from tcex.api.tc.v3.tags.tag_model import TagModel as Model
-        elif self.type_ == 'tasks':
-            # first-party
-            from tcex.api.tc.v3.tasks.task_model import TaskModel as Model
-        elif self.type_ == 'user_groups':
-            # first-party
-            from tcex.api.tc.v3.security.user_groups.user_group_model import UserGroupModel as Model
-        elif self.type_ == 'users':
-            # first-party
-            from tcex.api.tc.v3.security.users.user_model import UserModel as Model
-        elif self.type_ == 'victims':
-            # first-party
-            from tcex.api.tc.v3.victims.victim_model import VictimsModel as Model
-        elif self.type_ == 'victim_assets':
-            # first-party
-            from tcex.api.tc.v3.victim_assets.victim_asset_model import VictimAssetsModel as Model
-        elif self.type_ == 'workflow_events':
-            # first-party
-            from tcex.api.tc.v3.workflow_events.workflow_event_model import (
-                WorkflowEventModel as Model,
-            )
-        elif self.type_ == 'workflow_templates':
-            # first-party
-            from tcex.api.tc.v3.workflow_templates.workflow_template_model import (
-                WorkflowTemplateModel as Model,
-            )
+        return getattr(importlib.import_module(module), class_name)
 
-        return Model
+    @staticmethod
+    def _module_map(module: str) -> Dict:
+        """Return the module map data."""
+        _modules = {
+            'adversary_assets': {
+                'module': 'tcex.api.tc.v3.adversary_assets.adversary_asset_model',
+                'class_name': 'AdversaryAssetModel',
+            },
+            'artifacts': {
+                'module': 'tcex.api.tc.v3.artifacts.artifact_model',
+                'class_name': 'ArtifactModel',
+            },
+            'artifact_types': {
+                'module': 'tcex.api.tc.v3.artifact_types.artifact_type_model',
+                'class_name': 'ArtifactTypeModel',
+            },
+            'case_attributes': {
+                'module': 'tcex.api.tc.v3.case_attributes.case_attribute_model',
+                'class_name': 'CaseAttributesModel',
+            },
+            'cases': {
+                'module': 'tcex.api.tc.v3.cases.case_model',
+                'class_name': 'CaseModel',
+            },
+            'group_attributes': {
+                'module': 'tcex.api.tc.v3.group_attributes.group_attribute_model',
+                'class_name': 'GroupAttributesModel',
+            },
+            'groups': {
+                'module': 'tcex.api.tc.v3.groups.group_model',
+                'class_name': 'GroupModel',
+            },
+            'indicator_attributes': {
+                'module': 'tcex.api.tc.v3.indicator_attributes.indicator_attribute_model',
+                'class_name': 'IndicatorAttributesModel',
+            },
+            'indicators': {
+                'module': 'tcex.api.tc.v3.indicators.indicator_model',
+                'class_name': 'IndicatorModel',
+            },
+            'notes': {
+                'module': 'tcex.api.tc.v3.notes.note_model',
+                'class_name': 'NoteModel',
+            },
+            'owner_roles': {
+                'module': 'tcex.api.tc.v3.security.owner_roles.owner_role_model',
+                'class_name': 'OwnerRoleModel',
+            },
+            'owners': {
+                'module': 'tcex.api.tc.v3.security.owners.owner_model',
+                'class_name': 'OwnerModel',
+            },
+            'security_labels': {
+                'module': 'tcex.api.tc.v3.security_labels.security_label_model',
+                'class_name': 'SecurityLabelModel',
+            },
+            'system_roles': {
+                'module': 'tcex.api.tc.v3.security.system_roles.system_role_model',
+                'class_name': 'SystemRoleModel',
+            },
+            'tags': {
+                'module': 'tcex.api.tc.v3.tags.tag_model',
+                'class_name': 'TagModel',
+            },
+            'tasks': {
+                'module': 'tcex.api.tc.v3.tasks.task_model',
+                'class_name': 'TaskModel',
+            },
+            'users': {
+                'module': 'tcex.api.tc.v3.security.users.user_model',
+                'class_name': 'UserModel',
+            },
+            'user_groups': {
+                'module': 'tcex.api.tc.v3.security.user_groups.user_group_model',
+                'class_name': 'UserGroupModel',
+            },
+            'victims': {
+                'module': 'tcex.api.tc.v3.victims.victim_model',
+                'class_name': 'VictimModel',
+            },
+            'victim_assets': {
+                'module': 'tcex.api.tc.v3.victim_assets.victim_asset_model',
+                'class_name': 'VictimAssetModel',
+            },
+            'workflow_events': {
+                'module': 'tcex.api.tc.v3.workflow_events.workflow_event_model',
+                'class_name': 'WorkflowEventModel',
+            },
+            'workflow_templates': {
+                'module': 'tcex.api.tc.v3.workflow_templates.workflow_template_model',
+                'class_name': 'WorkflowTemplateModel',
+            },
+        }
+        return _modules.get(module)
 
     def _prop_type(self, prop_data: dict) -> str:
         """Return the appropriate arg type."""
@@ -138,7 +167,8 @@ class GenerateArgsABC(GenerateABC, ABC):
         i1 = i1 or self.i1
         i2 = i2 or self.i2
 
-        model = self._import_model()
+        module_data = self._module_map(self.type_)
+        model = self._import_model(module_data.get('module'), module_data.get('class_name'))
         _doc_string = [f'{i1}Args:']
 
         # get properties from schema
