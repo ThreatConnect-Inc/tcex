@@ -45,7 +45,7 @@ class scoped_property(typing.Generic[T]):
 
         # A value has *not* been created for the calling thread
         # yet, so use the factory to create a new one.
-        new_value = self._create_value(self.wrapped, (instance,))
+        new_value = self._create_value(self.wrapped, instance)
         return new_value
 
     def _create_value(self, wrapped, *args, **kwargs):

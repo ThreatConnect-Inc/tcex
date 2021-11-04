@@ -51,18 +51,18 @@ class TestIndicators(TestCaseManagement):
 
         A single test case to hit all sub-type creation (e.g., Notes).
         """
-        indicators = self.v3_helper.v3_obj_collection
-        indicators.filter.summary(TqlOperator.EQ, '123.123.123.123')
-        for indicator in indicators:
-            indicator.model.rating = 3
-            indicator.submit()
-            # print(indicator.blah.writable)
-            # print(indicator.model.json(indent=4))
-            # print(indicator.post_properties)
-            indicator.get(all_available_fields=True)
-            # print(indicator.model.json(exclude_none=True, indent=2))
-            print('writable', indicator.results.writable)
-            # print('raw', indicator.results.raw)
+        # indicators = self.v3_helper.v3_obj_collection
+        # indicators.filter.summary(TqlOperator.EQ, '123.123.123.123')
+        # for indicator in indicators:
+        #     indicator.model.rating = 3
+        #     indicator.submit()
+        #     # print(indicator.blah.writable)
+        #     # print(indicator.model.json(indent=4))
+        #     # print(indicator.post_properties)
+        #     indicator.get(all_available_fields=True)
+        #     # print(indicator.model.json(exclude_none=True, indent=2))
+        #     print('writable', indicator.results.writable)
+        #     # print('raw', indicator.results.raw)
 
         # [Create Testing] define object data
         object_data = {
@@ -89,7 +89,7 @@ class TestIndicators(TestCaseManagement):
                 ]
             },
             'type': 'Address',
-            # 'xid': '123.123.123.124',
+            'xid': '123.123.123.124',
         }
         indicator = self.ti.indicator(**object_data)
         print(indicator.model.dict())
