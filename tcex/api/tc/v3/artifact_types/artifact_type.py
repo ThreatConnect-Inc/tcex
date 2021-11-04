@@ -74,4 +74,4 @@ class ArtifactType(ObjectABC):
     @property
     def as_entity(self) -> dict:
         """Return the entity representation of the object."""
-        return {'type': 'ArtifactType', 'id': self.model.id, 'value': self.model.summary}
+        return {'type': 'ArtifactType', 'id': self.model.id, 'value': self.model.name}
