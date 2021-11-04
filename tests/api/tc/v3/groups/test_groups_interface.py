@@ -21,7 +21,7 @@ class TestGroups(TestCaseManagement):
         """Configure setup before all tests."""
         print('')  # ensure any following print statements will be on new line
         self.v3_helper = V3Helper('groups')
-        self.ti = self.v3_helper.ti
+        self.v3 = self.v3_helper.v3
         self.tcex = self.v3_helper.tcex
 
     def teardown_method(self):
@@ -89,7 +89,7 @@ class TestGroups(TestCaseManagement):
         #     'type': 'Address',
         #     # 'xid': '123.123.123.124',
         # }
-        # group = self.ti.group(**object_data)
+        # group = self.v3.group(**object_data)
         # print(group.model.dict())
         # try:
         #     group.submit()

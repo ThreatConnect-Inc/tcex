@@ -1,0 +1,126 @@
+"""Test the TcEx API Module."""
+# standard library
+import os
+
+# third-party
+import pytest
+
+# first-party
+from tcex.api.tc.v3.tql.tql_operator import TqlOperator
+from tests.api.tc.v3.v3_helpers import TestCaseManagement, V3Helper
+
+
+class TestArtifactTypes(TestCaseManagement):
+    """Test TcEx API Interface."""
+
+    v3 = None
+
+    def setup_method(self):
+        """Configure setup before all tests."""
+        print('')  # ensure any following print statements will be on new line
+        self.v3_helper = V3Helper('artifact_types')
+        self.v3 = self.v3_helper.v3
+        self.tcex = self.v3_helper.tcex
+
+    def teardown_method(self):
+        """Configure teardown before all tests."""
+        if os.getenv('TEARDOWN_METHOD') is None:
+            self.v3_helper.cleanup()
+
+    def test_artifact_type_api_options(self):
+        """Test filter keywords."""
+        super().obj_api_options()
+
+    def test_artifact_type_filter_keywords(self):
+        """Test filter keywords."""
+        super().obj_filter_keywords()
+
+    def test_artifact_type_object_properties(self):
+        """Test properties."""
+        super().obj_properties()
+
+    def test_artifact_type_object_properties_extra(self):
+        """Test properties."""
+        super().obj_properties_extra()
+
+    def test_artifact_type_get_many(self):
+        """Test Artifact Get Many"""
+        artifact_types = self.v3.artifact_types()
+        for artifact_type in artifact_types:
+            if artifact_type.model.name == 'Protocol Number':
+                assert artifact_type._api_endpoint == '/v3/artifactTypes'
+                assert artifact_type.model.data_type == 'String'
+                assert artifact_type.model.description.startswith('In the Internet Protocol')
+                break
+        else:
+            assert False, 'Artifact type of "Protocol Number" was not returned.'
+
+    def test_artifact_type_get_single_by_id_properties(self):
+        """Test Artifact get single attached to task by id"""
+        artifact_type = self.v3.artifact_type()
+        artifact_type.model.id = 1
+        artifact_type.get()
+
+        assert artifact_type.model.id == 1
+        assert artifact_type.model.name == 'Email Address'
+        assert artifact_type.model.description.startswith('A name that identifies')
+        assert artifact_type.model.data_type == 'String'
+        assert artifact_type.model.intel_type == 'indicator-EmailAddress'
+
+    def test_artifact_type_get_by_tql_filter_fail_tql(self):
+        """Test Artifact Get by TQL"""
+        # retrieve object using TQL
+        artifact_types = self.v3.artifact_types()
+        artifact_types.filter.tql = 'Invalid TQL'
+
+        # [Fail Testing] validate the object is removed
+        with pytest.raises(RuntimeError) as exc_info:
+            for _ in artifact_types:
+                pass
+
+        # [Fail Testing] assert error message contains the correct code
+        # error -> "(950, 'Error during pagination. API status code: 400, ..."
+        assert '950' in str(exc_info.value)
+        assert artifact_types.request.status_code == 400
+
+    def test_artifact_type_all_filters(self):
+        """Test TQL Filters for artifact on a Case"""
+
+        artifact_types = self.v3.artifact_types()
+
+        # [Filter Testing] active
+        artifact_types.filter.active(TqlOperator.EQ, True)
+
+        # [Filter Testing] data type
+        artifact_types.filter.data_type(TqlOperator.EQ, 'String')
+
+        # [Filter Testing] description
+        artifact_types.filter.description(
+            TqlOperator.EQ,
+            'A name that identifies an electronic post office box on '
+            'a network where Electronic-Mail (e-mail) can be sent.',
+        )
+
+        # [Filter Testing] id
+        artifact_types.filter.id(TqlOperator.EQ, 1)
+
+        # [Filter Testing] intel type
+        artifact_types.filter.intel_type(TqlOperator.EQ, 'indicator-EmailAddress')
+
+        # [Filter Testing] managed
+        artifact_types.filter.managed(TqlOperator.EQ, True)
+
+        # [Filter Testing] name
+        artifact_types.filter.name(TqlOperator.EQ, 'Email Address')
+
+        for artifact_type in artifact_types:
+            assert artifact_type.model.id == 1
+            assert artifact_type.model.name == 'Email Address'
+            assert artifact_type.model.description.startswith('A name that identifies')
+            assert artifact_type.model.data_type == 'String'
+            assert artifact_type.model.intel_type == 'indicator-EmailAddress'
+            break
+        else:
+            assert False, f'No artifact found for tql -> {artifact_types.tql.as_str}'
+        assert len(artifact_types) == 1, ('More than 1 artifact type retrieved for tql '
+                                          f'{artifact_types.tql.as_str}.')

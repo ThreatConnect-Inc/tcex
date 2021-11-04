@@ -21,7 +21,7 @@ class TestIndicators(TestCaseManagement):
         """Configure setup before all tests."""
         print('')  # ensure any following print statements will be on new line
         self.v3_helper = V3Helper('indicators')
-        self.ti = self.v3_helper.ti
+        self.v3 = self.v3_helper.v3
         self.tcex = self.v3_helper.tcex
 
     def teardown_method(self):
@@ -91,7 +91,7 @@ class TestIndicators(TestCaseManagement):
             'type': 'Address',
             'xid': '123.123.123.124',
         }
-        indicator = self.ti.indicator(**object_data)
+        indicator = self.v3.indicator(**object_data)
         print(indicator.model.dict())
         try:
             indicator.submit()

@@ -21,8 +21,7 @@ class V3Helper:
         """Initialize Class Properties"""
         self.app = MockApp(runtime_level='Playbook')
         self.tcex = self.app.tcex
-        self.cm = self.tcex.cm
-        self.ti = self.tcex.ti
+        self.v3 = self.tcex.v3
         self.utils = Utils()
 
         # get v3 obj and obj collection (could append s for collection, but dict is cleaner)
@@ -165,7 +164,7 @@ class V3Helper:
         Returns:
             CaseManagement.Case: A CM case object.
         """
-        cases = self.cm.cases()
+        cases = self.v3.cases()
         xid = kwargs.get('xid', f'xid-{inspect.stack()[1].function}')
         cases.filter.xid(TqlOperator.EQ, xid)
         for case in cases:
@@ -190,7 +189,7 @@ class V3Helper:
         tasks = kwargs.get('tasks', {})
 
         # create case
-        case = self.cm.case(**case_data)
+        case = self.v3.case(**case_data)
 
         # add artifacts
         for artifact, artifact_data in artifacts.items():
