@@ -5,13 +5,13 @@ python tcex/api/tc/v3/_gen/_gen.py all --help
 python tcex/api/tc/v3/_gen/_gen.py all
 
 ## Create/Replace All Filter Files
-python tcex/api/tc/v3/_gen/_gen.py --gen_type filter
+python tcex/api/tc/v3/_gen/_gen.py all --gen_type filter
 
 ## Create/Replace All Model Files
-python tcex/api/tc/v3/_gen/_gen.py --gen_type model
+python tcex/api/tc/v3/_gen/_gen.py all --gen_type model
 
 ## Create/Replace All Object Files
-python tcex/api/tc/v3/_gen/_gen.py --gen_type object
+python tcex/api/tc/v3/_gen/_gen.py all --gen_type object
 
 # Args
 python tcex/api/tc/v3/_gen/_gen.py args --help
