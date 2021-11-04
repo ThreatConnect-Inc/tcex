@@ -16,8 +16,7 @@ from requests import Session
 # first-party
 from tcex.api.tc.v2.metrics import Metrics
 from tcex.api.tc.v2.notifications import Notifications
-from tcex.api.tc.v3.case_management.case_management import CaseManagement
-from tcex.api.tc.v3.threat_intelligence.threat_intelligence import ThreatIntelligence
+from tcex.api.tc.v3.v3 import V3
 from tcex.app_config.install_json import InstallJson
 from tcex.app_feature import AdvancedRequest
 from tcex.backports import cached_property
@@ -226,16 +225,6 @@ class TcEx:
             mapping: Advanced - The datastore mapping if required.
         """
         return Cache(self.session_tc, domain, data_type, ttl_seconds, mapping)
-
-    @property
-    def case_management(self) -> CaseManagement:
-        """Return a case management instance."""
-        return CaseManagement(self.session_tc)
-
-    @property
-    def cm(self) -> CaseManagement:
-        """Alias for case_management."""
-        return self.case_management
 
     def datastore(self, domain: str, data_type: str, mapping: Optional[dict] = None) -> DataStore:
         """Get instance of the DataStore module.
@@ -694,16 +683,6 @@ class TcEx:
         """Return an instance of Requests Session configured for the ThreatConnect API."""
         return self.get_session_external()
 
-    @property
-    def threat_intelligence(self) -> 'CaseManagement':
-        """Return a case management instance."""
-        return ThreatIntelligence(self.session_tc)
-
-    @property
-    def ti(self) -> 'CaseManagement':
-        """Alias for case_management."""
-        return self.threat_intelligence
-
     @registry.factory(Tokens, singleton=True)
     @cached_property
     def token(self) -> 'Tokens':
@@ -728,3 +707,8 @@ class TcEx:
     def utils(self) -> 'Utils':
         """Include the Utils module."""
         return Utils(temp_path=self.inputs.data_unresolved.tc_temp_path)
+
+    @property
+    def v3(self) -> 'V3':
+        """Return a case management instance."""
+        return V3(self.session_tc)
