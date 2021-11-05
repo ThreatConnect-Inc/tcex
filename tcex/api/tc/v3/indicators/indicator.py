@@ -4,15 +4,19 @@ from typing import TYPE_CHECKING
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
+from tcex.api.tc.v3.indicator_attributes.indicator_attribute_model import IndicatorAttributeModel
 from tcex.api.tc.v3.indicators.indicator_filter import IndicatorFilter
 from tcex.api.tc.v3.indicators.indicator_model import IndicatorModel, IndicatorsModel
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
+from tcex.api.tc.v3.security_labels.security_label_model import SecurityLabelModel
 from tcex.api.tc.v3.tags.tag_model import TagModel
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 
 if TYPE_CHECKING:  # pragma: no cover
     # first-party
+    from tcex.api.tc.v3.indicator_attributes.indicator_attribute import IndicatorAttribute
+    from tcex.api.tc.v3.security_labels.security_label import SecurityLabel
     from tcex.api.tc.v3.tags.tag import Tag
 
 
@@ -126,6 +130,27 @@ class Indicator(ObjectABC):
 
         return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
 
+    def add_attribute(self, **kwargs) -> None:
+        """Add attribute to the object.
+
+        Args:
+            default (bool, kwargs): A flag indicating that this is the default attribute of its type
+                within the object. Only applies to certain attribute and data types.
+            source (str, kwargs): The attribute source.
+            value (str, kwargs): Attribute value.
+        """
+        self.model.attributes.data.append(IndicatorAttributeModel(**kwargs))
+
+    def add_security_label(self, **kwargs) -> None:
+        """Add security_label to the object.
+
+        Args:
+            color (str, kwargs): Color of the security label.
+            description (str, kwargs): Description of the security label.
+            name (str, kwargs): Name of the security label.
+        """
+        self.model.security_labels.data.append(SecurityLabelModel(**kwargs))
+
     def add_tag(self, **kwargs) -> None:
         """Add tag to the object.
 
@@ -134,6 +159,20 @@ class Indicator(ObjectABC):
             name (str, kwargs): The **name** for the Tag.
         """
         self.model.tags.data.append(TagModel(**kwargs))
+
+    @property
+    def attributes(self) -> 'IndicatorAttribute':
+        """Yield Attribute from Attributes."""
+        from tcex.api.tc.v3.indicator_attributes.indicator_attribute import IndicatorAttributes
+
+        yield from self._iterate_over_sublist(IndicatorAttributes)
+
+    @property
+    def security_labels(self) -> 'SecurityLabel':
+        """Yield Security_Label from Security_Labels."""
+        from tcex.api.tc.v3.security_labels.security_label import SecurityLabels
+
+        yield from self._iterate_over_sublist(SecurityLabels)
 
     @property
     def tags(self) -> 'Tag':

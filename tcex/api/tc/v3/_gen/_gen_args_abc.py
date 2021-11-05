@@ -13,6 +13,11 @@ from tcex.api.tc.v3._gen._gen_abc import GenerateABC
 class GenerateArgsABC(GenerateABC, ABC):
     """Generate docstring for Model."""
 
+    def __init__(self, type_: Any) -> None:
+        """Initialize class properties."""
+        super().__init__(type_)
+        self.type_ = self.utils.snake_string(self._type_map(type_))
+
     @staticmethod
     def _format_description(description: str, length: int, indent: str) -> str:
         """Format description for field."""
@@ -37,101 +42,6 @@ class GenerateArgsABC(GenerateABC, ABC):
     def _import_model(module, class_name) -> Any:
         """Import the appropriate model."""
         return getattr(importlib.import_module(module), class_name)
-
-    @staticmethod
-    def _module_map(module: str) -> Dict:
-        """Return the module map data."""
-        _modules = {
-            'adversary_assets': {
-                'module': 'tcex.api.tc.v3.adversary_assets.adversary_asset_model',
-                'class_name': 'AdversaryAssetModel',
-            },
-            'artifacts': {
-                'module': 'tcex.api.tc.v3.artifacts.artifact_model',
-                'class_name': 'ArtifactModel',
-            },
-            'artifact_types': {
-                'module': 'tcex.api.tc.v3.artifact_types.artifact_type_model',
-                'class_name': 'ArtifactTypeModel',
-            },
-            'case_attributes': {
-                'module': 'tcex.api.tc.v3.case_attributes.case_attribute_model',
-                'class_name': 'CaseAttributesModel',
-            },
-            'cases': {
-                'module': 'tcex.api.tc.v3.cases.case_model',
-                'class_name': 'CaseModel',
-            },
-            'group_attributes': {
-                'module': 'tcex.api.tc.v3.group_attributes.group_attribute_model',
-                'class_name': 'GroupAttributesModel',
-            },
-            'groups': {
-                'module': 'tcex.api.tc.v3.groups.group_model',
-                'class_name': 'GroupModel',
-            },
-            'indicator_attributes': {
-                'module': 'tcex.api.tc.v3.indicator_attributes.indicator_attribute_model',
-                'class_name': 'IndicatorAttributesModel',
-            },
-            'indicators': {
-                'module': 'tcex.api.tc.v3.indicators.indicator_model',
-                'class_name': 'IndicatorModel',
-            },
-            'notes': {
-                'module': 'tcex.api.tc.v3.notes.note_model',
-                'class_name': 'NoteModel',
-            },
-            'owner_roles': {
-                'module': 'tcex.api.tc.v3.security.owner_roles.owner_role_model',
-                'class_name': 'OwnerRoleModel',
-            },
-            'owners': {
-                'module': 'tcex.api.tc.v3.security.owners.owner_model',
-                'class_name': 'OwnerModel',
-            },
-            'security_labels': {
-                'module': 'tcex.api.tc.v3.security_labels.security_label_model',
-                'class_name': 'SecurityLabelModel',
-            },
-            'system_roles': {
-                'module': 'tcex.api.tc.v3.security.system_roles.system_role_model',
-                'class_name': 'SystemRoleModel',
-            },
-            'tags': {
-                'module': 'tcex.api.tc.v3.tags.tag_model',
-                'class_name': 'TagModel',
-            },
-            'tasks': {
-                'module': 'tcex.api.tc.v3.tasks.task_model',
-                'class_name': 'TaskModel',
-            },
-            'users': {
-                'module': 'tcex.api.tc.v3.security.users.user_model',
-                'class_name': 'UserModel',
-            },
-            'user_groups': {
-                'module': 'tcex.api.tc.v3.security.user_groups.user_group_model',
-                'class_name': 'UserGroupModel',
-            },
-            'victims': {
-                'module': 'tcex.api.tc.v3.victims.victim_model',
-                'class_name': 'VictimModel',
-            },
-            'victim_assets': {
-                'module': 'tcex.api.tc.v3.victim_assets.victim_asset_model',
-                'class_name': 'VictimAssetModel',
-            },
-            'workflow_events': {
-                'module': 'tcex.api.tc.v3.workflow_events.workflow_event_model',
-                'class_name': 'WorkflowEventModel',
-            },
-            'workflow_templates': {
-                'module': 'tcex.api.tc.v3.workflow_templates.workflow_template_model',
-                'class_name': 'WorkflowTemplateModel',
-            },
-        }
-        return _modules.get(module)
 
     def _prop_type(self, prop_data: dict) -> str:
         """Return the appropriate arg type."""
@@ -167,8 +77,8 @@ class GenerateArgsABC(GenerateABC, ABC):
         i1 = i1 or self.i1
         i2 = i2 or self.i2
 
-        module_data = self._module_map(self.type_)
-        model = self._import_model(module_data.get('module'), module_data.get('class_name'))
+        module_data = self._module_data(self.type_)
+        model = self._import_model(module_data.get('model_module'), module_data.get('model_class'))
         _doc_string = [f'{i1}Args:']
 
         # get properties from schema
