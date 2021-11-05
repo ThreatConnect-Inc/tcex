@@ -2,10 +2,9 @@
 # standard library
 import os
 from abc import ABC
-
-# third-party
 from typing import Any
 
+# third-party
 import typer
 from requests import Session
 from requests.exceptions import ProxyError

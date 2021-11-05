@@ -2,7 +2,10 @@
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.indicator_attributes.indicator_attribute_filter import IndicatorAttributeFilter
-from tcex.api.tc.v3.indicator_attributes.indicator_attribute_model import IndicatorAttributeModel, IndicatorAttributesModel
+from tcex.api.tc.v3.indicator_attributes.indicator_attribute_model import (
+    IndicatorAttributeModel,
+    IndicatorAttributesModel,
+)
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
@@ -83,4 +86,3 @@ class IndicatorAttribute(ObjectABC):
             type_ = self.model.type
 
         return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
-

@@ -9,7 +9,10 @@ from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tcex.api.tc.v3.workflow_templates.workflow_template_filter import WorkflowTemplateFilter
-from tcex.api.tc.v3.workflow_templates.workflow_template_model import WorkflowTemplateModel, WorkflowTemplatesModel
+from tcex.api.tc.v3.workflow_templates.workflow_template_model import (
+    WorkflowTemplateModel,
+    WorkflowTemplatesModel,
+)
 
 if TYPE_CHECKING:  # pragma: no cover
     # first-party
@@ -117,7 +120,7 @@ class WorkflowTemplate(ObjectABC):
     @property
     def cases(self) -> 'Case':
         """Yield Case from Cases."""
+        # first-party
         from tcex.api.tc.v3.cases.case import Cases
 
         yield from self._iterate_over_sublist(Cases)
-

@@ -89,4 +89,3 @@ class Note(ObjectABC):
             type_ = self.model.type
 
         return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
-

@@ -103,9 +103,7 @@ class TestNotes(TestCaseManagement):
         assert note.model.data_type == 'String'
         assert note.model.intel_type == 'indicator-EmailAddress'
 
-        assert note.as_entity == {
-            'type': 'ArtifactType', 'id': 1, 'value': 'Email Address'
-        }
+        assert note.as_entity == {'type': 'ArtifactType', 'id': 1, 'value': 'Email Address'}
 
     def test_note_get_by_tql_filter_fail_tql(self):
         """Test Artifact Get by TQL"""
@@ -162,5 +160,6 @@ class TestNotes(TestCaseManagement):
             break
         else:
             assert False, f'No artifact found for tql -> {notes.tql.as_str}'
-        assert len(notes) == 1, ('More than 1 artifact type retrieved for tql '
-                                          f'{notes.tql.as_str}.')
+        assert len(notes) == 1, (
+            'More than 1 artifact type retrieved for tql ' f'{notes.tql.as_str}.'
+        )

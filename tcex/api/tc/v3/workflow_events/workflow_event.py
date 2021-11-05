@@ -9,7 +9,10 @@ from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tcex.api.tc.v3.workflow_events.workflow_event_filter import WorkflowEventFilter
-from tcex.api.tc.v3.workflow_events.workflow_event_model import WorkflowEventModel, WorkflowEventsModel
+from tcex.api.tc.v3.workflow_events.workflow_event_model import (
+    WorkflowEventModel,
+    WorkflowEventsModel,
+)
 
 if TYPE_CHECKING:  # pragma: no cover
     # first-party
@@ -109,7 +112,7 @@ class WorkflowEvent(ObjectABC):
     @property
     def notes(self) -> 'Note':
         """Yield Note from Notes."""
+        # first-party
         from tcex.api.tc.v3.notes.note import Notes
 
         yield from self._iterate_over_sublist(Notes)
-

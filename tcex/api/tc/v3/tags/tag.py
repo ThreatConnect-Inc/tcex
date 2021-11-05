@@ -116,7 +116,7 @@ class Tag(ObjectABC):
     @property
     def cases(self) -> 'Case':
         """Yield Case from Cases."""
+        # first-party
         from tcex.api.tc.v3.cases.case import Cases
 
         yield from self._iterate_over_sublist(Cases)
-

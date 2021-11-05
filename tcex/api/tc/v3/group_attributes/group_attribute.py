@@ -2,7 +2,10 @@
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.group_attributes.group_attribute_filter import GroupAttributeFilter
-from tcex.api.tc.v3.group_attributes.group_attribute_model import GroupAttributeModel, GroupAttributesModel
+from tcex.api.tc.v3.group_attributes.group_attribute_model import (
+    GroupAttributeModel,
+    GroupAttributesModel,
+)
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
@@ -83,4 +86,3 @@ class GroupAttribute(ObjectABC):
             type_ = self.model.type
 
         return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
-

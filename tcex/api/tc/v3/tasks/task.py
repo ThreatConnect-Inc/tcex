@@ -133,6 +133,7 @@ class Task(ObjectABC):
     @property
     def artifacts(self) -> 'Artifact':
         """Yield Artifact from Artifacts."""
+        # first-party
         from tcex.api.tc.v3.artifacts.artifact import Artifacts
 
         yield from self._iterate_over_sublist(Artifacts)
@@ -140,7 +141,7 @@ class Task(ObjectABC):
     @property
     def notes(self) -> 'Note':
         """Yield Note from Notes."""
+        # first-party
         from tcex.api.tc.v3.notes.note import Notes
 
         yield from self._iterate_over_sublist(Notes)
-

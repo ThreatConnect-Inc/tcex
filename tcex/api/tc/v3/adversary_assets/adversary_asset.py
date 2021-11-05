@@ -1,7 +1,10 @@
 """AdversaryAsset / AdversaryAssets Object"""
 # first-party
 from tcex.api.tc.v3.adversary_assets.adversary_asset_filter import AdversaryAssetFilter
-from tcex.api.tc.v3.adversary_assets.adversary_asset_model import AdversaryAssetModel, AdversaryAssetsModel
+from tcex.api.tc.v3.adversary_assets.adversary_asset_model import (
+    AdversaryAssetModel,
+    AdversaryAssetsModel,
+)
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
@@ -87,4 +90,3 @@ class AdversaryAsset(ObjectABC):
             type_ = self.model.type
 
         return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
-

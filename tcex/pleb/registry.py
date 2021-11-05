@@ -4,7 +4,6 @@ import functools
 from collections.abc import Container
 from typing import TYPE_CHECKING, Any, Callable, Tuple, Type, Union
 
-
 if TYPE_CHECKING:
     # third-party
     from redis import Redis

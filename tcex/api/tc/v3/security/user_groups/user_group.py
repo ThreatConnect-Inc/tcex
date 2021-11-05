@@ -48,10 +48,7 @@ class UserGroups(ObjectCollectionABC):
 
 
 class UserGroup(ObjectABC):
-    """UserGroups Object.
-
-
-    """
+    """UserGroups Object."""
 
     def __init__(self, **kwargs) -> None:
         """Initialize class properties."""
@@ -82,4 +79,3 @@ class UserGroup(ObjectABC):
             type_ = self.model.type
 
         return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
-

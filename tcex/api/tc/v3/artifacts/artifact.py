@@ -116,7 +116,7 @@ class Artifact(ObjectABC):
     @property
     def notes(self) -> 'Note':
         """Yield Note from Notes."""
+        # first-party
         from tcex.api.tc.v3.notes.note import Notes
 
         yield from self._iterate_over_sublist(Notes)
-

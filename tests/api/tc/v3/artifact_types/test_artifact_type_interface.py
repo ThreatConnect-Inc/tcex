@@ -76,7 +76,9 @@ class TestArtifactTypes(TestCaseManagement):
         assert artifact_type.model.intel_type == 'indicator-EmailAddress'
 
         assert artifact_type.as_entity == {
-            'type': 'ArtifactType', 'id': 1, 'value': 'Email Address'
+            'type': 'ArtifactType',
+            'id': 1,
+            'value': 'Email Address',
         }
 
     def test_artifact_type_get_by_tql_filter_fail_tql(self):
@@ -134,5 +136,6 @@ class TestArtifactTypes(TestCaseManagement):
             break
         else:
             assert False, f'No artifact found for tql -> {artifact_types.tql.as_str}'
-        assert len(artifact_types) == 1, ('More than 1 artifact type retrieved for tql '
-                                          f'{artifact_types.tql.as_str}.')
+        assert len(artifact_types) == 1, (
+            'More than 1 artifact type retrieved for tql ' f'{artifact_types.tql.as_str}.'
+        )

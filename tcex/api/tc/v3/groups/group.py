@@ -140,7 +140,7 @@ class Group(ObjectABC):
     @property
     def tags(self) -> 'Tag':
         """Yield Tag from Tags."""
+        # first-party
         from tcex.api.tc.v3.tags.tag import Tags
 
         yield from self._iterate_over_sublist(Tags)
-
