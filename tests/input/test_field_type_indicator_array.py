@@ -707,7 +707,7 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
         tcex = playbook_app(config_data=config_data).tcex
 
         # ensure session singleton is loaded
-        _ = tcex.inputs.session
+        _ = tcex.session_tc
 
         class PytestModel(BaseModel):
             """Test Model for Inputs"""
