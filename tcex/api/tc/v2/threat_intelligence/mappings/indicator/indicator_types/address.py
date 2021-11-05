@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 # first-party
 from tcex.api.tc.v2.threat_intelligence.mappings.indicator import Indicator
+from tcex.exit.error_codes import handle_error
 
 if TYPE_CHECKING:
     # first-party
@@ -55,7 +56,7 @@ class Address(Indicator):
 
         """
         if not self.can_update():
-            self._handle_error(910, [self.type])
+            handle_error(910, [self.type])
         return self.tc_requests.dns_resolution(
             self.api_type, self.api_branch, self.unique_id, owner=self.owner
         )

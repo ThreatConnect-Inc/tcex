@@ -2,6 +2,9 @@
 # standard library
 import json
 
+# first-party
+from tcex.exit.error_codes import handle_error
+
 
 class Notifications:
     """TcEx Notification Class"""
@@ -90,7 +93,7 @@ class Notifications:
             # specifically handle unknown users
             self.tcex.log.error(f'Failed to send notification ({r.text})')
         elif not r.ok:  # pragma: no cover
-            self.tcex.handle_error(750, [r.status_code, r.text])
+            handle_error(750, [r.status_code, r.text])
 
         # return response body
         return r.json()

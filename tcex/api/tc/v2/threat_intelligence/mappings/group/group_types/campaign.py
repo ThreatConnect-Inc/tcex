@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 # first-party
 from tcex.api.tc.v2.threat_intelligence.mappings.group import Group
+from tcex.exit.error_codes import handle_error
 
 if TYPE_CHECKING:
     # first-party
@@ -35,8 +36,9 @@ class Campaign(Group):
             requests.Response: The response from the API call.
         """
         if not self.can_update():
-            self._handle_error(910, [self.type])
+            handle_error(910, [self.type])
 
+        # TODO [high] when datetime module is replaced, this must be updated.
         first_seen = self._utils.datetime.format_datetime(
             first_seen, date_format='%Y-%m-%dT%H:%M:%SZ'
         )

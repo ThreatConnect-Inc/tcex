@@ -2,6 +2,9 @@
 # third-party
 import wrapt
 
+# first-party
+from tcex.exit import ExitCode
+
 
 class FailOnOutput:
     """Fail App if return value (output) value conditions are met.
@@ -95,7 +98,7 @@ class FailOnOutput:
                         if hasattr(app, 'write_output'):
                             app.write_output()
                     app.exit_message = self.get_fail_msg(app)  # for test cases
-                    app.tcex.exit(1, self.get_fail_msg(app))
+                    app.tcex.exit(ExitCode.FAILURE, self.get_fail_msg(app))
             return data
 
         return fail(instance, *args, **kwargs)

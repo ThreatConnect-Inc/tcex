@@ -5,6 +5,9 @@ import traceback
 # third-party
 import wrapt
 
+# first-party
+from tcex.exit import ExitCode
+
 
 class OnException:
     """Set exit message on failed execution.
@@ -80,6 +83,6 @@ class OnException:
                         app.tcex.playbook.write_output()
                         if hasattr(app, 'write_output'):
                             app.write_output()
-                    app.tcex.exit(1, self.exit_msg)
+                    app.tcex.exit(ExitCode.FAILURE, self.exit_msg)
 
         return exception(instance, *args, **kwargs)
