@@ -28,9 +28,7 @@ class TestArtifacts(TestCaseManagement):
 
     def teardown_method(self):
         """Configure teardown before all tests."""
-        # TODO: [med] @bpurdy - do you recall what the condition is for?
-        # Ya - It was to make testing easier since we were manually verifying the objects were
-        # created correctly and they kept getting deleted which was annoying.
+        # Allows manual verification in the ThreatConnect Instance
         if os.getenv('TEARDOWN_METHOD') is None:
             self.v3_helper.cleanup()
 

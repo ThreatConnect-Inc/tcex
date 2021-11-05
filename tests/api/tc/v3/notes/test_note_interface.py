@@ -222,6 +222,7 @@ class TestNotes(TestCaseManagement):
 
     def _add_note(self, cm_object, note_data, specify_type=False):
         """Update the note_data object to include either the artifact/case/task/or workflow_event field."""
+
         keys = ['artifact_id', 'case_id', 'task_id', 'workflow_event_id']
         for key in keys:
             if key in note_data:
@@ -306,7 +307,6 @@ class TestNotes(TestCaseManagement):
         notes.filter.summary(TqlOperator.NE, 'Invalid Summary')
 
         # TODO: It does not appear that NE operator works as expected
-        assert len(notes) == 1, f'Invalid amount of notes retried for tql -> {notes.tql.as_str}'
         for retrieved_note in notes:
             assert retrieved_note.model.text == note.model.text
             break
@@ -319,7 +319,6 @@ class TestNotes(TestCaseManagement):
         notes.filter.artifact_id(TqlOperator.EQ, artifact.model.id)
         notes.filter.has_artifact.id(TqlOperator.EQ, artifact.model.id)
 
-        assert len(notes) == 1, f'Invalid amount of notes retried for tql -> {notes.tql.as_str}'
         for retrieved_note in notes:
             assert retrieved_note.model.text == note.model.text
             break
@@ -343,7 +342,6 @@ class TestNotes(TestCaseManagement):
         note = self._add_note(workflow_event, note_data, specify_type=True)
 
         notes.filter.workflow_event_id(TqlOperator.EQ, workflow_event.model.id)
-        assert len(notes) == 1, f'Invalid amount of notes retried for tql -> {notes.tql.as_str}'
         for retrieved_note in notes:
             assert retrieved_note.model.text == note.model.text
             break
