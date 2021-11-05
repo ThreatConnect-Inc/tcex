@@ -67,7 +67,7 @@ class Case(ObjectABC):
     Args:
         artifacts (Artifacts, kwargs): A list of Artifacts corresponding to the Case.
         assignee (None, kwargs): The user or group Assignee object for the Case.
-        attributes (Attributes, kwargs): A list of Attributes corresponding to the Case.
+        attributes (CaseAttributes, kwargs): A list of Attributes corresponding to the Case.
         case_close_time (str, kwargs): The date and time that the Case was closed.
         case_detection_time (str, kwargs): The date and time that ends the user initiated Case
             duration.
@@ -95,7 +95,7 @@ class Case(ObjectABC):
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
         self._model = CaseModel(**kwargs)
-        self._type = 'case'
+        self.type_ = 'Case'
 
     @property
     def _api_endpoint(self) -> str:
@@ -115,7 +115,11 @@ class Case(ObjectABC):
     @property
     def as_entity(self) -> dict:
         """Return the entity representation of the object."""
-        return {'type': 'Case', 'id': self.model.id, 'value': self.model.summary}
+        type_ = self.type_
+        if hasattr(self.model, 'type'):
+            type_ = self.model.type
+
+        return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
 
     def add_artifact(self, **kwargs) -> None:
         """Add artifact to the object.

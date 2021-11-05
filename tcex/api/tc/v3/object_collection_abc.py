@@ -62,7 +62,7 @@ class ObjectCollectionABC(ABC):
         self.request = None
         self.tql = Tql()
         self._model = None
-        self._type = None  # defined in child class
+        self.type_ = None  # defined in child class
         self._utils = Utils()
 
     def __len__(self) -> int:
@@ -113,7 +113,7 @@ class ObjectCollectionABC(ABC):
 
         # special parameter for indicators to enable the return the the indicator fields
         # (value1, value2, value3) on std-custom/custom-custom indicator types.
-        if self._type == 'indicators':
+        if self.type_ == 'Indicators':
             parameters.setdefault('fields', []).append('genericCustomIndicatorValues')
 
         # convert all keys to camel case

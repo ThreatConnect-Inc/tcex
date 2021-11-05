@@ -65,7 +65,7 @@ class AdversaryAsset(ObjectABC):
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
         self._model = AdversaryAssetModel(**kwargs)
-        self._type = 'adversary_asset'
+        self.type_ = 'Adversary Asset'
 
     @property
     def _api_endpoint(self) -> str:
@@ -85,4 +85,8 @@ class AdversaryAsset(ObjectABC):
     @property
     def as_entity(self) -> dict:
         """Return the entity representation of the object."""
-        return {'type': 'AdversaryAsset', 'id': self.model.id, 'value': self.model.summary}
+        type_ = self.type_
+        if hasattr(self.model, 'type'):
+            type_ = self.model.type
+
+        return {'type': type_, 'id': self.model.id, 'value': self.model.summary}

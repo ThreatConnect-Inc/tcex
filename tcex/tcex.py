@@ -585,6 +585,10 @@ class TcEx:
             )
         return _tokens
 
+    def set_exit_code(self, exit_code: int):
+        """Set the exit code (registry)"""
+        self.exit_code = exit_code
+
     @cached_property
     def utils(self) -> 'Utils':
         """Include the Utils module."""

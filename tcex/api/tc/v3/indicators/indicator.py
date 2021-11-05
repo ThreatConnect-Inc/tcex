@@ -4,15 +4,19 @@ from typing import TYPE_CHECKING
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
+from tcex.api.tc.v3.indicator_attributes.indicator_attribute_model import IndicatorAttributeModel
 from tcex.api.tc.v3.indicators.indicator_filter import IndicatorFilter
 from tcex.api.tc.v3.indicators.indicator_model import IndicatorModel, IndicatorsModel
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
+from tcex.api.tc.v3.security_labels.security_label_model import SecurityLabelModel
 from tcex.api.tc.v3.tags.tag_model import TagModel
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 
 if TYPE_CHECKING:  # pragma: no cover
     # first-party
+    from tcex.api.tc.v3.indicator_attributes.indicator_attribute import IndicatorAttribute
+    from tcex.api.tc.v3.security_labels.security_label import SecurityLabel
     from tcex.api.tc.v3.tags.tag import Tag
 
 
@@ -66,7 +70,8 @@ class Indicator(ObjectABC):
         associated_groups (Groups, kwargs): A list of groups that this indicator is associated with.
         associated_indicators (Indicators, kwargs): A list of indicators associated with this
             indicator.
-        attributes (Attributes, kwargs): A list of Attributes corresponding to the Indicator.
+        attributes (IndicatorAttributes, kwargs): A list of Attributes corresponding to the
+            Indicator.
         confidence (int, kwargs): The indicator threat confidence.
         description (str, kwargs): The indicator description text.
         dns_active (bool, kwargs): Is dns active for the indicator?
@@ -92,13 +97,14 @@ class Indicator(ObjectABC):
         value2 (str, kwargs): Custom Indicator summary field value2.
         value3 (str, kwargs): Custom Indicator summary field value3.
         whois_active (bool, kwargs): Is whois active for the indicator?
+        xid (str, kwargs): The xid of the item.
     """
 
     def __init__(self, **kwargs) -> None:
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
         self._model = IndicatorModel(**kwargs)
-        self._type = 'indicator'
+        self.type_ = 'Indicator'
 
     @property
     def _api_endpoint(self) -> str:
@@ -118,7 +124,32 @@ class Indicator(ObjectABC):
     @property
     def as_entity(self) -> dict:
         """Return the entity representation of the object."""
-        return {'type': 'Indicator', 'id': self.model.id, 'value': self.model.summary}
+        type_ = self.type_
+        if hasattr(self.model, 'type'):
+            type_ = self.model.type
+
+        return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
+
+    def add_attribute(self, **kwargs) -> None:
+        """Add attribute to the object.
+
+        Args:
+            default (bool, kwargs): A flag indicating that this is the default attribute of its type
+                within the object. Only applies to certain attribute and data types.
+            source (str, kwargs): The attribute source.
+            value (str, kwargs): Attribute value.
+        """
+        self.model.attributes.data.append(IndicatorAttributeModel(**kwargs))
+
+    def add_security_label(self, **kwargs) -> None:
+        """Add security_label to the object.
+
+        Args:
+            color (str, kwargs): Color of the security label.
+            description (str, kwargs): Description of the security label.
+            name (str, kwargs): Name of the security label.
+        """
+        self.model.security_labels.data.append(SecurityLabelModel(**kwargs))
 
     def add_tag(self, **kwargs) -> None:
         """Add tag to the object.
@@ -128,6 +159,20 @@ class Indicator(ObjectABC):
             name (str, kwargs): The **name** for the Tag.
         """
         self.model.tags.data.append(TagModel(**kwargs))
+
+    @property
+    def attributes(self) -> 'IndicatorAttribute':
+        """Yield Attribute from Attributes."""
+        from tcex.api.tc.v3.indicator_attributes.indicator_attribute import IndicatorAttributes
+
+        yield from self._iterate_over_sublist(IndicatorAttributes)
+
+    @property
+    def security_labels(self) -> 'SecurityLabel':
+        """Yield Security_Label from Security_Labels."""
+        from tcex.api.tc.v3.security_labels.security_label import SecurityLabels
+
+        yield from self._iterate_over_sublist(SecurityLabels)
 
     @property
     def tags(self) -> 'Tag':

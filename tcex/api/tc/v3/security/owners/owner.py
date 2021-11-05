@@ -54,7 +54,7 @@ class Owner(ObjectABC):
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
         self._model = OwnerModel(**kwargs)
-        self._type = 'owner'
+        self.type_ = 'Owner'
 
     @property
     def _api_endpoint(self) -> str:
@@ -74,4 +74,8 @@ class Owner(ObjectABC):
     @property
     def as_entity(self) -> dict:
         """Return the entity representation of the object."""
-        return {'type': 'Owner', 'id': self.model.id, 'value': self.model.summary}
+        type_ = self.type_
+        if hasattr(self.model, 'type'):
+            type_ = self.model.type
+
+        return {'type': type_, 'id': self.model.id, 'value': self.model.summary}

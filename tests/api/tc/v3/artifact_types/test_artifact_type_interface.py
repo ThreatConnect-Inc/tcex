@@ -45,6 +45,7 @@ class TestArtifactTypes(TestCaseManagement):
 
     def test_artifact_type_get_many(self):
         """Test Artifact Get Many"""
+        # [Retrieve Testing] iterate over all object looking for needle
         artifact_types = self.v3.artifact_types()
         for artifact_type in artifact_types:
             if artifact_type.model.name == 'Protocol Number':
@@ -57,15 +58,28 @@ class TestArtifactTypes(TestCaseManagement):
 
     def test_artifact_type_get_single_by_id_properties(self):
         """Test Artifact get single attached to task by id"""
+
+        # [Create Testing] Istanciate a instance of the Artifact Type
         artifact_type = self.v3.artifact_type()
+
+        # [Create Testing] testing setters on model
         artifact_type.model.id = 1
+
+        # [Retrieve Testing] get the object from the API
         artifact_type.get()
 
+        # [Retrieve Testing] run assertions on returned data
         assert artifact_type.model.id == 1
         assert artifact_type.model.name == 'Email Address'
         assert artifact_type.model.description.startswith('A name that identifies')
         assert artifact_type.model.data_type == 'String'
         assert artifact_type.model.intel_type == 'indicator-EmailAddress'
+
+        assert artifact_type.as_entity == {
+            'type': 'ArtifactType',
+            'id': 1,
+            'value': 'Email Address',
+        }
 
     def test_artifact_type_get_by_tql_filter_fail_tql(self):
         """Test Artifact Get by TQL"""

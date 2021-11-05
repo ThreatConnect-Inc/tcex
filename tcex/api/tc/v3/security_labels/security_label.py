@@ -64,7 +64,7 @@ class SecurityLabel(ObjectABC):
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
         self._model = SecurityLabelModel(**kwargs)
-        self._type = 'security_label'
+        self.type_ = 'Security Label'
 
     @property
     def _api_endpoint(self) -> str:
@@ -84,4 +84,8 @@ class SecurityLabel(ObjectABC):
     @property
     def as_entity(self) -> dict:
         """Return the entity representation of the object."""
-        return {'type': 'SecurityLabel', 'id': self.model.id, 'value': self.model.summary}
+        type_ = self.type_
+        if hasattr(self.model, 'type'):
+            type_ = self.model.type
+
+        return {'type': type_, 'id': self.model.id, 'value': self.model.summary}

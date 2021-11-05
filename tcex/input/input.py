@@ -282,8 +282,14 @@ class Input:
                         v = self.resolve_variable(
                             match.group('provider'), match.group('lookup'), match.group('id')
                         )
-                    # replace the *variable* with the lookup results (*v*) in the provided *value*
-                    value = re.sub(variable, v, value)
+
+                    if str(value) == variable:
+                        value = v
+                        break
+                    else:
+                        # replace the *variable* with the lookup results (*v*) in the provided
+                        # *value*
+                        value = re.sub(variable, v, value)
                 _inputs[name] = value
 
         # update contents

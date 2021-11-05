@@ -51,14 +51,18 @@ class VictimAsset(ObjectABC):
     """VictimAssets Object.
 
     Args:
-        data (array, kwargs): The data for the VictimAssets.
+        associated_groups (Groups, kwargs): A list of groups that this victim asset is associated
+            with.
+        name (str, kwargs): Name of victim asset.
+        type (str, kwargs): Type of victim asset.
+        victim_id (int, kwargs): Victim id of victim asset.
     """
 
     def __init__(self, **kwargs) -> None:
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
         self._model = VictimAssetModel(**kwargs)
-        self._type = 'victim_asset'
+        self.type_ = 'Victim Asset'
 
     @property
     def _api_endpoint(self) -> str:
@@ -78,4 +82,8 @@ class VictimAsset(ObjectABC):
     @property
     def as_entity(self) -> dict:
         """Return the entity representation of the object."""
-        return {'type': 'VictimAsset', 'id': self.model.id, 'value': self.model.summary}
+        type_ = self.type_
+        if hasattr(self.model, 'type'):
+            type_ = self.model.type
+
+        return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
