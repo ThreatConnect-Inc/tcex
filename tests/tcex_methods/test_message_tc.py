@@ -25,7 +25,7 @@ class TestMessageTc:
 
         # create and write a test message
         message = 'test'
-        tcex.message_tc(message)
+        tcex.exit_service._message_tc(message)
 
         # assert the file exists
         if not os.path.isfile(message_tc_file):
@@ -63,7 +63,7 @@ class TestMessageTc:
             'word word word word word word word word word word word word word word word word word '
             'word word word word word word word word word word word word word word word word word '
         )
-        tcex.message_tc(message)
+        tcex.exit_service._message_tc(message)
 
         # assert the file exists
         if not os.path.isfile(message_tc_file):
@@ -97,10 +97,10 @@ class TestMessageTc:
         message = (
             'word word word word word word word word word word word word word word word word word '
         )
-        tcex.message_tc(message)
-        tcex.message_tc(message)
-        tcex.message_tc(message)
-        tcex.message_tc(message)
+        tcex.exit_service._message_tc(message)
+        tcex.exit_service._message_tc(message)
+        tcex.exit_service._message_tc(message)
+        tcex.exit_service._message_tc(message)
 
         # assert the file exists
         if not os.path.isfile(message_tc_file):

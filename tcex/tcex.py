@@ -6,11 +6,11 @@ import logging
 import os
 import platform
 import signal
-import sys
 import threading
 from typing import Optional, Union
 
 # third-party
+from redis import Redis
 from requests import Session
 
 # first-party
@@ -24,6 +24,7 @@ from tcex.batch.batch import Batch
 from tcex.batch.batch_submit import BatchSubmit
 from tcex.batch.batch_writer import BatchWriter
 from tcex.datastore import Cache, DataStore
+from tcex.exit.exit import ExitCode, ExitService
 from tcex.input.input import Input
 from tcex.key_value_store import KeyValueApi, KeyValueRedis, RedisClient
 from tcex.logger.logger import Logger  # pylint: disable=no-name-in-module
@@ -36,7 +37,6 @@ from tcex.services.api_service import ApiService
 from tcex.services.common_service_trigger import CommonServiceTrigger
 from tcex.services.webhook_trigger_service import WebhookTriggerService
 from tcex.sessions import ExternalSession, TcSession
-from tcex.tcex_error_codes import TcExErrorCodes
 from tcex.tokens import Tokens
 from tcex.utils import Utils
 
@@ -61,7 +61,6 @@ class TcEx:
 
         # Property defaults
         self._config: dict = kwargs.get('config') or {}
-        self._exit_code = 0
         self._log = None
         self._jobs = None
         self._redis_client = None
@@ -75,8 +74,6 @@ class TcEx:
         # add methods to registry
         registry.register(self)
         registry.add_method(self.exit)
-        registry.add_method(self.handle_error)
-        registry.add_service('exit_code', self.exit_code)
 
         # log standard App info early so it shows at the top of the logfile
         self.logger.log_info(self.inputs.data_unresolved)
@@ -89,9 +86,9 @@ class TcEx:
         self.log.error(
             f'App interrupted - file: {call_file}, method: {call_module}, line: {call_line}.'
         )
-        exit_code = 0
+        exit_code = ExitCode.SUCCESS
         if threading.current_thread().name == 'MainThread' and signal_interrupt in (2, 15):
-            exit_code = 1
+            exit_code = ExitCode.FAILURE
 
         self.exit(exit_code, 'The App received an interrupt signal and will now exit.')
 
@@ -116,15 +113,6 @@ class TcEx:
             output_prefix: A value to prepend to outputs.
         """
         return AdvancedRequest(self.inputs, self.playbook, session, timeout, output_prefix)
-
-    def aot_rpush(self, exit_code: int) -> None:
-        """Push message to AOT action channel."""
-        if self.inputs.data_unresolved.tc_playbook_db_type == 'Redis':
-            try:
-                # pylint: disable=no-member
-                self.redis_client.rpush(self.inputs.data_unresolved.tc_exit_channel, exit_code)
-            except Exception as e:  # pragma: no cover
-                self.exit(1, f'Exception during AOT exit push ({e}).')
 
     def batch(
         self,
@@ -239,12 +227,7 @@ class TcEx:
         """
         return DataStore(self.session_tc, domain, data_type, mapping)
 
-    @cached_property
-    def error_codes(self) -> TcExErrorCodes:  # pylint: disable=no-self-use
-        """Return TcEx error codes."""
-        return TcExErrorCodes()
-
-    def exit(self, code: Optional[int] = None, msg: Optional[str] = None) -> None:
+    def exit(self, code: Optional[ExitCode] = None, msg: Optional[str] = None) -> None:
         """Application exit method with proper exit code
 
         The method will run the Python standard sys.exit() with the exit code
@@ -256,70 +239,15 @@ class TcEx:
             msg: A message to log and add to message tc output.
         """
         # get correct code
-        code = self.exit_code_handler(code)
-
-        # handle exit msg logging
-        self.exit_msg_handler(code, msg)
-
-        # playbook exit
-        self.exit_playbook_handler(msg)
-
-        # aot notify
-        if self.inputs.data_unresolved.tc_aot_enabled:
-            # push exit message
-            self.aot_rpush(code)
-
-        # exit token renewal thread
-        self.token.shutdown = True
-
-        self.log.info(f'Exit Code: {code}')
-        sys.exit(code)
-
-    def exit_code_handler(self, code: int) -> int:
-        """Return a valid exit code based on the App Type"""
-        code = code or self.exit_code
-
-        if code == 3 and self.ij.data.runtime_level.lower() == 'playbook':
-            self.log.info('Changing exit code from 3 to 0 for Playbook App.')
-            code = 0
-        elif code in [0, 1, 3]:
-            pass
-        else:
-            self.log.error('Invalid exit code')
-            code = 1
-
-        return code
-
-    def exit_msg_handler(self, code: int, msg: str) -> None:
-        """Handle exit message. Write to both log and message_tc."""
-        if msg is not None:
-            if code in [0, 3] or (code is None and self.exit_code in [0, 3]):
-                self.log.info(msg)
-            else:
-                self.log.error(msg)
-            self.message_tc(msg)
-
-    def exit_playbook_handler(self, msg: str) -> None:
-        """Perform special action for PB Apps before exit."""
-        # write outputs before exiting
-        self.playbook.write_output()  # pylint: disable=no-member
-
-        # required only for tcex testing framework
-        if (
-            hasattr(self.inputs.data_unresolved, 'tcex_testing_context')
-            and self.inputs.data_unresolved.tcex_testing_context is not None
-        ):  # pragma: no cover
-            self.redis_client.hset(  # pylint: disable=no-member
-                self.inputs.data_unresolved.tcex_testing_context, '_exit_message', msg
-            )
+        self.exit_service.exit(code, msg)
 
     @property
-    def exit_code(self) -> None:
+    def exit_code(self) -> ExitCode:
         """Return the current exit code."""
-        return self._exit_code
+        return self.exit_service.exit_code
 
     @exit_code.setter
-    def exit_code(self, code: int) -> None:
+    def exit_code(self, code: ExitCode) -> None:
         """Set the App exit code.
 
         For TC Exchange Apps there are 3 supported exit codes.
@@ -330,10 +258,22 @@ class TcEx:
         Args:
             code (int): The exit code value for the app.
         """
-        if code is not None and code in [0, 1, 3]:
-            self._exit_code = code
-        else:
-            self.log.warning('Invalid exit code')
+        self.exit_service.exit_code = code
+
+    @registry.factory(ExitService)
+    @scoped_property
+    def exit_service(self) -> ExitService:
+        """Return an ExitService object."""
+        return self.get_exit_service(
+            self.ij, self.inputs, self.playbook, self.redis_client, self.token
+        )
+
+    @staticmethod
+    def get_exit_service(
+        install_json: InstallJson, inputs: Input, playbook: Playbook, redis: Redis, token: Tokens
+    ) -> ExitService:
+        """Create an ExitService object."""
+        return ExitService(install_json, inputs, playbook, redis, token)
 
     def get_playbook(
         self, context: Optional[str] = None, output_variables: Optional[list] = None
@@ -429,35 +369,6 @@ class TcEx:
     #     """Include the Threat Intel Module."""
     #     return ThreatIntelligence(session=self.get_session_tc())
 
-    def handle_error(
-        self, code: int, message_values: Optional[list] = None, raise_error: Optional[bool] = True
-    ) -> None:
-        """Raise RuntimeError
-
-        Args:
-            code: The error code from API or SDK.
-            message: The error message from API or SDK.
-            raise_error: Raise a Runtime error. Defaults to True.
-
-        Raises:
-            RuntimeError: Raised a defined error.
-        """
-        try:
-            if message_values is None:
-                message_values = []
-            message = self.error_codes.message(code).format(*message_values)
-            self.log.error(f'Error code: {code}, {message}')
-        except AttributeError:
-            self.log.error(f'Incorrect error code provided ({code}).')
-            raise RuntimeError(100, 'Generic Failure, see logs for more details.')
-        except IndexError:
-            self.log.error(
-                f'Incorrect message values provided for error code {code} ({message_values}).'
-            )
-            raise RuntimeError(100, 'Generic Failure, see logs for more details.')
-        if raise_error:
-            raise RuntimeError(code, message)
-
     @registry.factory('KeyValueStore')
     @scoped_property
     def key_value_store(self) -> Union[KeyValueApi, KeyValueRedis]:
@@ -538,35 +449,6 @@ class TcEx:
             keyed: Indicates whether the data will have a keyed value.
         """
         return Metrics(self, name, description, data_type, interval, keyed)
-
-    def message_tc(self, message: str, max_length: Optional[int] = 255) -> None:
-        """Write data to message_tc file in TcEX specified directory.
-
-        This method is used to set and exit message in the ThreatConnect Platform.
-        ThreatConnect only supports files of max_message_length.  Any data exceeding
-        this limit will be truncated. The last <max_length> characters will be preserved.
-
-        Args:
-            message: The message to add to message_tc file
-            max_length: The maximum length of an exit message. Defaults to 255.
-        """
-        if not isinstance(message, str):
-            message = str(message)
-
-        if os.access(self.inputs.data_unresolved.tc_out_path, os.W_OK):
-            message_file = os.path.join(self.inputs.data_unresolved.tc_out_path, 'message.tc')
-        else:
-            message_file = 'message.tc'
-
-        if os.path.isfile(message_file):
-            with open(message_file) as mh:
-                message = mh.read() + message
-
-        if not message.endswith('\n'):
-            message += '\n'
-        with open(message_file, 'w') as mh:
-            # write last <max_length> characters to file
-            mh.write(message[-max_length:])
 
     def notification(self) -> Notifications:
         """Get instance of the Notification module."""

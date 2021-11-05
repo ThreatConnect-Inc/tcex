@@ -6,6 +6,7 @@ from urllib.parse import quote, unquote
 
 # first-party
 from tcex.api.tc.v2.threat_intelligence.mappings import Mappings
+from tcex.exit.error_codes import handle_error
 
 if TYPE_CHECKING:
     # first-party
@@ -167,6 +168,7 @@ class Indicator(Mappings):
         """
         key = self._metadata_map().get(key, key)
         if key in ['dateAdded', 'lastModified']:
+            # TODO [high] when datetime module is replaced, this must be updated.
             self._data[key] = self._utils.datetime.format_datetime(
                 value, date_format='%Y-%m-%dT%H:%M:%SZ'
             )
@@ -191,7 +193,7 @@ class Indicator(Mappings):
         Returns:
         """
         if not self.can_update():
-            self._handle_error(910, [self.type])
+            handle_error(910, [self.type])
         if not status and not cal_status:
             return None
         request_data = {}
@@ -218,7 +220,7 @@ class Indicator(Mappings):
             value:
         """
         if not self.can_update():
-            self._handle_error(910, [self.type])
+            handle_error(910, [self.type])
         request_data = {'rating': value}
         return self.tc_requests.update(
             self.api_type, self.api_branch, self.unique_id, request_data, owner=self.owner
@@ -231,7 +233,7 @@ class Indicator(Mappings):
             value:
         """
         if not self.can_update():
-            self._handle_error(910, [self.type])
+            handle_error(910, [self.type])
         request_data = {'confidence': value}
         return self.tc_requests.update(
             self.api_type, self.api_branch, self.unique_id, request_data, owner=self.owner
@@ -240,7 +242,7 @@ class Indicator(Mappings):
     def owners(self):
         """Return owners"""
         if not self.can_update():
-            self._handle_error(910, [self.type])
+            handle_error(910, [self.type])
         return self.tc_requests.owners(
             self.api_type, self.api_branch, self.unique_id, owner=self.owner
         )
@@ -254,8 +256,9 @@ class Indicator(Mappings):
 
         """
         if not self.can_update():
-            self._handle_error(910, [self.type])
+            handle_error(910, [self.type])
 
+        # TODO [high] when datetime module is replaced, this must be updated.
         data = {
             'count': count,
             'dateObserved': self._utils.datetime.format_datetime(
@@ -274,7 +277,7 @@ class Indicator(Mappings):
 
         """
         if not self.can_update():
-            self._handle_error(910, [self.type])
+            handle_error(910, [self.type])
         return self.tc_requests.observation_count(
             self.api_type, self.api_branch, self.unique_id, owner=self.owner
         )
@@ -282,7 +285,7 @@ class Indicator(Mappings):
     def add_false_positive(self):
         """Add a Indicator FalsePositive."""
         if not self.can_update():
-            self._handle_error(910, [self.type])
+            handle_error(910, [self.type])
 
         return self.tc_requests.add_false_positive(
             self.api_type, self.api_branch, self.unique_id, owner=self.owner
@@ -295,7 +298,7 @@ class Indicator(Mappings):
             [type]: [description]
         """
         if not self.can_update():
-            self._handle_error(910, [self.type])
+            handle_error(910, [self.type])
         return self.tc_requests.observations(
             self.api_type, self.api_branch, self.unique_id, owner=self.owner
         )

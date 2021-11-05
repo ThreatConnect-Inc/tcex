@@ -10,9 +10,9 @@ from urllib.parse import quote
 from requests import Session
 
 # first-party
-from tcex.tcex_error_codes import TcExErrorCodes
-
 # import local modules for dynamic reference
+from tcex.exit.error_codes import handle_error
+
 module = __import__(__name__)
 
 # get tcex logger
@@ -49,12 +49,6 @@ class TiTcRequest:
             self.log.error(f'Error deleting data ({err}')
         return r
 
-    @property
-    @lru_cache()
-    def _error_codes(self) -> TcExErrorCodes:  # noqa: F821
-        """Return TcEx error codes."""
-        return TcExErrorCodes()
-
     def _get(self, url, params=None):
         """Delete data from API."""
         params = params or {}
@@ -75,35 +69,6 @@ class TiTcRequest:
             self.log.error(f'Error getting data ({err}')
         return r
 
-    def _handle_error(
-        self, code: int, message_values: Optional[list] = None, raise_error: Optional[bool] = True
-    ) -> None:
-        """Raise RuntimeError
-
-        Args:
-            code: The error code from API or SDK.
-            message: The error message from API or SDK.
-            raise_error: Raise a Runtime error. Defaults to True.
-
-        Raises:
-            RuntimeError: Raised a defined error.
-        """
-        try:
-            if message_values is None:
-                message_values = []
-            message = self._error_codes.message(code).format(*message_values)
-            self.log.error(f'Error code: {code}, {message}')
-        except AttributeError:
-            self.log.error(f'Incorrect error code provided ({code}).')
-            raise RuntimeError(100, 'Generic Failure, see logs for more details.')
-        except IndexError:
-            self.log.error(
-                f'Incorrect message values provided for error code {code} ({message_values}).'
-            )
-            raise RuntimeError(100, 'Generic Failure, see logs for more details.')
-        if raise_error:
-            raise RuntimeError(code, message)
-
     def _iterate(self, url, params, api_entity):
         """Iterate over API pagination."""
         params['resultLimit'] = self.result_limit
@@ -120,7 +85,7 @@ class TiTcRequest:
             r = self._get(url, params=params)
             if not self.success(r):
                 err = r.text or r.reason
-                self._handle_error(950, [r.status_code, err, r.url])
+                handle_error(950, [r.status_code, err, r.url])
             data = r.json().get('data', {})
             if api_entity:
                 data = data.get(api_entity, [])
@@ -943,7 +908,7 @@ class TiTcRequest:
         if self.is_true(value) or self.is_false(value):
             data['dnsActive'] = self.is_true(value)
         else:
-            self._handle_error(925, ['option', 'dns value', 'value', value])
+            handle_error(925, ['option', 'dns value', 'value', value])
 
         if not sub_type:
             url = f'/v2/{main_type}/{unique_id}'
@@ -974,7 +939,7 @@ class TiTcRequest:
         if self.is_true(value) or self.is_false(value):
             data['whoisActive'] = self.is_true(value)
         else:
-            self._handle_error(925, ['option', 'whois value', 'value', value])
+            handle_error(925, ['option', 'whois value', 'value', value])
 
         if not sub_type:
             url = f'/v2/{main_type}/{unique_id}'
@@ -1036,7 +1001,7 @@ class TiTcRequest:
 
         if not self.success(r):
             err = r.text or r.reason
-            self._handle_error(950, [r.status_code, err, r.url])
+            handle_error(950, [r.status_code, err, r.url])
 
         data = r.json().get('data', {}).get('indicator', [])
 

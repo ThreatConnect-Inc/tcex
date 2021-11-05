@@ -1,0 +1,70 @@
+{
+  "allowOnDemand": true,
+  "commitHash": "abc-123",
+  "displayName": "Pytest",
+  "features": [
+    "aotExecutionEnabled",
+    "appBuilderCompliant",
+    "layoutEnabledApp",
+    "fileParams",
+    "secureParams"
+  ],
+  "languageVersion": "3.6",
+  "listDelimiter": "|",
+  "note": "TcEx Testing",
+  "params": [
+    {
+      "label": "My Bool",
+      "name": "my_bool",
+      "note": "",
+      "required": true,
+      "sequence": 1,
+      "type": "Boolean"
+    },
+    {
+      "label": "My Multi",
+      "name": "my_multi",
+      "note": "",
+      "required": false,
+      "sequence": 2,
+      "type": "MultiChoice",
+      "validValues": [
+        "one",
+        "two"
+      ]
+    },
+    {
+      "label": "Colors",
+      "name": "colors",
+      "note": "",
+      "required": false,
+      "sequence": 3,
+      "type": "String"
+    },
+    {
+      "label": "Color",
+      "name": "color",
+      "note": "",
+      "required": false,
+      "sequence": 4,
+      "type": "String"
+    },
+    {
+      "label": "Fruit",
+      "name": "fruit",
+      "note": "",
+      "required": false,
+      "sequence": 4,
+      "type": "String"
+    }
+  ],
+  "playbook": {
+    "outputPrefix": "pytest",
+    "outputVariables": [],
+    "type": "TcEx Test"
+  },
+  "programLanguage": "PYTHON",
+  "programMain": "run",
+  "programVersion": "1.0.0",
+  "runtimeLevel": "Playbook"
+}

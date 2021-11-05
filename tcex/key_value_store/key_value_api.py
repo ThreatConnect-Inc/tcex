@@ -5,9 +5,10 @@ from urllib.parse import quote
 
 # first-party
 from tcex.app_config.install_json import InstallJson
+from tcex.key_value_store.key_value_abc import KeyValueABC
 
 
-class KeyValueApi:
+class KeyValueApi(KeyValueABC):
     """TcEx Key Value API Module.
 
     Args:

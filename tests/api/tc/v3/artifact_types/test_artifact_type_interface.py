@@ -122,5 +122,6 @@ class TestArtifactTypes(TestCaseManagement):
             break
         else:
             assert False, f'No artifact found for tql -> {artifact_types.tql.as_str}'
-        assert len(artifact_types) == 1, ('More than 1 artifact type retrieved for tql '
-                                          f'{artifact_types.tql.as_str}.')
+        assert len(artifact_types) == 1, (
+            'More than 1 artifact type retrieved for tql ' f'{artifact_types.tql.as_str}.'
+        )

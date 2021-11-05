@@ -5,6 +5,7 @@ from urllib.parse import quote_plus
 
 # first-party
 from tcex.api.tc.v2.threat_intelligence.mappings import Mappings
+from tcex.exit.error_codes import handle_error
 
 if TYPE_CHECKING:
     # first-party
@@ -137,14 +138,14 @@ class Task(Mappings):
                 ADD if not provided.
         """
         if not self.can_update():
-            self._handle_error(910, [self.type])
+            handle_error(910, [self.type])
 
         return self.tc_requests.assignee(self.api_type, self.unique_id, assignee, action=action)
 
     def assignees(self):
         """Yield the Assignee Users"""
         if not self.can_update():
-            self._handle_error(910, [self.type])
+            handle_error(910, [self.type])
 
         return self.tc_requests.assignees(self.api_type, self.unique_id)
 
@@ -189,7 +190,7 @@ class Task(Mappings):
             due_date: Converted to %Y-%m-%dT%H:%M:%SZ date format
         """
         if not self.can_update():
-            self._handle_error(910, [self.type])
+            handle_error(910, [self.type])
 
         due_date = self._utils.datetime.format_datetime(due_date, date_format='%Y-%m-%dT%H:%M:%SZ')
         self._data['dueDate'] = due_date
@@ -211,14 +212,14 @@ class Task(Mappings):
 
         """
         if not self.can_update():
-            self._handle_error(910, [self.type])
+            handle_error(910, [self.type])
 
         return self.tc_requests.escalatee(self.api_type, self.unique_id, escalatee, action=action)
 
     def escalatees(self):
         """Yield the Escalatees Users"""
         if not self.can_update():
-            self._handle_error(910, [self.type])
+            handle_error(910, [self.type])
 
         return self.tc_requests.escalatees(self.api_type, self.unique_id)
 
@@ -229,7 +230,7 @@ class Task(Mappings):
             escalation_date: Converted to %Y-%m-%dT%H:%M:%SZ date format
         """
         if not self.can_update():
-            self._handle_error(910, [self.type])
+            handle_error(910, [self.type])
 
         escalation_date = self._utils.datetime.format_datetime(
             escalation_date, date_format='%Y-%m-%dT%H:%M:%SZ'
@@ -269,7 +270,7 @@ class Task(Mappings):
             reminder_date: Converted to %Y-%m-%dT%H:%M:%SZ date format
         """
         if not self.can_update():
-            self._handle_error(910, [self.type])
+            handle_error(910, [self.type])
 
         reminder_date = self._utils.datetime.format_datetime(
             reminder_date, date_format='%Y-%m-%dT%H:%M:%SZ'
@@ -292,7 +293,7 @@ class Task(Mappings):
             status: Not Started, In Progress, Completed, Waiting on Someone, Deferred
         """
         if not self.can_update():
-            self._handle_error(910, [self.type])
+            handle_error(910, [self.type])
 
         self._data['status'] = status
         request = {'status': status}

@@ -11,7 +11,7 @@ from requests.exceptions import ProxyError
 # first-party
 from tcex.api.tc.v3.tql.tql import Tql
 from tcex.backports import cached_property
-from tcex.pleb.registry import registry
+from tcex.exit.error_codes import handle_error
 from tcex.utils import Utils
 
 if TYPE_CHECKING:
@@ -138,7 +138,7 @@ class ObjectCollectionABC(ABC):
                     f'URl: ({self.request.url})'
                 )
             except (ConnectionError, ProxyError):  # pragma: no cover
-                registry.handle_error(
+                handle_error(
                     code=951,
                     message_values=[
                         'OPTIONS',
@@ -150,7 +150,7 @@ class ObjectCollectionABC(ABC):
 
             if not self.success(self.request):
                 err = self.request.text or self.request.reason
-                registry.handle_error(
+                handle_error(
                     code=950,
                     message_values=[
                         self.request.status_code,

@@ -1,4 +1,6 @@
 """TcEx Framework Module for working with Metrics in the ThreatConnect Platform."""
+# first-party
+from tcex.exit.error_codes import handle_error
 
 
 class Metrics:
@@ -56,7 +58,7 @@ class Metrics:
         r = self.tcex.session.post('/v2/customMetrics', json=body)
 
         if not r.ok:  # pragma: no cover
-            self.tcex.handle_error(700, [r.status_code, r.text])
+            handle_error(700, [r.status_code, r.text])
 
         data = r.json()
         self._metric_id = data.get('data', {}).get('customMetricConfig', {}).get('id')
@@ -90,7 +92,7 @@ class Metrics:
                 break
             r = self.tcex.session.get('/v2/customMetrics', params=params)
             if not r.ok:  # pragma: no cover
-                self.tcex.handle_error(705, [r.status_code, r.text])
+                handle_error(705, [r.status_code, r.text])
             data = r.json()
             for metric in data.get('data', {}).get('customMetricConfig'):
                 if metric.get('name') == self._metric_name:
@@ -119,7 +121,7 @@ class Metrics:
         """
         data = {}
         if self._metric_id is None:  # pragma: no cover
-            self.tcex.handle_error(715, [self._metric_name])
+            handle_error(715, [self._metric_name])
 
         body = {'value': value}
         if date is not None:
@@ -143,7 +145,7 @@ class Metrics:
         elif r.status_code == 204:
             pass
         else:  # pragma: no cover
-            self.tcex.handle_error(710, [r.status_code, r.text])
+            handle_error(710, [r.status_code, r.text])
 
         return data
 

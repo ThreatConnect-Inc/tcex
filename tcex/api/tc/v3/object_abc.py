@@ -13,7 +13,7 @@ from requests.exceptions import ProxyError
 
 # first-party
 from tcex.backports import cached_property
-from tcex.pleb.registry import registry
+from tcex.exit.error_codes import handle_error
 from tcex.utils import Utils
 
 if TYPE_CHECKING:
@@ -185,7 +185,7 @@ class ObjectABC(ABC):
                 f'URl: ({self.request.url})'
             )
         except (ConnectionError, ProxyError):  # pragma: no cover
-            registry.handle_error(
+            handle_error(
                 code=951,
                 message_values=[
                     'OPTIONS',
@@ -202,7 +202,7 @@ class ObjectABC(ABC):
         if not self.success(self.request):
             err = self.request.text or self.request.reason
             if self.request.status_code == 404:
-                registry.handle_error(
+                handle_error(
                     code=952,
                     message_values=[
                         self.request.request.method.upper(),
@@ -211,7 +211,7 @@ class ObjectABC(ABC):
                         self.request.url,
                     ],
                 )
-            registry.handle_error(
+            handle_error(
                 code=200,
                 message_values=[self.request.status_code, err, self.request.url],
             )
@@ -268,7 +268,7 @@ class ObjectABC(ABC):
 
         if not object_id:  # pragma: no cover
             message = '{"message": "No ID provided.", "status": "Error"}'
-            registry.handle_error(code=952, message_values=['GET', '404', message, url])
+            handle_error(code=952, message_values=['GET', '404', message, url])
 
         try:
             self.request = self._session.get(
@@ -280,7 +280,7 @@ class ObjectABC(ABC):
                 f'URl: ({self.request.url})'
             )
         except (ConnectionError, ProxyError):  # pragma: no cover
-            registry.handle_error(
+            handle_error(
                 code=951,
                 message_values=[
                     'OPTIONS',
@@ -299,11 +299,11 @@ class ObjectABC(ABC):
         if not self.success(self.request):
             err = self.request.text or self.request.reason
             if self.request.status_code == 404:
-                registry.handle_error(
+                handle_error(
                     code=952,
                     message_values=['GET', self.request.status_code, err, self.request.url],
                 )
-            registry.handle_error(
+            handle_error(
                 code=951,
                 message_values=['GET', self.request.status_code, err, self.request.url],
             )
@@ -351,7 +351,7 @@ class ObjectABC(ABC):
             if r.ok:
                 _properties = r.json()
         except (ConnectionError, ProxyError):
-            registry.handle_error(
+            handle_error(
                 code=951,
                 message_values=[
                     'OPTIONS',
@@ -451,7 +451,7 @@ class ObjectABC(ABC):
         if not self.success(self.request):  # pragma: no cover
             err = self.request.text or self.request.reason
             if self.request.status_code == 404:
-                registry.handle_error(
+                handle_error(
                     code=952,
                     message_values=[
                         self.request.request.method.upper(),
@@ -460,7 +460,7 @@ class ObjectABC(ABC):
                         self.request.url,
                     ],
                 )
-            registry.handle_error(
+            handle_error(
                 code=951,
                 message_values=[
                     self.request.request.method,

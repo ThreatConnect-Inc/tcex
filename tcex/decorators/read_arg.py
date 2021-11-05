@@ -7,6 +7,7 @@ import wrapt
 
 # first-party
 from tcex.app_config.install_json import InstallJson
+from tcex.exit import ExitCode
 from tcex.validators import (
     ValidationError,
     equal_to,
@@ -212,7 +213,7 @@ class ReadArg:
                     app.tcex.log.error(f'Arg {self.arg} was not found in Arg namespace.')
                     message = self.fail_msg or f'Invalid value provided for "{label}" ({self.arg}).'
                     app.exit_message = message  # for test cases
-                    app.tcex.exit(1, message)
+                    app.tcex.exit(ExitCode.FAILURE, message)
                 else:
                     # add results to kwargs
                     kwargs[self.arg] = self.default
@@ -254,10 +255,10 @@ class ReadArg:
                 app.tcex.log.error(message)
                 if self.fail_msg:
                     app.exit_message = self.fail_msg  # for test cases
-                    app.tcex.exit(1, self.fail_msg)
+                    app.tcex.exit(ExitCode.FAILURE, self.fail_msg)
                 else:
                     app.exit_message = message
-                    app.tcex.exit(1, message)
+                    app.tcex.exit(ExitCode.FAILURE, message)
 
             # check arg_data against fail_on_values
             if enabled:
@@ -272,10 +273,10 @@ class ReadArg:
                     app.tcex.log.error(message)
                     if self.fail_msg:
                         app.exit_message = self.fail_msg  # for test cases
-                        app.tcex.exit(1, self.fail_msg)
+                        app.tcex.exit(ExitCode.FAILURE, self.fail_msg)
                     else:
                         app.exit_message = message
-                        app.tcex.exit(1, message)
+                        app.tcex.exit(ExitCode.FAILURE, message)
             # add results to kwargs
             kwargs[self.arg] = arg_data
 

@@ -372,7 +372,7 @@ class CommonService:
         # TODO: [review] this doesn't help if MainThread does not die.
         # # delay shutdown to give App time to cleanup
         # time.sleep(5)
-        # self.tcex.exit(0)  # final shutdown in case App did not
+        # self.tcex.exit(ExitCode.SUCCESS)  # final shutdown in case App did not
 
     @property
     def ready(self) -> bool:

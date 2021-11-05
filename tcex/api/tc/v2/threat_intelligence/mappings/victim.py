@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 # first-party
 from tcex.api.tc.v2.threat_intelligence.mappings import Mappings
+from tcex.exit.error_codes import handle_error
 
 if TYPE_CHECKING:
     # first-party
@@ -50,13 +51,13 @@ class Victim(Mappings):
             requests.Response: The response from the API call.
         """
         if not self.can_update():
-            self._handle_error(910, [self.type])
+            handle_error(910, [self.type])
 
         if body is None:
             body = {}
 
         if asset_type is None:
-            self._handle_error(
+            handle_error(
                 925, ['asset_type', 'update_asset', 'asset_type', 'asset_type', asset_type]
             )
 
@@ -166,7 +167,7 @@ class Victim(Mappings):
 
         """
         if not self.can_update():
-            self._handle_error(910, [self.type])
+            handle_error(910, [self.type])
 
         return self.tc_requests.victim_assets(
             self.api_type, self.api_branch, self.unique_id, asset_type
@@ -194,10 +195,10 @@ class Victim(Mappings):
             requests.Response: The response from the API call.
         """
         if not self.can_update():
-            self._handle_error(910, [self.type])
+            handle_error(910, [self.type])
 
         if asset_type is None:
-            self._handle_error(
+            handle_error(
                 925, ['asset_type', 'update_asset', 'asset_type', 'asset_type', asset_type]
             )
 
@@ -286,10 +287,10 @@ class Victim(Mappings):
             requests.Response: The response from the API call.
         """
         if not self.can_update():
-            self._handle_error(910, [self.type])
+            handle_error(910, [self.type])
 
         if asset_type is None:
-            self._handle_error(
+            handle_error(
                 925, ['asset_type', 'update_asset', 'asset_type', 'asset_type', asset_type]
             )
 
@@ -415,7 +416,7 @@ class Victim(Mappings):
             body = {}
 
         if asset_type is None:
-            self._handle_error(
+            handle_error(
                 925, ['asset_type', 'update_asset', 'asset_type', 'asset_type', asset_type]
             )
 
