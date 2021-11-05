@@ -261,6 +261,8 @@ class TestCaseManagement:
                 # indicator ignore
                 'files',
                 'fileAction',
+                # Returns custom indicator fields as value1/value2/value3
+                # instead of their custom names
                 'genericCustomIndicatorValues',
                 'groups',
                 'indicators',

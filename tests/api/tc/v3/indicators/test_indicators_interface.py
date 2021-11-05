@@ -51,54 +51,124 @@ class TestIndicators(TestCaseManagement):
 
         A single test case to hit all sub-type creation (e.g., Notes).
         """
-        # indicators = self.v3_helper.v3_obj_collection
-        # indicators.filter.summary(TqlOperator.EQ, '123.123.123.123')
-        # for indicator in indicators:
-        #     indicator.model.rating = 3
-        #     indicator.submit()
-        #     # print(indicator.blah.writable)
-        #     # print(indicator.model.json(indent=4))
-        #     # print(indicator.post_properties)
-        #     indicator.get(all_available_fields=True)
-        #     # print(indicator.model.json(exclude_none=True, indent=2))
-        #     print('writable', indicator.results.writable)
-        #     # print('raw', indicator.results.raw)
+        indicators = self.v3_helper.v3_obj_collection
+        indicators = self.v3.indicators(params={'fields': 'securityLabels'})
+        indicators.filter.summary(TqlOperator.EQ, '123.123.123.123')
+        for indicator in indicators:
+            indicator.get('all_available_fields')
+            print(indicator.model.json(indent=4, exclude_none=True))
+
+        return
+
+        """
+        "associatedGroups": {
+                "data": [
+                    {
+                        "id": 30612,
+                        "type": "Adversary",
+                        "ownerName": "TCI",
+                        "dateAdded": "2021-11-05T13:44:43Z",
+                        "webLink": "/auth/adversary/adversary.xhtml?adversary=30612",
+                        "name": "adversary-001",
+                        "createdBy": "Bracey Summers"
+                    }
+                ],
+                "count": 1
+            },
+            "associatedIndicators": {
+                "data": [
+                    {
+                        "id": 62620,
+                        "type": "Address",
+                        "ownerName": "TCI",
+                        "dateAdded": "2021-11-03T23:54:08Z",
+                        "webLink": "/auth/indicators/details/address.xhtml?address=123.123.123.123",
+                        "lastModified": "2021-11-04T17:15:31Z",
+                        "rating": 3.00,
+                        "confidence": 75,
+                        "description": "TcEx Testing",
+                        "summary": "123.123.123.123",
+                        "privateFlag": false,
+                        "active": true,
+                        "activeLocked": false,
+                        "ip": "123.123.123.123"
+                    }
+                ],
+                "count": 1
+            },
+            "ip": "123.123.123.124"
+        },
+        """
 
         # [Create Testing] define object data
-        object_data = {
+        # indicator_data = {
+        #     'active': True,
+        #     'attributes': {
+        #         'data': [
+        #             {
+        #                 'type': 'Description',
+        #                 'value': 'TcEx Testing',
+        #                 'default': True,
+        #             }
+        #         ]
+        #     },
+        #     'confidence': 75,
+        #     'description': 'TcEx Testing',
+        #     'ip': '123.123.123.124',
+        #     'rating': 3,
+        #     'source': None,
+        #     'tags': {
+        #         'data': [
+        #             {
+        #                 'name': 'TcEx Testing',
+        #             }
+        #         ]
+        #     },
+        #     'type': 'Address',
+        #     'xid': '123.123.123.124',
+        # }
+
+        # [Create Testing] define object data
+        indicator_data = {
             'active': True,
-            'attributes': {
-                'data': [
-                    {
-                        'type': 'Description',
-                        'value': 'TcEx Testing',
-                        'default': True,
-                    }
-                ]
-            },
             'confidence': 75,
             'description': 'TcEx Testing',
             'ip': '123.123.123.124',
             'rating': 3,
             'source': None,
-            'tags': {
-                'data': [
-                    {
-                        'name': 'TcEx Testing',
-                    }
-                ]
-            },
             'type': 'Address',
             'xid': '123.123.123.124',
         }
-        indicator = self.v3.indicator(**object_data)
-        print(indicator.model.dict())
+        indicator = self.v3.indicator(**indicator_data)
+
+        # [Create Testing] define object data
+        attribute_data = {
+            'type': 'Description',
+            'value': 'TcEx Testing',
+            'default': True,
+        }
+        indicator.add_attribute(**attribute_data)
+
+        # [Create Testing] define object data
+        security_label_data = {
+            "name": "TLP:WHITE",
+        }
+        indicator.add_security_label(**security_label_data)
+
+        # [Create Testing] define object data
+        tag_data = {
+            'name': 'TcEx Testing',
+        }
+        indicator.add_tag(**tag_data)
+
+        # print(indicator.model.dict())
         try:
             indicator.submit()
         except RuntimeError:
             pass
+
         print('status_code', indicator.request.status_code)
         print('method', indicator.request.request.method)
         print('url', indicator.request.request.url)
         print('body', indicator.request.request.body)
-        print('text', indicator.request.text)
+        # print('text', indicator.request.text)

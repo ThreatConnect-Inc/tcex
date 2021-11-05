@@ -76,7 +76,7 @@ class TcEx:
         registry.register(self)
         registry.add_method(self.exit)
         registry.add_method(self.handle_error)
-        registry.add_service('exit_code', self.exit_code)
+        registry.add_method(self.set_exit_code)
 
         # log standard App info early so it shows at the top of the logfile
         self.logger.log_info(self.inputs.data_unresolved)
@@ -702,6 +702,10 @@ class TcEx:
                 expires=self.inputs.data_unresolved.tc_token_expires,
             )
         return _tokens
+
+    def set_exit_code(self, exit_code: int):
+        """Set the exit code (registry)"""
+        self.exit_code = exit_code
 
     @cached_property
     def utils(self) -> 'Utils':

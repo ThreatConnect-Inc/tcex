@@ -229,14 +229,20 @@ class GenerateObjectABC(GenerateABC, ABC):
 
             ...
             '''
-            self.model.notes.data.append(NoteModel(**kwargs))
+            self.model.artifacts.data.append(ArtifactModel(**kwargs))
         """
         type_ = self.utils.camel_string(type_)
-        model_name = f'{type_.singular().pascal_case()}Model'
-        self.update_requirements(type_, f'{type_.singular()}_model', [model_name])
+
+        # get model from map and update requirements
+        model_data = self._module_data(type_)
+        self.requirements['first-party'].append(
+            f'''from {model_data.get('model_module')} import {model_data.get('model_class')}'''
+        )
 
         # get args
-        args = GenerateArgs(type_).gen_args(self.i2, self.i3, nested_objects=False, updatable=False)
+        args = GenerateArgs(self._type_map(type_)).gen_args(
+            self.i2, self.i3, nested_objects=False, updatable=False
+        )
         return '\n'.join(
             [
                 f'''{self.i1}def add_{type_.singular()}(self, **kwargs) -> None:''',
@@ -244,7 +250,10 @@ class GenerateObjectABC(GenerateABC, ABC):
                 '',
                 f'''{args}''',
                 f'''{self.i2}"""''',
-                f'''{self.i2}self.model.{type_.plural()}.data.append({model_name}(**kwargs))''',
+                (
+                    f'''{self.i2}self.model.{type_.plural()}.data.'''
+                    f'''append({model_data.get('model_class')}(**kwargs))'''
+                ),
                 '',
                 '',
             ]
@@ -261,32 +270,32 @@ class GenerateObjectABC(GenerateABC, ABC):
             yield from self._iterate_over_sublist(Artifacts)
         """
         type_ = self.utils.camel_string(type_)
+
+        # get model from map and update requirements
+        model_data = self._module_data(type_)
         self.requirements['type-checking'].append(
-            f'from tcex.api.tc.v3.{type_.plural()}.{type_.singular()} import '
-            f'{type_.singular().pascal_case()}'
+            f'''from {model_data.get('object_module')} '''
+            f'''import {model_data.get('object_class')}'''
         )
-        # self.requirements['first-party'].append(
-        #     (
-        #         f'from tcex.api.tc.v3.{type_.plural()}.{type_.singular()} import '
-        #         f'{type_.singular().pascal_case()}, {type_.plural().pascal_case()}'
-        #     )
-        # )
         return '\n'.join(
             [
                 f'''{self.i1}@property''',
-                f'''{self.i1}def {type_.plural()}(self) -> '{type_.singular().pascal_case()}':''',
+                (
+                    f'''{self.i1}def {type_.plural()}(self) ->'''
+                    f''' '{model_data.get('object_class')}':'''
+                ),
                 (
                     f'''{self.i2}"""Yield {type_.singular().pascal_case()} '''
                     f'''from {type_.plural().pascal_case()}."""'''
                 ),
                 (
-                    f'''{self.i2}from tcex.api.tc.v3.{type_.plural()}.{type_.singular()} import '''
-                    f'''{type_.plural().pascal_case()}'''
+                    f'''{self.i2}from {model_data.get('object_module')} '''
+                    f'''import {model_data.get('object_collection_class')}'''
                 ),
                 '',
                 (
                     f'''{self.i2}yield from self._iterate_over_sublist'''
-                    f'''({type_.plural().pascal_case()})'''
+                    f'''({model_data.get('object_collection_class')})'''
                 ),
                 '',
                 '',
@@ -437,6 +446,10 @@ class GenerateObjectABC(GenerateABC, ABC):
         if 'artifacts' in add_properties:
             _code += self._gen_code_object_add_type_method('artifacts')
 
+        # generate add_attribute method
+        if 'attributes' in add_properties:
+            _code += self._gen_code_object_add_type_method('attributes')
+
         # generate add_case method
         if 'cases' in add_properties:
             _code += self._gen_code_object_add_type_method('cases')
@@ -444,6 +457,10 @@ class GenerateObjectABC(GenerateABC, ABC):
         # generate add_note method
         if 'notes' in add_properties:
             _code += self._gen_code_object_add_type_method('notes')
+
+        # generate add_security_labels method
+        if 'securityLabels' in add_properties:
+            _code += self._gen_code_object_add_type_method('security_labels')
 
         # generate add_tag method
         if 'tags' in add_properties:
@@ -460,6 +477,10 @@ class GenerateObjectABC(GenerateABC, ABC):
         if 'artifacts' in properties:
             _code += self._gen_code_object_type_property_method('artifacts')
 
+        # generate attributes property method
+        if 'attributes' in properties:
+            _code += self._gen_code_object_type_property_method('attributes')
+
         # generate cases property method
         if 'cases' in properties:
             _code += self._gen_code_object_type_property_method('cases')
@@ -467,6 +488,10 @@ class GenerateObjectABC(GenerateABC, ABC):
         # generate notes property method
         if 'notes' in properties:
             _code += self._gen_code_object_type_property_method('notes')
+
+        # generate security_labels property method
+        if 'securityLabels' in properties:
+            _code += self._gen_code_object_type_property_method('security_labels')
 
         # generate tags property method
         if 'tags' in properties:
@@ -481,7 +506,7 @@ class GenerateObjectABC(GenerateABC, ABC):
     def update_requirements(
         self, type_: str, filename: str, classes: List[str], from_: Optional[str] = 'first-party'
     ) -> Dict[str, str]:
-        """Return the requirements code"""
+        """Return the requirements code."""
         type_ = self.utils.camel_string(type_)
         classes = ', '.join(classes)
         self.requirements[from_].append(
