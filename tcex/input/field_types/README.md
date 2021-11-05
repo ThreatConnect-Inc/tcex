@@ -635,19 +635,23 @@ except that this value is restricted to only valid Indicator types when present.
 
 ##### StringArray Customizations
 
-###### split_on
+###### split
 
-This customization must be either a String instance or `None`. If this value is not `None` and StringArray is initialized
-with a single String value, the String value would be split on the value of `split_on`. This option has no effect if
-StringArray is initialized with an Array of Strings. This option is useful for inputs that must handle a single String,
-which could also be a comma-separated values String. In the case of a CSV String, `split_on` should be set to `,`, although
-`split_on` can be set to any String value. This option is `None` by default.
+This customization takes a boolean value and is `False` by default. If this value is `True` and StringArray is initialized
+with a single String value, the String value would be split on `,`. This option has no effect if StringArray is initialized
+with an Array of Strings. This option is useful for inputs that must handle a single String, which could also be a
+comma-separated values String.
+
+Note: Enabling this customization results in the calling of the `split` method on the String value used to initialize
+StringArray, which results in the String simply being split on `,` if `,` is present in the String.
+This means that more complex CSV operations, like quote characters and escape characters, are not taken into account.
+If more complex CSV splitting is desired, please refer to the `Content Parser` Playbook application.
 
 ###### strip_on_split
 
-This customization option only has an effect when `split_on` is not `None`. This option takes a boolean value and is
+This customization option only has an effect when `split` is `True`. This option takes a boolean value and is
 `True` by default. If this option is `True`, then `strip` will be called on the Strings that result from the `split`
-operation. Therefore, if `split_on` is set to `,` and a StringArray is initialized with `one ,two, three, `, then the
+operation. Therefore, if `split` is set to `True` and a StringArray is initialized with `one ,two, three, `, then the
 StringArray will contain `['one', 'two', 'three']` in the end. Note that this has the additional side effect of removing
 values that would be considered empty after the `strip` operation (`' '` is not be in the result, which would have come
 from the empty space after `three,`).

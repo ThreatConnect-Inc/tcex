@@ -10,7 +10,7 @@ class StringArray(AbstractArray):
 
     __input_type__ = 'String'
     __playbook_data_type__ = ['String', 'StringArray']
-    _split_on = None
+    _split = False
     _strip_on_split = False
 
     @classmethod
@@ -32,15 +32,17 @@ class StringArray(AbstractArray):
 
     @classmethod
     def pre_validation_processor(cls, value: Any) -> Any:
-        """Perform splitting of String values depending on value of _split_on"""
+        """Perform splitting of String values depending on value of _split"""
+        # only splitting on comma for now, could change to using value from install.json
+        split_char = ','
 
         # cannot use is_empty_member, is_null_member as value can be a list, which would
         # result in an exception
-        if isinstance(value, str) and value != '' and cls._split_on is not None:
+        if isinstance(value, str) and value != '' and cls._split:
             if cls._strip_on_split:
-                return [val.strip() for val in value.split(cls._split_on) if val.strip()]
+                return [val.strip() for val in value.split(split_char) if val.strip()]
 
-            return value.split(cls._split_on)
+            return value.split(split_char)
 
         return value
 

@@ -64,29 +64,36 @@ def custom_string_array(**kwargs):
     to the base custom_array function.
 
     :kwarg optional: Boolean denoting whether to return an Optional variant of the Array or not.
-    :kwarg split_on: String value upon which the value that initializes StringArray should be
-    split on. This has an effect if StringArray is initialized with a single String. If StringArray
-    is initialized with a StringArray, this option has no effect.
-    :kwarg strip_on_split: Boolean value that denotes whether the Strings that result from the
-    split operation on split_on should be stripped.
+
+    :kwarg split: Boolean denoting whether to split the value used to initialize StringArray.
+    This only has an effect if StringArray is initialized with a single String. If StringArray
+    is initialized with a StringArray, this option has no effect. Value is split on comma.
+    Defaults to False.
+
+    :kwarg strip_on_split: Boolean value that denotes whether the Strings that result from splitting
+    the String value used to initialize StringArray should be stripped of surrounding spaces. Empty
+    string values resulting from stripping surrounding spaces are discarded. This value only
+    has an effect when "split" kwarg is provided. Defaults to True
     """
-    _split_on = kwargs.pop('split_on', None)
+    _split = kwargs.pop('split', False)
+    _split = False if _split is None else _split
+
     _strip = kwargs.pop('strip_on_split', True)
     _strip = True if _strip is None else _strip
 
-    if _split_on is not None and not isinstance(_split_on, str):
+    if not isinstance(_split, bool):
         raise ConfigurationException(
-            'Value of "split_on" customization option must be a String or None. '
-            f'Received type: {type(_split_on)}'
+            'Value of "split" customization option must be a boolean or None. '
+            f'Received type: {type(_split)}'
         )
 
     if not isinstance(_strip, bool):
         raise ConfigurationException(
             'Value of "strip_on_split" customization option must be a boolean or None. '
-            f'Received type: {type(_split_on)}'
+            f'Received type: {type(_strip)}'
         )
 
-    namespace = {'_split_on': _split_on, '_strip_on_split': _strip}
+    namespace = {'_split': _split, '_strip_on_split': _strip}
     return _custom_array(
         StringArrayOptional if _is_optional(kwargs) else StringArray, namespace, **kwargs
     )
