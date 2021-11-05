@@ -10,7 +10,7 @@ from requests import Session
 
 # first-party
 from tcex.backports import cached_property
-from tcex.pleb.registry import registry
+from tcex.exit.error_codes import handle_error
 
 # get tcex logger
 logger = logging.getLogger('tcex')
@@ -166,7 +166,7 @@ class ThreatIntelUtils:
             for association in data.get('data', {}).get('associationType', []):
                 association_types[association.get('name')] = association
         except Exception as e:
-            registry.handle_error(code=200, message_values=[e])
+            handle_error(code=200, message_values=[e])
         return _association_types
 
     @cached_property

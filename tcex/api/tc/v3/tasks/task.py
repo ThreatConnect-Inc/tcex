@@ -106,7 +106,7 @@ class Task(ObjectABC):
         if hasattr(self.model, 'type'):
             type_ = self.model.type
 
-        return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
+        return {'type': type_, 'id': self.model.id, 'value': self.model.name}
 
     def add_artifact(self, **kwargs) -> None:
         """Add artifact to the object.

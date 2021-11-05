@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 # first-party
 from tcex.api.tc.v2.threat_intelligence.mappings.indicator import Indicator
+from tcex.exit.error_codes import handle_error
 
 if TYPE_CHECKING:
     # first-party
@@ -113,7 +114,7 @@ class File(Indicator):
     def occurrences(self):
         """Yield all occurrences that file has."""
         if not self.can_update():
-            self._handle_error(910, [self.type])
+            handle_error(910, [self.type])
 
         yield from self.tc_requests.file_occurrences(
             self.api_type, self.api_branch, self.unique_id, self.owner
@@ -122,7 +123,7 @@ class File(Indicator):
     def occurrence(self, occurrence_id):
         """Get a file occurrence given a occurrence id."""
         if not self.can_update():
-            self._handle_error(910, [self.type])
+            handle_error(910, [self.type])
 
         return self.tc_requests.file_occurrence(
             self.api_type, self.api_branch, self.unique_id, occurrence_id, self.owner
@@ -131,7 +132,7 @@ class File(Indicator):
     def add_occurrence(self, name, date, path):
         """Add  a occurrence to the file."""
         if not self.can_update():
-            self._handle_error(910, [self.type])
+            handle_error(910, [self.type])
 
         return self.tc_requests.add_file_occurrence(
             self.api_type, self.api_branch, self.unique_id, name, date, path, self.owner
@@ -140,7 +141,7 @@ class File(Indicator):
     def delete_occurrence(self, occurrence_id):
         """Delete a file occurrence given a occurrence id."""
         if not self.can_update():
-            self._handle_error(910, [self.type])
+            handle_error(910, [self.type])
 
         return self.tc_requests.delete_file_occurrence(
             self.api_type, self.api_branch, self.unique_id, occurrence_id, self.owner
@@ -164,7 +165,7 @@ class File(Indicator):
             Response: The response from the API call
         """
         if not self.can_update():
-            self._handle_error(910, [self.type])
+            handle_error(910, [self.type])
 
         return self.tc_requests.add_file_action(
             self.api_type, self.api_branch, self.unique_id, action, target, self.owner
@@ -188,7 +189,7 @@ class File(Indicator):
             Yield: Yield a dict of data of the File Action
         """
         if not self.can_update():
-            self._handle_error(910, [self.type])
+            handle_error(910, [self.type])
 
         return self.tc_requests.get_file_actions(
             self.api_type, self.api_branch, self.unique_id, action, target, self.owner
@@ -212,7 +213,7 @@ class File(Indicator):
             Response: The response from the API call
         """
         if not self.can_update():
-            self._handle_error(910, [self.type])
+            handle_error(910, [self.type])
 
         return self.tc_requests.delete_file_action(
             self.api_type, self.api_branch, self.unique_id, action, target, self.owner

@@ -51,7 +51,7 @@ class TestPlaybookAot:
         assert tcex.args.my_multi == ['one', 'two']
         assert tcex.rargs.my_multi == ['one', 'two']  # pylint: disable=no-member
 
-        tcex.aot_rpush(0)
+        tcex._aot_rpush(0)
 
     @staticmethod
     def test_aot_terminate(playbook_app, redis_client):

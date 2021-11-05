@@ -2,12 +2,15 @@
 # standard library
 from typing import TYPE_CHECKING, Any, Optional
 
+# first party
+from tcex.key_value_store.key_value_abc import KeyValueABC
+
 if TYPE_CHECKING:
     # first-party
     from tcex.key_value_store.redis_client import RedisClient
 
 
-class KeyValueRedis:
+class KeyValueRedis(KeyValueABC):
     """TcEx Key Value Redis Module.
 
     Args:

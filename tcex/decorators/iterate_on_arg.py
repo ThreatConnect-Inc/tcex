@@ -8,6 +8,7 @@ import wrapt
 
 # first-party
 from tcex.app_config.install_json import InstallJson
+from tcex.exit import ExitCode
 from tcex.validators import (
     ValidationError,
     equal_to,
@@ -190,10 +191,10 @@ class IterateOnArg:
                     app.tcex.log.error(message)
                     if self.fail_msg:
                         app.exit_message = self.fail_msg  # for test cases
-                        app.tcex.exit(1, self.fail_msg)
+                        app.tcex.exit(ExitCode.FAILURE, self.fail_msg)
                     else:
                         app.exit_message = message
-                        app.tcex.exit(1, message)
+                        app.tcex.exit(ExitCode.FAILURE, message)
 
                 # check ad against fail_on_values
                 if enabled:
@@ -208,10 +209,10 @@ class IterateOnArg:
                         app.tcex.log.error(message)
                         if self.fail_msg:
                             app.exit_message = self.fail_msg  # for test cases
-                            app.tcex.exit(1, self.fail_msg)
+                            app.tcex.exit(ExitCode.FAILURE, self.fail_msg)
                         else:
                             app.exit_message = message
-                            app.tcex.exit(1, message)
+                            app.tcex.exit(ExitCode.FAILURE, message)
 
                 # Add logging for debug/troubleshooting
                 if (

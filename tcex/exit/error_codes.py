@@ -1,7 +1,16 @@
-"""TcEx Error Codes"""
+"""TcExErrorCodes class and handle_error function."""
+# standard library
+import logging
+from typing import Optional
+
+# first-party
+from tcex.pleb.singleton import Singleton
+
+# get tcex logger
+logger = logging.getLogger('tcex')
 
 
-class TcExErrorCodes:
+class TcExErrorCodes(metaclass=Singleton):
     """TcEx Framework Error Codes."""
 
     @property
@@ -80,3 +89,25 @@ class TcExErrorCodes:
             (string): The error message.
         """
         return self.errors.get(code)
+
+
+def handle_error(
+    code: int,
+    message_values: Optional[list] = None,
+    raise_error: Optional[bool] = True,
+    cause: Optional[Exception] = None,
+) -> None:
+    """Logs a defined error and optionally raises a RuntimeError."""
+    try:
+        if message_values is None:
+            message_values = []
+        message = TcExErrorCodes().message(code).format(*message_values)
+        logger.error(f'Error code: {code}, {message}')
+        if raise_error:
+            raise RuntimeError(code, message) from cause
+    except AttributeError:
+        logger.error(f'Incorrect error code provided ({code}).')
+        raise RuntimeError(100, 'Generic Failure, see logs for more details.') from cause
+    except IndexError:
+        logger.error(f'Incorrect message values provided for error code {code} ({message_values}).')
+        raise RuntimeError(100, 'Generic Failure, see logs for more details.') from cause

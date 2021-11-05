@@ -2,7 +2,6 @@
 # standard library
 import logging
 from functools import lru_cache
-from typing import Optional
 
 # third-party
 import inflect
@@ -36,7 +35,7 @@ from tcex.api.tc.v2.threat_intelligence.mappings.owner import Owner
 from tcex.api.tc.v2.threat_intelligence.mappings.tag import Tag
 from tcex.api.tc.v2.threat_intelligence.mappings.task import Task
 from tcex.api.tc.v2.threat_intelligence.mappings.victim import Victim
-from tcex.tcex_error_codes import TcExErrorCodes
+from tcex.exit.error_codes import handle_error
 from tcex.utils import Utils
 
 p = inflect.engine()
@@ -62,12 +61,6 @@ class ThreatIntelligence:
 
         # generate custom ioc classes
         self._gen_indicator_class()
-
-    @property
-    @lru_cache()
-    def _error_codes(self) -> TcExErrorCodes:  # noqa: F821
-        """Return TcEx error codes."""
-        return TcExErrorCodes()
 
     @property
     def _group_types(self) -> list:
@@ -130,35 +123,6 @@ class ThreatIntelligence:
             _indicator_types_data[itd.get('name')] = itd
 
         return _indicator_types_data
-
-    def _handle_error(
-        self, code: int, message_values: Optional[list] = None, raise_error: Optional[bool] = True
-    ) -> None:
-        """Raise RuntimeError
-
-        Args:
-            code: The error code from API or SDK.
-            message: The error message from API or SDK.
-            raise_error: Raise a Runtime error. Defaults to True.
-
-        Raises:
-            RuntimeError: Raised a defined error.
-        """
-        try:
-            if message_values is None:
-                message_values = []
-            message = self._error_codes.message(code).format(*message_values)
-            self.log.error(f'Error code: {code}, {message}')
-        except AttributeError:
-            self.log.error(f'Incorrect error code provided ({code}).')
-            raise RuntimeError(100, 'Generic Failure, see logs for more details.')
-        except IndexError:
-            self.log.error(
-                f'Incorrect message values provided for error code {code} ({message_values}).'
-            )
-            raise RuntimeError(100, 'Generic Failure, see logs for more details.')
-        if raise_error:
-            raise RuntimeError(code, message)
 
     def address(self, **kwargs):
         """Return an Address TI object.
@@ -662,7 +626,7 @@ class ThreatIntelligence:
                 r = self.victim(name=d.get('name'))
                 value = d.get('name')
             else:
-                self._handle_error(925, ['type', 'entities', 'type', 'type', resource_type])
+                handle_error(925, ['type', 'entities', 'type', 'type', resource_type])
 
             if 'summary' in d:
                 values.append(d.get('summary'))
