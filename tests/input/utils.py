@@ -1,6 +1,8 @@
 """Class that contains shared logic that may be used by Input test suites"""
 
+# first-party
 from tcex.pleb.registry import registry
+
 
 class InputTest:
     """Class that contains shared logic used by Input test suites"""
