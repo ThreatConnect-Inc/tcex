@@ -9,9 +9,10 @@ from pathlib import Path
 # first-party
 from tcex.app_config.models import JobJsonModel
 from tcex.backports import cached_property
+from tcex.pleb.singleton import Singleton
 
 
-class JobJson:
+class JobJson(metaclass=Singleton):
     """Provide a model for the tcex.json config file."""
 
     def __init__(self, filename=None, path=None, logger=None):
@@ -42,14 +43,14 @@ class JobJson:
         return _contents
 
     @cached_property
-    def data(self) -> JobJsonModel:
+    def model(self) -> JobJsonModel:
         """Return the Install JSON model."""
         return JobJsonModel(**self.contents)
 
     # TODO: [low] possibly add auto fix of version and program name and then uncomment this code.
     # def write(self) -> None:
     #     """Write current data file."""
-    #     data = self.data.json(
+    #     data = self.model.json(
     #         by_alias=True, exclude_defaults=True, exclude_none=True, indent=2, sort_keys=True
     #     )
     #     with self.fqfn.open(mode='w') as fh:

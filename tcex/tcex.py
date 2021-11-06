@@ -99,7 +99,7 @@ class TcEx:
         return {
             'User-Agent': (
                 f'TcEx/{__import__(__name__).__version__}, '
-                f'{self.ij.data.display_name}/{self.ij.data.program_version}'
+                f'{self.ij.model.display_name}/{self.ij.model.program_version}'
             )
         }
 
@@ -240,12 +240,12 @@ class TcEx:
             msg: A message to log and add to message tc output.
         """
         # get correct code
-        self.exit_service.exit(code, msg)
+        self.exit_service.exit(code, msg)  # pylint: disable=no-member
 
     @property
     def exit_code(self) -> ExitCode:
         """Return the current exit code."""
-        return self.exit_service.exit_code
+        return self.exit_service.exit_code  # pylint: disable=no-member
 
     @exit_code.setter
     def exit_code(self, code: ExitCode) -> None:
@@ -544,11 +544,11 @@ class TcEx:
     @cached_property
     def service(self) -> Union[ApiService, CommonServiceTrigger, WebhookTriggerService]:
         """Include the Service Module."""
-        if self.ij.data.runtime_level.lower() == 'apiservice':
+        if self.ij.model.runtime_level.lower() == 'apiservice':
             from .services import ApiService as Service
-        elif self.ij.data.runtime_level.lower() == 'triggerservice':
+        elif self.ij.model.runtime_level.lower() == 'triggerservice':
             from .services import CommonServiceTrigger as Service
-        elif self.ij.data.runtime_level.lower() == 'webhooktriggerservice':
+        elif self.ij.model.runtime_level.lower() == 'webhooktriggerservice':
             from .services import WebhookTriggerService as Service
         else:
             self.exit(1, 'Could not determine the service type.')

@@ -27,9 +27,9 @@ class TestTcexJson:
     #         assert False, f'Failed parsing file {fqfn.name} ({ex})'
 
     #     print('\nfilename', fqfn.name)
-    #     print('tj.data.lib_versions', tj.data.lib_versions)
-    #     print('tj.data.package', tj.data.package)
-    #     print('tj.data.template', tj.data.template)
+    #     print('tj.model.lib_versions', tj.model.lib_versions)
+    #     print('tj.model.package', tj.model.package)
+    #     print('tj.model.template', tj.model.template)
 
     @staticmethod
     def ij(app_name: str = 'app_1', app_type: str = 'tcpb'):
@@ -83,7 +83,7 @@ class TestTcexJson:
             ddiff = DeepDiff(
                 json_dict,
                 # template requires json dump to serialize certain fields
-                json.loads(tj.data.json(by_alias=True, exclude_defaults=True, exclude_none=True)),
+                json.loads(tj.model.json(by_alias=True, exclude_defaults=True, exclude_none=True)),
                 ignore_order=True,
             )
             assert ddiff == {}, f'Failed validation of file {fqfn.name}'
@@ -103,8 +103,10 @@ class TestTcexJson:
 
         try:
             tj.update.multiple(template='service_api')
-            # print(tj.data.schema_json())
-            print(tj.data.json(exclude_defaults=False, exclude_none=True, indent=2, sort_keys=True))
+            # print(tj.model.schema_json())
+            print(
+                tj.model.json(exclude_defaults=False, exclude_none=True, indent=2, sort_keys=True)
+            )
             assert True
         except Exception as ex:
             assert False, f'Failed to update tcex.json file ({ex}).'

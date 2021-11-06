@@ -184,7 +184,7 @@ class Validate(BinABC):
 
         status = True
         try:
-            self.ij.data
+            self.ij.model
         except ValidationError as ex:
             self.invalid_json_files.append(self.ij.fqfn.name)
             status = False
@@ -207,10 +207,10 @@ class Validate(BinABC):
             return
 
         # use developer defined app version (deprecated) or package_version from InstallJson model
-        app_version = self.tj.data.package.app_version or self.ij.data.package_version
-        program_name = (f'''{self.tj.data.package.app_name}_{app_version}''').replace('_', ' ')
+        app_version = self.tj.model.package.app_version or self.ij.model.package_version
+        program_name = (f'''{self.tj.model.package.app_name}_{app_version}''').replace('_', ' ')
         status = True
-        for feed in self.ij.data.feeds:
+        for feed in self.ij.model.feeds:
             if feed.job_file in self.invalid_json_files:
                 # no need to check if schema if json is invalid
                 continue
@@ -227,7 +227,7 @@ class Validate(BinABC):
 
             try:
                 # validate the schema
-                jj.data
+                jj.model
             except ValidationError as ex:
                 status = False
                 for error in json.loads(ex.json()):
@@ -238,19 +238,19 @@ class Validate(BinABC):
                     )
 
             # validate program name
-            if status is True and jj.data.program_name != program_name:
+            if status is True and jj.model.program_name != program_name:
                 status = False
                 self.validation_data['errors'].append(
                     f'''Schema validation failed for {feed.job_file}. '''
-                    f'''The job.json programName {jj.data.program_name} != {program_name}.'''
+                    f'''The job.json programName {jj.model.program_name} != {program_name}.'''
                 )
 
             # validate program version
-            if status is True and jj.data.program_version != self.ij.data.program_version:
+            if status is True and jj.model.program_version != self.ij.model.program_version:
                 status = False
                 self.validation_data['errors'].append(
                     f'''Schema validation failed for {feed.job_file}. The job.json program'''
-                    f'''Version {jj.data.program_version} != {self.ij.data.program_version}.'''
+                    f'''Version {jj.model.program_version} != {self.ij.model.program_version}.'''
                 )
 
             self.validation_data['schema'].append({'filename': feed.job_file, 'status': status})
@@ -262,7 +262,7 @@ class Validate(BinABC):
 
         status = True
         try:
-            self.lj.data
+            self.lj.model
         except ValidationError as ex:
             self.invalid_json_files.append(self.ij.fqfn.name)
             status = False
@@ -288,8 +288,8 @@ class Validate(BinABC):
         will validate that no reference appear for inputs in install.json that don't exist.
         """
         # do not track hidden or serviceConfig inputs as they should not be in layouts.json
-        ij_input_names = list(self.ij.data.filter_params(service_config=False, hidden=False))
-        ij_output_names = [o.name for o in self.ij.data.playbook.output_variables]
+        ij_input_names = list(self.ij.model.filter_params(service_config=False, hidden=False))
+        ij_output_names = [o.name for o in self.ij.model.playbook.output_variables]
 
         # Check for duplicate inputs
         for name in self.ij.validate.validate_duplicate_input():
@@ -318,7 +318,7 @@ class Validate(BinABC):
 
         # inputs
         status = True
-        for i in self.lj.data.inputs:
+        for i in self.lj.model.inputs:
             for p in i.parameters:
                 if p.name not in ij_input_names:
                     # update validation data errors
@@ -361,7 +361,7 @@ class Validate(BinABC):
 
         # outputs
         status = True
-        for o in self.lj.data.outputs:
+        for o in self.lj.model.outputs:
             if o.name not in ij_output_names:
                 # update validation data errors
                 self.validation_data['errors'].append(

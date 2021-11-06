@@ -1,0 +1,18 @@
+{
+  "package": {
+    "app_name": "TCPB_-_",
+    "app_version": "1.0.0",
+    "excludes": [
+      ".gitignore",
+      ".pre-commit-config.yaml",
+      "local-*",
+      "pyproject.toml",
+      "setup.cfg",
+      "tcex.json",
+      "requirements.txt"
+    ],
+    "outdir": "target"
+  },
+  "template_name": "basic",
+  "template_type": "playbook"
+}

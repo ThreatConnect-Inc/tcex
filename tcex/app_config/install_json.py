@@ -37,7 +37,7 @@ class InstallJson(metaclass=Singleton):
     @property
     def app_prefix(self) -> str:
         """Return the appropriate output var type for the current App."""
-        return self.app_prefixes.get(self.data.runtime_level.lower(), '')
+        return self.app_prefixes.get(self.model.runtime_level.lower(), '')
 
     @property
     def app_prefixes(self) -> str:
@@ -92,12 +92,7 @@ class InstallJson(metaclass=Singleton):
             var_type: The variable type.
             job_id: A job id to use in output variable string.
         """
-        return f'#{self.data.app_output_var_type}:{job_id}:{var_name}!{var_type}'
-
-    @cached_property
-    def data(self) -> InstallJsonModel:
-        """Return the Install JSON model."""
-        return InstallJsonModel(**self.contents)
+        return f'#{self.model.app_output_var_type}:{job_id}:{var_name}!{var_type}'
 
     @staticmethod
     def expand_valid_values(valid_values: list) -> List[str]:
@@ -147,68 +142,18 @@ class InstallJson(metaclass=Singleton):
 
     def has_feature(self, feature: str) -> bool:
         """Return True if App has the provided feature."""
-        return feature.lower() in [f.lower() for f in self.data.features]
+        return feature.lower() in [f.lower() for f in self.model.features]
 
-    # TODO: [med] if this is not needed by the testing framework it can be removed.
-    # def params_to_args(
-    #     self,
-    #     name: Optional[str] = None,
-    #     hidden: Optional[bool] = None,
-    #     required: Optional[bool] = None,
-    #     service_config: Optional[bool] = None,
-    #     _type: Optional[str] = None,
-    #     input_permutations: Optional[list] = None,
-    # ) -> Dict[str, Any]:
-    #     """Return params as cli args.
-
-    #     Args:
-    #         name: The name of the input to return.
-    #         required: If set the inputs will be filtered based on required field.
-    #         service_config: If set the inputs will be filtered based on serviceConfig field.
-    #         _type: The type of input to return.
-    #         input_permutations: A list of valid input names for provided permutation.
-
-    #     Returns:
-    #         dict: All args for current filter
-    #     """
-    #     args = {}
-    #     for n, p in self.data.filter_params(
-    #         name, hidden, required, service_config, _type, input_permutations
-    #     ).items():
-    #         if p.type.lower() == 'boolean':
-    #             args[n] = p.default
-    #         elif p.type.lower() == 'choice':
-    #             # provide all options by default
-    #             valid_values = f"[{'|'.join(self.expand_valid_values(p.valid_values))}]"
-
-    #             # use the value from input_permutations if available or provide valid values
-    #             if input_permutations is not None:
-    #                 valid_values = input_permutations.get(n, valid_values)
-
-    #             # use default if available
-    #             if p.default is not None:
-    #                 valid_values = p.default
-
-    #             args[n] = valid_values
-    #         elif p.type.lower() == 'multichoice':
-    #             args[n] = p.valid_values
-    #         elif p.type.lower() == 'keyvaluelist':
-    #             args[n] = '<KeyValueArray>'
-    #         elif n in ['tc_api_access_id', 'tc_api_secret_key']:  # pragma: no cover
-    #             # leave these parameters set to the value defined in defaults
-    #             pass
-    #         else:
-    #             types = '|'.join(p.playbook_data_type)
-    #             if types:
-    #                 args[n] = p.default or f'<{types}>'
-    #             else:  # pragma: no cover
-    #                 args[n] = p.default or ''
-    #     return args
+    # @cached_property
+    @property
+    def model(self) -> InstallJsonModel:
+        """Return the Install JSON model."""
+        return InstallJsonModel(**self.contents)
 
     @property
     def tc_playbook_out_variables(self) -> list:
         """Return playbook output variable name array"""
-        return self.create_output_variables(self.data.playbook.output_variables)
+        return self.create_output_variables(self.model.playbook.output_variables)
 
     @property
     def tc_playbook_out_variables_csv(self) -> str:
@@ -227,7 +172,7 @@ class InstallJson(metaclass=Singleton):
 
     def write(self) -> None:
         """Write current data file."""
-        data = self.data.json(
+        data = self.model.json(
             by_alias=True, exclude_defaults=True, exclude_none=True, indent=2, sort_keys=True
         )
         with self.fqfn.open(mode='w') as fh:

@@ -25,9 +25,9 @@ class TestPermutation:
             assert False, f'Failed intializing permutation ({ex})'
 
         print('\n----------------')
-        # print('tj.data.lib_versions', tj.data.lib_versions)
-        # print('tj.data.package', tj.data.package)
-        # print('tj.data.template', tj.data.template)
+        # print('tj.model.lib_versions', tj.model.lib_versions)
+        # print('tj.model.package', tj.model.package)
+        # print('tj.model.template', tj.model.template)
         # permutation.permutations()
 
     @staticmethod

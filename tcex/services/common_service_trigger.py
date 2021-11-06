@@ -284,7 +284,7 @@ class CommonServiceTrigger(CommonService):
 
         logged_config = config.copy()
 
-        for param in self.ij.data.params:
+        for param in self.ij.model.params:
             if param.encrypt and config.__contains__(param.name):
                 logged_config[param.get('name')] = '***'
         self.log.info(
@@ -344,7 +344,7 @@ class CommonServiceTrigger(CommonService):
         if callable(self.create_config_callback):
 
             kwargs = {}
-            if self.ij.data.runtime_level.lower() == 'webhooktriggerservice':
+            if self.ij.model.runtime_level.lower() == 'webhooktriggerservice':
                 # only webhook triggers get and require the PB url
                 kwargs['url'] = message.get('url')
 

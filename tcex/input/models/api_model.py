@@ -71,7 +71,7 @@ class ApiModel(BaseModel):
         # organization (job) Apps: require credentials
         # playbook Apps: require credentials
         # service Apps: get token on createConfig message or during request
-        if _ij.fqfn.is_file() is False or _ij.data.runtime_level.lower() in [
+        if _ij.fqfn.is_file() is False or _ij.model.runtime_level.lower() in [
             'organization',
             'playbook',
         ]:

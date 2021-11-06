@@ -39,8 +39,11 @@ pytest --cov=tcex/api/tc/v3/notes --cov-report=term-missing tests/api/tc/v3/note
 #### tasks
 pytest --cov=tcex/api/tc/v3/tasks --cov-report=term-missing tests/api/tc/v3/tasks/test_task_interface.py
 
-# testing - delete
-pytest tests/api/tc/v3/artifacts/test_artifact_interface.py -s -k test_artifact_create_and_retrieve_nested_types
+## app_config
+
+### install_json_model
+pytest --cov=tcex/app_config/install.json --cov-report=term-missing tests/app_config/test_install_json_model.py
+
 # Case Management Error Codes
 
 ```

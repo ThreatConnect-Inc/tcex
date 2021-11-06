@@ -53,13 +53,13 @@ class Permutation:
         try:
             # grab the name using the index value of all params in the layout.json file.
             # after the last name is hit the IndexError will trigger collecting outputs.
-            name = list(self.lj.data.param_names)[index]
+            name = list(self.lj.model.param_names)[index]
 
             # get layout.json param name and data
-            lj_param: Union[NoneModel, ParametersModel] = self.lj.data.get_param(name)
+            lj_param: Union[NoneModel, ParametersModel] = self.lj.model.get_param(name)
 
             # get install.json param to match layout.json param
-            ij_param: Union[NoneModel, ParamsModel] = self.ij.data.get_param(name)
+            ij_param: Union[NoneModel, ParamsModel] = self.ij.model.get_param(name)
             if not isinstance(ij_param, ParamsModel):  # pragma: no cover
                 self.handle_error(f'No param found in install.json for "{name}".')
 
@@ -103,10 +103,10 @@ class Permutation:
             outputs = []
 
             # iterate of InstallJsonModel -> PlaybookModel -> OutputVariablesModel
-            for o in self.ij.data.playbook.output_variables:
+            for o in self.ij.model.playbook.output_variables:
 
                 # get layout.json param to match install.json output variable
-                lj_output: Union[NoneModel, OutputsModel] = self.lj.data.get_output(o.name)
+                lj_output: Union[NoneModel, OutputsModel] = self.lj.model.get_output(o.name)
                 if isinstance(lj_output, OutputsModel):
                     valid = self.validate_layout_display(self._input_table, lj_output.display)
                     if lj_output.display is None or not valid:
@@ -192,7 +192,7 @@ class Permutation:
             return
 
         # only column defined in install.json can be updated
-        if column in self.ij.data.param_names:
+        if column in self.ij.model.param_names:
             try:
                 # value should be wrapped in single quotes to be properly parsed
                 sql = f'''UPDATE {table_name} SET {column} = '{value}\''''
@@ -221,8 +221,8 @@ class Permutation:
             self._output_permutations = []
 
             # create db for permutations testing
-            self.db_create_table(self._input_table, self.ij.data.param_names)
-            self.db_insert_record(self._input_table, self.ij.data.param_names)
+            self.db_create_table(self._input_table, self.ij.model.param_names)
+            self.db_insert_record(self._input_table, self.ij.model.param_names)
 
             # only gen permutations if none have been generated previously
             self._gen_permutations()
@@ -295,17 +295,17 @@ class Permutation:
             list: List of Lists of valid outputs objects.
         """
         table = f'temp_{random.randint(100,999)}'  # nosec
-        self.db_create_table(table, self.ij.data.param_names)
-        self.db_insert_record(table, self.ij.data.param_names)
+        self.db_create_table(table, self.ij.model.param_names)
+        self.db_insert_record(table, self.ij.model.param_names)
 
         for name, val in inputs.items():
             self.db_update_record(table, name, val)
 
         outputs = []
         # iterate of InstallJsonModel -> PlaybookModel -> OutputVariablesModel
-        for o in self.ij.data.playbook.output_variables:
-            # if self.lj.data.get_output(o.name) is None:
-            lj_output = self.lj.data.get_output(o.name)
+        for o in self.ij.model.playbook.output_variables:
+            # if self.lj.model.get_output(o.name) is None:
+            lj_output = self.lj.model.get_output(o.name)
             if isinstance(lj_output, NoneModel):  # pragma: no cover
                 # an output not listed in layout.json should always be shown
                 valid = True
@@ -334,8 +334,8 @@ class Permutation:
             sys.exit(1)
 
         # create db for permutations testing
-        self.db_create_table(self._input_table, self.ij.data.param_names)
-        self.db_insert_record(self._input_table, self.ij.data.param_names)
+        self.db_create_table(self._input_table, self.ij.model.param_names)
+        self.db_insert_record(self._input_table, self.ij.model.param_names)
 
         # only gen permutations if none have been generated previously
         if not self._input_permutations and not self._output_permutations:
@@ -362,17 +362,17 @@ class Permutation:
             return True
 
         table = f'temp_{random.randint(100,999)}'  # nosec
-        self.db_create_table(table, self.ij.data.param_names)
-        self.db_insert_record(table, self.ij.data.param_names)
+        self.db_create_table(table, self.ij.model.param_names)
+        self.db_insert_record(table, self.ij.model.param_names)
 
         # APP-98 Added to cover the use case of interdependent variables in the layout.json.
-        for name, param in self.ij.data.filter_params(_type='Boolean').items():
+        for name, param in self.ij.model.filter_params(_type='Boolean').items():
             self.db_update_record(table, name, param.default)
 
         for name, val in inputs.items():
             self.db_update_record(table, name, val)
 
-        lj_data = self.lj.data.get_param(input_name)
+        lj_data = self.lj.model.get_param(input_name)
         if isinstance(lj_data, NoneModel):  # pragma: no cover
             # this shouldn't happen as all ij inputs must be in lj
             raise RuntimeError(f'The provided input {input_name} was not found in layout.json.')

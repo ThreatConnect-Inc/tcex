@@ -25,14 +25,6 @@ temp
 *.egg-info
 
 #-------------------------------------------------
-# Documentation Exclusion
-#-------------------------------------------------
-docs/src/*example
-docs/src/_build
-docs/src/_static
-docs/src/_templates
-
-#-------------------------------------------------
 # IDE Exclusions
 #-------------------------------------------------
 .c9
@@ -56,8 +48,6 @@ local-*
 log/*
 requirements.txt
 permutations.json
-tcex.json
-tcex.d
 templates
 threatconnect*
 tests/reports/*

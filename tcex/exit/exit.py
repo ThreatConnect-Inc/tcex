@@ -1,17 +1,10 @@
+"""TcEx Exit Module"""
 # standard library
 import logging
 import os
 import sys
 from enum import Enum
 from typing import TYPE_CHECKING, Optional, Union
-
-# third-party
-from redis import Redis
-
-# first-party
-from tcex.input.input import Input
-from tcex.playbook import Playbook
-from tcex.tokens import Tokens
 
 if TYPE_CHECKING:
     # third-party
@@ -39,6 +32,7 @@ class ExitCode(Enum):
     PARTIAL_FAILURE = 3
 
     def __str__(self):
+        """@cblades"""
         clean_name = self.name.replace('_', ' ').title()
         return f'{self.value} ({clean_name})'
 
@@ -80,7 +74,7 @@ class ExitService:
         exit_code = ExitCode(exit_code)
         if (
             exit_code == ExitCode.PARTIAL_FAILURE
-            and self.ij.data.runtime_level.lower() == 'playbook'
+            and self.ij.model.runtime_level.lower() == 'playbook'
         ):
             logger.info(
                 f'Changing exit code from {ExitCode.PARTIAL_FAILURE} '

@@ -32,9 +32,9 @@ class TestLayoutJson:
     #     #     path='tests/app_config/install_json_samples/tcpb',
     #     # )
     #     print('\nfilename', filename)
-    #     # lj.create(inputs=ij.data.params, outputs=ij.data.playbook.output_variables)
-    #     print('lj.data.inputs', lj.data.inputs)
-    #     # print('lj.data.outputs', lj.data.outputs)
+    #     # lj.create(inputs=ij.model.params, outputs=ij.model.playbook.output_variables)
+    #     print('lj.model.inputs', lj.model.inputs)
+    #     # print('lj.model.outputs', lj.model.outputs)
 
     @staticmethod
     def ij(app_name: str = 'app_1', app_type: str = 'tcpb'):
@@ -88,7 +88,7 @@ class TestLayoutJson:
             ddiff = DeepDiff(
                 json_dict,
                 # template requires json dump to serialize certain fields
-                json.loads(lj.data.json(by_alias=True, exclude_defaults=True, exclude_none=True)),
+                json.loads(lj.model.json(by_alias=True, exclude_defaults=True, exclude_none=True)),
                 ignore_order=True,
             )
             assert ddiff == {}, f'Failed validation of file {fqfn.name}'
@@ -97,7 +97,7 @@ class TestLayoutJson:
         """Test method"""
         ij = self.ij(app_type='tcpb')
         lj = self.lj(app_name='app_create_layout', app_type='tcpb')
-        lj.create(inputs=ij.data.params, outputs=ij.data.playbook.output_variables)
+        lj.create(inputs=ij.model.params, outputs=ij.model.playbook.output_variables)
         assert lj.fqfn.is_file()
 
         # remove temp file
@@ -109,19 +109,19 @@ class TestLayoutJson:
 
     def test_model_get_param(self):
         """Test method"""
-        assert isinstance(self.lj().data.get_param('tc_action'), ParametersModel)
+        assert isinstance(self.lj().model.get_param('tc_action'), ParametersModel)
 
     def test_model_get_output(self):
         """Test method"""
-        assert isinstance(self.lj().data.get_output('action_1.binary.output1'), OutputsModel)
+        assert isinstance(self.lj().model.get_output('action_1.binary.output1'), OutputsModel)
 
     def test_model_output_(self):
         """Test method"""
-        assert isinstance(self.lj().data.outputs_, dict)
+        assert isinstance(self.lj().model.outputs_, dict)
 
     def test_model_param_names(self):
         """Test method"""
-        assert isinstance(self.lj().data.param_names, list)
+        assert isinstance(self.lj().model.param_names, list)
 
     def test_update(self):
         """Test method"""

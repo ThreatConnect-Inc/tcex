@@ -39,8 +39,8 @@ class TcexJsonUpdate:
     def update_package_app_name(self) -> None:
         """Update the package app_name in the tcex.json file."""
         if (
-            self.tj.data.package.app_name is None
-            or self.tj.data.package.app_name in self.tj.ij.app_prefixes.values()
+            self.tj.model.package.app_name is None
+            or self.tj.model.package.app_name in self.tj.ij.app_prefixes.values()
         ):
             # lower case name and replace prefix if already exists
             _app_name = (
@@ -57,13 +57,13 @@ class TcexJsonUpdate:
             _app_name = f'{self.tj.ij.app_prefix}{_app_name}'
 
             # update App name
-            self.tj.data.package.app_name = _app_name
+            self.tj.model.package.app_name = _app_name
 
     # def update_deprecated_fields(self) -> None:
     #     """Update deprecated fields in the tcex.json file."""
     #     deprecated_fields = ['profile_include_dirs']
     #     for d in deprecated_fields:
-    #         setattr(self.tj.data, d, None)
+    #         setattr(self.tj.model, d, None)
 
     def update_package_excludes(self) -> None:
         """Update the excludes values in the tcex.json file."""
@@ -75,13 +75,13 @@ class TcexJsonUpdate:
             'setup.cfg',
             'tcex.json',
         ]:
-            if i not in self.tj.data.package.excludes:
+            if i not in self.tj.model.package.excludes:
                 # TODO: [low] pydantic doesn't seem to allow removing items from list???
-                self.tj.data.package.excludes.append(i)
+                self.tj.model.package.excludes.append(i)
 
     def update_lib_versions(self) -> None:
         """Update the lib_versions array in the tcex.json file."""
-        if os.getenv('TCEX_LIB_VERSIONS') and not self.tj.data.lib_versions:
+        if os.getenv('TCEX_LIB_VERSIONS') and not self.tj.model.lib_versions:
             _lib_versions = []
             for version in os.getenv('TCEX_LIB_VERSIONS').split(','):
                 _lib_versions.append(
@@ -90,4 +90,4 @@ class TcexJsonUpdate:
                         'python_executable': f'~/.pyenv/versions/${{env:{version}}}/bin/python',
                     }
                 )
-            self.tj.data.lib_versions = _lib_versions
+            self.tj.model.lib_versions = _lib_versions

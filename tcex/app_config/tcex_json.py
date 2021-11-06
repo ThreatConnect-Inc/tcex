@@ -14,9 +14,10 @@ from tcex.app_config.install_json import InstallJson
 from tcex.app_config.models import TcexJsonModel
 from tcex.app_config.tcex_json_update import TcexJsonUpdate
 from tcex.backports import cached_property
+from tcex.pleb.singleton import Singleton
 
 
-class TcexJson:
+class TcexJson(metaclass=Singleton):
     """Provide a model for the tcex.json config file."""
 
     def __init__(self, filename=None, path=None, logger=None):
@@ -48,7 +49,7 @@ class TcexJson:
         return _contents
 
     @cached_property
-    def data(self) -> TcexJsonModel:
+    def model(self) -> TcexJsonModel:
         """Return the Install JSON model."""
         return TcexJsonModel(**self.contents)
 
@@ -56,11 +57,11 @@ class TcexJson:
         """Print warning messages for tcex.json file."""
 
         # raise error if tcex.json is missing app_name field
-        if self.data.package.app_name is None:  # pragma: no cover
+        if self.model.package.app_name is None:  # pragma: no cover
             raise RuntimeError('The tcex.json file is missing the package.app_name field.')
 
         # log warning for old Apps
-        if self.data.package.app_version is not None:
+        if self.model.package.app_version is not None:
             print(
                 f'{c.Fore.YELLOW}'
                 'WARNING: The tcex.json file defines "app_version" which should only be '
@@ -76,6 +77,6 @@ class TcexJson:
 
     def write(self) -> None:
         """Write current data file."""
-        data = self.data.json(exclude_defaults=True, exclude_none=True, indent=2, sort_keys=True)
+        data = self.model.json(exclude_defaults=True, exclude_none=True, indent=2, sort_keys=True)
         with self.fqfn.open(mode='w') as fh:
             fh.write(f'{data}\n')

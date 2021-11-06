@@ -191,7 +191,7 @@ class Dep(BinABC):
             self.print_setting('Running', f'''{' '.join(exe_command)}''', fg_color='GREEN')
 
             # recommended -> https://pip.pypa.io/en/latest/user_guide/#using-pip-from-your-program
-            p = subprocess.Popen(
+            p = subprocess.Popen(  # pylint: disable=consider-using-with
                 exe_command,
                 shell=False,  # nosec
                 stdin=subprocess.PIPE,
@@ -235,11 +235,11 @@ class Dep(BinABC):
     @property
     def lib_versions(self) -> List[LibVersionModel]:
         """Return the lib_version data required to build lib directories."""
-        if self.tj.data.lib_versions:
+        if self.tj.model.lib_versions:
             self.print_setting('Python Version', 'using version(s) defined in tcex.json')
 
             # return the python versions defined in the tcex.json file
-            return self.tj.data.lib_versions
+            return self.tj.model.lib_versions
 
         # return the current python version
         return [

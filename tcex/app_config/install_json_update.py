@@ -57,19 +57,19 @@ class InstallJsonUpdate:
 
     # def update_display_name(self, json_data: dict) -> None:
     #     """Update the displayName parameter."""
-    #     if not self.ij.data.display_name:
+    #     if not self.ij.model.display_name:
     #         display_name = os.path.basename(os.getcwd()).replace(self.app_prefix, '')
     #         display_name = display_name.replace('_', ' ').replace('-', ' ')
     #         display_name = ' '.join([a.title() for a in display_name.split(' ')])
-    #     self.ij.data.display_name = self.ij.data.display_name or display_name
+    #     self.ij.model.display_name = self.ij.model.display_name or display_name
 
     def update_features(self) -> None:
         """Update feature set based on App type."""
         features = ['runtimeVariables']
 
-        if self.ij.data.runtime_level.lower() in ['organization']:
+        if self.ij.model.runtime_level.lower() in ['organization']:
             features.extend(['fileParams', 'secureParams'])
-        elif self.ij.data.runtime_level.lower() in ['playbook']:
+        elif self.ij.model.runtime_level.lower() in ['playbook']:
             features.extend(
                 [
                     'aotExecutionEnabled',
@@ -78,7 +78,7 @@ class InstallJsonUpdate:
                     'secureParams',
                 ]
             )
-        elif self.ij.data.runtime_level.lower() in [
+        elif self.ij.model.runtime_level.lower() in [
             'apiservice',
             'triggerservice',
             'webhooktriggerservice',
@@ -90,7 +90,7 @@ class InstallJsonUpdate:
             features.append('layoutEnabledApp')
 
         # re-add supported optional features
-        for feature in self.ij.data.features:
+        for feature in self.ij.model.features:
             if feature in [
                 'advancedRequest',
                 'CALSettings',
@@ -110,20 +110,20 @@ class InstallJsonUpdate:
             ]:
                 features.append(feature)
 
-        self.ij.data.features = sorted(list(set(features)))
+        self.ij.model.features = sorted(list(set(features)))
 
     def update_program_main(self) -> None:
         """Update program main."""
-        self.ij.data.program_main = 'run'
+        self.ij.model.program_main = 'run'
 
     def update_sequence_numbers(self) -> None:
         """Update program sequence numbers."""
-        for sequence, param in enumerate(self.ij.data.params, start=1):
+        for sequence, param in enumerate(self.ij.model.params, start=1):
             param.sequence = sequence
 
     def update_valid_values(self) -> None:
         """Update program main on App type."""
-        for param in self.ij.data.params:
+        for param in self.ij.model.params:
             if param.type not in ['String', 'KeyValueList']:
                 continue
 
@@ -131,7 +131,10 @@ class InstallJsonUpdate:
             if param.encrypt is True:
                 store = 'KEYCHAIN'
 
-            if self.ij.data.runtime_level.lower() == 'organization' or param.service_config is True:
+            if (
+                self.ij.model.runtime_level.lower() == 'organization'
+                or param.service_config is True
+            ):
                 if f'${{USER:{store}}}' not in param.valid_values:
                     param.valid_values.append(f'${{USER:{store}}}')
 
@@ -142,7 +145,7 @@ class InstallJsonUpdate:
                 if f'${{{store}}}' in param.valid_values:
                     param.valid_values.remove(f'${{{store}}}')
 
-            elif self.ij.data.runtime_level.lower() == 'playbook':
+            elif self.ij.model.runtime_level.lower() == 'playbook':
                 if f'${{{store}}}' not in param.valid_values:
                     param.valid_values.append(f'${{{store}}}')
 
@@ -156,10 +159,10 @@ class InstallJsonUpdate:
 
     def update_playbook_data_types(self) -> None:
         """Update program main on App type."""
-        if self.ij.data.runtime_level != 'Playbook':
+        if self.ij.model.runtime_level != 'Playbook':
             return
 
-        for param in self.ij.data.params:
+        for param in self.ij.model.params:
             if param.type != 'String':
                 continue
             if not param.playbook_data_type:

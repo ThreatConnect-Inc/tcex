@@ -381,8 +381,8 @@ class Template(BinABC):
 
     def update(self, branch: str, template: str, ignore_hash=False) -> List[dict]:
         """Initialize an App with template files."""
-        template = template or self.tj.data.template_name
-        type_ = self.tj.data.template_type
+        template = template or self.tj.model.template_name
+        type_ = self.tj.model.template_type
 
         # get the final contents after procession all parents
         contents = {}
@@ -438,5 +438,5 @@ class Template(BinABC):
 
     def update_tcex_json(self) -> None:
         """Update the tcex.json file."""
-        self.tj.data.template_repo_hash = self.project_sha
+        self.tj.model.template_repo_hash = self.project_sha
         self.tj.write()

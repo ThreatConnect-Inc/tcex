@@ -79,7 +79,7 @@ class Package(BinABC):
             'tests',  # pytest test directory
         ]
         excludes.extend(self._excludes)
-        excludes.extend(self.tj.data.package.excludes)
+        excludes.extend(self.tj.model.package.excludes)
         return excludes
 
     def exclude_files(self, src: str, names: list):
@@ -124,18 +124,18 @@ class Package(BinABC):
 
         # update package data
         self.package_data['package'].append(
-            {'action': 'App Name:', 'output': self.tj.data.package.app_name}
+            {'action': 'App Name:', 'output': self.tj.model.package.app_name}
         )
 
         # use developer defined app version (deprecated) or package_version from InstallJson model
-        app_version = self.tj.data.package.app_version or self.ij.data.package_version
+        app_version = self.tj.model.package.app_version or self.ij.model.package_version
 
         # update package data
         self.package_data['package'].append({'action': 'App Version:', 'output': f'{app_version}'})
 
         # !!! The name of the folder in the zip is the *key* for an App. This value must
         # !!! remain consistent for the App to upgrade successfully.
-        app_name_version = f'{self.tj.data.package.app_name}_{app_version}'
+        app_name_version = f'{self.tj.model.package.app_name}_{app_version}'
 
         # build app directory
         app_path_fqpn = os.path.join(self.build_fqpn, app_name_version)

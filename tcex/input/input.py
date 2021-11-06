@@ -262,7 +262,7 @@ class Input:
             if name in self.model_properties:
                 continue
 
-            if isinstance(value, list) and self.ij.data.runtime_level.lower() == 'playbook':
+            if isinstance(value, list) and self.ij.model.runtime_level.lower() == 'playbook':
                 # list could contain playbook variables, try to resolve the value
                 updated_value_array = []
                 for v in value:
@@ -286,7 +286,10 @@ class Input:
                         'TCEntityArray',
                     ]:
                         # "mixed" types are not supported
-                        if value != variable and self.ij.data.get_param(name).allow_nested is False:
+                        if (
+                            value != variable
+                            and self.ij.model.get_param(name).allow_nested is False
+                        ):
                             raise RuntimeError(
                                 f'''{match.group('type')} variables '''
                                 '''can not be in mixed string.'''
@@ -305,7 +308,7 @@ class Input:
                     try:
                         value = re.sub(variable, v, value)
                     except Exception:
-                        self.log.warn(f'Could not replace variable {variable} on input {name}.')
+                        self.log.warning(f'Could not replace variable {variable} on input {name}.')
 
                 _inputs[name] = value
 
@@ -325,7 +328,7 @@ class Input:
             # ThreatConnect AOT params could be updated in the future to proper JSON format.
             # MultiChoice data should be represented as JSON array and Boolean values should be a
             # JSON boolean and not a string.
-            param = self.ij.data.get_param(name)
+            param = self.ij.model.get_param(name)
             if isinstance(param, NoneModel):
                 # skip over "default" inputs not defined in the install.json file
                 continue
@@ -333,7 +336,7 @@ class Input:
             if param.type.lower() == 'multichoice' or param.allow_multiple:
                 # update delimited value to an array for inputs that have type of MultiChoice
                 if value is not None and not isinstance(value, list):
-                    inputs[name] = value.split(self.ij.data.list_delimiter or '|')
+                    inputs[name] = value.split(self.ij.model.list_delimiter or '|')
             elif param.type == 'boolean' and isinstance(value, str):
                 # convert boolean input that are passed in as a string ("true" -> True)
                 inputs[name] = str(value).lower() == 'true'
@@ -356,11 +359,11 @@ class Input:
             return runtime_level_map.get('external')
 
         # add all models for any supported features of the App
-        for feature in self.ij.data.features:
+        for feature in self.ij.model.features:
             self._models.extend(feature_map.get(feature))
 
         # add all models based on the runtime level of the App
-        self._models.extend(runtime_level_map.get(self.ij.data.runtime_level.lower()))
+        self._models.extend(runtime_level_map.get(self.ij.model.runtime_level.lower()))
 
         return self._models
 

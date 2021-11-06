@@ -25,7 +25,7 @@ class TestJobJson:
     #         assert False, f'Failed parsing file {fqfn.name} ({ex})'
 
     #     print('\nfilename', fqfn.name)
-    #     print('jj.data.allow_on_demand', jj.data.allow_on_demand)
+    #     print('jj.model.allow_on_demand', jj.model.allow_on_demand)
 
     @staticmethod
     def jj(app_name: str = 'app_1', app_type: str = 'tcpb'):
@@ -57,7 +57,7 @@ class TestJobJson:
             ddiff = DeepDiff(
                 json_dict,
                 # template requires json dump to serialize certain fields
-                json.loads(jj.data.json(by_alias=True, exclude_defaults=True, exclude_none=True)),
+                json.loads(jj.model.json(by_alias=True, exclude_defaults=True, exclude_none=True)),
                 ignore_order=True,
             )
             assert ddiff == {}, f'Failed validation of file {fqfn.name}'

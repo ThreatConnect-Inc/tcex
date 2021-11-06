@@ -138,8 +138,8 @@ def list(
 @app.command()
 def package(
     excludes: Optional[str] = typer.Option(
-        None,
-        help='File and directories to exclude from build in a comma-seperated list.'),
+        None, help='File and directories to exclude from build in a comma-seperated list.'
+    ),
     ignore_validation: Optional[bool] = typer.Option(
         False, help='If true, validation errors will not prevent package.'
     ),
@@ -196,7 +196,8 @@ def update(
         'main', help='The git branch of the tcex-app-template repository to use.'
     ),
     force: bool = typer.Option(
-        False, help="Update files from template even if they haven't changed.")
+        False, help="Update files from template even if they haven't changed."
+    ),
 ):
     """Update an project with latest template files.
 
@@ -223,8 +224,8 @@ def update(
 
         typer.echo('\n')
         tt.print_title('Update Summary')
-        tt.print_setting('Template Type', tt.tj.data.template_type)
-        tt.print_setting('Template Name', tt.tj.data.template_name)
+        tt.print_setting('Template Type', tt.tj.model.template_type)
+        tt.print_setting('Template Name', tt.tj.model.template_name)
         tt.print_setting('Files Updated', len(downloads))
         tt.print_setting('Branch', branch)
     except Exception as ex:

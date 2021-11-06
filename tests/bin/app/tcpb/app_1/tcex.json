@@ -1,0 +1,27 @@
+{
+  "lib_versions": [
+    {
+      "lib_dir": "lib_${env:PY36}",
+      "python_executable": "~/.pyenv/versions/${env:PY36}/bin/python"
+    },
+    {
+      "lib_dir": "lib_${env:PY39}",
+      "python_executable": "~/.pyenv/versions/${env:PY39}/bin/python"
+    }
+  ],
+  "package": {
+    "app_name": "TCPB_-_TcEx_TCPB_App_1",
+    "excludes": [
+      "*.install.json",
+      ".gitignore",
+      ".pre-commit-config.yaml",
+      "app.yaml",
+      "local-*",
+      "pyproject.toml",
+      "setup.cfg",
+      "tcex.json"
+    ]
+  },
+  "template_name": "basic",
+  "template_type": "playbook"
+}

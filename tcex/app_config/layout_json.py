@@ -10,13 +10,14 @@ from typing import TYPE_CHECKING
 # first-party
 from tcex.app_config.models import LayoutJsonModel
 from tcex.backports import cached_property
+from tcex.pleb.singleton import Singleton
 
 if TYPE_CHECKING:  # pragma: no cover
     # first-party
     from tcex.app_config.models.install_json_model import OutputVariablesModel, ParamsModel
 
 
-class LayoutJson:
+class LayoutJson(metaclass=Singleton):
     """Provide a model for the layout.json config file."""
 
     def __init__(self, filename=None, path=None, logger=None):
@@ -82,15 +83,15 @@ class LayoutJson:
         )
         self.write(data)
 
-    @cached_property
-    def data(self) -> LayoutJsonModel:
-        """Return the Install JSON model."""
-        return LayoutJsonModel(**self.contents)
-
     @property
     def has_layout(self):
         """Return True if App has layout.json file."""
         return self.fqfn.is_file()
+
+    @cached_property
+    def model(self) -> LayoutJsonModel:
+        """Return the Install JSON model."""
+        return LayoutJsonModel(**self.contents)
 
     @property
     def update(self):
@@ -119,7 +120,7 @@ class LayoutJsonUpdate:
         # APP-86 - sort output data by name
         self.update_sort_outputs()
 
-        data = self.lj.data.json(
+        data = self.lj.model.json(
             by_alias=True, exclude_defaults=True, exclude_none=True, indent=2, sort_keys=True
         )
         self.lj.write(data)
@@ -127,6 +128,6 @@ class LayoutJsonUpdate:
     def update_sort_outputs(self) -> None:
         """Sort output field by name."""
         # APP-86 - sort output data by name
-        self.lj.data.outputs = sorted(
-            self.lj.data.dict().get('outputs', []), key=lambda i: i['name']
+        self.lj.model.outputs = sorted(
+            self.lj.model.dict().get('outputs', []), key=lambda i: i['name']
         )

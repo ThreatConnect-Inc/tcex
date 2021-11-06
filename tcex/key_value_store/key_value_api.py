@@ -39,7 +39,7 @@ class KeyValueApi(KeyValueABC):
         # this conditional is only required while there are TC instances < 6.0.7 in the wild.
         # once all TC instance are > 6.0.7 the context endpoint should work for PB Apps.
         url = f'/internal/playbooks/keyValue/{key}'
-        if self.ij.data.runtime_level.lower() in [
+        if self.ij.model.runtime_level.lower() in [
             'apiservice',
             'triggerservice',
             'webhooktriggerservice',
@@ -64,7 +64,7 @@ class KeyValueApi(KeyValueABC):
         # this conditional is only required while there are TC instances < 6.0.7 in the wild.
         # once all TC instance are > 6.0.7 the context endpoint should work for PB Apps.
         url = f'/internal/playbooks/keyValue/{key}'
-        if self.ij.data.runtime_level.lower() in [
+        if self.ij.model.runtime_level.lower() in [
             'apiservice',
             'triggerservice',
             'webhooktriggerservice',

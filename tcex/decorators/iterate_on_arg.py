@@ -139,7 +139,7 @@ class IterateOnArg:
             """
             # retrieve the label for the current Arg
             try:
-                label = self.ij.data.params_dict.get(self.arg).label
+                label = self.ij.model.params_dict.get(self.arg).label
             except AttributeError:
                 label = None
 

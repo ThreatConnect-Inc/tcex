@@ -26,14 +26,14 @@ class TestInstallJson:
     #         assert False, f'Failed parsing file {fqfn.name} ({ex})'
 
     #     print('\nfilename', filename)
-    #     print('commit_hash', ij.data.commit_hash)
-    #     print('runtime_level', ij.data.runtime_level)
+    #     print('commit_hash', ij.model.commit_hash)
+    #     print('runtime_level', ij.model.runtime_level)
 
-    #     print('data.cache_info', InstallJson.data.fget.cache_info())
+    #     print('data.cache_info', InstallJson.model.fget.cache_info())
     #     print('ij.update', ij.update())
-    #     print('data.cache_info', InstallJson.data.fget.cache_info())
-    #     print('ij.data.features', ij.data.features)
-    #     print('ij.data.display_name', ij.data.display_name)
+    #     print('data.cache_info', InstallJson.model.fget.cache_info())
+    #     print('ij.model.features', ij.model.features)
+    #     print('ij.model.display_name', ij.model.display_name)
 
     @staticmethod
     def ij(app_name: str = 'app_1', app_type: str = 'tcpb'):
@@ -41,7 +41,10 @@ class TestInstallJson:
         ij_fqfn = os.path.join('tests', 'app_config', 'apps', app_type, app_name, 'install.json')
         fqfn = Path(ij_fqfn)
         try:
-            return InstallJson(filename=fqfn.name, path=fqfn.parent)
+            _ij = InstallJson(filename=fqfn.name, path=fqfn.parent)
+            # reset due to InstallJson being a singleton
+            _ij.fqfn = fqfn
+            return _ij
         except Exception as ex:
             assert False, f'Failed parsing file {fqfn.name} ({ex})'
 
@@ -77,7 +80,7 @@ class TestInstallJson:
             ddiff = DeepDiff(
                 json_dict,
                 # template requires json dump to serialize certain fields
-                json.loads(ij.data.json(by_alias=True, exclude_defaults=True, exclude_none=True)),
+                json.loads(ij.model.json(by_alias=True, exclude_defaults=True, exclude_none=True)),
                 ignore_order=True,
             )
             assert ddiff == {}, f'Failed validation of file {fqfn}'
@@ -93,7 +96,7 @@ class TestInstallJson:
     def test_create_output_variables(self):
         """Test method"""
         output_variables = self.ij(app_type='tcpb').create_output_variables(
-            self.ij(app_type='tcpb').data.playbook.output_variables
+            self.ij(app_type='tcpb').model.playbook.output_variables
         )
         assert '#App:9876:action_1.binary.output1!Binary' in output_variables
 
@@ -130,37 +133,37 @@ class TestInstallJson:
         valid_values = ij.expand_valid_values(['${USERS}'])
         assert valid_values == []
 
-    def test_params_to_args(self):
-        """Test method"""
-        ij = self.ij(app_type='tcpb')
+    # def test_params_to_args(self):
+    #     """Test method"""
+    #     ij = self.ij(app_type='tcpb')
 
-        # bool
-        name = 'boolean_input_required'
-        args = ij.params_to_args(name=name)
-        assert args.get(name) is True
+    #     # bool
+    #     name = 'boolean_input_required'
+    #     args = ij.params_to_args(name=name)
+    #     assert args.get(name) is True
 
-        # choice
-        name = 'tc_action'
-        args = ij.params_to_args(name=name)
-        assert args.get(name) == 'Action 1'
+    #     # choice
+    #     name = 'tc_action'
+    #     args = ij.params_to_args(name=name)
+    #     assert args.get(name) == 'Action 1'
 
-        # key-value-list
-        name = 'key_value_list_required'
-        args = ij.params_to_args(name=name)
-        assert args.get(name) == '<KeyValueArray>'
+    #     # key-value-list
+    #     name = 'key_value_list_required'
+    #     args = ij.params_to_args(name=name)
+    #     assert args.get(name) == '<KeyValueArray>'
 
-        # multi-choice
-        name = 'multi_choice_required'
-        args = ij.params_to_args(name=name)
-        assert args.get(name) == ['Option 1', 'Option 2', 'Option 3']
+    #     # multi-choice
+    #     name = 'multi_choice_required'
+    #     args = ij.params_to_args(name=name)
+    #     assert args.get(name) == ['Option 1', 'Option 2', 'Option 3']
 
-        # else
-        name = 'string_required'
-        args = ij.params_to_args(name=name)
-        assert args.get(name) == (
-            '<Binary|BinaryArray|KeyValue|KeyValueArray|String|'
-            'StringArray|TCEntity|TCEntityArray|TCEnhancedEntityArray>'
-        )
+    #     # else
+    #     name = 'string_required'
+    #     args = ij.params_to_args(name=name)
+    #     assert args.get(name) == (
+    #         '<Binary|BinaryArray|KeyValue|KeyValueArray|String|'
+    #         'StringArray|TCEntity|TCEntityArray|TCEnhancedEntityArray>'
+    #     )
 
     def test_tc_playbook_out_variables(self):
         """Test method"""
@@ -358,13 +361,13 @@ class TestInstallJson:
     def test_model_app_output_var_typ(self):
         """Test method"""
         ij = self.ij_bad(app_type='tcpb')
-        assert ij.data.app_output_var_type == 'App'
+        assert ij.model.app_output_var_type == 'App'
 
         # cleanup temp file
         ij.fqfn.unlink()
 
         ij = self.ij_bad(app_type='tcvc')
-        assert ij.data.app_output_var_type == 'Trigger'
+        assert ij.model.app_output_var_type == 'Trigger'
 
         # cleanup temp file
         ij.fqfn.unlink()
@@ -373,7 +376,7 @@ class TestInstallJson:
         """Test method"""
         ij = self.ij_bad(app_type='tcpb')
 
-        assert ij.data.commit_hash
+        assert ij.model.commit_hash
 
         # cleanup temp file
         ij.fqfn.unlink()
@@ -382,39 +385,39 @@ class TestInstallJson:
         """Test method"""
         ij = self.ij(app_type='tcvc')
 
-        assert ij.data.filter_params(name='service_string_required')
-        assert ij.data.filter_params(hidden=True)
-        assert ij.data.filter_params(required=True)
-        assert ij.data.filter_params(service_config=True)
-        assert ij.data.filter_params(_type='String')
+        assert ij.model.filter_params(name='service_string_required')
+        assert ij.model.filter_params(hidden=True)
+        assert ij.model.filter_params(required=True)
+        assert ij.model.filter_params(service_config=True)
+        assert ij.model.filter_params(_type='String')
 
     def test_model_get_param(self):
         """Test method"""
-        assert self.ij(app_type='tcpb').data.get_param('tc_action')
+        assert self.ij(app_type='tcpb').model.get_param('tc_action')
 
     def test_model_optional_params(self):
         """Test method"""
-        assert self.ij(app_type='tcpb').data.optional_params
+        assert self.ij(app_type='tcpb').model.optional_params
 
     def test_model_param_names(self):
         """Test method"""
-        assert self.ij(app_type='tcpb').data.param_names
+        assert self.ij(app_type='tcpb').model.param_names
 
     def test_model_playbook_outputs(self):
         """Test method"""
-        assert self.ij(app_type='tcpb').data.playbook_outputs
+        assert self.ij(app_type='tcpb').model.playbook_outputs
 
     def test_model_required_params(self):
         """Test method"""
-        assert self.ij(app_type='tcpb').data.required_params
+        assert self.ij(app_type='tcpb').model.required_params
 
     def test_model_service_config_params(self):
         """Test method"""
-        assert self.ij(app_type='tcvc').data.service_config_params
+        assert self.ij(app_type='tcvc').model.service_config_params
 
     def test_model_service_playbook_params(self):
         """Test method"""
-        assert self.ij(app_type='tcvc').data.service_playbook_params
+        assert self.ij(app_type='tcvc').model.service_playbook_params
 
     def test_tc_support(self) -> None:
         """Validate install.json files."""

@@ -13,12 +13,17 @@ from requests import Session
 
 # first-party
 from tcex.app_config.install_json import InstallJson
-from tcex.logger.api_handler import ApiHandler, ApiHandlerFormatter
-from tcex.logger.cache_handler import CacheHandler
-from tcex.logger.pattern_file_handler import PatternFileHandler
-from tcex.logger.rotating_file_handler_custom import RotatingFileHandlerCustom
-from tcex.logger.thread_file_handler import ThreadFileHandler
-from tcex.logger.trace_logger import TraceLogger
+from tcex.logger.api_handler import (  # pylint: disable=no-name-in-module
+    ApiHandler,
+    ApiHandlerFormatter,
+)
+from tcex.logger.cache_handler import CacheHandler  # pylint: disable=no-name-in-module
+from tcex.logger.pattern_file_handler import PatternFileHandler  # pylint: disable=no-name-in-module
+from tcex.logger.rotating_file_handler_custom import (  # pylint: disable=no-name-in-module
+    RotatingFileHandlerCustom,
+)
+from tcex.logger.thread_file_handler import ThreadFileHandler  # pylint: disable=no-name-in-module
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 
 
 class Logger:
@@ -330,14 +335,14 @@ class Logger:
     def _log_app_data(self) -> None:
         """Log the App data information as a best effort."""
         try:
-            self.log.info(f'app-name="{self.ij.data.display_name}"')
-            if self.ij.data.features:
-                self.log.info(f'''app-features={','.join(self.ij.data.features)}''')
-            self.log.info(f'app-minimum-threatconnect-version={self.ij.data.min_server_version}')
-            self.log.info(f'app-runtime-level={self.ij.data.runtime_level}')
-            app_version = f'app-version={self.ij.data.program_version}'
-            if self.ij.data.commit_hash is not None:
-                app_version += f', app-commit-hash={self.ij.data.commit_hash}'
+            self.log.info(f'app-name="{self.ij.model.display_name}"')
+            if self.ij.model.features:
+                self.log.info(f'''app-features={','.join(self.ij.model.features)}''')
+            self.log.info(f'app-minimum-threatconnect-version={self.ij.model.min_server_version}')
+            self.log.info(f'app-runtime-level={self.ij.model.runtime_level}')
+            app_version = f'app-version={self.ij.model.program_version}'
+            if self.ij.model.commit_hash is not None:
+                app_version += f', app-commit-hash={self.ij.model.commit_hash}'
             self.log.info(app_version)  # version and commit hash
         except Exception:  # nosec; pragma: no cover
             pass
