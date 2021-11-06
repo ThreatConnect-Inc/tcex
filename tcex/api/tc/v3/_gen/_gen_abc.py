@@ -64,6 +64,8 @@ class GenerateABC(ABC):
             type_ = 'group_attributes'
         elif type_ == 'attributes' and self.type_ == 'indicators':
             type_ = 'indicator_attributes'
+        elif type_ == 'attributes' and self.type_ == 'victims':
+            type_ = 'victim_attributes'
         return self.utils.snake_string(type_)
 
     def _module_data(self, type_: str) -> Dict:
@@ -81,109 +83,6 @@ class GenerateABC(ABC):
             'object_class': f'{type_.singular().pascal_case()}',
             'object_collection_class': f'{type_.plural().pascal_case()}',
         }
-
-    # def _model_module_map(self, type_: str) -> Dict:
-    #     """Return the model module map data."""
-    #     type_ = self.utils.snake_string(type_)
-    #     _modules = {
-    #         'adversary_assets': {
-    #             'model_module': 'tcex.api.tc.v3.adversary_assets.adversary_asset_model',
-    #             'model_class': 'AdversaryAssetModel',
-    #         },
-    #         'artifacts': {
-    #             'model_module': 'tcex.api.tc.v3.artifacts.artifact_model',
-    #             'model_class': 'ArtifactModel',
-    #         },
-    #         'artifact_types': {
-    #             'model_module': 'tcex.api.tc.v3.artifact_types.artifact_type_model',
-    #             'model_class': 'ArtifactTypeModel',
-    #         },
-    #         'attributes': {
-    #             'model_module': 'tcex.api.tc.v3.case_attributes.case_attribute_model',
-    #             'model_class': 'CaseAttributesModel',
-    #         },
-    #         'case_attributes': {
-    #             'model_module': 'tcex.api.tc.v3.case_attributes.case_attribute_model',
-    #             'model_class': 'CaseAttributesModel',
-    #         },
-    #         'cases': {
-    #             'model_module': 'tcex.api.tc.v3.cases.case_model',
-    #             'model_class': 'CaseModel',
-    #         },
-    #         'group_attributes': {
-    #             'model_module': 'tcex.api.tc.v3.group_attributes.group_attribute_model',
-    #             'model_class': 'GroupAttributesModel',
-    #         },
-    #         'groups': {
-    #             'model_module': 'tcex.api.tc.v3.groups.group_model',
-    #             'model_class': 'GroupModel',
-    #         },
-    #         'indicator_attributes': {
-    #             # 'model_module': 'tcex.api.tc.v3.indicator_attributes.indicator_attribute_model',
-    #             # 'model_class': 'IndicatorAttributesModel',
-    #             'model_module': f'{self.tap(type_)}.{type_}.{type_.singular()}_model',
-    #             'model_class': f'{type_.pascal_case()}Model',
-    #             'object_class': f'{type_.singular().pascal_case()}',
-    #         },
-    #         'indicators': {
-    #             'model_module': 'tcex.api.tc.v3.indicators.indicator_model',
-    #             'model_class': 'IndicatorModel',
-    #         },
-    #         'notes': {
-    #             'model_module': 'tcex.api.tc.v3.notes.note_model',
-    #             'model_class': 'NoteModel',
-    #         },
-    #         'owner_roles': {
-    #             'model_module': 'tcex.api.tc.v3.security.owner_roles.owner_role_model',
-    #             'model_class': 'OwnerRoleModel',
-    #         },
-    #         'owners': {
-    #             'model_module': 'tcex.api.tc.v3.security.owners.owner_model',
-    #             'model_class': 'OwnerModel',
-    #         },
-    #         'security_labels': {
-    #             'model_module': 'tcex.api.tc.v3.security_labels.security_label_model',
-    #             'model_class': 'SecurityLabelModel',
-    #         },
-    #         'system_roles': {
-    #             'model_module': 'tcex.api.tc.v3.security.system_roles.system_role_model',
-    #             'model_class': 'SystemRoleModel',
-    #         },
-    #         'tags': {
-    #             'model_module': 'tcex.api.tc.v3.tags.tag_model',
-    #             'model_class': 'TagModel',
-    #         },
-    #         'tasks': {
-    #             'model_module': 'tcex.api.tc.v3.tasks.task_model',
-    #             'model_class': 'TaskModel',
-    #         },
-    #         'users': {
-    #             'model_module': 'tcex.api.tc.v3.security.users.user_model',
-    #             'model_class': 'UserModel',
-    #         },
-    #         'user_groups': {
-    #             'model_module': 'tcex.api.tc.v3.security.user_groups.user_group_model',
-    #             'model_class': 'UserGroupModel',
-    #         },
-    #         'victims': {
-    #             'model_module': 'tcex.api.tc.v3.victims.victim_model',
-    #             'model_class': 'VictimModel',
-    #         },
-    #         'victim_assets': {
-    #             'model_module': 'tcex.api.tc.v3.victim_assets.victim_asset_model',
-    #             'model_class': 'VictimAssetModel',
-    #         },
-    #         'workflow_events': {
-    #             'model_module': 'tcex.api.tc.v3.workflow_events.workflow_event_model',
-    #             'model_class': 'WorkflowEventModel',
-    #         },
-    #         'workflow_templates': {
-    #             'model_module': 'tcex.api.tc.v3.workflow_templates.workflow_template_model',
-    #             'model_class': 'WorkflowTemplateModel',
-    #         },
-    #     }
-    #     print(_modules.get(type_))
-    #     return _modules.get(type_)
 
     @cached_property
     def _type_properties(self) -> dict:

@@ -6,14 +6,18 @@ from typing import TYPE_CHECKING
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
+from tcex.api.tc.v3.security_labels.security_label_model import SecurityLabelModel
 from tcex.api.tc.v3.tags.tag_model import TagModel
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
+from tcex.api.tc.v3.victim_attributes.victim_attribute_model import VictimAttributeModel
 from tcex.api.tc.v3.victims.victim_filter import VictimFilter
 from tcex.api.tc.v3.victims.victim_model import VictimModel, VictimsModel
 
 if TYPE_CHECKING:  # pragma: no cover
     # first-party
+    from tcex.api.tc.v3.security_labels.security_label import SecurityLabel
     from tcex.api.tc.v3.tags.tag import Tag
+    from tcex.api.tc.v3.victim_attributes.victim_attribute import VictimAttribute
 
 
 class Victims(ObjectCollectionABC):
@@ -67,8 +71,8 @@ class Victim(ObjectABC):
         nationality (str, kwargs): Nationality of the Victim.
         org (str, kwargs): Org of the Victim.
         security_labels (SecurityLabels, kwargs): A list of Security Labels corresponding to the
-            Intel item (NOTE: Setting this parameter will replace any existing tag(s) with the
-            one(s) specified).
+            Intel item (NOTE: Setting this parameter will replace any existing tag(s) with
+            the one(s) specified).
         suborg (str, kwargs): Suborg of the Victim.
         tags (Tags, kwargs): A list of Tags corresponding to the item (NOTE: Setting this parameter
             will replace any existing tag(s) with the one(s) specified).
@@ -107,6 +111,27 @@ class Victim(ObjectABC):
 
         return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
 
+    def add_attribute(self, **kwargs) -> None:
+        """Add attribute to the object.
+
+        Args:
+            default (bool, kwargs): A flag indicating that this is the default attribute of its type
+                within the object. Only applies to certain attribute and data types.
+            source (str, kwargs): The attribute source.
+            value (str, kwargs): Attribute value.
+        """
+        self.model.attributes.data.append(VictimAttributeModel(**kwargs))
+
+    def add_security_label(self, **kwargs) -> None:
+        """Add security_label to the object.
+
+        Args:
+            color (str, kwargs): Color of the security label.
+            description (str, kwargs): Description of the security label.
+            name (str, kwargs): Name of the security label.
+        """
+        self.model.security_labels.data.append(SecurityLabelModel(**kwargs))
+
     def add_tag(self, **kwargs) -> None:
         """Add tag to the object.
 
@@ -115,6 +140,22 @@ class Victim(ObjectABC):
             name (str, kwargs): The **name** for the Tag.
         """
         self.model.tags.data.append(TagModel(**kwargs))
+
+    @property
+    def attributes(self) -> 'VictimAttribute':
+        """Yield Attribute from Attributes."""
+        # first-party
+        from tcex.api.tc.v3.victim_attributes.victim_attribute import VictimAttributes
+
+        yield from self._iterate_over_sublist(VictimAttributes)
+
+    @property
+    def security_labels(self) -> 'SecurityLabel':
+        """Yield Security_Label from Security_Labels."""
+        # first-party
+        from tcex.api.tc.v3.security_labels.security_label import SecurityLabels
+
+        yield from self._iterate_over_sublist(SecurityLabels)
 
     @property
     def tags(self) -> 'Tag':

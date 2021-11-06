@@ -198,7 +198,7 @@ class GenerateObjectABC(GenerateABC, ABC):
 
             return {'type': 'Artifact', 'id': self.model.id, 'value': self.model.summary}
         """
-        name_entities = ['case', 'tag', 'task', 'workflow template']
+        name_entities = ['cases', 'tags', 'tasks', 'workflow_templates']
         value_type = 'summary'
         if self.type_.lower() in name_entities:
             value_type = 'name'
@@ -439,7 +439,7 @@ class GenerateObjectABC(GenerateABC, ABC):
                 # normalize the data format
                 field_data = {'data': [field_data]}
 
-            if field_data.get('data')[0].get('read-only', False) is False:
+            if field_data.get('data')[0].get('readOnly', False) is False:
                 add_properties.append(field_name)
 
         # generate add_artifact method
@@ -471,34 +471,34 @@ class GenerateObjectABC(GenerateABC, ABC):
             _code += self._gen_code_object_add_type_method('tasks')
 
         # properties of endpoint
-        properties = list(self._type_properties.keys())
+        # properties = list(self._type_properties.keys())
 
         # generate artifacts property method
-        if 'artifacts' in properties:
+        if 'artifacts' in add_properties:
             _code += self._gen_code_object_type_property_method('artifacts')
 
         # generate attributes property method
-        if 'attributes' in properties:
+        if 'attributes' in add_properties:
             _code += self._gen_code_object_type_property_method('attributes')
 
-        # generate cases property method
-        if 'cases' in properties:
+        # generate cases add_property method
+        if 'cases' in add_properties:
             _code += self._gen_code_object_type_property_method('cases')
 
         # generate notes property method
-        if 'notes' in properties:
+        if 'notes' in add_properties:
             _code += self._gen_code_object_type_property_method('notes')
 
         # generate security_labels property method
-        if 'securityLabels' in properties:
+        if 'securityLabels' in add_properties:
             _code += self._gen_code_object_type_property_method('security_labels')
 
         # generate tags property method
-        if 'tags' in properties:
+        if 'tags' in add_properties:
             _code += self._gen_code_object_type_property_method('tags')
 
         # generate tasks property method
-        if 'tasks' in properties:
+        if 'tasks' in add_properties:
             _code += self._gen_code_object_type_property_method('tasks')
 
         return _code

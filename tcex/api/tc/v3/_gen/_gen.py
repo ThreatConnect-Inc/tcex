@@ -61,23 +61,24 @@ class GenerateObject(GenerateObjectABC):
         self.api_url = f'{self._api_server}{_api_endpoint}'
 
 
-def format_code(code):
+def format_code(_code):
     """Return formatted code."""
 
     # run black formatter on code
     mode = black.FileMode(line_length=100, string_normalization=False)
     try:
-        code = black.format_file_contents(code, fast=False, mode=mode)
+        _code = black.format_file_contents(_code, fast=False, mode=mode)
     except black.NothingChanged:
         pass
 
+    # run isort on code
     try:
         isort_config = isort.Config(settings_file='setup.cfg')
-        code = isort.code(code, config=isort_config)
-    except Exception:
-        raise
+        _code = isort.code(_code, config=isort_config)
+    except Exception as ex:
+        print(f'Formatting of code failed {ex}.')
 
-    return code
+    return _code
 
 
 def gen_args(type_: str, indent_blocks: int) -> None:
@@ -107,14 +108,14 @@ def gen_filter(type_: str) -> None:
     # generate class methods first so requirements can be updated
     class_methods = gen.gen_class_methods()
 
-    code = gen.gen_doc_string()
-    code += gen.gen_requirements()
-    code += gen.gen_class()
-    code += class_methods
-    code += ''  # newline at the end of the file
+    _code = gen.gen_doc_string()
+    _code += gen.gen_requirements()
+    _code += gen.gen_class()
+    _code += class_methods
+    _code += ''  # newline at the end of the file
 
     with out_file.open(mode='w') as fh:
-        fh.write(format_code(code))
+        fh.write(format_code(_code))
 
     typer.secho(f'Successfully wrote {out_file}.', fg=typer.colors.GREEN)
 
@@ -136,26 +137,26 @@ def gen_model(type_: str) -> None:
     model_fields = gen.gen_model_fields()
     validator_methods = gen.gen_validator_methods()
 
-    code = gen.gen_doc_string()
-    code += gen.gen_requirements()
+    _code = gen.gen_doc_string()
+    _code += gen.gen_requirements()
     # add container model
-    code += gen.gen_container_class()
-    code += gen.gen_container_fields()
+    _code += gen.gen_container_class()
+    _code += gen.gen_container_fields()
     # add data model
-    code += gen.gen_data_class()
-    code += gen.gen_data_fields()
+    _code += gen.gen_data_class()
+    _code += gen.gen_data_fields()
     # add data model
-    code += gen.gen_model_class()
-    code += model_fields
+    _code += gen.gen_model_class()
+    _code += model_fields
     # add validators
-    code += validator_methods
+    _code += validator_methods
     # add forward reference requirements
-    code += gen.gen_requirements_first_party_forward_reference()
+    _code += gen.gen_requirements_first_party_forward_reference()
     # add forward references
-    code += gen.gen_forward_reference()
+    _code += gen.gen_forward_reference()
 
     with out_file.open(mode='w') as fh:
-        fh.write(format_code(code))
+        fh.write(format_code(_code))
 
     typer.secho(f'Successfully wrote {out_file}.', fg=typer.colors.GREEN)
 
@@ -177,15 +178,15 @@ def gen_object(type_: str) -> None:
     container_methods = gen.gen_container_methods()
     object_methods = gen.gen_object_methods()
 
-    code = gen.gen_doc_string()
-    code += gen.gen_requirements()
-    code += gen.gen_container_class()
-    code += container_methods
-    code += gen.gen_object_class()
-    code += object_methods
+    _code = gen.gen_doc_string()
+    _code += gen.gen_requirements()
+    _code += gen.gen_container_class()
+    _code += container_methods
+    _code += gen.gen_object_class()
+    _code += object_methods
 
     with out_file.open(mode='w') as fh:
-        fh.write(format_code(code))
+        fh.write(format_code(_code))
 
     typer.secho(f'Successfully wrote {out_file}.', fg=typer.colors.GREEN)
 
@@ -218,6 +219,7 @@ class ObjectTypes(str, Enum):
     user_groups = 'user_groups'
     victims = 'victims'
     victim_assets = 'victim_assets'
+    victim_attributes = 'victim_attributes'
     workflow_events = 'workflow_events'
     workflow_templates = 'workflow_templates'
 

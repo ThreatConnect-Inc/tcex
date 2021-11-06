@@ -1,18 +1,18 @@
-"""WorkflowTemplate / WorkflowTemplates Object"""
+"""VictimAttribute / VictimAttributes Object"""
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
-from tcex.api.tc.v3.workflow_templates.workflow_template_filter import WorkflowTemplateFilter
-from tcex.api.tc.v3.workflow_templates.workflow_template_model import (
-    WorkflowTemplateModel,
-    WorkflowTemplatesModel,
+from tcex.api.tc.v3.victim_attributes.victim_attribute_filter import VictimAttributeFilter
+from tcex.api.tc.v3.victim_attributes.victim_attribute_model import (
+    VictimAttributeModel,
+    VictimAttributesModel,
 )
 
 
-class WorkflowTemplates(ObjectCollectionABC):
-    """WorkflowTemplates Collection.
+class VictimAttributes(ObjectCollectionABC):
+    """VictimAttributes Collection.
 
     # Example of params input
     {
@@ -32,50 +32,52 @@ class WorkflowTemplates(ObjectCollectionABC):
         super().__init__(
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
         )
-        self._model = WorkflowTemplatesModel(**kwargs)
-        self._type = 'workflow_templates'
+        self._model = VictimAttributesModel(**kwargs)
+        self._type = 'victim_attributes'
 
-    def __iter__(self) -> 'WorkflowTemplate':
+    def __iter__(self) -> 'VictimAttribute':
         """Iterate over CM objects."""
-        return self.iterate(base_class=WorkflowTemplate)
+        return self.iterate(base_class=VictimAttribute)
 
     @property
     def _api_endpoint(self) -> str:
         """Return the type specific API endpoint."""
-        return ApiEndpoints.WORKFLOW_TEMPLATES.value
+        return ApiEndpoints.VICTIM_ATTRIBUTES.value
 
     @property
-    def filter(self) -> 'WorkflowTemplateFilter':
+    def filter(self) -> 'VictimAttributeFilter':
         """Return the type specific filter object."""
-        return WorkflowTemplateFilter(self.tql)
+        return VictimAttributeFilter(self.tql)
 
 
-class WorkflowTemplate(ObjectABC):
-    """WorkflowTemplates Object.
+class VictimAttribute(ObjectABC):
+    """VictimAttributes Object.
 
     Args:
-        config_attribute (object, kwargs): The **config attribute** for the Workflow_Template.
-        description (str, kwargs): The **description** for the Workflow_Template.
-        name (str, kwargs): The **name** for the Workflow_Template.
-        version (int, kwargs): The **version** for the Workflow_Template.
+        default (bool, kwargs): A flag indicating that this is the default attribute of its type
+            within the object. Only applies to certain attribute and data types.
+        source (str, kwargs): The attribute source.
+        type (str, kwargs): The attribute type.
+        value (str, kwargs): Attribute value.
+        victim_id (int, kwargs): Victim associated with attribute.
     """
 
     def __init__(self, **kwargs) -> None:
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
-        self._model = WorkflowTemplateModel(**kwargs)
-        self.type_ = 'Workflow Template'
+        self._model = VictimAttributeModel(**kwargs)
+        self.type_ = 'Victim Attribute'
 
     @property
     def _api_endpoint(self) -> str:
         """Return the type specific API endpoint."""
-        return ApiEndpoints.WORKFLOW_TEMPLATES.value
+        return ApiEndpoints.VICTIM_ATTRIBUTES.value
 
     @property
     def _base_filter(self) -> dict:
         """Return the default filter."""
         return {
-            'keyword': 'workflow_template_id',
+            'keyword': 'victim_attribute_id',
             'operator': TqlOperator.EQ,
             'value': self.model.id,
             'type_': 'integer',
@@ -88,4 +90,4 @@ class WorkflowTemplate(ObjectABC):
         if hasattr(self.model, 'type'):
             type_ = self.model.type
 
-        return {'type': type_, 'id': self.model.id, 'value': self.model.name}
+        return {'type': type_, 'id': self.model.id, 'value': self.model.summary}

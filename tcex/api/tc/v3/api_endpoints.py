@@ -27,5 +27,6 @@ class ApiEndpoints(Enum):
     USERS = '/v3/security/users'
     VICTIMS = '/v3/victims'
     VICTIM_ASSETS = '/v3/victimAssets'
+    VICTIM_ATTRIBUTES = '/v3/victimAttributes'
     WORKFLOW_EVENTS = '/v3/workflowEvents'
     WORKFLOW_TEMPLATES = '/v3/workflowTemplates'
