@@ -2,13 +2,8 @@
 # standard library
 import os
 from abc import ABC
-<<<<<<< HEAD
-from typing import Any
-=======
-
-# third-party
+from textwrap import TextWrapper
 from typing import Any, Dict
->>>>>>> e55bdd28 (APP-2294 - worked on indicator/groups)
 
 # third-party
 import typer
@@ -38,6 +33,27 @@ class GenerateABC(ABC):
         self.i4 = ' ' * 16  # indent level 3
         self.requirements = {}
         self.utils = Utils()
+
+    @staticmethod
+    def _format_description(arg: str, description: str, length: int, indent: str) -> str:
+        """Format description for field."""
+        # fix descriptions coming from core API endpoint
+        if description[-1] not in ('.', '?', '!'):
+            description += '.'
+
+        # fix core descriptions that are not capitalized.
+        description_words = description.split(' ')
+        description = f'{description_words[0].title()} ' + ' '.join(description_words[1:])
+
+        line = f'{arg}: {description}'
+        textwrapper = TextWrapper(
+            subsequent_indent=indent + '    ',
+            width=length - len(indent),
+            expand_tabs=True,
+            tabsize=len(indent),
+            break_long_words=False,
+        )
+        return '\n'.join(textwrapper.wrap(line))
 
     def _type_map(self, type_):
         """Return modified type."""

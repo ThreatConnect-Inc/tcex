@@ -61,7 +61,14 @@ class GenerateFilterABC(GenerateABC, ABC):
         try:
             r = self.session.options(f'{self.api_url}/tql', params={})
             if r.ok:
-                _properties = r.json()
+                _properties = r.json().get('data', [])
+
+                # TODO: [workaround] core issue where the wrong type is provided
+                if self.type_ == 'indicators':
+                    for property in _properties:
+                        if property.get('keyword') == 'addressIpval':
+                            property['type'] = 'String'
+
         except (ConnectionError, ProxyError) as ex:
             typer.secho(f'Failed getting types properties ({ex}).', fg=typer.colors.RED)
             typer.Exit(1)
@@ -70,13 +77,42 @@ class GenerateFilterABC(GenerateABC, ABC):
     @staticmethod
     def _filter_type(filter_type: str):
         """Return the Python type based on the filter type."""
-        # get the arg type
+        # hint types for the filter method
         filter_type_map = {
+            'Assignee': 'str',
+            'BigInteger': 'int',
             'Boolean': 'bool',
+            'Date': 'str',
+            'DateTime': 'str',
+            'Enum': 'str',
+            'EnumToInteger': 'str',
             'Integer': 'int',
             'Long': 'int',
+            'String': 'str',
+            'StringCIDR': 'str',
+            'StringLower': 'str',
+            'StringUpper': 'str',
+            'Undefined': 'str',
+            'User': 'str',
         }
-        return filter_type_map.get(filter_type, 'str')
+        hint_type = filter_type_map.get(filter_type)
+
+        # tql types for the add_filter method call
+        tql_type_map = {
+            'bool': 'TqlType.BOOLEAN',
+            'int': 'TqlType.INTEGER',
+            'str': 'TqlType.STRING',
+        }
+        tql_type = tql_type_map.get(hint_type)
+
+        # fail on any unknown types (core added something new)
+        if hint_type is None:
+            raise RuntimeError(f'Invalid type of {filter_type} (Core team added something new?)')
+
+        return {
+            'hint_type': hint_type,
+            'tql_type': tql_type,
+        }
 
     def _gen_code_generic_method(self, filter_data: dict) -> str:
         """Return code for generic TQL filter methods.
@@ -92,7 +128,7 @@ class GenerateFilterABC(GenerateABC, ABC):
         }
         """
         keyword = self.utils.camel_string(filter_data.get('keyword'))
-        description = filter_data.get('description')
+        description = filter_data.get('description', 'No description provided.')
         name = filter_data.get('name')
         type_ = filter_data.get('type')
 
@@ -100,21 +136,25 @@ class GenerateFilterABC(GenerateABC, ABC):
         if keyword in ['id', 'type']:
             comment = '  # pylint: disable=redefined-builtin'
 
+        keyword_description = self._format_description(
+            arg=keyword.snake_case(), description=description, length=100, indent=' ' * 12
+        )
         return [
             (
                 f'{self.i1}def {keyword.snake_case()}'
                 f'(self, operator: Enum, {keyword.snake_case()}: '
-                f'{self._filter_type(type_)}) -> None:{comment}'
+                f'''{self._filter_type(type_).get('hint_type')}) -> None:{comment}'''
             ),
             f'{self.i2}"""Filter {name} based on **{keyword}** keyword.',
             '',
             f'{self.i2}Args:',
             f'{self.i3}operator: The operator enum for the filter.',
-            f'{self.i3}{keyword.snake_case()}: {description}.',
+            # f'{self.i3}{keyword.snake_case()}: {description}.',
+            f'{self.i3}{keyword_description}',
             f'{self.i2}"""',
             (
                 f'''{self.i2}self._tql.add_filter('{keyword}', '''
-                f'''operator, {keyword.snake_case()}, {self._tql_type(type_)})'''
+                f'''operator, {keyword.snake_case()}, {self._filter_type(type_).get('tql_type')})'''
             ),
             '',
         ]
@@ -275,17 +315,6 @@ class GenerateFilterABC(GenerateABC, ABC):
             '',
         ]
 
-    @staticmethod
-    def _tql_type(tql_type: str):
-        """Return the Python type based on the filter type."""
-        # get the arg type
-        tql_type_map = {
-            'Boolean': 'TqlType.BOOLEAN',
-            'Integer': 'TqlType.INTEGER',
-            'Long': 'TqlType.INTEGER',
-        }
-        return tql_type_map.get(tql_type, 'TqlType.STRING')
-
     def gen_api_endpoint_method(self) -> str:
         """Generate private class method/property.
 
@@ -321,7 +350,7 @@ class GenerateFilterABC(GenerateABC, ABC):
         # added _api_endpoint method
         _filter_class.append(self.gen_api_endpoint_method())
 
-        for t in sorted(self._filter_properties.get('data', []), key=lambda i: i['keyword']):
+        for t in sorted(self._filter_properties, key=lambda i: i['keyword']):
             keyword = self.utils.camel_string(t.get('keyword'))
 
             if keyword.snake_case() == 'has_artifact':

@@ -50,7 +50,7 @@ class VictimFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            attribute: None.
+            attribute: No description provided.
         """
         self._tql.add_filter('attribute', operator, attribute, TqlType.STRING)
 

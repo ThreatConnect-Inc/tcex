@@ -93,8 +93,8 @@ class WorkflowEventFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            system_generated: Flag determining if this event
-                was created automatically by the system.
+            system_generated: Flag determining if this event was created automatically by the
+                system.
         """
         self._tql.add_filter('systemGenerated', operator, system_generated, TqlType.BOOLEAN)
 

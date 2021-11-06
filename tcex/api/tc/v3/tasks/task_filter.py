@@ -23,7 +23,7 @@ class TaskFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            assigned_to_user_or_group: A value of User, Group, or None depending on the assignee..
+            assigned_to_user_or_group: A value of User, Group, or None depending on the assignee.
         """
         self._tql.add_filter(
             'assignedToUserOrGroup', operator, assigned_to_user_or_group, TqlType.STRING
@@ -34,7 +34,7 @@ class TaskFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            assignee_name: The user or group name assigned to the Task..
+            assignee_name: The user or group name assigned to the Task.
         """
         self._tql.add_filter('assigneeName', operator, assignee_name, TqlType.STRING)
 

@@ -54,7 +54,12 @@ class IndicatorAttribute(ObjectABC):
     """IndicatorAttributes Object.
 
     Args:
-        data (array, kwargs): The data for the IndicatorAttributes.
+        default (bool, kwargs): A flag indicating that this is the default attribute of its type
+            within the object. Only applies to certain attribute and data types.
+        indicator_id (int, kwargs): Indicator associated with attribute.
+        source (str, kwargs): The attribute source.
+        type (str, kwargs): The attribute type.
+        value (str, kwargs): Attribute value.
     """
 
     def __init__(self, **kwargs) -> None:

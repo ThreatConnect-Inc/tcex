@@ -82,8 +82,8 @@ class Indicator(ObjectABC):
         private_flag (bool, kwargs): Is this indicator private?
         rating (int, kwargs): The indicator threat rating.
         security_labels (SecurityLabels, kwargs): A list of Security Labels corresponding to the
-            Intel item (NOTE: Setting this parameter will replace any existing tag(s) with the
-            one(s) specified).
+            Intel item (NOTE: Setting this parameter will replace any existing tag(s) with
+            the one(s) specified).
         sha1 (str, kwargs): The sha1 associated with this indicator (File specific summary field).
         sha256 (str, kwargs): The sha256 associated with this indicator (File specific summary
             field).
@@ -163,6 +163,7 @@ class Indicator(ObjectABC):
     @property
     def attributes(self) -> 'IndicatorAttribute':
         """Yield Attribute from Attributes."""
+        # first-party
         from tcex.api.tc.v3.indicator_attributes.indicator_attribute import IndicatorAttributes
 
         yield from self._iterate_over_sublist(IndicatorAttributes)
@@ -170,6 +171,7 @@ class Indicator(ObjectABC):
     @property
     def security_labels(self) -> 'SecurityLabel':
         """Yield Security_Label from Security_Labels."""
+        # first-party
         from tcex.api.tc.v3.security_labels.security_label import SecurityLabels
 
         yield from self._iterate_over_sublist(SecurityLabels)

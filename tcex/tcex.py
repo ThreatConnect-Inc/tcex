@@ -36,7 +36,8 @@ from tcex.pleb.scoped_property import scoped_property
 from tcex.services.api_service import ApiService
 from tcex.services.common_service_trigger import CommonServiceTrigger
 from tcex.services.webhook_trigger_service import WebhookTriggerService
-from tcex.sessions import ExternalSession, TcSession
+from tcex.sessions.external_session import ExternalSession
+from tcex.sessions.tc_session import TcSession
 from tcex.tokens import Tokens
 from tcex.utils import Utils
 

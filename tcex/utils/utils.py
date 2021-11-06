@@ -16,7 +16,6 @@ import pyaes
 
 # first-party
 from tcex.backports import cached_property
-from tcex.utils.mitre_attack_utils import MitreAttackUtils
 
 if TYPE_CHECKING:
     # third-party
@@ -237,11 +236,6 @@ class Utils:
                 yield mapped_obj
         except Exception:  # nosec
             pass
-
-    @property
-    def mitre_attack(self) -> MitreAttackUtils:
-        """Return an instance of MitreAttackUtils."""
-        return MitreAttackUtils()
 
     @staticmethod
     def printable_cred(

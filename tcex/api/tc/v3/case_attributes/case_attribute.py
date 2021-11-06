@@ -1,18 +1,18 @@
-"""GroupAttribute / GroupAttributes Object"""
+"""CaseAttribute / CaseAttributes Object"""
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
-from tcex.api.tc.v3.group_attributes.group_attribute_filter import GroupAttributeFilter
-from tcex.api.tc.v3.group_attributes.group_attribute_model import (
-    GroupAttributeModel,
-    GroupAttributesModel,
+from tcex.api.tc.v3.case_attributes.case_attribute_filter import CaseAttributeFilter
+from tcex.api.tc.v3.case_attributes.case_attribute_model import (
+    CaseAttributeModel,
+    CaseAttributesModel,
 )
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 
 
-class GroupAttributes(ObjectCollectionABC):
-    """GroupAttributes Collection.
+class CaseAttributes(ObjectCollectionABC):
+    """CaseAttributes Collection.
 
     # Example of params input
     {
@@ -32,31 +32,31 @@ class GroupAttributes(ObjectCollectionABC):
         super().__init__(
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
         )
-        self._model = GroupAttributesModel(**kwargs)
-        self._type = 'group_attributes'
+        self._model = CaseAttributesModel(**kwargs)
+        self._type = 'case_attributes'
 
-    def __iter__(self) -> 'GroupAttribute':
+    def __iter__(self) -> 'CaseAttribute':
         """Iterate over CM objects."""
-        return self.iterate(base_class=GroupAttribute)
+        return self.iterate(base_class=CaseAttribute)
 
     @property
     def _api_endpoint(self) -> str:
         """Return the type specific API endpoint."""
-        return ApiEndpoints.GROUP_ATTRIBUTES.value
+        return ApiEndpoints.CASE_ATTRIBUTES.value
 
     @property
-    def filter(self) -> 'GroupAttributeFilter':
+    def filter(self) -> 'CaseAttributeFilter':
         """Return the type specific filter object."""
-        return GroupAttributeFilter(self.tql)
+        return CaseAttributeFilter(self.tql)
 
 
-class GroupAttribute(ObjectABC):
-    """GroupAttributes Object.
+class CaseAttribute(ObjectABC):
+    """CaseAttributes Object.
 
     Args:
+        case_id (int, kwargs): Case associated with attribute.
         default (bool, kwargs): A flag indicating that this is the default attribute of its type
             within the object. Only applies to certain attribute and data types.
-        group_id (int, kwargs): Group associated with attribute.
         source (str, kwargs): The attribute source.
         type (str, kwargs): The attribute type.
         value (str, kwargs): Attribute value.
@@ -65,19 +65,19 @@ class GroupAttribute(ObjectABC):
     def __init__(self, **kwargs) -> None:
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
-        self._model = GroupAttributeModel(**kwargs)
-        self.type_ = 'Group Attribute'
+        self._model = CaseAttributeModel(**kwargs)
+        self.type_ = 'Case Attribute'
 
     @property
     def _api_endpoint(self) -> str:
         """Return the type specific API endpoint."""
-        return ApiEndpoints.GROUP_ATTRIBUTES.value
+        return ApiEndpoints.CASE_ATTRIBUTES.value
 
     @property
     def _base_filter(self) -> dict:
         """Return the default filter."""
         return {
-            'keyword': 'group_attribute_id',
+            'keyword': 'case_attribute_id',
             'operator': TqlOperator.EQ,
             'value': self.model.id,
             'type_': 'integer',

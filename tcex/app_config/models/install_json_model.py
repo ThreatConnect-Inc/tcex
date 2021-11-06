@@ -101,6 +101,7 @@ class ParamsModel(BaseModel):
     """Model for install_json.params"""
 
     allow_multiple: bool = False
+    allow_nested: bool = False
     default: Optional[Union[bool, str]]
     encrypt: bool = False
     expose_playbook_key_as: Optional[ExposePlaybookKeyAsEnum]
@@ -129,6 +130,7 @@ class ParamsModel(BaseModel):
 class OutputVariablesModel(BaseModel):
     """Model for install_json.playbook.outputVariables"""
 
+    encrypt: bool = False  # sensitive value
     intel_type: Optional[List]
     name: str
     note: Optional[str]

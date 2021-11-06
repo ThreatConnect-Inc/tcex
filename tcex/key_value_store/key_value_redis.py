@@ -57,7 +57,7 @@ class KeyValueRedis(KeyValueABC):
         """
         return self._redis_client.hgetall(context)
 
-    def read(self, context: str, key: str, decode='utf-8') -> Any:
+    def read(self, context: str, key: str) -> Any:
         """Read data from Redis for the provided key.
 
         Args:
@@ -68,11 +68,7 @@ class KeyValueRedis(KeyValueABC):
         Returns:
             str: The response data from Redis.
         """
-        value = self.hget(context, key)
-        # convert retrieved bytes to string
-        if isinstance(value, bytes) and decode:
-            value = value.decode('utf-8')
-        return value
+        return self.hget(context, key)
 
     def hget(self, context: str, key: str) -> Optional[bytes]:
         """Read data from redis for the provided key.

@@ -23,7 +23,7 @@ class GroupFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            associated_indicator: None.
+            associated_indicator: No description provided.
         """
         self._tql.add_filter('associatedIndicator', operator, associated_indicator, TqlType.INTEGER)
 
@@ -32,7 +32,7 @@ class GroupFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            attribute: None.
+            attribute: No description provided.
         """
         self._tql.add_filter('attribute', operator, attribute, TqlType.STRING)
 
@@ -41,7 +41,7 @@ class GroupFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            child_group: None.
+            child_group: No description provided.
         """
         self._tql.add_filter('childGroup', operator, child_group, TqlType.INTEGER)
 
@@ -149,8 +149,8 @@ class GroupFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            email_score_includes_body: A true/false indicating if the
-                body was included in the scoring of the email.
+            email_score_includes_body: A true/false indicating if the body was included in the
+                scoring of the email.
         """
         self._tql.add_filter(
             'emailScoreIncludesBody', operator, email_score_includes_body, TqlType.BOOLEAN
@@ -271,7 +271,7 @@ class GroupFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            is_group: None.
+            is_group: No description provided.
         """
         self._tql.add_filter('isGroup', operator, is_group, TqlType.BOOLEAN)
 
@@ -298,7 +298,7 @@ class GroupFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            parent_group: None.
+            parent_group: No description provided.
         """
         self._tql.add_filter('parentGroup', operator, parent_group, TqlType.INTEGER)
 
@@ -514,6 +514,6 @@ class GroupFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            victim_asset: None.
+            victim_asset: No description provided.
         """
         self._tql.add_filter('victimAsset', operator, victim_asset, TqlType.STRING)

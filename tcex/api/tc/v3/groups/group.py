@@ -4,15 +4,19 @@ from typing import TYPE_CHECKING
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
+from tcex.api.tc.v3.group_attributes.group_attribute_model import GroupAttributeModel
 from tcex.api.tc.v3.groups.group_filter import GroupFilter
 from tcex.api.tc.v3.groups.group_model import GroupModel, GroupsModel
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
+from tcex.api.tc.v3.security_labels.security_label_model import SecurityLabelModel
 from tcex.api.tc.v3.tags.tag_model import TagModel
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 
 if TYPE_CHECKING:  # pragma: no cover
     # first-party
+    from tcex.api.tc.v3.group_attributes.group_attribute import GroupAttribute
+    from tcex.api.tc.v3.security_labels.security_label import SecurityLabel
     from tcex.api.tc.v3.tags.tag import Tag
 
 
@@ -85,8 +89,8 @@ class Group(ObjectABC):
         publish_date (str, kwargs): The date and time that the report was first created.
         reminder_date (str, kwargs): The reminder date and time.
         security_labels (SecurityLabels, kwargs): A list of Security Labels corresponding to the
-            Intel item (NOTE: Setting this parameter will replace any existing tag(s) with the
-            one(s) specified).
+            Intel item (NOTE: Setting this parameter will replace any existing tag(s) with
+            the one(s) specified).
         status (str, kwargs): The status associated with this document, event, task, or incident
             (read only for task, document, and report).
         subject (str, kwargs): The email Subject section.
@@ -128,6 +132,27 @@ class Group(ObjectABC):
 
         return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
 
+    def add_attribute(self, **kwargs) -> None:
+        """Add attribute to the object.
+
+        Args:
+            default (bool, kwargs): A flag indicating that this is the default attribute of its type
+                within the object. Only applies to certain attribute and data types.
+            source (str, kwargs): The attribute source.
+            value (str, kwargs): Attribute value.
+        """
+        self.model.attributes.data.append(GroupAttributeModel(**kwargs))
+
+    def add_security_label(self, **kwargs) -> None:
+        """Add security_label to the object.
+
+        Args:
+            color (str, kwargs): Color of the security label.
+            description (str, kwargs): Description of the security label.
+            name (str, kwargs): Name of the security label.
+        """
+        self.model.security_labels.data.append(SecurityLabelModel(**kwargs))
+
     def add_tag(self, **kwargs) -> None:
         """Add tag to the object.
 
@@ -136,6 +161,22 @@ class Group(ObjectABC):
             name (str, kwargs): The **name** for the Tag.
         """
         self.model.tags.data.append(TagModel(**kwargs))
+
+    @property
+    def attributes(self) -> 'GroupAttribute':
+        """Yield Attribute from Attributes."""
+        # first-party
+        from tcex.api.tc.v3.group_attributes.group_attribute import GroupAttributes
+
+        yield from self._iterate_over_sublist(GroupAttributes)
+
+    @property
+    def security_labels(self) -> 'SecurityLabel':
+        """Yield Security_Label from Security_Labels."""
+        # first-party
+        from tcex.api.tc.v3.security_labels.security_label import SecurityLabels
+
+        yield from self._iterate_over_sublist(SecurityLabels)
 
     @property
     def tags(self) -> 'Tag':

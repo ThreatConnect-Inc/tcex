@@ -267,34 +267,50 @@ class Input:
                 updated_value_array = []
                 for v in value:
                     if isinstance(v, str):
-                        # v = self.playbook.read(v)
                         v = registry.playbook.read(v)
+                    # TODO: [high] does resolve variable need to be added here
                     updated_value_array.append(v)
                 _inputs[name] = updated_value_array
             elif isinstance(value, str):
                 # replace all embedded pb and tc variables (e.g., #APP:... and &{TC:...})
                 for match in re.finditer(self._variable_expansion_pattern, str(value)):
                     variable = match.group(0)  # the full variable pattern
+
+                    if match.group('type') in [
+                        'Binary',
+                        'BinaryArray',
+                        'KeyValue',
+                        'KeyValueArray',
+                        'StringArray',
+                        'TCEntity',
+                        'TCEntityArray',
+                    ]:
+                        # "mixed" types are not supported
+                        if value != variable and self.ij.data.get_param(name).allow_nested is False:
+                            raise RuntimeError(
+                                f'''{match.group('type')} variables '''
+                                '''can not be in mixed string.'''
+                            )
+                        value = registry.playbook.read(variable)
+                        break
+
                     if match.group('origin') == '#':  # pb-variable
-                        # v = self.playbook.read(variable)
                         v = registry.playbook.read(variable)
                     elif match.group('origin') == '&':  # tc-variable
                         v = self.resolve_variable(
                             match.group('provider'), match.group('lookup'), match.group('id')
                         )
 
-                    if str(value) == variable:
-                        value = v
-                        break
-                    else:
-                        # replace the *variable* with the lookup results (*v*) in the provided
-                        # *value*
+                    # replace the *variable* with the lookup results (*v*) in the provided *value*
+                    try:
                         value = re.sub(variable, v, value)
+                    except Exception:
+                        self.log.warn(f'Could not replace variable {variable} on input {name}.')
+
                 _inputs[name] = value
 
         # update contents
         self.contents_update(_inputs)
-
         return dict(sorted(_inputs.items()))
 
     # TODO: [high] - can this be replaced with a pydantic root validator?

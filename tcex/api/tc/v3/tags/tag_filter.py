@@ -23,7 +23,7 @@ class TagFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            associated_case: None.
+            associated_case: No description provided.
         """
         self._tql.add_filter('associatedCase', operator, associated_case, TqlType.INTEGER)
 
@@ -32,7 +32,7 @@ class TagFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            associated_group: None.
+            associated_group: No description provided.
         """
         self._tql.add_filter('associatedGroup', operator, associated_group, TqlType.INTEGER)
 
@@ -41,7 +41,7 @@ class TagFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            associated_indicator: None.
+            associated_indicator: No description provided.
         """
         self._tql.add_filter('associatedIndicator', operator, associated_indicator, TqlType.INTEGER)
 
@@ -50,7 +50,7 @@ class TagFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            associated_victim: None.
+            associated_victim: No description provided.
         """
         self._tql.add_filter('associatedVictim', operator, associated_victim, TqlType.INTEGER)
 

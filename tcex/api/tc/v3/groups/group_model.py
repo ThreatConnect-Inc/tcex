@@ -114,7 +114,7 @@ class GroupModel(
     )
     body: Optional[str] = Field(
         None,
-        applies_to=["Email"],
+        applies_to=['Email'],
         description='The email Body.',
         methods=['POST', 'PUT'],
         max_length=65535,
@@ -139,7 +139,7 @@ class GroupModel(
     document_date_added: Optional[datetime] = Field(
         None,
         allow_mutation=False,
-        applies_to=["Document", "Report"],
+        applies_to=['Document', 'Report'],
         description='The date and time that the document was first created.',
         read_only=True,
         title='documentDateAdded',
@@ -147,7 +147,7 @@ class GroupModel(
     document_type: Optional[str] = Field(
         None,
         allow_mutation=False,
-        applies_to=["Document", "Report"],
+        applies_to=['Document', 'Report'],
         description='The document type.',
         read_only=True,
         title='documentType',
@@ -162,7 +162,7 @@ class GroupModel(
     email_date: Optional[datetime] = Field(
         None,
         allow_mutation=False,
-        applies_to=["Email"],
+        applies_to=['Email'],
         description='The date and time that the email was first created.',
         read_only=True,
         title='emailDate',
@@ -170,7 +170,7 @@ class GroupModel(
     escalated: bool = Field(
         None,
         allow_mutation=False,
-        applies_to=["Task"],
+        applies_to=['Task'],
         description='Flag indicating whether or not the task has been escalated.',
         read_only=True,
         title='escalated',
@@ -184,7 +184,7 @@ class GroupModel(
     )
     event_date: Optional[datetime] = Field(
         None,
-        applies_to=["Incident"],
+        applies_to=['Incident'],
         description='The date and time that the incident or event was first created.',
         methods=['POST', 'PUT'],
         read_only=False,
@@ -192,8 +192,8 @@ class GroupModel(
     )
     file_name: Optional[str] = Field(
         None,
-        applies_to=["Document", "Report", "Signature"],
-        conditional_required=["Document", "Report"],
+        applies_to=['Document', 'Report', 'Signature'],
+        conditional_required=['Document', 'Report'],
         description='The document or signature file name.',
         methods=['POST', 'PUT'],
         max_length=100,
@@ -204,14 +204,14 @@ class GroupModel(
     file_size: Optional[int] = Field(
         None,
         allow_mutation=False,
-        applies_to=["Document", "Report"],
+        applies_to=['Document', 'Report'],
         description='The document file size.',
         read_only=True,
         title='fileSize',
     )
     file_text: Optional[str] = Field(
         None,
-        applies_to=["Signature"],
+        applies_to=['Signature'],
         description='The signature file text.',
         methods=['POST', 'PUT'],
         read_only=False,
@@ -219,7 +219,7 @@ class GroupModel(
     )
     file_type: Optional[str] = Field(
         None,
-        applies_to=["Signature"],
+        applies_to=['Signature'],
         description='The signature file type.',
         methods=['POST', 'PUT'],
         read_only=False,
@@ -227,7 +227,7 @@ class GroupModel(
     )
     first_seen: Optional[datetime] = Field(
         None,
-        applies_to=["Campaign"],
+        applies_to=['Campaign'],
         description='The date and time that the campaign was first created.',
         methods=['POST', 'PUT'],
         read_only=False,
@@ -236,7 +236,7 @@ class GroupModel(
     from_: Optional[str] = Field(
         None,
         alias='from',
-        applies_to=["Email"],
+        applies_to=['Email'],
         description='The email From field.',
         methods=['POST', 'PUT'],
         max_length=100,
@@ -246,7 +246,7 @@ class GroupModel(
     )
     handles: Optional['AdversaryAssetsModel'] = Field(
         None,
-        applies_to=["Adversary"],
+        applies_to=['Adversary'],
         description='A list of handle adversary assets associated with this group.',
         methods=['POST', 'PUT'],
         read_only=False,
@@ -254,7 +254,7 @@ class GroupModel(
     )
     header: Optional[str] = Field(
         None,
-        applies_to=["Email"],
+        applies_to=['Email'],
         description='The email Header field.',
         methods=['POST', 'PUT'],
         max_length=65535,
@@ -277,7 +277,7 @@ class GroupModel(
     )
     malware: bool = Field(
         None,
-        applies_to=["Document"],
+        applies_to=['Document'],
         description='Is the document malware?',
         methods=['POST', 'PUT'],
         read_only=False,
@@ -295,14 +295,14 @@ class GroupModel(
     overdue: bool = Field(
         None,
         allow_mutation=False,
-        applies_to=["Task"],
+        applies_to=['Task'],
         description='Flag indicating whether or not the task is overdue.',
         read_only=True,
         title='overdue',
     )
     password: Optional[str] = Field(
         None,
-        applies_to=["Document"],
+        applies_to=['Document'],
         description='The password associated with the document (Required if Malware is true).',
         methods=['POST', 'PUT'],
         read_only=False,
@@ -310,7 +310,7 @@ class GroupModel(
     )
     publish_date: Optional[datetime] = Field(
         None,
-        applies_to=["Report"],
+        applies_to=['Report'],
         description='The date and time that the report was first created.',
         methods=['POST', 'PUT'],
         read_only=False,
@@ -319,7 +319,7 @@ class GroupModel(
     reminded: bool = Field(
         None,
         allow_mutation=False,
-        applies_to=["Task"],
+        applies_to=['Task'],
         description='Flag indicating whether or not the task reminders have been sent.',
         read_only=True,
         title='reminded',
@@ -334,7 +334,7 @@ class GroupModel(
     score: Optional[int] = Field(
         None,
         allow_mutation=False,
-        applies_to=["Email"],
+        applies_to=['Email'],
         description='The score value for this email.',
         read_only=True,
         title='score',
@@ -342,7 +342,7 @@ class GroupModel(
     score_breakdown: Optional[str] = Field(
         None,
         allow_mutation=False,
-        applies_to=["Email"],
+        applies_to=['Email'],
         description='The email score breakdown.',
         read_only=True,
         title='scoreBreakdown',
@@ -350,7 +350,7 @@ class GroupModel(
     score_includes_body: bool = Field(
         None,
         allow_mutation=False,
-        applies_to=["Email"],
+        applies_to=['Email'],
         description='Is the Body included in the email score?',
         read_only=True,
         title='scoreIncludesBody',
@@ -368,14 +368,14 @@ class GroupModel(
     signature_date_added: Optional[datetime] = Field(
         None,
         allow_mutation=False,
-        applies_to=["Signature"],
+        applies_to=['Signature'],
         description='The date and time that the signature was first created.',
         read_only=True,
         title='signatureDateAdded',
     )
     status: Optional[str] = Field(
         None,
-        applies_to=["Document", "Report", "Event", "Task", "Incident"],
+        applies_to=['Document', 'Report', 'Event', 'Task', 'Incident'],
         description=(
             'The status associated with this document, event, task, or incident (read only for '
             'task, document, and report).'
@@ -386,7 +386,7 @@ class GroupModel(
     )
     subject: Optional[str] = Field(
         None,
-        applies_to=["Email"],
+        applies_to=['Email'],
         description='The email Subject section.',
         methods=['POST', 'PUT'],
         max_length=255,
@@ -406,7 +406,7 @@ class GroupModel(
     )
     to: Optional[str] = Field(
         None,
-        applies_to=["Email"],
+        applies_to=['Email'],
         description='The email To field .',
         methods=['POST', 'PUT'],
         read_only=False,
@@ -422,7 +422,7 @@ class GroupModel(
     )
     urls: Optional['AdversaryAssetsModel'] = Field(
         None,
-        applies_to=["Adversary"],
+        applies_to=['Adversary'],
         description='A list of url adversary assets associated with this group.',
         methods=['POST', 'PUT'],
         read_only=False,

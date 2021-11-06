@@ -3,8 +3,7 @@
 import importlib
 import sys
 from abc import ABC
-from textwrap import TextWrapper
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 # first-party
 from tcex.api.tc.v3._gen._gen_abc import GenerateABC
@@ -17,26 +16,6 @@ class GenerateArgsABC(GenerateABC, ABC):
         """Initialize class properties."""
         super().__init__(type_)
         self.type_ = self.utils.snake_string(self._type_map(type_))
-
-    @staticmethod
-    def _format_description(description: str, length: int, indent: str) -> str:
-        """Format description for field."""
-        # fix descriptions coming from core API endpoint
-        if description[-1] not in ('.', '?', '!'):
-            description += '.'
-
-        # fix core descriptions that are not capitalized.
-        description_words = description.split(' ')
-        description = f'{description_words[0].title()} ' + ' '.join(description_words[1:])
-
-        textwrapper = TextWrapper(
-            subsequent_indent=indent,
-            width=length,
-            expand_tabs=True,
-            tabsize=len(indent),
-            break_long_words=False,
-        )
-        return '\n'.join(textwrapper.wrap(description))
 
     @staticmethod
     def _import_model(module, class_name) -> Any:
@@ -140,19 +119,19 @@ class GenerateArgsABC(GenerateABC, ABC):
                 continue
 
             # arg
-            _arg_doc = f'{i2}{arg} ({prop_type}, kwargs): '
+            _arg_doc = f'{arg} ({prop_type}, kwargs)'
 
             # description
             description = prop_data.get('description')
-            d_indent = i2 + self.i1
             _arg_doc = self._format_description(
-                description=f'{_arg_doc}{description}',
+                arg=_arg_doc,
+                description=description,
                 length=100,
-                indent=d_indent,
+                indent=' ' * len(i2),
             )
 
             # add arg to doc string
-            _doc_string.append(_arg_doc)
+            _doc_string.append(f'{i2}{_arg_doc}')
 
         if len(_doc_string) > 1:
             return '\n'.join(_doc_string)

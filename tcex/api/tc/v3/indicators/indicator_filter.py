@@ -124,7 +124,7 @@ class IndicatorFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            associated_group: None.
+            associated_group: No description provided.
         """
         self._tql.add_filter('associatedGroup', operator, associated_group, TqlType.INTEGER)
 
@@ -133,7 +133,7 @@ class IndicatorFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            attribute: None.
+            attribute: No description provided.
         """
         self._tql.add_filter('attribute', operator, attribute, TqlType.STRING)
 
@@ -169,8 +169,8 @@ class IndicatorFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            false_positive_count: The number of times the
-                indicator has been flagged as a false positive.
+            false_positive_count: The number of times the indicator has been flagged as a false
+                positive.
         """
         self._tql.add_filter('falsePositiveCount', operator, false_positive_count, TqlType.INTEGER)
 
@@ -201,21 +201,21 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('filepath', operator, filepath, TqlType.STRING)
 
-    def filesize(self, operator: Enum, filesize: str) -> None:
+    def filesize(self, operator: Enum, filesize: int) -> None:
         """Filter Size (File) based on **filesize** keyword.
 
         Args:
             operator: The operator enum for the filter.
             filesize: The size of a file.
         """
-        self._tql.add_filter('filesize', operator, filesize, TqlType.STRING)
+        self._tql.add_filter('filesize', operator, filesize, TqlType.INTEGER)
 
     def flag1(self, operator: Enum, flag1: bool) -> None:
         """Filter flag1 based on **flag1** keyword.
 
         Args:
             operator: The operator enum for the filter.
-            flag1: None.
+            flag1: No description provided.
         """
         self._tql.add_filter('flag1', operator, flag1, TqlType.BOOLEAN)
 
@@ -224,7 +224,7 @@ class IndicatorFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            flag2: None.
+            flag2: No description provided.
         """
         self._tql.add_filter('flag2', operator, flag2, TqlType.BOOLEAN)
 
@@ -233,7 +233,7 @@ class IndicatorFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            flag3: None.
+            flag3: No description provided.
         """
         self._tql.add_filter('flag3', operator, flag3, TqlType.BOOLEAN)
 
@@ -356,32 +356,32 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('indicatorActive', operator, indicator_active, TqlType.BOOLEAN)
 
-    def int_value1(self, operator: Enum, int_value1: str) -> None:
+    def int_value1(self, operator: Enum, int_value1: int) -> None:
         """Filter intValue1 based on **intValue1** keyword.
 
         Args:
             operator: The operator enum for the filter.
-            int_value1: None.
+            int_value1: No description provided.
         """
-        self._tql.add_filter('intValue1', operator, int_value1, TqlType.STRING)
+        self._tql.add_filter('intValue1', operator, int_value1, TqlType.INTEGER)
 
-    def int_value2(self, operator: Enum, int_value2: str) -> None:
+    def int_value2(self, operator: Enum, int_value2: int) -> None:
         """Filter intValue2 based on **intValue2** keyword.
 
         Args:
             operator: The operator enum for the filter.
-            int_value2: None.
+            int_value2: No description provided.
         """
-        self._tql.add_filter('intValue2', operator, int_value2, TqlType.STRING)
+        self._tql.add_filter('intValue2', operator, int_value2, TqlType.INTEGER)
 
-    def int_value3(self, operator: Enum, int_value3: str) -> None:
+    def int_value3(self, operator: Enum, int_value3: int) -> None:
         """Filter intValue3 based on **intValue3** keyword.
 
         Args:
             operator: The operator enum for the filter.
-            int_value3: None.
+            int_value3: No description provided.
         """
-        self._tql.add_filter('intValue3', operator, int_value3, TqlType.STRING)
+        self._tql.add_filter('intValue3', operator, int_value3, TqlType.INTEGER)
 
     def last_false_positive(self, operator: Enum, last_false_positive: str) -> None:
         """Filter False Positive Last Observed based on **lastFalsePositive** keyword.
@@ -532,7 +532,7 @@ class IndicatorFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            value1: None.
+            value1: No description provided.
         """
         self._tql.add_filter('value1', operator, value1, TqlType.STRING)
 
@@ -541,7 +541,7 @@ class IndicatorFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            value2: None.
+            value2: No description provided.
         """
         self._tql.add_filter('value2', operator, value2, TqlType.STRING)
 
@@ -550,6 +550,6 @@ class IndicatorFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            value3: None.
+            value3: No description provided.
         """
         self._tql.add_filter('value3', operator, value3, TqlType.STRING)

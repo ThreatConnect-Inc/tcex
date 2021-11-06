@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.artifacts.artifact_model import ArtifactModel
+from tcex.api.tc.v3.case_attributes.case_attribute_model import CaseAttributeModel
 from tcex.api.tc.v3.cases.case_filter import CaseFilter
 from tcex.api.tc.v3.cases.case_model import CaseModel, CasesModel
 from tcex.api.tc.v3.notes.note_model import NoteModel
@@ -17,6 +18,7 @@ from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 if TYPE_CHECKING:  # pragma: no cover
     # first-party
     from tcex.api.tc.v3.artifacts.artifact import Artifact
+    from tcex.api.tc.v3.case_attributes.case_attribute import CaseAttribute
     from tcex.api.tc.v3.notes.note import Note
     from tcex.api.tc.v3.tags.tag import Tag
     from tcex.api.tc.v3.tasks.task import Task
@@ -135,6 +137,17 @@ class Case(ObjectABC):
         """
         self.model.artifacts.data.append(ArtifactModel(**kwargs))
 
+    def add_attribute(self, **kwargs) -> None:
+        """Add attribute to the object.
+
+        Args:
+            default (bool, kwargs): A flag indicating that this is the default attribute of its type
+                within the object. Only applies to certain attribute and data types.
+            source (str, kwargs): The attribute source.
+            value (str, kwargs): Attribute value.
+        """
+        self.model.attributes.data.append(CaseAttributeModel(**kwargs))
+
     def add_note(self, **kwargs) -> None:
         """Add note to the object.
 
@@ -171,6 +184,14 @@ class Case(ObjectABC):
         from tcex.api.tc.v3.artifacts.artifact import Artifacts
 
         yield from self._iterate_over_sublist(Artifacts)
+
+    @property
+    def attributes(self) -> 'CaseAttribute':
+        """Yield Attribute from Attributes."""
+        # first-party
+        from tcex.api.tc.v3.case_attributes.case_attribute import CaseAttributes
+
+        yield from self._iterate_over_sublist(CaseAttributes)
 
     @property
     def notes(self) -> 'Note':

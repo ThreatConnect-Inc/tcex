@@ -32,7 +32,7 @@ class AdversaryAssetFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            associated_group: None.
+            associated_group: No description provided.
         """
         self._tql.add_filter('associatedGroup', operator, associated_group, TqlType.INTEGER)
 

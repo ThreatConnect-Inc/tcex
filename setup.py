@@ -25,8 +25,7 @@ dev_packages = [
     'CommonMark==0.5.5',
     'deepdiff',
     'flake8',
-    # isort 5 currently causes issues with pylint
-    'isort>=4,<5',
+    'isort',
     'mako',
     'pre-commit',
     'pydocstyle',

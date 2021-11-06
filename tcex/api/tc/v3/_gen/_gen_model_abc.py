@@ -1,6 +1,5 @@
 """Generate Models for ThreatConnect API"""
 # standard library
-import json
 import sys
 from abc import ABC
 from textwrap import TextWrapper
@@ -641,13 +640,11 @@ class GenerateModelABC(GenerateABC, ABC):
 
             # applies_to
             if field_applies_to is not None:
-                _model.append(f'''{self.i2}applies_to={json.dumps(field_applies_to)},''')
+                _model.append(f'''{self.i2}applies_to={field_applies_to},''')
 
             # applies_to
             if field_conditional_required is not None:
-                _model.append(
-                    f'''{self.i2}conditional_required={json.dumps(field_conditional_required)},'''
-                )
+                _model.append(f'''{self.i2}conditional_required={field_conditional_required},''')
 
             # description
             if field_description is not None:
