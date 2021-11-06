@@ -59,7 +59,7 @@ class TestArtifactTypes(TestCaseManagement):
     def test_artifact_type_get_single_by_id_properties(self):
         """Test Artifact get single attached to task by id"""
 
-        # [Create Testing] Istanciate a instance of the Artifact Type
+        # [Create Testing] Instantiate a instance of the Artifact Type
         artifact_type = self.v3.artifact_type()
 
         # [Create Testing] testing setters on model
@@ -76,7 +76,7 @@ class TestArtifactTypes(TestCaseManagement):
         assert artifact_type.model.intel_type == 'indicator-EmailAddress'
 
         assert artifact_type.as_entity == {
-            'type': 'ArtifactType',
+            'type': 'Artifact Type',
             'id': 1,
             'value': 'Email Address',
         }

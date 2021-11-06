@@ -78,4 +78,4 @@ class ArtifactType(ObjectABC):
         if hasattr(self.model, 'type'):
             type_ = self.model.type
 
-        return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
+        return {'type': type_, 'id': self.model.id, 'value': self.model.name}

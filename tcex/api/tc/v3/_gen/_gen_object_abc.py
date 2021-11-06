@@ -198,7 +198,7 @@ class GenerateObjectABC(GenerateABC, ABC):
 
             return {'type': 'Artifact', 'id': self.model.id, 'value': self.model.summary}
         """
-        name_entities = ['cases', 'tags', 'tasks', 'workflow_templates']
+        name_entities = ['artifact_types', 'cases', 'tags', 'tasks', 'workflow_templates']
         value_type = 'summary'
         if self.type_.lower() in name_entities:
             value_type = 'name'

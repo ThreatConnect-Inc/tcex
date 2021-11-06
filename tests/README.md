@@ -27,8 +27,17 @@ pytest -n 12 --cov=tcex/ --cov-report=term-missing tests
 
 ### v3
 
+#### artifact_types
+pytest --cov=tcex/api/tc/v3/artifact_types --cov-report=term-missing tests/api/tc/v3/artifact_types/test_artifact_type_interface.py
+
 #### artifacts
 pytest --cov=tcex/api/tc/v3/artifacts --cov-report=term-missing tests/api/tc/v3/artifacts/test_artifact_interface.py
+
+#### notes
+pytest --cov=tcex/api/tc/v3/notes --cov-report=term-missing tests/api/tc/v3/notes/test_note_interface.py
+
+#### tasks
+pytest --cov=tcex/api/tc/v3/tasks --cov-report=term-missing tests/api/tc/v3/tasks/test_task_interface.py
 
 # testing - delete
 pytest tests/api/tc/v3/artifacts/test_artifact_interface.py -s -k test_artifact_create_and_retrieve_nested_types
