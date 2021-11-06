@@ -11,6 +11,7 @@ from pydantic import BaseModel, Extra
 
 # first-party
 from tcex import TcEx
+from tcex.pleb.registry import registry
 
 if TYPE_CHECKING:
     # third-party
@@ -30,6 +31,7 @@ class TestInputsConfig:
             playbook_app (fixture): An instance of MockApp.
             redis_client (fixture): An instance of Redis Client.
         """
+        registry._reset()
 
         class PytestModel(BaseModel):
             """Test Model for Inputs"""
@@ -67,12 +69,13 @@ class TestInputsConfig:
     @staticmethod
     def test_config_kwarg():
         """Test config file input method of TcEx"""
+        registry._reset()
         # external App config file data
         config_data = {
             'api_default_org': 'TCI',
-            'tc_api_access_id': os.getenv('API_ACCESS_ID'),
+            'tc_api_access_id': os.getenv('TC_API_ACCESS_ID'),
             'tc_api_path': os.getenv('TC_API_PATH'),
-            'tc_api_secret_key': os.getenv('API_SECRET_KEY'),
+            'tc_api_secret_key': os.getenv('TC_API_SECRET_KEY'),
             'tc_token': None,
             'tc_expires': None,
             'tc_verify': True,
@@ -87,14 +90,15 @@ class TestInputsConfig:
     @staticmethod
     def test_config_file_kwarg():
         """Test config file input method of TcEx"""
+        registry._reset()
         config_file = Path('app_config.json')
 
         # external App config file data
         config_data = {
             'api_default_org': 'TCI',
-            'tc_api_access_id': os.getenv('API_ACCESS_ID'),
+            'tc_api_access_id': os.getenv('TC_API_ACCESS_ID'),
             'tc_api_path': os.getenv('TC_API_PATH'),
-            'tc_api_secret_key': os.getenv('API_SECRET_KEY'),
+            'tc_api_secret_key': os.getenv('TC_API_SECRET_KEY'),
             'tc_token': None,
             'tc_expires': None,
             'tc_verify': True,
@@ -121,6 +125,7 @@ class TestInputsConfig:
         Args:
             tcex (TcEx, fixture): An instantiated instance of TcEx.
         """
+        registry._reset()
         # print(tcex.inputs.data.tc_token.get_secret_value())
         # print(tcex.inputs.data.tc_token_expires)
         assert tcex.inputs.data.tc_token
