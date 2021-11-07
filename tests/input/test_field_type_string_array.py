@@ -39,7 +39,7 @@ class TestInputsFieldTypeStringArray(InputTest):
         self._stage_key_value('my_string', '#App:1234:my_string!String', 'string', tcex)
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_string == ['string']
+        assert tcex.inputs.model.my_string == ['string']
 
     def test_field_type_string_array_input_string_array_staged(self, playbook_app: 'MockApp'):
         """Test StringArray field type with string array input.
@@ -61,7 +61,7 @@ class TestInputsFieldTypeStringArray(InputTest):
         self._stage_key_value('my_string', '#App:1234:my_string!StringArray', ['string'], tcex)
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_string == ['string']
+        assert tcex.inputs.model.my_string == ['string']
 
     @staticmethod
     def test_field_type_string_array_input_invalid(playbook_app: 'MockApp'):
@@ -156,7 +156,7 @@ class TestInputsFieldTypeStringArray(InputTest):
         tcex = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_string == []
+        assert tcex.inputs.model.my_string == []
 
     def test_field_type_string_array_input_empty_string(self, playbook_app: 'MockApp'):
         """Test StringArray field type with empty input.
@@ -202,7 +202,7 @@ class TestInputsFieldTypeStringArray(InputTest):
         self._stage_key_value('my_string', '#App:1234:my_string!String', '', tcex)
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_string == ['']
+        assert tcex.inputs.model.my_string == ['']
 
     @staticmethod
     def test_field_type_string_array_input_null(playbook_app: 'MockApp'):
@@ -264,7 +264,7 @@ class TestInputsFieldTypeStringArray(InputTest):
         tcex = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_string is None
+        assert tcex.inputs.model.my_string is None
 
     @staticmethod
     def test_optional_field_type_string_array_optional(playbook_app: 'MockApp'):
@@ -286,7 +286,7 @@ class TestInputsFieldTypeStringArray(InputTest):
         tcex = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_string is None
+        assert tcex.inputs.model.my_string is None
 
     def test_field_type_string_array_input_array_with_empty_and_null_members(
         self, playbook_app: 'MockApp'
@@ -312,7 +312,7 @@ class TestInputsFieldTypeStringArray(InputTest):
         tcex.inputs.add_model(PytestModel)
 
         # empty and null members are ok
-        assert tcex.inputs.data.my_string == ['', None]
+        assert tcex.inputs.model.my_string == ['', None]
 
     def test_field_type_string_array_input_array_with_empty_and_null_members_empty_not_allowed(
         self, playbook_app: 'MockApp'
@@ -475,8 +475,8 @@ class TestInputsFieldTypeStringArray(InputTest):
         self._stage_key_value('my_string', '#App:1234:my_string!String', '', tcex)
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_string == ['']
-        assert type(tcex.inputs.data.my_string).__name__ == 'StringArrayOptionalCustom'
+        assert tcex.inputs.model.my_string == ['']
+        assert type(tcex.inputs.model.my_string).__name__ == 'StringArrayOptionalCustom'
 
     def test_field_type_string_array_customization_that_handles_csv_string(
         self, playbook_app: 'MockApp'
@@ -499,7 +499,7 @@ class TestInputsFieldTypeStringArray(InputTest):
 
         # note that since strip_on_split is True (the default), any empty values that are empty
         # after the split operation are filtered out.
-        assert tcex.inputs.data.my_string == ['one', 'two', 'three']
+        assert tcex.inputs.model.my_string == ['one', 'two', 'three']
 
     def test_field_type_string_array_customization_that_handles_csv_string_no_split(
         self, playbook_app: 'MockApp'
@@ -521,7 +521,7 @@ class TestInputsFieldTypeStringArray(InputTest):
         self._stage_key_value('my_string', '#App:1234:my_string!String', 'one, two,three , ', tcex)
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_string == ['one', ' two', 'three ', ' ']
+        assert tcex.inputs.model.my_string == ['one', ' two', 'three ', ' ']
 
     def test_field_type_string_array_split_customization_no_effect_on_array_input(
         self, playbook_app: 'MockApp'
@@ -545,7 +545,7 @@ class TestInputsFieldTypeStringArray(InputTest):
         tcex.inputs.add_model(PytestModel)
 
         # input simply wrapped in list, no split operation since input is a StringArray
-        assert tcex.inputs.data.my_string == [' one, two,three , ']
+        assert tcex.inputs.model.my_string == [' one, two,three , ']
 
     @staticmethod
     def test_optional_field_type_custom_string_array(playbook_app: 'MockApp'):
@@ -569,4 +569,4 @@ class TestInputsFieldTypeStringArray(InputTest):
         tcex = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_string is None
+        assert tcex.inputs.model.my_string is None

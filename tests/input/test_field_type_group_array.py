@@ -41,7 +41,7 @@ class TestInputsFieldTypeGroupArray(InputTest):
         self._stage_key_value('my_group', '#App:1234:my_group!TCEntity', entity, tcex)
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_group == [entity]
+        assert tcex.inputs.model.my_group == [entity]
 
     def test_field_type_group_array_input_entity_array_staged(self, playbook_app: 'MockApp'):
         """Test GroupArray field type with TCEntity array input.
@@ -64,7 +64,7 @@ class TestInputsFieldTypeGroupArray(InputTest):
         self._stage_key_value('my_group', '#App:1234:my_group!TCEntityArray', entity, tcex)
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_group == entity
+        assert tcex.inputs.model.my_group == entity
 
     def test_field_type_group_array_input_string_staged(self, playbook_app: 'MockApp'):
         """Test GroupArray field type with string input.
@@ -87,7 +87,7 @@ class TestInputsFieldTypeGroupArray(InputTest):
         self._stage_key_value('my_group', '#App:1234:my_group!String', string, tcex)
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_group == [string]
+        assert tcex.inputs.model.my_group == [string]
 
     def test_field_type_group_array_input_string_array_staged(self, playbook_app: 'MockApp'):
         """Test GroupArray field type with string array input.
@@ -110,7 +110,7 @@ class TestInputsFieldTypeGroupArray(InputTest):
         self._stage_key_value('my_group', '#App:1234:my_group!StringArray', string, tcex)
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_group == string
+        assert tcex.inputs.model.my_group == string
 
     @pytest.mark.parametrize(
         'invalid_group',
@@ -246,7 +246,7 @@ class TestInputsFieldTypeGroupArray(InputTest):
         tcex = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_group == []
+        assert tcex.inputs.model.my_group == []
 
     def test_field_type_group_array_input_empty_entity(self, playbook_app: 'MockApp'):
         """Test GroupArray field type with empty input.
@@ -311,7 +311,7 @@ class TestInputsFieldTypeGroupArray(InputTest):
         tcex.inputs.add_model(PytestModel)
 
         # value coerced to Array (list)
-        assert tcex.inputs.data.my_group == [group]
+        assert tcex.inputs.model.my_group == [group]
 
     @staticmethod
     def test_field_type_group_array_input_empty_string(playbook_app: 'MockApp'):
@@ -367,7 +367,7 @@ class TestInputsFieldTypeGroupArray(InputTest):
         tcex.inputs.add_model(PytestModel)
 
         # value coerced to Array (list)
-        assert tcex.inputs.data.my_group == ['']
+        assert tcex.inputs.model.my_group == ['']
 
     @staticmethod
     def test_field_type_group_array_input_null(playbook_app: 'MockApp'):
@@ -429,7 +429,7 @@ class TestInputsFieldTypeGroupArray(InputTest):
         tcex = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_group is None
+        assert tcex.inputs.model.my_group is None
 
     @staticmethod
     def test_optional_field_type_group_array_optional(playbook_app: 'MockApp'):
@@ -451,7 +451,7 @@ class TestInputsFieldTypeGroupArray(InputTest):
         tcex = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_group is None
+        assert tcex.inputs.model.my_group is None
 
     @staticmethod
     def test_field_type_group_array_retrieval_methods(playbook_app: 'MockApp'):
@@ -468,13 +468,13 @@ class TestInputsFieldTypeGroupArray(InputTest):
         tcex = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_group_array == ind_array
+        assert tcex.inputs.model.my_group_array == ind_array
 
         # entities method returns only TCEntity members
-        assert list(tcex.inputs.data.my_group_array.entities()) == [entity]
+        assert list(tcex.inputs.model.my_group_array.entities()) == [entity]
 
         # values method returns string members as well as 'value' key of TCEntity members
-        assert list(tcex.inputs.data.my_group_array.values()) == ['Adversary Name', 'Adversary 2']
+        assert list(tcex.inputs.model.my_group_array.values()) == ['Adversary Name', 'Adversary 2']
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -509,7 +509,7 @@ class TestInputsFieldTypeGroupArray(InputTest):
         tcex.inputs.add_model(PytestModel)
 
         # empty and null members are ok
-        assert tcex.inputs.data.my_groups == groups
+        assert tcex.inputs.model.my_groups == groups
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -685,7 +685,7 @@ class TestInputsFieldTypeGroupArray(InputTest):
             my_groups: custom_group_array(entity_filter_types=types)
 
         tcex.inputs.add_model(PytestModel)
-        entities = list(tcex.inputs.data.my_groups.entities())
+        entities = list(tcex.inputs.model.my_groups.entities())
 
         # should only contain entities with type that is in configured filter types
         assert all(entity['type'] in types for entity in entities)
@@ -715,4 +715,4 @@ class TestInputsFieldTypeGroupArray(InputTest):
 
         tcex.inputs.add_model(PytestModel)
 
-        assert type(tcex.inputs.data.my_group).__name__ == 'GroupArrayOptionalCustom'
+        assert type(tcex.inputs.model.my_group).__name__ == 'GroupArrayOptionalCustom'

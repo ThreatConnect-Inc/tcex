@@ -41,7 +41,7 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
         self._stage_key_value('my_indicator', '#App:1234:my_indicator!TCEntity', entity, tcex)
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_indicator == [entity]
+        assert tcex.inputs.model.my_indicator == [entity]
 
     def test_field_type_indicator_array_input_entity_array_staged(self, playbook_app: 'MockApp'):
         """Test IndicatorArray field type with TCEntity array input.
@@ -64,7 +64,7 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
         self._stage_key_value('my_indicator', '#App:1234:my_indicator!TCEntityArray', entity, tcex)
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_indicator == entity
+        assert tcex.inputs.model.my_indicator == entity
 
     def test_field_type_indicator_array_input_string_staged(self, playbook_app: 'MockApp'):
         """Test IndicatorArray field type with string input.
@@ -87,7 +87,7 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
         self._stage_key_value('my_indicator', '#App:1234:my_indicator!String', string, tcex)
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_indicator == [string]
+        assert tcex.inputs.model.my_indicator == [string]
 
     def test_field_type_indicator_array_input_string_array_staged(self, playbook_app: 'MockApp'):
         """Test IndicatorArray field type with string array input.
@@ -110,7 +110,7 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
         self._stage_key_value('my_indicator', '#App:1234:my_indicator!StringArray', string, tcex)
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_indicator == string
+        assert tcex.inputs.model.my_indicator == string
 
     @pytest.mark.parametrize(
         'invalid_indicator',
@@ -252,7 +252,7 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
         tcex = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_indicator == []
+        assert tcex.inputs.model.my_indicator == []
 
     def test_field_type_indicator_array_input_empty_entity(self, playbook_app: 'MockApp'):
         """Test IndicatorArray field type with empty input.
@@ -317,7 +317,7 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
         tcex.inputs.add_model(PytestModel)
 
         # value coerced to Array (list)
-        assert tcex.inputs.data.my_indicator == [indicator]
+        assert tcex.inputs.model.my_indicator == [indicator]
 
     @staticmethod
     def test_field_type_indicator_array_input_empty_string(playbook_app: 'MockApp'):
@@ -373,7 +373,7 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
         tcex.inputs.add_model(PytestModel)
 
         # value coerced to Array (list)
-        assert tcex.inputs.data.my_indicator == ['']
+        assert tcex.inputs.model.my_indicator == ['']
 
     @staticmethod
     def test_field_type_indicator_array_input_null(playbook_app: 'MockApp'):
@@ -435,7 +435,7 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
         tcex = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_indicator is None
+        assert tcex.inputs.model.my_indicator is None
 
     @staticmethod
     def test_optional_field_type_indicator_array_optional(playbook_app: 'MockApp'):
@@ -457,7 +457,7 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
         tcex = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_indicator is None
+        assert tcex.inputs.model.my_indicator is None
 
     @staticmethod
     def test_field_type_indicator_array_retrieval_methods(playbook_app: 'MockApp'):
@@ -474,13 +474,13 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
         tcex = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_indicator_array == ind_array
+        assert tcex.inputs.model.my_indicator_array == ind_array
 
         # entities method returns only TCEntity members
-        assert list(tcex.inputs.data.my_indicator_array.entities()) == [entity]
+        assert list(tcex.inputs.model.my_indicator_array.entities()) == [entity]
 
         # values method returns string members as well as 'value' key of TCEntity members
-        assert list(tcex.inputs.data.my_indicator_array.values()) == ['8.8.8.8', '1.1.1.1']
+        assert list(tcex.inputs.model.my_indicator_array.values()) == ['8.8.8.8', '1.1.1.1']
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -515,7 +515,7 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
         tcex.inputs.add_model(PytestModel)
 
         # empty and null members are ok
-        assert tcex.inputs.data.my_indicators == indicators
+        assert tcex.inputs.model.my_indicators == indicators
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -687,7 +687,7 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
             my_indicators: custom_indicator_array(entity_filter_types=types)
 
         tcex.inputs.add_model(PytestModel)
-        entities = list(tcex.inputs.data.my_indicators.entities())
+        entities = list(tcex.inputs.model.my_indicators.entities())
 
         # should only contain entities with type that is in configured filter types
         assert all(entity['type'] in types for entity in entities)
@@ -716,4 +716,4 @@ class TestInputsFieldTypeIndicatorArray(InputTest):
 
         tcex.inputs.add_model(PytestModel)
 
-        assert type(tcex.inputs.data.my_indicator).__name__ == 'IndicatorArrayOptionalCustom'
+        assert type(tcex.inputs.model.my_indicator).__name__ == 'IndicatorArrayOptionalCustom'

@@ -102,7 +102,7 @@ class ExitService:
         self._exit_playbook_handler(msg)
 
         # aot notify
-        if self.inputs.data_unresolved.tc_aot_enabled:
+        if self.inputs.model_unresolved.tc_aot_enabled:
             # push exit message
             self._aot_rpush(code.value)
 
@@ -128,19 +128,19 @@ class ExitService:
 
         # required only for tcex testing framework
         if (
-            hasattr(self.inputs.data_unresolved, 'tcex_testing_context')
-            and self.inputs.data_unresolved.tcex_testing_context is not None
+            hasattr(self.inputs.model_unresolved, 'tcex_testing_context')
+            and self.inputs.model_unresolved.tcex_testing_context is not None
         ):  # pragma: no cover
             self.redis.hset(  # pylint: disable=no-member
-                self.inputs.data_unresolved.tcex_testing_context, '_exit_message', msg
+                self.inputs.model_unresolved.tcex_testing_context, '_exit_message', msg
             )
 
     def _aot_rpush(self, exit_code: int) -> None:
         """Push message to AOT action channel."""
-        if self.inputs.data_unresolved.tc_playbook_db_type == 'Redis':
+        if self.inputs.model_unresolved.tc_playbook_db_type == 'Redis':
             try:
                 # pylint: disable=no-member
-                self.redis.rpush(self.inputs.data_unresolved.tc_exit_channel, exit_code)
+                self.redis.rpush(self.inputs.model_unresolved.tc_exit_channel, exit_code)
             except Exception as e:  # pragma: no cover
                 self.exit(ExitCode.FAILURE, f'Exception during AOT exit push ({e}).')
 
@@ -158,8 +158,8 @@ class ExitService:
         if not isinstance(message, str):
             message = str(message)
 
-        if os.access(self.inputs.data_unresolved.tc_out_path, os.W_OK):
-            message_file = os.path.join(self.inputs.data_unresolved.tc_out_path, 'message.tc')
+        if os.access(self.inputs.model_unresolved.tc_out_path, os.W_OK):
+            message_file = os.path.join(self.inputs.model_unresolved.tc_out_path, 'message.tc')
         else:
             message_file = 'message.tc'
 

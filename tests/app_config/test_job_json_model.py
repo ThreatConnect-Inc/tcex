@@ -30,6 +30,9 @@ class TestJobJson:
     @staticmethod
     def jj(app_name: str = 'app_1', app_type: str = 'tcpb'):
         """Return tcex.json instance."""
+        # reset singleton
+        JobJson._instances = {}
+
         # the job.json file must be prefixed with the app_name
         tj_fqfn = os.path.join(
             'tests', 'app_config', 'apps', app_type, app_name, f'{app_name}_job.json'
@@ -45,6 +48,9 @@ class TestJobJson:
         """Validate input model in and out."""
         jj_path = Path(path)
         for fqfn in jj_path.glob('**/*job.json'):
+            # reset singleton
+            JobJson._instances = {}
+
             fqfn = Path(fqfn)
             with fqfn.open() as fh:
                 json_dict = json.load(fh)

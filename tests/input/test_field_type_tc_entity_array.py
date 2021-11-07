@@ -40,7 +40,7 @@ class TestInputsFieldTypeTCEntityArray(InputTest):
         self._stage_key_value('my_entity', '#App:1234:my_entity!TCEntity', entity, tcex)
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_entity == [entity]
+        assert tcex.inputs.model.my_entity == [entity]
 
     def test_field_type_entity_array_input_entity_array_staged(self, playbook_app: 'MockApp'):
         """Test TCEntityArray field type with TCEntity array input.
@@ -63,7 +63,7 @@ class TestInputsFieldTypeTCEntityArray(InputTest):
         self._stage_key_value('my_entity', '#App:1234:my_entity!TCEntityArray', entity, tcex)
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_entity == entity
+        assert tcex.inputs.model.my_entity == entity
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -191,7 +191,7 @@ class TestInputsFieldTypeTCEntityArray(InputTest):
         tcex = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_entity == []
+        assert tcex.inputs.model.my_entity == []
 
     def test_field_type_entity_array_input_empty_entity(self, playbook_app: 'MockApp'):
         """Test TCEntityArray field type with empty input.
@@ -258,7 +258,7 @@ class TestInputsFieldTypeTCEntityArray(InputTest):
         tcex.inputs.add_model(PytestModel)
 
         # values coerced to Arrays (list)
-        assert tcex.inputs.data.my_entity == [entity]
+        assert tcex.inputs.model.my_entity == [entity]
 
     @staticmethod
     def test_field_type_entity_array_input_null(playbook_app: 'MockApp'):
@@ -320,7 +320,7 @@ class TestInputsFieldTypeTCEntityArray(InputTest):
         tcex = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_entity is None
+        assert tcex.inputs.model.my_entity is None
 
     @staticmethod
     def test_optional_field_type_entity_array_optional(playbook_app: 'MockApp'):
@@ -342,7 +342,7 @@ class TestInputsFieldTypeTCEntityArray(InputTest):
         tcex = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_entity is None
+        assert tcex.inputs.model.my_entity is None
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -377,7 +377,7 @@ class TestInputsFieldTypeTCEntityArray(InputTest):
         tcex.inputs.add_model(PytestModel)
 
         # empty and null members are ok
-        assert tcex.inputs.data.my_entity == entity
+        assert tcex.inputs.model.my_entity == entity
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -508,4 +508,4 @@ class TestInputsFieldTypeTCEntityArray(InputTest):
         self._stage_key_value('my_entity', '#App:1234:my_entity!TCEntity', entity, tcex)
         tcex.inputs.add_model(PytestModel)
 
-        assert type(tcex.inputs.data.my_entity).__name__ == 'TCEntityArrayOptionalCustom'
+        assert type(tcex.inputs.model.my_entity).__name__ == 'TCEntityArrayOptionalCustom'

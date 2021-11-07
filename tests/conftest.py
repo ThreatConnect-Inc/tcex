@@ -7,7 +7,8 @@ import shutil
 import pytest
 import redis
 
-from .mock_app import MockApp
+# first-party
+from tests.mock_app import MockApp
 
 #
 # fixtures
@@ -30,7 +31,12 @@ def owner_id():
     def get_owner_id(name):
         """Return owner Id give the name."""
         id_ = None
-        for o in tcex_.session.get('/v2/owners').json().get('data', []).get('owner', []):
+        for o in (
+            tcex_.session_tc.get('/v2/owners')  # pylint: disable=no-member
+            .json()
+            .get('data', [])
+            .get('owner', [])
+        ):
             if o.get('name') == name:
                 id_ = o.get('id')
                 break

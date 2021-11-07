@@ -14,10 +14,13 @@ from tcex.app_config.install_json import InstallJson
 from tcex.app_config.models import TcexJsonModel
 from tcex.app_config.tcex_json_update import TcexJsonUpdate
 from tcex.backports import cached_property
-from tcex.pleb.singleton import Singleton
+
+# from tcex.pleb.singleton import Singleton
 
 
-class TcexJson(metaclass=Singleton):
+# TODO: [low] nested ij singleton prevents singleton use on tj class
+# class TcexJson(metaclass=Singleton):
+class TcexJson:
     """Provide a model for the tcex.json config file."""
 
     def __init__(self, filename=None, path=None, logger=None):

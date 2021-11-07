@@ -212,7 +212,7 @@ class Input:
             del self.__dict__['data']
 
         # force data model to load so that validation is done at this EXACT point
-        _ = self.data
+        _ = self.model
 
     @cached_property
     def contents(self) -> dict:
@@ -342,12 +342,12 @@ class Input:
                 inputs[name] = str(value).lower() == 'true'
 
     @cached_property
-    def data(self) -> BaseModel:
+    def model(self) -> BaseModel:
         """Return the Input Model."""
         return input_model(self.models)(**self.contents_resolved)
 
     @cached_property
-    def data_unresolved(self) -> BaseModel:
+    def model_unresolved(self) -> BaseModel:
         """Return the Input Model using contents (no resolved values)."""
         return input_model(self.models)(**self.contents)
 

@@ -28,7 +28,7 @@ class TestLogs:
 
         # simple assert to ensure the log file was created
         assert os.path.exists(
-            os.path.join(tcex.inputs.data.tc_log_path, tcex.inputs.data.tc_log_file)
+            os.path.join(tcex.inputs.model.tc_log_path, tcex.inputs.model.tc_log_file)
         )
 
     @staticmethod
@@ -46,8 +46,8 @@ class TestLogs:
 
         # simple assert to ensure the log file was created
         assert os.path.exists(
-            os.path.join(tcex.inputs.data.tc_log_path, tcex.inputs.data.tc_log_file)
+            os.path.join(tcex.inputs.model.tc_log_path, tcex.inputs.model.tc_log_file)
         )
         assert os.path.exists(
-            os.path.join(tcex.inputs.data.tc_log_path, f'{tcex.inputs.data.tc_log_file}.1.gz')
+            os.path.join(tcex.inputs.model.tc_log_path, f'{tcex.inputs.model.tc_log_file}.1.gz')
         )

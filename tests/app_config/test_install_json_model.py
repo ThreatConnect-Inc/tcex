@@ -16,6 +16,10 @@ from tcex.app_config.install_json import InstallJson
 class TestInstallJson:
     """App Config InstallJson testing."""
 
+    def setup_method(self):  # pylint: disable=no-self-use
+        """Configure setup before all tests."""
+        print('')
+
     # @staticmethod
     # def test_dev_testing():
     #     """."""
@@ -38,12 +42,13 @@ class TestInstallJson:
     @staticmethod
     def ij(app_name: str = 'app_1', app_type: str = 'tcpb'):
         """Return install.json instance."""
+        # reset singleton
+        InstallJson._instances = {}
+
         ij_fqfn = os.path.join('tests', 'app_config', 'apps', app_type, app_name, 'install.json')
         fqfn = Path(ij_fqfn)
         try:
             _ij = InstallJson(filename=fqfn.name, path=fqfn.parent)
-            # reset due to InstallJson being a singleton
-            _ij.fqfn = fqfn
             return _ij
         except Exception as ex:
             assert False, f'Failed parsing file {fqfn.name} ({ex})'
@@ -51,6 +56,9 @@ class TestInstallJson:
     @staticmethod
     def ij_bad(app_name: str = 'app_bad_install_json', app_type: str = 'tcpb'):
         """Return install.json instance with "bad" file."""
+        # reset singleton
+        InstallJson._instances = {}
+
         base_fqpn = os.path.join('tests', 'app_config', 'apps', app_type, app_name)
         shutil.copy2(
             os.path.join(base_fqpn, 'install-template.json'),
@@ -67,6 +75,9 @@ class TestInstallJson:
         """Validate input model in and out."""
         ij_path = Path(path)
         for fqfn in sorted(ij_path.glob('**/*install.json')):
+            # reset singleton
+            InstallJson._instances = {}
+
             fqfn = Path(fqfn)
             with fqfn.open() as fh:
                 json_dict = json.load(fh)

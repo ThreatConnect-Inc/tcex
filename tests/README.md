@@ -41,8 +41,7 @@ pytest --cov=tcex/api/tc/v3/tasks --cov-report=term-missing tests/api/tc/v3/task
 
 ## app_config
 
-### install_json_model
-pytest --cov=tcex/app_config/install.json --cov-report=term-missing tests/app_config/test_install_json_model.py
+pytest --cov=tcex/app_config/ --cov-report=term-missing tests/app_config/
 
 # Case Management Error Codes
 

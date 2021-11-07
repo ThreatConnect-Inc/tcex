@@ -159,7 +159,7 @@ class TestInputsFieldTypeKeyValueArray(InputTest):
         self._stage_key_value('my_key_value', variable_name, key_value, tcex)
         tcex.inputs.add_model(PytestModel)
 
-        parsed_input = tcex.inputs.data.my_key_value
+        parsed_input = tcex.inputs.model.my_key_value
 
         # input will be wrapped in list if not already a list
         assert parsed_input == [key_value] if not isinstance(key_value, list) else key_value
@@ -354,7 +354,7 @@ class TestInputsFieldTypeKeyValueArray(InputTest):
 
         self._stage_key_value('my_key_value', variable_name, key_value, tcex)
         tcex.inputs.add_model(PytestModel)
-        parsed_input = tcex.inputs.data.my_key_value
+        parsed_input = tcex.inputs.model.my_key_value
         assert parsed_input == [key_value] if not isinstance(key_value, list) else key_value
 
     @staticmethod
@@ -400,7 +400,7 @@ class TestInputsFieldTypeKeyValueArray(InputTest):
         tcex = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_key_value == []
+        assert tcex.inputs.model.my_key_value == []
 
     @staticmethod
     def test_field_type_key_value_array_input_null(playbook_app: 'MockApp'):
@@ -462,7 +462,7 @@ class TestInputsFieldTypeKeyValueArray(InputTest):
         tcex = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_key_value is None
+        assert tcex.inputs.model.my_key_value is None
 
     @staticmethod
     def test_optional_field_type_key_value_array_optional(playbook_app: 'MockApp'):
@@ -484,7 +484,7 @@ class TestInputsFieldTypeKeyValueArray(InputTest):
         tcex = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_key_value is None
+        assert tcex.inputs.model.my_key_value is None
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -531,7 +531,7 @@ class TestInputsFieldTypeKeyValueArray(InputTest):
         tcex.inputs.add_model(PytestModel)
 
         # empty and null members are ok
-        assert tcex.inputs.data.my_key_values == key_values
+        assert tcex.inputs.model.my_key_values == key_values
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -708,4 +708,4 @@ class TestInputsFieldTypeKeyValueArray(InputTest):
         tcex = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert type(tcex.inputs.data.my_key_value).__name__ == 'KeyValueArrayOptionalCustom'
+        assert type(tcex.inputs.model.my_key_value).__name__ == 'KeyValueArrayOptionalCustom'

@@ -62,9 +62,9 @@ class TestInputsConfig:
         tcex = app.tcex
         tcex.inputs.add_model(PytestModel)
 
-        # print(tcex.inputs.data.json(indent=2))
-        assert tcex.inputs.data.my_bool is True
-        assert tcex.inputs.data.my_multi == ['one', 'two']
+        # print(tcex.inputs.model.json(indent=2))
+        assert tcex.inputs.model.my_bool is True
+        assert tcex.inputs.model.my_multi == ['one', 'two']
 
     @staticmethod
     def test_config_kwarg():
@@ -84,8 +84,8 @@ class TestInputsConfig:
         # get instance of tcex with config_file kwargs
         tcex = TcEx(config=config_data)
 
-        # print(tcex.inputs.data.json(indent=2))
-        assert tcex.inputs.data.external_config_item == config_data.get('external_config_item')
+        # print(tcex.inputs.model.json(indent=2))
+        assert tcex.inputs.model.external_config_item == config_data.get('external_config_item')
 
     @staticmethod
     def test_config_file_kwarg():
@@ -112,8 +112,8 @@ class TestInputsConfig:
         # get instance of tcex with config_file kwargs
         tcex = TcEx(config_file=config_file)
 
-        # print(tcex.inputs.data.json(indent=2))
-        assert tcex.inputs.data.external_config_item == config_data.get('external_config_item')
+        # print(tcex.inputs.model.json(indent=2))
+        assert tcex.inputs.model.external_config_item == config_data.get('external_config_item')
 
         # cleanup config
         config_file.unlink()
@@ -126,11 +126,11 @@ class TestInputsConfig:
             tcex (TcEx, fixture): An instantiated instance of TcEx.
         """
         registry._reset()
-        # print(tcex.inputs.data.tc_token.get_secret_value())
-        # print(tcex.inputs.data.tc_token_expires)
-        assert tcex.inputs.data.tc_token
-        assert tcex.inputs.data.tc_token_expires
-        assert tcex.inputs.data.api_default_org == 'TCI'
+        # print(tcex.inputs.model.tc_token.get_secret_value())
+        # print(tcex.inputs.model.tc_token_expires)
+        assert tcex.inputs.model.tc_token
+        assert tcex.inputs.model.tc_token_expires
+        assert tcex.inputs.model.api_default_org == 'TCI'
 
 
 #     @staticmethod

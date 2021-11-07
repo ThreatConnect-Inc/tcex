@@ -39,6 +39,9 @@ class TestLayoutJson:
     @staticmethod
     def ij(app_name: str = 'app_1', app_type: str = 'tcpb'):
         """Return install.json instance."""
+        # reset singleton
+        InstallJson._instances = {}
+
         ij_fqfn = os.path.join('tests', 'app_config', 'apps', app_type, app_name, 'install.json')
         fqfn = Path(ij_fqfn)
         try:
@@ -49,6 +52,9 @@ class TestLayoutJson:
     @staticmethod
     def lj(app_name: str = 'app_1', app_type: str = 'tcpb'):
         """Return layout.json instance."""
+        # reset singleton
+        LayoutJson._instances = {}
+
         lj_fqfn = os.path.join('tests', 'app_config', 'apps', app_type, app_name, 'layout.json')
         fqfn = Path(lj_fqfn)
         try:
@@ -59,6 +65,9 @@ class TestLayoutJson:
     @staticmethod
     def lj_bad(app_name: str = 'app_bad_layout_json', app_type: str = 'tcpb'):
         """Return layout.json instance with "bad" file."""
+        # reset singleton
+        LayoutJson._instances = {}
+
         base_fqpn = os.path.join('tests', 'app_config', 'apps', app_type, app_name)
         shutil.copy2(
             os.path.join(base_fqpn, 'layout-template.json'),
@@ -75,6 +84,9 @@ class TestLayoutJson:
         """Validate input model in and out."""
         lj_path = Path(path)
         for fqfn in sorted(lj_path.glob('**/*layout.json')):
+            # reset singleton
+            LayoutJson._instances = {}
+
             fqfn = Path(fqfn)
             with fqfn.open() as fh:
                 json_dict = json.load(fh)

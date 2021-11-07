@@ -39,7 +39,7 @@ class Logger:
 
     @property
     def _logger(self) -> logging.Logger:
-        """Return the logger. The inputs.data property is not available in init."""
+        """Return the logger. The inputs.model property is not available in init."""
         logging.setLoggerClass(TraceLogger)
         logger = logging.getLogger(self.logger_name)
         logger.setLevel(logging.TRACE)

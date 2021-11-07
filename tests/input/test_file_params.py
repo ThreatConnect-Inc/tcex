@@ -24,5 +24,5 @@ class TestInputsFileParams:
         tcex = playbook_app(config_data=config_data).tcex
 
         # assert args
-        assert tcex.inputs.data.one == config_data.get('one')
-        assert tcex.inputs.data.two == config_data.get('two')
+        assert tcex.inputs.model.one == config_data.get('one')
+        assert tcex.inputs.model.two == config_data.get('two')

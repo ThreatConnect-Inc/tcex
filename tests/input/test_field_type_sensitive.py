@@ -34,21 +34,21 @@ class TestInputsFieldTypeSensitive(InputTest):
         config_data = {'my_sensitive': 'super-secret-squirrel'}
         tcex = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
-        # print(tcex.inputs.data.json(indent=2))
+        # print(tcex.inputs.model.json(indent=2))
 
-        assert str(tcex.inputs.data.my_sensitive).startswith('****')
-        assert tcex.inputs.data.my_sensitive.value == config_data.get('my_sensitive')
-        assert len(tcex.inputs.data.my_sensitive) == len(config_data.get('my_sensitive'))
-        assert isinstance(tcex.inputs.data.my_sensitive, Sensitive)
+        assert str(tcex.inputs.model.my_sensitive).startswith('****')
+        assert tcex.inputs.model.my_sensitive.value == config_data.get('my_sensitive')
+        assert len(tcex.inputs.model.my_sensitive) == len(config_data.get('my_sensitive'))
+        assert isinstance(tcex.inputs.model.my_sensitive, Sensitive)
 
         # code coverage -> def:__modify_schema__
-        tcex.inputs.data.schema()
+        tcex.inputs.model.schema()
 
         # code coverage -> def:validate->return value
-        tcex.inputs.data.my_sensitive = tcex.inputs.data.my_sensitive
+        tcex.inputs.model.my_sensitive = tcex.inputs.model.my_sensitive
 
         # code coverage -> def:__repr__
-        tcex.inputs.data.my_sensitive.__repr__()
+        tcex.inputs.model.my_sensitive.__repr__()
 
     def test_field_type_sensitive_input_binary_string_staged(self, playbook_app: 'MockApp'):
         """Test Sensitive field type with binary input.
@@ -72,8 +72,8 @@ class TestInputsFieldTypeSensitive(InputTest):
         )
         tcex.inputs.add_model(PytestModel)
 
-        assert str(tcex.inputs.data.my_sensitive_field).startswith('****')
-        assert tcex.inputs.data.my_sensitive_field.value == b'binary string'
+        assert str(tcex.inputs.model.my_sensitive_field).startswith('****')
+        assert tcex.inputs.model.my_sensitive_field.value == b'binary string'
 
     @staticmethod
     def test_field_type_sensitive_input_null_not_allowed(playbook_app: 'MockApp'):
@@ -163,7 +163,7 @@ class TestInputsFieldTypeSensitive(InputTest):
         )
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_sensitive_field.value == b''
+        assert tcex.inputs.model.my_sensitive_field.value == b''
 
     def test_field_type_sensitive_input_blank_string_allowed(self, playbook_app: 'MockApp'):
         """Test SensitiveOptional field type with blank string input.
@@ -183,7 +183,7 @@ class TestInputsFieldTypeSensitive(InputTest):
         self._stage_key_value('my_sensitive_field', '#App:1234:my_sensitive_field!String', '', tcex)
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_sensitive_field.value == ''
+        assert tcex.inputs.model.my_sensitive_field.value == ''
 
     @staticmethod
     def test_field_type_sensitive_input_null_allowed(playbook_app: 'MockApp'):
@@ -202,7 +202,7 @@ class TestInputsFieldTypeSensitive(InputTest):
         tcex = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_sensitive_field is None
+        assert tcex.inputs.model.my_sensitive_field is None
 
     @staticmethod
     def test_field_type_sensitive_bad_initializer(playbook_app: 'MockApp'):

@@ -848,7 +848,7 @@ class BatchWriter:
         if self._group_shelf_fqfn is None:
             # new shelf file
             self._group_shelf_fqfn = os.path.join(
-                self.inputs.data.tc_temp_path, f'groups-{str(uuid.uuid4())}'
+                self.inputs.model.tc_temp_path, f'groups-{str(uuid.uuid4())}'
             )
         return self._group_shelf_fqfn
 
@@ -936,7 +936,7 @@ class BatchWriter:
         if self._indicator_shelf_fqfn is None:
             # new shelf file
             self._indicator_shelf_fqfn = os.path.join(
-                self.inputs.data.tc_temp_path, f'indicators-{str(uuid.uuid4())}'
+                self.inputs.model.tc_temp_path, f'indicators-{str(uuid.uuid4())}'
             )
         return self._indicator_shelf_fqfn
 
@@ -1069,7 +1069,7 @@ class BatchWriter:
                     except KeyError:
                         # if group was saved twice it would already be delete
                         pass
-            elif resource_type in self.tic.indicator_types_data.keys():
+            elif resource_type in self.tic.indicator_types_data:
                 try:
                     # indicators
                     self.indicators_shelf[xid] = resource

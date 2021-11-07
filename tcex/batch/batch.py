@@ -16,6 +16,7 @@ from requests import Response, Session
 # first-party
 from tcex.batch.batch_submit import BatchSubmit
 from tcex.batch.batch_writer import BatchWriter, GroupType, IndicatorType
+from tcex.exit.error_codes import handle_error
 
 if TYPE_CHECKING:
     # first-party
@@ -99,7 +100,7 @@ class Batch(BatchWriter, BatchSubmit):
 
         # batch debug/replay variables
         self._debug = None
-        self.debug_path = os.path.join(self.inputs.data.tc_temp_path, 'DEBUG')
+        self.debug_path = os.path.join(self.inputs.model.tc_temp_path, 'DEBUG')
         self.debug_path_batch = os.path.join(self.debug_path, 'batch_data')
         self.debug_path_group_shelf = os.path.join(self.debug_path, 'groups-saved')
         self.debug_path_indicator_shelf = os.path.join(self.debug_path, 'indicators-saved')
@@ -858,17 +859,14 @@ class Batch(BatchWriter, BatchSubmit):
             params = {'includeAdditional': 'true'}
             r = self.session.post('/v2/batch/createAndUpload', files=files, params=params)
             if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-                self.event.send(
-                    'handle_error',
+                handle_error(
                     code=10510,
                     message_values=[r.status_code, r.text],
                     raise_error=halt_on_error,
                 )
             return r.json()
         except Exception as e:
-            self.event.send(
-                'handle_error', code=10505, message_values=[e], raise_error=halt_on_error
-            )
+            handle_error(code=10505, message_values=[e], raise_error=halt_on_error)
 
         return {}
 
@@ -946,8 +944,7 @@ class Batch(BatchWriter, BatchSubmit):
                 r = self.submit_file_content('PUT', url, content, headers, params, halt_on_error)
             if not r.ok:
                 status = False
-                self.event.send(
-                    'handle_error',
+                handle_error(
                     code=585,
                     message_values=[r.status_code, r.text],
                     raise_error=halt_on_error,
@@ -990,7 +987,7 @@ class Batch(BatchWriter, BatchSubmit):
         try:
             r = self.session.request(method, url, data=data, headers=headers, params=params)
         except Exception as e:
-            self.event.send('handle_error', code=580, message_values=[e], raise_error=halt_on_error)
+            handle_error(code=580, message_values=[e], raise_error=halt_on_error)
         return r
 
     def submit_job(self, halt_on_error: Optional[bool] = True) -> int:
@@ -1009,21 +1006,17 @@ class Batch(BatchWriter, BatchSubmit):
         try:
             r = self.session.post('/v2/batch', json=self.settings)
         except Exception as e:
-            self.event.send(
-                'handle_error', code=10505, message_values=[e], raise_error=halt_on_error
-            )
+            handle_error(code=10505, message_values=[e], raise_error=halt_on_error)
 
         if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-            self.event.send(
-                'handle_error',
+            handle_error(
                 code=10510,
                 message_values=[r.status_code, r.text],
                 raise_error=halt_on_error,
             )
         data = r.json()
         if data.get('status') != 'Success':
-            self.event.send(
-                'handle_error',
+            handle_error(
                 code=10510,
                 message_values=[r.status_code, r.text],
                 raise_error=halt_on_error,

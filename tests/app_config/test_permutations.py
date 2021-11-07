@@ -33,6 +33,9 @@ class TestPermutation:
     @staticmethod
     def ij(app_type: str, app_name: str) -> InstallJson:
         """Return install.json instance."""
+        # reset singleton
+        InstallJson._instances = {}
+
         base_path = f'tests/app_config/apps/{app_type}/{app_name}'
         fqfn = Path(os.path.join(base_path, 'install.json'))
         try:
@@ -43,6 +46,9 @@ class TestPermutation:
     @staticmethod
     def lj(app_type: str, app_name: str):
         """Return layout.json instance."""
+        # reset singleton
+        LayoutJson._instances = {}
+
         base_path = f'tests/app_config/apps/{app_type}/{app_name}'
         fqfn = Path(os.path.join(base_path, 'layout.json'))
         try:

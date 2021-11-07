@@ -77,7 +77,7 @@ class TcEx:
         registry.add_method(self.exit)
 
         # log standard App info early so it shows at the top of the logfile
-        self.logger.log_info(self.inputs.data_unresolved)
+        self.logger.log_info(self.inputs.model_unresolved)
 
     def _signal_handler(self, signal_interrupt: int, _) -> None:
         """Handle signal interrupt."""
@@ -318,13 +318,13 @@ class TcEx:
     def get_session_tc(self) -> TcSession:
         """Return an instance of Requests Session configured for the ThreatConnect API."""
         _session = TcSession(
-            tc_api_access_id=self.inputs.data_unresolved.tc_api_access_id,
-            tc_api_secret_key=self.inputs.data_unresolved.tc_api_secret_key,
-            tc_base_url=self.inputs.data_unresolved.tc_api_path,
+            tc_api_access_id=self.inputs.model_unresolved.tc_api_access_id,
+            tc_api_secret_key=self.inputs.model_unresolved.tc_api_secret_key,
+            tc_base_url=self.inputs.model_unresolved.tc_api_path,
         )
 
         # set verify
-        _session.verify = self.inputs.data_unresolved.tc_verify
+        _session.verify = self.inputs.model_unresolved.tc_verify
 
         # set token
         _session.token = self.token
@@ -333,15 +333,15 @@ class TcEx:
         _session.headers.update(self._user_agent)
 
         # add proxy support if requested
-        if self.inputs.data_unresolved.tc_proxy_tc:
+        if self.inputs.model_unresolved.tc_proxy_tc:
             _session.proxies = self.proxies
             self.log.info(
-                f'Using proxy host {self.inputs.data_unresolved.tc_proxy_host}:'
-                f'{self.inputs.data_unresolved.tc_proxy_port} for ThreatConnect session.'
+                f'Using proxy host {self.inputs.model_unresolved.tc_proxy_host}:'
+                f'{self.inputs.model_unresolved.tc_proxy_port} for ThreatConnect session.'
             )
 
         # enable curl logging if tc_log_curl param is set.
-        if self.inputs.data_unresolved.tc_log_curl:
+        if self.inputs.model_unresolved.tc_log_curl:
             _session.log_curl = True
 
         return _session
@@ -354,14 +354,14 @@ class TcEx:
         _session_external.headers.update(self._user_agent)
 
         # add proxy support if requested
-        if self.inputs.data_unresolved.tc_proxy_external:
+        if self.inputs.model_unresolved.tc_proxy_external:
             _session_external.proxies = self.proxies
             self.log.info(
-                f'Using proxy host {self.inputs.data_unresolved.tc_proxy_host}:'
-                f'{self.inputs.data_unresolved.tc_proxy_port} for external session.'
+                f'Using proxy host {self.inputs.model_unresolved.tc_proxy_host}:'
+                f'{self.inputs.model_unresolved.tc_proxy_port} for external session.'
             )
 
-        if self.inputs.data_unresolved.tc_log_curl:
+        if self.inputs.model_unresolved.tc_log_curl:
             _session_external.log_curl = True
 
         return _session_external
@@ -378,14 +378,14 @@ class TcEx:
         The TCKeyValueAPI KV store is limited to two operations (create and read),
         while the Redis kvstore wraps a few other Redis methods.
         """
-        if self.inputs.data_unresolved.tc_kvstore_type == 'Redis':
+        if self.inputs.model_unresolved.tc_kvstore_type == 'Redis':
             return KeyValueRedis(self.redis_client)
 
-        if self.inputs.data_unresolved.tc_kvstore_type == 'TCKeyValueAPI':
+        if self.inputs.model_unresolved.tc_kvstore_type == 'TCKeyValueAPI':
             return KeyValueApi(self.session_tc)
 
         raise RuntimeError(
-            f'Invalid KV Store Type: ({self.inputs.data_unresolved.tc_kvstore_type})'
+            f'Invalid KV Store Type: ({self.inputs.model_unresolved.tc_kvstore_type})'
         )
 
     @property
@@ -408,24 +408,24 @@ class TcEx:
 
         # add api handler
         if (
-            self.inputs.data_unresolved.tc_token is not None
-            and self.inputs.data_unresolved.tc_log_to_api
+            self.inputs.model_unresolved.tc_token is not None
+            and self.inputs.model_unresolved.tc_log_to_api
         ):
-            _logger.add_api_handler(level=self.inputs.data_unresolved.tc_log_level)
+            _logger.add_api_handler(level=self.inputs.model_unresolved.tc_log_level)
 
         # add rotating log handler
         _logger.add_rotating_file_handler(
             name='rfh',
-            filename=self.inputs.data_unresolved.tc_log_file,
-            path=self.inputs.data_unresolved.tc_log_path,
-            backup_count=self.inputs.data_unresolved.tc_log_backup_count,
-            max_bytes=self.inputs.data_unresolved.tc_log_max_bytes,
-            level=self.inputs.data_unresolved.tc_log_level,
+            filename=self.inputs.model_unresolved.tc_log_file,
+            path=self.inputs.model_unresolved.tc_log_path,
+            backup_count=self.inputs.model_unresolved.tc_log_backup_count,
+            max_bytes=self.inputs.model_unresolved.tc_log_max_bytes,
+            level=self.inputs.model_unresolved.tc_log_level,
         )
 
         # set logging level
-        _logger.update_handler_level(level=self.inputs.data_unresolved.tc_log_level)
-        _logger.log.setLevel(_logger.log_level(self.inputs.data_unresolved.tc_log_level))
+        _logger.update_handler_level(level=self.inputs.model_unresolved.tc_log_level)
+        _logger.log.setLevel(_logger.log_level(self.inputs.model_unresolved.tc_log_level))
 
         # replay cached log events
         _logger.replay_cached_events(handler_name='cache')
@@ -466,8 +466,8 @@ class TcEx:
             tcex.playbook.Playbooks: An instance of Playbooks
         """
         return self.get_playbook(
-            context=self.inputs.data_unresolved.tc_playbook_kvstore_context,
-            output_variables=self.inputs.data_unresolved.tc_playbook_out_variables,
+            context=self.inputs.model_unresolved.tc_playbook_kvstore_context,
+            output_variables=self.inputs.model_unresolved.tc_playbook_out_variables,
         )
 
     @cached_property
@@ -486,10 +486,10 @@ class TcEx:
            (dict): Dictionary of proxy settings
         """
         return proxies(
-            proxy_host=self.inputs.data_unresolved.tc_proxy_host,
-            proxy_port=self.inputs.data_unresolved.tc_proxy_port,
-            proxy_user=self.inputs.data_unresolved.tc_proxy_username,
-            proxy_pass=self.inputs.data_unresolved.tc_proxy_password,
+            proxy_host=self.inputs.model_unresolved.tc_proxy_host,
+            proxy_port=self.inputs.model_unresolved.tc_proxy_port,
+            proxy_user=self.inputs.model_unresolved.tc_proxy_username,
+            proxy_pass=self.inputs.model_unresolved.tc_proxy_password,
         )
 
     @registry.factory(RedisClient)
@@ -497,8 +497,8 @@ class TcEx:
     def redis_client(self) -> 'RedisClient':
         """Return redis client instance configure for Playbook/Service Apps."""
         return self.get_redis_client(
-            host=self.inputs.data_unresolved.tc_kvstore_host,
-            port=self.inputs.data_unresolved.tc_kvstore_port,
+            host=self.inputs.model_unresolved.tc_kvstore_host,
+            port=self.inputs.model_unresolved.tc_kvstore_port,
             db=0,
         )
 
@@ -512,8 +512,8 @@ class TcEx:
             key: The data key to be stored.
             value: The data value to be stored.
         """
-        if os.access(self.inputs.data_unresolved.tc_out_path, os.W_OK):
-            results_file = f'{self.inputs.data_unresolved.tc_out_path}/results.tc'
+        if os.access(self.inputs.model_unresolved.tc_out_path, os.W_OK):
+            results_file = f'{self.inputs.model_unresolved.tc_out_path}/results.tc'
         else:
             results_file = 'results.tc'
 
@@ -571,18 +571,18 @@ class TcEx:
     def token(self) -> 'Tokens':
         """Return token object."""
         _tokens = Tokens(
-            self.inputs.data_unresolved.tc_api_path,
-            self.inputs.data_unresolved.tc_verify,
+            self.inputs.model_unresolved.tc_api_path,
+            self.inputs.model_unresolved.tc_verify,
         )
 
         # register token for Apps that pass token on start
         if all(
-            [self.inputs.data_unresolved.tc_token, self.inputs.data_unresolved.tc_token_expires]
+            [self.inputs.model_unresolved.tc_token, self.inputs.model_unresolved.tc_token_expires]
         ):
             _tokens.register_token(
                 key=threading.current_thread().name,
-                token=self.inputs.data_unresolved.tc_token,
-                expires=self.inputs.data_unresolved.tc_token_expires,
+                token=self.inputs.model_unresolved.tc_token,
+                expires=self.inputs.model_unresolved.tc_token_expires,
             )
         return _tokens
 
@@ -593,7 +593,7 @@ class TcEx:
     @cached_property
     def utils(self) -> 'Utils':
         """Include the Utils module."""
-        return Utils(temp_path=self.inputs.data_unresolved.tc_temp_path)
+        return Utils(temp_path=self.inputs.model_unresolved.tc_temp_path)
 
     @property
     def v3(self) -> 'V3':

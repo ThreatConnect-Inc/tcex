@@ -21,10 +21,10 @@ class InputTest:
         # stage update inputs contents cached property from None to correct variable name so
         # that inputs contents_resolved logic may resolve variable
         #
-        # UPDATE: tcex code now relies on inputs.data_unresolved, so the tcex should not resolve
+        # UPDATE: tcex code now relies on inputs.model_unresolved, so the tcex should not resolve
         # the variable to None, but leaving this code here just in case tcex is changed to use
-        # inputs.data at some point.
+        # inputs.model at some point.
         tcex.inputs.__dict__['contents'][config_key] = variable_name
 
-        # since tcex code is not using inputs.data, call it here to ensure variables are resolved
-        _ = tcex.inputs.data
+        # since tcex code is not using inputs.model, call it here to ensure variables are resolved
+        _ = tcex.inputs.model

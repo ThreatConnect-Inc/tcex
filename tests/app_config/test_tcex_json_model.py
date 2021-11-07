@@ -34,6 +34,9 @@ class TestTcexJson:
     @staticmethod
     def ij(app_name: str = 'app_1', app_type: str = 'tcpb'):
         """Return install.json instance."""
+        # reset singleton
+        InstallJson._instances = {}
+
         ij_fqfn = os.path.join('tests', 'app_config', 'apps', app_type, app_name, 'install.json')
         fqfn = Path(ij_fqfn)
         try:
@@ -44,6 +47,9 @@ class TestTcexJson:
     @staticmethod
     def tj(app_name: str = 'app_1', app_type: str = 'tcpb'):
         """Return tcex.json instance."""
+        # reset singleton
+        TcexJson._instances = {}
+
         tj_fqfn = os.path.join('tests', 'app_config', 'apps', app_type, app_name, 'tcex.json')
         fqfn = Path(tj_fqfn)
         try:
@@ -54,6 +60,9 @@ class TestTcexJson:
     @staticmethod
     def tj_bad(app_name: str = 'app_bad_tcex_json', app_type: str = 'tcpb'):
         """Return tcex.json instance with "bad" file."""
+        # reset singleton
+        TcexJson._instances = {}
+
         base_fqpn = os.path.join('tests', 'app_config', 'apps', app_type, app_name)
         shutil.copy2(
             f'{base_fqpn}/tcex-template.json',
@@ -70,6 +79,9 @@ class TestTcexJson:
         """Validate input model in and out."""
         tj_path = Path(path)
         for fqfn in tj_path.glob('**/*tcex.json'):
+            # reset singleton
+            TcexJson._instances = {}
+
             fqfn = Path(fqfn)
             with fqfn.open() as fh:
                 json_dict = json.load(fh)

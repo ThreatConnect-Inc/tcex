@@ -54,7 +54,7 @@ class AdvancedRequest:
 
     def configure_body(self) -> None:
         """Configure Body"""
-        self.data: Union[bytes, str] = self.inputs.data.tc_adv_req_body
+        self.data: Union[bytes, str] = self.inputs.model.tc_adv_req_body
         if self.data is not None:
             # INT-1386
             try:
@@ -62,7 +62,7 @@ class AdvancedRequest:
             except AttributeError:
                 pass  # Binary Data
 
-        if self.inputs.data.tc_adv_req_urlencode_body:
+        if self.inputs.model.tc_adv_req_urlencode_body:
             try:
                 self.data: dict = json.loads(self.data)
             except ValueError:  # pragma: no cover
@@ -76,7 +76,7 @@ class AdvancedRequest:
             "value": "TcEx MyApp: 1.0.0",
         }]
         """
-        for header_data in self.inputs.data.tc_adv_req_headers:
+        for header_data in self.inputs.model.tc_adv_req_headers:
             value: str = self.playbook.read(header_data.get('value'))
             self.headers[str(header_data.get('key'))] = str(value)
 
@@ -88,13 +88,13 @@ class AdvancedRequest:
             "page": "1",
         }]
         """
-        for param_data in self.inputs.data.tc_adv_req_params:
+        for param_data in self.inputs.model.tc_adv_req_params:
             param: str = str(param_data.get('key'))
             values: str = self.playbook.read(param_data.get('value'))
             if not isinstance(values, list):
                 values: list = [values]
             for value in values:
-                if not value and self.inputs.data.tc_adv_req_exclude_null_params:
+                if not value and self.inputs.model.tc_adv_req_exclude_null_params:
                     self.log.warning(
                         f'Query parameter {param} has a null/empty value '
                         'and will not be added to the request.'
@@ -119,10 +119,10 @@ class AdvancedRequest:
                 allow_redirects=self.allow_redirects,
                 data=self.data,
                 headers=self.headers,
-                method=self.inputs.data.tc_adv_req_http_method,
+                method=self.inputs.model.tc_adv_req_http_method,
                 params=self.params,
                 timeout=self.timeout,
-                url=self.inputs.data.tc_adv_req_path,
+                url=self.inputs.model.tc_adv_req_path,
             )
         except requests.exceptions.RequestException as e:  # pragma: no cover
             response = None
@@ -157,7 +157,7 @@ class AdvancedRequest:
         )
 
         # fail if fail_on_error is selected and not ok
-        if self.inputs.data.tc_adv_req_fail_on_error and not response.ok:
+        if self.inputs.model.tc_adv_req_fail_on_error and not response.ok:
             raise RuntimeError(f'Failed for status ({response.status_code})')
 
         return response

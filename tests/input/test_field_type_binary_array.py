@@ -40,7 +40,7 @@ class TestInputsFieldTypeBinaryArray(InputTest):
         self._stage_key_value('my_binary', '#App:1234:my_binary!Binary', b'binary string', tcex)
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_binary == [b'binary string']
+        assert tcex.inputs.model.my_binary == [b'binary string']
 
     def test_field_type_binary_array_input_binary_array_staged(self, playbook_app: 'MockApp'):
         """Test BinaryArray field type with binary array input.
@@ -64,7 +64,7 @@ class TestInputsFieldTypeBinaryArray(InputTest):
         )
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_binary == [b'binary string']
+        assert tcex.inputs.model.my_binary == [b'binary string']
 
     @staticmethod
     def test_field_type_binary_array_input_invalid(playbook_app: 'MockApp'):
@@ -159,7 +159,7 @@ class TestInputsFieldTypeBinaryArray(InputTest):
         tcex = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_binary == []
+        assert tcex.inputs.model.my_binary == []
 
     def test_field_type_binary_array_input_empty_binary(self, playbook_app: 'MockApp'):
         """Test BinaryArray field type with empty input.
@@ -205,7 +205,7 @@ class TestInputsFieldTypeBinaryArray(InputTest):
         self._stage_key_value('my_binary', '#App:1234:my_binary!Binary', b'', tcex)
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_binary == [b'']
+        assert tcex.inputs.model.my_binary == [b'']
 
     @staticmethod
     def test_field_type_binary_array_input_null(playbook_app: 'MockApp'):
@@ -267,7 +267,7 @@ class TestInputsFieldTypeBinaryArray(InputTest):
         tcex = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_binary is None
+        assert tcex.inputs.model.my_binary is None
 
     @staticmethod
     def test_optional_field_type_binary_array_optional(playbook_app: 'MockApp'):
@@ -289,7 +289,7 @@ class TestInputsFieldTypeBinaryArray(InputTest):
         tcex = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.data.my_binary is None
+        assert tcex.inputs.model.my_binary is None
 
     def test_field_type_binary_array_input_array_with_empty_and_null_members(
         self, playbook_app: 'MockApp'
@@ -315,7 +315,7 @@ class TestInputsFieldTypeBinaryArray(InputTest):
         tcex.inputs.add_model(PytestModel)
 
         # empty and null members are ok
-        assert tcex.inputs.data.my_binary == [b'', None]
+        assert tcex.inputs.model.my_binary == [b'', None]
 
     def test_field_type_binary_array_input_array_with_empty_and_null_members_empty_not_allowed(
         self, playbook_app: 'MockApp'
@@ -405,4 +405,4 @@ class TestInputsFieldTypeBinaryArray(InputTest):
         self._stage_key_value('my_binary', '#App:1234:my_binary!Binary', b'', tcex)
         tcex.inputs.add_model(PytestModel)
 
-        assert type(tcex.inputs.data.my_binary).__name__ == 'BinaryArrayOptionalCustom'
+        assert type(tcex.inputs.model.my_binary).__name__ == 'BinaryArrayOptionalCustom'
