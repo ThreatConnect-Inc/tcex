@@ -38,7 +38,7 @@ class AdvancedRequest:
     ) -> None:
         """Initialize class properties."""
         self.inputs = inputs
-        self.output_prefix: str = output_prefix or InstallJson().data.playbook.output_prefix
+        self.output_prefix: str = output_prefix or InstallJson().model.playbook.output_prefix
         self.playbook = playbook
         self.session = session
 

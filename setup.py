@@ -22,7 +22,6 @@ with open('README.md') as f:
 dev_packages = [
     'bandit',
     'black',
-    'CommonMark==0.5.5',
     'deepdiff',
     'flake8',
     'isort',
@@ -35,10 +34,6 @@ dev_packages = [
     'pytest-html',
     'pytest-xdist>=2.0.0',
     'pyupgrade',
-    'recommonmark',
-    'reno',
-    'sphinx',
-    'sphinx-rtd-theme',
 ]
 
 
@@ -64,6 +59,7 @@ setup(
     extras_require={'dev': dev_packages, 'develop': dev_packages, 'development': dev_packages},
     include_package_data=True,
     install_requires=[
+        'arrow',
         'backports.cached-property; python_version < "3.8.0"',
         'colorama>=0.3.9',
         'future',

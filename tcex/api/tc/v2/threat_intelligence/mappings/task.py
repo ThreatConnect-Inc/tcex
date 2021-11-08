@@ -106,9 +106,7 @@ class Task(Mappings):
         if key in ['unique_id', 'id']:
             self._unique_id = quote_plus(str(value))
         elif key in ['dueDate', 'reminderDate', 'escalationDate']:
-            self._data[key] = self._utils.datetime.format_datetime(
-                value, date_format='%Y-%m-%dT%H:%M:%SZ'
-            )
+            self._data[key] = self._utils.any_to_arrow(value).strftime('%Y-%m-%dT%H:%M:%SZ')
         else:
             self._data[key] = value
 
@@ -192,7 +190,7 @@ class Task(Mappings):
         if not self.can_update():
             handle_error(910, [self.type])
 
-        due_date = self._utils.datetime.format_datetime(due_date, date_format='%Y-%m-%dT%H:%M:%SZ')
+        due_date = self._utils.any_to_arrow(due_date).strftime('%Y-%m-%dT%H:%M:%SZ')
         self._data['dueDate'] = due_date
         request = {'dueDate': due_date}
         return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
@@ -232,9 +230,7 @@ class Task(Mappings):
         if not self.can_update():
             handle_error(910, [self.type])
 
-        escalation_date = self._utils.datetime.format_datetime(
-            escalation_date, date_format='%Y-%m-%dT%H:%M:%SZ'
-        )
+        escalation_date = self._utils.any_to_arrow(escalation_date).strftime('%Y-%m-%dT%H:%M:%SZ')
         self._data['escalationDate'] = escalation_date
         request = {'escalationDate': escalation_date}
         return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
@@ -272,9 +268,7 @@ class Task(Mappings):
         if not self.can_update():
             handle_error(910, [self.type])
 
-        reminder_date = self._utils.datetime.format_datetime(
-            reminder_date, date_format='%Y-%m-%dT%H:%M:%SZ'
-        )
+        reminder_date = self._utils.any_to_arrow(reminder_date).strftime('%Y-%m-%dT%H:%M:%SZ')
         self._data['reminderDate'] = reminder_date
         request = {'reminderDate': reminder_date}
         return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)

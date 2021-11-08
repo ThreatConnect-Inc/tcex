@@ -205,7 +205,7 @@ class TestGroup1:
         """Test report creation"""
         batch = tcex.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'report', name])
-        ti = batch.report(name=name, file_name='report.pdf', publish_date='12-12-2008', xid=xid)
+        ti = batch.report(name=name, file_name='report.pdf', publish_date='2008-12-12', xid=xid)
         ti.file_content = 'test 123'
         ti.attribute(attr_type='Description', attr_value=description, displayed=True)
         ti.security_label(name=label, description='Pytest Label Description', color='ffc0cb')

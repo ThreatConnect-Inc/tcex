@@ -28,7 +28,7 @@ class Batch(BatchWriter, BatchSubmit):
 
     Args:
         inputs: The App inputs.
-        session: The ThreatConnect API session.
+        session_tc: The ThreatConnect API session.
         owner: The ThreatConnect owner for Batch action.
         action: Action for the batch job ['Create', 'Delete'].
         attribute_write_type: Write type for attributes ['Append', 'Replace'].
@@ -41,7 +41,7 @@ class Batch(BatchWriter, BatchSubmit):
     def __init__(
         self,
         inputs: 'Input',
-        session: Session,
+        session_tc: Session,
         owner: str,
         action: Optional[str] = 'Create',
         attribute_write_type: Optional[str] = 'Replace',
@@ -51,11 +51,11 @@ class Batch(BatchWriter, BatchSubmit):
         security_label_write_type: Optional[str] = 'Replace',
     ) -> None:
         """Initialize Class properties."""
-        BatchWriter.__init__(self, inputs=inputs, session=session, output_dir='')
+        BatchWriter.__init__(self, inputs=inputs, session_tc=session_tc, output_dir='')
         BatchSubmit.__init__(
             self,
             inputs=inputs,
-            session=session,
+            session_tc=session_tc,
             owner=owner,
             action=action,
             attribute_write_type=attribute_write_type,
@@ -857,7 +857,7 @@ class Batch(BatchWriter, BatchSubmit):
         try:
             files = (('config', json.dumps(self.settings)), ('content', json.dumps(content)))
             params = {'includeAdditional': 'true'}
-            r = self.session.post('/v2/batch/createAndUpload', files=files, params=params)
+            r = self.session_tc.post('/v2/batch/createAndUpload', files=files, params=params)
             if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
                 handle_error(
                     code=10510,
@@ -985,7 +985,7 @@ class Batch(BatchWriter, BatchSubmit):
         """
         r = None
         try:
-            r = self.session.request(method, url, data=data, headers=headers, params=params)
+            r = self.session_tc.request(method, url, data=data, headers=headers, params=params)
         except Exception as e:
             handle_error(code=580, message_values=[e], raise_error=halt_on_error)
         return r
@@ -1004,7 +1004,7 @@ class Batch(BatchWriter, BatchSubmit):
             halt_on_error = self.halt_on_batch_error
 
         try:
-            r = self.session.post('/v2/batch', json=self.settings)
+            r = self.session_tc.post('/v2/batch', json=self.settings)
         except Exception as e:
             handle_error(code=10505, message_values=[e], raise_error=halt_on_error)
 

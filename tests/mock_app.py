@@ -376,11 +376,18 @@ class MockApp:
 
     @property
     def tcex_log_file(self) -> str:
-        """Return log file name for current test case."""
+        """Return log file name for current test case.
+
+        Possible Name:
+        input/test_field_type_key_value_array_input_kv_and_kv_array_staged-key_value0
+        -#App:1234:my_key_value!KeyValue].log
+        """
         try:
             test_data = os.getenv('PYTEST_CURRENT_TEST').split(' ')[0].split('::')
             test_feature = '-'.join(test_data[0].split('/')[1:-1])
-            test_name = test_data[-1].replace('/', '-').replace('[', '-')
+            test_name = (
+                test_data[-1].replace('/', '-').replace('[', '-').replace('#', '-').replace('!', '')
+            )
         except AttributeError:
             # TODO: remove this once tcex_init file is removed
             test_feature = 'tcex_init_legacy'

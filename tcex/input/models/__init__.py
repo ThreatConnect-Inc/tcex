@@ -1,7 +1,7 @@
 """Input Models"""
 
 # flake8:noqa
-from .advanced_settings_model import AdvancedSettingsModel
+from .advanced_request_model import AdvancedRequestModel
 from .aot_execution_enabled_model import AotExecutionEnabledModel
 from .api_model import ApiModel
 from .batch_model import BatchModel

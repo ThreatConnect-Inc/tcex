@@ -22,9 +22,9 @@ class ThreatIntelUtils:
     INDICATOR = 'Indicator'
     GROUP = 'Group'
 
-    def __init__(self, session: Session) -> None:
+    def __init__(self, session_tc: Session) -> None:
         """Initialize class properties."""
-        self.session = session
+        self.session_tc = session_tc
 
         # properties
         self.log = logger
@@ -142,7 +142,7 @@ class ThreatIntelUtils:
         _association_types = {}
 
         # Dynamically create custom indicator class
-        r = self.session.get('/v2/types/associationTypes')
+        r = self.session_tc.get('/v2/types/associationTypes')
 
         # check for bad status code and response that is not JSON
         if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
@@ -190,7 +190,7 @@ class ThreatIntelUtils:
             (dict): A dictionary of ThreatConnect Indicator data.
         """
         # retrieve data from API
-        r = self.session.get('/v2/types/indicatorTypes')
+        r = self.session_tc.get('/v2/types/indicatorTypes')
 
         # TODO: [low] use handle error instead
         if not r.ok:

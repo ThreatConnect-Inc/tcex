@@ -4,7 +4,7 @@ import os
 from datetime import datetime, timedelta
 
 
-class TestAttributes:
+class TestBatch:
     """Test the TcEx Batch Module."""
 
     @staticmethod

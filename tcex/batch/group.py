@@ -23,11 +23,11 @@ class Group:
         '_processed',
         '_type',
         '_tags',
-        '_utils',
         'file_content',
         'malware',
         'password',
         'status',
+        'utils',
     ]
 
     def __init__(self, group_type: str, name: str, **kwargs) -> None:
@@ -38,7 +38,6 @@ class Group:
             name (str): The name for this Group.
             xid (str, kwargs): The external id for this Group.
         """
-        self._utils = Utils()
         self._name = name
         self._type = group_type
         self._group_data = {'name': name, 'type': group_type}
@@ -53,6 +52,9 @@ class Group:
         self._file_content = None
         self._tags = []
         self._processed = False
+
+        # properties
+        self.utils = Utils()
 
     @property
     def _metadata_map(self) -> dict:
@@ -103,8 +105,8 @@ class Group:
         key = self._metadata_map.get(key, key)
         if key in ['dateAdded', 'eventDate', 'firstSeen', 'publishDate']:
             if value is not None:
-                self._group_data[key] = self._utils.datetime.format_datetime(
-                    value, date_format='%Y-%m-%dT%H:%M:%SZ'
+                self._group_data[key] = self.utils.any_to_arrow(value).strftime(
+                    '%Y-%m-%dT%H:%M:%SZ'
                 )
         elif key == 'file_content':
             # file content arg is not part of Group JSON
@@ -196,8 +198,8 @@ class Group:
     @date_added.setter
     def date_added(self, date_added: str) -> None:
         """Set Indicator dateAdded."""
-        self._group_data['dateAdded'] = self._utils.datetime.format_datetime(
-            date_added, date_format='%Y-%m-%dT%H:%M:%SZ'
+        self._group_data['dateAdded'] = self.utils.any_to_arrow(date_added).strftime(
+            '%Y-%m-%dT%H:%M:%SZ'
         )
 
     @property
@@ -326,8 +328,8 @@ class Campaign(Group):
     @first_seen.setter
     def first_seen(self, first_seen: str) -> None:
         """Set Document first seen."""
-        self._group_data['firstSeen'] = self._utils.datetime.format_datetime(
-            first_seen, date_format='%Y-%m-%dT%H:%M:%SZ'
+        self._group_data['firstSeen'] = self.utils.any_to_arrow(first_seen).strftime(
+            '%Y-%m-%dT%H:%M:%SZ'
         )
 
 
@@ -470,8 +472,8 @@ class Event(Group):
     @event_date.setter
     def event_date(self, event_date: str) -> None:
         """Set the Events "event date" value."""
-        self._group_data['eventDate'] = self._utils.datetime.format_datetime(
-            event_date, date_format='%Y-%m-%dT%H:%M:%SZ'
+        self._group_data['eventDate'] = self.utils.any_to_arrow(event_date).strftime(
+            '%Y-%m-%dT%H:%M:%SZ'
         )
 
     @property
@@ -521,8 +523,8 @@ class Incident(Group):
     @event_date.setter
     def event_date(self, event_date: str) -> None:
         """Set Incident event_date."""
-        self._group_data['eventDate'] = self._utils.datetime.format_datetime(
-            event_date, date_format='%Y-%m-%dT%H:%M:%SZ'
+        self._group_data['eventDate'] = self.utils.any_to_arrow(event_date).strftime(
+            '%Y-%m-%dT%H:%M:%SZ'
         )
 
     @property
@@ -602,8 +604,8 @@ class Report(Group):
     @publish_date.setter
     def publish_date(self, publish_date: str) -> None:
         """Set Report publish date"""
-        self._group_data['publishDate'] = self._utils.datetime.format_datetime(
-            publish_date, date_format='%Y-%m-%dT%H:%M:%SZ'
+        self._group_data['publishDate'] = self.utils.any_to_arrow(publish_date).strftime(
+            '%Y-%m-%dT%H:%M:%SZ'
         )
 
 

@@ -72,9 +72,7 @@ class Group(Mappings):
         """
         key = self._metadata_map.get(key, key)
         if key in ['dateAdded', 'eventDate', 'firstSeen', 'publishDate']:
-            self._data[key] = self._utils.datetime.format_datetime(
-                value, date_format='%Y-%m-%dT%H:%M:%SZ'
-            )
+            self._data[key] = self._utils.any_to_arrow(value).strftime('%Y-%m-%dT%H:%M:%SZ')
         elif key == 'file_content':
             # file content arg is not part of Group JSON
             pass

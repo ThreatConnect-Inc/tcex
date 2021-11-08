@@ -1,6 +1,7 @@
 """TcEx Framework Module for working with Metrics in the ThreatConnect Platform."""
 # first-party
 from tcex.exit.error_codes import handle_error
+from tcex.utils import Utils
 
 
 class Metrics:
@@ -20,10 +21,13 @@ class Metrics:
         self.tcex = tcex
         self._metric_data_type = data_type
         self._metric_description = description
-        self._metric_id = None
         self._metric_interval = interval
         self._metric_keyed = keyed
         self._metric_name = name
+
+        # properties
+        self._metric_id = None
+        self.utils = Utils
 
         if not self.metric_find():
             self.metric_create()
@@ -125,9 +129,8 @@ class Metrics:
 
         body = {'value': value}
         if date is not None:
-            body['date'] = self.tcex.utils.datetime.format_datetime(
-                date, date_format='%Y-%m-%dT%H:%M:%SZ'
-            )
+            body['date'] = self.utils.any_to_arrow(date).strftime('%Y-%m-%dT%H:%M:%SZ')
+
         if key is not None:
             body['name'] = key
         if weight:

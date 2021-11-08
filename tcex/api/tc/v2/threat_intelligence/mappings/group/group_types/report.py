@@ -113,10 +113,7 @@ class Report(Group):
         if not self.can_update():
             handle_error(910, [self.type])
 
-        # TODO [high] when datetime module is replaced, this must be updated.
-        publish_date = self._utils.datetime.format_datetime(
-            publish_date, date_format='%Y-%m-%dT%H:%M:%SZ'
-        )
+        publish_date = self._utils.any_to_arrow(publish_date).strftime('%Y-%m-%dT%H:%M:%SZ')
 
         self._data['publishDate'] = publish_date
         request = {'publishDate': publish_date, 'fileName': self._data['fileName']}

@@ -52,7 +52,7 @@ class TestAdvancedRequest:
                 'tc_adv_req_fail_on_error': False,
                 'tc_adv_req_urlencode_body': False,
                 'tc_adv_req_body': None,
-                'tc_adv_req_headers': {'key': 'pytest', 'value': 'pytest'},
+                'tc_adv_req_headers': [{'key': 'pytest', 'value': 'pytest'}],
                 'tc_adv_req_http_method': 'GET',
                 'tc_adv_req_params': [{'key': 'one', 'value': '1'}, {'key': 'two', 'value': ''}],
                 'tc_adv_req_path': '/anything',
@@ -72,7 +72,7 @@ class TestAdvancedRequest:
         assert r.status_code == 200
         # assert headers
         assert data.get('headers', {}).get('Pytest') == 'pytest'
-        assert data.get('headers', {}).get('User-Agent') == 'TcEx App: Pytest - 1.0.0'
+        assert data.get('headers', {}).get('User-Agent') == 'TcEx/3.0.0, Pytest/1.0.0'
         # assert params
         assert data.get('args', {}).get('one') == '1'
         assert data.get('args', {}).get('two') == ''
@@ -90,7 +90,7 @@ class TestAdvancedRequest:
                 'tc_adv_req_fail_on_error': True,
                 'tc_adv_req_urlencode_body': False,
                 'tc_adv_req_body': None,
-                'tc_adv_req_headers': {'key': 'pytest', 'value': 'pytest'},
+                'tc_adv_req_headers': [{'key': 'pytest', 'value': 'pytest'}],
                 'tc_adv_req_http_method': 'GET',
                 'tc_adv_req_params': [{'key': 'one', 'value': '1'}, {'key': 'two', 'value': ''}],
                 'tc_adv_req_path': '/status/500',
@@ -110,12 +110,12 @@ class TestAdvancedRequest:
 
         try:
             # the write_output method is called in exit method
-            tcex.playbook.exit(1)
+            tcex.exit(1)
         except SystemExit:
             pass
 
         # load output data from KV store to validate
-        data = self._load_data(tcex, tcex.args.tc_playbook_db_context)
+        data = self._load_data(tcex, tcex.inputs.model.tc_playbook_kvstore_context)
 
         assert data.get('#App:0001:pytest.request.reason!String') == 'INTERNAL SERVER ERROR'
         assert data.get('#App:0001:pytest.request.content!String') == ''
@@ -141,7 +141,7 @@ class TestAdvancedRequest:
                 'tc_adv_req_fail_on_error': False,
                 'tc_adv_req_urlencode_body': False,
                 'tc_adv_req_body': None,
-                'tc_adv_req_headers': {'key': 'pytest', 'value': 'pytest'},
+                'tc_adv_req_headers': [{'key': 'pytest', 'value': 'pytest'}],
                 'tc_adv_req_http_method': 'GET',
                 'tc_adv_req_params': [{'key': 'one', 'value': '1'}, {'key': 'two', 'value': None}],
                 'tc_adv_req_path': '/anything',
@@ -161,7 +161,7 @@ class TestAdvancedRequest:
         assert r.status_code == 200
         # assert headers
         assert data.get('headers', {}).get('Pytest') == 'pytest'
-        assert data.get('headers', {}).get('User-Agent') == 'TcEx App: Pytest - 1.0.0'
+        assert data.get('headers', {}).get('User-Agent') == 'TcEx/3.0.0, Pytest/1.0.0'
         # assert params
         assert data.get('args', {}).get('one') == '1'
         assert data.get('args', {}).get('two') is None
@@ -179,9 +179,9 @@ class TestAdvancedRequest:
                 'tc_adv_req_fail_on_error': False,
                 'tc_adv_req_urlencode_body': False,
                 'tc_adv_req_body': 'pytest',
-                'tc_adv_req_headers': {'key': 'pytest', 'value': 'pytest'},
+                'tc_adv_req_headers': [{'key': 'pytest', 'value': 'pytest'}],
                 'tc_adv_req_http_method': 'POST',
-                'tc_adv_req_params': {'key': 'one', 'value': '1'},
+                'tc_adv_req_params': [{'key': 'one', 'value': '1'}],
                 'tc_adv_req_path': '/anything',
             }
         ).tcex
@@ -198,10 +198,10 @@ class TestAdvancedRequest:
         assert r.request.url == data.get('url')
         assert r.status_code == 200
         # assert data
-        assert data.get('data') == tcex.args.tc_adv_req_body
+        assert data.get('data') == tcex.inputs.model.tc_adv_req_body
         # assert headers
         assert data.get('headers', {}).get('Pytest') == 'pytest'
-        assert data.get('headers', {}).get('User-Agent') == 'TcEx App: Pytest - 1.0.0'
+        assert data.get('headers', {}).get('User-Agent') == 'TcEx/3.0.0, Pytest/1.0.0'
         # assert params
         assert data.get('args', {}).get('one') == '1'
 
@@ -217,10 +217,10 @@ class TestAdvancedRequest:
                 'tc_adv_req_exclude_null_params': False,
                 'tc_adv_req_fail_on_error': False,
                 'tc_adv_req_urlencode_body': False,
-                'tc_adv_req_body': b'pytest',
-                'tc_adv_req_headers': {'key': 'pytest', 'value': 'pytest'},
+                'tc_adv_req_body': 'pytest',
+                'tc_adv_req_headers': [{'key': 'pytest', 'value': 'pytest'}],
                 'tc_adv_req_http_method': 'POST',
-                'tc_adv_req_params': {'key': 'one', 'value': '1'},
+                'tc_adv_req_params': [{'key': 'one', 'value': '1'}],
                 'tc_adv_req_path': '/anything',
             }
         ).tcex
@@ -237,10 +237,10 @@ class TestAdvancedRequest:
         assert r.request.url == data.get('url')
         assert r.status_code == 200
         # assert data
-        assert data.get('data') == tcex.args.tc_adv_req_body.decode()
+        assert data.get('data') == tcex.inputs.model.tc_adv_req_body
         # assert headers
         assert data.get('headers', {}).get('Pytest') == 'pytest'
-        assert data.get('headers', {}).get('User-Agent') == 'TcEx App: Pytest - 1.0.0'
+        assert data.get('headers', {}).get('User-Agent') == 'TcEx/3.0.0, Pytest/1.0.0'
         # assert params
         assert data.get('args', {}).get('one') == '1'
 
@@ -257,9 +257,9 @@ class TestAdvancedRequest:
                 'tc_adv_req_fail_on_error': False,
                 'tc_adv_req_urlencode_body': True,
                 'tc_adv_req_body': json.dumps({'one': '1', 'two': '2'}),
-                'tc_adv_req_headers': {'key': 'pytest', 'value': 'pytest'},
+                'tc_adv_req_headers': [{'key': 'pytest', 'value': 'pytest'}],
                 'tc_adv_req_http_method': 'POST',
-                'tc_adv_req_params': {'key': 'one', 'value': '1'},
+                'tc_adv_req_params': [{'key': 'one', 'value': '1'}],
                 'tc_adv_req_path': '/anything',
             }
         ).tcex
@@ -280,6 +280,6 @@ class TestAdvancedRequest:
         assert data.get('form', {}).get('two') == '2'
         # assert headers
         assert data.get('headers', {}).get('Pytest') == 'pytest'
-        assert data.get('headers', {}).get('User-Agent') == 'TcEx App: Pytest - 1.0.0'
+        assert data.get('headers', {}).get('User-Agent') == 'TcEx/3.0.0, Pytest/1.0.0'
         # assert params
         assert data.get('args', {}).get('one') == '1'

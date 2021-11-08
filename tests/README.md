@@ -27,6 +27,8 @@ pytest -n 12 --cov=tcex/ --cov-report=term-missing tests
 
 ### v3
 
+pytest --cov=tcex/api/tc/v3/ --cov-report=term-missing tests/api/tc/v3/
+
 #### artifact_types
 pytest --cov=tcex/api/tc/v3/artifact_types --cov-report=term-missing tests/api/tc/v3/artifact_types/test_artifact_type_interface.py
 
@@ -42,6 +44,14 @@ pytest --cov=tcex/api/tc/v3/tasks --cov-report=term-missing tests/api/tc/v3/task
 ## app_config
 
 pytest --cov=tcex/app_config/ --cov-report=term-missing tests/app_config/
+
+## app_feature
+
+pytest --cov=tcex/app_feature/ --cov-report=term-missing tests/app_feature/
+
+## input
+
+pytest --cov=tcex/input/ --cov-report=term-missing tests/input/
 
 # Case Management Error Codes
 

@@ -90,16 +90,16 @@ class BatchWriter:
 
     Args:
         inputs: The App inputs.
-        session: The ThreatConnect API session.
+        session_tc: The ThreatConnect API session.
         output_dir: The directory to write the batch JSON data.
     """
 
-    def __init__(self, inputs: Input, session: Session, output_dir: str, **kwargs) -> None:
+    def __init__(self, inputs: Input, session_tc: Session, output_dir: str, **kwargs) -> None:
         """Initialize Class properties."""
         self.inputs = inputs
         self.output_dir = output_dir
         self.output_extension = kwargs.get('output_extension')
-        self.session = session
+        self.session_tc = session_tc
         self.write_callback = kwargs.get('write_callback')
         self.write_callback_kwargs = kwargs.get('write_callback_kwargs', {})
 
@@ -108,8 +108,8 @@ class BatchWriter:
         self._batch_max_chunk = 100_000
         self._batch_size = 0  # track current batch size
         self._batch_max_size = 75_000_000  # max size in bytes
-        self.log = logger()
-        self.tic = ThreatIntelUtils(self.session)
+        self.log = logger
+        self.tic = ThreatIntelUtils(self.session_tc)
         self.utils = Utils()
 
         # shelf settings

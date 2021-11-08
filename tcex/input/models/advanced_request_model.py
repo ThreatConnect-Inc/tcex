@@ -1,12 +1,12 @@
 """Advanced Settings Model"""
 # standard library
-from typing import Any, Optional
+from typing import Any, List, Optional
 
 # third-party
 from pydantic import BaseModel, Field
 
 
-class AdvancedSettingsModel(BaseModel):
+class AdvancedRequestModel(BaseModel):
     """Advanced Settings Model
 
     * why was input included -> feature (what feature?), runtime_level
@@ -36,7 +36,7 @@ class AdvancedSettingsModel(BaseModel):
         inclusion_reason='feature (advancedRequest)',
         requires_definition=True,
     )
-    tc_adv_req_headers: Optional[dict] = Field(
+    tc_adv_req_headers: List[Optional[dict]] = Field(
         None,
         description='The HTTP headers for the request.',
         inclusion_reason='feature (advancedRequest)',
@@ -48,7 +48,7 @@ class AdvancedSettingsModel(BaseModel):
         inclusion_reason='feature (advancedRequest)',
         requires_definition=True,
     )
-    tc_adv_req_params: Optional[dict] = Field(
+    tc_adv_req_params: List[Optional[dict]] = Field(
         None,
         description='The HTTP query params for the request.',
         inclusion_reason='feature (advancedRequest)',

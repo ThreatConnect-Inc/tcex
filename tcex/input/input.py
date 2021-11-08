@@ -208,8 +208,8 @@ class Input:
             self._models.insert(0, model)
 
         # clear cache for data property
-        if 'data' in self.__dict__:
-            del self.__dict__['data']
+        if 'model' in self.__dict__:
+            del self.__dict__['model']
 
         # force data model to load so that validation is done at this EXACT point
         _ = self.model
@@ -257,11 +257,6 @@ class Input:
             return _inputs
 
         for name, value in _inputs.items():
-            # model properties at this point are the default fields passed by ThreatConnect
-            # these should not be playbook variables and will not need to be resolved.
-            if name in self.model_properties:
-                continue
-
             if isinstance(value, list) and self.ij.model.runtime_level.lower() == 'playbook':
                 # list could contain playbook variables, try to resolve the value
                 updated_value_array = []
@@ -320,11 +315,6 @@ class Input:
     def contents_update(self, inputs: dict) -> None:
         """Update inputs provided by AOT to be of the proper value and type."""
         for name, value in inputs.items():
-            # model properties at this point are the default fields passed by ThreatConnect
-            # these should not be playbook variables and will not need to be resolved.
-            if name in self.model_properties:
-                continue
-
             # ThreatConnect AOT params could be updated in the future to proper JSON format.
             # MultiChoice data should be represented as JSON array and Boolean values should be a
             # JSON boolean and not a string.
@@ -339,7 +329,7 @@ class Input:
                     inputs[name] = value.split(self.ij.model.list_delimiter or '|')
             elif param.type == 'boolean' and isinstance(value, str):
                 # convert boolean input that are passed in as a string ("true" -> True)
-                inputs[name] = str(value).lower() == 'true'
+                inputs[name] = value.lower() == 'true'
 
     @cached_property
     def model(self) -> BaseModel:

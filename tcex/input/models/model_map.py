@@ -1,7 +1,7 @@
 """Model Map"""
 
 # first-party
-from tcex.input.models.advanced_settings_model import AdvancedSettingsModel
+from tcex.input.models.advanced_request_model import AdvancedRequestModel
 from tcex.input.models.aot_execution_enabled_model import AotExecutionEnabledModel
 from tcex.input.models.api_model import ApiModel
 from tcex.input.models.batch_model import BatchModel
@@ -19,7 +19,7 @@ from tcex.input.models.smtp_settings_model import SmtpSettingsModel
 feature_map = {
     'aotExecutionEnabled': [AotExecutionEnabledModel],
     'appBuilderCompliant': [],
-    'advancedRequest': [AdvancedSettingsModel],
+    'advancedRequest': [AdvancedRequestModel],
     'CALSettings': [CalSettingsModel],
     'fileParams': [],
     'layoutEnabledApp': [],

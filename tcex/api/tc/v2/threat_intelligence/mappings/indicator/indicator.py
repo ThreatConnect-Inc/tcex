@@ -168,10 +168,7 @@ class Indicator(Mappings):
         """
         key = self._metadata_map().get(key, key)
         if key in ['dateAdded', 'lastModified']:
-            # TODO [high] when datetime module is replaced, this must be updated.
-            self._data[key] = self._utils.datetime.format_datetime(
-                value, date_format='%Y-%m-%dT%H:%M:%SZ'
-            )
+            self._data[key] = self._utils.any_to_arrow(value).strftime('%Y-%m-%dT%H:%M:%SZ')
         elif key == 'confidence':
             self._data[key] = int(value)
         elif key == 'rating':
@@ -261,9 +258,7 @@ class Indicator(Mappings):
         # TODO [high] when datetime module is replaced, this must be updated.
         data = {
             'count': count,
-            'dateObserved': self._utils.datetime.format_datetime(
-                date_observed, date_format='%Y-%m-%dT%H:%M:%SZ'
-            ),
+            'dateObserved': self._utils.any_to_arrow(date_observed).strftime('%Y-%m-%dT%H:%M:%SZ'),
         }
 
         return self.tc_requests.add_observations(

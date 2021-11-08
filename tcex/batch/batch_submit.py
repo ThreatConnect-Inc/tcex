@@ -25,7 +25,7 @@ class BatchSubmit:
     def __init__(
         self,
         inputs: Input,
-        session: Session,
+        session_tc: Session,
         owner: str,
         action: Optional[str] = 'Create',
         attribute_write_type: Optional[str] = 'Replace',
@@ -38,7 +38,7 @@ class BatchSubmit:
 
         Args:
             inputs: The App inputs.
-            session: The ThreatConnect API session.
+            session_tc: The ThreatConnect API session.
             owner: The ThreatConnect owner for Batch action.
             action: Action for the batch job ['Create', 'Delete'].
             attribute_write_type: Write type for Indicator attributes ['Append', 'Replace'].
@@ -48,7 +48,7 @@ class BatchSubmit:
             tag_write_type: Write type for tags ['Append', 'Replace'].
         """
         self.inputs = inputs
-        self.session = session
+        self.session_tc = session_tc
         self._action = action
         self._attribute_write_type = attribute_write_type
         self._halt_on_error = halt_on_error
@@ -60,7 +60,7 @@ class BatchSubmit:
         # properties
         self._file_merge_mode = None
         self._hash_collision_mode = None
-        self.log = logger()
+        self.log = logger
 
         # global overrides on batch/file errors
         self._halt_on_batch_error = None
@@ -114,7 +114,7 @@ class BatchSubmit:
             halt_on_error = self.halt_on_batch_error
 
         try:
-            r = self.session.post('/v2/batch', json=self.settings)
+            r = self.session_tc.post('/v2/batch', json=self.settings)
         except Exception as e:
             handle_error(code=10505, message_values=[e], raise_error=halt_on_error)
 
@@ -179,7 +179,7 @@ class BatchSubmit:
         errors = []
         try:
             self.log.debug(f'feature=batch, event=retrieve-errors, batch-id={batch_id}')
-            r = self.session.get(f'/v2/batch/{batch_id}/errors')
+            r = self.session_tc.get(f'/v2/batch/{batch_id}/errors')
             # API does not return correct content type
             if r.ok:
                 errors = json.loads(r.text)
@@ -320,7 +320,7 @@ class BatchSubmit:
             self.log.info(f'feature=batch, event=progress, poll-time={poll_time_total}')
             try:
                 # retrieve job status
-                r = self.session.get(f'/v2/batch/{batch_id}', params=params)
+                r = self.session_tc.get(f'/v2/batch/{batch_id}', params=params)
                 if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
                     handle_error(
                         code=545,
@@ -441,7 +441,7 @@ class BatchSubmit:
         files = (('config', json.dumps(self.settings)), ('content', json.dumps(content)))
         params = {'includeAdditional': 'true'}
         try:
-            r = self.session.post('/v2/batch/createAndUpload', files=files, params=params)
+            r = self.session_tc.post('/v2/batch/createAndUpload', files=files, params=params)
             if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
                 handle_error(
                     code=10510,
@@ -480,7 +480,7 @@ class BatchSubmit:
 
         headers = {'Content-Type': 'application/octet-stream'}
         try:
-            r = self.session.post(f'/v2/batch/{batch_id}', headers=headers, data=content)
+            r = self.session_tc.post(f'/v2/batch/{batch_id}', headers=headers, data=content)
             if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
                 handle_error(
                     code=10525,

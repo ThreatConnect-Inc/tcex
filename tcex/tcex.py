@@ -128,7 +128,6 @@ class TcEx:
         """Return instance of Batch
 
         Args:
-            tcex: An instance of TcEx object.
             owner: The ThreatConnect owner for Batch action.
             action: Action for the batch job ['Create', 'Delete'].
             attribute_write_type: Write type for TI attributes ['Append', 'Replace'].
@@ -138,7 +137,8 @@ class TcEx:
             tag_write_type: Write type for tags ['Append', 'Replace'].
         """
         return Batch(
-            self,
+            self.inputs,
+            self.session_tc,
             owner,
             action,
             attribute_write_type,
@@ -171,7 +171,8 @@ class TcEx:
             tag_write_type: Write type for tags ['Append', 'Replace'].
         """
         return BatchSubmit(
-            self,
+            self.inputs,
+            self.session_tc,
             owner,
             action,
             attribute_write_type,
@@ -193,7 +194,7 @@ class TcEx:
                 file.
             write_callback_kwargs (kwargs: dict): Additional values to send to callback method.
         """
-        return BatchWriter(self, output_dir, **kwargs)
+        return BatchWriter(self.inputs, self.session_tc, output_dir, **kwargs)
 
     def cache(
         self,

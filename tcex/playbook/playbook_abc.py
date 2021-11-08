@@ -267,6 +267,9 @@ class PlaybookABC(ABC):
         if value is None:
             return value
 
+        # moved decode from key value store to here
+        value = value.decode()
+
         if variable_type == 'Binary':
             value = self._load_value(value)
 
@@ -316,6 +319,9 @@ class PlaybookABC(ABC):
 
         if value is None:
             return value
+
+        # moved decode from key value store to here
+        value = value.decode()
 
         if variable_type == 'BinaryArray':
             value = json.loads(value, object_pairs_hook=OrderedDict)

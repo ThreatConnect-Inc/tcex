@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING, Any, List, Optional, Union
 from urllib.parse import urlsplit
 
 # third-party
+import arrow
 import jmespath
 import pyaes
 
@@ -37,6 +38,28 @@ class Utils:
         self._camel_pattern = re.compile(r'(?<!^)(?=[A-Z])')
         self.variable_match = re.compile(fr'^{self.variable_pattern}$')
         self.variable_parse = re.compile(self.variable_pattern)
+
+    @staticmethod
+    def any_to_arrow(datetime_expression: str) -> 'arrow.Arrow':
+        """Return a arrow object from datetime expression."""
+        if datetime_expression is not None:
+            _datetime = None
+            try:
+                _datetime = arrow.get(datetime_expression)
+            except arrow.parser.ParserError:
+                pass  # best effort
+
+            if _datetime is None:
+                try:
+                    arw = arrow.utcnow()
+                    _datetime = arw.dehumanize(datetime_expression)
+                except arrow.parser.ParserError:
+                    pass  # best effort
+
+            if _datetime is not None:
+                datetime_expression = _datetime
+
+        return datetime_expression
 
     def camel_string(self, string_: str) -> Any:
         """Return custom str with custom properties/methods."""

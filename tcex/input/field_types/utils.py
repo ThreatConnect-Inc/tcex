@@ -18,7 +18,7 @@ def ti_utils() -> ThreatIntelUtils:
     Use the TC session singleton to initialize TI Utils. At this point
     the singleton should already be initialize so no need to pass args.
     """
-    return ThreatIntelUtils(session=registry.session_tc)
+    return ThreatIntelUtils(session_tc=registry.session_tc)
 
 
 class ConfigurationUtils:
