@@ -174,6 +174,9 @@ class TestTasks(TestCaseManagement):
         task.submit()
 
         task.model.status = 'Closed'
+        # TODO: [High] This is failing because the attributes inner object doesnt contain the
+        #  `type` field. This is because the API endpoint for the attributes says its not
+        #  `updatable` so its being excluded from PUTS.
         task.submit()
         # [Retrieve Testing] create the object with id filter,
         # using object id from the object created above
@@ -192,7 +195,6 @@ class TestTasks(TestCaseManagement):
         # tasks.filter.analytics_score(TqlOperator.GT, 50)
 
         # [Filter Testing] case_id
-        print(task.model.completed_by)
         tasks.filter.case_id(TqlOperator.EQ, case.model.id)
         tasks.filter.completed_date(TqlOperator.EQ, task_data.get('completed_date'))
         tasks.filter.due_date(TqlOperator.EQ, task_data.get('due_date'))
