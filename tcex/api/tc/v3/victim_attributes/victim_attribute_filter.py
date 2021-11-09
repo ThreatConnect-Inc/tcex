@@ -43,6 +43,15 @@ class VictimAttributeFilter(FilterABC):
         """
         self._tql.add_filter('displayed', operator, displayed, TqlType.BOOLEAN)
 
+    def has_security_label(self, operator: Enum, has_security_label: int) -> None:
+        """Filter Associated Security Label based on **hasSecurityLabel** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            has_security_label: A nested query for association to other security labels.
+        """
+        self._tql.add_filter('hasSecurityLabel', operator, has_security_label, TqlType.INTEGER)
+
     def has_victim(self, operator: Enum, has_victim: int) -> None:
         """Filter Associated Victim based on **hasVictim** keyword.
 
@@ -51,15 +60,6 @@ class VictimAttributeFilter(FilterABC):
             has_victim: A nested query for association to other victims.
         """
         self._tql.add_filter('hasVictim', operator, has_victim, TqlType.INTEGER)
-
-    def hassecuritylabel(self, operator: Enum, hassecuritylabel: int) -> None:
-        """Filter Associated Security Label based on **hassecuritylabel** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            hassecuritylabel: A nested query for association to other security labels.
-        """
-        self._tql.add_filter('hassecuritylabel', operator, hassecuritylabel, TqlType.INTEGER)
 
     def id(self, operator: Enum, id: int) -> None:  # pylint: disable=redefined-builtin
         """Filter ID based on **id** keyword.

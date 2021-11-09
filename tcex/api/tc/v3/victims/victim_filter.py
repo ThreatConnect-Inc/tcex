@@ -63,6 +63,15 @@ class VictimFilter(FilterABC):
         """
         self._tql.add_filter('description', operator, description, TqlType.STRING)
 
+    def has_attribute(self, operator: Enum, has_attribute: int) -> None:
+        """Filter Associated Attribute based on **hasAttribute** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            has_attribute: A nested query for association to other attributes.
+        """
+        self._tql.add_filter('hasAttribute', operator, has_attribute, TqlType.INTEGER)
+
     @property
     def has_group(self):
         """Return **GroupFilter** for further filtering."""
@@ -82,6 +91,15 @@ class VictimFilter(FilterABC):
         indicators = IndicatorFilter(Tql())
         self._tql.add_filter('hasIndicator', TqlOperator.EQ, indicators, TqlType.SUB_QUERY)
         return indicators
+
+    def has_security_label(self, operator: Enum, has_security_label: int) -> None:
+        """Filter Associated Security Label based on **hasSecurityLabel** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            has_security_label: A nested query for association to other security labels.
+        """
+        self._tql.add_filter('hasSecurityLabel', operator, has_security_label, TqlType.INTEGER)
 
     @property
     def has_tag(self):
@@ -110,24 +128,6 @@ class VictimFilter(FilterABC):
             has_victim_asset: A nested query for association to other victim assets.
         """
         self._tql.add_filter('hasVictimAsset', operator, has_victim_asset, TqlType.INTEGER)
-
-    def hasattribute(self, operator: Enum, hasattribute: int) -> None:
-        """Filter Associated Attribute based on **hasattribute** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            hasattribute: A nested query for association to other attributes.
-        """
-        self._tql.add_filter('hasattribute', operator, hasattribute, TqlType.INTEGER)
-
-    def hassecuritylabel(self, operator: Enum, hassecuritylabel: int) -> None:
-        """Filter Associated Security Label based on **hassecuritylabel** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            hassecuritylabel: A nested query for association to other security labels.
-        """
-        self._tql.add_filter('hassecuritylabel', operator, hassecuritylabel, TqlType.INTEGER)
 
     def id(self, operator: Enum, id: int) -> None:  # pylint: disable=redefined-builtin
         """Filter ID based on **id** keyword.
