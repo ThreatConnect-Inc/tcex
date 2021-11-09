@@ -50,7 +50,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             '2020-01-01T00:00:00',
         ],
     )
-    def test_field_type_arrow_date_time_simple(self, playbook_app: 'MockApp', to_parse):
+    def test_field_type_date_time_simple(self, playbook_app: 'MockApp', to_parse):
         """Test parsing of date strings and timestamps
 
         All test inputs are expected to parse to '2020-01-01T00:00:00+00:00'
@@ -85,7 +85,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             '2020-05-27 10:30:35+00:00',
         ],
     )
-    def test_field_type_arrow_date_time_non_default_formats(
+    def test_field_type_date_time_non_default_formats(
         self, playbook_app: 'MockApp', to_parse
     ):
         """Testing inputs directly from built-in (non-default) formats section of docs.
@@ -143,7 +143,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             '1636415957728793',
         ],
     )
-    def test_field_type_arrow_date_time_microseconds(self, playbook_app: 'MockApp', to_parse):
+    def test_field_type_date_time_microseconds(self, playbook_app: 'MockApp', to_parse):
         """Testing timestamp inputs
 
         All inputs expected to parse to '2021-11-08T23:59:17.728793+00:00'
@@ -168,7 +168,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             '1636415957728',
         ],
     )
-    def test_field_type_arrow_date_time_milliseconds(self, playbook_app: 'MockApp', to_parse):
+    def test_field_type_date_time_milliseconds(self, playbook_app: 'MockApp', to_parse):
         """Testing timestamp inputs
 
         All inputs expected to parse to '2021-11-08T23:59:17.728000+00:00'
@@ -186,7 +186,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
 
         assert tcex.inputs.model.my_datetime.isoformat() == '2021-11-08T23:59:17.728000+00:00'
 
-    def test_field_type_arrow_date_time_seconds(self, playbook_app: 'MockApp'):
+    def test_field_type_date_time_seconds(self, playbook_app: 'MockApp'):
         """Testing timestamp inputs. Parse seconds epoch"""
 
         class PytestModel(BaseModel):
@@ -233,7 +233,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             ('in 2 minute', add, timedelta(minutes=2)),
         ],
     )
-    def test_field_type_arrow_date_time_human_input(
+    def test_field_type_date_time_human_input(
         self, playbook_app: 'MockApp', to_parse, operator, delta
     ):
         """Testing timestamp inputs
@@ -298,7 +298,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
 
         ],
     )
-    def test_field_type_arrow_date_time_bad_input(self, playbook_app: 'MockApp', to_parse):
+    def test_field_type_date_time_bad_input(self, playbook_app: 'MockApp', to_parse):
         """Test parsing of bad input
 
         Args:
