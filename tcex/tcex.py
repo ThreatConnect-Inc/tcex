@@ -115,6 +115,16 @@ class TcEx:
 
         self.exit(exit_code, 'The App received an interrupt signal and will now exit.')
 
+    @property
+    def _user_agent(self):
+        """Return a User-Agent string."""
+        return {
+            'User-Agent': (
+                f'TcEx/{__import__(__name__).__version__}, '
+                f'{self.ij.display_name}/{self.ij.program_version}'
+            )
+        }
+
     def advanced_request(
         self, session: object, timeout: Optional[int] = 600, output_prefix: Optional[str] = None
     ) -> 'AdvancedRequest':  # noqa: F821
@@ -429,7 +439,7 @@ class TcEx:
         _session.token = self.token
 
         # update User-Agent
-        _session.headers.update({'User-Agent': f'TcEx: {__import__(__name__).__version__}'})
+        _session.headers.update(self._user_agent)
 
         # add proxy support if requested
         if self.default_args.tc_proxy_tc:
@@ -809,7 +819,7 @@ class TcEx:
 
         return self._redis_client
 
-    def resolve_variable(self, provider: str, key: str, type_: str) -> Union[bytes, str]:
+    def resolve_variable(self, provider: str, lookup: str, id_: str) -> Union[bytes, str]:
         """Resolve TEXT/KEYCHAIN/FILE variables.
 
         Feature: PLAT-2688
@@ -818,27 +828,32 @@ class TcEx:
         {
             "data": "value"
         }
+
+        Args:
+            provider: The variable value provider (e.g. TC).
+            lookup: The value to lookup (the key).
+            id_: The id/type field (e.g. TEXT/KEYCHAIN/FILE).
         """
         data = None
 
         # retrieve value from API
-        r = self.session.get(f'/internal/variable/runtime/{provider}/{key}')
+        r = self.session.get(f'/internal/variable/runtime/{provider}/{lookup}')
         if r.ok:
             try:
                 data = r.json().get('data')
 
-                if type_.lower() == 'file':
+                if id_.lower() == 'file':
                     data = b64decode(data)  # returns bytes
-                elif type_.lower() == 'keychain':
+                elif id_.lower() == 'keychain':
                     self.logger.filter_sensitive.add(data)
 
             except Exception as ex:
                 raise RuntimeError(
-                    f'Could not retrieve variable: provider={provider}, key={key}, type={type_}.'
+                    f'Could not retrieve variable: provider={provider}, key={lookup}, type={id_}.'
                 ) from ex
         else:
             raise RuntimeError(
-                f'Could not retrieve variable: provider={provider}, key={key}, type={type_}.'
+                f'Could not retrieve variable: provider={provider}, key={lookup}, type={id_}.'
             )
 
         return data
@@ -1012,9 +1027,7 @@ class TcEx:
             self._session_external = ExternalSession(logger=self.log)
 
             # add User-Agent to headers
-            self._session_external.headers.update(
-                {'User-Agent': f'TcEx App: {self.ij.display_name} - {self.ij.program_version}'}
-            )
+            self._session_external.headers.update(self._user_agent)
 
             # add proxy support if requested
             if self.default_args.tc_proxy_external:

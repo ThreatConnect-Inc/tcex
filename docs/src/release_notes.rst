@@ -6,8 +6,9 @@ Release Notes
 2.0.26
 ======
 + APP-3130 - [TI] - Added ability to iterate over all Tags currently in system.
-+ APP-3149 - [Inputs] - Added support for resolving FILE, TEXT, and KEYCHAIN values.
-+ APP-3147 - [CM] - Added the artifact_filter property to be excluded when using the to_dict method
++ APP-3149 - [Inputs] - Added support for resolving FILE, TEXT, and KEYCHAIN values [TC 6.4].
++ APP-3147 - [CM] - Updated artifact_filter property to excluded when using the to_dict method.
++ APP-3184 - [Session] Updated user agent on TC and external sessions to be include TcEx version and App name/version.
 
 2.0.25
 ======

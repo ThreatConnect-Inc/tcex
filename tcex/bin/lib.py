@@ -99,7 +99,7 @@ class Lib(Bin):
                 proxy_url = f'{self.args.proxy_host}:{self.args.proxy_port}'
 
             os.putenv('HTTP_PROXY', f'http://{proxy_url}')
-            os.putenv('HTTPS_PROXY', f'https://{proxy_url}')
+            os.putenv('HTTPS_PROXY', f'http://{proxy_url}')
 
             print(
                 f'Using Proxy Server: {c.Fore.CYAN}{self.args.proxy_host}:{self.args.proxy_port}.'
