@@ -134,7 +134,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             '1636415957728793',
         ],
     )
-    def test_field_type_arrow_date_time_nanoseconds(self, playbook_app: 'MockApp', to_parse):
+    def test_field_type_arrow_date_time_microseconds(self, playbook_app: 'MockApp', to_parse):
         """Testing timestamp inputs
 
         All inputs expected to parse to '2021-11-08T23:59:17.728793+00:00'

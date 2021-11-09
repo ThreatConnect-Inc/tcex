@@ -72,14 +72,14 @@ class ArrowDateTime(arrow.Arrow):
 
     @classmethod
     def _parse_timestamp(cls, value: Any) -> 'arrow.Arrow':
-        """Attempt to parse epoch timestamp in seconds, milliseconds, or nanoseconds.
+        """Attempt to parse epoch timestamp in seconds, milliseconds, or microseconds.
 
         Note: passing formats to test against overrides the default formats. Defaults are not used.
         """
-        # note: order matters. Must try to parse as milliseconds/nanoseconds first (x)
+        # note: order matters. Must try to parse as milliseconds/microseconds first (x)
         # before trying to parse as seconds (X), else error occurs if passing a ms/ns value
         try:
-            # attempt to parse as string first using nanosecond/millisecond and second specifiers
+            # attempt to parse as string first using microsecond/millisecond and second specifiers
             return arrow.get(value, ['x', 'X'])
         except (arrow.parser.ParserError, ValueError):
             # could not parse as string, try to parse as float
