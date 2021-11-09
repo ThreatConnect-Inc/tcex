@@ -737,7 +737,8 @@ in 2 hours
 
 #### Other Valid Formats
 
-The following formats are supported, as they are the default formats supported by Arrow:
+ISO 8601 formats are supported by default (`2021-11-08T23:59:17.728000+00:00`, `2021-11-08T23:59:17.728000Z`).
+The following formats are also supported, as they are the default formats supported by Arrow:
 
 ```
 "YYYY-MM-DD",
