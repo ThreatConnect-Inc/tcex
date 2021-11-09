@@ -17,6 +17,7 @@ class GenerateModelABC(GenerateABC, ABC):
         super().__init__(type_)
 
         # properties
+        self.json_encoder = {'datetime': 'lambda v: v.isoformat()'}
         self.requirements = {
             'standard library': [{'module': 'typing', 'imports': ['List', 'Optional']}],
             'third-party': [
@@ -24,6 +25,7 @@ class GenerateModelABC(GenerateABC, ABC):
             ],
             'first-party': [
                 {'module': 'tcex.utils', 'imports': ['Utils']},
+                {'module': 'datetime', 'imports': ['datetime']},
             ],
             'first-party-forward-reference': [],
         }
@@ -401,7 +403,7 @@ class GenerateModelABC(GenerateABC, ABC):
             BaseModel,
             title='Artifacts Model',
             alias_generator=Utils().snake_to_camel,
-            validate_assignment=True
+            validate_assignment=True,
         ):
         """
         return '\n'.join(
@@ -511,6 +513,7 @@ class GenerateModelABC(GenerateABC, ABC):
             title='Artifact Model',
             alias_generator=Utils().snake_to_camel,
             validate_assignment=True,
+            json_encoders=json_encoders,
         ):
         """
         return '\n'.join(
@@ -522,6 +525,7 @@ class GenerateModelABC(GenerateABC, ABC):
                 f'''{self.i1}extra=Extra.allow,''',
                 f'''{self.i1}title='{self.type_.singular().pascal_case()} Model',''',
                 f'''{self.i1}validate_assignment=True,''',
+                f'''{self.i1}json_encoders=json_encoders,''',
                 '''):''',
                 f'''{self.i1}"""{self.type_.singular().title()} Model"""''',
                 '',

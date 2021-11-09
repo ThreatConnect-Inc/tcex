@@ -48,7 +48,11 @@ class Users(ObjectCollectionABC):
 
 
 class User(ObjectABC):
-    """Users Object."""
+    """Users Object.
+
+    Args:
+        user_name (str, kwargs): The **user name** for the User.
+    """
 
     def __init__(self, **kwargs) -> None:
         """Initialize class properties."""
