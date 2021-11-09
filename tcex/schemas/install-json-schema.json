@@ -206,14 +206,14 @@
           "items": {
             "additionalProperties": false,
             "properties": {
+              "encrypt": {
+                "type": "boolean"
+              },
               "intelType": {
                 "type": "array"
               },
               "name": {
                 "type": "string"
-              },
-              "sensitive": {
-                "type": "boolean"
               },
               "type": {
                 "type": "string"
