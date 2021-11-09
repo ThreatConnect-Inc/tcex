@@ -1,5 +1,6 @@
 """Testing TcEx Input module field types."""
 # standard library
+import math
 from datetime import timedelta
 from operator import add, sub
 from typing import TYPE_CHECKING, Optional
@@ -50,7 +51,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             '2020-01-01T00:00:00',
         ],
     )
-    def test_field_type_simple(self, playbook_app: 'MockApp', to_parse):
+    def test_field_type_datetime_simple(self, playbook_app: 'MockApp', to_parse):
         """Test parsing of date strings and timestamps
 
         All test inputs are expected to parse to '2020-01-01T00:00:00+00:00'
@@ -85,7 +86,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             '2020-05-27 10:30:35+00:00',
         ],
     )
-    def test_field_type_non_default_formats(
+    def test_field_type_datetime_non_default_formats(
         self, playbook_app: 'MockApp', to_parse
     ):
         """Testing inputs directly from built-in (non-default) formats section of docs.
@@ -143,7 +144,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             '1636415957728793',
         ],
     )
-    def test_field_type_microseconds(self, playbook_app: 'MockApp', to_parse):
+    def test_field_type_datetime_microseconds(self, playbook_app: 'MockApp', to_parse):
         """Testing timestamp inputs
 
         All inputs expected to parse to '2021-11-08T23:59:17.728793+00:00'
@@ -168,7 +169,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             '1636415957728',
         ],
     )
-    def test_field_type_milliseconds(self, playbook_app: 'MockApp', to_parse):
+    def test_field_type_datetime_milliseconds(self, playbook_app: 'MockApp', to_parse):
         """Testing timestamp inputs
 
         All inputs expected to parse to '2021-11-08T23:59:17.728000+00:00'
@@ -186,7 +187,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
 
         assert tcex.inputs.model.my_datetime.isoformat() == '2021-11-08T23:59:17.728000+00:00'
 
-    def test_field_type_seconds(self, playbook_app: 'MockApp'):
+    def test_field_type_datetime_seconds(self, playbook_app: 'MockApp'):
         """Testing timestamp inputs. Parse seconds epoch"""
 
         class PytestModel(BaseModel):
@@ -218,6 +219,8 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             ('in 1 hours', add, timedelta(hours=1)),
             ('2 minutes ago', sub, timedelta(minutes=2)),
             ('in 2 minutes', add, timedelta(minutes=2)),
+            ('2 seconds ago', sub, timedelta(seconds=2)),
+            ('in 2 seconds', add, timedelta(seconds=2)),
             # same as above, but with singular terms
             ('1 year ago', sub, relativedelta(years=1)),
             ('in 1 year', add, relativedelta(years=1)),
@@ -231,9 +234,11 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             ('in 1 hour', add, timedelta(hours=1)),
             ('2 minute ago', sub, timedelta(minutes=2)),
             ('in 2 minute', add, timedelta(minutes=2)),
+            ('1 second ago', sub, timedelta(seconds=1)),
+            ('in 1 second', add, timedelta(seconds=1)),
         ],
     )
-    def test_field_type_human_input(
+    def test_field_type_datetime_human_input(
         self, playbook_app: 'MockApp', to_parse, operator, delta
     ):
         """Testing timestamp inputs
@@ -241,7 +246,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
         Inputs are parsed relative to 'now' in UTC. The parsed input will be compared to a
         datetime object that is calculated outside of TCEX. Note that a small amount of play
         is allowed when comparing minutes in case minutes change between the time the test starts
-        and the time the date is parsed.
+        and the time the date is parsed. This play is also allowed for seconds.
 
         :param to_parse: the human date time to parse.
         :param operator: either an add or subtract operator that will be used to calculate
@@ -271,10 +276,14 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
         assert expected_parse_result.hour == result.hour
         assert expected_parse_result.tzinfo == result.tzinfo
 
-        # allow a bit of play in minutes in case the time changes between the time the 'now'
-        # variable of this test case is calculated and the time that TCEX parses the human input.
-        minute_difference = abs(expected_parse_result.minute - result.minute)
-        assert minute_difference == 0 or minute_difference == 1
+        # As minutes and seconds could change in the middle of execution, minutes and seconds
+        # are validated by taking the difference in seconds of the result and the expected result
+        # this essentially validates the above assertions as well, but leaving the above assertions
+        # in place for completeness (especially the tzinfo assertion).
+        #
+        # Get time delta between expected result and result and calculate difference in seconds
+        second_difference = abs(math.floor((expected_parse_result - result).total_seconds()))
+        assert second_difference == 0 or second_difference == 1
 
     @pytest.mark.parametrize(
         'to_parse',
@@ -298,7 +307,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
 
         ],
     )
-    def test_field_type_bad_input(self, playbook_app: 'MockApp', to_parse):
+    def test_field_type_datetime_bad_input(self, playbook_app: 'MockApp', to_parse):
         """Test parsing of bad input
 
         Args:
@@ -322,7 +331,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
         assert f'{to_parse}' in err_msg
         assert 'could not be parsed as a date time object' in err_msg
 
-    def test_field_type_none_not_allowed(self, playbook_app: 'MockApp'):
+    def test_field_type_datetime_none_not_allowed(self, playbook_app: 'MockApp'):
         """Testing timestamp inputs. None not allowed"""
 
         class PytestModel(BaseModel):
@@ -338,7 +347,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
 
         assert 'none is not an allowed value' in str(exc_info.value)
 
-    def test_field_type_none_allowed(self, playbook_app: 'MockApp'):
+    def test_field_type_datetime_none_allowed(self, playbook_app: 'MockApp'):
         """Testing timestamp inputs. None allowed"""
 
         class PytestModel(BaseModel):
