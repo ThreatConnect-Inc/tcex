@@ -82,7 +82,7 @@ class TaskModel(
         read_only=False,
         title='artifacts',
     )
-    assignee: Optional['Assignee'] = Field(
+    assignee: Optional['AssigneeModel'] = Field(
         None,
         description='The user or group Assignee object for the Task.',
         methods=['POST', 'PUT'],
@@ -247,6 +247,12 @@ class TaskModel(
             return ArtifactsModel()
         return v
 
+    @validator('assignee', always=True)
+    def _validate_assignee(cls, v):
+        if not v:
+            return AssigneeModel()
+        return v
+
     @validator('parent_case', always=True)
     def _validate_parent_case(cls, v):
         if not v:
@@ -262,9 +268,9 @@ class TaskModel(
 
 # first-party
 from tcex.api.tc.v3.artifacts.artifact_model import ArtifactsModel
-from tcex.api.tc.v3.case_management.assignee import Assignee  # pylint: disable=unused-import
 from tcex.api.tc.v3.cases.case_model import CaseModel
 from tcex.api.tc.v3.notes.note_model import NotesModel
+from tcex.api.tc.v3.security.assignee import AssigneeModel  # pylint: disable=unused-import
 
 # add forward references
 TaskDataModel.update_forward_refs()

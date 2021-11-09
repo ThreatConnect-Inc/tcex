@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import List, Optional
 
 # third-party
-from pydantic import BaseModel, Extra, Field, validator
+from pydantic import BaseModel, Extra, Field
 
 # first-party
 from tcex.utils import Utils
@@ -75,13 +75,6 @@ class SecurityLabelModel(
         """Return privates dict."""
         return self._privates_
 
-    attributes: Optional['AttributesModel'] = Field(
-        None,
-        allow_mutation=False,
-        description='Victim attributes associated with the security label.',
-        read_only=True,
-        title='attributes',
-    )
     color: Optional[str] = Field(
         None,
         description='Color of the security label.',
@@ -130,30 +123,7 @@ class SecurityLabelModel(
         title='owner',
         updatable=False,
     )
-    victims: Optional['VictimsModel'] = Field(
-        None,
-        allow_mutation=False,
-        description='Victims associated with the security label.',
-        read_only=True,
-        title='victims',
-    )
 
-    @validator('attributes', always=True)
-    def _validate_attributes(cls, v):
-        if not v:
-            return AttributesModel()
-        return v
-
-    @validator('victims', always=True)
-    def _validate_victims(cls, v):
-        if not v:
-            return VictimsModel()
-        return v
-
-
-# first-party
-from tcex.api.tc.v3.attributes.attribute_model import AttributesModel
-from tcex.api.tc.v3.victims.victim_model import VictimsModel
 
 # add forward references
 SecurityLabelDataModel.update_forward_refs()

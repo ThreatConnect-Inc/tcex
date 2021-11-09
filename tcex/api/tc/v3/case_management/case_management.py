@@ -3,7 +3,7 @@
 from requests import Session
 
 # first-party
-from tcex.api.tc.v3.case_management.assignee import Assignee
+from tcex.api.tc.v3.security.assignee import AssigneeModel
 
 
 class CaseManagement:
@@ -98,7 +98,7 @@ class CaseManagement:
         """
         return ArtifactTypes(session=self.session, **kwargs)
 
-    def assignee(self, **kwargs) -> Assignee:
+    def assignee(self, **kwargs) -> AssigneeModel:
         """Return a instance of Assignee object.
 
         For User type the user_name or id fields is required and
@@ -115,7 +115,7 @@ class CaseManagement:
             type (str, kwargs): The assignee type. Default to User.
         """
         # TODO: Figure out how/where the model for this should be.
-        return Assignee(session=self.session, **kwargs)
+        return AssigneeModel(session=self.session, **kwargs)
 
     def case(self, **kwargs) -> 'Case':
         """Return a instance of Case object.

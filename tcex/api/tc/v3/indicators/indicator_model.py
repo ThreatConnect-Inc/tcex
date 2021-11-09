@@ -153,19 +153,12 @@ class IndicatorModel(
         read_only=False,
         title='dnsActive',
     )
-    false_positive_count: Optional[int] = Field(
+    false_positives: Optional[int] = Field(
         None,
         allow_mutation=False,
         description='The number of false positives reported for this indicator.',
         read_only=True,
-        title='falsePositiveCount',
-    )
-    false_positive_last_reported: Optional[datetime] = Field(
-        None,
-        allow_mutation=False,
-        description='The date and time of the last false positive reported for this indicator.',
-        read_only=True,
-        title='falsePositiveLastReported',
+        title='falsePositives',
     )
     host_name: Optional[str] = Field(
         None,
@@ -193,6 +186,13 @@ class IndicatorModel(
         read_only=False,
         title='ip',
     )
+    last_false_positive: Optional[datetime] = Field(
+        None,
+        allow_mutation=False,
+        description='The date and time of the last false positive reported for this indicator.',
+        read_only=True,
+        title='lastFalsePositive',
+    )
     last_modified: Optional[datetime] = Field(
         None,
         allow_mutation=False,
@@ -215,12 +215,19 @@ class IndicatorModel(
         read_only=False,
         title='md5',
     )
-    observation_count: Optional[int] = Field(
+    observations: Optional[int] = Field(
         None,
         allow_mutation=False,
         description='The number of times this indicator has been observed.',
         read_only=True,
-        title='observationCount',
+        title='observations',
+    )
+    owner_name: Optional[str] = Field(
+        None,
+        description='The name of the Organization, Community, or Source that the item belongs to.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='ownerName',
     )
     private_flag: bool = Field(
         None,
@@ -362,13 +369,6 @@ class IndicatorModel(
         methods=['POST', 'PUT'],
         read_only=False,
         title='whoisActive',
-    )
-    xid: Optional[str] = Field(
-        None,
-        description='The xid of the item.',
-        methods=['POST', 'PUT'],
-        read_only=False,
-        title='xid',
     )
 
     @validator('associated_groups', always=True)

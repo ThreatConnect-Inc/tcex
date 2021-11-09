@@ -110,9 +110,9 @@ class UserModel(
     )
     user_name: Optional[str] = Field(
         None,
-        allow_mutation=False,
         description='The **user name** for the User.',
-        read_only=True,
+        methods=['POST', 'PUT'],
+        read_only=False,
         title='userName',
     )
 

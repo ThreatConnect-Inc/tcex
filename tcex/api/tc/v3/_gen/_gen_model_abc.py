@@ -172,11 +172,12 @@ class GenerateModelABC(GenerateABC, ABC):
                 'requirement': {
                     'from': 'first-party-forward-reference',
                     'import': (
-                        'from tcex.api.tc.v3.case_management.assignee import Assignee'
+                        'from tcex.api.tc.v3.security.assignee import AssigneeModel'
                         '  # pylint: disable=unused-import'
                     ),
                 },
-                'type': 'Optional[\'Assignee\']',
+                'type': 'Optional[\'AssigneeModel\']',
+                'validator': self._gen_code_validator_method(type_, field),
             },
             'Attributes': {
                 'requirement': {
@@ -296,9 +297,9 @@ class GenerateModelABC(GenerateABC, ABC):
             'TaskAssignees': {
                 'requirement': {
                     'from': 'first-party-forward-reference',
-                    'import': 'from tcex.api.tc.v3.case_management.assignee import Assignee',
+                    'import': 'from tcex.api.tc.v3.security.assignee import AssigneeModel',
                 },
-                'type': 'Optional[\'Assignee\']',
+                'type': 'Optional[\'AssigneeModel\']',
             },
             'Tasks': {
                 'requirement': self._gen_req_code(type_),

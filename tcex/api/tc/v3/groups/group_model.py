@@ -75,7 +75,7 @@ class GroupModel(
         """Return privates dict."""
         return self._privates_
 
-    assignments: Optional['Assignee'] = Field(
+    assignments: Optional['AssigneeModel'] = Field(
         None,
         description=(
             'A list of assignees and escalatees associated with this group (Task specific).'
@@ -184,7 +184,7 @@ class GroupModel(
     )
     event_date: Optional[datetime] = Field(
         None,
-        applies_to=['Incident'],
+        applies_to=['Incident', 'Event'],
         description='The date and time that the incident or event was first created.',
         methods=['POST', 'PUT'],
         read_only=False,
@@ -244,14 +244,6 @@ class GroupModel(
         read_only=False,
         title='from_',
     )
-    handles: Optional['AdversaryAssetsModel'] = Field(
-        None,
-        applies_to=['Adversary'],
-        description='A list of handle adversary assets associated with this group.',
-        methods=['POST', 'PUT'],
-        read_only=False,
-        title='handles',
-    )
     header: Optional[str] = Field(
         None,
         applies_to=['Email'],
@@ -299,6 +291,13 @@ class GroupModel(
         description='Flag indicating whether or not the task is overdue.',
         read_only=True,
         title='overdue',
+    )
+    owner_name: Optional[str] = Field(
+        None,
+        description='The name of the Organization, Community, or Source that the item belongs to.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='ownerName',
     )
     password: Optional[str] = Field(
         None,
@@ -420,14 +419,6 @@ class GroupModel(
         read_only=False,
         title='type',
     )
-    urls: Optional['AdversaryAssetsModel'] = Field(
-        None,
-        applies_to=['Adversary'],
-        description='A list of url adversary assets associated with this group.',
-        methods=['POST', 'PUT'],
-        read_only=False,
-        title='urls',
-    )
     xid: Optional[str] = Field(
         None,
         description='The xid of the item.',
@@ -435,12 +426,6 @@ class GroupModel(
         read_only=False,
         title='xid',
     )
-
-    @validator('urls', always=True)
-    def _validate_urls(cls, v):
-        if not v:
-            return AdversaryAssetsModel()
-        return v
 
     @validator('attributes', always=True)
     def _validate_attributes(cls, v):
@@ -480,10 +465,9 @@ class GroupModel(
 
 
 # first-party
-from tcex.api.tc.v3.adversary_assets.adversary_asset_model import AdversaryAssetsModel
-from tcex.api.tc.v3.case_management.assignee import Assignee
 from tcex.api.tc.v3.group_attributes.group_attribute_model import GroupAttributesModel
 from tcex.api.tc.v3.indicators.indicator_model import IndicatorsModel
+from tcex.api.tc.v3.security.assignee import AssigneeModel
 from tcex.api.tc.v3.security_labels.security_label_model import SecurityLabelsModel
 from tcex.api.tc.v3.tags.tag_model import TagsModel
 from tcex.api.tc.v3.victim_assets.victim_asset_model import VictimAssetsModel
