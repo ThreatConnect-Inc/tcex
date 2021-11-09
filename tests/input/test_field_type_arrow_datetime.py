@@ -218,6 +218,19 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             ('in 1 hours', add, timedelta(hours=1)),
             ('2 minutes ago', sub, timedelta(minutes=2)),
             ('in 2 minutes', add, timedelta(minutes=2)),
+            # same as above, but with singular terms
+            ('1 year ago', sub, relativedelta(years=1)),
+            ('in 1 year', add, relativedelta(years=1)),
+            ('1 month ago', sub, relativedelta(months=1)),
+            ('in 1 month', add, relativedelta(months=1)),
+            ('2 week ago', sub, timedelta(weeks=2)),
+            ('in 2 week', add, timedelta(weeks=2)),
+            ('2 day ago', sub, timedelta(days=2)),
+            ('in 2 day', add, timedelta(days=2)),
+            ('1 hour ago', sub, timedelta(hours=1)),
+            ('in 1 hour', add, timedelta(hours=1)),
+            ('2 minute ago', sub, timedelta(minutes=2)),
+            ('in 2 minute', add, timedelta(minutes=2)),
         ],
     )
     def test_field_type_arrow_date_time_human_input(

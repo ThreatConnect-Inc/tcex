@@ -43,9 +43,22 @@ class ArrowDateTime(arrow.Arrow):
     def parse_humanized_input(cls, value: Any) -> 'arrow.Arrow':
         """Attempt to dehumanize time inputs. Example: 'Two hours ago'."""
         now = arrow.utcnow()
+        plurals = {
+            'second': 'seconds',
+            'minute': 'minutes',
+            'hour': 'hours',
+            'day': 'days',
+            'week': 'weeks',
+            'month': 'months',
+            'year': 'years',
+        }
 
         if value.strip().lower() == 'now':
             return now
+
+        # pluralize singular time terms as applicable. Arrow does not support singular terms
+        terms = [plurals.get(term.lower(), term) for term in value.split()]
+        value = " ".join(terms)
 
         return now.dehumanize(value)
 
