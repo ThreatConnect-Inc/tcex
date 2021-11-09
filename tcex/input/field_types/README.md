@@ -42,8 +42,8 @@ is simply defined to be StringArray, then `my_input` is configured with the defa
 on default Array behavior and how to customize it, see the `Customizable Arrays` documentation section.
 
 
-By default, the above definition would accept neither an empty String nor an empty Array as an initialization value. Input
-types come with `Optional` variants, which allow empty values. `Optional` variants have class names equal to their
+By default, the above definition would accept neither an empty String nor an empty Array as an initialization value.
+Most input types come with `Optional` variants, which allow empty values. `Optional` variants have class names equal to their
 non-optional counterparts, but with "Optional" appended to the name. For example, the `Optional` variant of StringArray
 would be StringArrayOptional.
 
@@ -681,3 +681,103 @@ to prevent accidental logging of sensitive data. In order to access the real val
 This type may be initialized with String and Binary instances only.
 
 This input type also has an `Optional` variant. See the `Usage` section of this document for more details about `Optional` variants.
+
+### DateTime
+
+This type should be used when an Integration expects some form of datetime input (date, epoch timestamp, etc.). This
+input type parses the value that it is initialized with and returns an `Arrow` datetime object, which has all the
+functionality of the Python `datetime` module and more. If no timezone information is provided in the initializer value,
+UTC will be used by default (unless the format of the initializer value is expected to contain timezone information.
+A `ValidationError` is raised in this case.). For information on the methods that Arrow provides in addition to the
+methods found in a Python `datetime` object, see: `https://arrow.readthedocs.io/en/latest/#`
+
+#### Epoch Timestamps
+
+This field can parse epoch timestamps that contain microsecond information, like:
+```
+'1636415957.728793'
+'1636415957728.793'
+'1636415957728793' # 16 digit epoch string (microseconds)
+```
+
+This field can also parse epoch timestamps that contain only millisecond information, like:
+```
+'1636415957.728',
+'1636415957728' # 13 digit epoch string (milliseconds)
+```
+
+Of course, this input can also parse a 10-digit epoch timestamp (epoch in seconds).
+
+#### Humanized Relative Dates
+
+This field also has the ability to parse "humanized" time inputs. The expected format of "humanized" time inputs is
+as follows:
+
+```
+# Relative to the past
+QUANTITY TIME_TERM ago
+
+# Relative to the future
+in QUANTITY TIME_TERM
+```
+
+Regarding the expected format above, `QUANTITY` would be a positive integer, and `TIME_TERM` is the granularity to be used
+when performing the time calculation. `TIME_TERM` may be any of the following:'second', 'minute','hour', 'day', 'week',
+'month' or 'year' (plural forms are also acceptable). It is important to note that `QUANTITY` must be an integer. Special
+value `now` may also be used to reference the current time.
+
+The following are some valid examples:
+```
+1 day ago
+in 1 day
+2 hours ago
+in 2 hours
+```
+`now` may also be used to reference the current time.
+
+#### Other Valid Formats
+
+The following formats are supported, as they are the default formats supported by Arrow:
+
+```
+"YYYY-MM-DD",
+"YYYY-M-DD",
+"YYYY-M-D",
+"YYYY/MM/DD",
+"YYYY/M/DD",
+"YYYY/M/D",
+"YYYY.MM.DD",
+"YYYY.M.DD",
+"YYYY.M.D",
+"YYYYMMDD",
+"YYYY-DDDD",  # Year-Day-of-year: 2020-364 == 2020-12-29T00:00:00+00:00
+"YYYYDDDD",   # same as above, but without separating dash
+"YYYY-MM",
+"YYYY/MM",
+"YYYY.MM",
+"YYYY",
+"W"           # ISO week date: 2011-W05-4, 2019-W17
+```
+
+Note: the format specifiers displayed above are not necessarily the same tokens used for `datetime`'s `strptime` method.
+For more information on the above specifiers, visit the following documentation page:
+`https://arrow.readthedocs.io/en/latest/#supported-tokens`.
+
+In addition to the above formats, the following formats are also supported:
+
+```
+arrow.FORMAT_ATOM
+arrow.FORMAT_COOKIE
+arrow.FORMAT_RFC822
+arrow.FORMAT_RFC850
+arrow.FORMAT_RFC1036
+arrow.FORMAT_RFC1123
+arrow.FORMAT_RFC2822
+arrow.FORMAT_RFC3339
+arrow.FORMAT_RSS
+arrow.FORMAT_W3C
+```
+
+Note that the above formats do not allow the omission of timezone information. For more information of the above
+formats, visit the following documentation page:
+`https://arrow.readthedocs.io/en/latest/#built-in-formats`.
