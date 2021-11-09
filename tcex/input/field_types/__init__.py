@@ -2,7 +2,7 @@
 
 # flake8:noqa
 # first-party
-from tcex.input.field_types.arrow_datetime import ArrowDateTime
+from tcex.input.field_types.datetime import DateTime
 from tcex.input.field_types.binary_array import BinaryArray, BinaryArrayOptional
 from tcex.input.field_types.group_array import GroupArray, GroupArrayOptional
 from tcex.input.field_types.indicator_array import IndicatorArray, IndicatorArrayOptional

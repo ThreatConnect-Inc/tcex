@@ -9,7 +9,7 @@ import arrow
 from tcex.utils import Utils
 
 
-class ArrowDateTime(arrow.Arrow):
+class DateTime(arrow.Arrow):
     """Arrow Datetime Field Type"""
 
     @classmethod

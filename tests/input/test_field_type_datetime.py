@@ -11,7 +11,7 @@ from dateutil.relativedelta import relativedelta
 from pydantic import BaseModel
 
 # first-party
-from tcex.input.field_types import ArrowDateTime
+from tcex.input.field_types import DateTime
 
 from .utils import InputTest
 
@@ -62,7 +62,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
         class PytestModel(BaseModel):
             """Test Model for Inputs"""
 
-            my_datetime: ArrowDateTime
+            my_datetime: DateTime
 
         config_data = {'my_datetime': to_parse}
         app = playbook_app(config_data=config_data)
@@ -126,7 +126,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
         class PytestModel(BaseModel):
             """Test Model for Inputs"""
 
-            my_datetime: ArrowDateTime
+            my_datetime: DateTime
 
         config_data = {'my_datetime': to_parse}
         app = playbook_app(config_data=config_data)
@@ -152,7 +152,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
         class PytestModel(BaseModel):
             """Test Model for Inputs"""
 
-            my_datetime: ArrowDateTime
+            my_datetime: DateTime
 
         config_data = {'my_datetime': to_parse}
         app = playbook_app(config_data=config_data)
@@ -177,7 +177,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
         class PytestModel(BaseModel):
             """Test Model for Inputs"""
 
-            my_datetime: ArrowDateTime
+            my_datetime: DateTime
 
         config_data = {'my_datetime': to_parse}
         app = playbook_app(config_data=config_data)
@@ -192,7 +192,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
         class PytestModel(BaseModel):
             """Test Model for Inputs"""
 
-            my_datetime: ArrowDateTime
+            my_datetime: DateTime
 
         config_data = {'my_datetime': '1636415957'}
         app = playbook_app(config_data=config_data)
@@ -255,7 +255,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
         class PytestModel(BaseModel):
             """Test Model for Inputs"""
 
-            my_datetime: ArrowDateTime
+            my_datetime: DateTime
 
         config_data = {'my_datetime': to_parse}
         app = playbook_app(config_data=config_data)
@@ -303,7 +303,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
         class PytestModel(BaseModel):
             """Test Model for Inputs"""
 
-            my_datetime: ArrowDateTime
+            my_datetime: DateTime
 
         config_data = {'my_datetime': to_parse}
         app = playbook_app(config_data=config_data)
