@@ -81,7 +81,7 @@ class WorkflowTemplateModel(
         read_only=True,
         title='active',
     )
-    assignee: Optional['Assignee'] = Field(
+    assignee: Optional['AssigneeModel'] = Field(
         None,
         allow_mutation=False,
         description='The **assignee** for the Workflow_Template.',
@@ -156,6 +156,12 @@ class WorkflowTemplateModel(
         title='version',
     )
 
+    @validator('assignee', always=True)
+    def _validate_assignee(cls, v):
+        if not v:
+            return AssigneeModel()
+        return v
+
     @validator('cases', always=True)
     def _validate_cases(cls, v):
         if not v:
@@ -164,8 +170,8 @@ class WorkflowTemplateModel(
 
 
 # first-party
-from tcex.api.tc.v3.case_management.assignee import Assignee  # pylint: disable=unused-import
 from tcex.api.tc.v3.cases.case_model import CasesModel
+from tcex.api.tc.v3.security.assignee import AssigneeModel  # pylint: disable=unused-import
 
 # add forward references
 WorkflowTemplateDataModel.update_forward_refs()

@@ -129,6 +129,11 @@ class GenerateABC(ABC):
                         'description': 'The id of the **Object**',
                         'read-only': True,
                     }
+                if self.type_.lower() == 'user_groups':
+                    _properties['name']['readOnly'] = False
+                if self.type_.lower() == 'users':
+                    _properties['userName']['readOnly'] = False
+
         except (ConnectionError, ProxyError) as ex:
             typer.secho(f'Failed getting types properties ({ex}).', fg=typer.colors.RED)
             typer.Exit(1)

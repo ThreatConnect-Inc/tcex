@@ -82,7 +82,7 @@ class CaseModel(
         read_only=False,
         title='artifacts',
     )
-    assignee: Optional['Assignee'] = Field(
+    assignee: Optional['AssigneeModel'] = Field(
         None,
         description='The user or group Assignee object for the Case.',
         methods=['POST', 'PUT'],
@@ -290,6 +290,12 @@ class CaseModel(
             return ArtifactsModel()
         return v
 
+    @validator('assignee', always=True)
+    def _validate_assignee(cls, v):
+        if not v:
+            return AssigneeModel()
+        return v
+
     @validator('attributes', always=True)
     def _validate_attributes(cls, v):
         if not v:
@@ -348,8 +354,8 @@ class CaseModel(
 # first-party
 from tcex.api.tc.v3.artifacts.artifact_model import ArtifactsModel
 from tcex.api.tc.v3.case_attributes.case_attribute_model import CaseAttributesModel
-from tcex.api.tc.v3.case_management.assignee import Assignee  # pylint: disable=unused-import
 from tcex.api.tc.v3.notes.note_model import NotesModel
+from tcex.api.tc.v3.security.assignee import AssigneeModel  # pylint: disable=unused-import
 from tcex.api.tc.v3.security.users.user_model import UserModel, UsersModel
 from tcex.api.tc.v3.tags.tag_model import TagsModel
 from tcex.api.tc.v3.tasks.task_model import TasksModel

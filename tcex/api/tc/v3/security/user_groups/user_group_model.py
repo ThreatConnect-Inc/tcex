@@ -89,9 +89,9 @@ class UserGroupModel(
     )
     name: Optional[str] = Field(
         None,
-        allow_mutation=False,
         description='The **name** for the User_Group.',
-        read_only=True,
+        methods=['POST', 'PUT'],
+        read_only=False,
         title='name',
     )
     users: Optional['UsersModel'] = Field(
