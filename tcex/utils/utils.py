@@ -40,7 +40,7 @@ class Utils:
         self.variable_parse = re.compile(self.variable_pattern)
 
     @classmethod
-    def any_to_arrow(cls, datetime_expression: str) -> 'arrow.Arrow':
+    def any_to_datetime(cls, datetime_expression: str) -> 'arrow.Arrow':
         """Return a arrow object from datetime expression."""
         if isinstance(datetime_expression, arrow.Arrow):
             return datetime_expression

@@ -38,7 +38,7 @@ class Campaign(Group):
         if not self.can_update():
             handle_error(910, [self.type])
 
-        first_seen = self._utils.any_to_arrow(first_seen).strftime('%Y-%m-%dT%H:%M:%SZ')
+        first_seen = self._utils.any_to_datetime(first_seen).strftime('%Y-%m-%dT%H:%M:%SZ')
 
         self._data['firstSeen'] = first_seen
         request = {'firstSeen': first_seen}

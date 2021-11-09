@@ -213,6 +213,6 @@ class Cache:
         if self.ttl_seconds is None or self.ttl_seconds == 0:
             return True  # if ttl_is 0 or None, all cached data is always invalid.
 
-        cached_datetime = self.utils.any_to_arrow(cached_date).datetime
+        cached_datetime = self.utils.any_to_datetime(cached_date).datetime
         cache_expires = (cached_datetime + timedelta(seconds=self.ttl_seconds)).timestamp()
         return cache_expires < datetime.utcnow().timestamp()

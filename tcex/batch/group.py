@@ -105,7 +105,7 @@ class Group:
         key = self._metadata_map.get(key, key)
         if key in ['dateAdded', 'eventDate', 'firstSeen', 'publishDate']:
             if value is not None:
-                self._group_data[key] = self.utils.any_to_arrow(value).strftime(
+                self._group_data[key] = self.utils.any_to_datetime(value).strftime(
                     '%Y-%m-%dT%H:%M:%SZ'
                 )
         elif key == 'file_content':
@@ -198,7 +198,7 @@ class Group:
     @date_added.setter
     def date_added(self, date_added: str) -> None:
         """Set Indicator dateAdded."""
-        self._group_data['dateAdded'] = self.utils.any_to_arrow(date_added).strftime(
+        self._group_data['dateAdded'] = self.utils.any_to_datetime(date_added).strftime(
             '%Y-%m-%dT%H:%M:%SZ'
         )
 
@@ -328,7 +328,7 @@ class Campaign(Group):
     @first_seen.setter
     def first_seen(self, first_seen: str) -> None:
         """Set Document first seen."""
-        self._group_data['firstSeen'] = self.utils.any_to_arrow(first_seen).strftime(
+        self._group_data['firstSeen'] = self.utils.any_to_datetime(first_seen).strftime(
             '%Y-%m-%dT%H:%M:%SZ'
         )
 
@@ -472,7 +472,7 @@ class Event(Group):
     @event_date.setter
     def event_date(self, event_date: str) -> None:
         """Set the Events "event date" value."""
-        self._group_data['eventDate'] = self.utils.any_to_arrow(event_date).strftime(
+        self._group_data['eventDate'] = self.utils.any_to_datetime(event_date).strftime(
             '%Y-%m-%dT%H:%M:%SZ'
         )
 
@@ -523,7 +523,7 @@ class Incident(Group):
     @event_date.setter
     def event_date(self, event_date: str) -> None:
         """Set Incident event_date."""
-        self._group_data['eventDate'] = self.utils.any_to_arrow(event_date).strftime(
+        self._group_data['eventDate'] = self.utils.any_to_datetime(event_date).strftime(
             '%Y-%m-%dT%H:%M:%SZ'
         )
 
@@ -604,7 +604,7 @@ class Report(Group):
     @publish_date.setter
     def publish_date(self, publish_date: str) -> None:
         """Set Report publish date"""
-        self._group_data['publishDate'] = self.utils.any_to_arrow(publish_date).strftime(
+        self._group_data['publishDate'] = self.utils.any_to_datetime(publish_date).strftime(
             '%Y-%m-%dT%H:%M:%SZ'
         )
 

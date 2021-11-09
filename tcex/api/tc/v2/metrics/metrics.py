@@ -129,7 +129,7 @@ class Metrics:
 
         body = {'value': value}
         if date is not None:
-            body['date'] = self.utils.any_to_arrow(date).strftime('%Y-%m-%dT%H:%M:%SZ')
+            body['date'] = self.utils.any_to_datetime(date).strftime('%Y-%m-%dT%H:%M:%SZ')
 
         if key is not None:
             body['name'] = key

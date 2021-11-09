@@ -16,7 +16,7 @@ class DateTime(arrow.Arrow):
     def _validate(cls, value: Any) -> 'arrow.Arrow':
         """Pydantic validate method."""
         try:
-            return Utils.any_to_arrow(value)
+            return Utils.any_to_datetime(value)
         except RuntimeError as ex:
             raise ValueError(str(ex)) from ex
 

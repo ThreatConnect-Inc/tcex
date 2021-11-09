@@ -43,7 +43,7 @@ class Event(Group):
         if not self.can_update():
             handle_error(910, [self.type])
 
-        event_date = self._utils.any_to_arrow(event_date).strftime('%Y-%m-%dT%H:%M:%SZ')
+        event_date = self._utils.any_to_datetime(event_date).strftime('%Y-%m-%dT%H:%M:%SZ')
 
         self._data['eventDate'] = event_date
         request = {'eventDate': event_date}
