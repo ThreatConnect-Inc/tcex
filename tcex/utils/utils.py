@@ -39,27 +39,35 @@ class Utils:
         self.variable_match = re.compile(fr'^{self.variable_pattern}$')
         self.variable_parse = re.compile(self.variable_pattern)
 
-    @staticmethod
-    def any_to_arrow(datetime_expression: str) -> 'arrow.Arrow':
+    @classmethod
+    def any_to_arrow(cls, datetime_expression: str) -> 'arrow.Arrow':
         """Return a arrow object from datetime expression."""
-        if datetime_expression is not None:
-            _datetime = None
+        if isinstance(datetime_expression, arrow.Arrow):
+            return datetime_expression
+
+        value = str(datetime_expression)
+
+        # note: order matters. For example, the timestamp could parse inputs that would have
+        # been meant for one of the default parser formats
+        parser_methods = [
+            cls._parse_default_arrow_formats,
+            cls._parse_non_default_arrow_formats,
+            cls._parse_timestamp,
+            cls._parse_humanized_input
+        ]
+        for method in parser_methods:
             try:
-                _datetime = arrow.get(datetime_expression)
-            except arrow.parser.ParserError:
-                pass  # best effort
+                return method(value)
+            # TypeError should never occur, but adding for completeness in case of improperly
+            # overriden str method
+            except (arrow.parser.ParserError, ValueError, TypeError):
+                # value could not be parsed by current method.
+                pass
 
-            if _datetime is None:
-                try:
-                    arw = arrow.utcnow()
-                    _datetime = arw.dehumanize(datetime_expression)
-                except arrow.parser.ParserError:
-                    pass  # best effort
-
-            if _datetime is not None:
-                datetime_expression = _datetime
-
-        return datetime_expression
+        raise RuntimeError(
+            f'Value "{value}" of type "{type(datetime_expression)}" '
+            'could not be parsed as a date time object.'
+        )
 
     def camel_string(self, string_: str) -> Any:
         """Return custom str with custom properties/methods."""
@@ -588,3 +596,97 @@ class Utils:
         with open(fqpn, mode) as fh:
             fh.write(content)
         return fqpn
+
+    @staticmethod
+    def _parse_default_arrow_formats(value: Any) -> 'arrow.Arrow':
+        """Attempt to parse value using default Arrow formats.
+
+        The value is simply passed into Arrow's "get" method. The following are the default
+        date formats (found in arrow.parser.DateTimeParser.parse_iso):
+
+        "YYYY-MM-DD",
+        "YYYY-M-DD",
+        "YYYY-M-D",
+        "YYYY/MM/DD",
+        "YYYY/M/DD",
+        "YYYY/M/D",
+        "YYYY.MM.DD",
+        "YYYY.M.DD",
+        "YYYY.M.D",
+        "YYYYMMDD",
+        # Year-Day-of-year: 2020-364 == 2020-12-29T00:00:00+00:00
+        "YYYY-DDDD",
+        # same as above, but without separating dash
+        "YYYYDDDD",
+        "YYYY-MM",
+        "YYYY/MM",
+        "YYYY.MM",
+        "YYYY",
+        # ISO week date: 2011-W05-4, 2019-W17
+        "W"
+        """
+        return arrow.get(value)
+
+    @staticmethod
+    def _parse_humanized_input(value: Any) -> 'arrow.Arrow':
+        """Attempt to dehumanize time inputs. Example: 'Two hours ago'."""
+        now = arrow.utcnow()
+        plurals = {
+            'second': 'seconds',
+            'minute': 'minutes',
+            'hour': 'hours',
+            'day': 'days',
+            'week': 'weeks',
+            'month': 'months',
+            'year': 'years',
+        }
+
+        if value.strip().lower() == 'now':
+            return now
+
+        # pluralize singular time terms as applicable. Arrow does not support singular terms
+        terms = [plurals.get(term.lower(), term) for term in value.split()]
+        value = " ".join(terms)
+
+        return now.dehumanize(value)
+
+    @staticmethod
+    def _parse_non_default_arrow_formats(value: Any) -> 'arrow.Arrow':
+        """Attempt to parse value using non-default Arrow formats
+
+        These are formats that Arrow provides constants for but are not used in the "get"
+        method (Arrow method that parses values into datetimes) by default.
+
+        Note: passing formats to test against overrides the default formats. Defaults are not used.
+        """
+        return arrow.get(
+            value,
+            [
+                arrow.FORMAT_ATOM,
+                arrow.FORMAT_COOKIE,
+                arrow.FORMAT_RFC822,
+                arrow.FORMAT_RFC850,
+                arrow.FORMAT_RFC1036,
+                arrow.FORMAT_RFC1123,
+                arrow.FORMAT_RFC2822,
+                arrow.FORMAT_RFC3339,
+                arrow.FORMAT_RSS,
+                arrow.FORMAT_W3C,
+            ],
+        )
+
+    @staticmethod
+    def _parse_timestamp(value: Any) -> 'arrow.Arrow':
+        """Attempt to parse epoch timestamp in seconds, milliseconds, or microseconds.
+
+        Note: passing formats to test against overrides the default formats. Defaults are not used.
+        """
+        # note: order matters. Must try to parse as milliseconds/microseconds first (x)
+        # before trying to parse as seconds (X), else error occurs if passing a ms/ns value
+        try:
+            # attempt to parse as string first using microsecond/millisecond and second specifiers
+            return arrow.get(value, ['x', 'X'])
+        except (arrow.parser.ParserError, ValueError):
+            # could not parse as string, try to parse as float
+            return arrow.get(float(value))
+
