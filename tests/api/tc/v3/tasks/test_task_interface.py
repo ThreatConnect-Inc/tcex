@@ -111,7 +111,7 @@ class TestTasks(TestCaseManagement):
         # [Retrieve Testing] test "artifacts" method
         artifacts = self.v3.artifacts()
         artifacts.filter.task_id(TqlOperator.EQ, task.model.id)
-        assert len(artifacts) == 1, 'Artifact was not added/retrieved from task object.'
+        assert len(artifacts) == 1, 'Task was not added/retrieved from task object.'
         for artifact in task.artifacts:
             # only a single artifact was added so summary should match
             assert artifact.model.summary == artifact_data.get('summary')
@@ -220,7 +220,7 @@ class TestTasks(TestCaseManagement):
             assert False, f'No task found for tql -> {tasks.tql.as_str}'
 
     def test_task_get_by_tql_filter_fail_tql(self):
-        """Test Artifact Get by TQL"""
+        """Test Task Get by TQL"""
         # retrieve object using TQL
         tasks = self.v3.tasks()
         tasks.filter.tql = 'Invalid TQL'
@@ -236,7 +236,7 @@ class TestTasks(TestCaseManagement):
         assert tasks.request.status_code == 400
 
     def test_task_create_by_case_xid(self, request: FixtureRequest):
-        """Test Artifact Creation"""
+        """Test Task Creation"""
         # [Pre-Requisite] - create case and provide a unique xid
         case_xid = f'{request.node.name}-{time.time()}'
         _ = self.v3_helper.create_case(xid=case_xid)
@@ -276,7 +276,7 @@ class TestTasks(TestCaseManagement):
         assert task.model.required is False
 
     def test_task_delete_by_id(self, request: FixtureRequest):
-        """Test Artifact Deletion"""
+        """Test Task Deletion"""
         # [Pre-Requisite] - create case and provide a unique xid
         case = self.v3_helper.create_case()
 
@@ -312,7 +312,7 @@ class TestTasks(TestCaseManagement):
         assert '952' in str(exc_info.value)
 
     def test_task_get_many(self):
-        """Test Artifact Get Many"""
+        """Test Task Get Many"""
         # [Pre-Requisite] - create case
         case = self.v3_helper.create_case()
         task_count = 10
@@ -343,7 +343,7 @@ class TestTasks(TestCaseManagement):
         assert not task_ids, 'Not all tasks were returned.'
 
     def test_task_get_single_by_id_properties(self, request: FixtureRequest):
-        """Test Artifact get single attached to task by id"""
+        """Test Task get single attached to task by id"""
         # [Pre-Requisite] - create case
         case = self.v3_helper.create_case()
 
