@@ -53,7 +53,7 @@ class Utils:
             cls._parse_default_arrow_formats,
             cls._parse_non_default_arrow_formats,
             cls._parse_timestamp,
-            cls._parse_humanized_input
+            cls._parse_humanized_input,
         ]
         for method in parser_methods:
             try:
@@ -646,7 +646,7 @@ class Utils:
 
         # pluralize singular time terms as applicable. Arrow does not support singular terms
         terms = [plurals.get(term.lower(), term) for term in value.split()]
-        value = " ".join(terms)
+        value = ' '.join(terms)
 
         return now.dehumanize(value)
 
@@ -689,4 +689,3 @@ class Utils:
         except (arrow.parser.ParserError, ValueError):
             # could not parse as string, try to parse as float
             return arrow.get(float(value))
-

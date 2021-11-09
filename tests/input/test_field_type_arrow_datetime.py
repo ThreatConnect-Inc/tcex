@@ -86,7 +86,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
         ],
     )
     def test_field_type_arrow_date_time_non_default_formats(
-            self, playbook_app: 'MockApp', to_parse
+        self, playbook_app: 'MockApp', to_parse
     ):
         """Testing inputs directly from built-in (non-default) formats section of docs.
 
@@ -234,7 +234,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
         ],
     )
     def test_field_type_arrow_date_time_human_input(
-            self, playbook_app: 'MockApp', to_parse, operator, delta
+        self, playbook_app: 'MockApp', to_parse, operator, delta
     ):
         """Testing timestamp inputs
 
@@ -262,7 +262,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
         tcex = app.tcex
         tcex.inputs.add_model(PytestModel)
 
-        expected_parse_result = (operator(now, delta))
+        expected_parse_result = operator(now, delta)
         result = tcex.inputs.model.my_datetime
 
         assert expected_parse_result.year == result.year
@@ -290,7 +290,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             'in one hour',
             'in 1 hour',
             '1 hour from now',
-            '1 hour ago'
+            '1 hour ago',
         ],
     )
     def test_field_type_arrow_date_time_unsupported_format(self, playbook_app: 'MockApp', to_parse):
