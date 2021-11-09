@@ -151,3 +151,43 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
         tcex.inputs.add_model(PytestModel)
 
         assert tcex.inputs.model.my_datetime.isoformat() == '2021-11-08T23:59:17.728793+00:00'
+
+    @pytest.mark.parametrize(
+        'to_parse',
+        [
+            '1636415957.728',
+            '1636415957728',
+        ],
+    )
+    def test_field_type_arrow_date_time_milliseconds(self, playbook_app: 'MockApp', to_parse):
+        """Testing timestamp inputs
+
+        All inputs expected to parse to '2021-11-08T23:59:17.728000+00:00'
+        """
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_datetime: ArrowDateTime
+
+        config_data = {'my_datetime': to_parse}
+        app = playbook_app(config_data=config_data)
+        tcex = app.tcex
+        tcex.inputs.add_model(PytestModel)
+
+        assert tcex.inputs.model.my_datetime.isoformat() == '2021-11-08T23:59:17.728000+00:00'
+
+    def test_field_type_arrow_date_time_seconds(self, playbook_app: 'MockApp'):
+        """Testing timestamp inputs. Parse seconds epoch"""
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_datetime: ArrowDateTime
+
+        config_data = {'my_datetime': '1636415957'}
+        app = playbook_app(config_data=config_data)
+        tcex = app.tcex
+        tcex.inputs.add_model(PytestModel)
+
+        assert tcex.inputs.model.my_datetime.isoformat() == '2021-11-08T23:59:17+00:00'
