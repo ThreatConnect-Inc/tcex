@@ -733,7 +733,6 @@ in 1 day
 2 hours ago
 in 2 hours
 ```
-`now` may also be used to reference the current time.
 
 #### Other Valid Formats
 
