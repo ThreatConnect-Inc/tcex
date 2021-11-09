@@ -279,6 +279,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
     @pytest.mark.parametrize(
         'to_parse',
         [
+            # some unsupported formats for awareness (not inclusive of all unsupported formats)
             'Wednesday, 27-May-2020 10:30:35',
             'Wed, 27 May 2020 10:30:35',
             'Wed, 27 May 20 10:30:35',
@@ -288,16 +289,21 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             'May 27 2020',
             '05 27 2020',
             'in one hour',
-            'in 1 hour',
             '1 hour from now',
-            '1 hour ago',
+            # bad inputs
+            'bad input',
+            '',
+            [],
+            {},
+
         ],
     )
-    def test_field_type_arrow_date_time_unsupported_format(self, playbook_app: 'MockApp', to_parse):
-        """Testing timestamp inputs
+    def test_field_type_arrow_date_time_bad_input(self, playbook_app: 'MockApp', to_parse):
+        """Test parsing of bad input
 
-        This test keeps track of date strings that have been found to be unsupported.
-        Parsing these date strings will result in failure.
+        Args:
+            playbook_app (fixture): An instance of MockApp.
+            to_parse: an input that cannot be parsed
         """
 
         class PytestModel(BaseModel):
@@ -308,4 +314,10 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
         config_data = {'my_datetime': to_parse}
         app = playbook_app(config_data=config_data)
         tcex = app.tcex
-        tcex.inputs.add_model(PytestModel)
+        with pytest.raises(ValueError) as exc_info:
+            tcex.inputs.add_model(PytestModel)
+
+        err_msg = str(exc_info.value)
+
+        assert f'{to_parse}' in err_msg
+        assert 'could not be parsed as a date time object' in err_msg
