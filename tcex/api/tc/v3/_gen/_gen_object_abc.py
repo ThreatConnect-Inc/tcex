@@ -83,7 +83,7 @@ class GenerateObjectABC(GenerateABC, ABC):
                 ),
                 f'''{self.i2})''',
                 f'''{self.i2}self._model = {self.type_.plural().pascal_case()}Model(**kwargs)''',
-                f'''{self.i2}self._type = \'{self.type_.plural()}\'''',
+                f'''{self.i2}self.type_ = \'{self.type_.plural()}\'''',
                 '',
                 '',
             ]
