@@ -193,7 +193,7 @@ class Lib(Bin):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
             )
-            out, err = p.communicate()  # pylint: disable=unused-variable
+            _, err = p.communicate(timeout=60)  # pylint: disable=unused-variable
 
             if p.returncode != 0:
                 print(f'{c.Style.BRIGHT}{c.Fore.RED}FAIL')
