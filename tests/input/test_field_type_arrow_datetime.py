@@ -39,6 +39,9 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             '2020/01',
             '2020.01',
             '2020',
+            # ISO 8601 still handled by default parser
+            '2020-01-01T00:00:00+00:00',
+            '2020-01-01T00:00:00'
         ],
     )
     def test_field_type_arrow_date_time_simple(self, playbook_app: 'MockApp', to_parse):
