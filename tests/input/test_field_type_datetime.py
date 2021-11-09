@@ -2,13 +2,13 @@
 # standard library
 from datetime import timedelta
 from operator import add, sub
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 # third-party
 import arrow
 import pytest
 from dateutil.relativedelta import relativedelta
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 
 # first-party
 from tcex.input.field_types import DateTime
@@ -50,7 +50,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             '2020-01-01T00:00:00',
         ],
     )
-    def test_field_type_date_time_simple(self, playbook_app: 'MockApp', to_parse):
+    def test_field_type_simple(self, playbook_app: 'MockApp', to_parse):
         """Test parsing of date strings and timestamps
 
         All test inputs are expected to parse to '2020-01-01T00:00:00+00:00'
@@ -85,7 +85,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             '2020-05-27 10:30:35+00:00',
         ],
     )
-    def test_field_type_date_time_non_default_formats(
+    def test_field_type_non_default_formats(
         self, playbook_app: 'MockApp', to_parse
     ):
         """Testing inputs directly from built-in (non-default) formats section of docs.
@@ -143,7 +143,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             '1636415957728793',
         ],
     )
-    def test_field_type_date_time_microseconds(self, playbook_app: 'MockApp', to_parse):
+    def test_field_type_microseconds(self, playbook_app: 'MockApp', to_parse):
         """Testing timestamp inputs
 
         All inputs expected to parse to '2021-11-08T23:59:17.728793+00:00'
@@ -168,7 +168,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             '1636415957728',
         ],
     )
-    def test_field_type_date_time_milliseconds(self, playbook_app: 'MockApp', to_parse):
+    def test_field_type_milliseconds(self, playbook_app: 'MockApp', to_parse):
         """Testing timestamp inputs
 
         All inputs expected to parse to '2021-11-08T23:59:17.728000+00:00'
@@ -186,7 +186,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
 
         assert tcex.inputs.model.my_datetime.isoformat() == '2021-11-08T23:59:17.728000+00:00'
 
-    def test_field_type_date_time_seconds(self, playbook_app: 'MockApp'):
+    def test_field_type_seconds(self, playbook_app: 'MockApp'):
         """Testing timestamp inputs. Parse seconds epoch"""
 
         class PytestModel(BaseModel):
@@ -233,7 +233,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             ('in 2 minute', add, timedelta(minutes=2)),
         ],
     )
-    def test_field_type_date_time_human_input(
+    def test_field_type_human_input(
         self, playbook_app: 'MockApp', to_parse, operator, delta
     ):
         """Testing timestamp inputs
@@ -298,7 +298,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
 
         ],
     )
-    def test_field_type_date_time_bad_input(self, playbook_app: 'MockApp', to_parse):
+    def test_field_type_bad_input(self, playbook_app: 'MockApp', to_parse):
         """Test parsing of bad input
 
         Args:
@@ -314,10 +314,42 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
         config_data = {'my_datetime': to_parse}
         app = playbook_app(config_data=config_data)
         tcex = app.tcex
-        with pytest.raises(ValueError) as exc_info:
+        with pytest.raises(ValidationError) as exc_info:
             tcex.inputs.add_model(PytestModel)
 
         err_msg = str(exc_info.value)
 
         assert f'{to_parse}' in err_msg
         assert 'could not be parsed as a date time object' in err_msg
+
+    def test_field_type_none_not_allowed(self, playbook_app: 'MockApp'):
+        """Testing timestamp inputs. None not allowed"""
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_datetime: DateTime
+
+        config_data = {'my_datetime': None}
+        app = playbook_app(config_data=config_data)
+        tcex = app.tcex
+        with pytest.raises(ValidationError) as exc_info:
+            tcex.inputs.add_model(PytestModel)
+
+        assert 'none is not an allowed value' in str(exc_info.value)
+
+    def test_field_type_none_allowed(self, playbook_app: 'MockApp'):
+        """Testing timestamp inputs. None allowed"""
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_datetime: Optional[DateTime]
+
+        config_data = {'my_datetime': None}
+        app = playbook_app(config_data=config_data)
+        tcex = app.tcex
+        tcex.inputs.add_model(PytestModel)
+
+        assert tcex.inputs.model.my_datetime is None
+
