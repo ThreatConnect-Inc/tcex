@@ -40,6 +40,16 @@ class ArrowDateTime(arrow.Arrow):
         return arrow.get(value)
 
     @classmethod
+    def parse_humanized_input(cls, value: Any) -> 'arrow.Arrow':
+        """Attempt to dehumanize time inputs. Example: 'Two hours ago'."""
+        now = arrow.utcnow()
+
+        if value.strip().lower() == 'now':
+            return now
+
+        return now.dehumanize(value)
+
+    @classmethod
     def _parse_human_time(cls, value: Any) -> 'arrow.Arrow':
         """Parse human dates, like '1 hour ago'."""
         now = arrow.utcnow()
@@ -99,6 +109,7 @@ class ArrowDateTime(arrow.Arrow):
             cls._parse_default_arrow_formats,
             cls._parse_non_default_arrow_formats,
             cls._parse_timestamp,
+            cls.parse_humanized_input
         ]
         for method in parser_methods:
             try:
