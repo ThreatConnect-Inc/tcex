@@ -86,9 +86,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             '2020-05-27 10:30:35+00:00',
         ],
     )
-    def test_field_type_datetime_non_default_formats(
-        self, playbook_app: 'MockApp', to_parse
-    ):
+    def test_field_type_datetime_non_default_formats(self, playbook_app: 'MockApp', to_parse):
         """Testing inputs directly from built-in (non-default) formats section of docs.
 
         All inputs expected to parse to '2020-05-27T10:30:35+00:00'
@@ -304,7 +302,6 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             '',
             [],
             {},
-
         ],
     )
     def test_field_type_datetime_bad_input(self, playbook_app: 'MockApp', to_parse):
@@ -361,4 +358,3 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
         tcex.inputs.add_model(PytestModel)
 
         assert tcex.inputs.model.my_datetime is None
-
