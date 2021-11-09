@@ -42,7 +42,7 @@ class Indicators(ObjectCollectionABC):
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
         )
         self._model = IndicatorsModel(**kwargs)
-        self._type = 'indicators'
+        self.type_ = 'indicators'
 
     def __iter__(self) -> 'Indicator':
         """Iterate over CM objects."""
@@ -79,6 +79,8 @@ class Indicator(ObjectABC):
         ip (str, kwargs): The ip address associated with this indicator (Address specific summary
             field).
         md5 (str, kwargs): The md5 associated with this indicator (File specific summary field).
+        owner_name (str, kwargs): The name of the Organization, Community, or Source that the item
+            belongs to.
         private_flag (bool, kwargs): Is this indicator private?
         rating (int, kwargs): The indicator threat rating.
         security_labels (SecurityLabels, kwargs): A list of Security Labels corresponding to the
@@ -97,7 +99,6 @@ class Indicator(ObjectABC):
         value2 (str, kwargs): Custom Indicator summary field value2.
         value3 (str, kwargs): Custom Indicator summary field value3.
         whois_active (bool, kwargs): Is whois active for the indicator?
-        xid (str, kwargs): The xid of the item.
     """
 
     def __init__(self, **kwargs) -> None:

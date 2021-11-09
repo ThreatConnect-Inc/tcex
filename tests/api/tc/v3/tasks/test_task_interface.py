@@ -111,7 +111,7 @@ class TestTasks(TestCaseManagement):
         # [Retrieve Testing] test "artifacts" method
         artifacts = self.v3.artifacts()
         artifacts.filter.task_id(TqlOperator.EQ, task.model.id)
-        assert len(artifacts) == 1, 'Artifact was not added/retrieved from task object.'
+        assert len(artifacts) == 1, 'Task was not added/retrieved from task object.'
         for artifact in task.artifacts:
             # only a single artifact was added so summary should match
             assert artifact.model.summary == artifact_data.get('summary')
@@ -220,7 +220,7 @@ class TestTasks(TestCaseManagement):
             assert False, f'No task found for tql -> {tasks.tql.as_str}'
 
     def test_task_get_by_tql_filter_fail_tql(self):
-        """Test Artifact Get by TQL"""
+        """Test Task Get by TQL"""
         # retrieve object using TQL
         tasks = self.v3.tasks()
         tasks.filter.tql = 'Invalid TQL'
@@ -236,7 +236,7 @@ class TestTasks(TestCaseManagement):
         assert tasks.request.status_code == 400
 
     def test_task_create_by_case_xid(self, request: FixtureRequest):
-        """Test Artifact Creation"""
+        """Test Task Creation"""
         # [Pre-Requisite] - create case and provide a unique xid
         case_xid = f'{request.node.name}-{time.time()}'
         _ = self.v3_helper.create_case(xid=case_xid)
@@ -276,7 +276,7 @@ class TestTasks(TestCaseManagement):
         assert task.model.required is False
 
     def test_task_delete_by_id(self, request: FixtureRequest):
-        """Test Artifact Deletion"""
+        """Test Task Deletion"""
         # [Pre-Requisite] - create case and provide a unique xid
         case = self.v3_helper.create_case()
 
@@ -312,7 +312,7 @@ class TestTasks(TestCaseManagement):
         assert '952' in str(exc_info.value)
 
     def test_task_get_many(self):
-        """Test Artifact Get Many"""
+        """Test Task Get Many"""
         # [Pre-Requisite] - create case
         case = self.v3_helper.create_case()
         task_count = 10
@@ -323,8 +323,6 @@ class TestTasks(TestCaseManagement):
                 'case_id': case.model.id,
                 'description': f'a description from pytest test',
                 'name': f'name-{randint(100, 999)}',
-                'workflow_phase': 0,
-                'workflow_step': 1,
             }
 
             # [Create Testing] create the object
@@ -345,9 +343,11 @@ class TestTasks(TestCaseManagement):
         assert not task_ids, 'Not all tasks were returned.'
 
     def test_task_get_single_by_id_properties(self, request: FixtureRequest):
-        """Test Artifact get single attached to task by id"""
+        """Test Task get single attached to task by id"""
         # [Pre-Requisite] - create case
         case = self.v3_helper.create_case()
+
+        # [Pre-Requisite] - create a task which the main task is dependent on
         task_data = {
             'case_id': case.model.id,
             'description': f'a description from pytest test',
@@ -358,15 +358,16 @@ class TestTasks(TestCaseManagement):
         task_2 = self.v3.task(**task_data)
         task_2.submit()
 
-        future_1 = (datetime.now() + timedelta(days=10)).strftime('%Y-%m-%dT%H:%M:%S')
-        future_2 = (datetime.now() + timedelta(days=5)).strftime('%Y-%m-%dT%H:%M:%S')
+        # [Pre-Requisite] - construct some timestamps in the future for completed and due by fields.
+        future_1 = (datetime.now() + timedelta(days=10))
+        future_2 = datetime.now() + timedelta(days=5)
 
         # [Pre-Requisite] construct the artifacts model
         artifact_count = 10
         artifact_summaries = []
         artifact_data = {'data': []}
         for _ in range(0, artifact_count):
-            # [Create Testing] define task data
+            # [Pre-Requisite] define artifact data
             summary = f'asn{randint(100, 999)}'
             artifact_data.get('data').append(
                 {
@@ -380,21 +381,23 @@ class TestTasks(TestCaseManagement):
 
         # [Pre-Requisite] construct the notes model
         note_count = 10
-        note_text = []
+        notes_text = []
         note_data = {'data': []}
         for _ in range(0, note_count):
-            # [Create Testing] define task data
+            # [Pre-Requisite] define note data
             text = f'sample note generated: {time.time()} for {request.node.name} test task.'
             note_data.get('data').append({'text': text})
 
-            note_text.append(text)
+            notes_text.append(text)
 
+        # [Pre-Requisite] define assignee data
         assignee = {
             "type": "User",
             "data": {
-                "userName": "bpurdy@threatconnect.com"
+                "user_name": "bpurdy@threatconnect.com"
             }
         }
+
         # [Create Testing] define task data
         task_data = {
             'case_id': case.model.id,
@@ -406,7 +409,7 @@ class TestTasks(TestCaseManagement):
             'due_date': future_1,
             'name': f'name-{request.node.name}',
             'notes': note_data,
-            'status': 'Open',
+            'status': 'Pending',  # It is always pending because of the depended on task
             'required': False,
             'workflow_phase': 0
         }
@@ -420,8 +423,8 @@ class TestTasks(TestCaseManagement):
         task.model.case_id = task_data.get('case_id')
         task.model.dependent_on_id = task_data.get('dependent_on_id')
         task.model.description = task_data.get('description')
-        # task.model.due_date = task_data.get('due_date')
-        # task.model.completed_date = task_data.get('completed_date')
+        task.model.due_date = task_data.get('due_date')
+        task.model.completed_date = task_data.get('completed_date')
         task.model.name = task_data.get('name')
         task.model.notes = task_data.get('notes')
         task.model.required = task_data.get('required')
@@ -440,152 +443,72 @@ class TestTasks(TestCaseManagement):
 
         # [Retrieve Testing] run assertions on returned data
         assert task.model.case_id == case.model.id
-        assert task.model.case_xid == case.model.xid
-        # assert artifact.model.file_data == file_data
-        # assert artifact.model.source == artifact_data.get('source')
-        # assert artifact.model.summary == artifact_data.get('summary')
-        # assert artifact.model.task.name == task.model.name
-        # assert artifact.model.task_id == task.model.id
-        # assert artifact.model.task_xid == task.model.xid
-        # assert artifact.model.intel_type is None
-        # assert artifact.model.type == artifact_data.get('type')
-        # for note in artifact.model.notes.data:
-        #     if note.text == artifact_data.get('note_text'):
-        #         break
-        #     assert False, 'Note not found'
-        #
-        # # [Retrieve Testing] assert read-only data
-        # assert artifact.model.analytics_priority_level is None
-        # assert artifact.model.analytics_score is None
-        # assert artifact.model.analytics_type is None
-        # assert artifact.model.artifact_type.name == artifact_data.get('type')
-        # assert artifact.model.parent_case.id == case.model.id
-        #
-        # # [Retrieve Testing] test as_entity
-        # assert artifact.as_entity.get('value') == artifact_data.get('summary')
+        assert task.model.name == task_data.get('name')
+        assert task.model.required == task_data.get('required')
+        assert task.model.status == task_data.get('status')
+        assert task.model.workflow_phase == task_data.get('workflow_phase')
+        assert task.model.assignee.type == assignee.get('type')
+        assert task.model.assignee.data.user_name == assignee.get('data').get('user_name')
+        for note in task.model.notes.data:
+            assert note.text in notes_text
+            notes_text.remove(note.text)
+        assert not notes_text, 'Incorrect amount of notes were retrieved'
+        for artifact in task.model.artifacts.data:
+            assert artifact.summary in artifact_summaries
+            artifact_summaries.remove(artifact.summary)
+        assert not artifact_summaries, 'Incorrect amount of artifacts were retrieved'
 
-    def test_artifact_case_get_single_by_id_properties(self):
-        """Test Artifact get single attached to case by id"""
-        # [Pre-Requisite] - create case
-        case = self.v3_helper.create_case()
-
-        # [Create Testing] define the object file data
-        file_data = (
-            'RmFpbGVkIHRvIGZpbmQgbGliIGRpcmVjdG9yeSAoWydsaWJfbGF0ZXN0JywgJ2xpYl8yLjcuMTUnXSkuCg=='
-        )
-
-        # [Create Testing] define object data
-        artifact_data = {
-            'case_id': case.model.id,
-            'case_xid': case.model.xid,
-            'source': 'artifact source',
-            'file_data': f'{file_data}',
-            'summary': 'pytest test file artifact',
-            'type': 'Certificate File',
-            'note_text': 'artifact note text',
-        }
-
-        # [Create Testing] create the object
-        artifact = self.v3.artifact()
-
-        # [Create Testing] using model setters
-        artifact.model.case_id = artifact_data.get('case_id')
-        artifact.model.case_xid = artifact_data.get('case_xid')
-        artifact.model.file_data = artifact_data.get('file_data')
-        artifact.model.source = artifact_data.get('source')
-        artifact.model.summary = artifact_data.get('summary')
-        artifact.model.type = artifact_data.get('type')
-
-        # [Create Testing] add the note data to the object
-        notes = {'data': [{'text': artifact_data.get('note_text')}]}
-        artifact.model.notes = notes
-
-        # [Create Testing] submit the object to the TC API
-        artifact.submit()
-
-        # [Retrieve Testing] define the object with id filter,
-        # using object id from the object created above
-        artifact = self.v3.artifact(id=artifact.model.id)
-
-        # [Retrieve Testing] get the object from the API
-        artifact.get(all_available_fields=True)
-
-        # [Retrieve Testing] run assertions on returned data
-        assert artifact.model.case_id == artifact_data.get('case_id')
-        assert artifact.model.case_xid == artifact_data.get('case_xid')
-        assert artifact.model.file_data == file_data
-        assert artifact.model.source == artifact_data.get('source')
-        assert artifact.model.summary == artifact_data.get('summary')
-        # TODO: Should this be None?
-        # assert artifact.model.task is None
-        assert artifact.model.task_id is None
-        assert artifact.model.task_xid is None
-        assert artifact.model.intel_type is None
-        assert artifact.model.type == artifact_data.get('type')
-        for note in artifact.model.notes.data:  # Double check
-            if note.text == artifact_data.get('note_text'):
-                break
-            assert False, 'Note not found'
-
-        # [Retrieve Testing] run assertions on returned data
-        assert artifact.model.analytics_priority_level is None
-        assert artifact.model.analytics_score is None
-        assert artifact.model.analytics_type is None
-        assert artifact.model.artifact_type.name == artifact_data.get('type')
-        assert artifact.model.parent_case.id == case.model.id
-
-        # [Retrieve Testing] run assertions on returned data
-        assert artifact.as_entity.get('value') == artifact_data.get('summary')
-
-    def test_artifact_update_properties(self):
+    def test_task_update_properties(self, request: FixtureRequest):
         """Test updating artifacts properties"""
         # [Pre-Requisite] - create case
         case = self.v3_helper.create_case()
 
-        # [Create Testing] define the object file data
-        file_data = (
-            'FmFpbGVkIHRvIGZpbmQgbGliIGRpcmVjdG9yeSAoWydsaWJfbGF0ZXN0JywgJ2xpYl8yLjcuMTUnXSkuCg=='
-        )
-
-        # [Create Testing] define object data
-        artifact_data = {
-            'case_id': case.model.id,
-            'file_data': f'{file_data}',
-            'summary': f'asn{randint(100, 999)}',
-            'type': 'Certificate File',
+        # [Pre-Requisite] define assignee data
+        assignee = {
+            "type": "User",
+            "data": {
+                "user_name": "bpurdy@threatconnect.com"
+            }
         }
 
-        # [Create Testing] create the object
-        artifact = self.v3.artifact(**artifact_data)
+        # [Pre-Requisite] - create a task which the main task is dependent on
+        task_data = {
+            'assignee': assignee,
+            'case_id': case.model.id,
+            'description': f'a description from pytest test',
+            'name': f'name-depended_task',
+        }
+        task = self.v3.task(**task_data)
+        task.submit()
 
-        # [Create Testing] submit the object to the TC API
-        artifact.submit()
-
-        # [Create Testing] define the object file data
-        file_data = (
-            'GmFpbGVkIHRvIGZpbmQgbGliIGRpcmVjdG9yeSAoWydsaWJfbGF0ZXN0JywgJ2xpYl8yLjcuMTUnXSkuCg=='
-        )
-
-        # [Create Testing] define object data
-        artifact_data = {
-            'source': 'artifact source',
-            'file_data': f'{file_data}',
-            'summary': f'asn{randint(100, 999)}',
+        # This was tested locally since no Groups are on the system by default
+        assignee = {
+            'type': 'Group',
+            'data': {
+                'name': 'temp_user_group'
+            }
         }
 
         # [Update Testing] update object properties
-        artifact.model.source = artifact_data.get('source')
-        artifact.model.summary = artifact_data.get('summary')
-        artifact.model.file_data = artifact_data.get('file_data')
+        task_data = {
+            # 'assignee': assignee,
+            'description': f'a description from {request.node.name}',
+            'name': f'name-{request.node.name}',
+        }
+
+        # task.model.assignee = assignee
+        task.model.description = task_data.get('description')
+        task.model.name = task_data.get('name')
 
         # [Update Testing] submit the object to the TC API
-        artifact.submit()
+        task.submit()
 
         # [Retrieve Testing] get the object from the API
-        artifact.get(all_available_fields=True)
+        task.get(all_available_fields=True)
 
         # [Retrieve Testing] run assertions on returned data
-        assert artifact.model.source == artifact_data.get('source')
-        assert artifact.model.summary == artifact_data.get('summary')
-        assert artifact.model.file_data == artifact_data.get('file_data')
+        # assert task.model.assignee.type == assignee.get('type')
+        # assert task.model.assignee.data.name == assignee.get('data').get('name')
+        assert task.model.description == task_data.get('description')
+        assert task.model.name == task_data.get('name')
 

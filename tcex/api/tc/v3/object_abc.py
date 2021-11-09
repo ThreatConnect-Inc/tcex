@@ -1,5 +1,6 @@
 """Case Management Abstract Base Class"""
 # standard library
+import json
 import logging
 
 # import inspect
@@ -83,7 +84,8 @@ class ObjectABC(ABC):
         """Return the generated POST body."""
         schema = self.model.schema(ref_template='{model}')
         properties = self._schema_properties(schema, schema.get('$ref'))
-        raw_body = self.model.dict(by_alias=True, exclude_none=True)
+        raw_body = json.loads(self.model.json(by_alias=True, exclude_none=True))
+        # raw_body = self.model.dict(by_alias=True, exclude_none=True)
         return self._generate_body_filtered(schema, method, properties, raw_body)
 
     def _generate_body_filtered(
@@ -152,7 +154,6 @@ class ObjectABC(ABC):
         if isinstance(body, list):
             return [self._generate_body_filtered(schema, method, properties, i) for i in body]
 
-        # print('body', body)
         return body
 
     def _iterate_over_sublist(self, sublist_type: object) -> 'V3Type':
@@ -265,6 +266,9 @@ class ObjectABC(ABC):
             params.setdefault('fields', []).append('genericCustomIndicatorValues')
 
         # add fields parameter if provided
+        if '_all' in params.get('fields', []):
+            params['fields'] = list(self.available_fields)
+
         if all_available_fields is True:
             params['fields'] = list(self.available_fields)
 

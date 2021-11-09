@@ -1,6 +1,7 @@
 """Adversary_Asset / Adversary_Assets Model"""
 # pylint: disable=no-member,no-self-argument,no-self-use,wrong-import-position
 # standard library
+from datetime import datetime
 from typing import List, Optional
 
 # third-party
@@ -8,6 +9,9 @@ from pydantic import BaseModel, Extra, Field, validator
 
 # first-party
 from tcex.utils import Utils
+
+# json-encoder
+json_encoders = {datetime: lambda v: v.isoformat()}
 
 
 class AdversaryAssetsModel(
@@ -48,6 +52,7 @@ class AdversaryAssetModel(
     extra=Extra.allow,
     title='AdversaryAsset Model',
     validate_assignment=True,
+    json_encoders=json_encoders,
 ):
     """Adversary_Asset Model"""
 

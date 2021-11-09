@@ -10,6 +10,9 @@ from pydantic import BaseModel, Extra, Field, validator
 # first-party
 from tcex.utils import Utils
 
+# json-encoder
+json_encoders = {datetime: lambda v: v.isoformat()}
+
 
 class IndicatorsModel(
     BaseModel,
@@ -49,6 +52,7 @@ class IndicatorModel(
     extra=Extra.allow,
     title='Indicator Model',
     validate_assignment=True,
+    json_encoders=json_encoders,
 ):
     """Indicator Model"""
 
