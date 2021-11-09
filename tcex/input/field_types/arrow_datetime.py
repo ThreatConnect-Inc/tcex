@@ -1,7 +1,9 @@
 """Arrow Datetime Field"""
-import arrow
-
+# standard library
 from typing import Any, Callable
+
+# third-party
+import arrow
 
 
 class ArrowDateTime(arrow.Arrow):
@@ -43,7 +45,6 @@ class ArrowDateTime(arrow.Arrow):
         now = arrow.utcnow()
         return now.dehumanize(value)
 
-
     @classmethod
     def _parse_non_default_arrow_formats(cls, value: Any) -> 'arrow.Arrow':
         """Attempt to parse value using non-default Arrow formats
@@ -66,7 +67,7 @@ class ArrowDateTime(arrow.Arrow):
                 arrow.FORMAT_RFC3339,
                 arrow.FORMAT_RSS,
                 arrow.FORMAT_W3C,
-            ]
+            ],
         )
 
     @classmethod
@@ -77,7 +78,12 @@ class ArrowDateTime(arrow.Arrow):
         """
         # note: order matters. Must try to parse as milliseconds/nanoseconds first (x)
         # before trying to parse as seconds (X), else error occurs if passing a ms/ns value
-        return arrow.get(value, ['x', 'X'])
+        try:
+            # attempt to parse as string first using nanosecond/millisecond and second specifiers
+            return arrow.get(value, ['x', 'X'])
+        except (arrow.parser.ParserError, ValueError):
+            # could not parse as string, try to parse as float
+            return arrow.get(float(value))
 
     @classmethod
     def _validate(cls, value: Any) -> 'arrow.Arrow':
