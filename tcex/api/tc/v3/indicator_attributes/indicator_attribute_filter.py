@@ -55,14 +55,14 @@ class IndicatorAttributeFilter(FilterABC):
         self._tql.add_filter('hasIndicator', TqlOperator.EQ, indicators, TqlType.SUB_QUERY)
         return indicators
 
-    def hassecuritylabel(self, operator: Enum, hassecuritylabel: int) -> None:
-        """Filter Associated Security Label based on **hassecuritylabel** keyword.
+    def has_security_label(self, operator: Enum, has_security_label: int) -> None:
+        """Filter Associated Security Label based on **hasSecurityLabel** keyword.
 
         Args:
             operator: The operator enum for the filter.
-            hassecuritylabel: A nested query for association to other security labels.
+            has_security_label: A nested query for association to other security labels.
         """
-        self._tql.add_filter('hassecuritylabel', operator, hassecuritylabel, TqlType.INTEGER)
+        self._tql.add_filter('hasSecurityLabel', operator, has_security_label, TqlType.INTEGER)
 
     def id(self, operator: Enum, id: int) -> None:  # pylint: disable=redefined-builtin
         """Filter ID based on **id** keyword.

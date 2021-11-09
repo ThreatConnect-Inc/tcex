@@ -174,68 +174,41 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('falsePositiveCount', operator, false_positive_count, TqlType.INTEGER)
 
-    def filename(self, operator: Enum, filename: str) -> None:
-        """Filter Name (File) based on **filename** keyword.
+    def file_name(self, operator: Enum, file_name: str) -> None:
+        """Filter Name (File) based on **fileName** keyword.
 
         Args:
             operator: The operator enum for the filter.
-            filename: The name of a file.
+            file_name: The name of a file.
         """
-        self._tql.add_filter('filename', operator, filename, TqlType.STRING)
+        self._tql.add_filter('fileName', operator, file_name, TqlType.STRING)
 
-    def fileoccurrence_date(self, operator: Enum, fileoccurrence_date: str) -> None:
-        """Filter Occurrence Date (File) based on **fileoccurrenceDate** keyword.
+    def file_occurrence_date(self, operator: Enum, file_occurrence_date: str) -> None:
+        """Filter Occurrence Date (File) based on **fileOccurrenceDate** keyword.
 
         Args:
             operator: The operator enum for the filter.
-            fileoccurrence_date: The occurrence date of a file.
+            file_occurrence_date: The occurrence date of a file.
         """
-        self._tql.add_filter('fileoccurrenceDate', operator, fileoccurrence_date, TqlType.STRING)
+        self._tql.add_filter('fileOccurrenceDate', operator, file_occurrence_date, TqlType.STRING)
 
-    def filepath(self, operator: Enum, filepath: str) -> None:
-        """Filter Path (File) based on **filepath** keyword.
+    def file_path(self, operator: Enum, file_path: str) -> None:
+        """Filter Path (File) based on **filePath** keyword.
 
         Args:
             operator: The operator enum for the filter.
-            filepath: The path of a file.
+            file_path: The path of a file.
         """
-        self._tql.add_filter('filepath', operator, filepath, TqlType.STRING)
+        self._tql.add_filter('filePath', operator, file_path, TqlType.STRING)
 
-    def filesize(self, operator: Enum, filesize: int) -> None:
-        """Filter Size (File) based on **filesize** keyword.
+    def file_size(self, operator: Enum, file_size: int) -> None:
+        """Filter Size (File) based on **fileSize** keyword.
 
         Args:
             operator: The operator enum for the filter.
-            filesize: The size of a file.
+            file_size: The size of a file.
         """
-        self._tql.add_filter('filesize', operator, filesize, TqlType.INTEGER)
-
-    def flag1(self, operator: Enum, flag1: bool) -> None:
-        """Filter flag1 based on **flag1** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            flag1: No description provided.
-        """
-        self._tql.add_filter('flag1', operator, flag1, TqlType.BOOLEAN)
-
-    def flag2(self, operator: Enum, flag2: bool) -> None:
-        """Filter flag2 based on **flag2** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            flag2: No description provided.
-        """
-        self._tql.add_filter('flag2', operator, flag2, TqlType.BOOLEAN)
-
-    def flag3(self, operator: Enum, flag3: bool) -> None:
-        """Filter flag3 based on **flag3** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            flag3: No description provided.
-        """
-        self._tql.add_filter('flag3', operator, flag3, TqlType.BOOLEAN)
+        self._tql.add_filter('fileSize', operator, file_size, TqlType.INTEGER)
 
     @property
     def has_artifact(self):
@@ -246,6 +219,15 @@ class IndicatorFilter(FilterABC):
         artifacts = ArtifactFilter(Tql())
         self._tql.add_filter('hasArtifact', TqlOperator.EQ, artifacts, TqlType.SUB_QUERY)
         return artifacts
+
+    def has_attribute(self, operator: Enum, has_attribute: int) -> None:
+        """Filter Associated Attribute based on **hasAttribute** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            has_attribute: A nested query for association to attributes.
+        """
+        self._tql.add_filter('hasAttribute', operator, has_attribute, TqlType.INTEGER)
 
     @property
     def has_case(self):
@@ -274,6 +256,15 @@ class IndicatorFilter(FilterABC):
         self._tql.add_filter('hasIndicator', TqlOperator.EQ, indicators, TqlType.SUB_QUERY)
         return indicators
 
+    def has_security_label(self, operator: Enum, has_security_label: int) -> None:
+        """Filter Associated Security Label based on **hasSecurityLabel** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            has_security_label: A nested query for association to other security labels.
+        """
+        self._tql.add_filter('hasSecurityLabel', operator, has_security_label, TqlType.INTEGER)
+
     @property
     def has_tag(self):
         """Return **TagFilter** for further filtering."""
@@ -293,32 +284,14 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('hasVictim', operator, has_victim, TqlType.INTEGER)
 
-    def has_victimasset(self, operator: Enum, has_victimasset: int) -> None:
-        """Filter Associated Victim Asset based on **hasVictimasset** keyword.
+    def has_victim_asset(self, operator: Enum, has_victim_asset: int) -> None:
+        """Filter Associated Victim Asset based on **hasVictimAsset** keyword.
 
         Args:
             operator: The operator enum for the filter.
-            has_victimasset: A nested query for association to other victim assets.
+            has_victim_asset: A nested query for association to other victim assets.
         """
-        self._tql.add_filter('hasVictimasset', operator, has_victimasset, TqlType.INTEGER)
-
-    def hasattribute(self, operator: Enum, hasattribute: int) -> None:
-        """Filter Associated Attribute based on **hasattribute** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            hasattribute: A nested query for association to attributes.
-        """
-        self._tql.add_filter('hasattribute', operator, hasattribute, TqlType.INTEGER)
-
-    def hassecuritylabel(self, operator: Enum, hassecuritylabel: int) -> None:
-        """Filter Associated Security Label based on **hassecuritylabel** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            hassecuritylabel: A nested query for association to other security labels.
-        """
-        self._tql.add_filter('hassecuritylabel', operator, hassecuritylabel, TqlType.INTEGER)
+        self._tql.add_filter('hasVictimAsset', operator, has_victim_asset, TqlType.INTEGER)
 
     def host_dns_active(self, operator: Enum, host_dns_active: bool) -> None:
         """Filter DNS Active (Host) based on **hostDnsActive** keyword.
@@ -355,33 +328,6 @@ class IndicatorFilter(FilterABC):
             indicator_active: The status (active/inactive) of the indicator.
         """
         self._tql.add_filter('indicatorActive', operator, indicator_active, TqlType.BOOLEAN)
-
-    def int_value1(self, operator: Enum, int_value1: int) -> None:
-        """Filter intValue1 based on **intValue1** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            int_value1: No description provided.
-        """
-        self._tql.add_filter('intValue1', operator, int_value1, TqlType.INTEGER)
-
-    def int_value2(self, operator: Enum, int_value2: int) -> None:
-        """Filter intValue2 based on **intValue2** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            int_value2: No description provided.
-        """
-        self._tql.add_filter('intValue2', operator, int_value2, TqlType.INTEGER)
-
-    def int_value3(self, operator: Enum, int_value3: int) -> None:
-        """Filter intValue3 based on **intValue3** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            int_value3: No description provided.
-        """
-        self._tql.add_filter('intValue3', operator, int_value3, TqlType.INTEGER)
 
     def last_false_positive(self, operator: Enum, last_false_positive: str) -> None:
         """Filter False Positive Last Observed based on **lastFalsePositive** keyword.

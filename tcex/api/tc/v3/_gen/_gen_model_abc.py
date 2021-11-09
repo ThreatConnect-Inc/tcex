@@ -325,6 +325,17 @@ class GenerateModelABC(GenerateABC, ABC):
                 'type': f'Optional[\'{type_}Model\']',
                 'validator': self._gen_code_validator_method(type_, field),
             },
+            'VictimAttributes': {
+                'requirement': {
+                    'from': 'first-party-forward-reference',
+                    'import': (
+                        'from tcex.api.tc.v3.victim_attributes.victim_attribute_model '
+                        'import VictimAttributesModel'
+                    ),
+                },
+                'type': f'Optional[\'{type_}Model\']',
+                'validator': self._gen_code_validator_method(type_, field),
+            },
             'WorkflowEvent': {
                 'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',

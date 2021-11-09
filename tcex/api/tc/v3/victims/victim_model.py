@@ -89,7 +89,7 @@ class VictimModel(
         read_only=False,
         title='associatedGroups',
     )
-    attributes: Optional['AttributesModel'] = Field(
+    attributes: Optional['VictimAttributesModel'] = Field(
         None,
         description='A list of Attributes corresponding to the Victim.',
         methods=['POST', 'PUT'],
@@ -145,6 +145,13 @@ class VictimModel(
         read_only=False,
         title='org',
     )
+    owner_name: Optional[str] = Field(
+        None,
+        description='The name of the Organization, Community, or Source that the item belongs to.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='ownerName',
+    )
     security_labels: Optional['SecurityLabelsModel'] = Field(
         None,
         description=(
@@ -191,19 +198,6 @@ class VictimModel(
         read_only=False,
         title='workLocation',
     )
-    xid: Optional[str] = Field(
-        None,
-        description='The xid of the item.',
-        methods=['POST', 'PUT'],
-        read_only=False,
-        title='xid',
-    )
-
-    @validator('attributes', always=True)
-    def _validate_attributes(cls, v):
-        if not v:
-            return AttributesModel()
-        return v
 
     @validator('associated_groups', always=True)
     def _validate_associated_groups(cls, v):
@@ -229,13 +223,19 @@ class VictimModel(
             return VictimAssetsModel()
         return v
 
+    @validator('attributes', always=True)
+    def _validate_attributes(cls, v):
+        if not v:
+            return VictimAttributesModel()
+        return v
+
 
 # first-party
-from tcex.api.tc.v3.attributes.attribute_model import AttributesModel
 from tcex.api.tc.v3.groups.group_model import GroupsModel
 from tcex.api.tc.v3.security_labels.security_label_model import SecurityLabelsModel
 from tcex.api.tc.v3.tags.tag_model import TagsModel
 from tcex.api.tc.v3.victim_assets.victim_asset_model import VictimAssetsModel
+from tcex.api.tc.v3.victim_attributes.victim_attribute_model import VictimAttributesModel
 
 # add forward references
 VictimDataModel.update_forward_refs()
