@@ -22,7 +22,7 @@ class Tags:
 
     def many(self, filters=None, owners=None, params=None):
         """Get all the tags."""
-        for tag in self.tc_requests.tags(filters=filters, owners=owners, params=params):
+        for tag in self.tc_requests.all_tags(filters=filters, owners=owners, params=params):
             yield self.ti.tag(name=tag.get('name'))
 
     @property

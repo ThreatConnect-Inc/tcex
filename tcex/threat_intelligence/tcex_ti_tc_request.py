@@ -1698,7 +1698,34 @@ class TiTcRequest:
 
         return self.tag(main_type, sub_type, unique_id, tag, owner=owner, params=params)
 
-    def tags(self, owners=None, filters=None, params=None):
+    def tags(self, main_type, sub_type, unique_id, owner=None, filters=None, params=None):
+        """
+
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            owner:
+            filters:
+            params:
+
+        Return:
+
+        """
+        params = params or {}
+
+        if owner:
+            params['owner'] = owner
+        if filters and filters.filters:
+            params['filters'] = filters.filters_string
+        if not sub_type:
+            url = f'/v2/{main_type}/{unique_id}/tags'
+        else:
+            url = f'/v2/{main_type}/{sub_type}/{unique_id}/tags'
+
+        yield from self._iterate(url, params, 'tag')
+
+    def all_tags(self, owners=None, filters=None, params=None):
         """
 
         Args:
