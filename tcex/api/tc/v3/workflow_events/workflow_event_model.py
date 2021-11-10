@@ -8,6 +8,7 @@ from typing import List, Optional
 from pydantic import BaseModel, Extra, Field, validator
 
 # first-party
+from datetime import datetime
 from tcex.utils import Utils
 
 # json-encoder
@@ -114,7 +115,7 @@ class WorkflowEventModel(
     deleted_reason: Optional[str] = Field(
         None,
         description='The reason for deleting the event (required input for DELETE operation only).',
-        methods=['POST', 'PUT'],
+        methods=['DELETE'],
         max_length=255,
         min_length=1,
         read_only=False,

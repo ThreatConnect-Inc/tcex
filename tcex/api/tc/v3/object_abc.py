@@ -178,10 +178,11 @@ class ObjectABC(ABC):
         if not self.model.id:  # pragma: no cover
             self.log.warning(f'A {self._type} object without an ID cannot be deleted.')
             return None
+        body = self._generate_body('DELETE') or None
 
         url = f'{self._api_endpoint}/{self.model.id}'
         try:
-            self.request = self._session.delete(url)
+            self.request = self._session.delete(url, json=body)
             self.log.debug(
                 f'Method: ({self.request.request.method.upper()}), '
                 f'Status Code: {self.request.status_code}, '

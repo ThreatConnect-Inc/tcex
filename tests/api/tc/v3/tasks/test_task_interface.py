@@ -174,10 +174,11 @@ class TestTasks(TestCaseManagement):
         task.submit()
 
         # task.model.status = 'Closed'
-        # TODO: [High] This is failing because the attributes inner object doesnt contain the
+        # TODO: [High] This is failing because the artifacts inner object doesnt contain the
         #  `type` field. This is because the API endpoint for the attributes says its not
         #  `updatable` so its being excluded from PUTS.
         # task.submit()
+
         # [Retrieve Testing] create the object with id filter,
         # using object id from the object created above
         task = self.v3.task(id=task.model.id)

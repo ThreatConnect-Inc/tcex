@@ -641,6 +641,11 @@ class GenerateModelABC(GenerateABC, ABC):
                 field_methods.append('POST')
                 if field_updatable not in [False]:
                     field_methods.append('PUT')
+            if (
+                    self.type_.lower() == 'workflow_events' and
+                    field_name.snake_case() == 'deleted_reason'
+            ):
+                field_methods = ['DELETE']
 
             # update model
             _model.append(f'''{self.i1}{field_name.snake_case()}: {field_hint_type} = Field(''')
