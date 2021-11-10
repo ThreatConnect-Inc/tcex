@@ -263,7 +263,11 @@ class Inputs:
                         v = self.tcex.resolve_variable(
                             match.group('provider'), match.group('lookup'), match.group('id')
                         )
-                        value = re.sub(variable, v, value)
+                        if match.group('id').lower() == 'file':
+                            # file data comes in as bytes and does not support "mixed" input
+                            value = v
+                        else:
+                            value = re.sub(variable, v, value)
 
                     setattr(self._default_args, name, value)
 

@@ -99,7 +99,7 @@ class Lib(Bin):
                 proxy_url = f'{self.args.proxy_host}:{self.args.proxy_port}'
 
             os.putenv('HTTP_PROXY', f'http://{proxy_url}')
-            os.putenv('HTTPS_PROXY', f'https://{proxy_url}')
+            os.putenv('HTTPS_PROXY', f'http://{proxy_url}')
 
             print(
                 f'Using Proxy Server: {c.Fore.CYAN}{self.args.proxy_host}:{self.args.proxy_port}.'
@@ -193,7 +193,7 @@ class Lib(Bin):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
             )
-            out, err = p.communicate()  # pylint: disable=unused-variable
+            _, err = p.communicate(timeout=60)  # pylint: disable=unused-variable
 
             if p.returncode != 0:
                 print(f'{c.Style.BRIGHT}{c.Fore.RED}FAIL')

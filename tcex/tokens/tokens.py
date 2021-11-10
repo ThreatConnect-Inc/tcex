@@ -56,7 +56,7 @@ class Tokens:
         # token map for storing keys -> tokens -> threads
         self.token_map = {}
         # amount of seconds to pad before token renewal
-        self.token_window = 60
+        self.token_window = 600
         self.utils = Utils
 
         # start token renewal process
