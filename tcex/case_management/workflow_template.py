@@ -68,6 +68,7 @@ class WorkflowTemplate(CommonCaseManagement):
         active (bool, kwargs): [Read-Only] The **Active** flag for the Workflow Template.
         assignee (Assignee, kwargs): [Read-Only] The **Assignee** for the Workflow Template.
         cases (Case, kwargs): [Read-Only] The **Cases** for the Workflow Template.
+        config_attribute (str, kwargs): The **Config Attribute** for the Workflow Template.
         config_artifact (str, kwargs): [Read-Only] The **Config Artifact** for the Workflow
             Template.
         config_playbook (str, kwargs): [Read-Only] The **Config Playbook** for the Workflow
@@ -86,6 +87,7 @@ class WorkflowTemplate(CommonCaseManagement):
         self._assignee = kwargs.get('assignee', None)
         self._cases = kwargs.get('cases', None)
         self._config_artifact = kwargs.get('config_artifact', None)
+        self._config_attribute = kwargs.get('config_attribute', None)
         self._config_playbook = kwargs.get('config_playbook', None)
         self._config_task = kwargs.get('config_task', None)
         self._description = kwargs.get('description', None)
@@ -116,6 +118,11 @@ class WorkflowTemplate(CommonCaseManagement):
     def config_artifact(self):
         """Return the parent **Config Artifact** for the Workflow Template."""
         return self._config_artifact
+
+    @property
+    def config_attribute(self):
+        """Return the parent **Config Attribute** for the Workflow Template."""
+        return self._config_attribute
 
     @property
     def config_playbook(self):

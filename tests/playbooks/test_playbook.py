@@ -488,7 +488,8 @@ class TestUtils:
             pass
 
     @pytest.mark.parametrize(
-        'variable,value', [('#App:0001:s1!String', '1')],
+        'variable,value',
+        [('#App:0001:s1!String', '1')],
     )
     def test_playbook_read_array(self, variable, value, playbook_app):
         """Test the create output method of Playbook module.
@@ -514,7 +515,8 @@ class TestUtils:
         assert tcex.playbook.read(variable) is None
 
     @pytest.mark.parametrize(
-        'variable,value', [('#App:0001:s1!String', '1')],
+        'variable,value',
+        [('#App:0001:s1!String', '1')],
     )
     def test_playbook_read(self, variable, value, playbook_app):
         """Test the create output method of Playbook module.
@@ -559,7 +561,7 @@ class TestUtils:
         Args:
             tcex (TcEx, fixture): The tcex fixture.
         """
-        assert len(tcex.playbook._variable_types) == 10
+        assert len(tcex.playbook._variable_types) == 11
 
     @pytest.mark.parametrize(
         'variable,value',
@@ -719,7 +721,13 @@ class TestUtils:
         assert result == expected, f'result {result} do not match expected {expected}'
 
     @pytest.mark.parametrize(
-        'variable,value', [('#App:0001:sa1!StringArray', ['1.1.1.1', '2.2.2.2'],)],
+        'variable,value',
+        [
+            (
+                '#App:0001:sa1!StringArray',
+                ['1.1.1.1', '2.2.2.2'],
+            )
+        ],
     )
     def test_playbook_read_indicator_value_string_array(self, variable, value, playbook_app):
         """Test the indicator_value method using StringArray.

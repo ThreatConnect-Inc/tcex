@@ -39,6 +39,7 @@ class TestArtifact(TestCaseManagement):
         doc_string, filter_map, filter_class = super().obj_code_gen()
         assert doc_string
         assert filter_map
+        print(filter_map)
         assert filter_class
 
     def test_artifact_filter_keywords(self):

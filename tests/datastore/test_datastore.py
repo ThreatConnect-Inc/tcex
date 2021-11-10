@@ -95,7 +95,7 @@ class TestDataStore:
         ds = tcex.datastore('local', key)
 
         results = ds.add(rid=rid, data=data)
-        assert results.get('_type') == key
+        assert results.get('_id') == rid
         assert results.get('_shards').get('successful') == 1
 
     def test_data_store_local_add(self, tcex):
@@ -110,23 +110,23 @@ class TestDataStore:
         ds = tcex.datastore('local', self.data_type)
 
         results = ds.add(rid=rid, data=data)
-        assert results.get('_type') == self.data_type
+        assert results.get('_id') == rid
         assert results.get('_shards').get('successful') == 1
 
-    def test_data_store_local_add_no_rid(self, tcex):
-        """Test local datastore add with no rid
+    # This seems to unsupported in latest datastore on 6.3.1
+    # def test_data_store_local_add_no_rid(self, tcex):
+    #     """Test local datastore add with no rid
 
-        Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx.
-        """
-        data = {'one': 1}
-        rid = None
+    #     Args:
+    #         tcex (TcEx, fixture): An instantiated instance of TcEx.
+    #     """
+    #     data = {'one': 1}
+    #     rid = None
 
-        ds = tcex.datastore('local', self.data_type)
+    #     ds = tcex.datastore('local', self.data_type)
 
-        results = ds.add(rid=rid, data=data)
-        assert results.get('_type') == self.data_type
-        assert results.get('_shards').get('successful') == 1
+    #     results = ds.add(rid=rid, data=data)
+    #     assert results.get('_shards').get('successful') == 1
 
     def test_data_store_local_add_fail(self, tcex, monkeypatch):
         """Test failure of data store add
@@ -167,7 +167,7 @@ class TestDataStore:
 
         # delete
         results = ds.delete(rid=rid)
-        assert results.get('_type') == self.data_type
+        assert results.get('_id') == rid
         assert results.get('_shards').get('successful') == 1
         assert results.get('result') == 'deleted'
 
@@ -210,7 +210,7 @@ class TestDataStore:
         ds.add(rid, data)
 
         results = ds.get(rid=rid)
-        assert results.get('_type') == self.data_type
+        assert results.get('_id') == rid
         assert results.get('_source').get('two') == 2
         assert results.get('found') is True
 
@@ -262,7 +262,7 @@ class TestDataStore:
         ds = tcex.datastore('organization', self.data_type)
 
         results = ds.add(rid=rid, data=data)
-        assert results.get('_type') == self.data_type
+        assert results.get('_id') == rid
         assert results.get('_shards').get('successful') == 1
 
     def test_data_store_organization_delete(self, tcex):
@@ -280,7 +280,7 @@ class TestDataStore:
 
         # delete
         results = ds.delete(rid=rid)
-        assert results.get('_type') == self.data_type
+        assert results.get('_id') == rid
         assert results.get('_shards').get('successful') == 1
         assert results.get('result') == 'deleted'
 
@@ -299,7 +299,7 @@ class TestDataStore:
         ds.add(rid, data)
 
         results = ds.get(rid=rid)
-        assert results.get('_type') == self.data_type
+        assert results.get('_id') == rid
         assert results.get('_source').get('two') == 2
         assert results.get('found') is True
 
@@ -321,7 +321,7 @@ class TestDataStore:
         ds.add(rid, {'one': 2})
 
         results = ds.put(rid=rid, data=data)
-        assert results.get('_type') == self.data_type
+        assert results.get('_id') == rid
         assert results.get('_shards').get('successful') == 1
 
     def test_data_store_local_put_fail(self, monkeypatch, tcex):

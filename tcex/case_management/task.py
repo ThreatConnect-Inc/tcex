@@ -477,6 +477,15 @@ class FilterTasks(Filter):
         """
         self._tql.add_filter('caseId', operator, case_id, TQL.Type.INTEGER)
 
+    def case_id_as_string(self, operator, case_id_as_string):
+        """Filter Tasks based on **caseIdAsString** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            case_id_as_string (str): The ID of the case as a String.
+        """
+        self._tql.add_filter('caseIdAsString', operator, case_id_as_string, TQL.Type.STRING)
+
     def case_severity(self, operator, case_severity):
         """Filter Tasks based on **caseSeverity** keyword.
 
@@ -522,9 +531,8 @@ class FilterTasks(Filter):
         """
         self._tql.add_filter('dueDate', operator, due_date, TQL.Type.STRING)
 
-    # there is not way to add an **actual** artifact to a task through the API.
     @property
-    def has_artifact(self):  # pragma: no cover
+    def has_artifact(self):
         """Return **FilterArtifacts** for further filtering."""
         from .artifact import FilterArtifacts
 
@@ -535,7 +543,7 @@ class FilterTasks(Filter):
     @property
     def has_case(self):
         """Return **FilterCases** for further filtering."""
-        from .case import FilterCases
+        from .case import FilterCases  # pylint: disable=cyclic-import
 
         cases = FilterCases(ApiEndpoints.CASES, self._tcex, TQL())
         self._tql.add_filter('hasCase', TQL.Operator.EQ, cases, TQL.Type.SUB_QUERY)

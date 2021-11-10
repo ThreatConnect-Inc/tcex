@@ -10,6 +10,7 @@ Release Notes
 + APP-3147 - [CM] - Updated artifact_filter property to excluded when using the to_dict method.
 + APP-3184 - [Session] Updated user agent on TC and external sessions to be include TcEx version and App name/version.
 + APP-3185 - [CLI] Added timeout to tclib when running the pip install command (App Builder).
++ APP-3187 - [CM] Updated CM module for new fields and filters.
 
 2.0.25
 ======

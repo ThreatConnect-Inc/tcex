@@ -41,6 +41,7 @@ class TestCase(TestCaseManagement):
         assert doc_string
         assert filter_map
         assert filter_class
+        print(filter_class)
 
     def test_case_filter_keywords(self):
         """Test filter keywords."""
@@ -663,6 +664,11 @@ class TestCase(TestCaseManagement):
         status = 'Closed'
         # create case
         case = self.cm_helper.create_case(status=status)
+
+        # status can't be set to closed on creation, so updating status
+        case = self.cm.case(id=case.id)
+        case.status = 'Closed'
+        case.submit()
 
         # retrieve note using TQL
         cases = self.cm.cases()

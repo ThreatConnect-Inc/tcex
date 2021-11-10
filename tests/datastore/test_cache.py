@@ -29,7 +29,7 @@ class TestCache:
 
         cache = tcex.cache('local', self.data_type, expire)
         results = cache.add(rid=rid, data=data)
-        assert results.get('_type') == self.data_type
+        assert results.get('_id') == rid
         assert results.get('_shards').get('successful') == 1
 
     def test_cache_delete(self, tcex):
@@ -48,7 +48,7 @@ class TestCache:
 
         # delete cache entry
         results = cache.delete(rid=rid)
-        assert results.get('_type') == self.data_type
+        assert results.get('_id') == rid
         assert results.get('_shards').get('successful') == 1
         assert results.get('result') == 'deleted'
 

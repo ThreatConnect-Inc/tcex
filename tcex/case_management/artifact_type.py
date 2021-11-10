@@ -76,6 +76,7 @@ class ArtifactType(CommonCaseManagement):
         super().__init__(tcex, ApiEndpoints.ARTIFACT_TYPES, kwargs)
         self._data_type = kwargs.get('data_type', None)
         self._description = kwargs.get('description', None)
+        self._derived_link = kwargs.get('derived_link', None)
         self._intel_type = kwargs.get('intel_type', None)
         self._name = kwargs.get('name', None)
 
@@ -97,6 +98,16 @@ class ArtifactType(CommonCaseManagement):
     def data_type(self):
         """Return the **Date Type** for the Artifact."""
         return self._data_type
+
+    @property
+    def derived_link(self):
+        """Return the **Derived Link** for the Artifact."""
+        return self._derived_link
+
+    @derived_link.setter
+    def derived_link(self, derived_link):
+        """Set the **Derived Link** for the Artifact."""
+        self._derived_link = derived_link
 
     @property
     def description(self):

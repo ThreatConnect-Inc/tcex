@@ -72,10 +72,14 @@ class Case(CommonCaseManagement):
         assignee (Assignee, kwargs): the user or group Assignee object for the Case
         case_close_time (str, kwargs): [Read-Only] The date and time that the Case was closed.
         case_close_user (User, kwargs): [Read-Only] The user that closed the Case.
-        case_detection_time (str, kwargs): The date and time that ends the user initiated Case duration.
-        case_detection_user (User, kwargs): [Read-Only] The user that stopped the clock on Case duration.
-        case_occurrence_time (str, kwargs): The date and time that starts the user initiated Case duration.
-        case_occurrence_user (User, kwargs): [Read-Only] The user that started the clock on Case duration.
+        case_detection_time (str, kwargs): The date and time that ends the user initiated Case
+            duration.
+        case_detection_user (User, kwargs): [Read-Only] The user that stopped the clock on Case
+            duration.
+        case_occurrence_time (str, kwargs): The date and time that starts the user initiated Case
+            duration.
+        case_occurrence_user (User, kwargs): [Read-Only] The user that started the clock on Case
+            duration.
         case_open_time (str, kwargs): The date and time that the Case was first opened.
         case_open_user (User, kwargs): [Read-Only] The user that opened the Case.
         created_by (User, kwargs): [Read-Only] The **Created By** for the Case.
@@ -427,6 +431,87 @@ class Case(CommonCaseManagement):
 class FilterCases(Filter):
     """Filter Object for Cases"""
 
+    def attribute(self, operator, attribute):
+        """Filter Cases based on **attribute** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            attribute (str): None.
+        """
+        self._tql.add_filter('attribute', operator, attribute, TQL.Type.STRING)
+
+    def case_close_time(self, operator, case_close_time):
+        """Filter Cases based on **caseCloseTime** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            case_close_time (str): The date/time the case was closed.
+        """
+        self._tql.add_filter('caseCloseTime', operator, case_close_time, TQL.Type.STRING)
+
+    def case_close_user(self, operator, case_close_user):
+        """Filter Cases based on **caseCloseUser** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            case_close_user (str): The user who closed the case.
+        """
+        self._tql.add_filter('caseCloseUser', operator, case_close_user, TQL.Type.STRING)
+
+    def case_detection_time(self, operator, case_detection_time):
+        """Filter Cases based on **caseDetectionTime** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            case_detection_time (str): The date/time the case was detected.
+        """
+        self._tql.add_filter('caseDetectionTime', operator, case_detection_time, TQL.Type.STRING)
+
+    def case_detection_user(self, operator, case_detection_user):
+        """Filter Cases based on **caseDetectionUser** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            case_detection_user (str): The user who logged the case detection time.
+        """
+        self._tql.add_filter('caseDetectionUser', operator, case_detection_user, TQL.Type.STRING)
+
+    def case_occurrence_time(self, operator, case_occurrence_time):
+        """Filter Cases based on **caseOccurrenceTime** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            case_occurrence_time (str): The date/time the case occured.
+        """
+        self._tql.add_filter('caseOccurrenceTime', operator, case_occurrence_time, TQL.Type.STRING)
+
+    def case_occurrence_user(self, operator, case_occurrence_user):
+        """Filter Cases based on **caseOccurrenceUser** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            case_occurrence_user (str): The user who logged the case occurrence time.
+        """
+        self._tql.add_filter('caseOccurrenceUser', operator, case_occurrence_user, TQL.Type.STRING)
+
+    def case_open_time(self, operator, case_open_time):
+        """Filter Cases based on **caseOpenTime** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            case_open_time (str): The date/time the case was opened.
+        """
+        self._tql.add_filter('caseOpenTime', operator, case_open_time, TQL.Type.STRING)
+
+    def case_open_user(self, operator, case_open_user):
+        """Filter Cases based on **caseOpenUser** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            case_open_user (str): The user who opened the case.
+        """
+        self._tql.add_filter('caseOpenUser', operator, case_open_user, TQL.Type.STRING)
+
     def created_by(self, operator, created_by):
         """Filter Cases based on **createdBy** keyword.
 
@@ -466,16 +551,34 @@ class FilterCases(Filter):
     @property
     def has_artifact(self):
         """Return **FilterArtifacts** for further filtering."""
-        from .artifact import FilterArtifacts  # pylint: disable=cyclic-import
+        from .artifact import FilterArtifacts
 
         artifacts = FilterArtifacts(ApiEndpoints.ARTIFACTS, self._tcex, TQL())
         self._tql.add_filter('hasArtifact', TQL.Operator.EQ, artifacts, TQL.Type.SUB_QUERY)
         return artifacts
 
+    def has_group(self, operator, has_group):
+        """Filter Cases based on **hasGroup** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            has_group (int): A nested query for association to other buckets.
+        """
+        self._tql.add_filter('hasGroup', operator, has_group, TQL.Type.INTEGER)
+
+    def has_indicator(self, operator, has_indicator):
+        """Filter Cases based on **hasIndicator** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            has_indicator (int): A nested query for association to other indicators.
+        """
+        self._tql.add_filter('hasIndicator', operator, has_indicator, TQL.Type.INTEGER)
+
     @property
     def has_note(self):
         """Return **FilterNotes** for further filtering."""
-        from .note import FilterNotes  # pylint: disable=cyclic-import
+        from .note import FilterNotes
 
         notes = FilterNotes(ApiEndpoints.NOTES, self._tcex, TQL())
         self._tql.add_filter('hasNote', TQL.Operator.EQ, notes, TQL.Type.SUB_QUERY)
@@ -484,7 +587,7 @@ class FilterCases(Filter):
     @property
     def has_tag(self):
         """Return **FilterTags** for further filtering."""
-        from .tag import FilterTags  # pylint: disable=cyclic-import
+        from .tag import FilterTags
 
         tags = FilterTags(ApiEndpoints.TAGS, self._tcex, TQL())
         self._tql.add_filter('hasTag', TQL.Operator.EQ, tags, TQL.Type.SUB_QUERY)
@@ -493,7 +596,7 @@ class FilterCases(Filter):
     @property
     def has_task(self):
         """Return **FilterTask** for further filtering."""
-        from .task import FilterTasks  # pylint: disable=cyclic-import
+        from .task import FilterTasks
 
         tasks = FilterTasks(ApiEndpoints.TASKS, self._tcex, TQL())
         self._tql.add_filter('hasTask', TQL.Operator.EQ, tasks, TQL.Type.SUB_QUERY)
@@ -507,6 +610,15 @@ class FilterCases(Filter):
             id (int): The ID of the case.
         """
         self._tql.add_filter('id', operator, id, TQL.Type.INTEGER)
+
+    def id_as_string(self, operator, id_as_string):
+        """Filter Cases based on **idAsString** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            id_as_string (str): The ID of the case as a String.
+        """
+        self._tql.add_filter('idAsString', operator, id_as_string, TQL.Type.STRING)
 
     def name(self, operator, name):
         """Filter Cases based on **name** keyword.

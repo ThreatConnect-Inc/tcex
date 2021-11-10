@@ -143,6 +143,13 @@ class TestCaseManagement:
     def obj_api_options(self):
         """Test filter keywords."""
         for f in self.cm_helper.cm_obj.fields:
+            # fields that are returned in OPT /v3/<obj>/filters endpoint, but not OPT /v3/<obj>
+            if f.get('name') in [
+                # case ignore
+                'analytics',  # per MJ this is a special field that enables returning all analytics
+            ]:
+                continue
+
             if f.get('name') not in self.cm_helper.cm_obj.properties:
                 assert False, f"{f.get('name')} not in {self.cm_helper.cm_obj.properties.keys()}"
 

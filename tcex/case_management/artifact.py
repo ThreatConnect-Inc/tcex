@@ -123,8 +123,10 @@ class Artifact(CommonCaseManagement):
         self._case_id = kwargs.get('case_id', None) or kwargs.get('parent_case', {}).get('id', None)
         self._case_xid = kwargs.get('case_xid', None)
         self._date_added = kwargs.get('date_added', None)
+        self._derived_link = kwargs.get('derived_link', None)
         self._field_name = kwargs.get('field_name', None)
         self._file_data = kwargs.get('file_data', None)
+        self._hash_code = kwargs.get('hash_code', None)
         self._intel_type = kwargs.get('intel_type', None)
         self._links = kwargs.get('links', None)
         self._notes = kwargs.get('notes', None)
@@ -202,6 +204,16 @@ class Artifact(CommonCaseManagement):
         """Return the **Date Added** for the Artifact."""
         return self._date_added
 
+    @property
+    def derived_link(self):
+        """Return the **Derived Link** for the Artifact."""
+        return self._derived_link
+
+    @derived_link.setter
+    def derived_link(self, derived_link):
+        """Set the **Derived Link** for the Artifact."""
+        self._derived_link = derived_link
+
     def entity_mapper(self, entity):
         """Update current object with provided object properties.
 
@@ -225,6 +237,16 @@ class Artifact(CommonCaseManagement):
     def file_data(self, file_data):
         """Set the **File Data** for the Artifact."""
         self._file_data = file_data
+
+    @property
+    def hash_code(self):
+        """Return the **Hash Code** for the Artifact."""
+        return self._hash_code
+
+    @hash_code.setter
+    def hash_code(self, hash_code):
+        """Set the **Hash Code** for the Artifact."""
+        self._hash_code = hash_code
 
     @property
     def intel_type(self):
@@ -324,6 +346,15 @@ class Artifact(CommonCaseManagement):
 class FilterArtifacts(Filter):
     """Filter Object for Artifacts"""
 
+    def analytics_score(self, operator, analytics_score):
+        """Filter Artifacts based on **analyticsScore** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            analytics_score (int): The intel score of the artifact.
+        """
+        self._tql.add_filter('analyticsScore', operator, analytics_score, TQL.Type.INTEGER)
+
     def case_id(self, operator, case_id):
         """Filter Artifacts based on **caseId** keyword.
 
@@ -333,19 +364,46 @@ class FilterArtifacts(Filter):
         """
         self._tql.add_filter('caseId', operator, case_id, TQL.Type.INTEGER)
 
+    def date_added(self, operator, date_added):
+        """Filter Artifacts based on **dateAdded** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            date_added (str): The date the artifact was added to the system.
+        """
+        self._tql.add_filter('dateAdded', operator, date_added, TQL.Type.STRING)
+
     @property
     def has_case(self):
         """Return **FilterCases** for further filtering."""
-        from .case import FilterCases
+        from .case import FilterCases  # pylint: disable=cyclic-import
 
         cases = FilterCases(ApiEndpoints.CASES, self._tcex, TQL())
         self._tql.add_filter('hasCase', TQL.Operator.EQ, cases, TQL.Type.SUB_QUERY)
         return cases
 
+    def has_group(self, operator, has_group):
+        """Filter Artifacts based on **hasGroup** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            has_group (int): A nested query for association to other buckets.
+        """
+        self._tql.add_filter('hasGroup', operator, has_group, TQL.Type.INTEGER)
+
+    def has_indicator(self, operator, has_indicator):
+        """Filter Artifacts based on **hasIndicator** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            has_indicator (int): A nested query for association to other indicators.
+        """
+        self._tql.add_filter('hasIndicator', operator, has_indicator, TQL.Type.INTEGER)
+
     @property
     def has_note(self):
         """Return **FilterNotes** for further filtering."""
-        from .note import FilterNotes  # pylint: disable=cyclic-import
+        from .note import FilterNotes
 
         notes = FilterNotes(ApiEndpoints.NOTES, self._tcex, TQL())
         self._tql.add_filter('hasNote', TQL.Operator.EQ, notes, TQL.Type.SUB_QUERY)
@@ -354,7 +412,7 @@ class FilterArtifacts(Filter):
     @property
     def has_task(self):
         """Return **FilterTask** for further filtering."""
-        from .task import FilterTasks  # pylint: disable=cyclic-import
+        from .task import FilterTasks
 
         tasks = FilterTasks(ApiEndpoints.TASKS, self._tcex, TQL())
         self._tql.add_filter('hasTask', TQL.Operator.EQ, tasks, TQL.Type.SUB_QUERY)
@@ -368,6 +426,15 @@ class FilterArtifacts(Filter):
             id (int): The ID of the artifact.
         """
         self._tql.add_filter('id', operator, id, TQL.Type.INTEGER)
+
+    def indicator_active(self, operator, indicator_active):
+        """Filter Artifacts based on **indicatorActive** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            indicator_active (bool): A flag indicating whether or not the artifact is active.
+        """
+        self._tql.add_filter('indicatorActive', operator, indicator_active, TQL.Type.BOOLEAN)
 
     def note_id(self, operator, note_id):
         """Filter Artifacts based on **noteId** keyword.
@@ -404,6 +471,15 @@ class FilterArtifacts(Filter):
             task_id (int): The ID of the task associated with this artifact.
         """
         self._tql.add_filter('taskId', operator, task_id, TQL.Type.INTEGER)
+
+    def type(self, operator, type):  # pylint: disable=redefined-builtin
+        """Filter Artifacts based on **type** keyword.
+
+        Args:
+            operator (enum): The operator enum for the filter.
+            type (str): The type name of the artifact.
+        """
+        self._tql.add_filter('type', operator, type, TQL.Type.STRING)
 
     def type_name(self, operator, type_name):
         """Filter Artifacts based on **typeName** keyword.

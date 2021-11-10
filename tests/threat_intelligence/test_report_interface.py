@@ -1,6 +1,7 @@
 """Test the TcEx Threat Intel Module."""
 # standard library
 import os
+import time
 from datetime import datetime, timedelta
 from random import randint
 
@@ -240,6 +241,8 @@ class TestReportGroups(TestThreatIntelligence):
         # update file content (coverage)
         r = helper_ti.file_content(self.file_content)
         assert r.status_code == 200
+
+        time.sleep(2)
 
         r = helper_ti.download()
         assert r.status_code == 200
