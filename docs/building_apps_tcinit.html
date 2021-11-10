@@ -7,12 +7,14 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Building Apps: Templates (tcinit) &mdash; TcEx 2.0.23 documentation</title>
+  <title>Building Apps: Templates (tcinit) &mdash; TcEx 2.0.26 documentation</title>
 
 
 
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
 
 
@@ -30,6 +32,7 @@
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -64,7 +67,7 @@
 
 
               <div class="version">
-                2.0.23
+                2.0.26
               </div>
 
 
@@ -89,7 +92,7 @@
 
 
 
-              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
@@ -304,35 +307,22 @@ Service App Templates:
 <p>This basic template provides the structure for a Job App without any logic.  This template is intended for advanced users that only require the App structure.</p>
 <div class="section" id="app-py">
 <h4>app.py<a class="headerlink" href="#app-py" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;ThreatConnect Job App&quot;&quot;&quot;</span>
-
-<span class="c1"># first-party</span>
-<span class="kn">from</span> <span class="nn">job_app</span> <span class="kn">import</span> <span class="n">JobApp</span>  <span class="c1"># Import default Job App Class (Required)</span>
-
-
-<span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">JobApp</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Job App&quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Run the App main logic.</span>
-
-<span class="sd">        This method should contain the core logic of the App.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="sd">&quot;&quot;&quot;ThreatConnect Job App&quot;&quot;&quot;</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="c1"># first-party</span>
+<span class="linenos"> 4</span><span class="kn">from</span> <span class="nn">job_app</span> <span class="kn">import</span> <span class="n">JobApp</span>  <span class="c1"># Import default Job App Class (Required)</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span><span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">JobApp</span><span class="p">):</span>
+<span class="linenos"> 8</span>    <span class="sd">&quot;&quot;&quot;Job App&quot;&quot;&quot;</span>
+<span class="linenos"> 9</span>
+<span class="linenos">10</span>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">11</span>        <span class="sd">&quot;&quot;&quot;Run the App main logic.</span>
+<span class="linenos">12</span>
+<span class="linenos">13</span><span class="sd">        This method should contain the core logic of the App.</span>
+<span class="linenos">14</span><span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 </div>
 <div class="section" id="job-batch-job-batch">
@@ -340,147 +330,78 @@ Service App Templates:
 <p>This template provides a working example of how to download remote-threat intel (md5 hash Indicators) and write the data in the ThreatConnect platform using the TcEx <a class="reference internal" href="module_batch.html#module-batch"><span class="std std-ref">Batch Module</span></a>.  The URL is defined in the <code class="docutils literal notranslate"><span class="pre">init()</span></code> method for convenience. In the <code class="docutils literal notranslate"><span class="pre">run()</span></code> method, the Batch module is instantiated. Next, the data is retrieved from the remote URL and written to the Batch module. Finally, the Batch Job is submitted to ThreatConnect for processing.</p>
 <div class="section" id="id1">
 <h4>app.py<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span>
-<span class="normal">57</span>
-<span class="normal">58</span>
-<span class="normal">59</span>
-<span class="normal">60</span>
-<span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span>
-<span class="normal">64</span>
-<span class="normal">65</span>
-<span class="normal">66</span>
-<span class="normal">67</span>
-<span class="normal">68</span>
-<span class="normal">69</span>
-<span class="normal">70</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;ThreatConnect Job App&quot;&quot;&quot;</span>
-<span class="c1"># standard library</span>
-<span class="kn">import</span> <span class="nn">csv</span>
-
-<span class="c1"># first-party</span>
-<span class="kn">from</span> <span class="nn">job_app</span> <span class="kn">import</span> <span class="n">JobApp</span>  <span class="c1"># Import default Job App Class (Required)</span>
-
-<span class="kn">from</span> <span class="nn">tcex.batch</span> <span class="kn">import</span> <span class="n">Batch</span>
-<span class="kn">from</span> <span class="nn">tcex.sessions</span> <span class="kn">import</span> <span class="n">ExternalSession</span>
-
-
-<span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">JobApp</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Job App&quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_tcex</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize class properties.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_tcex</span><span class="p">)</span>
-
-        <span class="c1"># properties</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">:</span> <span class="n">Batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_owner</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Perform prep/setup logic.&quot;&quot;&quot;</span>
-        <span class="c1"># using tcex session_external to get built-in features (e.g., proxy, logging, retries)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">:</span> <span class="n">ExternalSession</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session_external</span>
-
-        <span class="c1"># setting the base url allow for subsequent API call to be made by only</span>
-        <span class="c1"># providing the API endpoint/path.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">base_url</span> <span class="o">=</span> <span class="s1">&#39;https://feodotracker.abuse.ch&#39;</span>
-
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Run main App logic.&quot;&quot;&quot;</span>
-
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="k">as</span> <span class="n">s</span><span class="p">:</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;downloads/malware_hashes.csv&#39;</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
-                <span class="n">decoded_content</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
-
-                <span class="n">reader</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">decoded_content</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">quotechar</span><span class="o">=</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
-                    <span class="c1"># CSV headers</span>
-                    <span class="c1"># Firstseen,MD5hash,Malware</span>
-
-                    <span class="c1"># skip comments</span>
-                    <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span>
-                        <span class="k">continue</span>
-
-                    <span class="c1"># create batch entry</span>
-                    <span class="n">indicator_value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-                    <span class="n">file_hash</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">file</span><span class="p">(</span>
-                        <span class="n">indicator_value</span><span class="p">,</span> <span class="n">rating</span><span class="o">=</span><span class="s1">&#39;4.0&#39;</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="s1">&#39;100&#39;</span>
-                    <span class="p">)</span>
-                    <span class="n">file_hash</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-
-                    <span class="c1"># add occurrence to batch entry</span>
-                    <span class="n">occurrence</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="n">file_hash</span><span class="o">.</span><span class="n">occurrence</span><span class="p">()</span>
-                    <span class="n">occurrence</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">file_hash</span><span class="p">)</span>  <span class="c1"># optionally save object to disk</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Failed to download CSV data.&#39;</span><span class="p">)</span>
-
-        <span class="c1"># submit batch job</span>
-        <span class="n">batch_status</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">submit_all</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">batch_status</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">exit_message</span> <span class="o">=</span> <span class="p">(</span>  <span class="c1"># pylint: disable=attribute-defined-outside-init</span>
-            <span class="s1">&#39;Downloaded data and create batch job.&#39;</span>
-        <span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="sd">&quot;&quot;&quot;ThreatConnect Job App&quot;&quot;&quot;</span>
+<span class="linenos"> 2</span><span class="c1"># standard library</span>
+<span class="linenos"> 3</span><span class="kn">import</span> <span class="nn">csv</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="c1"># first-party</span>
+<span class="linenos"> 6</span><span class="kn">from</span> <span class="nn">job_app</span> <span class="kn">import</span> <span class="n">JobApp</span>  <span class="c1"># Import default Job App Class (Required)</span>
+<span class="linenos"> 7</span>
+<span class="linenos"> 8</span><span class="kn">from</span> <span class="nn">tcex.batch</span> <span class="kn">import</span> <span class="n">Batch</span>
+<span class="linenos"> 9</span><span class="kn">from</span> <span class="nn">tcex.sessions</span> <span class="kn">import</span> <span class="n">ExternalSession</span>
+<span class="linenos">10</span>
+<span class="linenos">11</span>
+<span class="linenos">12</span><span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">JobApp</span><span class="p">):</span>
+<span class="linenos">13</span>    <span class="sd">&quot;&quot;&quot;Job App&quot;&quot;&quot;</span>
+<span class="linenos">14</span>
+<span class="linenos">15</span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_tcex</span><span class="p">):</span>
+<span class="linenos">16</span>        <span class="sd">&quot;&quot;&quot;Initialize class properties.&quot;&quot;&quot;</span>
+<span class="linenos">17</span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_tcex</span><span class="p">)</span>
+<span class="linenos">18</span>
+<span class="linenos">19</span>        <span class="c1"># properties</span>
+<span class="linenos">20</span>        <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">:</span> <span class="n">Batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_owner</span><span class="p">)</span>
+<span class="linenos">21</span>        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos">22</span>
+<span class="linenos">23</span>    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="linenos">24</span>        <span class="sd">&quot;&quot;&quot;Perform prep/setup logic.&quot;&quot;&quot;</span>
+<span class="linenos">25</span>        <span class="c1"># using tcex session_external to get built-in features (e.g., proxy, logging, retries)</span>
+<span class="linenos">26</span>        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">:</span> <span class="n">ExternalSession</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session_external</span>
+<span class="linenos">27</span>
+<span class="linenos">28</span>        <span class="c1"># setting the base url allow for subsequent API call to be made by only</span>
+<span class="linenos">29</span>        <span class="c1"># providing the API endpoint/path.</span>
+<span class="linenos">30</span>        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">base_url</span> <span class="o">=</span> <span class="s1">&#39;https://feodotracker.abuse.ch&#39;</span>
+<span class="linenos">31</span>
+<span class="linenos">32</span>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="linenos">33</span>        <span class="sd">&quot;&quot;&quot;Run main App logic.&quot;&quot;&quot;</span>
+<span class="linenos">34</span>
+<span class="linenos">35</span>        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="k">as</span> <span class="n">s</span><span class="p">:</span>
+<span class="linenos">36</span>            <span class="n">r</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;downloads/malware_hashes.csv&#39;</span><span class="p">)</span>
+<span class="linenos">37</span>
+<span class="linenos">38</span>            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+<span class="linenos">39</span>                <span class="n">decoded_content</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+<span class="linenos">40</span>
+<span class="linenos">41</span>                <span class="n">reader</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">decoded_content</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">quotechar</span><span class="o">=</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
+<span class="linenos">42</span>                <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
+<span class="linenos">43</span>                    <span class="c1"># CSV headers</span>
+<span class="linenos">44</span>                    <span class="c1"># Firstseen,MD5hash,Malware</span>
+<span class="linenos">45</span>
+<span class="linenos">46</span>                    <span class="c1"># skip comments</span>
+<span class="linenos">47</span>                    <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span>
+<span class="linenos">48</span>                        <span class="k">continue</span>
+<span class="linenos">49</span>
+<span class="linenos">50</span>                    <span class="c1"># create batch entry</span>
+<span class="linenos">51</span>                    <span class="n">indicator_value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="linenos">52</span>                    <span class="n">file_hash</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">file</span><span class="p">(</span>
+<span class="linenos">53</span>                        <span class="n">indicator_value</span><span class="p">,</span> <span class="n">rating</span><span class="o">=</span><span class="s1">&#39;4.0&#39;</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="s1">&#39;100&#39;</span>
+<span class="linenos">54</span>                    <span class="p">)</span>
+<span class="linenos">55</span>                    <span class="n">file_hash</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+<span class="linenos">56</span>
+<span class="linenos">57</span>                    <span class="c1"># add occurrence to batch entry</span>
+<span class="linenos">58</span>                    <span class="n">occurrence</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="n">file_hash</span><span class="o">.</span><span class="n">occurrence</span><span class="p">()</span>
+<span class="linenos">59</span>                    <span class="n">occurrence</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="linenos">60</span>                    <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">file_hash</span><span class="p">)</span>  <span class="c1"># optionally save object to disk</span>
+<span class="linenos">61</span>            <span class="k">else</span><span class="p">:</span>
+<span class="linenos">62</span>                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Failed to download CSV data.&#39;</span><span class="p">)</span>
+<span class="linenos">63</span>
+<span class="linenos">64</span>        <span class="c1"># submit batch job</span>
+<span class="linenos">65</span>        <span class="n">batch_status</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">submit_all</span><span class="p">()</span>
+<span class="linenos">66</span>        <span class="nb">print</span><span class="p">(</span><span class="n">batch_status</span><span class="p">)</span>
+<span class="linenos">67</span>
+<span class="linenos">68</span>        <span class="bp">self</span><span class="o">.</span><span class="n">exit_message</span> <span class="o">=</span> <span class="p">(</span>  <span class="c1"># pylint: disable=attribute-defined-outside-init</span>
+<span class="linenos">69</span>            <span class="s1">&#39;Downloaded data and create batch job.&#39;</span>
+<span class="linenos">70</span>        <span class="p">)</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 </div>
 </div>
@@ -491,49 +412,29 @@ Service App Templates:
 <p>This template provides the structure for a Playbook App without any logic.  This template is intended for advanced users that only require the App structure.</p>
 <div class="section" id="id2">
 <h4>app.py<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;ThreatConnect Playbook App&quot;&quot;&quot;</span>
-
-<span class="c1"># first-party</span>
-<span class="kn">from</span> <span class="nn">playbook_app</span> <span class="kn">import</span> <span class="n">PlaybookApp</span>  <span class="c1"># Import default Playbook App Class (Required)</span>
-
-
-<span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">PlaybookApp</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Playbook App&quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Run the App main logic.</span>
-
-<span class="sd">        This method should contain the core logic of the App.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">write_output</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Write the Playbook output variables.</span>
-
-<span class="sd">        This method should be overridden with the output variables defined in the install.json</span>
-<span class="sd">        configuration file.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="sd">&quot;&quot;&quot;ThreatConnect Playbook App&quot;&quot;&quot;</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="c1"># first-party</span>
+<span class="linenos"> 4</span><span class="kn">from</span> <span class="nn">playbook_app</span> <span class="kn">import</span> <span class="n">PlaybookApp</span>  <span class="c1"># Import default Playbook App Class (Required)</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span><span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">PlaybookApp</span><span class="p">):</span>
+<span class="linenos"> 8</span>    <span class="sd">&quot;&quot;&quot;Playbook App&quot;&quot;&quot;</span>
+<span class="linenos"> 9</span>
+<span class="linenos">10</span>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">11</span>        <span class="sd">&quot;&quot;&quot;Run the App main logic.</span>
+<span class="linenos">12</span>
+<span class="linenos">13</span><span class="sd">        This method should contain the core logic of the App.</span>
+<span class="linenos">14</span><span class="sd">        &quot;&quot;&quot;</span>
+<span class="linenos">15</span>
+<span class="linenos">16</span>    <span class="k">def</span> <span class="nf">write_output</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">17</span>        <span class="sd">&quot;&quot;&quot;Write the Playbook output variables.</span>
+<span class="linenos">18</span>
+<span class="linenos">19</span><span class="sd">        This method should be overridden with the output variables defined in the install.json</span>
+<span class="linenos">20</span><span class="sd">        configuration file.</span>
+<span class="linenos">21</span><span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 </div>
 <div class="section" id="playbook-actions-playbook-actions">
@@ -548,175 +449,92 @@ Service App Templates:
 </div>
 <div class="section" id="id3">
 <h4>app.py<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span>
-<span class="normal">57</span>
-<span class="normal">58</span>
-<span class="normal">59</span>
-<span class="normal">60</span>
-<span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span>
-<span class="normal">64</span>
-<span class="normal">65</span>
-<span class="normal">66</span>
-<span class="normal">67</span>
-<span class="normal">68</span>
-<span class="normal">69</span>
-<span class="normal">70</span>
-<span class="normal">71</span>
-<span class="normal">72</span>
-<span class="normal">73</span>
-<span class="normal">74</span>
-<span class="normal">75</span>
-<span class="normal">76</span>
-<span class="normal">77</span>
-<span class="normal">78</span>
-<span class="normal">79</span>
-<span class="normal">80</span>
-<span class="normal">81</span>
-<span class="normal">82</span>
-<span class="normal">83</span>
-<span class="normal">84</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;ThreatConnect Playbook App&quot;&quot;&quot;</span>
-
-<span class="c1"># third-party</span>
-<span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">IterateOnArg</span><span class="p">,</span> <span class="n">OnException</span><span class="p">,</span> <span class="n">OnSuccess</span><span class="p">,</span> <span class="n">Output</span>
-
-<span class="c1"># first-party</span>
-<span class="kn">from</span> <span class="nn">playbook_app</span> <span class="kn">import</span> <span class="n">PlaybookApp</span>  <span class="c1"># Import default Playbook App Class (Required)</span>
-
-
-<span class="c1"># pylint: disable=no-self-use</span>
-<span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">PlaybookApp</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Playbook App&quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_tcex</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize class properties.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_tcex</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">output_strings</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="nd">@IterateOnArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;input_strings&#39;</span><span class="p">)</span>
-    <span class="nd">@OnException</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Failed to run capitalize action.&#39;</span><span class="p">)</span>
-    <span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Successfully ran capitalize action.&#39;</span><span class="p">)</span>
-    <span class="nd">@Output</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;output_strings&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">capitalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_strings</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return capitalized string.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">input_strings</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
-
-    <span class="nd">@IterateOnArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;input_strings&#39;</span><span class="p">)</span>
-    <span class="nd">@OnException</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Failed to run lowercase action.&#39;</span><span class="p">)</span>
-    <span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Successfully ran lowercase action.&#39;</span><span class="p">)</span>
-    <span class="nd">@Output</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;output_strings&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">lowercase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_strings</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return string in lowercase.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">input_strings</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-
-    <span class="nd">@IterateOnArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;input_strings&#39;</span><span class="p">)</span>
-    <span class="nd">@OnException</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Failed to run reverse action.&#39;</span><span class="p">)</span>
-    <span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Successfully ran reverse action.&#39;</span><span class="p">)</span>
-    <span class="nd">@Output</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;output_strings&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">reverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_strings</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return string reversed.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">input_strings</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-    <span class="nd">@IterateOnArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;input_strings&#39;</span><span class="p">)</span>
-    <span class="nd">@OnException</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Failed to run strip action.&#39;</span><span class="p">)</span>
-    <span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Successfully ran strip action.&#39;</span><span class="p">)</span>
-    <span class="nd">@Output</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;output_strings&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">strip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_strings</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return string stripping any whitespaces at beginning and end.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">input_strings</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-
-    <span class="nd">@IterateOnArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;input_strings&#39;</span><span class="p">)</span>
-    <span class="nd">@OnException</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Failed to run swap case action.&#39;</span><span class="p">)</span>
-    <span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Successfully ran swap case action.&#39;</span><span class="p">)</span>
-    <span class="nd">@Output</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;output_strings&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">swap_case</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_strings</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return string with the case swapped.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">input_strings</span><span class="o">.</span><span class="n">swapcase</span><span class="p">()</span>
-
-    <span class="nd">@IterateOnArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;input_strings&#39;</span><span class="p">)</span>
-    <span class="nd">@OnException</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Failed to run title case action.&#39;</span><span class="p">)</span>
-    <span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Successfully ran title case action.&#39;</span><span class="p">)</span>
-    <span class="nd">@Output</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;output_strings&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">title_case</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_strings</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return string in title case.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">input_strings</span><span class="o">.</span><span class="n">title</span><span class="p">()</span>
-
-    <span class="nd">@IterateOnArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;input_strings&#39;</span><span class="p">)</span>
-    <span class="nd">@OnException</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Failed to run uppercase action.&#39;</span><span class="p">)</span>
-    <span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Successfully ran uppercase action.&#39;</span><span class="p">)</span>
-    <span class="nd">@Output</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;output_strings&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">uppercase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_strings</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return string in uppercase.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">input_strings</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">write_output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Write the Playbook output variables.&quot;&quot;&quot;</span>
-        <span class="c1"># output</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;output_strings: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">output_strings</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">create_output</span><span class="p">(</span><span class="s1">&#39;string.action&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_action</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">create_output</span><span class="p">(</span><span class="s1">&#39;string.outputs&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_strings</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_strings</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">create_output</span><span class="p">(</span><span class="s1">&#39;string.outputs.0&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_strings</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">create_output</span><span class="p">(</span><span class="s1">&#39;string.outputs.count&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_strings</span><span class="p">))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="sd">&quot;&quot;&quot;ThreatConnect Playbook App&quot;&quot;&quot;</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="c1"># third-party</span>
+<span class="linenos"> 4</span><span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">IterateOnArg</span><span class="p">,</span> <span class="n">OnException</span><span class="p">,</span> <span class="n">OnSuccess</span><span class="p">,</span> <span class="n">Output</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span><span class="c1"># first-party</span>
+<span class="linenos"> 7</span><span class="kn">from</span> <span class="nn">playbook_app</span> <span class="kn">import</span> <span class="n">PlaybookApp</span>  <span class="c1"># Import default Playbook App Class (Required)</span>
+<span class="linenos"> 8</span>
+<span class="linenos"> 9</span>
+<span class="linenos">10</span><span class="c1"># pylint: disable=no-self-use</span>
+<span class="linenos">11</span><span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">PlaybookApp</span><span class="p">):</span>
+<span class="linenos">12</span>    <span class="sd">&quot;&quot;&quot;Playbook App&quot;&quot;&quot;</span>
+<span class="linenos">13</span>
+<span class="linenos">14</span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_tcex</span><span class="p">):</span>
+<span class="linenos">15</span>        <span class="sd">&quot;&quot;&quot;Initialize class properties.&quot;&quot;&quot;</span>
+<span class="linenos">16</span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_tcex</span><span class="p">)</span>
+<span class="linenos">17</span>        <span class="bp">self</span><span class="o">.</span><span class="n">output_strings</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="linenos">18</span>
+<span class="linenos">19</span>    <span class="nd">@IterateOnArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;input_strings&#39;</span><span class="p">)</span>
+<span class="linenos">20</span>    <span class="nd">@OnException</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Failed to run capitalize action.&#39;</span><span class="p">)</span>
+<span class="linenos">21</span>    <span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Successfully ran capitalize action.&#39;</span><span class="p">)</span>
+<span class="linenos">22</span>    <span class="nd">@Output</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;output_strings&#39;</span><span class="p">)</span>
+<span class="linenos">23</span>    <span class="k">def</span> <span class="nf">capitalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_strings</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="linenos">24</span>        <span class="sd">&quot;&quot;&quot;Return capitalized string.&quot;&quot;&quot;</span>
+<span class="linenos">25</span>        <span class="k">return</span> <span class="n">input_strings</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+<span class="linenos">26</span>
+<span class="linenos">27</span>    <span class="nd">@IterateOnArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;input_strings&#39;</span><span class="p">)</span>
+<span class="linenos">28</span>    <span class="nd">@OnException</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Failed to run lowercase action.&#39;</span><span class="p">)</span>
+<span class="linenos">29</span>    <span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Successfully ran lowercase action.&#39;</span><span class="p">)</span>
+<span class="linenos">30</span>    <span class="nd">@Output</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;output_strings&#39;</span><span class="p">)</span>
+<span class="linenos">31</span>    <span class="k">def</span> <span class="nf">lowercase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_strings</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="linenos">32</span>        <span class="sd">&quot;&quot;&quot;Return string in lowercase.&quot;&quot;&quot;</span>
+<span class="linenos">33</span>        <span class="k">return</span> <span class="n">input_strings</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+<span class="linenos">34</span>
+<span class="linenos">35</span>    <span class="nd">@IterateOnArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;input_strings&#39;</span><span class="p">)</span>
+<span class="linenos">36</span>    <span class="nd">@OnException</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Failed to run reverse action.&#39;</span><span class="p">)</span>
+<span class="linenos">37</span>    <span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Successfully ran reverse action.&#39;</span><span class="p">)</span>
+<span class="linenos">38</span>    <span class="nd">@Output</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;output_strings&#39;</span><span class="p">)</span>
+<span class="linenos">39</span>    <span class="k">def</span> <span class="nf">reverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_strings</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="linenos">40</span>        <span class="sd">&quot;&quot;&quot;Return string reversed.&quot;&quot;&quot;</span>
+<span class="linenos">41</span>        <span class="k">return</span> <span class="n">input_strings</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="linenos">42</span>
+<span class="linenos">43</span>    <span class="nd">@IterateOnArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;input_strings&#39;</span><span class="p">)</span>
+<span class="linenos">44</span>    <span class="nd">@OnException</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Failed to run strip action.&#39;</span><span class="p">)</span>
+<span class="linenos">45</span>    <span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Successfully ran strip action.&#39;</span><span class="p">)</span>
+<span class="linenos">46</span>    <span class="nd">@Output</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;output_strings&#39;</span><span class="p">)</span>
+<span class="linenos">47</span>    <span class="k">def</span> <span class="nf">strip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_strings</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="linenos">48</span>        <span class="sd">&quot;&quot;&quot;Return string stripping any whitespaces at beginning and end.&quot;&quot;&quot;</span>
+<span class="linenos">49</span>        <span class="k">return</span> <span class="n">input_strings</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+<span class="linenos">50</span>
+<span class="linenos">51</span>    <span class="nd">@IterateOnArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;input_strings&#39;</span><span class="p">)</span>
+<span class="linenos">52</span>    <span class="nd">@OnException</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Failed to run swap case action.&#39;</span><span class="p">)</span>
+<span class="linenos">53</span>    <span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Successfully ran swap case action.&#39;</span><span class="p">)</span>
+<span class="linenos">54</span>    <span class="nd">@Output</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;output_strings&#39;</span><span class="p">)</span>
+<span class="linenos">55</span>    <span class="k">def</span> <span class="nf">swap_case</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_strings</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="linenos">56</span>        <span class="sd">&quot;&quot;&quot;Return string with the case swapped.&quot;&quot;&quot;</span>
+<span class="linenos">57</span>        <span class="k">return</span> <span class="n">input_strings</span><span class="o">.</span><span class="n">swapcase</span><span class="p">()</span>
+<span class="linenos">58</span>
+<span class="linenos">59</span>    <span class="nd">@IterateOnArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;input_strings&#39;</span><span class="p">)</span>
+<span class="linenos">60</span>    <span class="nd">@OnException</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Failed to run title case action.&#39;</span><span class="p">)</span>
+<span class="linenos">61</span>    <span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Successfully ran title case action.&#39;</span><span class="p">)</span>
+<span class="linenos">62</span>    <span class="nd">@Output</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;output_strings&#39;</span><span class="p">)</span>
+<span class="linenos">63</span>    <span class="k">def</span> <span class="nf">title_case</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_strings</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="linenos">64</span>        <span class="sd">&quot;&quot;&quot;Return string in title case.&quot;&quot;&quot;</span>
+<span class="linenos">65</span>        <span class="k">return</span> <span class="n">input_strings</span><span class="o">.</span><span class="n">title</span><span class="p">()</span>
+<span class="linenos">66</span>
+<span class="linenos">67</span>    <span class="nd">@IterateOnArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;input_strings&#39;</span><span class="p">)</span>
+<span class="linenos">68</span>    <span class="nd">@OnException</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Failed to run uppercase action.&#39;</span><span class="p">)</span>
+<span class="linenos">69</span>    <span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Successfully ran uppercase action.&#39;</span><span class="p">)</span>
+<span class="linenos">70</span>    <span class="nd">@Output</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;output_strings&#39;</span><span class="p">)</span>
+<span class="linenos">71</span>    <span class="k">def</span> <span class="nf">uppercase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_strings</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="linenos">72</span>        <span class="sd">&quot;&quot;&quot;Return string in uppercase.&quot;&quot;&quot;</span>
+<span class="linenos">73</span>        <span class="k">return</span> <span class="n">input_strings</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+<span class="linenos">74</span>
+<span class="linenos">75</span>    <span class="k">def</span> <span class="nf">write_output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="linenos">76</span>        <span class="sd">&quot;&quot;&quot;Write the Playbook output variables.&quot;&quot;&quot;</span>
+<span class="linenos">77</span>        <span class="c1"># output</span>
+<span class="linenos">78</span>        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;output_strings: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">output_strings</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="linenos">79</span>
+<span class="linenos">80</span>        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">create_output</span><span class="p">(</span><span class="s1">&#39;string.action&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_action</span><span class="p">)</span>
+<span class="linenos">81</span>        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">create_output</span><span class="p">(</span><span class="s1">&#39;string.outputs&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_strings</span><span class="p">)</span>
+<span class="linenos">82</span>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_strings</span><span class="p">:</span>
+<span class="linenos">83</span>            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">create_output</span><span class="p">(</span><span class="s1">&#39;string.outputs.0&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_strings</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="linenos">84</span>        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">create_output</span><span class="p">(</span><span class="s1">&#39;string.outputs.count&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_strings</span><span class="p">))</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 </div>
 <div class="section" id="playbook-utility-playbook-utility">
@@ -724,153 +542,81 @@ Service App Templates:
 <p>This template provides a working example of a utility App that takes an input, analyzes or modifies the data, and writes the results as output.</p>
 <div class="section" id="id4">
 <h4>app.py<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span>
-<span class="normal">57</span>
-<span class="normal">58</span>
-<span class="normal">59</span>
-<span class="normal">60</span>
-<span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span>
-<span class="normal">64</span>
-<span class="normal">65</span>
-<span class="normal">66</span>
-<span class="normal">67</span>
-<span class="normal">68</span>
-<span class="normal">69</span>
-<span class="normal">70</span>
-<span class="normal">71</span>
-<span class="normal">72</span>
-<span class="normal">73</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;ThreatConnect Playbook App&quot;&quot;&quot;</span>
-<span class="c1"># standard library</span>
-<span class="kn">import</span> <span class="nn">json</span>
-
-<span class="c1"># first-party</span>
-<span class="kn">from</span> <span class="nn">playbook_app</span> <span class="kn">import</span> <span class="n">PlaybookApp</span>  <span class="c1"># Import default Playbook App Class (Required)</span>
-
-
-<span class="c1"># pylint: disable=attribute-defined-outside-init</span>
-<span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">TcEx</span>
-
-
-<span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">PlaybookApp</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Playbook App&quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_tcex</span><span class="p">:</span> <span class="n">TcEx</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize class properties.</span>
-
-<span class="sd">        This method can be OPTIONALLY overridden.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_tcex</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pretty_json</span> <span class="o">=</span> <span class="p">{}</span>
-
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Run the App main logic.</span>
-
-<span class="sd">        This method should contain the core logic of the App.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># read inputs</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">indent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">indent</span><span class="p">)</span>
-            <span class="n">indent</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">indent</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Invalid value (&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}</span><span class="s1">&quot;) passed for indent.&#39;</span><span class="p">)</span>
-        <span class="n">json_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">json_data</span><span class="p">)</span>
-
-        <span class="c1"># get the playbook variable type</span>
-        <span class="n">json_data_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">json_data</span><span class="p">)</span>
-
-        <span class="c1"># convert string input to dict</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">json_data_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;String&#39;</span><span class="p">]:</span>
-                <span class="n">json_data</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json_data</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Failed parsing JSON data.&#39;</span><span class="p">)</span>
-
-        <span class="c1"># generate the new &quot;pretty&quot; json (this will be used as an option variable)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pretty_json</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
-                <span class="n">json_data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">sort_keys</span>
-            <span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Failed parsing JSON data.&#39;</span><span class="p">)</span>
-
-        <span class="c1"># set the App exit message</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">exit_message</span> <span class="o">=</span> <span class="s1">&#39;JSON prettified.&#39;</span>
-
-    <span class="c1"># def setup(self):</span>
-    <span class="c1">#     &quot;&quot;&quot;Perform prep/setup work before running App main logic.&quot;&quot;&quot;</span>
-    <span class="c1">#     self.tcex.log.debug(&#39;Running setup.&#39;)</span>
-
-    <span class="c1"># def teardown(self):</span>
-    <span class="c1">#     &quot;&quot;&quot;Perform cleanup/teardown work before after App main logic.&quot;&quot;&quot;</span>
-    <span class="c1">#     self.tcex.log.debug(&#39;Running teardown.&#39;)</span>
-
-    <span class="k">def</span> <span class="nf">write_output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Write the Playbook output variables.</span>
-
-<span class="sd">        This method should be overridden with the output variables defined in the install.json</span>
-<span class="sd">        configuration file.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Writing Output&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">create_output</span><span class="p">(</span><span class="s1">&#39;json.pretty&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pretty_json</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="sd">&quot;&quot;&quot;ThreatConnect Playbook App&quot;&quot;&quot;</span>
+<span class="linenos"> 2</span><span class="c1"># standard library</span>
+<span class="linenos"> 3</span><span class="kn">import</span> <span class="nn">json</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="c1"># first-party</span>
+<span class="linenos"> 6</span><span class="kn">from</span> <span class="nn">playbook_app</span> <span class="kn">import</span> <span class="n">PlaybookApp</span>  <span class="c1"># Import default Playbook App Class (Required)</span>
+<span class="linenos"> 7</span>
+<span class="linenos"> 8</span>
+<span class="linenos"> 9</span><span class="c1"># pylint: disable=attribute-defined-outside-init</span>
+<span class="linenos">10</span><span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">TcEx</span>
+<span class="linenos">11</span>
+<span class="linenos">12</span>
+<span class="linenos">13</span><span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">PlaybookApp</span><span class="p">):</span>
+<span class="linenos">14</span>    <span class="sd">&quot;&quot;&quot;Playbook App&quot;&quot;&quot;</span>
+<span class="linenos">15</span>
+<span class="linenos">16</span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_tcex</span><span class="p">:</span> <span class="n">TcEx</span><span class="p">):</span>
+<span class="linenos">17</span>        <span class="sd">&quot;&quot;&quot;Initialize class properties.</span>
+<span class="linenos">18</span>
+<span class="linenos">19</span><span class="sd">        This method can be OPTIONALLY overridden.</span>
+<span class="linenos">20</span><span class="sd">        &quot;&quot;&quot;</span>
+<span class="linenos">21</span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_tcex</span><span class="p">)</span>
+<span class="linenos">22</span>        <span class="bp">self</span><span class="o">.</span><span class="n">pretty_json</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="linenos">23</span>
+<span class="linenos">24</span>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">25</span>        <span class="sd">&quot;&quot;&quot;Run the App main logic.</span>
+<span class="linenos">26</span>
+<span class="linenos">27</span><span class="sd">        This method should contain the core logic of the App.</span>
+<span class="linenos">28</span><span class="sd">        &quot;&quot;&quot;</span>
+<span class="linenos">29</span>        <span class="c1"># read inputs</span>
+<span class="linenos">30</span>        <span class="k">try</span><span class="p">:</span>
+<span class="linenos">31</span>            <span class="n">indent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">indent</span><span class="p">)</span>
+<span class="linenos">32</span>            <span class="n">indent</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">indent</span><span class="p">)</span>
+<span class="linenos">33</span>        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+<span class="linenos">34</span>            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Invalid value (&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}</span><span class="s1">&quot;) passed for indent.&#39;</span><span class="p">)</span>
+<span class="linenos">35</span>        <span class="n">json_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">json_data</span><span class="p">)</span>
+<span class="linenos">36</span>
+<span class="linenos">37</span>        <span class="c1"># get the playbook variable type</span>
+<span class="linenos">38</span>        <span class="n">json_data_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">json_data</span><span class="p">)</span>
+<span class="linenos">39</span>
+<span class="linenos">40</span>        <span class="c1"># convert string input to dict</span>
+<span class="linenos">41</span>        <span class="k">try</span><span class="p">:</span>
+<span class="linenos">42</span>            <span class="k">if</span> <span class="n">json_data_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;String&#39;</span><span class="p">]:</span>
+<span class="linenos">43</span>                <span class="n">json_data</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json_data</span><span class="p">)</span>
+<span class="linenos">44</span>        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+<span class="linenos">45</span>            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Failed parsing JSON data.&#39;</span><span class="p">)</span>
+<span class="linenos">46</span>
+<span class="linenos">47</span>        <span class="c1"># generate the new &quot;pretty&quot; json (this will be used as an option variable)</span>
+<span class="linenos">48</span>        <span class="k">try</span><span class="p">:</span>
+<span class="linenos">49</span>            <span class="bp">self</span><span class="o">.</span><span class="n">pretty_json</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
+<span class="linenos">50</span>                <span class="n">json_data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">sort_keys</span>
+<span class="linenos">51</span>            <span class="p">)</span>
+<span class="linenos">52</span>        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+<span class="linenos">53</span>            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Failed parsing JSON data.&#39;</span><span class="p">)</span>
+<span class="linenos">54</span>
+<span class="linenos">55</span>        <span class="c1"># set the App exit message</span>
+<span class="linenos">56</span>        <span class="bp">self</span><span class="o">.</span><span class="n">exit_message</span> <span class="o">=</span> <span class="s1">&#39;JSON prettified.&#39;</span>
+<span class="linenos">57</span>
+<span class="linenos">58</span>    <span class="c1"># def setup(self):</span>
+<span class="linenos">59</span>    <span class="c1">#     &quot;&quot;&quot;Perform prep/setup work before running App main logic.&quot;&quot;&quot;</span>
+<span class="linenos">60</span>    <span class="c1">#     self.tcex.log.debug(&#39;Running setup.&#39;)</span>
+<span class="linenos">61</span>
+<span class="linenos">62</span>    <span class="c1"># def teardown(self):</span>
+<span class="linenos">63</span>    <span class="c1">#     &quot;&quot;&quot;Perform cleanup/teardown work before after App main logic.&quot;&quot;&quot;</span>
+<span class="linenos">64</span>    <span class="c1">#     self.tcex.log.debug(&#39;Running teardown.&#39;)</span>
+<span class="linenos">65</span>
+<span class="linenos">66</span>    <span class="k">def</span> <span class="nf">write_output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="linenos">67</span>        <span class="sd">&quot;&quot;&quot;Write the Playbook output variables.</span>
+<span class="linenos">68</span>
+<span class="linenos">69</span><span class="sd">        This method should be overridden with the output variables defined in the install.json</span>
+<span class="linenos">70</span><span class="sd">        configuration file.</span>
+<span class="linenos">71</span><span class="sd">        &quot;&quot;&quot;</span>
+<span class="linenos">72</span>        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Writing Output&#39;</span><span class="p">)</span>
+<span class="linenos">73</span>        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">create_output</span><span class="p">(</span><span class="s1">&#39;json.pretty&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pretty_json</span><span class="p">)</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 </div>
 </div>
@@ -903,35 +649,22 @@ Service App Templates:
 <p>This basic template provides the structure for an External App without any logic.  This template is intended for advanced users that only require the App structure.</p>
 <div class="section" id="id5">
 <h4>app.py<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;ThreatConnect External App&quot;&quot;&quot;</span>
-
-<span class="c1"># first-party</span>
-<span class="kn">from</span> <span class="nn">external_app</span> <span class="kn">import</span> <span class="n">ExternalApp</span>  <span class="c1"># Import default External App Class (Required)</span>
-
-
-<span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">ExternalApp</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;External App&quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Run the App main logic.</span>
-
-<span class="sd">        This method should contain the core logic of the App.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="sd">&quot;&quot;&quot;ThreatConnect External App&quot;&quot;&quot;</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="c1"># first-party</span>
+<span class="linenos"> 4</span><span class="kn">from</span> <span class="nn">external_app</span> <span class="kn">import</span> <span class="n">ExternalApp</span>  <span class="c1"># Import default External App Class (Required)</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span><span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">ExternalApp</span><span class="p">):</span>
+<span class="linenos"> 8</span>    <span class="sd">&quot;&quot;&quot;External App&quot;&quot;&quot;</span>
+<span class="linenos"> 9</span>
+<span class="linenos">10</span>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">11</span>        <span class="sd">&quot;&quot;&quot;Run the App main logic.</span>
+<span class="linenos">12</span>
+<span class="linenos">13</span><span class="sd">        This method should contain the core logic of the App.</span>
+<span class="linenos">14</span><span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 </div>
 <div class="section" id="external-ingress-external-ingress">
@@ -939,109 +672,59 @@ Service App Templates:
 <p>This template provides a working example of how to download remote-threat intel (md5 hash Indicators) and write the data in the ThreatConnect platform using the TcEx <a class="reference internal" href="module_batch.html#module-batch"><span class="std std-ref">Batch Module</span></a>.  The URL is defined in the <code class="docutils literal notranslate"><span class="pre">init()</span></code> method for convenience. In the <code class="docutils literal notranslate"><span class="pre">run()</span></code> method, the Batch module is instantiated. Next, the data is retrieved from the remote URL and written to the Batch module. Finally, the Batch Job is submitted to ThreatConnect for processing.</p>
 <div class="section" id="id6">
 <h4>app.py<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;ThreatConnect Job App&quot;&quot;&quot;</span>
-<span class="c1"># standard library</span>
-<span class="kn">import</span> <span class="nn">csv</span>
-
-<span class="c1"># first-party</span>
-<span class="kn">from</span> <span class="nn">external_app</span> <span class="kn">import</span> <span class="n">ExternalApp</span>  <span class="c1"># Import default External App Class (Required)</span>
-
-
-<span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">ExternalApp</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;External App&quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_tcex</span><span class="p">:</span> <span class="nb">object</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize class properties.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_tcex</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://feodotracker.abuse.ch/downloads/malware_hashes.csv&#39;</span>
-
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Run main App logic.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_owner</span><span class="p">)</span>
-
-        <span class="c1"># using tcex requests to get built-in features (e.g., proxy, logging, retries)</span>
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session_external</span> <span class="k">as</span> <span class="n">s</span><span class="p">:</span>
-            <span class="n">r</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
-                <span class="n">decoded_content</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
-
-                <span class="n">reader</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">decoded_content</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">quotechar</span><span class="o">=</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
-                    <span class="c1"># CSV headers</span>
-                    <span class="c1"># Firstseen,MD5hash,Malware</span>
-
-                    <span class="c1"># skip comments</span>
-                    <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span>
-                        <span class="k">continue</span>
-
-                    <span class="c1"># create batch entry</span>
-                    <span class="n">file_hash</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">file</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">rating</span><span class="o">=</span><span class="s1">&#39;4.0&#39;</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="s1">&#39;100&#39;</span><span class="p">)</span>
-                    <span class="n">file_hash</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-                    <span class="n">occurrence</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="n">file_hash</span><span class="o">.</span><span class="n">occurrence</span><span class="p">()</span>
-                    <span class="n">occurrence</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">file_hash</span><span class="p">)</span>  <span class="c1"># optionally save object to disk</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Failed to download CSV data.&#39;</span><span class="p">)</span>
-
-        <span class="c1"># submit batch job(s)</span>
-        <span class="n">batch_status</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">submit_all</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">batch_status</span><span class="p">)</span>
-
-        <span class="c1"># self.exit_message = f&#39;Downloaded and created {self.batch.indicator_len} file hashes.&#39;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="sd">&quot;&quot;&quot;ThreatConnect Job App&quot;&quot;&quot;</span>
+<span class="linenos"> 2</span><span class="c1"># standard library</span>
+<span class="linenos"> 3</span><span class="kn">import</span> <span class="nn">csv</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="c1"># first-party</span>
+<span class="linenos"> 6</span><span class="kn">from</span> <span class="nn">external_app</span> <span class="kn">import</span> <span class="n">ExternalApp</span>  <span class="c1"># Import default External App Class (Required)</span>
+<span class="linenos"> 7</span>
+<span class="linenos"> 8</span>
+<span class="linenos"> 9</span><span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">ExternalApp</span><span class="p">):</span>
+<span class="linenos">10</span>    <span class="sd">&quot;&quot;&quot;External App&quot;&quot;&quot;</span>
+<span class="linenos">11</span>
+<span class="linenos">12</span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_tcex</span><span class="p">:</span> <span class="nb">object</span><span class="p">):</span>
+<span class="linenos">13</span>        <span class="sd">&quot;&quot;&quot;Initialize class properties.&quot;&quot;&quot;</span>
+<span class="linenos">14</span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_tcex</span><span class="p">)</span>
+<span class="linenos">15</span>        <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos">16</span>        <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://feodotracker.abuse.ch/downloads/malware_hashes.csv&#39;</span>
+<span class="linenos">17</span>
+<span class="linenos">18</span>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">19</span>        <span class="sd">&quot;&quot;&quot;Run main App logic.&quot;&quot;&quot;</span>
+<span class="linenos">20</span>        <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_owner</span><span class="p">)</span>
+<span class="linenos">21</span>
+<span class="linenos">22</span>        <span class="c1"># using tcex requests to get built-in features (e.g., proxy, logging, retries)</span>
+<span class="linenos">23</span>        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session_external</span> <span class="k">as</span> <span class="n">s</span><span class="p">:</span>
+<span class="linenos">24</span>            <span class="n">r</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+<span class="linenos">25</span>
+<span class="linenos">26</span>            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+<span class="linenos">27</span>                <span class="n">decoded_content</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+<span class="linenos">28</span>
+<span class="linenos">29</span>                <span class="n">reader</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">decoded_content</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">quotechar</span><span class="o">=</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
+<span class="linenos">30</span>                <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
+<span class="linenos">31</span>                    <span class="c1"># CSV headers</span>
+<span class="linenos">32</span>                    <span class="c1"># Firstseen,MD5hash,Malware</span>
+<span class="linenos">33</span>
+<span class="linenos">34</span>                    <span class="c1"># skip comments</span>
+<span class="linenos">35</span>                    <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span>
+<span class="linenos">36</span>                        <span class="k">continue</span>
+<span class="linenos">37</span>
+<span class="linenos">38</span>                    <span class="c1"># create batch entry</span>
+<span class="linenos">39</span>                    <span class="n">file_hash</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">file</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">rating</span><span class="o">=</span><span class="s1">&#39;4.0&#39;</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="s1">&#39;100&#39;</span><span class="p">)</span>
+<span class="linenos">40</span>                    <span class="n">file_hash</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+<span class="linenos">41</span>                    <span class="n">occurrence</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="n">file_hash</span><span class="o">.</span><span class="n">occurrence</span><span class="p">()</span>
+<span class="linenos">42</span>                    <span class="n">occurrence</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="linenos">43</span>                    <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">file_hash</span><span class="p">)</span>  <span class="c1"># optionally save object to disk</span>
+<span class="linenos">44</span>            <span class="k">else</span><span class="p">:</span>
+<span class="linenos">45</span>                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Failed to download CSV data.&#39;</span><span class="p">)</span>
+<span class="linenos">46</span>
+<span class="linenos">47</span>        <span class="c1"># submit batch job(s)</span>
+<span class="linenos">48</span>        <span class="n">batch_status</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">submit_all</span><span class="p">()</span>
+<span class="linenos">49</span>        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">batch_status</span><span class="p">)</span>
+<span class="linenos">50</span>
+<span class="linenos">51</span>        <span class="c1"># self.exit_message = f&#39;Downloaded and created {self.batch.indicator_len} file hashes.&#39;</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 </div>
 </div>

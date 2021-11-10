@@ -7,12 +7,14 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>tcex.case_management.artifact &mdash; TcEx 2.0.23 documentation</title>
+  <title>tcex.case_management.artifact &mdash; TcEx 2.0.26 documentation</title>
 
 
 
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
 
 
@@ -30,6 +32,7 @@
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -62,7 +65,7 @@
 
 
               <div class="version">
-                2.0.23
+                2.0.26
               </div>
 
 
@@ -87,7 +90,7 @@
 
 
 
-              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../features.html">Features</a></li>
@@ -309,8 +312,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_case_id</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;case_id&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;parent_case&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_case_xid</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;case_xid&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_date_added</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;date_added&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_derived_link</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;derived_link&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_field_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;field_name&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_file_data</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;file_data&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hash_code</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;hash_code&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_intel_type</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;intel_type&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_links</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;links&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_notes</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;notes&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -388,6 +393,16 @@
         <span class="sd">&quot;&quot;&quot;Return the **Date Added** for the Artifact.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_date_added</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">derived_link</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Derived Link** for the Artifact.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_derived_link</span>
+
+    <span class="nd">@derived_link</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">derived_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">derived_link</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the **Derived Link** for the Artifact.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_derived_link</span> <span class="o">=</span> <span class="n">derived_link</span>
+
 <div class="viewcode-block" id="Artifact.entity_mapper"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.artifact.Artifact.entity_mapper">[docs]</a>    <span class="k">def</span> <span class="nf">entity_mapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Update current object with provided object properties.</span>
 
@@ -411,6 +426,16 @@
     <span class="k">def</span> <span class="nf">file_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the **File Data** for the Artifact.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_file_data</span> <span class="o">=</span> <span class="n">file_data</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">hash_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Hash Code** for the Artifact.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash_code</span>
+
+    <span class="nd">@hash_code</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">hash_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hash_code</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the **Hash Code** for the Artifact.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hash_code</span> <span class="o">=</span> <span class="n">hash_code</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">intel_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -510,6 +535,15 @@
 <div class="viewcode-block" id="FilterArtifacts"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.artifact.FilterArtifacts">[docs]</a><span class="k">class</span> <span class="nc">FilterArtifacts</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Filter Object for Artifacts&quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="FilterArtifacts.analytics_score"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.artifact.FilterArtifacts.analytics_score">[docs]</a>    <span class="k">def</span> <span class="nf">analytics_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">analytics_score</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Artifacts based on **analyticsScore** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            analytics_score (int): The intel score of the artifact.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;analyticsScore&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">analytics_score</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="FilterArtifacts.case_id"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.artifact.FilterArtifacts.case_id">[docs]</a>    <span class="k">def</span> <span class="nf">case_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">case_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Filter Artifacts based on **caseId** keyword.</span>
 
@@ -519,19 +553,46 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;caseId&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">case_id</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="FilterArtifacts.date_added"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.artifact.FilterArtifacts.date_added">[docs]</a>    <span class="k">def</span> <span class="nf">date_added</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">date_added</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Artifacts based on **dateAdded** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            date_added (str): The date the artifact was added to the system.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;dateAdded&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">date_added</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span></div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">has_case</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return **FilterCases** for further filtering.&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.case</span> <span class="kn">import</span> <span class="n">FilterCases</span>
+        <span class="kn">from</span> <span class="nn">.case</span> <span class="kn">import</span> <span class="n">FilterCases</span>  <span class="c1"># pylint: disable=cyclic-import</span>
 
         <span class="n">cases</span> <span class="o">=</span> <span class="n">FilterCases</span><span class="p">(</span><span class="n">ApiEndpoints</span><span class="o">.</span><span class="n">CASES</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="p">,</span> <span class="n">TQL</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;hasCase&#39;</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Operator</span><span class="o">.</span><span class="n">EQ</span><span class="p">,</span> <span class="n">cases</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">SUB_QUERY</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">cases</span>
 
+<div class="viewcode-block" id="FilterArtifacts.has_group"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.artifact.FilterArtifacts.has_group">[docs]</a>    <span class="k">def</span> <span class="nf">has_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">has_group</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Artifacts based on **hasGroup** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            has_group (int): A nested query for association to other buckets.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;hasGroup&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">has_group</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterArtifacts.has_indicator"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.artifact.FilterArtifacts.has_indicator">[docs]</a>    <span class="k">def</span> <span class="nf">has_indicator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">has_indicator</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Artifacts based on **hasIndicator** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            has_indicator (int): A nested query for association to other indicators.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;hasIndicator&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">has_indicator</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">)</span></div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">has_note</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return **FilterNotes** for further filtering.&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.note</span> <span class="kn">import</span> <span class="n">FilterNotes</span>  <span class="c1"># pylint: disable=cyclic-import</span>
+        <span class="kn">from</span> <span class="nn">.note</span> <span class="kn">import</span> <span class="n">FilterNotes</span>
 
         <span class="n">notes</span> <span class="o">=</span> <span class="n">FilterNotes</span><span class="p">(</span><span class="n">ApiEndpoints</span><span class="o">.</span><span class="n">NOTES</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="p">,</span> <span class="n">TQL</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;hasNote&#39;</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Operator</span><span class="o">.</span><span class="n">EQ</span><span class="p">,</span> <span class="n">notes</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">SUB_QUERY</span><span class="p">)</span>
@@ -540,7 +601,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">has_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return **FilterTask** for further filtering.&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.task</span> <span class="kn">import</span> <span class="n">FilterTasks</span>  <span class="c1"># pylint: disable=cyclic-import</span>
+        <span class="kn">from</span> <span class="nn">.task</span> <span class="kn">import</span> <span class="n">FilterTasks</span>
 
         <span class="n">tasks</span> <span class="o">=</span> <span class="n">FilterTasks</span><span class="p">(</span><span class="n">ApiEndpoints</span><span class="o">.</span><span class="n">TASKS</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="p">,</span> <span class="n">TQL</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;hasTask&#39;</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Operator</span><span class="o">.</span><span class="n">EQ</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">SUB_QUERY</span><span class="p">)</span>
@@ -554,6 +615,15 @@
 <span class="sd">            id (int): The ID of the artifact.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterArtifacts.indicator_active"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.artifact.FilterArtifacts.indicator_active">[docs]</a>    <span class="k">def</span> <span class="nf">indicator_active</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">indicator_active</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Artifacts based on **indicatorActive** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            indicator_active (bool): A flag indicating whether or not the artifact is active.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;indicatorActive&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">indicator_active</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">BOOLEAN</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="FilterArtifacts.note_id"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.artifact.FilterArtifacts.note_id">[docs]</a>    <span class="k">def</span> <span class="nf">note_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">note_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Filter Artifacts based on **noteId** keyword.</span>
@@ -590,6 +660,15 @@
 <span class="sd">            task_id (int): The ID of the task associated with this artifact.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;taskId&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">task_id</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterArtifacts.type"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.artifact.FilterArtifacts.type">[docs]</a>    <span class="k">def</span> <span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>  <span class="c1"># pylint: disable=redefined-builtin</span>
+        <span class="sd">&quot;&quot;&quot;Filter Artifacts based on **type** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            type (str): The type name of the artifact.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="FilterArtifacts.type_name"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.artifact.FilterArtifacts.type_name">[docs]</a>    <span class="k">def</span> <span class="nf">type_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">type_name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Filter Artifacts based on **typeName** keyword.</span>

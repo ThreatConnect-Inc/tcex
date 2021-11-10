@@ -26,7 +26,10 @@ import sphinx_rtd_theme  # pylint: disable=C0413
 # from tcex import __version__  # pylint: disable=C0413
 metadata = {}
 metadata_file = os.path.join('..', '..', 'tcex', '__metadata__.py')
-with open(metadata_file, mode='r', encoding='utf-8',) as f:
+with open(
+    metadata_file,
+    encoding='utf-8',
+) as f:
     exec(f.read(), metadata)  # pylint: disable=exec-used
 
 
@@ -375,4 +378,4 @@ texinfo_documents = [
 
 def setup(app):
     """setup method"""
-    app.add_stylesheet('css/custom.css')
+    app.add_css_file('css/custom.css')

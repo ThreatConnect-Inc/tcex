@@ -7,12 +7,14 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Module: Batch &mdash; TcEx 2.0.23 documentation</title>
+  <title>Module: Batch &mdash; TcEx 2.0.26 documentation</title>
 
 
 
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
 
 
@@ -30,6 +32,7 @@
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -64,7 +67,7 @@
 
 
               <div class="version">
-                2.0.23
+                2.0.26
               </div>
 
 
@@ -89,7 +92,7 @@
 
 
 
-              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
@@ -239,55 +242,34 @@
 <h3>Group Interface 1<a class="headerlink" href="#group-interface-1" title="Permalink to this headline">¶</a></h3>
 <p>The first interface is for type-specific access.  This interface allows for passing of all the data in the method call or of only the required fields, with optional fields being set via property setters. All metadata (e.g., Attributes, Security Labels, and Tags) can be added to the group instance directly.</p>
 <p>The example below passes all supported fields to the <code class="docutils literal notranslate"><span class="pre">adversary()</span></code> method.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span>
-<span class="normal">6</span>
-<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
-<span class="hll"><span class="n">adversary</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">adversary</span><span class="p">(</span><span class="s1">&#39;adversary-001&#39;</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="s1">&#39;my-xid-000&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="n">adversary</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-</span><span class="hll"><span class="n">adversary</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="n">adversary</span><span class="o">.</span><span class="n">security_label</span><span class="p">(</span><span class="s1">&#39;TLP Green&#39;</span><span class="p">)</span>
-</span><span class="c1"># optional save method</span>
-<span class="hll"><span class="n">batch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">adversary</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+<span class="hll"><span class="linenos">2</span><span class="n">adversary</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">adversary</span><span class="p">(</span><span class="s1">&#39;adversary-001&#39;</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="s1">&#39;my-xid-000&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="linenos">3</span><span class="n">adversary</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+</span><span class="hll"><span class="linenos">4</span><span class="n">adversary</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="linenos">5</span><span class="n">adversary</span><span class="o">.</span><span class="n">security_label</span><span class="p">(</span><span class="s1">&#39;TLP Green&#39;</span><span class="p">)</span>
+</span><span class="linenos">6</span><span class="c1"># optional save method</span>
+<span class="hll"><span class="linenos">7</span><span class="n">batch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">adversary</span><span class="p">)</span>
 </span></pre></div>
-</td></tr></table></div>
+</div>
 <p>The example below passes only the required fields to <strong>document()</strong>.  The optional properties can then be set whenever required. The same interface is used for the Attribute.  The required Attribute properties are set first, and then optional values can be added.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
-<span class="hll"><span class="n">document</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">document</span><span class="p">(</span><span class="s1">&#39;document-001&#39;</span><span class="p">,</span> <span class="s1">&#39;example.txt&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">malware</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="s1">&#39;test&#39;</span>
-</span><span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">file_content</span> <span class="o">=</span> <span class="s1">&#39;example file content&#39;</span>
-</span><span class="hll"><span class="c1"># Add Attribute</span>
-</span><span class="hll"><span class="n">attr</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description&#39;</span><span class="p">)</span>
-</span><span class="n">attr</span><span class="o">.</span><span class="n">displayed</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="hll"><span class="c1"># Add Tag</span>
-</span><span class="n">document</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
-<span class="hll"><span class="c1"># Add Label</span>
-</span><span class="hll"><span class="n">label</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">security_label</span><span class="p">(</span><span class="s1">&#39;My Label&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="n">label</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;ffffff&#39;</span>
-</span><span class="n">label</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Security label description.&#39;</span>
-<span class="hll"><span class="c1"># optional save method</span>
-</span><span class="n">batch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">document</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+<span class="hll"><span class="linenos"> 2</span><span class="n">document</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">document</span><span class="p">(</span><span class="s1">&#39;document-001&#39;</span><span class="p">,</span> <span class="s1">&#39;example.txt&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="linenos"> 3</span><span class="n">document</span><span class="o">.</span><span class="n">malware</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span class="hll"><span class="linenos"> 4</span><span class="n">document</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="s1">&#39;test&#39;</span>
+</span><span class="hll"><span class="linenos"> 5</span><span class="n">document</span><span class="o">.</span><span class="n">file_content</span> <span class="o">=</span> <span class="s1">&#39;example file content&#39;</span>
+</span><span class="hll"><span class="linenos"> 6</span><span class="c1"># Add Attribute</span>
+</span><span class="hll"><span class="linenos"> 7</span><span class="n">attr</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description&#39;</span><span class="p">)</span>
+</span><span class="linenos"> 8</span><span class="n">attr</span><span class="o">.</span><span class="n">displayed</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="hll"><span class="linenos"> 9</span><span class="c1"># Add Tag</span>
+</span><span class="linenos">10</span><span class="n">document</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
+<span class="hll"><span class="linenos">11</span><span class="c1"># Add Label</span>
+</span><span class="hll"><span class="linenos">12</span><span class="n">label</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">security_label</span><span class="p">(</span><span class="s1">&#39;My Label&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="linenos">13</span><span class="n">label</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;ffffff&#39;</span>
+</span><span class="linenos">14</span><span class="n">label</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Security label description.&#39;</span>
+<span class="hll"><span class="linenos">15</span><span class="c1"># optional save method</span>
+</span><span class="linenos">16</span><span class="n">batch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">document</span><span class="p">)</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The optional <code class="docutils literal notranslate"><span class="pre">batch.save()</span></code> method will write the Group or Indicator to disk.  When processing large amounts of data, this is the preferred method in order to save on the memory usage of the App.</p>
@@ -300,80 +282,50 @@
 <div class="section" id="group-interface-2">
 <h3>Group Interface 2<a class="headerlink" href="#group-interface-2" title="Permalink to this headline">¶</a></h3>
 <p>The second and more dynamic interface uses the more generic <code class="xref py py-meth docutils literal notranslate"><span class="pre">group()</span></code> method.  In this interface the Group type, Group name, and optional xid are the only allowed fields.  For a type-specific field, such as <strong>eventDate</strong> for an Event Group, the <code class="xref py py-meth docutils literal notranslate"><span class="pre">add_key_value()</span></code> method is available. The field name must be exactly what the batch API expects (which are listed <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/groups/groups.html#group-fields">here</a>).  Added metadata behaves the same as in Interface 1.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span>
-<span class="normal">6</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
-<span class="hll"><span class="n">event</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;Event&#39;</span><span class="p">,</span> <span class="s1">&#39;My event name&#39;</span><span class="p">,</span> <span class="n">date_added</span><span class="o">=</span><span class="s1">&#39;2008-12-12T12:12:12&#39;</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="s1">&#39;my-xid-0001&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="n">event</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;eventDate&#39;</span><span class="p">,</span> <span class="s1">&#39;yesterday&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="n">event</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">,</span> <span class="s1">&#39;Needs Review&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="n">event</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description 2&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;source&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="n">event</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+<span class="hll"><span class="linenos">2</span><span class="n">event</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;Event&#39;</span><span class="p">,</span> <span class="s1">&#39;My event name&#39;</span><span class="p">,</span> <span class="n">date_added</span><span class="o">=</span><span class="s1">&#39;2008-12-12T12:12:12&#39;</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="s1">&#39;my-xid-0001&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="linenos">3</span><span class="n">event</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;eventDate&#39;</span><span class="p">,</span> <span class="s1">&#39;yesterday&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="linenos">4</span><span class="n">event</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">,</span> <span class="s1">&#39;Needs Review&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="linenos">5</span><span class="n">event</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description 2&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;source&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="linenos">6</span><span class="n">event</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
 </span></pre></div>
-</td></tr></table></div>
+</div>
 <p>The code below demonstrates how to create a Document using this interface (and the same principle applies for Reports and any other Groups to which file contents can be added):</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span>
-<span class="normal">6</span>
-<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
-<span class="n">document</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="s1">&#39;document-001&#39;</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="s1">&#39;my-xid-0001&#39;</span><span class="p">)</span>
-<span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="s1">&#39;test.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;Document content here...&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;fileName&#39;</span><span class="p">,</span> <span class="s1">&#39;test.txt&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;Attribute source&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">security_label</span><span class="p">(</span><span class="s1">&#39;TLP Green&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+<span class="linenos">2</span><span class="n">document</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="s1">&#39;document-001&#39;</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="s1">&#39;my-xid-0001&#39;</span><span class="p">)</span>
+<span class="hll"><span class="linenos">3</span><span class="n">document</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="s1">&#39;test.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;Document content here...&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="linenos">4</span><span class="n">document</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;fileName&#39;</span><span class="p">,</span> <span class="s1">&#39;test.txt&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="linenos">5</span><span class="n">document</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;Attribute source&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="linenos">6</span><span class="n">document</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="linenos">7</span><span class="n">document</span><span class="o">.</span><span class="n">security_label</span><span class="p">(</span><span class="s1">&#39;TLP Green&#39;</span><span class="p">)</span>
 </span></pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="group-interface-3">
 <h3>Group Interface 3<a class="headerlink" href="#group-interface-3" title="Permalink to this headline">¶</a></h3>
 <p>The third interface accepts the raw data formatted as a dictionary.  This method requires that an xid be provided.  All metadata should be included with in the JSON object.  View the required fields for each group type <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/groups/groups.html#group-fields">here</a>.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
-<span class="n">xid</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">generate_xid</span><span class="p">([</span><span class="s1">&#39;my&#39;</span><span class="p">,</span> <span class="s1">&#39;adversary&#39;</span><span class="p">,</span> <span class="s1">&#39;123&#39;</span><span class="p">])</span>
-<span class="hll"><span class="n">batch</span><span class="o">.</span><span class="n">add_group</span><span class="p">({</span>
-</span><span class="hll">    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;document-002&#39;</span><span class="p">,</span>
-</span><span class="hll">    <span class="s1">&#39;fileName&#39;</span><span class="p">:</span> <span class="s1">&#39;test2.txt&#39;</span><span class="p">,</span>
-</span><span class="hll">    <span class="s1">&#39;fileContent&#39;</span><span class="p">:</span> <span class="s1">&#39;example content 2&#39;</span><span class="p">,</span>
-</span><span class="hll">    <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span>
-</span><span class="hll">    <span class="s1">&#39;xid&#39;</span><span class="p">:</span> <span class="n">xid</span><span class="p">,</span>
-</span><span class="hll">    <span class="s2">&quot;associatedGroupXid&quot;</span><span class="p">:</span> <span class="p">[</span>
-</span><span class="hll">        <span class="s2">&quot;my-xid-001&quot;</span>
-</span><span class="hll">    <span class="p">],</span>
-</span><span class="hll">    <span class="s1">&#39;attribute&#39;</span><span class="p">:</span> <span class="p">[{</span>
-</span><span class="hll">        <span class="s2">&quot;displayed&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-</span><span class="hll">        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Description&quot;</span><span class="p">,</span>
-</span><span class="hll">        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;Example Description&quot;</span>
-</span><span class="hll">    <span class="p">}],</span>
-</span><span class="hll">    <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="p">[{</span>
-</span><span class="hll">        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;SafeToDelete&#39;</span>
-</span><span class="hll">    <span class="p">}]</span>
-</span><span class="hll"><span class="p">})</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+<span class="linenos"> 2</span><span class="n">xid</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">generate_xid</span><span class="p">([</span><span class="s1">&#39;my&#39;</span><span class="p">,</span> <span class="s1">&#39;adversary&#39;</span><span class="p">,</span> <span class="s1">&#39;123&#39;</span><span class="p">])</span>
+<span class="hll"><span class="linenos"> 3</span><span class="n">batch</span><span class="o">.</span><span class="n">add_group</span><span class="p">({</span>
+</span><span class="hll"><span class="linenos"> 4</span>    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;document-002&#39;</span><span class="p">,</span>
+</span><span class="hll"><span class="linenos"> 5</span>    <span class="s1">&#39;fileName&#39;</span><span class="p">:</span> <span class="s1">&#39;test2.txt&#39;</span><span class="p">,</span>
+</span><span class="hll"><span class="linenos"> 6</span>    <span class="s1">&#39;fileContent&#39;</span><span class="p">:</span> <span class="s1">&#39;example content 2&#39;</span><span class="p">,</span>
+</span><span class="hll"><span class="linenos"> 7</span>    <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span>
+</span><span class="hll"><span class="linenos"> 8</span>    <span class="s1">&#39;xid&#39;</span><span class="p">:</span> <span class="n">xid</span><span class="p">,</span>
+</span><span class="hll"><span class="linenos"> 9</span>    <span class="s2">&quot;associatedGroupXid&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span class="hll"><span class="linenos">10</span>        <span class="s2">&quot;my-xid-001&quot;</span>
+</span><span class="hll"><span class="linenos">11</span>    <span class="p">],</span>
+</span><span class="hll"><span class="linenos">12</span>    <span class="s1">&#39;attribute&#39;</span><span class="p">:</span> <span class="p">[{</span>
+</span><span class="hll"><span class="linenos">13</span>        <span class="s2">&quot;displayed&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span class="hll"><span class="linenos">14</span>        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Description&quot;</span><span class="p">,</span>
+</span><span class="hll"><span class="linenos">15</span>        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;Example Description&quot;</span>
+</span><span class="hll"><span class="linenos">16</span>    <span class="p">}],</span>
+</span><span class="hll"><span class="linenos">17</span>    <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="p">[{</span>
+</span><span class="hll"><span class="linenos">18</span>        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;SafeToDelete&#39;</span>
+</span><span class="hll"><span class="linenos">19</span>    <span class="p">}]</span>
+</span><span class="hll"><span class="linenos">20</span><span class="p">})</span>
 </span></pre></div>
-</td></tr></table></div>
+</div>
 </div>
 </div>
 <div class="section" id="indicators">
@@ -382,85 +334,52 @@
 <div class="section" id="indicator-interface-1">
 <h3>Indicator Interface 1<a class="headerlink" href="#indicator-interface-1" title="Permalink to this headline">¶</a></h3>
 <p>The first interface is for type-specific access.  This interface allows for passing of all the data in the method call or of only the required fields, with optional fields being set via property setters. All metadata (e.g., Attributes, Security Labels, Associations, and Tags) can be added to the Indicator instance directly.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span>
-<span class="normal">6</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
-<span class="hll"><span class="n">address</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">address</span><span class="p">(</span><span class="s1">&#39;123.124.125.126&#39;</span><span class="p">,</span> <span class="n">rating</span><span class="o">=</span><span class="s1">&#39;5.0&#39;</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="s1">&#39;100&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="n">address</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-</span><span class="hll"><span class="n">address</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="n">address</span><span class="o">.</span><span class="n">security_label</span><span class="p">(</span><span class="s1">&#39;TLP Green&#39;</span><span class="p">)</span>
-</span><span class="n">address</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="s1">&#39;the_xid_of_pre_existing_group&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+<span class="hll"><span class="linenos">2</span><span class="n">address</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">address</span><span class="p">(</span><span class="s1">&#39;123.124.125.126&#39;</span><span class="p">,</span> <span class="n">rating</span><span class="o">=</span><span class="s1">&#39;5.0&#39;</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="s1">&#39;100&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="linenos">3</span><span class="n">address</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+</span><span class="hll"><span class="linenos">4</span><span class="n">address</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="linenos">5</span><span class="n">address</span><span class="o">.</span><span class="n">security_label</span><span class="p">(</span><span class="s1">&#39;TLP Green&#39;</span><span class="p">)</span>
+</span><span class="linenos">6</span><span class="n">address</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="s1">&#39;the_xid_of_pre_existing_group&#39;</span><span class="p">)</span>
 </pre></div>
-</td></tr></table></div>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
-<span class="hll"><span class="n">file_hash</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">file</span><span class="p">(</span><span class="s1">&#39;43c3609411c83f363e051d455ade78a6&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="n">file_hash</span><span class="o">.</span><span class="n">rating</span> <span class="o">=</span> <span class="mf">5.0</span>
-</span><span class="hll"><span class="n">file_hash</span><span class="o">.</span><span class="n">confidence</span> <span class="o">=</span> <span class="mi">100</span>
-</span><span class="c1"># Add Attribute</span>
-<span class="hll"><span class="n">attr</span> <span class="o">=</span> <span class="n">file_hash</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="n">attr</span><span class="o">.</span><span class="n">displayed</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span class="c1"># Tag</span>
-<span class="hll"><span class="n">file_hash</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
-</span><span class="c1"># Add Label</span>
-<span class="hll"><span class="n">label</span> <span class="o">=</span> <span class="n">file_hash</span><span class="o">.</span><span class="n">security_label</span><span class="p">(</span><span class="s1">&#39;My Label&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="n">label</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;ffffff&#39;</span>
-</span><span class="hll"><span class="n">label</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Security label description.&#39;</span>
-</span><span class="c1"># Add Occurrence</span>
-<span class="hll"><span class="n">occurrence</span> <span class="o">=</span> <span class="n">file_hash</span><span class="o">.</span><span class="n">occurrence</span><span class="p">()</span>
-</span><span class="hll"><span class="n">occurrence</span><span class="o">.</span><span class="n">file_name</span> <span class="o">=</span> <span class="s1">&#39;drop1.exe&#39;</span>
-</span><span class="hll"><span class="n">occurrence</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;C:</span><span class="se">\\</span><span class="s1">test</span><span class="se">\\</span><span class="s1">&#39;</span>
-</span><span class="hll"><span class="n">occurrence</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="s1">&#39;2017-02-02 01:02:03&#39;</span>
-</span><span class="c1"># Add Association</span>
-<span class="n">pre_existing_group_xid</span> <span class="o">=</span> <span class="s1">&#39;the_xid_of_pre_existing_group&#39;</span>
-<span class="n">file_hash</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">pre_existing_group_xid</span><span class="p">)</span>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+<span class="hll"><span class="linenos"> 2</span><span class="n">file_hash</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">file</span><span class="p">(</span><span class="s1">&#39;43c3609411c83f363e051d455ade78a6&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="linenos"> 3</span><span class="n">file_hash</span><span class="o">.</span><span class="n">rating</span> <span class="o">=</span> <span class="mf">5.0</span>
+</span><span class="hll"><span class="linenos"> 4</span><span class="n">file_hash</span><span class="o">.</span><span class="n">confidence</span> <span class="o">=</span> <span class="mi">100</span>
+</span><span class="linenos"> 5</span><span class="c1"># Add Attribute</span>
+<span class="hll"><span class="linenos"> 6</span><span class="n">attr</span> <span class="o">=</span> <span class="n">file_hash</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="linenos"> 7</span><span class="n">attr</span><span class="o">.</span><span class="n">displayed</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span class="linenos"> 8</span><span class="c1"># Tag</span>
+<span class="hll"><span class="linenos"> 9</span><span class="n">file_hash</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
+</span><span class="linenos">10</span><span class="c1"># Add Label</span>
+<span class="hll"><span class="linenos">11</span><span class="n">label</span> <span class="o">=</span> <span class="n">file_hash</span><span class="o">.</span><span class="n">security_label</span><span class="p">(</span><span class="s1">&#39;My Label&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="linenos">12</span><span class="n">label</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;ffffff&#39;</span>
+</span><span class="hll"><span class="linenos">13</span><span class="n">label</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Security label description.&#39;</span>
+</span><span class="linenos">14</span><span class="c1"># Add Occurrence</span>
+<span class="hll"><span class="linenos">15</span><span class="n">occurrence</span> <span class="o">=</span> <span class="n">file_hash</span><span class="o">.</span><span class="n">occurrence</span><span class="p">()</span>
+</span><span class="hll"><span class="linenos">16</span><span class="n">occurrence</span><span class="o">.</span><span class="n">file_name</span> <span class="o">=</span> <span class="s1">&#39;drop1.exe&#39;</span>
+</span><span class="hll"><span class="linenos">17</span><span class="n">occurrence</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;C:</span><span class="se">\\</span><span class="s1">test</span><span class="se">\\</span><span class="s1">&#39;</span>
+</span><span class="hll"><span class="linenos">18</span><span class="n">occurrence</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="s1">&#39;2017-02-02 01:02:03&#39;</span>
+</span><span class="linenos">19</span><span class="c1"># Add Association</span>
+<span class="linenos">20</span><span class="n">pre_existing_group_xid</span> <span class="o">=</span> <span class="s1">&#39;the_xid_of_pre_existing_group&#39;</span>
+<span class="linenos">21</span><span class="n">file_hash</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">pre_existing_group_xid</span><span class="p">)</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="indicator-interface-2">
 <h3>Indicator Interface 2<a class="headerlink" href="#indicator-interface-2" title="Permalink to this headline">¶</a></h3>
 <p>The second and more dynamic interface uses the more generic <code class="xref py py-meth docutils literal notranslate"><span class="pre">indicator()</span></code> method.  In this interface, the Indicator type, Indicator value, optional rating, optional confidence, and optional xid are the only allowed fields.  For a type-specific field, such as <strong>size</strong> for a File Indicator, the <code class="xref py py-meth docutils literal notranslate"><span class="pre">add_key_value()</span></code> method is available. The field name must be exactly what the batch API expects (which are listed <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#indicator-fields">here</a>).  Added metadata behaves the same as in Interface 1.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span>
-<span class="normal">6</span>
-<span class="normal">7</span>
-<span class="normal">8</span>
-<span class="normal">9</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
-<span class="hll"><span class="n">host</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="s1">&#39;Host&#39;</span><span class="p">,</span> <span class="s1">&#39;www.badguys2.com&#39;</span><span class="p">,</span> <span class="n">rating</span><span class="o">=</span><span class="s1">&#39;5.0&#39;</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="s1">&#39;100&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="n">host</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;dnsActive&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-</span><span class="hll"><span class="n">host</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;whoisActive&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-</span><span class="hll"><span class="n">host</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description 2&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;source&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="n">host</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
-</span><span class="c1"># Add association</span>
-<span class="n">pre_existing_group_xid</span> <span class="o">=</span> <span class="s1">&#39;the_xid_of_pre_existing_group&#39;</span>
-<span class="n">host</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">pre_existing_group_xid</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+<span class="hll"><span class="linenos">2</span><span class="n">host</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="s1">&#39;Host&#39;</span><span class="p">,</span> <span class="s1">&#39;www.badguys2.com&#39;</span><span class="p">,</span> <span class="n">rating</span><span class="o">=</span><span class="s1">&#39;5.0&#39;</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="s1">&#39;100&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="linenos">3</span><span class="n">host</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;dnsActive&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+</span><span class="hll"><span class="linenos">4</span><span class="n">host</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;whoisActive&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+</span><span class="hll"><span class="linenos">5</span><span class="n">host</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description 2&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;source&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="linenos">6</span><span class="n">host</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
+</span><span class="linenos">7</span><span class="c1"># Add association</span>
+<span class="linenos">8</span><span class="n">pre_existing_group_xid</span> <span class="o">=</span> <span class="s1">&#39;the_xid_of_pre_existing_group&#39;</span>
+<span class="linenos">9</span><span class="n">host</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">pre_existing_group_xid</span><span class="p">)</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The case of the Indicator type (the first argument provided to the <cite>batch.indicator()</cite> function) should be the same as the <cite>name</cite> key provided when retrieving the Indicator types &lt;<a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#retrieve-available-indicator-types">https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#retrieve-available-indicator-types</a>&gt;`__.</p>
@@ -469,80 +388,49 @@
 <div class="section" id="indicator-interface-3">
 <h3>Indicator Interface 3<a class="headerlink" href="#indicator-interface-3" title="Permalink to this headline">¶</a></h3>
 <p>The third interface accepts the raw data formatted as a dictionary. This method requires that an xid be provided. All metadata should be included with in the data. View the required fields for each Indicator type <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#indicator-fields">here</a>.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
-<span class="hll"><span class="n">batch</span><span class="o">.</span><span class="n">add_indicator</span><span class="p">({</span>
-</span><span class="hll">    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;File&quot;</span><span class="p">,</span>
-</span><span class="hll">    <span class="s2">&quot;rating&quot;</span><span class="p">:</span> <span class="mf">5.00</span><span class="p">,</span>
-</span><span class="hll">    <span class="s2">&quot;confidence&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
-</span><span class="hll">    <span class="s2">&quot;summary&quot;</span><span class="p">:</span> <span class="s2">&quot;53c3609411c83f363e051d455ade78a7 : 57a49b478310e4313c54c0fee46e4d70a73dd580 : db31cb2a748b7e0046d8c97a32a7eb4efde32a0593e5dbd58e07a3b4ae6bf3d7&quot;</span><span class="p">,</span>
-</span><span class="hll">    <span class="s2">&quot;associatedGroups&quot;</span><span class="p">:</span> <span class="p">[</span>
-</span><span class="hll">        <span class="p">{</span>
-</span><span class="hll">            <span class="s2">&quot;groupXid&quot;</span><span class="p">:</span> <span class="s2">&quot;e336e2dd-5dfb-48cd-a33a-f8809e83e904&quot;</span>
-</span><span class="hll">        <span class="p">}</span>
-</span><span class="hll">    <span class="p">],</span>
-</span><span class="hll">    <span class="s2">&quot;attribute&quot;</span><span class="p">:</span> <span class="p">[{</span>
-</span><span class="hll">        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Source&quot;</span><span class="p">,</span>
-</span><span class="hll">        <span class="s2">&quot;displayed&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-</span><span class="hll">        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;Malware Analysis provided by external AMA.&quot;</span>
-</span><span class="hll">    <span class="p">}],</span>
-</span><span class="hll">    <span class="s2">&quot;fileOccurrence&quot;</span><span class="p">:</span> <span class="p">[{</span>
-</span><span class="hll">        <span class="s2">&quot;fileName&quot;</span><span class="p">:</span> <span class="s2">&quot;drop1.exe&quot;</span><span class="p">,</span>
-</span><span class="hll">        <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="s2">&quot;2017-03-03T18:00:00-06:00&quot;</span>
-</span><span class="hll">    <span class="p">}],</span>
-</span><span class="hll">    <span class="s2">&quot;tag&quot;</span><span class="p">:</span> <span class="p">[{</span>
-</span><span class="hll">        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;China&quot;</span>
-</span><span class="hll">    <span class="p">}],</span>
-</span><span class="hll">    <span class="s2">&quot;xid&quot;</span><span class="p">:</span> <span class="s2">&quot;e336e2dd-5dfb-48cd-a33a-f8809e83e904:170139&quot;</span>
-</span><span class="hll"><span class="p">})</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+<span class="hll"><span class="linenos"> 2</span><span class="n">batch</span><span class="o">.</span><span class="n">add_indicator</span><span class="p">({</span>
+</span><span class="hll"><span class="linenos"> 3</span>    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;File&quot;</span><span class="p">,</span>
+</span><span class="hll"><span class="linenos"> 4</span>    <span class="s2">&quot;rating&quot;</span><span class="p">:</span> <span class="mf">5.00</span><span class="p">,</span>
+</span><span class="hll"><span class="linenos"> 5</span>    <span class="s2">&quot;confidence&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+</span><span class="hll"><span class="linenos"> 6</span>    <span class="s2">&quot;summary&quot;</span><span class="p">:</span> <span class="s2">&quot;53c3609411c83f363e051d455ade78a7 : 57a49b478310e4313c54c0fee46e4d70a73dd580 : db31cb2a748b7e0046d8c97a32a7eb4efde32a0593e5dbd58e07a3b4ae6bf3d7&quot;</span><span class="p">,</span>
+</span><span class="hll"><span class="linenos"> 7</span>    <span class="s2">&quot;associatedGroups&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span class="hll"><span class="linenos"> 8</span>        <span class="p">{</span>
+</span><span class="hll"><span class="linenos"> 9</span>            <span class="s2">&quot;groupXid&quot;</span><span class="p">:</span> <span class="s2">&quot;e336e2dd-5dfb-48cd-a33a-f8809e83e904&quot;</span>
+</span><span class="hll"><span class="linenos">10</span>        <span class="p">}</span>
+</span><span class="hll"><span class="linenos">11</span>    <span class="p">],</span>
+</span><span class="hll"><span class="linenos">12</span>    <span class="s2">&quot;attribute&quot;</span><span class="p">:</span> <span class="p">[{</span>
+</span><span class="hll"><span class="linenos">13</span>        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Source&quot;</span><span class="p">,</span>
+</span><span class="hll"><span class="linenos">14</span>        <span class="s2">&quot;displayed&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span class="hll"><span class="linenos">15</span>        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;Malware Analysis provided by external AMA.&quot;</span>
+</span><span class="hll"><span class="linenos">16</span>    <span class="p">}],</span>
+</span><span class="hll"><span class="linenos">17</span>    <span class="s2">&quot;fileOccurrence&quot;</span><span class="p">:</span> <span class="p">[{</span>
+</span><span class="hll"><span class="linenos">18</span>        <span class="s2">&quot;fileName&quot;</span><span class="p">:</span> <span class="s2">&quot;drop1.exe&quot;</span><span class="p">,</span>
+</span><span class="hll"><span class="linenos">19</span>        <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="s2">&quot;2017-03-03T18:00:00-06:00&quot;</span>
+</span><span class="hll"><span class="linenos">20</span>    <span class="p">}],</span>
+</span><span class="hll"><span class="linenos">21</span>    <span class="s2">&quot;tag&quot;</span><span class="p">:</span> <span class="p">[{</span>
+</span><span class="hll"><span class="linenos">22</span>        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;China&quot;</span>
+</span><span class="hll"><span class="linenos">23</span>    <span class="p">}],</span>
+</span><span class="hll"><span class="linenos">24</span>    <span class="s2">&quot;xid&quot;</span><span class="p">:</span> <span class="s2">&quot;e336e2dd-5dfb-48cd-a33a-f8809e83e904:170139&quot;</span>
+</span><span class="hll"><span class="linenos">25</span><span class="p">})</span>
 </span></pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="file-occurrence">
 <h3>File Occurrence<a class="headerlink" href="#file-occurrence" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># &lt;... snipped&gt;</span>
-<span class="hll"><span class="n">file_hash</span><span class="o">.</span><span class="n">occurrence</span><span class="p">(</span><span class="s1">&#39;drop1.exe&#39;</span><span class="p">,</span> <span class="s1">&#39;C:</span><span class="se">\\</span><span class="s1">test</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;2017-02-02 01:02:03&#39;</span><span class="p">)</span>
-</span><span class="c1"># &lt;snipped ...&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="c1"># &lt;... snipped&gt;</span>
+<span class="hll"><span class="linenos">2</span><span class="n">file_hash</span><span class="o">.</span><span class="n">occurrence</span><span class="p">(</span><span class="s1">&#39;drop1.exe&#39;</span><span class="p">,</span> <span class="s1">&#39;C:</span><span class="se">\\</span><span class="s1">test</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;2017-02-02 01:02:03&#39;</span><span class="p">)</span>
+</span><span class="linenos">3</span><span class="c1"># &lt;snipped ...&gt;</span>
 </pre></div>
-</td></tr></table></div>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span>
-<span class="normal">6</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># &lt;... snipped&gt;</span>
-<span class="hll"><span class="n">occurrence</span> <span class="o">=</span> <span class="n">file_hash</span><span class="o">.</span><span class="n">occurrence</span><span class="p">()</span>
-</span><span class="hll"><span class="n">occurrence</span><span class="o">.</span><span class="n">file_name</span> <span class="o">=</span> <span class="s1">&#39;drop1.exe&#39;</span>
-</span><span class="hll"><span class="n">occurrence</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;C:</span><span class="se">\\</span><span class="s1">test</span><span class="se">\\</span><span class="s1">&#39;</span>
-</span><span class="hll"><span class="n">occurrence</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="s1">&#39;2017-02-02 01:02:03&#39;</span>
-</span><span class="c1"># &lt;snipped ...&gt;</span>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="c1"># &lt;... snipped&gt;</span>
+<span class="hll"><span class="linenos">2</span><span class="n">occurrence</span> <span class="o">=</span> <span class="n">file_hash</span><span class="o">.</span><span class="n">occurrence</span><span class="p">()</span>
+</span><span class="hll"><span class="linenos">3</span><span class="n">occurrence</span><span class="o">.</span><span class="n">file_name</span> <span class="o">=</span> <span class="s1">&#39;drop1.exe&#39;</span>
+</span><span class="hll"><span class="linenos">4</span><span class="n">occurrence</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;C:</span><span class="se">\\</span><span class="s1">test</span><span class="se">\\</span><span class="s1">&#39;</span>
+</span><span class="hll"><span class="linenos">5</span><span class="n">occurrence</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="s1">&#39;2017-02-02 01:02:03&#39;</span>
+</span><span class="linenos">6</span><span class="c1"># &lt;snipped ...&gt;</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 </div>
 <div class="section" id="associations">
@@ -551,82 +439,53 @@
 <div class="section" id="group">
 <h3>Group<a class="headerlink" href="#group" title="Permalink to this headline">¶</a></h3>
 <p>Example of Group -&gt; Group Association.</p>
-<div class="highlight-javascript notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span>
-<span class="normal">6</span>
-<span class="normal">7</span>
-<span class="normal">8</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;document-002&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Document&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;xid&quot;</span><span class="o">:</span> <span class="s2">&quot;my-xid-002&quot;</span><span class="p">,</span>
-<span class="hll">    <span class="s2">&quot;associatedGroupXid&quot;</span><span class="o">:</span> <span class="p">[</span>
-</span><span class="hll">        <span class="s2">&quot;my-xid-001&quot;</span>
-</span><span class="hll">    <span class="p">]</span>
-</span><span class="p">}</span>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="p">{</span>
+<span class="linenos">2</span>    <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;document-002&quot;</span><span class="p">,</span>
+<span class="linenos">3</span>    <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Document&quot;</span><span class="p">,</span>
+<span class="linenos">4</span>    <span class="s2">&quot;xid&quot;</span><span class="o">:</span> <span class="s2">&quot;my-xid-002&quot;</span><span class="p">,</span>
+<span class="hll"><span class="linenos">5</span>    <span class="s2">&quot;associatedGroupXid&quot;</span><span class="o">:</span> <span class="p">[</span>
+</span><span class="hll"><span class="linenos">6</span>        <span class="s2">&quot;my-xid-001&quot;</span>
+</span><span class="hll"><span class="linenos">7</span>    <span class="p">]</span>
+</span><span class="linenos">8</span><span class="p">}</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="indicator">
 <h3>Indicator<a class="headerlink" href="#indicator" title="Permalink to this headline">¶</a></h3>
 <p>Example of Indicator -&gt; Group Association.</p>
-<div class="highlight-javascript notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span>
-<span class="normal">6</span>
-<span class="normal">7</span>
-<span class="normal">8</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="hll">    <span class="s2">&quot;associatedGroups&quot;</span><span class="o">:</span> <span class="p">[{</span>
-</span><span class="hll">        <span class="s2">&quot;groupXid&quot;</span><span class="o">:</span> <span class="s2">&quot;my-xid-001&quot;</span>
-</span><span class="hll">    <span class="p">}],</span>
-</span><span class="hll">    <span class="s2">&quot;summary&quot;</span><span class="o">:</span> <span class="s2">&quot;HKEY_LOCAL_MACHINE\system : TRUE : REG_DWORD&quot;</span><span class="p">,</span>
-</span><span class="hll">    <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Registry Key&quot;</span><span class="p">,</span>
-</span>    <span class="s2">&quot;xid&quot;</span><span class="o">:</span> <span class="s2">&quot;ba60d2d6-8049-4080-9c5c-2b33d8d97767&quot;</span>
-<span class="p">}</span>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="p">{</span>
+<span class="hll"><span class="linenos">2</span>    <span class="s2">&quot;associatedGroups&quot;</span><span class="o">:</span> <span class="p">[{</span>
+</span><span class="hll"><span class="linenos">3</span>        <span class="s2">&quot;groupXid&quot;</span><span class="o">:</span> <span class="s2">&quot;my-xid-001&quot;</span>
+</span><span class="hll"><span class="linenos">4</span>    <span class="p">}],</span>
+</span><span class="hll"><span class="linenos">5</span>    <span class="s2">&quot;summary&quot;</span><span class="o">:</span> <span class="s2">&quot;HKEY_LOCAL_MACHINE\system : TRUE : REG_DWORD&quot;</span><span class="p">,</span>
+</span><span class="hll"><span class="linenos">6</span>    <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Registry Key&quot;</span><span class="p">,</span>
+</span><span class="linenos">7</span>    <span class="s2">&quot;xid&quot;</span><span class="o">:</span> <span class="s2">&quot;ba60d2d6-8049-4080-9c5c-2b33d8d97767&quot;</span>
+<span class="linenos">8</span><span class="p">}</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 </div>
 <div class="section" id="submit">
 <h2>Submit<a class="headerlink" href="#submit" title="Permalink to this headline">¶</a></h2>
 <p>There are few options for submitting the batch job, all with an option to <strong>halt_on_error</strong>.  The most common option, <code class="xref py py-meth docutils literal notranslate"><span class="pre">submit_all()</span></code>, provides a simple interface that will perform all the individual step by default (e.g., request create and upload, poll for status, retrieve errors, and submit files).  When using this method, it is possible to control the <strong>halt_on_error</strong> behavior for each step using global overrides.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
-</span><span class="c1"># defaults to true or uses the provided value passed to the submit method. this value controls the behavior</span>
-<span class="c1"># for errors when creating batch job and submitting the data.</span>
-<span class="n">batch</span><span class="o">.</span><span class="n">halt_on_batch_error</span> <span class="o">=</span> <span class="kc">False</span>
-
-<span class="c1"># defaults to true or uses the provided value passed to the submit method. this value controls the behavior</span>
-<span class="c1"># for errors when submitting files. if set to True a single file upload error would cause the batch module</span>
-<span class="c1"># to raise and exception and potentially cause the job to fail.</span>
-<span class="n">batch</span><span class="o">.</span><span class="n">halt_on_file_error</span> <span class="o">=</span> <span class="kc">False</span>
-
-<span class="c1"># defaults to true or uses the provided value passed to the submit method. this value controls the behavior</span>
-<span class="c1"># for errors when polling batch status.</span>
-<span class="n">batch</span><span class="o">.</span><span class="n">halt_on_poll_error</span> <span class="o">=</span> <span class="kc">False</span>
-
-<span class="k">if</span> <span class="n">errors</span><span class="p">:</span>
-    <span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Errors during Batch: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">errors</span><span class="p">))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="linenos"> 1</span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+</span><span class="linenos"> 2</span><span class="c1"># defaults to true or uses the provided value passed to the submit method. this value controls the behavior</span>
+<span class="linenos"> 3</span><span class="c1"># for errors when creating batch job and submitting the data.</span>
+<span class="linenos"> 4</span><span class="n">batch</span><span class="o">.</span><span class="n">halt_on_batch_error</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span><span class="c1"># defaults to true or uses the provided value passed to the submit method. this value controls the behavior</span>
+<span class="linenos"> 7</span><span class="c1"># for errors when submitting files. if set to True a single file upload error would cause the batch module</span>
+<span class="linenos"> 8</span><span class="c1"># to raise and exception and potentially cause the job to fail.</span>
+<span class="linenos"> 9</span><span class="n">batch</span><span class="o">.</span><span class="n">halt_on_file_error</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="linenos">10</span>
+<span class="linenos">11</span><span class="c1"># defaults to true or uses the provided value passed to the submit method. this value controls the behavior</span>
+<span class="linenos">12</span><span class="c1"># for errors when polling batch status.</span>
+<span class="linenos">13</span><span class="n">batch</span><span class="o">.</span><span class="n">halt_on_poll_error</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="linenos">14</span>
+<span class="linenos">15</span><span class="k">if</span> <span class="n">errors</span><span class="p">:</span>
+<span class="linenos">16</span>    <span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Errors during Batch: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">errors</span><span class="p">))</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <p>In some cases, handling errors may require more control.  For these cases the submit method can be called with some or all of the additional features (e.g., polling, retrieving errors, and uploading files) disabled. It is also possible to call each method individually.  A possible workflow could be to use <code class="xref py py-meth docutils literal notranslate"><span class="pre">submit_create_and_upload()</span></code> and then to retrieve data from a remote endpoint while ThreatConnect processes the batch job.  Next, poll by using <code class="xref py py-meth docutils literal notranslate"><span class="pre">poll()</span></code> for status, and when the job is completed, the next job request can be submitted. If batch errors are reported in the Batch status, the <code class="xref py py-meth docutils literal notranslate"><span class="pre">errors()</span></code> method can be used to retrieve the errors.  Submitting files for Documents and Reports can be done using the <code class="xref py py-meth docutils literal notranslate"><span class="pre">submit_files()</span></code> method.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -635,56 +494,36 @@
 <div class="section" id="option-1">
 <h3>Option 1<a class="headerlink" href="#option-1" title="Permalink to this headline">¶</a></h3>
 <p>Submit the job and wait for completion. In the example below, any error messages are requested to be returned as well.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="n">batch_data</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">submit_all</span><span class="p">()</span>
-</span><span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="p">[</span><span class="n">errors</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errors&#39;</span><span class="p">,</span> <span class="p">[]))</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">batch_data</span> <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errors&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]</span>
-<span class="k">if</span> <span class="n">errors</span><span class="p">:</span>
-    <span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Errors during Batch: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">errors</span><span class="p">))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="linenos">1</span><span class="n">batch_data</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">submit_all</span><span class="p">()</span>
+</span><span class="linenos">2</span><span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="linenos">3</span><span class="p">[</span><span class="n">errors</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errors&#39;</span><span class="p">,</span> <span class="p">[]))</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">batch_data</span> <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errors&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]</span>
+<span class="linenos">4</span><span class="k">if</span> <span class="n">errors</span><span class="p">:</span>
+<span class="linenos">5</span>    <span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Errors during Batch: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">errors</span><span class="p">))</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="option-2">
 <h3>Option 2<a class="headerlink" href="#option-2" title="Permalink to this headline">¶</a></h3>
 <p>Call each step in submitting the batch job manually. A check for <strong>batch_id</strong> will indicate whether the job was processed asynchronously.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># submit batch job create and upload request</span>
-<span class="hll"><span class="n">batch_data</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">submit_create_and_upload</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;batchStatus&#39;</span><span class="p">)</span>
-</span>
-<span class="c1"># check if job requires polling</span>
-<span class="hll"><span class="n">batch_id</span> <span class="o">=</span> <span class="n">batch_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="k">if</span> <span class="n">batch_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span class="hll">    <span class="c1"># poll for batch status</span>
-</span><span class="hll">    <span class="n">batch_status</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">poll</span><span class="p">(</span><span class="n">batch_id</span><span class="p">)</span>
-</span><span class="hll">
-</span><span class="hll">    <span class="c1"># check for errors</span>
-</span><span class="hll">    <span class="k">if</span> <span class="n">batch_status</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;batchStatus&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errorCount&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-</span><span class="hll">        <span class="c1"># retrieve errors</span>
-</span><span class="hll">        <span class="n">errors</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">errors</span><span class="p">(</span><span class="n">batch_id</span><span class="p">)</span>
-</span><span class="hll">        <span class="nb">print</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span>
-</span>
-<span class="c1"># submit any documents or reports</span>
-<span class="hll"><span class="n">upload_status</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">submit_files</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1"># submit batch job create and upload request</span>
+<span class="hll"><span class="linenos"> 2</span><span class="n">batch_data</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">submit_create_and_upload</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;batchStatus&#39;</span><span class="p">)</span>
+</span><span class="linenos"> 3</span>
+<span class="linenos"> 4</span><span class="c1"># check if job requires polling</span>
+<span class="hll"><span class="linenos"> 5</span><span class="n">batch_id</span> <span class="o">=</span> <span class="n">batch_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="linenos"> 6</span><span class="k">if</span> <span class="n">batch_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos"> 7</span>    <span class="c1"># poll for batch status</span>
+</span><span class="hll"><span class="linenos"> 8</span>    <span class="n">batch_status</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">poll</span><span class="p">(</span><span class="n">batch_id</span><span class="p">)</span>
+</span><span class="hll"><span class="linenos"> 9</span>
+</span><span class="hll"><span class="linenos">10</span>    <span class="c1"># check for errors</span>
+</span><span class="hll"><span class="linenos">11</span>    <span class="k">if</span> <span class="n">batch_status</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;batchStatus&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errorCount&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos">12</span>        <span class="c1"># retrieve errors</span>
+</span><span class="hll"><span class="linenos">13</span>        <span class="n">errors</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">errors</span><span class="p">(</span><span class="n">batch_id</span><span class="p">)</span>
+</span><span class="hll"><span class="linenos">14</span>        <span class="nb">print</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span>
+</span><span class="linenos">15</span>
+<span class="linenos">16</span><span class="c1"># submit any documents or reports</span>
+<span class="hll"><span class="linenos">17</span><span class="n">upload_status</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">submit_files</span><span class="p">()</span>
 </span></pre></div>
-</td></tr></table></div>
+</div>
 </div>
 </div>
 </div>

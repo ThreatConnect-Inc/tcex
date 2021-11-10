@@ -7,12 +7,14 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>tcex.case_management.case_management &mdash; TcEx 2.0.23 documentation</title>
+  <title>tcex.case_management.case_management &mdash; TcEx 2.0.26 documentation</title>
 
 
 
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
 
 
@@ -30,6 +32,7 @@
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -62,7 +65,7 @@
 
 
               <div class="version">
-                2.0.23
+                2.0.26
               </div>
 
 
@@ -87,7 +90,7 @@
 
 
 
-              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../features.html">Features</a></li>
@@ -186,6 +189,7 @@
   <h1>Source code for tcex.case_management.case_management</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;ThreatConnect Case Management&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">.artifact</span> <span class="kn">import</span> <span class="n">Artifact</span><span class="p">,</span> <span class="n">Artifacts</span>
+<span class="kn">from</span> <span class="nn">.attribute</span> <span class="kn">import</span> <span class="n">Attribute</span><span class="p">,</span> <span class="n">Attributes</span>
 <span class="kn">from</span> <span class="nn">.artifact_type</span> <span class="kn">import</span> <span class="n">ArtifactType</span><span class="p">,</span> <span class="n">ArtifactTypes</span>
 <span class="kn">from</span> <span class="nn">.assignee</span> <span class="kn">import</span> <span class="n">Assignee</span><span class="p">,</span> <span class="n">User</span><span class="p">,</span> <span class="n">Users</span>
 <span class="kn">from</span> <span class="nn">.case</span> <span class="kn">import</span> <span class="n">Case</span><span class="p">,</span> <span class="n">Cases</span>
@@ -206,6 +210,16 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class properties.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span> <span class="o">=</span> <span class="n">tcex</span>
+
+<div class="viewcode-block" id="CaseManagement.attribute"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.case_management.CaseManagement.attribute">[docs]</a>    <span class="k">def</span> <span class="nf">attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a instance of Attribute object.&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">Attribute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CaseManagement.attributes"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.case_management.CaseManagement.attributes">[docs]</a>    <span class="k">def</span> <span class="nf">attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a instance of Attributes object.&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">Attributes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CaseManagement.artifact"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.case_management.CaseManagement.artifact">[docs]</a>    <span class="k">def</span> <span class="nf">artifact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a instance of Artifact object.</span>

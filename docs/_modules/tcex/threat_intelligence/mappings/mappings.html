@@ -7,12 +7,14 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>tcex.threat_intelligence.mappings.mappings &mdash; TcEx 2.0.23 documentation</title>
+  <title>tcex.threat_intelligence.mappings.mappings &mdash; TcEx 2.0.26 documentation</title>
 
 
 
   <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
 
 
@@ -30,6 +32,7 @@
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
@@ -62,7 +65,7 @@
 
 
               <div class="version">
-                2.0.23
+                2.0.26
               </div>
 
 
@@ -87,7 +90,7 @@
 
 
 
-              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../features.html">Features</a></li>
@@ -1139,45 +1142,45 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Mappings.can_create"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.can_create">[docs]</a>    <span class="k">def</span> <span class="nf">can_create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-use</span>
-        <span class="sd">&quot;&quot;&quot; Determines if the object can be created. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Determines if the object can be created.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
 <div class="viewcode-block" id="Mappings.can_delete"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.can_delete">[docs]</a>    <span class="k">def</span> <span class="nf">can_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Determines if the object can be deleted. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Determines if the object can be deleted.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="Mappings.can_update"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.can_update">[docs]</a>    <span class="k">def</span> <span class="nf">can_update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Determines if the object can be updated. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Determines if the object can be updated.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="Mappings.is_indicator"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.is_indicator">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">is_indicator</span><span class="p">():</span>
-        <span class="sd">&quot;&quot;&quot; Determines if the object is a Indicator. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Determines if the object is a Indicator.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">False</span></div>
 
 <div class="viewcode-block" id="Mappings.is_group"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.is_group">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">is_group</span><span class="p">():</span>
-        <span class="sd">&quot;&quot;&quot; Determines if the object is a Group. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Determines if the object is a Group.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">False</span></div>
 
 <div class="viewcode-block" id="Mappings.is_victim"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.is_victim">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">is_victim</span><span class="p">():</span>
-        <span class="sd">&quot;&quot;&quot; Determines if the object is a Victim. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Determines if the object is a Victim.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">False</span></div>
 
 <div class="viewcode-block" id="Mappings.is_tag"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.is_tag">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">is_tag</span><span class="p">():</span>
-        <span class="sd">&quot;&quot;&quot; Determines if the object is a Tag. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Determines if the object is a Tag.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">False</span></div>
 
 <div class="viewcode-block" id="Mappings.is_security_label"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.is_security_label">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">is_security_label</span><span class="p">():</span>
-        <span class="sd">&quot;&quot;&quot; Determines if the object is a Security Label. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Determines if the object is a Security Label.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">False</span></div>
 
 <div class="viewcode-block" id="Mappings.is_task"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.is_task">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">is_task</span><span class="p">():</span>
-        <span class="sd">&quot;&quot;&quot; Determines if the object is a Task. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Determines if the object is a Task.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">False</span></div>
 
 <div class="viewcode-block" id="Mappings.is_encoded"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.is_encoded">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -1200,7 +1203,7 @@
         <span class="k">return</span> <span class="n">uri</span></div>
 
 <div class="viewcode-block" id="Mappings._set_unique_id"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings._set_unique_id">[docs]</a>    <span class="k">def</span> <span class="nf">_set_unique_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_response</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Sets the Unique Id given a json &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Sets the Unique Id given a json&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span> <span class="o">=</span> <span class="n">json_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Mappings.__str__"><a class="viewcode-back" href="../../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.mappings.mappings.Mappings.__str__">[docs]</a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

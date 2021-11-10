@@ -7,12 +7,14 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>tcex.case_management.case &mdash; TcEx 2.0.23 documentation</title>
+  <title>tcex.case_management.case &mdash; TcEx 2.0.26 documentation</title>
 
 
 
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
 
 
@@ -30,6 +32,7 @@
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -62,7 +65,7 @@
 
 
               <div class="version">
-                2.0.23
+                2.0.26
               </div>
 
 
@@ -87,7 +90,7 @@
 
 
 
-              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../features.html">Features</a></li>
@@ -256,6 +259,18 @@
 <span class="sd">        tcex (TcEx): An instantiated instance of TcEx object.</span>
 <span class="sd">        artifacts (Artifact, kwargs): a list of Artifacts corresponding to the Case</span>
 <span class="sd">        assignee (Assignee, kwargs): the user or group Assignee object for the Case</span>
+<span class="sd">        case_close_time (str, kwargs): [Read-Only] The date and time that the Case was closed.</span>
+<span class="sd">        case_close_user (User, kwargs): [Read-Only] The user that closed the Case.</span>
+<span class="sd">        case_detection_time (str, kwargs): The date and time that ends the user initiated Case</span>
+<span class="sd">            duration.</span>
+<span class="sd">        case_detection_user (User, kwargs): [Read-Only] The user that stopped the clock on Case</span>
+<span class="sd">            duration.</span>
+<span class="sd">        case_occurrence_time (str, kwargs): The date and time that starts the user initiated Case</span>
+<span class="sd">            duration.</span>
+<span class="sd">        case_occurrence_user (User, kwargs): [Read-Only] The user that started the clock on Case</span>
+<span class="sd">            duration.</span>
+<span class="sd">        case_open_time (str, kwargs): The date and time that the Case was first opened.</span>
+<span class="sd">        case_open_user (User, kwargs): [Read-Only] The user that opened the Case.</span>
 <span class="sd">        created_by (User, kwargs): [Read-Only] The **Created By** for the Case.</span>
 <span class="sd">        date_added (str, kwargs): [Read-Only] The **Date Added** for the Case.</span>
 <span class="sd">        description (str, kwargs): The **Description** for the Case.</span>
@@ -285,8 +300,17 @@
             <span class="p">{</span><span class="s1">&#39;keyword&#39;</span><span class="p">:</span> <span class="s1">&#39;caseid&#39;</span><span class="p">,</span> <span class="s1">&#39;operator&#39;</span><span class="p">:</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Operator</span><span class="o">.</span><span class="n">EQ</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;integer&#39;</span><span class="p">}</span>
         <span class="p">]</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;attributes&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_artifacts</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;artifacts&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_assignee</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;assignee&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_case_close_time</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;case_close_time&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_case_close_user</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;case_close_user&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_case_detection_time</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;case_detection_time&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_case_detection_user</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;case_detection_user&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_case_occurrence_time</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;case_occurrence_time&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_case_occurrence_user</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;case_occurrence_user&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_case_open_time</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;case_open_time&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_case_open_user</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;case_open_user&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_created_by</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;created_by&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_date_added</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;date_added&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -303,6 +327,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_workflow_events</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;workflow_events&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_workflow_template</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;workflow_template&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_xid</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;xid&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Case.add_attribute"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.case.Case.add_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">add_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add a Artifact to a Case.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">add_attribute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Case.add_artifact"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.case.Case.add_artifact">[docs]</a>    <span class="k">def</span> <span class="nf">add_artifact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add a Artifact to a Case.&quot;&quot;&quot;</span>
@@ -329,6 +357,16 @@
                 <span class="n">initial_response</span><span class="o">=</span><span class="n">artifacts</span><span class="p">,</span> <span class="n">tql_filters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">case_filter</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_artifacts</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Artifacts** for the Case.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span> <span class="ow">or</span> <span class="p">{}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span>
+                <span class="n">initial_response</span><span class="o">=</span><span class="n">attributes</span><span class="p">,</span> <span class="n">tql_filters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">case_filter</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span>
 
     <span class="nd">@artifacts</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">artifacts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">artifacts</span><span class="p">):</span>
@@ -359,6 +397,54 @@
         <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Case&#39;</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">}</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">case_close_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Case Close Time** for the Case.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_case_close_time</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">case_close_user</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Case Close User** for the Case.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_case_close_user</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">user</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_case_close_user</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_case_close_user</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">case_detection_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Case Detection Time** for the Case.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_case_detection_time</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">case_detection_user</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Case Detection User** for the Case.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_case_detection_user</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">user</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_case_detection_user</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_case_detection_user</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">case_occurrence_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Case Occurrence Time** for the Case.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_case_occurrence_time</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">case_occurrence_user</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Case Occurrence User** for the Case.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_case_occurrence_user</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">user</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_case_occurrence_user</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_case_occurrence_user</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">case_open_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Case Open Time** for the Case.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_case_open_time</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">case_open_user</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the **Case Open User** for the Case.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_case_open_user</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">user</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_case_open_user</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_case_open_user</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">created_by</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the **Created By** for the Case.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_created_by</span><span class="p">:</span>
@@ -374,6 +460,16 @@
     <span class="k">def</span> <span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">description</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the **Description** for the Case.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="n">description</span>
+
+    <span class="nd">@case_detection_time</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">case_detection_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">case_detection_time</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the **Description** for the Case.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_case_detection_time</span> <span class="o">=</span> <span class="n">case_detection_time</span>
+
+    <span class="nd">@case_occurrence_time</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">case_occurrence_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">case_occurrence_time</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the **Description** for the Case.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_case_detection_time</span> <span class="o">=</span> <span class="n">case_occurrence_time</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">date_added</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -524,6 +620,87 @@
 <div class="viewcode-block" id="FilterCases"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.case.FilterCases">[docs]</a><span class="k">class</span> <span class="nc">FilterCases</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Filter Object for Cases&quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="FilterCases.attribute"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.case.FilterCases.attribute">[docs]</a>    <span class="k">def</span> <span class="nf">attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Cases based on **attribute** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            attribute (str): None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;attribute&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterCases.case_close_time"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.case.FilterCases.case_close_time">[docs]</a>    <span class="k">def</span> <span class="nf">case_close_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">case_close_time</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Cases based on **caseCloseTime** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            case_close_time (str): The date/time the case was closed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;caseCloseTime&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">case_close_time</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterCases.case_close_user"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.case.FilterCases.case_close_user">[docs]</a>    <span class="k">def</span> <span class="nf">case_close_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">case_close_user</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Cases based on **caseCloseUser** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            case_close_user (str): The user who closed the case.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;caseCloseUser&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">case_close_user</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterCases.case_detection_time"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.case.FilterCases.case_detection_time">[docs]</a>    <span class="k">def</span> <span class="nf">case_detection_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">case_detection_time</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Cases based on **caseDetectionTime** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            case_detection_time (str): The date/time the case was detected.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;caseDetectionTime&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">case_detection_time</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterCases.case_detection_user"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.case.FilterCases.case_detection_user">[docs]</a>    <span class="k">def</span> <span class="nf">case_detection_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">case_detection_user</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Cases based on **caseDetectionUser** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            case_detection_user (str): The user who logged the case detection time.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;caseDetectionUser&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">case_detection_user</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterCases.case_occurrence_time"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.case.FilterCases.case_occurrence_time">[docs]</a>    <span class="k">def</span> <span class="nf">case_occurrence_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">case_occurrence_time</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Cases based on **caseOccurrenceTime** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            case_occurrence_time (str): The date/time the case occured.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;caseOccurrenceTime&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">case_occurrence_time</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterCases.case_occurrence_user"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.case.FilterCases.case_occurrence_user">[docs]</a>    <span class="k">def</span> <span class="nf">case_occurrence_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">case_occurrence_user</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Cases based on **caseOccurrenceUser** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            case_occurrence_user (str): The user who logged the case occurrence time.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;caseOccurrenceUser&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">case_occurrence_user</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterCases.case_open_time"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.case.FilterCases.case_open_time">[docs]</a>    <span class="k">def</span> <span class="nf">case_open_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">case_open_time</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Cases based on **caseOpenTime** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            case_open_time (str): The date/time the case was opened.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;caseOpenTime&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">case_open_time</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterCases.case_open_user"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.case.FilterCases.case_open_user">[docs]</a>    <span class="k">def</span> <span class="nf">case_open_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">case_open_user</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Cases based on **caseOpenUser** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            case_open_user (str): The user who opened the case.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;caseOpenUser&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">case_open_user</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="FilterCases.created_by"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.case.FilterCases.created_by">[docs]</a>    <span class="k">def</span> <span class="nf">created_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">created_by</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Filter Cases based on **createdBy** keyword.</span>
 
@@ -563,16 +740,34 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">has_artifact</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return **FilterArtifacts** for further filtering.&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.artifact</span> <span class="kn">import</span> <span class="n">FilterArtifacts</span>  <span class="c1"># pylint: disable=cyclic-import</span>
+        <span class="kn">from</span> <span class="nn">.artifact</span> <span class="kn">import</span> <span class="n">FilterArtifacts</span>
 
         <span class="n">artifacts</span> <span class="o">=</span> <span class="n">FilterArtifacts</span><span class="p">(</span><span class="n">ApiEndpoints</span><span class="o">.</span><span class="n">ARTIFACTS</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="p">,</span> <span class="n">TQL</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;hasArtifact&#39;</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Operator</span><span class="o">.</span><span class="n">EQ</span><span class="p">,</span> <span class="n">artifacts</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">SUB_QUERY</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">artifacts</span>
 
+<div class="viewcode-block" id="FilterCases.has_group"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.case.FilterCases.has_group">[docs]</a>    <span class="k">def</span> <span class="nf">has_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">has_group</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Cases based on **hasGroup** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            has_group (int): A nested query for association to other buckets.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;hasGroup&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">has_group</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterCases.has_indicator"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.case.FilterCases.has_indicator">[docs]</a>    <span class="k">def</span> <span class="nf">has_indicator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">has_indicator</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Cases based on **hasIndicator** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            has_indicator (int): A nested query for association to other indicators.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;hasIndicator&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">has_indicator</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">)</span></div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">has_note</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return **FilterNotes** for further filtering.&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.note</span> <span class="kn">import</span> <span class="n">FilterNotes</span>  <span class="c1"># pylint: disable=cyclic-import</span>
+        <span class="kn">from</span> <span class="nn">.note</span> <span class="kn">import</span> <span class="n">FilterNotes</span>
 
         <span class="n">notes</span> <span class="o">=</span> <span class="n">FilterNotes</span><span class="p">(</span><span class="n">ApiEndpoints</span><span class="o">.</span><span class="n">NOTES</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="p">,</span> <span class="n">TQL</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;hasNote&#39;</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Operator</span><span class="o">.</span><span class="n">EQ</span><span class="p">,</span> <span class="n">notes</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">SUB_QUERY</span><span class="p">)</span>
@@ -581,7 +776,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">has_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return **FilterTags** for further filtering.&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.tag</span> <span class="kn">import</span> <span class="n">FilterTags</span>  <span class="c1"># pylint: disable=cyclic-import</span>
+        <span class="kn">from</span> <span class="nn">.tag</span> <span class="kn">import</span> <span class="n">FilterTags</span>
 
         <span class="n">tags</span> <span class="o">=</span> <span class="n">FilterTags</span><span class="p">(</span><span class="n">ApiEndpoints</span><span class="o">.</span><span class="n">TAGS</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="p">,</span> <span class="n">TQL</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;hasTag&#39;</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Operator</span><span class="o">.</span><span class="n">EQ</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">SUB_QUERY</span><span class="p">)</span>
@@ -590,7 +785,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">has_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return **FilterTask** for further filtering.&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.task</span> <span class="kn">import</span> <span class="n">FilterTasks</span>  <span class="c1"># pylint: disable=cyclic-import</span>
+        <span class="kn">from</span> <span class="nn">.task</span> <span class="kn">import</span> <span class="n">FilterTasks</span>
 
         <span class="n">tasks</span> <span class="o">=</span> <span class="n">FilterTasks</span><span class="p">(</span><span class="n">ApiEndpoints</span><span class="o">.</span><span class="n">TASKS</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="p">,</span> <span class="n">TQL</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;hasTask&#39;</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Operator</span><span class="o">.</span><span class="n">EQ</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">SUB_QUERY</span><span class="p">)</span>
@@ -604,6 +799,15 @@
 <span class="sd">            id (int): The ID of the case.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterCases.id_as_string"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.case.FilterCases.id_as_string">[docs]</a>    <span class="k">def</span> <span class="nf">id_as_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">id_as_string</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter Cases based on **idAsString** keyword.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            operator (enum): The operator enum for the filter.</span>
+<span class="sd">            id_as_string (str): The ID of the case as a String.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tql</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;idAsString&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">id_as_string</span><span class="p">,</span> <span class="n">TQL</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="FilterCases.name"><a class="viewcode-back" href="../../../tcex_docs/tcex.case_management.html#tcex.case_management.case.FilterCases.name">[docs]</a>    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Filter Cases based on **name** keyword.</span>

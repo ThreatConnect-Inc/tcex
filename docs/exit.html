@@ -7,12 +7,14 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Exit &mdash; TcEx 2.0.23 documentation</title>
+  <title>Exit &mdash; TcEx 2.0.26 documentation</title>
 
 
 
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
 
 
@@ -30,6 +32,7 @@
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -64,7 +67,7 @@
 
 
               <div class="version">
-                2.0.23
+                2.0.26
               </div>
 
 
@@ -89,7 +92,7 @@
 
 
 
-              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
@@ -216,59 +219,37 @@
 <p>Some failures do not warrant an immediate exit.  In these cases, the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit_code" title="tcex.tcex.TcEx.exit_code"><code class="xref py py-mod docutils literal notranslate"><span class="pre">exit_code</span></code></a> property allows an exit code to be set for when the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">exit()</span></code></a> method is called.  This allows the App to continue execution and still notify the ThreatConnect platform that a failure occurred.</p>
 <div class="section" id="job-app-example">
 <h3>Job App Example<a class="headerlink" href="#job-app-example" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
-
-<span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">datafile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-<span class="k">except</span><span class="p">:</span>
-<span class="hll">    <span class="n">tcex</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">3</span>
-</span>
-<span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
-
-<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;My App message&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
+<span class="linenos"> 4</span><span class="k">try</span><span class="p">:</span>
+<span class="linenos"> 5</span>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">datafile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+<span class="linenos"> 6</span>        <span class="n">data</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="linenos"> 7</span><span class="k">except</span><span class="p">:</span>
+<span class="hll"><span class="linenos"> 8</span>    <span class="n">tcex</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">3</span>
+</span><span class="linenos"> 9</span>
+<span class="linenos">10</span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
+<span class="linenos">11</span>
+<span class="hll"><span class="linenos">12</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;My App message&#39;</span><span class="p">)</span>
 </span></pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="playbook-app-example">
 <h3>Playbook App Example<a class="headerlink" href="#playbook-app-example" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
-
-<span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">datafile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-<span class="k">except</span><span class="p">:</span>
-<span class="hll">    <span class="n">tcex</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">1</span>
-</span>
-<span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
-
-<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;My App message&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
+<span class="linenos"> 4</span><span class="k">try</span><span class="p">:</span>
+<span class="linenos"> 5</span>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">datafile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+<span class="linenos"> 6</span>        <span class="n">data</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="linenos"> 7</span><span class="k">except</span><span class="p">:</span>
+<span class="hll"><span class="linenos"> 8</span>    <span class="n">tcex</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span class="linenos"> 9</span>
+<span class="linenos">10</span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
+<span class="linenos">11</span>
+<span class="hll"><span class="linenos">12</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;My App message&#39;</span><span class="p">)</span>
 </span></pre></div>
-</td></tr></table></div>
+</div>
 </div>
 </div>
 <div class="section" id="immediate-exit-on-failure">
@@ -276,51 +257,33 @@
 <p>Certain failures require that the App exit immediately.  In these cases, calling the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">exit()</span></code></a> method while passing the exit code will immediately halt execution of the App and notify the ThreatConnect platform of a failure.</p>
 <div class="section" id="id2">
 <h3>Job App Example<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
-
-<span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">datafile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-<span class="k">except</span><span class="p">:</span>
-<span class="hll">    <span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;App failed&#39;</span><span class="p">)</span>
-</span>
-<span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
+<span class="linenos"> 4</span><span class="k">try</span><span class="p">:</span>
+<span class="linenos"> 5</span>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">datafile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+<span class="linenos"> 6</span>        <span class="n">data</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="linenos"> 7</span><span class="k">except</span><span class="p">:</span>
+<span class="hll"><span class="linenos"> 8</span>    <span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;App failed&#39;</span><span class="p">)</span>
+</span><span class="linenos"> 9</span>
+<span class="linenos">10</span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="id3">
 <h3>Playbook App Example<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
-
-<span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">datafile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-<span class="k">except</span><span class="p">:</span>
-<span class="hll">    <span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;App failed&#39;</span><span class="p">)</span>
-</span>
-<span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
+<span class="linenos"> 4</span><span class="k">try</span><span class="p">:</span>
+<span class="linenos"> 5</span>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">datafile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+<span class="linenos"> 6</span>        <span class="n">data</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="linenos"> 7</span><span class="k">except</span><span class="p">:</span>
+<span class="hll"><span class="linenos"> 8</span>    <span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;App failed&#39;</span><span class="p">)</span>
+</span><span class="linenos"> 9</span>
+<span class="linenos">10</span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 </div>
 <div class="section" id="job-app-exit-codes">

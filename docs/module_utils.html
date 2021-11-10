@@ -7,12 +7,14 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Module: Utils &mdash; TcEx 2.0.23 documentation</title>
+  <title>Module: Utils &mdash; TcEx 2.0.26 documentation</title>
 
 
 
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
 
 
@@ -30,6 +32,7 @@
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -64,7 +67,7 @@
 
 
               <div class="version">
-                2.0.23
+                2.0.26
               </div>
 
 
@@ -89,7 +92,7 @@
 
 
 
-              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
@@ -223,113 +226,91 @@
 </div>
 <div class="section" id="weeks-ago-u-s-eastern-time-formatted-for-threatconnect">
 <h3>3 Weeks Ago U.S. Eastern Time Formatted for ThreatConnect<a class="headerlink" href="#weeks-ago-u-s-eastern-time-formatted-for-threatconnect" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
-<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;3 weeks ago&#39;</span><span class="p">,</span> <span class="s1">&#39;UTC&#39;</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span><span class="p">)</span>
-</span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
+<span class="hll"><span class="linenos">2</span><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;3 weeks ago&#39;</span><span class="p">,</span> <span class="s1">&#39;UTC&#39;</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span><span class="p">)</span>
+</span><span class="linenos">3</span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="unix-timestamp-integer">
 <h3>UNIX Timestamp Integer<a class="headerlink" href="#unix-timestamp-integer" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
-<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="mi">1510052400</span><span class="p">)</span>
-</span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
+<span class="hll"><span class="linenos">2</span><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="mi">1510052400</span><span class="p">)</span>
+</span><span class="linenos">3</span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="unix-timestamp-string">
 <h3>UNIX Timestamp String<a class="headerlink" href="#unix-timestamp-string" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
-<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;1510686617.298753&#39;</span><span class="p">)</span>
-</span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
+<span class="hll"><span class="linenos">2</span><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;1510686617.298753&#39;</span><span class="p">)</span>
+</span><span class="linenos">3</span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="iso-8601-date-zulu">
 <h3>ISO 8601 Date (Zulu)<a class="headerlink" href="#iso-8601-date-zulu" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
-<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;2017-11-08T16:52:42Z&#39;</span><span class="p">)</span>
-</span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
+<span class="hll"><span class="linenos">2</span><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;2017-11-08T16:52:42Z&#39;</span><span class="p">)</span>
+</span><span class="linenos">3</span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="iso-8601-date-zulu-in-u-s-eastern-time">
 <h3>ISO 8601 Date (Zulu) in U.S. Eastern Time<a class="headerlink" href="#iso-8601-date-zulu-in-u-s-eastern-time" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
-<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;2017-11-08T16:52:42Z&#39;</span><span class="p">,</span> <span class="s1">&#39;US/Eastern&#39;</span><span class="p">)</span>
-</span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
+<span class="hll"><span class="linenos">2</span><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;2017-11-08T16:52:42Z&#39;</span><span class="p">,</span> <span class="s1">&#39;US/Eastern&#39;</span><span class="p">)</span>
+</span><span class="linenos">3</span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="iso-8601-date-with-timezone-offset">
 <h3>ISO 8601 Date with Timezone Offset<a class="headerlink" href="#iso-8601-date-with-timezone-offset" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
-<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;2017-11-08T16:52:42-05:00&#39;</span><span class="p">)</span>
-</span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
+<span class="hll"><span class="linenos">2</span><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;2017-11-08T16:52:42-05:00&#39;</span><span class="p">)</span>
+</span><span class="linenos">3</span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="iso-8601-date-with-timezone-offset-in-u-s-eastern-time">
 <h3>ISO 8601 Date with Timezone Offset in U.S. Eastern Time<a class="headerlink" href="#iso-8601-date-with-timezone-offset-in-u-s-eastern-time" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
-<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;2017-11-08T16:52:42-00:00&#39;</span><span class="p">,</span> <span class="s1">&#39;US/Eastern&#39;</span><span class="p">)</span>
-</span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
+<span class="hll"><span class="linenos">2</span><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;2017-11-08T16:52:42-00:00&#39;</span><span class="p">,</span> <span class="s1">&#39;US/Eastern&#39;</span><span class="p">)</span>
+</span><span class="linenos">3</span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="now-utc-unix-timestamp">
 <h3>Now UTC UNIX timestamp<a class="headerlink" href="#now-utc-unix-timestamp" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
-<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;now&#39;</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">)</span>
-</span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
+<span class="hll"><span class="linenos">2</span><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;now&#39;</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">)</span>
+</span><span class="linenos">3</span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="now-in-u-s-central-time">
 <h3>Now in U.S. Central Time<a class="headerlink" href="#now-in-u-s-central-time" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
-<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;now&#39;</span><span class="p">,</span> <span class="s1">&#39;US/Central&#39;</span><span class="p">)</span>
-</span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
+<span class="hll"><span class="linenos">2</span><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;now&#39;</span><span class="p">,</span> <span class="s1">&#39;US/Central&#39;</span><span class="p">)</span>
+</span><span class="linenos">3</span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="tomorrow-at-6-a-m">
 <h3>Tomorrow at 6 A.M.<a class="headerlink" href="#tomorrow-at-6-a-m" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
-<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;tomorrow at 6 am&#39;</span><span class="p">)</span>
-</span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
+<span class="hll"><span class="linenos">2</span><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;tomorrow at 6 am&#39;</span><span class="p">)</span>
+</span><span class="linenos">3</span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="next-monday-at-noon">
 <h3>Next Monday at Noon<a class="headerlink" href="#next-monday-at-noon" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
-<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;next monday at noon&#39;</span><span class="p">)</span>
-</span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
+<span class="hll"><span class="linenos">2</span><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;next monday at noon&#39;</span><span class="p">)</span>
+</span><span class="linenos">3</span><span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 </div>
 <div class="section" id="date-to-datetime">

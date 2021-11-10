@@ -7,12 +7,14 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Module: Decorators &mdash; TcEx 2.0.23 documentation</title>
+  <title>Module: Decorators &mdash; TcEx 2.0.26 documentation</title>
 
 
 
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
 
 
@@ -30,6 +32,7 @@
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -64,7 +67,7 @@
 
 
               <div class="version">
-                2.0.23
+                2.0.26
               </div>
 
 
@@ -89,7 +92,7 @@
 
 
 
-              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
@@ -204,165 +207,107 @@
 <h2>Fail on Output<a class="headerlink" href="#fail-on-output" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">FailOnOutput()</span></code> decorator is useful in decorating methods that should have a valid and/or specific output. The decorator can be enabled/disable directly by the App developer or based on a user input (e.g., Boolean input value in install.json).</p>
 <p>The following example adds the <code class="docutils literal notranslate"><span class="pre">FailOnOutput</span></code> decorator to a method that takes a single IP Address input.  If the <code class="docutils literal notranslate"><span class="pre">fail_on_false</span></code> input is enabled and an invalid IP Address is provided the App will exit with the provided <strong>fail_msg</strong>. This decorator provides a decent amount of flexibility, provides consistent functionality, and reduces redundant code in the App.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ipaddress</span>
-<span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">FailOnOutput</span>
-
-<span class="nd">@FailOnOutput</span><span class="p">(</span>
-    <span class="n">fail_enabled</span><span class="o">=</span><span class="s1">&#39;fail_on_false&#39;</span><span class="p">,</span>  <span class="c1"># references input value fail_on_false</span>
-    <span class="n">fail_msg</span><span class="o">=</span><span class="s1">&#39;App failed due to invalid ip address&#39;</span><span class="p">,</span>  <span class="c1"># exit message</span>
-    <span class="n">fail_on</span><span class="o">=</span><span class="p">[</span><span class="kc">False</span><span class="p">],</span>  <span class="c1"># invalid return values</span>
-    <span class="n">write_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># regardless of pass/fail write output variables</span>
-<span class="p">)</span>
-<span class="k">def</span> <span class="nf">is_ip_address</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip_address</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return True if input is a valid ipv4 address.&quot;&quot;&quot;</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">ipaddress</span><span class="o">.</span><span class="n">ip_address</span><span class="p">(</span><span class="s1">&#39;192.168.0.1&#39;</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">False</span>
-    <span class="k">return</span> <span class="kc">True</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span> <span class="nn">ipaddress</span>
+<span class="linenos"> 2</span><span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">FailOnOutput</span>
+<span class="linenos"> 3</span>
+<span class="linenos"> 4</span><span class="nd">@FailOnOutput</span><span class="p">(</span>
+<span class="linenos"> 5</span>    <span class="n">fail_enabled</span><span class="o">=</span><span class="s1">&#39;fail_on_false&#39;</span><span class="p">,</span>  <span class="c1"># references input value fail_on_false</span>
+<span class="linenos"> 6</span>    <span class="n">fail_msg</span><span class="o">=</span><span class="s1">&#39;App failed due to invalid ip address&#39;</span><span class="p">,</span>  <span class="c1"># exit message</span>
+<span class="linenos"> 7</span>    <span class="n">fail_on</span><span class="o">=</span><span class="p">[</span><span class="kc">False</span><span class="p">],</span>  <span class="c1"># invalid return values</span>
+<span class="linenos"> 8</span>    <span class="n">write_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># regardless of pass/fail write output variables</span>
+<span class="linenos"> 9</span><span class="p">)</span>
+<span class="linenos">10</span><span class="k">def</span> <span class="nf">is_ip_address</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip_address</span><span class="p">):</span>
+<span class="linenos">11</span>    <span class="sd">&quot;&quot;&quot;Return True if input is a valid ipv4 address.&quot;&quot;&quot;</span>
+<span class="linenos">12</span>    <span class="k">try</span><span class="p">:</span>
+<span class="linenos">13</span>        <span class="n">ipaddress</span><span class="o">.</span><span class="n">ip_address</span><span class="p">(</span><span class="s1">&#39;192.168.0.1&#39;</span><span class="p">)</span>
+<span class="linenos">14</span>    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+<span class="linenos">15</span>        <span class="k">return</span> <span class="kc">False</span>
+<span class="linenos">16</span>    <span class="k">return</span> <span class="kc">True</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="iterate-on-arg">
 <h2>Iterate On Arg<a class="headerlink" href="#iterate-on-arg" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">IterateOnArg()</span></code> decorator is useful in decorating methods that process a single and array input. This decorator can be very useful in <strong>action</strong> based Apps. This decorator accepts validators and transforms in the same manner as <code class="docutils literal notranslate"><span class="pre">ReadArg()</span></code>, please see that section for details.</p>
 <p>The following example adds the <code class="docutils literal notranslate"><span class="pre">IterateOnArg</span></code> decorator to a method that takes a String or StringArray input and returns the value capitalized.  The decorator will call the method one time for each item in the input array (a single String input value would be automatically converted to an StringArray). If the <code class="docutils literal notranslate"><span class="pre">fail_enabled</span></code> input is enabled and any supplied validators fail, the App would then exit using the <strong>fail_msg</strong> string provided. This decorator provides a decent amount of flexibility, provides consistent functionality, and reduces redundant code in the App.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">IterateOn</span>
-
-<span class="nd">@IterateOnArg</span><span class="p">(</span>
-    <span class="n">arg</span><span class="o">=</span><span class="s1">&#39;colors&#39;</span><span class="p">,</span>
-    <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">fail_enabled</span><span class="o">=</span><span class="s1">&#39;fail_on_error,</span>
-    <span class="n">fail_msg</span><span class="o">=</span><span class="s1">&#39;Failed to capitalize string input.&#39;</span><span class="p">,</span>
-    <span class="n">fail_on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;None&#39;</span> <span class="s1">&#39;&#39;</span><span class="p">],</span>
-<span class="p">)</span>
-<span class="k">def</span> <span class="nf">capitalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">colors</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return capitalized string.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">colors</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">IterateOn</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="nd">@IterateOnArg</span><span class="p">(</span>
+<span class="linenos"> 4</span>    <span class="n">arg</span><span class="o">=</span><span class="s1">&#39;colors&#39;</span><span class="p">,</span>
+<span class="linenos"> 5</span>    <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="linenos"> 6</span>    <span class="n">fail_enabled</span><span class="o">=</span><span class="s1">&#39;fail_on_error,</span>
+<span class="linenos"> 7</span>    <span class="n">fail_msg</span><span class="o">=</span><span class="s1">&#39;Failed to capitalize string input.&#39;</span><span class="p">,</span>
+<span class="linenos"> 8</span>    <span class="n">fail_on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;None&#39;</span> <span class="s1">&#39;&#39;</span><span class="p">],</span>
+<span class="linenos"> 9</span><span class="p">)</span>
+<span class="linenos">10</span><span class="k">def</span> <span class="nf">capitalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">colors</span><span class="p">):</span>
+<span class="linenos">11</span>    <span class="sd">&quot;&quot;&quot;Return capitalized string.&quot;&quot;&quot;</span>
+<span class="linenos">12</span>    <span class="k">return</span> <span class="n">colors</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="on-exception">
 <h2>On Exception<a class="headerlink" href="#on-exception" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">OnException()</span></code> decorator is useful in decorating methods that may have an exception that needs to be handled consistently.</p>
 <p>The following example adds the <code class="docutils literal notranslate"><span class="pre">OnException</span></code> decorator to a method that processes an input.  The decorator will catch any <strong>Exception</strong> and write an exit message. If the <code class="docutils literal notranslate"><span class="pre">fail_on_error</span></code> input is enabled and an exception is caught, the App would then exit using the <strong>exit_msg</strong> string provided. This decorator provides a decent amount of flexibility, provides consistent functionality, and reduces redundant code in the App.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">OnException</span>
-
-<span class="nd">@OnException</span><span class="p">(</span>
-    <span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Failed to capitalize input.&#39;</span><span class="p">,</span>
-    <span class="n">exit_enabled</span><span class="o">=</span><span class="s1">&#39;fail_on_error&#39;</span><span class="p">,</span>
-    <span class="n">write_output</span><span class="o">=</span><span class="kc">False</span>
-<span class="p">)</span>
-<span class="k">def</span> <span class="nf">capitalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">colors</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return capitalized string.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">colors</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">OnException</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="nd">@OnException</span><span class="p">(</span>
+<span class="linenos"> 4</span>    <span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Failed to capitalize input.&#39;</span><span class="p">,</span>
+<span class="linenos"> 5</span>    <span class="n">exit_enabled</span><span class="o">=</span><span class="s1">&#39;fail_on_error&#39;</span><span class="p">,</span>
+<span class="linenos"> 6</span>    <span class="n">write_output</span><span class="o">=</span><span class="kc">False</span>
+<span class="linenos"> 7</span><span class="p">)</span>
+<span class="linenos"> 8</span><span class="k">def</span> <span class="nf">capitalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">colors</span><span class="p">):</span>
+<span class="linenos"> 9</span>    <span class="sd">&quot;&quot;&quot;Return capitalized string.&quot;&quot;&quot;</span>
+<span class="linenos">10</span>    <span class="k">return</span> <span class="n">colors</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="on-success">
 <h2>On Success<a class="headerlink" href="#on-success" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">OnSuccess()</span></code> decorator is useful in decorating methods with a predefined exit message on successfully execution.</p>
 <p>The following example adds the <code class="docutils literal notranslate"><span class="pre">OnSuccess</span></code> decorator to a method that processes an input.  The decorator set the exit message of the App when the method successfully completes.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span>
-<span class="normal">6</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">OnSuccess</span>
-
-<span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Successfully capitalized input.&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">capitalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">colors</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return capitalized string.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">colors</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">OnSuccess</span>
+<span class="linenos">2</span>
+<span class="linenos">3</span><span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Successfully capitalized input.&#39;</span><span class="p">)</span>
+<span class="linenos">4</span><span class="k">def</span> <span class="nf">capitalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">colors</span><span class="p">):</span>
+<span class="linenos">5</span>    <span class="sd">&quot;&quot;&quot;Return capitalized string.&quot;&quot;&quot;</span>
+<span class="linenos">6</span>    <span class="k">return</span> <span class="n">colors</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="output">
 <h2>Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">Output()</span></code> decorator is useful in decorating methods that provide output that will be used during the <code class="docutils literal notranslate"><span class="pre">write_output()</span></code> method.</p>
 <p>The following example adds the <code class="docutils literal notranslate"><span class="pre">Output</span></code> decorator to a method that processes an input.  The decorator will add the output of the method to the <strong>attribute</strong> provided to the decorator. This method is helpful when using the <code class="docutils literal notranslate"><span class="pre">IterateOn()</span></code> decorator. For each execution of the method the return data is appended/extended to the provided attribute. This decorator provides a decent amount of flexibility, provides consistent functionality, and reduces redundant code in the App.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">Output</span>
-
-<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Initialize class properties.&quot;&quot;&quot;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">output_data</span> <span class="o">=</span> <span class="kc">None</span>
-
-<span class="nd">@Output</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;output_data&#39;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">capitalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">colors</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return capitalized string.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">colors</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">Output</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="linenos"> 4</span>    <span class="sd">&quot;&quot;&quot;Initialize class properties.&quot;&quot;&quot;</span>
+<span class="linenos"> 5</span>    <span class="bp">self</span><span class="o">.</span><span class="n">output_data</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span><span class="nd">@Output</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;output_data&#39;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="linenos"> 8</span><span class="k">def</span> <span class="nf">capitalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">colors</span><span class="p">):</span>
+<span class="linenos"> 9</span>    <span class="sd">&quot;&quot;&quot;Return capitalized string.&quot;&quot;&quot;</span>
+<span class="linenos">10</span>    <span class="k">return</span> <span class="n">colors</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="read-arg">
 <h2>Read Arg<a class="headerlink" href="#read-arg" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">ReadArg()</span></code> decorator is useful in decorating methods that use a user input.</p>
 <p>The following example adds the <code class="docutils literal notranslate"><span class="pre">ReadArg</span></code> decorator to a method that takes a String.  The decorator will call the method passing the value of the <strong>append_chars</strong> input. If the <code class="docutils literal notranslate"><span class="pre">fail_on_error</span></code> input is enabled and the input matches a value in the <strong>fail_on</strong> array, the App would then exit using the <strong>fail_msg</strong> string provided. This decorator provides a decent amount of flexibility, provides consistent functionality, and reduces redundant code in the App.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tcex.decorators</span> <span class="kn">import</span> <span class="n">ReadArg</span>
-
-<span class="nd">@ReadArg</span><span class="p">(</span>
-    <span class="n">arg</span><span class="o">=</span><span class="s1">&#39;append_chars&#39;</span><span class="p">,</span>
-    <span class="n">fail_enabled</span><span class="o">=</span><span class="s1">&#39;fail_on_error,</span>
-    <span class="n">fail_on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;None&#39;</span> <span class="s1">&#39;&#39;</span><span class="p">],</span>
-<span class="p">)</span>
-<span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">,</span> <span class="n">append_chars</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return string with appended characters.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">string</span><span class="si">}{</span><span class="n">append_chars</span><span class="si">}</span><span class="s1">&#39;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span> <span class="nn">tcex.decorators</span> <span class="kn">import</span> <span class="n">ReadArg</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="nd">@ReadArg</span><span class="p">(</span>
+<span class="linenos"> 4</span>    <span class="n">arg</span><span class="o">=</span><span class="s1">&#39;append_chars&#39;</span><span class="p">,</span>
+<span class="linenos"> 5</span>    <span class="n">fail_enabled</span><span class="o">=</span><span class="s1">&#39;fail_on_error,</span>
+<span class="linenos"> 6</span>    <span class="n">fail_on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;None&#39;</span> <span class="s1">&#39;&#39;</span><span class="p">],</span>
+<span class="linenos"> 7</span><span class="p">)</span>
+<span class="linenos"> 8</span><span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">,</span> <span class="n">append_chars</span><span class="p">):</span>
+<span class="linenos"> 9</span>    <span class="sd">&quot;&quot;&quot;Return string with appended characters.&quot;&quot;&quot;</span>
+<span class="linenos">10</span>    <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">string</span><span class="si">}{</span><span class="n">append_chars</span><span class="si">}</span><span class="s1">&#39;</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <p>The <code class="docutils literal notranslate"><span class="pre">ReadArg()</span></code> decorator includes several built-in transforms that modify the value of the input and validators that perform checks on the input but do not change its value.</p>
 <p>The following built-in transforms are available:</p>
 <ul class="simple">
@@ -381,95 +326,54 @@
 <li><p>not_in (this is equivalent to fail_on)</p></li>
 </ul>
 <p>Transforms are run, in the order they are passed, before validators, which are also run in the order they are passed.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tcex.decorators</span> <span class="kn">import</span> <span class="n">ReadArg</span>
-
-<span class="nd">@ReadArg</span><span class="p">(</span>
-    <span class="n">arg</span><span class="o">=</span><span class="s1">&#39;confidence&#39;</span><span class="p">,</span>
-    <span class="n">fail_enabled</span><span class="o">=</span><span class="s1">&#39;fail_on_error,</span>
-    <span class="n">fail_on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;None&#39;</span> <span class="s1">&#39;&#39;</span><span class="p">],</span>
-    <span class="n">to_int</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">in_range</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;min&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">}</span>
-<span class="p">)</span>
-<span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">confidence</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return string with appended characters.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">confidence</span><span class="si">}</span><span class="s1">&#39;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span> <span class="nn">tcex.decorators</span> <span class="kn">import</span> <span class="n">ReadArg</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="nd">@ReadArg</span><span class="p">(</span>
+<span class="linenos"> 4</span>    <span class="n">arg</span><span class="o">=</span><span class="s1">&#39;confidence&#39;</span><span class="p">,</span>
+<span class="linenos"> 5</span>    <span class="n">fail_enabled</span><span class="o">=</span><span class="s1">&#39;fail_on_error,</span>
+<span class="linenos"> 6</span>    <span class="n">fail_on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;None&#39;</span> <span class="s1">&#39;&#39;</span><span class="p">],</span>
+<span class="linenos"> 7</span>    <span class="n">to_int</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="linenos"> 8</span>    <span class="n">in_range</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;min&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">}</span>
+<span class="linenos"> 9</span><span class="p">)</span>
+<span class="linenos">10</span><span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">confidence</span><span class="p">):</span>
+<span class="linenos">11</span>    <span class="sd">&quot;&quot;&quot;Return string with appended characters.&quot;&quot;&quot;</span>
+<span class="linenos">12</span>    <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">confidence</span><span class="si">}</span><span class="s1">&#39;</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <p>Custom validators and transforms can be defined using the <code class="docutils literal notranslate"><span class="pre">validators</span></code> and <code class="docutils literal notranslate"><span class="pre">transforms</span></code> arguments.  Both validators and transforms are callables that accept the input value and input name and raise a <code class="docutils literal notranslate"><span class="pre">tcex.validators.ValidationError</span></code> if the input is invalid.  Validators do not return a value, but transforms should return a new value for the input.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tcex.decorators</span> <span class="kn">import</span> <span class="n">ReadArg</span>
-<span class="kn">from</span> <span class="nn">tcex.validators</span> <span class="kn">import</span> <span class="n">ValidationError</span>
-
-<span class="k">def</span> <span class="nf">to_email</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">arg_name</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;This is a transform that takes a name and returns the associated email address&quot;&quot;&quot;</span>
-    <span class="n">name_to_email</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;Bob&#39;</span><span class="p">:</span> <span class="s1">&#39;bob@foo.com&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Sally&#39;</span><span class="p">:</span> <span class="s1">&#39;sally@foo.com&#39;</span>
-    <span class="p">}</span>
-
-    <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">name_to_email</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">name_to_email</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-
-    <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;no email found for </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
-
-<span class="k">def</span> <span class="nf">is_valid_label</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">arg_name</span><span class="p">):</span>
-    <span class="n">valid_labels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;High&#39;</span><span class="p">,</span> <span class="s1">&#39;Medium&#39;</span><span class="p">,</span> <span class="s1">&#39;Low&#39;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_labels</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">arg_name</span><span class="si">}</span><span class="s1"> must be High, Medium, or Low&#39;</span><span class="p">)</span>
-
-<span class="nd">@ReadArg</span><span class="p">(</span>
-    <span class="n">arg</span><span class="o">=</span><span class="s1">&#39;email_to&#39;</span><span class="p">,</span>
-    <span class="n">transforms</span><span class="o">=</span><span class="p">[</span><span class="n">to_email</span><span class="p">]</span>
-<span class="p">)</span>
-<span class="nd">@ReadArg</span><span class="p">(</span>
-    <span class="n">arg</span><span class="o">=</span><span class="s1">&#39;label&#39;</span><span class="p">,</span>
-    <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">is_valid_label</span><span class="p">]</span>
-<span class="p">)</span>
-<span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">email_to</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return string with appended characters.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">email_to</span><span class="si">}</span><span class="s1">  - </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s1">&#39;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span> <span class="nn">tcex.decorators</span> <span class="kn">import</span> <span class="n">ReadArg</span>
+<span class="linenos"> 2</span><span class="kn">from</span> <span class="nn">tcex.validators</span> <span class="kn">import</span> <span class="n">ValidationError</span>
+<span class="linenos"> 3</span>
+<span class="linenos"> 4</span><span class="k">def</span> <span class="nf">to_email</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">arg_name</span><span class="p">):</span>
+<span class="linenos"> 5</span>    <span class="sd">&quot;&quot;&quot;This is a transform that takes a name and returns the associated email address&quot;&quot;&quot;</span>
+<span class="linenos"> 6</span>    <span class="n">name_to_email</span> <span class="o">=</span> <span class="p">{</span>
+<span class="linenos"> 7</span>        <span class="s1">&#39;Bob&#39;</span><span class="p">:</span> <span class="s1">&#39;bob@foo.com&#39;</span><span class="p">,</span>
+<span class="linenos"> 8</span>        <span class="s1">&#39;Sally&#39;</span><span class="p">:</span> <span class="s1">&#39;sally@foo.com&#39;</span>
+<span class="linenos"> 9</span>    <span class="p">}</span>
+<span class="linenos">10</span>
+<span class="linenos">11</span>    <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">name_to_email</span><span class="p">:</span>
+<span class="linenos">12</span>        <span class="k">return</span> <span class="n">name_to_email</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+<span class="linenos">13</span>
+<span class="linenos">14</span>    <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;no email found for </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+<span class="linenos">15</span>
+<span class="linenos">16</span><span class="k">def</span> <span class="nf">is_valid_label</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">arg_name</span><span class="p">):</span>
+<span class="linenos">17</span>    <span class="n">valid_labels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;High&#39;</span><span class="p">,</span> <span class="s1">&#39;Medium&#39;</span><span class="p">,</span> <span class="s1">&#39;Low&#39;</span><span class="p">]</span>
+<span class="linenos">18</span>    <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_labels</span><span class="p">:</span>
+<span class="linenos">19</span>        <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">arg_name</span><span class="si">}</span><span class="s1"> must be High, Medium, or Low&#39;</span><span class="p">)</span>
+<span class="linenos">20</span>
+<span class="linenos">21</span><span class="nd">@ReadArg</span><span class="p">(</span>
+<span class="linenos">22</span>    <span class="n">arg</span><span class="o">=</span><span class="s1">&#39;email_to&#39;</span><span class="p">,</span>
+<span class="linenos">23</span>    <span class="n">transforms</span><span class="o">=</span><span class="p">[</span><span class="n">to_email</span><span class="p">]</span>
+<span class="linenos">24</span><span class="p">)</span>
+<span class="linenos">25</span><span class="nd">@ReadArg</span><span class="p">(</span>
+<span class="linenos">26</span>    <span class="n">arg</span><span class="o">=</span><span class="s1">&#39;label&#39;</span><span class="p">,</span>
+<span class="linenos">27</span>    <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">is_valid_label</span><span class="p">]</span>
+<span class="linenos">28</span><span class="p">)</span>
+<span class="linenos">29</span><span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">email_to</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+<span class="linenos">30</span>    <span class="sd">&quot;&quot;&quot;Return string with appended characters.&quot;&quot;&quot;</span>
+<span class="linenos">31</span>    <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">email_to</span><span class="si">}</span><span class="s1">  - </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s1">&#39;</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 </div>
 

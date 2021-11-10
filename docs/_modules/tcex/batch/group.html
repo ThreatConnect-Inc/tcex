@@ -7,12 +7,14 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>tcex.batch.group &mdash; TcEx 2.0.23 documentation</title>
+  <title>tcex.batch.group &mdash; TcEx 2.0.26 documentation</title>
 
 
 
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
 
 
@@ -30,6 +32,7 @@
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -62,7 +65,7 @@
 
 
               <div class="version">
-                2.0.23
+                2.0.26
               </div>
 
 
@@ -87,7 +90,7 @@
 
 
 
-              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../features.html">Features</a></li>
@@ -487,6 +490,22 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Adversary&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="AttackPattern"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.group.AttackPattern">[docs]</a><span class="k">class</span> <span class="nc">AttackPattern</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Attack Pattern Object&quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name: The name for this Group.</span>
+<span class="sd">            date_added (str, kwargs): The date timestamp the Indicator was created.</span>
+<span class="sd">            xid (str, kwargs): The external id for this Group.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Attack Pattern&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="Campaign"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.group.Campaign">[docs]</a><span class="k">class</span> <span class="nc">Campaign</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Campaign Object&quot;&quot;&quot;</span>
 
@@ -514,6 +533,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;firstSeen&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
             <span class="n">first_seen</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span>
         <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CourseOfAction"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.group.CourseOfAction">[docs]</a><span class="k">class</span> <span class="nc">CourseOfAction</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Course Of Action Object&quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name: The name for this Group.</span>
+<span class="sd">            date_added (str, kwargs): The date timestamp the Indicator was created.</span>
+<span class="sd">            xid (str, kwargs): The external id for this Group.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Course of Action&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Document"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.group.Document">[docs]</a><span class="k">class</span> <span class="nc">Document</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
@@ -734,7 +769,7 @@
 
 
 <div class="viewcode-block" id="IntrusionSet"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.group.IntrusionSet">[docs]</a><span class="k">class</span> <span class="nc">IntrusionSet</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Adversary Object&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Intrusion Set Object&quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -747,6 +782,22 @@
 <span class="sd">            xid (str, kwargs): The external id for this Group.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Intrusion Set&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Malware"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.group.Malware">[docs]</a><span class="k">class</span> <span class="nc">Malware</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Malware Object&quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name: The name for this Group.</span>
+<span class="sd">            date_added (str, kwargs): The date timestamp the Indicator was created.</span>
+<span class="sd">            xid (str, kwargs): The external id for this Group.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Malware&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Report"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.group.Report">[docs]</a><span class="k">class</span> <span class="nc">Report</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
@@ -825,6 +876,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;fileText&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_text</span></div>
 
 
+<div class="viewcode-block" id="Tactic"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.group.Tactic">[docs]</a><span class="k">class</span> <span class="nc">Tactic</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Tactic Object&quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name: The name for this Group.</span>
+<span class="sd">            date_added (str, kwargs): The date timestamp the Indicator was created.</span>
+<span class="sd">            xid (str, kwargs): The external id for this Group.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Tactic&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="Threat"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.group.Threat">[docs]</a><span class="k">class</span> <span class="nc">Threat</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Threat Object&quot;&quot;&quot;</span>
 
@@ -839,6 +906,38 @@
 <span class="sd">            xid (str, kwargs): The external id for this Group.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Threat&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Tool"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.group.Tool">[docs]</a><span class="k">class</span> <span class="nc">Tool</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Tool Object&quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name: The name for this Group.</span>
+<span class="sd">            date_added (str, kwargs): The date timestamp the Indicator was created.</span>
+<span class="sd">            xid (str, kwargs): The external id for this Group.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Tool&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Vulnerability"><a class="viewcode-back" href="../../../tcex_docs/tcex.batch.html#tcex.batch.group.Vulnerability">[docs]</a><span class="k">class</span> <span class="nc">Vulnerability</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Vulnerability Object&quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name: The name for this Group.</span>
+<span class="sd">            date_added (str, kwargs): The date timestamp the Indicator was created.</span>
+<span class="sd">            xid (str, kwargs): The external id for this Group.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Vulnerability&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

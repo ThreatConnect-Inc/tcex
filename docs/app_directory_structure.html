@@ -7,12 +7,14 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>App-Directory Structure &mdash; TcEx 2.0.23 documentation</title>
+  <title>App-Directory Structure &mdash; TcEx 2.0.26 documentation</title>
 
 
 
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
 
 
@@ -30,6 +32,7 @@
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -64,7 +67,7 @@
 
 
               <div class="version">
-                2.0.23
+                2.0.26
               </div>
 
 
@@ -89,7 +92,7 @@
 
 
 
-              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
@@ -232,545 +235,298 @@
 <div class="section" id="gitignore-optional">
 <h2>.gitignore (optional)<a class="headerlink" href="#gitignore-optional" title="Permalink to this headline">¶</a></h2>
 <p>This template file specifies intentionally untracked files that Github should ignore. This file is part of the template update, but it optionally can be updated, if required.</p>
-<div class="highlight-bash notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span>
-<span class="normal">57</span>
-<span class="normal">58</span>
-<span class="normal">59</span>
-<span class="normal">60</span>
-<span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span>
-<span class="normal">64</span>
-<span class="normal">65</span>
-<span class="normal">66</span>
-<span class="normal">67</span>
-<span class="normal">68</span>
-<span class="normal">69</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">#=================================================</span>
-<span class="c1"># Python App Template</span>
-<span class="c1"># Version: 1.0.4</span>
-<span class="c1"># Last Updated: 2019/03/06</span>
-<span class="c1">#=================================================</span>
-
-<span class="c1">#-------------------------------------------------</span>
-<span class="c1"># Language Exclusions</span>
-<span class="c1">#-------------------------------------------------</span>
-__pycache__
-*.pyc
-.env
-venv
-
-<span class="c1">#-------------------------------------------------</span>
-<span class="c1"># App Specific Exclusions</span>
-<span class="c1">#-------------------------------------------------</span>
-*.log
-local-*
-log
-sample-*.json
-
-<span class="c1">#-------------------------------------------------</span>
-<span class="c1"># Build Exclusions</span>
-<span class="c1">#-------------------------------------------------</span>
-build
-lib_*
-permutations.json
-target
-temp
-
-<span class="c1">#-------------------------------------------------</span>
-<span class="c1"># IDE Exclusions</span>
-<span class="c1">#-------------------------------------------------</span>
-.c9
-.idea
-.project
-.python-version
-.settings
-.vscode
-*.iml
-nbproject
-*.swp
-*.vim
-
-<span class="c1">#-------------------------------------------------</span>
-<span class="c1"># OS Exclusions</span>
-<span class="c1">#-------------------------------------------------</span>
-.DS_Store
-
-<span class="c1">#-------------------------------------------------</span>
-<span class="c1"># Test Exclusions</span>
-<span class="c1">#-------------------------------------------------</span>
-.coverage
-.pytest_cache
-artifacts
-junit.xml
-py36.xml
-py37.xml
-py38.xml
-dump.rdb
-
-<span class="c1">#-------------------------------------------------</span>
-<span class="c1"># Other Nonsense</span>
-<span class="c1">#-------------------------------------------------</span>
-
-<span class="c1">#*************************************************</span>
-<span class="c1"># Custom Exclusion (per App exclusions)</span>
-<span class="c1">#*************************************************</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1">#=================================================</span>
+<span class="linenos"> 2</span><span class="c1"># Python App Template</span>
+<span class="linenos"> 3</span><span class="c1"># Version: 1.0.4</span>
+<span class="linenos"> 4</span><span class="c1"># Last Updated: 2019/03/06</span>
+<span class="linenos"> 5</span><span class="c1">#=================================================</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span><span class="c1">#-------------------------------------------------</span>
+<span class="linenos"> 8</span><span class="c1"># Language Exclusions</span>
+<span class="linenos"> 9</span><span class="c1">#-------------------------------------------------</span>
+<span class="linenos">10</span>__pycache__
+<span class="linenos">11</span>*.pyc
+<span class="linenos">12</span>.env
+<span class="linenos">13</span>venv
+<span class="linenos">14</span>
+<span class="linenos">15</span><span class="c1">#-------------------------------------------------</span>
+<span class="linenos">16</span><span class="c1"># App Specific Exclusions</span>
+<span class="linenos">17</span><span class="c1">#-------------------------------------------------</span>
+<span class="linenos">18</span>*.log
+<span class="linenos">19</span>local-*
+<span class="linenos">20</span>log
+<span class="linenos">21</span>sample-*.json
+<span class="linenos">22</span>
+<span class="linenos">23</span><span class="c1">#-------------------------------------------------</span>
+<span class="linenos">24</span><span class="c1"># Build Exclusions</span>
+<span class="linenos">25</span><span class="c1">#-------------------------------------------------</span>
+<span class="linenos">26</span>build
+<span class="linenos">27</span>lib_*
+<span class="linenos">28</span>permutations.json
+<span class="linenos">29</span>target
+<span class="linenos">30</span>temp
+<span class="linenos">31</span>
+<span class="linenos">32</span><span class="c1">#-------------------------------------------------</span>
+<span class="linenos">33</span><span class="c1"># IDE Exclusions</span>
+<span class="linenos">34</span><span class="c1">#-------------------------------------------------</span>
+<span class="linenos">35</span>.c9
+<span class="linenos">36</span>.idea
+<span class="linenos">37</span>.project
+<span class="linenos">38</span>.python-version
+<span class="linenos">39</span>.settings
+<span class="linenos">40</span>.vscode
+<span class="linenos">41</span>*.iml
+<span class="linenos">42</span>nbproject
+<span class="linenos">43</span>*.swp
+<span class="linenos">44</span>*.vim
+<span class="linenos">45</span>
+<span class="linenos">46</span><span class="c1">#-------------------------------------------------</span>
+<span class="linenos">47</span><span class="c1"># OS Exclusions</span>
+<span class="linenos">48</span><span class="c1">#-------------------------------------------------</span>
+<span class="linenos">49</span>.DS_Store
+<span class="linenos">50</span>
+<span class="linenos">51</span><span class="c1">#-------------------------------------------------</span>
+<span class="linenos">52</span><span class="c1"># Test Exclusions</span>
+<span class="linenos">53</span><span class="c1">#-------------------------------------------------</span>
+<span class="linenos">54</span>.coverage
+<span class="linenos">55</span>.pytest_cache
+<span class="linenos">56</span>artifacts
+<span class="linenos">57</span>junit.xml
+<span class="linenos">58</span>py36.xml
+<span class="linenos">59</span>py37.xml
+<span class="linenos">60</span>py38.xml
+<span class="linenos">61</span>dump.rdb
+<span class="linenos">62</span>
+<span class="linenos">63</span><span class="c1">#-------------------------------------------------</span>
+<span class="linenos">64</span><span class="c1"># Other Nonsense</span>
+<span class="linenos">65</span><span class="c1">#-------------------------------------------------</span>
+<span class="linenos">66</span>
+<span class="linenos">67</span><span class="c1">#*************************************************</span>
+<span class="linenos">68</span><span class="c1"># Custom Exclusion (per App exclusions)</span>
+<span class="linenos">69</span><span class="c1">#*************************************************</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="pre-commit-config-yaml-optional">
 <h2>.pre-commit-config.yaml (optional)<a class="headerlink" href="#pre-commit-config-yaml-optional" title="Permalink to this headline">¶</a></h2>
 <p>This is the configuration file for the <code class="docutils literal notranslate"><span class="pre">pre-commit</span></code> Python CLI tool. This configuration is the same one that is used for the internal development of Apps.</p>
-<div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span>
-<span class="normal">57</span>
-<span class="normal">58</span>
-<span class="normal">59</span>
-<span class="normal">60</span>
-<span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span>
-<span class="normal">64</span>
-<span class="normal">65</span>
-<span class="normal">66</span>
-<span class="normal">67</span>
-<span class="normal">68</span>
-<span class="normal">69</span>
-<span class="normal">70</span>
-<span class="normal">71</span>
-<span class="normal">72</span>
-<span class="normal">73</span>
-<span class="normal">74</span>
-<span class="normal">75</span>
-<span class="normal">76</span>
-<span class="normal">77</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">exclude</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">^lib</span>
-<span class="nt">repos</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/pre-commit/pre-commit-hooks</span>
-    <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">v3.4.0</span>
-    <span class="nt">hooks</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-added-large-files</span>
-        <span class="nt">args</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;--maxkb=500&quot;</span><span class="p p-Indicator">]</span>
-      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-ast</span>
-      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-builtin-literals</span>
-      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-case-conflict</span>
-      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-docstring-first</span>
-      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-json</span>
-      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-merge-conflict</span>
-      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-symlinks</span>
-      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-toml</span>
-      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">debug-statements</span>
-      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">double-quote-string-fixer</span>
-      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">end-of-file-fixer</span>
-      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mixed-line-ending</span>
-      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">no-commit-to-branch</span>
-        <span class="nt">args</span><span class="p">:</span>
-          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">--branch</span>
-          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">master</span>
-          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">--branch</span>
-          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">qa</span>
-      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pretty-format-json</span>
-        <span class="nt">args</span><span class="p">:</span>
-          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">--autofix</span>
-        <span class="nt">exclude</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">^tests/.+/profiles.d/.*</span>
-      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">requirements-txt-fixer</span>
-      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">trailing-whitespace</span>
-  <span class="p p-Indicator">-</span> <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/pycqa/bandit</span>
-    <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.7.0</span>
-    <span class="nt">hooks</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">bandit</span>
-        <span class="nt">args</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">--exclude</span><span class="p p-Indicator">,</span> <span class="nv">tests</span><span class="p p-Indicator">]</span>
-  <span class="p p-Indicator">-</span> <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/psf/black</span>
-    <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20.8b1</span>
-    <span class="nt">hooks</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">black</span>
-  <span class="p p-Indicator">-</span> <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://gitlab.com/pycqa/flake8</span>
-    <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3.9.0</span>
-    <span class="nt">hooks</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">flake8</span>
-  <span class="p p-Indicator">-</span> <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/pre-commit/mirrors-isort</span>
-    <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">v5.8.0</span>
-    <span class="nt">hooks</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">isort</span>
-  <span class="p p-Indicator">-</span> <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/pycqa/pydocstyle</span>
-    <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">6.0.0</span>
-    <span class="nt">hooks</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pydocstyle</span>
-  <span class="p p-Indicator">-</span> <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/asottile/pyupgrade</span>
-    <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">v2.11.0</span>
-    <span class="nt">hooks</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pyupgrade</span>
-        <span class="nt">args</span><span class="p">:</span>
-          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">--py3-plus</span>
-          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">--py36-plus</span>
-  <span class="p p-Indicator">-</span> <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/yunojuno/pre-commit-xenon</span>
-    <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">v0.1</span>
-    <span class="nt">hooks</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">xenon</span>
-        <span class="nt">args</span><span class="p">:</span>
-          <span class="p p-Indicator">[</span>
-            <span class="s">&quot;--max-average=B&quot;</span><span class="p p-Indicator">,</span>
-            <span class="s">&quot;--exclude=local*&quot;</span><span class="p p-Indicator">,</span>
-            <span class="s">&quot;--ignore=lib_*,local*,target,tests&quot;</span><span class="p p-Indicator">,</span>
-          <span class="p p-Indicator">]</span>
-  <span class="p p-Indicator">-</span> <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local</span>
-    <span class="nt">hooks</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pylint</span>
-        <span class="nt">entry</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pylint</span>
-        <span class="nt">exclude</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">^lib</span>
-        <span class="nt">language</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">system</span>
-        <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pylint</span>
-        <span class="nt">types</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">python</span><span class="p p-Indicator">]</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="nt">exclude</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">^lib</span>
+<span class="linenos"> 2</span><span class="nt">repos</span><span class="p">:</span>
+<span class="linenos"> 3</span>  <span class="p p-Indicator">-</span> <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/pre-commit/pre-commit-hooks</span>
+<span class="linenos"> 4</span>    <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">v3.4.0</span>
+<span class="linenos"> 5</span>    <span class="nt">hooks</span><span class="p">:</span>
+<span class="linenos"> 6</span>      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-added-large-files</span>
+<span class="linenos"> 7</span>        <span class="nt">args</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;--maxkb=500&quot;</span><span class="p p-Indicator">]</span>
+<span class="linenos"> 8</span>      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-ast</span>
+<span class="linenos"> 9</span>      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-builtin-literals</span>
+<span class="linenos">10</span>      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-case-conflict</span>
+<span class="linenos">11</span>      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-docstring-first</span>
+<span class="linenos">12</span>      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-json</span>
+<span class="linenos">13</span>      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-merge-conflict</span>
+<span class="linenos">14</span>      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-symlinks</span>
+<span class="linenos">15</span>      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-toml</span>
+<span class="linenos">16</span>      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">debug-statements</span>
+<span class="linenos">17</span>      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">double-quote-string-fixer</span>
+<span class="linenos">18</span>      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">end-of-file-fixer</span>
+<span class="linenos">19</span>      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mixed-line-ending</span>
+<span class="linenos">20</span>      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">no-commit-to-branch</span>
+<span class="linenos">21</span>        <span class="nt">args</span><span class="p">:</span>
+<span class="linenos">22</span>          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">--branch</span>
+<span class="linenos">23</span>          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">master</span>
+<span class="linenos">24</span>          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">--branch</span>
+<span class="linenos">25</span>          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">qa</span>
+<span class="linenos">26</span>      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pretty-format-json</span>
+<span class="linenos">27</span>        <span class="nt">args</span><span class="p">:</span>
+<span class="linenos">28</span>          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">--autofix</span>
+<span class="linenos">29</span>        <span class="nt">exclude</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">^tests/.+/profiles.d/.*</span>
+<span class="linenos">30</span>      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">requirements-txt-fixer</span>
+<span class="linenos">31</span>      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">trailing-whitespace</span>
+<span class="linenos">32</span>  <span class="p p-Indicator">-</span> <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/pycqa/bandit</span>
+<span class="linenos">33</span>    <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.7.0</span>
+<span class="linenos">34</span>    <span class="nt">hooks</span><span class="p">:</span>
+<span class="linenos">35</span>      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">bandit</span>
+<span class="linenos">36</span>        <span class="nt">args</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">--exclude</span><span class="p p-Indicator">,</span> <span class="nv">tests</span><span class="p p-Indicator">]</span>
+<span class="linenos">37</span>  <span class="p p-Indicator">-</span> <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/psf/black</span>
+<span class="linenos">38</span>    <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20.8b1</span>
+<span class="linenos">39</span>    <span class="nt">hooks</span><span class="p">:</span>
+<span class="linenos">40</span>      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">black</span>
+<span class="linenos">41</span>  <span class="p p-Indicator">-</span> <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://gitlab.com/pycqa/flake8</span>
+<span class="linenos">42</span>    <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3.9.0</span>
+<span class="linenos">43</span>    <span class="nt">hooks</span><span class="p">:</span>
+<span class="linenos">44</span>      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">flake8</span>
+<span class="linenos">45</span>  <span class="p p-Indicator">-</span> <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/pre-commit/mirrors-isort</span>
+<span class="linenos">46</span>    <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">v5.8.0</span>
+<span class="linenos">47</span>    <span class="nt">hooks</span><span class="p">:</span>
+<span class="linenos">48</span>      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">isort</span>
+<span class="linenos">49</span>  <span class="p p-Indicator">-</span> <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/pycqa/pydocstyle</span>
+<span class="linenos">50</span>    <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">6.0.0</span>
+<span class="linenos">51</span>    <span class="nt">hooks</span><span class="p">:</span>
+<span class="linenos">52</span>      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pydocstyle</span>
+<span class="linenos">53</span>  <span class="p p-Indicator">-</span> <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/asottile/pyupgrade</span>
+<span class="linenos">54</span>    <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">v2.11.0</span>
+<span class="linenos">55</span>    <span class="nt">hooks</span><span class="p">:</span>
+<span class="linenos">56</span>      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pyupgrade</span>
+<span class="linenos">57</span>        <span class="nt">args</span><span class="p">:</span>
+<span class="linenos">58</span>          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">--py3-plus</span>
+<span class="linenos">59</span>          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">--py36-plus</span>
+<span class="linenos">60</span>  <span class="p p-Indicator">-</span> <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/yunojuno/pre-commit-xenon</span>
+<span class="linenos">61</span>    <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">v0.1</span>
+<span class="linenos">62</span>    <span class="nt">hooks</span><span class="p">:</span>
+<span class="linenos">63</span>      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">xenon</span>
+<span class="linenos">64</span>        <span class="nt">args</span><span class="p">:</span>
+<span class="linenos">65</span>          <span class="p p-Indicator">[</span>
+<span class="linenos">66</span>            <span class="s">&quot;--max-average=B&quot;</span><span class="p p-Indicator">,</span>
+<span class="linenos">67</span>            <span class="s">&quot;--exclude=local*&quot;</span><span class="p p-Indicator">,</span>
+<span class="linenos">68</span>            <span class="s">&quot;--ignore=lib_*,local*,target,tests&quot;</span><span class="p p-Indicator">,</span>
+<span class="linenos">69</span>          <span class="p p-Indicator">]</span>
+<span class="linenos">70</span>  <span class="p p-Indicator">-</span> <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local</span>
+<span class="linenos">71</span>    <span class="nt">hooks</span><span class="p">:</span>
+<span class="linenos">72</span>      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pylint</span>
+<span class="linenos">73</span>        <span class="nt">entry</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pylint</span>
+<span class="linenos">74</span>        <span class="nt">exclude</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">^lib</span>
+<span class="linenos">75</span>        <span class="nt">language</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">system</span>
+<span class="linenos">76</span>        <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pylint</span>
+<span class="linenos">77</span>        <span class="nt">types</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">python</span><span class="p p-Indicator">]</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="readme-md-required">
 <h2>README.md (required)<a class="headerlink" href="#readme-md-required" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">README.md</span></code> file should contain any relevant information for the App and the App release notes.</p>
-<div class="highlight-md notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gh"># Release Notes</span>
-
-<span class="gu">## 1.0.0 (YYYY-MM-DD)</span>
-<span class="k">*</span> Initial Release
+<div class="highlight-md notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gh"># Release Notes</span>
+<span class="linenos">2</span>
+<span class="linenos">3</span><span class="gu">## 1.0.0 (YYYY-MM-DD)</span>
+<span class="linenos">4</span><span class="k">*</span> Initial Release
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="main-py-required">
 <h2>__main__.py (required)<a class="headerlink" href="#main-py-required" title="Permalink to this headline">¶</a></h2>
 <p>This template file should not be modified.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span>
-<span class="normal">6</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Legacy &quot;main&quot; file for running App&quot;&quot;&quot;</span>
-<span class="c1"># first-party</span>
-<span class="kn">from</span> <span class="nn">run</span> <span class="kn">import</span> <span class="n">run</span>
-
-<span class="c1"># call the run method</span>
-<span class="n">run</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="sd">&quot;&quot;&quot;Legacy &quot;main&quot; file for running App&quot;&quot;&quot;</span>
+<span class="linenos">2</span><span class="c1"># first-party</span>
+<span class="linenos">3</span><span class="kn">from</span> <span class="nn">run</span> <span class="kn">import</span> <span class="n">run</span>
+<span class="linenos">4</span>
+<span class="linenos">5</span><span class="c1"># call the run method</span>
+<span class="linenos">6</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="app-py-required">
 <h2>app.py (required)<a class="headerlink" href="#app-py-required" title="Permalink to this headline">¶</a></h2>
 <p>This file contains the “main” App logic and the <code class="docutils literal notranslate"><span class="pre">run()</span></code> method that is called by default. It also can contain methods for <strong>tc_actions</strong>.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;ThreatConnect Playbook App&quot;&quot;&quot;</span>
-
-<span class="c1"># first-party</span>
-<span class="kn">from</span> <span class="nn">playbook_app</span> <span class="kn">import</span> <span class="n">PlaybookApp</span>  <span class="c1"># Import default Playbook App Class (Required)</span>
-
-
-<span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">PlaybookApp</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Playbook App&quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Run the App main logic.</span>
-
-<span class="sd">        This method should contain the core logic of the App.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">write_output</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Write the Playbook output variables.</span>
-
-<span class="sd">        This method should be overridden with the output variables defined in the install.json</span>
-<span class="sd">        configuration file.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="sd">&quot;&quot;&quot;ThreatConnect Playbook App&quot;&quot;&quot;</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="c1"># first-party</span>
+<span class="linenos"> 4</span><span class="kn">from</span> <span class="nn">playbook_app</span> <span class="kn">import</span> <span class="n">PlaybookApp</span>  <span class="c1"># Import default Playbook App Class (Required)</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span><span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">PlaybookApp</span><span class="p">):</span>
+<span class="linenos"> 8</span>    <span class="sd">&quot;&quot;&quot;Playbook App&quot;&quot;&quot;</span>
+<span class="linenos"> 9</span>
+<span class="linenos">10</span>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">11</span>        <span class="sd">&quot;&quot;&quot;Run the App main logic.</span>
+<span class="linenos">12</span>
+<span class="linenos">13</span><span class="sd">        This method should contain the core logic of the App.</span>
+<span class="linenos">14</span><span class="sd">        &quot;&quot;&quot;</span>
+<span class="linenos">15</span>
+<span class="linenos">16</span>    <span class="k">def</span> <span class="nf">write_output</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">17</span>        <span class="sd">&quot;&quot;&quot;Write the Playbook output variables.</span>
+<span class="linenos">18</span>
+<span class="linenos">19</span><span class="sd">        This method should be overridden with the output variables defined in the install.json</span>
+<span class="linenos">20</span><span class="sd">        configuration file.</span>
+<span class="linenos">21</span><span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="args-py-required">
 <h2>args.py (required)<a class="headerlink" href="#args-py-required" title="Permalink to this headline">¶</a></h2>
 <p>This file contains the args required for the App to function properly.  Only App args are required to be defined.  The default args are part of the TcEx framework and are added automatically.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span>
-<span class="normal">6</span>
-<span class="normal">7</span>
-<span class="normal">8</span>
-<span class="normal">9</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Playbook Args&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">argparse</span> <span class="kn">import</span> <span class="n">ArgumentParser</span>
-
-
-<span class="k">class</span> <span class="nc">Args</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Playbook Args&quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">:</span> <span class="n">ArgumentParser</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize class properties.&quot;&quot;&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="sd">&quot;&quot;&quot;Playbook Args&quot;&quot;&quot;</span>
+<span class="linenos">2</span><span class="kn">from</span> <span class="nn">argparse</span> <span class="kn">import</span> <span class="n">ArgumentParser</span>
+<span class="linenos">3</span>
+<span class="linenos">4</span>
+<span class="linenos">5</span><span class="k">class</span> <span class="nc">Args</span><span class="p">:</span>
+<span class="linenos">6</span>    <span class="sd">&quot;&quot;&quot;Playbook Args&quot;&quot;&quot;</span>
+<span class="linenos">7</span>
+<span class="linenos">8</span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">:</span> <span class="n">ArgumentParser</span><span class="p">):</span>
+<span class="linenos">9</span>        <span class="sd">&quot;&quot;&quot;Initialize class properties.&quot;&quot;&quot;</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="install-json-required">
 <h2>install.json (required)<a class="headerlink" href="#install-json-required" title="Permalink to this headline">¶</a></h2>
 <p>This is the main configuration file for the App and controls what inputs and outputs will be presented to the user.</p>
-<div class="highlight-json notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span>
-<span class="normal">57</span>
-<span class="normal">58</span>
-<span class="normal">59</span>
-<span class="normal">60</span>
-<span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span>
-<span class="normal">64</span>
-<span class="normal">65</span>
-<span class="normal">66</span>
-<span class="normal">67</span>
-<span class="normal">68</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;allowOnDemand&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-  <span class="nt">&quot;displayName&quot;</span><span class="p">:</span> <span class="s2">&quot;JSON Pretty&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;features&quot;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="s2">&quot;aotExecutionEnabled&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;appBuilderCompliant&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;secureParams&quot;</span>
-  <span class="p">],</span>
-  <span class="nt">&quot;languageVersion&quot;</span><span class="p">:</span> <span class="s2">&quot;3.6&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;listDelimiter&quot;</span><span class="p">:</span> <span class="s2">&quot;|&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;note&quot;</span><span class="p">:</span> <span class="s2">&quot;Take raw JSON string and output \&quot;pretty\&quot; with provide indent level.&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;params&quot;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;JSON Data&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;json_data&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;note&quot;</span><span class="p">:</span> <span class="s2">&quot;The JSON data to be formatted.&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;playbookDataType&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="s2">&quot;KeyValue&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;KeyValueArray&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;String&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;StringArray&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;TCEntity&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;TCEntityArray&quot;</span>
-      <span class="p">],</span>
-      <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-      <span class="nt">&quot;sequence&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;String&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;validValues&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="s2">&quot;${TEXT}&quot;</span>
-      <span class="p">]</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;default&quot;</span><span class="p">:</span> <span class="s2">&quot;4&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Indent&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;indent&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;note&quot;</span><span class="p">:</span> <span class="s2">&quot;The number of spaces to use for indention (default: 4).&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;playbookDataType&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="s2">&quot;String&quot;</span>
-      <span class="p">],</span>
-      <span class="nt">&quot;sequence&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;String&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;validValues&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="s2">&quot;${TEXT}&quot;</span>
-      <span class="p">]</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;default&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-      <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Sort Keys&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;sort_keys&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;note&quot;</span><span class="p">:</span> <span class="s2">&quot;Indicates whether keys should be sorted.&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;sequence&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Boolean&quot;</span>
-    <span class="p">}</span>
-  <span class="p">],</span>
-  <span class="nt">&quot;playbook&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;outputVariables&quot;</span><span class="p">:</span> <span class="p">[</span>
-      <span class="p">{</span>
-        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;json.pretty&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;String&quot;</span>
-      <span class="p">}</span>
-    <span class="p">],</span>
-    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Utility&quot;</span>
-  <span class="p">},</span>
-  <span class="nt">&quot;programLanguage&quot;</span><span class="p">:</span> <span class="s2">&quot;PYTHON&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;programMain&quot;</span><span class="p">:</span> <span class="s2">&quot;run&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;programVersion&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;runtimeLevel&quot;</span><span class="p">:</span> <span class="s2">&quot;Playbook&quot;</span>
-<span class="p">}</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="p">{</span>
+<span class="linenos"> 2</span>  <span class="nt">&quot;allowOnDemand&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+<span class="linenos"> 3</span>  <span class="nt">&quot;displayName&quot;</span><span class="p">:</span> <span class="s2">&quot;JSON Pretty&quot;</span><span class="p">,</span>
+<span class="linenos"> 4</span>  <span class="nt">&quot;features&quot;</span><span class="p">:</span> <span class="p">[</span>
+<span class="linenos"> 5</span>    <span class="s2">&quot;aotExecutionEnabled&quot;</span><span class="p">,</span>
+<span class="linenos"> 6</span>    <span class="s2">&quot;appBuilderCompliant&quot;</span><span class="p">,</span>
+<span class="linenos"> 7</span>    <span class="s2">&quot;secureParams&quot;</span>
+<span class="linenos"> 8</span>  <span class="p">],</span>
+<span class="linenos"> 9</span>  <span class="nt">&quot;languageVersion&quot;</span><span class="p">:</span> <span class="s2">&quot;3.6&quot;</span><span class="p">,</span>
+<span class="linenos">10</span>  <span class="nt">&quot;listDelimiter&quot;</span><span class="p">:</span> <span class="s2">&quot;|&quot;</span><span class="p">,</span>
+<span class="linenos">11</span>  <span class="nt">&quot;note&quot;</span><span class="p">:</span> <span class="s2">&quot;Take raw JSON string and output \&quot;pretty\&quot; with provide indent level.&quot;</span><span class="p">,</span>
+<span class="linenos">12</span>  <span class="nt">&quot;params&quot;</span><span class="p">:</span> <span class="p">[</span>
+<span class="linenos">13</span>    <span class="p">{</span>
+<span class="linenos">14</span>      <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;JSON Data&quot;</span><span class="p">,</span>
+<span class="linenos">15</span>      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;json_data&quot;</span><span class="p">,</span>
+<span class="linenos">16</span>      <span class="nt">&quot;note&quot;</span><span class="p">:</span> <span class="s2">&quot;The JSON data to be formatted.&quot;</span><span class="p">,</span>
+<span class="linenos">17</span>      <span class="nt">&quot;playbookDataType&quot;</span><span class="p">:</span> <span class="p">[</span>
+<span class="linenos">18</span>        <span class="s2">&quot;KeyValue&quot;</span><span class="p">,</span>
+<span class="linenos">19</span>        <span class="s2">&quot;KeyValueArray&quot;</span><span class="p">,</span>
+<span class="linenos">20</span>        <span class="s2">&quot;String&quot;</span><span class="p">,</span>
+<span class="linenos">21</span>        <span class="s2">&quot;StringArray&quot;</span><span class="p">,</span>
+<span class="linenos">22</span>        <span class="s2">&quot;TCEntity&quot;</span><span class="p">,</span>
+<span class="linenos">23</span>        <span class="s2">&quot;TCEntityArray&quot;</span>
+<span class="linenos">24</span>      <span class="p">],</span>
+<span class="linenos">25</span>      <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+<span class="linenos">26</span>      <span class="nt">&quot;sequence&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+<span class="linenos">27</span>      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;String&quot;</span><span class="p">,</span>
+<span class="linenos">28</span>      <span class="nt">&quot;validValues&quot;</span><span class="p">:</span> <span class="p">[</span>
+<span class="linenos">29</span>        <span class="s2">&quot;${TEXT}&quot;</span>
+<span class="linenos">30</span>      <span class="p">]</span>
+<span class="linenos">31</span>    <span class="p">},</span>
+<span class="linenos">32</span>    <span class="p">{</span>
+<span class="linenos">33</span>      <span class="nt">&quot;default&quot;</span><span class="p">:</span> <span class="s2">&quot;4&quot;</span><span class="p">,</span>
+<span class="linenos">34</span>      <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Indent&quot;</span><span class="p">,</span>
+<span class="linenos">35</span>      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;indent&quot;</span><span class="p">,</span>
+<span class="linenos">36</span>      <span class="nt">&quot;note&quot;</span><span class="p">:</span> <span class="s2">&quot;The number of spaces to use for indention (default: 4).&quot;</span><span class="p">,</span>
+<span class="linenos">37</span>      <span class="nt">&quot;playbookDataType&quot;</span><span class="p">:</span> <span class="p">[</span>
+<span class="linenos">38</span>        <span class="s2">&quot;String&quot;</span>
+<span class="linenos">39</span>      <span class="p">],</span>
+<span class="linenos">40</span>      <span class="nt">&quot;sequence&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+<span class="linenos">41</span>      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;String&quot;</span><span class="p">,</span>
+<span class="linenos">42</span>      <span class="nt">&quot;validValues&quot;</span><span class="p">:</span> <span class="p">[</span>
+<span class="linenos">43</span>        <span class="s2">&quot;${TEXT}&quot;</span>
+<span class="linenos">44</span>      <span class="p">]</span>
+<span class="linenos">45</span>    <span class="p">},</span>
+<span class="linenos">46</span>    <span class="p">{</span>
+<span class="linenos">47</span>      <span class="nt">&quot;default&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+<span class="linenos">48</span>      <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Sort Keys&quot;</span><span class="p">,</span>
+<span class="linenos">49</span>      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;sort_keys&quot;</span><span class="p">,</span>
+<span class="linenos">50</span>      <span class="nt">&quot;note&quot;</span><span class="p">:</span> <span class="s2">&quot;Indicates whether keys should be sorted.&quot;</span><span class="p">,</span>
+<span class="linenos">51</span>      <span class="nt">&quot;sequence&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+<span class="linenos">52</span>      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Boolean&quot;</span>
+<span class="linenos">53</span>    <span class="p">}</span>
+<span class="linenos">54</span>  <span class="p">],</span>
+<span class="linenos">55</span>  <span class="nt">&quot;playbook&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="linenos">56</span>    <span class="nt">&quot;outputVariables&quot;</span><span class="p">:</span> <span class="p">[</span>
+<span class="linenos">57</span>      <span class="p">{</span>
+<span class="linenos">58</span>        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;json.pretty&quot;</span><span class="p">,</span>
+<span class="linenos">59</span>        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;String&quot;</span>
+<span class="linenos">60</span>      <span class="p">}</span>
+<span class="linenos">61</span>    <span class="p">],</span>
+<span class="linenos">62</span>    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Utility&quot;</span>
+<span class="linenos">63</span>  <span class="p">},</span>
+<span class="linenos">64</span>  <span class="nt">&quot;programLanguage&quot;</span><span class="p">:</span> <span class="s2">&quot;PYTHON&quot;</span><span class="p">,</span>
+<span class="linenos">65</span>  <span class="nt">&quot;programMain&quot;</span><span class="p">:</span> <span class="s2">&quot;run&quot;</span><span class="p">,</span>
+<span class="linenos">66</span>  <span class="nt">&quot;programVersion&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
+<span class="linenos">67</span>  <span class="nt">&quot;runtimeLevel&quot;</span><span class="p">:</span> <span class="s2">&quot;Playbook&quot;</span>
+<span class="linenos">68</span><span class="p">}</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="log-temporary">
 <h2>log (temporary)<a class="headerlink" href="#log-temporary" title="Permalink to this headline">¶</a></h2>
@@ -791,418 +547,231 @@ dump.rdb
 <div class="section" id="playbook-app-py-required">
 <h2>playbook_app.py (required)<a class="headerlink" href="#playbook-app-py-required" title="Permalink to this headline">¶</a></h2>
 <p>This template file contains base logic for a Playbook App. This file should not be edited and will get updated when using the <code class="docutils literal notranslate"><span class="pre">tcinit</span> <span class="pre">--action</span> <span class="pre">update</span> <span class="pre">--template</span> <span class="pre">&lt;template</span> <span class="pre">name&gt;</span></code> command.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Playbook App Template.&quot;&quot;&quot;</span>
-<span class="c1"># first-party</span>
-<span class="kn">from</span> <span class="nn">args</span> <span class="kn">import</span> <span class="n">Args</span>
-
-<span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">TcEx</span>
-
-
-<span class="k">class</span> <span class="nc">PlaybookApp</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Playbook App Class.&quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_tcex</span><span class="p">:</span> <span class="n">TcEx</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize class properties.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">:</span> <span class="n">TcEx</span> <span class="o">=</span> <span class="n">_tcex</span>
-
-        <span class="c1"># properties</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">exit_message</span> <span class="o">=</span> <span class="s1">&#39;Success&#39;</span>
-
-        <span class="c1"># automatically parse args on init</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">parse_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Parse CLI args.&quot;&quot;&quot;</span>
-        <span class="n">Args</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">parser</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">args</span>
-
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Run the App main logic.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No run logic provided.&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Perform prep/setup logic.&quot;&quot;&quot;</span>
-        <span class="c1"># run legacy method</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;start&#39;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;calling legacy start method&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>  <span class="c1"># pylint: disable=no-member</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;setup&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">teardown</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Perform cleanup/teardown logic.&quot;&quot;&quot;</span>
-        <span class="c1"># run legacy method</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;done&#39;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;calling legacy done method&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>  <span class="c1"># pylint: disable=no-member</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;teardown&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">write_output</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Write the Playbook output variables.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No output variables written.&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="sd">&quot;&quot;&quot;Playbook App Template.&quot;&quot;&quot;</span>
+<span class="linenos"> 2</span><span class="c1"># first-party</span>
+<span class="linenos"> 3</span><span class="kn">from</span> <span class="nn">args</span> <span class="kn">import</span> <span class="n">Args</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">TcEx</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span>
+<span class="linenos"> 8</span><span class="k">class</span> <span class="nc">PlaybookApp</span><span class="p">:</span>
+<span class="linenos"> 9</span>    <span class="sd">&quot;&quot;&quot;Playbook App Class.&quot;&quot;&quot;</span>
+<span class="linenos">10</span>
+<span class="linenos">11</span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_tcex</span><span class="p">:</span> <span class="n">TcEx</span><span class="p">):</span>
+<span class="linenos">12</span>        <span class="sd">&quot;&quot;&quot;Initialize class properties.&quot;&quot;&quot;</span>
+<span class="linenos">13</span>        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">:</span> <span class="n">TcEx</span> <span class="o">=</span> <span class="n">_tcex</span>
+<span class="linenos">14</span>
+<span class="linenos">15</span>        <span class="c1"># properties</span>
+<span class="linenos">16</span>        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos">17</span>        <span class="bp">self</span><span class="o">.</span><span class="n">exit_message</span> <span class="o">=</span> <span class="s1">&#39;Success&#39;</span>
+<span class="linenos">18</span>
+<span class="linenos">19</span>        <span class="c1"># automatically parse args on init</span>
+<span class="linenos">20</span>        <span class="bp">self</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+<span class="linenos">21</span>
+<span class="linenos">22</span>    <span class="k">def</span> <span class="nf">parse_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">23</span>        <span class="sd">&quot;&quot;&quot;Parse CLI args.&quot;&quot;&quot;</span>
+<span class="linenos">24</span>        <span class="n">Args</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">parser</span><span class="p">)</span>
+<span class="linenos">25</span>        <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">args</span>
+<span class="linenos">26</span>
+<span class="linenos">27</span>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">28</span>        <span class="sd">&quot;&quot;&quot;Run the App main logic.&quot;&quot;&quot;</span>
+<span class="linenos">29</span>        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No run logic provided.&#39;</span><span class="p">)</span>
+<span class="linenos">30</span>
+<span class="linenos">31</span>    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">32</span>        <span class="sd">&quot;&quot;&quot;Perform prep/setup logic.&quot;&quot;&quot;</span>
+<span class="linenos">33</span>        <span class="c1"># run legacy method</span>
+<span class="linenos">34</span>        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;start&#39;</span><span class="p">):</span>
+<span class="linenos">35</span>            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;calling legacy start method&#39;</span><span class="p">)</span>
+<span class="linenos">36</span>            <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>  <span class="c1"># pylint: disable=no-member</span>
+<span class="linenos">37</span>        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;setup&#39;</span><span class="p">)</span>
+<span class="linenos">38</span>
+<span class="linenos">39</span>    <span class="k">def</span> <span class="nf">teardown</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">40</span>        <span class="sd">&quot;&quot;&quot;Perform cleanup/teardown logic.&quot;&quot;&quot;</span>
+<span class="linenos">41</span>        <span class="c1"># run legacy method</span>
+<span class="linenos">42</span>        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;done&#39;</span><span class="p">):</span>
+<span class="linenos">43</span>            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;calling legacy done method&#39;</span><span class="p">)</span>
+<span class="linenos">44</span>            <span class="bp">self</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>  <span class="c1"># pylint: disable=no-member</span>
+<span class="linenos">45</span>        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;teardown&#39;</span><span class="p">)</span>
+<span class="linenos">46</span>
+<span class="linenos">47</span>    <span class="k">def</span> <span class="nf">write_output</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">48</span>        <span class="sd">&quot;&quot;&quot;Write the Playbook output variables.&quot;&quot;&quot;</span>
+<span class="linenos">49</span>        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No output variables written.&#39;</span><span class="p">)</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="pyproject-toml-optional">
 <h2>pyproject.toml (optional)<a class="headerlink" href="#pyproject-toml-optional" title="Permalink to this headline">¶</a></h2>
 <p>This is a Python tool configuration file that contains the configuration for the <strong>black</strong> formatting tool used to format all Python code.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">tool</span><span class="o">.</span><span class="n">black</span><span class="p">]</span>
-<span class="n">line</span><span class="o">-</span><span class="n">length</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">skip</span><span class="o">-</span><span class="n">string</span><span class="o">-</span><span class="n">normalization</span> <span class="o">=</span> <span class="n">true</span>
-
-<span class="p">[</span><span class="n">tool</span><span class="o">.</span><span class="n">pylint</span><span class="o">.</span><span class="n">master</span><span class="p">]</span>
-<span class="n">init</span><span class="o">-</span><span class="n">hook</span> <span class="o">=</span> <span class="s2">&quot;import sys;sys.path.insert(0, &#39;lib_latest&#39;)&quot;</span>
-
-<span class="p">[</span><span class="n">tool</span><span class="o">.</span><span class="n">pylint</span><span class="o">.</span><span class="n">messages_control</span><span class="p">]</span>
-<span class="c1"># C0103 - invalid-name</span>
-<span class="c1"># C0116 - missing-function-docstring</span>
-<span class="c1"># C0302 - too-many-lines</span>
-<span class="c1"># C0330 - bad-continuation</span>
-<span class="c1"># C0401 - wrong-spelling-in-comment</span>
-<span class="c1"># C0411 - wrong-import-order</span>
-<span class="c1"># E0401 - import-error (checked after tclib)</span>
-<span class="c1"># R0801 - duplicate-code</span>
-<span class="c1"># R0902 - too-many-instance-attributes</span>
-<span class="c1"># R0903 - too-few-public-methods</span>
-<span class="c1"># R0904 - too-many-public-methods</span>
-<span class="c1"># R0912 - too-many-branches</span>
-<span class="c1"># R0913 - too-many-arguments</span>
-<span class="c1"># R0914 - too-many-locals</span>
-<span class="c1"># R0915 - too-many-statements</span>
-<span class="c1"># W0511 - fixme</span>
-<span class="c1"># W0703 - broad-except</span>
-<span class="c1"># W1203 - logging-fstring-interpolation</span>
-<span class="n">disable</span> <span class="o">=</span> <span class="s2">&quot;C0103,C0116,C0302,C0330,C0401,C0411,E0401,R0801,R0902,R0903,R0904,R0912,R0913,R0914,R0915,W0511,W0703,W1203&quot;</span>
-
-<span class="p">[</span><span class="n">tool</span><span class="o">.</span><span class="n">pytest</span><span class="o">.</span><span class="n">ini_options</span><span class="p">]</span>
-<span class="n">junit_family</span> <span class="o">=</span> <span class="s2">&quot;xunit2&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="p">[</span><span class="n">tool</span><span class="o">.</span><span class="n">black</span><span class="p">]</span>
+<span class="linenos"> 2</span><span class="n">line</span><span class="o">-</span><span class="n">length</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="linenos"> 3</span><span class="n">skip</span><span class="o">-</span><span class="n">string</span><span class="o">-</span><span class="n">normalization</span> <span class="o">=</span> <span class="n">true</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="p">[</span><span class="n">tool</span><span class="o">.</span><span class="n">pylint</span><span class="o">.</span><span class="n">master</span><span class="p">]</span>
+<span class="linenos"> 6</span><span class="n">init</span><span class="o">-</span><span class="n">hook</span> <span class="o">=</span> <span class="s2">&quot;import sys;sys.path.insert(0, &#39;lib_latest&#39;)&quot;</span>
+<span class="linenos"> 7</span>
+<span class="linenos"> 8</span><span class="p">[</span><span class="n">tool</span><span class="o">.</span><span class="n">pylint</span><span class="o">.</span><span class="n">messages_control</span><span class="p">]</span>
+<span class="linenos"> 9</span><span class="c1"># C0103 - invalid-name</span>
+<span class="linenos">10</span><span class="c1"># C0116 - missing-function-docstring</span>
+<span class="linenos">11</span><span class="c1"># C0302 - too-many-lines</span>
+<span class="linenos">12</span><span class="c1"># C0330 - bad-continuation</span>
+<span class="linenos">13</span><span class="c1"># C0401 - wrong-spelling-in-comment</span>
+<span class="linenos">14</span><span class="c1"># C0411 - wrong-import-order</span>
+<span class="linenos">15</span><span class="c1"># E0401 - import-error (checked after tclib)</span>
+<span class="linenos">16</span><span class="c1"># R0801 - duplicate-code</span>
+<span class="linenos">17</span><span class="c1"># R0902 - too-many-instance-attributes</span>
+<span class="linenos">18</span><span class="c1"># R0903 - too-few-public-methods</span>
+<span class="linenos">19</span><span class="c1"># R0904 - too-many-public-methods</span>
+<span class="linenos">20</span><span class="c1"># R0912 - too-many-branches</span>
+<span class="linenos">21</span><span class="c1"># R0913 - too-many-arguments</span>
+<span class="linenos">22</span><span class="c1"># R0914 - too-many-locals</span>
+<span class="linenos">23</span><span class="c1"># R0915 - too-many-statements</span>
+<span class="linenos">24</span><span class="c1"># W0511 - fixme</span>
+<span class="linenos">25</span><span class="c1"># W0703 - broad-except</span>
+<span class="linenos">26</span><span class="c1"># W1203 - logging-fstring-interpolation</span>
+<span class="linenos">27</span><span class="n">disable</span> <span class="o">=</span> <span class="s2">&quot;C0103,C0116,C0302,C0330,C0401,C0411,E0401,R0801,R0902,R0903,R0904,R0912,R0913,R0914,R0915,W0511,W0703,W1203&quot;</span>
+<span class="linenos">28</span>
+<span class="linenos">29</span><span class="p">[</span><span class="n">tool</span><span class="o">.</span><span class="n">pytest</span><span class="o">.</span><span class="n">ini_options</span><span class="p">]</span>
+<span class="linenos">30</span><span class="n">junit_family</span> <span class="o">=</span> <span class="s2">&quot;xunit2&quot;</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="requirements-txt-required">
 <h2>requirements.txt (required)<a class="headerlink" href="#requirements-txt-required" title="Permalink to this headline">¶</a></h2>
 <p>This file contains all the required Python dependencies for the App. The <strong>requirements.txt</strong> file is used by the <code class="docutils literal notranslate"><span class="pre">tclib</span></code> command to build the <strong>lib_x.x.x</strong> directories.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tcex</span><span class="o">&gt;=</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span><span class="p">,</span><span class="o">&lt;</span><span class="mf">2.1</span><span class="o">.</span><span class="mi">0</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">tcex</span><span class="o">&gt;=</span><span class="mf">2.0.0</span><span class="p">,</span><span class="o">&lt;</span><span class="mf">2.1.0</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="run-py-required">
 <h2>run.py (required)<a class="headerlink" href="#run-py-required" title="Permalink to this headline">¶</a></h2>
 <p>This template file is called by ThreatConnect to launch the App. This file should not be edited and will get updated when using the <code class="docutils literal notranslate"><span class="pre">tcinit</span> <span class="pre">--action</span> <span class="pre">update</span> <span class="pre">--template</span> <span class="pre">&lt;template</span> <span class="pre">name&gt;</span></code> command.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span>
-<span class="normal">57</span>
-<span class="normal">58</span>
-<span class="normal">59</span>
-<span class="normal">60</span>
-<span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span>
-<span class="normal">64</span>
-<span class="normal">65</span>
-<span class="normal">66</span>
-<span class="normal">67</span>
-<span class="normal">68</span>
-<span class="normal">69</span>
-<span class="normal">70</span>
-<span class="normal">71</span>
-<span class="normal">72</span>
-<span class="normal">73</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Playbook App&quot;&quot;&quot;</span>
-<span class="c1"># standard library</span>
-<span class="kn">import</span> <span class="nn">traceback</span>
-
-<span class="c1"># first-party</span>
-<span class="kn">from</span> <span class="nn">app_lib</span> <span class="kn">import</span> <span class="n">AppLib</span>
-
-
-<span class="c1"># pylint: disable=no-member</span>
-<span class="k">def</span> <span class="nf">run</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Update path and run the App.&quot;&quot;&quot;</span>
-
-    <span class="c1"># update the path to ensure the App has access to required modules</span>
-    <span class="n">app_lib</span> <span class="o">=</span> <span class="n">AppLib</span><span class="p">()</span>
-    <span class="n">app_lib</span><span class="o">.</span><span class="n">update_path</span><span class="p">()</span>
-
-    <span class="c1"># import modules after path has been updated</span>
-
-    <span class="c1"># third-party</span>
-    <span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">TcEx</span>  <span class="c1"># pylint: disable=import-outside-toplevel</span>
-
-    <span class="c1"># first-party</span>
-    <span class="kn">from</span> <span class="nn">app</span> <span class="kn">import</span> <span class="n">App</span>  <span class="c1"># pylint: disable=import-outside-toplevel</span>
-
-    <span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="c1"># load App class</span>
-        <span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
-
-        <span class="c1"># perform prep/setup operations</span>
-        <span class="n">app</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="o">**</span><span class="p">{})</span>
-
-        <span class="c1"># run the App logic</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;tc_action&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_action</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># if the args NameSpace has the reserved arg of &quot;tc_action&quot;, this arg value is used to</span>
-            <span class="c1"># triggers a call to the app.&lt;tc_action&gt;() method.  an exact match to the method is</span>
-            <span class="c1"># tried first, followed by a normalization of the tc_action value, and finally an</span>
-            <span class="c1"># attempt is made to find the reserved &quot;tc_action_map&quot; property to map value to method.</span>
-            <span class="n">tc_action</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_action</span>
-            <span class="n">tc_action_formatted</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">tc_action</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
-            <span class="n">tc_action_map</span> <span class="o">=</span> <span class="s1">&#39;tc_action_map&#39;</span>  <span class="c1"># reserved property name for action to method map</span>
-            <span class="c1"># run action method</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">tc_action</span><span class="p">):</span>
-                <span class="nb">getattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">tc_action</span><span class="p">)()</span>
-            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">tc_action_formatted</span><span class="p">):</span>
-                <span class="nb">getattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">tc_action_formatted</span><span class="p">)()</span>
-            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">tc_action_map</span><span class="p">):</span>
-                <span class="n">app</span><span class="o">.</span><span class="n">tc_action_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_action</span><span class="p">)()</span>  <span class="c1"># pylint: disable=no-member</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Action method (</span><span class="si">{</span><span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_action</span><span class="si">}</span><span class="s1">) was not found.&#39;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># default to run method</span>
-            <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="p">{})</span>
-
-        <span class="c1"># write requested value for downstream Apps</span>
-        <span class="n">app</span><span class="o">.</span><span class="n">write_output</span><span class="p">()</span>  <span class="c1"># pylint: disable=no-member</span>
-
-        <span class="c1"># perform cleanup/teardown operations</span>
-        <span class="n">app</span><span class="o">.</span><span class="n">teardown</span><span class="p">(</span><span class="o">**</span><span class="p">{})</span>
-
-        <span class="c1"># explicitly call the exit method</span>
-        <span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">exit_message</span><span class="p">)</span>
-
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">main_err</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Generic Error.  See logs for more details (</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">).&#39;</span>
-        <span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
-        <span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">main_err</span><span class="p">)</span>
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="c1"># Run the App</span>
-    <span class="n">run</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="sd">&quot;&quot;&quot;Playbook App&quot;&quot;&quot;</span>
+<span class="linenos"> 2</span><span class="c1"># standard library</span>
+<span class="linenos"> 3</span><span class="kn">import</span> <span class="nn">traceback</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="c1"># first-party</span>
+<span class="linenos"> 6</span><span class="kn">from</span> <span class="nn">app_lib</span> <span class="kn">import</span> <span class="n">AppLib</span>
+<span class="linenos"> 7</span>
+<span class="linenos"> 8</span>
+<span class="linenos"> 9</span><span class="c1"># pylint: disable=no-member</span>
+<span class="linenos">10</span><span class="k">def</span> <span class="nf">run</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">11</span>    <span class="sd">&quot;&quot;&quot;Update path and run the App.&quot;&quot;&quot;</span>
+<span class="linenos">12</span>
+<span class="linenos">13</span>    <span class="c1"># update the path to ensure the App has access to required modules</span>
+<span class="linenos">14</span>    <span class="n">app_lib</span> <span class="o">=</span> <span class="n">AppLib</span><span class="p">()</span>
+<span class="linenos">15</span>    <span class="n">app_lib</span><span class="o">.</span><span class="n">update_path</span><span class="p">()</span>
+<span class="linenos">16</span>
+<span class="linenos">17</span>    <span class="c1"># import modules after path has been updated</span>
+<span class="linenos">18</span>
+<span class="linenos">19</span>    <span class="c1"># third-party</span>
+<span class="linenos">20</span>    <span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">TcEx</span>  <span class="c1"># pylint: disable=import-outside-toplevel</span>
+<span class="linenos">21</span>
+<span class="linenos">22</span>    <span class="c1"># first-party</span>
+<span class="linenos">23</span>    <span class="kn">from</span> <span class="nn">app</span> <span class="kn">import</span> <span class="n">App</span>  <span class="c1"># pylint: disable=import-outside-toplevel</span>
+<span class="linenos">24</span>
+<span class="linenos">25</span>    <span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
+<span class="linenos">26</span>
+<span class="linenos">27</span>    <span class="k">try</span><span class="p">:</span>
+<span class="linenos">28</span>        <span class="c1"># load App class</span>
+<span class="linenos">29</span>        <span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+<span class="linenos">30</span>
+<span class="linenos">31</span>        <span class="c1"># perform prep/setup operations</span>
+<span class="linenos">32</span>        <span class="n">app</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="o">**</span><span class="p">{})</span>
+<span class="linenos">33</span>
+<span class="linenos">34</span>        <span class="c1"># run the App logic</span>
+<span class="linenos">35</span>        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;tc_action&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_action</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">36</span>            <span class="c1"># if the args NameSpace has the reserved arg of &quot;tc_action&quot;, this arg value is used to</span>
+<span class="linenos">37</span>            <span class="c1"># triggers a call to the app.&lt;tc_action&gt;() method.  an exact match to the method is</span>
+<span class="linenos">38</span>            <span class="c1"># tried first, followed by a normalization of the tc_action value, and finally an</span>
+<span class="linenos">39</span>            <span class="c1"># attempt is made to find the reserved &quot;tc_action_map&quot; property to map value to method.</span>
+<span class="linenos">40</span>            <span class="n">tc_action</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_action</span>
+<span class="linenos">41</span>            <span class="n">tc_action_formatted</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">tc_action</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+<span class="linenos">42</span>            <span class="n">tc_action_map</span> <span class="o">=</span> <span class="s1">&#39;tc_action_map&#39;</span>  <span class="c1"># reserved property name for action to method map</span>
+<span class="linenos">43</span>            <span class="c1"># run action method</span>
+<span class="linenos">44</span>            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">tc_action</span><span class="p">):</span>
+<span class="linenos">45</span>                <span class="nb">getattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">tc_action</span><span class="p">)()</span>
+<span class="linenos">46</span>            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">tc_action_formatted</span><span class="p">):</span>
+<span class="linenos">47</span>                <span class="nb">getattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">tc_action_formatted</span><span class="p">)()</span>
+<span class="linenos">48</span>            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">tc_action_map</span><span class="p">):</span>
+<span class="linenos">49</span>                <span class="n">app</span><span class="o">.</span><span class="n">tc_action_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_action</span><span class="p">)()</span>  <span class="c1"># pylint: disable=no-member</span>
+<span class="linenos">50</span>            <span class="k">else</span><span class="p">:</span>
+<span class="linenos">51</span>                <span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Action method (</span><span class="si">{</span><span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_action</span><span class="si">}</span><span class="s1">) was not found.&#39;</span><span class="p">)</span>
+<span class="linenos">52</span>        <span class="k">else</span><span class="p">:</span>
+<span class="linenos">53</span>            <span class="c1"># default to run method</span>
+<span class="linenos">54</span>            <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="p">{})</span>
+<span class="linenos">55</span>
+<span class="linenos">56</span>        <span class="c1"># write requested value for downstream Apps</span>
+<span class="linenos">57</span>        <span class="n">app</span><span class="o">.</span><span class="n">write_output</span><span class="p">()</span>  <span class="c1"># pylint: disable=no-member</span>
+<span class="linenos">58</span>
+<span class="linenos">59</span>        <span class="c1"># perform cleanup/teardown operations</span>
+<span class="linenos">60</span>        <span class="n">app</span><span class="o">.</span><span class="n">teardown</span><span class="p">(</span><span class="o">**</span><span class="p">{})</span>
+<span class="linenos">61</span>
+<span class="linenos">62</span>        <span class="c1"># explicitly call the exit method</span>
+<span class="linenos">63</span>        <span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">exit_message</span><span class="p">)</span>
+<span class="linenos">64</span>
+<span class="linenos">65</span>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<span class="linenos">66</span>        <span class="n">main_err</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Generic Error.  See logs for more details (</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">).&#39;</span>
+<span class="linenos">67</span>        <span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+<span class="linenos">68</span>        <span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">main_err</span><span class="p">)</span>
+<span class="linenos">69</span>
+<span class="linenos">70</span>
+<span class="linenos">71</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="linenos">72</span>    <span class="c1"># Run the App</span>
+<span class="linenos">73</span>    <span class="n">run</span><span class="p">()</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="setup-cfg-optional">
 <h2>setup.cfg (optional)<a class="headerlink" href="#setup-cfg-optional" title="Permalink to this headline">¶</a></h2>
 <p>This file contains Python configurations data, specifically for linting ignores or excludes.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">flake8</span><span class="p">]</span>
-<span class="nb">max</span><span class="o">-</span><span class="n">line</span><span class="o">-</span><span class="n">length</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">ignore</span> <span class="o">=</span> <span class="n">E402</span><span class="p">,</span><span class="n">W503</span>
-
-<span class="p">[</span><span class="n">isort</span><span class="p">]</span>
-<span class="c1"># profile = &quot;black&quot;</span>
-<span class="n">force_grid_wrap</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">ensure_newline_before_comments</span> <span class="o">=</span> <span class="n">true</span>
-<span class="n">import_heading_stdlib</span> <span class="o">=</span> <span class="n">standard</span> <span class="n">library</span>
-<span class="n">import_heading_firstparty</span> <span class="o">=</span> <span class="n">first</span><span class="o">-</span><span class="n">party</span>
-<span class="n">import_heading_thirdparty</span> <span class="o">=</span> <span class="n">third</span><span class="o">-</span><span class="n">party</span>
-<span class="n">include_trailing_comma</span> <span class="o">=</span> <span class="n">true</span>
-<span class="n">known_first_party</span> <span class="o">=</span> <span class="n">api_service_app</span><span class="p">,</span><span class="n">app</span><span class="p">,</span><span class="n">app_lib</span><span class="p">,</span><span class="n">args</span><span class="p">,</span><span class="n">external_app</span><span class="p">,</span><span class="n">job_app</span><span class="p">,</span><span class="n">playbook_app</span><span class="p">,</span><span class="n">run</span><span class="p">,</span><span class="n">service_app</span>
-<span class="n">known_third_party</span> <span class="o">=</span> <span class="n">falcon</span><span class="p">,</span><span class="n">pytest</span><span class="p">,</span><span class="n">tcex</span>
-<span class="n">line_length</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">multi_line_output</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="n">use_parentheses</span> <span class="o">=</span> <span class="n">true</span>
-
-<span class="p">[</span><span class="n">pep8</span><span class="p">]</span>
-<span class="nb">max</span><span class="o">-</span><span class="n">line</span><span class="o">-</span><span class="n">length</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">ignore</span> <span class="o">=</span> <span class="n">E203</span><span class="p">,</span><span class="n">E402</span><span class="p">,</span><span class="n">W503</span>
-
-<span class="p">[</span><span class="n">pydocstyle</span><span class="p">]</span>
-<span class="n">ignore</span> <span class="o">=</span> <span class="n">D104</span><span class="p">,</span><span class="n">D202</span><span class="p">,</span><span class="n">D203</span><span class="p">,</span><span class="n">D213</span><span class="p">,</span><span class="n">D301</span><span class="p">,</span><span class="n">D400</span><span class="p">,</span><span class="n">D406</span><span class="p">,</span><span class="n">D407</span><span class="p">,</span><span class="n">D413</span><span class="p">,</span><span class="n">D415</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="p">[</span><span class="n">flake8</span><span class="p">]</span>
+<span class="linenos"> 2</span><span class="nb">max</span><span class="o">-</span><span class="n">line</span><span class="o">-</span><span class="n">length</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="linenos"> 3</span><span class="n">ignore</span> <span class="o">=</span> <span class="n">E402</span><span class="p">,</span><span class="n">W503</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="p">[</span><span class="n">isort</span><span class="p">]</span>
+<span class="linenos"> 6</span><span class="c1"># profile = &quot;black&quot;</span>
+<span class="linenos"> 7</span><span class="n">force_grid_wrap</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="linenos"> 8</span><span class="n">ensure_newline_before_comments</span> <span class="o">=</span> <span class="n">true</span>
+<span class="linenos"> 9</span><span class="n">import_heading_stdlib</span> <span class="o">=</span> <span class="n">standard</span> <span class="n">library</span>
+<span class="linenos">10</span><span class="n">import_heading_firstparty</span> <span class="o">=</span> <span class="n">first</span><span class="o">-</span><span class="n">party</span>
+<span class="linenos">11</span><span class="n">import_heading_thirdparty</span> <span class="o">=</span> <span class="n">third</span><span class="o">-</span><span class="n">party</span>
+<span class="linenos">12</span><span class="n">include_trailing_comma</span> <span class="o">=</span> <span class="n">true</span>
+<span class="linenos">13</span><span class="n">known_first_party</span> <span class="o">=</span> <span class="n">api_service_app</span><span class="p">,</span><span class="n">app</span><span class="p">,</span><span class="n">app_lib</span><span class="p">,</span><span class="n">args</span><span class="p">,</span><span class="n">external_app</span><span class="p">,</span><span class="n">job_app</span><span class="p">,</span><span class="n">playbook_app</span><span class="p">,</span><span class="n">run</span><span class="p">,</span><span class="n">service_app</span>
+<span class="linenos">14</span><span class="n">known_third_party</span> <span class="o">=</span> <span class="n">falcon</span><span class="p">,</span><span class="n">pytest</span><span class="p">,</span><span class="n">tcex</span>
+<span class="linenos">15</span><span class="n">line_length</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="linenos">16</span><span class="n">multi_line_output</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="linenos">17</span><span class="n">use_parentheses</span> <span class="o">=</span> <span class="n">true</span>
+<span class="linenos">18</span>
+<span class="linenos">19</span><span class="p">[</span><span class="n">pep8</span><span class="p">]</span>
+<span class="linenos">20</span><span class="nb">max</span><span class="o">-</span><span class="n">line</span><span class="o">-</span><span class="n">length</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="linenos">21</span><span class="n">ignore</span> <span class="o">=</span> <span class="n">E203</span><span class="p">,</span><span class="n">E402</span><span class="p">,</span><span class="n">W503</span>
+<span class="linenos">22</span>
+<span class="linenos">23</span><span class="p">[</span><span class="n">pydocstyle</span><span class="p">]</span>
+<span class="linenos">24</span><span class="n">ignore</span> <span class="o">=</span> <span class="n">D104</span><span class="p">,</span><span class="n">D202</span><span class="p">,</span><span class="n">D203</span><span class="p">,</span><span class="n">D213</span><span class="p">,</span><span class="n">D301</span><span class="p">,</span><span class="n">D400</span><span class="p">,</span><span class="n">D406</span><span class="p">,</span><span class="n">D407</span><span class="p">,</span><span class="n">D413</span><span class="p">,</span><span class="n">D415</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="tcex-json-required">
 <h2>tcex.json (required)<a class="headerlink" href="#tcex-json-required" title="Permalink to this headline">¶</a></h2>
 <p>This is the main TcEx framework configuration file. It is required to run local testing and for packaging, but it should not be included in the App package.</p>
-<div class="highlight-json notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;package&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;app_name&quot;</span><span class="p">:</span> <span class="s2">&quot;TCPB_-_&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;excludes&quot;</span><span class="p">:</span> <span class="p">[</span>
-      <span class="s2">&quot;.gitignore&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;.pre-commit-config.yaml&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;local-*&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;pyproject.toml&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;setup.cfg&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;tcex.json&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;*.install.json&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;tcex.d&quot;</span>
-    <span class="p">],</span>
-    <span class="nt">&quot;outdir&quot;</span><span class="p">:</span> <span class="s2">&quot;target&quot;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="p">{</span>
+<span class="linenos"> 2</span>  <span class="nt">&quot;package&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="linenos"> 3</span>    <span class="nt">&quot;app_name&quot;</span><span class="p">:</span> <span class="s2">&quot;TCPB_-_&quot;</span><span class="p">,</span>
+<span class="linenos"> 4</span>    <span class="nt">&quot;excludes&quot;</span><span class="p">:</span> <span class="p">[</span>
+<span class="linenos"> 5</span>      <span class="s2">&quot;.gitignore&quot;</span><span class="p">,</span>
+<span class="linenos"> 6</span>      <span class="s2">&quot;.pre-commit-config.yaml&quot;</span><span class="p">,</span>
+<span class="linenos"> 7</span>      <span class="s2">&quot;local-*&quot;</span><span class="p">,</span>
+<span class="linenos"> 8</span>      <span class="s2">&quot;pyproject.toml&quot;</span><span class="p">,</span>
+<span class="linenos"> 9</span>      <span class="s2">&quot;setup.cfg&quot;</span><span class="p">,</span>
+<span class="linenos">10</span>      <span class="s2">&quot;tcex.json&quot;</span><span class="p">,</span>
+<span class="linenos">11</span>      <span class="s2">&quot;*.install.json&quot;</span><span class="p">,</span>
+<span class="linenos">12</span>      <span class="s2">&quot;tcex.d&quot;</span>
+<span class="linenos">13</span>    <span class="p">],</span>
+<span class="linenos">14</span>    <span class="nt">&quot;outdir&quot;</span><span class="p">:</span> <span class="s2">&quot;target&quot;</span>
+<span class="linenos">15</span>  <span class="p">}</span>
+<span class="linenos">16</span><span class="p">}</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 </div>
 

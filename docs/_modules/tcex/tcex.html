@@ -7,12 +7,14 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>tcex.tcex &mdash; TcEx 2.0.23 documentation</title>
+  <title>tcex.tcex &mdash; TcEx 2.0.26 documentation</title>
 
 
 
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
 
 
@@ -30,6 +32,7 @@
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -62,7 +65,7 @@
 
 
               <div class="version">
-                2.0.23
+                2.0.26
               </div>
 
 
@@ -87,7 +90,7 @@
 
 
 
-              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../features.html">Features</a></li>
@@ -195,6 +198,7 @@
 <span class="kn">import</span> <span class="nn">signal</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">from</span> <span class="nn">base64</span> <span class="kn">import</span> <span class="n">b64decode</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">quote</span>
@@ -299,6 +303,16 @@
             <span class="n">exit_code</span> <span class="o">=</span> <span class="mi">1</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">exit_code</span><span class="p">,</span> <span class="s1">&#39;The App received an interrupt signal and will now exit.&#39;</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_user_agent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a User-Agent string.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;User-Agent&#39;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;TcEx/</span><span class="si">{</span><span class="nb">__import__</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s1">, &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">display_name</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">program_version</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
+        <span class="p">}</span>
 
 <div class="viewcode-block" id="TcEx.advanced_request"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.advanced_request">[docs]</a>    <span class="k">def</span> <span class="nf">advanced_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">600</span><span class="p">,</span> <span class="n">output_prefix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -614,7 +628,7 @@
         <span class="n">_session</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span>
 
         <span class="c1"># update User-Agent</span>
-        <span class="n">_session</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;User-Agent&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;TcEx: </span><span class="si">{</span><span class="nb">__import__</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">})</span>
+        <span class="n">_session</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_user_agent</span><span class="p">)</span>
 
         <span class="c1"># add proxy support if requested</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_tc</span><span class="p">:</span>
@@ -647,47 +661,29 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            (list): A list of ThreatConnect Group types.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">[</span>
-            <span class="s1">&#39;Adversary&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;Campaign&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;Document&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;Email&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;Event&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;Incident&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;Intrusion Set&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;Signature&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;Report&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;Threat&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;Task&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;Attack Pattern&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;Malware&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;Vulnerability&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;Tactic&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;Tool&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;Course of Action&#39;</span><span class="p">,</span>
-        <span class="p">]</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">group_types_data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">group_types_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return supported ThreatConnect Group types.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="s1">&#39;Adversary&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;adversaries&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;adversary&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Attack Pattern&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;attackPatterns&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;attackPattern&#39;</span><span class="p">},</span>
             <span class="s1">&#39;Campaign&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;campaigns&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;campaign&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Course of Action&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;coursesOfAction&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;courseOfAction&#39;</span><span class="p">},</span>
             <span class="s1">&#39;Document&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;documents&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;document&#39;</span><span class="p">},</span>
             <span class="s1">&#39;Email&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;emails&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;email&#39;</span><span class="p">},</span>
             <span class="s1">&#39;Event&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;events&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;event&#39;</span><span class="p">},</span>
             <span class="s1">&#39;Incident&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;incidents&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;incident&#39;</span><span class="p">},</span>
             <span class="s1">&#39;Intrusion Set&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;intrusionSets&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;intrusionSet&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Malware&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;malware&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;malware&#39;</span><span class="p">},</span>
             <span class="s1">&#39;Report&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;reports&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;report&#39;</span><span class="p">},</span>
             <span class="s1">&#39;Signature&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;signatures&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;signature&#39;</span><span class="p">},</span>
-            <span class="s1">&#39;Threat&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;threats&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;threat&#39;</span><span class="p">},</span>
-            <span class="s1">&#39;Task&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;tasks&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;task&#39;</span><span class="p">},</span>
-            <span class="s1">&#39;Attack Pattern&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;attackpatterns&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;attackPattern&#39;</span><span class="p">},</span>
-            <span class="s1">&#39;Malware&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;malware&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;malware&#39;</span><span class="p">},</span>
-            <span class="s1">&#39;Vulnerability&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;vulnerabilities&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;vulnerability&#39;</span><span class="p">},</span>
             <span class="s1">&#39;Tactic&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;tactics&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;tactic&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Task&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;tasks&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;task&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Threat&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;threats&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;threat&#39;</span><span class="p">},</span>
             <span class="s1">&#39;Tool&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;tools&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;tool&#39;</span><span class="p">},</span>
-            <span class="s1">&#39;Course of Action&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;coursesofaction&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;courseofAction&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Vulnerability&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;vulnerabilities&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;vulnerability&#39;</span><span class="p">},</span>
         <span class="p">}</span>
 
 <div class="viewcode-block" id="TcEx.get_type_from_api_entity"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.get_type_from_api_entity">[docs]</a>    <span class="k">def</span> <span class="nf">get_type_from_api_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_entity</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
@@ -1012,6 +1008,45 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redis_client</span>
 
+<div class="viewcode-block" id="TcEx.resolve_variable"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.resolve_variable">[docs]</a>    <span class="k">def</span> <span class="nf">resolve_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">provider</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">lookup</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">id_</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Resolve TEXT/KEYCHAIN/FILE variables.</span>
+
+<span class="sd">        Feature: PLAT-2688</span>
+
+<span class="sd">        Data Format:</span>
+<span class="sd">        {</span>
+<span class="sd">            &quot;data&quot;: &quot;value&quot;</span>
+<span class="sd">        }</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            provider: The variable value provider (e.g. TC).</span>
+<span class="sd">            lookup: The value to lookup (the key).</span>
+<span class="sd">            id_: The id/type field (e.g. TEXT/KEYCHAIN/FILE).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># retrieve value from API</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;/internal/variable/runtime/</span><span class="si">{</span><span class="n">provider</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">lookup</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">id_</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;file&#39;</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">b64decode</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># returns bytes</span>
+                <span class="k">elif</span> <span class="n">id_</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;keychain&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">filter_sensitive</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Could not retrieve variable: provider=</span><span class="si">{</span><span class="n">provider</span><span class="si">}</span><span class="s1">, key=</span><span class="si">{</span><span class="n">lookup</span><span class="si">}</span><span class="s1">, type=</span><span class="si">{</span><span class="n">id_</span><span class="si">}</span><span class="s1">.&#39;</span>
+                <span class="p">)</span> <span class="kn">from</span> <span class="nn">ex</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Could not retrieve variable: provider=</span><span class="si">{</span><span class="n">provider</span><span class="si">}</span><span class="s1">, key=</span><span class="si">{</span><span class="n">lookup</span><span class="si">}</span><span class="s1">, type=</span><span class="si">{</span><span class="n">id_</span><span class="si">}</span><span class="s1">.&#39;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">data</span></div>
+
 <div class="viewcode-block" id="TcEx.results_tc"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.results_tc">[docs]</a>    <span class="k">def</span> <span class="nf">results_tc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Write data to results_tc file in TcEX specified directory.</span>
 
@@ -1028,7 +1063,7 @@
             <span class="n">results_file</span> <span class="o">=</span> <span class="s1">&#39;results.tc&#39;</span>
 
         <span class="n">new</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="nb">open</span><span class="p">(</span><span class="n">results_file</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>  <span class="c1"># ensure file exists</span>
+        <span class="nb">open</span><span class="p">(</span><span class="n">results_file</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>  <span class="c1"># pylint: disable=consider-using-with</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">results_file</span><span class="p">,</span> <span class="s1">&#39;r+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
             <span class="n">results</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">):</span>
@@ -1181,9 +1216,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_session_external</span> <span class="o">=</span> <span class="n">ExternalSession</span><span class="p">(</span><span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">)</span>
 
             <span class="c1"># add User-Agent to headers</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_session_external</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
-                <span class="p">{</span><span class="s1">&#39;User-Agent&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;TcEx App: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">display_name</span><span class="si">}</span><span class="s1"> - </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ij</span><span class="o">.</span><span class="n">program_version</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">}</span>
-            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_session_external</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_user_agent</span><span class="p">)</span>
 
             <span class="c1"># add proxy support if requested</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_external</span><span class="p">:</span>

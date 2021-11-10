@@ -7,12 +7,14 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Decorators &mdash; TcEx 2.0.23 documentation</title>
+  <title>Decorators &mdash; TcEx 2.0.26 documentation</title>
 
 
 
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
 
@@ -30,6 +32,7 @@
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -64,7 +67,7 @@
 
 
               <div class="version">
-                2.0.23
+                2.0.26
               </div>
 
 
@@ -89,7 +92,7 @@
 
 
 
-              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../features.html">Features</a></li>
@@ -230,46 +233,36 @@
 <p>Log benchmarking times.</p>
 <p>This decorator will log the time of execution (benchmark_time) to the app.log file. It can be
 helpful in troubleshooting performance issues with Apps.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
-
-<span class="nd">@Benchmark</span><span class="p">()</span>
-<span class="k">def</span> <span class="nf">my_method</span><span class="p">():</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="kn">import</span> <span class="nn">time</span>
+<span class="linenos">2</span>
+<span class="linenos">3</span><span class="nd">@Benchmark</span><span class="p">()</span>
+<span class="linenos">4</span><span class="k">def</span> <span class="nf">my_method</span><span class="p">():</span>
+<span class="linenos">5</span>    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="module-tcex.decorators.Debug">
 <span id="debug"></span><h2>Debug<a class="headerlink" href="#module-tcex.decorators.Debug" title="Permalink to this headline">¶</a></h2>
 <p>Debug function inputs.</p>
 <p>This decorator will log the inputs to the function to assist in debugging an App.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@Debug</span><span class="p">()</span>
-<span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="n">arg1</span><span class="p">,</span> <span class="n">args2</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="nd">@Debug</span><span class="p">()</span>
+<span class="linenos">2</span><span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="n">arg1</span><span class="p">,</span> <span class="n">args2</span><span class="p">):</span>
+<span class="linenos">3</span>    <span class="nb">print</span><span class="p">(</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">)</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <div class="section" id="module-tcex.decorators.FailOnOutput">
 <span id="failonoutput"></span><h2>FailOnOutput<a class="headerlink" href="#module-tcex.decorators.FailOnOutput" title="Permalink to this headline">¶</a></h2>
 <p>Fail App if return value (output) value conditions are met.</p>
 <p>This decorator allows for the App to exit on conditions defined in the function
 parameters.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@FailOnOutput</span><span class="p">(</span>
-    <span class="n">fail_on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;false&#39;</span><span class="p">],</span> <span class="n">fail_msg</span><span class="o">=</span><span class="s1">&#39;Operation returned a value of &quot;false&quot;.&#39;</span>
-<span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">lowercase</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="nd">@FailOnOutput</span><span class="p">(</span>
+<span class="linenos">2</span>    <span class="n">fail_on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;false&#39;</span><span class="p">],</span> <span class="n">fail_msg</span><span class="o">=</span><span class="s1">&#39;Operation returned a value of &quot;false&quot;.&#39;</span>
+<span class="linenos">3</span><span class="p">)</span>
+<span class="linenos">4</span><span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<span class="linenos">5</span>    <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">lowercase</span><span class="p">()</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">param fail_enabled</dt>
 <dd class="field-odd"><p>Accepts a boolean or string value.  If a boolean value
@@ -317,29 +310,19 @@ was provided the arg <code class="docutils literal notranslate"><span class="pre
 this decorator would call the function 3 times. Each call to the function would pass one value
 from the array. The return values are stored and returned all at once after the last value is
 processed.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># the args value of &quot;colors&quot; refers to ``self.args.colors``.</span>
-<span class="nd">@iterateOnArgs</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;colors&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="n">colors</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">colors</span>
-
-<span class="c1"># ** OR **</span>
-
-<span class="c1"># the args value of &quot;colors&quot; refers to ``self.args.colors``.</span>
-<span class="nd">@iterateOnArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;colors&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;colors&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1"># the args value of &quot;colors&quot; refers to ``self.args.colors``.</span>
+<span class="linenos"> 2</span><span class="nd">@iterateOnArgs</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;colors&#39;</span><span class="p">)</span>
+<span class="linenos"> 3</span><span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="n">colors</span><span class="p">):</span>
+<span class="linenos"> 4</span>    <span class="k">return</span> <span class="n">colors</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span><span class="c1"># ** OR **</span>
+<span class="linenos"> 7</span>
+<span class="linenos"> 8</span><span class="c1"># the args value of &quot;colors&quot; refers to ``self.args.colors``.</span>
+<span class="linenos"> 9</span><span class="nd">@iterateOnArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;colors&#39;</span><span class="p">)</span>
+<span class="linenos">10</span><span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="linenos">11</span>    <span class="k">return</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;colors&#39;</span><span class="p">)</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">param arg</dt>
 <dd class="field-odd"><p>The arg name from the App which contains the input. This input can be
@@ -378,13 +361,11 @@ The value of this boolean will control enabling/disabling this feature.</p>
 <p>Set exit message on failed execution.</p>
 <p>This decorator will catch the generic “Exception” error, log the supplied error message, set
 the “exit_message”, and exit the App with an exit code of 1.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@OnException</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Failed to process JSON data.&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="n">json_data</span><span class="p">):</span>
-    <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">json_data</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="nd">@OnException</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Failed to process JSON data.&#39;</span><span class="p">)</span>
+<span class="linenos">2</span><span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="n">json_data</span><span class="p">):</span>
+<span class="linenos">3</span>    <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">json_data</span><span class="p">)</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">param exit_msg</dt>
 <dd class="field-odd"><p>The message to send to exit method.</p>
@@ -415,13 +396,11 @@ If enabled, will call app.write_output() when an exception is raised.</p>
 <p>Set exit message on successful execution.</p>
 <p>This decorator will set the supplied msg as the App “exit_message”. Typically and App would
 only have 1 exit message so this decorator would typically be used in App that used “actions”.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Successfully processed JSON data.&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="n">json_data</span><span class="p">):</span>
-    <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">json_data</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">exit_msg</span><span class="o">=</span><span class="s1">&#39;Successfully processed JSON data.&#39;</span><span class="p">)</span>
+<span class="linenos">2</span><span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="n">json_data</span><span class="p">):</span>
+<span class="linenos">3</span>    <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">json_data</span><span class="p">)</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">param exit_msg</dt>
 <dd class="field-odd"><p>The message to send to exit method.</p>
@@ -437,21 +416,15 @@ only have 1 exit message so this decorator would typically be used in App that u
 <p>This decorator will write, append, or extend the methods return value to the App attribute
 provided in the <code class="docutils literal notranslate"><span class="pre">attribute</span></code> input. The <code class="docutils literal notranslate"><span class="pre">attribute</span></code> must first be defined in the
 <code class="docutils literal notranslate"><span class="pre">__init__()</span></code> method of the App before the decorator is used.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span>
-<span class="normal">6</span>
-<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_tcex</span><span class="p">):</span>
-    <span class="nb">super</span><span class="p">(</span><span class="n">App</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_tcex</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">output_strings</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Output decorator writes here.</span>
-
-<span class="nd">@Output</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;output_strings&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">lowercase</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_tcex</span><span class="p">):</span>
+<span class="linenos">2</span>    <span class="nb">super</span><span class="p">(</span><span class="n">App</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_tcex</span><span class="p">)</span>
+<span class="linenos">3</span>    <span class="bp">self</span><span class="o">.</span><span class="n">output_strings</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Output decorator writes here.</span>
+<span class="linenos">4</span>
+<span class="linenos">5</span><span class="nd">@Output</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;output_strings&#39;</span><span class="p">)</span>
+<span class="linenos">6</span><span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<span class="linenos">7</span>    <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">lowercase</span><span class="p">()</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">param attribute</dt>
 <dd class="field-odd"><p>The name of the App attribute to write data.</p>
@@ -473,61 +446,35 @@ will be overwritten.</p>
 <p>Read value of App arg resolving any playbook variables.</p>
 <p>This decorator will read the args from Redis, if it is a playbook variable, and pass the
 resolved value to the function.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@ReadArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
-<span class="nd">@ReadArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;number&#39;</span><span class="p">)</span>
-<span class="nd">@ReadArg</span><span class="p">(</span>
-    <span class="n">arg</span><span class="o">=</span><span class="s1">&#39;fruits&#39;</span><span class="p">,</span>
-    <span class="n">array</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">fail_on</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">[]],</span>
-    <span class="n">fail_enabled</span><span class="o">=</span><span class="kc">True</span>
-<span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">fruits</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;number&#39;</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;fruit&#39;</span><span class="p">,</span> <span class="n">fruit</span><span class="p">)</span>
-
-<span class="c1"># ** OR **</span>
-
-<span class="nd">@ReadArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
-<span class="nd">@ReadArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;number&#39;</span><span class="p">)</span>
-<span class="nd">@ReadArg</span><span class="p">(</span>
-    <span class="n">arg</span><span class="o">=</span><span class="s1">&#39;fruits&#39;</span><span class="p">,</span>
-    <span class="n">array</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">fail_on</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">[]],</span>
-    <span class="n">fail_enabled</span><span class="o">=</span><span class="kc">True</span>
-<span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;number&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;number&#39;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;fruit&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fruit&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="nd">@ReadArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+<span class="linenos"> 2</span><span class="nd">@ReadArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;number&#39;</span><span class="p">)</span>
+<span class="linenos"> 3</span><span class="nd">@ReadArg</span><span class="p">(</span>
+<span class="linenos"> 4</span>    <span class="n">arg</span><span class="o">=</span><span class="s1">&#39;fruits&#39;</span><span class="p">,</span>
+<span class="linenos"> 5</span>    <span class="n">array</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="linenos"> 6</span>    <span class="n">fail_on</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">[]],</span>
+<span class="linenos"> 7</span>    <span class="n">fail_enabled</span><span class="o">=</span><span class="kc">True</span>
+<span class="linenos"> 8</span><span class="p">)</span>
+<span class="linenos"> 9</span><span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">fruits</span><span class="p">):</span>
+<span class="linenos">10</span>    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
+<span class="linenos">11</span>    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;number&#39;</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+<span class="linenos">12</span>    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;fruit&#39;</span><span class="p">,</span> <span class="n">fruit</span><span class="p">)</span>
+<span class="linenos">13</span>
+<span class="linenos">14</span><span class="c1"># ** OR **</span>
+<span class="linenos">15</span>
+<span class="linenos">16</span><span class="nd">@ReadArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+<span class="linenos">17</span><span class="nd">@ReadArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;number&#39;</span><span class="p">)</span>
+<span class="linenos">18</span><span class="nd">@ReadArg</span><span class="p">(</span>
+<span class="linenos">19</span>    <span class="n">arg</span><span class="o">=</span><span class="s1">&#39;fruits&#39;</span><span class="p">,</span>
+<span class="linenos">20</span>    <span class="n">array</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="linenos">21</span>    <span class="n">fail_on</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">[]],</span>
+<span class="linenos">22</span>    <span class="n">fail_enabled</span><span class="o">=</span><span class="kc">True</span>
+<span class="linenos">23</span><span class="p">)</span>
+<span class="linenos">24</span><span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="linenos">25</span>    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">))</span>
+<span class="linenos">26</span>    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;number&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;number&#39;</span><span class="p">)</span>
+<span class="linenos">27</span>    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;fruit&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fruit&#39;</span><span class="p">)</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">param arg</dt>
 <dd class="field-odd"><p>The arg name from the App which contains the input. This input can be
@@ -680,13 +627,11 @@ return value. If multiple value are provided for the same output variable there 
 to overwrite the previous value.</p>
 <p>This decorator is intended for very simple Apps. Using the <cite>write_output()</cite> method of the App
 template is the recommended way of writing output data.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@WriteOutput</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="n">variable_type</span><span class="o">=</span><span class="s1">&#39;String&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="n">color</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">color</span><span class="o">.</span><span class="n">lowercase</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="nd">@WriteOutput</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="n">variable_type</span><span class="o">=</span><span class="s1">&#39;String&#39;</span><span class="p">)</span>
+<span class="linenos">2</span><span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="n">color</span><span class="p">):</span>
+<span class="linenos">3</span>    <span class="k">return</span> <span class="n">color</span><span class="o">.</span><span class="n">lowercase</span><span class="p">()</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">param key</dt>
 <dd class="field-odd"><p>The name of the playbook output variable.</p>

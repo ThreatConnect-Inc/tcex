@@ -7,12 +7,14 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>tcex.inputs.inputs &mdash; TcEx 2.0.23 documentation</title>
+  <title>tcex.inputs.inputs &mdash; TcEx 2.0.26 documentation</title>
 
 
 
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
 
 
@@ -30,6 +32,7 @@
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -62,7 +65,7 @@
 
 
               <div class="version">
-                2.0.23
+                2.0.26
               </div>
 
 
@@ -87,7 +90,7 @@
 
 
 
-              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../features.html">Features</a></li>
@@ -188,6 +191,7 @@
 <span class="c1"># standard library</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">from</span> <span class="nn">argparse</span> <span class="kn">import</span> <span class="n">Namespace</span>
 
@@ -222,6 +226,14 @@
         <span class="c1"># properties</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parsed</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parsed_resolved</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_variable_expansion_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+            <span class="c1"># Provider: TC-Variable -&gt; provider (e.g. TC|Vault)</span>
+            <span class="sa">r</span><span class="s1">&#39;&amp;\{(?P&lt;provider&gt;\w+):&#39;</span>
+            <span class="c1"># ID: TC-Variable -&gt; FILE|KEYCHAIN|TEXT</span>
+            <span class="sa">r</span><span class="s1">&#39;(?P&lt;id&gt;\w+):&#39;</span>
+            <span class="c1"># Lookup: TC-Variable -&gt; variable identifier to lookup</span>
+            <span class="sa">r</span><span class="s1">&#39;(?P&lt;lookup&gt;(.*?))\}&#39;</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">utils</span> <span class="o">=</span> <span class="n">Utils</span><span class="p">()</span>
 
         <span class="c1"># parser</span>
@@ -419,7 +431,9 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_job_id</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1"># get the job id from the token</span>
                 <span class="nb">setattr</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="p">,</span> <span class="s1">&#39;tc_job_id&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_token</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="p">,</span>
+                    <span class="s1">&#39;tc_job_id&#39;</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="o">.</span><span class="n">tc_token</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span>
                 <span class="p">)</span>
 
             <span class="c1"># set parsed bool to ensure args are only parsed once</span>
@@ -427,6 +441,24 @@
 
             <span class="c1"># log unknown arguments</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">unknown_args</span><span class="p">()</span>
+
+            <span class="c1"># iterate over Args and resolve FILE, KEYCHAIN, or TEXT variables</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="p">):</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="c1"># strings could be a variable, try to resolve the value</span>
+                    <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variable_expansion_pattern</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)):</span>
+                        <span class="n">variable</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># the full variable pattern</span>
+                        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">resolve_variable</span><span class="p">(</span>
+                            <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;provider&#39;</span><span class="p">),</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;lookup&#39;</span><span class="p">),</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+                        <span class="p">)</span>
+                        <span class="k">if</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;file&#39;</span><span class="p">:</span>
+                            <span class="c1"># file data comes in as bytes and does not support &quot;mixed&quot; input</span>
+                            <span class="n">value</span> <span class="o">=</span> <span class="n">v</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">value</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_args</span></div>
 

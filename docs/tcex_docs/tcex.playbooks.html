@@ -7,12 +7,14 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Playbooks Module &mdash; TcEx 2.0.23 documentation</title>
+  <title>Playbooks Module &mdash; TcEx 2.0.26 documentation</title>
 
 
 
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
 
@@ -30,6 +32,7 @@
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -64,7 +67,7 @@
 
 
               <div class="version">
-                2.0.23
+                2.0.26
               </div>
 
 
@@ -89,7 +92,7 @@
 
 
 
-              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../features.html">Features</a></li>
@@ -222,8 +225,8 @@
 <span id="playbooks-playbooks-base"></span><h2>playbooks.playbooks_base<a class="headerlink" href="#module-tcex.playbooks.playbooks_base" title="Permalink to this headline">¶</a></h2>
 <p>TcEx Framework Playbook module</p>
 <dl class="py class">
-<dt id="tcex.playbooks.playbooks_base.PlaybooksBase">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">tcex.playbooks.playbooks_base.</span></code><code class="sig-name descname"><span class="pre">PlaybooksBase</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_variables</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks_base.PlaybooksBase">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tcex.playbooks.playbooks_base.</span></span><span class="sig-name descname"><span class="pre">PlaybooksBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_variables</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>TcEx Playbook Module Base Class</p>
 <dl class="field-list simple">
@@ -236,56 +239,62 @@
 </dd>
 </dl>
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks_base.PlaybooksBase._coerce_string_value">
-<code class="sig-name descname"><span class="pre">_coerce_string_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase._coerce_string_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase._coerce_string_value" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks_base.PlaybooksBase._coerce_string_value">
+<span class="sig-name descname"><span class="pre">_coerce_string_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase._coerce_string_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase._coerce_string_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a string value from an bool or int.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks_base.PlaybooksBase._create">
-<code class="sig-name descname"><span class="pre">_create</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase._create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase._create" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks_base.PlaybooksBase._create">
+<span class="sig-name descname"><span class="pre">_create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase._create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase._create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the value in Redis if applicable.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks_base.PlaybooksBase._create_array">
-<code class="sig-name descname"><span class="pre">_create_array</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase._create_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase._create_array" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks_base.PlaybooksBase._create_array">
+<span class="sig-name descname"><span class="pre">_create_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase._create_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase._create_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the value in Redis if applicable.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks_base.PlaybooksBase._decode_binary">
-<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">_decode_binary</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase._decode_binary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase._decode_binary" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks_base.PlaybooksBase._decode_binary">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">_decode_binary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase._decode_binary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase._decode_binary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return decoded bytes data handling data written by java apps.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks_base.PlaybooksBase._is_key_value">
-<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">_is_key_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase._is_key_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase._is_key_value" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks_base.PlaybooksBase._is_key_value">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">_is_key_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase._is_key_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase._is_key_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return True if provided data has proper structure for Key Value.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks_base.PlaybooksBase._is_key_value_array">
-<code class="sig-name descname"><span class="pre">_is_key_value_array</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase._is_key_value_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase._is_key_value_array" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks_base.PlaybooksBase._is_key_value_array">
+<span class="sig-name descname"><span class="pre">_is_key_value_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase._is_key_value_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase._is_key_value_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return True if provided data has proper structure for Key Value Array.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks_base.PlaybooksBase._is_tc_entity">
-<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">_is_tc_entity</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase._is_tc_entity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase._is_tc_entity" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks_base.PlaybooksBase._is_tc_batch">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">_is_tc_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase._is_tc_batch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase._is_tc_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if provided data has proper structure for TC Batch.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks_base.PlaybooksBase._is_tc_entity">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">_is_tc_entity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase._is_tc_entity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase._is_tc_entity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return True if provided data has proper structure for TC Entity.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks_base.PlaybooksBase._is_tc_entity_array">
-<code class="sig-name descname"><span class="pre">_is_tc_entity_array</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase._is_tc_entity_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase._is_tc_entity_array" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks_base.PlaybooksBase._is_tc_entity_array">
+<span class="sig-name descname"><span class="pre">_is_tc_entity_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase._is_tc_entity_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase._is_tc_entity_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return True if provided data has proper structure for TC Entity Array.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks_base.PlaybooksBase._load_value">
-<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">_load_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase._load_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase._load_value" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks_base.PlaybooksBase._load_value">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">_load_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase._load_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase._load_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the loaded JSON value or raise an error.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -304,8 +313,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks_base.PlaybooksBase._parse_output_variables">
-<code class="sig-name descname"><span class="pre">_parse_output_variables</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase._parse_output_variables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase._parse_output_variables" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks_base.PlaybooksBase._parse_output_variables">
+<span class="sig-name descname"><span class="pre">_parse_output_variables</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase._parse_output_variables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase._parse_output_variables" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse the output variables provided to Playbook Class.</p>
 <p><strong>Example Variable Format</strong>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s1">&#39;#App:1234:status!String&#39;</span><span class="p">,</span> <span class="s1">&#39;#App:1234:status_code!String&#39;</span><span class="p">]</span>
@@ -314,20 +323,20 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks_base.PlaybooksBase._read">
-<code class="sig-name descname"><span class="pre">_read</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b64decode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase._read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase._read" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks_base.PlaybooksBase._read">
+<span class="sig-name descname"><span class="pre">_read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b64decode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase._read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase._read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the value in Redis if applicable.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks_base.PlaybooksBase._read_array">
-<code class="sig-name descname"><span class="pre">_read_array</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b64decode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase._read_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase._read_array" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks_base.PlaybooksBase._read_array">
+<span class="sig-name descname"><span class="pre">_read_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b64decode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase._read_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase._read_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the value in Redis if applicable.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks_base.PlaybooksBase._read_embedded">
-<code class="sig-name descname"><span class="pre">_read_embedded</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase._read_embedded"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase._read_embedded" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks_base.PlaybooksBase._read_embedded">
+<span class="sig-name descname"><span class="pre">_read_embedded</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase._read_embedded"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase._read_embedded" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method for “embedded” variables.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -384,8 +393,8 @@ from DB. If there are no keys/variables the raw string will be returned.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks_base.PlaybooksBase._wrap_embedded_keyvalue">
-<code class="sig-name descname"><span class="pre">_wrap_embedded_keyvalue</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase._wrap_embedded_keyvalue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase._wrap_embedded_keyvalue" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks_base.PlaybooksBase._wrap_embedded_keyvalue">
+<span class="sig-name descname"><span class="pre">_wrap_embedded_keyvalue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase._wrap_embedded_keyvalue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase._wrap_embedded_keyvalue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrap keyvalue embedded variable in double quotes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -401,8 +410,8 @@ from DB. If there are no keys/variables the raw string will be returned.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks_base.PlaybooksBase.create_raw">
-<code class="sig-name descname"><span class="pre">create_raw</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase.create_raw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase.create_raw" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks_base.PlaybooksBase.create_raw">
+<span class="sig-name descname"><span class="pre">create_raw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase.create_raw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase.create_raw" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create method of CRUD operation for raw data.</p>
 <dl class="simple">
 <dt>..important:: Raw data can only be a byte, str or int. Other data structures</dt><dd><p>(dict, list, etc) must be serialized.</p>
@@ -412,7 +421,7 @@ from DB. If there are no keys/variables the raw string will be returned.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>key</strong> (<em>str</em>) – The variable to write to the DB.</p></li>
-<li><p><strong>value</strong> (<em>bytes|int|string</em>) – The data to write to the DB.</p></li>
+<li><p><strong>value</strong> (<em>bytes</em><em>|</em><em>int</em><em>|</em><em>string</em>) – The data to write to the DB.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -425,20 +434,20 @@ from DB. If there are no keys/variables the raw string will be returned.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks_base.PlaybooksBase.parse_variable">
-<code class="sig-name descname"><span class="pre">parse_variable</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase.parse_variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase.parse_variable" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks_base.PlaybooksBase.parse_variable">
+<span class="sig-name descname"><span class="pre">parse_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase.parse_variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase.parse_variable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set placeholder for child method.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks_base.PlaybooksBase.read">
-<code class="sig-name descname"><span class="pre">read</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">array</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase.read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase.read" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks_base.PlaybooksBase.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">array</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase.read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set placeholder for child method.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks_base.PlaybooksBase.read_raw">
-<code class="sig-name descname"><span class="pre">read_raw</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase.read_raw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase.read_raw" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks_base.PlaybooksBase.read_raw">
+<span class="sig-name descname"><span class="pre">read_raw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase.read_raw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase.read_raw" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for raw data.</p>
 <dl class="simple">
 <dt>..important:: Bytes input will be returned a as string as there is</dt><dd><p>no way to determine data from redis originated as bytes or string.</p>
@@ -458,8 +467,8 @@ from DB. If there are no keys/variables the raw string will be returned.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks_base.PlaybooksBase.variable_type">
-<code class="sig-name descname"><span class="pre">variable_type</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase.variable_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase.variable_type" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks_base.PlaybooksBase.variable_type">
+<span class="sig-name descname"><span class="pre">variable_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks_base.html#PlaybooksBase.variable_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks_base.PlaybooksBase.variable_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set placeholder for child method.</p>
 </dd></dl>
 
@@ -470,8 +479,8 @@ from DB. If there are no keys/variables the raw string will be returned.</p>
 <span id="playbooks-playbooks"></span><h2>playbooks.playbooks<a class="headerlink" href="#module-tcex.playbooks.playbooks" title="Permalink to this headline">¶</a></h2>
 <p>TcEx Framework Playbook module</p>
 <dl class="py class">
-<dt id="tcex.playbooks.playbooks.Playbooks">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">tcex.playbooks.playbooks.</span></code><code class="sig-name descname"><span class="pre">Playbooks</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_variables</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tcex.playbooks.playbooks.</span></span><span class="sig-name descname"><span class="pre">Playbooks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_variables</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.playbooks.playbooks_base.PlaybooksBase" title="tcex.playbooks.playbooks_base.PlaybooksBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.playbooks.playbooks_base.PlaybooksBase</span></code></a></p>
 <p>Playbook methods for accessing key value store.</p>
 <dl class="field-list simple">
@@ -484,8 +493,8 @@ from DB. If there are no keys/variables the raw string will be returned.</p>
 </dd>
 </dl>
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks._entity_field">
-<code class="sig-name descname"><span class="pre">_entity_field</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks._entity_field"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks._entity_field" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks._entity_field">
+<span class="sig-name descname"><span class="pre">_entity_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks._entity_field"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks._entity_field" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read the value of the given key and return the data at the given field of the value.</p>
 <p>This method is used by functions designed to make it easier to get
 data from a particular field from TC(Enhanced)Entity(Array).</p>
@@ -510,56 +519,37 @@ TCEnhancedEntities.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.add_output">
-<code class="sig-name descname"><span class="pre">add_output</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">append_array</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.add_output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.add_output" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.add_output">
+<span class="sig-name descname"><span class="pre">add_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">append_array</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.add_output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.add_output" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dynamically add output to output_data dictionary to be written to DB later.</p>
 <p>This method provides an alternative and more dynamic way to create output variables in an
 App. Instead of storing the output data manually and writing all at once the data can be
 stored inline, when it is generated and then written before the App completes.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;yellow&#39;</span><span class="p">]:</span>
-<span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s1">&#39;app.colors&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="s1">&#39;StringArray&#39;</span><span class="p">)</span>
-
-<span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">write_output</span><span class="p">()</span>  <span class="c1">#  writes the output stored in output_data</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;yellow&#39;</span><span class="p">]:</span>
+<span class="linenos">2</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s1">&#39;app.colors&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="s1">&#39;StringArray&#39;</span><span class="p">)</span>
+<span class="linenos">3</span>
+<span class="linenos">4</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">write_output</span><span class="p">()</span>  <span class="c1">#  writes the output stored in output_data</span>
 </pre></div>
-</td></tr></table></div>
-<div class="highlight-json notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="nt">&quot;my_color-String&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;my_color&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;String&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;blue&quot;</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;my_numbers-String&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;my_numbers&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;String&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;seven&quot;</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;my_numbers-StringArray&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;my_numbers&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;StringArray&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;seven&quot;</span><span class="p">,</span> <span class="s2">&quot;five&quot;</span><span class="p">]</span>
-    <span class="p">}</span>
-<span class="p">}</span>
+</div>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="p">{</span>
+<span class="linenos"> 2</span>    <span class="nt">&quot;my_color-String&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="linenos"> 3</span>        <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;my_color&quot;</span><span class="p">,</span>
+<span class="linenos"> 4</span>        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;String&quot;</span><span class="p">,</span>
+<span class="linenos"> 5</span>        <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;blue&quot;</span>
+<span class="linenos"> 6</span>    <span class="p">},</span>
+<span class="linenos"> 7</span>    <span class="nt">&quot;my_numbers-String&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="linenos"> 8</span>        <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;my_numbers&quot;</span><span class="p">,</span>
+<span class="linenos"> 9</span>        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;String&quot;</span><span class="p">,</span>
+<span class="linenos">10</span>        <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;seven&quot;</span>
+<span class="linenos">11</span>    <span class="p">},</span>
+<span class="linenos">12</span>    <span class="nt">&quot;my_numbers-StringArray&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="linenos">13</span>        <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;my_numbers&quot;</span><span class="p">,</span>
+<span class="linenos">14</span>        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;StringArray&quot;</span><span class="p">,</span>
+<span class="linenos">15</span>        <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;seven&quot;</span><span class="p">,</span> <span class="s2">&quot;five&quot;</span><span class="p">]</span>
+<span class="linenos">16</span>    <span class="p">}</span>
+<span class="linenos">17</span><span class="p">}</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -573,8 +563,8 @@ stored inline, when it is generated and then written before the App completes.</
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.check_output_variable">
-<code class="sig-name descname"><span class="pre">check_output_variable</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.check_output_variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.check_output_variable" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.check_output_variable">
+<span class="sig-name descname"><span class="pre">check_output_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.check_output_variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.check_output_variable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check to see if output variable was requested by downstream app.</p>
 <p>Using the auto generated dictionary of output variables check to see if provided
 variable was requested by downstream app.</p>
@@ -592,8 +582,8 @@ variable was requested by downstream app.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.create">
-<code class="sig-name descname"><span class="pre">create</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.create" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.create">
+<span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create method of CRUD operation for working with KeyValue DB.</p>
 <p>This method will automatically determine the variable type and
 call the appropriate method to write the data.  If a non standard
@@ -615,8 +605,8 @@ type is provided the data will be written as RAW data.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.create_binary">
-<code class="sig-name descname"><span class="pre">create_binary</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.create_binary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.create_binary" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.create_binary">
+<span class="sig-name descname"><span class="pre">create_binary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.create_binary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.create_binary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create method of CRUD operation for binary data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -635,8 +625,8 @@ type is provided the data will be written as RAW data.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.create_binary_array">
-<code class="sig-name descname"><span class="pre">create_binary_array</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.create_binary_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.create_binary_array" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.create_binary_array">
+<span class="sig-name descname"><span class="pre">create_binary_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.create_binary_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.create_binary_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create method of CRUD operation for binary array data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -655,8 +645,8 @@ type is provided the data will be written as RAW data.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.create_key_value">
-<code class="sig-name descname"><span class="pre">create_key_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.create_key_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.create_key_value" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.create_key_value">
+<span class="sig-name descname"><span class="pre">create_key_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.create_key_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.create_key_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create method of CRUD operation for key/value data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -675,8 +665,8 @@ type is provided the data will be written as RAW data.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.create_key_value_array">
-<code class="sig-name descname"><span class="pre">create_key_value_array</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.create_key_value_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.create_key_value_array" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.create_key_value_array">
+<span class="sig-name descname"><span class="pre">create_key_value_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.create_key_value_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.create_key_value_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create method of CRUD operation for key/value array data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -695,8 +685,8 @@ type is provided the data will be written as RAW data.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.create_output">
-<code class="sig-name descname"><span class="pre">create_output</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.create_output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.create_output" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.create_output">
+<span class="sig-name descname"><span class="pre">create_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.create_output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.create_output" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for Create method of CRUD operation for working with KeyValue DB.</p>
 <p>This method will automatically check to see if provided variable was requested by
 a downstream app and if so create the data in the KeyValue DB.</p>
@@ -718,8 +708,8 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.create_string">
-<code class="sig-name descname"><span class="pre">create_string</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.create_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.create_string" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.create_string">
+<span class="sig-name descname"><span class="pre">create_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.create_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.create_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create method of CRUD operation for string data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -738,8 +728,8 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.create_string_array">
-<code class="sig-name descname"><span class="pre">create_string_array</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.create_string_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.create_string_array" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.create_string_array">
+<span class="sig-name descname"><span class="pre">create_string_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.create_string_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.create_string_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create method of CRUD operation for string array data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -758,8 +748,8 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.create_tc_entity">
-<code class="sig-name descname"><span class="pre">create_tc_entity</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.create_tc_entity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.create_tc_entity" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.create_tc_entity">
+<span class="sig-name descname"><span class="pre">create_tc_entity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.create_tc_entity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.create_tc_entity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create method of CRUD operation for TC entity data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -778,8 +768,8 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.create_tc_entity_array">
-<code class="sig-name descname"><span class="pre">create_tc_entity_array</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.create_tc_entity_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.create_tc_entity_array" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.create_tc_entity_array">
+<span class="sig-name descname"><span class="pre">create_tc_entity_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.create_tc_entity_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.create_tc_entity_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create method of CRUD operation for TC entity array data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -798,8 +788,8 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.delete">
-<code class="sig-name descname"><span class="pre">delete</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.delete" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.delete" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete method of CRUD operation for all data types.</p>
 <p>This method is only supported when using key_value_redis.</p>
 <dl class="field-list simple">
@@ -816,8 +806,8 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.exit">
-<code class="sig-name descname"><span class="pre">exit</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.exit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.exit" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.exit">
+<span class="sig-name descname"><span class="pre">exit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.exit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.exit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Exit the App</p>
 <p>Playbooks do not support partial failures so we change the exit method from 3 to 1 and call
 it a partial success instead.</p>
@@ -832,26 +822,26 @@ it a partial success instead.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.is_variable">
-<code class="sig-name descname"><span class="pre">is_variable</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.is_variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.is_variable" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.is_variable">
+<span class="sig-name descname"><span class="pre">is_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.is_variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.is_variable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return True if provided key is a properly formatted variable.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.output_variables_by_name">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">output_variables_by_name</span></code><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.output_variables_by_name" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.output_variables_by_name">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">output_variables_by_name</span></span><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.output_variables_by_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return output variables stored as name dict.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.output_variables_by_type">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">output_variables_by_type</span></code><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.output_variables_by_type" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.output_variables_by_type">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">output_variables_by_type</span></span><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.output_variables_by_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return output variables stored as name-type dict.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.parse_variable">
-<code class="sig-name descname"><span class="pre">parse_variable</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.parse_variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.parse_variable" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.parse_variable">
+<span class="sig-name descname"><span class="pre">parse_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.parse_variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.parse_variable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse an input or output variable.</p>
 <p><strong>Example Variable</strong>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#App:1234:output!String</span>
@@ -871,8 +861,8 @@ it a partial success instead.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.read">
-<code class="sig-name descname"><span class="pre">read</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">array</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">array</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for working with KeyValue DB.</p>
 <p>This method will automatically check to see if a single variable is passed
 or if “mixed” data is passed and return the results from the DB. It will also
@@ -895,8 +885,8 @@ automatically determine the variable type to read.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.read_array">
-<code class="sig-name descname"><span class="pre">read_array</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read_array" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.read_array">
+<span class="sig-name descname"><span class="pre">read_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read playbook variable and return array for any variable type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -915,8 +905,8 @@ automatically determine the variable type to read.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.read_binary">
-<code class="sig-name descname"><span class="pre">read_binary</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b64decode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read_binary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read_binary" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.read_binary">
+<span class="sig-name descname"><span class="pre">read_binary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b64decode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read_binary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read_binary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for binary data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -936,8 +926,8 @@ automatically determine the variable type to read.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.read_binary_array">
-<code class="sig-name descname"><span class="pre">read_binary_array</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b64decode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read_binary_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read_binary_array" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.read_binary_array">
+<span class="sig-name descname"><span class="pre">read_binary_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b64decode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read_binary_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read_binary_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for binary array data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -957,8 +947,8 @@ automatically determine the variable type to read.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.read_choice">
-<code class="sig-name descname"><span class="pre">read_choice</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alt_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read_choice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read_choice" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.read_choice">
+<span class="sig-name descname"><span class="pre">read_choice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alt_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read_choice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read_choice" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method for choice inputs.</p>
 <p>Behavior:
 * If key is “– Select –” return None.
@@ -981,8 +971,8 @@ automatically determine the variable type to read.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.read_group_ids">
-<code class="sig-name descname"><span class="pre">read_group_ids</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read_group_ids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read_group_ids" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.read_group_ids">
+<span class="sig-name descname"><span class="pre">read_group_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read_group_ids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read_group_ids" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read the value of the given key and return group ids from the value.</p>
 <p>This method will call the <cite>read</cite> method and then will process the data
 so as to return a list of strings where each string is a group id.</p>
@@ -1004,8 +994,8 @@ TCEnhancedEntities.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.read_group_values">
-<code class="sig-name descname"><span class="pre">read_group_values</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read_group_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read_group_values" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.read_group_values">
+<span class="sig-name descname"><span class="pre">read_group_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read_group_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read_group_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read the value of the given key and return group names from the value.</p>
 <p>This method will call the <cite>read</cite> method and then will process the data
 so as to return a list of strings where each string is a group name.</p>
@@ -1027,8 +1017,8 @@ TCEnhancedEntities.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.read_indicator_values">
-<code class="sig-name descname"><span class="pre">read_indicator_values</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read_indicator_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read_indicator_values" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.read_indicator_values">
+<span class="sig-name descname"><span class="pre">read_indicator_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read_indicator_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read_indicator_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read the value of the given key and return indicators from the value.</p>
 <p>This method will call the <cite>read</cite> method and then will process the data so as to return a
 list of strings where each string is an indicator (the summary of an indicator - e.g.
@@ -1051,8 +1041,8 @@ TCEnhancedEntities.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.read_key_value">
-<code class="sig-name descname"><span class="pre">read_key_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read_key_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read_key_value" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.read_key_value">
+<span class="sig-name descname"><span class="pre">read_key_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read_key_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read_key_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for key/value data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1071,8 +1061,8 @@ TCEnhancedEntities.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.read_key_value_array">
-<code class="sig-name descname"><span class="pre">read_key_value_array</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read_key_value_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read_key_value_array" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.read_key_value_array">
+<span class="sig-name descname"><span class="pre">read_key_value_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read_key_value_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read_key_value_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for key/value array data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1091,8 +1081,8 @@ TCEnhancedEntities.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.read_string">
-<code class="sig-name descname"><span class="pre">read_string</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read_string" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.read_string">
+<span class="sig-name descname"><span class="pre">read_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for string data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1111,8 +1101,8 @@ TCEnhancedEntities.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.read_string_array">
-<code class="sig-name descname"><span class="pre">read_string_array</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read_string_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read_string_array" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.read_string_array">
+<span class="sig-name descname"><span class="pre">read_string_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read_string_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read_string_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for string array data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1131,8 +1121,8 @@ TCEnhancedEntities.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.read_tc_entity">
-<code class="sig-name descname"><span class="pre">read_tc_entity</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read_tc_entity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read_tc_entity" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.read_tc_entity">
+<span class="sig-name descname"><span class="pre">read_tc_entity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read_tc_entity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read_tc_entity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for TC entity data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1151,8 +1141,8 @@ TCEnhancedEntities.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.read_tc_entity_array">
-<code class="sig-name descname"><span class="pre">read_tc_entity_array</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read_tc_entity_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read_tc_entity_array" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.read_tc_entity_array">
+<span class="sig-name descname"><span class="pre">read_tc_entity_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.read_tc_entity_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.read_tc_entity_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for TC entity array data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1171,8 +1161,8 @@ TCEnhancedEntities.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.variable_type">
-<code class="sig-name descname"><span class="pre">variable_type</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.variable_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.variable_type" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.variable_type">
+<span class="sig-name descname"><span class="pre">variable_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.variable_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.variable_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the Type from the variable string or default to String type.</p>
 <p>The default type is “String” for those cases when the input variable is
 contains not “DB variable” and is just a String.</p>
@@ -1198,8 +1188,8 @@ contains not “DB variable” and is just a String.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.playbooks.playbooks.Playbooks.write_output">
-<code class="sig-name descname"><span class="pre">write_output</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.write_output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.write_output" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.playbooks.playbooks.Playbooks.write_output">
+<span class="sig-name descname"><span class="pre">write_output</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/playbooks/playbooks.html#Playbooks.write_output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.playbooks.playbooks.Playbooks.write_output" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write all stored output data to storage.</p>
 </dd></dl>
 

@@ -7,12 +7,14 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Services Module &mdash; TcEx 2.0.23 documentation</title>
+  <title>Services Module &mdash; TcEx 2.0.26 documentation</title>
 
 
 
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
 
@@ -30,6 +32,7 @@
 
 
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -64,7 +67,7 @@
 
 
               <div class="version">
-                2.0.23
+                2.0.26
               </div>
 
 
@@ -89,7 +92,7 @@
 
 
 
-              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../features.html">Features</a></li>
@@ -221,19 +224,19 @@
 <span id="services-services"></span><h2>services.services<a class="headerlink" href="#module-tcex.services.api_service" title="Permalink to this headline">¶</a></h2>
 <p>TcEx Framework API Service module.</p>
 <dl class="py class">
-<dt id="tcex.services.api_service.ApiService">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">tcex.services.api_service.</span></code><code class="sig-name descname"><span class="pre">ApiService</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcex</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/api_service.html#ApiService"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.api_service.ApiService" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.api_service.ApiService">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tcex.services.api_service.</span></span><span class="sig-name descname"><span class="pre">ApiService</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcex</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/api_service.html#ApiService"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.api_service.ApiService" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.services.common_service.CommonService" title="tcex.services.common_service.CommonService"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.services.common_service.CommonService</span></code></a></p>
 <p>TcEx Framework API Service module.</p>
-<dl class="py method">
-<dt id="tcex.services.api_service.ApiService.command_map">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">command_map</span></code><a class="headerlink" href="#tcex.services.api_service.ApiService.command_map" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="tcex.services.api_service.ApiService.command_map">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">command_map</span></span><em class="property"><span class="pre">:</span> <span class="pre">dict</span></em><a class="headerlink" href="#tcex.services.api_service.ApiService.command_map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the command map for the current Service type.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.api_service.ApiService.format_query_string">
-<code class="sig-name descname"><span class="pre">format_query_string</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="reference internal" href="../_modules/tcex/services/api_service.html#ApiService.format_query_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.api_service.ApiService.format_query_string" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.api_service.ApiService.format_query_string">
+<span class="sig-name descname"><span class="pre">format_query_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/tcex/services/api_service.html#ApiService.format_query_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.api_service.ApiService.format_query_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert name/value array to a query string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -249,8 +252,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.api_service.ApiService.format_request_headers">
-<code class="sig-name descname"><span class="pre">format_request_headers</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">headers</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">dict</span><a class="reference internal" href="../_modules/tcex/services/api_service.html#ApiService.format_request_headers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.api_service.ApiService.format_request_headers" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.api_service.ApiService.format_request_headers">
+<span class="sig-name descname"><span class="pre">format_request_headers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">headers</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../_modules/tcex/services/api_service.html#ApiService.format_request_headers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.api_service.ApiService.format_request_headers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert name/value array to a headers dict.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -266,8 +269,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.api_service.ApiService.format_response_headers">
-<code class="sig-name descname"><span class="pre">format_response_headers</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">headers</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">dict</span><a class="reference internal" href="../_modules/tcex/services/api_service.html#ApiService.format_response_headers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.api_service.ApiService.format_response_headers" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.api_service.ApiService.format_response_headers">
+<span class="sig-name descname"><span class="pre">format_response_headers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">headers</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../_modules/tcex/services/api_service.html#ApiService.format_response_headers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.api_service.ApiService.format_response_headers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert name/value array to a query string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -283,36 +286,24 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.api_service.ApiService.process_run_service_command">
-<code class="sig-name descname"><span class="pre">process_run_service_command</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/api_service.html#ApiService.process_run_service_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.api_service.ApiService.process_run_service_command" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.api_service.ApiService.process_run_service_command">
+<span class="sig-name descname"><span class="pre">process_run_service_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/api_service.html#ApiService.process_run_service_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.api_service.ApiService.process_run_service_command" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process the RunService command.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="s2">&quot;RunService&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;apiToken&quot;</span><span class="p">:</span> <span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;bodyVariable&quot;</span><span class="p">:</span> <span class="s2">&quot;request.body&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;headers&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="p">{</span> <span class="n">key</span><span class="o">/</span><span class="n">value</span> <span class="n">pairs</span> <span class="p">}</span> <span class="p">],</span>
-  <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;queryParams&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="p">{</span> <span class="n">key</span><span class="o">/</span><span class="n">value</span> <span class="n">pairs</span> <span class="p">}</span> <span class="p">],</span>
-  <span class="s2">&quot;requestKey&quot;</span><span class="p">:</span> <span class="s2">&quot;123abc&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;userConfig&quot;</span><span class="p">:</span> <span class="p">[{</span>
-    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;tlpExportSetting&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;TLP:RED&quot;</span>
-  <span class="p">}],</span>
-<span class="p">}</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="p">{</span>
+<span class="linenos"> 2</span>  <span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="s2">&quot;RunService&quot;</span><span class="p">,</span>
+<span class="linenos"> 3</span>  <span class="s2">&quot;apiToken&quot;</span><span class="p">:</span> <span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
+<span class="linenos"> 4</span>  <span class="s2">&quot;bodyVariable&quot;</span><span class="p">:</span> <span class="s2">&quot;request.body&quot;</span><span class="p">,</span>
+<span class="linenos"> 5</span>  <span class="s2">&quot;headers&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="p">{</span> <span class="n">key</span><span class="o">/</span><span class="n">value</span> <span class="n">pairs</span> <span class="p">}</span> <span class="p">],</span>
+<span class="linenos"> 6</span>  <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span>
+<span class="linenos"> 7</span>  <span class="s2">&quot;queryParams&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="p">{</span> <span class="n">key</span><span class="o">/</span><span class="n">value</span> <span class="n">pairs</span> <span class="p">}</span> <span class="p">],</span>
+<span class="linenos"> 8</span>  <span class="s2">&quot;requestKey&quot;</span><span class="p">:</span> <span class="s2">&quot;123abc&quot;</span><span class="p">,</span>
+<span class="linenos"> 9</span>  <span class="s2">&quot;userConfig&quot;</span><span class="p">:</span> <span class="p">[{</span>
+<span class="linenos">10</span>    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;tlpExportSetting&quot;</span><span class="p">,</span>
+<span class="linenos">11</span>    <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;TLP:RED&quot;</span>
+<span class="linenos">12</span>  <span class="p">}],</span>
+<span class="linenos">13</span><span class="p">}</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>message</strong> – The message payload from the server topic.</p>
@@ -321,8 +312,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.api_service.ApiService.process_run_service_response">
-<code class="sig-name descname"><span class="pre">process_run_service_response</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/api_service.html#ApiService.process_run_service_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.api_service.ApiService.process_run_service_response" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.api_service.ApiService.process_run_service_response">
+<span class="sig-name descname"><span class="pre">process_run_service_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/api_service.html#ApiService.process_run_service_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.api_service.ApiService.process_run_service_response" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handle service event responses.</p>
 <p>(‘200 OK’, [(‘content-type’, ‘application/json’), (‘content-length’, ‘103’)])</p>
 </dd></dl>
@@ -331,8 +322,8 @@
 
 <span class="target" id="module-tcex.services.common_service"></span><p>TcEx Framework Service Common module</p>
 <dl class="py class">
-<dt id="tcex.services.common_service.CommonService">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">tcex.services.common_service.</span></code><code class="sig-name descname"><span class="pre">CommonService</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcex</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service.CommonService">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tcex.services.common_service.</span></span><span class="sig-name descname"><span class="pre">CommonService</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcex</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>TcEx Framework Service Common module</p>
 <p>Shared service logic between the supported service types:
@@ -340,14 +331,14 @@
 * Custom Trigger Service
 * Webhook Trigger Service</p>
 <dl class="py method">
-<dt id="tcex.services.common_service.CommonService._create_logging_handler">
-<code class="sig-name descname"><span class="pre">_create_logging_handler</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService._create_logging_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService._create_logging_handler" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service.CommonService._create_logging_handler">
+<span class="sig-name descname"><span class="pre">_create_logging_handler</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService._create_logging_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService._create_logging_handler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a logging handler.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.common_service.CommonService.add_metric">
-<code class="sig-name descname"><span class="pre">add_metric</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.add_metric"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.add_metric" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service.CommonService.add_metric">
+<span class="sig-name descname"><span class="pre">add_metric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.add_metric"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.add_metric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a metric.</p>
 <p>Metrics are reported in heartbeat message.</p>
 <dl class="field-list simple">
@@ -360,15 +351,15 @@
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="tcex.services.common_service.CommonService.command_map">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">command_map</span></code><a class="headerlink" href="#tcex.services.common_service.CommonService.command_map" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="tcex.services.common_service.CommonService.command_map">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">command_map</span></span><em class="property"><span class="pre">:</span> <span class="pre">dict</span></em><a class="headerlink" href="#tcex.services.common_service.CommonService.command_map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the command map for the current Service type.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.common_service.CommonService.create_session_id">
-<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">create_session_id</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.create_session_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.create_session_id" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service.CommonService.create_session_id">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">create_session_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.create_session_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.create_session_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a uuid4 session id.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -381,26 +372,26 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.common_service.CommonService.heartbeat">
-<code class="sig-name descname"><span class="pre">heartbeat</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.heartbeat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.heartbeat" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service.CommonService.heartbeat">
+<span class="sig-name descname"><span class="pre">heartbeat</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.heartbeat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.heartbeat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start heartbeat process.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.common_service.CommonService.heartbeat_broker_check">
-<code class="sig-name descname"><span class="pre">heartbeat_broker_check</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.heartbeat_broker_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.heartbeat_broker_check" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service.CommonService.heartbeat_broker_check">
+<span class="sig-name descname"><span class="pre">heartbeat_broker_check</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.heartbeat_broker_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.heartbeat_broker_check" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send self check message to ensure communications with message broker.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.common_service.CommonService.heartbeat_monitor">
-<code class="sig-name descname"><span class="pre">heartbeat_monitor</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.heartbeat_monitor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.heartbeat_monitor" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service.CommonService.heartbeat_monitor">
+<span class="sig-name descname"><span class="pre">heartbeat_monitor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.heartbeat_monitor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.heartbeat_monitor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Publish heartbeat on timer.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.common_service.CommonService.increment_metric">
-<code class="sig-name descname"><span class="pre">increment_metric</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.increment_metric"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.increment_metric" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service.CommonService.increment_metric">
+<span class="sig-name descname"><span class="pre">increment_metric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.increment_metric"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.increment_metric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Increment a metric if already exists.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -413,14 +404,14 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.common_service.CommonService.listen">
-<code class="sig-name descname"><span class="pre">listen</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.listen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.listen" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service.CommonService.listen">
+<span class="sig-name descname"><span class="pre">listen</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.listen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.listen" title="Permalink to this definition">¶</a></dt>
 <dd><p>List for message coming from broker.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.common_service.CommonService.loop_forever">
-<code class="sig-name descname"><span class="pre">loop_forever</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sleep</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bool</span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.loop_forever"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.loop_forever" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service.CommonService.loop_forever">
+<span class="sig-name descname"><span class="pre">loop_forever</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sleep</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.loop_forever"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.loop_forever" title="Permalink to this definition">¶</a></dt>
 <dd><p>Block and wait for shutdown.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -435,27 +426,27 @@
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="tcex.services.common_service.CommonService.metrics">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">metrics</span></code><a class="headerlink" href="#tcex.services.common_service.CommonService.metrics" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="tcex.services.common_service.CommonService.metrics">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">metrics</span></span><em class="property"><span class="pre">:</span> <span class="pre">dict</span></em><a class="headerlink" href="#tcex.services.common_service.CommonService.metrics" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return current metrics.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.common_service.CommonService.on_connect_handler">
-<code class="sig-name descname"><span class="pre">on_connect_handler</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rc</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.on_connect_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.on_connect_handler" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service.CommonService.on_connect_handler">
+<span class="sig-name descname"><span class="pre">on_connect_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rc</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.on_connect_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.on_connect_handler" title="Permalink to this definition">¶</a></dt>
 <dd><p>On connect method for mqtt broker.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.common_service.CommonService.on_message_handler">
-<code class="sig-name descname"><span class="pre">on_message_handler</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.on_message_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.on_message_handler" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service.CommonService.on_message_handler">
+<span class="sig-name descname"><span class="pre">on_message_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.on_message_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.on_message_handler" title="Permalink to this definition">¶</a></dt>
 <dd><p>On message for mqtt.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.common_service.CommonService.process_acknowledged_command">
-<code class="sig-name descname"><span class="pre">process_acknowledged_command</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.process_acknowledged_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.process_acknowledged_command" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service.CommonService.process_acknowledged_command">
+<span class="sig-name descname"><span class="pre">process_acknowledged_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.process_acknowledged_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.process_acknowledged_command" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process the Acknowledge command.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -465,16 +456,14 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.common_service.CommonService.process_broker_check">
-<code class="sig-name descname"><span class="pre">process_broker_check</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.process_broker_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.process_broker_check" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service.CommonService.process_broker_check">
+<span class="sig-name descname"><span class="pre">process_broker_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.process_broker_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.process_broker_check" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement parent method to log a broker check message.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="s2">&quot;BrokerCheck&quot;</span><span class="p">,</span>
-<span class="p">}</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="p">{</span>
+<span class="linenos">2</span>    <span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="s2">&quot;BrokerCheck&quot;</span><span class="p">,</span>
+<span class="linenos">3</span><span class="p">}</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>message</strong> – The message payload from the server topic.</p>
@@ -483,22 +472,17 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.common_service.CommonService.process_heartbeat_command">
-<code class="sig-name descname"><span class="pre">process_heartbeat_command</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.process_heartbeat_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.process_heartbeat_command" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service.CommonService.process_heartbeat_command">
+<span class="sig-name descname"><span class="pre">process_heartbeat_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.process_heartbeat_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.process_heartbeat_command" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process the HeartBeat command.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span>
-<span class="normal">6</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="s2">&quot;Heartbeat&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;metric&quot;</span><span class="p">:</span> <span class="p">{},</span>
-    <span class="s2">&quot;memoryPercent&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="s2">&quot;cpuPercent&quot;</span><span class="p">:</span> <span class="mi">0</span>
-<span class="p">}</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="p">{</span>
+<span class="linenos">2</span>    <span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="s2">&quot;Heartbeat&quot;</span><span class="p">,</span>
+<span class="linenos">3</span>    <span class="s2">&quot;metric&quot;</span><span class="p">:</span> <span class="p">{},</span>
+<span class="linenos">4</span>    <span class="s2">&quot;memoryPercent&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+<span class="linenos">5</span>    <span class="s2">&quot;cpuPercent&quot;</span><span class="p">:</span> <span class="mi">0</span>
+<span class="linenos">6</span><span class="p">}</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>message</strong> – The message payload from the server topic.</p>
@@ -507,8 +491,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.common_service.CommonService.process_invalid_command">
-<code class="sig-name descname"><span class="pre">process_invalid_command</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.process_invalid_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.process_invalid_command" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service.CommonService.process_invalid_command">
+<span class="sig-name descname"><span class="pre">process_invalid_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.process_invalid_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.process_invalid_command" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process all invalid commands.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -518,18 +502,15 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.common_service.CommonService.process_logging_change_command">
-<code class="sig-name descname"><span class="pre">process_logging_change_command</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.process_logging_change_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.process_logging_change_command" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service.CommonService.process_logging_change_command">
+<span class="sig-name descname"><span class="pre">process_logging_change_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.process_logging_change_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.process_logging_change_command" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process the LoggingChange command.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="s2">&quot;LoggingChange&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="s2">&quot;DEBUG&quot;</span>
-<span class="p">}</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="p">{</span>
+<span class="linenos">2</span>    <span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="s2">&quot;LoggingChange&quot;</span><span class="p">,</span>
+<span class="linenos">3</span>    <span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="s2">&quot;DEBUG&quot;</span>
+<span class="linenos">4</span><span class="p">}</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>message</strong> – The message payload from the server topic.</p>
@@ -538,18 +519,15 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.common_service.CommonService.process_shutdown_command">
-<code class="sig-name descname"><span class="pre">process_shutdown_command</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.process_shutdown_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.process_shutdown_command" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service.CommonService.process_shutdown_command">
+<span class="sig-name descname"><span class="pre">process_shutdown_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.process_shutdown_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.process_shutdown_command" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement parent method to process the shutdown command.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="s2">&quot;Shutdown&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;Service disabled by user.&quot;</span>
-<span class="p">}</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="p">{</span>
+<span class="linenos">2</span>    <span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="s2">&quot;Shutdown&quot;</span><span class="p">,</span>
+<span class="linenos">3</span>    <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;Service disabled by user.&quot;</span>
+<span class="linenos">4</span><span class="p">}</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>message</strong> – The message payload from the server topic.</p>
@@ -557,15 +535,15 @@
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="tcex.services.common_service.CommonService.ready">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">ready</span></code><a class="headerlink" href="#tcex.services.common_service.CommonService.ready" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="tcex.services.common_service.CommonService.ready">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">ready</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#tcex.services.common_service.CommonService.ready" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return ready boolean.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.common_service.CommonService.service_thread">
-<code class="sig-name descname"><span class="pre">service_thread</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.service_thread"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.service_thread" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service.CommonService.service_thread">
+<span class="sig-name descname"><span class="pre">service_thread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.service_thread"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.service_thread" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start a message thread.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -581,27 +559,27 @@
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="tcex.services.common_service.CommonService.session_id">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">session_id</span></code><a class="headerlink" href="#tcex.services.common_service.CommonService.session_id" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="tcex.services.common_service.CommonService.session_id">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">session_id</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional[str]</span></em><a class="headerlink" href="#tcex.services.common_service.CommonService.session_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the current session_id.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="tcex.services.common_service.CommonService.thread_name">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">thread_name</span></code><a class="headerlink" href="#tcex.services.common_service.CommonService.thread_name" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="tcex.services.common_service.CommonService.thread_name">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">thread_name</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#tcex.services.common_service.CommonService.thread_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a uuid4 session id.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="tcex.services.common_service.CommonService.trigger_id">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">trigger_id</span></code><a class="headerlink" href="#tcex.services.common_service.CommonService.trigger_id" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="tcex.services.common_service.CommonService.trigger_id">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">trigger_id</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional[int]</span></em><a class="headerlink" href="#tcex.services.common_service.CommonService.trigger_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the current trigger_id.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.common_service.CommonService.update_metric">
-<code class="sig-name descname"><span class="pre">update_metric</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.update_metric"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.update_metric" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service.CommonService.update_metric">
+<span class="sig-name descname"><span class="pre">update_metric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/common_service.html#CommonService.update_metric"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service.CommonService.update_metric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update a metric if already exists.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -617,16 +595,16 @@
 
 <span class="target" id="module-tcex.services.common_service_trigger"></span><p>TcEx Framework Service Trigger Common module.</p>
 <dl class="py class">
-<dt id="tcex.services.common_service_trigger.CommonServiceTrigger">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">tcex.services.common_service_trigger.</span></code><code class="sig-name descname"><span class="pre">CommonServiceTrigger</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcex</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/common_service_trigger.html#CommonServiceTrigger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service_trigger.CommonServiceTrigger" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service_trigger.CommonServiceTrigger">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tcex.services.common_service_trigger.</span></span><span class="sig-name descname"><span class="pre">CommonServiceTrigger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcex</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/common_service_trigger.html#CommonServiceTrigger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service_trigger.CommonServiceTrigger" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.services.common_service.CommonService" title="tcex.services.common_service.CommonService"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.services.common_service.CommonService</span></code></a></p>
 <p>TcEx Framework Service Trigger Common module.</p>
 <p>Shared service logic between the supported service types:
 * Custom Trigger Service
 * Webhook Trigger Service</p>
 <dl class="py method">
-<dt id="tcex.services.common_service_trigger.CommonServiceTrigger._tcex_testing">
-<code class="sig-name descname"><span class="pre">_tcex_testing</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/common_service_trigger.html#CommonServiceTrigger._tcex_testing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service_trigger.CommonServiceTrigger._tcex_testing" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service_trigger.CommonServiceTrigger._tcex_testing">
+<span class="sig-name descname"><span class="pre">_tcex_testing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/common_service_trigger.html#CommonServiceTrigger._tcex_testing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service_trigger.CommonServiceTrigger._tcex_testing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write data required for testing framework to Redis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -639,8 +617,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.common_service_trigger.CommonServiceTrigger._tcex_testing_fired_events">
-<code class="sig-name descname"><span class="pre">_tcex_testing_fired_events</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fired</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/common_service_trigger.html#CommonServiceTrigger._tcex_testing_fired_events"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service_trigger.CommonServiceTrigger._tcex_testing_fired_events" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service_trigger.CommonServiceTrigger._tcex_testing_fired_events">
+<span class="sig-name descname"><span class="pre">_tcex_testing_fired_events</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fired</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/common_service_trigger.html#CommonServiceTrigger._tcex_testing_fired_events"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service_trigger.CommonServiceTrigger._tcex_testing_fired_events" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write fired event data to KV Store to be used in test validation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -652,15 +630,15 @@
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="tcex.services.common_service_trigger.CommonServiceTrigger.command_map">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">command_map</span></code><a class="headerlink" href="#tcex.services.common_service_trigger.CommonServiceTrigger.command_map" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="tcex.services.common_service_trigger.CommonServiceTrigger.command_map">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">command_map</span></span><em class="property"><span class="pre">:</span> <span class="pre">dict</span></em><a class="headerlink" href="#tcex.services.common_service_trigger.CommonServiceTrigger.command_map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the command map for the current Service type.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.common_service_trigger.CommonServiceTrigger.create_config">
-<code class="sig-name descname"><span class="pre">create_config</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trigger_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/common_service_trigger.html#CommonServiceTrigger.create_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service_trigger.CommonServiceTrigger.create_config" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service_trigger.CommonServiceTrigger.create_config">
+<span class="sig-name descname"><span class="pre">create_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trigger_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/common_service_trigger.html#CommonServiceTrigger.create_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service_trigger.CommonServiceTrigger.create_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add config item to service config object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -675,8 +653,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.common_service_trigger.CommonServiceTrigger.delete_config">
-<code class="sig-name descname"><span class="pre">delete_config</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trigger_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/common_service_trigger.html#CommonServiceTrigger.delete_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service_trigger.CommonServiceTrigger.delete_config" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service_trigger.CommonServiceTrigger.delete_config">
+<span class="sig-name descname"><span class="pre">delete_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trigger_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/common_service_trigger.html#CommonServiceTrigger.delete_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service_trigger.CommonServiceTrigger.delete_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete config item from config object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -690,8 +668,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.common_service_trigger.CommonServiceTrigger.fire_event">
-<code class="sig-name descname"><span class="pre">fire_event</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/common_service_trigger.html#CommonServiceTrigger.fire_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service_trigger.CommonServiceTrigger.fire_event" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service_trigger.CommonServiceTrigger.fire_event">
+<span class="sig-name descname"><span class="pre">fire_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/common_service_trigger.html#CommonServiceTrigger.fire_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service_trigger.CommonServiceTrigger.fire_event" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trigger a FireEvent command.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -704,8 +682,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.common_service_trigger.CommonServiceTrigger.fire_event_publish">
-<code class="sig-name descname"><span class="pre">fire_event_publish</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trigger_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/common_service_trigger.html#CommonServiceTrigger.fire_event_publish"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service_trigger.CommonServiceTrigger.fire_event_publish" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service_trigger.CommonServiceTrigger.fire_event_publish">
+<span class="sig-name descname"><span class="pre">fire_event_publish</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trigger_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/common_service_trigger.html#CommonServiceTrigger.fire_event_publish"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service_trigger.CommonServiceTrigger.fire_event_publish" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send FireEvent command.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -719,8 +697,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.common_service_trigger.CommonServiceTrigger.fire_event_trigger">
-<code class="sig-name descname"><span class="pre">fire_event_trigger</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">playbook</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/common_service_trigger.html#CommonServiceTrigger.fire_event_trigger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service_trigger.CommonServiceTrigger.fire_event_trigger" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service_trigger.CommonServiceTrigger.fire_event_trigger">
+<span class="sig-name descname"><span class="pre">fire_event_trigger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">playbook</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/common_service_trigger.html#CommonServiceTrigger.fire_event_trigger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service_trigger.CommonServiceTrigger.fire_event_trigger" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fire event for trigger.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -736,8 +714,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.common_service_trigger.CommonServiceTrigger.log_config">
-<code class="sig-name descname"><span class="pre">log_config</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trigger_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/common_service_trigger.html#CommonServiceTrigger.log_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service_trigger.CommonServiceTrigger.log_config" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service_trigger.CommonServiceTrigger.log_config">
+<span class="sig-name descname"><span class="pre">log_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trigger_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/common_service_trigger.html#CommonServiceTrigger.log_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service_trigger.CommonServiceTrigger.log_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Log the config wile hiding encrypted values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -750,36 +728,24 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.common_service_trigger.CommonServiceTrigger.process_create_config_command">
-<code class="sig-name descname"><span class="pre">process_create_config_command</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/common_service_trigger.html#CommonServiceTrigger.process_create_config_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service_trigger.CommonServiceTrigger.process_create_config_command" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service_trigger.CommonServiceTrigger.process_create_config_command">
+<span class="sig-name descname"><span class="pre">process_create_config_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/common_service_trigger.html#CommonServiceTrigger.process_create_config_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service_trigger.CommonServiceTrigger.process_create_config_command" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process the CreateConfig command.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;appId&quot;</span><span class="p">:</span> <span class="mi">387</span><span class="p">,</span>
-    <span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="s2">&quot;CreateConfig&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;triggerId&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="s2">&quot;config&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="s2">&quot;test-pass&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;test-user&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;cc_action&quot;</span><span class="p">:</span> <span class="s2">&quot;pass&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;tc_playbook_out_variables&quot;</span><span class="p">:</span> <span class="s2">&quot;#Trigger:1:testing.body!String&quot;</span>
-    <span class="p">},</span>
-    <span class="s2">&quot;apiToken&quot;</span><span class="p">:</span> <span class="s2">&quot;SVC:8:QQuyIp:1596817138182:387:+9vBOAT8Y56caHRcjLa4IwAqABoatsYOU ... &quot;</span><span class="p">,</span>
-    <span class="s2">&quot;expireSeconds&quot;</span><span class="p">:</span> <span class="mi">1596817138</span>
-<span class="p">}</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="p">{</span>
+<span class="linenos"> 2</span>    <span class="s2">&quot;appId&quot;</span><span class="p">:</span> <span class="mi">387</span><span class="p">,</span>
+<span class="linenos"> 3</span>    <span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="s2">&quot;CreateConfig&quot;</span><span class="p">,</span>
+<span class="linenos"> 4</span>    <span class="s2">&quot;triggerId&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+<span class="linenos"> 5</span>    <span class="s2">&quot;config&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="linenos"> 6</span>        <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="s2">&quot;test-pass&quot;</span><span class="p">,</span>
+<span class="linenos"> 7</span>        <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;test-user&quot;</span><span class="p">,</span>
+<span class="linenos"> 8</span>        <span class="s2">&quot;cc_action&quot;</span><span class="p">:</span> <span class="s2">&quot;pass&quot;</span><span class="p">,</span>
+<span class="linenos"> 9</span>        <span class="s2">&quot;tc_playbook_out_variables&quot;</span><span class="p">:</span> <span class="s2">&quot;#Trigger:1:testing.body!String&quot;</span>
+<span class="linenos">10</span>    <span class="p">},</span>
+<span class="linenos">11</span>    <span class="s2">&quot;apiToken&quot;</span><span class="p">:</span> <span class="s2">&quot;SVC:8:QQuyIp:1596817138182:387:+9vBOAT8Y56caHRcjLa4IwAqABoatsYOU ... &quot;</span><span class="p">,</span>
+<span class="linenos">12</span>    <span class="s2">&quot;expireSeconds&quot;</span><span class="p">:</span> <span class="mi">1596817138</span>
+<span class="linenos">13</span><span class="p">}</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>message</strong> – The message payload from the server topic.</p>
@@ -788,20 +754,16 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.common_service_trigger.CommonServiceTrigger.process_delete_config_command">
-<code class="sig-name descname"><span class="pre">process_delete_config_command</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/common_service_trigger.html#CommonServiceTrigger.process_delete_config_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service_trigger.CommonServiceTrigger.process_delete_config_command" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.common_service_trigger.CommonServiceTrigger.process_delete_config_command">
+<span class="sig-name descname"><span class="pre">process_delete_config_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/common_service_trigger.html#CommonServiceTrigger.process_delete_config_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.common_service_trigger.CommonServiceTrigger.process_delete_config_command" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process the DeleteConfig command.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;appId&quot;</span><span class="p">:</span> <span class="mi">387</span><span class="p">,</span>
-    <span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="s2">&quot;DeleteConfig&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;triggerId&quot;</span><span class="p">:</span> <span class="mi">1</span>
-<span class="p">}</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="p">{</span>
+<span class="linenos">2</span>    <span class="s2">&quot;appId&quot;</span><span class="p">:</span> <span class="mi">387</span><span class="p">,</span>
+<span class="linenos">3</span>    <span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="s2">&quot;DeleteConfig&quot;</span><span class="p">,</span>
+<span class="linenos">4</span>    <span class="s2">&quot;triggerId&quot;</span><span class="p">:</span> <span class="mi">1</span>
+<span class="linenos">5</span><span class="p">}</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>message</strong> – The message payload from the server topic.</p>
@@ -809,15 +771,15 @@
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="tcex.services.common_service_trigger.CommonServiceTrigger.thread_trigger_id">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">thread_trigger_id</span></code><a class="headerlink" href="#tcex.services.common_service_trigger.CommonServiceTrigger.thread_trigger_id" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="tcex.services.common_service_trigger.CommonServiceTrigger.thread_trigger_id">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">thread_trigger_id</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional[str]</span></em><a class="headerlink" href="#tcex.services.common_service_trigger.CommonServiceTrigger.thread_trigger_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the current thread trigger id.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="tcex.services.common_service_trigger.CommonServiceTrigger.trigger_logfile">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">trigger_logfile</span></code><a class="headerlink" href="#tcex.services.common_service_trigger.CommonServiceTrigger.trigger_logfile" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="tcex.services.common_service_trigger.CommonServiceTrigger.trigger_logfile">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">trigger_logfile</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#tcex.services.common_service_trigger.CommonServiceTrigger.trigger_logfile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the logfile name based on date and thread name.</p>
 </dd></dl>
 
@@ -825,13 +787,13 @@
 
 <span class="target" id="module-tcex.services.mqtt_message_broker"></span><p>TcEx Framework MQTT message broker module.</p>
 <dl class="py class">
-<dt id="tcex.services.mqtt_message_broker.MqttMessageBroker">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">tcex.services.mqtt_message_broker.</span></code><code class="sig-name descname"><span class="pre">MqttMessageBroker</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">broker_host</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">broker_port</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">broker_timeout</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">broker_token</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">broker_cacert</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.mqtt_message_broker.MqttMessageBroker">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tcex.services.mqtt_message_broker.</span></span><span class="sig-name descname"><span class="pre">MqttMessageBroker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">broker_host</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">broker_port</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">broker_timeout</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">broker_token</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">broker_cacert</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>TcEx Framework MQTT message broker module.</p>
 <dl class="py method">
-<dt id="tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_connect_callback">
-<code class="sig-name descname"><span class="pre">add_on_connect_callback</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.add_on_connect_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_connect_callback" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_connect_callback">
+<span class="sig-name descname"><span class="pre">add_on_connect_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.add_on_connect_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_connect_callback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a callback for on_connect events.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -844,8 +806,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_disconnect_callback">
-<code class="sig-name descname"><span class="pre">add_on_disconnect_callback</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.add_on_disconnect_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_disconnect_callback" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_disconnect_callback">
+<span class="sig-name descname"><span class="pre">add_on_disconnect_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.add_on_disconnect_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_disconnect_callback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a callback for on_disconnect events.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -858,8 +820,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_log_callback">
-<code class="sig-name descname"><span class="pre">add_on_log_callback</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.add_on_log_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_log_callback" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_log_callback">
+<span class="sig-name descname"><span class="pre">add_on_log_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.add_on_log_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_log_callback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a callback for on_log events.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -872,8 +834,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_message_callback">
-<code class="sig-name descname"><span class="pre">add_on_message_callback</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topics</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.add_on_message_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_message_callback" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_message_callback">
+<span class="sig-name descname"><span class="pre">add_on_message_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topics</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.add_on_message_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_message_callback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a callback for on_message events.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -888,8 +850,8 @@ will always be called.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_publish_callback">
-<code class="sig-name descname"><span class="pre">add_on_publish_callback</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.add_on_publish_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_publish_callback" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_publish_callback">
+<span class="sig-name descname"><span class="pre">add_on_publish_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.add_on_publish_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_publish_callback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a callback for on_publish events.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -902,8 +864,8 @@ will always be called.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_subscribe_callback">
-<code class="sig-name descname"><span class="pre">add_on_subscribe_callback</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.add_on_subscribe_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_subscribe_callback" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_subscribe_callback">
+<span class="sig-name descname"><span class="pre">add_on_subscribe_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.add_on_subscribe_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_subscribe_callback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a callback for on_subscribe events.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -916,8 +878,8 @@ will always be called.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_unsubscribe_callback">
-<code class="sig-name descname"><span class="pre">add_on_unsubscribe_callback</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.add_on_unsubscribe_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_unsubscribe_callback" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_unsubscribe_callback">
+<span class="sig-name descname"><span class="pre">add_on_unsubscribe_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.add_on_unsubscribe_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.add_on_unsubscribe_callback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a callback for on_unsubscribe events.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -929,63 +891,63 @@ will always be called.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="tcex.services.mqtt_message_broker.MqttMessageBroker.client">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">client</span></code><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.client" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="tcex.services.mqtt_message_broker.MqttMessageBroker.client">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">client</span></span><em class="property"><span class="pre">:</span> <span class="pre">object</span></em><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.client" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return MQTT client.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.mqtt_message_broker.MqttMessageBroker.connect">
-<code class="sig-name descname"><span class="pre">connect</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.connect" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.mqtt_message_broker.MqttMessageBroker.connect">
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.connect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Listen for message coming from broker.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.mqtt_message_broker.MqttMessageBroker.on_connect">
-<code class="sig-name descname"><span class="pre">on_connect</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rc</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.on_connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.on_connect" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.mqtt_message_broker.MqttMessageBroker.on_connect">
+<span class="sig-name descname"><span class="pre">on_connect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rc</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.on_connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.on_connect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handle MQTT on_connect events.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.mqtt_message_broker.MqttMessageBroker.on_disconnect">
-<code class="sig-name descname"><span class="pre">on_disconnect</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rc</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.on_disconnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.on_disconnect" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.mqtt_message_broker.MqttMessageBroker.on_disconnect">
+<span class="sig-name descname"><span class="pre">on_disconnect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rc</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.on_disconnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.on_disconnect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handle MQTT on_disconnect events.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.mqtt_message_broker.MqttMessageBroker.on_log">
-<code class="sig-name descname"><span class="pre">on_log</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buf</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.on_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.on_log" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.mqtt_message_broker.MqttMessageBroker.on_log">
+<span class="sig-name descname"><span class="pre">on_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buf</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.on_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.on_log" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handle MQTT on_log events.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.mqtt_message_broker.MqttMessageBroker.on_message">
-<code class="sig-name descname"><span class="pre">on_message</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.on_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.on_message" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.mqtt_message_broker.MqttMessageBroker.on_message">
+<span class="sig-name descname"><span class="pre">on_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.on_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.on_message" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handle MQTT on_message events.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.mqtt_message_broker.MqttMessageBroker.on_publish">
-<code class="sig-name descname"><span class="pre">on_publish</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.on_publish"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.on_publish" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.mqtt_message_broker.MqttMessageBroker.on_publish">
+<span class="sig-name descname"><span class="pre">on_publish</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.on_publish"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.on_publish" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handle MQTT on_publish events.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.mqtt_message_broker.MqttMessageBroker.on_subscribe">
-<code class="sig-name descname"><span class="pre">on_subscribe</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">granted_qos</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.on_subscribe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.on_subscribe" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.mqtt_message_broker.MqttMessageBroker.on_subscribe">
+<span class="sig-name descname"><span class="pre">on_subscribe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">granted_qos</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.on_subscribe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.on_subscribe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handle MQTT on_subscribe events.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.mqtt_message_broker.MqttMessageBroker.on_unsubscribe">
-<code class="sig-name descname"><span class="pre">on_unsubscribe</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.on_unsubscribe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.on_unsubscribe" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.mqtt_message_broker.MqttMessageBroker.on_unsubscribe">
+<span class="sig-name descname"><span class="pre">on_unsubscribe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.on_unsubscribe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.on_unsubscribe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handle MQTT on_unsubscribe events.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.mqtt_message_broker.MqttMessageBroker.publish">
-<code class="sig-name descname"><span class="pre">publish</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topic</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.publish"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.publish" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.mqtt_message_broker.MqttMessageBroker.publish">
+<span class="sig-name descname"><span class="pre">publish</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topic</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.publish"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.publish" title="Permalink to this definition">¶</a></dt>
 <dd><p>Publish a message on client topic.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -998,8 +960,8 @@ will always be called.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.mqtt_message_broker.MqttMessageBroker.register_callbacks">
-<code class="sig-name descname"><span class="pre">register_callbacks</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.register_callbacks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.register_callbacks" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.mqtt_message_broker.MqttMessageBroker.register_callbacks">
+<span class="sig-name descname"><span class="pre">register_callbacks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/mqtt_message_broker.html#MqttMessageBroker.register_callbacks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.mqtt_message_broker.MqttMessageBroker.register_callbacks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Register all the message broker callbacks.</p>
 </dd></dl>
 
@@ -1007,13 +969,13 @@ will always be called.</p></li>
 
 <span class="target" id="module-tcex.services.webhook_trigger_service"></span><p>TcEx Framework Webhook Service Trigger module.</p>
 <dl class="py class">
-<dt id="tcex.services.webhook_trigger_service.WebhookTriggerService">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">tcex.services.webhook_trigger_service.</span></code><code class="sig-name descname"><span class="pre">WebhookTriggerService</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcex</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/webhook_trigger_service.html#WebhookTriggerService"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.webhook_trigger_service.WebhookTriggerService" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.webhook_trigger_service.WebhookTriggerService">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">tcex.services.webhook_trigger_service.</span></span><span class="sig-name descname"><span class="pre">WebhookTriggerService</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcex</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/services/webhook_trigger_service.html#WebhookTriggerService"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.webhook_trigger_service.WebhookTriggerService" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.services.common_service_trigger.CommonServiceTrigger" title="tcex.services.common_service_trigger.CommonServiceTrigger"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.services.common_service_trigger.CommonServiceTrigger</span></code></a></p>
 <p>TcEx Framework Webhook Service Trigger module.</p>
 <dl class="py method">
-<dt id="tcex.services.webhook_trigger_service.WebhookTriggerService.callback_response_handler">
-<code class="sig-name descname"><span class="pre">callback_response_handler</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback_response</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/webhook_trigger_service.html#WebhookTriggerService.callback_response_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.webhook_trigger_service.WebhookTriggerService.callback_response_handler" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.webhook_trigger_service.WebhookTriggerService.callback_response_handler">
+<span class="sig-name descname"><span class="pre">callback_response_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback_response</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/webhook_trigger_service.html#WebhookTriggerService.callback_response_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.webhook_trigger_service.WebhookTriggerService.callback_response_handler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handle the different types of callback responses.</p>
 <p># Webhook App (default)</p>
 <ul class="simple">
@@ -1052,8 +1014,8 @@ will always be called.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.webhook_trigger_service.WebhookTriggerService.callback_response_marshall">
-<code class="sig-name descname"><span class="pre">callback_response_marshall</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback_response</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/webhook_trigger_service.html#WebhookTriggerService.callback_response_marshall"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.webhook_trigger_service.WebhookTriggerService.callback_response_marshall" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.webhook_trigger_service.WebhookTriggerService.callback_response_marshall">
+<span class="sig-name descname"><span class="pre">callback_response_marshall</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback_response</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/webhook_trigger_service.html#WebhookTriggerService.callback_response_marshall"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.webhook_trigger_service.WebhookTriggerService.callback_response_marshall" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handle the different types of callback responses.</p>
 <p># webhookResponseMarshall Feature App</p>
 <ul class="simple">
@@ -1072,8 +1034,8 @@ will always be called.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.webhook_trigger_service.WebhookTriggerService.callback_response_service_endpoint">
-<code class="sig-name descname"><span class="pre">callback_response_service_endpoint</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback_response</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/webhook_trigger_service.html#WebhookTriggerService.callback_response_service_endpoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.webhook_trigger_service.WebhookTriggerService.callback_response_service_endpoint" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.webhook_trigger_service.WebhookTriggerService.callback_response_service_endpoint">
+<span class="sig-name descname"><span class="pre">callback_response_service_endpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback_response</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/webhook_trigger_service.html#WebhookTriggerService.callback_response_service_endpoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.webhook_trigger_service.WebhookTriggerService.callback_response_service_endpoint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handle the different types of callback responses.</p>
 <p># webhookServiceEndpoint Feature App</p>
 <p>For this feature the callback method must fire the event on it’s own.</p>
@@ -1096,8 +1058,8 @@ will always be called.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.webhook_trigger_service.WebhookTriggerService.callback_response_webhook">
-<code class="sig-name descname"><span class="pre">callback_response_webhook</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback_response</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/webhook_trigger_service.html#WebhookTriggerService.callback_response_webhook"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.webhook_trigger_service.WebhookTriggerService.callback_response_webhook" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.webhook_trigger_service.WebhookTriggerService.callback_response_webhook">
+<span class="sig-name descname"><span class="pre">callback_response_webhook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback_response</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/webhook_trigger_service.html#WebhookTriggerService.callback_response_webhook"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.webhook_trigger_service.WebhookTriggerService.callback_response_webhook" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handle the different types of callback responses.</p>
 <ul class="simple">
 <li><dl class="simple">
@@ -1118,55 +1080,37 @@ will always be called.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="tcex.services.webhook_trigger_service.WebhookTriggerService.command_map">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">command_map</span></code><a class="headerlink" href="#tcex.services.webhook_trigger_service.WebhookTriggerService.command_map" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="tcex.services.webhook_trigger_service.WebhookTriggerService.command_map">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">command_map</span></span><em class="property"><span class="pre">:</span> <span class="pre">dict</span></em><a class="headerlink" href="#tcex.services.webhook_trigger_service.WebhookTriggerService.command_map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the command map for the current Service type.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.webhook_trigger_service.WebhookTriggerService.process_webhook_event_command">
-<code class="sig-name descname"><span class="pre">process_webhook_event_command</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/webhook_trigger_service.html#WebhookTriggerService.process_webhook_event_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.webhook_trigger_service.WebhookTriggerService.process_webhook_event_command" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.webhook_trigger_service.WebhookTriggerService.process_webhook_event_command">
+<span class="sig-name descname"><span class="pre">process_webhook_event_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/webhook_trigger_service.html#WebhookTriggerService.process_webhook_event_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.webhook_trigger_service.WebhookTriggerService.process_webhook_event_command" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process the WebhookEvent command.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;appId&quot;</span><span class="p">:</span> <span class="mi">387</span><span class="p">,</span>
-    <span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="s2">&quot;WebhookEvent&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;triggerId&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="s2">&quot;requestKey&quot;</span><span class="p">:</span> <span class="s2">&quot;cd8c7a3a-7968-4b97-80c9-68b83a8ef1a1&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;headers&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Accept-Encoding&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;gzip, deflate, br&quot;</span>
-        <span class="p">}</span>
-    <span class="p">],</span>
-    <span class="s2">&quot;queryParams&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;registration&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;true&quot;</span>
-        <span class="p">}</span>
-    <span class="p">]</span>
-<span class="p">}</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="p">{</span>
+<span class="linenos"> 2</span>    <span class="s2">&quot;appId&quot;</span><span class="p">:</span> <span class="mi">387</span><span class="p">,</span>
+<span class="linenos"> 3</span>    <span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="s2">&quot;WebhookEvent&quot;</span><span class="p">,</span>
+<span class="linenos"> 4</span>    <span class="s2">&quot;triggerId&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+<span class="linenos"> 5</span>    <span class="s2">&quot;requestKey&quot;</span><span class="p">:</span> <span class="s2">&quot;cd8c7a3a-7968-4b97-80c9-68b83a8ef1a1&quot;</span><span class="p">,</span>
+<span class="linenos"> 6</span>    <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span>
+<span class="linenos"> 7</span>    <span class="s2">&quot;headers&quot;</span><span class="p">:</span> <span class="p">[</span>
+<span class="linenos"> 8</span>        <span class="p">{</span>
+<span class="linenos"> 9</span>            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Accept-Encoding&quot;</span><span class="p">,</span>
+<span class="linenos">10</span>            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;gzip, deflate, br&quot;</span>
+<span class="linenos">11</span>        <span class="p">}</span>
+<span class="linenos">12</span>    <span class="p">],</span>
+<span class="linenos">13</span>    <span class="s2">&quot;queryParams&quot;</span><span class="p">:</span> <span class="p">[</span>
+<span class="linenos">14</span>        <span class="p">{</span>
+<span class="linenos">15</span>            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;registration&quot;</span><span class="p">,</span>
+<span class="linenos">16</span>            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;true&quot;</span>
+<span class="linenos">17</span>        <span class="p">}</span>
+<span class="linenos">18</span>    <span class="p">]</span>
+<span class="linenos">19</span><span class="p">}</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>message</strong> – The message payload from the server topic.</p>
@@ -1175,38 +1119,25 @@ will always be called.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.webhook_trigger_service.WebhookTriggerService.process_webhook_marshall_event_command">
-<code class="sig-name descname"><span class="pre">process_webhook_marshall_event_command</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/webhook_trigger_service.html#WebhookTriggerService.process_webhook_marshall_event_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.webhook_trigger_service.WebhookTriggerService.process_webhook_marshall_event_command" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.webhook_trigger_service.WebhookTriggerService.process_webhook_marshall_event_command">
+<span class="sig-name descname"><span class="pre">process_webhook_marshall_event_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/webhook_trigger_service.html#WebhookTriggerService.process_webhook_marshall_event_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.webhook_trigger_service.WebhookTriggerService.process_webhook_marshall_event_command" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process the WebhookMarshallEvent command.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;appId&quot;</span><span class="p">:</span> <span class="mi">95</span><span class="p">,</span>
-    <span class="s2">&quot;bodyVariable&quot;</span><span class="p">:</span> <span class="s2">&quot;request.body&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="s2">&quot;WebhookMarshallEvent&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;headers&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Accept&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;*/*&quot;</span>
-        <span class="p">}</span>
-    <span class="p">],</span>
-    <span class="s2">&quot;requestKey&quot;</span><span class="p">:</span> <span class="s2">&quot;c29927c8-b94d-4116-a397-e6eb7002f41c&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;statusCode&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
-    <span class="s2">&quot;triggerId&quot;</span><span class="p">:</span> <span class="mi">1234</span>
-<span class="p">}</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="p">{</span>
+<span class="linenos"> 2</span>    <span class="s2">&quot;appId&quot;</span><span class="p">:</span> <span class="mi">95</span><span class="p">,</span>
+<span class="linenos"> 3</span>    <span class="s2">&quot;bodyVariable&quot;</span><span class="p">:</span> <span class="s2">&quot;request.body&quot;</span><span class="p">,</span>
+<span class="linenos"> 4</span>    <span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="s2">&quot;WebhookMarshallEvent&quot;</span><span class="p">,</span>
+<span class="linenos"> 5</span>    <span class="s2">&quot;headers&quot;</span><span class="p">:</span> <span class="p">[</span>
+<span class="linenos"> 6</span>        <span class="p">{</span>
+<span class="linenos"> 7</span>            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Accept&quot;</span><span class="p">,</span>
+<span class="linenos"> 8</span>            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;*/*&quot;</span>
+<span class="linenos"> 9</span>        <span class="p">}</span>
+<span class="linenos">10</span>    <span class="p">],</span>
+<span class="linenos">11</span>    <span class="s2">&quot;requestKey&quot;</span><span class="p">:</span> <span class="s2">&quot;c29927c8-b94d-4116-a397-e6eb7002f41c&quot;</span><span class="p">,</span>
+<span class="linenos">12</span>    <span class="s2">&quot;statusCode&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+<span class="linenos">13</span>    <span class="s2">&quot;triggerId&quot;</span><span class="p">:</span> <span class="mi">1234</span>
+<span class="linenos">14</span><span class="p">}</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>message</strong> – The message payload from the server topic.</p>
@@ -1215,8 +1146,8 @@ will always be called.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.webhook_trigger_service.WebhookTriggerService.publish_webhook_event_acknowledge">
-<code class="sig-name descname"><span class="pre">publish_webhook_event_acknowledge</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/webhook_trigger_service.html#WebhookTriggerService.publish_webhook_event_acknowledge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.webhook_trigger_service.WebhookTriggerService.publish_webhook_event_acknowledge" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.webhook_trigger_service.WebhookTriggerService.publish_webhook_event_acknowledge">
+<span class="sig-name descname"><span class="pre">publish_webhook_event_acknowledge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/webhook_trigger_service.html#WebhookTriggerService.publish_webhook_event_acknowledge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.webhook_trigger_service.WebhookTriggerService.publish_webhook_event_acknowledge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Publish the WebhookEventResponse message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1226,8 +1157,8 @@ will always be called.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.webhook_trigger_service.WebhookTriggerService.publish_webhook_event_response">
-<code class="sig-name descname"><span class="pre">publish_webhook_event_response</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback_response</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/webhook_trigger_service.html#WebhookTriggerService.publish_webhook_event_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.webhook_trigger_service.WebhookTriggerService.publish_webhook_event_response" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.webhook_trigger_service.WebhookTriggerService.publish_webhook_event_response">
+<span class="sig-name descname"><span class="pre">publish_webhook_event_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback_response</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/webhook_trigger_service.html#WebhookTriggerService.publish_webhook_event_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.webhook_trigger_service.WebhookTriggerService.publish_webhook_event_response" title="Permalink to this definition">¶</a></dt>
 <dd><p>Publish the WebhookEventResponse message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1241,22 +1172,17 @@ will always be called.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="tcex.services.webhook_trigger_service.WebhookTriggerService.publish_webhook_marshall_event_acknowledge">
-<code class="sig-name descname"><span class="pre">publish_webhook_marshall_event_acknowledge</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="reference internal" href="../_modules/tcex/services/webhook_trigger_service.html#WebhookTriggerService.publish_webhook_marshall_event_acknowledge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.webhook_trigger_service.WebhookTriggerService.publish_webhook_marshall_event_acknowledge" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="tcex.services.webhook_trigger_service.WebhookTriggerService.publish_webhook_marshall_event_acknowledge">
+<span class="sig-name descname"><span class="pre">publish_webhook_marshall_event_acknowledge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tcex/services/webhook_trigger_service.html#WebhookTriggerService.publish_webhook_marshall_event_acknowledge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tcex.services.webhook_trigger_service.WebhookTriggerService.publish_webhook_marshall_event_acknowledge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Publish the WebhookEventResponse message.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span>
-<span class="normal">6</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="s2">&quot;Acknowledged&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;requestKey&quot;</span><span class="p">:</span> <span class="s2">&quot;cd8c7a3a-7968-4b97-80c9-68b83a8ef1a1&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;triggerId&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;WebhookMarshallResponse&quot;</span>
-<span class="p">}</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="p">{</span>
+<span class="linenos">2</span>    <span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="s2">&quot;Acknowledged&quot;</span><span class="p">,</span>
+<span class="linenos">3</span>    <span class="s2">&quot;requestKey&quot;</span><span class="p">:</span> <span class="s2">&quot;cd8c7a3a-7968-4b97-80c9-68b83a8ef1a1&quot;</span><span class="p">,</span>
+<span class="linenos">4</span>    <span class="s2">&quot;triggerId&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+<span class="linenos">5</span>    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;WebhookMarshallResponse&quot;</span>
+<span class="linenos">6</span><span class="p">}</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>message</strong> – The message from the broker.</p>
