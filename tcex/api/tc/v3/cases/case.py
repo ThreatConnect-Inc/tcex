@@ -46,7 +46,7 @@ class Cases(ObjectCollectionABC):
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
         )
         self._model = CasesModel(**kwargs)
-        self._type = 'cases'
+        self.type_ = 'cases'
 
     def __iter__(self) -> 'Case':
         """Iterate over CM objects."""

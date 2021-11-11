@@ -30,7 +30,7 @@ class UserGroups(ObjectCollectionABC):
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
         )
         self._model = UserGroupsModel(**kwargs)
-        self._type = 'user_groups'
+        self.type_ = 'user_groups'
 
     def __iter__(self) -> 'UserGroup':
         """Iterate over CM objects."""

@@ -30,7 +30,7 @@ class SystemRoles(ObjectCollectionABC):
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
         )
         self._model = SystemRolesModel(**kwargs)
-        self._type = 'system_roles'
+        self.type_ = 'system_roles'
 
     def __iter__(self) -> 'SystemRole':
         """Iterate over CM objects."""

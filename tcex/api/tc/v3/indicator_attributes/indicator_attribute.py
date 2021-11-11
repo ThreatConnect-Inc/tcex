@@ -33,7 +33,7 @@ class IndicatorAttributes(ObjectCollectionABC):
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
         )
         self._model = IndicatorAttributesModel(**kwargs)
-        self._type = 'indicator_attributes'
+        self.type_ = 'indicator_attributes'
 
     def __iter__(self) -> 'IndicatorAttribute':
         """Iterate over CM objects."""

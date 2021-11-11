@@ -33,7 +33,7 @@ class VictimAttributes(ObjectCollectionABC):
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
         )
         self._model = VictimAttributesModel(**kwargs)
-        self._type = 'victim_attributes'
+        self.type_ = 'victim_attributes'
 
     def __iter__(self) -> 'VictimAttribute':
         """Iterate over CM objects."""

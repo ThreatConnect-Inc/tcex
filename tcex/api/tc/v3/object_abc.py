@@ -1,11 +1,13 @@
 """Case Management Abstract Base Class"""
 # standard library
+import datetime
 import json
 import logging
 
 # import inspect
 # import re
 from abc import ABC
+from json import JSONEncoder
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 # third-party
@@ -23,6 +25,16 @@ if TYPE_CHECKING:
 
 # get tcex logger
 logger = logging.getLogger('tcex')
+
+
+class CustomJSONEncoder(JSONEncoder):
+    """Format object in JSON data."""
+
+    def default(self, o: Any) -> str:
+        """Format object"""
+        if isinstance(o, (datetime.date, datetime.datetime)):
+            return o.isoformat()
+        return o
 
 
 class ObjectABC(ABC):
@@ -55,112 +67,65 @@ class ObjectABC(ABC):
         """Return the object as an entity."""
         raise NotImplementedError('Child class must implement this property.')
 
-    @staticmethod
-    def _schema_properties(schema: dict, ref: str) -> dict:
-        """Return the schema properties for the ref."""
-        return schema.get('definitions', {}).get(ref, {}).get('properties', {})
-
-    @staticmethod
-    def _schema_refs(attribute_property: dict) -> List[str]:
-        """Return one or more ref values from a property."""
-        refs = []
-
-        # get allOf ref or refs
-        for all_of in attribute_property.get('allOf', []):
-            refs.append(all_of.get('$ref'))
-
-        # get anyOf ref or refs
-        for any_of in attribute_property.get('anyOf', []):
-            refs.append(any_of.get('$ref'))
-
-        # get data item ref
-        ref = attribute_property.get('data', attribute_property).get('items', {}).get('$ref')
-        if ref is not None:
-            refs.append(ref)
-
-        return refs
-
-    def _generate_body(self, method: str) -> dict:
-        """Return the generated POST body."""
-        schema = self.model.schema(ref_template='{model}')
-        properties = self._schema_properties(schema, schema.get('$ref'))
-        raw_body = json.loads(self.model.json(by_alias=True, exclude_none=True))
-        # raw_body = self.model.dict(by_alias=True, exclude_none=True)
-        return self._generate_body_filtered(schema, method, properties, raw_body)
-
-    def _generate_body_filtered(
-        self, schema: dict, method: str, properties: dict, body: Any, nested: Optional[str] = None
-    ) -> dict:
-        """Return body with null, read-only, and not updatable fields removed.
-
-        This method is called recursively to resolve all nested models.
-        """
-        if isinstance(body, dict):
-            safe_data = body.copy()  # make a copy of the original
-            _filtered_body = {}
-
-            # iterate over body model: k is JSON key and v is array/dict/str/model
-            for k, v in safe_data.items():
-                # get the type of model for the key (e.g., "note" -> NoteModel)
-                nested_schema = properties.get(k)
-
-                # skip populating body if field is not a nested
-                # schema OR has no value OR method supported
-                if nested_schema is None or not v or method not in nested_schema.get('methods', []):
-                    continue
-
-                # TODO: does this cover all edit to a model, e.g., appends, dict update, etc?
-                #       could a root validator do this better?
-                # BUG: this doesn't handle the difference between the body using camel case
-                #     and the model using snake case. maybe self.model.dict(alias=True)
-                # # only add nested value to body if they have been modified
-                # if nested is not None and isinstance(v, list):
-                #     _v = []
-                #     for index, item in enumerate(getattr(getattr(self.model, nested), k)):
-                #         if hasattr(item, 'privates'):
-                #             # always include all values on create (POST) or if item is new (!id)
-                #             if method == 'POST' or item.id is None:
-                #                 _v.append(v[index])
-                #             elif method == 'PUT' and item.modified > 0:
-                #                 _v.append(v[index])
-                #         else:
-                #             _v.append(v[index])
-                #     v = _v
-
-                if isinstance(v, (list, dict)):
-
-                    for ref in self._schema_refs(nested_schema):
-                        # ref -> the nested property type (e.g., ArtifactsModel)
-                        # nested_properties -> the properties/schema for the ref type
-                        nested_properties = self._schema_properties(schema, ref)
-
-                        # update body
-                        nested_body = {
-                            k: self._generate_body_filtered(schema, method, nested_properties, v, k)
-                        }
-                        # print('nested_body', nested_body)
-
-                        # filter out field where value doesn't exist
-                        nested_body = {k: v for k, v in nested_body.items() if v}
-
-                        # only add nested body if it has data
-                        if nested_body:
-                            _filtered_body.update(nested_body)
-                else:
-                    _filtered_body.update({k: v})
-            # print('filtered body', _filtered_body)
-            return _filtered_body
-
-        if isinstance(body, list):
-            return [self._generate_body_filtered(schema, method, properties, i) for i in body]
-
-        return body
-
     def _iterate_over_sublist(self, sublist_type: object) -> 'V3Type':
         """Iterate over any nested collections."""
         sublist = sublist_type(session=self._session)
         sublist.tql.add_filter(**self._base_filter)
         yield from sublist
+
+    def _request(
+        self,
+        method: str,
+        url: str,
+        body: Optional[Union[bytes, str]],
+        params: Optional[dict] = None,
+        headers: Optional[dict] = None,
+    ) -> Response:
+        """Handle standard request with error checking."""
+        _request = None
+        try:
+            _request = self._session.request(method, url, data=body, headers=headers, params=params)
+            # log content for debugging
+            self.log.debug(
+                f'action=submit, method={_request.request.method}, '
+                f'url={_request.request.url}, '
+                f'status_code={_request.status_code}, '
+                f'body={_request.request.body}'
+            )
+        except (ConnectionError, ProxyError):  # pragma: no cover
+            handle_error(
+                code=951,
+                message_values=[
+                    _request.request.method.upper(),
+                    _request.status_code,
+                    '{\"message\": \"Connection/Proxy Error\"}',
+                    url,
+                ],
+            )
+
+        if not self.success(_request):
+            err = _request.text or _request.reason
+            handle_error(
+                code=952,
+                message_values=[
+                    _request.request.method.upper(),
+                    _request.status_code,
+                    err,
+                    _request.url,
+                ],
+            )
+
+        # log content for debugging
+        self.log_response_text(_request)
+
+        return _request
+
+    @staticmethod
+    def _validate_id(id_: int, url: str) -> None:
+        """Raise exception is id is not provided."""
+        if not id_:  # pragma: no cover
+            message = '{"message": "No ID provided.", "status": "Error"}'
+            handle_error(code=952, message_values=['GET', '404', message, url])
 
     @property
     def as_entity(self) -> Dict[str, str]:  # pragma: no cover
@@ -174,61 +139,40 @@ class ObjectABC(ABC):
 
     def delete(self) -> None:
         """Delete the object."""
-        # If no id is present in the obj then returns immediately.
-        if not self.model.id:  # pragma: no cover
-            self.log.warning(f'A {self.type_} object without an ID cannot be deleted.')
-            return None
-        body = self._generate_body('DELETE') or None
+        method = 'DELETE'
+        body = json.dumps(self.model.gen_body(method), cls=CustomJSONEncoder)
 
-        url = f'{self._api_endpoint}/{self.model.id}'
-        try:
-            self.request = self._session.delete(url, json=body)
-            self.log.debug(
-                f'Method: ({self.request.request.method.upper()}), '
-                f'Status Code: {self.request.status_code}, '
-                f'URl: ({self.request.url})'
-            )
-        except (ConnectionError, ProxyError):  # pragma: no cover
-            handle_error(
-                code=951,
-                message_values=[
-                    'OPTIONS',
-                    407,
-                    '{\"message\": \"Connection Error\"}',
-                    self._api_endpoint,
-                ],
-            )
-        if len(self.request.content) < 5000:
-            self.log.debug(f'response text: {self.request.text}')
-        else:  # pragma: no cover
-            self.log.debug('response text: (text to large to log)')
+        # validate an id is available
+        self._validate_id(self.model.id, self.url(method))
 
-        if not self.success(self.request):
-            err = self.request.text or self.request.reason
-            if self.request.status_code == 404:
-                handle_error(
-                    code=952,
-                    message_values=[
-                        self.request.request.method.upper(),
-                        self.request.status_code,
-                        err,
-                        self.request.url,
-                    ],
-                )
-            handle_error(
-                code=200,
-                message_values=[self.request.status_code, err, self.request.url],
-            )
+        self.request = self._request(method, self.url(method), body)
+
         return self.request
 
     @cached_property
-    def fields(self) -> dict:
+    def fields(self) -> Dict[str, str]:
         """Return the field data for this object."""
         _fields = {}
         r = self._session.options(f'{self._api_endpoint}/fields', params={})
         if r.ok:
             _fields = r.json().get('data', {})
         return _fields
+
+    def gen_params(self, params: List[dict]) -> List[dict]:
+        """Return appropriate params values."""
+        # convert all keys to camel case
+        params = {self._utils.snake_to_camel(k): v for k, v in params.items()}
+
+        # special parameter for indicators to enable the return the the indicator fields
+        # (value1, value2, value3) on std-custom/custom-custom indicator types.
+        if self.type_ == 'Indicator':
+            params.setdefault('fields', []).append('genericCustomIndicatorValues')
+
+        # add fields parameter if provided
+        if '_all_' in params.get('fields', []):
+            params['fields'] = list(self.available_fields)
+
+        return params
 
     def get(
         self,
@@ -252,66 +196,28 @@ class ObjectABC(ABC):
             object_id: The unique id of the object to be returned.
             params: Dict of the params to be sent while retrieving the Artifacts objects.
         """
+        method = 'GET'
         object_id = object_id or self.model.id
         params = params or {}
-        url = f'{self._api_endpoint}/{object_id}'
 
-        # convert all keys to camel case
-        params = {self._utils.snake_to_camel(k): v for k, v in params.items()}
+        # validate an id is available
+        self._validate_id(self.model.id, self.url(method))
 
-        # special parameter for indicators to enable the return the the indicator fields
-        # (value1, value2, value3) on std-custom/custom-custom indicator types.
-        if self.type_ == 'Indicator':
-            params.setdefault('fields', []).append('genericCustomIndicatorValues')
+        body = json.dumps(self.model.gen_body(method), cls=CustomJSONEncoder)
+        params = self.gen_params(params)
+        self.request = self._request(method, self.url(method), body, params)
 
-        # add fields parameter if provided
-        if '_all_' in params.get('fields', []):
-            params['fields'] = list(self.available_fields)
-
-        if not object_id:  # pragma: no cover
-            message = '{"message": "No ID provided.", "status": "Error"}'
-            handle_error(code=952, message_values=['GET', '404', message, url])
-
-        try:
-            self.request = self._session.get(
-                url, params=params, headers={'content-type': 'application/json'}
-            )
-            self.log.debug(
-                f'Method: ({self.request.request.method.upper()}), '
-                f'Status Code: {self.request.status_code}, '
-                f'URl: ({self.request.url})'
-            )
-        except (ConnectionError, ProxyError):  # pragma: no cover
-            handle_error(
-                code=951,
-                message_values=[
-                    'OPTIONS',
-                    407,
-                    '{\"message\": \"Connection Error\"}',
-                    self._api_endpoint,
-                ],
-            )
-
-        # log content for debugging
-        response_text = 'response text: (text to large to log)'
-        if len(self.request.content) < 5000:
-            response_text = self.request.text
-        self.log.debug(f'response text: {response_text}')
-
-        if not self.success(self.request):
-            err = self.request.text or self.request.reason
-            if self.request.status_code == 404:
-                handle_error(
-                    code=952,
-                    message_values=['GET', self.request.status_code, err, self.request.url],
-                )
-            handle_error(
-                code=951,
-                message_values=['GET', self.request.status_code, err, self.request.url],
-            )
+        # update model
         self.model = self.request.json().get('data')
 
         return self.request
+
+    def log_response_text(self, response: Response) -> None:
+        """Log the response text."""
+        response_text = 'response text: (text to large to log)'
+        if len(response.content) < 5000:  # check size of content for performance
+            response_text = response.text
+        self.log.debug(f'response text: {response_text}')
 
     @property
     def model(self) -> 'V3Type':
@@ -329,20 +235,23 @@ class ObjectABC(ABC):
             self._model = type(self.model)(**data)
         # TODO: [med] @bpurdy - should we raise an exception if the wrong data type is provided?
 
-    @property
-    def post_properties(self) -> List[str]:
-        """Return all the properties available in POST requests."""
-        post_properties = []
-        for p, pd in sorted(self.properties.items()):
-            read_only = pd.get('read-only', False)
-            if not read_only:
-                post_properties.append(p)
+    # @property
+    # def post_properties(self) -> List[str]:
+    #     """Return all the properties available in POST requests."""
+    #     post_properties = []
+    #     for p, pd in sorted(self.properties.items()):
+    #         read_only = pd.get('read-only', False)
+    #         if not read_only:
+    #             post_properties.append(p)
 
-        return post_properties
+    #     return post_properties
 
     @cached_property
     def properties(self) -> dict:
-        """Return defined API properties for the current object."""
+        """Return defined API properties for the current object.
+
+        This property is used in testing API consistency.
+        """
         _properties = []
         try:
             r = self._session.options(
@@ -364,63 +273,28 @@ class ObjectABC(ABC):
             )
         return _properties
 
-    @property
-    def put_properties(self) -> List[str]:
-        """Return all the properties available in PUT requests."""
-        put_properties = []
-        for p, pd in sorted(self.properties.items()):
-            # get read-only value for display and required value
-            updatable = pd.get('updatable', True)
-            read_only = pd.get('read-only', False)
-            if not read_only:
-                if updatable:
-                    put_properties.append(p)
-
-        return put_properties
-
-    @property
-    def required_properties(self) -> List[str]:
-        """Return a list of required fields for current object."""
-        rp = []
-        for p, pd in self.properties.items():
-            if pd.get('required'):
-                rp.append(p)
-        return rp
-
-    # TODO: [low] WIP
     # @property
-    # def results(self):
-    #     """Return blah"""
+    # def put_properties(self) -> List[str]:
+    #     """Return all the properties available in PUT requests."""
+    #     put_properties = []
+    #     for p, pd in sorted(self.properties.items()):
+    #         # get read-only value for display and required value
+    #         updatable = pd.get('updatable', True)
+    #         read_only = pd.get('read-only', False)
+    #         if not read_only:
+    #             if updatable:
+    #                 put_properties.append(p)
 
-    #     # local scope
-    #     model = self.model
-    #     request = self.request
-    #     post_properties = self.post_properties
-    #     properties = self.properties
-    #     put_properties = self.put_properties
+    #     return put_properties
 
-    #     class Results:
-    #         @property
-    #         def writable(self):
-    #             """Return writable fields."""
-    #             _includes = {}
-    #             for field in post_properties:
-    #                 property = properties.get(field)
-    #                 if (
-    #                     property.get('appliesTo')
-    #                     and model.type not in property.get('appliesTo')
-    #                     or property.get('readOnly') is True
-    #                 ):
-    #                     continue
-    #                 _includes[field] = ...
-    #             # return model.dict(include=_includes)
-    #             return model.json(include=_includes, indent=4)
-
-    #         @property
-    #         def raw(self):
-    #             return request.json()
-
-    #     return Results()
+    # @property
+    # def required_properties(self) -> List[str]:
+    #     """Return a list of required fields for current object."""
+    #     rp = []
+    #     for p, pd in self.properties.items():
+    #         if pd.get('required'):
+    #             rp.append(p)
+    #     return rp
 
     def submit(self) -> Response:
         """Create or Update the Case Management object.
@@ -428,64 +302,20 @@ class ObjectABC(ABC):
         This is determined based on if the id is already present in the object.
         """
         method = 'PUT' if self.model.id else 'POST'
-
-        body = self._generate_body(method)
-
-        # TODO: POC of new gen_body
-        # _body = self.model.gen_body(method)
-        # if _body != body:
-        #     import json
-
-        #     print(' body', method, json.dumps(body, sort_keys=True))
-        #     print('_body', method, json.dumps(_body, sort_keys=True))
-        #     raise RuntimeError('blah')
-
-        # make the request
-        self.request: Response = self._session.request(
-            method, self.url, json=body, headers={'content-type': 'application/json'}
+        body = json.dumps(self.model.gen_body(method), cls=CustomJSONEncoder)
+        self.request: Response = self._request(
+            method, self.url(method), body, headers={'content-type': 'application/json'}
         )
 
-        # log content for debugging
-        self.log.debug(
-            f'action=submit, method={self.request.request.method}, url={self.request.request.url}, '
-            f'status_code={self.request.status_code}, body={self.request.request.body}'
-        )
-        response_text = 'response text: (text to large to log)'
-        if len(self.request.content) < 5000:  # response.text takes longer
-            response_text = self.request.text
-        self.log.debug(f'action=submit, response-text={response_text}')
-
-        if not self.success(self.request):  # pragma: no cover
-            err = self.request.text or self.request.reason
-            if self.request.status_code == 404:
-                handle_error(
-                    code=952,
-                    message_values=[
-                        self.request.request.method.upper(),
-                        self.request.status_code,
-                        err,
-                        self.request.url,
-                    ],
-                )
-            handle_error(
-                code=951,
-                message_values=[
-                    self.request.request.method,
-                    self.request.status_code,
-                    err,
-                    self.request.url,
-                ],
-            )
-
-        r_json = self.request.json().get('data', self.request.json())
+        # get the response data from nested data object or full response
+        response_json = self.request.json()
 
         # TODO: [high] Unsure if the entire model should be reset or just the id.
-        #       If entire model the inner objects get ids set which is nice.
-        new_id = r_json.get('data', r_json).get('id')
-        if not new_id:
-            return self.request
+        #     If entire model the inner objects get ids set which is nice.
+        new_id = response_json.get('data', response_json).get('id')
+        if new_id:
+            self.model.id = new_id
 
-        self.model.id = new_id
         return self.request
 
     @staticmethod
@@ -509,9 +339,8 @@ class ObjectABC(ABC):
             status = False
         return status
 
-    @property
-    def url(self):
+    def url(self, method: str) -> str:
         """Return the proper URL."""
-        if self.model.id:
+        if method in ['DELETE', 'GET', 'PUT']:
             return f'{self._api_endpoint}/{self.model.id}'
         return self._api_endpoint

@@ -33,7 +33,7 @@ class GroupAttributes(ObjectCollectionABC):
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
         )
         self._model = GroupAttributesModel(**kwargs)
-        self._type = 'group_attributes'
+        self.type_ = 'group_attributes'
 
     def __iter__(self) -> 'GroupAttribute':
         """Iterate over CM objects."""

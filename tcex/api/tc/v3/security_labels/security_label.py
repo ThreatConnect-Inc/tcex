@@ -33,7 +33,7 @@ class SecurityLabels(ObjectCollectionABC):
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
         )
         self._model = SecurityLabelsModel(**kwargs)
-        self._type = 'security_labels'
+        self.type_ = 'security_labels'
 
     def __iter__(self) -> 'SecurityLabel':
         """Iterate over CM objects."""

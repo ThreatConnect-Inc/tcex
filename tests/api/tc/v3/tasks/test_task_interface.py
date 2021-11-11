@@ -122,7 +122,6 @@ class TestTasks(TestCaseManagement):
 
         # [Retrieve Testing] run assertions on returned data
         assert task.as_entity == {'type': 'Task', 'id': task.model.id, 'value': task.model.name}
-        assert task.required_properties  # coverage: required_properties
         assert task.model.name == task_data.get('name')
         assert task.model.description == task_data.get('description')
         assert task.model.xid == task_data.get('xid')
@@ -267,7 +266,6 @@ class TestTasks(TestCaseManagement):
 
         # [Retrieve Testing] run assertions on returned data
         assert task.as_entity == {'type': 'Task', 'id': task.model.id, 'value': task.model.name}
-        assert task.required_properties  # coverage: required_properties
         assert task.model.name == task_data.get('name')
         assert task.model.description == task_data.get('description')
         assert task.model.xid == task_data.get('xid')
@@ -458,14 +456,14 @@ class TestTasks(TestCaseManagement):
         case = self.v3_helper.create_case()
 
         # [Pre-Requisite] define assignee data
-        assignee = {"type": "User", "data": {"user_name": "bpurdy@threatconnect.com"}}
+        assignee = {'type': 'User', 'data': {'user_name': 'bpurdy@threatconnect.com'}}
 
         # [Pre-Requisite] - create a task which the main task is dependent on
         task_data = {
             'assignee': assignee,
             'case_id': case.model.id,
-            'description': f'a description from pytest test',
-            'name': f'name-depended_task',
+            'description': 'a description from pytest test',
+            'name': 'name-depended_task',
         }
         task = self.v3.task(**task_data)
         task.submit()

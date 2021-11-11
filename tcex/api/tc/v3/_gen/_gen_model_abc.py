@@ -531,32 +531,6 @@ class GenerateModelABC(GenerateABC, ABC):
                 '''):''',
                 f'''{self.i1}"""{self.type_.singular().title()} Model"""''',
                 '',
-                # f'''{self.i1}# slot attributes are not added to dict()/json()''',
-                # f'''{self.i1}__slot__ = ('_privates_',)''',
-                # '',
-                # f'''{self.i1}def __init__(self, **kwargs):''',
-                # f'''{self.i2}"""Initialize class properties."""''',
-                # f'''{self.i2}super().__init__(**kwargs)''',
-                # f'''{self.i2}super().__setattr__('_privates_', {{'_modified_': 0}})''',
-                # '',
-                # f'''{self.i1}def __setattr__(self, name, value):''',
-                # f'''{self.i2}"""Update modified property on any update."""''',
-                # (
-                #     f'''{self.i2}super().__setattr__('_privates_', '''
-                #     f'''{{'_modified_': self.privates.get('_modified_', 0) + 1}})'''
-                # ),
-                # f'''{self.i2}super().__setattr__(name, value)''',
-                # '',
-                # f'''{self.i1}@property''',
-                # f'''{self.i1}def modified(self):''',
-                # f'''{self.i2}"""Return int value of modified (> 0 means modified)."""''',
-                # f'''{self.i2}return self._privates_.get('_modified_', 0)''',
-                # '',
-                # f'''{self.i1}@property''',
-                # f'''{self.i1}def privates(self):''',
-                # f'''{self.i2}"""Return privates dict."""''',
-                # f'''{self.i2}return self._privates_''',
-                '',
                 '',
             ]
         )
@@ -643,6 +617,8 @@ class GenerateModelABC(GenerateABC, ABC):
                 field_methods.append('POST')
                 if field_updatable not in [False]:
                     field_methods.append('PUT')
+
+            # special case until core updates OPTIONS output
             if (
                 self.type_.lower() == 'workflow_events'
                 and field_name.snake_case() == 'deleted_reason'

@@ -30,7 +30,7 @@ class Notes(ObjectCollectionABC):
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
         )
         self._model = NotesModel(**kwargs)
-        self._type = 'notes'
+        self.type_ = 'notes'
 
     def __iter__(self) -> 'Note':
         """Iterate over CM objects."""

@@ -41,7 +41,7 @@ class WorkflowEvents(ObjectCollectionABC):
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
         )
         self._model = WorkflowEventsModel(**kwargs)
-        self._type = 'workflow_events'
+        self.type_ = 'workflow_events'
 
     def __iter__(self) -> 'WorkflowEvent':
         """Iterate over CM objects."""

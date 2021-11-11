@@ -30,7 +30,7 @@ class ArtifactTypes(ObjectCollectionABC):
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
         )
         self._model = ArtifactTypesModel(**kwargs)
-        self._type = 'artifact_types'
+        self.type_ = 'artifact_types'
 
     def __iter__(self) -> 'ArtifactType':
         """Iterate over CM objects."""

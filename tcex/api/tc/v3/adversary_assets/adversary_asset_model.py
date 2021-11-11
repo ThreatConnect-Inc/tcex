@@ -57,6 +57,37 @@ class AdversaryAssetModel(
 ):
     """Adversary_Asset Model"""
 
+    account_name: Optional[str] = Field(
+        None,
+        applies_to=['SocialNetwork', 'NetworkAccount'],
+        conditional_required=['SocialNetwork', 'NetworkAccount'],
+        description='The network name.',
+        methods=['POST', 'PUT'],
+        max_length=255,
+        min_length=1,
+        read_only=False,
+        title='accountName',
+    )
+    address: Optional[str] = Field(
+        None,
+        applies_to=['EmailAddress'],
+        conditional_required=['EmailAddress'],
+        description='The email address associated with the E-Mail Address asset.',
+        methods=['POST', 'PUT'],
+        max_length=255,
+        min_length=1,
+        read_only=False,
+        title='address',
+    )
+    address_type: Optional[str] = Field(
+        None,
+        applies_to=['EmailAddress'],
+        conditional_required=['EmailAddress'],
+        description='The type of the E-Mail Address asset.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='addressType',
+    )
     associated_groups: Optional['GroupsModel'] = Field(
         None,
         description='A list of groups that this victim asset is associated with.',
@@ -70,14 +101,34 @@ class AdversaryAssetModel(
         read_only=True,
         title='id',
     )
-    name: Optional[str] = Field(
+    network_type: Optional[str] = Field(
         None,
-        description='Name of victim asset.',
+        applies_to=['NetworkAccount'],
+        conditional_required=['NetworkAccount'],
+        description='The type of network.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='networkType',
+    )
+    phone: Optional[str] = Field(
+        None,
+        applies_to=['Phone'],
+        conditional_required=['Phone'],
+        description='The phone number of the asset.',
         methods=['POST', 'PUT'],
         max_length=255,
         min_length=1,
         read_only=False,
-        title='name',
+        title='phone',
+    )
+    social_network: Optional[str] = Field(
+        None,
+        applies_to=['SocialNetwork'],
+        conditional_required=['SocialNetwork'],
+        description='The type of social network.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='socialNetwork',
     )
     type: Optional[str] = Field(
         None,
@@ -95,6 +146,17 @@ class AdversaryAssetModel(
         read_only=False,
         title='victimId',
         updatable=False,
+    )
+    website: Optional[str] = Field(
+        None,
+        applies_to=['WebSite'],
+        conditional_required=['WebSite'],
+        description='The website of the asset.',
+        methods=['POST', 'PUT'],
+        max_length=255,
+        min_length=1,
+        read_only=False,
+        title='website',
     )
 
     @validator('associated_groups', always=True)

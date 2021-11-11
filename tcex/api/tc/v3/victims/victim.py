@@ -42,7 +42,7 @@ class Victims(ObjectCollectionABC):
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
         )
         self._model = VictimsModel(**kwargs)
-        self._type = 'victims'
+        self.type_ = 'victims'
 
     def __iter__(self) -> 'Victim':
         """Iterate over CM objects."""

@@ -33,7 +33,7 @@ class WorkflowTemplates(ObjectCollectionABC):
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
         )
         self._model = WorkflowTemplatesModel(**kwargs)
-        self._type = 'workflow_templates'
+        self.type_ = 'workflow_templates'
 
     def __iter__(self) -> 'WorkflowTemplate':
         """Iterate over CM objects."""

@@ -93,7 +93,6 @@ class TestArtifacts(TestCaseManagement):
         assert artifact.model.notes.data[0].text == note_data.get('text')
 
         # [Retrieve Testing] run assertions on returned data
-        assert artifact.required_properties  # coverage: required_properties
         assert artifact.model.intel_type == artifact_data.get('intel_type')
         assert artifact.model.summary == artifact_data.get('summary')
         assert artifact.model.type == artifact_data.get('type')

@@ -30,7 +30,7 @@ class Tags(ObjectCollectionABC):
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
         )
         self._model = TagsModel(**kwargs)
-        self._type = 'tags'
+        self.type_ = 'tags'
 
     def __iter__(self) -> 'Tag':
         """Iterate over CM objects."""

@@ -236,7 +236,7 @@ class ArtifactModel(
     type: Optional[str] = Field(
         None,
         description='The **type** for the Artifact.',
-        methods=['POST', 'PUT'],
+        methods=['POST'],
         read_only=False,
         title='type',
         updatable=False,

@@ -33,7 +33,7 @@ class AdversaryAssets(ObjectCollectionABC):
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
         )
         self._model = AdversaryAssetsModel(**kwargs)
-        self._type = 'adversary_assets'
+        self.type_ = 'adversary_assets'
 
     def __iter__(self) -> 'AdversaryAsset':
         """Iterate over CM objects."""
@@ -54,11 +54,17 @@ class AdversaryAsset(ObjectABC):
     """AdversaryAssets Object.
 
     Args:
+        account_name (str, kwargs): The network name.
+        address (str, kwargs): The email address associated with the E-Mail Address asset.
+        address_type (str, kwargs): The type of the E-Mail Address asset.
         associated_groups (Groups, kwargs): A list of groups that this victim asset is associated
             with.
-        name (str, kwargs): Name of victim asset.
+        network_type (str, kwargs): The type of network.
+        phone (str, kwargs): The phone number of the asset.
+        social_network (str, kwargs): The type of social network.
         type (str, kwargs): Type of victim asset.
         victim_id (int, kwargs): Victim id of victim asset.
+        website (str, kwargs): The website of the asset.
     """
 
     def __init__(self, **kwargs) -> None:

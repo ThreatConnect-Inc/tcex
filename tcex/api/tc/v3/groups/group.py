@@ -42,7 +42,7 @@ class Groups(ObjectCollectionABC):
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
         )
         self._model = GroupsModel(**kwargs)
-        self._type = 'groups'
+        self.type_ = 'groups'
 
     def __iter__(self) -> 'Group':
         """Iterate over CM objects."""

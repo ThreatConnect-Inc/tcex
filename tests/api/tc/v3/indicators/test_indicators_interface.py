@@ -107,7 +107,6 @@ class TestIndicators(TestCaseManagement):
         indicator.get(params={'fields': ['_all_']})
 
         # [Retrieve Testing] run assertions on returned data
-        indicator.required_properties  # coverage: required_properties
         indicator.model.summary == indicator_data.get('ip')
         indicator.model.ip == indicator_data.get('ip')
 

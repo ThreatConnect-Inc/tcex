@@ -30,7 +30,7 @@ class Owners(ObjectCollectionABC):
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
         )
         self._model = OwnersModel(**kwargs)
-        self._type = 'owners'
+        self.type_ = 'owners'
 
     def __iter__(self) -> 'Owner':
         """Iterate over CM objects."""

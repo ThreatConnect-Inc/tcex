@@ -40,7 +40,7 @@ class Tasks(ObjectCollectionABC):
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
         )
         self._model = TasksModel(**kwargs)
-        self._type = 'tasks'
+        self.type_ = 'tasks'
 
     def __iter__(self) -> 'Task':
         """Iterate over CM objects."""

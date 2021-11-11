@@ -30,7 +30,7 @@ class OwnerRoles(ObjectCollectionABC):
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
         )
         self._model = OwnerRolesModel(**kwargs)
-        self._type = 'owner_roles'
+        self.type_ = 'owner_roles'
 
     def __iter__(self) -> 'OwnerRole':
         """Iterate over CM objects."""
