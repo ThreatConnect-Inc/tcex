@@ -62,7 +62,7 @@ class Task(ObjectABC):
 
     Args:
         artifacts (Artifacts, kwargs): A list of Artifacts corresponding to the Task.
-        assignee (None, kwargs): The user or group Assignee object for the Task.
+        assignee (Assignee, kwargs): The user or group Assignee object for the Task.
         case_id (int, kwargs): The **case id** for the Task.
         case_xid (str, kwargs): The **case xid** for the Task.
         completed_date (str, kwargs): The completion date of the Task.

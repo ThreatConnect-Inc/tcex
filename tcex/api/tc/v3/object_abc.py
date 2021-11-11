@@ -176,7 +176,7 @@ class ObjectABC(ABC):
         """Delete the object."""
         # If no id is present in the obj then returns immediately.
         if not self.model.id:  # pragma: no cover
-            self.log.warning(f'A {self._type} object without an ID cannot be deleted.')
+            self.log.warning(f'A {self.type_} object without an ID cannot be deleted.')
             return None
         body = self._generate_body('DELETE') or None
 
@@ -232,7 +232,6 @@ class ObjectABC(ABC):
 
     def get(
         self,
-        all_available_fields: Optional[bool] = False,
         object_id: Optional[int] = None,
         params: Optional[dict] = None,
     ) -> 'V3Type':
@@ -250,7 +249,6 @@ class ObjectABC(ABC):
             }
 
         Args:
-            all_available_fields: If True all available fields will be returned.
             object_id: The unique id of the object to be returned.
             params: Dict of the params to be sent while retrieving the Artifacts objects.
         """
@@ -267,10 +265,7 @@ class ObjectABC(ABC):
             params.setdefault('fields', []).append('genericCustomIndicatorValues')
 
         # add fields parameter if provided
-        if '_all' in params.get('fields', []):
-            params['fields'] = list(self.available_fields)
-
-        if all_available_fields is True:
+        if '_all_' in params.get('fields', []):
             params['fields'] = list(self.available_fields)
 
         if not object_id:  # pragma: no cover
@@ -432,26 +427,31 @@ class ObjectABC(ABC):
 
         This is determined based on if the id is already present in the object.
         """
-        method = 'POST'
-        url = self._api_endpoint
-        if self.model.id:
-            url = f'{url}/{self.model.id}'
-            method = 'PUT'
+        method = 'PUT' if self.model.id else 'POST'
+
         body = self._generate_body(method)
 
+        # TODO: POC of new gen_body
+        # _body = self.model.gen_body(method)
+        # if _body != body:
+        #     import json
+
+        #     print(' body', method, json.dumps(body, sort_keys=True))
+        #     print('_body', method, json.dumps(_body, sort_keys=True))
+        #     raise RuntimeError('blah')
+
         # make the request
-        self.request = self._session.request(
-            method, url, json=body, headers={'content-type': 'application/json'}
+        self.request: Response = self._session.request(
+            method, self.url, json=body, headers={'content-type': 'application/json'}
         )
 
         # log content for debugging
-        self.log.debug(f'action=submit, method={method}, url={url}, body={body}')
         self.log.debug(
-            f'action=submit-response, method={self.request.request.method}, '
-            f'url={self.request.request.url}'
+            f'action=submit, method={self.request.request.method}, url={self.request.request.url}, '
+            f'status_code={self.request.status_code}, body={self.request.request.body}'
         )
         response_text = 'response text: (text to large to log)'
-        if len(self.request.content) < 5000:
+        if len(self.request.content) < 5000:  # response.text takes longer
             response_text = self.request.text
         self.log.debug(f'action=submit, response-text={response_text}')
 
@@ -508,3 +508,10 @@ class ObjectABC(ABC):
         else:
             status = False
         return status
+
+    @property
+    def url(self):
+        """Return the proper URL."""
+        if self.model.id:
+            return f'{self._api_endpoint}/{self.model.id}'
+        return self._api_endpoint

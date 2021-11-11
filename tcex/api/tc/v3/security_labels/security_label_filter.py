@@ -99,17 +99,6 @@ class SecurityLabelFilter(FilterABC):
         """
         self._tql.add_filter('hasvictimattribute', operator, hasvictimattribute, TqlType.INTEGER)
 
-    def hasworkflowattribute(self, operator: Enum, hasworkflowattribute: int) -> None:
-        """Filter Associated Workflow based on **hasworkflowattribute** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            hasworkflowattribute: A nested query for association to other workflows.
-        """
-        self._tql.add_filter(
-            'hasworkflowattribute', operator, hasworkflowattribute, TqlType.INTEGER
-        )
-
     def id(self, operator: Enum, id: int) -> None:  # pylint: disable=redefined-builtin
         """Filter ID based on **id** keyword.
 

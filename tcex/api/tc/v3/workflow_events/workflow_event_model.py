@@ -8,7 +8,7 @@ from typing import List, Optional
 from pydantic import BaseModel, Extra, Field, validator
 
 # first-party
-from datetime import datetime
+from tcex.api.tc.v3.v3_model_abc import V3ModelABC
 from tcex.utils import Utils
 
 # json-encoder
@@ -48,7 +48,7 @@ class WorkflowEventDataModel(
 
 
 class WorkflowEventModel(
-    BaseModel,
+    V3ModelABC,
     alias_generator=Utils().snake_to_camel,
     extra=Extra.allow,
     title='WorkflowEvent Model',
@@ -56,29 +56,6 @@ class WorkflowEventModel(
     json_encoders=json_encoders,
 ):
     """Workflow_Event Model"""
-
-    # slot attributes are not added to dict()/json()
-    __slot__ = ('_privates_',)
-
-    def __init__(self, **kwargs):
-        """Initialize class properties."""
-        super().__init__(**kwargs)
-        super().__setattr__('_privates_', {'_modified_': 0})
-
-    def __setattr__(self, name, value):
-        """Update modified property on any update."""
-        super().__setattr__('_privates_', {'_modified_': self.privates.get('_modified_', 0) + 1})
-        super().__setattr__(name, value)
-
-    @property
-    def modified(self):
-        """Return int value of modified (> 0 means modified)."""
-        return self._privates_.get('_modified_', 0)
-
-    @property
-    def privates(self):
-        """Return privates dict."""
-        return self._privates_
 
     case_id: Optional[int] = Field(
         None,

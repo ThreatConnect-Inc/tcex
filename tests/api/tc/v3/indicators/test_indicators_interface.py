@@ -6,7 +6,6 @@ from datetime import datetime, timedelta
 from random import randint
 
 # third-party
-import pytest
 from pytest import FixtureRequest
 
 # first-party
@@ -46,88 +45,25 @@ class TestIndicators(TestCaseManagement):
         """Test properties."""
         super().obj_properties_extra()
 
+    # def test_return_indicators(self, request: FixtureRequest):
+    #     """Test Object Creation
+
+    #     A single test case to hit all sub-type creation (e.g., Notes).
+    #     """
+    #     indicators = self.v3_helper.v3_obj_collection
+    #     indicators = self.v3.indicators(params={'fields': 'securityLabels'})
+    #     indicators.filter.summary(TqlOperator.EQ, '123.123.123.123')
+    #     for indicator in indicators:
+    #         indicator.get(params={'fields': ['_all_']})
+    #         print(indicator.model.json(indent=4, exclude_none=True))
+
+    #     return
+
     def test_indicator_create_and_retrieve_nested_types(self, request: FixtureRequest):
         """Test Object Creation
 
         A single test case to hit all sub-type creation (e.g., Notes).
         """
-        indicators = self.v3_helper.v3_obj_collection
-        indicators = self.v3.indicators(params={'fields': 'securityLabels'})
-        indicators.filter.summary(TqlOperator.EQ, '123.123.123.123')
-        for indicator in indicators:
-            indicator.get('all_available_fields')
-            print(indicator.model.json(indent=4, exclude_none=True))
-
-        return
-
-        """
-        "associatedGroups": {
-                "data": [
-                    {
-                        "id": 30612,
-                        "type": "Adversary",
-                        "ownerName": "TCI",
-                        "dateAdded": "2021-11-05T13:44:43Z",
-                        "webLink": "/auth/adversary/adversary.xhtml?adversary=30612",
-                        "name": "adversary-001",
-                        "createdBy": "Bracey Summers"
-                    }
-                ],
-                "count": 1
-            },
-            "associatedIndicators": {
-                "data": [
-                    {
-                        "id": 62620,
-                        "type": "Address",
-                        "ownerName": "TCI",
-                        "dateAdded": "2021-11-03T23:54:08Z",
-                        "webLink": "/auth/indicators/details/address.xhtml?address=123.123.123.123",
-                        "lastModified": "2021-11-04T17:15:31Z",
-                        "rating": 3.00,
-                        "confidence": 75,
-                        "description": "TcEx Testing",
-                        "summary": "123.123.123.123",
-                        "privateFlag": false,
-                        "active": true,
-                        "activeLocked": false,
-                        "ip": "123.123.123.123"
-                    }
-                ],
-                "count": 1
-            },
-            "ip": "123.123.123.124"
-        },
-        """
-
-        # [Create Testing] define object data
-        # indicator_data = {
-        #     'active': True,
-        #     'attributes': {
-        #         'data': [
-        #             {
-        #                 'type': 'Description',
-        #                 'value': 'TcEx Testing',
-        #                 'default': True,
-        #             }
-        #         ]
-        #     },
-        #     'confidence': 75,
-        #     'description': 'TcEx Testing',
-        #     'ip': '123.123.123.124',
-        #     'rating': 3,
-        #     'source': None,
-        #     'tags': {
-        #         'data': [
-        #             {
-        #                 'name': 'TcEx Testing',
-        #             }
-        #         ]
-        #     },
-        #     'type': 'Address',
-        #     'xid': '123.123.123.124',
-        # }
-
         # [Create Testing] define object data
         indicator_data = {
             'active': True,
@@ -137,7 +73,6 @@ class TestIndicators(TestCaseManagement):
             'rating': 3,
             'source': None,
             'type': 'Address',
-            'xid': '123.123.123.124',
         }
         indicator = self.v3.indicator(**indicator_data)
 
@@ -151,7 +86,7 @@ class TestIndicators(TestCaseManagement):
 
         # [Create Testing] define object data
         security_label_data = {
-            "name": "TLP:WHITE",
+            'name': 'TLP:WHITE',
         }
         indicator.add_security_label(**security_label_data)
 
@@ -162,13 +97,74 @@ class TestIndicators(TestCaseManagement):
         indicator.add_tag(**tag_data)
 
         # print(indicator.model.dict())
-        try:
-            indicator.submit()
-        except RuntimeError:
-            pass
+        indicator.submit()
 
-        print('status_code', indicator.request.status_code)
-        print('method', indicator.request.request.method)
-        print('url', indicator.request.request.url)
-        print('body', indicator.request.request.body)
+        # [Retrieve Testing] create the object with id filter,
+        # using object id from the object created above
+        self.v3.indicator(id=indicator.model.id)
+
+        # [Retrieve Testing] get the object from the API
+        indicator.get(params={'fields': ['_all_']})
+
+        # [Retrieve Testing] run assertions on returned data
+        indicator.required_properties  # coverage: required_properties
+        indicator.model.summary == indicator_data.get('ip')
+        indicator.model.ip == indicator_data.get('ip')
+
+        # [Retrieve Testing] run assertions on returned nested data
+        indicator.model.attributes.data[0].value == attribute_data.get('value')
+
+        # [Retrieve Testing] run assertions on returned nested data
+        indicator.model.security_labels.data[0].name == security_label_data.get('name')
+
+        # [Retrieve Testing] run assertions on returned nested data
+        indicator.model.tags.data[0].name == tag_data.get('name')
+
+        # print('status_code', indicator.request.status_code)
+        # print('method', indicator.request.request.method)
+        # print('url', indicator.request.request.url)
+        # print('body', indicator.request.request.body)
         # print('text', indicator.request.text)
+
+    def test_indicator_get_many(self):
+        """Test Indicators Get Many"""
+        # # [Pre-Cleanup] - create case (requires v3ApiBulkDeleteAllowed to be enabled)
+        # indicators = self.v3.indicators()
+        # indicators.filter.tag(TqlOperator.EQ, indicator_tag)
+        # indicators.delete()
+
+        # [Pre-Requisite] - create case
+        indicator_count = 10
+        indicator_ids = []
+        indicator_tag = 'TcEx-Indicator-Testing'
+        for i in range(0, indicator_count):
+            # [Create Testing] define object data
+            indicator_data = {
+                'active': True,
+                'confidence': 75,
+                'description': 'TcEx Testing',
+                'ip': f'123.123.125.{i}',
+                'rating': 3,
+                'source': None,
+                'tags': {'data': [{'name': indicator_tag}]},
+                'type': 'Address',
+            }
+            indicator = self.v3.indicator(**indicator_data)
+            indicator.submit()
+            indicator_ids.append(indicator.model.id)
+            self.v3_helper._v3_objects.append(indicator)
+
+        # [Retrieve Testing] iterate over all object looking for needle
+        indicators = self.v3.indicators()
+        indicators.filter.tag(TqlOperator.EQ, indicator_tag)
+        # capture indicator count before deleting the indicator
+        indicators_counts = len(indicators)
+        for i, indicator in enumerate(indicators):
+            assert indicator.model.id in indicator_ids
+            indicator_ids.remove(indicator.model.id)
+
+            # cleanup the indicator
+            # indicator.delete()
+
+        assert indicators_counts == indicator_count
+        assert not indicator_ids, 'Not all indicators were returned.'

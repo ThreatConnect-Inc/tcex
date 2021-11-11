@@ -1,18 +1,20 @@
 """ThreatConnect Assignee Module"""
+# pylint: disable=no-member,no-self-argument,no-self-use,wrong-import-position
 # standard library
-from typing import Union, Optional
-
-# first-party
-from tcex.utils import Utils
-from tcex.api.tc.v3.security.user_groups.user_group_model import UserGroupModel
-from tcex.api.tc.v3.security.users.user_model import UserModel
+from typing import Optional, Union
 
 # third-party
-from pydantic import BaseModel, validator, Field
+from pydantic import Field, validator
+
+# first-party
+from tcex.api.tc.v3.security.user_groups.user_group_model import UserGroupModel
+from tcex.api.tc.v3.security.users.user_model import UserModel
+from tcex.api.tc.v3.v3_model_abc import V3ModelABC
+from tcex.utils import Utils
 
 
 class AssigneeModel(
-    BaseModel,
+    V3ModelABC,
     title='User Data Model',
     alias_generator=Utils().snake_to_camel,
     validate_assignment=True,
@@ -39,9 +41,11 @@ class AssigneeModel(
     def _validate_type(cls, v):
         if not v:
             return v
+
         if v.lower() == 'user':
             return 'User'
-        elif v.lower() in ['group', 'user_group', 'usergroup']:
+
+        if v.lower() in ['group', 'user_group', 'usergroup']:
             return 'Group'
 
         raise ValueError('Value must be either `User` or `Group`.')

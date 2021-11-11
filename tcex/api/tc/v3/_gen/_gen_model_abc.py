@@ -24,8 +24,10 @@ class GenerateModelABC(GenerateABC, ABC):
                 {'module': 'pydantic', 'imports': ['BaseModel', 'Extra', 'Field']},
             ],
             'first-party': [
-                {'module': 'tcex.utils', 'imports': ['Utils']},
+                # TODO: @bpurdy - what is this for?
                 {'module': 'datetime', 'imports': ['datetime']},
+                {'module': 'tcex.utils', 'imports': ['Utils']},
+                {'module': 'tcex.api.tc.v3.v3_model_abc', 'imports': ['V3ModelABC']},
             ],
             'first-party-forward-reference': [],
         }
@@ -520,7 +522,7 @@ class GenerateModelABC(GenerateABC, ABC):
             [
                 '',
                 f'''class {self.type_.singular().pascal_case()}Model(''',
-                f'''{self.i1}BaseModel,''',
+                f'''{self.i1}V3ModelABC,''',
                 f'''{self.i1}alias_generator=Utils().snake_to_camel,''',
                 f'''{self.i1}extra=Extra.allow,''',
                 f'''{self.i1}title='{self.type_.singular().pascal_case()} Model',''',
@@ -529,31 +531,31 @@ class GenerateModelABC(GenerateABC, ABC):
                 '''):''',
                 f'''{self.i1}"""{self.type_.singular().title()} Model"""''',
                 '',
-                f'''{self.i1}# slot attributes are not added to dict()/json()''',
-                f'''{self.i1}__slot__ = ('_privates_',)''',
-                '',
-                f'''{self.i1}def __init__(self, **kwargs):''',
-                f'''{self.i2}"""Initialize class properties."""''',
-                f'''{self.i2}super().__init__(**kwargs)''',
-                f'''{self.i2}super().__setattr__('_privates_', {{'_modified_': 0}})''',
-                '',
-                f'''{self.i1}def __setattr__(self, name, value):''',
-                f'''{self.i2}"""Update modified property on any update."""''',
-                (
-                    f'''{self.i2}super().__setattr__('_privates_', '''
-                    f'''{{'_modified_': self.privates.get('_modified_', 0) + 1}})'''
-                ),
-                f'''{self.i2}super().__setattr__(name, value)''',
-                '',
-                f'''{self.i1}@property''',
-                f'''{self.i1}def modified(self):''',
-                f'''{self.i2}"""Return int value of modified (> 0 means modified)."""''',
-                f'''{self.i2}return self._privates_.get('_modified_', 0)''',
-                '',
-                f'''{self.i1}@property''',
-                f'''{self.i1}def privates(self):''',
-                f'''{self.i2}"""Return privates dict."""''',
-                f'''{self.i2}return self._privates_''',
+                # f'''{self.i1}# slot attributes are not added to dict()/json()''',
+                # f'''{self.i1}__slot__ = ('_privates_',)''',
+                # '',
+                # f'''{self.i1}def __init__(self, **kwargs):''',
+                # f'''{self.i2}"""Initialize class properties."""''',
+                # f'''{self.i2}super().__init__(**kwargs)''',
+                # f'''{self.i2}super().__setattr__('_privates_', {{'_modified_': 0}})''',
+                # '',
+                # f'''{self.i1}def __setattr__(self, name, value):''',
+                # f'''{self.i2}"""Update modified property on any update."""''',
+                # (
+                #     f'''{self.i2}super().__setattr__('_privates_', '''
+                #     f'''{{'_modified_': self.privates.get('_modified_', 0) + 1}})'''
+                # ),
+                # f'''{self.i2}super().__setattr__(name, value)''',
+                # '',
+                # f'''{self.i1}@property''',
+                # f'''{self.i1}def modified(self):''',
+                # f'''{self.i2}"""Return int value of modified (> 0 means modified)."""''',
+                # f'''{self.i2}return self._privates_.get('_modified_', 0)''',
+                # '',
+                # f'''{self.i1}@property''',
+                # f'''{self.i1}def privates(self):''',
+                # f'''{self.i2}"""Return privates dict."""''',
+                # f'''{self.i2}return self._privates_''',
                 '',
                 '',
             ]
@@ -642,8 +644,8 @@ class GenerateModelABC(GenerateABC, ABC):
                 if field_updatable not in [False]:
                     field_methods.append('PUT')
             if (
-                    self.type_.lower() == 'workflow_events' and
-                    field_name.snake_case() == 'deleted_reason'
+                self.type_.lower() == 'workflow_events'
+                and field_name.snake_case() == 'deleted_reason'
             ):
                 field_methods = ['DELETE']
 

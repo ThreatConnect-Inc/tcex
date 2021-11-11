@@ -2,7 +2,7 @@
 # standard library
 import logging
 from abc import ABC
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 # third-party
 from requests import Response
@@ -92,6 +92,57 @@ class ObjectCollectionABC(ABC):
     def _api_endpoint(self) -> None:  # pragma: no cover
         """Return filter method."""
         raise NotImplementedError('Child class must implement this method.')
+
+    def delete(self) -> Any:
+        """Delete V3 objects."""
+        parameters = self.params
+
+        # convert all keys to camel case
+        for k, v in list(parameters.items()):
+            k = self._utils.snake_to_camel(k)
+            parameters[k] = v
+
+        url = self._api_endpoint
+        tql_string = self.tql.raw_tql or self.tql.as_str
+
+        if tql_string:
+            parameters['tql'] = tql_string
+        else:
+            raise RuntimeError('Delete not allowed without TQL.')
+
+        try:
+            self.request = self._session.delete(
+                url, params=parameters, headers={'content-type': 'application/json'}
+            )
+            self.log.debug(
+                f'Method: ({self.request.request.method.upper()}), '
+                f'Status Code: {self.request.status_code}, '
+                f'URl: ({self.request.url})'
+            )
+        except (ConnectionError, ProxyError):  # pragma: no cover
+            handle_error(
+                code=951,
+                message_values=[
+                    'OPTIONS',
+                    self.request.status_code,
+                    self.request.reason,
+                    self._api_endpoint,
+                ],
+            )
+
+        # if not self.success(self.request):
+        #     err = self.request.text or self.request.reason
+        #     handle_error(
+        #         code=950,
+        #         message_values=[
+        #             self.request.status_code,
+        #             f'"message": "{err}"',
+        #             self.request.url,
+        #         ],
+        #     )
+
+        # reset some vars
+        parameters = {}
 
     @property
     def filter(self) -> None:  # pragma: no cover

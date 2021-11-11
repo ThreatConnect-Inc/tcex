@@ -2,7 +2,8 @@
 # standard library
 import importlib
 import inspect
-from typing import Any, Dict
+from random import randint
+from typing import Any, Dict, Optional
 
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
@@ -216,13 +217,93 @@ class V3Helper:
                 name=task, description=task_data.get('description'), status=task_data.get('status')
             )
 
-        # submit task
+        # submit object
         case.submit()
 
         # store case id for cleanup
         self._v3_objects.append(case)
 
         return case
+
+    # def create_indicator(self, type_: Optional[str] = 'Address', **kwargs):
+    #     """Create a indicator.
+
+    #     Args:
+    #         associations (dict|list, kwargs): Optional indicator associations.
+    #         attributes (dict|list, kwargs): Optional indicator attributes.
+    #         confidence (str, kwargs): Optional rating.
+    #         rating (str, kwargs): Optional rating.
+    #         security_labels (dict|list, kwargs): Optional indicator security labels.
+    #         size (dict|list, kwargs): Optional indicator size for File indicators.
+    #         tags (dict|list, kwargs): Optional case tags.
+    #         value_1 (str, kwargs): Optional indicator value 1.
+    #         value_2 (str, kwargs): Optional indicator value 2.
+    #         value_3 (str, kwargs): Optional indicator value 3.
+
+    #     Returns:
+    #         V3.Indicator: A indicator object.
+    #     """
+    #     value_1 = kwargs.get('value1', f'123.124.125.{randint(1,255)}')
+    #     indicators = self.v3.indicators()
+    #     indicators.filter.tag(TqlOperator.EQ, 'pytest')
+    #     for indicator in indicators:
+    #         indicator.delete()
+
+    #     def value_1_map():
+    #         """Return the appropriate indicator field name."""
+    #         value_1_mapping = {
+    #             'Address': 'ip',
+    #             'EmailAddress': 'address',
+    #             'File': 'md5',
+    #             'Host': 'hostName',
+    #             'URL': 'text',
+    #         }
+    #         return value_1_mapping.get(type_, 'value1')
+
+    #     def value_2_map():
+    #         """Return the appropriate indicator field name."""
+    #         value_1_mapping = {
+    #             'File': 'sha1',
+    #         }
+    #         return value_1_mapping.get(type_, type_)
+
+    #     def value_3_map():
+    #         """Return the appropriate indicator field name."""
+    #         value_1_mapping = {
+    #             'File': 'sha1',
+    #         }
+    #         return value_1_mapping.get(type_, type_)
+
+    #     indicator_data = {
+    #         'active': True,
+    #         'confidence': kwargs.get('confidence', 0),
+    #         'description': 'TcEx Testing',
+    #         'rating': kwargs.get('rating'),
+    #         'type': type_,
+    #     }
+
+    #     # add indicator field
+    #     indicator_data[value_1_map()] = value_1
+
+    #     # add additional indicator field
+    #     if kwargs.get('value_2') is not None:
+
+    #     tags = kwargs.get('tags', [])
+
+    #     # add tags
+    #     indicator.add_tag(name='pytest')
+    #     if isinstance(tags, dict):
+    #         tags = [tags]
+    #     for tag in tags:
+    #         indicator.add_tag(**tag)
+
+    #     # submit object
+    #     indicator.submit()
+
+    #     # store case id for cleanup
+    #     self._v3_objects.append(indicator)
+
+    #     return indicator
 
     def cleanup(self):
         """Remove all cases and child data."""

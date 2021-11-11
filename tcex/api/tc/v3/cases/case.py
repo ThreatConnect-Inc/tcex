@@ -68,7 +68,7 @@ class Case(ObjectABC):
 
     Args:
         artifacts (Artifacts, kwargs): A list of Artifacts corresponding to the Case.
-        assignee (None, kwargs): The user or group Assignee object for the Case.
+        assignee (Assignee, kwargs): The user or group Assignee object for the Case.
         attributes (CaseAttributes, kwargs): A list of Attributes corresponding to the Case.
         case_close_time (str, kwargs): The date and time that the Case was closed.
         case_detection_time (str, kwargs): The date and time that ends the user initiated Case

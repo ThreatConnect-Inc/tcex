@@ -35,6 +35,12 @@ pytest --cov=tcex/api/tc/v3/artifact_types --cov-report=term-missing tests/api/t
 #### artifacts
 pytest --cov=tcex/api/tc/v3/artifacts --cov-report=term-missing tests/api/tc/v3/artifacts/test_artifact_interface.py
 
+#### groups
+pytest --cov=tcex/api/tc/v3/groups --cov-report=term-missing tests/api/tc/v3/groups/test_groups_interface.py
+
+#### indicators
+pytest --cov=tcex/api/tc/v3/indicators --cov-report=term-missing tests/api/tc/v3/indicators/test_indicators_interface.py
+
 #### notes
 pytest --cov=tcex/api/tc/v3/notes --cov-report=term-missing tests/api/tc/v3/notes/test_note_interface.py
 

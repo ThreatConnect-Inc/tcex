@@ -174,33 +174,6 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('falsePositiveCount', operator, false_positive_count, TqlType.INTEGER)
 
-    def file_name(self, operator: Enum, file_name: str) -> None:
-        """Filter Name (File) based on **fileName** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            file_name: The name of a file.
-        """
-        self._tql.add_filter('fileName', operator, file_name, TqlType.STRING)
-
-    def file_occurrence_date(self, operator: Enum, file_occurrence_date: str) -> None:
-        """Filter Occurrence Date (File) based on **fileOccurrenceDate** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            file_occurrence_date: The occurrence date of a file.
-        """
-        self._tql.add_filter('fileOccurrenceDate', operator, file_occurrence_date, TqlType.STRING)
-
-    def file_path(self, operator: Enum, file_path: str) -> None:
-        """Filter Path (File) based on **filePath** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            file_path: The path of a file.
-        """
-        self._tql.add_filter('filePath', operator, file_path, TqlType.STRING)
-
     def file_size(self, operator: Enum, file_size: int) -> None:
         """Filter Size (File) based on **fileSize** keyword.
 

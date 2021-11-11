@@ -322,7 +322,7 @@ class TestTasks(TestCaseManagement):
             # [Create Testing] define task data
             task_data = {
                 'case_id': case.model.id,
-                'description': f'a description from pytest test',
+                'description': 'a description from pytest test',
                 'name': f'name-{randint(100, 999)}',
             }
 
@@ -351,8 +351,8 @@ class TestTasks(TestCaseManagement):
         # [Pre-Requisite] - create a task which the main task is dependent on
         task_data = {
             'case_id': case.model.id,
-            'description': f'a description from pytest test',
-            'name': f'name-depended_task',
+            'description': 'a description from pytest test',
+            'name': 'name-depended_task',
             'workflow_phase': 0,
             'workflow_step': 1,
         }
@@ -360,7 +360,7 @@ class TestTasks(TestCaseManagement):
         task_2.submit()
 
         # [Pre-Requisite] - construct some timestamps in the future for completed and due by fields.
-        future_1 = (datetime.now() + timedelta(days=10))
+        future_1 = datetime.now() + timedelta(days=10)
         future_2 = datetime.now() + timedelta(days=5)
 
         # [Pre-Requisite] construct the artifacts model
@@ -391,14 +391,7 @@ class TestTasks(TestCaseManagement):
 
             notes_text.append(text)
 
-        # [Pre-Requisite] define assignee data
-        assignee = {
-            "type": "User",
-            "data": {
-                "user_name": "bpurdy@threatconnect.com"
-            }
-        }
-
+        assignee = {'type': 'User', 'data': {'userName': 'bpurdy@threatconnect.com'}}
         # [Create Testing] define task data
         task_data = {
             'case_id': case.model.id,
@@ -412,7 +405,7 @@ class TestTasks(TestCaseManagement):
             'notes': note_data,
             'status': 'Pending',  # It is always pending because of the depended on task
             'required': False,
-            'workflow_phase': 0
+            'workflow_phase': 0,
         }
 
         # [Create Testing] add the note data to the object
@@ -440,7 +433,7 @@ class TestTasks(TestCaseManagement):
         task = self.v3.task(id=task.model.id)
 
         # [Retrieve Testing] get the object from the API
-        task.get(all_available_fields=True)
+        task.get(params={'fields': ['_all_']})
 
         # [Retrieve Testing] run assertions on returned data
         assert task.model.case_id == case.model.id
@@ -465,12 +458,7 @@ class TestTasks(TestCaseManagement):
         case = self.v3_helper.create_case()
 
         # [Pre-Requisite] define assignee data
-        assignee = {
-            "type": "User",
-            "data": {
-                "user_name": "bpurdy@threatconnect.com"
-            }
-        }
+        assignee = {"type": "User", "data": {"user_name": "bpurdy@threatconnect.com"}}
 
         # [Pre-Requisite] - create a task which the main task is dependent on
         task_data = {
@@ -483,12 +471,7 @@ class TestTasks(TestCaseManagement):
         task.submit()
 
         # This was tested locally since no Groups are on the system by default
-        assignee = {
-            'type': 'Group',
-            'data': {
-                'name': 'temp_user_group'
-            }
-        }
+        assignee = {'type': 'Group', 'data': {'name': 'temp_user_group'}}
 
         # [Update Testing] update object properties
         task_data = {
@@ -505,11 +488,10 @@ class TestTasks(TestCaseManagement):
         task.submit()
 
         # [Retrieve Testing] get the object from the API
-        task.get(all_available_fields=True)
+        task.get(params={'fields': ['_all_']})
 
         # [Retrieve Testing] run assertions on returned data
         # assert task.model.assignee.type == assignee.get('type')
         # assert task.model.assignee.data.name == assignee.get('data').get('name')
         assert task.model.description == task_data.get('description')
         assert task.model.name == task_data.get('name')
-

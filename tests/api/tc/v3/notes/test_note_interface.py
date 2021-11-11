@@ -1,12 +1,11 @@
 """Test the TcEx API Module."""
 # standard library
-import os
-
-# third-party
-import time
 import datetime
+import os
+import time
 from random import randint
 
+# third-party
 import pytest
 from pytest import FixtureRequest
 
@@ -51,7 +50,7 @@ class TestNotes(TestCaseManagement):
     def _test_note_on_obj(self, request, cm_object):
         common_note_data = {
             'text': 'Generic Note Data. This is auto generated to ensure that adding a note '
-                    'does not remove already existing notes.'
+            'does not remove already existing notes.'
         }
         notes = self.v3.notes()
 
@@ -61,7 +60,7 @@ class TestNotes(TestCaseManagement):
         cm_object.submit()
 
         # [Pre-Requisite] - Add the note data to the appropriate object
-        note_data = { 'text': f'sample note for {request.node.name} test.' }
+        note_data = {'text': f'sample note for {request.node.name} test.'}
 
         # [Pre-Requisite] - Add the appropriate filter for the notes object
         if cm_object.type_.lower() == 'artifact':
@@ -107,9 +106,9 @@ class TestNotes(TestCaseManagement):
         assert len(notes) == 1
         for remaining_note in cm_object.notes:
             if remaining_note.model.id == note.model.id:
-                assert False, (
-                    f'Note found on {cm_object.type_} when it should not have been present.'
-                )
+                assert (
+                    False
+                ), f'Note found on {cm_object.type_} when it should not have been present.'
         # [Delete Testing] validate the object is removed
         with pytest.raises(RuntimeError) as exc_info:
             note.get()
@@ -137,7 +136,7 @@ class TestNotes(TestCaseManagement):
             'type': 'ASN',
         }
 
-        artifact = self.v3.task(**artifact_data)
+        artifact = self.v3.artifact(**artifact_data)
         self._test_note_on_obj(request, artifact)
 
     def test_note_on_task(self, request: FixtureRequest):
@@ -184,7 +183,7 @@ class TestNotes(TestCaseManagement):
             # [Create Testing] define object data
             note_data = {
                 'case_id': case.model.id,
-                'text': f'sample note randomint - {randint(100, 999)}'
+                'text': f'sample note randomint - {randint(100, 999)}',
             }
 
             # [Create Testing] create the object
@@ -221,7 +220,7 @@ class TestNotes(TestCaseManagement):
         assert notes.request.status_code == 400
 
     def _add_note(self, cm_object, note_data, specify_type=False):
-        """Update the note_data object to include either the artifact/case/task/or workflow_event field."""
+        """Update the note object to include either the artifact/case/task/workflow_event field."""
 
         keys = ['artifact_id', 'case_id', 'task_id', 'workflow_event_id']
         for key in keys:

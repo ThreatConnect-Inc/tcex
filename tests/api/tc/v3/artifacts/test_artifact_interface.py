@@ -331,8 +331,7 @@ class TestArtifacts(TestCaseManagement):
         # [Retrieve Testing] iterate over all object looking for needle
         artifacts = self.v3.artifacts(params={'resultLimit': 5})
         artifacts.filter.case_id(TqlOperator.EQ, case.model.id)
-        for i, a in enumerate(artifacts):
-            print(i)
+        for _, a in enumerate(artifacts):
             assert artifact.model.id in artifact_ids
             artifact_ids.remove(a.model.id)
 
@@ -399,7 +398,7 @@ class TestArtifacts(TestCaseManagement):
         artifact = self.v3.artifact(id=artifact.model.id)
 
         # [Retrieve Testing] get the object from the API
-        artifact.get(all_available_fields=True)
+        artifact.get(params={'fields': ['_all_']})
 
         # [Retrieve Testing] run assertions on returned data
         assert artifact.model.case_id == case.model.id
@@ -471,7 +470,7 @@ class TestArtifacts(TestCaseManagement):
         artifact = self.v3.artifact(id=artifact.model.id)
 
         # [Retrieve Testing] get the object from the API
-        artifact.get(all_available_fields=True)
+        artifact.get(params={'fields': ['_all_']})
 
         # [Retrieve Testing] run assertions on returned data
         assert artifact.model.case_id == artifact_data.get('case_id')
@@ -545,7 +544,7 @@ class TestArtifacts(TestCaseManagement):
         artifact.submit()
 
         # [Retrieve Testing] get the object from the API
-        artifact.get(all_available_fields=True)
+        artifact.get(params={'fields': ['_all_']})
 
         # [Retrieve Testing] run assertions on returned data
         assert artifact.model.source == artifact_data.get('source')

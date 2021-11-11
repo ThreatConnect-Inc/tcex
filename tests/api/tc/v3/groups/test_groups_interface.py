@@ -51,15 +51,18 @@ class TestGroups(TestCaseManagement):
 
         A single test case to hit all sub-type creation (e.g., Notes).
         """
-        groups = self.v3_helper.v3_obj_collection
-        # groups.filter.summary(TqlOperator.EQ, '123.123.123.123')
+        groups = self.v3.groups()
+        groups.filter.has_indicator.last_modified(TqlOperator.GT, '2021-11-09T00:00:00Z')
+
+        # groups.filter.has_indicator.last_modified(TqlOperator.GT, 'yesterday')
         for group in groups:
+            print(group.model.name)
             # print(group.blah.writable)
             # print(group.model.json(indent=4))
             # print(group.post_properties)
-            group.get(all_available_fields=True)
+            # group.get(params={'fields': ['_all_']})
             # print(group.model.json(exclude_none=True, indent=2))
-            print('writable', group.results.writable)
+            # print('writable', group.results.writable)
             # print('raw', group.results.raw)
 
         # # [Create Testing] define object data
