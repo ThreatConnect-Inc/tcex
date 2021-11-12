@@ -84,6 +84,11 @@ class ObjectABC(ABC):
         """Handle standard request with error checking."""
         _request = None
         try:
+            if body:
+                headers = headers or {}
+                if 'content-type' not in (header.lower() for header in headers.keys()):
+                    headers['content-type'] = 'application/json'
+
             _request = self._session.request(method, url, data=body, headers=headers, params=params)
             # log content for debugging
             self.log.debug(

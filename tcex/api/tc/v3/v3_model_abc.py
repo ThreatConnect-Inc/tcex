@@ -59,7 +59,7 @@ class V3ModelABC(BaseModel, ABC):
                             continue
 
                         _method = str(method)
-                        if not model.id:
+                        if not model.id and _method == 'PUT':
                             _method = 'POST'
                         data = model.gen_body(_method)
                         if data:
