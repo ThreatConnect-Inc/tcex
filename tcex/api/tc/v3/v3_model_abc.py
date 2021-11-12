@@ -49,6 +49,7 @@ class V3ModelABC(BaseModel, ABC):
             if isinstance(value, BaseModel):
                 if hasattr(value, 'data') and isinstance(value.data, list):
                     # this is a nested collection (e.g., GroupsModel)
+                    _data = []
                     for model in value.data:
                         # on PUT method:
                         # * don't put values with and id
@@ -57,10 +58,15 @@ class V3ModelABC(BaseModel, ABC):
                         if method == 'PUT' and (model.id is not None or model.updated is True):
                             continue
 
-                        data = model.gen_body(method)
+                        _method = str(method)
+                        if not model.id:
+                            _method = 'POST'
+                        data = model.gen_body(_method)
                         if data:
-                            _body[key] = {}
-                            _body[key]['data'] = [model.gen_body(method)]
+                            _data.append(data)
+                    if _data:
+                        _body[key] = {}
+                        _body[key]['data'] = _data
                 else:
                     # handle nested values
                     if method != 'PUT' or value.updated is True:
