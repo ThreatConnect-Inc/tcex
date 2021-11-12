@@ -82,7 +82,6 @@ class AdversaryAssetModel(
     address_type: Optional[str] = Field(
         None,
         applies_to=['EmailAddress'],
-        conditional_required=['EmailAddress'],
         description='The type of the E-Mail Address asset.',
         methods=['POST', 'PUT'],
         read_only=False,

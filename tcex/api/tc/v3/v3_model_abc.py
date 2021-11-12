@@ -15,6 +15,7 @@ class V3ModelABC(BaseModel, ABC):
     """V3 Base Model"""
 
     _dict_hash: str = PrivateAttr()
+    _method_override = PrivateAttr(False)
     _log = logger
 
     def __init__(self, **kwargs):
@@ -61,6 +62,8 @@ class V3ModelABC(BaseModel, ABC):
                         _method = str(method)
                         if not model.id and _method == 'PUT':
                             _method = 'POST'
+                        elif model._method_override and _method.upper() not in ['GET', 'DELETE']:
+                            _method = 'PUT'
                         data = model.gen_body(_method)
                         if data:
                             _data.append(data)

@@ -398,6 +398,12 @@ class GenerateModelABC(GenerateABC, ABC):
             '# pylint: disable=no-member,no-self-argument,no-self-use,wrong-import-position\n'
         )
 
+    def gen_private_attrs(self) -> str:
+        """Generate doc string."""
+        if self.type_.lower() in ['tags', 'security_labels']:
+            return f'{self.i1}_method_override = PrivateAttr(True)\n\n'
+        return ''
+
     def gen_container_class(self) -> str:
         """Generate the Container Model
 

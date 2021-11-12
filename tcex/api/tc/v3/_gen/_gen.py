@@ -140,7 +140,6 @@ def gen_model(type_: str) -> None:
     _code = gen.gen_doc_string()
     _code += gen.gen_requirements()
     _code += gen.gen_json_encoder()
-    # TODO: Add it here
     # add container model
     _code += gen.gen_container_class()
     _code += gen.gen_container_fields()
@@ -149,6 +148,7 @@ def gen_model(type_: str) -> None:
     _code += gen.gen_data_fields()
     # add data model
     _code += gen.gen_model_class()
+    _code += gen.gen_private_attrs()
     _code += model_fields
     # add validators
     _code += validator_methods

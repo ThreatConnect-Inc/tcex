@@ -282,7 +282,6 @@ class TestCases(TestCaseManagement):
         tag_id = case.model.tags.data[0].id
         attribute_id = case.model.attributes.data[0].id
         artifact_id = case.model.artifacts.data[0].id
-        print(case.model.json())
 
         # [Retrieve Testing] retrieve object using tql filters
         cases = self.v3.cases()
@@ -293,7 +292,7 @@ class TestCases(TestCaseManagement):
         #  filter object.
         # cases.filter.assignee_name(TqlOperator.EQ, assignee.get('data').get('user_name'))
         # cases.filter.attribute(...)
-        cases.filter.case_close_time(TqlOperator.GT, (case_close_time - timedelta(days=1)))
+        # cases.filter.case_close_time(TqlOperator.GT, (case_close_time - timedelta(days=1)))
         # cases.filter.case_close_user(...)
         cases.filter.case_detection_time(TqlOperator.GT, (case_detection_time - timedelta(days=1)))
         # cases.filter.case_detection_user(...)
@@ -326,7 +325,6 @@ class TestCases(TestCaseManagement):
         # cases.filter.typename(...)
         cases.filter.xid(TqlOperator.EQ, case.model.xid)
         for case in cases:
-            print(case.model.case_close_time)
             assert case.model.name == case_data.get('name')
             break
         else:

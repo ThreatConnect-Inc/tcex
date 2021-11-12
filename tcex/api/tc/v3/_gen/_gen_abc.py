@@ -153,6 +153,7 @@ class GenerateABC(ABC):
             json_encoders.append(f'''{self.i1}{type_}: {lambda_}''')
         if self.json_encoder:
             json_encoders.append('}')
+            json_encoders.append('\n')
         return '\n'.join(json_encoders)
 
     def gen_requirements(self):
@@ -160,6 +161,19 @@ class GenerateABC(ABC):
         # add additional imports when required
         if self.requirements.get('type-checking'):
             self.requirements['standard library'].append('from typing import TYPE_CHECKING')
+
+        # add the PrivateAttr to the pydantic module imports for tags and security labels
+        if self.type_.lower() in ['tags', 'security_labels']:
+            libs = self.requirements.get('third-party', [])
+            added = False
+            for lib in libs:
+                if lib.get('module') == 'pydantic':
+                    added = True
+                    if 'PrivateAttr' not in lib.get('imports', []):
+                        lib.get('imports', []).append('PrivateAttr')
+                    break
+            if added is False:
+                libs.append({'module': 'pydantic', 'imports': ['PrivateAttr']})
 
         indent = ''
         _libs = []
