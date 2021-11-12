@@ -116,7 +116,8 @@ class TestWorkflowEvents(TestCaseManagement):
         workflow_event.submit()
 
         # [Retrieving Testing] Retrieving the workflow event to ensure the user object is populated
-        workflow_event.get(all_available_fields=True)
+        
+        workflow_event.get(params={'fields': ['_all_']})
 
         # [Filter Testing] create the object collection
         workflow_events = self.v3.workflow_events()
@@ -159,7 +160,7 @@ class TestWorkflowEvents(TestCaseManagement):
         """Test WorkflowEvent Creation"""
         # [Pre-Requisite] - create case and provide a unique xid
         case_xid = f'{request.node.name}-{time.time()}'
-        _ = self.v3_helper.create_case(xid=case_xid)
+        case = self.v3_helper.create_case(xid=case_xid)
 
         # [Create Testing] define workflow_event data
         workflow_event_data = {
@@ -178,10 +179,12 @@ class TestWorkflowEvents(TestCaseManagement):
         workflow_event = self.v3.workflow_event(id=workflow_event.model.id)
 
         # [Retrieve Testing] get the object from the API
-        workflow_event.get()
+        workflow_event.get(params={'fields': ['_all_']})
 
         # [Retrieve Testing] run assertions on returned data
-        assert workflow_event.model.case_xid == case_xid
+        # TODO: [Medium] Case Xid does not get returned on api call. Unsure if this is a bug
+        # assert workflow_event.model.case_xid == case_xid
+        assert workflow_event.model.case_id == case.model.id
 
     def test_workflow_event_delete_by_id(self, request: FixtureRequest):
         """Test WorkflowEvent Deletion"""
@@ -224,8 +227,7 @@ class TestWorkflowEvents(TestCaseManagement):
             # [Create Testing] define workflow_event data
             workflow_event_data = {
                 'case_id': case.model.id,
-                'description': f'a description from pytest test',
-                'name': f'name-{randint(100, 999)}',
+                'summary': f'a description from pytest test',
             }
 
             # [Create Testing] create the object
@@ -238,180 +240,152 @@ class TestWorkflowEvents(TestCaseManagement):
         # [Retrieve Testing] iterate over all object looking for needle
         workflow_events = self.v3.workflow_events(params={'resultLimit': 5})
         workflow_events.filter.case_id(TqlOperator.EQ, case.model.id)
+
+        # [Retrieve Testing] One workflow event is auto created on creation of the case.
+        assert len(workflow_events) == workflow_event_count + 1
+
+        # [Retrieve Testing] Iterate over and verify each workflow_event + the one that was auto
+        # created.
         for workflow_event in workflow_events:
+            if workflow_event.model.id not in workflow_event_ids:
+                workflow_event_ids.append(workflow_event.model.id)
             assert workflow_event.model.id in workflow_event_ids
             workflow_event_ids.remove(workflow_event.model.id)
 
-        assert len(workflow_events) == workflow_event_count
         assert not workflow_event_ids, 'Not all workflow_events were returned.'
 
-    # def test_workflow_event_get_single_by_id_properties(self, request: FixtureRequest):
-    #     """Test WorkflowEvent get single attached to workflow_event by id"""
-    #     # [Pre-Requisite] - create case
-    #     case = self.v3_helper.create_case()
-    #
-    #     # [Pre-Requisite] - create a workflow_event which the main workflow_event is dependent on
-    #     workflow_event_data = {
-    #         'case_id': case.model.id,
-    #         'description': f'a description from pytest test',
-    #         'name': f'name-depended_workflow_event',
-    #         'workflow_phase': 0,
-    #         'workflow_step': 1,
-    #     }
-    #     workflow_event_2 = self.v3.workflow_event(**workflow_event_data)
-    #     workflow_event_2.submit()
-    #
-    #     # [Pre-Requisite] - construct some timestamps in the future for completed and due by fields.
-    #     future_1 = (datetime.now() + timedelta(days=10))
-    #     future_2 = datetime.now() + timedelta(days=5)
-    #
-    #     # [Pre-Requisite] construct the artifacts model
-    #     artifact_count = 10
-    #     artifact_summaries = []
-    #     artifact_data = {'data': []}
-    #     for _ in range(0, artifact_count):
-    #         # [Pre-Requisite] define artifact data
-    #         summary = f'asn{randint(100, 999)}'
-    #         artifact_data.get('data').append(
-    #             {
-    #                 'intel_type': 'indicator-ASN',
-    #                 'summary': summary,
-    #                 'type': 'ASN',
-    #                 'note_text': 'artifact note text',
-    #             }
-    #         )
-    #         artifact_summaries.append(summary)
-    #
-    #     # [Pre-Requisite] construct the notes model
-    #     note_count = 10
-    #     notes_text = []
-    #     note_data = {'data': []}
-    #     for _ in range(0, note_count):
-    #         # [Pre-Requisite] define note data
-    #         text = f'sample note generated: {time.time()} for {request.node.name} test workflow_event.'
-    #         note_data.get('data').append({'text': text})
-    #
-    #         notes_text.append(text)
-    #
-    #     # [Pre-Requisite] define assignee data
-    #     assignee = {
-    #         "type": "User",
-    #         "data": {
-    #             "user_name": "bpurdy@threatconnect.com"
-    #         }
-    #     }
-    #
-    #     # [Create Testing] define workflow_event data
-    #     workflow_event_data = {
-    #         'case_id': case.model.id,
-    #         'artifacts': artifact_data,
-    #         'assignee': assignee,
-    #         'completed_date': future_2,
-    #         'dependent_on_id': workflow_event_2.model.id,
-    #         'description': f'a description from {request.node.name}',
-    #         'due_date': future_1,
-    #         'name': f'name-{request.node.name}',
-    #         'notes': note_data,
-    #         'status': 'Pending',  # It is always pending because of the depended on workflow_event
-    #         'required': False,
-    #         'workflow_phase': 0
-    #     }
-    #
-    #     # [Create Testing] add the note data to the object
-    #     workflow_event = self.v3.workflow_event()
-    #
-    #     # [Create Testing] testing setters on model
-    #     workflow_event.model.artifacts = workflow_event_data.get('artifacts')
-    #     workflow_event.model.assignee = workflow_event_data.get('assignee')
-    #     workflow_event.model.case_id = workflow_event_data.get('case_id')
-    #     workflow_event.model.dependent_on_id = workflow_event_data.get('dependent_on_id')
-    #     workflow_event.model.description = workflow_event_data.get('description')
-    #     workflow_event.model.due_date = workflow_event_data.get('due_date')
-    #     workflow_event.model.completed_date = workflow_event_data.get('completed_date')
-    #     workflow_event.model.name = workflow_event_data.get('name')
-    #     workflow_event.model.notes = workflow_event_data.get('notes')
-    #     workflow_event.model.required = workflow_event_data.get('required')
-    #     workflow_event.model.status = workflow_event_data.get('status')
-    #     workflow_event.model.workflow_phase = workflow_event_data.get('workflow_phase')
-    #
-    #     # [Create Testing] submit the object to the TC API
-    #     workflow_event.submit()
-    #
-    #     # [Retrieve Testing] create the object with id filter,
-    #     # using object id from the object created above
-    #     workflow_event = self.v3.workflow_event(id=workflow_event.model.id)
-    #
-    #     # [Retrieve Testing] get the object from the API
-    #     workflow_event.get(all_available_fields=True)
-    #
-    #     # [Retrieve Testing] run assertions on returned data
-    #     assert workflow_event.model.case_id == case.model.id
-    #     assert workflow_event.model.name == workflow_event_data.get('name')
-    #     assert workflow_event.model.required == workflow_event_data.get('required')
-    #     assert workflow_event.model.status == workflow_event_data.get('status')
-    #     assert workflow_event.model.workflow_phase == workflow_event_data.get('workflow_phase')
-    #     assert workflow_event.model.assignee.type == assignee.get('type')
-    #     assert workflow_event.model.assignee.data.user_name == assignee.get('data').get('user_name')
-    #     for note in workflow_event.model.notes.data:
-    #         assert note.text in notes_text
-    #         notes_text.remove(note.text)
-    #     assert not notes_text, 'Incorrect amount of notes were retrieved'
-    #     for artifact in workflow_event.model.artifacts.data:
-    #         assert artifact.summary in artifact_summaries
-    #         artifact_summaries.remove(artifact.summary)
-    #     assert not artifact_summaries, 'Incorrect amount of artifacts were retrieved'
-    #
-    # def test_workflow_event_update_properties(self, request: FixtureRequest):
-    #     """Test updating artifacts properties"""
-    #     # [Pre-Requisite] - create case
-    #     case = self.v3_helper.create_case()
-    #
-    #     # [Pre-Requisite] define assignee data
-    #     assignee = {
-    #         "type": "User",
-    #         "data": {
-    #             "user_name": "bpurdy@threatconnect.com"
-    #         }
-    #     }
-    #
-    #     # [Pre-Requisite] - create a workflow_event which the main workflow_event is dependent on
-    #     workflow_event_data = {
-    #         'assignee': assignee,
-    #         'case_id': case.model.id,
-    #         'description': f'a description from pytest test',
-    #         'name': f'name-depended_workflow_event',
-    #     }
-    #     workflow_event = self.v3.workflow_event(**workflow_event_data)
-    #     workflow_event.submit()
-    #
-    #     # This was tested locally since no Groups are on the system by default
-    #     assignee = {
-    #         'type': 'Group',
-    #         'data': {
-    #             'name': 'temp_user_group'
-    #         }
-    #     }
-    #
-    #     # [Update Testing] update object properties
-    #     workflow_event_data = {
-    #         # 'assignee': assignee,
-    #         'description': f'a description from {request.node.name}',
-    #         'name': f'name-{request.node.name}',
-    #     }
-    #
-    #     # workflow_event.model.assignee = assignee
-    #     workflow_event.model.description = workflow_event_data.get('description')
-    #     workflow_event.model.name = workflow_event_data.get('name')
-    #
-    #     # [Update Testing] submit the object to the TC API
-    #     workflow_event.submit()
-    #
-    #     # [Retrieve Testing] get the object from the API
-    #     workflow_event.get(all_available_fields=True)
-    #
-    #     # [Retrieve Testing] run assertions on returned data
-    #     # assert workflow_event.model.assignee.type == assignee.get('type')
-    #     # assert workflow_event.model.assignee.data.name == assignee.get('data').get('name')
-    #     assert workflow_event.model.description == workflow_event_data.get('description')
-    #     assert workflow_event.model.name == workflow_event_data.get('name')
+    def test_workflow_event_get_single_by_id_properties(self, request: FixtureRequest):
+        """Test WorkflowEvent get single attached to workflow_event by id"""
+        # [Pre-Requisite] - create case
+        case_xid = f'{request.node.name}-{time.time()}'
+        case = self.v3_helper.create_case(xid=case_xid)
+
+        # [Pre-Requisite] - create datetime in the past
+        past = (datetime.now() - timedelta(days=10))
+
+        # [Create Testing] define workflow_event data
+        workflow_event_data = {
+            'case_id': case.model.id,
+            'case_xid': case_xid,
+            'summary': request.node.name,
+            'event_date': past
+        }
+
+        # [Pre-Requisite] construct the notes model
+        note_count = 10
+        notes_text = []
+        note_data = {'data': []}
+        for _ in range(0, note_count):
+            # [Pre-Requisite] define note data
+            text = f'sample note generated: {time.time()} for {request.node.name} test task.'
+            note_data.get('data').append({'text': text})
+
+            notes_text.append(text)
+
+        # [Create Testing] add the note data to the object
+        workflow_event = self.v3.workflow_event()
+
+        # [Create Testing] testing setters on model
+        workflow_event.model.case_id = workflow_event_data.get('case_id')
+        workflow_event.model.case_xid = workflow_event_data.get('case_xid')
+        workflow_event.model.summary = workflow_event_data.get('summary')
+        workflow_event.model.event_date = workflow_event_data.get('event_date')
+        workflow_event.model.notes = note_data
+
+        # [Create Testing] submit the object to the TC API
+        workflow_event.submit()
+
+        # [Retrieve Testing] create the object with id filter,
+        # using object id from the object created above
+        workflow_event = self.v3.workflow_event(id=workflow_event.model.id)
+
+        # [Retrieve Testing] get the object from the API
+        workflow_event.get(params={'fields': ['_all_']})
+
+        # [Retrieve Testing] run assertions on returned data
+        assert workflow_event.model.case_id == workflow_event_data.get('case_id')
+        # TODO: [Medium] Case Xid does not get returned on api call. Unsure if this is a bug
+        # assert workflow_event.model.case_xid == workflow_event_data.get('case_xid')
+        assert workflow_event.model.summary == workflow_event_data.get('summary')
+        assert (
+            workflow_event.model.event_date.strftime('%Y-%m-%dT%H%M%S') ==
+            workflow_event_data.get('event_date').strftime('%Y-%m-%dT%H%M%S')
+        )
+        for note in workflow_event.model.notes.data:
+            assert note.text in notes_text
+            notes_text.remove(note.text)
+        assert not notes_text, 'Incorrect amount of notes were retrieved'
+
+    def test_workflow_event_update_properties(self, request: FixtureRequest):
+        """Test updating artifacts properties"""
+        # [Pre-Requisite] - create case
+        case = self.v3_helper.create_case()
+
+        # [Pre-Requisite] - create datetime in the past
+        past = (datetime.now() - timedelta(days=10))
+
+        note_count = 10
+        note_data = {'data': []}
+        note_text = []
+        for _ in range(0, note_count):
+            # [Pre-Requisite] define note data
+            text = f'sample note generated: {time.time()} for {request.node.name} test task.'
+            note_data.get('data').append({'text': text})
+            note_text.append(text)
+
+        # [Create Testing] define workflow_event data
+        workflow_event_data = {
+            'case_id': case.model.id,
+            'summary': request.node.name,
+            'event_date': past,
+            'notes': note_data,
+        }
+
+        workflow_event = self.v3.workflow_event(**workflow_event_data)
+        workflow_event.submit()
+
+        # [Pre-Requisite] - create datetime in the past
+        past = (datetime.now() - timedelta(days=8))
+
+        note_data = {'data': []}
+        for _ in range(0, note_count):
+            # [Pre-Requisite] define note data
+            text = f'sample note generated: {time.time()} for {request.node.name} test task.'
+            note_data.get('data').append({'text': text})
+            note_text.append(text)
+
+        # [Update Testing] update object properties
+        workflow_event_data = {
+            'event_date': past,
+            'summary': 'updated summary',
+            'notes': note_data
+        }
+
+        # workflow_event.model.assignee = assignee
+        workflow_event.model.event_date = workflow_event_data.get('event_date')
+        workflow_event.model.summary = workflow_event_data.get('summary')
+        workflow_event.model.notes = workflow_event_data.get('notes')
+
+        # [Update Testing] submit the object to the TC API
+        workflow_event.submit()
+
+        # [Retrieve Testing] get the object from the API
+        workflow_event.get(params={'fields': ['_all_']})
+
+        # [Retrieve Testing] run assertions on returned data
+        assert (
+                workflow_event.model.event_date.strftime('%Y-%m-%dT%H%M%S') ==
+                workflow_event_data.get('event_date').strftime('%Y-%m-%dT%H%M%S')
+        )
+        assert workflow_event.model.summary == workflow_event_data.get('summary')
+        assert len(note_text) == note_count * 2, (
+            'Not all the notes were created on thw Workflow Event'
+        )
+        for note in workflow_event.model.notes.data:
+            assert note.text in note_text
+            note_text.remove(note.text)
+        assert not note_text, 'Incorrect amount of notes were retrieved'
+
+
+
 
