@@ -27,9 +27,9 @@ class TestCache:
         expire = 10
         rid = 'cache-one'
 
-        cache = tcex.cache('local', self.data_type, expire)
+        cache = tcex.v2.cache('local', self.data_type, expire)
         results = cache.add(rid=rid, data=data)
-        assert results.get('_type') == self.data_type
+        assert results.get('_id') == rid
         assert results.get('_shards').get('successful') == 1
 
     def test_cache_delete(self, tcex):
@@ -41,14 +41,14 @@ class TestCache:
         rid = 'cache-delete'
 
         # get cache instance
-        cache = tcex.cache('local', self.data_type, 10)
+        cache = tcex.v2.cache('local', self.data_type, 10)
 
         # add entry to be deleted
         cache.add(rid=rid, data={'one': 1})
 
         # delete cache entry
         results = cache.delete(rid=rid)
-        assert results.get('_type') == self.data_type
+        assert results.get('_id') == rid
         assert results.get('_shards').get('successful') == 1
         assert results.get('result') == 'deleted'
 
@@ -61,7 +61,7 @@ class TestCache:
         rid = 'cache-get'
 
         # get cache instance
-        cache = tcex.cache('local', self.data_type, 300)
+        cache = tcex.v2.cache('local', self.data_type, 300)
 
         # add entry to get
         cache.add(rid=rid, data={'results': 'cached'})
@@ -79,7 +79,7 @@ class TestCache:
         rid = 'cache-get-expire'
 
         # get cache instance
-        cache = tcex.cache('local', self.data_type, 1)
+        cache = tcex.v2.cache('local', self.data_type, 1)
 
         # add entry to be retrieved
         results = cache.add(rid=rid, data={'one': 5})
@@ -99,7 +99,7 @@ class TestCache:
         rid = 'cache-get'
 
         # get cache instance
-        cache = tcex.cache('local', self.data_type, expire)
+        cache = tcex.v2.cache('local', self.data_type, expire)
 
         results = cache.update(rid=rid, data=data)
         assert results.get('cache-data') == data

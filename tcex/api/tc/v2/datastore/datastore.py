@@ -33,20 +33,20 @@ class DataStore:
     passed directly to ElasticSearch.
 
     Args:
-        session: A requests.Session instance with auth configured for the ThreatConnect API.
+        session_tc: A requests.Session instance with auth configured for the ThreatConnect API.
         domain: A value of “system”, “organization”, or “local”.
         data_type: A free form type name for the data.
         mapping: Elasticsearch mappings data.
     """
 
     def __init__(
-        self, session: 'Session', domain: str, data_type: str, mapping: Optional[dict] = None
+        self, session_tc: 'Session', domain: str, data_type: str, mapping: Optional[dict] = None
     ) -> None:
         """Initialize class properties."""
         self.domain = domain
         self.data_type = data_type
         self.mapping = mapping or {'dynamic': False}
-        self.session = session
+        self.session_tc = session_tc
 
         # properties
         self.log = logger
@@ -62,7 +62,7 @@ class DataStore:
             index_settings = {}
             headers = {'Content-Type': 'application/json', 'DB-Method': 'POST'}
             url = f'/v2/exchange/db/{self.domain}/{self.data_type}/{rid}'
-            r: 'Response' = self.session.post(url, json=index_settings, headers=headers)
+            r: 'Response' = self.session_tc.post(url, json=index_settings, headers=headers)
 
             if not r.ok:
                 error: str = r.text or r.reason
@@ -77,7 +77,7 @@ class DataStore:
         This check needs to be made after args are parsed to ensure token module has initialized.
         """
         # This module requires a token.
-        if self.session.token.token is None:  # pragma: no cover
+        if self.session_tc.token.token is None:  # pragma: no cover
             raise RuntimeError(
                 'The DataModel TcEx Module requires a Token to '
                 'interact with the ThreatConnect platform.'
@@ -87,7 +87,7 @@ class DataStore:
         """Update the mappings for the current index."""
         headers = {'Content-Type': 'application/json', 'DB-Method': 'PUT'}
         url = f'/v2/exchange/db/{self.domain}/{self.data_type}/_mappings'
-        r: 'Response' = self.session.post(url, json=self.mapping, headers=headers)
+        r: 'Response' = self.session_tc.post(url, json=self.mapping, headers=headers)
         self.log.debug(f'update mapping. status_code: {r.status_code}, response: "{r.text}".')
 
     @property
@@ -95,7 +95,7 @@ class DataStore:
         """Check to see if index exists."""
         headers = {'Content-Type': 'application/json', 'DB-Method': 'GET'}
         url = f'/v2/exchange/db/{self.domain}/{self.data_type}/_search'
-        r: 'Response' = self.session.post(url, headers=headers)
+        r: 'Response' = self.session_tc.post(url, headers=headers)
         if not r.ok:
             self.log.warning(f'The provided index was not found ({r.text}).')
             return False
@@ -148,7 +148,7 @@ class DataStore:
         response_data = None
         headers = {'Content-Type': 'application/json', 'DB-Method': 'DELETE'}
         url = f'/v2/exchange/db/{self.domain}/{self.data_type}/{rid}'
-        r: 'Response' = self.session.post(url, headers=headers)
+        r: 'Response' = self.session_tc.post(url, headers=headers)
         self.log.debug(f'datastore delete status code: {r.status_code}')
         if r.ok and 'application/json' in r.headers.get('content-type', ''):
             response_data: dict = r.json()
@@ -200,7 +200,7 @@ class DataStore:
             url = f'/v2/exchange/db/{self.domain}/{self.data_type}/'
         else:
             url = f'/v2/exchange/db/{self.domain}/{self.data_type}/{rid}'
-        r: 'Response' = self.session.post(url, json=data, headers=headers)
+        r: 'Response' = self.session_tc.post(url, json=data, headers=headers)
         self.log.debug(f'datastore get status code: {r.status_code}')
         if 'application/json' in r.headers.get('content-type', ''):
             # as long as the content is JSON set the value
@@ -260,7 +260,7 @@ class DataStore:
         if rid is not None:
             url = f'{url}{rid}'
 
-        r: 'Response' = self.session.post(url, json=data, headers=headers)
+        r: 'Response' = self.session_tc.post(url, json=data, headers=headers)
         self.log.debug(f'datastore post status code: {r.status_code}')
 
         if r.ok and 'application/json' in r.headers.get('content-type', ''):
@@ -310,7 +310,7 @@ class DataStore:
         headers = {'Content-Type': 'application/json', 'DB-Method': 'PUT'}
         url = f'/v2/exchange/db/{self.domain}/{self.data_type}/{rid}'
 
-        r: 'Response' = self.session.post(url, json=data, headers=headers)
+        r: 'Response' = self.session_tc.post(url, json=data, headers=headers)
         self.log.debug(f'datastore put status code: {r.status_code}')
 
         if r.ok and 'application/json' in r.headers.get('content-type', ''):

@@ -15,7 +15,7 @@ class TestMetrics:
         """
         date = '2008-12-12T12:12:12'
         result_date = '2008-12-12T00:00:00Z'
-        metrics = tcex.metric(
+        metrics = tcex.v2.metric(
             name='pytest metrics',
             description='pytest',
             data_type='Average',
@@ -35,7 +35,7 @@ class TestMetrics:
         """
         date = '2008-12-12T12:12:12'
         result_date = '2008-12-12T00:00:00Z'
-        metrics = tcex.metric(
+        metrics = tcex.v2.metric(
             name='pytest metrics by Owner',
             description='pytest',
             data_type='Average',
@@ -53,7 +53,7 @@ class TestMetrics:
             tcex (TcEx, fixture): An instantiated instance of TcEx object.
         """
         name = f'pytest-{str(uuid.uuid4())}'
-        metrics = tcex.metric(
+        metrics = tcex.v2.metric(
             name=name, description='pytest', data_type='Sum', interval='Daily', keyed=True
         )
         assert metrics.metric_find()
@@ -67,7 +67,7 @@ class TestMetrics:
         """
         name = 'x' * 500
         try:
-            tcex.metric(
+            tcex.v2.metric(
                 name=name, description='pytest', data_type='Sum', interval='Daily', keyed=True
             )
             assert False, 'Failed to catch API error for metric name to long'

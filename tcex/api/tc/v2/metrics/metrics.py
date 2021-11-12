@@ -1,24 +1,43 @@
 """TcEx Framework Module for working with Metrics in the ThreatConnect Platform."""
+# standard library
+import logging
+from typing import TYPE_CHECKING, Optional
+
 # first-party
 from tcex.exit.error_codes import handle_error
 from tcex.utils import Utils
 
+if TYPE_CHECKING:
+    # third-party
+    from requests import Session
+
+# get tcex logger
+logger = logging.getLogger('tcex')
+
 
 class Metrics:
-    """TcEx Metrics Class"""
+    """TcEx Metrics Class
 
-    def __init__(self, tcex, name, description, data_type, interval, keyed=False):
-        """Initialize the Class properties.
+    Args:
+        session_tc: An configured instance of request.Session with TC API Auth.
+        name: The name for the metric.
+        description: The description of the metric.
+        data_type: The type of metric: Sum, Count, Min, Max, First, Last, and Average.
+        interval: The metric interval: Hourly, Daily, Weekly, Monthly, and Yearly.
+        keyed: Indicates whether the data will have a keyed value.
+    """
 
-        Args:
-            tcex (TcEx): An instance of TcEx class.
-            name (str): The name for the metric.
-            description (str): The description of the metric.
-            data_type (str): The type of metric: Sum, Count, Min, Max, First, Last, and Average.
-            interval (str): The metric interval: Hourly, Daily, Weekly, Monthly, and Yearly.
-            keyed (bool, default:False): Indicates whether the data will have a keyed value.
-        """
-        self.tcex = tcex
+    def __init__(
+        self,
+        session_tc: 'Session',
+        name: str,
+        description: str,
+        data_type: str,
+        interval: str,
+        keyed: Optional[bool] = False,
+    ):
+        """Initialize the Class properties."""
+        self.session_tc = session_tc
         self._metric_data_type = data_type
         self._metric_description = description
         self._metric_interval = interval
@@ -27,6 +46,7 @@ class Metrics:
 
         # properties
         self._metric_id = None
+        self.log = logger
         self.utils = Utils
 
         if not self.metric_find():
@@ -58,15 +78,15 @@ class Metrics:
             'name': self._metric_name,
             'keyedValues': self._metric_keyed,
         }
-        self.tcex.log.debug(f'metric body: {body}')
-        r = self.tcex.session.post('/v2/customMetrics', json=body)
+        self.log.debug(f'metric body: {body}')
+        r = self.session_tc.post('/v2/customMetrics', json=body)
 
         if not r.ok:  # pragma: no cover
             handle_error(700, [r.status_code, r.text])
 
         data = r.json()
         self._metric_id = data.get('data', {}).get('customMetricConfig', {}).get('id')
-        self.tcex.log.debug(f'metric data: {data}')
+        self.log.debug(f'metric data: {data}')
 
     def metric_find(self):
         """Find the Metric by name.
@@ -94,14 +114,14 @@ class Metrics:
         while True:
             if params.get('resultStart') >= params.get('resultLimit'):
                 break
-            r = self.tcex.session.get('/v2/customMetrics', params=params)
+            r = self.session_tc.get('/v2/customMetrics', params=params)
             if not r.ok:  # pragma: no cover
                 handle_error(705, [r.status_code, r.text])
             data = r.json()
             for metric in data.get('data', {}).get('customMetricConfig'):
                 if metric.get('name') == self._metric_name:
                     self._metric_id = metric.get('id')
-                    self.tcex.log.info(
+                    self.log.info(
                         f'found metric with name "{self._metric_name}" '
                         f'and Id {self._metric_id}.'
                     )
@@ -135,14 +155,14 @@ class Metrics:
             body['name'] = key
         if weight:
             body['weight'] = weight
-        self.tcex.log.debug(f'metric data: {body}')
+        self.log.debug(f'metric data: {body}')
 
         params = {}
         if return_value:
             params = {'returnValue': 'true'}
 
         url = f'/v2/customMetrics/{self._metric_id}/data'
-        r = self.tcex.session.post(url, json=body, params=params)
+        r = self.session_tc.post(url, json=body, params=params)
         if r.status_code == 200 and 'application/json' in r.headers.get('content-type', ''):
             data = r.json()
         elif r.status_code == 204:

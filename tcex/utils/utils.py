@@ -59,7 +59,7 @@ class Utils:
             try:
                 return method(value)
             # TypeError should never occur, but adding for completeness in case of improperly
-            # overriden str method
+            # overridden str method
             except (arrow.parser.ParserError, ValueError, TypeError):
                 # value could not be parsed by current method.
                 pass

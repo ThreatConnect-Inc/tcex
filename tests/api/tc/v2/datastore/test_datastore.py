@@ -63,12 +63,12 @@ class TestDataStore:
         def mp_post(*args, **kwargs):  # pylint: disable=unused-argument
             return MockPost({}, ok=False)
 
-        monkeypatch.setattr(tcex.session, 'post', mp_post)
+        monkeypatch.setattr(tcex.session_tc, 'post', mp_post)
 
         # create index
         key = str(uuid.uuid4())
         try:
-            tcex.datastore('local', key)
+            tcex.v2.datastore('local', key)
             assert False, 'Failed to catch error on ok=False'
         except RuntimeError:
             assert True
@@ -79,7 +79,7 @@ class TestDataStore:
         Args:
             tcex (TcEx, fixture): An instantiated instance of TcEx.
         """
-        tcex.datastore('local', self.data_type)
+        tcex.v2.datastore('local', self.data_type)
 
     @staticmethod
     def test_data_store_local_new_index(tcex):
@@ -92,10 +92,10 @@ class TestDataStore:
         key = str(uuid.uuid4())
         rid = 'one'
 
-        ds = tcex.datastore('local', key)
+        ds = tcex.v2.datastore('local', key)
 
         results = ds.add(rid=rid, data=data)
-        assert results.get('_type') == key
+        assert results.get('_id') == rid
         assert results.get('_shards').get('successful') == 1
 
     def test_data_store_local_add(self, tcex):
@@ -107,25 +107,10 @@ class TestDataStore:
         data = {'one': 1}
         rid = 'one'
 
-        ds = tcex.datastore('local', self.data_type)
+        ds = tcex.v2.datastore('local', self.data_type)
 
         results = ds.add(rid=rid, data=data)
-        assert results.get('_type') == self.data_type
-        assert results.get('_shards').get('successful') == 1
-
-    def test_data_store_local_add_no_rid(self, tcex):
-        """Test local datastore add with no rid
-
-        Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx.
-        """
-        data = {'one': 1}
-        rid = None
-
-        ds = tcex.datastore('local', self.data_type)
-
-        results = ds.add(rid=rid, data=data)
-        assert results.get('_type') == self.data_type
+        assert results.get('_id') == rid
         assert results.get('_shards').get('successful') == 1
 
     def test_data_store_local_add_fail(self, tcex, monkeypatch):
@@ -142,10 +127,10 @@ class TestDataStore:
             return MockPost({}, ok=False)
 
         # delete
-        ds = tcex.datastore('local', self.data_type)
+        ds = tcex.v2.datastore('local', self.data_type)
 
         # patch after datastore created
-        monkeypatch.setattr(tcex.session, 'post', mp_post)
+        monkeypatch.setattr(tcex.session_tc, 'post', mp_post)
         try:
             ds.add(rid=rid, data=None)
             assert False
@@ -160,14 +145,14 @@ class TestDataStore:
         """
         rid = 'three'
 
-        ds = tcex.datastore('local', self.data_type)
+        ds = tcex.v2.datastore('local', self.data_type)
 
         # add entry to be deleted
         ds.add(rid, {'delete': 'delete'})
 
         # delete
         results = ds.delete(rid=rid)
-        assert results.get('_type') == self.data_type
+        assert results.get('_id') == rid
         assert results.get('_shards').get('successful') == 1
         assert results.get('result') == 'deleted'
 
@@ -185,10 +170,10 @@ class TestDataStore:
             return MockPost({}, ok=False)
 
         # delete
-        ds = tcex.datastore('local', self.data_type)
+        ds = tcex.v2.datastore('local', self.data_type)
 
         # patch after datastore created
-        monkeypatch.setattr(tcex.session, 'post', mp_post)
+        monkeypatch.setattr(tcex.session_tc, 'post', mp_post)
         try:
             ds.delete(rid=rid)
             assert False
@@ -204,13 +189,13 @@ class TestDataStore:
         data = {'two': 2}
         rid = 'two'
 
-        ds = tcex.datastore('local', self.data_type)
+        ds = tcex.v2.datastore('local', self.data_type)
 
         # add entry to be deleted
         ds.add(rid, data)
 
         results = ds.get(rid=rid)
-        assert results.get('_type') == self.data_type
+        assert results.get('_id') == rid
         assert results.get('_source').get('two') == 2
         assert results.get('found') is True
 
@@ -223,7 +208,7 @@ class TestDataStore:
         Args:
             tcex (TcEx, fixture): An instantiated instance of TcEx.
         """
-        ds = tcex.datastore('local', self.data_type)
+        ds = tcex.v2.datastore('local', self.data_type)
 
         results = ds.get()
         assert results.get('hits') is not None
@@ -240,10 +225,10 @@ class TestDataStore:
             return MockPost({}, ok=False)
 
         # delete
-        ds = tcex.datastore('local', self.data_type)
+        ds = tcex.v2.datastore('local', self.data_type)
 
         # patch after datastore created
-        monkeypatch.setattr(tcex.session, 'post', mp_post)
+        monkeypatch.setattr(tcex.session_tc, 'post', mp_post)
         try:
             ds.get()
             assert False
@@ -259,10 +244,10 @@ class TestDataStore:
         data = {'one': 1}
         rid = 'one'
 
-        ds = tcex.datastore('organization', self.data_type)
+        ds = tcex.v2.datastore('organization', self.data_type)
 
         results = ds.add(rid=rid, data=data)
-        assert results.get('_type') == self.data_type
+        assert results.get('_id') == rid
         assert results.get('_shards').get('successful') == 1
 
     def test_data_store_organization_delete(self, tcex):
@@ -273,14 +258,14 @@ class TestDataStore:
         """
         rid = 'three'
 
-        ds = tcex.datastore('organization', self.data_type)
+        ds = tcex.v2.datastore('organization', self.data_type)
 
         # add entry to be deleted
         ds.add(rid, {'three': 3})
 
         # delete
         results = ds.delete(rid=rid)
-        assert results.get('_type') == self.data_type
+        assert results.get('_id') == rid
         assert results.get('_shards').get('successful') == 1
         assert results.get('result') == 'deleted'
 
@@ -293,13 +278,13 @@ class TestDataStore:
         data = {'two': 2}
         rid = 'two'
 
-        ds = tcex.datastore('organization', self.data_type)
+        ds = tcex.v2.datastore('organization', self.data_type)
 
         # add entry to get
         ds.add(rid, data)
 
         results = ds.get(rid=rid)
-        assert results.get('_type') == self.data_type
+        assert results.get('_id') == rid
         assert results.get('_source').get('two') == 2
         assert results.get('found') is True
 
@@ -315,13 +300,13 @@ class TestDataStore:
         data = {'one': 1}
         rid = 'one'
 
-        ds = tcex.datastore('local', self.data_type)
+        ds = tcex.v2.datastore('local', self.data_type)
 
         # add entry to update
         ds.add(rid, {'one': 2})
 
         results = ds.put(rid=rid, data=data)
-        assert results.get('_type') == self.data_type
+        assert results.get('_id') == rid
         assert results.get('_shards').get('successful') == 1
 
     def test_data_store_local_put_fail(self, monkeypatch, tcex):
@@ -336,10 +321,10 @@ class TestDataStore:
             return MockPost({}, ok=False)
 
         # delete
-        ds = tcex.datastore('local', self.data_type)
+        ds = tcex.v2.datastore('local', self.data_type)
 
         # patch after datastore created
-        monkeypatch.setattr(tcex.session, 'post', mp_post)
+        monkeypatch.setattr(tcex.session_tc, 'post', mp_post)
         try:
             ds.update(rid=None, data=None)
             assert False

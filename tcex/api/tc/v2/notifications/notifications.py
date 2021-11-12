@@ -1,27 +1,37 @@
 """TcEx Notification Module"""
 # standard library
 import json
+import logging
+from typing import TYPE_CHECKING
 
 # first-party
 from tcex.exit.error_codes import handle_error
+
+if TYPE_CHECKING:
+    # third-party
+    from requests import Session
+
+# get tcex logger
+logger = logging.getLogger('tcex')
 
 
 class Notifications:
     """TcEx Notification Class"""
 
-    def __init__(self, tcex):
+    def __init__(self, session_tc: 'Session'):
         """Initialize the Class properties.
 
         Args:
-            tcex (obj): An instance of TcEx object.
+            session_tc: An configured instance of request.Session with TC API Auth.
         """
-        self.tcex = tcex
+        self.session_tc = session_tc
 
         # properties
         self._is_organization = False
         self._notification_type = None
         self._recipients = None
         self._priority = 'Low'
+        self.log = logger
 
     def recipients(self, notification_type, recipients, priority='Low'):
         """Set vars for the passed in data. Used for one or more recipient notification.
@@ -85,13 +95,13 @@ class Notifications:
         if self._recipients:
             body['recipients'] = self._recipients
 
-        self.tcex.log.debug(f'notification body: {json.dumps(body)}')
+        self.log.debug(f'notification body: {json.dumps(body)}')
 
         # create our tcex resource
-        r = self.tcex.session.post('/v2/notifications', json=body)
+        r = self.session_tc.post('/v2/notifications', json=body)
         if r.status_code == 400:
             # specifically handle unknown users
-            self.tcex.log.error(f'Failed to send notification ({r.text})')
+            self.log.error(f'Failed to send notification ({r.text})')
         elif not r.ok:  # pragma: no cover
             handle_error(750, [r.status_code, r.text])
 

@@ -445,7 +445,7 @@ class TestUtils:
             tcex (TcEx, fixture): The tcex fixture.
         """
         try:
-            tcex.playbook.exit(0)  # coverage
+            tcex.exit(0)  # coverage
             assert False, 'Exit command did not trigger SystemExit'
         except SystemExit:
             pass
@@ -458,7 +458,7 @@ class TestUtils:
         """
         try:
             tcex.exit_code = 3
-            tcex.playbook.exit()  # coverage
+            tcex.exit()  # coverage
             assert False, 'Exit command did not trigger SystemExit'
         except SystemExit:
             pass
@@ -470,7 +470,7 @@ class TestUtils:
             tcex (TcEx, fixture): The tcex fixture.
         """
         try:
-            tcex.playbook.exit(3)  # coverage
+            tcex.exit(3)  # coverage
             assert False, 'Exit command did not trigger SystemExit'
         except SystemExit:
             pass
@@ -482,7 +482,7 @@ class TestUtils:
             tcex (TcEx, fixture): The tcex fixture.
         """
         try:
-            tcex.playbook.exit()  # coverage
+            tcex.exit()  # coverage
             assert False, 'Exit command did not trigger SystemExit'
         except SystemExit:
             pass

@@ -39,22 +39,23 @@ class Group:
             xid (str, kwargs): The external id for this Group.
         """
         self._name = name
-        self._type = group_type
         self._group_data = {'name': name, 'type': group_type}
+        self._type = group_type
+
+        # properties
+        self._attributes = []
+        self._labels = []
+        self._file_content = None
+        self._tags = []
+        self._processed = False
+        self.utils = Utils()
+
         # process all kwargs and update metadata field names
         for arg, value in kwargs.items():
             self.add_key_value(arg, value)
         # set xid to random and unique uuid4 value if not provided
         if kwargs.get('xid') is None:
             self._group_data['xid'] = str(uuid.uuid4())
-        self._attributes = []
-        self._labels = []
-        self._file_content = None
-        self._tags = []
-        self._processed = False
-
-        # properties
-        self.utils = Utils()
 
     @property
     def _metadata_map(self) -> dict:

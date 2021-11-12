@@ -5,10 +5,11 @@ from datetime import datetime, timedelta
 from typing import Callable, Optional
 
 # third-party
+import arrow
 from requests import Session
 
 # first-party
-from tcex.datastore.datastore import DataStore
+from tcex.api.tc.v2.datastore.datastore import DataStore
 from tcex.utils import Utils
 
 # get tcex logger
@@ -213,6 +214,12 @@ class Cache:
         if self.ttl_seconds is None or self.ttl_seconds == 0:
             return True  # if ttl_is 0 or None, all cached data is always invalid.
 
+        # convert the stored time expression to a datetime
+        # object (support for different tcex version)
         cached_datetime = self.utils.any_to_datetime(cached_date).datetime
-        cache_expires = (cached_datetime + timedelta(seconds=self.ttl_seconds)).timestamp()
-        return cache_expires < datetime.utcnow().timestamp()
+
+        # calculate the cache expiration time by adding the ttl seconds to the cached time
+        cache_expires = cached_datetime + timedelta(seconds=self.ttl_seconds)
+
+        # if cache expires is less than "now" then return True/expired
+        return cache_expires < arrow.get(datetime.utcnow())

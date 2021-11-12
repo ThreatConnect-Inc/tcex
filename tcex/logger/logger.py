@@ -5,11 +5,7 @@ import os
 import pathlib
 import platform
 import sys
-from typing import Optional
-
-# third-party
-from pydantic import BaseModel
-from requests import Session
+from typing import TYPE_CHECKING, Optional
 
 # first-party
 from tcex.app_config.install_json import InstallJson
@@ -25,14 +21,18 @@ from tcex.logger.rotating_file_handler_custom import (  # pylint: disable=no-nam
 from tcex.logger.thread_file_handler import ThreadFileHandler  # pylint: disable=no-name-in-module
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 
+if TYPE_CHECKING:
+    # third-party
+    from pydantic import BaseModel
+    from requests import Session
+
 
 class Logger:
     """Framework logger module."""
 
-    def __init__(self, logger_name: str, session: Session) -> None:
+    def __init__(self, logger_name: str) -> None:
         """Initialize Class Properties."""
         self.logger_name = logger_name
-        self.session = session
 
         # properties
         self.ij = InstallJson()
@@ -144,15 +144,18 @@ class Logger:
     # handlers
     #
 
-    def add_api_handler(self, name: Optional[str] = 'api', level: Optional[str] = None) -> None:
+    def add_api_handler(
+        self, session_tc: 'Session', name: Optional[str] = 'api', level: Optional[str] = None
+    ) -> None:
         """Add API logging handler.
 
         Args:
+            session_tc: An configured instance of request.Session with TC API Auth.
             name: The name of the handler.
             level: The level value as a string.
         """
         self.remove_handler_by_name(name)
-        api = ApiHandler(self.session)
+        api = ApiHandler(session_tc)
         api.set_name(name)
         api.setLevel(self.log_level(level))
         api.setFormatter(ApiHandlerFormatter())
@@ -320,7 +323,7 @@ class Logger:
     # App info logging
     #
 
-    def log_info(self, inputs: BaseModel) -> None:
+    def log_info(self, inputs: 'BaseModel') -> None:
         """Send System and App data to logs.
 
         Args:
@@ -360,7 +363,7 @@ class Logger:
             f'{sys.version_info.micro}'
         )
 
-    def _log_tc_proxy(self, inputs: BaseModel) -> None:
+    def _log_tc_proxy(self, inputs: 'BaseModel') -> None:
         """Log the proxy settings.
 
         Args:

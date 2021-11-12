@@ -14,8 +14,7 @@ from redis import Redis
 from requests import Session
 
 # first-party
-from tcex.api.tc.v2.metrics import Metrics
-from tcex.api.tc.v2.notifications import Notifications
+from tcex.api.tc.v2.v2 import V2
 from tcex.api.tc.v3.v3 import V3
 from tcex.app_config.install_json import InstallJson
 from tcex.app_feature import AdvancedRequest
@@ -23,7 +22,6 @@ from tcex.backports import cached_property
 from tcex.batch.batch import Batch
 from tcex.batch.batch_submit import BatchSubmit
 from tcex.batch.batch_writer import BatchWriter
-from tcex.datastore import Cache, DataStore
 from tcex.exit.exit import ExitCode, ExitService
 from tcex.input.input import Input
 from tcex.key_value_store import KeyValueApi, KeyValueRedis, RedisClient
@@ -196,39 +194,6 @@ class TcEx:
         """
         return BatchWriter(self.inputs, self.session_tc, output_dir, **kwargs)
 
-    def cache(
-        self,
-        domain: str,
-        data_type: str,
-        ttl_seconds: Optional[int] = None,
-        mapping: Optional[dict] = None,
-    ) -> Cache:
-        """Get instance of the Cache module.
-
-        Args:
-            domain: The domain can be either "system", "organization", or "local". When using
-                "organization" the data store can be accessed by any Application in the entire org,
-                while "local" access is restricted to the App writing the data. The "system" option
-                should not be used in almost all cases.
-            data_type: The data type descriptor (e.g., tc:whois:cache).
-            ttl_seconds: The number of seconds the cache is valid.
-            mapping: Advanced - The datastore mapping if required.
-        """
-        return Cache(self.session_tc, domain, data_type, ttl_seconds, mapping)
-
-    def datastore(self, domain: str, data_type: str, mapping: Optional[dict] = None) -> DataStore:
-        """Get instance of the DataStore module.
-
-        Args:
-            domain: The domain can be either "system", "organization", or "local". When using
-                "organization" the data store can be accessed by any Application in the entire org,
-                while "local" access is restricted to the App writing the data. The "system" option
-                should not be used in almost all cases.
-            data_type: The data type descriptor (e.g., tc:whois:cache).
-            mapping: ElasticSearch mappings data.
-        """
-        return DataStore(self.session_tc, domain, data_type, mapping)
-
     def exit(self, code: Optional[ExitCode] = None, msg: Optional[str] = None) -> None:
         """Application exit method with proper exit code
 
@@ -266,6 +231,8 @@ class TcEx:
     @scoped_property
     def exit_service(self) -> ExitService:
         """Return an ExitService object."""
+        # TODO: [low] @cblades - why pass ij instead of getting singleton in exit service
+        # TODO: [high] @cblades - inputs being required for exit prevents AOT from exiting
         return self.get_exit_service(
             self.ij, self.inputs, self.playbook, self.redis_client, self.token
         )
@@ -405,14 +372,19 @@ class TcEx:
     @cached_property
     def logger(self) -> Logger:
         """Return logger."""
-        _logger = Logger(logger_name='tcex', session=self.get_session_tc())
+        _logger = Logger(logger_name='tcex')
+
+        # set logger to prevent recursion issue on get_session_tc
+        self._log = _logger.log
 
         # add api handler
         if (
             self.inputs.model_unresolved.tc_token is not None
             and self.inputs.model_unresolved.tc_log_to_api
         ):
-            _logger.add_api_handler(level=self.inputs.model_unresolved.tc_log_level)
+            _logger.add_api_handler(
+                session_tc=self.get_session_tc(), level=self.inputs.model_unresolved.tc_log_level
+            )
 
         # add rotating log handler
         _logger.add_rotating_file_handler(
@@ -432,29 +404,6 @@ class TcEx:
         _logger.replay_cached_events(handler_name='cache')
 
         return _logger
-
-    def metric(
-        self,
-        name: str,
-        description: str,
-        data_type: str,
-        interval: str,
-        keyed: Optional[bool] = False,
-    ) -> Metrics:
-        """Get instance of the Metrics module.
-
-        Args:
-            name: The name for the metric.
-            description: The description of the metric.
-            data_type: The type of metric: Sum, Count, Min, Max, First, Last, and Average.
-            interval: The metric interval: Hourly, Daily, Weekly, Monthly, and Yearly.
-            keyed: Indicates whether the data will have a keyed value.
-        """
-        return Metrics(self, name, description, data_type, interval, keyed)
-
-    def notification(self) -> Notifications:
-        """Get instance of the Notification module."""
-        return Notifications(self)
 
     @registry.factory(Playbook)
     @scoped_property
@@ -595,6 +544,11 @@ class TcEx:
     def utils(self) -> 'Utils':
         """Include the Utils module."""
         return Utils(temp_path=self.inputs.model_unresolved.tc_temp_path)
+
+    @property
+    def v2(self) -> 'V2':
+        """Return a case management instance."""
+        return V2(self.session_tc)
 
     @property
     def v3(self) -> 'V3':

@@ -83,20 +83,21 @@ class Indicator:
         self._summary = summary
         self._type = indicator_type
         self._indicator_data = {'summary': summary, 'type': indicator_type}
+
+        # properties
+        self._attributes = []
+        self._file_actions = []
+        self._labels = []
+        self._occurrences = []
+        self._tags = []
+        self.utils = Utils()
+
         # process all kwargs and update metadata field names
         for arg, value in kwargs.items():
             self.add_key_value(arg, value)
         # set xid to random and unique uuid4 value if not provided
         if kwargs.get('xid') is None:
             self._indicator_data['xid'] = str(uuid.uuid4())
-        self._attributes = []
-        self._file_actions = []
-        self._labels = []
-        self._occurrences = []
-        self._tags = []
-
-        # properties
-        self.utils = Utils()
 
     @property
     def _metadata_map(self) -> dict:
@@ -773,7 +774,9 @@ class FileOccurrence:
     @date.setter
     def date(self, date: str) -> None:
         """Set File Occurrence date."""
-        self._occurrence_data['date'] = self.utils.any_to_datetime(date).strftime('%Y-%m-%dT%H:%M:%SZ')
+        self._occurrence_data['date'] = self.utils.any_to_datetime(date).strftime(
+            '%Y-%m-%dT%H:%M:%SZ'
+        )
 
     @property
     def file_name(self) -> str:
