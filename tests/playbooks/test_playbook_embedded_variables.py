@@ -10,7 +10,7 @@ class TestEmbedded:
     def stage_data(tcex):
         """Configure setup before all tests."""
         out_variables = []
-        setattr(tcex.args, 'tc_playbook_out_variables', ','.join(out_variables))
+        tcex.inputs.model.tc_playbook_out_variables = ','.join(out_variables)
 
         # add String inputs
         string_inputs = [

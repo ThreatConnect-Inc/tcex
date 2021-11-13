@@ -2,6 +2,9 @@
 # standard library
 import os
 
+# first-party
+from tcex.utils.file_operations import FileOperations
+
 
 # pylint: disable=no-self-use
 class TestBool:
@@ -13,8 +16,9 @@ class TestBool:
         Args:
             tcex (TcEx, fixture): An instantiated instance of TcEx object.
         """
+        file_operations = FileOperations(tcex.inputs.model.tc_temp_path)
         filename = 'test.txt'
-        fqpn = tcex.utils.write_temp_file('test', filename)
+        fqpn = file_operations.write_temp_file('test', filename)
         assert os.path.isfile(fqpn)
 
     def test_utils_write_temp_file_no_filename(self, tcex):
@@ -23,7 +27,8 @@ class TestBool:
         Args:
             tcex (TcEx, fixture): An instantiated instance of TcEx object.
         """
-        fqpn = tcex.utils.write_temp_file('test')
+        file_operations = FileOperations(tcex.inputs.model.tc_temp_path)
+        fqpn = file_operations.write_temp_file('test')
         assert os.path.isfile(fqpn)
 
     def test_utils_write_temp_binary_file(self, tcex):
@@ -32,8 +37,9 @@ class TestBool:
         Args:
             tcex (TcEx, fixture): An instantiated instance of TcEx object.
         """
+        file_operations = FileOperations(tcex.inputs.model.tc_temp_path)
         filename = 'test.bin'
-        fqpn = tcex.utils.write_temp_binary_file(b'test', filename)
+        fqpn = file_operations.write_temp_binary_file(b'test', filename)
         assert os.path.isfile(fqpn)
 
     def test_utils_write_temp_binary_file_no_filename(self, tcex):
@@ -42,5 +48,6 @@ class TestBool:
         Args:
             tcex (TcEx, fixture): An instantiated instance of TcEx object.
         """
-        fqpn = tcex.utils.write_temp_binary_file(b'test')
+        file_operations = FileOperations(tcex.inputs.model.tc_temp_path)
+        fqpn = file_operations.write_temp_binary_file(b'test')
         assert os.path.isfile(fqpn)

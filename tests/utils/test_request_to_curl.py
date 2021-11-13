@@ -6,19 +6,25 @@ from base64 import b64decode
 # third-party
 import requests
 
+# first-party
+from tcex.utils.requests_to_curl import RequestsToCurl
+
+# init RequestToCurl
+requests_to_curl = RequestsToCurl()
+
 
 # pylint: disable=no-self-use
 class TestRequestToCurl:
     """Test the TcEx Utils Module."""
 
-    def test_curl_get(self, tcex):
+    def test_curl_get(self):
         """Test an IPv4 address
 
         Args:
             tcex (TcEx, fixture): An instantiated instance of TcEx object.
         """
         r = requests.get('https://www.google.com')
-        r_curl = tcex.utils.requests_to_curl(r.request)
+        r_curl = requests_to_curl.convert(r.request)
         r_curl_expected = re.compile(
             r'''curl -X GET -H 'Accept: \*/\*' -H 'Accept-Encoding: deflate' '''
             '''-H 'Connection: keep-alive' -H 'User-Agent: '''
@@ -26,14 +32,14 @@ class TestRequestToCurl:
         )
         assert r_curl_expected.match(r_curl)
 
-    def test_curl_get_insecure(self, tcex):
+    def test_curl_get_insecure(self):
         """Test an IPv4 address
 
         Args:
             tcex (TcEx, fixture): An instantiated instance of TcEx object.
         """
         r = requests.get('https://www.google.com')
-        r_curl = tcex.utils.requests_to_curl(r.request, verify=False)
+        r_curl = requests_to_curl.convert(r.request, verify=False)
         r_curl_expected = re.compile(
             r'''curl -X GET -H 'Accept: \*/\*' -H 'Accept-Encoding: deflate' '''
             '''-H 'Connection: keep-alive' -H 'User-Agent: '''
@@ -42,7 +48,7 @@ class TestRequestToCurl:
         )
         assert r_curl_expected.match(r_curl)
 
-    def test_curl_get_mask(self, tcex):
+    def test_curl_get_mask(self):
         """Test an IPv4 address
 
         Args:
@@ -53,7 +59,7 @@ class TestRequestToCurl:
             'pytest': 'mask',
         }
         r = requests.get('https://www.google.com', headers=headers)
-        r_curl = tcex.utils.requests_to_curl(
+        r_curl = requests_to_curl.convert(
             r.request, mask_headers=True, mask_patterns=['pytest'], verify=False
         )
         r_curl_expected = re.compile(
@@ -64,7 +70,7 @@ class TestRequestToCurl:
         )
         assert r_curl_expected.match(r_curl)
 
-    def test_curl_get_proxies(self, tcex):
+    def test_curl_get_proxies(self):
         """Test an IPv4 address
 
         Args:
@@ -72,7 +78,7 @@ class TestRequestToCurl:
         """
         headers = {'authorization': 'sensitive information that should not be readable'}
         r = requests.get('https://www.google.com', headers=headers)
-        r_curl = tcex.utils.requests_to_curl(
+        r_curl = requests_to_curl.convert(
             r.request, proxies={'https': 'https://www.google.com'}, verify=False
         )
         r_curl_expected = re.compile(
@@ -83,7 +89,7 @@ class TestRequestToCurl:
         )
         assert r_curl_expected.match(r_curl)
 
-    def test_curl_get_proxies_with_auth(self, tcex):
+    def test_curl_get_proxies_with_auth(self):
         """Test an IPv4 address
 
         Args:
@@ -91,7 +97,7 @@ class TestRequestToCurl:
         """
         headers = {'authorization': 'sensitive information that should not be readable'}
         r = requests.get('https://www.google.com', headers=headers)
-        r_curl = tcex.utils.requests_to_curl(
+        r_curl = requests_to_curl.convert(
             r.request, proxies={'https': 'https://user:pass@www.google.com'}, verify=False
         )
         r_curl_expected = re.compile(
@@ -103,14 +109,14 @@ class TestRequestToCurl:
         )
         assert r_curl_expected.match(r_curl)
 
-    def test_curl_post(self, tcex):
+    def test_curl_post(self):
         """Test an IPv4 address
 
         Args:
             tcex (TcEx, fixture): An instantiated instance of TcEx object.
         """
         r = requests.post('https://www.google.com', data='test')
-        r_curl = tcex.utils.requests_to_curl(r.request)
+        r_curl = requests_to_curl.convert(r.request)
         r_curl_expected = re.compile(
             r'''curl -X POST -H 'Accept: \*/\*' -H 'Accept-Encoding: deflate' '''
             '''-H 'Connection: keep-alive' -H 'Content-Length: 4' -H 'User-Agent: '''
@@ -119,14 +125,14 @@ class TestRequestToCurl:
         )
         assert r_curl_expected.match(r_curl)
 
-    def test_curl_mask_body(self, tcex):
+    def test_curl_mask_body(self):
         """Test an IPv4 address
 
         Args:
             tcex (TcEx, fixture): An instantiated instance of TcEx object.
         """
         r = requests.post('https://www.google.com', data='test')
-        r_curl = tcex.utils.requests_to_curl(r.request, mask_body=True)
+        r_curl = requests_to_curl.convert(r.request, mask_body=True)
         r_curl_expected = re.compile(
             r'''curl -X POST -H 'Accept: \*/\*' -H 'Accept-Encoding: deflate' '''
             '''-H 'Connection: keep-alive' -H 'Content-Length: 4' -H 'User-Agent: '''
@@ -135,14 +141,14 @@ class TestRequestToCurl:
         )
         assert r_curl_expected.match(r_curl)
 
-    def test_curl_post_bytes(self, tcex):
+    def test_curl_post_bytes(self):
         """Test an IPv4 address
 
         Args:
             tcex (TcEx, fixture): An instantiated instance of TcEx object.
         """
         r = requests.post('https://www.google.com', data=b'test')
-        r_curl = tcex.utils.requests_to_curl(r.request)
+        r_curl = requests_to_curl.convert(r.request)
         r_curl_expected = re.compile(
             r'''curl -X POST -H 'Accept: \*/\*' -H 'Accept-Encoding: deflate' '''
             '''-H 'Connection: keep-alive' -H 'Content-Length: 4' -H 'User-Agent: '''
@@ -151,7 +157,7 @@ class TestRequestToCurl:
         )
         assert r_curl_expected.match(r_curl)
 
-    def test_curl_post_bytes_binary(self, tcex):
+    def test_curl_post_bytes_binary(self):
         """Test an IPv4 address
 
         Args:
@@ -163,7 +169,7 @@ class TestRequestToCurl:
             'EE9gEAAAQUAAAAUEsFBgAAAAABAAEASgAAAEAAAAAAAA=='
         )
         r = requests.post('https://www.google.com', data=data)
-        r_curl = tcex.utils.requests_to_curl(r.request)
+        r_curl = requests_to_curl.convert(r.request)
         filename = re.search(r'(@\/tmp\/[a-z0-9].+)\s(?:http)', r_curl)[1]
         r_curl_expected = re.compile(
             r'''curl -X POST -H 'Accept: \*/\*' -H 'Accept-Encoding: deflate' '''

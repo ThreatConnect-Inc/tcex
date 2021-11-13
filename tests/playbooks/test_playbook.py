@@ -84,7 +84,7 @@ class TestUtils:
                             {'id': '002', 'type': 'Address', 'value': '2.2.2.2'},
                         ],
                     },
-                    {'variable': '#App:0001:r1!Raw', 'value': 'raw data'},
+                    {'variable': '#App:0001:r1!Raw', 'value': b'raw data'},
                     {'variable': '#App:0001:n1!None', 'value': None},
                 ]
             )
@@ -162,7 +162,7 @@ class TestUtils:
                             {'id': '002', 'type': 'Address', 'value': '2.2.2.2'},
                         ],
                     },
-                    {'variable': '#App:0001:r1!Raw', 'value': 'raw data'},
+                    {'variable': '#App:0001:r1!Raw', 'value': b'raw data'},
                     {'variable': '#App:0001:n1!None', 'value': None},
                 ]
             )
@@ -302,7 +302,7 @@ class TestUtils:
                     {'id': '002', 'type': 'Address', 'value': '2.2.2.2'},
                 ],
             ),
-            ('#App:0001:r1!Raw', 'raw data'),
+            ('#App:0001:r1!Raw', b'raw data'),
             ('#App:0001:dup.name!String', 'dup name'),
             ('#App:0001:dup.name!StringArray', ['dup name']),
         ],
@@ -353,7 +353,7 @@ class TestUtils:
                     {'id': '002', 'type': 'Address', 'value': '2.2.2.2'},
                 ],
             ),
-            ('#App:0001:r1!Raw', 'raw data'),
+            ('#App:0001:r1!Raw', b'raw data'),
         ],
     )
     def test_playbook_create_output_without_type(self, variable, value, playbook_app):

@@ -112,7 +112,7 @@ class TestPlaybookKeyValueApi:
                     {'id': '002', 'type': 'Address', 'value': '2.2.2.2'},
                 ],
             ),
-            ('#App:0001:r1!Raw', 'raw data'),
+            ('#App:0001:r1!Raw', b'raw data'),
             ('#App:0001:dup.name!String', 'dup name'),
             ('#App:0001:dup.name!StringArray', ['dup name']),
         ],
@@ -149,8 +149,8 @@ class TestPlaybookKeyValueApi:
         def mp_get(*args, **kwargs):  # pylint: disable=unused-argument
             return mock_api
 
-        monkeypatch.setattr(tcex.session, 'get', mp_get)
-        monkeypatch.setattr(tcex.session, 'put', mp_put)
+        monkeypatch.setattr(tcex.session_tc, 'get', mp_get)
+        monkeypatch.setattr(tcex.session_tc, 'put', mp_put)
 
         tcex.playbook.create_output(variable_name, value, variable_type)
         result = tcex.playbook.read(variable)

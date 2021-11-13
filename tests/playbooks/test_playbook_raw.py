@@ -11,8 +11,8 @@ class TestPlaybookRaw:
         'variable,value',
         [
             ('#App:0002:r1!Raw', b'bytes 1'),
-            ('#App:0002:r2!Raw', 'string'),
-            ('#App:0002:r3!Raw', 1),
+            ('#App:0002:r2!Raw', b'string'),
+            ('#App:0002:r3!Raw', b'1'),
         ],
     )
     def test_playbook_raw(self, variable, value, tcex):
@@ -25,9 +25,7 @@ class TestPlaybookRaw:
         """
         tcex.playbook.create_raw(variable, value)
         result = tcex.playbook.read_raw(variable)
-        if isinstance(value, bytes):
-            value = value.decode('utf-8')
-        assert result == str(value), f'result of ({result}) does not match ({value})'
+        assert result == value, f'result of ({result}) does not match ({value})'
 
         tcex.playbook.delete(variable)
         assert tcex.playbook.read(variable) is None

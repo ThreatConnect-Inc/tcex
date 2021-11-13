@@ -123,9 +123,7 @@ class RateLimitHandler:
         utils = Utils()
         wait_until = self.last_limit_reset_value
         try:
-            seconds = (
-                float(utils.datetime.format_datetime(wait_until, date_format='%s')) - time.time()
-            )
+            seconds = utils.any_to_datetime(wait_until).timestamp() - time.time()
         except RuntimeError:
             seconds = wait_until
 

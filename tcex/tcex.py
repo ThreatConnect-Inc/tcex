@@ -541,9 +541,9 @@ class TcEx:
         self.exit_code = exit_code
 
     @cached_property
-    def utils(self) -> 'Utils':
+    def utils(self) -> 'Utils':  # pylint: disable=no-self-use
         """Include the Utils module."""
-        return Utils(temp_path=self.inputs.model_unresolved.tc_temp_path)
+        return Utils()
 
     @property
     def v2(self) -> 'V2':
