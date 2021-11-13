@@ -54,32 +54,32 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('addressCity', operator, address_city, TqlType.STRING)
 
-    def address_countrycode(self, operator: Enum, address_countrycode: str) -> None:
-        """Filter Country Code (Address) based on **addressCountrycode** keyword.
+    def address_country_code(self, operator: Enum, address_country_code: str) -> None:
+        """Filter Country Code (Address) based on **addressCountryCode** keyword.
 
         Args:
             operator: The operator enum for the filter.
-            address_countrycode: The registered country code for an address.
+            address_country_code: The registered country code for an address.
         """
-        self._tql.add_filter('addressCountrycode', operator, address_countrycode, TqlType.STRING)
+        self._tql.add_filter('addressCountryCode', operator, address_country_code, TqlType.STRING)
 
-    def address_countryname(self, operator: Enum, address_countryname: str) -> None:
-        """Filter Country Name (Address) based on **addressCountryname** keyword.
+    def address_country_name(self, operator: Enum, address_country_name: str) -> None:
+        """Filter Country Name (Address) based on **addressCountryName** keyword.
 
         Args:
             operator: The operator enum for the filter.
-            address_countryname: The name of the country an address is registered to.
+            address_country_name: The name of the country an address is registered to.
         """
-        self._tql.add_filter('addressCountryname', operator, address_countryname, TqlType.STRING)
+        self._tql.add_filter('addressCountryName', operator, address_country_name, TqlType.STRING)
 
-    def address_ipval(self, operator: Enum, address_ipval: str) -> None:
-        """Filter Value (Address) based on **addressIpval** keyword.
+    def address_ip_val(self, operator: Enum, address_ip_val: int) -> None:
+        """Filter Value (Address) based on **addressIpVal** keyword.
 
         Args:
             operator: The operator enum for the filter.
-            address_ipval: The numeric value of an address.
+            address_ip_val: The numeric value of an address.
         """
-        self._tql.add_filter('addressIpval', operator, address_ipval, TqlType.STRING)
+        self._tql.add_filter('addressIpVal', operator, address_ip_val, TqlType.INTEGER)
 
     def address_is_ipv6(self, operator: Enum, address_is_ipv6: bool) -> None:
         """Filter Type (Address) based on **addressIsIpv6** keyword.
@@ -90,15 +90,15 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('addressIsIpv6', operator, address_is_ipv6, TqlType.BOOLEAN)
 
-    def address_registeringorg(self, operator: Enum, address_registeringorg: str) -> None:
-        """Filter Registering Org (Address) based on **addressRegisteringorg** keyword.
+    def address_registering_org(self, operator: Enum, address_registering_org: str) -> None:
+        """Filter Registering Org (Address) based on **addressRegisteringOrg** keyword.
 
         Args:
             operator: The operator enum for the filter.
-            address_registeringorg: The registering organization for an address.
+            address_registering_org: The registering organization for an address.
         """
         self._tql.add_filter(
-            'addressRegisteringorg', operator, address_registeringorg, TqlType.STRING
+            'addressRegisteringOrg', operator, address_registering_org, TqlType.STRING
         )
 
     def address_state(self, operator: Enum, address_state: str) -> None:

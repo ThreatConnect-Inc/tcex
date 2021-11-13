@@ -18,23 +18,23 @@ class GroupAttributeFilter(FilterABC):
         """Return the API endpoint."""
         return ApiEndpoints.GROUP_ATTRIBUTES.value
 
-    def dateadded(self, operator: Enum, dateadded: str) -> None:
-        """Filter Date Added based on **dateadded** keyword.
+    def date_added(self, operator: Enum, date_added: str) -> None:
+        """Filter Date Added based on **dateAdded** keyword.
 
         Args:
             operator: The operator enum for the filter.
-            dateadded: The date the attribute was added to the system.
+            date_added: The date the attribute was added to the system.
         """
-        self._tql.add_filter('dateadded', operator, dateadded, TqlType.STRING)
+        self._tql.add_filter('dateAdded', operator, date_added, TqlType.STRING)
 
-    def dateval(self, operator: Enum, dateval: str) -> None:
-        """Filter Date based on **dateval** keyword.
+    def date_val(self, operator: Enum, date_val: str) -> None:
+        """Filter Date based on **dateVal** keyword.
 
         Args:
             operator: The operator enum for the filter.
-            dateval: The date value of the attribute (only applies to certain types).
+            date_val: The date value of the attribute (only applies to certain types).
         """
-        self._tql.add_filter('dateval', operator, dateval, TqlType.STRING)
+        self._tql.add_filter('dateVal', operator, date_val, TqlType.STRING)
 
     def displayed(self, operator: Enum, displayed: bool) -> None:
         """Filter Displayed based on **displayed** keyword.
@@ -82,32 +82,32 @@ class GroupAttributeFilter(FilterABC):
         """
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
-    def intval(self, operator: Enum, intval: int) -> None:
-        """Filter Integer Value based on **intval** keyword.
+    def int_val(self, operator: Enum, int_val: int) -> None:
+        """Filter Integer Value based on **intVal** keyword.
 
         Args:
             operator: The operator enum for the filter.
-            intval: The integer value of the attribute (only applies to certain types).
+            int_val: The integer value of the attribute (only applies to certain types).
         """
-        self._tql.add_filter('intval', operator, intval, TqlType.INTEGER)
+        self._tql.add_filter('intVal', operator, int_val, TqlType.INTEGER)
 
-    def lastmodified(self, operator: Enum, lastmodified: str) -> None:
-        """Filter Last Modified based on **lastmodified** keyword.
+    def last_modified(self, operator: Enum, last_modified: str) -> None:
+        """Filter Last Modified based on **lastModified** keyword.
 
         Args:
             operator: The operator enum for the filter.
-            lastmodified: The date the attribute was last modified in the system.
+            last_modified: The date the attribute was last modified in the system.
         """
-        self._tql.add_filter('lastmodified', operator, lastmodified, TqlType.STRING)
+        self._tql.add_filter('lastModified', operator, last_modified, TqlType.STRING)
 
-    def maxsize(self, operator: Enum, maxsize: int) -> None:
-        """Filter Max Size based on **maxsize** keyword.
+    def max_size(self, operator: Enum, max_size: int) -> None:
+        """Filter Max Size based on **maxSize** keyword.
 
         Args:
             operator: The operator enum for the filter.
-            maxsize: The max length of the attribute text.
+            max_size: The max length of the attribute text.
         """
-        self._tql.add_filter('maxsize', operator, maxsize, TqlType.INTEGER)
+        self._tql.add_filter('maxSize', operator, max_size, TqlType.INTEGER)
 
     def owner(self, operator: Enum, owner: int) -> None:
         """Filter Owner ID based on **owner** keyword.
@@ -118,14 +118,14 @@ class GroupAttributeFilter(FilterABC):
         """
         self._tql.add_filter('owner', operator, owner, TqlType.INTEGER)
 
-    def ownername(self, operator: Enum, ownername: str) -> None:
-        """Filter Owner Name based on **ownername** keyword.
+    def owner_name(self, operator: Enum, owner_name: str) -> None:
+        """Filter Owner Name based on **ownerName** keyword.
 
         Args:
             operator: The operator enum for the filter.
-            ownername: The owner name of the attribute.
+            owner_name: The owner name of the attribute.
         """
-        self._tql.add_filter('ownername', operator, ownername, TqlType.STRING)
+        self._tql.add_filter('ownerName', operator, owner_name, TqlType.STRING)
 
     def source(self, operator: Enum, source: str) -> None:
         """Filter Source based on **source** keyword.
@@ -154,14 +154,14 @@ class GroupAttributeFilter(FilterABC):
         """
         self._tql.add_filter('type', operator, type, TqlType.INTEGER)
 
-    def typename(self, operator: Enum, typename: str) -> None:
-        """Filter Type Name based on **typename** keyword.
+    def type_name(self, operator: Enum, type_name: str) -> None:
+        """Filter Type Name based on **typeName** keyword.
 
         Args:
             operator: The operator enum for the filter.
-            typename: The name of the attribute type.
+            type_name: The name of the attribute type.
         """
-        self._tql.add_filter('typename', operator, typename, TqlType.STRING)
+        self._tql.add_filter('typeName', operator, type_name, TqlType.STRING)
 
     def user(self, operator: Enum, user: str) -> None:
         """Filter User based on **user** keyword.

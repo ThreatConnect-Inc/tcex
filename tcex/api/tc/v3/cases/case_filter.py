@@ -325,14 +325,14 @@ class CaseFilter(FilterABC):
         """
         self._tql.add_filter('targetType', operator, target_type, TqlType.STRING)
 
-    def typename(self, operator: Enum, typename: str) -> None:
-        """Filter Name based on **typename** keyword.
+    def type_name(self, operator: Enum, type_name: str) -> None:
+        """Filter Name based on **typeName** keyword.
 
         Args:
             operator: The operator enum for the filter.
-            typename: The name of the case.
+            type_name: The name of the case.
         """
-        self._tql.add_filter('typename', operator, typename, TqlType.STRING)
+        self._tql.add_filter('typeName', operator, type_name, TqlType.STRING)
 
     def xid(self, operator: Enum, xid: str) -> None:
         """Filter XID based on **xid** keyword.
