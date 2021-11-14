@@ -123,7 +123,6 @@ class TagModel(
         methods=['POST'],
         read_only=False,
         title='owner',
-        updatable=False,
     )
     victims: Optional['VictimsModel'] = Field(
         None,

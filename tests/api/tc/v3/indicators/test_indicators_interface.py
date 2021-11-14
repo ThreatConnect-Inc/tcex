@@ -29,6 +29,12 @@ class TestIndicators(TestCaseManagement):
         for indicator in indicators:
             indicator.delete()
 
+        # cleanup between tests
+        groups = self.v3.groups()
+        groups.filter.tag(TqlOperator.EQ, 'pytest')
+        for group in groups:
+            group.delete()
+
     def teardown_method(self):
         """Configure teardown before all tests."""
         # TODO: [med] @bpurdy - do you recall what the condition is for?
@@ -167,5 +173,107 @@ class TestIndicators(TestCaseManagement):
             assert indicator.model.id in indicator_ids
             indicator_ids.remove(indicator.model.id)
 
+            for tag in indicator.tags:
+                tag.remove()
+
+            indicator.submit()
+
         assert indicators_counts == indicator_count
         assert not indicator_ids, 'Not all indicators were returned.'
+
+    def test_indicator_address(self, request: FixtureRequest):
+        """Test Artifact get single attached to task by id"""
+        associated_indicator = self.v3_helper.create_indicator()
+        associated_group = self.v3_helper.create_group(
+            **{'associated_indicators': associated_indicator.model.gen_body(method='POST')}
+        )
+
+        # [Create testing] define object data
+        indicator_data = {
+            'active': True,
+            'associated_groups': associated_group.model.gen_body(method='POST'),
+            'attribute': {'type': 'Description', 'value': request.node.name},
+            'confidence': randint(0, 100),
+            'description': 'TcEx Testing',
+            # for create indicator send value1 instead of ip
+            'value1': f'123.{randint(1,255)}.{randint(1,255)}.{randint(1,255)}',
+            'ownerName': 'TCI',
+            'rating': randint(0, 5),
+            'security_labels': {'name': 'TLP:WHITE'},
+            'source': None,
+            'tags': {'name': request.node.name},
+            'type': 'Address',
+        }
+
+        # [Create testing] create a temporary indicator
+        indicator = self.v3_helper.create_indicator(**indicator_data)
+
+        # [Retrieve Testing] create the object with id filter,
+        # using object id from the object created above
+        indicator = self.v3.indicator(id=indicator.model.id)
+
+        # [Retrieve Testing] get the object from the API
+        indicator.get(params={'fields': ['_all_']})
+
+        # [Create Testing] testing setters on model
+        indicator.model.active == indicator_data.get('active')
+        # indicator.model.associated_groups == indicator_data.get('associated_groups')
+        # indicator.model.associated_indicators == indicator_data.get('associated_indicators')
+        # indicator.model.attributes == indicator_data.get('attributes')
+        indicator.model.confidence == indicator_data.get('confidence')
+        indicator.model.date_added is not None
+        indicator.model.description == indicator_data.get('description')
+        indicator.model.id == indicator_data.get('id')
+        indicator.model.ip == indicator_data.get('value1')
+        indicator.model.last_modified is not None
+        indicator.model.owner_name == indicator_data.get('owner_name')
+        indicator.model.rating == indicator_data.get('rating')
+        # indicator.model.security_labels == indicator_data.get('security_labels')
+        indicator.model.summary == indicator_data.get('summary')
+        # indicator.model.tags == indicator_data.get('tags')
+        indicator.model.type == indicator_data.get('type')
+        indicator.model.web_link is not None
+
+        # [Retrieve Testing] test as_entity
+        assert indicator.as_entity.get('value') == indicator_data.get(
+            'value1'
+        ), 'as_entity test failed'
+
+        # [Retrieve Testing] test associated_groups
+        for ag in indicator.associated_groups:
+            assert ag.model.name == associated_group.model.name
+
+        # [Retrieve Testing] test associated_indicators
+        for ai in indicator.associated_indicators:
+            if ai.model.summary == indicator.model.summary:
+                # found the associated indicator
+                break
+        else:
+            assert False, f'Associated indicator {ai.model.summary} not found.'
+
+        # for key, value in indicator.model:
+        #     if value:
+        #         print(f'''indicator.model.{key} = indicator_data.get('{key}')''')
+
+    # def test_bcs(self):
+    #     """Test Indicators Get Many"""
+    #     # [Create Testing] define object data
+    #     indicator_tag = 'BCS-Testing'
+    #     indicator = self.v3_helper.create_indicator(
+    #         **{
+    #             'active': True,
+    #             'associated_groups': {'id': 8755},
+    #             'attribute': {'type': 'Description', 'value': indicator_tag},
+    #             'confidence': randint(0, 100),
+    #             'description': 'TcEx Testing',
+    #             'rating': randint(0, 5),
+    #             'security_labels': {'name': 'TLP:WHITE'},
+    #             'source': None,
+    #             'tags': {'name': indicator_tag},
+    #             'type': 'Address',
+    #         }
+    #     )
+
+    #     print(f'indicator.web_link {indicator.model.web_link}')
+    #     print(indicator.model.gen_body(method='POST', mode='delete', indent=4, sort_keys=True))
+    #     indicator.submit(mode='delete')

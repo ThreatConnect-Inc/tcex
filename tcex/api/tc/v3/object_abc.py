@@ -87,7 +87,7 @@ class ObjectABC(ABC):
                 f'action=submit, method={_request.request.method}, '
                 f'url={_request.request.url}, '
                 f'status_code={_request.status_code}, '
-                f'body={_request.request.body}'
+                f'''body={_request.request.body}'''
             )
         except (ConnectionError, ProxyError):  # pragma: no cover
             handle_error(
@@ -137,7 +137,7 @@ class ObjectABC(ABC):
     def delete(self) -> None:
         """Delete the object."""
         method = 'DELETE'
-        body = self.model.gen_body(method)
+        body = self.model.gen_body_json(method)
 
         # validate an id is available
         self._validate_id(self.model.id, self.url(method))
@@ -200,7 +200,7 @@ class ObjectABC(ABC):
         # validate an id is available
         self._validate_id(self.model.id, self.url(method))
 
-        body = self.model.gen_body(method)
+        body = self.model.gen_body_json(method)
         params = self.gen_params(params)
         self.request = self._request(method, self.url(method), body, params)
 
@@ -306,7 +306,7 @@ class ObjectABC(ABC):
         This is determined based on if the id is already present in the object.
         """
         method = 'PUT' if self.model.id else 'POST'
-        body = self.model.gen_body(method=method, mode=mode)
+        body = self.model.gen_body_json(method=method, mode=mode)
         self.request: Response = self._request(
             method, self.url(method), body, headers={'content-type': 'application/json'}
         )

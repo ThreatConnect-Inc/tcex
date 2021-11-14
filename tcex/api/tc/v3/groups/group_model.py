@@ -407,6 +407,13 @@ class GroupModel(
         read_only=False,
         title='type',
     )
+    web_link: Optional[str] = Field(
+        None,
+        allow_mutation=False,
+        description='The object link.',
+        read_only=True,
+        title='webLink',
+    )
     xid: Optional[str] = Field(
         None,
         description='The xid of the item.',

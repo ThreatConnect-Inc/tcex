@@ -633,7 +633,7 @@ class GenerateModelABC(GenerateABC, ABC):
             field_methods = []
             field_read_only = field_data.get('readOnly', False)
             field_required_alt_field = field_data.get('requiredAltField')
-            field_updatable = field_data.get('updatable')
+            field_updatable = field_data.get('updatable', True)
 
             # method rules
             if field_read_only is False:
@@ -705,10 +705,6 @@ class GenerateModelABC(GenerateABC, ABC):
 
             # title
             _model.append(f'''{self.i2}title='{field_name}',''')
-
-            # updatable
-            if field_updatable is not None:
-                _model.append(f'''{self.i2}updatable={field_updatable},''')
 
             _model.append(f'''{self.i1})''')
         _model.append('')

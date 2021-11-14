@@ -111,7 +111,6 @@ class SecurityLabelModel(
         methods=['POST'],
         read_only=False,
         title='owner',
-        updatable=False,
     )
 
 

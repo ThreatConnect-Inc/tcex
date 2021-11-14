@@ -350,6 +350,13 @@ class IndicatorModel(
         read_only=False,
         title='value3',
     )
+    web_link: Optional[str] = Field(
+        None,
+        allow_mutation=False,
+        description='The object link.',
+        read_only=True,
+        title='webLink',
+    )
     whois_active: bool = Field(
         None,
         applies_to=['Host'],

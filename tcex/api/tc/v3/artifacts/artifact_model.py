@@ -112,7 +112,6 @@ class ArtifactModel(
         read_only=False,
         required_alt_field='caseXid',
         title='caseId',
-        updatable=False,
     )
     case_xid: Optional[str] = Field(
         None,
@@ -121,7 +120,6 @@ class ArtifactModel(
         read_only=False,
         required_alt_field='caseId',
         title='caseXid',
-        updatable=False,
     )
     date_added: Optional[datetime] = Field(
         None,
@@ -162,7 +160,6 @@ class ArtifactModel(
         methods=['POST'],
         read_only=False,
         title='hashCode',
-        updatable=False,
     )
     id: Optional[int] = Field(
         None,
@@ -229,7 +226,6 @@ class ArtifactModel(
         methods=['POST'],
         read_only=False,
         title='taskId',
-        updatable=False,
     )
     task_xid: Optional[str] = Field(
         None,
@@ -237,7 +233,6 @@ class ArtifactModel(
         methods=['POST'],
         read_only=False,
         title='taskXid',
-        updatable=False,
     )
     type: Optional[str] = Field(
         None,
@@ -245,7 +240,6 @@ class ArtifactModel(
         methods=['POST'],
         read_only=False,
         title='type',
-        updatable=False,
     )
 
     @validator('artifact_type', always=True)

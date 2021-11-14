@@ -162,12 +162,12 @@ class V3Helper:
             assignee (str, kwargs): Optional assignee.
             date_added (str, kwargs): Optional date_added.
             description (str, kwargs): Optional description.
-            name (str, kwargs): Optional case name.
-            resolution (str, kwargs): Optional case resolution.
-            severity (str, kwargs): Optional case severity.
-            status (str, kwargs): Optional case status.
-            tags (dict|list, kwargs): Optional case tags.
-            xid (str, kwargs): Optional case XID.
+            name (str, kwargs): Optional name.
+            resolution (str, kwargs): Optional resolution.
+            severity (str, kwargs): Optional severity.
+            status (str, kwargs): Optional status.
+            tags (dict|list, kwargs): Optional tags.
+            xid (str, kwargs): Optional XID.
 
         Returns:
             CaseManagement.Case: A CM case object.
@@ -230,6 +230,72 @@ class V3Helper:
 
         return case
 
+    def create_group(self, type_: Optional[str] = 'Adversary', **kwargs):
+        """Create a group.
+
+        Args:
+            active (bool, kwargs): Optional active bool.
+            associated_groups (dict|list, kwargs): Optional group associations.
+            associated_indicator (dict|list, kwargs): Optional indicator associations.
+            attributes (dict|list, kwargs): Optional group attributes.
+            name (str, kwargs): Optional name for the group.
+            security_labels (dict|list, kwargs): Optional group security labels.
+            source (str, kwargs): Optional source.
+            tags (dict|list, kwargs): Optional tags.
+            xid (str, kwargs): Optional XID.
+
+        Returns:
+            V3.Group: A group object.
+        """
+        group_data = {
+            'name': kwargs.get('name', inspect.stack()[1].function),
+            'type': type_,
+            # 'xid': kwargs.get('xid', f'xid-{inspect.stack()[1].function}'),
+        }
+        # if kwargs.get('size') is not None:
+        #     group_data['size'] = kwargs.get('size')
+        # add source
+        if kwargs.get('source') is not None:
+            group_data['source'] = kwargs.get('source')
+
+        # create indicator
+        group = self.v3.group(**group_data)
+
+        associated_groups = self._to_list(kwargs.get('associated_groups', []))
+        associated_indicators = self._to_list(kwargs.get('associated_indicators', []))
+        attributes = self._to_list(kwargs.get('attribute', []))
+        security_labels = self._to_list(kwargs.get('security_labels', []))
+        tags = self._to_list(kwargs.get('tags', []))
+
+        # add associations
+        for associated_group in associated_groups:
+            group.add_associated_group(**associated_group)
+
+        # add indicators
+        for associated_indicator in associated_indicators:
+            group.add_associated_indicator(**associated_indicator)
+
+        # add attributes
+        for attribute in attributes:
+            group.add_attribute(**attribute)
+
+        # add security labels
+        for security_label in security_labels:
+            group.add_security_label(**security_label)
+
+        # add tags
+        group.add_tag(name='pytest')
+        for tag in tags:
+            group.add_tag(**tag)
+
+        # submit object
+        group.submit()
+
+        # store case id for cleanup
+        self._v3_objects.append(group)
+
+        return group
+
     def create_indicator(self, type_: Optional[str] = 'Address', **kwargs):
         """Create a indicator.
 
@@ -242,7 +308,7 @@ class V3Helper:
             security_labels (dict|list, kwargs): Optional indicator security labels.
             size (dict|list, kwargs): Optional indicator size for File indicators.
             source (str, kwargs): Optional source.
-            tags (dict|list, kwargs): Optional case tags.
+            tags (dict|list, kwargs): Optional tags.
             value_1 (str, kwargs): Optional indicator value 1.
             value_2 (str, kwargs): Optional indicator value 2.
             value_3 (str, kwargs): Optional indicator value 3.
@@ -285,6 +351,7 @@ class V3Helper:
             'active': kwargs.get('active', True),
             'confidence': kwargs.get('confidence', 0),
             'description': 'TcEx Testing',
+            'ownerName': kwargs.get('ownerName'),
             'rating': kwargs.get('rating'),
             'type': type_,
         }
@@ -417,8 +484,9 @@ class TestCaseManagement:
     def obj_properties_extra(self):
         """Check to see if there are any additional properties in obj."""
         for prop in self.v3_helper.v3_obj.model.dict(by_alias=True):
-            # [pydantic] - _privates_ does not show up in model using dict()/json(),
-            # but it does show up in the model configuration
-            if prop in ['_privates_', 'id']:
+            # Ignore extra properties
+            # * id - not define, by API endpoint
+            # * webLink - not define, by API endpoint (Core Issue)
+            if prop in ['id', 'webLink']:
                 continue
             assert prop in self.v3_helper.v3_obj.properties, f'Extra {prop} property.'

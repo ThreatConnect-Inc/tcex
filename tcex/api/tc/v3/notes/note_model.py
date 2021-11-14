@@ -76,7 +76,6 @@ class NoteModel(
         methods=['POST'],
         read_only=False,
         title='artifactId',
-        updatable=False,
     )
     author: Optional[str] = Field(
         None,
@@ -92,7 +91,6 @@ class NoteModel(
         read_only=False,
         required_alt_field='caseXid',
         title='caseId',
-        updatable=False,
     )
     case_xid: Optional[str] = Field(
         None,
@@ -101,7 +99,6 @@ class NoteModel(
         read_only=False,
         required_alt_field='caseId',
         title='caseXid',
-        updatable=False,
     )
     date_added: Optional[datetime] = Field(
         None,
@@ -157,7 +154,6 @@ class NoteModel(
         methods=['POST'],
         read_only=False,
         title='taskId',
-        updatable=False,
     )
     task_xid: Optional[str] = Field(
         None,
@@ -165,7 +161,6 @@ class NoteModel(
         methods=['POST'],
         read_only=False,
         title='taskXid',
-        updatable=False,
     )
     text: Optional[str] = Field(
         None,
@@ -189,7 +184,6 @@ class NoteModel(
         methods=['POST'],
         read_only=False,
         title='workflowEventId',
-        updatable=False,
     )
 
     @validator('artifact', always=True)

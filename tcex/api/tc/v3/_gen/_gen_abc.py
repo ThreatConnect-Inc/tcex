@@ -142,10 +142,16 @@ class GenerateABC(ABC):
                         'readOnly': True,
                         'updatable': False,
                     }
-                # the "id" field needs to be send in nested object on PUT and POST
-                # (e.g., for group associations on an indicator object)
-                # _properties['id']['readOnly'] = False
 
+                # special handling for core issue: missing webLink
+                if self.type_ in ['groups', 'indicators']:
+                    _properties['webLink'] = {
+                        'required': False,
+                        'type': 'String',
+                        'description': 'The object link.',
+                        'readOnly': True,
+                        'updatable': False,
+                    }
                 if self.type_.lower() == 'user_groups':
                     _properties['name']['readOnly'] = False
                 if self.type_.lower() == 'users':

@@ -269,7 +269,6 @@ class CaseModel(
         min_length=10,
         read_only=False,
         title='xid',
-        updatable=False,
     )
 
     @validator('artifacts', always=True)

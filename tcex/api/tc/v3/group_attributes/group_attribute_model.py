@@ -93,7 +93,6 @@ class GroupAttributeModel(
         methods=['POST'],
         read_only=False,
         title='groupId',
-        updatable=False,
     )
     id: Optional[int] = Field(
         None,
@@ -121,7 +120,6 @@ class GroupAttributeModel(
         methods=['POST'],
         read_only=False,
         title='type',
-        updatable=False,
     )
     value: Optional[str] = Field(
         None,

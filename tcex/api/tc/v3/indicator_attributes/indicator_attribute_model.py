@@ -99,7 +99,6 @@ class IndicatorAttributeModel(
         methods=['POST'],
         read_only=False,
         title='indicatorId',
-        updatable=False,
     )
     last_modified: Optional[datetime] = Field(
         None,
@@ -121,7 +120,6 @@ class IndicatorAttributeModel(
         methods=['POST'],
         read_only=False,
         title='type',
-        updatable=False,
     )
     value: Optional[str] = Field(
         None,

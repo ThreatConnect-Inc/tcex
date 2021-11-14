@@ -84,7 +84,6 @@ class TaskModel(
         read_only=False,
         required_alt_field='caseXid',
         title='caseId',
-        updatable=False,
     )
     case_xid: Optional[str] = Field(
         None,
@@ -93,7 +92,6 @@ class TaskModel(
         read_only=False,
         required_alt_field='caseId',
         title='caseXid',
-        updatable=False,
     )
     completed_by: Optional[str] = Field(
         None,
@@ -108,7 +106,6 @@ class TaskModel(
         methods=['POST'],
         read_only=False,
         title='completedDate',
-        updatable=False,
     )
     config_playbook: Optional[str] = Field(
         None,
@@ -130,7 +127,6 @@ class TaskModel(
         methods=['POST'],
         read_only=False,
         title='dependentOnId',
-        updatable=False,
     )
     description: Optional[str] = Field(
         None,
@@ -206,7 +202,6 @@ class TaskModel(
         minimum=0,
         read_only=False,
         title='workflowPhase',
-        updatable=False,
     )
     workflow_step: Optional[int] = Field(
         None,
@@ -216,7 +211,6 @@ class TaskModel(
         minimum=1,
         read_only=False,
         title='workflowStep',
-        updatable=False,
     )
     xid: Optional[str] = Field(
         None,
@@ -226,7 +220,6 @@ class TaskModel(
         min_length=10,
         read_only=False,
         title='xid',
-        updatable=False,
     )
 
     @validator('artifacts', always=True)

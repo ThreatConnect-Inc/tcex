@@ -142,7 +142,6 @@ class VictimAssetModel(
         min_length=1,
         read_only=False,
         title='type',
-        updatable=False,
     )
     victim_id: Optional[int] = Field(
         None,
@@ -150,7 +149,6 @@ class VictimAssetModel(
         methods=['POST'],
         read_only=False,
         title='victimId',
-        updatable=False,
     )
     website: Optional[str] = Field(
         None,

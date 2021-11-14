@@ -113,7 +113,6 @@ class VictimAttributeModel(
         methods=['POST'],
         read_only=False,
         title='type',
-        updatable=False,
     )
     value: Optional[str] = Field(
         None,
@@ -129,7 +128,6 @@ class VictimAttributeModel(
         methods=['POST'],
         read_only=False,
         title='victimId',
-        updatable=False,
     )
 
     @validator('created_by', always=True)

@@ -1,10 +1,10 @@
 """ThreatConnect API V3 Base Model."""
 # standard library
+import datetime
 import hashlib
 import json
 import logging
 from abc import ABC
-import datetime
 from json import JSONEncoder
 from typing import Any, Optional
 
@@ -58,13 +58,15 @@ class V3ModelABC(BaseModel, ABC):
         """Return True if the field is calculated to be included."""
         # MODE DELETE Rule - The "id" should be the only field included when delete mode
         #     is enabled.
-        if nested is True and field != 'id' and mode and mode == 'delete':
+        if mode == 'delete' and nested is True and field not in ['id', 'name']:
             return False
 
         # ID Rule - The "id" should not be included for ANY method on parent object,
         #     but for nested objects the "id" field should be included when available.
         if field == 'id' and nested is True and value:
             return True
+
+        # handle attribute sending Type on PUT of nested body
 
         # if method == 'POST' and nested is True:
         #     pass
@@ -80,62 +82,38 @@ class V3ModelABC(BaseModel, ABC):
         # DEFAULT Rule - Fields should not be included unless the match a previous rule.
         return False
 
-    def _gen_body(
-        self,
-        method: str,
-        mode: Optional[str] = None,
-        exclude_none: Optional[bool] = True,
-        nested: Optional[bool] = False,
-    ) -> dict:
-        """Return the generated body.
+    # def _process_nested_data_object(
+    #     self, method: str, mode: str, nested: bool, nested_object: 'BaseModel'
+    # ):
+    #     """Process the nested data object (e.g., GroupsModel.data).
 
-        The field included in the body depend on the HTTP Method and whether or not the object
-        is nested. For example the ID should not be send on the parent object on a POST or PUT,
-        but should be added for a PUT on a nested object.
-        """
-        _body = {}
-        schema_properties = self._properties()
-        for name, value in self:
-            if exclude_none is True and value is None:
-                continue
+    #     Nested Object Inclusion Rules:
+    #     * If the method is not PUT.
+    #     * The model doesn't have an "id" field.
+    #       * Object was created using the "add_xxx" method on the parent object.
+    #     * The model's "updated" field is True.
+    #       * Object was modified after it was created. Since object pulled from the API
+    #           are create using **kwargs they are not updated.
+    #     """
+    #     _data = []
+    #     for model in nested_object.data:
+    #         if method in ['DELETE', 'GET']:
+    #             continue
 
-            # get the current field from the schema to us in validating method membership.
-            property_ = schema_properties.get(name)
-            if property_ is None:
-                # a field not being available does not indicate a failure, it could simple
-                # be the incorrect field was passed to the object, which will be dropped.
-                self._log.warning(f'action=schema-check, property={name}, result=not-found')
-                continue
+    #         if (
+    #             method == 'POST'
+    #             or model.id is None
+    #             or model.updated is True
+    #             or mode in ['delete', 'replace']
+    #         ):
+    #             method = self._calculate_method(method, model, nested)
+    #             data = model.gen_body(method, mode, nested=True)
+    #             if data:
+    #                 _data.append(data)
+    #     return _data
 
-            # TODO: [med] talk to @bpurdy about switching to alias field
-            key = property_.get('title')
-            if isinstance(value, BaseModel) and property_.get('read_only') is False:
-                # For the threatconnect API the data structure for an object should have
-                # a data array with nested object or be an object.
-                # @bsummer - Updated this because not all nested objects are a array (assignee
-                # for example)
-                if hasattr(value, 'data'):# and isinstance(value.data, list):
-                    _data = self._process_nested_data_object(method, mode, nested, value)
-                    if _data:
-                        _body.setdefault(key, {})['data'] = _data
-                        # This is for Assignee since it has more than just a data field
-                        if hasattr(value, 'type'):
-                            _body.setdefault(key, {})['type'] = value.type
-                        if mode or hasattr(value, 'mode'):
-                            _body.setdefault(key, {})['mode'] = mode or value.mode
-                        # _body[key] = {}
-                        # _body[key]['data'] = _data
-                else:
-                    if method == 'POST' or value.id is None or value.updated is True:
-                        _data = value._gen_body(method, mode, nested=True)
-                        if _data:
-                            _body[key] = _data
-            elif self._calculate_field_inclusion(key, method, mode, nested, property_, value):
-                _body[key] = value
-        return _body
-
-    def _process_nested_data_object( self,
-        method: str, mode: str, nested: bool, nested_object: 'BaseModel'
+    def _process_nested_data_object(
+        self, method: str, mode: str, nested: bool, nested_object: 'BaseModel'
     ):
         """Process the nested data object (e.g., GroupsModel.data).
 
@@ -155,11 +133,19 @@ class V3ModelABC(BaseModel, ABC):
         if not isinstance(nested_object.data, list):
             nested_data = [nested_data]
         for model in nested_data:
-            # @bpurdy - Never include nested object for get or delete? - Ben 'Yeap'
+            # nested object should never be send with HTTP METHOD is DELETE OR GET
             if method in ['DELETE', 'GET']:
                 continue
 
-            if method == 'POST' or model.id is None or model.updated is True or mode == 'delete':
+            # Rules:
+            # *
+
+            if (
+                method == 'POST'
+                or model.id is None
+                or model.updated is True
+                or mode in ['delete', 'replace']
+            ):
                 method = self._calculate_method(method, model, nested)
                 data = model._gen_body(method, mode, nested=True)
                 if data:
@@ -189,16 +175,70 @@ class V3ModelABC(BaseModel, ABC):
         self,
         method: str,
         mode: Optional[str] = None,
-        indent: Optional[int] = 0,
+        exclude_none: Optional[bool] = True,
+        nested: Optional[bool] = False,
+    ) -> dict:
+        """Return the generated body.
+
+        The field included in the body depend on the HTTP Method and whether or not the object
+        is nested. For example the ID should not be send on the parent object on a POST or PUT,
+        but should be added for a PUT on a nested object.
+        """
+        _body = {}
+        schema_properties = self._properties()
+        for name, value in self:
+            if exclude_none is True and value is None:
+                continue
+
+            # get the current field from the schema to us in validating method membership.
+            property_ = schema_properties.get(name)
+            if property_ is None:
+                # a field not being available does not indicate a failure, it could simple
+                # be the incorrect field was passed to the object, which will be dropped.
+                self._log.warning(
+                    f'action=schema-check, type={self.__class__.__name__}, '
+                    f'property={name}, result=not-found'
+                )
+                continue
+
+            # TODO: [med] talk to @bpurdy about switching to alias field
+            key = property_.get('title')
+            if isinstance(value, BaseModel) and property_.get('read_only') is False:
+                # For the threatconnect API the data structure for an object should have
+                # a data array with nested object or be an object.
+                if hasattr(value, 'data'):  # and isinstance(value.data, list):
+                    _data = self._process_nested_data_object(method, mode, nested, value)
+                    if _data:
+                        _body.setdefault(key, {})['data'] = _data
+                        # This is for Assignee since it has more than just a data field
+                        if hasattr(value, 'type'):
+                            _body.setdefault(key, {})['type'] = value.type
+                        elif mode or hasattr(value, 'mode'):
+                            _body.setdefault(key, {})['mode'] = mode or value.mode
+                else:
+                    # TODO: [high] @bsummers - find where this is used and document
+                    if method == 'POST' or value.id is None or value.updated is True:
+                        _data = value.gen_body(method, mode, nested=True)
+                        if _data:
+                            _body[key] = _data
+            elif self._calculate_field_inclusion(key, method, mode, nested, property_, value):
+                _body[key] = value
+        return _body
+
+    def gen_body_json(
+        self,
+        method: str,
+        mode: Optional[str] = None,
+        indent: Optional[int] = None,
         sort_keys: Optional[bool] = False,
-    ):
-        """Return the post body."""
+    ) -> str:
+        """Wrap gen_body method returning JSON instead of dict."""
         # ensure mode is set to lower case if provided on gen_body entry point
         if mode is not None:
             mode = mode.lower()
 
         return json.dumps(
-            self._gen_body(method=method, mode=mode),
+            self.gen_body(method=method, mode=mode),
             cls=CustomJSONEncoder,
             indent=indent,
             sort_keys=sort_keys,

@@ -69,7 +69,6 @@ class CaseAttributeModel(
         methods=['POST'],
         read_only=False,
         title='caseId',
-        updatable=False,
     )
     created_by: Optional['UserModel'] = Field(
         None,
@@ -121,7 +120,6 @@ class CaseAttributeModel(
         methods=['POST'],
         read_only=False,
         title='type',
-        updatable=False,
     )
     value: Optional[str] = Field(
         None,

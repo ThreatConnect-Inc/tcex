@@ -70,7 +70,6 @@ class WorkflowEventModel(
         read_only=False,
         required_alt_field='caseXid',
         title='caseId',
-        updatable=False,
     )
     case_xid: Optional[str] = Field(
         None,
@@ -79,7 +78,6 @@ class WorkflowEventModel(
         read_only=False,
         required_alt_field='caseId',
         title='caseXid',
-        updatable=False,
     )
     date_added: Optional[datetime] = Field(
         None,
