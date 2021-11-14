@@ -303,6 +303,9 @@ class ObjectABC(ABC):
     def submit(self, mode: Optional[str] = None) -> Response:
         """Create or Update the Case Management object.
 
+        Args:
+            mode: User override of default mode for nested object.
+
         This is determined based on if the id is already present in the object.
         """
         method = 'PUT' if self.model.id else 'POST'
@@ -316,9 +319,14 @@ class ObjectABC(ABC):
 
         # TODO: [high] Unsure if the entire model should be reset or just the id.
         #     If entire model the inner objects get ids set which is nice.
-        new_id = response_json.get('data', response_json).get('id')
-        if new_id:
-            self.model.id = new_id
+        # new_id = response_json.get('data', response_json).get('id')
+        # if new_id:
+        #     self.model.id = new_id
+        try:
+            self.model = type(self.model)(**response_json.get('data'))
+        except Exception:
+            # TODO: [high] - should we raise here?
+            self.log.error('Failed update model with API response.')
 
         return self.request
 

@@ -53,9 +53,13 @@ class V3ModelABC(BaseModel, ABC):
 
     @staticmethod
     def _calculate_field_inclusion(
-        field: str, method: str, nested: bool, property_: dict, value: Any
+        field: str, method: str, mode: str, nested: bool, property_: dict, value: Any
     ) -> str:
         """Return True if the field is calculated to be included."""
+        # MODE DELETE Rule - The "id" should be the only field included when delete mode
+        #     is enabled.
+        if nested is True and field != 'id' and mode and mode == 'delete':
+            return False
 
         # ID Rule - The "id" should not be included for ANY method on parent object,
         #     but for nested objects the "id" field should be included when available.
@@ -105,11 +109,11 @@ class V3ModelABC(BaseModel, ABC):
 
             # TODO: [med] talk to @bpurdy about switching to alias field
             key = property_.get('title')
-            if isinstance(value, BaseModel):
+            if isinstance(value, BaseModel) and property_.get('read_only') is False:
                 # For the threatconnect API the data structure for an object should have
                 # a data array with nested object or be an object.
                 if hasattr(value, 'data') and isinstance(value.data, list):
-                    _data = self._process_nested_data_object(method, nested, value)
+                    _data = self._process_nested_data_object(method, mode, nested, value)
                     if _data:
                         _body.setdefault(key, {})['data'] = _data
                         _body.setdefault(key, {})['mode'] = mode or value.mode
@@ -117,15 +121,17 @@ class V3ModelABC(BaseModel, ABC):
                         # _body[key]['data'] = _data
                 else:
                     if method == 'POST' or value.id is None or value.updated is True:
-                        _data = value._gen_body(method, nested=True)
+                        _data = value._gen_body(method, mode, nested=True)
                         if _data:
                             _body[key] = _data
-            elif self._calculate_field_inclusion(key, method, nested, property_, value):
+            elif self._calculate_field_inclusion(key, method, mode, nested, property_, value):
                 _body[key] = value
         return _body
 
     @staticmethod
-    def _process_nested_data_object(method: str, nested: bool, nested_object: 'BaseModel'):
+    def _process_nested_data_object(
+        method: str, mode: str, nested: bool, nested_object: 'BaseModel'
+    ):
         """Process the nested data object (e.g., GroupsModel.data).
 
         Nested Object Inclusion Rules:
@@ -142,9 +148,9 @@ class V3ModelABC(BaseModel, ABC):
             if method in ['DELETE', 'GET']:
                 continue
 
-            if method == 'POST' or model.id is None or model.updated is True:
+            if method == 'POST' or model.id is None or model.updated is True or mode == 'delete':
                 # method = self._calculate_method(method, model, nested)
-                data = model._gen_body(method, nested=True)
+                data = model._gen_body(method, mode, nested=True)
                 if data:
                     _data.append(data)
         return _data
@@ -173,6 +179,10 @@ class V3ModelABC(BaseModel, ABC):
         sort_keys: Optional[bool] = False,
     ):
         """Return the post body."""
+        # ensure mode is set to lower case if provided on gen_body entry point
+        if mode is not None:
+            mode = mode.lower()
+
         return json.dumps(
             self._gen_body(method=method, mode=mode),
             cls=CustomJSONEncoder,
