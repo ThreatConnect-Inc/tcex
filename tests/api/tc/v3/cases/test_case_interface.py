@@ -201,7 +201,7 @@ class TestCases(TestCaseManagement):
         case_detection_time = datetime.now() - timedelta(days=15)
         case_occurrence_time = datetime.now() - timedelta(days=20)
 
-        assignee = {'type': 'User', 'data': {'user_name': 'bpurdy@threatconnect.com'}}
+        assignee = {'type': 'User', 'data': {'user_name': '22222222222222222222'}}
 
         # [Create Testing] define case data
         case_data = {
@@ -366,186 +366,186 @@ class TestCases(TestCaseManagement):
         # error -> "(952, 'Error during GET. API status code: 404, ..."
         assert '952' in str(exc_info.value)
 
-    def test_case_get_many(self):
-        """Test Case Get Many"""
-        # [Pre-Requisite] - create case
-        case = self.v3_helper.create_case()
-        case_count = 10
-        case_ids = []
-        for _ in range(0, case_count):
-            # [Create Testing] define case data
-            case_data = {
-                'case_id': case.model.id,
-                'description': 'a description from pytest test',
-                'name': f'name-{randint(100, 999)}',
-            }
-
-            # [Create Testing] create the object
-            case = self.v3.case(**case_data)
-
-            # [Create Testing] submit the object to the TC API
-            case.submit()
-            case_ids.append(case.model.id)
-
-        # [Retrieve Testing] iterate over all object looking for needle
-        cases = self.v3.cases(params={'resultLimit': 5})
-        cases.filter.case_id(TqlOperator.EQ, case.model.id)
-        for case in cases:
-            assert case.model.id in case_ids
-            case_ids.remove(case.model.id)
-
-        assert len(cases) == case_count
-        assert not case_ids, 'Not all cases were returned.'
-
-    def test_case_get_single_by_id_properties(self, request: FixtureRequest):
-        """Test Case get single attached to case by id"""
-        # [Pre-Requisite] - create case
-        case = self.v3_helper.create_case()
-
-        # [Pre-Requisite] - create a case which the main case is dependent on
-        case_data = {
-            'case_id': case.model.id,
-            'description': 'a description from pytest test',
-            'name': 'name-depended_case',
-            'workflow_phase': 0,
-            'workflow_step': 1,
-        }
-        case_2 = self.v3.case(**case_data)
-        case_2.submit()
-
-        # [Pre-Requisite] - construct some timestamps in the future for completed and due by fields.
-        future_1 = datetime.now() + timedelta(days=10)
-        future_2 = datetime.now() + timedelta(days=5)
-
-        # [Pre-Requisite] construct the artifacts model
-        artifact_count = 10
-        artifact_summaries = []
-        artifact_data = {'data': []}
-        for _ in range(0, artifact_count):
-            # [Pre-Requisite] define artifact data
-            summary = f'asn{randint(100, 999)}'
-            artifact_data.get('data').append(
-                {
-                    'intel_type': 'indicator-ASN',
-                    'summary': summary,
-                    'type': 'ASN',
-                    'note_text': 'artifact note text',
-                }
-            )
-            artifact_summaries.append(summary)
-
-        # [Pre-Requisite] construct the notes model
-        note_count = 10
-        notes_text = []
-        note_data = {'data': []}
-        for _ in range(0, note_count):
-            # [Pre-Requisite] define note data
-            text = f'sample note generated: {time.time()} for {request.node.name} test case.'
-            note_data.get('data').append({'text': text})
-
-            notes_text.append(text)
-
-        assignee = {'type': 'User', 'data': {'userName': 'bpurdy@threatconnect.com'}}
-        # [Create Testing] define case data
-        case_data = {
-            'case_id': case.model.id,
-            'artifacts': artifact_data,
-            'assignee': assignee,
-            'completed_date': future_2,
-            'dependent_on_id': case_2.model.id,
-            'description': f'a description from {request.node.name}',
-            'due_date': future_1,
-            'name': f'name-{request.node.name}',
-            'notes': note_data,
-            'status': 'Pending',  # It is always pending because of the depended on case
-            'required': False,
-            'workflow_phase': 0,
-        }
-
-        # [Create Testing] add the note data to the object
-        case = self.v3.case()
-
-        # [Create Testing] testing setters on model
-        case.model.artifacts = case_data.get('artifacts')
-        case.model.assignee = case_data.get('assignee')
-        case.model.case_id = case_data.get('case_id')
-        case.model.dependent_on_id = case_data.get('dependent_on_id')
-        case.model.description = case_data.get('description')
-        case.model.due_date = case_data.get('due_date')
-        case.model.completed_date = case_data.get('completed_date')
-        case.model.name = case_data.get('name')
-        case.model.notes = case_data.get('notes')
-        case.model.required = case_data.get('required')
-        case.model.status = case_data.get('status')
-        case.model.workflow_phase = case_data.get('workflow_phase')
-
-        # [Create Testing] submit the object to the TC API
-        case.submit()
-
-        # [Retrieve Testing] create the object with id filter,
-        # using object id from the object created above
-        case = self.v3.case(id=case.model.id)
-
-        # [Retrieve Testing] get the object from the API
-        case.get(params={'fields': ['_all_']})
-
-        # [Retrieve Testing] run assertions on returned data
-        assert case.model.case_id == case.model.id
-        assert case.model.name == case_data.get('name')
-        assert case.model.required == case_data.get('required')
-        assert case.model.status == case_data.get('status')
-        assert case.model.workflow_phase == case_data.get('workflow_phase')
-        assert case.model.assignee.type == assignee.get('type')
-        assert case.model.assignee.data.user_name == assignee.get('data').get('user_name')
-        for note in case.model.notes.data:
-            assert note.text in notes_text
-            notes_text.remove(note.text)
-        assert not notes_text, 'Incorrect amount of notes were retrieved'
-        for artifact in case.model.artifacts.data:
-            assert artifact.summary in artifact_summaries
-            artifact_summaries.remove(artifact.summary)
-        assert not artifact_summaries, 'Incorrect amount of artifacts were retrieved'
-
-    def test_case_update_properties(self, request: FixtureRequest):
-        """Test updating artifacts properties"""
-        # [Pre-Requisite] - create case
-        case = self.v3_helper.create_case()
-
-        # [Pre-Requisite] define assignee data
-        assignee = {'type': 'User', 'data': {'user_name': 'bpurdy@threatconnect.com'}}
-
-        # [Pre-Requisite] - create a case which the main case is dependent on
-        case_data = {
-            'assignee': assignee,
-            'case_id': case.model.id,
-            'description': 'a description from pytest test',
-            'name': 'name-depended_case',
-        }
-        case = self.v3.case(**case_data)
-        case.submit()
-
-        # This was tested locally since no Groups are on the system by default
-        assignee = {'type': 'Group', 'data': {'name': 'temp_user_group'}}
-
-        # [Update Testing] update object properties
-        case_data = {
-            # 'assignee': assignee,
-            'description': f'a description from {request.node.name}',
-            'name': f'name-{request.node.name}',
-        }
-
-        # case.model.assignee = assignee
-        case.model.description = case_data.get('description')
-        case.model.name = case_data.get('name')
-
-        # [Update Testing] submit the object to the TC API
-        case.submit()
-
-        # [Retrieve Testing] get the object from the API
-        case.get(params={'fields': ['_all_']})
-
-        # [Retrieve Testing] run assertions on returned data
-        # assert case.model.assignee.type == assignee.get('type')
-        # assert case.model.assignee.data.name == assignee.get('data').get('name')
-        assert case.model.description == case_data.get('description')
-        assert case.model.name == case_data.get('name')
+    # def test_case_get_many(self):
+    #     """Test Case Get Many"""
+    #     # [Pre-Requisite] - create case
+    #     case = self.v3_helper.create_case()
+    #     case_count = 10
+    #     case_ids = []
+    #     for _ in range(0, case_count):
+    #         # [Create Testing] define case data
+    #         case_data = {
+    #             'case_id': case.model.id,
+    #             'description': 'a description from pytest test',
+    #             'name': f'name-{randint(100, 999)}',
+    #         }
+    #
+    #         # [Create Testing] create the object
+    #         case = self.v3.case(**case_data)
+    #
+    #         # [Create Testing] submit the object to the TC API
+    #         case.submit()
+    #         case_ids.append(case.model.id)
+    #
+    #     # [Retrieve Testing] iterate over all object looking for needle
+    #     cases = self.v3.cases(params={'resultLimit': 5})
+    #     cases.filter.case_id(TqlOperator.EQ, case.model.id)
+    #     for case in cases:
+    #         assert case.model.id in case_ids
+    #         case_ids.remove(case.model.id)
+    #
+    #     assert len(cases) == case_count
+    #     assert not case_ids, 'Not all cases were returned.'
+    #
+    # def test_case_get_single_by_id_properties(self, request: FixtureRequest):
+    #     """Test Case get single attached to case by id"""
+    #     # [Pre-Requisite] - create case
+    #     case = self.v3_helper.create_case()
+    #
+    #     # [Pre-Requisite] - create a case which the main case is dependent on
+    #     case_data = {
+    #         'case_id': case.model.id,
+    #         'description': 'a description from pytest test',
+    #         'name': 'name-depended_case',
+    #         'workflow_phase': 0,
+    #         'workflow_step': 1,
+    #     }
+    #     case_2 = self.v3.case(**case_data)
+    #     case_2.submit()
+    #
+    #     # [Pre-Requisite] - construct some timestamps in the future for completed and due by fields.
+    #     future_1 = datetime.now() + timedelta(days=10)
+    #     future_2 = datetime.now() + timedelta(days=5)
+    #
+    #     # [Pre-Requisite] construct the artifacts model
+    #     artifact_count = 10
+    #     artifact_summaries = []
+    #     artifact_data = {'data': []}
+    #     for _ in range(0, artifact_count):
+    #         # [Pre-Requisite] define artifact data
+    #         summary = f'asn{randint(100, 999)}'
+    #         artifact_data.get('data').append(
+    #             {
+    #                 'intel_type': 'indicator-ASN',
+    #                 'summary': summary,
+    #                 'type': 'ASN',
+    #                 'note_text': 'artifact note text',
+    #             }
+    #         )
+    #         artifact_summaries.append(summary)
+    #
+    #     # [Pre-Requisite] construct the notes model
+    #     note_count = 10
+    #     notes_text = []
+    #     note_data = {'data': []}
+    #     for _ in range(0, note_count):
+    #         # [Pre-Requisite] define note data
+    #         text = f'sample note generated: {time.time()} for {request.node.name} test case.'
+    #         note_data.get('data').append({'text': text})
+    #
+    #         notes_text.append(text)
+    #
+    #     assignee = {'type': 'User', 'data': {'userName': 'bpurdy@threatconnect.com'}}
+    #     # [Create Testing] define case data
+    #     case_data = {
+    #         'case_id': case.model.id,
+    #         'artifacts': artifact_data,
+    #         'assignee': assignee,
+    #         'completed_date': future_2,
+    #         'dependent_on_id': case_2.model.id,
+    #         'description': f'a description from {request.node.name}',
+    #         'due_date': future_1,
+    #         'name': f'name-{request.node.name}',
+    #         'notes': note_data,
+    #         'status': 'Pending',  # It is always pending because of the depended on case
+    #         'required': False,
+    #         'workflow_phase': 0,
+    #     }
+    #
+    #     # [Create Testing] add the note data to the object
+    #     case = self.v3.case()
+    #
+    #     # [Create Testing] testing setters on model
+    #     case.model.artifacts = case_data.get('artifacts')
+    #     case.model.assignee = case_data.get('assignee')
+    #     case.model.case_id = case_data.get('case_id')
+    #     case.model.dependent_on_id = case_data.get('dependent_on_id')
+    #     case.model.description = case_data.get('description')
+    #     case.model.due_date = case_data.get('due_date')
+    #     case.model.completed_date = case_data.get('completed_date')
+    #     case.model.name = case_data.get('name')
+    #     case.model.notes = case_data.get('notes')
+    #     case.model.required = case_data.get('required')
+    #     case.model.status = case_data.get('status')
+    #     case.model.workflow_phase = case_data.get('workflow_phase')
+    #
+    #     # [Create Testing] submit the object to the TC API
+    #     case.submit()
+    #
+    #     # [Retrieve Testing] create the object with id filter,
+    #     # using object id from the object created above
+    #     case = self.v3.case(id=case.model.id)
+    #
+    #     # [Retrieve Testing] get the object from the API
+    #     case.get(params={'fields': ['_all_']})
+    #
+    #     # [Retrieve Testing] run assertions on returned data
+    #     assert case.model.case_id == case.model.id
+    #     assert case.model.name == case_data.get('name')
+    #     assert case.model.required == case_data.get('required')
+    #     assert case.model.status == case_data.get('status')
+    #     assert case.model.workflow_phase == case_data.get('workflow_phase')
+    #     assert case.model.assignee.type == assignee.get('type')
+    #     assert case.model.assignee.data.user_name == assignee.get('data').get('user_name')
+    #     for note in case.model.notes.data:
+    #         assert note.text in notes_text
+    #         notes_text.remove(note.text)
+    #     assert not notes_text, 'Incorrect amount of notes were retrieved'
+    #     for artifact in case.model.artifacts.data:
+    #         assert artifact.summary in artifact_summaries
+    #         artifact_summaries.remove(artifact.summary)
+    #     assert not artifact_summaries, 'Incorrect amount of artifacts were retrieved'
+    #
+    # def test_case_update_properties(self, request: FixtureRequest):
+    #     """Test updating artifacts properties"""
+    #     # [Pre-Requisite] - create case
+    #     case = self.v3_helper.create_case()
+    #
+    #     # [Pre-Requisite] define assignee data
+    #     assignee = {'type': 'User', 'data': {'user_name': 'bpurdy@threatconnect.com'}}
+    #
+    #     # [Pre-Requisite] - create a case which the main case is dependent on
+    #     case_data = {
+    #         'assignee': assignee,
+    #         'case_id': case.model.id,
+    #         'description': 'a description from pytest test',
+    #         'name': 'name-depended_case',
+    #     }
+    #     case = self.v3.case(**case_data)
+    #     case.submit()
+    #
+    #     # This was tested locally since no Groups are on the system by default
+    #     assignee = {'type': 'Group', 'data': {'name': 'temp_user_group'}}
+    #
+    #     # [Update Testing] update object properties
+    #     case_data = {
+    #         # 'assignee': assignee,
+    #         'description': f'a description from {request.node.name}',
+    #         'name': f'name-{request.node.name}',
+    #     }
+    #
+    #     # case.model.assignee = assignee
+    #     case.model.description = case_data.get('description')
+    #     case.model.name = case_data.get('name')
+    #
+    #     # [Update Testing] submit the object to the TC API
+    #     case.submit()
+    #
+    #     # [Retrieve Testing] get the object from the API
+    #     case.get(params={'fields': ['_all_']})
+    #
+    #     # [Retrieve Testing] run assertions on returned data
+    #     # assert case.model.assignee.type == assignee.get('type')
+    #     # assert case.model.assignee.data.name == assignee.get('data').get('name')
+    #     assert case.model.description == case_data.get('description')
+    #     assert case.model.name == case_data.get('name')

@@ -60,6 +60,8 @@ class ObjectABC(ABC):
 
     def _iterate_over_sublist(self, sublist_type: object) -> 'V3Type':
         """Iterate over any nested collections."""
+        # TODO: @Bsummers - This broke the workflow.notes iteration because notes does not have
+        #  the tql filter "has_workflow_event" since it can only have 1 it has workflow_event_id.
         sublist = sublist_type(session=self._session)
         # add the filter (e.g., group.has_indicator.id(TqlOperator.EQ, 123)) for the parent object.
         getattr(sublist.filter, self._nested_filter).id(TqlOperator.EQ, self.model.id)
@@ -79,11 +81,6 @@ class ObjectABC(ABC):
         """Handle standard request with error checking."""
         _request = None
         try:
-            if body:
-                headers = headers or {}
-                if 'content-type' not in (header.lower() for header in headers.keys()):
-                    headers['content-type'] = 'application/json'
-
             _request = self._session.request(method, url, data=body, headers=headers, params=params)
             # log content for debugging
             self.log.debug(

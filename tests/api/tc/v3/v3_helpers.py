@@ -340,7 +340,10 @@ class V3Helper:
         """Remove all cases and child data."""
         # remove cases created by the create_case method
         for obj in self._v3_objects:
-            obj.delete()
+            try:
+                obj.delete()
+            except:
+                pass
 
         # # delete cases by tag
         # if os.getenv('TCEX_CLEAN_CM'):

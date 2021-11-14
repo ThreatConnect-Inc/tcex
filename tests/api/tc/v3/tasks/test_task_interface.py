@@ -440,7 +440,7 @@ class TestTasks(TestCaseManagement):
         assert task.model.status == task_data.get('status')
         assert task.model.workflow_phase == task_data.get('workflow_phase')
         assert task.model.assignee.type == assignee.get('type')
-        assert task.model.assignee.data.user_name == assignee.get('data').get('user_name')
+        assert task.model.assignee.data.user_name == assignee.get('data').get('userName')
         for note in task.model.notes.data:
             assert note.text in notes_text
             notes_text.remove(note.text)
@@ -456,7 +456,7 @@ class TestTasks(TestCaseManagement):
         case = self.v3_helper.create_case()
 
         # [Pre-Requisite] define assignee data
-        assignee = {'type': 'User', 'data': {'user_name': 'bpurdy@threatconnect.com'}}
+        assignee = {'type': 'User', 'data': {'userName': 'bpurdy@threatconnect.com'}}
 
         # [Pre-Requisite] - create a task which the main task is dependent on
         task_data = {
@@ -490,6 +490,6 @@ class TestTasks(TestCaseManagement):
 
         # [Retrieve Testing] run assertions on returned data
         # assert task.model.assignee.type == assignee.get('type')
-        # assert task.model.assignee.data.name == assignee.get('data').get('name')
+        # assert task.model.assignee.data.user_name == assignee.get('data').get('userName')
         assert task.model.description == task_data.get('description')
         assert task.model.name == task_data.get('name')

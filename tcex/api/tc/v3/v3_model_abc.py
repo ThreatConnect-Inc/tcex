@@ -4,7 +4,7 @@ import hashlib
 import json
 import logging
 from abc import ABC
-from datetime import datetime
+import datetime
 from json import JSONEncoder
 from typing import Any, Optional
 
@@ -39,17 +39,17 @@ class V3ModelABC(BaseModel, ABC):
         # store initial dict hash of model
         self._dict_hash = self.gen_model_hash(self.json(sort_keys=True))
 
-    # @staticmethod
-    # def _calculate_method(method: str, model: 'BaseModel', nested: bool) -> str:
-    #     """Return the appropriate HTTP method value.
+    @staticmethod
+    def _calculate_method(method: str, model: 'BaseModel', nested: bool) -> str:
+        """Return the appropriate HTTP method value.
 
-    #     The method value control the behavior of included field for a DELETE, GET, POST or PUT.
-    #     """
-    #     if not model.id and method == 'PUT':
-    #         method = 'POST'
-    #     elif model._method_override and method.upper() not in ['GET', 'DELETE']:
-    #         method = 'PUT'
-    #     return method
+        The method value control the behavior of included field for a DELETE, GET, POST or PUT.
+        """
+        if not model.id and method == 'PUT':
+            method = 'POST'
+        elif model._method_override and method.upper() not in ['GET', 'DELETE']:
+            method = 'PUT'
+        return method
 
     @staticmethod
     def _calculate_field_inclusion(
@@ -112,11 +112,17 @@ class V3ModelABC(BaseModel, ABC):
             if isinstance(value, BaseModel) and property_.get('read_only') is False:
                 # For the threatconnect API the data structure for an object should have
                 # a data array with nested object or be an object.
-                if hasattr(value, 'data') and isinstance(value.data, list):
+                # @bsummer - Updated this because not all nested objects are a array (assignee
+                # for example)
+                if hasattr(value, 'data'):# and isinstance(value.data, list):
                     _data = self._process_nested_data_object(method, mode, nested, value)
                     if _data:
                         _body.setdefault(key, {})['data'] = _data
-                        _body.setdefault(key, {})['mode'] = mode or value.mode
+                        # This is for Assignee since it has more than just a data field
+                        if hasattr(value, 'type'):
+                            _body.setdefault(key, {})['type'] = value.type
+                        if mode or hasattr(value, 'mode'):
+                            _body.setdefault(key, {})['mode'] = mode or value.mode
                         # _body[key] = {}
                         # _body[key]['data'] = _data
                 else:
@@ -128,8 +134,7 @@ class V3ModelABC(BaseModel, ABC):
                 _body[key] = value
         return _body
 
-    @staticmethod
-    def _process_nested_data_object(
+    def _process_nested_data_object( self,
         method: str, mode: str, nested: bool, nested_object: 'BaseModel'
     ):
         """Process the nested data object (e.g., GroupsModel.data).
@@ -143,16 +148,25 @@ class V3ModelABC(BaseModel, ABC):
               are create using **kwargs they are not updated.
         """
         _data = []
-        for model in nested_object.data:
-            # @bpurdy - Never include nested object for get or delete?
+        # @bsummers - Updating this to support both data dicts and arrays
+        if nested_object.data is None:
+            return _data
+        nested_data = nested_object.data.copy()
+        if not isinstance(nested_object.data, list):
+            nested_data = [nested_data]
+        for model in nested_data:
+            # @bpurdy - Never include nested object for get or delete? - Ben 'Yeap'
             if method in ['DELETE', 'GET']:
                 continue
 
             if method == 'POST' or model.id is None or model.updated is True or mode == 'delete':
-                # method = self._calculate_method(method, model, nested)
+                method = self._calculate_method(method, model, nested)
                 data = model._gen_body(method, mode, nested=True)
                 if data:
-                    _data.append(data)
+                    if isinstance(nested_object.data, list):
+                        _data.append(data)
+                    else:
+                        _data = data
         return _data
 
     def _properties(self):

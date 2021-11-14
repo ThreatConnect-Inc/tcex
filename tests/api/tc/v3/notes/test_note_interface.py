@@ -293,7 +293,8 @@ class TestNotes(TestCaseManagement):
         # [Filter Testing] case_id
         notes.filter.case_id(TqlOperator.EQ, case.model.id)
         # [Filter Testing] author
-        notes.filter.author(TqlOperator.NE, 'Random User')
+        # TODO: This fails if the user does not exist on the system
+        notes.filter.author(TqlOperator.NE, 'bpurdy@threatconnect.com')
         # [Filter Testing] date_added
         notes.filter.date_added(TqlOperator.GT, past)
         # [Filter Testing] has_case -> using id since it's available

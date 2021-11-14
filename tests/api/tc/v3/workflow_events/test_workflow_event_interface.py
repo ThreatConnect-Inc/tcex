@@ -214,6 +214,7 @@ class TestWorkflowEvents(TestCaseManagement):
 
         workflow_event.get()
 
+        # TODO: [Medium] - I am unsure why this test is failing. Looks like a core API bug.
         assert workflow_event.model.deleted
         assert workflow_event.model.deleted_reason == 'Pytesting'
 
