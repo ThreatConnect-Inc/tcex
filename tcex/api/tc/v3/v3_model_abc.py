@@ -1,8 +1,11 @@
 """ThreatConnect API V3 Base Model."""
 # standard library
 import hashlib
+import json
 import logging
 from abc import ABC
+from datetime import datetime
+from json import JSONEncoder
 from typing import Any, Optional
 
 # third-party
@@ -10,6 +13,16 @@ from pydantic import BaseModel, PrivateAttr
 
 # get tcex logger
 logger = logging.getLogger('tcex')
+
+
+class CustomJSONEncoder(JSONEncoder):
+    """Format object in JSON data."""
+
+    def default(self, o: Any) -> str:
+        """Format object"""
+        if isinstance(o, (datetime.date, datetime.datetime)):
+            return o.isoformat()
+        return o
 
 
 class V3ModelABC(BaseModel, ABC):
@@ -63,40 +76,12 @@ class V3ModelABC(BaseModel, ABC):
         # DEFAULT Rule - Fields should not be included unless the match a previous rule.
         return False
 
-    @staticmethod
-    def _process_nested_data_object(method: str, nested: bool, nested_object: 'BaseModel'):
-        """Process the nested data object (e.g., GroupsModel.data).
-
-        Nested Object Inclusion Rules:
-        * If the method is not PUT.
-        * The model doesn't have an "id" field.
-          * Object was created using the "add_xxx" method on the parent object.
-        * The model's "updated" field is True.
-          * Object was modified after it was created. Since object pulled from the API
-              are create using **kwargs they are not updated.
-        """
-        _data = []
-        for model in nested_object.data:
-            # @bpurdy - Never include nested object for get or delete?
-            if method in ['DELETE', 'GET']:
-                continue
-
-            if method == 'POST' or model.id is None or model.updated is True:
-                # method = self._calculate_method(method, model, nested)
-                data = model.gen_body(method, nested=True)
-                if data:
-                    _data.append(data)
-        return _data
-
-    def _properties(self):
-        """Return properties of the current model."""
-        schema = self.schema(by_alias=False)
-        if schema.get('properties') is not None:
-            return schema.get('properties')
-        return schema.get('definitions').get(self.__class__.__name__).get('properties')
-
-    def gen_body(
-        self, method: str, exclude_none: Optional[bool] = True, nested: Optional[bool] = False
+    def _gen_body(
+        self,
+        method: str,
+        mode: Optional[str] = None,
+        exclude_none: Optional[bool] = True,
+        nested: Optional[bool] = False,
     ) -> dict:
         """Return the generated body.
 
@@ -127,16 +112,49 @@ class V3ModelABC(BaseModel, ABC):
                     _data = self._process_nested_data_object(method, nested, value)
                     if _data:
                         _body.setdefault(key, {})['data'] = _data
+                        _body.setdefault(key, {})['mode'] = mode or value.mode
                         # _body[key] = {}
                         # _body[key]['data'] = _data
                 else:
                     if method == 'POST' or value.id is None or value.updated is True:
-                        _data = value.gen_body(method, nested=True)
+                        _data = value._gen_body(method, nested=True)
                         if _data:
                             _body[key] = _data
             elif self._calculate_field_inclusion(key, method, nested, property_, value):
                 _body[key] = value
         return _body
+
+    @staticmethod
+    def _process_nested_data_object(method: str, nested: bool, nested_object: 'BaseModel'):
+        """Process the nested data object (e.g., GroupsModel.data).
+
+        Nested Object Inclusion Rules:
+        * If the method is not PUT.
+        * The model doesn't have an "id" field.
+          * Object was created using the "add_xxx" method on the parent object.
+        * The model's "updated" field is True.
+          * Object was modified after it was created. Since object pulled from the API
+              are create using **kwargs they are not updated.
+        """
+        _data = []
+        for model in nested_object.data:
+            # @bpurdy - Never include nested object for get or delete?
+            if method in ['DELETE', 'GET']:
+                continue
+
+            if method == 'POST' or model.id is None or model.updated is True:
+                # method = self._calculate_method(method, model, nested)
+                data = model._gen_body(method, nested=True)
+                if data:
+                    _data.append(data)
+        return _data
+
+    def _properties(self):
+        """Return properties of the current model."""
+        schema = self.schema(by_alias=False)
+        if schema.get('properties') is not None:
+            return schema.get('properties')
+        return schema.get('definitions').get(self.__class__.__name__).get('properties')
 
     @staticmethod
     def gen_model_hash(json_: str) -> str:
@@ -146,6 +164,21 @@ class V3ModelABC(BaseModel, ABC):
         encoded = json_.encode()
         hash_.update(encoded)
         return hash_.hexdigest()
+
+    def gen_body(
+        self,
+        method: str,
+        mode: Optional[str] = None,
+        indent: Optional[int] = 0,
+        sort_keys: Optional[bool] = False,
+    ):
+        """Return the post body."""
+        return json.dumps(
+            self._gen_body(method=method, mode=mode),
+            cls=CustomJSONEncoder,
+            indent=indent,
+            sort_keys=sort_keys,
+        )
 
     @property
     def updated(self):

@@ -1,14 +1,11 @@
 """Case Management Abstract Base Class"""
 # standard library
-import datetime
-import json
 import logging
 
 # import inspect
 # import re
 from abc import ABC
-from json import JSONEncoder
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Dict, List, Optional, Union
 
 # third-party
 from requests import Response
@@ -28,16 +25,6 @@ if TYPE_CHECKING:
 logger = logging.getLogger('tcex')
 
 
-class CustomJSONEncoder(JSONEncoder):
-    """Format object in JSON data."""
-
-    def default(self, o: Any) -> str:
-        """Format object"""
-        if isinstance(o, (datetime.date, datetime.datetime)):
-            return o.isoformat()
-        return o
-
-
 class ObjectABC(ABC):
     """Object Abstract Base Class
 
@@ -54,6 +41,13 @@ class ObjectABC(ABC):
         # properties
         self._model = None  # defined in child class
         self._nested_filter = None  # defined in child class
+        self._parent_remove_objects = None  # set by _iterate_over_sublist
+        self._remove_objects = {
+            'associations': [],
+            'attributes': [],
+            'securityLabels': [],
+            'tags': [],
+        }
         self._utils = Utils()
         self.log = logger
         self.request = None
@@ -69,7 +63,10 @@ class ObjectABC(ABC):
         sublist = sublist_type(session=self._session)
         # add the filter (e.g., group.has_indicator.id(TqlOperator.EQ, 123)) for the parent object.
         getattr(sublist.filter, self._nested_filter).id(TqlOperator.EQ, self.model.id)
-        yield from sublist
+        # yield from sublist
+        for obj in sublist:
+            obj._parent_remove_objects = self._remove_objects
+            yield obj
 
     def _request(
         self,
@@ -143,7 +140,7 @@ class ObjectABC(ABC):
     def delete(self) -> None:
         """Delete the object."""
         method = 'DELETE'
-        body = json.dumps(self.model.gen_body(method), cls=CustomJSONEncoder)
+        body = self.model.gen_body(method)
 
         # validate an id is available
         self._validate_id(self.model.id, self.url(method))
@@ -206,7 +203,7 @@ class ObjectABC(ABC):
         # validate an id is available
         self._validate_id(self.model.id, self.url(method))
 
-        body = json.dumps(self.model.gen_body(method), cls=CustomJSONEncoder)
+        body = self.model.gen_body(method)
         params = self.gen_params(params)
         self.request = self._request(method, self.url(method), body, params)
 
@@ -299,13 +296,17 @@ class ObjectABC(ABC):
     #             rp.append(p)
     #     return rp
 
-    def submit(self) -> Response:
+    def remove(self):
+        """Remove the tag from the parent object."""
+        self._parent_remove_objects['tags'].append(self.model.id)
+
+    def submit(self, mode: Optional[str] = None) -> Response:
         """Create or Update the Case Management object.
 
         This is determined based on if the id is already present in the object.
         """
         method = 'PUT' if self.model.id else 'POST'
-        body = json.dumps(self.model.gen_body(method), cls=CustomJSONEncoder)
+        body = self.model.gen_body(method=method, mode=mode)
         self.request: Response = self._request(
             method, self.url(method), body, headers={'content-type': 'application/json'}
         )
@@ -320,6 +321,30 @@ class ObjectABC(ABC):
             self.model.id = new_id
 
         return self.request
+
+    # def submit_mode_delete(self) -> Response:
+    #     """Submit metadata removal."""
+    #     method = 'PUT'
+    #     body = {}
+    #     # self._remove_objects = {
+    #     #     'associations': [],
+    #     #     'attributes': [],
+    #     #     'securityLabels': [],
+    #     #     'tags': [],
+    #     # }
+
+    #     # What does this look like?
+    #     #
+    #     #
+    #     #
+    #     #
+    #     #
+
+    #     # for type_, data in self._remove_objects.items():
+
+    #     # self.request: Response = self._request(
+    #     #     method, self.url(method), body, headers={'content-type': 'application/json'}
+    #     # )
 
     @staticmethod
     def success(r: Response) -> bool:

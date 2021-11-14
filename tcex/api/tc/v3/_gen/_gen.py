@@ -1,6 +1,7 @@
 """Generate Models for ThreatConnect V3 API"""
 # standard library
 import os
+import sys
 from enum import Enum
 from pathlib import Path
 
@@ -68,6 +69,9 @@ def format_code(_code):
     mode = black.FileMode(line_length=100, string_normalization=False)
     try:
         _code = black.format_file_contents(_code, fast=False, mode=mode)
+    except black.InvalidInput as ex:
+        print(f'Formatting of code failed {ex}.')
+        sys.exit(1)
     except black.NothingChanged:
         pass
 
@@ -77,6 +81,7 @@ def format_code(_code):
         _code = isort.code(_code, config=isort_config)
     except Exception as ex:
         print(f'Formatting of code failed {ex}.')
+        sys.exit(1)
 
     return _code
 

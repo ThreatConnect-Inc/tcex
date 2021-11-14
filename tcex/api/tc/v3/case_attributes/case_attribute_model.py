@@ -29,6 +29,12 @@ class CaseAttributesModel(
         methods=['POST', 'PUT'],
         title='data',
     )
+    mode: str = Field(
+        'append',
+        description='The PUT mode for nested objects (append, delete, replace). Default: append',
+        methods=['POST', 'PUT'],
+        title='append',
+    )
 
 
 class CaseAttributeDataModel(

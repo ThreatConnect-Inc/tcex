@@ -462,6 +462,15 @@ class GenerateModelABC(GenerateABC, ABC):
                 f'''{self.i2}methods=['POST', 'PUT'],''',
                 f'''{self.i2}title='data',''',
                 f'''{self.i1})''',
+                f'''{self.i1}mode: str = Field(''',
+                f'''{self.i2}'append',''',
+                (
+                    f'''{self.i2}description='The PUT mode for nested '''
+                    '''objects (append, delete, replace). Default: append','''
+                ),
+                f'''{self.i2}methods=['POST', 'PUT'],''',
+                f'''{self.i2}title='append',''',
+                f'''{self.i1})''',
                 '',
                 '',
             ]
