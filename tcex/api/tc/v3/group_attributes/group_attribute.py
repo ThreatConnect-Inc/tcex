@@ -8,7 +8,6 @@ from tcex.api.tc.v3.group_attributes.group_attribute_model import (
 )
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
-from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 
 
 class GroupAttributes(ObjectCollectionABC):
@@ -65,23 +64,16 @@ class GroupAttribute(ObjectABC):
     def __init__(self, **kwargs) -> None:
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
+
+        # properties
         self._model = GroupAttributeModel(**kwargs)
+        self._nested_filter = 'has_group_attribute'
         self.type_ = 'Group Attribute'
 
     @property
     def _api_endpoint(self) -> str:
         """Return the type specific API endpoint."""
         return ApiEndpoints.GROUP_ATTRIBUTES.value
-
-    @property
-    def _base_filter(self) -> dict:
-        """Return the default filter."""
-        return {
-            'keyword': 'group_attribute_id',
-            'operator': TqlOperator.EQ,
-            'value': self.model.id,
-            'type_': 'integer',
-        }
 
     @property
     def as_entity(self) -> dict:

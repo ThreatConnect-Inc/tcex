@@ -5,7 +5,6 @@ from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 from tcex.api.tc.v3.security.user_groups.user_group_filter import UserGroupFilter
 from tcex.api.tc.v3.security.user_groups.user_group_model import UserGroupModel, UserGroupsModel
-from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 
 
 class UserGroups(ObjectCollectionABC):
@@ -57,23 +56,16 @@ class UserGroup(ObjectABC):
     def __init__(self, **kwargs) -> None:
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
+
+        # properties
         self._model = UserGroupModel(**kwargs)
+        self._nested_filter = 'has_user_group'
         self.type_ = 'User Group'
 
     @property
     def _api_endpoint(self) -> str:
         """Return the type specific API endpoint."""
         return ApiEndpoints.USER_GROUPS.value
-
-    @property
-    def _base_filter(self) -> dict:
-        """Return the default filter."""
-        return {
-            'keyword': 'user_group_id',
-            'operator': TqlOperator.EQ,
-            'value': self.model.id,
-            'type_': 'integer',
-        }
 
     @property
     def as_entity(self) -> dict:

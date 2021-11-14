@@ -3,6 +3,7 @@
 import hashlib
 import logging
 from abc import ABC
+from typing import Any, Optional
 
 # third-party
 from pydantic import BaseModel, PrivateAttr
@@ -25,6 +26,68 @@ class V3ModelABC(BaseModel, ABC):
         # store initial dict hash of model
         self._dict_hash = self.gen_model_hash(self.json(sort_keys=True))
 
+    # @staticmethod
+    # def _calculate_method(method: str, model: 'BaseModel', nested: bool) -> str:
+    #     """Return the appropriate HTTP method value.
+
+    #     The method value control the behavior of included field for a DELETE, GET, POST or PUT.
+    #     """
+    #     if not model.id and method == 'PUT':
+    #         method = 'POST'
+    #     elif model._method_override and method.upper() not in ['GET', 'DELETE']:
+    #         method = 'PUT'
+    #     return method
+
+    @staticmethod
+    def _calculate_field_inclusion(
+        field: str, method: str, nested: bool, property_: dict, value: Any
+    ) -> str:
+        """Return True if the field is calculated to be included."""
+
+        # ID Rule - The "id" should not be included for ANY method on parent object,
+        #     but for nested objects the "id" field should be included when available.
+        if field == 'id' and nested is True and value:
+            return True
+
+        # if method == 'POST' and nested is True:
+        #     pass
+
+        # if method == 'PUT' and nested is True:
+        #     pass
+
+        # METHOD Rule - If the current method is in the property "methods" list the
+        #     field should be included when available.
+        if method in property_.get('methods', []) and value:
+            return True
+
+        # DEFAULT Rule - Fields should not be included unless the match a previous rule.
+        return False
+
+    @staticmethod
+    def _process_nested_data_object(method: str, nested: bool, nested_object: 'BaseModel'):
+        """Process the nested data object (e.g., GroupsModel.data).
+
+        Nested Object Inclusion Rules:
+        * If the method is not PUT.
+        * The model doesn't have an "id" field.
+          * Object was created using the "add_xxx" method on the parent object.
+        * The model's "updated" field is True.
+          * Object was modified after it was created. Since object pulled from the API
+              are create using **kwargs they are not updated.
+        """
+        _data = []
+        for model in nested_object.data:
+            # @bpurdy - Never include nested object for get or delete?
+            if method in ['DELETE', 'GET']:
+                continue
+
+            if method == 'POST' or model.id is None or model.updated is True:
+                # method = self._calculate_method(method, model, nested)
+                data = model.gen_body(method, nested=True)
+                if data:
+                    _data.append(data)
+        return _data
+
     def _properties(self):
         """Return properties of the current model."""
         schema = self.schema(by_alias=False)
@@ -32,51 +95,46 @@ class V3ModelABC(BaseModel, ABC):
             return schema.get('properties')
         return schema.get('definitions').get(self.__class__.__name__).get('properties')
 
-    def gen_body(self, method: str, exclude_none=True) -> dict:
-        """Return the generated body."""
+    def gen_body(
+        self, method: str, exclude_none: Optional[bool] = True, nested: Optional[bool] = False
+    ) -> dict:
+        """Return the generated body.
+
+        The field included in the body depend on the HTTP Method and whether or not the object
+        is nested. For example the ID should not be send on the parent object on a POST or PUT,
+        but should be added for a PUT on a nested object.
+        """
         _body = {}
         schema_properties = self._properties()
         for name, value in self:
             if exclude_none is True and value is None:
                 continue
 
-            # schema check
+            # get the current field from the schema to us in validating method membership.
             property_ = schema_properties.get(name)
             if property_ is None:
+                # a field not being available does not indicate a failure, it could simple
+                # be the incorrect field was passed to the object, which will be dropped.
                 self._log.warning(f'action=schema-check, property={name}, result=not-found')
                 continue
 
+            # TODO: [med] talk to @bpurdy about switching to alias field
             key = property_.get('title')
             if isinstance(value, BaseModel):
+                # For the threatconnect API the data structure for an object should have
+                # a data array with nested object or be an object.
                 if hasattr(value, 'data') and isinstance(value.data, list):
-                    # this is a nested collection (e.g., GroupsModel)
-                    _data = []
-                    for model in value.data:
-                        # on PUT method:
-                        # * don't put values with and id
-                        # OR
-                        # * don't put values that have not been updated
-                        if method == 'PUT' and (model.id is not None or model.updated is True):
-                            continue
-
-                        _method = str(method)
-                        if not model.id and _method == 'PUT':
-                            _method = 'POST'
-                        elif model._method_override and _method.upper() not in ['GET', 'DELETE']:
-                            _method = 'PUT'
-                        data = model.gen_body(_method)
-                        if data:
-                            _data.append(data)
+                    _data = self._process_nested_data_object(method, nested, value)
                     if _data:
-                        _body[key] = {}
-                        _body[key]['data'] = _data
+                        _body.setdefault(key, {})['data'] = _data
+                        # _body[key] = {}
+                        # _body[key]['data'] = _data
                 else:
-                    # handle nested values
-                    if method != 'PUT' or value.updated is True:
-                        data = value.gen_body(method)
-                        if data:
-                            _body[key] = data
-            elif method in property_.get('methods', []) and value:
+                    if method == 'POST' or value.id is None or value.updated is True:
+                        _data = value.gen_body(method, nested=True)
+                        if _data:
+                            _body[key] = _data
+            elif self._calculate_field_inclusion(key, method, nested, property_, value):
                 _body[key] = value
         return _body
 

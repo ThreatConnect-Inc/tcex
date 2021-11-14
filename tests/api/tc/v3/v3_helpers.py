@@ -35,6 +35,13 @@ class V3Helper:
         # cleanup values
         self._v3_objects = []
 
+    @staticmethod
+    def _to_list(value: Any) -> list:
+        """Wrap value in list if required."""
+        if not isinstance(value, list):
+            value = [value]
+        return value
+
     def _import_model(self, module, class_name) -> Any:
         """Import the appropriate model."""
         # print(f'method=import_module, module={module}, class_name={class_name}')
@@ -186,7 +193,7 @@ class V3Helper:
 
         artifacts = kwargs.get('artifacts', {})
         notes = kwargs.get('notes', [])
-        tags = kwargs.get('tags', [])
+        tags = self._to_list(kwargs.get('tags', []))
         tasks = kwargs.get('tasks', {})
 
         # create case
@@ -206,8 +213,6 @@ class V3Helper:
 
         # add tags
         case.add_tag(name='pytest')
-        if isinstance(tags, dict):
-            tags = [tags]
         for tag in tags:
             case.add_tag(**tag)
 
@@ -225,85 +230,111 @@ class V3Helper:
 
         return case
 
-    # def create_indicator(self, type_: Optional[str] = 'Address', **kwargs):
-    #     """Create a indicator.
+    def create_indicator(self, type_: Optional[str] = 'Address', **kwargs):
+        """Create a indicator.
 
-    #     Args:
-    #         associations (dict|list, kwargs): Optional indicator associations.
-    #         attributes (dict|list, kwargs): Optional indicator attributes.
-    #         confidence (str, kwargs): Optional rating.
-    #         rating (str, kwargs): Optional rating.
-    #         security_labels (dict|list, kwargs): Optional indicator security labels.
-    #         size (dict|list, kwargs): Optional indicator size for File indicators.
-    #         tags (dict|list, kwargs): Optional case tags.
-    #         value_1 (str, kwargs): Optional indicator value 1.
-    #         value_2 (str, kwargs): Optional indicator value 2.
-    #         value_3 (str, kwargs): Optional indicator value 3.
+        Args:
+            active (bool, kwargs): Optional active bool.
+            associated_groups (dict|list, kwargs): Optional group associations.
+            attributes (dict|list, kwargs): Optional indicator attributes.
+            confidence (int, kwargs): Optional rating.
+            rating (int, kwargs): Optional rating.
+            security_labels (dict|list, kwargs): Optional indicator security labels.
+            size (dict|list, kwargs): Optional indicator size for File indicators.
+            source (str, kwargs): Optional source.
+            tags (dict|list, kwargs): Optional case tags.
+            value_1 (str, kwargs): Optional indicator value 1.
+            value_2 (str, kwargs): Optional indicator value 2.
+            value_3 (str, kwargs): Optional indicator value 3.
 
-    #     Returns:
-    #         V3.Indicator: A indicator object.
-    #     """
-    #     value_1 = kwargs.get('value1', f'123.124.125.{randint(1,255)}')
-    #     indicators = self.v3.indicators()
-    #     indicators.filter.tag(TqlOperator.EQ, 'pytest')
-    #     for indicator in indicators:
-    #         indicator.delete()
+        Returns:
+            V3.Indicator: A indicator object.
+        """
+        value_1 = kwargs.get('value1', f'123.{randint(1,255)}.{randint(1,255)}.{randint(1,255)}')
+        # indicators = self.v3.indicators()
+        # indicators.filter.tag(TqlOperator.EQ, 'pytest')
+        # for indicator in indicators:
+        #     indicator.delete()
 
-    #     def value_1_map():
-    #         """Return the appropriate indicator field name."""
-    #         value_1_mapping = {
-    #             'Address': 'ip',
-    #             'EmailAddress': 'address',
-    #             'File': 'md5',
-    #             'Host': 'hostName',
-    #             'URL': 'text',
-    #         }
-    #         return value_1_mapping.get(type_, 'value1')
+        def value_1_map():
+            """Return the appropriate indicator field name."""
+            value_1_mapping = {
+                'Address': 'ip',
+                'EmailAddress': 'address',
+                'File': 'md5',
+                'Host': 'hostName',
+                'URL': 'text',
+            }
+            return value_1_mapping.get(type_, 'value1')
 
-    #     def value_2_map():
-    #         """Return the appropriate indicator field name."""
-    #         value_1_mapping = {
-    #             'File': 'sha1',
-    #         }
-    #         return value_1_mapping.get(type_, type_)
+        def value_2_map():
+            """Return the appropriate indicator field name."""
+            value_1_mapping = {
+                'File': 'sha1',
+            }
+            return value_1_mapping.get(type_, type_)
 
-    #     def value_3_map():
-    #         """Return the appropriate indicator field name."""
-    #         value_1_mapping = {
-    #             'File': 'sha1',
-    #         }
-    #         return value_1_mapping.get(type_, type_)
+        def value_3_map():
+            """Return the appropriate indicator field name."""
+            value_1_mapping = {
+                'File': 'sha256',
+            }
+            return value_1_mapping.get(type_, type_)
 
-    #     indicator_data = {
-    #         'active': True,
-    #         'confidence': kwargs.get('confidence', 0),
-    #         'description': 'TcEx Testing',
-    #         'rating': kwargs.get('rating'),
-    #         'type': type_,
-    #     }
+        indicator_data = {
+            'active': kwargs.get('active', True),
+            'confidence': kwargs.get('confidence', 0),
+            'description': 'TcEx Testing',
+            'rating': kwargs.get('rating'),
+            'type': type_,
+        }
+        # add "primary" indicator field
+        indicator_data[value_1_map()] = value_1
+        # add "secondary" indicator field
+        if kwargs.get('value_2') is not None:
+            indicator_data[value_2_map()] = value_1
+        # add "tertiary" indicator field
+        if kwargs.get('value_2') is not None:
+            indicator_data[value_3_map()] = value_1
+        # add size for file
+        if kwargs.get('size') is not None:
+            indicator_data['size'] = kwargs.get('size')
+        # add source
+        if kwargs.get('source') is not None:
+            indicator_data['source'] = kwargs.get('source')
 
-    #     # add indicator field
-    #     indicator_data[value_1_map()] = value_1
+        # create indicator
+        indicator = self.v3.indicator(**indicator_data)
 
-    #     # add additional indicator field
-    #     if kwargs.get('value_2') is not None:
+        associated_groups = self._to_list(kwargs.get('associated_groups', []))
+        attributes = self._to_list(kwargs.get('attribute', []))
+        security_labels = self._to_list(kwargs.get('security_labels', []))
+        tags = self._to_list(kwargs.get('tags', []))
 
-    #     tags = kwargs.get('tags', [])
+        # add associations
+        for associated_group in associated_groups:
+            indicator.add_associated_group(**associated_group)
 
-    #     # add tags
-    #     indicator.add_tag(name='pytest')
-    #     if isinstance(tags, dict):
-    #         tags = [tags]
-    #     for tag in tags:
-    #         indicator.add_tag(**tag)
+        # add attributes
+        for attribute in attributes:
+            indicator.add_attribute(**attribute)
 
-    #     # submit object
-    #     indicator.submit()
+        # add security labels
+        for security_label in security_labels:
+            indicator.add_security_label(**security_label)
 
-    #     # store case id for cleanup
-    #     self._v3_objects.append(indicator)
+        # add tags
+        indicator.add_tag(name='pytest')
+        for tag in tags:
+            indicator.add_tag(**tag)
 
-    #     return indicator
+        # submit object
+        indicator.submit()
+
+        # store case id for cleanup
+        self._v3_objects.append(indicator)
+
+        return indicator
 
     def cleanup(self):
         """Remove all cases and child data."""

@@ -3,7 +3,6 @@
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
-from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tcex.api.tc.v3.victim_attributes.victim_attribute_filter import VictimAttributeFilter
 from tcex.api.tc.v3.victim_attributes.victim_attribute_model import (
     VictimAttributeModel,
@@ -65,23 +64,16 @@ class VictimAttribute(ObjectABC):
     def __init__(self, **kwargs) -> None:
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
+
+        # properties
         self._model = VictimAttributeModel(**kwargs)
+        self._nested_filter = 'has_victim_attribute'
         self.type_ = 'Victim Attribute'
 
     @property
     def _api_endpoint(self) -> str:
         """Return the type specific API endpoint."""
         return ApiEndpoints.VICTIM_ATTRIBUTES.value
-
-    @property
-    def _base_filter(self) -> dict:
-        """Return the default filter."""
-        return {
-            'keyword': 'victim_attribute_id',
-            'operator': TqlOperator.EQ,
-            'value': self.model.id,
-            'type_': 'integer',
-        }
 
     @property
     def as_entity(self) -> dict:

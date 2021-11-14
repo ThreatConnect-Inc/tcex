@@ -1,4 +1,7 @@
 """AdversaryAsset / AdversaryAssets Object"""
+# standard library
+from typing import TYPE_CHECKING
+
 # first-party
 from tcex.api.tc.v3.adversary_assets.adversary_asset_filter import AdversaryAssetFilter
 from tcex.api.tc.v3.adversary_assets.adversary_asset_model import (
@@ -6,9 +9,13 @@ from tcex.api.tc.v3.adversary_assets.adversary_asset_model import (
     AdversaryAssetsModel,
 )
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
+from tcex.api.tc.v3.groups.group_model import GroupModel
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
-from tcex.api.tc.v3.tql.tql_operator import TqlOperator
+
+if TYPE_CHECKING:  # pragma: no cover
+    # first-party
+    from tcex.api.tc.v3.groups.group import Group
 
 
 class AdversaryAssets(ObjectCollectionABC):
@@ -70,23 +77,16 @@ class AdversaryAsset(ObjectABC):
     def __init__(self, **kwargs) -> None:
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
+
+        # properties
         self._model = AdversaryAssetModel(**kwargs)
+        self._nested_filter = 'has_adversary_asset'
         self.type_ = 'Adversary Asset'
 
     @property
     def _api_endpoint(self) -> str:
         """Return the type specific API endpoint."""
         return ApiEndpoints.ADVERSARY_ASSETS.value
-
-    @property
-    def _base_filter(self) -> dict:
-        """Return the default filter."""
-        return {
-            'keyword': 'adversary_asset_id',
-            'operator': TqlOperator.EQ,
-            'value': self.model.id,
-            'type_': 'integer',
-        }
 
     @property
     def as_entity(self) -> dict:
@@ -96,3 +96,44 @@ class AdversaryAsset(ObjectABC):
             type_ = self.model.type
 
         return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
+
+    def add_associated_group(self, **kwargs) -> None:
+        """Add group to the object.
+
+        Args:
+            attributes (GroupAttributes, kwargs): A list of Attributes corresponding to the Group.
+            body (str, kwargs): The email Body.
+            due_date (str, kwargs): The date and time that the Task is due.
+            escalation_date (str, kwargs): The escalation date and time.
+            event_date (str, kwargs): The date and time that the incident or event was first
+                created.
+            file_name (str, kwargs): The document or signature file name.
+            file_text (str, kwargs): The signature file text.
+            file_type (str, kwargs): The signature file type.
+            first_seen (str, kwargs): The date and time that the campaign was first created.
+            from_ (str, kwargs): The email From field.
+            header (str, kwargs): The email Header field.
+            malware (bool, kwargs): Is the document malware?
+            name (str, kwargs): The name of the group.
+            owner_name (str, kwargs): The name of the Organization, Community, or Source that the
+                item belongs to.
+            password (str, kwargs): The password associated with the document (Required if Malware
+                is true).
+            publish_date (str, kwargs): The date and time that the report was first created.
+            reminder_date (str, kwargs): The reminder date and time.
+            status (str, kwargs): The status associated with this document, event, task, or incident
+                (read only for task, document, and report).
+            subject (str, kwargs): The email Subject section.
+            to (str, kwargs): The email To field .
+            type (str, kwargs): The **type** for the Group.
+            xid (str, kwargs): The xid of the item.
+        """
+        self.model.associated_groups.data.append(GroupModel(**kwargs))
+
+    @property
+    def associated_groups(self) -> 'Group':
+        """Yield Group from Groups."""
+        # first-party
+        from tcex.api.tc.v3.groups.group import Groups
+
+        yield from self._iterate_over_sublist(Groups)

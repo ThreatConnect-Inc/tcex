@@ -1,6 +1,5 @@
 """Generate Abstract Base Class"""
 # standard library
-import json
 import os
 from abc import ABC
 from textwrap import TextWrapper
@@ -70,8 +69,17 @@ class GenerateABC(ABC):
             type_ = 'victim_attributes'
         return self.utils.snake_string(type_)
 
-    def _module_data(self, type_: str) -> Dict:
-        """Return the model module map data."""
+    def _module_import_data(self, type_: str) -> Dict:
+        """Return the model module map data.
+
+        This method provides the logic to build the import module and class dynamically. Using
+        the provided type value (e.g., cases, groups, victim_attributes) the module
+        (tcex.api.tc.v3.groups.group_filter) and the class (GroupFilter) are returned.
+
+        filter -> the filter Class (CaseFilter)
+        model  -> the model and model collection Classes (CaseModel, CasesModel)
+        object -> the object and object collection Classes (Case, Cases)
+        """
         type_ = self._type_map(type_)
 
         _base_path = f'{self.tap(type_)}.{type_}'
@@ -124,13 +132,20 @@ class GenerateABC(ABC):
             # print(r.request.method, r.request.url, r.text)
             if r.ok:
                 _properties = r.json()
+
+                # special handling of "id" field
                 if 'id' not in _properties:
                     _properties['id'] = {
                         'required': False,
                         'type': 'Integer',
                         'description': 'The id of the **Object**',
-                        'read-only': True,
+                        'readOnly': True,
+                        'updatable': False,
                     }
+                # the "id" field needs to be send in nested object on PUT and POST
+                # (e.g., for group associations on an indicator object)
+                # _properties['id']['readOnly'] = False
+
                 if self.type_.lower() == 'user_groups':
                     _properties['name']['readOnly'] = False
                 if self.type_.lower() == 'users':
@@ -140,11 +155,10 @@ class GenerateABC(ABC):
             typer.secho(f'Failed getting types properties ({ex}).', fg=typer.colors.RED)
             typer.Exit(1)
 
-        # print('status', r.status_code)
-        # print(r.text)
         return _properties
 
     def gen_json_encoder(self):
+        """@bpurdy"""
         json_encoders = []
         if self.json_encoder:
             json_encoders.append('# json-encoder')
@@ -161,19 +175,6 @@ class GenerateABC(ABC):
         # add additional imports when required
         if self.requirements.get('type-checking'):
             self.requirements['standard library'].append('from typing import TYPE_CHECKING')
-
-        # add the PrivateAttr to the pydantic module imports for tags and security labels
-        if self.type_.lower() in ['tags', 'security_labels']:
-            libs = self.requirements.get('third-party', [])
-            added = False
-            for lib in libs:
-                if lib.get('module') == 'pydantic':
-                    added = True
-                    if 'PrivateAttr' not in lib.get('imports', []):
-                        lib.get('imports', []).append('PrivateAttr')
-                    break
-            if added is False:
-                libs.append({'module': 'pydantic', 'imports': ['PrivateAttr']})
 
         indent = ''
         _libs = []

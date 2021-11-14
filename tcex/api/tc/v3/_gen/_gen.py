@@ -136,6 +136,7 @@ def gen_model(type_: str) -> None:
     # generate model fields code first so that requirements can be determined
     model_fields = gen.gen_model_fields()
     validator_methods = gen.gen_validator_methods()
+    private_attrs = gen.gen_private_attrs()
 
     _code = gen.gen_doc_string()
     _code += gen.gen_requirements()
@@ -148,7 +149,7 @@ def gen_model(type_: str) -> None:
     _code += gen.gen_data_fields()
     # add data model
     _code += gen.gen_model_class()
-    _code += gen.gen_private_attrs()
+    _code += private_attrs
     _code += model_fields
     # add validators
     _code += validator_methods

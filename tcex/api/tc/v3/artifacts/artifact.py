@@ -9,7 +9,6 @@ from tcex.api.tc.v3.artifacts.artifact_model import ArtifactModel, ArtifactsMode
 from tcex.api.tc.v3.notes.note_model import NoteModel
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
-from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 
 if TYPE_CHECKING:  # pragma: no cover
     # first-party
@@ -78,23 +77,16 @@ class Artifact(ObjectABC):
     def __init__(self, **kwargs) -> None:
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
+
+        # properties
         self._model = ArtifactModel(**kwargs)
+        self._nested_filter = 'has_artifact'
         self.type_ = 'Artifact'
 
     @property
     def _api_endpoint(self) -> str:
         """Return the type specific API endpoint."""
         return ApiEndpoints.ARTIFACTS.value
-
-    @property
-    def _base_filter(self) -> dict:
-        """Return the default filter."""
-        return {
-            'keyword': 'artifact_id',
-            'operator': TqlOperator.EQ,
-            'value': self.model.id,
-            'type_': 'integer',
-        }
 
     @property
     def as_entity(self) -> dict:

@@ -40,6 +40,13 @@ class GenerateModelABC(GenerateABC, ABC):
                 if lib.get('module') == 'pydantic':
                     lib['imports'].append('validator')
 
+    def _add_pydantic_private_attr(self):
+        """Add pydantic validator only when required."""
+        for lib in self.requirements['third-party']:
+            if isinstance(lib, dict):
+                if lib.get('module') == 'pydantic':
+                    lib['imports'].append('PrivateAttr')
+
     def _configure_type(self, type_: str, field: str) -> str:
         """Return hint type."""
         _types = self._prop_type_common()
@@ -401,6 +408,7 @@ class GenerateModelABC(GenerateABC, ABC):
     def gen_private_attrs(self) -> str:
         """Generate doc string."""
         if self.type_.lower() in ['tags', 'security_labels']:
+            self._add_pydantic_private_attr()
             return f'{self.i1}_method_override = PrivateAttr(True)\n\n'
         return ''
 

@@ -2,9 +2,6 @@
 # standard library
 from enum import Enum
 
-# third-party
-from pydantic import PrivateAttr
-
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.filter_abc import FilterABC

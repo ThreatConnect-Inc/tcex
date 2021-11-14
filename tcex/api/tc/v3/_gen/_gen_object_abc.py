@@ -27,7 +27,6 @@ class GenerateObjectABC(GenerateABC, ABC):
                 'from tcex.api.tc.v3.api_endpoints import ApiEndpoints',
                 'from tcex.api.tc.v3.object_abc import ObjectABC',
                 'from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC',
-                'from tcex.api.tc.v3.tql.tql_operator import TqlOperator',
             ],
             'first-party-forward-reference': [],
             'type-checking': [],
@@ -147,41 +146,45 @@ class GenerateObjectABC(GenerateABC, ABC):
                 f'''{self.i1}def __init__(self, **kwargs) -> None:''',
                 f'''{self.i2}"""Initialize class properties."""''',
                 f'''{self.i2}super().__init__(kwargs.pop('session', None))''',
+                '',
+                f'''{self.i2}# properties''',
                 f'''{self.i2}self._model = {self.type_.singular().pascal_case()}Model(**kwargs)''',
+                f'''{self.i2}self._nested_filter = 'has_{self.type_.singular()}' ''',
                 f'''{self.i2}self.type_ = \'{self.type_.singular().space_case()}\'''',
                 '',
                 '',
             ]
         )
 
-    def _gen_code_object_base_filter_method(self) -> str:
-        """Return the method code.
+    # def _gen_code_object_base_filter_method(self) -> str:
+    #     """Return the method code.
 
-        @property
-        def _base_filter(self) -> dict:
-            '''Return the default filter.'''
-            return {
-                'keyword': 'artifactid',
-                'operator': TqlOperator.EQ,
-                'value': self.model.id,
-                'type_': 'integer',
-            }
-        """
-        return '\n'.join(
-            [
-                f'''{self.i1}@property''',
-                f'''{self.i1}def _base_filter(self) -> dict:''',
-                f'''{self.i2}"""Return the default filter."""''',
-                f'''{self.i2}return {{''',
-                f'''{self.i3}'keyword': '{self.type_.singular()}_id',''',
-                f'''{self.i3}'operator': TqlOperator.EQ,''',
-                f'''{self.i3}'value': self.model.id,''',
-                f'''{self.i3}'type_': 'integer',''',
-                f'''{self.i2}}}''',
-                '',
-                '',
-            ]
-        )
+    #     @property
+    #     def _base_filter(self) -> dict:
+    #         '''Return the default filter.'''
+    #         return {
+    #             'keyword': 'artifactid',
+    #             'operator': TqlOperator.EQ,
+    #             'value': self.model.id,
+    #             'type_': 'integer',
+    #         }
+    #     """
+    #     return '\n'.join(
+    #         [
+    #             f'''{self.i1}@property''',
+    #             f'''{self.i1}def _base_filter(self) -> dict:''',
+    #             f'''{self.i2}"""Return the default filter."""''',
+    #             f'''{self.i2}return {{''',
+    #             f'''{self.i3}'keyword': '{self.type_.singular()}_id',''',
+    #             f'''{self.i3}'keyword': 'id',''',
+    #             f'''{self.i3}'operator': TqlOperator.EQ,''',
+    #             f'''{self.i3}'value': self.model.id,''',
+    #             f'''{self.i3}'type_': 'integer',''',
+    #             f'''{self.i2}}}''',
+    #             '',
+    #             '',
+    #         ]
+    #     )
 
     def _gen_code_object_as_entity_property_method(self) -> str:
         """Return the method code.
@@ -221,7 +224,7 @@ class GenerateObjectABC(GenerateABC, ABC):
             ]
         )
 
-    def _gen_code_object_add_type_method(self, type_) -> str:
+    def _gen_code_object_add_type_method(self, type_: str, model_type: Optional[str] = None) -> str:
         """Return the method code.
 
         def add_artifact(self, **kwargs) -> None:
@@ -232,11 +235,13 @@ class GenerateObjectABC(GenerateABC, ABC):
             self.model.artifacts.data.append(ArtifactModel(**kwargs))
         """
         type_ = self.utils.camel_string(type_)
+        model_type = self.utils.camel_string(model_type or type_)
 
         # get model from map and update requirements
-        model_data = self._module_data(type_)
+        model_import_data = self._module_import_data(type_)
         self.requirements['first-party'].append(
-            f'''from {model_data.get('model_module')} import {model_data.get('model_class')}'''
+            f'''from {model_import_data.get('model_module')} '''
+            f'''import {model_import_data.get('model_class')}'''
         )
 
         # get args
@@ -245,21 +250,23 @@ class GenerateObjectABC(GenerateABC, ABC):
         )
         return '\n'.join(
             [
-                f'''{self.i1}def add_{type_.singular()}(self, **kwargs) -> None:''',
+                f'''{self.i1}def add_{model_type.singular()}(self, **kwargs) -> None:''',
                 f'''{self.i2}"""Add {type_.singular()} to the object.''',
                 '',
                 f'''{args}''',
                 f'''{self.i2}"""''',
                 (
-                    f'''{self.i2}self.model.{type_.plural()}.data.'''
-                    f'''append({model_data.get('model_class')}(**kwargs))'''
+                    f'''{self.i2}self.model.{model_type.plural()}.data.'''
+                    f'''append({model_import_data.get('model_class')}(**kwargs))'''
                 ),
                 '',
                 '',
             ]
         )
 
-    def _gen_code_object_type_property_method(self, type_: str) -> str:
+    def _gen_code_object_type_property_method(
+        self, type_: str, model_type: Optional[str] = None
+    ) -> str:
         """Return the method code.
 
         @property
@@ -270,37 +277,51 @@ class GenerateObjectABC(GenerateABC, ABC):
             yield from self._iterate_over_sublist(Artifacts)
         """
         type_ = self.utils.camel_string(type_)
+        model_type = self.utils.camel_string(model_type or type_)
 
         # get model from map and update requirements
-        model_data = self._module_data(type_)
-        self.requirements['type-checking'].append(
-            f'''from {model_data.get('object_module')} '''
-            f'''import {model_data.get('object_class')}'''
-        )
-        return '\n'.join(
+        model_import_data = self._module_import_data(type_)
+
+        # don't add import if class is in same file
+        if self.type_ != type_:
+            self.requirements['type-checking'].append(
+                f'''from {model_import_data.get('object_module')} '''
+                f'''import {model_import_data.get('object_class')}'''
+            )
+        _code = [
+            f'''{self.i1}@property''',
+            (
+                f'''{self.i1}def {model_type.plural()}(self) ->'''
+                f''' '{model_import_data.get('object_class')}':'''
+            ),
+            (
+                f'''{self.i2}"""Yield {type_.singular().pascal_case()} '''
+                f'''from {type_.plural().pascal_case()}."""'''
+            ),
+        ]
+
+        if self.type_ != type_:
+            _code.extend(
+                [
+                    (
+                        f'''{self.i2}from {model_import_data.get('object_module')} '''
+                        f'''import {model_import_data.get('object_collection_class')}'''
+                    ),
+                    '',
+                ]
+            )
+
+        _code.extend(
             [
-                f'''{self.i1}@property''',
-                (
-                    f'''{self.i1}def {type_.plural()}(self) ->'''
-                    f''' '{model_data.get('object_class')}':'''
-                ),
-                (
-                    f'''{self.i2}"""Yield {type_.singular().pascal_case()} '''
-                    f'''from {type_.plural().pascal_case()}."""'''
-                ),
-                (
-                    f'''{self.i2}from {model_data.get('object_module')} '''
-                    f'''import {model_data.get('object_collection_class')}'''
-                ),
-                '',
                 (
                     f'''{self.i2}yield from self._iterate_over_sublist'''
-                    f'''({model_data.get('object_collection_class')})'''
+                    f'''({model_import_data.get('object_collection_class')})'''
                 ),
                 '',
                 '',
             ]
         )
+        return '\n'.join(_code)
 
     def gen_container_class(self) -> str:
         """Generate the Container Model
@@ -423,12 +444,12 @@ class GenerateObjectABC(GenerateABC, ABC):
         _code += self._gen_code_api_endpoint_property()
 
         # generate base_filter property method
-        _code += self._gen_code_object_base_filter_method()
+        # _code += self._gen_code_object_base_filter_method()
 
         # generate as_entity property method
         _code += self._gen_code_object_as_entity_property_method()
 
-        # get NON read-only properties of endpoint
+        # get NON read-only properties of endpoint (OPTIONS: /v3/<object>)
         add_properties = []
         for field_name, field_data in self._type_properties.items():
             # TODO: [super-low] remove this when core updates format of attribute on v3 TI
@@ -445,6 +466,14 @@ class GenerateObjectABC(GenerateABC, ABC):
         # generate add_artifact method
         if 'artifacts' in add_properties:
             _code += self._gen_code_object_add_type_method('artifacts')
+
+        # generate add_associated_group method
+        if 'associatedGroups' in add_properties:
+            _code += self._gen_code_object_add_type_method('groups', 'associated_groups')
+
+        # generate add_associated_indicator method
+        if 'associatedIndicators' in add_properties and self.type_ != 'indicators':
+            _code += self._gen_code_object_add_type_method('indicators', 'associated_indicators')
 
         # generate add_attribute method
         if 'attributes' in add_properties:
@@ -476,6 +505,16 @@ class GenerateObjectABC(GenerateABC, ABC):
         # generate artifacts property method
         if 'artifacts' in add_properties:
             _code += self._gen_code_object_type_property_method('artifacts')
+
+        # generate add_associated_group method
+        if 'associatedGroups' in add_properties:
+            _code += self._gen_code_object_type_property_method('groups', 'associated_groups')
+
+        # generate add_associated_indicator method
+        if 'associatedIndicators' in add_properties:
+            _code += self._gen_code_object_type_property_method(
+                'indicators', 'associated_indicators'
+            )
 
         # generate attributes property method
         if 'attributes' in add_properties:

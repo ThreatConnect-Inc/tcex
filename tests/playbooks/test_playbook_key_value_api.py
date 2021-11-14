@@ -124,6 +124,7 @@ class TestPlaybookKeyValueApi:
             variable (str): The key/variable to create in Key Value Store.
             value (str): The value to store in Key Value Store.
             playbook_app (callable, fixture): The playbook_app fixture.
+            monkeypatch (monkeypatch): Pytest monkeypatch.
         """
         tcex = playbook_app(
             config_data={

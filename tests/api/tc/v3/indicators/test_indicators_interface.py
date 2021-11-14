@@ -23,6 +23,12 @@ class TestIndicators(TestCaseManagement):
         self.v3 = self.v3_helper.v3
         self.tcex = self.v3_helper.tcex
 
+        # cleanup between tests
+        indicators = self.v3.indicators()
+        indicators.filter.tag(TqlOperator.EQ, 'pytest')
+        for indicator in indicators:
+            indicator.delete()
+
     def teardown_method(self):
         """Configure teardown before all tests."""
         # TODO: [med] @bpurdy - do you recall what the condition is for?
@@ -106,6 +112,9 @@ class TestIndicators(TestCaseManagement):
         # [Retrieve Testing] get the object from the API
         indicator.get(params={'fields': ['_all_']})
 
+        for group in indicator.associated_groups:
+            print('group name', group.model.name)
+
         # [Retrieve Testing] run assertions on returned data
         indicator.model.summary == indicator_data.get('ip')
         indicator.model.ip == indicator_data.get('ip')
@@ -127,43 +136,36 @@ class TestIndicators(TestCaseManagement):
 
     def test_indicator_get_many(self):
         """Test Indicators Get Many"""
-        # # [Pre-Cleanup] - create case (requires v3ApiBulkDeleteAllowed to be enabled)
-        # indicators = self.v3.indicators()
-        # indicators.filter.tag(TqlOperator.EQ, indicator_tag)
-        # indicators.delete()
-
         # [Pre-Requisite] - create case
         indicator_count = 10
         indicator_ids = []
         indicator_tag = 'TcEx-Indicator-Testing'
-        for i in range(0, indicator_count):
+        for _ in range(0, indicator_count):
             # [Create Testing] define object data
-            indicator_data = {
-                'active': True,
-                'confidence': 75,
-                'description': 'TcEx Testing',
-                'ip': f'123.123.125.{i}',
-                'rating': 3,
-                'source': None,
-                'tags': {'data': [{'name': indicator_tag}]},
-                'type': 'Address',
-            }
-            indicator = self.v3.indicator(**indicator_data)
-            indicator.submit()
+            indicator = self.v3_helper.create_indicator(
+                **{
+                    'active': True,
+                    'associated_groups': {'id': 8755},
+                    'attribute': {'type': 'Description', 'value': indicator_tag},
+                    'confidence': randint(0, 100),
+                    'description': 'TcEx Testing',
+                    'rating': randint(0, 5),
+                    'security_labels': {'name': 'TLP:WHITE'},
+                    'source': None,
+                    'tags': {'name': indicator_tag},
+                    'type': 'Address',
+                }
+            )
             indicator_ids.append(indicator.model.id)
-            self.v3_helper._v3_objects.append(indicator)
 
         # [Retrieve Testing] iterate over all object looking for needle
         indicators = self.v3.indicators()
         indicators.filter.tag(TqlOperator.EQ, indicator_tag)
         # capture indicator count before deleting the indicator
         indicators_counts = len(indicators)
-        for i, indicator in enumerate(indicators):
+        for _, indicator in enumerate(indicators):
             assert indicator.model.id in indicator_ids
             indicator_ids.remove(indicator.model.id)
-
-            # cleanup the indicator
-            # indicator.delete()
 
         assert indicators_counts == indicator_count
         assert not indicator_ids, 'Not all indicators were returned.'

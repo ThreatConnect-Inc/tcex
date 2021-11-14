@@ -3,7 +3,6 @@
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
-from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tcex.api.tc.v3.workflow_templates.workflow_template_filter import WorkflowTemplateFilter
 from tcex.api.tc.v3.workflow_templates.workflow_template_model import (
     WorkflowTemplateModel,
@@ -63,23 +62,16 @@ class WorkflowTemplate(ObjectABC):
     def __init__(self, **kwargs) -> None:
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
+
+        # properties
         self._model = WorkflowTemplateModel(**kwargs)
+        self._nested_filter = 'has_workflow_template'
         self.type_ = 'Workflow Template'
 
     @property
     def _api_endpoint(self) -> str:
         """Return the type specific API endpoint."""
         return ApiEndpoints.WORKFLOW_TEMPLATES.value
-
-    @property
-    def _base_filter(self) -> dict:
-        """Return the default filter."""
-        return {
-            'keyword': 'workflow_template_id',
-            'operator': TqlOperator.EQ,
-            'value': self.model.id,
-            'type_': 'integer',
-        }
 
     @property
     def as_entity(self) -> dict:

@@ -5,7 +5,6 @@ from tcex.api.tc.v3.artifact_types.artifact_type_filter import ArtifactTypeFilte
 from tcex.api.tc.v3.artifact_types.artifact_type_model import ArtifactTypeModel, ArtifactTypesModel
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
-from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 
 
 class ArtifactTypes(ObjectCollectionABC):
@@ -53,23 +52,16 @@ class ArtifactType(ObjectABC):
     def __init__(self, **kwargs) -> None:
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
+
+        # properties
         self._model = ArtifactTypeModel(**kwargs)
+        self._nested_filter = 'has_artifact_type'
         self.type_ = 'Artifact Type'
 
     @property
     def _api_endpoint(self) -> str:
         """Return the type specific API endpoint."""
         return ApiEndpoints.ARTIFACT_TYPES.value
-
-    @property
-    def _base_filter(self) -> dict:
-        """Return the default filter."""
-        return {
-            'keyword': 'artifact_type_id',
-            'operator': TqlOperator.EQ,
-            'value': self.model.id,
-            'type_': 'integer',
-        }
 
     @property
     def as_entity(self) -> dict:

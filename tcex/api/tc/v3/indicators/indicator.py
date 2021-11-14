@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
+from tcex.api.tc.v3.groups.group_model import GroupModel
 from tcex.api.tc.v3.indicator_attributes.indicator_attribute_model import IndicatorAttributeModel
 from tcex.api.tc.v3.indicators.indicator_filter import IndicatorFilter
 from tcex.api.tc.v3.indicators.indicator_model import IndicatorModel, IndicatorsModel
@@ -11,10 +12,10 @@ from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 from tcex.api.tc.v3.security_labels.security_label_model import SecurityLabelModel
 from tcex.api.tc.v3.tags.tag_model import TagModel
-from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 
 if TYPE_CHECKING:  # pragma: no cover
     # first-party
+    from tcex.api.tc.v3.groups.group import Group
     from tcex.api.tc.v3.indicator_attributes.indicator_attribute import IndicatorAttribute
     from tcex.api.tc.v3.security_labels.security_label import SecurityLabel
     from tcex.api.tc.v3.tags.tag import Tag
@@ -104,23 +105,16 @@ class Indicator(ObjectABC):
     def __init__(self, **kwargs) -> None:
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
+
+        # properties
         self._model = IndicatorModel(**kwargs)
+        self._nested_filter = 'has_indicator'
         self.type_ = 'Indicator'
 
     @property
     def _api_endpoint(self) -> str:
         """Return the type specific API endpoint."""
         return ApiEndpoints.INDICATORS.value
-
-    @property
-    def _base_filter(self) -> dict:
-        """Return the default filter."""
-        return {
-            'keyword': 'indicator_id',
-            'operator': TqlOperator.EQ,
-            'value': self.model.id,
-            'type_': 'integer',
-        }
 
     @property
     def as_entity(self) -> dict:
@@ -130,6 +124,39 @@ class Indicator(ObjectABC):
             type_ = self.model.type
 
         return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
+
+    def add_associated_group(self, **kwargs) -> None:
+        """Add group to the object.
+
+        Args:
+            attributes (GroupAttributes, kwargs): A list of Attributes corresponding to the Group.
+            body (str, kwargs): The email Body.
+            due_date (str, kwargs): The date and time that the Task is due.
+            escalation_date (str, kwargs): The escalation date and time.
+            event_date (str, kwargs): The date and time that the incident or event was first
+                created.
+            file_name (str, kwargs): The document or signature file name.
+            file_text (str, kwargs): The signature file text.
+            file_type (str, kwargs): The signature file type.
+            first_seen (str, kwargs): The date and time that the campaign was first created.
+            from_ (str, kwargs): The email From field.
+            header (str, kwargs): The email Header field.
+            malware (bool, kwargs): Is the document malware?
+            name (str, kwargs): The name of the group.
+            owner_name (str, kwargs): The name of the Organization, Community, or Source that the
+                item belongs to.
+            password (str, kwargs): The password associated with the document (Required if Malware
+                is true).
+            publish_date (str, kwargs): The date and time that the report was first created.
+            reminder_date (str, kwargs): The reminder date and time.
+            status (str, kwargs): The status associated with this document, event, task, or incident
+                (read only for task, document, and report).
+            subject (str, kwargs): The email Subject section.
+            to (str, kwargs): The email To field .
+            type (str, kwargs): The **type** for the Group.
+            xid (str, kwargs): The xid of the item.
+        """
+        self.model.associated_groups.data.append(GroupModel(**kwargs))
 
     def add_attribute(self, **kwargs) -> None:
         """Add attribute to the object.
@@ -160,6 +187,19 @@ class Indicator(ObjectABC):
             name (str, kwargs): The **name** for the Tag.
         """
         self.model.tags.data.append(TagModel(**kwargs))
+
+    @property
+    def associated_groups(self) -> 'Group':
+        """Yield Group from Groups."""
+        # first-party
+        from tcex.api.tc.v3.groups.group import Groups
+
+        yield from self._iterate_over_sublist(Groups)
+
+    @property
+    def associated_indicators(self) -> 'Indicator':
+        """Yield Indicator from Indicators."""
+        yield from self._iterate_over_sublist(Indicators)
 
     @property
     def attributes(self) -> 'IndicatorAttribute':

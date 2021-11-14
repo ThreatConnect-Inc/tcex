@@ -8,7 +8,6 @@ from tcex.api.tc.v3.indicator_attributes.indicator_attribute_model import (
 )
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
-from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 
 
 class IndicatorAttributes(ObjectCollectionABC):
@@ -65,23 +64,16 @@ class IndicatorAttribute(ObjectABC):
     def __init__(self, **kwargs) -> None:
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
+
+        # properties
         self._model = IndicatorAttributeModel(**kwargs)
+        self._nested_filter = 'has_indicator_attribute'
         self.type_ = 'Indicator Attribute'
 
     @property
     def _api_endpoint(self) -> str:
         """Return the type specific API endpoint."""
         return ApiEndpoints.INDICATOR_ATTRIBUTES.value
-
-    @property
-    def _base_filter(self) -> dict:
-        """Return the default filter."""
-        return {
-            'keyword': 'indicator_attribute_id',
-            'operator': TqlOperator.EQ,
-            'value': self.model.id,
-            'type_': 'integer',
-        }
 
     @property
     def as_entity(self) -> dict:

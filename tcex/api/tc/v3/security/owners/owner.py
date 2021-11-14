@@ -5,7 +5,6 @@ from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 from tcex.api.tc.v3.security.owners.owner_filter import OwnerFilter
 from tcex.api.tc.v3.security.owners.owner_model import OwnerModel, OwnersModel
-from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 
 
 class Owners(ObjectCollectionABC):
@@ -53,23 +52,16 @@ class Owner(ObjectABC):
     def __init__(self, **kwargs) -> None:
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
+
+        # properties
         self._model = OwnerModel(**kwargs)
+        self._nested_filter = 'has_owner'
         self.type_ = 'Owner'
 
     @property
     def _api_endpoint(self) -> str:
         """Return the type specific API endpoint."""
         return ApiEndpoints.OWNERS.value
-
-    @property
-    def _base_filter(self) -> dict:
-        """Return the default filter."""
-        return {
-            'keyword': 'owner_id',
-            'operator': TqlOperator.EQ,
-            'value': self.model.id,
-            'type_': 'integer',
-        }
 
     @property
     def as_entity(self) -> dict:

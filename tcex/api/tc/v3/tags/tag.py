@@ -1,14 +1,10 @@
 """Tag / Tags Object"""
-# third-party
-from pydantic import PrivateAttr
-
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 from tcex.api.tc.v3.tags.tag_filter import TagFilter
 from tcex.api.tc.v3.tags.tag_model import TagModel, TagsModel
-from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 
 
 class Tags(ObjectCollectionABC):
@@ -62,23 +58,16 @@ class Tag(ObjectABC):
     def __init__(self, **kwargs) -> None:
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
+
+        # properties
         self._model = TagModel(**kwargs)
+        self._nested_filter = 'has_tag'
         self.type_ = 'Tag'
 
     @property
     def _api_endpoint(self) -> str:
         """Return the type specific API endpoint."""
         return ApiEndpoints.TAGS.value
-
-    @property
-    def _base_filter(self) -> dict:
-        """Return the default filter."""
-        return {
-            'keyword': 'tag_id',
-            'operator': TqlOperator.EQ,
-            'value': self.model.id,
-            'type_': 'integer',
-        }
 
     @property
     def as_entity(self) -> dict:

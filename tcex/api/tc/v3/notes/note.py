@@ -5,7 +5,6 @@ from tcex.api.tc.v3.notes.note_filter import NoteFilter
 from tcex.api.tc.v3.notes.note_model import NoteModel, NotesModel
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
-from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 
 
 class Notes(ObjectCollectionABC):
@@ -63,23 +62,16 @@ class Note(ObjectABC):
     def __init__(self, **kwargs) -> None:
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
+
+        # properties
         self._model = NoteModel(**kwargs)
+        self._nested_filter = 'has_note'
         self.type_ = 'Note'
 
     @property
     def _api_endpoint(self) -> str:
         """Return the type specific API endpoint."""
         return ApiEndpoints.NOTES.value
-
-    @property
-    def _base_filter(self) -> dict:
-        """Return the default filter."""
-        return {
-            'keyword': 'note_id',
-            'operator': TqlOperator.EQ,
-            'value': self.model.id,
-            'type_': 'integer',
-        }
 
     @property
     def as_entity(self) -> dict:

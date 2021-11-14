@@ -56,8 +56,10 @@ class GenerateArgsABC(GenerateABC, ABC):
         i1 = i1 or self.i1
         i2 = i2 or self.i2
 
-        module_data = self._module_data(self.type_)
-        model = self._import_model(module_data.get('model_module'), module_data.get('model_class'))
+        module_import_data = self._module_import_data(self.type_)
+        model = self._import_model(
+            module_import_data.get('model_module'), module_import_data.get('model_class')
+        )
         _doc_string = [f'{i1}Args:']
 
         # get properties from schema

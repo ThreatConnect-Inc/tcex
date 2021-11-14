@@ -15,6 +15,7 @@ from requests import Response
 from requests.exceptions import ProxyError
 
 # first-party
+from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tcex.backports import cached_property
 from tcex.exit.error_codes import handle_error
 from tcex.utils import Utils
@@ -52,25 +53,22 @@ class ObjectABC(ABC):
 
         # properties
         self._model = None  # defined in child class
-        self.type_ = None  # defined in child class
+        self._nested_filter = None  # defined in child class
         self._utils = Utils()
         self.log = logger
         self.request = None
+        self.type_ = None  # defined in child class
 
     @property
     def _api_endpoint(self) -> dict:  # pragma: no cover
         """Return the type specific API endpoint."""
         raise NotImplementedError('Child class must implement this property.')
 
-    @property
-    def _base_filter(self) -> dict:  # pragma: no cover
-        """Return the object as an entity."""
-        raise NotImplementedError('Child class must implement this property.')
-
     def _iterate_over_sublist(self, sublist_type: object) -> 'V3Type':
         """Iterate over any nested collections."""
         sublist = sublist_type(session=self._session)
-        sublist.tql.add_filter(**self._base_filter)
+        # add the filter (e.g., group.has_indicator.id(TqlOperator.EQ, 123)) for the parent object.
+        getattr(sublist.filter, self._nested_filter).id(TqlOperator.EQ, self.model.id)
         yield from sublist
 
     def _request(

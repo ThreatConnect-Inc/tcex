@@ -7,7 +7,6 @@ from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.notes.note_model import NoteModel
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
-from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tcex.api.tc.v3.workflow_events.workflow_event_filter import WorkflowEventFilter
 from tcex.api.tc.v3.workflow_events.workflow_event_model import (
     WorkflowEventModel,
@@ -74,23 +73,16 @@ class WorkflowEvent(ObjectABC):
     def __init__(self, **kwargs) -> None:
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
+
+        # properties
         self._model = WorkflowEventModel(**kwargs)
+        self._nested_filter = 'has_workflow_event'
         self.type_ = 'Workflow Event'
 
     @property
     def _api_endpoint(self) -> str:
         """Return the type specific API endpoint."""
         return ApiEndpoints.WORKFLOW_EVENTS.value
-
-    @property
-    def _base_filter(self) -> dict:
-        """Return the default filter."""
-        return {
-            'keyword': 'workflow_event_id',
-            'operator': TqlOperator.EQ,
-            'value': self.model.id,
-            'type_': 'integer',
-        }
 
     @property
     def as_entity(self) -> dict:
