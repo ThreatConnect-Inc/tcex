@@ -13,14 +13,26 @@ class DatetimeOperations:
     """TcEx Utilities Datetime Operations Class"""
 
     @classmethod
-    def any_to_datetime(cls, datetime_expression: str) -> 'arrow.Arrow':
-        """Return a arrow object from datetime expression."""
+    def any_to_datetime(cls, datetime_expression: str, tz: Optional[str] = None) -> 'arrow.Arrow':
+        """Return a arrow object from datetime expression.
+
+        Args:
+            datetime_expression: the datetime expression to parse into an Arrow datetime object.
+
+            tz: if provided, the parsed Arrow datetime object will be converted to the timezone
+            resulting from this timezone expression. Accepts values like 'US/Pacific', '-07:00',
+            'UTC'.
+            When this parameter is None, the returned Arrow datetime object will retain
+            its timezone information if datetime_expression is timezone-aware. If
+            datetime_expression is not timezone-aware, then the returned Arrow datetime object
+            will have UTC timezone info.
+        """
         if isinstance(datetime_expression, arrow.Arrow):
             return datetime_expression
 
         value = str(datetime_expression)
 
-        # note: order matters. For example, the timestamp could parse inputs that would have
+        # note: order matters. For example, _parse_timestamp could parse inputs that would have
         # been meant for one of the default parser formats
         parser_methods = [
             cls._parse_default_arrow_formats,
@@ -29,82 +41,68 @@ class DatetimeOperations:
             cls._parse_humanized_input,
             cls._parse_date_utils,
         ]
+
         for method in parser_methods:
             try:
-                return method(value)
-            # TypeError should never occur, but adding for completeness in case of improperly
-            # overridden str method
-            # TODO: [low] @phuerta - any reason not to just catch Exception here? are there
-            #    any exception that we would want to raise for?
-            except (arrow.parser.ParserError, parser.ParserError, TypeError, ValueError):
+                parsed = method(value)
+            except Exception:
                 # value could not be parsed by current method.
                 pass
+            else:
+                # convert timezone if tz arg provided, else return parsed object
+                return cls._convert_timezone(parsed, tz) if tz is not None else parsed
 
         raise RuntimeError(
             f'Value "{value}" of type "{type(datetime_expression)}" '
             'could not be parsed as a date time object.'
         )
 
-    # TODO: [med] @phuerta - can this be done better with arrow
     def chunk_date_range(
         self,
-        start_date: Union[int, str, datetime],
-        end_date: Union[int, str, datetime],
+        start_date: Union[int, str, datetime, arrow.Arrow],
+        end_date: Union[int, str, datetime, arrow.Arrow],
         chunk_size: int,
         chunk_unit: Optional[str] = 'months',
         date_format: Optional[str] = None,
-    ) -> Tuple[Union[datetime, str], Union[datetime, str]]:
+    ) -> Tuple[Union[arrow.Arrow, str], Union[arrow.Arrow, str]]:
         """Chunk a date range based on unit and size
 
         Args:
             start_date: Date time expression or datetime object.
-            end_data: Date time expression or datetime object.
+            end_date: Date time expression or datetime object.
             chunk_size: Chunk size for the provided units.
-            chunk_unit: A value of (years, months, days, weeks, hours, minuts, seconds)
+            chunk_unit: A value of year, quarter, month, day, week, hour, minute, second (plural
+            versions of valid values also acceptable)
             date_format: If None datetime object will be returned. Any other value
                 must be a valid strftime format (%s for epoch seconds).
 
         Returns:
-            Tuple[Union[datetime, str], Union[datetime, str]]: Either a datetime object
+            Tuple[Union[arrow.Arrow, str], Union[arrow.Arrow, str]]: Either a datetime object
                 or a string representation of the date.
         """
-        # define relative delta settings
-        relative_delta_settings = {chunk_unit: +chunk_size}
+        start_date = self.any_to_datetime(start_date)
+        end_date = self.any_to_datetime(end_date)
+        interval_args = {
+            'frame': chunk_unit,
+            'start': start_date,
+            'end': end_date,
+            'interval': chunk_size,
+            'bounds': '[]',
+            'exact': True,
+        }
 
-        # normalize inputs into datetime objects
-        if isinstance(start_date, (int, str)):
-            start_date = self.any_to_datetime(start_date)
-        if isinstance(end_date, (int, str)):
-            end_date = self.any_to_datetime(end_date)
+        try:
+            for range_tuple in arrow.Arrow.interval(**interval_args):
+                if date_format is not None:
+                    yield range_tuple[0].strftime(date_format), range_tuple[1].strftime(date_format)
+                else:
+                    yield range_tuple
+        except Exception as ex:
+            raise RuntimeError(
+                'Could not generate date range. Please verify that chunk_size, chunk_unit, '
+                'and date_format values are valid.'
+            ) from ex
 
-        # set sd value for iteration
-        sd = start_date
-        # set ed value the the smaller of end_date or relative date
-        ed = min(end_date, start_date + relativedelta(**relative_delta_settings))
-
-        while 1:
-            sdf = sd
-            edf = ed
-            if date_format is not None:
-                # TODO:[high] @phuerta - this needs to be changed to arrow format
-                # format the response data to a date formatted string
-                # sdf = self.format_datetime(sd.isoformat(), 'UTC', date_format)
-                # edf = self.format_datetime(ed.isoformat(), 'UTC', date_format)
-                sdf = sd.strftime(date_format)
-                edf = ed.strftime(date_format)
-
-            # yield chunked data
-            yield sdf, edf
-
-            # break iteration once chunked ed is gte to provided end_date
-            if ed >= end_date:
-                break
-
-            # update sd and ed values for next iteration
-            sd = ed
-            ed = min(end_date, sd + relativedelta(**relative_delta_settings))
-
-    # TODO: [med] @phuerta - can this be done better with arrow
     def timedelta(self, time_input1: str, time_input2: str) -> dict:
         """Calculate the time delta between two time expressions.
 
@@ -115,8 +113,8 @@ class DatetimeOperations:
         Returns:
             (dict): Dict with delta values.
         """
-        time_input1: datetime = self.any_to_datetime(time_input1)
-        time_input2: datetime = self.any_to_datetime(time_input2)
+        time_input1: datetime = self.any_to_datetime(time_input1).datetime
+        time_input2: datetime = self.any_to_datetime(time_input2).datetime
 
         diff = time_input1 - time_input2  # timedelta
         delta: object = relativedelta(time_input1, time_input2)  # relativedelta
@@ -148,6 +146,21 @@ class DatetimeOperations:
             'total_seconds': total_seconds,
             'total_microseconds': total_microseconds,
         }
+
+    @classmethod
+    def _convert_timezone(cls, arrow_dt: arrow.Arrow, tz: str):
+        """Convert Arrow datetime's timezone
+
+        Args:
+            arrow_dt: Arrow datetime object that will have its timezone converted
+            tz: timezone expression. Accepts values like 'US/Pacific', '-07:00', 'UTC'.
+        """
+        try:
+            return arrow_dt.to(tz)
+        except Exception as ex:
+            raise RuntimeError(
+                f'Could not convert datetime to timezone "{tz}". Please verify timezone input.'
+            ) from ex
 
     @staticmethod
     def _parse_default_arrow_formats(value: Any) -> 'arrow.Arrow':
