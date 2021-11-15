@@ -23,6 +23,8 @@ class TagsModel(
 ):
     """Tags Model"""
 
+    _mode_support = PrivateAttr(True)
+
     data: Optional[List['TagModel']] = Field(
         [],
         description='The data for the Tags.',
@@ -63,7 +65,8 @@ class TagModel(
 ):
     """Tag Model"""
 
-    _method_override = PrivateAttr(True)
+    _method_override = PrivateAttr(False)
+    _shared_type = PrivateAttr(True)
 
     cases: Optional['CasesModel'] = Field(
         None,

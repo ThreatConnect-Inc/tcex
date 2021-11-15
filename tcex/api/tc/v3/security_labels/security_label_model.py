@@ -23,6 +23,8 @@ class SecurityLabelsModel(
 ):
     """Security_Labels Model"""
 
+    _mode_support = PrivateAttr(True)
+
     data: Optional[List['SecurityLabelModel']] = Field(
         [],
         description='The data for the SecurityLabels.',
@@ -63,7 +65,8 @@ class SecurityLabelModel(
 ):
     """Security_Label Model"""
 
-    _method_override = PrivateAttr(True)
+    _method_override = PrivateAttr(False)
+    _shared_type = PrivateAttr(True)
 
     color: Optional[str] = Field(
         None,

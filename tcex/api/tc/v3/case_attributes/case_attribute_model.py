@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import List, Optional
 
 # third-party
-from pydantic import BaseModel, Extra, Field, validator
+from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
@@ -22,6 +22,8 @@ class CaseAttributesModel(
     validate_assignment=True,
 ):
     """Case_Attributes Model"""
+
+    _mode_support = PrivateAttr(True)
 
     data: Optional[List['CaseAttributeModel']] = Field(
         [],
@@ -62,6 +64,9 @@ class CaseAttributeModel(
     json_encoders=json_encoders,
 ):
     """Case_Attribute Model"""
+
+    _method_override = PrivateAttr(False)
+    _shared_type = PrivateAttr(False)
 
     case_id: Optional[int] = Field(
         None,

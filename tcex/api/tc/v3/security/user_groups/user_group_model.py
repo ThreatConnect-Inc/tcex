@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import List, Optional
 
 # third-party
-from pydantic import BaseModel, Extra, Field, validator
+from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
@@ -22,6 +22,8 @@ class UserGroupsModel(
     validate_assignment=True,
 ):
     """User_Groups Model"""
+
+    _mode_support = PrivateAttr(False)
 
     data: Optional[List['UserGroupModel']] = Field(
         [],
@@ -62,6 +64,9 @@ class UserGroupModel(
     json_encoders=json_encoders,
 ):
     """User_Group Model"""
+
+    _method_override = PrivateAttr(False)
+    _shared_type = PrivateAttr(False)
 
     description: Optional[str] = Field(
         None,

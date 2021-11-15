@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import List, Optional
 
 # third-party
-from pydantic import BaseModel, Extra, Field, validator
+from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
@@ -22,6 +22,8 @@ class VictimAssetsModel(
     validate_assignment=True,
 ):
     """Victim_Assets Model"""
+
+    _mode_support = PrivateAttr(False)
 
     data: Optional[List['VictimAssetModel']] = Field(
         [],
@@ -62,6 +64,9 @@ class VictimAssetModel(
     json_encoders=json_encoders,
 ):
     """Victim_Asset Model"""
+
+    _method_override = PrivateAttr(False)
+    _shared_type = PrivateAttr(False)
 
     account_name: Optional[str] = Field(
         None,

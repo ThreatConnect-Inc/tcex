@@ -139,22 +139,24 @@ def gen_model(type_: str) -> None:
         typer.Exit(code=1)
 
     # generate model fields code first so that requirements can be determined
+    container_private_attrs = gen.gen_container_private_attrs()
     model_fields = gen.gen_model_fields()
+    model_private_attrs = gen.gen_model_private_attrs()
     validator_methods = gen.gen_validator_methods()
-    private_attrs = gen.gen_private_attrs()
 
     _code = gen.gen_doc_string()
     _code += gen.gen_requirements()
     _code += gen.gen_json_encoder()
     # add container model
     _code += gen.gen_container_class()
+    _code += container_private_attrs
     _code += gen.gen_container_fields()
     # add data model
     _code += gen.gen_data_class()
     _code += gen.gen_data_fields()
     # add data model
     _code += gen.gen_model_class()
-    _code += private_attrs
+    _code += model_private_attrs
     _code += model_fields
     # add validators
     _code += validator_methods

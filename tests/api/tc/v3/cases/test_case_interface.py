@@ -64,7 +64,7 @@ class TestCases(TestCaseManagement):
             'assignee': assignee,
             'severity': 'Low',
             'status': 'Open',
-            'xid': 'xid-test_case_create_and_retrieve_nested_types'
+            'xid': 'xid-test_case_create_and_retrieve_nested_types',
         }
 
         # [Pre-Requisite] - create case
@@ -75,7 +75,7 @@ class TestCases(TestCaseManagement):
             'description': f'a description from {request.node.name}',
             'name': f'name-{request.node.name}',
             'workflow_phase': 0,
-            'workflow_step': 1
+            'workflow_step': 1,
         }
 
         # [Create Testing] define artifact data
@@ -234,7 +234,7 @@ class TestCases(TestCaseManagement):
             'description': f'a description from {request.node.name}',
             'name': f'name-{request.node.name}',
             'workflow_phase': 0,
-            'workflow_step': 1
+            'workflow_step': 1,
         }
         # [Create Testing] define artifact data
         attribute_data = {
@@ -246,8 +246,8 @@ class TestCases(TestCaseManagement):
         tag_data = {
             'description': 'will this update the tags description',
             'name': 'Pytest',
-            'owner': 'Does not exist', # TODO: [High] it should not be submitting this because
-            # its unneeded
+            # TODO: [high] @bpurdy - this may be solved with new shared_type rule.
+            'owner': 'Does not exist',
         }
 
         # [Create Testing] create the object
@@ -296,7 +296,9 @@ class TestCases(TestCaseManagement):
         # cases.filter.case_close_user(...)
         cases.filter.case_detection_time(TqlOperator.GT, (case_detection_time - timedelta(days=1)))
         # cases.filter.case_detection_user(...)
-        cases.filter.case_occurrence_time(TqlOperator.GT, (case_occurrence_time - timedelta(days=1)))
+        cases.filter.case_occurrence_time(
+            TqlOperator.GT, (case_occurrence_time - timedelta(days=1))
+        )
         # cases.filter.case_occurrence_user(...)
         cases.filter.case_open_time(TqlOperator.GT, (case_open_time - timedelta(days=1)))
         # cases.filter.case_open_user(...)

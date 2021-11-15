@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import List, Optional
 
 # third-party
-from pydantic import BaseModel, Extra, Field
+from pydantic import BaseModel, Extra, Field, PrivateAttr
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
@@ -22,6 +22,8 @@ class OwnersModel(
     validate_assignment=True,
 ):
     """Owners Model"""
+
+    _mode_support = PrivateAttr(False)
 
     data: Optional[List['OwnerModel']] = Field(
         [],
@@ -62,6 +64,9 @@ class OwnerModel(
     json_encoders=json_encoders,
 ):
     """Owner Model"""
+
+    _method_override = PrivateAttr(False)
+    _shared_type = PrivateAttr(False)
 
     id: Optional[int] = Field(
         None,

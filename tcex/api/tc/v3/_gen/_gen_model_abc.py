@@ -405,13 +405,6 @@ class GenerateModelABC(GenerateABC, ABC):
             '# pylint: disable=no-member,no-self-argument,no-self-use,wrong-import-position\n'
         )
 
-    def gen_private_attrs(self) -> str:
-        """Generate doc string."""
-        if self.type_.lower() in ['tags', 'security_labels']:
-            self._add_pydantic_private_attr()
-            return f'{self.i1}_method_override = PrivateAttr(True)\n\n'
-        return ''
-
     def gen_container_class(self) -> str:
         """Generate the Container Model
 
@@ -471,6 +464,33 @@ class GenerateModelABC(GenerateABC, ABC):
                 f'''{self.i2}methods=['POST', 'PUT'],''',
                 f'''{self.i2}title='append',''',
                 f'''{self.i1})''',
+                '',
+                '',
+            ]
+        )
+
+    def gen_container_private_attrs(self) -> str:
+        """Generate doc string."""
+        self._add_pydantic_private_attr()
+        if self.type_.lower() in [
+            'case_attributes',
+            'group_attributes',
+            'groups',
+            'indicator_attributes',
+            'indicators',
+            'security_labels',
+            'tags',
+        ]:
+            return '\n'.join(
+                [
+                    f'{self.i1}_mode_support = PrivateAttr(True)',
+                    '',
+                    '',
+                ]
+            )
+        return '\n'.join(
+            [
+                f'{self.i1}_mode_support = PrivateAttr(False)',
                 '',
                 '',
             ]
@@ -710,6 +730,41 @@ class GenerateModelABC(GenerateABC, ABC):
         _model.append('')
 
         return '\n'.join(_model)
+
+    def gen_model_private_attrs(self) -> str:
+        """Generate doc string."""
+        # if self.type_.lower() in ['tags', 'security_labels']:
+        #     self._add_pydantic_private_attr()
+        #     return f'{self.i1}_method_override = PrivateAttr(True)\n\n'
+        method_override = False
+        shared_type = False
+
+        self._add_pydantic_private_attr()
+        if self.type_.lower() in [
+            'adversary_assets',
+            'artifacts',
+            'artifact_types',
+            'cases',
+            'notes',
+            'tasks',
+            'workflow_events',
+            'workflow_templates',
+        ]:
+            method_override = True
+        elif self.type_.lower() in [
+            'security_labels',
+            'tags',
+        ]:
+            shared_type = True
+
+        return '\n'.join(
+            [
+                f'{self.i1}_method_override = PrivateAttr({method_override})',
+                f'{self.i1}_shared_type = PrivateAttr({shared_type})',
+                '',
+                '',
+            ]
+        )
 
     def gen_requirements_first_party_forward_reference(self):
         """Generate first-party forward reference, imported at the botton of the file."""
