@@ -27,9 +27,6 @@ class DatetimeOperations:
             datetime_expression is not timezone-aware, then the returned Arrow datetime object
             will have UTC timezone info.
         """
-        if isinstance(datetime_expression, arrow.Arrow):
-            return datetime_expression
-
         value = str(datetime_expression)
 
         # note: order matters. For example, _parse_timestamp could parse inputs that would have
