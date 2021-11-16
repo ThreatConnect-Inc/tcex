@@ -55,15 +55,33 @@ class Indicators(ObjectCollectionABC):
         """Return the type specific API endpoint."""
         return ApiEndpoints.INDICATORS.value
 
-    def deleted(
-        self, deleted_since: Optional[Union[datetime, str]], type_: Optional[str] = None
-    ) -> None:
-        """Return deleted indicators."""
-
     @property
     def filter(self) -> 'IndicatorFilter':
         """Return the type specific filter object."""
         return IndicatorFilter(self.tql)
+
+    def deleted(
+        self,
+        deleted_since: Optional[Union[datetime, str]],
+        type_: Optional[str] = None,
+        owner: Optional[str] = None,
+    ) -> None:
+        """Return deleted indicators.
+
+        This will not use the default params set on the "Indicators"
+        object and instead used the params that are passed in.
+        """
+
+        if deleted_since is not None:
+            deleted_since = str(
+                self.utils.any_to_datetime(deleted_since).strftime('%Y-%m-%dT%H:%M:%SZ')
+            )
+
+        yield from self.iterate(
+            base_class=Indicator,
+            api_endpoint=f'{self._api_endpoint}/deleted',
+            params={'deletedSince': deleted_since, 'owner': owner, 'type': type_},
+        )
 
 
 class Indicator(ObjectABC):

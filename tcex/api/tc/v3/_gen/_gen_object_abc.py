@@ -129,6 +129,47 @@ class GenerateObjectABC(GenerateABC, ABC):
             ]
         )
 
+    def _gen_code_deleted_method(self) -> str:
+        """Return the method code.
+
+        @property
+        def filter(self) -> 'ArtifactFilter':
+            '''Return the type specific filter object.'''
+            return ArtifactFilter(self._session, self.tql)
+        """
+        self.requirements['first-party'].append({'module': 'datetime', 'imports': ['datetime']})
+        self.requirements['standard library'].append({'module': 'typing', 'imports': ['Optional']})
+        return '\n'.join(
+            [
+                f'''{self.i1}def deleted(''',
+                f'''{self.i2}self,''',
+                f'''{self.i2}deleted_since: Optional[Union[datetime, str]],''',
+                f'''{self.i2}type_: Optional[str] = None,''',
+                f'''{self.i2}owner: Optional[str] = None''',
+                f'''{self.i1}) -> None:''',
+                f'''{self.i2}"""Return deleted indicators.''',
+                '',
+                f'''{self.i2}This will not use the default params set on the "Indicators" ''',
+                f'''{self.i2}object and instead used the params that are passed in.''',
+                f'''{self.i2}"""''',
+                '',
+                f'''{self.i2}if deleted_since is not None:''',
+                f'''{self.i3}deleted_since = str(''',
+                f'''{self.i4}self.utils.any_to_datetime(deleted_since).strftime('%Y-%m-%dT%H:%M:%SZ')''',
+                f'''{self.i3})''',
+                '',
+                f'''{self.i2}yield from self.iterate(''',
+                f'''{self.i3}base_class=Indicator,''',
+                f'''{self.i3}api_endpoint=f'{{self._api_endpoint}}/deleted',''',
+                (
+                    f'''{self.i3}params={{'deletedSince': deleted_since, '''
+                    ''''owner': owner, 'type': type_}'''
+                ),
+                f'''{self.i2})''',
+                '',
+            ]
+        )
+
     def _gen_code_object_init_method(self) -> str:
         """Return the method code.
 
@@ -400,6 +441,9 @@ class GenerateObjectABC(GenerateABC, ABC):
 
         # generate filter property method
         _code += self._gen_code_container_filter_property()
+
+        if self.type_.lower() == 'indicators':
+            _code += self._gen_code_deleted_method()
 
         return _code
 
