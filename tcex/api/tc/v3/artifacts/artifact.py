@@ -1,6 +1,6 @@
 """Artifact / Artifacts Object"""
 # standard library
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -80,6 +80,7 @@ class Artifact(ObjectABC):
 
         # properties
         self._model = ArtifactModel(**kwargs)
+        self._nested_field_name = 'artifacts'
         self._nested_filter = 'has_artifact'
         self.type_ = 'Artifact'
 
@@ -97,13 +98,16 @@ class Artifact(ObjectABC):
 
         return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
 
-    def add_note(self, **kwargs) -> None:
-        """Add note to the object.
+    def add_note(self, data: Union['ObjectABC', 'NoteModel']) -> None:
+        """Add note to the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = NoteModel(**data)
 
-        Args:
-            text (str, kwargs): The **text** for the Note.
-        """
-        self.model.notes.data.append(NoteModel(**kwargs))
+        if not isinstance(data, NoteModel):
+            raise RuntimeError('Invalid type passed in to add_note')
+        self.model.notes.data.append(data)
 
     @property
     def notes(self) -> 'Note':

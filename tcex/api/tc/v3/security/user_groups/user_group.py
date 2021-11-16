@@ -59,6 +59,7 @@ class UserGroup(ObjectABC):
 
         # properties
         self._model = UserGroupModel(**kwargs)
+        self._nested_field_name = 'userGroups'
         self._nested_filter = 'has_user_group'
         self.type_ = 'User Group'
 

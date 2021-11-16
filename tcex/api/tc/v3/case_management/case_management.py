@@ -3,6 +3,7 @@
 from requests import Session
 
 # first-party
+from tcex.api.tc.v3.case_attributes.case_attribute import CaseAttribute
 from tcex.api.tc.v3.security.assignee import AssigneeModel
 
 
@@ -141,6 +142,19 @@ class CaseManagement:
             xid (str, kwargs): The **xid** for the Case.
         """
         return Case(session=self.session, **kwargs)
+
+    def case_attribute(self, **kwargs) -> 'CaseAttribute':
+        """Return a instance of Case Attributes object.
+
+        Args:
+            case_id (int, kwargs): Case associated with attribute.
+            default (bool, kwargs): A flag indicating that this is the default attribute of its type
+                within the object. Only applies to certain attribute and data types.
+            source (str, kwargs): The attribute source.
+            type (str, kwargs): The attribute type.
+            value (str, kwargs): Attribute value.
+        """
+        return CaseAttribute(session=self.session, **kwargs)
 
     def cases(self, **kwargs) -> 'Cases':
         """Return a instance of Cases object.

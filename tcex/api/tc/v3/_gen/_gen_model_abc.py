@@ -33,19 +33,28 @@ class GenerateModelABC(GenerateABC, ABC):
         }
         self.validators = {}
 
+    def _add_module_class(self, from_: str, module: str, class_: str) -> None:
+        """Add pydantic validator only when required."""
+        for lib in self.requirements[from_]:
+            if isinstance(lib, dict):
+                if lib.get('module') == module:
+                    lib['imports'].append(class_)
+
     def _add_pydantic_validator(self):
         """Add pydantic validator only when required."""
-        for lib in self.requirements['third-party']:
-            if isinstance(lib, dict):
-                if lib.get('module') == 'pydantic':
-                    lib['imports'].append('validator')
+        self._add_module_class('third-party', 'pydantic', 'validator')
+        # for lib in self.requirements['third-party']:
+        #     if isinstance(lib, dict):
+        #         if lib.get('module') == 'pydantic':
+        #             lib['imports'].append('validator')
 
     def _add_pydantic_private_attr(self):
         """Add pydantic validator only when required."""
-        for lib in self.requirements['third-party']:
-            if isinstance(lib, dict):
-                if lib.get('module') == 'pydantic':
-                    lib['imports'].append('PrivateAttr')
+        self._add_module_class('third-party', 'pydantic', 'PrivateAttr')
+        # for lib in self.requirements['third-party']:
+        #     if isinstance(lib, dict):
+        #         if lib.get('module') == 'pydantic':
+        #             lib['imports'].append('PrivateAttr')
 
     def _configure_type(self, type_: str, field: str) -> str:
         """Return hint type."""
@@ -480,6 +489,7 @@ class GenerateModelABC(GenerateABC, ABC):
             'indicators',
             'security_labels',
             'tags',
+            # 'task_assignments',
         ]:
             return '\n'.join(
                 [
@@ -733,9 +743,6 @@ class GenerateModelABC(GenerateABC, ABC):
 
     def gen_model_private_attrs(self) -> str:
         """Generate doc string."""
-        # if self.type_.lower() in ['tags', 'security_labels']:
-        #     self._add_pydantic_private_attr()
-        #     return f'{self.i1}_method_override = PrivateAttr(True)\n\n'
         method_override = False
         shared_type = False
 

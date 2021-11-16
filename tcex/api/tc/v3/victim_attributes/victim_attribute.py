@@ -67,6 +67,7 @@ class VictimAttribute(ObjectABC):
 
         # properties
         self._model = VictimAttributeModel(**kwargs)
+        self._nested_field_name = 'victimAttributes'
         self._nested_filter = 'has_victim_attribute'
         self.type_ = 'Victim Attribute'
 

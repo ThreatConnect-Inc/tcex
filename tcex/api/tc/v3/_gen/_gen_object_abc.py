@@ -141,6 +141,15 @@ class GenerateObjectABC(GenerateABC, ABC):
         # classes = [f'{self.type_.singular().pascal_case()}Model']
         # self.update_requirements(self.type_, 'model', classes)
 
+        # set nested type
+        nested_field_name = self.utils.snake_string(self.type_).camel_case().plural()
+        if self.type_ in ['indicators', 'groups']:
+            nested_field_name = (
+                self.utils.snake_string(f'associated_{self.type_}').camel_case().plural()
+            )
+        elif self.type_ in ['case_attributes', 'group_attributes', 'indicator_attributes']:
+            nested_field_name = 'attributes'
+
         return '\n'.join(
             [
                 f'''{self.i1}def __init__(self, **kwargs) -> None:''',
@@ -149,6 +158,7 @@ class GenerateObjectABC(GenerateABC, ABC):
                 '',
                 f'''{self.i2}# properties''',
                 f'''{self.i2}self._model = {self.type_.singular().pascal_case()}Model(**kwargs)''',
+                f'''{self.i2}self._nested_field_name = '{nested_field_name}' ''',
                 f'''{self.i2}self._nested_filter = 'has_{self.type_.singular()}' ''',
                 f'''{self.i2}self.type_ = \'{self.type_.singular().space_case()}\'''',
                 '',
@@ -239,27 +249,30 @@ class GenerateObjectABC(GenerateABC, ABC):
 
         # get model from map and update requirements
         model_import_data = self._module_import_data(type_)
+        self.requirements['standard library'].append('''from typing import Union''')
         self.requirements['first-party'].append(
             f'''from {model_import_data.get('model_module')} '''
             f'''import {model_import_data.get('model_class')}'''
         )
-
-        # get args
-        args = GenerateArgs(self._type_map(type_)).gen_args(
-            self.i2, self.i3, nested_objects=False, updatable=False
-        )
         return '\n'.join(
             [
-                f'''{self.i1}def add_{model_type.singular()}(self, **kwargs) -> None:''',
-                f'''{self.i2}"""Add {type_.singular()} to the object.''',
-                '',
-                f'''{args}''',
-                f'''{self.i2}"""''',
                 (
-                    f'''{self.i2}self.model.{model_type.plural()}.data.'''
-                    f'''append({model_import_data.get('model_class')}(**kwargs))'''
+                    f'''{self.i1}def add_{model_type.singular()}(self, '''
+                    f'''data: Union['ObjectABC', '{model_import_data.get('model_class')}'''
+                    f'''']) -> None:'''
                 ),
+                f'''{self.i2}"""Add {type_.singular()} to the object."""''',
+                f'''{self.i2}if isinstance(data, ObjectABC):''',
+                f'''{self.i3}data = data.model''',
+                f'''{self.i2}elif isinstance(data, dict):''',
+                f'''{self.i3}data = {model_import_data.get('model_class')}(**data)''',
                 '',
+                f'''{self.i2}if not isinstance(data, {model_import_data.get('model_class')}):''',
+                (
+                    f'''{self.i3}raise RuntimeError('Invalid type '''
+                    f'''passed in to add_{model_type.singular()}')'''
+                ),
+                f'''{self.i2}self.model.{model_type.plural()}.data.append(data)''' '',
                 '',
             ]
         )

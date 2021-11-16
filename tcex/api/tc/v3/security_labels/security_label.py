@@ -65,6 +65,7 @@ class SecurityLabel(ObjectABC):
 
         # properties
         self._model = SecurityLabelModel(**kwargs)
+        self._nested_field_name = 'securityLabels'
         self._nested_filter = 'has_security_label'
         self.type_ = 'Security Label'
 

@@ -59,6 +59,7 @@ class User(ObjectABC):
 
         # properties
         self._model = UserModel(**kwargs)
+        self._nested_field_name = 'users'
         self._nested_filter = 'has_user'
         self.type_ = 'User'
 

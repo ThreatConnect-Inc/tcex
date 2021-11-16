@@ -65,6 +65,7 @@ class WorkflowTemplate(ObjectABC):
 
         # properties
         self._model = WorkflowTemplateModel(**kwargs)
+        self._nested_field_name = 'workflowTemplates'
         self._nested_filter = 'has_workflow_template'
         self.type_ = 'Workflow Template'
 

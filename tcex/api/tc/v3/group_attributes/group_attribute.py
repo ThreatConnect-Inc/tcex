@@ -67,6 +67,7 @@ class GroupAttribute(ObjectABC):
 
         # properties
         self._model = GroupAttributeModel(**kwargs)
+        self._nested_field_name = 'attributes'
         self._nested_filter = 'has_group_attribute'
         self.type_ = 'Group Attribute'
 

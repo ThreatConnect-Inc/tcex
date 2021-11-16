@@ -28,6 +28,7 @@ temp
 # IDE Exclusions
 #-------------------------------------------------
 .c9
+.history
 .idea
 .project
 .python-version

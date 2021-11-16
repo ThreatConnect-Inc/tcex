@@ -1,5 +1,6 @@
 """Case Management Abstract Base Class"""
 # standard library
+import json
 import logging
 
 # import inspect
@@ -9,7 +10,7 @@ from typing import TYPE_CHECKING, Dict, List, Optional, Union
 
 # third-party
 from requests import Response
-from requests.exceptions import ProxyError
+from requests.exceptions import ProxyError, RetryError
 
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
@@ -39,9 +40,7 @@ class ObjectABC(ABC):
         self._session = session
 
         # properties
-        self._model = None  # defined in child class
-        self._nested_filter = None  # defined in child class
-        self._parent_remove_objects = None  # set by _iterate_over_sublist
+        self._parent_data = {}
         self._remove_objects = {
             'associations': [],
             'attributes': [],
@@ -51,23 +50,50 @@ class ObjectABC(ABC):
         self._utils = Utils()
         self.log = logger
         self.request = None
-        self.type_ = None  # defined in child class
+
+        # define/overwritten in child class
+        self._model = None
+        self._nested_field_name = None
+        self._nested_filter = None
+        self.type_ = None
 
     @property
     def _api_endpoint(self) -> dict:  # pragma: no cover
         """Return the type specific API endpoint."""
         raise NotImplementedError('Child class must implement this property.')
 
+    def _calculate_unique_id(self):
+        if self.model.id:
+            return {'filter': 'id', 'value': self.model.id}
+
+        if hasattr(self.model, 'xid') and self.model.xid:
+            return {'filter': 'xid', 'value': self.model.xid}
+
+        if self.type_.lower() in ['indicator']:
+            return {'filter': 'summary', 'value': self.model.summary}
+
+        return {}
+
     def _iterate_over_sublist(self, sublist_type: object) -> 'V3Type':
         """Iterate over any nested collections."""
-        # TODO: @Bsummers - This broke the workflow.notes iteration because notes does not have
-        #  the tql filter "has_workflow_event" since it can only have 1 it has workflow_event_id.
         sublist = sublist_type(session=self._session)
+
+        # determine the filter type and value based on the available object fields.
+        unique_id_data = self._calculate_unique_id()
+
         # add the filter (e.g., group.has_indicator.id(TqlOperator.EQ, 123)) for the parent object.
-        getattr(sublist.filter, self._nested_filter).id(TqlOperator.EQ, self.model.id)
-        # yield from sublist
+        getattr(getattr(sublist.filter, self._nested_filter), unique_id_data.get('filter'))(
+            TqlOperator.EQ, unique_id_data.get('value')
+        )
+
+        # return the sub object, injecting the parent data
         for obj in sublist:
-            obj._parent_remove_objects = self._remove_objects
+            # obj._parent_remove_objects = self._remove_objects
+            obj._parent_data = {
+                'api_endpoint': self._api_endpoint,
+                'type': self.type_,
+                'unique_id': unique_id_data.get('value'),
+            }
             yield obj
 
     def _request(
@@ -89,13 +115,13 @@ class ObjectABC(ABC):
                 f'status_code={_request.status_code}, '
                 f'''body={_request.request.body}'''
             )
-        except (ConnectionError, ProxyError):  # pragma: no cover
+        except (ConnectionError, ProxyError, RetryError):  # pragma: no cover
             handle_error(
                 code=951,
                 message_values=[
-                    _request.request.method.upper(),
-                    _request.status_code,
-                    '{\"message\": \"Connection/Proxy Error\"}',
+                    method.upper(),
+                    None,
+                    '{\"message\": \"Connection/Proxy Error/Retry\"}',
                     url,
                 ],
             )
@@ -134,15 +160,41 @@ class ObjectABC(ABC):
         """Return the available query param field names for this object."""
         return [fd.get('name') for fd in self.fields]
 
-    def delete(self) -> None:
+    def create(self, params: Optional[dict] = None) -> Response:
+        """Create or Update the Case Management object.
+
+        This is determined based on if the id is already present in the object.
+        """
+        method = 'POST'
+        body = self.model.gen_body_json(method=method)
+        self.request: Response = self._request(
+            method,
+            self.url(method),
+            body,
+            headers={'content-type': 'application/json'},
+            params=params,
+        )
+
+        # get the response data from nested data object or full response
+        response_json = self.request.json()
+
+        # update the model with the response from the API
+        self.model = type(self.model)(**response_json.get('data'))
+
+        return self.request
+
+    def delete(self, params: Optional[dict] = None) -> None:
         """Delete the object."""
         method = 'DELETE'
         body = self.model.gen_body_json(method)
 
-        # validate an id is available
-        self._validate_id(self.model.id, self.url(method))
+        # get the unique id value for id, xid, summary, etc ...
+        unique_id = self._calculate_unique_id().get('value')
 
-        self.request = self._request(method, self.url(method), body)
+        # validate an id is available
+        self._validate_id(unique_id, self.url(method, unique_id))
+
+        self.request = self._request(method, self.url(method, unique_id), body, params=params)
 
         return self.request
 
@@ -197,12 +249,15 @@ class ObjectABC(ABC):
         object_id = object_id or self.model.id
         params = params or {}
 
+        # get the unique id value for id, xid, summary, etc ...
+        unique_id = self._calculate_unique_id().get('value')
+
         # validate an id is available
-        self._validate_id(self.model.id, self.url(method))
+        self._validate_id(unique_id, self.url(method, unique_id))
 
         body = self.model.gen_body_json(method)
         params = self.gen_params(params)
-        self.request = self._request(method, self.url(method), body, params)
+        self.request = self._request(method, self.url(method, unique_id), body, params)
 
         # update model
         self.model = self.request.json().get('data')
@@ -232,17 +287,6 @@ class ObjectABC(ABC):
             self._model = type(self.model)(**data)
         # TODO: [med] @bpurdy - should we raise an exception if the wrong data type is provided?
 
-    # @property
-    # def post_properties(self) -> List[str]:
-    #     """Return all the properties available in POST requests."""
-    #     post_properties = []
-    #     for p, pd in sorted(self.properties.items()):
-    #         read_only = pd.get('read-only', False)
-    #         if not read_only:
-    #             post_properties.append(p)
-
-    #     return post_properties
-
     @cached_property
     def properties(self) -> dict:
         """Return defined API properties for the current object.
@@ -270,86 +314,35 @@ class ObjectABC(ABC):
             )
         return _properties
 
-    # @property
-    # def put_properties(self) -> List[str]:
-    #     """Return all the properties available in PUT requests."""
-    #     put_properties = []
-    #     for p, pd in sorted(self.properties.items()):
-    #         # get read-only value for display and required value
-    #         updatable = pd.get('updatable', True)
-    #         read_only = pd.get('read-only', False)
-    #         if not read_only:
-    #             if updatable:
-    #                 put_properties.append(p)
-
-    #     return put_properties
-
-    # @property
-    # def required_properties(self) -> List[str]:
-    #     """Return a list of required fields for current object."""
-    #     rp = []
-    #     for p, pd in self.properties.items():
-    #         if pd.get('required'):
-    #             rp.append(p)
-    #     return rp
-
-    def remove(self):
-        """Remove the tag from the parent object."""
-        self._parent_remove_objects['tags'].append(self.model.id)
-
-    def submit(self, mode: Optional[str] = None) -> Response:
-        """Create or Update the Case Management object.
-
-        Args:
-            mode: User override of default mode for nested object.
-
-        This is determined based on if the id is already present in the object.
-        """
-        method = 'PUT' if self.model.id else 'POST'
-        body = self.model.gen_body_json(method=method, mode=mode)
-        self.request: Response = self._request(
-            method, self.url(method), body, headers={'content-type': 'application/json'}
+    # TODO: [med] should this just be added to Associations/Tag/Security Label?
+    def remove(self, params: Optional[dict] = None) -> None:
+        """Remove a nested object."""
+        method = 'PUT'
+        body = json.dumps(
+            {self._nested_field_name: {'data': [{'id': self.model.id}], 'mode': 'delete'}}
         )
 
-        # get the response data from nested data object or full response
-        response_json = self.request.json()
+        # get the unique id value for id, xid, summary, etc ...
+        api_endpoint = self._parent_data.get('api_endpoint')
+        unique_id = self._parent_data.get('unique_id')
+        url = f'{api_endpoint}/{unique_id}'
 
-        # TODO: [high] Unsure if the entire model should be reset or just the id.
-        #     If entire model the inner objects get ids set which is nice.
-        # new_id = response_json.get('data', response_json).get('id')
-        # if new_id:
-        #     self.model.id = new_id
-        try:
-            self.model = type(self.model)(**response_json.get('data'))
-        except Exception:
-            # TODO: [high] - should we raise here?
-            self.log.error('Failed update model with API response.')
+        # validate an id is available
+        self._validate_id(unique_id, url)
+
+        self.request = self._request(
+            method=method,
+            url=url,
+            body=body,
+            headers={'content-type': 'application/json'},
+            params=params,
+        )
 
         return self.request
 
-    # def submit_mode_delete(self) -> Response:
-    #     """Submit metadata removal."""
-    #     method = 'PUT'
-    #     body = {}
-    #     # self._remove_objects = {
-    #     #     'associations': [],
-    #     #     'attributes': [],
-    #     #     'securityLabels': [],
-    #     #     'tags': [],
-    #     # }
-
-    #     # What does this look like?
-    #     #
-    #     #
-    #     #
-    #     #
-    #     #
-
-    #     # for type_, data in self._remove_objects.items():
-
-    #     # self.request: Response = self._request(
-    #     #     method, self.url(method), body, headers={'content-type': 'application/json'}
-    #     # )
+    # def remove(self):
+    #     """Remove the tag from the parent object."""
+    #     self._parent_remove_objects['tags'].append(self.model.id)
 
     @staticmethod
     def success(r: Response) -> bool:
@@ -372,8 +365,38 @@ class ObjectABC(ABC):
             status = False
         return status
 
-    def url(self, method: str) -> str:
+    def update(self, mode: Optional[str] = None, params: Optional[dict] = None) -> Response:
+        """Create or Update the Case Management object.
+
+        This is determined based on if the id is already present in the object.
+        """
+        method = 'PUT'
+        body = self.model.gen_body_json(method=method, mode=mode)
+
+        # get the unique id value for id, xid, summary, etc ...
+        unique_id = self._calculate_unique_id().get('value')
+
+        # validate an id is available
+        self._validate_id(unique_id, self.url(method))
+
+        self.request: Response = self._request(
+            method,
+            self.url(method, unique_id=unique_id),
+            body,
+            headers={'content-type': 'application/json'},
+            params=params,
+        )
+
+        # get the response data from nested data object or full response
+        response_json = self.request.json()
+
+        self.model = type(self.model)(**response_json.get('data'))
+
+        return self.request
+
+    def url(self, method: str, unique_id: Optional[str] = None) -> str:
         """Return the proper URL."""
+        unique_id = unique_id or self.model.id
         if method in ['DELETE', 'GET', 'PUT']:
-            return f'{self._api_endpoint}/{self.model.id}'
+            return f'{self._api_endpoint}/{unique_id}'
         return self._api_endpoint

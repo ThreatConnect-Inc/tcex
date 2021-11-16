@@ -1,6 +1,6 @@
 """Task / Tasks Object"""
 # standard library
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -83,6 +83,7 @@ class Task(ObjectABC):
 
         # properties
         self._model = TaskModel(**kwargs)
+        self._nested_field_name = 'tasks'
         self._nested_filter = 'has_task'
         self.type_ = 'Task'
 
@@ -100,27 +101,27 @@ class Task(ObjectABC):
 
         return {'type': type_, 'id': self.model.id, 'value': self.model.name}
 
-    def add_artifact(self, **kwargs) -> None:
-        """Add artifact to the object.
+    def add_artifact(self, data: Union['ObjectABC', 'ArtifactModel']) -> None:
+        """Add artifact to the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = ArtifactModel(**data)
 
-        Args:
-            derived_link (bool, kwargs): Flag to specify if this artifact should be used for
-                potentially associated cases or not.
-            field_name (str, kwargs): The field name for the artifact.
-            file_data (str, kwargs): Base64 encoded file attachment required only for certain
-                artifact types.
-            source (str, kwargs): The **source** for the Artifact.
-            summary (str, kwargs): The **summary** for the Artifact.
-        """
-        self.model.artifacts.data.append(ArtifactModel(**kwargs))
+        if not isinstance(data, ArtifactModel):
+            raise RuntimeError('Invalid type passed in to add_artifact')
+        self.model.artifacts.data.append(data)
 
-    def add_note(self, **kwargs) -> None:
-        """Add note to the object.
+    def add_note(self, data: Union['ObjectABC', 'NoteModel']) -> None:
+        """Add note to the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = NoteModel(**data)
 
-        Args:
-            text (str, kwargs): The **text** for the Note.
-        """
-        self.model.notes.data.append(NoteModel(**kwargs))
+        if not isinstance(data, NoteModel):
+            raise RuntimeError('Invalid type passed in to add_note')
+        self.model.notes.data.append(data)
 
     @property
     def artifacts(self) -> 'Artifact':

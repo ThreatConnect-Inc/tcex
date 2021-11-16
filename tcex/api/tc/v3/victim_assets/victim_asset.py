@@ -1,6 +1,6 @@
 """VictimAsset / VictimAssets Object"""
 # standard library
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -77,6 +77,7 @@ class VictimAsset(ObjectABC):
 
         # properties
         self._model = VictimAssetModel(**kwargs)
+        self._nested_field_name = 'victimAssets'
         self._nested_filter = 'has_victim_asset'
         self.type_ = 'Victim Asset'
 
@@ -94,38 +95,16 @@ class VictimAsset(ObjectABC):
 
         return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
 
-    def add_associated_group(self, **kwargs) -> None:
-        """Add group to the object.
+    def add_associated_group(self, data: Union['ObjectABC', 'GroupModel']) -> None:
+        """Add group to the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = GroupModel(**data)
 
-        Args:
-            attributes (GroupAttributes, kwargs): A list of Attributes corresponding to the Group.
-            body (str, kwargs): The email Body.
-            due_date (str, kwargs): The date and time that the Task is due.
-            escalation_date (str, kwargs): The escalation date and time.
-            event_date (str, kwargs): The date and time that the incident or event was first
-                created.
-            file_name (str, kwargs): The document or signature file name.
-            file_text (str, kwargs): The signature file text.
-            file_type (str, kwargs): The signature file type.
-            first_seen (str, kwargs): The date and time that the campaign was first created.
-            from_ (str, kwargs): The email From field.
-            header (str, kwargs): The email Header field.
-            malware (bool, kwargs): Is the document malware?
-            name (str, kwargs): The name of the group.
-            owner_name (str, kwargs): The name of the Organization, Community, or Source that the
-                item belongs to.
-            password (str, kwargs): The password associated with the document (Required if Malware
-                is true).
-            publish_date (str, kwargs): The date and time that the report was first created.
-            reminder_date (str, kwargs): The reminder date and time.
-            status (str, kwargs): The status associated with this document, event, task, or incident
-                (read only for task, document, and report).
-            subject (str, kwargs): The email Subject section.
-            to (str, kwargs): The email To field .
-            type (str, kwargs): The **type** for the Group.
-            xid (str, kwargs): The xid of the item.
-        """
-        self.model.associated_groups.data.append(GroupModel(**kwargs))
+        if not isinstance(data, GroupModel):
+            raise RuntimeError('Invalid type passed in to add_associated_group')
+        self.model.associated_groups.data.append(data)
 
     @property
     def associated_groups(self) -> 'Group':

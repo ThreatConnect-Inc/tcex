@@ -61,6 +61,7 @@ class Tag(ObjectABC):
 
         # properties
         self._model = TagModel(**kwargs)
+        self._nested_field_name = 'tags'
         self._nested_filter = 'has_tag'
         self.type_ = 'Tag'
 

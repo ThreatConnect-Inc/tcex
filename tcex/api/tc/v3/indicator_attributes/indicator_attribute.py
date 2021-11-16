@@ -67,6 +67,7 @@ class IndicatorAttribute(ObjectABC):
 
         # properties
         self._model = IndicatorAttributeModel(**kwargs)
+        self._nested_field_name = 'attributes'
         self._nested_filter = 'has_indicator_attribute'
         self.type_ = 'Indicator Attribute'
 

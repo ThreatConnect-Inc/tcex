@@ -55,6 +55,7 @@ class ArtifactType(ObjectABC):
 
         # properties
         self._model = ArtifactTypeModel(**kwargs)
+        self._nested_field_name = 'artifactTypes'
         self._nested_filter = 'has_artifact_type'
         self.type_ = 'Artifact Type'
 

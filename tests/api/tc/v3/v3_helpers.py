@@ -191,39 +191,38 @@ class V3Helper:
             'xid': kwargs.get('xid', f'xid-{inspect.stack()[1].function}'),
         }
 
-        artifacts = kwargs.get('artifacts', {})
-        notes = kwargs.get('notes', [])
+        artifacts = self._to_list(kwargs.get('artifacts', []))
+        attributes = self._to_list(kwargs.get('attributes', []))
+        notes = self._to_list(kwargs.get('notes', []))
         tags = self._to_list(kwargs.get('tags', []))
-        tasks = kwargs.get('tasks', {})
+        tasks = self._to_list(kwargs.get('tasks', []))
 
         # create case
         case = self.v3.case(**case_data)
 
         # add artifacts
-        for artifact, artifact_data in artifacts.items():
-            case.add_artifact(
-                summary=artifact,
-                intel_type=artifact_data.get('intel_type'),
-                type=artifact_data.get('type'),
-            )
+        for artifact in artifacts:
+            case.add_artifact(self.v3.artifact(**artifact))
+
+        # add attributes
+        for attribute in attributes:
+            case.add_attribute(self.v3.case_attribute(**attribute))
 
         # add notes
         for note in notes:
-            case.add_note(text=note)
+            case.add_note(self.v3.note(**note))
 
         # add tags
-        case.add_tag(name='pytest')
+        case.add_tag(self.v3.tag(name='pytest'))
         for tag in tags:
-            case.add_tag(**tag)
+            case.add_tag(self.v3.tag(**tag))
 
         # add task
-        for task, task_data in tasks.items():
-            case.add_task(
-                name=task, description=task_data.get('description'), status=task_data.get('status')
-            )
+        for task in tasks:
+            case.add_task(self.v3.task(**task))
 
         # submit object
-        case.submit()
+        case.create()
 
         # store case id for cleanup
         self._v3_objects.append(case)
@@ -269,27 +268,27 @@ class V3Helper:
 
         # add associations
         for associated_group in associated_groups:
-            group.add_associated_group(**associated_group)
+            group.add_associated_group(self.v3.group(**associated_group))
 
         # add indicators
         for associated_indicator in associated_indicators:
-            group.add_associated_indicator(**associated_indicator)
+            group.add_associated_indicator(self.v3.indicator(**associated_indicator))
 
         # add attributes
         for attribute in attributes:
-            group.add_attribute(**attribute)
+            group.add_attribute(self.v3.group_attribute(**attribute))
 
         # add security labels
         for security_label in security_labels:
-            group.add_security_label(**security_label)
+            group.add_security_label(self.v3.security_label(**security_label))
 
         # add tags
-        group.add_tag(name='pytest')
+        group.add_tag(self.v3.tag(name='pytest'))
         for tag in tags:
-            group.add_tag(**tag)
+            group.add_tag(self.v3.tag(**tag))
 
         # submit object
-        group.submit()
+        group.create()
 
         # store case id for cleanup
         self._v3_objects.append(group)
@@ -374,29 +373,29 @@ class V3Helper:
         indicator = self.v3.indicator(**indicator_data)
 
         associated_groups = self._to_list(kwargs.get('associated_groups', []))
-        attributes = self._to_list(kwargs.get('attribute', []))
+        attributes = self._to_list(kwargs.get('attributes', []))
         security_labels = self._to_list(kwargs.get('security_labels', []))
         tags = self._to_list(kwargs.get('tags', []))
 
         # add associations
         for associated_group in associated_groups:
-            indicator.add_associated_group(**associated_group)
+            indicator.add_associated_group(self.v3.group(**associated_group))
 
         # add attributes
         for attribute in attributes:
-            indicator.add_attribute(**attribute)
+            indicator.add_attribute(self.v3.indicator_attribute(**attribute))
 
         # add security labels
         for security_label in security_labels:
-            indicator.add_security_label(**security_label)
+            indicator.add_security_label(self.v3.security_label(**security_label))
 
         # add tags
-        indicator.add_tag(name='pytest')
+        indicator.add_tag(self.v3.tag(name='pytest'))
         for tag in tags:
-            indicator.add_tag(**tag)
+            indicator.add_tag(self.v3.tag(**tag))
 
         # submit object
-        indicator.submit()
+        indicator.create()
 
         # store case id for cleanup
         self._v3_objects.append(indicator)
@@ -409,7 +408,7 @@ class V3Helper:
         for obj in self._v3_objects:
             try:
                 obj.delete()
-            except:
+            except Exception:
                 pass
 
         # # delete cases by tag

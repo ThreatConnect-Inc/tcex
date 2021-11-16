@@ -1,6 +1,6 @@
 """Group / Groups Object"""
 # standard library
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -108,6 +108,7 @@ class Group(ObjectABC):
 
         # properties
         self._model = GroupModel(**kwargs)
+        self._nested_field_name = 'associatedGroups'
         self._nested_filter = 'has_group'
         self.type_ = 'Group'
 
@@ -125,104 +126,60 @@ class Group(ObjectABC):
 
         return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
 
-    def add_associated_group(self, **kwargs) -> None:
-        """Add group to the object.
+    def add_associated_group(self, data: Union['ObjectABC', 'GroupModel']) -> None:
+        """Add group to the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = GroupModel(**data)
 
-        Args:
-            attributes (GroupAttributes, kwargs): A list of Attributes corresponding to the Group.
-            body (str, kwargs): The email Body.
-            due_date (str, kwargs): The date and time that the Task is due.
-            escalation_date (str, kwargs): The escalation date and time.
-            event_date (str, kwargs): The date and time that the incident or event was first
-                created.
-            file_name (str, kwargs): The document or signature file name.
-            file_text (str, kwargs): The signature file text.
-            file_type (str, kwargs): The signature file type.
-            first_seen (str, kwargs): The date and time that the campaign was first created.
-            from_ (str, kwargs): The email From field.
-            header (str, kwargs): The email Header field.
-            malware (bool, kwargs): Is the document malware?
-            name (str, kwargs): The name of the group.
-            owner_name (str, kwargs): The name of the Organization, Community, or Source that the
-                item belongs to.
-            password (str, kwargs): The password associated with the document (Required if Malware
-                is true).
-            publish_date (str, kwargs): The date and time that the report was first created.
-            reminder_date (str, kwargs): The reminder date and time.
-            status (str, kwargs): The status associated with this document, event, task, or incident
-                (read only for task, document, and report).
-            subject (str, kwargs): The email Subject section.
-            to (str, kwargs): The email To field .
-            type (str, kwargs): The **type** for the Group.
-            xid (str, kwargs): The xid of the item.
-        """
-        self.model.associated_groups.data.append(GroupModel(**kwargs))
+        if not isinstance(data, GroupModel):
+            raise RuntimeError('Invalid type passed in to add_associated_group')
+        self.model.associated_groups.data.append(data)
 
-    def add_associated_indicator(self, **kwargs) -> None:
-        """Add indicator to the object.
+    def add_associated_indicator(self, data: Union['ObjectABC', 'IndicatorModel']) -> None:
+        """Add indicator to the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = IndicatorModel(**data)
 
-        Args:
-            active (bool, kwargs): Is the indicator active?
-            active_locked (bool, kwargs): Lock the indicator active value?
-            address (str, kwargs): The email address associated with this indicator (EmailAddress
-                specific summary field).
-            attributes (IndicatorAttributes, kwargs): A list of Attributes corresponding to the
-                Indicator.
-            confidence (int, kwargs): The indicator threat confidence.
-            description (str, kwargs): The indicator description text.
-            dns_active (bool, kwargs): Is dns active for the indicator?
-            host_name (str, kwargs): The host name of the indicator (Host specific summary field).
-            ip (str, kwargs): The ip address associated with this indicator (Address specific
-                summary field).
-            md5 (str, kwargs): The md5 associated with this indicator (File specific summary field).
-            owner_name (str, kwargs): The name of the Organization, Community, or Source that the
-                item belongs to.
-            private_flag (bool, kwargs): Is this indicator private?
-            rating (int, kwargs): The indicator threat rating.
-            sha1 (str, kwargs): The sha1 associated with this indicator (File specific summary
-                field).
-            sha256 (str, kwargs): The sha256 associated with this indicator (File specific summary
-                field).
-            size (int, kwargs): The size of the file.
-            source (str, kwargs): The source for this indicator.
-            text (str, kwargs): The url text value of the indicator (Url specific summary field).
-            type (str, kwargs): The **type** for the Indicator.
-            value1 (str, kwargs): Custom Indicator summary field value1.
-            value2 (str, kwargs): Custom Indicator summary field value2.
-            value3 (str, kwargs): Custom Indicator summary field value3.
-            whois_active (bool, kwargs): Is whois active for the indicator?
-        """
-        self.model.associated_indicators.data.append(IndicatorModel(**kwargs))
+        if not isinstance(data, IndicatorModel):
+            raise RuntimeError('Invalid type passed in to add_associated_indicator')
+        self.model.associated_indicators.data.append(data)
 
-    def add_attribute(self, **kwargs) -> None:
-        """Add attribute to the object.
+    def add_attribute(self, data: Union['ObjectABC', 'GroupAttributeModel']) -> None:
+        """Add attribute to the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = GroupAttributeModel(**data)
 
-        Args:
-            default (bool, kwargs): A flag indicating that this is the default attribute of its type
-                within the object. Only applies to certain attribute and data types.
-            source (str, kwargs): The attribute source.
-            value (str, kwargs): Attribute value.
-        """
-        self.model.attributes.data.append(GroupAttributeModel(**kwargs))
+        if not isinstance(data, GroupAttributeModel):
+            raise RuntimeError('Invalid type passed in to add_attribute')
+        self.model.attributes.data.append(data)
 
-    def add_security_label(self, **kwargs) -> None:
-        """Add security_label to the object.
+    def add_security_label(self, data: Union['ObjectABC', 'SecurityLabelModel']) -> None:
+        """Add security_label to the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = SecurityLabelModel(**data)
 
-        Args:
-            color (str, kwargs): Color of the security label.
-            description (str, kwargs): Description of the security label.
-            name (str, kwargs): Name of the security label.
-        """
-        self.model.security_labels.data.append(SecurityLabelModel(**kwargs))
+        if not isinstance(data, SecurityLabelModel):
+            raise RuntimeError('Invalid type passed in to add_security_label')
+        self.model.security_labels.data.append(data)
 
-    def add_tag(self, **kwargs) -> None:
-        """Add tag to the object.
+    def add_tag(self, data: Union['ObjectABC', 'TagModel']) -> None:
+        """Add tag to the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = TagModel(**data)
 
-        Args:
-            description (str, kwargs): A brief description of the Tag.
-            name (str, kwargs): The **name** for the Tag.
-        """
-        self.model.tags.data.append(TagModel(**kwargs))
+        if not isinstance(data, TagModel):
+            raise RuntimeError('Invalid type passed in to add_tag')
+        self.model.tags.data.append(data)
 
     @property
     def associated_groups(self) -> 'Group':

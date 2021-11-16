@@ -55,6 +55,7 @@ class SystemRole(ObjectABC):
 
         # properties
         self._model = SystemRoleModel(**kwargs)
+        self._nested_field_name = 'systemRoles'
         self._nested_filter = 'has_system_role'
         self.type_ = 'System Role'
 

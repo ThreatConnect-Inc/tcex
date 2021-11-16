@@ -80,7 +80,6 @@ class TestCases(TestCaseManagement):
 
         # [Create Testing] define artifact data
         artifact_data = {
-            'intel_type': 'indicator-ASN',
             'summary': f'asn{randint(100, 999)}',
             'type': 'ASN',
         }

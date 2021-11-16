@@ -65,6 +65,7 @@ class Note(ObjectABC):
 
         # properties
         self._model = NoteModel(**kwargs)
+        self._nested_field_name = 'notes'
         self._nested_filter = 'has_note'
         self.type_ = 'Note'
 

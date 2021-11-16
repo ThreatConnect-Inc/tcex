@@ -67,6 +67,7 @@ class CaseAttribute(ObjectABC):
 
         # properties
         self._model = CaseAttributeModel(**kwargs)
+        self._nested_field_name = 'attributes'
         self._nested_filter = 'has_case_attribute'
         self.type_ = 'Case Attribute'
 

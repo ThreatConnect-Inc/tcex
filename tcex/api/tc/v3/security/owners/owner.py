@@ -55,6 +55,7 @@ class Owner(ObjectABC):
 
         # properties
         self._model = OwnerModel(**kwargs)
+        self._nested_field_name = 'owners'
         self._nested_filter = 'has_owner'
         self.type_ = 'Owner'
 

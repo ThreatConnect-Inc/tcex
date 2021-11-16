@@ -3,8 +3,11 @@
 from requests import Session
 
 # first-party
+from tcex.api.tc.v3.group_attributes.group_attribute import GroupAttribute
 from tcex.api.tc.v3.groups.group import Group, Groups
+from tcex.api.tc.v3.indicator_attributes.indicator_attribute import IndicatorAttribute
 from tcex.api.tc.v3.indicators.indicator import Indicator, Indicators
+from tcex.api.tc.v3.security_labels.security_label import SecurityLabel
 
 
 class ThreatIntelligence:
@@ -65,6 +68,19 @@ class ThreatIntelligence:
                 group.
         """
         return Group(session=self.session, **kwargs)
+
+    def group_attribute(self, **kwargs) -> 'GroupAttribute':
+        """Return a instance of Case Attributes object.
+
+        Args:
+            default (bool, kwargs): A flag indicating that this is the default attribute of its type
+                within the object. Only applies to certain attribute and data types.
+            indicator_id (int, kwargs): Indicator associated with attribute.
+            source (str, kwargs): The attribute source.
+            type (str, kwargs): The attribute type.
+            value (str, kwargs): Attribute value.
+        """
+        return GroupAttribute(session=self.session, **kwargs)
 
     def groups(self, **kwargs) -> 'Groups':
         """Return a instance of Groups object.
@@ -129,6 +145,19 @@ class ThreatIntelligence:
         """
         return Indicator(session=self.session, **kwargs)
 
+    def indicator_attribute(self, **kwargs) -> 'IndicatorAttribute':
+        """Return a instance of Case Attributes object.
+
+        Args:
+            default (bool, kwargs): A flag indicating that this is the default attribute of its type
+                within the object. Only applies to certain attribute and data types.
+            indicator_id (int, kwargs): Indicator associated with attribute.
+            source (str, kwargs): The attribute source.
+            type (str, kwargs): The attribute type.
+            value (str, kwargs): Attribute value.
+        """
+        return IndicatorAttribute(session=self.session, **kwargs)
+
     def indicators(self, **kwargs) -> 'Indicators':
         """Return a instance of Indicators object.
 
@@ -149,3 +178,14 @@ class ThreatIntelligence:
             params (dict, optional): A dict of query params for the request.
         """
         return Indicators(session=self.session, **kwargs)
+
+    def security_label(self, **kwargs) -> 'SecurityLabel':
+        """Return a instance of Case Attributes object.
+
+        Args:
+            color (str, kwargs): Color of the security label.
+            description (str, kwargs): Description of the security label.
+            name (str, kwargs): Name of the security label.
+            owner (str, kwargs): The name of the Owner of the Label.
+        """
+        return SecurityLabel(session=self.session, **kwargs)

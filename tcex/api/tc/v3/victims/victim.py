@@ -1,6 +1,6 @@
 """Victim / Victims Object"""
 # standard library
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -89,6 +89,7 @@ class Victim(ObjectABC):
 
         # properties
         self._model = VictimModel(**kwargs)
+        self._nested_field_name = 'victims'
         self._nested_filter = 'has_victim'
         self.type_ = 'Victim'
 
@@ -106,68 +107,49 @@ class Victim(ObjectABC):
 
         return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
 
-    def add_associated_group(self, **kwargs) -> None:
-        """Add group to the object.
+    def add_associated_group(self, data: Union['ObjectABC', 'GroupModel']) -> None:
+        """Add group to the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = GroupModel(**data)
 
-        Args:
-            attributes (GroupAttributes, kwargs): A list of Attributes corresponding to the Group.
-            body (str, kwargs): The email Body.
-            due_date (str, kwargs): The date and time that the Task is due.
-            escalation_date (str, kwargs): The escalation date and time.
-            event_date (str, kwargs): The date and time that the incident or event was first
-                created.
-            file_name (str, kwargs): The document or signature file name.
-            file_text (str, kwargs): The signature file text.
-            file_type (str, kwargs): The signature file type.
-            first_seen (str, kwargs): The date and time that the campaign was first created.
-            from_ (str, kwargs): The email From field.
-            header (str, kwargs): The email Header field.
-            malware (bool, kwargs): Is the document malware?
-            name (str, kwargs): The name of the group.
-            owner_name (str, kwargs): The name of the Organization, Community, or Source that the
-                item belongs to.
-            password (str, kwargs): The password associated with the document (Required if Malware
-                is true).
-            publish_date (str, kwargs): The date and time that the report was first created.
-            reminder_date (str, kwargs): The reminder date and time.
-            status (str, kwargs): The status associated with this document, event, task, or incident
-                (read only for task, document, and report).
-            subject (str, kwargs): The email Subject section.
-            to (str, kwargs): The email To field .
-            type (str, kwargs): The **type** for the Group.
-            xid (str, kwargs): The xid of the item.
-        """
-        self.model.associated_groups.data.append(GroupModel(**kwargs))
+        if not isinstance(data, GroupModel):
+            raise RuntimeError('Invalid type passed in to add_associated_group')
+        self.model.associated_groups.data.append(data)
 
-    def add_attribute(self, **kwargs) -> None:
-        """Add attribute to the object.
+    def add_attribute(self, data: Union['ObjectABC', 'VictimAttributeModel']) -> None:
+        """Add attribute to the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = VictimAttributeModel(**data)
 
-        Args:
-            default (bool, kwargs): A flag indicating that this is the default attribute of its type
-                within the object. Only applies to certain attribute and data types.
-            source (str, kwargs): The attribute source.
-            value (str, kwargs): Attribute value.
-        """
-        self.model.attributes.data.append(VictimAttributeModel(**kwargs))
+        if not isinstance(data, VictimAttributeModel):
+            raise RuntimeError('Invalid type passed in to add_attribute')
+        self.model.attributes.data.append(data)
 
-    def add_security_label(self, **kwargs) -> None:
-        """Add security_label to the object.
+    def add_security_label(self, data: Union['ObjectABC', 'SecurityLabelModel']) -> None:
+        """Add security_label to the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = SecurityLabelModel(**data)
 
-        Args:
-            color (str, kwargs): Color of the security label.
-            description (str, kwargs): Description of the security label.
-            name (str, kwargs): Name of the security label.
-        """
-        self.model.security_labels.data.append(SecurityLabelModel(**kwargs))
+        if not isinstance(data, SecurityLabelModel):
+            raise RuntimeError('Invalid type passed in to add_security_label')
+        self.model.security_labels.data.append(data)
 
-    def add_tag(self, **kwargs) -> None:
-        """Add tag to the object.
+    def add_tag(self, data: Union['ObjectABC', 'TagModel']) -> None:
+        """Add tag to the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = TagModel(**data)
 
-        Args:
-            description (str, kwargs): A brief description of the Tag.
-            name (str, kwargs): The **name** for the Tag.
-        """
-        self.model.tags.data.append(TagModel(**kwargs))
+        if not isinstance(data, TagModel):
+            raise RuntimeError('Invalid type passed in to add_tag')
+        self.model.tags.data.append(data)
 
     @property
     def associated_groups(self) -> 'Group':

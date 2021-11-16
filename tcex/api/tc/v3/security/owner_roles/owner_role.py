@@ -55,6 +55,7 @@ class OwnerRole(ObjectABC):
 
         # properties
         self._model = OwnerRoleModel(**kwargs)
+        self._nested_field_name = 'ownerRoles'
         self._nested_filter = 'has_owner_role'
         self.type_ = 'Owner Role'
 
