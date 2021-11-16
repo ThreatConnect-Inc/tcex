@@ -69,8 +69,6 @@ class TestNotes(TestCaseManagement):
             notes.filter.case_id(TqlOperator.EQ, cm_object.model.id)
         elif cm_object.type_.lower() == 'task':
             notes.filter.task_id(TqlOperator.EQ, cm_object.model.id)
-        elif cm_object.type_.lower() == 'workflow event':
-            notes.filter.workflow_event_id(TqlOperator.EQ, cm_object.model.id)
         else:
             assert False, f'Invalid value {cm_object.type_} passed into _test_note_on_obj.'
 
@@ -93,7 +91,7 @@ class TestNotes(TestCaseManagement):
 
         # [Update Testing] validate the object got updated
         note.model.text = 'updated note value'
-        note.create()
+        note.update()
         assert len(notes) == 2
         for note in cm_object.notes:
             if note.model.text == 'updated note value':
@@ -137,6 +135,7 @@ class TestNotes(TestCaseManagement):
         }
 
         artifact = self.v3.artifact(**artifact_data)
+        artifact.create()
         self._test_note_on_obj(request, artifact)
 
     def test_note_on_task(self, request: FixtureRequest):
@@ -155,23 +154,8 @@ class TestNotes(TestCaseManagement):
         }
 
         task = self.v3.task(**task_data)
+        task.create()
         self._test_note_on_obj(request, task)
-
-    def test_note_on_workflow_event(self, request: FixtureRequest):
-        """Test Note functions on a Workflow Event Object"""
-
-        # [Pre-Requisite] - create case
-        case = self.v3_helper.create_case()
-
-        # [Pre-Requisite] - create task
-        workflow_event_data = {
-            'case_id': case.model.id,
-            'summary': 'pytest test workflow event',
-        }
-
-        workflow_event = self.v3.workflow_event(**workflow_event_data)
-
-        self._test_note_on_obj(request, workflow_event)
 
     def test_note_get_many(self):
         """Test Artifact Get Many"""

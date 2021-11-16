@@ -61,14 +61,8 @@ class TestWorkflowEvents(TestCaseManagement):
             'summary': request.node.name,
         }
 
-        # [Create Testing] define nested note data
-        note_data = {'text': f'sample note for {request.node.name} test case.'}
-
         # [Create Testing] create the object object
         workflow_event = self.v3.workflow_event(**workflow_event_data)
-
-        # [Create Testing] add the note data to the object
-        workflow_event.stage_note(note_data)
 
         # [Create Testing] create the object to the TC API
         workflow_event.create()
@@ -78,15 +72,7 @@ class TestWorkflowEvents(TestCaseManagement):
         workflow_event = self.v3.workflow_event(id=workflow_event.model.id)
 
         # [Retrieve Testing] get the object from the API
-        workflow_event.get(params={'fields': ['notes']})
-
-        # [Retrieve Testing] test "notes" method
-        notes = self.v3.notes()
-        notes.filter.workflow_event_id(TqlOperator.EQ, workflow_event.model.id)
-        assert len(notes) == 1, 'Note was not added/retrieved from workflow_event object.'
-        for note in workflow_event.notes:
-            # only a single note was added so text should match
-            assert note.model.text == note_data.get('text')
+        workflow_event.get()
 
     def test_workflow_event_all_filters(self, request: FixtureRequest):
         """Test TQL Filters for workflow_event on a Case"""
@@ -103,14 +89,8 @@ class TestWorkflowEvents(TestCaseManagement):
             'event_date': past,
         }
 
-        # [Create Testing] define nested note data
-        note_data = {'text': f'sample note for {request.node.name} test case.'}
-
         # [Create Testing] create the object object
         workflow_event = self.v3.workflow_event(**workflow_event_data)
-
-        # [Create Testing] add the note data to the object
-        workflow_event.stage_note(note_data)
 
         # [Create Testing] create the object to the TC API
         workflow_event.create()
@@ -272,18 +252,7 @@ class TestWorkflowEvents(TestCaseManagement):
             'event_date': past,
         }
 
-        # [Pre-Requisite] construct the notes model
-        note_count = 10
-        notes_text = []
-        note_data = {'data': []}
-        for _ in range(0, note_count):
-            # [Pre-Requisite] define note data
-            text = f'sample note generated: {time.time()} for {request.node.name} test task.'
-            note_data.get('data').append({'text': text})
-
-            notes_text.append(text)
-
-        # [Create Testing] add the note data to the object
+        # [Create Testing] init the workflow event object
         workflow_event = self.v3.workflow_event()
 
         # [Create Testing] testing setters on model
@@ -291,7 +260,6 @@ class TestWorkflowEvents(TestCaseManagement):
         workflow_event.model.case_xid = workflow_event_data.get('case_xid')
         workflow_event.model.summary = workflow_event_data.get('summary')
         workflow_event.model.event_date = workflow_event_data.get('event_date')
-        workflow_event.model.notes = note_data
 
         # [Create Testing] create the object to the TC API
         workflow_event.create()
@@ -311,10 +279,6 @@ class TestWorkflowEvents(TestCaseManagement):
         assert workflow_event.model.event_date.strftime(
             '%Y-%m-%dT%H%M%S'
         ) == workflow_event_data.get('event_date').strftime('%Y-%m-%dT%H%M%S')
-        for note in workflow_event.model.notes.data:
-            assert note.text in notes_text
-            notes_text.remove(note.text)
-        assert not notes_text, 'Incorrect amount of notes were retrieved'
 
     def test_workflow_event_update_properties(self, request: FixtureRequest):
         """Test updating artifacts properties"""
@@ -324,21 +288,11 @@ class TestWorkflowEvents(TestCaseManagement):
         # [Pre-Requisite] - create datetime in the past
         past = datetime.now() - timedelta(days=10)
 
-        note_count = 10
-        note_data = {'data': []}
-        note_text = []
-        for _ in range(0, note_count):
-            # [Pre-Requisite] define note data
-            text = f'sample note generated: {time.time()} for {request.node.name} test task.'
-            note_data.get('data').append({'text': text})
-            note_text.append(text)
-
         # [Create Testing] define workflow_event data
         workflow_event_data = {
             'case_id': case.model.id,
             'summary': request.node.name,
             'event_date': past,
-            'notes': note_data,
         }
 
         workflow_event = self.v3.workflow_event(**workflow_event_data)
@@ -347,20 +301,12 @@ class TestWorkflowEvents(TestCaseManagement):
         # [Pre-Requisite] - create datetime in the past
         past = datetime.now() - timedelta(days=8)
 
-        note_data = {'data': []}
-        for _ in range(0, note_count):
-            # [Pre-Requisite] define note data
-            text = f'sample note generated: {time.time()} for {request.node.name} test task.'
-            note_data.get('data').append({'text': text})
-            note_text.append(text)
-
         # [Update Testing] update object properties
-        workflow_event_data = {'event_date': past, 'summary': 'updated summary', 'notes': note_data}
+        workflow_event_data = {'event_date': past, 'summary': 'updated summary'}
 
         # workflow_event.model.assignee = assignee
         workflow_event.model.event_date = workflow_event_data.get('event_date')
         workflow_event.model.summary = workflow_event_data.get('summary')
-        workflow_event.model.notes = workflow_event_data.get('notes')
 
         # [Update Testing] update the object to the TC API
         workflow_event.update()
@@ -373,10 +319,3 @@ class TestWorkflowEvents(TestCaseManagement):
             '%Y-%m-%dT%H%M%S'
         ) == workflow_event_data.get('event_date').strftime('%Y-%m-%dT%H%M%S')
         assert workflow_event.model.summary == workflow_event_data.get('summary')
-        assert (
-            len(note_text) == note_count * 2
-        ), 'Not all the notes were created on thw Workflow Event'
-        for note in workflow_event.model.notes.data:
-            assert note.text in note_text
-            note_text.remove(note.text)
-        assert not note_text, 'Incorrect amount of notes were retrieved'
