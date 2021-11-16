@@ -237,8 +237,8 @@ class GenerateObjectABC(GenerateABC, ABC):
     def _gen_code_object_add_type_method(self, type_: str, model_type: Optional[str] = None) -> str:
         """Return the method code.
 
-        def add_artifact(self, **kwargs) -> None:
-            '''Add a Artifact to object.
+        def stage_artifact(self, **kwargs) -> None:
+            '''Stage an Artifact on the object.
 
             ...
             '''
@@ -257,11 +257,11 @@ class GenerateObjectABC(GenerateABC, ABC):
         return '\n'.join(
             [
                 (
-                    f'''{self.i1}def add_{model_type.singular()}(self, '''
-                    f'''data: Union['ObjectABC', '{model_import_data.get('model_class')}'''
+                    f'''{self.i1}def stage_{model_type.singular()}(self, '''
+                    f'''data: Union[dict, 'ObjectABC', '{model_import_data.get('model_class')}'''
                     f'''']) -> None:'''
                 ),
-                f'''{self.i2}"""Add {type_.singular()} to the object."""''',
+                f'''{self.i2}"""Stage {type_.singular()} on the object."""''',
                 f'''{self.i2}if isinstance(data, ObjectABC):''',
                 f'''{self.i3}data = data.model''',
                 f'''{self.i2}elif isinstance(data, dict):''',
@@ -270,7 +270,7 @@ class GenerateObjectABC(GenerateABC, ABC):
                 f'''{self.i2}if not isinstance(data, {model_import_data.get('model_class')}):''',
                 (
                     f'''{self.i3}raise RuntimeError('Invalid type '''
-                    f'''passed in to add_{model_type.singular()}')'''
+                    f'''passed in to stage_{model_type.singular()}')'''
                 ),
                 f'''{self.i2}self.model.{model_type.plural()}.data.append(data)''' '',
                 '',
@@ -476,42 +476,6 @@ class GenerateObjectABC(GenerateABC, ABC):
             if field_data.get('data')[0].get('readOnly', False) is False:
                 add_properties.append(field_name)
 
-        # generate add_artifact method
-        if 'artifacts' in add_properties:
-            _code += self._gen_code_object_add_type_method('artifacts')
-
-        # generate add_associated_group method
-        if 'associatedGroups' in add_properties:
-            _code += self._gen_code_object_add_type_method('groups', 'associated_groups')
-
-        # generate add_associated_indicator method
-        if 'associatedIndicators' in add_properties and self.type_ != 'indicators':
-            _code += self._gen_code_object_add_type_method('indicators', 'associated_indicators')
-
-        # generate add_attribute method
-        if 'attributes' in add_properties:
-            _code += self._gen_code_object_add_type_method('attributes')
-
-        # generate add_case method
-        if 'cases' in add_properties:
-            _code += self._gen_code_object_add_type_method('cases')
-
-        # generate add_note method
-        if 'notes' in add_properties:
-            _code += self._gen_code_object_add_type_method('notes')
-
-        # generate add_security_labels method
-        if 'securityLabels' in add_properties:
-            _code += self._gen_code_object_add_type_method('security_labels')
-
-        # generate add_tag method
-        if 'tags' in add_properties:
-            _code += self._gen_code_object_add_type_method('tags')
-
-        # generate add_task method
-        if 'tasks' in add_properties:
-            _code += self._gen_code_object_add_type_method('tasks')
-
         # properties of endpoint
         # properties = list(self._type_properties.keys())
 
@@ -552,6 +516,44 @@ class GenerateObjectABC(GenerateABC, ABC):
         # generate tasks property method
         if 'tasks' in add_properties:
             _code += self._gen_code_object_type_property_method('tasks')
+
+        # Stage Method
+
+        # generate add_artifact method
+        if 'artifacts' in add_properties:
+            _code += self._gen_code_object_add_type_method('artifacts')
+
+        # generate add_associated_group method
+        if 'associatedGroups' in add_properties:
+            _code += self._gen_code_object_add_type_method('groups', 'associated_groups')
+
+        # generate add_associated_indicator method
+        if 'associatedIndicators' in add_properties and self.type_ != 'indicators':
+            _code += self._gen_code_object_add_type_method('indicators', 'associated_indicators')
+
+        # generate add_attribute method
+        if 'attributes' in add_properties:
+            _code += self._gen_code_object_add_type_method('attributes')
+
+        # generate add_case method
+        if 'cases' in add_properties:
+            _code += self._gen_code_object_add_type_method('cases')
+
+        # generate add_note method
+        if 'notes' in add_properties:
+            _code += self._gen_code_object_add_type_method('notes')
+
+        # generate add_security_labels method
+        if 'securityLabels' in add_properties:
+            _code += self._gen_code_object_add_type_method('security_labels')
+
+        # generate add_tag method
+        if 'tags' in add_properties:
+            _code += self._gen_code_object_add_type_method('tags')
+
+        # generate add_task method
+        if 'tasks' in add_properties:
+            _code += self._gen_code_object_add_type_method('tasks')
 
         return _code
 

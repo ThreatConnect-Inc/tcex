@@ -81,13 +81,13 @@ class TestTasks(TestCaseManagement):
         task = self.v3.task(**task_data)
 
         # [Create Testing] add the note data to the object
-        task.add_note(**note_data)
+        task.stage_note(note_data)
 
         # [Create Testing] add the artifact data to the object
-        task.add_artifact(**artifact_data)
+        task.stage_artifact(artifact_data)
 
-        # [Create Testing] submit the object to the TC API
-        task.submit()
+        # [Create Testing] create the object to the TC API
+        task.create()
 
         # [Retrieve Testing] create the object with id filter,
         # using object id from the object created above
@@ -164,19 +164,19 @@ class TestTasks(TestCaseManagement):
         task = self.v3.task(**task_data)
 
         # [Create Testing] add the note data to the object
-        task.add_note(**note_data)
+        task.stage_note(note_data)
 
         # [Create Testing] add the artifact data to the object
-        task.add_artifact(**artifact_data)
+        task.stage_artifact(artifact_data)
 
-        # [Create Testing] submit the object to the TC API
-        task.submit()
+        # [Create Testing] create the object to the TC API
+        task.create()
 
         # task.model.status = 'Closed'
         # TODO: [High] This is failing because the artifacts inner object doesnt contain the
         #  `type` field. This is because the API endpoint for the attributes says its not
         #  `updatable` so its being excluded from PUTS.
-        # task.submit()
+        # task.update()
 
         # [Retrieve Testing] create the object with id filter,
         # using object id from the object created above
@@ -254,8 +254,8 @@ class TestTasks(TestCaseManagement):
         # [Create Testing] create the object
         task = self.v3.task(**task_data)
 
-        # [Create Testing] submit the object to the TC API
-        task.submit()
+        # [Create Testing] create the object to the TC API
+        task.create()
 
         # [Retrieve Testing] create the object with id filter,
         # using object id from the object created above
@@ -292,8 +292,8 @@ class TestTasks(TestCaseManagement):
         # [Create Testing] create the object
         task = self.v3.task(**task_data)
 
-        # [Create Testing] submit the object to the TC API
-        task.submit()
+        # [Create Testing] create the object to the TC API
+        task.create()
 
         # [Retrieve Testing] create the object with id filter,
         # using object id from the object created above
@@ -327,8 +327,8 @@ class TestTasks(TestCaseManagement):
             # [Create Testing] create the object
             task = self.v3.task(**task_data)
 
-            # [Create Testing] submit the object to the TC API
-            task.submit()
+            # [Create Testing] create the object to the TC API
+            task.create()
             task_ids.append(task.model.id)
 
         # [Retrieve Testing] iterate over all object looking for needle
@@ -355,7 +355,7 @@ class TestTasks(TestCaseManagement):
             'workflow_step': 1,
         }
         task_2 = self.v3.task(**task_data)
-        task_2.submit()
+        task_2.create()
 
         # [Pre-Requisite] - construct some timestamps in the future for completed and due by fields.
         future_1 = datetime.now() + timedelta(days=10)
@@ -423,8 +423,8 @@ class TestTasks(TestCaseManagement):
         task.model.status = task_data.get('status')
         task.model.workflow_phase = task_data.get('workflow_phase')
 
-        # [Create Testing] submit the object to the TC API
-        task.submit()
+        # [Create Testing] create the object to the TC API
+        task.create()
 
         # [Retrieve Testing] create the object with id filter,
         # using object id from the object created above
@@ -466,7 +466,7 @@ class TestTasks(TestCaseManagement):
             'name': 'name-depended_task',
         }
         task = self.v3.task(**task_data)
-        task.submit()
+        task.create()
 
         # This was tested locally since no Groups are on the system by default
         assignee = {'type': 'Group', 'data': {'name': 'temp_user_group'}}
@@ -482,8 +482,8 @@ class TestTasks(TestCaseManagement):
         task.model.description = task_data.get('description')
         task.model.name = task_data.get('name')
 
-        # [Update Testing] submit the object to the TC API
-        task.submit()
+        # [Update Testing] update the object to the TC API
+        task.update()
 
         # [Retrieve Testing] get the object from the API
         task.get(params={'fields': ['_all_']})

@@ -43,18 +43,10 @@ class GenerateModelABC(GenerateABC, ABC):
     def _add_pydantic_validator(self):
         """Add pydantic validator only when required."""
         self._add_module_class('third-party', 'pydantic', 'validator')
-        # for lib in self.requirements['third-party']:
-        #     if isinstance(lib, dict):
-        #         if lib.get('module') == 'pydantic':
-        #             lib['imports'].append('validator')
 
     def _add_pydantic_private_attr(self):
         """Add pydantic validator only when required."""
         self._add_module_class('third-party', 'pydantic', 'PrivateAttr')
-        # for lib in self.requirements['third-party']:
-        #     if isinstance(lib, dict):
-        #         if lib.get('module') == 'pydantic':
-        #             lib['imports'].append('PrivateAttr')
 
     def _configure_type(self, type_: str, field: str) -> str:
         """Return hint type."""

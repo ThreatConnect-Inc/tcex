@@ -95,7 +95,7 @@ class TestGroups(TestCaseManagement):
         # group = self.v3.group(**object_data)
         # print(group.model.dict())
         # try:
-        #     group.submit()
+        #     group.create()
         # except RuntimeError:
         #     pass
         # print('status_code', group.request.status_code)

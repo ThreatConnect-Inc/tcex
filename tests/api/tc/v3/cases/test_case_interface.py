@@ -8,6 +8,7 @@ from random import randint
 # third-party
 import pytest
 from pytest import FixtureRequest
+from typer import params
 
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
@@ -86,10 +87,8 @@ class TestCases(TestCaseManagement):
 
         # [Create Testing] define artifact data
         attribute_data = {
-            # TODO: [Medium] This is not respected by the API endpoint.
-            # 'default': True,
             'source': 'Pytest',
-            'type': 'BNP Test',  # TODO: What are the default attribute types on the system?
+            'type': 'Description',
             'value': 'Pytest value',
         }
 
@@ -97,30 +96,28 @@ class TestCases(TestCaseManagement):
         tag_data = {
             'description': 'will this update the tags description',
             'name': 'Pytest',
-            # 'owner': 'Does not exist', # TODO: [High] it should not be submitting this because
-            # its unneeded
         }
 
         # [Create Testing] define nested note data
         note_data = {'text': f'sample note for {request.node.name} test case.'}
 
         # [Create Testing] create the object object
-        case.add_tag(**tag_data)
+        case.stage_tag(tag_data)
 
         # [Create Testing] create the object object
-        case.add_attribute(**attribute_data)
+        case.stage_attribute(attribute_data)
 
         # [Create Testing] create the object object
-        case.add_task(**task_data)
+        case.stage_task(task_data)
 
         # [Create Testing] add the note data to the object
-        case.add_note(**note_data)
+        case.stage_note(note_data)
 
         # [Create Testing] add the artifact data to the object
-        case.add_artifact(**artifact_data)
+        case.stage_artifact(artifact_data)
 
-        # [Create Testing] submit the object to the TC API
-        case.submit()
+        # [Create Testing] update the object to the TC API
+        case.update()
 
         # [Retrieve Testing] create the object with id filter,
         # using object id from the object created above
@@ -187,9 +184,9 @@ class TestCases(TestCaseManagement):
         assert case.model.severity == case_data.get('severity')
         assert case.model.status == case_data.get('status')
         assert case.model.xid == case_data.get('xid')
-        assert case.model.created_by.user_name == '22222222222222222222'  # TODO: Read this as env
+        assert case.model.created_by.user_name == os.getenv('TC_API_ACCESS_ID')
         # variable
-        assert case.model.case_open_user.user_name == '22222222222222222222'  # TODO: Read this as
+        assert case.model.case_open_user.user_name == os.getenv('TC_API_ACCESS_ID')
         # env variable
 
     def test_case_all_filters(self, request: FixtureRequest):
@@ -200,7 +197,7 @@ class TestCases(TestCaseManagement):
         case_detection_time = datetime.now() - timedelta(days=15)
         case_occurrence_time = datetime.now() - timedelta(days=20)
 
-        assignee = {'type': 'User', 'data': {'user_name': '22222222222222222222'}}
+        assignee = {'type': 'User', 'data': {'user_name': os.getenv('TC_API_ACCESS_ID')}}
 
         # [Create Testing] define case data
         case_data = {
@@ -253,22 +250,22 @@ class TestCases(TestCaseManagement):
         case = self.v3.case(**case_data)
 
         # [Create Testing] add the note data to the object
-        case.add_note(**note_data)
+        case.stage_note(note_data)
 
         # [Create Testing] add the task data to the object
-        case.add_task(**task_data)
+        case.stage_task(task_data)
 
         # [Create Testing] add the tag data to the object
-        case.add_tag(**tag_data)
+        case.stage_tag(tag_data)
 
         # [Create Testing] add the attribute data to the object
-        case.add_attribute(**attribute_data)
+        case.stage_attribute(attribute_data)
 
         # [Create Testing] add the artifact data to the object
-        case.add_artifact(**artifact_data)
+        case.stage_artifact(artifact_data)
 
-        # [Create Testing] submit the object to the TC API
-        case.submit()
+        # [Create Testing] create the object to the TC API
+        case.create()
 
         # [Retrieve Testing] create the object with id filter,
         # using object id from the object created above
@@ -384,8 +381,8 @@ class TestCases(TestCaseManagement):
     #         # [Create Testing] create the object
     #         case = self.v3.case(**case_data)
     #
-    #         # [Create Testing] submit the object to the TC API
-    #         case.submit()
+    #         # [Create Testing] create the object to the TC API
+    #         case.create()
     #         case_ids.append(case.model.id)
     #
     #     # [Retrieve Testing] iterate over all object looking for needle
@@ -412,7 +409,7 @@ class TestCases(TestCaseManagement):
     #         'workflow_step': 1,
     #     }
     #     case_2 = self.v3.case(**case_data)
-    #     case_2.submit()
+    #     case_2.create()
     #
     #     # [Pre-Requisite] - construct some timestamps in the future for completed and due by fields.
     #     future_1 = datetime.now() + timedelta(days=10)
@@ -480,8 +477,8 @@ class TestCases(TestCaseManagement):
     #     case.model.status = case_data.get('status')
     #     case.model.workflow_phase = case_data.get('workflow_phase')
     #
-    #     # [Create Testing] submit the object to the TC API
-    #     case.submit()
+    #     # [Create Testing] create the object to the TC API
+    #     case.create()
     #
     #     # [Retrieve Testing] create the object with id filter,
     #     # using object id from the object created above
@@ -523,7 +520,7 @@ class TestCases(TestCaseManagement):
     #         'name': 'name-depended_case',
     #     }
     #     case = self.v3.case(**case_data)
-    #     case.submit()
+    #     case.create()
     #
     #     # This was tested locally since no Groups are on the system by default
     #     assignee = {'type': 'Group', 'data': {'name': 'temp_user_group'}}
@@ -539,8 +536,8 @@ class TestCases(TestCaseManagement):
     #     case.model.description = case_data.get('description')
     #     case.model.name = case_data.get('name')
     #
-    #     # [Update Testing] submit the object to the TC API
-    #     case.submit()
+    #     # [Update Testing] update the object to the TC API
+    #     case.update()
     #
     #     # [Retrieve Testing] get the object from the API
     #     case.get(params={'fields': ['_all_']})

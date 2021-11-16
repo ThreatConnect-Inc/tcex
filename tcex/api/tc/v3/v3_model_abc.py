@@ -53,15 +53,16 @@ class V3ModelABC(BaseModel, ABC):
         if field == 'id' and nested is True and value:
             return True
 
-        # TODO: [med] @bpurdy can we base this on whether the object has an model.id field?
-        # on POST of case the artifact would work correctly.
-        # on PUT of add with add_artifact fields would be missing, but we know that the add_artifact
-        #    method doesn't add an id.
-
         # CM NESTED RULE: For nested CM objects the body should use the valid POST fields
         #    instead of the PUT fields. This handles including artifact type and other
         #    fields that are needed on the nested object.
-        if method == 'PUT' and nested is True and self._method_override is True:
+        # if method == 'PUT' and nested is True and self._method_override is True:
+        #     method = 'POST'
+
+        # NESTED RULE: For nested objects the body should use the valid POST fields
+        #    instead of the PUT fields if not id is available. This handles including
+        #    artifact type, attributes and other fields that are needed on the nested object.
+        if method == 'PUT' and nested is True and not self.id:  # this is a new nested deal
             method = 'POST'
 
         # SHARED TYPE RULE: For nested "shared types" objects the body should use the valid

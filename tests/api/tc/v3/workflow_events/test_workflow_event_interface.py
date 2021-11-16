@@ -68,10 +68,10 @@ class TestWorkflowEvents(TestCaseManagement):
         workflow_event = self.v3.workflow_event(**workflow_event_data)
 
         # [Create Testing] add the note data to the object
-        workflow_event.add_note(**note_data)
+        workflow_event.stage_note(note_data)
 
-        # [Create Testing] submit the object to the TC API
-        workflow_event.submit()
+        # [Create Testing] create the object to the TC API
+        workflow_event.create()
 
         # [Retrieve Testing] create the object with id filter,
         # using object id from the object created above
@@ -94,13 +94,13 @@ class TestWorkflowEvents(TestCaseManagement):
         case = self.v3_helper.create_case()
 
         # [Pre-Requisite] - create datetime in the past
-        past = (datetime.now() - timedelta(days=10))
+        past = datetime.now() - timedelta(days=10)
 
         # [Create Testing] define workflow_event data
         workflow_event_data = {
             'case_id': case.model.id,
             'summary': request.node.name,
-            'event_date': past
+            'event_date': past,
         }
 
         # [Create Testing] define nested note data
@@ -110,13 +110,13 @@ class TestWorkflowEvents(TestCaseManagement):
         workflow_event = self.v3.workflow_event(**workflow_event_data)
 
         # [Create Testing] add the note data to the object
-        workflow_event.add_note(**note_data)
+        workflow_event.stage_note(note_data)
 
-        # [Create Testing] submit the object to the TC API
-        workflow_event.submit()
+        # [Create Testing] create the object to the TC API
+        workflow_event.create()
 
         # [Retrieving Testing] Retrieving the workflow event to ensure the user object is populated
-        
+
         workflow_event.get(params={'fields': ['_all_']})
 
         # [Filter Testing] create the object collection
@@ -171,8 +171,8 @@ class TestWorkflowEvents(TestCaseManagement):
         # [Create Testing] create the object
         workflow_event = self.v3.workflow_event(**workflow_event_data)
 
-        # [Create Testing] submit the object to the TC API
-        workflow_event.submit()
+        # [Create Testing] create the object to the TC API
+        workflow_event.create()
 
         # [Retrieve Testing] create the object with id filter,
         # using object id from the object created above
@@ -200,8 +200,8 @@ class TestWorkflowEvents(TestCaseManagement):
         # [Create Testing] create the object
         workflow_event = self.v3.workflow_event(**workflow_event_data)
 
-        # [Create Testing] submit the object to the TC API
-        workflow_event.submit()
+        # [Create Testing] create the object to the TC API
+        workflow_event.create()
 
         # [Retrieve Testing] create the object with id filter,
         # using object id from the object created above
@@ -234,8 +234,8 @@ class TestWorkflowEvents(TestCaseManagement):
             # [Create Testing] create the object
             workflow_event = self.v3.workflow_event(**workflow_event_data)
 
-            # [Create Testing] submit the object to the TC API
-            workflow_event.submit()
+            # [Create Testing] create the object to the TC API
+            workflow_event.create()
             workflow_event_ids.append(workflow_event.model.id)
 
         # [Retrieve Testing] iterate over all object looking for needle
@@ -262,14 +262,14 @@ class TestWorkflowEvents(TestCaseManagement):
         case = self.v3_helper.create_case(xid=case_xid)
 
         # [Pre-Requisite] - create datetime in the past
-        past = (datetime.now() - timedelta(days=10))
+        past = datetime.now() - timedelta(days=10)
 
         # [Create Testing] define workflow_event data
         workflow_event_data = {
             'case_id': case.model.id,
             'case_xid': case_xid,
             'summary': request.node.name,
-            'event_date': past
+            'event_date': past,
         }
 
         # [Pre-Requisite] construct the notes model
@@ -293,8 +293,8 @@ class TestWorkflowEvents(TestCaseManagement):
         workflow_event.model.event_date = workflow_event_data.get('event_date')
         workflow_event.model.notes = note_data
 
-        # [Create Testing] submit the object to the TC API
-        workflow_event.submit()
+        # [Create Testing] create the object to the TC API
+        workflow_event.create()
 
         # [Retrieve Testing] create the object with id filter,
         # using object id from the object created above
@@ -308,10 +308,9 @@ class TestWorkflowEvents(TestCaseManagement):
         # TODO: [Medium] Case Xid does not get returned on api call. Unsure if this is a bug
         # assert workflow_event.model.case_xid == workflow_event_data.get('case_xid')
         assert workflow_event.model.summary == workflow_event_data.get('summary')
-        assert (
-            workflow_event.model.event_date.strftime('%Y-%m-%dT%H%M%S') ==
-            workflow_event_data.get('event_date').strftime('%Y-%m-%dT%H%M%S')
-        )
+        assert workflow_event.model.event_date.strftime(
+            '%Y-%m-%dT%H%M%S'
+        ) == workflow_event_data.get('event_date').strftime('%Y-%m-%dT%H%M%S')
         for note in workflow_event.model.notes.data:
             assert note.text in notes_text
             notes_text.remove(note.text)
@@ -323,7 +322,7 @@ class TestWorkflowEvents(TestCaseManagement):
         case = self.v3_helper.create_case()
 
         # [Pre-Requisite] - create datetime in the past
-        past = (datetime.now() - timedelta(days=10))
+        past = datetime.now() - timedelta(days=10)
 
         note_count = 10
         note_data = {'data': []}
@@ -343,10 +342,10 @@ class TestWorkflowEvents(TestCaseManagement):
         }
 
         workflow_event = self.v3.workflow_event(**workflow_event_data)
-        workflow_event.submit()
+        workflow_event.create()
 
         # [Pre-Requisite] - create datetime in the past
-        past = (datetime.now() - timedelta(days=8))
+        past = datetime.now() - timedelta(days=8)
 
         note_data = {'data': []}
         for _ in range(0, note_count):
@@ -356,37 +355,28 @@ class TestWorkflowEvents(TestCaseManagement):
             note_text.append(text)
 
         # [Update Testing] update object properties
-        workflow_event_data = {
-            'event_date': past,
-            'summary': 'updated summary',
-            'notes': note_data
-        }
+        workflow_event_data = {'event_date': past, 'summary': 'updated summary', 'notes': note_data}
 
         # workflow_event.model.assignee = assignee
         workflow_event.model.event_date = workflow_event_data.get('event_date')
         workflow_event.model.summary = workflow_event_data.get('summary')
         workflow_event.model.notes = workflow_event_data.get('notes')
 
-        # [Update Testing] submit the object to the TC API
-        workflow_event.submit()
+        # [Update Testing] update the object to the TC API
+        workflow_event.update()
 
         # [Retrieve Testing] get the object from the API
         workflow_event.get(params={'fields': ['_all_']})
 
         # [Retrieve Testing] run assertions on returned data
-        assert (
-                workflow_event.model.event_date.strftime('%Y-%m-%dT%H%M%S') ==
-                workflow_event_data.get('event_date').strftime('%Y-%m-%dT%H%M%S')
-        )
+        assert workflow_event.model.event_date.strftime(
+            '%Y-%m-%dT%H%M%S'
+        ) == workflow_event_data.get('event_date').strftime('%Y-%m-%dT%H%M%S')
         assert workflow_event.model.summary == workflow_event_data.get('summary')
-        assert len(note_text) == note_count * 2, (
-            'Not all the notes were created on thw Workflow Event'
-        )
+        assert (
+            len(note_text) == note_count * 2
+        ), 'Not all the notes were created on thw Workflow Event'
         for note in workflow_event.model.notes.data:
             assert note.text in note_text
             note_text.remove(note.text)
         assert not note_text, 'Incorrect amount of notes were retrieved'
-
-
-
-

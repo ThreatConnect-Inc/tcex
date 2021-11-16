@@ -216,6 +216,8 @@ class ObjectCollectionABC(ABC):
             data = self.request.json().get('data', [])
             url = self.request.json().pop('next', None)
 
+            self.log.debug(f'!!!!!!! count={len(data)}, url={url}')
+
             for result in data:
                 yield base_class(session=self._session, **result)
 

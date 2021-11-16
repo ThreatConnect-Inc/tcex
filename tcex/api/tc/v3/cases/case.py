@@ -116,61 +116,6 @@ class Case(ObjectABC):
 
         return {'type': type_, 'id': self.model.id, 'value': self.model.name}
 
-    def add_artifact(self, data: Union['ObjectABC', 'ArtifactModel']) -> None:
-        """Add artifact to the object."""
-        if isinstance(data, ObjectABC):
-            data = data.model
-        elif isinstance(data, dict):
-            data = ArtifactModel(**data)
-
-        if not isinstance(data, ArtifactModel):
-            raise RuntimeError('Invalid type passed in to add_artifact')
-        self.model.artifacts.data.append(data)
-
-    def add_attribute(self, data: Union['ObjectABC', 'CaseAttributeModel']) -> None:
-        """Add attribute to the object."""
-        if isinstance(data, ObjectABC):
-            data = data.model
-        elif isinstance(data, dict):
-            data = CaseAttributeModel(**data)
-
-        if not isinstance(data, CaseAttributeModel):
-            raise RuntimeError('Invalid type passed in to add_attribute')
-        self.model.attributes.data.append(data)
-
-    def add_note(self, data: Union['ObjectABC', 'NoteModel']) -> None:
-        """Add note to the object."""
-        if isinstance(data, ObjectABC):
-            data = data.model
-        elif isinstance(data, dict):
-            data = NoteModel(**data)
-
-        if not isinstance(data, NoteModel):
-            raise RuntimeError('Invalid type passed in to add_note')
-        self.model.notes.data.append(data)
-
-    def add_tag(self, data: Union['ObjectABC', 'TagModel']) -> None:
-        """Add tag to the object."""
-        if isinstance(data, ObjectABC):
-            data = data.model
-        elif isinstance(data, dict):
-            data = TagModel(**data)
-
-        if not isinstance(data, TagModel):
-            raise RuntimeError('Invalid type passed in to add_tag')
-        self.model.tags.data.append(data)
-
-    def add_task(self, data: Union['ObjectABC', 'TaskModel']) -> None:
-        """Add task to the object."""
-        if isinstance(data, ObjectABC):
-            data = data.model
-        elif isinstance(data, dict):
-            data = TaskModel(**data)
-
-        if not isinstance(data, TaskModel):
-            raise RuntimeError('Invalid type passed in to add_task')
-        self.model.tasks.data.append(data)
-
     @property
     def artifacts(self) -> 'Artifact':
         """Yield Artifact from Artifacts."""
@@ -210,3 +155,58 @@ class Case(ObjectABC):
         from tcex.api.tc.v3.tasks.task import Tasks
 
         yield from self._iterate_over_sublist(Tasks)
+
+    def stage_artifact(self, data: Union[dict, 'ObjectABC', 'ArtifactModel']) -> None:
+        """Stage artifact on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = ArtifactModel(**data)
+
+        if not isinstance(data, ArtifactModel):
+            raise RuntimeError('Invalid type passed in to stage_artifact')
+        self.model.artifacts.data.append(data)
+
+    def stage_attribute(self, data: Union[dict, 'ObjectABC', 'CaseAttributeModel']) -> None:
+        """Stage attribute on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = CaseAttributeModel(**data)
+
+        if not isinstance(data, CaseAttributeModel):
+            raise RuntimeError('Invalid type passed in to stage_attribute')
+        self.model.attributes.data.append(data)
+
+    def stage_note(self, data: Union[dict, 'ObjectABC', 'NoteModel']) -> None:
+        """Stage note on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = NoteModel(**data)
+
+        if not isinstance(data, NoteModel):
+            raise RuntimeError('Invalid type passed in to stage_note')
+        self.model.notes.data.append(data)
+
+    def stage_tag(self, data: Union[dict, 'ObjectABC', 'TagModel']) -> None:
+        """Stage tag on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = TagModel(**data)
+
+        if not isinstance(data, TagModel):
+            raise RuntimeError('Invalid type passed in to stage_tag')
+        self.model.tags.data.append(data)
+
+    def stage_task(self, data: Union[dict, 'ObjectABC', 'TaskModel']) -> None:
+        """Stage task on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = TaskModel(**data)
+
+        if not isinstance(data, TaskModel):
+            raise RuntimeError('Invalid type passed in to stage_task')
+        self.model.tasks.data.append(data)

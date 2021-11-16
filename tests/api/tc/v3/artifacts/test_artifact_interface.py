@@ -71,10 +71,10 @@ class TestArtifacts(TestCaseManagement):
         artifact = self.v3.artifact(**artifact_data)
 
         # [Create Testing] add the note data to the object
-        artifact.add_note(**note_data)
+        artifact.stage_note(note_data)
 
-        # [Create Testing] submit the object to the TC API
-        artifact.submit()
+        # [Create Testing] create the object to the TC API
+        artifact.create()
 
         # [Retrieve Testing] create the object with id filter,
         # using object id from the object created above
@@ -119,10 +119,10 @@ class TestArtifacts(TestCaseManagement):
         artifact = self.v3.artifact(**artifact_data)
 
         # [Create Testing] add the note data to the object
-        artifact.add_note(**note_data)
+        artifact.stage_note(note_data)
 
-        # [Create Testing] submit the object to the TC API
-        artifact.submit()
+        # [Create Testing] create the object to the TC API
+        artifact.create()
 
         # [Retrieve Testing] create the object with id filter,
         # using object id from the object created above
@@ -205,8 +205,8 @@ class TestArtifacts(TestCaseManagement):
         # [Create Testing] create the task object
         task = self.v3.task(**task_data)
 
-        # [Create Testing] submit the task ot the TC API
-        task.submit()
+        # [Create Testing] create the task ot the TC API
+        task.create()
 
         # [Create Testing] define object data
         artifact_data = {
@@ -219,8 +219,8 @@ class TestArtifacts(TestCaseManagement):
         # [Create Testing] create the object object
         artifact = self.v3.artifact(**artifact_data)
 
-        # [Create Testing] submit the object ot the TC API
-        artifact.submit()
+        # [Create Testing] create the object ot the TC API
+        artifact.create()
 
         # [Retrieve Testing] retrieve object using tql filters
         artifacts = self.v3.artifacts()
@@ -256,8 +256,8 @@ class TestArtifacts(TestCaseManagement):
         # [Create Testing] create the object
         artifact = self.v3.artifact(**artifact_data)
 
-        # [Create Testing] submit the object to the TC API
-        artifact.submit()
+        # [Create Testing] create the object to the TC API
+        artifact.create()
 
         # [Retrieve Testing] create the object with id filter,
         # using object id from the object created above
@@ -287,8 +287,8 @@ class TestArtifacts(TestCaseManagement):
         # [Create Testing] create the object
         artifact = self.v3.artifact(**artifact_data)
 
-        # [Create Testing] submit the object to the TC API
-        artifact.submit()
+        # [Create Testing] create the object to the TC API
+        artifact.create()
 
         # [Retrieve Testing] create the object with id filter,
         # using object id from the object created above
@@ -323,8 +323,8 @@ class TestArtifacts(TestCaseManagement):
             # [Create Testing] create the object
             artifact = self.v3.artifact(**artifact_data)
 
-            # [Create Testing] submit the object to the TC API
-            artifact.submit()
+            # [Create Testing] create the object to the TC API
+            artifact.create()
             artifact_ids.append(artifact.model.id)
 
         # [Retrieve Testing] iterate over all object looking for needle
@@ -355,8 +355,8 @@ class TestArtifacts(TestCaseManagement):
         # [Create Testing] create the task object
         task = self.v3.task(**task_data)
 
-        # [Create Testing] submit the task ot the TC API
-        task.submit()
+        # [Create Testing] create the task ot the TC API
+        task.create()
 
         # [Create Testing] define the object file data
         file_data = (
@@ -387,10 +387,10 @@ class TestArtifacts(TestCaseManagement):
 
         # [Create Testing] add the note data to the object
         note_data = {'text': artifact_data.get('note_text')}
-        artifact.add_note(**note_data)
+        artifact.stage_note(note_data)
 
-        # [Create Testing] submit the object to the TC API
-        artifact.submit()
+        # [Create Testing] create the object to the TC API
+        artifact.create()
 
         # [Retrieve Testing] create the object with id filter,
         # using object id from the object created above
@@ -461,8 +461,8 @@ class TestArtifacts(TestCaseManagement):
         notes = {'data': [{'text': artifact_data.get('note_text')}]}
         artifact.model.notes = notes
 
-        # [Create Testing] submit the object to the TC API
-        artifact.submit()
+        # [Create Testing] create the object to the TC API
+        artifact.create()
 
         # [Retrieve Testing] define the object with id filter,
         # using object id from the object created above
@@ -519,8 +519,8 @@ class TestArtifacts(TestCaseManagement):
         # [Create Testing] create the object
         artifact = self.v3.artifact(**artifact_data)
 
-        # [Create Testing] submit the object to the TC API
-        artifact.submit()
+        # [Create Testing] create the object to the TC API
+        artifact.create()
 
         # [Create Testing] define the object file data
         file_data = (
@@ -539,8 +539,8 @@ class TestArtifacts(TestCaseManagement):
         artifact.model.summary = artifact_data.get('summary')
         artifact.model.file_data = artifact_data.get('file_data')
 
-        # [Update Testing] submit the object to the TC API
-        artifact.submit()
+        # [Update Testing] update the object to the TC API
+        artifact.update()
 
         # [Retrieve Testing] get the object from the API
         artifact.get(params={'fields': ['_all_']})

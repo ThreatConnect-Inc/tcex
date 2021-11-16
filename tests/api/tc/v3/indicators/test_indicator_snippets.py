@@ -4,7 +4,7 @@ from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestCaseManagement, V3Helper
 
 
-class TestIndicators(TestCaseManagement):
+class TestIndicatorSnippets(TestCaseManagement):
     """Test TcEx API Interface."""
 
     v3 = None
@@ -38,7 +38,7 @@ class TestIndicators(TestCaseManagement):
         # Add cleanup
         indicator.delete()
 
-    def test_address_add_group_associations(self):
+    def test_address_stage_group_associations(self):
         """Test snippet"""
         # Begin Snippet
         indicator = self.tcex.v3.indicator(
@@ -50,7 +50,7 @@ class TestIndicators(TestCaseManagement):
 
         # Add attribute
         association = self.tcex.v3.group(name='MyGroup', type='Adversary')
-        indicator.add_associated_group(association)
+        indicator.stage_associated_group(association)
 
         indicator.create(params={'owner': 'TCI'})
         # End Snippet
@@ -58,7 +58,7 @@ class TestIndicators(TestCaseManagement):
         # Add cleanup
         indicator.delete()
 
-    def test_address_add_attribute(self):
+    def test_address_stage_attribute(self):
         """Test snippet"""
         # Begin Snippet
         indicator = self.tcex.v3.indicator(
@@ -73,7 +73,7 @@ class TestIndicators(TestCaseManagement):
             value='An example description attribute.',
             type='Description',
         )
-        indicator.add_attribute(attribute)
+        indicator.stage_attribute(attribute)
 
         indicator.create(params={'owner': 'TCI'})
         # End Snippet
@@ -81,7 +81,7 @@ class TestIndicators(TestCaseManagement):
         # Add cleanup
         indicator.delete()
 
-    def test_address_add_security_label(self):
+    def test_address_stage_security_label(self):
         """Test snippet"""
         # Begin Snippet
         indicator = self.tcex.v3.indicator(
@@ -93,7 +93,7 @@ class TestIndicators(TestCaseManagement):
 
         # Add attribute
         security_label = self.tcex.v3.security_label(name='TLP:WHITE')
-        indicator.add_security_label(security_label)
+        indicator.stage_security_label(security_label)
 
         indicator.create(params={'owner': 'TCI'})
         # End Snippet
@@ -101,7 +101,7 @@ class TestIndicators(TestCaseManagement):
         # Add cleanup
         indicator.delete()
 
-    def test_address_add_tag(self):
+    def test_address_stage_tag(self):
         """Test snippet"""
         # Begin Snippet
         indicator = self.tcex.v3.indicator(
@@ -113,7 +113,7 @@ class TestIndicators(TestCaseManagement):
 
         # Add attribute
         tag = self.tcex.v3.tag(name='Example-Tag')
-        indicator.add_tag(tag)
+        indicator.stage_tag(tag)
 
         indicator.create(params={'owner': 'TCI'})
         # End Snippet
@@ -133,6 +133,7 @@ class TestIndicators(TestCaseManagement):
 
         # Begin Snippet
         indicator = self.tcex.v3.indicator(id=indicator.model.id)
+        indicator.delete(params={'owner': 'TCI'})
         # End Snippet
 
     def test_address_delete_by_summary(self):
@@ -191,16 +192,11 @@ class TestIndicators(TestCaseManagement):
 
         for association in indicator.associated_groups:
             if association.model.name == 'MyGroup':
-                # IMPORTANT the "remove()" will remove the association from the indicator and
+                # IMPORTANT the "remove()" method will remove the association from the indicator and
                 #    the "delete()" method will remove the association from the system.
                 association.remove()
         # End Snippet
 
-    # TODO: [high] @bpurdy i think we should add "remove_tags" and "remove_security_label" methods
-    # but how to call out that this does not require submit?
-    # self.tcex.v3.indicator(summary='111.111.111.111').remove_security_label(name='TLP:WHITE')
-    # self.tcex.v3.indicator(summary='111.111.111.111').remove_security_label(id=1)
-    # self.tcex.v3.indicator(summary='111.111.111.111').remove_tag(name='Example-Tag')
     def test_address_remove_security_label(self):
         """Test snippet"""
         indicator = self.v3_helper.create_indicator(
@@ -217,7 +213,7 @@ class TestIndicators(TestCaseManagement):
 
         for security_label in indicator.security_labels:
             if security_label.model.name == 'TLP:WHITE':
-                # IMPORTANT the "remove()" will remove the security label from the indicator and
+                # IMPORTANT the "remove()" method will remove the security label from the indicator and
                 #    the "delete()" method will remove the security label from the system.
                 security_label.remove()
         # End Snippet
@@ -235,7 +231,7 @@ class TestIndicators(TestCaseManagement):
 
         for tag in indicator.tags:
             if tag.model.name == 'Example-Tag':
-                # IMPORTANT the "remove()" will remove the tag from the indicator and
+                # IMPORTANT the "remove()" method will remove the tag from the indicator and
                 #    the "delete()" method will remove the tag from the system.
                 tag.remove()
         # End Snippet

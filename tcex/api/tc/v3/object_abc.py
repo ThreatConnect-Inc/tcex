@@ -88,7 +88,6 @@ class ObjectABC(ABC):
 
         # return the sub object, injecting the parent data
         for obj in sublist:
-            # obj._parent_remove_objects = self._remove_objects
             obj._parent_data = {
                 'api_endpoint': self._api_endpoint,
                 'type': self.type_,
@@ -318,17 +317,27 @@ class ObjectABC(ABC):
     def remove(self, params: Optional[dict] = None) -> None:
         """Remove a nested object."""
         method = 'PUT'
+        unique_id = self._calculate_unique_id()
+
+        # validate an id is available
+        self._validate_id(unique_id.get('value'), '')
+
         body = json.dumps(
-            {self._nested_field_name: {'data': [{'id': self.model.id}], 'mode': 'delete'}}
+            {
+                self._nested_field_name: {
+                    'data': [{unique_id.get('filter'): unique_id.get('value')}],
+                    'mode': 'delete',
+                }
+            }
         )
 
         # get the unique id value for id, xid, summary, etc ...
-        api_endpoint = self._parent_data.get('api_endpoint')
-        unique_id = self._parent_data.get('unique_id')
-        url = f'{api_endpoint}/{unique_id}'
+        parent_api_endpoint = self._parent_data.get('api_endpoint')
+        parent_unique_id = self._parent_data.get('unique_id')
+        url = f'{parent_api_endpoint}/{parent_unique_id}'
 
-        # validate an id is available
-        self._validate_id(unique_id, url)
+        # validate parent an id is available
+        self._validate_id(parent_unique_id, url)
 
         self.request = self._request(
             method=method,
@@ -339,10 +348,6 @@ class ObjectABC(ABC):
         )
 
         return self.request
-
-    # def remove(self):
-    #     """Remove the tag from the parent object."""
-    #     self._parent_remove_objects['tags'].append(self.model.id)
 
     @staticmethod
     def success(r: Response) -> bool:

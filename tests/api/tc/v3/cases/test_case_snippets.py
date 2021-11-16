@@ -4,7 +4,7 @@ from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestCaseManagement, V3Helper
 
 
-class TestCases(TestCaseManagement):
+class TestCaseSnippets(TestCaseManagement):
     """Test TcEx API Interface."""
 
     v3 = None
@@ -40,7 +40,7 @@ class TestCases(TestCaseManagement):
         # Add cleanup
         case.delete()
 
-    def test_case_add_artifact(self):
+    def test_case_stage_artifact(self):
         """Test snippet"""
         # Begin Snippet
         case = self.tcex.v3.case(
@@ -56,7 +56,7 @@ class TestCases(TestCaseManagement):
             summary='asn999',
             type='ASN',
         )
-        case.add_artifact(artifact)
+        case.stage_artifact(artifact)
 
         case.create()
         # End Snippet
@@ -64,7 +64,7 @@ class TestCases(TestCaseManagement):
         # Add cleanup
         case.delete()
 
-    def test_case_add_attribute(self):
+    def test_case_stage_attribute(self):
         """Test snippet"""
         # Begin Snippet
         case = self.tcex.v3.case(
@@ -79,7 +79,7 @@ class TestCases(TestCaseManagement):
             value='An example description attribute.',
             type='Description',
         )
-        case.add_attribute(attribute)
+        case.stage_attribute(attribute)
 
         case.create()
         # End Snippet
@@ -87,7 +87,7 @@ class TestCases(TestCaseManagement):
         # Add cleanup
         case.delete()
 
-    def test_case_add_note(self):
+    def test_case_stage_note(self):
         """Test snippet"""
         # Begin Snippet
         case = self.tcex.v3.case(
@@ -100,7 +100,7 @@ class TestCases(TestCaseManagement):
 
         # Add note
         note = self.tcex.v3.note(text='An example note.')
-        case.add_note(note)
+        case.stage_note(note)
 
         case.create()
         # End Snippet
@@ -108,7 +108,7 @@ class TestCases(TestCaseManagement):
         # Add cleanup
         case.delete()
 
-    def test_case_add_tag(self):
+    def test_case_stage_tag(self):
         """Test snippet"""
         # Begin Snippet
         case = self.tcex.v3.case(
@@ -121,7 +121,7 @@ class TestCases(TestCaseManagement):
 
         # Add tag
         tag = self.tcex.v3.tag(name='Example-Tag')
-        case.add_tag(tag)
+        case.stage_tag(tag)
 
         case.create()
         # End Snippet
@@ -129,7 +129,7 @@ class TestCases(TestCaseManagement):
         # Add cleanup
         case.delete()
 
-    def test_case_add_task(self):
+    def test_case_stage_task(self):
         """Test snippet"""
         # Begin Snippet
         case = self.tcex.v3.case(
@@ -142,7 +142,7 @@ class TestCases(TestCaseManagement):
 
         # Add task
         task = self.tcex.v3.task(description='An example task description.', name='MyTask')
-        case.add_task(task)
+        case.stage_task(task)
 
         case.create()
         # End Snippet

@@ -95,17 +95,6 @@ class VictimAsset(ObjectABC):
 
         return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
 
-    def add_associated_group(self, data: Union['ObjectABC', 'GroupModel']) -> None:
-        """Add group to the object."""
-        if isinstance(data, ObjectABC):
-            data = data.model
-        elif isinstance(data, dict):
-            data = GroupModel(**data)
-
-        if not isinstance(data, GroupModel):
-            raise RuntimeError('Invalid type passed in to add_associated_group')
-        self.model.associated_groups.data.append(data)
-
     @property
     def associated_groups(self) -> 'Group':
         """Yield Group from Groups."""
@@ -113,3 +102,14 @@ class VictimAsset(ObjectABC):
         from tcex.api.tc.v3.groups.group import Groups
 
         yield from self._iterate_over_sublist(Groups)
+
+    def stage_associated_group(self, data: Union[dict, 'ObjectABC', 'GroupModel']) -> None:
+        """Stage group on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = GroupModel(**data)
+
+        if not isinstance(data, GroupModel):
+            raise RuntimeError('Invalid type passed in to stage_associated_group')
+        self.model.associated_groups.data.append(data)

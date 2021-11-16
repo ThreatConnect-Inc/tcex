@@ -56,8 +56,8 @@ class TestNotes(TestCaseManagement):
 
         # [Pre-Requisite] - Add a note to the provided cm object to ensure that it does not get
         # replaced/removed
-        cm_object.add_note(**common_note_data)
-        cm_object.submit()
+        cm_object.stage_note(common_note_data)
+        cm_object.update()
 
         # [Pre-Requisite] - Add the note data to the appropriate object
         note_data = {'text': f'sample note for {request.node.name} test.'}
@@ -75,7 +75,7 @@ class TestNotes(TestCaseManagement):
             assert False, f'Invalid value {cm_object.type_} passed into _test_note_on_obj.'
 
         # [Create Testing] create the object
-        note = self._add_note(cm_object, note_data, specify_type=True)
+        note = self._stage_note(cm_object, note_data, specify_type=True)
 
         note = self.v3.note(id=note.model.id)
         note.get()
@@ -93,7 +93,7 @@ class TestNotes(TestCaseManagement):
 
         # [Update Testing] validate the object got updated
         note.model.text = 'updated note value'
-        note.submit()
+        note.create()
         assert len(notes) == 2
         for note in cm_object.notes:
             if note.model.text == 'updated note value':
@@ -189,8 +189,8 @@ class TestNotes(TestCaseManagement):
             # [Create Testing] create the object
             note = self.v3.note(**note_data)
 
-            # [Create Testing] submit the object to the TC API
-            note.submit()
+            # [Create Testing] create the object to the TC API
+            note.create()
             note_ids.append(note.model.id)
 
         # [Retrieve Testing] iterate over all object looking for needle
@@ -219,7 +219,7 @@ class TestNotes(TestCaseManagement):
         assert '950' in str(exc_info.value)
         assert notes.request.status_code == 400
 
-    def _add_note(self, cm_object, note_data, specify_type=False):
+    def _stage_note(self, cm_object, note_data, specify_type=False):
         """Update the note object to include either the artifact/case/task/workflow_event field."""
 
         keys = ['artifact_id', 'case_id', 'task_id', 'workflow_event_id']
@@ -240,7 +240,7 @@ class TestNotes(TestCaseManagement):
         else:
             assert False, f'Invalid value {cm_object.type_} passed into _test_note_on_obj'
         note = self.v3.note(**note_data)
-        note.submit()
+        note.create()
         return note
 
     def test_note_all_filters(self, request: FixtureRequest):
@@ -256,7 +256,7 @@ class TestNotes(TestCaseManagement):
         }
 
         workflow_event = self.v3.workflow_event(**workflow_event_data)
-        workflow_event.submit()
+        workflow_event.create()
 
         # [Pre-Requisite] - create task
         task_data = {
@@ -269,7 +269,7 @@ class TestNotes(TestCaseManagement):
         }
 
         task = self.v3.task(**task_data)
-        task.submit()
+        task.create()
 
         # [Pre-Requisite] - create artifact
         artifact_data = {
@@ -280,9 +280,9 @@ class TestNotes(TestCaseManagement):
         }
 
         artifact = self.v3.artifact(**artifact_data)
-        artifact.submit()
+        artifact.create()
 
-        note = self._add_note(case, note_data, specify_type=True)
+        note = self._stage_note(case, note_data, specify_type=True)
 
         notes = self.v3.notes()
 
@@ -314,7 +314,7 @@ class TestNotes(TestCaseManagement):
             assert False, f'No note found for tql -> {notes.tql.as_str}'
 
         notes = self.v3.notes()
-        note = self._add_note(artifact, note_data, specify_type=True)
+        note = self._stage_note(artifact, note_data, specify_type=True)
 
         notes.filter.artifact_id(TqlOperator.EQ, artifact.model.id)
         notes.filter.has_artifact.id(TqlOperator.EQ, artifact.model.id)
@@ -326,7 +326,7 @@ class TestNotes(TestCaseManagement):
             assert False, f'No note found for tql -> {notes.tql.as_str}'
 
         notes = self.v3.notes()
-        note = self._add_note(task, note_data, specify_type=True)
+        note = self._stage_note(task, note_data, specify_type=True)
 
         notes.filter.task_id(TqlOperator.EQ, task.model.id)
         notes.filter.has_task.id(TqlOperator.EQ, task.model.id)
@@ -339,7 +339,7 @@ class TestNotes(TestCaseManagement):
             assert False, f'No note found for tql -> {notes.tql.as_str}'
 
         notes = self.v3.notes()
-        note = self._add_note(workflow_event, note_data, specify_type=True)
+        note = self._stage_note(workflow_event, note_data, specify_type=True)
 
         notes.filter.workflow_event_id(TqlOperator.EQ, workflow_event.model.id)
         for retrieved_note in notes:

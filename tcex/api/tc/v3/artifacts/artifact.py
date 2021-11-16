@@ -98,17 +98,6 @@ class Artifact(ObjectABC):
 
         return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
 
-    def add_note(self, data: Union['ObjectABC', 'NoteModel']) -> None:
-        """Add note to the object."""
-        if isinstance(data, ObjectABC):
-            data = data.model
-        elif isinstance(data, dict):
-            data = NoteModel(**data)
-
-        if not isinstance(data, NoteModel):
-            raise RuntimeError('Invalid type passed in to add_note')
-        self.model.notes.data.append(data)
-
     @property
     def notes(self) -> 'Note':
         """Yield Note from Notes."""
@@ -116,3 +105,14 @@ class Artifact(ObjectABC):
         from tcex.api.tc.v3.notes.note import Notes
 
         yield from self._iterate_over_sublist(Notes)
+
+    def stage_note(self, data: Union[dict, 'ObjectABC', 'NoteModel']) -> None:
+        """Stage note on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = NoteModel(**data)
+
+        if not isinstance(data, NoteModel):
+            raise RuntimeError('Invalid type passed in to stage_note')
+        self.model.notes.data.append(data)

@@ -202,26 +202,26 @@ class V3Helper:
 
         # add artifacts
         for artifact in artifacts:
-            case.add_artifact(self.v3.artifact(**artifact))
+            case.stage_artifact(self.v3.artifact(**artifact))
 
         # add attributes
         for attribute in attributes:
-            case.add_attribute(self.v3.case_attribute(**attribute))
+            case.stage_attribute(self.v3.case_attribute(**attribute))
 
         # add notes
         for note in notes:
-            case.add_note(self.v3.note(**note))
+            case.stage_note(self.v3.note(**note))
 
         # add tags
-        case.add_tag(self.v3.tag(name='pytest'))
+        case.stage_tag(self.v3.tag(name='pytest'))
         for tag in tags:
-            case.add_tag(self.v3.tag(**tag))
+            case.stage_tag(self.v3.tag(**tag))
 
         # add task
         for task in tasks:
-            case.add_task(self.v3.task(**task))
+            case.stage_task(self.v3.task(**task))
 
-        # submit object
+        # create object
         case.create()
 
         # store case id for cleanup
@@ -268,26 +268,26 @@ class V3Helper:
 
         # add associations
         for associated_group in associated_groups:
-            group.add_associated_group(self.v3.group(**associated_group))
+            group.stage_associated_group(self.v3.group(**associated_group))
 
         # add indicators
         for associated_indicator in associated_indicators:
-            group.add_associated_indicator(self.v3.indicator(**associated_indicator))
+            group.stage_associated_indicator(self.v3.indicator(**associated_indicator))
 
         # add attributes
         for attribute in attributes:
-            group.add_attribute(self.v3.group_attribute(**attribute))
+            group.stage_attribute(self.v3.group_attribute(**attribute))
 
         # add security labels
         for security_label in security_labels:
-            group.add_security_label(self.v3.security_label(**security_label))
+            group.stage_security_label(self.v3.security_label(**security_label))
 
         # add tags
-        group.add_tag(self.v3.tag(name='pytest'))
+        group.stage_tag(self.v3.tag(name='pytest'))
         for tag in tags:
-            group.add_tag(self.v3.tag(**tag))
+            group.stage_tag(self.v3.tag(**tag))
 
-        # submit object
+        # create object
         group.create()
 
         # store case id for cleanup
@@ -316,10 +316,6 @@ class V3Helper:
             V3.Indicator: A indicator object.
         """
         value_1 = kwargs.get('value1', f'123.{randint(1,255)}.{randint(1,255)}.{randint(1,255)}')
-        # indicators = self.v3.indicators()
-        # indicators.filter.tag(TqlOperator.EQ, 'pytest')
-        # for indicator in indicators:
-        #     indicator.delete()
 
         def value_1_map():
             """Return the appropriate indicator field name."""
@@ -379,22 +375,22 @@ class V3Helper:
 
         # add associations
         for associated_group in associated_groups:
-            indicator.add_associated_group(self.v3.group(**associated_group))
+            indicator.stage_associated_group(self.v3.group(**associated_group))
 
         # add attributes
         for attribute in attributes:
-            indicator.add_attribute(self.v3.indicator_attribute(**attribute))
+            indicator.stage_attribute(self.v3.indicator_attribute(**attribute))
 
         # add security labels
         for security_label in security_labels:
-            indicator.add_security_label(self.v3.security_label(**security_label))
+            indicator.stage_security_label(self.v3.security_label(**security_label))
 
         # add tags
-        indicator.add_tag(self.v3.tag(name='pytest'))
+        indicator.stage_tag(self.v3.tag(name='pytest'))
         for tag in tags:
-            indicator.add_tag(self.v3.tag(**tag))
+            indicator.stage_tag(self.v3.tag(**tag))
 
-        # submit object
+        # create object
         indicator.create()
 
         # store case id for cleanup

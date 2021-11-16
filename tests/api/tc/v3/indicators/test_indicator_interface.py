@@ -94,22 +94,22 @@ class TestIndicators(TestCaseManagement):
             'value': 'TcEx Testing',
             'default': True,
         }
-        indicator.add_attribute(**attribute_data)
+        indicator.stage_attribute(attribute_data)
 
         # [Create Testing] define object data
         security_label_data = {
             'name': 'TLP:WHITE',
         }
-        indicator.add_security_label(**security_label_data)
+        indicator.stage_security_label(security_label_data)
 
         # [Create Testing] define object data
         tag_data = {
             'name': 'TcEx Testing',
         }
-        indicator.add_tag(**tag_data)
+        indicator.stage_tag(tag_data)
 
         # print(indicator.model.dict())
-        indicator.submit()
+        indicator.create()
 
         # [Retrieve Testing] create the object with id filter,
         # using object id from the object created above
@@ -172,11 +172,6 @@ class TestIndicators(TestCaseManagement):
         for _, indicator in enumerate(indicators):
             assert indicator.model.id in indicator_ids
             indicator_ids.remove(indicator.model.id)
-
-            for tag in indicator.tags:
-                tag.remove()
-
-            indicator.submit()
 
         assert indicators_counts == indicator_count
         assert not indicator_ids, 'Not all indicators were returned.'
@@ -276,4 +271,4 @@ class TestIndicators(TestCaseManagement):
 
     #     print(f'indicator.web_link {indicator.model.web_link}')
     #     print(indicator.model.gen_body(method='POST', mode='delete', indent=4, sort_keys=True))
-    #     indicator.submit(mode='delete')
+    #     indicator.update(mode='delete')

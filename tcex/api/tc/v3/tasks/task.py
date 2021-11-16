@@ -101,28 +101,6 @@ class Task(ObjectABC):
 
         return {'type': type_, 'id': self.model.id, 'value': self.model.name}
 
-    def add_artifact(self, data: Union['ObjectABC', 'ArtifactModel']) -> None:
-        """Add artifact to the object."""
-        if isinstance(data, ObjectABC):
-            data = data.model
-        elif isinstance(data, dict):
-            data = ArtifactModel(**data)
-
-        if not isinstance(data, ArtifactModel):
-            raise RuntimeError('Invalid type passed in to add_artifact')
-        self.model.artifacts.data.append(data)
-
-    def add_note(self, data: Union['ObjectABC', 'NoteModel']) -> None:
-        """Add note to the object."""
-        if isinstance(data, ObjectABC):
-            data = data.model
-        elif isinstance(data, dict):
-            data = NoteModel(**data)
-
-        if not isinstance(data, NoteModel):
-            raise RuntimeError('Invalid type passed in to add_note')
-        self.model.notes.data.append(data)
-
     @property
     def artifacts(self) -> 'Artifact':
         """Yield Artifact from Artifacts."""
@@ -138,3 +116,25 @@ class Task(ObjectABC):
         from tcex.api.tc.v3.notes.note import Notes
 
         yield from self._iterate_over_sublist(Notes)
+
+    def stage_artifact(self, data: Union[dict, 'ObjectABC', 'ArtifactModel']) -> None:
+        """Stage artifact on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = ArtifactModel(**data)
+
+        if not isinstance(data, ArtifactModel):
+            raise RuntimeError('Invalid type passed in to stage_artifact')
+        self.model.artifacts.data.append(data)
+
+    def stage_note(self, data: Union[dict, 'ObjectABC', 'NoteModel']) -> None:
+        """Stage note on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = NoteModel(**data)
+
+        if not isinstance(data, NoteModel):
+            raise RuntimeError('Invalid type passed in to stage_note')
+        self.model.notes.data.append(data)

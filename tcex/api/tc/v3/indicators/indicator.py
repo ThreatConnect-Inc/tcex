@@ -1,6 +1,7 @@
 """Indicator / Indicators Object"""
 # standard library
-from typing import TYPE_CHECKING, Union
+from datetime import datetime
+from typing import TYPE_CHECKING, Optional, Union
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -53,6 +54,11 @@ class Indicators(ObjectCollectionABC):
     def _api_endpoint(self) -> str:
         """Return the type specific API endpoint."""
         return ApiEndpoints.INDICATORS.value
+
+    def deleted(
+        self, deleted_since: Optional[Union[datetime, str]], type_: Optional[str] = None
+    ) -> None:
+        """Return deleted indicators."""
 
     @property
     def filter(self) -> 'IndicatorFilter':
@@ -126,50 +132,6 @@ class Indicator(ObjectABC):
 
         return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
 
-    def add_associated_group(self, data: Union['ObjectABC', 'GroupModel']) -> None:
-        """Add group to the object."""
-        if isinstance(data, ObjectABC):
-            data = data.model
-        elif isinstance(data, dict):
-            data = GroupModel(**data)
-
-        if not isinstance(data, GroupModel):
-            raise RuntimeError('Invalid type passed in to add_associated_group')
-        self.model.associated_groups.data.append(data)
-
-    def add_attribute(self, data: Union['ObjectABC', 'IndicatorAttributeModel']) -> None:
-        """Add attribute to the object."""
-        if isinstance(data, ObjectABC):
-            data = data.model
-        elif isinstance(data, dict):
-            data = IndicatorAttributeModel(**data)
-
-        if not isinstance(data, IndicatorAttributeModel):
-            raise RuntimeError('Invalid type passed in to add_attribute')
-        self.model.attributes.data.append(data)
-
-    def add_security_label(self, data: Union['ObjectABC', 'SecurityLabelModel']) -> None:
-        """Add security_label to the object."""
-        if isinstance(data, ObjectABC):
-            data = data.model
-        elif isinstance(data, dict):
-            data = SecurityLabelModel(**data)
-
-        if not isinstance(data, SecurityLabelModel):
-            raise RuntimeError('Invalid type passed in to add_security_label')
-        self.model.security_labels.data.append(data)
-
-    def add_tag(self, data: Union['ObjectABC', 'TagModel']) -> None:
-        """Add tag to the object."""
-        if isinstance(data, ObjectABC):
-            data = data.model
-        elif isinstance(data, dict):
-            data = TagModel(**data)
-
-        if not isinstance(data, TagModel):
-            raise RuntimeError('Invalid type passed in to add_tag')
-        self.model.tags.data.append(data)
-
     @property
     def associated_groups(self) -> 'Group':
         """Yield Group from Groups."""
@@ -206,3 +168,47 @@ class Indicator(ObjectABC):
         from tcex.api.tc.v3.tags.tag import Tags
 
         yield from self._iterate_over_sublist(Tags)
+
+    def stage_associated_group(self, data: Union[dict, 'ObjectABC', 'GroupModel']) -> None:
+        """Stage group on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = GroupModel(**data)
+
+        if not isinstance(data, GroupModel):
+            raise RuntimeError('Invalid type passed in to stage_associated_group')
+        self.model.associated_groups.data.append(data)
+
+    def stage_attribute(self, data: Union[dict, 'ObjectABC', 'IndicatorAttributeModel']) -> None:
+        """Stage attribute on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = IndicatorAttributeModel(**data)
+
+        if not isinstance(data, IndicatorAttributeModel):
+            raise RuntimeError('Invalid type passed in to stage_attribute')
+        self.model.attributes.data.append(data)
+
+    def stage_security_label(self, data: Union[dict, 'ObjectABC', 'SecurityLabelModel']) -> None:
+        """Stage security_label on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = SecurityLabelModel(**data)
+
+        if not isinstance(data, SecurityLabelModel):
+            raise RuntimeError('Invalid type passed in to stage_security_label')
+        self.model.security_labels.data.append(data)
+
+    def stage_tag(self, data: Union[dict, 'ObjectABC', 'TagModel']) -> None:
+        """Stage tag on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = TagModel(**data)
+
+        if not isinstance(data, TagModel):
+            raise RuntimeError('Invalid type passed in to stage_tag')
+        self.model.tags.data.append(data)
