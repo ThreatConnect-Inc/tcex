@@ -113,7 +113,6 @@ class TestWorkflowEvents(TestV3):
         workflow_events.filter.user_name(TqlOperator.EQ, os.getenv('TC_API_ACCESS_ID'))
         # This filter does not work appropriately.
         # workflow_events.filter.deleted_reason(TqlOperator.NE, 'This event has been deleted')
-        print(workflow_events.filter.tql.as_str)
         for workflow_event in workflow_events:
             assert workflow_event.model.summary == workflow_event_data.get('summary')
             break
