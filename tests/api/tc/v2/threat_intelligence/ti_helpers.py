@@ -4,7 +4,8 @@ import os
 import uuid
 from random import randint
 
-from ..mock_app import MockApp
+# first-party
+from tests.mock_app import MockApp
 
 
 class TIHelper:
@@ -25,7 +26,7 @@ class TIHelper:
         # properties
         self.app = MockApp(runtime_level='Playbook')
         self.tcex = self.app.tcex
-        self.ti = self.tcex.ti
+        self.ti = self.tcex.v2.ti
 
         # indicator_type_value_map
         self.im = {

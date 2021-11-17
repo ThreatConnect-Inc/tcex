@@ -1,19 +1,11 @@
 """ThreatConnect TI Generic Mappings Object"""
-# standard library
-from typing import TYPE_CHECKING
-
-# first-party
-from tcex.api.tc.v2.threat_intelligence.tcex_ti_tc_request import TiTcRequest
-
-if TYPE_CHECKING:
-    # first-party
-    from tcex.api.tc.v2.threat_intelligence import ThreatIntelligence
+from ..tcex_ti_tc_request import TiTcRequest
 
 
 class Owner:
     """Common API calls for for Indicators/SecurityLabels/Groups and Victims"""
 
-    def __init__(self, ti: 'ThreatIntelligence'):
+    def __init__(self, ti: 'ThreatIntelligenc'):
         """Initialize Class properties."""
         self._data = {}
 
@@ -21,7 +13,7 @@ class Owner:
         self._api_type = 'owners'
         self._api_entity = 'owner'
 
-        self._tc_requests = TiTcRequest(ti.session)
+        self._tc_requests = TiTcRequest(ti.session_tc)
 
     @property
     def type(self):

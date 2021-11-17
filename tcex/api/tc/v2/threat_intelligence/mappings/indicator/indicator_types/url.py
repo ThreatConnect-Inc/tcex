@@ -1,20 +1,14 @@
 """ThreatConnect TI URL"""
 # standard library
-from typing import TYPE_CHECKING
 from urllib.parse import quote_plus
 
-# first-party
-from tcex.api.tc.v2.threat_intelligence.mappings.indicator import Indicator
-
-if TYPE_CHECKING:
-    # first-party
-    from tcex.api.tc.v2.threat_intelligence import ThreatIntelligence
+from ..indicator import Indicator
 
 
 class URL(Indicator):
     """Unique API calls for URL API Endpoints"""
 
-    def __init__(self, ti: 'ThreatIntelligence', **kwargs):
+    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
         """Initialize Class Properties.
 
         Args:

@@ -2,12 +2,13 @@
 # standard library
 import json
 import logging
-from typing import TYPE_CHECKING
+from functools import lru_cache
+from typing import TYPE_CHECKING, Optional
 from urllib.parse import unquote
 
 # first-party
 from tcex.api.tc.v2.threat_intelligence.tcex_ti_tc_request import TiTcRequest
-from tcex.exit.error_codes import handle_error
+from tcex.exit.error_codes import TcExErrorCodes
 from tcex.utils import Utils
 
 if TYPE_CHECKING:
@@ -37,21 +38,58 @@ class Mappings:
         self._api_sub_type = sub_type
         self._api_type = api_type
         self._owner = owner
-        self._session = ti.session
+        self._session = ti.session_tc
         self.ti = ti
         self._type = main_type
 
         # properties
         self._data = {}
         self.log = logger
-        self._tc_requests = TiTcRequest(ti.session)
+        self._tc_requests = TiTcRequest(ti.session_tc)
         self._unique_id = None
         self._utils = Utils()
 
     @property
+    @lru_cache()
+    def _error_codes(self) -> TcExErrorCodes:  # noqa: F821
+        """Return TcEx error codes."""
+        return TcExErrorCodes()
+
+    @property
     def _excluded_properties(self):
-        """Return a list of properties to exclude when creating a dict of the children Classes."""
+        """
+        Returns a list of properties to exclude when creating a dict of the children Classes.
+        """
         return ['tcex', 'kwargs', 'api_endpoint']
+
+    def _handle_error(
+        self, code: int, message_values: Optional[list] = None, raise_error: Optional[bool] = True
+    ) -> None:
+        """Raise RuntimeError
+
+        Args:
+            code: The error code from API or SDK.
+            message: The error message from API or SDK.
+            raise_error: Raise a Runtime error. Defaults to True.
+
+        Raises:
+            RuntimeError: Raised a defined error.
+        """
+        try:
+            if message_values is None:
+                message_values = []
+            message = self._error_codes.message(code).format(*message_values)
+            self.log.error(f'Error code: {code}, {message}')
+        except AttributeError:
+            self.log.error(f'Incorrect error code provided ({code}).')
+            raise RuntimeError(100, 'Generic Failure, see logs for more details.')
+        except IndexError:
+            self.log.error(
+                f'Incorrect message values provided for error code {code} ({message_values}).'
+            )
+            raise RuntimeError(100, 'Generic Failure, see logs for more details.')
+        if raise_error:
+            raise RuntimeError(code, message)
 
     @property
     def as_entity(self):  # pragma: no cover
@@ -60,7 +98,9 @@ class Mappings:
 
     @property
     def as_dict(self):
-        """Return the dict representation of the case management object."""
+        """
+        Returns the dict representation of the case management object.
+        """
         properties = vars(self)
         as_dict = {}
         for key, value in properties.items():
@@ -124,8 +164,8 @@ class Mappings:
 
     @api_branch.setter
     def api_branch(self, api_branch):
-        """Set the Api Entity
-
+        """
+        Sets the Api Entity
         Args:
             api_branch:
 
@@ -136,8 +176,8 @@ class Mappings:
 
     @api_entity.setter
     def api_entity(self, api_entity):
-        """Set the Api Entity
-
+        """
+        Sets the Api Entity
         Args:
             api_entity:
 
@@ -148,8 +188,8 @@ class Mappings:
 
     @api_type.setter
     def api_type(self, api_type):
-        """Set the Api Type
-
+        """
+        Sets the Api Type
         Args:
             api_type:
 
@@ -160,8 +200,8 @@ class Mappings:
 
     @tc_requests.setter
     def tc_requests(self, tc_requests):
-        """Set the Tc Request Object
-
+        """
+        Sets the Tc Request Object
         Args:
             tc_requests:
 
@@ -172,8 +212,8 @@ class Mappings:
 
     @api_sub_type.setter
     def api_sub_type(self, sub_type):
-        """Set the Api Sub Type
-
+        """
+        Sets the Api Sub Type
         Args:
             sub_type:
 
@@ -184,8 +224,8 @@ class Mappings:
 
     @unique_id.setter
     def unique_id(self, unique_id):
-        """Set the Unique Id
-
+        """
+        Sets the Unique Id
         Args:
             unique_id:
 
@@ -201,8 +241,8 @@ class Mappings:
 
     @data.setter
     def data(self, data):
-        """Set the data
-
+        """
+        Sets the data
         Args:
             data:
 
@@ -214,8 +254,8 @@ class Mappings:
             self._set_unique_id(data)
 
     def set(self, **kwargs):
-        """Set attributes of a TC data object.
-
+        """
+        A generic way to update the attributes of a TC data object.
         Args:
             **kwargs:
 
@@ -229,12 +269,13 @@ class Mappings:
                 self._data[arg] = value
 
     def create(self):
-        """Create the Indicator/Group/Victim or Security Label given Owner
+        """
+        Creates the Indicator/Group/Victim or Security Label given Owner
 
         Args:
         """
         if not self.can_create():
-            handle_error(920, [self.type])
+            self._handle_error(920, [self.type])
 
         response = self.tc_requests.create(self.api_type, self.api_branch, self._data, self.owner)
 
@@ -244,26 +285,30 @@ class Mappings:
         return response
 
     def delete(self):
-        """Delete the Indicator/Group/Victim or Security Label"""
+        """
+        Deletes the Indicator/Group/Victim or Security Label
+        """
         if not self.can_delete():
-            handle_error(915, [self.type])
+            self._handle_error(915, [self.type])
 
         return self.tc_requests.delete(
             self.api_type, self.api_branch, self.unique_id, owner=self.owner
         )
 
     def update(self):
-        """Update the Indicator/Group/Victim or Security Label"""
+        """
+        Updates the Indicator/Group/Victim or Security Label
+        """
         if not self.can_update():
-            handle_error(905, [self.type])
+            self._handle_error(905, [self.type])
 
         return self.tc_requests.update(
             self.api_type, self.api_branch, self.unique_id, self._data, owner=self.owner
         )
 
     def single(self, filters=None, params=None):
-        """Get the Indicator/Group/Victim or Security Label
-
+        """
+        Gets the Indicator/Group/Victim or Security Label
         Args:
             filters:
             params: parameters to pass in to get the object
@@ -272,7 +317,7 @@ class Mappings:
 
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         return self.tc_requests.single(
             self.api_type,
@@ -284,10 +329,11 @@ class Mappings:
         )
 
     def many(self, filters=None, params=None):
-        """Get the Indicator/Group/Victim or Security Labels
-
+        """
+        Gets the Indicator/Group/Victim or Security Labels
         Args:
             filters:
+            owner:
             params: parameters to pass in to get the objects
 
         Yields: A Indicator/Group/Victim json
@@ -303,10 +349,11 @@ class Mappings:
         )
 
     def request(self, result_limit, result_start, filters=None, params=None):
-        """Get the Indicator/Group/Victim or Security Labels
-
+        """
+        Gets the Indicator/Group/Victim or Security Labels
         Args:
             filters:
+            owner:
             result_limit:
             result_start:
             params: parameters to pass in to get the objects
@@ -325,10 +372,11 @@ class Mappings:
         )
 
     def tags(self, filters=None, params=None):
-        """Get the tags from a Indicator/Group/Victim/Security Labels
-
+        """
+        Gets the tags from a Indicator/Group/Victim/Security Labels
         Args:
             filters:
+            owner:
             params: parameters to pass in to get the objects
 
         Yields: A tag json
@@ -336,7 +384,7 @@ class Mappings:
         """
 
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         yield from self.tc_requests.tags(
             self.api_type,
@@ -348,18 +396,19 @@ class Mappings:
         )
 
     def tag(self, name, action='ADD', params=None):
-        """Add a tag to a Indicator/Group/Victim/Security Label
-
+        """
+        Adds a tag to a Indicator/Group/Victim/Security Label
         Args:
             params:
             action:
             name: The name of the tag
+
         """
         if not name:
-            handle_error(925, ['name', 'tag', 'name', 'name', name])
+            self._handle_error(925, ['name', 'tag', 'name', 'name', name])
 
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         if action in ['GET', 'ADD', 'DELETE']:
             return self.tc_requests.tag(
@@ -371,20 +420,21 @@ class Mappings:
                 owner=self.owner,
                 params=params,
             )
-        handle_error(925, ['action', 'tag', 'action', 'action', action])
+        self._handle_error(925, ['action', 'tag', 'action', 'action', action])
         return None
 
     def add_tag(self, name):
-        """Add a tag to a Indicator/Group/Victim/Security Label
-
+        """
+        Adds a tag to a Indicator/Group/Victim/Security Label
         Args:
             name: The name of the tag
+
         """
         return self.tag(name, action='ADD')
 
     def get_tag(self, name, params=None):
-        """Get a tag from a Indicator/Group/Victim/Security Label
-
+        """
+        Gets a tag from a Indicator/Group/Victim/Security Label
         Args:
             name: The name of the tag
             params:
@@ -392,20 +442,23 @@ class Mappings:
         return self.tag(name, action='GET', params=params)
 
     def delete_tag(self, name):
-        """Delete a tag from a Indicator/Group/Victim/Security Label
-
+        """
+        Deletes a tag from a Indicator/Group/Victim/Security Label
         Args:
             name: The name of the tag
         """
+
         return self.tag(name, action='DELETE')
 
     def labels(self, filters=None, params=None):
-        """Get the security labels from a Indicator/Group/Victim
+        """
+        Gets the security labels from a Indicator/Group/Victim
 
         Yields: A Security label
+
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         yield from self.tc_requests.labels(
             self.api_type,
@@ -417,21 +470,23 @@ class Mappings:
         )
 
     def label(self, label, action='ADD', params=None):
-        """Add a Security Label to a Indicator/Group or Victim
-
+        """
+        Adds a Security Label to a Indicator/Group or Victim
         Args:
             params:
             label: The name of the Security Label
             action:
+
         """
+
         if params is None:
             params = {}
 
         if not label:
-            handle_error(925, ['label', 'Security Label', 'label', 'label', label])
+            self._handle_error(925, ['label', 'Security Label', 'label', 'label', label])
 
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         if action == 'GET':
             return self.tc_requests.get_label(
@@ -453,20 +508,20 @@ class Mappings:
                 self.api_type, self.api_branch, self.unique_id, label, owner=self.owner
             )
 
-        handle_error(925, ['action', 'label', 'action', 'action', action])
+        self._handle_error(925, ['action', 'label', 'action', 'action', action])
         return None
 
     def add_label(self, label):
-        """Add a label to a Indicator/Group/Victim
-
+        """
+        Adds a label to a Indicator/Group/Victim
         Args:
             label: The name of the Security Label
         """
         return self.label(label, action='ADD')
 
     def get_label(self, label, params=None):
-        """Get a security label from a Indicator/Group/Victim
-
+        """
+        Gets a security label from a Indicator/Group/Victim
         Args:
             label: The name of the Security Label
             params:
@@ -474,20 +529,22 @@ class Mappings:
         return self.label(label, action='GET', params=params)
 
     def delete_label(self, label):
-        """Delete a security label from a Indicator/Group/Victim
-
+        """
+        Deletes a security label from a Indicator/Group/Victim
         Args:
             label: The name of the Security Label
         """
         return self.label(label, action='DELETE')
 
     def indicator_associations(self, params=None):
-        """Get the indicator association from a Indicator/Group/Victim
+        """
+        Gets the indicator association from a Indicator/Group/Victim
 
         Yields: Indicator Association
+
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         if params is None:
             params = {}
@@ -497,29 +554,33 @@ class Mappings:
         )
 
     def group_associations(self, params=None):
-        """Get the group association from a Indicator/Group/Victim
+        """
+        Gets the group association from a Indicator/Group/Victim
 
         Yields: Group Association
+
         """
         if params is None:
             params = {}
 
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         yield from self.tc_requests.group_associations(
             self.api_type, self.api_branch, self.unique_id, owner=self.owner, params=params
         )
 
     def victim_asset_associations(self, params=None):
-        """Get the victim asset association from a Indicator/Group/Victim
+        """
+        Gets the victim asset association from a Indicator/Group/Victim
 
         Yields: Victim Association json
+
         """
         if params is None:
             params = {}
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         return self.tc_requests.victim_asset_associations(
             self.api_type, self.api_branch, self.unique_id, owner=self.owner, params=params
@@ -528,7 +589,8 @@ class Mappings:
     def indicator_associations_types(
         self, indicator_type, api_entity=None, api_branch=None, params=None
     ):
-        """Get the indicator association from a Indicator/Group/Victim
+        """
+        Gets the indicator association from a Indicator/Group/Victim
 
         Args:
             indicator_type:
@@ -542,7 +604,7 @@ class Mappings:
         if params is None:
             params = {}
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         target = self.ti.indicator(indicator_type)
         yield from self.tc_requests.indicator_associations_types(
@@ -557,7 +619,8 @@ class Mappings:
         )
 
     def group_associations_types(self, group_type, api_entity=None, api_branch=None, params=None):
-        """Get the group association from a Indicator/Group/Victim
+        """
+        Gets the group association from a Indicator/Group/Victim
 
         Args:
             group_type:
@@ -571,7 +634,7 @@ class Mappings:
         if params is None:
             params = {}
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         target = self.ti.group(group_type)
         yield from self.tc_requests.group_associations_types(
@@ -586,7 +649,8 @@ class Mappings:
         )
 
     def victim_asset_associations_type(self, victim_asset_type, params=None):
-        """Get the victim association from a Indicator/Group/Victim
+        """
+        Gets the victim association from a Indicator/Group/Victim
 
         Args:
             victim_asset_type:
@@ -598,7 +662,7 @@ class Mappings:
         if params is None:
             params = {}
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         return self.tc_requests.victim_asset_associations(
             self.api_type,
@@ -610,7 +674,8 @@ class Mappings:
         )
 
     def add_association(self, target, api_type=None, api_branch=None, unique_id=None):
-        """Add a association to a Indicator/Group/Victim
+        """
+        Adds a association to a Indicator/Group/Victim
 
         Args:
             target:
@@ -625,10 +690,10 @@ class Mappings:
         api_branch = api_branch or target.api_branch
         unique_id = unique_id or target.unique_id
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         if not target.can_update():
-            handle_error(910, [target.type])
+            self._handle_error(910, [target.type])
 
         return self.tc_requests.add_association(
             self.api_type,
@@ -641,7 +706,8 @@ class Mappings:
         )
 
     def delete_association(self, target, api_type=None, api_branch=None, unique_id=None):
-        """Delete a association from a Indicator/Group/Victim
+        """
+        Deletes a association from a Indicator/Group/Victim
 
         Args:
             target:
@@ -656,10 +722,10 @@ class Mappings:
         api_branch = api_branch or target.api_branch
         unique_id = unique_id or target.unique_id
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         if not target.can_update():
-            handle_error(910, [target.type])
+            self._handle_error(910, [target.type])
 
         return self.tc_requests.delete_association(
             self.api_type,
@@ -672,7 +738,8 @@ class Mappings:
         )
 
     def attributes(self, params=None):
-        """Get the attributes from a Group/Indicator or Victim
+        """
+        Gets the attributes from a Group/Indicator or Victim
 
         Yields: attribute json
 
@@ -680,14 +747,15 @@ class Mappings:
         if params is None:
             params = {}
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         yield from self.tc_requests.attributes(
             self.api_type, self.api_branch, self.unique_id, owner=self.owner, params=params
         )
 
     def attribute(self, attribute_id, action='GET', params=None):
-        """Get the attribute from a Group/Indicator or Victim
+        """
+        Gets the attribute from a Group/Indicator or Victim
 
 
         Args:
@@ -702,7 +770,7 @@ class Mappings:
             params = {}
         action = action.upper()
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         if action == 'GET':
             return self.tc_requests.get_attribute(
@@ -719,13 +787,15 @@ class Mappings:
                 self.api_type, self.api_branch, self.unique_id, attribute_id, owner=self.owner
             )
 
-        handle_error(925, ['action', 'attribute', 'action', 'action', action])
+        self._handle_error(925, ['action', 'attribute', 'action', 'action', action])
         return None
 
     def add_attribute(
         self, attribute_type, attribute_value, source=None, displayed=None, params=None
     ):
-        """Add a attribute to a Group/Indicator or Victim
+        """
+        Adds a attribute to a Group/Indicator or Victim
+
 
         Args:
             source:
@@ -735,9 +805,10 @@ class Mappings:
             attribute_value:
 
         Returns: attribute json
+
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         if params is None:
             params = {}
@@ -757,18 +828,22 @@ class Mappings:
     def update_attribute(
         self, attribute_value, attribute_id, source=None, displayed=None, params=None
     ):
-        """Add a attribute to a Group/Indicator or Victim
+        """
+        Adds a attribute to a Group/Indicator or Victim
+
 
         Args:
             source:
             displayed:
             params:
+            attribute_type:
             attribute_value:
 
         Returns: attribute json
+
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         if params is None:
             params = {}
@@ -786,7 +861,9 @@ class Mappings:
         )
 
     def delete_attribute(self, attribute_id):
-        """Delete a attribute from a Group/Indicator or Victim
+        """
+        Deletes a attribute from a Group/Indicator or Victim
+
 
         Args:
             attribute_id:
@@ -795,14 +872,15 @@ class Mappings:
 
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         return self.tc_requests.delete_attribute(
             self.api_type, self.api_branch, self.unique_id, attribute_id, owner=self.owner
         )
 
     def attribute_labels(self, attribute_id, params=None):
-        """Get the security labels from a attribute
+        """
+        Gets the security labels from a attribute
 
         Yields: Security label json
 
@@ -810,7 +888,7 @@ class Mappings:
         if params is None:
             params = {}
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         yield from self.tc_requests.attribute_labels(
             self.api_type,
@@ -822,11 +900,21 @@ class Mappings:
         )
 
     def attribute_label(self, attribute_id, label, action='GET', params=None):
-        """Get a security labels from a attribute"""
+        """
+        Gets a security labels from a attribute
+
+        Args:
+            attribute_id:
+            label:
+            action:
+            params:
+
+        Returns: Security label json
+        """
         if params is None:
             params = {}
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         if action == 'GET':
             return self.tc_requests.get_attribute_label(
@@ -848,88 +936,89 @@ class Mappings:
                 owner=self.owner,
             )
 
-        handle_error(925, ['action', 'attribute_label', 'action', 'action', action])
+        self._handle_error(925, ['action', 'attribute_label', 'action', 'action', action])
         return None
 
     def add_attribute_label(self, attribute_id, label):
-        """Add a security labels to a attribute
+        """
+        Adds a security labels to a attribute
 
         Args:
-            attribute_id: The attribute Id
-            label: The attribute label
+            attribute_id:
+            label:
 
         Returns: A response json
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         return self.tc_requests.add_attribute_label(
             self.api_type, self.api_branch, self.unique_id, attribute_id, label, owner=self.owner
         )
 
     def can_create(self):  # pylint: disable=no-self-use
-        """Determine if the object can be created."""
+        """Determines if the object can be created."""
         return True
 
     def can_delete(self):
-        """Determine if the object can be deleted."""
+        """Determines if the object can be deleted."""
         return self.unique_id is not None
 
     def can_update(self):
-        """Determine if the object can be updated."""
+        """Determines if the object can be updated."""
         return self.unique_id is not None
 
     @staticmethod
     def is_indicator():
-        """Determine if the object is a Indicator."""
+        """Determines if the object is a Indicator."""
         return False
 
     @staticmethod
     def is_group():
-        """Determine if the object is a Group."""
+        """Determines if the object is a Group."""
         return False
 
     @staticmethod
     def is_victim():
-        """Determine if the object is a Victim."""
+        """Determines if the object is a Victim."""
         return False
 
     @staticmethod
     def is_tag():
-        """Determine if the object is a Tag."""
+        """Determines if the object is a Tag."""
         return False
 
     @staticmethod
     def is_security_label():
-        """Determine if the object is a Security Label."""
+        """Determines if the object is a Security Label."""
         return False
 
     @staticmethod
     def is_task():
-        """Determine if the object is a Task."""
+        """Determines if the object is a Task."""
         return False
 
     @staticmethod
     def is_encoded(uri):
-        """Determine if a uri is currently encoded"""
+        """Determines if a uri is currently encoded"""
         uri = uri or ''
 
         return uri != unquote(uri)
 
     def fully_decode_uri(self, uri):
-        """Decode a url till it is no longer encoded."""
-        safety_valve = 0
+        """Decodes a url till it is no longer encoded."""
+        saftey_valve = 0
 
         while self.is_encoded(uri):
             uri = unquote(uri)
-            safety_valve += 1
-            if safety_valve > 10:
+            saftey_valve += 1
+            if saftey_valve > 10:
                 break
 
         return uri
 
     def _set_unique_id(self, json_response):
-        """Set the Unique Id given a json"""
+        """Sets the Unique Id given a json"""
         self.unique_id = json_response.get('id')
 
     def __str__(self):

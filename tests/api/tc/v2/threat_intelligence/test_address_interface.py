@@ -4,7 +4,8 @@ import os
 from datetime import datetime, timedelta
 from random import randint
 
-from .ti_helpers import TestThreatIntelligence, TIHelper
+# first-party
+from tests.api.tc.v2.threat_intelligence.ti_helpers import TestThreatIntelligence, TIHelper
 
 
 class TestAddressIndicators(TestThreatIntelligence):
@@ -111,10 +112,10 @@ class TestAddressIndicators(TestThreatIntelligence):
         indicator.create()
         today = datetime.strftime(datetime.now(), '%Y-%m-%d')
         tomorrow = datetime.strftime(datetime.now() + timedelta(1), '%Y-%m-%d')
-        filters = self.tcex.ti.filters()
+        filters = self.tcex.v2.ti.filters()
         filters.add_filter('dateAdded', '>', today)
         filters.add_filter('dateAdded', '<', tomorrow)
-        indicators = self.tcex.ti.indicator()
+        indicators = self.tcex.v2.ti.indicator()
         found = False
         for indicator in indicators.many(filters=filters):
             if indicator.get('summary') == rand_ip:
@@ -142,7 +143,7 @@ class TestAddressIndicators(TestThreatIntelligence):
         filters.add_filter('active', '=', 'true')
         filters.add_filter('active', '=', 'false')
         parameters = {'orParams': 'true'}
-        indicators = self.tcex.ti.indicator()
+        indicators = self.tcex.v2.ti.indicator()
         active_found = False
         inactive_found = False
         for indicator in indicators.many(filters=filters, params=parameters):
@@ -169,7 +170,7 @@ class TestAddressIndicators(TestThreatIntelligence):
         indicator.create()
         filters = self.ti.filters()
         filters.add_filter('active', '=', 'false')
-        indicators = self.tcex.ti.indicator()
+        indicators = self.tcex.v2.ti.indicator()
         active_found = False
         for indicator in indicators.many(filters=filters):
             if indicator.get('summary') == rand_ip:

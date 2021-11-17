@@ -1,14 +1,5 @@
 """ThreatConnect TI Document"""
-# standard library
-from typing import TYPE_CHECKING
-
-# first-party
-from tcex.api.tc.v2.threat_intelligence.mappings.group import Group
-from tcex.exit.error_codes import handle_error
-
-if TYPE_CHECKING:
-    # first-party
-    from tcex.api.tc.v2.threat_intelligence import ThreatIntelligence
+from ..group import Group
 
 
 class Document(Group):
@@ -36,7 +27,7 @@ class Document(Group):
             requests.Response: The response from the API call.
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         return self.tc_requests.download(self.api_type, self.api_branch, self.unique_id)
 
@@ -52,7 +43,7 @@ class Document(Group):
             requests.Response
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         self._data['fileContent'] = file_content
         return self.tc_requests.upload(
@@ -73,7 +64,7 @@ class Document(Group):
             requests.Response
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         # update data dict with new value
         self._data['fileName'] = file_name
@@ -92,7 +83,7 @@ class Document(Group):
             requests.Response
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         # update data dict with new value
         self._data['fileSize'] = file_size
@@ -111,7 +102,7 @@ class Document(Group):
 
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         return self.tc_requests.get_file_hash(
             self.api_type, self.api_branch, self.unique_id, hash_type=hash_type
@@ -129,7 +120,7 @@ class Document(Group):
             requests.Response
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         # update data dict with new value
         self._data['malware'] = malware

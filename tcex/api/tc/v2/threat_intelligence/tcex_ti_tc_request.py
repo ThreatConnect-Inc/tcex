@@ -10,9 +10,9 @@ from urllib.parse import quote
 from requests import Session
 
 # first-party
-# import local modules for dynamic reference
-from tcex.exit.error_codes import handle_error
+from tcex.exit.error_codes import TcExErrorCodes
 
+# import local modules for dynamic reference
 module = __import__(__name__)
 
 # get tcex logger
@@ -49,6 +49,12 @@ class TiTcRequest:
             self.log.error(f'Error deleting data ({err}')
         return r
 
+    @property
+    @lru_cache()
+    def _error_codes(self) -> TcExErrorCodes:  # noqa: F821
+        """Return TcEx error codes."""
+        return TcExErrorCodes()
+
     def _get(self, url, params=None):
         """Delete data from API."""
         params = params or {}
@@ -69,9 +75,39 @@ class TiTcRequest:
             self.log.error(f'Error getting data ({err}')
         return r
 
+    def _handle_error(
+        self, code: int, message_values: Optional[list] = None, raise_error: Optional[bool] = True
+    ) -> None:
+        """Raise RuntimeError
+
+        Args:
+            code: The error code from API or SDK.
+            message: The error message from API or SDK.
+            raise_error: Raise a Runtime error. Defaults to True.
+
+        Raises:
+            RuntimeError: Raised a defined error.
+        """
+        try:
+            if message_values is None:
+                message_values = []
+            message = self._error_codes.message(code).format(*message_values)
+            self.log.error(f'Error code: {code}, {message}')
+        except AttributeError:
+            self.log.error(f'Incorrect error code provided ({code}).')
+            raise RuntimeError(100, 'Generic Failure, see logs for more details.')
+        except IndexError:
+            self.log.error(
+                f'Incorrect message values provided for error code {code} ({message_values}).'
+            )
+            raise RuntimeError(100, 'Generic Failure, see logs for more details.')
+        if raise_error:
+            raise RuntimeError(code, message)
+
     def _iterate(self, url, params, api_entity):
         """Iterate over API pagination."""
-        params['resultLimit'] = self.result_limit
+        safe_params = params.copy()
+        safe_params['resultLimit'] = self.result_limit
 
         should_iterate = True
         result_start = params.get('resultStart', 0)
@@ -81,11 +117,11 @@ class TiTcRequest:
             result_start = 0
             self.log.error('Invalid ResultStart Param. Starting at 0')
         while should_iterate:
-            params['resultStart'] = result_start
-            r = self._get(url, params=params)
+            safe_params['resultStart'] = result_start
+            r = self._get(url, params=safe_params)
             if not self.success(r):
                 err = r.text or r.reason
-                handle_error(950, [r.status_code, err, r.url])
+                self._handle_error(950, [r.status_code, err, r.url])
             data = r.json().get('data', {})
             if api_entity:
                 data = data.get(api_entity, [])
@@ -205,7 +241,7 @@ class TiTcRequest:
 
         Args:
             unique_id (str): The unique ID of the Adversary
-            params (dict, optional): The query params for the request.
+            params (dict, optional): The query params for the request. Defaults to None.
 
         Yields:
             requests.Response: A request Response object.
@@ -222,7 +258,7 @@ class TiTcRequest:
             unique_id (str): The unique ID of the Adversary
             asset_id: (str) The ID of the asset.
             action: (str): The HTTP method (e.g., DELETE or GET)
-            params (dict, optional): The query params for the request.
+            params (dict, optional): The query params for the request. Defaults to None.
 
         Returns:
             requests.Response: A request Response object.
@@ -242,7 +278,7 @@ class TiTcRequest:
 
         Args:
             unique_id (str): The unique ID of the Adversary
-            params (dict, optional): The query params for the request.
+            params (dict, optional): The query params for the request. Defaults to None.
 
         Yields:
             requests.Response: A request Response object.
@@ -259,7 +295,7 @@ class TiTcRequest:
             unique_id (str): The unique ID of the Adversary
             asset_id: (str) The ID of the asset.
             action: (str): The HTTP method (e.g., DELETE or GET)
-            params (dict, optional): The query params for the request.
+            params (dict, optional): The query params for the request. Defaults to None.
 
         Returns:
             requests.Response: A request Response object.
@@ -279,7 +315,7 @@ class TiTcRequest:
 
         Args:
             unique_id (str): The unique ID of the Adversary
-            params (dict, optional): The query params for the request.
+            params (dict, optional): The query params for the request. Defaults to None.
 
         Yields:
             requests.Response: A request Response object.
@@ -296,7 +332,7 @@ class TiTcRequest:
             unique_id (str): The unique ID of the Adversary
             asset_id: (str) The ID of the asset.
             action: (str): The HTTP method (e.g., DELETE or GET)
-            params (dict, optional): The query params for the request.
+            params (dict, optional): The query params for the request. Defaults to None.
 
         Returns:
             requests.Response: A request Response object.
@@ -316,7 +352,7 @@ class TiTcRequest:
 
         Args:
             unique_id (str): The unique ID of the Adversary
-            params (dict, optional): The query params for the request.
+            params (dict, optional): The query params for the request. Defaults to None.
 
         Yields:
             requests.Response: A request Response object.
@@ -504,9 +540,9 @@ class TiTcRequest:
             sub_type ([type]): [description]
             result_limit ([type]): [description]
             result_start ([type]): [description]
-            owner ([type], optional): [description].
-            filters ([type], optional): [description].
-            params ([type], optional): [description].
+            owner ([type], optional): [description]. Defaults to None.
+            filters ([type], optional): [description]. Defaults to None.
+            params ([type], optional): [description]. Defaults to None.
 
         Returns:
             [type]: [description]
@@ -908,7 +944,7 @@ class TiTcRequest:
         if self.is_true(value) or self.is_false(value):
             data['dnsActive'] = self.is_true(value)
         else:
-            handle_error(925, ['option', 'dns value', 'value', value])
+            self._handle_error(925, ['option', 'dns value', 'value', value])
 
         if not sub_type:
             url = f'/v2/{main_type}/{unique_id}'
@@ -939,7 +975,7 @@ class TiTcRequest:
         if self.is_true(value) or self.is_false(value):
             data['whoisActive'] = self.is_true(value)
         else:
-            handle_error(925, ['option', 'whois value', 'value', value])
+            self._handle_error(925, ['option', 'whois value', 'value', value])
 
         if not sub_type:
             url = f'/v2/{main_type}/{unique_id}'
@@ -1001,7 +1037,7 @@ class TiTcRequest:
 
         if not self.success(r):
             err = r.text or r.reason
-            handle_error(950, [r.status_code, err, r.url])
+            self._handle_error(950, [r.status_code, err, r.url])
 
         data = r.json().get('data', {}).get('indicator', [])
 
@@ -1686,6 +1722,27 @@ class TiTcRequest:
             url = f'/v2/{main_type}/{unique_id}/tags'
         else:
             url = f'/v2/{main_type}/{sub_type}/{unique_id}/tags'
+
+        yield from self._iterate(url, params, 'tag')
+
+    def all_tags(self, owners=None, filters=None, params=None):
+        """
+
+        Args:
+            owners:
+            filters:
+            params:
+
+        Return:
+
+        """
+        params = params or {}
+
+        if owners:
+            params['owner'] = owners
+        if filters and filters.filters:
+            params['filters'] = filters.filters_string
+        url = f'/v2/tags'
 
         yield from self._iterate(url, params, 'tag')
 

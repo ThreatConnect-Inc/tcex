@@ -3,12 +3,11 @@
 from typing import TYPE_CHECKING
 
 # first-party
-from tcex.api.tc.v2.threat_intelligence.mappings.group import Group
-from tcex.exit.error_codes import handle_error
+from tcex.api.tc.v2.threat_intelligence.mappings.group.group import Group
 
 if TYPE_CHECKING:
     # first-party
-    from tcex.api.tc.v2.threat_intelligence import ThreatIntelligence
+    from tcex.api.tc.v2.threat_intelligence.threat_intelligence import ThreatIntelligence
 
 
 class Report(Group):
@@ -36,7 +35,7 @@ class Report(Group):
 
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         self._data['fileContent'] = file_content
         return self.tc_requests.upload(
@@ -54,7 +53,7 @@ class Report(Group):
             file_name:
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         self._data['fileName'] = file_name
         request = {'fileName': file_name}
@@ -67,7 +66,7 @@ class Report(Group):
             file_size:
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         self._data['fileSize'] = file_size
         request = {'fileSize': file_size, 'fileName': self._data['fileName']}
@@ -83,7 +82,7 @@ class Report(Group):
 
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         return self.tc_requests.get_file_hash(
             self.api_type, self.api_branch, self.unique_id, hash_type=hash_type
@@ -102,7 +101,7 @@ class Report(Group):
             status: Success, Awaiting Upload, In Progress, or Failed
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         self._data['status'] = status
         request = {'status': status, 'fileName': self._data['fileName']}
@@ -111,7 +110,7 @@ class Report(Group):
     def publish_date(self, publish_date):
         """Return Email to."""
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         publish_date = self._utils.any_to_datetime(publish_date).strftime('%Y-%m-%dT%H:%M:%SZ')
 
@@ -126,6 +125,6 @@ class Report(Group):
 
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         return self.tc_requests.download(self.api_type, self.api_branch, self.unique_id)

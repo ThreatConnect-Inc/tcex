@@ -1,20 +1,11 @@
 """ThreatConnect TI Address"""
-# standard library
-from typing import TYPE_CHECKING
-
-# first-party
-from tcex.api.tc.v2.threat_intelligence.mappings.indicator import Indicator
-from tcex.exit.error_codes import handle_error
-
-if TYPE_CHECKING:
-    # first-party
-    from tcex.api.tc.v2.threat_intelligence import ThreatIntelligence
+from ..indicator import Indicator
 
 
 class Address(Indicator):
     """Unique API calls for Address API Endpoints"""
 
-    def __init__(self, ti: 'ThreatIntelligence', **kwargs):
+    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -56,7 +47,7 @@ class Address(Indicator):
 
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
         return self.tc_requests.dns_resolution(
             self.api_type, self.api_branch, self.unique_id, owner=self.owner
         )

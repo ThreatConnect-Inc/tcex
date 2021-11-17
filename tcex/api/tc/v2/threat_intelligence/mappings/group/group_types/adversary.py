@@ -1,20 +1,11 @@
 """ThreatConnect TI Adversary"""
-# standard library
-from typing import TYPE_CHECKING
-
-# first-party
-from tcex.api.tc.v2.threat_intelligence.mappings.group import Group
-from tcex.exit.error_codes import handle_error
-
-if TYPE_CHECKING:
-    # first-party
-    from tcex.api.tc.v2.threat_intelligence import ThreatIntelligence
+from ..group import Group
 
 
 class Adversary(Group):
     """Unique API calls for Adversary API Endpoints"""
 
-    def __init__(self, ti: 'ThreatIntelligence', **kwargs):
+    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
         """Initialize Class properties"""
         super().__init__(
             ti, sub_type='Adversary', api_entity='adversary', api_branch='adversaries', **kwargs
@@ -31,7 +22,7 @@ class Adversary(Group):
             requests.Response: The response from the API call.
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         asset_methods = {
             'handle': self.tc_requests.add_adversary_handle_asset,
@@ -41,7 +32,9 @@ class Adversary(Group):
 
         # handle invalid input
         if asset_methods.get(asset_type.lower()) is None:
-            handle_error(925, ['asset_type', 'assets', 'asset_type', 'asset_type', asset_type])
+            self._handle_error(
+                925, ['asset_type', 'assets', 'asset_type', 'asset_type', asset_type]
+            )
 
         return asset_methods.get(asset_type.lower())(self.unique_id, asset_value)
 
@@ -90,7 +83,7 @@ class Adversary(Group):
             requests.Response: The response from the API call.
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         asset_methods = {
             'handle': self.tc_requests.adversary_handle_asset,
@@ -100,7 +93,9 @@ class Adversary(Group):
 
         # handle invalid input
         if asset_methods.get(asset_type.lower()) is None:
-            handle_error(925, ['asset_type', 'assets', 'asset_type', 'asset_type', asset_type])
+            self._handle_error(
+                925, ['asset_type', 'assets', 'asset_type', 'asset_type', asset_type]
+            )
 
         return asset_methods.get(asset_type.lower())(self.unique_id, asset_id, action=action)
 
@@ -114,7 +109,7 @@ class Adversary(Group):
             requests.Response: The response from the API call.
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         asset_methods = {
             'handle': self.tc_requests.adversary_handle_assets,
@@ -127,7 +122,9 @@ class Adversary(Group):
 
         # handle invalid input
         if asset_methods.get(asset_type.lower()) is None:
-            handle_error(925, ['asset_type', 'assets', 'asset_type', 'asset_type', asset_type])
+            self._handle_error(
+                925, ['asset_type', 'assets', 'asset_type', 'asset_type', asset_type]
+            )
 
         return asset_methods.get(asset_type.lower())(self.unique_id)
 

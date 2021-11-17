@@ -3,11 +3,11 @@
 from typing import TYPE_CHECKING
 
 # first-party
-from tcex.api.tc.v2.threat_intelligence.mappings import Mappings
+from tcex.api.tc.v2.threat_intelligence.mappings.mappings import Mappings
 
 if TYPE_CHECKING:
     # first-party
-    from tcex.api.tc.v2.threat_intelligence import ThreatIntelligence
+    from tcex.api.tc.v2.threat_intelligence.threat_intelligence import ThreatIntelligence
 
 # import local modules for dynamic reference
 module = __import__(__name__)
@@ -41,7 +41,11 @@ class SecurityLabel(Mappings):
 
     @staticmethod
     def is_security_label():
-        """Indicates that this is a security label object."""
+        """Indicates that this is a security label object
+
+        Returns:
+
+        """
         return True
 
     def can_create(self):

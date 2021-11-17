@@ -3,12 +3,11 @@
 from typing import TYPE_CHECKING
 
 # first-party
-from tcex.api.tc.v2.threat_intelligence.mappings.group import Group
-from tcex.exit.error_codes import handle_error
+from tcex.api.tc.v2.threat_intelligence.mappings.group.group import Group
 
 if TYPE_CHECKING:
     # first-party
-    from tcex.api.tc.v2.threat_intelligence import ThreatIntelligence
+    from tcex.api.tc.v2.threat_intelligence.threat_intelligence import ThreatIntelligence
 
 
 class Campaign(Group):
@@ -36,10 +35,9 @@ class Campaign(Group):
             requests.Response: The response from the API call.
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         first_seen = self._utils.any_to_datetime(first_seen).strftime('%Y-%m-%dT%H:%M:%SZ')
-
         self._data['firstSeen'] = first_seen
         request = {'firstSeen': first_seen}
         return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)

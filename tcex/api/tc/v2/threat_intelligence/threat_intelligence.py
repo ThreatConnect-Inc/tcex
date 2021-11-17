@@ -2,24 +2,37 @@
 # standard library
 import logging
 from functools import lru_cache
+from typing import Optional
 
 # third-party
-import inflect
+# import inflect
 from requests import Session
 
 # first-party
 from tcex.api.tc.v2.threat_intelligence.mappings.filters import Filters
 from tcex.api.tc.v2.threat_intelligence.mappings.group.group import Group
 from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.adversary import Adversary
+from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.attack_pattern import (
+    AttackPattern,
+)
 from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.campaign import Campaign
+from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.course_of_action import (
+    CourseOfAction,
+)
 from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.document import Document
 from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.email import Email
 from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.event import Event
 from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.incident import Incident
 from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.intrusion_set import IntrusionSet
+from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.malware import Malware
 from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.report import Report
 from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.signature import Signature
+from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.tactic import Tactic
 from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.threat import Threat
+from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.tool import Tool
+from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.vulnerability import (
+    Vulnerability,
+)
 from tcex.api.tc.v2.threat_intelligence.mappings.indicator.indicator import (
     Indicator,
     custom_indicator_class_factory,
@@ -33,12 +46,13 @@ from tcex.api.tc.v2.threat_intelligence.mappings.indicator.indicator_types.host 
 from tcex.api.tc.v2.threat_intelligence.mappings.indicator.indicator_types.url import URL
 from tcex.api.tc.v2.threat_intelligence.mappings.owner import Owner
 from tcex.api.tc.v2.threat_intelligence.mappings.tag import Tag
+from tcex.api.tc.v2.threat_intelligence.mappings.tags import Tags
 from tcex.api.tc.v2.threat_intelligence.mappings.task import Task
 from tcex.api.tc.v2.threat_intelligence.mappings.victim import Victim
-from tcex.exit.error_codes import handle_error
+from tcex.exit.error_codes import TcExErrorCodes
 from tcex.utils import Utils
 
-p = inflect.engine()
+# p = inflect.engine()
 
 # import local modules for dynamic reference
 module = __import__(__name__)
@@ -50,9 +64,9 @@ logger = logging.getLogger('tcex')
 class ThreatIntelligence:
     """ThreatConnect Threat Intelligence Module"""
 
-    def __init__(self, session: Session) -> None:
+    def __init__(self, session_tc: 'Session') -> None:
         """Initialize Class properties."""
-        self.session = session
+        self.session_tc = session_tc
 
         # properties
         self._custom_indicator_classes = {}
@@ -61,6 +75,12 @@ class ThreatIntelligence:
 
         # generate custom ioc classes
         self._gen_indicator_class()
+
+    @property
+    @lru_cache()
+    def _error_codes(self) -> TcExErrorCodes:  # noqa: F821
+        """Return TcEx error codes."""
+        return TcExErrorCodes()
 
     @property
     def _group_types(self) -> list:
@@ -81,6 +101,12 @@ class ThreatIntelligence:
             'Report',
             'Threat',
             'Task',
+            'Attack Pattern',
+            'Malware',
+            'Vulnerability',
+            'Tactic',
+            'Tool',
+            'Course of Action',
         ]
 
     @property
@@ -98,6 +124,12 @@ class ThreatIntelligence:
             'Signature': {'apiBranch': 'signatures', 'apiEntity': 'signature'},
             'Threat': {'apiBranch': 'threats', 'apiEntity': 'threat'},
             'Task': {'apiBranch': 'tasks', 'apiEntity': 'task'},
+            'Attack Pattern': {'apiBranch': 'attackpatterns', 'apiEntity': 'attackPattern'},
+            'Malware': {'apiBranch': 'malware', 'apiEntity': 'malware'},
+            'Vulnerability': {'apiBranch': 'vulnerabilities', 'apiEntity': 'vulnerability'},
+            'Tactic': {'apiBranch': 'tactics', 'apiEntity': 'tactic'},
+            'Tool': {'apiBranch': 'tools', 'apiEntity': 'tool'},
+            'Course of Action': {'apiBranch': 'coursesofaction', 'apiEntity': 'courseofAction'},
         }
 
     @property
@@ -113,7 +145,7 @@ class ThreatIntelligence:
         _indicator_types_data = {}
 
         # retrieve data from API
-        r = self.session.get('/v2/types/indicatorTypes')
+        r = self.session_tc.get('/v2/types/indicatorTypes')
 
         # TODO: use handle error instead
         if not r.ok:
@@ -123,6 +155,35 @@ class ThreatIntelligence:
             _indicator_types_data[itd.get('name')] = itd
 
         return _indicator_types_data
+
+    def _handle_error(
+        self, code: int, message_values: Optional[list] = None, raise_error: Optional[bool] = True
+    ) -> None:
+        """Raise RuntimeError
+
+        Args:
+            code: The error code from API or SDK.
+            message: The error message from API or SDK.
+            raise_error: Raise a Runtime error. Defaults to True.
+
+        Raises:
+            RuntimeError: Raised a defined error.
+        """
+        try:
+            if message_values is None:
+                message_values = []
+            message = self._error_codes.message(code).format(*message_values)
+            self.log.error(f'Error code: {code}, {message}')
+        except AttributeError:
+            self.log.error(f'Incorrect error code provided ({code}).')
+            raise RuntimeError(100, 'Generic Failure, see logs for more details.')
+        except IndexError:
+            self.log.error(
+                f'Incorrect message values provided for error code {code} ({message_values}).'
+            )
+            raise RuntimeError(100, 'Generic Failure, see logs for more details.')
+        if raise_error:
+            raise RuntimeError(code, message)
 
     def address(self, **kwargs):
         """Return an Address TI object.
@@ -238,7 +299,7 @@ class ThreatIntelligence:
 
         # return correct indicator object
         indicator_object = indicator_type_map.get(indicator_type)
-        return indicator_object(**kwargs)
+        return indicator_object(self, **kwargs)
 
     def group(self, group_type=None, owner=None, **kwargs):
         """Create the Group TI object.
@@ -261,6 +322,12 @@ class ThreatIntelligence:
             'report': Report,
             'signature': Signature,
             'threat': Threat,
+            'attack pattern': AttackPattern,
+            'malware': Malware,
+            'vulnerability': Vulnerability,
+            'tactic': Tactic,
+            'tool': Tool,
+            'course of action': CourseOfAction,
         }
 
         # if "name" is not in kwargs
@@ -276,7 +343,79 @@ class ThreatIntelligence:
 
         # return correct group object
         group_object = group_type_map.get(group_type)
-        return group_object(**kwargs)
+        return group_object(self, **kwargs)
+
+    def attack_pattern(self, **kwargs):
+        """Create the Attack Pattern TI object.
+
+        Args:
+            name (str, kwargs): [Required for Create] The name for this Group.
+            owner (str, kwargs): The name for this Group. Default to default Org when not provided
+
+        Return:
+            ti.AttackPattern: An instance of AttackPattern.
+        """
+        return AttackPattern(self, **kwargs)
+
+    def malware(self, **kwargs):
+        """Create the Malware TI object.
+
+        Args:
+            name (str, kwargs): [Required for Create] The name for this Group.
+            owner (str, kwargs): The name for this Group. Default to default Org when not provided
+
+        Return:
+            ti.Malware: An instance of Malware.
+        """
+        return Malware(self, **kwargs)
+
+    def vulnerability(self, **kwargs):
+        """Create the Vulnerability TI object.
+
+        Args:
+            name (str, kwargs): [Required for Create] The name for this Group.
+            owner (str, kwargs): The name for this Group. Default to default Org when not provided
+
+        Return:
+            ti.Vulnerability: An instance of Vulnerability.
+        """
+        return Vulnerability(self, **kwargs)
+
+    def tactic(self, **kwargs):
+        """Create the Tactic TI object.
+
+        Args:
+            name (str, kwargs): [Required for Create] The name for this Group.
+            owner (str, kwargs): The name for this Group. Default to default Org when not provided
+
+        Return:
+            ti.Tactic: An instance of Tactic.
+        """
+        return Tactic(self, **kwargs)
+
+    def tool(self, **kwargs):
+        """Create the Tool TI object.
+
+        Args:
+            name (str, kwargs): [Required for Create] The name for this Group.
+            owner (str, kwargs): The name for this Group. Default to default Org when not provided
+
+        Return:
+            ti.Tool: An instance of Tool.
+        """
+        return Tool(self, **kwargs)
+
+    def course_of_action(self, **kwargs):
+        """Create the Course of Action TI object.
+
+        Args:
+            name (str, kwargs): [Required for Create] The name for this Group.
+            owner (str, kwargs): The name for this Group. Default to default Org when not provided
+
+        Return:
+            ti.CourseOfAction: An instance of CourseOfAction.
+        """
+        return CourseOfAction(self, **kwargs)
 
     def adversary(self, **kwargs):
         """Create the Adversary TI object.
@@ -436,6 +575,10 @@ class ThreatIntelligence:
 
         """
         return Victim(self, **kwargs)
+
+    def tags(self):
+        """Create the Tag TI object."""
+        return Tags(self)
 
     def tag(self, name):
         """Create the Tag TI object."""
@@ -613,12 +756,12 @@ class ThreatIntelligence:
             keys = d.keys()
             if resource_type.lower() in map(str.lower, self._group_types):
                 # @bpurdy - is this okay?
-                # r = self.tcex.ti.group(group_type=resource_type, name=d.get('name'))
+                # r = self.tcex.v2.ti.group(group_type=resource_type, name=d.get('name'))
                 r = self.group(group_type=resource_type, name=d.get('name'))
                 value = d.get('name')
             elif resource_type.lower() in map(str.lower, self._indicator_types_data.keys()):
                 # @bpurdy - is this okay?
-                # r = self.tcex.ti.indicator(indicator_type=resource_type)
+                # r = self.tcex.v2.ti.indicator(indicator_type=resource_type)
                 r = self.indicator(indicator_type=resource_type)
                 r._set_unique_id(d)
                 value = r.unique_id
@@ -626,7 +769,7 @@ class ThreatIntelligence:
                 r = self.victim(name=d.get('name'))
                 value = d.get('name')
             else:
-                handle_error(925, ['type', 'entities', 'type', 'type', resource_type])
+                self._handle_error(925, ['type', 'entities', 'type', 'type', resource_type])
 
             if 'summary' in d:
                 values.append(d.get('summary'))

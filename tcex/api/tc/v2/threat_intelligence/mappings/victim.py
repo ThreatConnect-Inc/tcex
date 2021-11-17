@@ -1,14 +1,5 @@
 """ThreatConnect TI Victim"""
-# standard library
-from typing import TYPE_CHECKING
-
-# first-party
-from tcex.api.tc.v2.threat_intelligence.mappings import Mappings
-from tcex.exit.error_codes import handle_error
-
-if TYPE_CHECKING:
-    # first-party
-    from tcex.api.tc.v2.threat_intelligence import ThreatIntelligence
+from .mappings import Mappings
 
 # import local modules for dynamic reference
 module = __import__(__name__)
@@ -17,7 +8,7 @@ module = __import__(__name__)
 class Victim(Mappings):
     """Unique API calls for Victim API Endpoints"""
 
-    def __init__(self, ti: 'ThreatIntelligence', **kwargs):
+    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
         """Initialize Class properties.
 
         Args:
@@ -51,13 +42,13 @@ class Victim(Mappings):
             requests.Response: The response from the API call.
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         if body is None:
             body = {}
 
         if asset_type is None:
-            handle_error(
+            self._handle_error(
                 925, ['asset_type', 'update_asset', 'asset_type', 'asset_type', asset_type]
             )
 
@@ -167,7 +158,7 @@ class Victim(Mappings):
 
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         return self.tc_requests.victim_assets(
             self.api_type, self.api_branch, self.unique_id, asset_type
@@ -195,10 +186,10 @@ class Victim(Mappings):
             requests.Response: The response from the API call.
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         if asset_type is None:
-            handle_error(
+            self._handle_error(
                 925, ['asset_type', 'update_asset', 'asset_type', 'asset_type', asset_type]
             )
 
@@ -287,10 +278,10 @@ class Victim(Mappings):
             requests.Response: The response from the API call.
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         if asset_type is None:
-            handle_error(
+            self._handle_error(
                 925, ['asset_type', 'update_asset', 'asset_type', 'asset_type', asset_type]
             )
 
@@ -416,7 +407,7 @@ class Victim(Mappings):
             body = {}
 
         if asset_type is None:
-            handle_error(
+            self._handle_error(
                 925, ['asset_type', 'update_asset', 'asset_type', 'asset_type', asset_type]
             )
 

@@ -1,15 +1,14 @@
 """ThreatConnect TI Adversary """
 # standard library
-from typing import TYPE_CHECKING
+from glob import escape
 from urllib.parse import quote_plus
+from typing import TYPE_CHECKING
 
-# first-party
-from tcex.api.tc.v2.threat_intelligence.mappings import Mappings
-from tcex.exit.error_codes import handle_error
+from .mappings import Mappings
 
 if TYPE_CHECKING:
     # first-party
-    from tcex.api.tc.v2.threat_intelligence import ThreatIntelligence
+    from tcex.api.tc.v2.threat_intelligence.threat_intelligence import ThreatIntelligence
 
 
 class Task(Mappings):
@@ -136,14 +135,14 @@ class Task(Mappings):
                 ADD if not provided.
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         return self.tc_requests.assignee(self.api_type, self.unique_id, assignee, action=action)
 
     def assignees(self):
         """Yield the Assignee Users"""
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         return self.tc_requests.assignees(self.api_type, self.unique_id)
 
@@ -188,7 +187,7 @@ class Task(Mappings):
             due_date: Converted to %Y-%m-%dT%H:%M:%SZ date format
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         due_date = self._utils.any_to_datetime(due_date).strftime('%Y-%m-%dT%H:%M:%SZ')
         self._data['dueDate'] = due_date
@@ -210,14 +209,14 @@ class Task(Mappings):
 
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         return self.tc_requests.escalatee(self.api_type, self.unique_id, escalatee, action=action)
 
     def escalatees(self):
         """Yield the Escalatees Users"""
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         return self.tc_requests.escalatees(self.api_type, self.unique_id)
 
@@ -228,9 +227,11 @@ class Task(Mappings):
             escalation_date: Converted to %Y-%m-%dT%H:%M:%SZ date format
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
-        escalation_date = self._utils.any_to_datetime(escalation_date).strftime('%Y-%m-%dT%H:%M:%SZ')
+        escalation_date = self._utils.any_to_datetime(escalation_date).strftime(
+            '%Y-%m-%dT%H:%M:%SZ'
+        )
         self._data['escalationDate'] = escalation_date
         request = {'escalationDate': escalation_date}
         return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
@@ -266,7 +267,7 @@ class Task(Mappings):
             reminder_date: Converted to %Y-%m-%dT%H:%M:%SZ date format
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         reminder_date = self._utils.any_to_datetime(reminder_date).strftime('%Y-%m-%dT%H:%M:%SZ')
         self._data['reminderDate'] = reminder_date
@@ -287,7 +288,7 @@ class Task(Mappings):
             status: Not Started, In Progress, Completed, Waiting on Someone, Deferred
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         self._data['status'] = status
         request = {'status': status}

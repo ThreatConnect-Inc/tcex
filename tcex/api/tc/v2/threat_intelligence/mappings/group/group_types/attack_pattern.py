@@ -1,9 +1,9 @@
-"""ThreatConnect TI Intrusion Set"""
+"""ThreatConnect TI Email"""
 from ..group import Group
 
 
-class IntrusionSet(Group):
-    """Unique API calls for IntrustionSet API Endpoints
+class AttackPattern(Group):
+    """Unique API calls for AttackPattern API Endpoints
 
     Args:
         name (str, kwargs): [Required for Create] The name for this Group.
@@ -11,11 +11,11 @@ class IntrusionSet(Group):
     """
 
     def __init__(self, ti: 'ThreatIntelligence', **kwargs):
-        """Initialize Class Properties."""
+        """Initialize Class properties."""
         super().__init__(
             ti,
-            sub_type='Intrusion Set',
-            api_entity='intrusionSet',
-            api_branch='intrusionSets',
+            sub_type='Attack Pattern',
+            api_entity='attackPattern',
+            api_branch='attackPatterns',
             **kwargs
         )

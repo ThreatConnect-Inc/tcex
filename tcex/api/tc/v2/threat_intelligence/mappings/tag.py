@@ -1,14 +1,8 @@
 """ThreatConnect TI Security Label"""
-# standard library
-from typing import TYPE_CHECKING
-
 # first-party
-from tcex.api.tc.v2.threat_intelligence.tcex_ti_tc_request import TiTcRequest
 from tcex.utils import Utils
 
-if TYPE_CHECKING:
-    # first-party
-    from tcex.api.tc.v2.threat_intelligence import ThreatIntelligence
+from ..tcex_ti_tc_request import TiTcRequest
 
 
 class Tag:
@@ -21,7 +15,7 @@ class Tag:
 
     """
 
-    def __init__(self, ti: 'ThreatIntelligence', name):
+    def __init__(self, ti: 'ThreatIntelligenc', name):
         """Initialize Class Properties."""
         self._name = name
 
@@ -29,7 +23,7 @@ class Tag:
         self._api_entity = 'tag'
         self._api_sub_type = None
         self._api_type = None
-        self._tc_requests = TiTcRequest(ti.session)
+        self._tc_requests = TiTcRequest(ti.session_tc)
         self._type = 'tags'
         self._utils = Utils()
         self.ti = ti

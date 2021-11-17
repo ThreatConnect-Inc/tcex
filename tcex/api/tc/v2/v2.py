@@ -7,6 +7,7 @@ from tcex.api.tc.v2.datastore.cache import Cache
 from tcex.api.tc.v2.datastore.datastore import DataStore
 from tcex.api.tc.v2.metrics.metrics import Metrics
 from tcex.api.tc.v2.notifications.notifications import Notifications
+from tcex.api.tc.v2.threat_intelligence.threat_intelligence import ThreatIntelligence
 
 if TYPE_CHECKING:
     # third-party
@@ -44,7 +45,7 @@ class V2:
         """
         return Cache(self.session_tc, domain, data_type, ttl_seconds, mapping)
 
-    def datastore(self, domain: str, data_type: str, mapping: Optional[dict] = None) -> DataStore:
+    def datastore(self, domain: str, data_type: str, mapping: Optional[dict] = None) -> 'DataStore':
         """Return Datastore Module.
 
         Args:
@@ -66,7 +67,7 @@ class V2:
         data_type: str,
         interval: str,
         keyed: Optional[bool] = False,
-    ) -> Metrics:
+    ) -> 'Metrics':
         """Get instance of the Metrics module.
 
         Args:
@@ -85,6 +86,12 @@ class V2:
             keyed=keyed,
         )
 
-    def notification(self) -> Notifications:
+    @property
+    def notification(self) -> 'Notifications':
         """Get instance of the Notification module."""
         return Notifications(self.session_tc)
+
+    @property
+    def ti(self) -> 'ThreatIntelligence':
+        """Get instance of the Notification module."""
+        return ThreatIntelligence(self.session_tc)

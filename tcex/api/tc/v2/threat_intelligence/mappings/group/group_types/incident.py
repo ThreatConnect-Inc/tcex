@@ -3,12 +3,11 @@
 from typing import TYPE_CHECKING
 
 # first-party
-from tcex.api.tc.v2.threat_intelligence.mappings.group import Group
-from tcex.exit.error_codes import handle_error
+from tcex.api.tc.v2.threat_intelligence.mappings.group.group import Group
 
 if TYPE_CHECKING:
     # first-party
-    from tcex.api.tc.v2.threat_intelligence import ThreatIntelligence
+    from tcex.api.tc.v2.threat_intelligence.threat_intelligence import ThreatIntelligence
 
 
 class Incident(Group):
@@ -47,10 +46,9 @@ class Incident(Group):
 
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         event_date = self._utils.any_to_datetime(event_date).strftime('%Y-%m-%dT%H:%M:%SZ')
-
         self._data['eventDate'] = event_date
         request = {'eventDate': event_date}
         return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)
@@ -77,7 +75,7 @@ class Incident(Group):
 
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         self._data['status'] = status
         request = {'status': status}

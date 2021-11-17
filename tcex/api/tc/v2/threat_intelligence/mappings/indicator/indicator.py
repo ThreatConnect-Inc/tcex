@@ -1,16 +1,9 @@
 """ThreatConnect TI Indicator"""
 # standard library
 import json
-from typing import TYPE_CHECKING
 from urllib.parse import quote, unquote
 
-# first-party
-from tcex.api.tc.v2.threat_intelligence.mappings import Mappings
-from tcex.exit.error_codes import handle_error
-
-if TYPE_CHECKING:
-    # first-party
-    from tcex.api.tc.v2.threat_intelligence import ThreatIntelligence
+from ..mappings import Mappings
 
 # import local modules for dynamic reference
 module = __import__(__name__)
@@ -103,7 +96,7 @@ def custom_indicator_class_factory(
 class Indicator(Mappings):
     """Unique API calls for Indicator API Endpoints"""
 
-    def __init__(self, ti: 'ThreatIntelligence', **kwargs):
+    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
         """Initialize Class Properties."""
         super().__init__(
             ti,
@@ -137,7 +130,7 @@ class Indicator(Mappings):
         """Return the owner."""
         return self._owner
 
-    def can_create(self):  # pylint: disable=unused-argument
+    def can_create(self):
         """Overridden by other indicator classes."""
         return True
 
@@ -190,7 +183,7 @@ class Indicator(Mappings):
         Returns:
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
         if not status and not cal_status:
             return None
         request_data = {}
@@ -217,7 +210,7 @@ class Indicator(Mappings):
             value:
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
         request_data = {'rating': value}
         return self.tc_requests.update(
             self.api_type, self.api_branch, self.unique_id, request_data, owner=self.owner
@@ -230,7 +223,7 @@ class Indicator(Mappings):
             value:
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
         request_data = {'confidence': value}
         return self.tc_requests.update(
             self.api_type, self.api_branch, self.unique_id, request_data, owner=self.owner
@@ -239,7 +232,7 @@ class Indicator(Mappings):
     def owners(self):
         """Return owners"""
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
         return self.tc_requests.owners(
             self.api_type, self.api_branch, self.unique_id, owner=self.owner
         )
@@ -253,12 +246,13 @@ class Indicator(Mappings):
 
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
-        # TODO [high] when datetime module is replaced, this must be updated.
         data = {
             'count': count,
-            'dateObserved': self._utils.any_to_datetime(date_observed).strftime('%Y-%m-%dT%H:%M:%SZ'),
+            'dateObserved': self._utils.any_to_datetime(date_observed).strftime(
+                '%Y-%m-%dT%H:%M:%SZ'
+            ),
         }
 
         return self.tc_requests.add_observations(
@@ -272,7 +266,7 @@ class Indicator(Mappings):
 
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
         return self.tc_requests.observation_count(
             self.api_type, self.api_branch, self.unique_id, owner=self.owner
         )
@@ -280,7 +274,7 @@ class Indicator(Mappings):
     def add_false_positive(self):
         """Add a Indicator FalsePositive."""
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
 
         return self.tc_requests.add_false_positive(
             self.api_type, self.api_branch, self.unique_id, owner=self.owner
@@ -293,7 +287,7 @@ class Indicator(Mappings):
             [type]: [description]
         """
         if not self.can_update():
-            handle_error(910, [self.type])
+            self._handle_error(910, [self.type])
         return self.tc_requests.observations(
             self.api_type, self.api_branch, self.unique_id, owner=self.owner
         )
@@ -303,8 +297,8 @@ class Indicator(Mappings):
 
         Args:
             deleted_since ([type]): [description]
-            filters ([type], optional): [description].
-            params ([type], optional): [description].
+            filters ([type], optional): [description]. Defaults to None.
+            params ([type], optional): [description]. Defaults to None.
 
         Returns:
             [type]: [description]
@@ -323,9 +317,9 @@ class Indicator(Mappings):
         """Construct an indicator summary given va1, va2, val3.
 
         Args:
-            val1 (str, optional): Indicator value.
-            val2 (str, optional): Indicator value.
-            val3 (str, optional): Indicator value.
+            val1 (str, optional): Indicator value. Defaults to None.
+            val2 (str, optional): Indicator value. Defaults to None.
+            val3 (str, optional): Indicator value. Defaults to None.
 
         Returns:
             str: <space><colon><space> delimeted indicator summary.

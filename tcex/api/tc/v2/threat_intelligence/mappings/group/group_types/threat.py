@@ -1,13 +1,5 @@
 """ThreatConnect TI Threat"""
-# standard library
-from typing import TYPE_CHECKING
-
-# first-party
-from tcex.api.tc.v2.threat_intelligence.mappings.group import Group
-
-if TYPE_CHECKING:
-    # first-party
-    from tcex.api.tc.v2.threat_intelligence import ThreatIntelligence
+from ..group import Group
 
 
 class Threat(Group):
