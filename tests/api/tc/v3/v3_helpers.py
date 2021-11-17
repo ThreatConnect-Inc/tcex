@@ -65,6 +65,11 @@ class V3Helper:
                 'class_name': 'AdversaryAsset',
                 'collection_class_name': 'AdversaryAssets',
             },
+            'attribute_types': {
+                'module': 'tcex.api.tc.v3.attribute_types.attribute_type',
+                'class_name': 'AttributeType',
+                'collection_class_name': 'AttributeTypes',
+            },
             'artifacts': {
                 'module': 'tcex.api.tc.v3.artifacts.artifact',
                 'class_name': 'Artifact',
