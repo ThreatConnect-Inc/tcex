@@ -11,9 +11,6 @@ from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
 from tcex.utils import Utils
 
-# json-encoder
-json_encoders = {datetime: lambda v: v.isoformat()}
-
 
 class TagsModel(
     BaseModel,
@@ -61,7 +58,6 @@ class TagModel(
     extra=Extra.allow,
     title='Tag Model',
     validate_assignment=True,
-    json_encoders=json_encoders,
 ):
     """Tag Model"""
 

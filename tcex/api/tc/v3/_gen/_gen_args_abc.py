@@ -86,39 +86,6 @@ class GenerateArgsABC(GenerateABC, ABC):
             # get arg type
             prop_type = self._prop_type(prop_data)
 
-            # for stage_xxx method doc string nested object args should not be included.
-            # TODO: [low] -@bpurdy try removing this if check.
-            if nested_objects is False and prop_type in [
-                'AdversaryAssets',
-                'Artifact',
-                'Artifacts',
-                'ArtifactType',
-                'Assignee',
-                'Attributes',
-                'Case',
-                'Cases',
-                'FileAction',
-                'FileOccurrences',
-                'Groups',
-                'Indicators',
-                'Note',
-                'Notes',
-                'SecurityLabels',
-                'Tag',
-                'Tags',
-                'Task',
-                'Tasks',
-                'User',
-                'Users',
-                'Victims',
-                'VictimAssets',
-                'WorkflowEvent',
-                'WorkflowEvents',
-                'WorkflowTemplate',
-                None,
-            ]:
-                continue
-
             # arg
             _arg_doc = f'{arg} ({prop_type}, kwargs)'
 

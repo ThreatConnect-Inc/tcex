@@ -11,9 +11,6 @@ from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
 from tcex.utils import Utils
 
-# json-encoder
-json_encoders = {datetime: lambda v: v.isoformat()}
-
 
 class GroupsModel(
     BaseModel,
@@ -61,7 +58,6 @@ class GroupModel(
     extra=Extra.allow,
     title='Group Model',
     validate_assignment=True,
-    json_encoders=json_encoders,
 ):
     """Group Model"""
 

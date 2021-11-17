@@ -32,7 +32,6 @@ class GenerateABC(ABC):
         self.i3 = ' ' * 12  # indent level 3
         self.i4 = ' ' * 16  # indent level 3
         self.requirements = {}
-        self.json_encoder = {}  # used in the model
         self.utils = Utils()
 
     @staticmethod
@@ -162,19 +161,6 @@ class GenerateABC(ABC):
             typer.Exit(1)
 
         return _properties
-
-    def gen_json_encoder(self):
-        """@bpurdy"""
-        json_encoders = []
-        if self.json_encoder:
-            json_encoders.append('# json-encoder')
-            json_encoders.append('json_encoders = {')
-        for type_, lambda_ in self.json_encoder.items():
-            json_encoders.append(f'''{self.i1}{type_}: {lambda_}''')
-        if self.json_encoder:
-            json_encoders.append('}')
-            json_encoders.append('\n')
-        return '\n'.join(json_encoders)
 
     def gen_requirements(self):
         """Generate imports string."""

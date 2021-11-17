@@ -146,7 +146,6 @@ def gen_model(type_: str) -> None:
 
     _code = gen.gen_doc_string()
     _code += gen.gen_requirements()
-    _code += gen.gen_json_encoder()
     # add container model
     _code += gen.gen_container_class()
     _code += container_private_attrs

@@ -1,7 +1,6 @@
 """Owner_Role / Owner_Roles Model"""
 # pylint: disable=no-member,no-self-argument,no-self-use,wrong-import-position
 # standard library
-from datetime import datetime
 from typing import List, Optional
 
 # third-party
@@ -10,9 +9,6 @@ from pydantic import BaseModel, Extra, Field, PrivateAttr
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
 from tcex.utils import Utils
-
-# json-encoder
-json_encoders = {datetime: lambda v: v.isoformat()}
 
 
 class OwnerRolesModel(
@@ -61,7 +57,6 @@ class OwnerRoleModel(
     extra=Extra.allow,
     title='OwnerRole Model',
     validate_assignment=True,
-    json_encoders=json_encoders,
 ):
     """Owner_Role Model"""
 
