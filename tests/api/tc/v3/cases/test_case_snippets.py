@@ -220,23 +220,25 @@ class TestCaseSnippets(TestV3):
                 note.delete()
         # End Snippet
 
-    # TODO: [high] fix this!!!
-    # def test_case_remove_tag(self):
-    #     """Test snippet"""
-    #     case = self.v3_helper.create_case(
-    #         name='MyCase',
-    #         tags={'name': 'Example-Tag'},
-    #     )
+    def test_case_remove_tag(self):
+        """Test snippet"""
+        case = self.v3_helper.create_case(
+            name='MyCase',
+            tags=[
+                {'name': 'Example-Tag'},
+            ],
+        )
 
-    #     # Begin Snippet
-    #     case = self.tcex.v3.case(id=case.model.id)
+        # Begin Snippet
+        case = self.tcex.v3.case(id=case.model.id)
 
-    #     for tag in case.tags:
-    #         if tag.model.name != 'Example-Tag':
-    #             # IMPORTANT be careful NOT to delete the case object itself since it could
-    #             # be shared between multiple cases.
-    #             tag.remove()
-    #     # End Snippet
+        for tag in case.tags:
+            if tag.model.name != 'Example-Tag':
+                # IMPORTANT: on case management the submitted tags will replace any existing
+                # tags on the case.
+                case.stage_tag(tag.model)
+        case.update()
+        # End Snippet
 
     def test_case_delete_task(self):
         """Test snippet"""

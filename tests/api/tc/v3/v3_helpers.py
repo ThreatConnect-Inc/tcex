@@ -162,7 +162,7 @@ class V3Helper:
     def assert_generator(model: 'BaseModel', object_name: str) -> None:
         """Print assert statements for the provided model.
 
-        self.v3_helper.assert_generator(owner.model, 'owner')
+        self.v3_helper.assert_generator(owner.model, 'owners')
         """
         for key, value in model:
             if isinstance(value, BaseModel):

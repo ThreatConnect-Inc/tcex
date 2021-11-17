@@ -740,7 +740,6 @@ class GenerateModelABC(GenerateABC, ABC):
 
         self._add_pydantic_private_attr()
         if self.type_.lower() in [
-            'adversary_assets',
             'artifacts',
             'artifact_types',
             'cases',

@@ -79,8 +79,7 @@ class V3ModelABC(BaseModel, ABC):
         # DEFAULT RULE -> Fields should not be included unless the match a previous rule.
         return False
 
-    @staticmethod
-    def _calculate_nested_inclusion(method: str, mode: str, model: 'BaseModel') -> str:
+    def _calculate_nested_inclusion(self, method: str, mode: str, model: 'BaseModel') -> str:
         """Return True if the field is calculated to be included."""
         # EMPTY RULE: If there is not value in the model it should not be included.
         if not model:
@@ -94,13 +93,19 @@ class V3ModelABC(BaseModel, ABC):
         # * HTTP Post Method -> Sub types should always be included.
         # * ID is None       -> Indicates that and add_xxx method was used to add the nested model.
         # * Model Updated    -> Indicates the model has changed.
-        # * Mode [delete]    -> Include for mode delete so that all nested items are deleted appropriately.
+        # * Mode [delete]    -> Include for mode delete so that all nested items are deleted
+        #                       appropriately.
         # * Mode [replace]   -> Include for mode replace or nested models would be removed by core.
+        # * Method Override  -> For CM object there is not support for mode, therefore nested
+        #                       shared object (e.g., tags) need to be sent on each submission.
+        #                       For artifact and others they should only be sent when modified
+        #                       or "new".
         if (
             method == 'POST'
             or model.id is None
             or model.updated is True
             or mode in ['delete', 'replace']
+            or (self._method_override is True and model._method_override is False)
         ):
             return True
 
