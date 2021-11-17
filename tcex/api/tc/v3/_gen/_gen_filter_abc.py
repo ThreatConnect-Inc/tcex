@@ -63,7 +63,7 @@ class GenerateFilterABC(GenerateABC, ABC):
             if r.ok:
                 _properties = r.json().get('data', [])
 
-                # TODO: [workaround] core issue where the wrong type is provided
+                # Provided invalid type "BigInteger" on tql options call and correcting it to String
                 if self.type_ == 'indicators':
                     for property_ in _properties:
                         if property_.get('keyword') == 'addressIpval':

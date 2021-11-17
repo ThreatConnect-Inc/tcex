@@ -26,7 +26,6 @@ class TestGroups(TestV3):
 
     def teardown_method(self):
         """Configure teardown before all tests."""
-        # TODO: [med] @bpurdy - do you recall what the condition is for?
         if os.getenv('TEARDOWN_METHOD') is None:
             self.v3_helper.cleanup()
 

@@ -338,11 +338,18 @@ class V3Helper:
         Returns:
             V3.Group: A group object.
         """
+        name = kwargs.get('name', inspect.stack()[1].function)
+
+        groups = self.tcex.v3.groups()
+        groups.filter.summary(TqlOperator.EQ, name)
+        for group in groups:
+            group.delete()
+
         group_data = {
             'file_name': kwargs.get('file_name'),
-            'name': kwargs.get('name', inspect.stack()[1].function),
+            'name': name,
             'type': type_,
-            # 'xid': kwargs.get('xid', f'xid-{inspect.stack()[1].function}'),
+            'xid': kwargs.get('xid', f'xid-{inspect.stack()[1].function}'),
         }
         # add source
         if kwargs.get('source') is not None:
@@ -488,6 +495,82 @@ class V3Helper:
         self._v3_objects.append(indicator)
 
         return indicator
+
+    def create_victim(self, **kwargs):
+        """Create a group.
+
+        Args:
+            assets (VictimAssets, kwargs): A list of victim assets corresponding to the Victim.
+            associated_groups (Groups, kwargs): A list of groups that this indicator is associated
+                with.
+            attributes (VictimAttributes, kwargs): A list of Attributes corresponding to the
+                Victim.
+            description (str, kwargs): The indicator description text.
+            name (str, kwargs): Name of the Victim.
+            nationality (str, kwargs): Nationality of the Victim.
+            org (str, kwargs): Org of the Victim.
+            id (int, kwargs): The ID of the Victim.
+            owner_name (str, kwargs): The name of the Organization, Community, or Source that the item belongs to.
+            security_labels (SecurityLabels, kwargs): A list of Security Labels corresponding to the
+                Intel item (NOTE: Setting this parameter will replace any existing tag(s) with the
+                one(s) specified).
+            suborg (str, kwargs): Suborg of the Victim.
+            tags (Tags, kwargs): A list of Tags corresponding to the item (NOTE: Setting this
+                parameter will replace any existing tag(s) with the one(s) specified)
+            type (str, kwargs): The type for the Victim.
+            work_location (str, kwargs): Work Location of the Victim.
+
+        Returns:
+            V3.Victim: A victim object.
+        """
+        group_data = {
+            'name': kwargs.get('name', inspect.stack()[1].function),
+            'type': 'A Random Type',
+            'description': kwargs.get('description') or 'Example Victim Description',
+            'nationality': kwargs.get('nationality') or 'American',
+            'org': kwargs.get('org') or 'TCI',
+            'owner_name': kwargs.get('owner_name') or 'TCI',
+            'suborg': kwargs.get('suborg') or 'Example Sub Org',
+            'work_location': kwargs.get('work_location') or 'Home',
+        }
+
+        # create indicator
+        victim = self.v3.victim(**group_data)
+
+        associated_groups = self._to_list(group_data.get('associated_groups', []))
+        attributes = self._to_list(kwargs.get('attribute', []))
+        security_labels = self._to_list(kwargs.get('security_labels', []))
+        tags = self._to_list(kwargs.get('tags', []))
+        assets = self._to_list(kwargs.get('assets', []))
+
+        # add associations
+        for associated_group in associated_groups:
+            victim.stage_associated_group(self.v3.group(**associated_group))
+
+        # add attributes
+        for attribute in attributes:
+            victim.stage_attribute(self.v3.group_attribute(**attribute))
+
+        # add security labels
+        for security_label in security_labels:
+            victim.stage_security_label(self.v3.security_label(**security_label))
+
+        # add tags
+        victim.stage_tag(self.v3.tag(name='pytest'))
+        for tag in tags:
+            victim.stage_tag(self.v3.tag(**tag))
+
+        # add assets
+        # for tag in tags:
+        #     victim.stage_asset(self.v3.victim_asset(**tag))
+
+        # create object
+        victim.create()
+
+        # store case id for cleanup
+        self._v3_objects.append(victim)
+
+        return victim
 
     def cleanup(self):
         """Remove all cases and child data."""

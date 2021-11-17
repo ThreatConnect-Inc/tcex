@@ -235,15 +235,13 @@ class TestCases(TestV3):
         # [Create Testing] define artifact data
         attribute_data = {
             'source': 'Pytest',
-            'type': 'BNP Test',  # TODO: What are the default attribute types on the system?
+            'type': 'Description',
             'value': 'Pytest value',
         }
         # [Create Testing] define tag
         tag_data = {
             'description': 'will this update the tags description',
             'name': 'Pytest',
-            # TODO: [high] @bpurdy - this may be solved with new shared_type rule.
-            'owner': 'Does not exist',
         }
 
         # [Create Testing] create the object
@@ -284,7 +282,7 @@ class TestCases(TestV3):
 
         # [Filter Testing]
         cases.filter.assigned_to_user_or_group(TqlOperator.EQ, assignee.get('type'))
-        # TODO: [High] This is a filter type "Assignee". We currently do not have a Assignee
+        # TODO: [PLAT-????] This is a filter type "Assignee". We currently do not have a Assignee
         #  filter object.
         # cases.filter.assignee_name(TqlOperator.EQ, assignee.get('data').get('user_name'))
         # cases.filter.attribute(...)

@@ -6,8 +6,6 @@ from enum import Enum
 class ApiEndpoints(Enum):
     """Available API Endpoints"""
 
-    # TODO: [high] update adversary assets when core implements the endpoint
-    ADVERSARY_ASSETS = '/v3/victimAssets'
     ARTIFACT_TYPES = '/v3/artifactTypes'
     ATTRIBUTE_TYPES = '/v3/attributeTypes'
     ARTIFACTS = '/v3/artifacts'

@@ -70,7 +70,6 @@ class GenerateArgsABC(GenerateABC, ABC):
         elif 'properties' in schema:
             properties = schema.get('properties')
         else:
-            print('WTH???')
             print(model().schema_json(by_alias=False))
             sys.exit()
 
@@ -87,8 +86,8 @@ class GenerateArgsABC(GenerateABC, ABC):
             # get arg type
             prop_type = self._prop_type(prop_data)
 
-            # for add_xxx method doc string nested object args should not be included.
-            # TODO: [low] there should be an easier way than maitaining the list of types here.
+            # for stage_xxx method doc string nested object args should not be included.
+            # TODO: [low] -@bpurdy try removing this if check.
             if nested_objects is False and prop_type in [
                 'AdversaryAssets',
                 'Artifact',

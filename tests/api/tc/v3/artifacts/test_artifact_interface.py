@@ -150,11 +150,11 @@ class TestArtifacts(TestV3):
         # [Filter Testing] has_case - using id filter as it's easily available
         artifacts.filter.has_case.id(TqlOperator.EQ, case.model.id)
 
-        # TODO: [low] not available via the API currently
+        # TODO: [PLAT-2830] not available via the API currently
         # [Filter Testing] has_group
         # artifacts.filter.has_group.id(TqlOperator.EQ, ???)
 
-        # TODO: [low] not available via the API currently
+        # TODO: [PLAT-2830] not available via the API currently
         # [Filter Testing] has_indicator
         # artifacts.filter.has_indicator.id(TqlOperator.EQ, ???)
 
@@ -164,7 +164,7 @@ class TestArtifacts(TestV3):
         # [Filter Testing] id
         artifacts.filter.id(TqlOperator.EQ, artifact.model.id)
 
-        # TODO: [low] this doesn't work with True or False
+        # TODO: [PLAT-2830] not available via the API currently
         # [Filter Testing] indicator_active
         # artifacts.filter.indicator_active(TqlOperator.EQ, True)
 
@@ -184,7 +184,6 @@ class TestArtifacts(TestV3):
         artifacts.filter.type_name(TqlOperator.EQ, artifact_data.get('type'))
 
         # [Retrieve Testing] get the object from the API
-        # print(f'TQL Filter -> ({artifacts.tql.as_str})')
         for artifact in artifacts:
             assert artifact.model.summary == artifact_data.get('summary')
             break
@@ -477,8 +476,6 @@ class TestArtifacts(TestV3):
         assert artifact.model.file_data == file_data
         assert artifact.model.source == artifact_data.get('source')
         assert artifact.model.summary == artifact_data.get('summary')
-        # TODO: Should this be None?
-        # assert artifact.model.task is None
         assert artifact.model.task_id is None
         assert artifact.model.task_xid is None
         assert artifact.model.intel_type is None

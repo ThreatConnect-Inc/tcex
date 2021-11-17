@@ -279,13 +279,14 @@ class ObjectABC(ABC):
     @model.setter
     def model(self, data: Union['V3Type', dict]) -> None:
         """Create model using the provided data."""
-        if isinstance(data, type(self._model)):
+        if isinstance(data, type(self.model)):
             # provided data is already a model, nothing required to change
             self._model = data
         elif isinstance(data, dict):
             # provided data is raw response, load the model
             self._model = type(self.model)(**data)
-        # TODO: [med] @bpurdy - should we raise an exception if the wrong data type is provided?
+        else:
+            raise RuntimeError(f'Invalid data type: {type(data)} provided.')
 
     @cached_property
     def properties(self) -> dict:
@@ -314,7 +315,7 @@ class ObjectABC(ABC):
             )
         return _properties
 
-    # TODO: [med] should this just be added to Associations/Tag/Security Label?
+    # TODO: [med] @bsummers - move this to the gen script for tags/secuirty labels/associations
     def remove(self, params: Optional[dict] = None) -> None:
         """Remove a nested object."""
         method = 'PUT'

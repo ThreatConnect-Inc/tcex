@@ -4,6 +4,8 @@
 import base64
 
 # first-party
+import time
+
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 
@@ -377,6 +379,9 @@ class TestGroupSnippets(TestV3):
         )
         file_content = base64.b64decode(self.example_pdf)
         _ = group.upload(file_content)
+
+        # provide it enough time to upload the file.
+        time.sleep(1)
 
         # Begin Snippet
         group = self.tcex.v3.group(id=group.model.id)

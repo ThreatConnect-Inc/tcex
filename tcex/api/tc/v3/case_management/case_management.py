@@ -115,7 +115,6 @@ class CaseManagement:
             user_name (str, kwargs): The user name of the User.
             type (str, kwargs): The assignee type. Default to User.
         """
-        # TODO: Figure out how/where the model for this should be.
         return AssigneeModel(session=self.session, **kwargs)
 
     def case(self, **kwargs) -> 'Case':

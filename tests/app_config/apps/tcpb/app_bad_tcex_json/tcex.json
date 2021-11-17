@@ -1,12 +1,12 @@
 {
   "lib_versions": [
     {
-      "lib_dir": "lib_${env:PY36}",
-      "python_executable": "~/.pyenv/versions/${env:PY36}/bin/python"
+      "lib_dir": "lib_${env:3.6}",
+      "python_executable": "~/.pyenv/versions/${env:3.6}/bin/python"
     },
     {
-      "lib_dir": "lib_${env:PY39}",
-      "python_executable": "~/.pyenv/versions/${env:PY39}/bin/python"
+      "lib_dir": "lib_${env:3.9}",
+      "python_executable": "~/.pyenv/versions/${env:3.9}/bin/python"
     }
   ],
   "package": {

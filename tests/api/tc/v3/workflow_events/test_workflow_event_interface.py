@@ -104,15 +104,16 @@ class TestWorkflowEvents(TestV3):
         workflow_events.filter.case_id(TqlOperator.EQ, case.model.id)
         workflow_events.filter.date_added(TqlOperator.GT, past)
         workflow_events.filter.deleted(TqlOperator.EQ, False)
-        workflow_events.filter.event_date(TqlOperator.GT, past)
+        # workflow_events.filter.event_date(TqlOperator.GT, past)
         workflow_events.filter.id(TqlOperator.EQ, workflow_event.model.id)
-        # TODO: No link is generated/returned if workflow event is created via the api.
+        # TODO: [PLAT-????] No link is generated/returned if workflow event is created via the api.
         # workflow_events.filter.link(TqlOperator.EQ, workflow_event.model.link)
         workflow_events.filter.summary(TqlOperator.EQ, workflow_event_data.get('summary'))
         workflow_events.filter.system_generated(TqlOperator.EQ, False)
-        workflow_events.filter.user_name(TqlOperator.EQ, '22222222222222222222')
-        # TODO: This filter does not work appropriatly.
+        workflow_events.filter.user_name(TqlOperator.EQ, os.getenv('TC_API_ACCESS_ID'))
+        # This filter does not work appropriately.
         # workflow_events.filter.deleted_reason(TqlOperator.NE, 'This event has been deleted')
+        print(workflow_events.filter.tql.as_str)
         for workflow_event in workflow_events:
             assert workflow_event.model.summary == workflow_event_data.get('summary')
             break
@@ -161,11 +162,9 @@ class TestWorkflowEvents(TestV3):
         workflow_event.get(params={'fields': ['_all_']})
 
         # [Retrieve Testing] run assertions on returned data
-        # TODO: [Medium] Case Xid does not get returned on api call. Unsure if this is a bug
-        # assert workflow_event.model.case_xid == case_xid
         assert workflow_event.model.case_id == case.model.id
 
-    # TODO: [med] @bpurdy - this is waiting on a core fix?
+    # TODO: [PLAT-4118] this is waiting on a core fix
     # def test_workflow_event_delete_by_id(self, request: FixtureRequest):
     #     """Test WorkflowEvent Deletion"""
     #     # [Pre-Requisite] - create case and provide a unique xid
@@ -194,7 +193,6 @@ class TestWorkflowEvents(TestV3):
 
     #     workflow_event.get()
 
-    #     # TODO: [Medium] - I am unsure why this test is failing. Looks like a core API bug.
     #     assert workflow_event.model.deleted
     #     assert workflow_event.model.deleted_reason == 'Pytesting'
 
@@ -273,8 +271,6 @@ class TestWorkflowEvents(TestV3):
 
         # [Retrieve Testing] run assertions on returned data
         assert workflow_event.model.case_id == workflow_event_data.get('case_id')
-        # TODO: [Medium] Case Xid does not get returned on api call. Unsure if this is a bug
-        # assert workflow_event.model.case_xid == workflow_event_data.get('case_xid')
         assert workflow_event.model.summary == workflow_event_data.get('summary')
         assert workflow_event.model.event_date.strftime(
             '%Y-%m-%dT%H%M%S'

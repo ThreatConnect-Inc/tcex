@@ -17,6 +17,7 @@ class GenerateModelABC(GenerateABC, ABC):
         super().__init__(type_)
 
         # properties
+        # TODO: @bpurdy - remove and test
         self.json_encoder = {'datetime': 'lambda v: v.isoformat()'}
         self.requirements = {
             'standard library': [{'module': 'typing', 'imports': ['List', 'Optional']}],
@@ -24,7 +25,7 @@ class GenerateModelABC(GenerateABC, ABC):
                 {'module': 'pydantic', 'imports': ['BaseModel', 'Extra', 'Field']},
             ],
             'first-party': [
-                # TODO: @bpurdy - what is this for?
+                # TODO: @bpurdy - remove and test
                 {'module': 'datetime', 'imports': ['datetime']},
                 {'module': 'tcex.utils', 'imports': ['Utils']},
                 {'module': 'tcex.api.tc.v3.v3_model_abc', 'imports': ['V3ModelABC']},
@@ -127,6 +128,7 @@ class GenerateModelABC(GenerateABC, ABC):
                 'type': 'bool',
             },
             'Date': {
+                # TODO: @bpurdy - once you validate the datetime above validate this...
                 'requirement': {
                     'from': 'standard library',
                     'import': 'from datetime import datetime',
@@ -305,7 +307,7 @@ class GenerateModelABC(GenerateABC, ABC):
                 'type': f'Optional[\'{type_}Model\']',
                 'validator': self._gen_code_validator_method(type_, field),
             },
-            # TODO: [high] validate this is correct
+            # TODO: [high] - @bsummers Its not.
             'TaskAssignees': {
                 'requirement': {
                     'from': 'first-party-forward-reference',

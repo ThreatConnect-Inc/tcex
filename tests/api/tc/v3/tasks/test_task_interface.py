@@ -26,11 +26,9 @@ class TestTasks(TestV3):
         self.v3 = self.v3_helper.v3
         self.tcex = self.v3_helper.tcex
 
+    # TODO: @bpurdy - move this to parent class and clean up other test classes
     def teardown_method(self):
         """Configure teardown before all tests."""
-        # TODO: [med] @bpurdy - do you recall what the condition is for?
-        # Ya - It was to make testing easier since we were manually verifying the objects were
-        # created correctly and they kept getting deleted which was annoying.
         if os.getenv('TEARDOWN_METHOD') is None:
             self.v3_helper.cleanup()
 
@@ -172,11 +170,8 @@ class TestTasks(TestV3):
         # [Create Testing] create the object to the TC API
         task.create()
 
-        # task.model.status = 'Closed'
-        # TODO: [High] This is failing because the artifacts inner object doesnt contain the
-        #  `type` field. This is because the API endpoint for the attributes says its not
-        #  `updatable` so its being excluded from PUTS.
-        # task.update()
+        task.model.status = 'Closed'
+        task.update()
 
         # [Retrieve Testing] create the object with id filter,
         # using object id from the object created above
@@ -209,7 +204,7 @@ class TestTasks(TestV3):
         tasks.filter.has_case.id(TqlOperator.EQ, case.model.id)
         tasks.filter.has_artifact.id(TqlOperator.EQ, artifact_id)
         tasks.filter.has_note.id(TqlOperator.EQ, note_id)
-        # TODO: [Medium] Outstanding core bug relating to this filter
+        # TODO: [PLAT-????] Outstanding core bug relating to this filter
         # tasks.filter.case_severity(TqlOperator.EQ, case.model.severity)
         # tasks.filter.completed_by(TqlOperator.NE, None)
 

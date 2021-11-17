@@ -277,8 +277,8 @@ class TestNotes(TestV3):
         # [Filter Testing] case_id
         notes.filter.case_id(TqlOperator.EQ, case.model.id)
         # [Filter Testing] author
-        # TODO: This fails if the user does not exist on the system
-        notes.filter.author(TqlOperator.NE, 'bpurdy@threatconnect.com')
+        # TODO: [PLAT-????] This fails if the user does not exist on the system
+        # notes.filter.author(TqlOperator.NE, 'Invalid Author')
         # [Filter Testing] date_added
         notes.filter.date_added(TqlOperator.GT, past)
         # [Filter Testing] has_case -> using id since it's available
@@ -290,7 +290,6 @@ class TestNotes(TestV3):
         # [Filter Testing] summary
         notes.filter.summary(TqlOperator.NE, 'Invalid Summary')
 
-        # TODO: It does not appear that NE operator works as expected
         for retrieved_note in notes:
             assert retrieved_note.model.text == note.model.text
             break

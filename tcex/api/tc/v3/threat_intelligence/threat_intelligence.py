@@ -8,6 +8,9 @@ from tcex.api.tc.v3.groups.group import Group, Groups
 from tcex.api.tc.v3.indicator_attributes.indicator_attribute import IndicatorAttribute
 from tcex.api.tc.v3.indicators.indicator import Indicator, Indicators
 from tcex.api.tc.v3.security_labels.security_label import SecurityLabel
+from tcex.api.tc.v3.victim_assets.victim_asset import VictimAssets, VictimAsset
+from tcex.api.tc.v3.victim_attributes.victim_attribute import VictimAttribute, VictimAttributes
+from tcex.api.tc.v3.victims.victim import Victim, Victims
 
 
 class ThreatIntelligence:
@@ -46,6 +49,7 @@ class ThreatIntelligence:
             handles (AdversaryAssets, kwargs): A list of handle adversary assets associated with
                 this group.
             header (str, kwargs): The email Header field.
+            id (int, kwargs): The ID of the Group.
             malware (bool, kwargs): Is the document malware?
             name (str, kwargs): The name of the group.
             password (str, kwargs): The password associated with the document (Required if Malware
@@ -189,3 +193,103 @@ class ThreatIntelligence:
             owner (str, kwargs): The name of the Owner of the Label.
         """
         return SecurityLabel(session=self.session, **kwargs)
+
+    def victim(self, **kwargs) -> 'Victim':
+        """Return a instance of Victim object.
+
+        Args:
+            assets (VictimAssets, kwargs): A list of victim assets corresponding to the Victim.
+            associated_groups (Groups, kwargs): A list of groups that this indicator is associated
+                with.
+            attributes (VictimAttributes, kwargs): A list of Attributes corresponding to the
+                Victim.
+            description (str, kwargs): The indicator description text.
+            name (str, kwargs): Name of the Victim.
+            nationality (str, kwargs): Nationality of the Victim.
+            org (str, kwargs): Org of the Victim.
+            id (int, kwargs): The ID of the Victim.
+            owner_name (str, kwargs): The name of the Organization, Community, or Source that the item belongs to.
+            security_labels (SecurityLabels, kwargs): A list of Security Labels corresponding to the
+                Intel item (NOTE: Setting this parameter will replace any existing tag(s) with the
+                one(s) specified).
+            suborg (str, kwargs): Suborg of the Victim.
+            tags (Tags, kwargs): A list of Tags corresponding to the item (NOTE: Setting this
+                parameter will replace any existing tag(s) with the one(s) specified)
+            type (str, kwargs): The type for the Victim.
+            work_location (str, kwargs): Work Location of the Victim.
+        """
+
+        return Victim(session=self.session, **kwargs)
+
+    def victims(self, **kwargs) -> 'Victims':
+        """Return a instance of Victims object.
+
+        .. code-block:: python
+            :linenos:
+            :lineno-start: 1
+
+            # Example of params input
+            {
+                'result_limit': 100,  # How many results are retrieved.
+                'result_start': 10,  # Starting point on retrieved results.
+                'fields': ['caseId', 'summary']  # Additional fields returned on the results
+            }
+
+        Args:
+            initial_response (dict, optional): Initial data in Case Object for Indicator.
+            tql_filters (list, optional): A list of TQL filters.
+            params (dict, optional): A dict of query params for the request.
+        """
+        return Victims(session=self.session, **kwargs)
+
+    def victim_asset(self, **kwargs) -> 'VictimAsset':
+        """Return a instance of VictimAsset object. """
+
+        return VictimAsset(session=self.session, **kwargs)
+
+    def victim_assets(self, **kwargs) -> 'VictimAssets':
+        """Return a instance of Victims object.
+
+        .. code-block:: python
+            :linenos:
+            :lineno-start: 1
+
+            # Example of params input
+            {
+                'result_limit': 100,  # How many results are retrieved.
+                'result_start': 10,  # Starting point on retrieved results.
+                'fields': ['caseId', 'summary']  # Additional fields returned on the results
+            }
+
+        Args:
+            initial_response (dict, optional): Initial data in Case Object for Indicator.
+            tql_filters (list, optional): A list of TQL filters.
+            params (dict, optional): A dict of query params for the request.
+        """
+        return VictimAssets(session=self.session, **kwargs)
+
+    def victim_attribute(self, **kwargs) -> 'VictimAttribute':
+        """Return a instance of VictimAttribute object. """
+
+        return VictimAttribute(session=self.session, **kwargs)
+
+    def victim_attributes(self, **kwargs) -> 'VictimAttributes':
+        """Return a instance of Victims object.
+
+        .. code-block:: python
+            :linenos:
+            :lineno-start: 1
+
+            # Example of params input
+            {
+                'result_limit': 100,  # How many results are retrieved.
+                'result_start': 10,  # Starting point on retrieved results.
+                'fields': ['caseId', 'summary']  # Additional fields returned on the results
+            }
+
+        Args:
+            initial_response (dict, optional): Initial data in Case Object for Indicator.
+            tql_filters (list, optional): A list of TQL filters.
+            params (dict, optional): A dict of query params for the request.
+        """
+        return VictimAttributes(session=self.session, **kwargs)

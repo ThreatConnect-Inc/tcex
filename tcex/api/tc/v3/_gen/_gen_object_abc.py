@@ -559,9 +559,14 @@ class GenerateObjectABC(GenerateABC, ABC):
         # generate base_filter property method
         # _code += self._gen_code_object_base_filter_method()
 
-        # TODO: [med] @bpurdy - to reduce code coverage what others can be added here?
         # skip object that don't require as_entity method
         if self.type_ not in [
+            'case_attributes',
+            'victim_attributes',
+            'group_attributes',
+            'indicator_attributes',
+            'security_labels',
+            'tags',
             'attribute_types',
             'owner_roles',
             'owners',
@@ -580,7 +585,6 @@ class GenerateObjectABC(GenerateABC, ABC):
         # get NON read-only properties of endpoint (OPTIONS: /v3/<object>)
         add_properties = []
         for field_name, field_data in self._type_properties.items():
-            # TODO: [super-low] remove this when core updates format of attribute on v3 TI
             if isinstance(field_data.get('data'), dict):
                 field_data['data'] = [field_data.get('data')]
 
