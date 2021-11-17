@@ -47,7 +47,7 @@ class ObjectABC(ABC):
             'securityLabels': [],
             'tags': [],
         }
-        self._utils = Utils()
+        self.utils = Utils()
         self.log = logger
         self.request = None
 
@@ -99,20 +99,21 @@ class ObjectABC(ABC):
         self,
         method: str,
         url: str,
-        body: Optional[Union[bytes, str]],
+        body: Optional[Union[bytes, str]] = None,
         params: Optional[dict] = None,
         headers: Optional[dict] = None,
     ) -> Response:
         """Handle standard request with error checking."""
-        _request = None
         try:
-            _request = self._session.request(method, url, data=body, headers=headers, params=params)
+            self.request = self._session.request(
+                method, url, data=body, headers=headers, params=params
+            )
             # log content for debugging
             self.log.debug(
-                f'action=submit, method={_request.request.method}, '
-                f'url={_request.request.url}, '
-                f'status_code={_request.status_code}, '
-                f'''body={_request.request.body}'''
+                f'action=submit, method={self.request.request.method}, '
+                f'url={self.request.request.url}, '
+                f'status_code={self.request.status_code}, '
+                f'''body={self.request.request.body}'''
             )
         except (ConnectionError, ProxyError, RetryError):  # pragma: no cover
             handle_error(
@@ -125,22 +126,22 @@ class ObjectABC(ABC):
                 ],
             )
 
-        if not self.success(_request):
-            err = _request.text or _request.reason
+        content_type = self.request.headers.get('Content-Type')
+        if content_type == 'application/json' and not self.success(self.request):
+            err = self.request.text or self.request.reason
             handle_error(
                 code=952,
                 message_values=[
-                    _request.request.method.upper(),
-                    _request.status_code,
+                    self.request.request.method.upper(),
+                    self.request.status_code,
                     err,
-                    _request.url,
+                    self.request.url,
                 ],
             )
 
         # log content for debugging
-        self.log_response_text(_request)
-
-        return _request
+        if content_type == 'application/json':
+            self.log_response_text(self.request)
 
     @staticmethod
     def _validate_id(id_: int, url: str) -> None:
@@ -166,7 +167,7 @@ class ObjectABC(ABC):
         """
         method = 'POST'
         body = self.model.gen_body_json(method=method)
-        self.request: Response = self._request(
+        self._request(
             method,
             self.url(method),
             body,
@@ -193,7 +194,7 @@ class ObjectABC(ABC):
         # validate an id is available
         self._validate_id(unique_id, self.url(method, unique_id))
 
-        self.request = self._request(method, self.url(method, unique_id), body, params=params)
+        self._request(method, self.url(method, unique_id), body, params=params)
 
         return self.request
 
@@ -209,7 +210,7 @@ class ObjectABC(ABC):
     def gen_params(self, params: List[dict]) -> List[dict]:
         """Return appropriate params values."""
         # convert all keys to camel case
-        params = {self._utils.snake_to_camel(k): v for k, v in params.items()}
+        params = {self.utils.snake_to_camel(k): v for k, v in params.items()}
 
         # special parameter for indicators to enable the return the the indicator fields
         # (value1, value2, value3) on std-custom/custom-custom indicator types.
@@ -256,7 +257,7 @@ class ObjectABC(ABC):
 
         body = self.model.gen_body_json(method)
         params = self.gen_params(params)
-        self.request = self._request(method, self.url(method, unique_id), body, params)
+        self._request(method, self.url(method, unique_id), body, params)
 
         # update model
         self.model = self.request.json().get('data')
@@ -339,7 +340,7 @@ class ObjectABC(ABC):
         # validate parent an id is available
         self._validate_id(parent_unique_id, url)
 
-        self.request = self._request(
+        self._request(
             method=method,
             url=url,
             body=body,
@@ -384,7 +385,7 @@ class ObjectABC(ABC):
         # validate an id is available
         self._validate_id(unique_id, self.url(method))
 
-        self.request: Response = self._request(
+        self._request(
             method,
             self.url(method, unique_id=unique_id),
             body,

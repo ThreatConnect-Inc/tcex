@@ -209,9 +209,10 @@ def gen_object(type_: str) -> None:
 class ObjectTypes(str, Enum):
     """Object Types"""
 
-    adversary_assets = 'adversary_assets'
+    # adversary_assets = 'adversary_assets'
     artifacts = 'artifacts'
     artifact_types = 'artifact_types'
+    attribute_types = 'attribute_types'
     cases = 'cases'
     case_attributes = 'case_attributes'
     group_attributes = 'group_attributes'

@@ -1,9 +1,14 @@
 """Case Management PyTest Helper Method"""
 # standard library
+from datetime import datetime
 import importlib
 import inspect
+from os import stat
 from random import randint
 from typing import Any, Dict, Optional
+
+# third-party
+from pydantic import BaseModel
 
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
@@ -153,6 +158,87 @@ class V3Helper:
         }
         return _modules.get(module)
 
+    @staticmethod
+    def assert_generator(model: 'BaseModel', object_name: str) -> None:
+        """Print assert statements for the provided model.
+
+        self.v3_helper.assert_generator(owner.model, 'owner')
+        """
+        for key, value in model:
+            if isinstance(value, BaseModel):
+                print('skipping nested model')
+                continue
+
+            if isinstance(value, str):
+                value = f'\'{value}\''
+            print(f'''{' ' * 8}assert {object_name}.model.{key} == {value}''')
+
+    def tql_generator(self, model: 'BaseModel', object_name: str) -> None:
+        """Print TQL filter.
+
+        self.v3_helper.tql_generator(group.model, 'groups')
+        """
+
+        def get_model_keyword(keyword: str):
+            keyword_map = {
+                # "type" is the id of the type, while type name is the name that is returned
+                'type_name': 'type',
+                # break "type" lookup since it is never returned
+                'type': 'unknown',
+            }
+            return keyword_map.get(keyword, keyword)
+
+        def get_value(keyword: str, value: str):
+            """Return the appropriate value."""
+            # format the value
+            operator = 'EQ'
+
+            if isinstance(value, datetime):
+                value = '1 day ago'
+                operator = 'GT'
+
+            if isinstance(value, str):
+                value = f'\'{value}\''
+
+            if keyword == 'id':
+                value = f'{object_name}.model.id'
+
+            return operator, value
+
+        print(f'''{'-' * 20} Field Values {'-' * 20}''')
+        for key, value in model:
+            if isinstance(value, BaseModel):
+                continue
+            print(f'''{key} == {value}''')
+
+        # Generate TQL statements
+        model_data = model.dict()
+        tql_filters = {
+            'found': [],
+            'missing': [],
+        }
+        for keyword in self.v3_obj_collection.tql_keywords:
+            keyword = self.utils.camel_to_snake(keyword)
+            if keyword.startswith('has'):
+                continue
+            operator, value = get_value(keyword, model_data.get(get_model_keyword(keyword)))
+
+            # print TQL filters
+            tql_filter = f'''{object_name}.filter.{keyword}(TqlOperator.{operator}, {value})'''
+            tql_filter_type = 'missing'
+            if value is not None:
+                tql_filter_type = 'found'
+            # add the filter to the tql dict
+            tql_filters[tql_filter_type].append(tql_filter)
+
+        print(f'''{'-' * 20} Found TQL {'-' * 20}''')
+        for found_tracker in tql_filters['found']:
+            print(found_tracker)
+
+        print(f'''{'-' * 20} Missing TQL {'-' * 20}''')
+        for missing_tracker in tql_filters['missing']:
+            print(missing_tracker)
+
     def create_case(self, **kwargs):
         """Create an case.
 
@@ -237,6 +323,7 @@ class V3Helper:
             associated_groups (dict|list, kwargs): Optional group associations.
             associated_indicator (dict|list, kwargs): Optional indicator associations.
             attributes (dict|list, kwargs): Optional group attributes.
+            file_name (str, kwargs): Optional Document/Report file name.
             name (str, kwargs): Optional name for the group.
             security_labels (dict|list, kwargs): Optional group security labels.
             source (str, kwargs): Optional source.
@@ -247,12 +334,11 @@ class V3Helper:
             V3.Group: A group object.
         """
         group_data = {
+            'file_name': kwargs.get('file_name'),
             'name': kwargs.get('name', inspect.stack()[1].function),
             'type': type_,
             # 'xid': kwargs.get('xid', f'xid-{inspect.stack()[1].function}'),
         }
-        # if kwargs.get('size') is not None:
-        #     group_data['size'] = kwargs.get('size')
         # add source
         if kwargs.get('source') is not None:
             group_data['source'] = kwargs.get('source')
@@ -415,8 +501,8 @@ class V3Helper:
         #         case.delete()
 
 
-class TestCaseManagement:
-    """Test TcEx Case Management Base Class"""
+class TestV3:
+    """Test TcEx V3 Base Class"""
 
     v3_helper = None
     tcex = None

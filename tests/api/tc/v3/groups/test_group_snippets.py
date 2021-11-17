@@ -1,20 +1,34 @@
 """Test the TcEx API Snippets."""
+# standard-library
+# standard library
+import base64
+
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
-from tests.api.tc.v3.v3_helpers import TestCaseManagement, V3Helper
+from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 
 
-class TestGroupSnippets(TestCaseManagement):
+class TestGroupSnippets(TestV3):
     """Test TcEx API Interface."""
 
+    example_pdf = None
     v3 = None
 
     def setup_method(self):
         """Configure setup before all tests."""
         print('')  # ensure any following print statements will be on new line
-        self.v3_helper = V3Helper('cases')
+        self.v3_helper = V3Helper('groups')
         self.v3 = self.v3_helper.v3
         self.tcex = self.v3_helper.tcex
+
+        self.example_pdf = (
+            r'JVBERi0xLjIgCjkgMCBvYmoKPDwKPj4Kc3RyZWFtCkJULyAzMiBUZiggIFRjRXggVGVzdGluZyAg'
+            r'ICknIEVUCmVuZHN0cmVhbQplbmRvYmoKNCAwIG9iago8PAovVHlwZSAvUGFnZQovUGFyZW50IDUg'
+            r'MCBSCi9Db250ZW50cyA5IDAgUgo+PgplbmRvYmoKNSAwIG9iago8PAovS2lkcyBbNCAwIFIgXQov'
+            r'Q291bnQgMQovVHlwZSAvUGFnZXMKL01lZGlhQm94IFsgMCAwIDI1MCA1MCBdCj4+CmVuZG9iagoz'
+            r'IDAgb2JqCjw8Ci9QYWdlcyA1IDAgUgovVHlwZSAvQ2F0YWxvZwo+PgplbmRvYmoKdHJhaWxlcgo8'
+            r'PAovUm9vdCAzIDAgUgo+PgolJUVPRgo='
+        )
 
         # remove old cases
         groups = self.tcex.v3.groups()
@@ -158,7 +172,7 @@ class TestGroupSnippets(TestCaseManagement):
     def test_adversary_delete_attribute(self):
         """Test snippet"""
         group = self.v3_helper.create_group(
-            value1='MyAdversary',
+            name='MyAdversary',
             type='Adversary',
             attributes=[
                 {
@@ -176,6 +190,37 @@ class TestGroupSnippets(TestCaseManagement):
         for attribute in group.attributes:
             if attribute.model.value == 'An example description attribute':
                 attribute.delete()
+        # End Snippet
+
+    def test_adversary_get_by_id(self):
+        """Test snippet"""
+        group = self.tcex.v3.group(
+            name='MyAdversary',
+            type='Adversary',
+        )
+        group.create(params={'owner': 'TCI'})
+
+        # Begin Snippet
+        group = self.tcex.v3.group(id=group.model.id, params={'fields': ['_all_']})
+        group.get()
+        # End Snippet
+
+    def test_adversary_get_tql(self):
+        """Test snippet"""
+        group = self.tcex.v3.group(
+            name='MyAdversary',
+            type='Adversary',
+        )
+        group.create(params={'owner': 'TCI'})
+
+        # Begin Snippet
+        groups = self.tcex.v3.groups()
+        groups.filter.date_added(TqlOperator.GT, '1 day ago')
+        groups.filter.id(TqlOperator.EQ, group.model.id)
+        groups.filter.owner_name(TqlOperator.EQ, 'TCI')
+        groups.filter.type_name(TqlOperator.EQ, 'Adversary')
+        for group in groups:
+            print(group.model.dict(exclude_none=True))
         # End Snippet
 
     def test_adversary_remove_group_associations(self):
@@ -223,7 +268,7 @@ class TestGroupSnippets(TestCaseManagement):
     def test_adversary_remove_security_label(self):
         """Test snippet"""
         group = self.v3_helper.create_group(
-            value1='MyAdversary',
+            name='MyAdversary',
             type='Adversary',
             security_labels=[
                 {'name': 'TLP:WHITE'},
@@ -244,7 +289,7 @@ class TestGroupSnippets(TestCaseManagement):
     def test_adversary_remove_tag(self):
         """Test snippet"""
         group = self.v3_helper.create_group(
-            value1='MyAdversary',
+            name='MyAdversary',
             type='Adversary',
             tags={'name': 'Example-Tag'},
         )
@@ -262,7 +307,7 @@ class TestGroupSnippets(TestCaseManagement):
     def test_adversary_remove_tag_using_mode(self):
         """Test snippet"""
         group = self.v3_helper.create_group(
-            value1='MyAdversary',
+            name='MyAdversary',
             type='Adversary',
             tags={'name': 'Example-Tag'},
         )
@@ -280,6 +325,21 @@ class TestGroupSnippets(TestCaseManagement):
 
     def test_adversary_update(self):
         """Test snippet"""
+        group = self.v3_helper.create_group(
+            name='MyAdversary',
+            type='Adversary',
+        )
+
+        # Begin Snippet
+        group = self.tcex.v3.group(id=group.model.id)
+        # This will update the confidence to "50"
+        group.model.name = 50
+        group.update(params={'owner': 'TCI'})
+        # End Snippet
+
+    def test_document_download_pdf(self):
+        """Test snippet"""
+        # Begin Snippet
         group = self.tcex.v3.group(
             name='MyAdversary',
             type='Adversary',
@@ -288,7 +348,39 @@ class TestGroupSnippets(TestCaseManagement):
 
         # Begin Snippet
         group = self.tcex.v3.group(id=group.model.id)
-        # This will update the confidence to "50"
-        group.model.confidence = 50
-        group.update(params={'owner': 'TCI'})
+        _ = group.pdf()  # pdf is returned as bytes
+        # End Snippet
+
+    def test_document_upload(self):
+        """Test snippet"""
+        file_content = base64.b64decode(self.example_pdf)
+        # Begin Snippet
+        group = self.tcex.v3.group(
+            file_name='example.pdf',
+            name='MyDocument',
+            type='Document',
+        )
+        group.create(params={'owner': 'TCI'})
+        response = group.upload(file_content)
+        if not response.ok:
+            print(f'The upload failed: {response.reason}')
+        # End Snippet
+
+        group.delete()
+
+    def test_document_download(self):
+        """Test snippet"""
+        group = self.v3_helper.create_group(
+            file_name='example.pdf',
+            name='MyDocument',
+            type_='Document',
+        )
+        file_content = base64.b64decode(self.example_pdf)
+        _ = group.upload(file_content)
+
+        # Begin Snippet
+        group = self.tcex.v3.group(id=group.model.id)
+        _ = group.download()  # content is returned as bytes
+        if not group.request.ok:
+            print(f'The download failed: {group.request.reason}')
         # End Snippet

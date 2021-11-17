@@ -23,6 +23,7 @@ class VictimAttributeFilter(FilterABC):
             operator: The operator enum for the filter.
             date_added: The date the attribute was added to the system.
         """
+        date_added = self.utils.any_to_datetime(date_added).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('dateAdded', operator, date_added, TqlType.STRING)
 
     def date_val(self, operator: Enum, date_val: str) -> None:
@@ -32,6 +33,7 @@ class VictimAttributeFilter(FilterABC):
             operator: The operator enum for the filter.
             date_val: The date value of the attribute (only applies to certain types).
         """
+        date_val = self.utils.any_to_datetime(date_val).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('dateVal', operator, date_val, TqlType.STRING)
 
     def displayed(self, operator: Enum, displayed: bool) -> None:
@@ -86,6 +88,7 @@ class VictimAttributeFilter(FilterABC):
             operator: The operator enum for the filter.
             last_modified: The date the attribute was last modified in the system.
         """
+        last_modified = self.utils.any_to_datetime(last_modified).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('lastModified', operator, last_modified, TqlType.STRING)
 
     def max_size(self, operator: Enum, max_size: int) -> None:

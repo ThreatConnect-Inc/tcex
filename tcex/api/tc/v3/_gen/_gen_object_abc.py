@@ -155,7 +155,10 @@ class GenerateObjectABC(GenerateABC, ABC):
                 '',
                 f'''{self.i2}if deleted_since is not None:''',
                 f'''{self.i3}deleted_since = str(''',
-                f'''{self.i4}self.utils.any_to_datetime(deleted_since).strftime('%Y-%m-%dT%H:%M:%SZ')''',
+                (
+                    f'''{self.i4}self.utils.any_to_datetime(deleted_since)'''
+                    '''.strftime('%Y-%m-%dT%H:%M:%SZ')'''
+                ),
                 f'''{self.i3})''',
                 '',
                 f'''{self.i2}yield from self.iterate(''',
@@ -166,6 +169,59 @@ class GenerateObjectABC(GenerateABC, ABC):
                     ''''owner': owner, 'type': type_}'''
                 ),
                 f'''{self.i2})''',
+                '',
+            ]
+        )
+
+    def _gen_code_group_methods(self) -> str:
+        """Return the method code.
+
+        @property
+        def filter(self) -> 'ArtifactFilter':
+            '''Return the type specific filter object.'''
+            return ArtifactFilter(self._session, self.tql)
+        """
+        self.requirements['standard library'].append({'module': 'typing', 'imports': ['Optional']})
+        self.requirements['type-checking'].append('''from requests import Response''')
+        return '\n'.join(
+            [
+                f'''{self.i1}def download(self, params: Optional[dict] = None) -> bytes:''',
+                f'''{self.i2}"""Return the document attachment for Document/Report Types."""''',
+                f'''{self.i2}self._request(''',
+                f'''{self.i3}method='GET',''',
+                f'''{self.i3}url=f\'\'\'{{self.url('GET')}}/download\'\'\',''',
+                f'''{self.i3}# headers={{'content-type': 'application/octet-stream'}},''',
+                f'''{self.i3}headers=None,''',
+                f'''{self.i3}params=params,''',
+                f'''{self.i2})''',
+                f'''{self.i2}return self.request.content''',
+                '',
+                f'''{self.i1}def pdf(self, params: Optional[dict] = None) -> bytes:''',
+                f'''{self.i2}"""Return the document attachment for Document/Report Types."""''',
+                f'''{self.i2}self._request(''',
+                f'''{self.i3}method='GET',''',
+                f'''{self.i3}body=None,''',
+                f'''{self.i3}url=f\'\'\'{{self.url('GET')}}/pdf\'\'\',''',
+                f'''{self.i3}headers=None,''',
+                f'''{self.i3}params=params,''',
+                f'''{self.i2})''',
+                '',
+                f'''{self.i2}return self.request.content''',
+                '',
+                (
+                    f'''{self.i1}def upload(self, content: Union[bytes, str], '''
+                    '''params: Optional[dict] = None) -> 'Response':'''
+                ),
+                f'''{self.i2}"""Return the document attachment for Document/Report Types."""''',
+                f'''{self.i2}self._request(''',
+                f'''{self.i3}method='POST',''',
+                f'''{self.i3}url=f\'\'\'{{self.url('GET')}}/upload\'\'\',''',
+                f'''{self.i3}body=content,''',
+                f'''{self.i3}headers={{'content-type': 'application/octet-stream'}},''',
+                f'''{self.i3}params=params,''',
+                f'''{self.i2})''',
+                f'''{self.i2}return self.request''',
+                '',
                 '',
             ]
         )
@@ -503,8 +559,23 @@ class GenerateObjectABC(GenerateABC, ABC):
         # generate base_filter property method
         # _code += self._gen_code_object_base_filter_method()
 
-        # generate as_entity property method
-        _code += self._gen_code_object_as_entity_property_method()
+        # TODO: [med] @bpurdy - to reduce code coverage what others can be added here?
+        # skip object that don't require as_entity method
+        if self.type_ not in [
+            'attribute_types',
+            'owner_roles',
+            'owners',
+            'system_roles',
+            'user_groups',
+            'users',
+            'victim_assets',
+        ]:
+            # generate as_entity property method
+            _code += self._gen_code_object_as_entity_property_method()
+
+        # generate group specific methods
+        if self.type_.lower() == 'groups':
+            _code += self._gen_code_group_methods()
 
         # get NON read-only properties of endpoint (OPTIONS: /v3/<object>)
         add_properties = []

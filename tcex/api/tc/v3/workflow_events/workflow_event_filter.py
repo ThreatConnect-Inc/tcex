@@ -32,6 +32,7 @@ class WorkflowEventFilter(FilterABC):
             operator: The operator enum for the filter.
             date_added: The date the event was added.
         """
+        date_added = self.utils.any_to_datetime(date_added).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('dateAdded', operator, date_added, TqlType.STRING)
 
     def deleted(self, operator: Enum, deleted: bool) -> None:
@@ -59,6 +60,7 @@ class WorkflowEventFilter(FilterABC):
             operator: The operator enum for the filter.
             event_date: The date the event occurred.
         """
+        event_date = self.utils.any_to_datetime(event_date).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('eventDate', operator, event_date, TqlType.STRING)
 
     def id(self, operator: Enum, id: int) -> None:  # pylint: disable=redefined-builtin

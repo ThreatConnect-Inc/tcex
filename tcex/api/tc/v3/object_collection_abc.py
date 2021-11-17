@@ -2,11 +2,11 @@
 # standard library
 import logging
 from abc import ABC
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Optional, Union
 
 # third-party
 from requests import Response
-from requests.exceptions import ProxyError
+from requests.exceptions import ProxyError, RetryError
 
 # first-party
 from tcex.api.tc.v3.tql.tql import Tql
@@ -15,6 +15,9 @@ from tcex.exit.error_codes import handle_error
 from tcex.utils import Utils
 
 if TYPE_CHECKING:
+    # third-party
+    from pydantic import BaseModel
+
     # first-party
     from tcex.api.tc.v3.artifacts.artifact import Artifact
     from tcex.api.tc.v3.cases.case import Case
@@ -63,7 +66,7 @@ class ObjectCollectionABC(ABC):
         self.tql = Tql()
         self._model = None
         self.type_ = None  # defined in child class
-        self._utils = Utils()
+        self.utils = Utils()
 
     def __len__(self) -> int:
         """Return the length of the collection."""
@@ -78,76 +81,82 @@ class ObjectCollectionABC(ABC):
 
         # convert all keys to camel case
         for k, v in list(parameters.items()):
-            k = self._utils.snake_to_camel(k)
+            k = self.utils.snake_to_camel(k)
             # if result_limit and resultLimit both show up use the proper cased version
             if k not in parameters:
                 parameters[k] = v
 
-        r = self._session.get(
-            self._api_endpoint, params=parameters, headers={'content-type': 'application/json'}
+        self._request(
+            'GET',
+            self._api_endpoint,
+            body=None,
+            params=parameters,
+            headers={'content-type': 'application/json'},
         )
-        return r.json().get('count', len(r.json().get('data', [])))
+        return self.request.json().get('count', len(self.request.json().get('data', [])))
 
     @property
     def _api_endpoint(self) -> None:  # pragma: no cover
         """Return filter method."""
         raise NotImplementedError('Child class must implement this method.')
 
-    def delete(self) -> Any:
-        """Delete V3 objects."""
-        parameters = self.params
-
-        # convert all keys to camel case
-        for k, v in list(parameters.items()):
-            k = self._utils.snake_to_camel(k)
-            parameters[k] = v
-
-        url = self._api_endpoint
-        tql_string = self.tql.raw_tql or self.tql.as_str
-
-        if tql_string:
-            parameters['tql'] = tql_string
-        else:
-            raise RuntimeError('Delete not allowed without TQL.')
-
+    def _request(
+        self,
+        method: str,
+        url: str,
+        body: Optional[Union[bytes, str]] = None,
+        params: Optional[dict] = None,
+        headers: Optional[dict] = None,
+    ) -> None:
+        """Handle standard request with error checking."""
         try:
-            self.request = self._session.delete(
-                url, params=parameters, headers={'content-type': 'application/json'}
+            self.request = self._session.request(
+                method, url, data=body, headers=headers, params=params
             )
+            # log content for debugging
             self.log.debug(
-                f'Method: ({self.request.request.method.upper()}), '
-                f'Status Code: {self.request.status_code}, '
-                f'URl: ({self.request.url})'
+                f'action=submit, method={self.request.request.method}, '
+                f'url={self.request.request.url}, '
+                f'status_code={self.request.status_code}, '
+                f'''body={self.request.request.body}'''
             )
-        except (ConnectionError, ProxyError):  # pragma: no cover
+        except (ConnectionError, ProxyError, RetryError):  # pragma: no cover
             handle_error(
                 code=951,
                 message_values=[
-                    'OPTIONS',
-                    self.request.status_code,
-                    self.request.reason,
-                    self._api_endpoint,
+                    method.upper(),
+                    None,
+                    '{\"message\": \"Connection/Proxy Error/Retry\"}',
+                    url,
                 ],
             )
 
-        # if not self.success(self.request):
-        #     err = self.request.text or self.request.reason
-        #     handle_error(
-        #         code=950,
-        #         message_values=[
-        #             self.request.status_code,
-        #             f'"message": "{err}"',
-        #             self.request.url,
-        #         ],
-        #     )
+        if not self.success(self.request):
+            err = self.request.text or self.request.reason
+            handle_error(
+                code=950,
+                message_values=[
+                    self.request.request.method.upper(),
+                    self.request.status_code,
+                    err,
+                    self.request.url,
+                ],
+            )
 
-        # reset some vars
-        parameters = {}
+        # log content for debugging
+        self.log_response_text(self.request)
 
     @property
     def filter(self) -> None:  # pragma: no cover
         """Return filter method."""
         raise NotImplementedError('Child class must implement this method.')
+
+    def log_response_text(self, response: Response) -> None:
+        """Log the response text."""
+        response_text = 'response text: (text to large to log)'
+        if len(response.content) < 5000:  # check size of content for performance
+            response_text = response.text
+        self.log.debug(f'response text: {response_text}')
 
     @property
     def model(self):
@@ -158,65 +167,46 @@ class ObjectCollectionABC(ABC):
     def model(self, data):
         self._model = type(self.model)(**data)
 
-    def iterate(self, base_class) -> 'CaseManagementType':
+    def iterate(
+        self,
+        base_class: 'BaseModel',
+        api_endpoint: Optional[str] = None,
+        params: Optional[dict] = None,
+    ) -> 'CaseManagementType':
         """Iterate over CM/TI objects."""
-        parameters = self.params
+        url = api_endpoint or self._api_endpoint
+        params = params or self.params
 
         # special parameter for indicators to enable the return the the indicator fields
         # (value1, value2, value3) on std-custom/custom-custom indicator types.
-        if self.type_ == 'Indicators':
-            parameters.setdefault('fields', []).append('genericCustomIndicatorValues')
+        if self.type_ == 'Indicators' and api_endpoint is None:
+            params.setdefault('fields', []).append('genericCustomIndicatorValues')
 
         # convert all keys to camel case
-        for k, v in list(parameters.items()):
-            k = self._utils.snake_to_camel(k)
-            parameters[k] = v
+        for k, v in list(params.items()):
+            k = self.utils.snake_to_camel(k)
+            params[k] = v
 
-        url = self._api_endpoint
         tql_string = self.tql.raw_tql or self.tql.as_str
 
         if tql_string:
-            parameters['tql'] = tql_string
+            params['tql'] = tql_string
 
         while True:
-            try:
-                self.request = self._session.get(
-                    url, params=parameters, headers={'content-type': 'application/json'}
-                )
-                self.log.debug(
-                    f'Method: ({self.request.request.method.upper()}), '
-                    f'Status Code: {self.request.status_code}, '
-                    f'URl: ({self.request.url})'
-                )
-            except (ConnectionError, ProxyError):  # pragma: no cover
-                handle_error(
-                    code=951,
-                    message_values=[
-                        'OPTIONS',
-                        407,
-                        '{\"message\": \"Connection Error\"}',
-                        self._api_endpoint,
-                    ],
-                )
-
-            if not self.success(self.request):
-                err = self.request.text or self.request.reason
-                handle_error(
-                    code=950,
-                    message_values=[
-                        self.request.status_code,
-                        f'"message": "{err}"',
-                        self.request.url,
-                    ],
-                )
+            self._request(
+                'GET',
+                body=None,
+                url=url,
+                headers={'content-type': 'application/json'},
+                params=params,
+            )
 
             # reset some vars
-            parameters = {}
+            params = {}
 
-            data = self.request.json().get('data', [])
-            url = self.request.json().pop('next', None)
-
-            self.log.debug(f'!!!!!!! count={len(data)}, url={url}')
+            response = self.request.json()
+            data = response.get('data', [])
+            url = response.pop('next', None)
 
             for result in data:
                 yield base_class(session=self._session, **result)

@@ -10,10 +10,10 @@ from pytest import FixtureRequest
 
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
-from tests.api.tc.v3.v3_helpers import TestCaseManagement, V3Helper
+from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 
 
-class TestIndicators(TestCaseManagement):
+class TestIndicators(TestV3):
     """Test TcEx API Interface."""
 
     def setup_method(self):
@@ -246,29 +246,38 @@ class TestIndicators(TestCaseManagement):
         else:
             assert False, f'Associated indicator {ai.model.summary} not found.'
 
-        # for key, value in indicator.model:
-        #     if value:
-        #         print(f'''indicator.model.{key} = indicator_data.get('{key}')''')
+    def test_indicator_get_many(self):
+        """Test Indicators Get Many"""
+        # [Pre-Requisite] - create case
+        indicator_count = 10
+        indicator_ids = []
+        indicator_tag = 'TcEx-Indicator-Testing'
+        for _ in range(0, indicator_count):
+            # [Create Testing] define object data
+            indicator = self.v3_helper.create_indicator(
+                **{
+                    'active': True,
+                    'associated_groups': {'id': 8755},
+                    'attribute': {'type': 'Description', 'value': indicator_tag},
+                    'confidence': randint(0, 100),
+                    'description': 'TcEx Testing',
+                    'rating': randint(0, 5),
+                    'security_labels': {'name': 'TLP:WHITE'},
+                    'source': None,
+                    'tags': {'name': indicator_tag},
+                    'type': 'Address',
+                }
+            )
+            indicator_ids.append(indicator.model.id)
 
-    # def test_bcs(self):
-    #     """Test Indicators Get Many"""
-    #     # [Create Testing] define object data
-    #     indicator_tag = 'BCS-Testing'
-    #     indicator = self.v3_helper.create_indicator(
-    #         **{
-    #             'active': True,
-    #             'associated_groups': {'id': 8755},
-    #             'attribute': {'type': 'Description', 'value': indicator_tag},
-    #             'confidence': randint(0, 100),
-    #             'description': 'TcEx Testing',
-    #             'rating': randint(0, 5),
-    #             'security_labels': {'name': 'TLP:WHITE'},
-    #             'source': None,
-    #             'tags': {'name': indicator_tag},
-    #             'type': 'Address',
-    #         }
-    #     )
+        # [Retrieve Testing] iterate over all object looking for needle
+        indicators = self.v3.indicators()
+        indicators.filter.tag(TqlOperator.EQ, indicator_tag)
+        # capture indicator count before deleting the indicator
+        indicators_counts = len(indicators)
+        for _, indicator in enumerate(indicators):
+            assert indicator.model.id in indicator_ids
+            indicator_ids.remove(indicator.model.id)
 
-    #     print(f'indicator.web_link {indicator.model.web_link}')
-    #     print(indicator.model.gen_body(method='POST', mode='delete', indent=4, sort_keys=True))
-    #     indicator.update(mode='delete')
+        assert indicators_counts == indicator_count
+        assert not indicator_ids, 'Not all indicators were returned.'

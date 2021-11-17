@@ -61,6 +61,7 @@ class GroupFilter(FilterABC):
             operator: The operator enum for the filter.
             date_added: The date the group was added to the system.
         """
+        date_added = self.utils.any_to_datetime(date_added).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('dateAdded', operator, date_added, TqlType.STRING)
 
     def document_date_added(self, operator: Enum, document_date_added: str) -> None:
@@ -70,6 +71,9 @@ class GroupFilter(FilterABC):
             operator: The operator enum for the filter.
             document_date_added: The date the document was added.
         """
+        document_date_added = self.utils.any_to_datetime(document_date_added).strftime(
+            '%Y-%m-%dT%H:%M:%S'
+        )
         self._tql.add_filter('documentDateAdded', operator, document_date_added, TqlType.STRING)
 
     def document_filename(self, operator: Enum, document_filename: str) -> None:
@@ -124,6 +128,7 @@ class GroupFilter(FilterABC):
             operator: The operator enum for the filter.
             email_date: The date of the email.
         """
+        email_date = self.utils.any_to_datetime(email_date).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('emailDate', operator, email_date, TqlType.STRING)
 
     def email_from(self, operator: Enum, email_from: str) -> None:
@@ -172,6 +177,7 @@ class GroupFilter(FilterABC):
             operator: The operator enum for the filter.
             event_date: The event date of the group.
         """
+        event_date = self.utils.any_to_datetime(event_date).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('eventDate', operator, event_date, TqlType.STRING)
 
     @property
@@ -318,6 +324,9 @@ class GroupFilter(FilterABC):
             operator: The operator enum for the filter.
             signature_date_added: The date the signature was added.
         """
+        signature_date_added = self.utils.any_to_datetime(signature_date_added).strftime(
+            '%Y-%m-%dT%H:%M:%S'
+        )
         self._tql.add_filter('signatureDateAdded', operator, signature_date_added, TqlType.STRING)
 
     def signature_filename(self, operator: Enum, signature_filename: str) -> None:
@@ -408,6 +417,7 @@ class GroupFilter(FilterABC):
             operator: The operator enum for the filter.
             task_date_added: The date the task was added.
         """
+        task_date_added = self.utils.any_to_datetime(task_date_added).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('taskDateAdded', operator, task_date_added, TqlType.STRING)
 
     def task_due_date(self, operator: Enum, task_due_date: str) -> None:
@@ -417,6 +427,7 @@ class GroupFilter(FilterABC):
             operator: The operator enum for the filter.
             task_due_date: The due date of a task.
         """
+        task_due_date = self.utils.any_to_datetime(task_due_date).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('taskDueDate', operator, task_due_date, TqlType.STRING)
 
     def task_escalated(self, operator: Enum, task_escalated: bool) -> None:
@@ -435,6 +446,9 @@ class GroupFilter(FilterABC):
             operator: The operator enum for the filter.
             task_escalation_date: The escalation date of a task.
         """
+        task_escalation_date = self.utils.any_to_datetime(task_escalation_date).strftime(
+            '%Y-%m-%dT%H:%M:%S'
+        )
         self._tql.add_filter('taskEscalationDate', operator, task_escalation_date, TqlType.STRING)
 
     def task_last_modified(self, operator: Enum, task_last_modified: str) -> None:
@@ -444,6 +458,9 @@ class GroupFilter(FilterABC):
             operator: The operator enum for the filter.
             task_last_modified: The date the task was last modified.
         """
+        task_last_modified = self.utils.any_to_datetime(task_last_modified).strftime(
+            '%Y-%m-%dT%H:%M:%S'
+        )
         self._tql.add_filter('taskLastModified', operator, task_last_modified, TqlType.STRING)
 
     def task_overdue(self, operator: Enum, task_overdue: bool) -> None:
@@ -471,6 +488,9 @@ class GroupFilter(FilterABC):
             operator: The operator enum for the filter.
             task_reminder_date: The reminder date of a task.
         """
+        task_reminder_date = self.utils.any_to_datetime(task_reminder_date).strftime(
+            '%Y-%m-%dT%H:%M:%S'
+        )
         self._tql.add_filter('taskReminderDate', operator, task_reminder_date, TqlType.STRING)
 
     def task_status(self, operator: Enum, task_status: str) -> None:

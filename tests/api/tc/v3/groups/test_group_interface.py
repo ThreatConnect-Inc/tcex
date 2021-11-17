@@ -11,10 +11,10 @@ from pytest import FixtureRequest
 
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
-from tests.api.tc.v3.v3_helpers import TestCaseManagement, V3Helper
+from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 
 
-class TestGroups(TestCaseManagement):
+class TestGroups(TestV3):
     """Test TcEx API Interface."""
 
     def setup_method(self):

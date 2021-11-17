@@ -1,10 +1,10 @@
 """Test the TcEx API Snippets."""
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
-from tests.api.tc.v3.v3_helpers import TestCaseManagement, V3Helper
+from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 
 
-class TestIndicatorSnippets(TestCaseManagement):
+class TestIndicatorSnippets(TestV3):
     """Test TcEx API Interface."""
 
     v3 = None
@@ -12,11 +12,11 @@ class TestIndicatorSnippets(TestCaseManagement):
     def setup_method(self):
         """Configure setup before all tests."""
         print('')  # ensure any following print statements will be on new line
-        self.v3_helper = V3Helper('cases')
+        self.v3_helper = V3Helper('indicators')
         self.v3 = self.v3_helper.v3
         self.tcex = self.v3_helper.tcex
 
-        # remove old cases
+        # remove old objects
         indicators = self.tcex.v3.indicators()
         indicators.filter.summary(TqlOperator.EQ, '111.111.111.111')
         for indicator in indicators:
@@ -213,8 +213,8 @@ class TestIndicatorSnippets(TestCaseManagement):
 
         for security_label in indicator.security_labels:
             if security_label.model.name == 'TLP:WHITE':
-                # IMPORTANT the "remove()" method will remove the security label from the indicator and
-                #    the "delete()" method will remove the security label from the system.
+                # IMPORTANT the "remove()" method will remove the security label from the indicator
+                #    and the "delete()" method will remove the security label from the system.
                 security_label.remove()
         # End Snippet
 
@@ -251,4 +251,20 @@ class TestIndicatorSnippets(TestCaseManagement):
         # This will update the confidence to "50"
         indicator.model.confidence = 50
         indicator.update(params={'owner': 'TCI'})
+        # End Snippet
+
+    def test_indicator_deleted(self):
+        """Test snippet"""
+        indicator = self.v3_helper.create_indicator(
+            value1='111.111.111.111',
+            type='Address',
+        )
+        indicator.delete()
+
+        # Begin Snippet
+        # The "deleted()" method will not use the params set on the `Indicators` object.
+        for indicator in self.tcex.v3.indicators().deleted(
+            deleted_since='1 day ago', type_='Address', owner='TCI'
+        ):
+            print(indicator.model.dict(exclude_none=True))
         # End Snippet

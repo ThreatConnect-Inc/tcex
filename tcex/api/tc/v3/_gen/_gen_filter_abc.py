@@ -65,9 +65,9 @@ class GenerateFilterABC(GenerateABC, ABC):
 
                 # TODO: [workaround] core issue where the wrong type is provided
                 if self.type_ == 'indicators':
-                    for property in _properties:
-                        if property.get('keyword') == 'addressIpval':
-                            property['type'] = 'String'
+                    for property_ in _properties:
+                        if property_.get('keyword') == 'addressIpval':
+                            property_['type'] = 'String'
 
         except (ConnectionError, ProxyError) as ex:
             typer.secho(f'Failed getting types properties ({ex}).', fg=typer.colors.RED)
@@ -139,7 +139,7 @@ class GenerateFilterABC(GenerateABC, ABC):
         keyword_description = self._format_description(
             arg=keyword.snake_case(), description=description, length=100, indent=' ' * 12
         )
-        return [
+        _code = [
             (
                 f'{self.i1}def {keyword.snake_case()}'
                 f'(self, operator: Enum, {keyword.snake_case()}: '
@@ -152,12 +152,31 @@ class GenerateFilterABC(GenerateABC, ABC):
             # f'{self.i3}{keyword.snake_case()}: {description}.',
             f'{self.i3}{keyword_description}',
             f'{self.i2}"""',
-            (
-                f'''{self.i2}self._tql.add_filter('{keyword}', '''
-                f'''operator, {keyword.snake_case()}, {self._filter_type(type_).get('tql_type')})'''
-            ),
-            '',
         ]
+        # if type_.lower() in ['date']:
+        #     _code.extend(
+        #         [
+        #             f'''{self.i2}{keyword.snake_case()} = self.utils.any_to_datetime'''
+        #             f'''({keyword.snake_case()}).strftime('%Y-%m-%d')'''
+        #         ]
+        #     )
+        if type_.lower() in ['date', 'datetime']:
+            _code.extend(
+                [
+                    f'''{self.i2}{keyword.snake_case()} = self.utils.any_to_datetime'''
+                    f'''({keyword.snake_case()}).strftime('%Y-%m-%dT%H:%M:%S')'''
+                ]
+            )
+        _code.extend(
+            [
+                (
+                    f'''{self.i2}self._tql.add_filter('{keyword}', operator, '''
+                    f'''{keyword.snake_case()}, {self._filter_type(type_).get('tql_type')})'''
+                ),
+                '',
+            ]
+        )
+        return _code
 
     def _gen_code_has_artifact_method(self) -> str:
         """Return code for has_artifact TQL filter methods."""

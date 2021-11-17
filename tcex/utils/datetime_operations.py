@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Any, Optional, Tuple, Union
 
 # third-party
-import arrow
+import arrow as _arrow
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
 
@@ -13,7 +13,7 @@ class DatetimeOperations:
     """TcEx Utilities Datetime Operations Class"""
 
     @classmethod
-    def any_to_datetime(cls, datetime_expression: str, tz: Optional[str] = None) -> 'arrow.Arrow':
+    def any_to_datetime(cls, datetime_expression: str, tz: Optional[str] = None) -> '_arrow.Arrow':
         """Return a arrow object from datetime expression.
 
         Args:
@@ -42,7 +42,7 @@ class DatetimeOperations:
         for method in parser_methods:
             try:
                 parsed = method(value)
-            except Exception:
+            except Exception:  # nosec
                 # value could not be parsed by current method.
                 pass
             else:
@@ -54,14 +54,19 @@ class DatetimeOperations:
             'could not be parsed as a date time object.'
         )
 
+    @property
+    def arrow(self):
+        """Return arrow for use in Apps."""
+        return _arrow
+
     def chunk_date_range(
         self,
-        start_date: Union[int, str, datetime, arrow.Arrow],
-        end_date: Union[int, str, datetime, arrow.Arrow],
+        start_date: Union[int, str, datetime, _arrow.Arrow],
+        end_date: Union[int, str, datetime, _arrow.Arrow],
         chunk_size: int,
         chunk_unit: Optional[str] = 'months',
         date_format: Optional[str] = None,
-    ) -> Tuple[Union[arrow.Arrow, str], Union[arrow.Arrow, str]]:
+    ) -> Tuple[Union[_arrow.Arrow, str], Union[_arrow.Arrow, str]]:
         """Chunk a date range based on unit and size
 
         Args:
@@ -89,7 +94,7 @@ class DatetimeOperations:
         }
 
         try:
-            for range_tuple in arrow.Arrow.interval(**interval_args):
+            for range_tuple in _arrow.Arrow.interval(**interval_args):
                 if date_format is not None:
                     yield range_tuple[0].strftime(date_format), range_tuple[1].strftime(date_format)
                 else:
@@ -145,7 +150,7 @@ class DatetimeOperations:
         }
 
     @classmethod
-    def _convert_timezone(cls, arrow_dt: arrow.Arrow, tz: str):
+    def _convert_timezone(cls, arrow_dt: '_arrow.Arrow', tz: str):
         """Convert Arrow datetime's timezone
 
         Args:
@@ -160,7 +165,7 @@ class DatetimeOperations:
             ) from ex
 
     @staticmethod
-    def _parse_default_arrow_formats(value: Any) -> 'arrow.Arrow':
+    def _parse_default_arrow_formats(value: Any) -> '_arrow.Arrow':
         """Attempt to parse value using default Arrow formats.
 
         The value is simply passed into Arrow's "get" method. The following are the default
@@ -187,12 +192,12 @@ class DatetimeOperations:
         # ISO week date: 2011-W05-4, 2019-W17
         "W"
         """
-        return arrow.get(value)
+        return _arrow.get(value)
 
     @staticmethod
-    def _parse_humanized_input(value: Any) -> 'arrow.Arrow':
+    def _parse_humanized_input(value: Any) -> '_arrow.Arrow':
         """Attempt to dehumanize time inputs. Example: 'Two hours ago'."""
-        now = arrow.utcnow()
+        now = _arrow.utcnow()
         plurals = {
             'second': 'seconds',
             'minute': 'minutes',
@@ -213,7 +218,7 @@ class DatetimeOperations:
         return now.dehumanize(value)
 
     @staticmethod
-    def _parse_non_default_arrow_formats(value: Any) -> 'arrow.Arrow':
+    def _parse_non_default_arrow_formats(value: Any) -> '_arrow.Arrow':
         """Attempt to parse value using non-default Arrow formats
 
         These are formats that Arrow provides constants for but are not used in the "get"
@@ -221,24 +226,24 @@ class DatetimeOperations:
 
         Note: passing formats to test against overrides the default formats. Defaults are not used.
         """
-        return arrow.get(
+        return _arrow.get(
             value,
             [
-                arrow.FORMAT_ATOM,
-                arrow.FORMAT_COOKIE,
-                arrow.FORMAT_RFC822,
-                arrow.FORMAT_RFC850,
-                arrow.FORMAT_RFC1036,
-                arrow.FORMAT_RFC1123,
-                arrow.FORMAT_RFC2822,
-                arrow.FORMAT_RFC3339,
-                arrow.FORMAT_RSS,
-                arrow.FORMAT_W3C,
+                _arrow.FORMAT_ATOM,
+                _arrow.FORMAT_COOKIE,
+                _arrow.FORMAT_RFC822,
+                _arrow.FORMAT_RFC850,
+                _arrow.FORMAT_RFC1036,
+                _arrow.FORMAT_RFC1123,
+                _arrow.FORMAT_RFC2822,
+                _arrow.FORMAT_RFC3339,
+                _arrow.FORMAT_RSS,
+                _arrow.FORMAT_W3C,
             ],
         )
 
     @staticmethod
-    def _parse_timestamp(value: Any) -> 'arrow.Arrow':
+    def _parse_timestamp(value: Any) -> '_arrow.Arrow':
         """Attempt to parse epoch timestamp in seconds, milliseconds, or microseconds.
 
         Note: passing formats to test against overrides the default formats. Defaults are not used.
@@ -247,15 +252,15 @@ class DatetimeOperations:
         # before trying to parse as seconds (X), else error occurs if passing a ms/ns value
         try:
             # attempt to parse as string first using microsecond/millisecond and second specifiers
-            return arrow.get(value, ['x', 'X'])
-        except (arrow.parser.ParserError, ValueError):
+            return _arrow.get(value, ['x', 'X'])
+        except (_arrow.parser.ParserError, ValueError):
             # could not parse as string, try to parse as float
-            return arrow.get(float(value))
+            return _arrow.get(float(value))
 
     @staticmethod
-    def _parse_date_utils(value: Any) -> 'arrow.Arrow':
+    def _parse_date_utils(value: Any) -> '_arrow.Arrow':
         """Attempt to supplement arrows parsing ability with dateutils.
 
         Arrow doesn't support RFC_5322 used in HTTP 409 headers
         """
-        return arrow.get(parser.parse(value))
+        return _arrow.get(parser.parse(value))

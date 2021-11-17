@@ -1,5 +1,6 @@
 [run]
 omit =
+    tcex/api/tc/v3/_gen/*
     tcex/bin/*
     tcex/testing/*
     tcex/vault/*

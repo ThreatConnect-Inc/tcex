@@ -63,12 +63,3 @@ class OwnerRole(ObjectABC):
     def _api_endpoint(self) -> str:
         """Return the type specific API endpoint."""
         return ApiEndpoints.OWNER_ROLES.value
-
-    @property
-    def as_entity(self) -> dict:
-        """Return the entity representation of the object."""
-        type_ = self.type_
-        if hasattr(self.model, 'type'):
-            type_ = self.model.type
-
-        return {'type': type_, 'id': self.model.id, 'value': self.model.summary}

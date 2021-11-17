@@ -153,6 +153,7 @@ class IndicatorFilter(FilterABC):
             operator: The operator enum for the filter.
             date_added: The date the indicator was added to the system.
         """
+        date_added = self.utils.any_to_datetime(date_added).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('dateAdded', operator, date_added, TqlType.STRING)
 
     def description(self, operator: Enum, description: str) -> None:
@@ -309,6 +310,9 @@ class IndicatorFilter(FilterABC):
             operator: The operator enum for the filter.
             last_false_positive: The date the indicator has been last flagged as a false positive.
         """
+        last_false_positive = self.utils.any_to_datetime(last_false_positive).strftime(
+            '%Y-%m-%dT%H:%M:%S'
+        )
         self._tql.add_filter('lastFalsePositive', operator, last_false_positive, TqlType.STRING)
 
     def last_modified(self, operator: Enum, last_modified: str) -> None:
@@ -318,6 +322,7 @@ class IndicatorFilter(FilterABC):
             operator: The operator enum for the filter.
             last_modified: The date the indicator was last modified in the system.
         """
+        last_modified = self.utils.any_to_datetime(last_modified).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('lastModified', operator, last_modified, TqlType.STRING)
 
     def last_observed(self, operator: Enum, last_observed: str) -> None:
@@ -327,6 +332,7 @@ class IndicatorFilter(FilterABC):
             operator: The operator enum for the filter.
             last_observed: The date the indicator has been last observed.
         """
+        last_observed = self.utils.any_to_datetime(last_observed).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('lastObserved', operator, last_observed, TqlType.STRING)
 
     def observation_count(self, operator: Enum, observation_count: int) -> None:

@@ -1,10 +1,10 @@
 """Test the TcEx API Snippets."""
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
-from tests.api.tc.v3.v3_helpers import TestCaseManagement, V3Helper
+from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 
 
-class TestCaseSnippets(TestCaseManagement):
+class TestCaseSnippets(TestV3):
     """Test TcEx API Interface."""
 
     v3 = None

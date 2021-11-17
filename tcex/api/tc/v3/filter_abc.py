@@ -3,6 +3,9 @@
 from abc import ABC
 from typing import TYPE_CHECKING, List
 
+# first-party
+from tcex.utils.utils import Utils
+
 if TYPE_CHECKING:
     # first-party
     from tcex.api.tc.v3.tql.tql import Tql
@@ -14,6 +17,9 @@ class FilterABC(ABC):
     def __init__(self, tql: 'Tql'):
         """Initialize Class properties"""
         self._tql = tql
+
+        # properties
+        self.utils = Utils()
 
     @property
     def _api_endpoint(self):

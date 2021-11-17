@@ -30,7 +30,10 @@ pytest -n 12 --cov=tcex/ --cov-report=term-missing tests
 pytest --cov=tcex/api/tc/v3/ --cov-report=term-missing tests/api/tc/v3/
 
 #### artifact_types
-pytest --cov=tcex/api/tc/v3/artifact_types --cov-report=term-missing tests/api/tc/v3/artifact_types/test_artifact_type_interface.py
+pytest --cov=tcex/api/tc/v3/artifact_types --cov-report=term-missing tests/api/tc/v3/artifact_types
+
+#### attribute_types
+pytest --cov=tcex/api/tc/v3/attribute_types --cov-report=term-missing tests/api/tc/v3/attribute_types
 
 #### artifacts
 pytest --cov=tcex/api/tc/v3/artifacts --cov-report=term-missing tests/api/tc/v3/artifacts/test_artifact_interface.py
@@ -43,6 +46,21 @@ pytest --cov=tcex/api/tc/v3/indicators --cov-report=term-missing tests/api/tc/v3
 
 #### notes
 pytest --cov=tcex/api/tc/v3/notes --cov-report=term-missing tests/api/tc/v3/notes/test_note_interface.py
+
+#### security -> owner_roles
+pytest --cov=tcex/api/tc/v3/security/owner_roles --cov-report=term-missing tests/api/tc/v3/security/owner_roles
+
+#### security -> owners
+pytest --cov=tcex/api/tc/v3/security/owners --cov-report=term-missing tests/api/tc/v3/security/owners
+
+#### security -> system_roles
+pytest --cov=tcex/api/tc/v3/security/system_roles --cov-report=term-missing tests/api/tc/v3/security/system_roles
+
+#### security -> user_groups
+pytest --cov=tcex/api/tc/v3/security/user_groups --cov-report=term-missing tests/api/tc/v3/security/user_groups
+
+#### security -> users
+pytest --cov=tcex/api/tc/v3/security/users --cov-report=term-missing tests/api/tc/v3/security/users
 
 #### tasks
 pytest --cov=tcex/api/tc/v3/tasks --cov-report=term-missing tests/api/tc/v3/tasks/test_task_interface.py

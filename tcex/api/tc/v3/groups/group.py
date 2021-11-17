@@ -1,6 +1,6 @@
 """Group / Groups Object"""
 # standard library
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Optional, Union
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -14,6 +14,9 @@ from tcex.api.tc.v3.security_labels.security_label_model import SecurityLabelMod
 from tcex.api.tc.v3.tags.tag_model import TagModel
 
 if TYPE_CHECKING:  # pragma: no cover
+    # third-party
+    from requests import Response
+
     # first-party
     from tcex.api.tc.v3.group_attributes.group_attribute import GroupAttribute
     from tcex.api.tc.v3.indicators.indicator import Indicator
@@ -125,6 +128,40 @@ class Group(ObjectABC):
             type_ = self.model.type
 
         return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
+
+    def download(self, params: Optional[dict] = None) -> bytes:
+        """Return the document attachment for Document/Report Types."""
+        self._request(
+            method='GET',
+            url=f'''{self.url('GET')}/download''',
+            # headers={'content-type': 'application/octet-stream'},
+            headers=None,
+            params=params,
+        )
+        return self.request.content
+
+    def pdf(self, params: Optional[dict] = None) -> bytes:
+        """Return the document attachment for Document/Report Types."""
+        self._request(
+            method='GET',
+            body=None,
+            url=f'''{self.url('GET')}/pdf''',
+            headers=None,
+            params=params,
+        )
+
+        return self.request.content
+
+    def upload(self, content: Union[bytes, str], params: Optional[dict] = None) -> 'Response':
+        """Return the document attachment for Document/Report Types."""
+        self._request(
+            method='POST',
+            url=f'''{self.url('GET')}/upload''',
+            body=content,
+            headers={'content-type': 'application/octet-stream'},
+            params=params,
+        )
+        return self.request
 
     @property
     def associated_groups(self) -> 'Group':
