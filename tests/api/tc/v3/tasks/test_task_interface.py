@@ -191,7 +191,7 @@ class TestTasks(TestV3):
 
         # [Filter Testing] case_id
         tasks.filter.case_id(TqlOperator.EQ, case.model.id)
-        tasks.filter.completed_date(TqlOperator.EQ, task_data.get('completed_date'))
+        tasks.filter.completed_date(TqlOperator.EQ, task.model.completed_date)
         tasks.filter.due_date(TqlOperator.EQ, task_data.get('due_date'))
         tasks.filter.id(TqlOperator.EQ, task.model.id)
         tasks.filter.description(TqlOperator.EQ, task_data.get('description'))
