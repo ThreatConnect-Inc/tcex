@@ -666,6 +666,9 @@ class GenerateObjectABC(GenerateABC, ABC):
         if 'artifacts' in add_properties:
             _code += self._gen_code_object_type_property_method('artifacts')
 
+        if 'assets' in add_properties:
+            _code += self._gen_code_object_type_property_method('victim_assets')
+
         # generate add_associated_group method
         if 'associatedGroups' in add_properties:
             _code += self._gen_code_object_type_property_method('groups', 'associated_groups')

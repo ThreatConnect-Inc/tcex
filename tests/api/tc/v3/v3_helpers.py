@@ -578,6 +578,10 @@ class V3Helper:
         for security_label in security_labels:
             victim.stage_security_label(self.v3.security_label(**security_label))
 
+        # add assets
+        for asset in assets:
+            victim.stage_victim_asset(self.v3.victim_asset(**asset))
+
         # add tags
         victim.stage_tag(self.v3.tag(name='pytest'))
         for tag in tags:
