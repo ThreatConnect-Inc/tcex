@@ -68,7 +68,7 @@ class Group(ObjectABC):
     """Groups Object.
 
     Args:
-        assignments (Assignee, kwargs): A list of assignees and escalatees associated with this
+        assignments (TaskAssignees, kwargs): A list of assignees and escalatees associated with this
             group (Task specific).
         associated_groups (Groups, kwargs): A list of groups associated with this group.
         associated_indicators (Indicators, kwargs): A list of indicators associated with this group.

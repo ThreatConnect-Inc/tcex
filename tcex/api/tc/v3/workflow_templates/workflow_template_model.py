@@ -160,7 +160,7 @@ class WorkflowTemplateModel(
 
 # first-party
 from tcex.api.tc.v3.cases.case_model import CasesModel
-from tcex.api.tc.v3.security.assignee import AssigneeModel  # pylint: disable=unused-import
+from tcex.api.tc.v3.security.assignee_model import AssigneeModel
 
 # add forward references
 WorkflowTemplateDataModel.update_forward_refs()

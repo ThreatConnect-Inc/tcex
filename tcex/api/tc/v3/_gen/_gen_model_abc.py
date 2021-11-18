@@ -180,10 +180,7 @@ class GenerateModelABC(GenerateABC, ABC):
             'Assignee': {
                 'requirement': {
                     'from': 'first-party-forward-reference',
-                    'import': (
-                        'from tcex.api.tc.v3.security.assignee import AssigneeModel'
-                        '  # pylint: disable=unused-import'
-                    ),
+                    'import': 'from tcex.api.tc.v3.security.assignee_model import AssigneeModel',
                 },
                 'type': 'Optional[\'AssigneeModel\']',
                 'validator': self._gen_code_validator_method(type_, field),
@@ -302,13 +299,15 @@ class GenerateModelABC(GenerateABC, ABC):
                 'type': f'Optional[\'{type_}Model\']',
                 'validator': self._gen_code_validator_method(type_, field),
             },
-            # TODO: [high] - @bsummers Its not.
             'TaskAssignees': {
                 'requirement': {
                     'from': 'first-party-forward-reference',
-                    'import': 'from tcex.api.tc.v3.security.assignee import AssigneeModel',
+                    'import': (
+                        'from tcex.api.tc.v3.security.task_assignee_model '
+                        'import TaskAssigneesModel'
+                    ),
                 },
-                'type': 'Optional[\'AssigneeModel\']',
+                'type': 'Optional[\'TaskAssigneesModel\']',
             },
             'Tasks': {
                 'requirement': self._gen_req_code(type_),

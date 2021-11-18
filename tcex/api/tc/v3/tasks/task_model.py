@@ -252,7 +252,7 @@ class TaskModel(
 from tcex.api.tc.v3.artifacts.artifact_model import ArtifactsModel
 from tcex.api.tc.v3.cases.case_model import CaseModel
 from tcex.api.tc.v3.notes.note_model import NotesModel
-from tcex.api.tc.v3.security.assignee import AssigneeModel  # pylint: disable=unused-import
+from tcex.api.tc.v3.security.assignee_model import AssigneeModel
 
 # add forward references
 TaskDataModel.update_forward_refs()

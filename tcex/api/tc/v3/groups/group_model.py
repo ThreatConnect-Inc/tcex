@@ -64,7 +64,7 @@ class GroupModel(
     _method_override = PrivateAttr(False)
     _shared_type = PrivateAttr(False)
 
-    assignments: Optional['AssigneeModel'] = Field(
+    assignments: Optional['TaskAssigneesModel'] = Field(
         None,
         description=(
             'A list of assignees and escalatees associated with this group (Task specific).'
@@ -463,7 +463,7 @@ class GroupModel(
 # first-party
 from tcex.api.tc.v3.group_attributes.group_attribute_model import GroupAttributesModel
 from tcex.api.tc.v3.indicators.indicator_model import IndicatorsModel
-from tcex.api.tc.v3.security.assignee import AssigneeModel
+from tcex.api.tc.v3.security.task_assignee_model import TaskAssigneesModel
 from tcex.api.tc.v3.security_labels.security_label_model import SecurityLabelsModel
 from tcex.api.tc.v3.tags.tag_model import TagsModel
 from tcex.api.tc.v3.victim_assets.victim_asset_model import VictimAssetsModel

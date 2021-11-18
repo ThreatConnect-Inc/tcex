@@ -343,7 +343,7 @@ class CaseModel(
 from tcex.api.tc.v3.artifacts.artifact_model import ArtifactsModel
 from tcex.api.tc.v3.case_attributes.case_attribute_model import CaseAttributesModel
 from tcex.api.tc.v3.notes.note_model import NotesModel
-from tcex.api.tc.v3.security.assignee import AssigneeModel  # pylint: disable=unused-import
+from tcex.api.tc.v3.security.assignee_model import AssigneeModel
 from tcex.api.tc.v3.security.users.user_model import UserModel, UsersModel
 from tcex.api.tc.v3.tags.tag_model import TagsModel
 from tcex.api.tc.v3.tasks.task_model import TasksModel

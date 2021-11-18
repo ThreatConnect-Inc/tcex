@@ -4,7 +4,7 @@ from requests import Session
 
 # first-party
 from tcex.api.tc.v3.case_attributes.case_attribute import CaseAttribute, CaseAttributes
-from tcex.api.tc.v3.security.assignee import AssigneeModel
+from tcex.api.tc.v3.security.assignee_model import AssigneeModel
 
 
 class CaseManagement:
