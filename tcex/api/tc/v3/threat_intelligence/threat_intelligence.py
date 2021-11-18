@@ -3,9 +3,12 @@
 from requests import Session
 
 # first-party
-from tcex.api.tc.v3.group_attributes.group_attribute import GroupAttribute
+from tcex.api.tc.v3.group_attributes.group_attribute import GroupAttribute, GroupAttributes
 from tcex.api.tc.v3.groups.group import Group, Groups
-from tcex.api.tc.v3.indicator_attributes.indicator_attribute import IndicatorAttribute
+from tcex.api.tc.v3.indicator_attributes.indicator_attribute import (
+    IndicatorAttribute,
+    IndicatorAttributes,
+)
 from tcex.api.tc.v3.indicators.indicator import Indicator, Indicators
 from tcex.api.tc.v3.security_labels.security_label import SecurityLabel
 from tcex.api.tc.v3.victim_assets.victim_asset import VictimAssets, VictimAsset
@@ -74,7 +77,7 @@ class ThreatIntelligence:
         return Group(session=self.session, **kwargs)
 
     def group_attribute(self, **kwargs) -> 'GroupAttribute':
-        """Return a instance of Case Attributes object.
+        """Return a instance of Group Attributes object.
 
         Args:
             default (bool, kwargs): A flag indicating that this is the default attribute of its type
@@ -85,6 +88,27 @@ class ThreatIntelligence:
             value (str, kwargs): Attribute value.
         """
         return GroupAttribute(session=self.session, **kwargs)
+
+    def group_attributes(self, **kwargs) -> 'GroupAttributes':
+        """Return a instance of Group Attributes object.
+
+        .. code-block:: python
+            :linenos:
+            :lineno-start: 1
+
+            # Example of params input
+            {
+                'result_limit': 100,  # How many results are retrieved.
+                'result_start': 10,  # Starting point on retrieved results.
+                'fields': ['caseId', 'summary']  # Additional fields returned on the results
+            }
+
+        Args:
+            initial_response (dict, optional): Initial data in Case Object for Group.
+            tql_filters (list, optional): A list of TQL filters.
+            params (dict, optional): A dict of query params for the request.
+        """
+        return GroupAttributes(session=self.session, **kwargs)
 
     def groups(self, **kwargs) -> 'Groups':
         """Return a instance of Groups object.
@@ -161,6 +185,27 @@ class ThreatIntelligence:
             value (str, kwargs): Attribute value.
         """
         return IndicatorAttribute(session=self.session, **kwargs)
+
+    def indicator_attributes(self, **kwargs) -> 'IndicatorAttributes':
+        """Return a instance of Indicator Attributes object.
+
+        .. code-block:: python
+            :linenos:
+            :lineno-start: 1
+
+            # Example of params input
+            {
+                'result_limit': 100,  # How many results are retrieved.
+                'result_start': 10,  # Starting point on retrieved results.
+                'fields': ['caseId', 'summary']  # Additional fields returned on the results
+            }
+
+        Args:
+            initial_response (dict, optional): Initial data in Case Object for Group.
+            tql_filters (list, optional): A list of TQL filters.
+            params (dict, optional): A dict of query params for the request.
+        """
+        return IndicatorAttributes(session=self.session, **kwargs)
 
     def indicators(self, **kwargs) -> 'Indicators':
         """Return a instance of Indicators object.
@@ -243,7 +288,7 @@ class ThreatIntelligence:
         return Victims(session=self.session, **kwargs)
 
     def victim_asset(self, **kwargs) -> 'VictimAsset':
-        """Return a instance of VictimAsset object. """
+        """Return a instance of VictimAsset object."""
 
         return VictimAsset(session=self.session, **kwargs)
 
@@ -269,7 +314,7 @@ class ThreatIntelligence:
         return VictimAssets(session=self.session, **kwargs)
 
     def victim_attribute(self, **kwargs) -> 'VictimAttribute':
-        """Return a instance of VictimAttribute object. """
+        """Return a instance of VictimAttribute object."""
 
         return VictimAttribute(session=self.session, **kwargs)
 

@@ -34,10 +34,7 @@ def default_too_many_requests_handler(response: Response) -> float:
     utils = Utils()
     retry_after = response.headers.get('Retry-After', 0)
     try:
-        seconds = (
-            float(utils.datetime.format_datetime(float(retry_after), date_format='%s'))
-            - time.time()
-        )
+        seconds = utils.any_to_datetime(float(retry_after)).timestamp() - time.time()
     except RuntimeError:
         # retry_after must be in seconds
         seconds = retry_after

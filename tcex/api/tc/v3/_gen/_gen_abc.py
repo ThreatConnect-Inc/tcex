@@ -30,7 +30,8 @@ class GenerateABC(ABC):
         self.i1 = ' ' * 4  # indent level 1
         self.i2 = ' ' * 8  # indent level 2
         self.i3 = ' ' * 12  # indent level 3
-        self.i4 = ' ' * 16  # indent level 3
+        self.i4 = ' ' * 16  # indent level 4
+        self.i5 = ' ' * 20  # indent level 5
         self.requirements = {}
         self.utils = Utils()
 

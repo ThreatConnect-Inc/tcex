@@ -135,7 +135,7 @@ class TestGroupSnippets(TestV3):
             type='Adversary',
         )
 
-        # Add attribute
+        # Add tag
         tag = self.tcex.v3.tag(name='Example-Tag')
         group.stage_tag(tag)
 

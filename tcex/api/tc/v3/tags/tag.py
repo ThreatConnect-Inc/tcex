@@ -1,4 +1,8 @@
 """Tag / Tags Object"""
+# standard library
+import json
+from typing import Optional
+
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.object_abc import ObjectABC
@@ -69,3 +73,38 @@ class Tag(ObjectABC):
     def _api_endpoint(self) -> str:
         """Return the type specific API endpoint."""
         return ApiEndpoints.TAGS.value
+
+    def remove(self, params: Optional[dict] = None) -> None:
+        """Remove a nested object."""
+        method = 'PUT'
+        unique_id = self._calculate_unique_id()
+
+        # validate an id is available
+        self._validate_id(unique_id.get('value'), '')
+
+        body = json.dumps(
+            {
+                self._nested_field_name: {
+                    'data': [{unique_id.get('filter'): unique_id.get('value')}],
+                    'mode': 'delete',
+                }
+            }
+        )
+
+        # get the unique id value for id, xid, summary, etc ...
+        parent_api_endpoint = self._parent_data.get('api_endpoint')
+        parent_unique_id = self._parent_data.get('unique_id')
+        url = f'{parent_api_endpoint}/{parent_unique_id}'
+
+        # validate parent an id is available
+        self._validate_id(parent_unique_id, url)
+
+        self._request(
+            method=method,
+            url=url,
+            body=body,
+            headers={'content-type': 'application/json'},
+            params=params,
+        )
+
+        return self.request

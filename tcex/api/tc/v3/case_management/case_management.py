@@ -3,7 +3,7 @@
 from requests import Session
 
 # first-party
-from tcex.api.tc.v3.case_attributes.case_attribute import CaseAttribute
+from tcex.api.tc.v3.case_attributes.case_attribute import CaseAttribute, CaseAttributes
 from tcex.api.tc.v3.security.assignee import AssigneeModel
 
 
@@ -154,6 +154,27 @@ class CaseManagement:
             value (str, kwargs): Attribute value.
         """
         return CaseAttribute(session=self.session, **kwargs)
+
+    def case_attributes(self, **kwargs) -> 'CaseAttributes':
+        """Return a instance of Case Attributes object.
+
+        .. code-block:: python
+            :linenos:
+            :lineno-start: 1
+
+            # Example of params input
+            {
+                'result_limit': 100,  # How many results are retrieved.
+                'result_start': 10,  # Starting point on retrieved results.
+                'fields': ['caseId', 'summary']  # Additional fields returned on the results
+            }
+
+        Args:
+            initial_response (dict, optional): Initial data in Case Object for Group.
+            tql_filters (list, optional): A list of TQL filters.
+            params (dict, optional): A dict of query params for the request.
+        """
+        return CaseAttributes(session=self.session, **kwargs)
 
     def cases(self, **kwargs) -> 'Cases':
         """Return a instance of Cases object.

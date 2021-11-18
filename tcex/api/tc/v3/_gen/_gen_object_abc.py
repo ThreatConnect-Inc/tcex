@@ -374,6 +374,51 @@ class GenerateObjectABC(GenerateABC, ABC):
             ]
         )
 
+    def _gen_code_object_remove_method(self) -> str:
+        """Return the method code."""
+        self.requirements['standard library'].append('import json')
+        self.requirements['standard library'].append({'module': 'typing', 'imports': ['Optional']})
+        return '\n'.join(
+            [
+                f'''{self.i1}def remove(self, params: Optional[dict] = None) -> None:''',
+                f'''{self.i2}"""Remove a nested object."""''',
+                f'''{self.i2}method = \'PUT\'''',
+                f'''{self.i2}unique_id = self._calculate_unique_id()''',
+                '',
+                f'''{self.i2}# validate an id is available''',
+                f'''{self.i2}self._validate_id(unique_id.get('value'), '')''',
+                '',
+                f'''{self.i2}body = json.dumps(''',
+                f'''{self.i3}{{''',
+                f'''{self.i4}self._nested_field_name: {{''',
+                f'''{self.i5}'data': [{{unique_id.get('filter'): unique_id.get('value')}}],''',
+                f'''{self.i5}'mode': 'delete',''',
+                f'''{self.i4}}}''',
+                f'''{self.i3}}}''',
+                f'''{self.i2})''',
+                '',
+                f'''{self.i2}# get the unique id value for id, xid, summary, etc ...''',
+                f'''{self.i2}parent_api_endpoint = self._parent_data.get('api_endpoint')''',
+                f'''{self.i2}parent_unique_id = self._parent_data.get('unique_id')''',
+                f'''{self.i2}url = f\'{{parent_api_endpoint}}/{{parent_unique_id}}\'''',
+                '',
+                f'''{self.i2}# validate parent an id is available''',
+                f'''{self.i2}self._validate_id(parent_unique_id, url)''',
+                '',
+                f'''{self.i2}self._request(''',
+                f'''{self.i3}method=method,''',
+                f'''{self.i3}url=url,''',
+                f'''{self.i3}body=body,''',
+                f'''{self.i3}headers={{'content-type': 'application/json'}},''',
+                f'''{self.i3}params=params,''',
+                f'''{self.i2})''',
+                '',
+                f'''{self.i2}return self.request''',
+                '',
+                '',
+            ]
+        )
+
     def _gen_code_object_type_property_method(
         self, type_: str, model_type: Optional[str] = None
     ) -> str:
@@ -577,6 +622,16 @@ class GenerateObjectABC(GenerateABC, ABC):
         ]:
             # generate as_entity property method
             _code += self._gen_code_object_as_entity_property_method()
+
+        # skip object that don't require as_entity method
+        if self.type_ in [
+            'groups',
+            'indicators',
+            'security_labels',
+            'tags',
+        ]:
+            # generate as_entity property method
+            _code += self._gen_code_object_remove_method()
 
         # generate group specific methods
         if self.type_.lower() == 'groups':

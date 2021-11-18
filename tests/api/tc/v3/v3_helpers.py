@@ -80,10 +80,20 @@ class V3Helper:
                 'class_name': 'ArtifactType',
                 'collection_class_name': 'ArtifactTypes',
             },
+            'case_attributes': {
+                'module': 'tcex.api.tc.v3.case_attributes.case_attribute',
+                'class_name': 'CaseAttribute',
+                'collection_class_name': 'CaseAttributes',
+            },
             'cases': {
                 'module': 'tcex.api.tc.v3.cases.case',
                 'class_name': 'Case',
                 'collection_class_name': 'Cases',
+            },
+            'group_attributes': {
+                'module': 'tcex.api.tc.v3.group_attributes.group_attribute',
+                'class_name': 'GroupAttribute',
+                'collection_class_name': 'GroupAttributes',
             },
             'groups': {
                 'module': 'tcex.api.tc.v3.groups.group',
@@ -94,6 +104,11 @@ class V3Helper:
                 'module': 'tcex.api.tc.v3.indicators.indicator',
                 'class_name': 'Indicator',
                 'collection_class_name': 'Indicators',
+            },
+            'indicator_attributes': {
+                'module': 'tcex.api.tc.v3.indicator_attributes.indicator_attribute',
+                'class_name': 'IndicatorAttribute',
+                'collection_class_name': 'IndicatorAttributes',
             },
             'notes': {
                 'module': 'tcex.api.tc.v3.notes.note',
@@ -150,6 +165,11 @@ class V3Helper:
                 'class_name': 'VictimAsset',
                 'collection_class_name': 'VictimAssets',
             },
+            'victim_attributes': {
+                'module': 'tcex.api.tc.v3.victim_attributes.victim_attribute',
+                'class_name': 'VictimAttribute',
+                'collection_class_name': 'VictimAttributes',
+            },
             'workflow_events': {
                 'module': 'tcex.api.tc.v3.workflow_events.workflow_event',
                 'class_name': 'WorkflowEvent',
@@ -181,11 +201,14 @@ class V3Helper:
     def tql_generator(self, model: 'BaseModel', object_name: str) -> None:
         """Print TQL filter.
 
+        group.get(params={'fields': ['_all_']})
         self.v3_helper.tql_generator(group.model, 'groups')
         """
 
         def get_model_keyword(keyword: str):
             keyword_map = {
+                # attribute are not consistent on tql filter and field name
+                'displayed': 'default',
                 # "type" is the id of the type, while type name is the name that is returned
                 'type_name': 'type',
                 # break "type" lookup since it is never returned
@@ -360,7 +383,7 @@ class V3Helper:
 
         associated_groups = self._to_list(kwargs.get('associated_groups', []))
         associated_indicators = self._to_list(kwargs.get('associated_indicators', []))
-        attributes = self._to_list(kwargs.get('attribute', []))
+        attributes = self._to_list(kwargs.get('attributes', []))
         security_labels = self._to_list(kwargs.get('security_labels', []))
         tags = self._to_list(kwargs.get('tags', []))
 
@@ -523,7 +546,7 @@ class V3Helper:
         Returns:
             V3.Victim: A victim object.
         """
-        group_data = {
+        victim_data = {
             'name': kwargs.get('name', inspect.stack()[1].function),
             'type': 'A Random Type',
             'description': kwargs.get('description') or 'Example Victim Description',
@@ -535,10 +558,10 @@ class V3Helper:
         }
 
         # create indicator
-        victim = self.v3.victim(**group_data)
+        victim = self.v3.victim(**victim_data)
 
-        associated_groups = self._to_list(group_data.get('associated_groups', []))
-        attributes = self._to_list(kwargs.get('attribute', []))
+        associated_groups = self._to_list(victim_data.get('associated_groups', []))
+        attributes = self._to_list(kwargs.get('attributes', []))
         security_labels = self._to_list(kwargs.get('security_labels', []))
         tags = self._to_list(kwargs.get('tags', []))
         assets = self._to_list(kwargs.get('assets', []))
@@ -549,7 +572,7 @@ class V3Helper:
 
         # add attributes
         for attribute in attributes:
-            victim.stage_attribute(self.v3.group_attribute(**attribute))
+            victim.stage_attribute(self.v3.victim_attribute(**attribute))
 
         # add security labels
         for security_label in security_labels:

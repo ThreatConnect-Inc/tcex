@@ -60,22 +60,43 @@ pytest --cov=tcex/api/tc/v3/ --cov-report=term-missing tests/api/tc/v3/
 
 #### artifact_types
 ```bash
-pytest --cov=tcex/api/tc/v3/artifact_types --cov-report=term-missing tests/api/tc/v3/
-```
-
-#### attribute_types
-```bash
-pytest --cov=tcex/api/tc/v3/attribute_types --cov-report=term-missing tests/api/tc/v3/
+pytest --cov=tcex/api/tc/v3/artifact_types --cov-report=term-missing tests/api/tc/v3/artifact_types
 ```
 
 #### artifacts
 ```bash
-pytest --cov=tcex/api/tc/v3/artifacts --cov-report=term-missing tests/api/tc/v3/artifacts/
+pytest --cov=tcex/api/tc/v3/artifacts --cov-report=term-missing tests/api/tc/v3/artifacts
+```
+
+
+#### attribute_types
+```bash
+pytest --cov=tcex/api/tc/v3/attribute_types --cov-report=term-missing tests/api/tc/v3/attribute_types
+```
+
+#### case_attributes
+```bash
+pytest --cov=tcex/api/tc/v3/case_attributes --cov-report=term-missing tests/api/tc/v3/case_attributes/
+```
+
+#### cases
+```bash
+pytest --cov=tcex/api/tc/v3/cases --cov-report=term-missing tests/api/tc/v3/cases/
+```
+
+#### group_attributes
+```bash
+pytest --cov=tcex/api/tc/v3/group_attributes --cov-report=term-missing tests/api/tc/v3/group_attributes/
 ```
 
 #### groups
 ```bash
 pytest --cov=tcex/api/tc/v3/groups --cov-report=term-missing tests/api/tc/v3/groups/
+```
+
+#### indicator_attributes
+```bash
+pytest --cov=tcex/api/tc/v3/indicator_attributes --cov-report=term-missing tests/api/tc/v3/indicator_attributes/
 ```
 
 #### indicators
@@ -113,9 +134,44 @@ pytest --cov=tcex/api/tc/v3/security/user_groups --cov-report=term-missing tests
 pytest --cov=tcex/api/tc/v3/security/users --cov-report=term-missing tests/api/tc/v3/security/users
 ```
 
+#### security_labels
+```bash
+pytest --cov=tcex/api/tc/v3/security_labels --cov-report=term-missing tests/api/tc/v3/security_labels
+```
+
+#### tag
+```bash
+pytest --cov=tcex/api/tc/v3/tag --cov-report=term-missing tests/api/tc/v3/tag
+```
+
 #### tasks
 ```bash
-pytest --cov=tcex/api/tc/v3/tasks --cov-report=term-missing tests/api/tc/v3/tasks/
+pytest --cov=tcex/api/tc/v3/tasks --cov-report=term-missing tests/api/tc/v3/tasks
+```
+
+#### victim_assets
+```bash
+pytest --cov=tcex/api/tc/v3/victim_assets --cov-report=term-missing tests/api/tc/v3/victim_assets
+```
+
+#### victim_attributes
+```bash
+pytest --cov=tcex/api/tc/v3/victim_attributes --cov-report=term-missing tests/api/tc/v3/victim_attributes
+```
+
+#### victims
+```bash
+pytest --cov=tcex/api/tc/v3/tasks --cov-report=term-missing tests/api/tc/v3/tasks
+```
+
+#### workflow_events
+```bash
+pytest --cov=tcex/api/tc/v3/workflow_events --cov-report=term-missing tests/api/tc/v3/workflow_events
+```
+
+#### workflow_templates
+```bash
+pytest --cov=tcex/api/tc/v3/workflow_templates --cov-report=term-missing tests/api/tc/v3/workflow_templates
 ```
 
 ## app_config

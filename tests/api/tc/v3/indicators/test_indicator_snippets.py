@@ -169,6 +169,7 @@ class TestIndicatorSnippets(TestV3):
                 },
             ],
         )
+
         # Begin Snippet
         indicator = self.tcex.v3.indicator(summary='111.111.111.111')
         for attribute in indicator.attributes:
