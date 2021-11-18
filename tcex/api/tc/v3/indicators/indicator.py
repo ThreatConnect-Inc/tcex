@@ -1,5 +1,6 @@
 """Indicator / Indicators Object"""
 # standard library
+import json
 from datetime import datetime
 from typing import TYPE_CHECKING, Optional, Union
 
@@ -149,6 +150,41 @@ class Indicator(ObjectABC):
             type_ = self.model.type
 
         return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
+
+    def remove(self, params: Optional[dict] = None) -> None:
+        """Remove a nested object."""
+        method = 'PUT'
+        unique_id = self._calculate_unique_id()
+
+        # validate an id is available
+        self._validate_id(unique_id.get('value'), '')
+
+        body = json.dumps(
+            {
+                self._nested_field_name: {
+                    'data': [{unique_id.get('filter'): unique_id.get('value')}],
+                    'mode': 'delete',
+                }
+            }
+        )
+
+        # get the unique id value for id, xid, summary, etc ...
+        parent_api_endpoint = self._parent_data.get('api_endpoint')
+        parent_unique_id = self._parent_data.get('unique_id')
+        url = f'{parent_api_endpoint}/{parent_unique_id}'
+
+        # validate parent an id is available
+        self._validate_id(parent_unique_id, url)
+
+        self._request(
+            method=method,
+            url=url,
+            body=body,
+            headers={'content-type': 'application/json'},
+            params=params,
+        )
+
+        return self.request
 
     @property
     def associated_groups(self) -> 'Group':

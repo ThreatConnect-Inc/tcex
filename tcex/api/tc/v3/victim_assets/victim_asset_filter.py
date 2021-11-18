@@ -56,23 +56,25 @@ class VictimAssetFilter(FilterABC):
         self._tql.add_filter('hasIndicator', TqlOperator.EQ, indicators, TqlType.SUB_QUERY)
         return indicators
 
-    def has_victim(self, operator: Enum, has_victim: int) -> None:
-        """Filter Associated Victim based on **hasVictim** keyword.
+    @property
+    def has_victim(self):
+        """Return **VictimFilter** for further filtering."""
+        # first-party
+        from tcex.api.tc.v3.victims.victim_filter import VictimFilter
 
-        Args:
-            operator: The operator enum for the filter.
-            has_victim: A nested query for association to other victims.
-        """
-        self._tql.add_filter('hasVictim', operator, has_victim, TqlType.INTEGER)
+        victims = VictimFilter(Tql())
+        self._tql.add_filter('hasVictim', TqlOperator.EQ, victims, TqlType.SUB_QUERY)
+        return victims
 
-    def has_victim_asset(self, operator: Enum, has_victim_asset: int) -> None:
-        """Filter Associated Victim Asset based on **hasVictimAsset** keyword.
+    @property
+    def has_victim_asset(self):
+        """Return **VictimAssetFilter** for further filtering."""
+        # first-party
+        from tcex.api.tc.v3.victim_assets.victim_asset_filter import VictimAssetFilter
 
-        Args:
-            operator: The operator enum for the filter.
-            has_victim_asset: A nested query for association to other victim assets.
-        """
-        self._tql.add_filter('hasVictimAsset', operator, has_victim_asset, TqlType.INTEGER)
+        victim_assets = VictimAssetFilter(Tql())
+        self._tql.add_filter('hasVictimAsset', TqlOperator.EQ, victim_assets, TqlType.SUB_QUERY)
+        return victim_assets
 
     def id(self, operator: Enum, id: int) -> None:  # pylint: disable=redefined-builtin
         """Filter ID based on **id** keyword.

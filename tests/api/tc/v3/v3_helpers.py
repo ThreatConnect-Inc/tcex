@@ -560,7 +560,7 @@ class V3Helper:
         # create indicator
         victim = self.v3.victim(**victim_data)
 
-        associated_groups = self._to_list(victim_data.get('associated_groups', []))
+        associated_groups = self._to_list(kwargs.get('associated_groups', []))
         attributes = self._to_list(kwargs.get('attributes', []))
         security_labels = self._to_list(kwargs.get('security_labels', []))
         tags = self._to_list(kwargs.get('tags', []))

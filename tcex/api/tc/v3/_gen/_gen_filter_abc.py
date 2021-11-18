@@ -114,7 +114,7 @@ class GenerateFilterABC(GenerateABC, ABC):
             'tql_type': tql_type,
         }
 
-    def _gen_code_generic_method(self, filter_data: dict) -> str:
+    def _gen_code_generic_method(self, filter_data: dict) -> list:
         """Return code for generic TQL filter methods.
 
         filter_data:
@@ -178,7 +178,7 @@ class GenerateFilterABC(GenerateABC, ABC):
         )
         return _code
 
-    def _gen_code_has_artifact_method(self) -> str:
+    def _gen_code_has_artifact_method(self) -> list:
         """Return code for has_artifact TQL filter methods."""
         self._add_tql_imports()
         return [
@@ -197,7 +197,7 @@ class GenerateFilterABC(GenerateABC, ABC):
             '',
         ]
 
-    def _gen_code_has_case_method(self) -> str:
+    def _gen_code_has_case_method(self) -> list:
         """Return code for has_case TQL filter methods."""
         self._add_tql_imports()
         return [
@@ -216,7 +216,7 @@ class GenerateFilterABC(GenerateABC, ABC):
             '',
         ]
 
-    def _gen_code_has_group_method(self) -> str:
+    def _gen_code_has_group_method(self) -> list:
         """Return code for has_group TQL filter methods."""
         self._add_tql_imports()
         _code = [
@@ -245,7 +245,7 @@ class GenerateFilterABC(GenerateABC, ABC):
         )
         return _code
 
-    def _gen_code_has_indicator_method(self) -> str:
+    def _gen_code_has_indicator_method(self) -> list:
         """Return code for has_indicator TQL filter methods."""
         self._add_tql_imports()
         _code = [
@@ -277,7 +277,7 @@ class GenerateFilterABC(GenerateABC, ABC):
         )
         return _code
 
-    def _gen_code_has_note_method(self) -> str:
+    def _gen_code_has_note_method(self) -> list:
         """Return code for has_note TQL filter methods."""
         self._add_tql_imports()
         return [
@@ -296,7 +296,7 @@ class GenerateFilterABC(GenerateABC, ABC):
             '',
         ]
 
-    def _gen_code_has_tag_method(self) -> str:
+    def _gen_code_has_tag_method(self) -> list:
         """Return code for has_tag TQL filter methods."""
         self._add_tql_imports()
         return [
@@ -315,7 +315,7 @@ class GenerateFilterABC(GenerateABC, ABC):
             '',
         ]
 
-    def _gen_code_has_task_method(self) -> str:
+    def _gen_code_has_task_method(self) -> list:
         """Return code for has_task TQL filter methods."""
         self._add_tql_imports()
         return [
@@ -331,6 +331,99 @@ class GenerateFilterABC(GenerateABC, ABC):
                 '''TqlOperator.EQ, tasks, TqlType.SUB_QUERY)'''
             ),
             f'{self.i2}return tasks',
+            '',
+        ]
+
+    def _gen_code_has_security_label_method(self) -> list:
+        """Return code for has_security_label TQL filter methods."""
+        self._add_tql_imports()
+        return [
+            f'{self.i1}@property',
+            f'{self.i1}def has_security_label(self):',
+            f'{self.i2}"""Return **SecurityLabel** for further filtering."""',
+            f'{self.i2}# first-party',
+            (
+                f'{self.i2}from tcex.api.tc.v3.security_labels.security_label_filter import '
+                f'SecurityLabelFilter'
+            ),
+            '',
+            f'{self.i2}security_labels = SecurityLabelFilter(Tql())',
+            (
+                f'''{self.i2}self._tql.add_filter('hasSecurityLabel', '''
+                '''TqlOperator.EQ, security_labels, TqlType.SUB_QUERY)'''
+            ),
+            f'{self.i2}return security_labels',
+            '',
+        ]
+
+    def _gen_code_has_victim_asset_method(self) -> list:
+        """Return code for has_victim_asset TQL filter methods."""
+        self._add_tql_imports()
+        return [
+            f'{self.i1}@property',
+            f'{self.i1}def has_victim_asset(self):',
+            f'{self.i2}"""Return **VictimAssetFilter** for further filtering."""',
+            f'{self.i2}# first-party',
+            (
+                f'{self.i2}from tcex.api.tc.v3.victim_assets.victim_asset_filter import '
+                f'VictimAssetFilter'
+            ),
+            '',
+            f'{self.i2}victim_assets = VictimAssetFilter(Tql())',
+            (
+                f'''{self.i2}self._tql.add_filter('hasVictimAsset', '''
+                '''TqlOperator.EQ, victim_assets, TqlType.SUB_QUERY)'''
+            ),
+            f'{self.i2}return victim_assets',
+            '',
+        ]
+
+    def _gen_code_has_victim_method(self) -> list:
+        """Return code for has_victim TQL filter methods."""
+        self._add_tql_imports()
+        return [
+            f'{self.i1}@property',
+            f'{self.i1}def has_victim(self):',
+            f'{self.i2}"""Return **VictimFilter** for further filtering."""',
+            f'{self.i2}# first-party',
+            f'{self.i2}from tcex.api.tc.v3.victims.victim_filter import VictimFilter',
+            '',
+            f'{self.i2}victims = VictimFilter(Tql())',
+            (
+                f'''{self.i2}self._tql.add_filter('hasVictim', '''
+                '''TqlOperator.EQ, victims, TqlType.SUB_QUERY)'''
+            ),
+            f'{self.i2}return victims',
+            '',
+        ]
+
+    def _gen_code_has_attribute_method(self) -> list:
+        """Return code for has_attribute TQL filter methods."""
+        self._add_tql_imports()
+
+        # hasAttribute filter is present on groups/indicators/ and victims.
+        filter_type = f'GroupAttributeFilter'
+        import_path = f'group_attributes.group_attribute_filter'
+        if self.type_.lower() == 'indicators':
+            filter_type = f'IndicatorAttributeFilter'
+            import_path = f'indicator_attributes.indicator_attribute_filter'
+        elif self.type_.lower() == 'victims':
+            filter_type = f'VictimAttributeFilter'
+            import_path = f'victim_attributes.victim_attribute_filter'
+
+        return [
+            f'{self.i1}@property',
+            f'{self.i1}def has_attribute(self):',
+            f'{self.i2}"""Return **{filter_type}** for further filtering."""',
+            f'{self.i2}# first-party',
+            f'{self.i2}from tcex.api.tc.v3.{import_path} import {filter_type}',
+            '',
+            f'{self.i2}attributes = {filter_type}(Tql())',
+            (
+                f'''{self.i2}self._tql.add_filter('hasAttribute', '''
+                '''TqlOperator.EQ, attributes, TqlType.SUB_QUERY)'''
+            ),
+            f'{self.i2}return attributes',
             '',
         ]
 
@@ -386,6 +479,14 @@ class GenerateFilterABC(GenerateABC, ABC):
                 _filter_class.extend(self._gen_code_has_tag_method())
             elif keyword.snake_case() == 'has_task':
                 _filter_class.extend(self._gen_code_has_task_method())
+            elif keyword.snake_case() == 'has_attribute':
+                _filter_class.extend(self._gen_code_has_attribute_method())
+            elif keyword.snake_case() == 'has_security_label':
+                _filter_class.extend(self._gen_code_has_security_label_method())
+            elif keyword.snake_case() == 'has_victim':
+                _filter_class.extend(self._gen_code_has_victim_method())
+            elif keyword.snake_case() == 'has_victim_asset':
+                _filter_class.extend(self._gen_code_has_victim_asset_method())
             else:
                 _filter_class.extend(self._gen_code_generic_method(t))
 

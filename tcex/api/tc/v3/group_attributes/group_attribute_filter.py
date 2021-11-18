@@ -66,14 +66,15 @@ class GroupAttributeFilter(FilterABC):
         self._tql.add_filter('hasGroup', TqlOperator.EQ, groups, TqlType.SUB_QUERY)
         return groups
 
-    def has_security_label(self, operator: Enum, has_security_label: int) -> None:
-        """Filter Associated Security Label based on **hasSecurityLabel** keyword.
+    @property
+    def has_security_label(self):
+        """Return **SecurityLabel** for further filtering."""
+        # first-party
+        from tcex.api.tc.v3.security_labels.security_label_filter import SecurityLabelFilter
 
-        Args:
-            operator: The operator enum for the filter.
-            has_security_label: A nested query for association to other security labels.
-        """
-        self._tql.add_filter('hasSecurityLabel', operator, has_security_label, TqlType.INTEGER)
+        security_labels = SecurityLabelFilter(Tql())
+        self._tql.add_filter('hasSecurityLabel', TqlOperator.EQ, security_labels, TqlType.SUB_QUERY)
+        return security_labels
 
     def id(self, operator: Enum, id: int) -> None:  # pylint: disable=redefined-builtin
         """Filter ID based on **id** keyword.

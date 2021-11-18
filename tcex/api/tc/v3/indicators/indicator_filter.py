@@ -194,14 +194,17 @@ class IndicatorFilter(FilterABC):
         self._tql.add_filter('hasArtifact', TqlOperator.EQ, artifacts, TqlType.SUB_QUERY)
         return artifacts
 
-    def has_attribute(self, operator: Enum, has_attribute: int) -> None:
-        """Filter Associated Attribute based on **hasAttribute** keyword.
+    @property
+    def has_attribute(self):
+        """Return **IndicatorAttributeFilter** for further filtering."""
+        # first-party
+        from tcex.api.tc.v3.indicator_attributes.indicator_attribute_filter import (
+            IndicatorAttributeFilter,
+        )
 
-        Args:
-            operator: The operator enum for the filter.
-            has_attribute: A nested query for association to attributes.
-        """
-        self._tql.add_filter('hasAttribute', operator, has_attribute, TqlType.INTEGER)
+        attributes = IndicatorAttributeFilter(Tql())
+        self._tql.add_filter('hasAttribute', TqlOperator.EQ, attributes, TqlType.SUB_QUERY)
+        return attributes
 
     @property
     def has_case(self):
@@ -230,14 +233,15 @@ class IndicatorFilter(FilterABC):
         self._tql.add_filter('hasIndicator', TqlOperator.EQ, indicators, TqlType.SUB_QUERY)
         return indicators
 
-    def has_security_label(self, operator: Enum, has_security_label: int) -> None:
-        """Filter Associated Security Label based on **hasSecurityLabel** keyword.
+    @property
+    def has_security_label(self):
+        """Return **SecurityLabel** for further filtering."""
+        # first-party
+        from tcex.api.tc.v3.security_labels.security_label_filter import SecurityLabelFilter
 
-        Args:
-            operator: The operator enum for the filter.
-            has_security_label: A nested query for association to other security labels.
-        """
-        self._tql.add_filter('hasSecurityLabel', operator, has_security_label, TqlType.INTEGER)
+        security_labels = SecurityLabelFilter(Tql())
+        self._tql.add_filter('hasSecurityLabel', TqlOperator.EQ, security_labels, TqlType.SUB_QUERY)
+        return security_labels
 
     @property
     def has_tag(self):
@@ -249,23 +253,25 @@ class IndicatorFilter(FilterABC):
         self._tql.add_filter('hasTag', TqlOperator.EQ, tags, TqlType.SUB_QUERY)
         return tags
 
-    def has_victim(self, operator: Enum, has_victim: int) -> None:
-        """Filter Associated Victim based on **hasVictim** keyword.
+    @property
+    def has_victim(self):
+        """Return **VictimFilter** for further filtering."""
+        # first-party
+        from tcex.api.tc.v3.victims.victim_filter import VictimFilter
 
-        Args:
-            operator: The operator enum for the filter.
-            has_victim: A nested query for association to other victims.
-        """
-        self._tql.add_filter('hasVictim', operator, has_victim, TqlType.INTEGER)
+        victims = VictimFilter(Tql())
+        self._tql.add_filter('hasVictim', TqlOperator.EQ, victims, TqlType.SUB_QUERY)
+        return victims
 
-    def has_victim_asset(self, operator: Enum, has_victim_asset: int) -> None:
-        """Filter Associated Victim Asset based on **hasVictimAsset** keyword.
+    @property
+    def has_victim_asset(self):
+        """Return **VictimAssetFilter** for further filtering."""
+        # first-party
+        from tcex.api.tc.v3.victim_assets.victim_asset_filter import VictimAssetFilter
 
-        Args:
-            operator: The operator enum for the filter.
-            has_victim_asset: A nested query for association to other victim assets.
-        """
-        self._tql.add_filter('hasVictimAsset', operator, has_victim_asset, TqlType.INTEGER)
+        victim_assets = VictimAssetFilter(Tql())
+        self._tql.add_filter('hasVictimAsset', TqlOperator.EQ, victim_assets, TqlType.SUB_QUERY)
+        return victim_assets
 
     def host_dns_active(self, operator: Enum, host_dns_active: bool) -> None:
         """Filter DNS Active (Host) based on **hostDnsActive** keyword.

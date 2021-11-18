@@ -102,14 +102,15 @@ class TagFilter(FilterABC):
         self._tql.add_filter('hasIndicator', TqlOperator.EQ, indicators, TqlType.SUB_QUERY)
         return indicators
 
-    def has_victim(self, operator: Enum, has_victim: int) -> None:
-        """Filter Associated Victim based on **hasVictim** keyword.
+    @property
+    def has_victim(self):
+        """Return **VictimFilter** for further filtering."""
+        # first-party
+        from tcex.api.tc.v3.victims.victim_filter import VictimFilter
 
-        Args:
-            operator: The operator enum for the filter.
-            has_victim: A nested query for association to other victims.
-        """
-        self._tql.add_filter('hasVictim', operator, has_victim, TqlType.INTEGER)
+        victims = VictimFilter(Tql())
+        self._tql.add_filter('hasVictim', TqlOperator.EQ, victims, TqlType.SUB_QUERY)
+        return victims
 
     def id(self, operator: Enum, id: int) -> None:  # pylint: disable=redefined-builtin
         """Filter ID based on **id** keyword.

@@ -5,6 +5,8 @@ from enum import Enum
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.filter_abc import FilterABC
+from tcex.api.tc.v3.tql.tql import Tql
+from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tcex.api.tc.v3.tql.tql_type import TqlType
 
 
@@ -45,23 +47,25 @@ class VictimAttributeFilter(FilterABC):
         """
         self._tql.add_filter('displayed', operator, displayed, TqlType.BOOLEAN)
 
-    def has_security_label(self, operator: Enum, has_security_label: int) -> None:
-        """Filter Associated Security Label based on **hasSecurityLabel** keyword.
+    @property
+    def has_security_label(self):
+        """Return **SecurityLabel** for further filtering."""
+        # first-party
+        from tcex.api.tc.v3.security_labels.security_label_filter import SecurityLabelFilter
 
-        Args:
-            operator: The operator enum for the filter.
-            has_security_label: A nested query for association to other security labels.
-        """
-        self._tql.add_filter('hasSecurityLabel', operator, has_security_label, TqlType.INTEGER)
+        security_labels = SecurityLabelFilter(Tql())
+        self._tql.add_filter('hasSecurityLabel', TqlOperator.EQ, security_labels, TqlType.SUB_QUERY)
+        return security_labels
 
-    def has_victim(self, operator: Enum, has_victim: int) -> None:
-        """Filter Associated Victim based on **hasVictim** keyword.
+    @property
+    def has_victim(self):
+        """Return **VictimFilter** for further filtering."""
+        # first-party
+        from tcex.api.tc.v3.victims.victim_filter import VictimFilter
 
-        Args:
-            operator: The operator enum for the filter.
-            has_victim: A nested query for association to other victims.
-        """
-        self._tql.add_filter('hasVictim', operator, has_victim, TqlType.INTEGER)
+        victims = VictimFilter(Tql())
+        self._tql.add_filter('hasVictim', TqlOperator.EQ, victims, TqlType.SUB_QUERY)
+        return victims
 
     def id(self, operator: Enum, id: int) -> None:  # pylint: disable=redefined-builtin
         """Filter ID based on **id** keyword.
