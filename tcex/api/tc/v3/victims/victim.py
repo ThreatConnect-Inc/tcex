@@ -9,6 +9,7 @@ from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 from tcex.api.tc.v3.security_labels.security_label_model import SecurityLabelModel
 from tcex.api.tc.v3.tags.tag_model import TagModel
+from tcex.api.tc.v3.victim_assets.victim_asset_model import VictimAssetModel
 from tcex.api.tc.v3.victim_attributes.victim_attribute_model import VictimAttributeModel
 from tcex.api.tc.v3.victims.victim_filter import VictimFilter
 from tcex.api.tc.v3.victims.victim_model import VictimModel, VictimsModel
@@ -138,6 +139,17 @@ class Victim(ObjectABC):
         from tcex.api.tc.v3.tags.tag import Tags
 
         yield from self._iterate_over_sublist(Tags)
+
+    def stage_victim_asset(self, data: Union[dict, 'ObjectABC', 'VictimAssetModel']) -> None:
+        """Stage victim_asset on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = VictimAssetModel(**data)
+
+        if not isinstance(data, VictimAssetModel):
+            raise RuntimeError('Invalid type passed in to stage_victim_asset')
+        self.model.assets.data.append(data)
 
     def stage_associated_group(self, data: Union[dict, 'ObjectABC', 'GroupModel']) -> None:
         """Stage group on the object."""

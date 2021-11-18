@@ -42,6 +42,20 @@ class TestVictimSnippets(TestV3):
         victim.create(params={'owner': 'TCI'})
         # End Snippet
 
+    def test_victim_stage_asset(self):
+        """Test snippet"""
+        # Begin Snippet
+        victim = self.v3_helper.create_victim()
+
+        # Add attribute
+        asset = self.tcex.v3.victim_asset(
+            type='EmailAddress', address='malware@example.com', address_type='Trojan'
+        )
+        victim.stage_victim_asset(asset)
+
+        victim.update(params={'owner': 'TCI'})
+        # End Snippet
+
     def test_victim_stage_group_associations(self):
         """Test snippet"""
         # Begin Snippet
@@ -51,7 +65,7 @@ class TestVictimSnippets(TestV3):
         association = self.tcex.v3.group(name='MyThreat', type='Threat')
         victim.stage_associated_group(association)
 
-        victim.create(params={'owner': 'TCI'})
+        victim.update(params={'owner': 'TCI'})
         # End Snippet
 
     def test_victim_stage_attribute(self):
@@ -66,7 +80,7 @@ class TestVictimSnippets(TestV3):
         )
         victim.stage_attribute(attribute)
 
-        victim.create(params={'owner': 'TCI'})
+        victim.update(params={'owner': 'TCI'})
         # End Snippet
 
     def test_victim_stage_security_label(self):
@@ -78,7 +92,7 @@ class TestVictimSnippets(TestV3):
         security_label = self.tcex.v3.security_label(name='TLP:WHITE')
         victim.stage_security_label(security_label)
 
-        victim.create(params={'owner': 'TCI'})
+        victim.update(params={'owner': 'TCI'})
         # End Snippet
 
     def test_victim_stage_tag(self):
@@ -90,7 +104,7 @@ class TestVictimSnippets(TestV3):
         tag = self.tcex.v3.tag(name='Example-Tag')
         victim.stage_tag(tag)
 
-        victim.create(params={'owner': 'TCI'})
+        victim.update(params={'owner': 'TCI'})
         # End Snippet
 
     def test_victim_delete_by_id(self):
@@ -230,8 +244,6 @@ class TestVictimSnippets(TestV3):
                 victim.stage_tag(tag)
         victim.update(mode='delete')
         # End Snippet
-        for tag in victim.tags:
-            print('remove_multiple_tags: ', tag)
 
     def test_victim_update(self):
         """Test snippet"""
@@ -239,7 +251,7 @@ class TestVictimSnippets(TestV3):
 
         # Begin Snippet
         victim = self.tcex.v3.victim(id=victim.model.id)
-        # This will update the confidence to "50"
+        # This will update the name to "MyVictim"
         victim.model.name = 'MyVictim'
         victim.update(params={'owner': 'TCI'})
         # End Snippet

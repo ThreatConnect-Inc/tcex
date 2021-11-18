@@ -343,6 +343,15 @@ class GenerateObjectABC(GenerateABC, ABC):
         """
         type_ = self.utils.camel_string(type_)
         model_type = self.utils.camel_string(model_type or type_)
+        model_reference = model_type
+
+        # Unlike all of the other objects on the victims model, it references 'assets' not the
+        # model name 'VictimAsset'
+        # VictimAsset
+        # object just Assets.
+        if type_.lower() == 'victim_assets':
+            model_reference = self.utils.camel_string('assets')
+
 
         # get model from map and update requirements
         model_import_data = self._module_import_data(type_)
@@ -369,7 +378,7 @@ class GenerateObjectABC(GenerateABC, ABC):
                     f'''{self.i3}raise RuntimeError('Invalid type '''
                     f'''passed in to stage_{model_type.singular()}')'''
                 ),
-                f'''{self.i2}self.model.{model_type.plural()}.data.append(data)''' '',
+                f'''{self.i2}self.model.{model_reference.plural()}.data.append(data)''' '',
                 '',
             ]
         )
@@ -696,6 +705,10 @@ class GenerateObjectABC(GenerateABC, ABC):
         # generate add_artifact method
         if 'artifacts' in add_properties:
             _code += self._gen_code_object_add_type_method('artifacts')
+
+        # generate add_asset method
+        if 'assets' in add_properties:
+            _code += self._gen_code_object_add_type_method('victim_assets')
 
         # generate add_associated_group method
         if 'associatedGroups' in add_properties:
