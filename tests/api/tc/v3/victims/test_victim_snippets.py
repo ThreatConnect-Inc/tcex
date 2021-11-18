@@ -173,6 +173,25 @@ class TestVictimSnippets(TestV3):
             print(victim.model.dict(exclude_none=True))
         # End Snippet
 
+    def test_victim_add_group_association_to_asset(self):
+        """Test snippet"""
+        victim = self.v3_helper.create_victim(
+            assets={
+                'type': 'EmailAddress', 'address': 'malware@example.com', 'address_type': 'Trojan'
+            },
+        )
+        group = self.v3_helper.create_group()
+
+        # Begin Snippet
+        asset = self.tcex.v3.victim_asset(id=victim.model.assets.data[0].id)
+        asset.stage_associated_group(group)
+        print('associated_groups: ', asset.model.associated_groups.data[0])
+        asset.update()
+
+        for association in victim.associated_groups:
+            print(association)
+        # End Snippet
+
     def test_victim_remove_group_associations(self):
         """Test snippet"""
         victim = self.v3_helper.create_victim(

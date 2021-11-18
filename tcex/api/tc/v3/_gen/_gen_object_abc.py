@@ -345,10 +345,8 @@ class GenerateObjectABC(GenerateABC, ABC):
         model_type = self.utils.camel_string(model_type or type_)
         model_reference = model_type
 
-        # Unlike all of the other objects on the victims model, it references 'assets' not the
-        # model name 'VictimAsset'
-        # VictimAsset
-        # object just Assets.
+        # Unlike all of the other objects, on the victims model, it references 'assets' not the
+        # model name 'VictimAssets'
         if type_.lower() == 'victim_assets':
             model_reference = self.utils.camel_string('assets')
 
@@ -667,7 +665,7 @@ class GenerateObjectABC(GenerateABC, ABC):
             _code += self._gen_code_object_type_property_method('artifacts')
 
         if 'assets' in add_properties:
-            _code += self._gen_code_object_type_property_method('victim_assets')
+            _code += self._gen_code_object_type_property_method('assets', 'victim_assets')
 
         # generate add_associated_group method
         if 'associatedGroups' in add_properties:
@@ -677,6 +675,12 @@ class GenerateObjectABC(GenerateABC, ABC):
         if 'associatedIndicators' in add_properties:
             _code += self._gen_code_object_type_property_method(
                 'indicators', 'associated_indicators'
+            )
+
+        # generate add_associated_indicator method
+        if 'associatedVictimAssets' in add_properties:
+            _code += self._gen_code_object_type_property_method(
+                'victim_assets', 'associated_victim_assets'
             )
 
         # generate attributes property method
@@ -714,8 +718,16 @@ class GenerateObjectABC(GenerateABC, ABC):
             _code += self._gen_code_object_add_type_method('victim_assets')
 
         # generate add_associated_group method
-        if 'associatedGroups' in add_properties:
+        # victims have associatedGroups but groups must be associated to the asset not the victim
+        # object.
+        if 'associatedGroups' in add_properties and self.type_.lower() not in ['victims']:
             _code += self._gen_code_object_add_type_method('groups', 'associated_groups')
+
+        # generate add_associated_group method
+        if 'associatedVictimAssets' in add_properties:
+            _code += self._gen_code_object_add_type_method(
+                'victim_assets', 'associated_victim_assets'
+            )
 
         # generate add_associated_indicator method
         if 'associatedIndicators' in add_properties and self.type_ != 'indicators':

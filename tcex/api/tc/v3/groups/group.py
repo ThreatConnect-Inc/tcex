@@ -13,6 +13,7 @@ from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 from tcex.api.tc.v3.security_labels.security_label_model import SecurityLabelModel
 from tcex.api.tc.v3.tags.tag_model import TagModel
+from tcex.api.tc.v3.victim_assets.victim_asset_model import VictimAssetModel
 
 if TYPE_CHECKING:  # pragma: no cover
     # third-party
@@ -23,6 +24,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from tcex.api.tc.v3.indicators.indicator import Indicator
     from tcex.api.tc.v3.security_labels.security_label import SecurityLabel
     from tcex.api.tc.v3.tags.tag import Tag
+    from tcex.api.tc.v3.victim_assets.victim_asset import VictimAsset
 
 
 class Groups(ObjectCollectionABC):
@@ -213,6 +215,14 @@ class Group(ObjectABC):
         yield from self._iterate_over_sublist(Indicators)
 
     @property
+    def associated_victim_assets(self) -> 'VictimAsset':
+        """Yield Victim_Asset from Victim_Assets."""
+        # first-party
+        from tcex.api.tc.v3.victim_assets.victim_asset import VictimAssets
+
+        yield from self._iterate_over_sublist(VictimAssets)
+
+    @property
     def attributes(self) -> 'GroupAttribute':
         """Yield Attribute from Attributes."""
         # first-party
@@ -246,6 +256,19 @@ class Group(ObjectABC):
         if not isinstance(data, GroupModel):
             raise RuntimeError('Invalid type passed in to stage_associated_group')
         self.model.associated_groups.data.append(data)
+
+    def stage_associated_victim_asset(
+        self, data: Union[dict, 'ObjectABC', 'VictimAssetModel']
+    ) -> None:
+        """Stage victim_asset on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = VictimAssetModel(**data)
+
+        if not isinstance(data, VictimAssetModel):
+            raise RuntimeError('Invalid type passed in to stage_associated_victim_asset')
+        self.model.assets.data.append(data)
 
     def stage_associated_indicator(self, data: Union[dict, 'ObjectABC', 'IndicatorModel']) -> None:
         """Stage indicator on the object."""

@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, Union
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
-from tcex.api.tc.v3.groups.group_model import GroupModel
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 from tcex.api.tc.v3.security_labels.security_label_model import SecurityLabelModel
@@ -16,10 +15,10 @@ from tcex.api.tc.v3.victims.victim_model import VictimModel, VictimsModel
 
 if TYPE_CHECKING:  # pragma: no cover
     # first-party
+    from tcex.api.tc.v3.assets.asset import Asset
     from tcex.api.tc.v3.groups.group import Group
     from tcex.api.tc.v3.security_labels.security_label import SecurityLabel
     from tcex.api.tc.v3.tags.tag import Tag
-    from tcex.api.tc.v3.victim_assets.victim_asset import VictimAsset
     from tcex.api.tc.v3.victim_attributes.victim_attribute import VictimAttribute
 
 
@@ -110,12 +109,12 @@ class Victim(ObjectABC):
         return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
 
     @property
-    def victim_assets(self) -> 'VictimAsset':
-        """Yield Victim_Asset from Victim_Assets."""
+    def victim_assets(self) -> 'Asset':
+        """Yield Asset from Assets."""
         # first-party
-        from tcex.api.tc.v3.victim_assets.victim_asset import VictimAssets
+        from tcex.api.tc.v3.assets.asset import Assets
 
-        yield from self._iterate_over_sublist(VictimAssets)
+        yield from self._iterate_over_sublist(Assets)
 
     @property
     def associated_groups(self) -> 'Group':
@@ -159,17 +158,6 @@ class Victim(ObjectABC):
         if not isinstance(data, VictimAssetModel):
             raise RuntimeError('Invalid type passed in to stage_victim_asset')
         self.model.assets.data.append(data)
-
-    def stage_associated_group(self, data: Union[dict, 'ObjectABC', 'GroupModel']) -> None:
-        """Stage group on the object."""
-        if isinstance(data, ObjectABC):
-            data = data.model
-        elif isinstance(data, dict):
-            data = GroupModel(**data)
-
-        if not isinstance(data, GroupModel):
-            raise RuntimeError('Invalid type passed in to stage_associated_group')
-        self.model.associated_groups.data.append(data)
 
     def stage_attribute(self, data: Union[dict, 'ObjectABC', 'VictimAttributeModel']) -> None:
         """Stage attribute on the object."""

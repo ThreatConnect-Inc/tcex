@@ -60,7 +60,7 @@ class V3ModelABC(BaseModel, ABC):
         #     method = 'POST'
 
         # NESTED RULE: For nested objects the body should use the valid POST fields
-        #    instead of the PUT fields if not id is available. This handles including
+        #    instead of the PUT fields if id is not available. This handles including
         #    artifact type, attributes and other fields that are needed on the nested object.
         if method == 'PUT' and nested is True and not self.id:  # this is a new nested deal
             method = 'POST'
