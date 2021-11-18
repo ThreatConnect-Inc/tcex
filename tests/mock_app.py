@@ -41,7 +41,6 @@ class MockApp:
         self.ijd: dict = kwargs.get('ij_data', {})  # install.json data
 
         # properties
-        self.ij = InstallJson()
         self.tc_api_path = os.getenv('TC_API_PATH')
         self.tc_token_url = os.getenv('TC_TOKEN_URL')
         self.tc_token_svc_id = os.getenv('TC_TOKEN_SVC_ID')
@@ -51,6 +50,8 @@ class MockApp:
         if self.runtime_level.lower() != 'external':
             # create install.json file
             self.mock_install_json()
+        InstallJson._instances = {}
+        self.ij = InstallJson()
 
     @property
     def _config_api(self) -> Dict[str, str]:

@@ -103,7 +103,8 @@ class Input:
 
                 if msg_data is None:  # pragma: no cover
                     # send exit to tcex.exit method
-                    registry.exit(code=1, msg='AOT subscription timeout reached.')
+                    registry.ExitService.exit_aot_terminate(
+                        code=1, msg='AOT subscription timeout reached.')
 
                 msg_data = json.loads(msg_data[1])
                 msg_type = msg_data.get('type', 'terminate')
@@ -111,10 +112,12 @@ class Input:
                     params = msg_data.get('params', {})
                 elif msg_type == 'terminate':
                     # send exit to tcex.exit method
-                    registry.exit(code=0, msg='Received AOT terminate message.')
+                    registry.ExitService.exit_aot_terminate(
+                        code=0, msg='Received AOT terminate message.')
             except Exception as e:  # pragma: no cover
                 # send exit to tcex.exit method
-                registry.exit(code=1, msg=f'Exception during AOT subscription ({e}).')
+                registry.ExitService.exit_aot_terminate(
+                    code=1, msg=f'Exception during AOT subscription ({e}).')
 
         return params
 

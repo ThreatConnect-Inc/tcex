@@ -72,7 +72,7 @@ class TcEx:
 
         # add methods to registry
         registry.register(self)
-        registry.add_method(self.exit)
+        registry.add_service(Input, self.inputs)
 
         # log standard App info early so it shows at the top of the logfile
         self.logger.log_info(self.inputs.model_unresolved)
@@ -231,18 +231,13 @@ class TcEx:
     @scoped_property
     def exit_service(self) -> ExitService:
         """Return an ExitService object."""
-        # TODO: [low] @cblades - why pass ij instead of getting singleton in exit service
         # TODO: [high] @cblades - inputs being required for exit prevents AOT from exiting
-        return self.get_exit_service(
-            self.ij, self.inputs, self.playbook, self.redis_client, self.token
-        )
+        return self.get_exit_service(self.inputs.contents)
 
     @staticmethod
-    def get_exit_service(
-        install_json: InstallJson, inputs: Input, playbook: Playbook, redis: Redis, token: Tokens
-    ) -> ExitService:
+    def get_exit_service(pre_run_params) -> ExitService:
         """Create an ExitService object."""
-        return ExitService(install_json, inputs, playbook, redis, token)
+        return ExitService(pre_run_params)
 
     def get_playbook(
         self, context: Optional[str] = None, output_variables: Optional[list] = None
@@ -379,8 +374,8 @@ class TcEx:
 
         # add api handler
         if (
-            self.inputs.model_unresolved.tc_token is not None
-            and self.inputs.model_unresolved.tc_log_to_api
+            self.inputs.contents.get('tc_token') is not None
+            and bool(self.inputs.contents.get('tc_log_to_api'))
         ):
             _logger.add_api_handler(
                 session_tc=self.get_session_tc(), level=self.inputs.model_unresolved.tc_log_level
@@ -447,8 +442,8 @@ class TcEx:
     def redis_client(self) -> 'RedisClient':
         """Return redis client instance configure for Playbook/Service Apps."""
         return self.get_redis_client(
-            host=self.inputs.model_unresolved.tc_kvstore_host,
-            port=self.inputs.model_unresolved.tc_kvstore_port,
+            host=self.inputs.contents.get('tc_kvstore_host'),
+            port=self.inputs.contents.get('tc_kvstore_port'),
             db=0,
         )
 
@@ -503,7 +498,7 @@ class TcEx:
         else:
             self.exit(1, 'Could not determine the service type.')
 
-        return Service(self)
+        return Service()
 
     @registry.factory(TcSession)
     @scoped_property

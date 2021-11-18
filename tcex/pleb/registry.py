@@ -9,6 +9,7 @@ if TYPE_CHECKING:
     from redis import Redis
 
     # first-party
+    from tcex.exit.exit import ExitService
     from tcex.input.input import Input
     from tcex.key_value_store.key_value_api import KeyValueApi
     from tcex.key_value_store.key_value_redis import KeyValueRedis
@@ -155,6 +156,10 @@ class Registry(Container):
     #
 
     @property
+    def exit(self) -> 'ExitService':
+        return self.__getattr__('ExitService')
+
+    @property
     def handle_error(self) -> 'Callable':
         """Return a handle_error function."""
         return self.__getattr__('handle_error')
@@ -177,7 +182,7 @@ class Registry(Container):
     @property
     def redis_client(self) -> 'Redis':
         """Return a Redis client object (redis.Redis)."""
-        return self.Redis
+        return self.RedisClient
 
     @property
     def session_tc(self) -> 'TcSession':

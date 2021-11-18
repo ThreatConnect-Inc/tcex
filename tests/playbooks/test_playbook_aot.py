@@ -2,6 +2,16 @@
 # standard library
 import json
 from random import randint
+from typing import List
+
+from pydantic import BaseModel
+
+from tcex.input.field_types import StringArray
+
+
+class TestInputModel(BaseModel):
+    my_bool: bool
+    my_multi: StringArray
 
 
 class TestPlaybookAot:
@@ -26,6 +36,7 @@ class TestPlaybookAot:
         }
         app = playbook_app(config_data=config_data)
 
+
         # send redis rpush AOT message
         aot_config_data = {'my_bool': 'true', 'my_multi': 'one|two'}
         aot_config_data.update(app.config_data)
@@ -35,23 +46,12 @@ class TestPlaybookAot:
         # get a configured instance of tcex, missing AOT values
         # tcex will block, check for the AOT method, parse new config, and then run
         tcex = app.tcex
+        tcex.inputs.add_model(TestInputModel)
 
-        # add custom args (install.json defined in conftest.py)
-        tcex.parser.add_argument('--my_bool', action='store_true')
-        tcex.parser.add_argument('--my_multi', action='append')
+        assert tcex.inputs.model.my_bool is True
+        assert tcex.inputs.model.my_multi == ['one', 'two']
 
-        # args and rargs must be called once before accessing args
-        tcex.args  # pylint: disable=pointless-statement
-        tcex.rargs  # pylint: disable=pointless-statement
-
-        assert tcex.inputs.params.my_bool is True
-        assert tcex.inputs.resolved_params.my_bool is True
-        assert tcex.args.my_bool is True
-        assert tcex.rargs.my_bool is True  # pylint: disable=no-member
-        assert tcex.args.my_multi == ['one', 'two']
-        assert tcex.rargs.my_multi == ['one', 'two']  # pylint: disable=no-member
-
-        tcex._aot_rpush(0)
+        tcex.exit_service._aot_rpush(0)
 
     @staticmethod
     def test_aot_terminate(playbook_app, redis_client):
@@ -100,7 +100,7 @@ class TestPlaybookAot:
         app = playbook_app(config_data=config_data)
 
         try:
-            app.tcex  # pylint: disable=pointless-statement
+            app.tcex.inputs.model  # pylint: disable=pointless-statement
             # the app will timeout and exit
             assert False
         except SystemExit:

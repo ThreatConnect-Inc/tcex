@@ -6,13 +6,15 @@ import sys
 from enum import Enum
 from typing import TYPE_CHECKING, Optional, Union
 
+# first-party
+from tcex.app_config import InstallJson
+from tcex.pleb.registry import registry
+
 if TYPE_CHECKING:
     # third-party
     from redis import Redis
 
     # first-party
-    from tcex.app_config import InstallJson
-    from tcex.input.input import Input
     from tcex.playbook.playbook import Playbook
     from tcex.tokens import Tokens
 
@@ -42,18 +44,12 @@ class ExitService:
 
     def __init__(
         self,
-        install_json: 'InstallJson',
-        inputs: 'Input',
-        playbook: 'Playbook',
-        redis: 'Redis',
-        token: 'Tokens',
+        pre_run_inputs
     ):
         """."""
-        self.ij = install_json
-        self.inputs = inputs
-        self.playbook = playbook
-        self.redis = redis
-        self.token = token
+        self.ij = InstallJson()
+        self.pre_run_inputs = pre_run_inputs
+
 
         self._exit_code = ExitCode.SUCCESS
 
@@ -99,15 +95,40 @@ class ExitService:
         self._exit_msg_handler(code, msg)
 
         # playbook exit
-        self._exit_playbook_handler(msg)
+        if registry.playbook:
+            self._exit_playbook_handler(msg)
 
         # aot notify
-        if self.inputs.model_unresolved.tc_aot_enabled:
+        if ('tc_aot_enabled' in self.pre_run_inputs
+                and self.pre_run_inputs.get('tc_aot_enabled')):
             # push exit message
             self._aot_rpush(code.value)
 
         # exit token renewal thread
-        self.token.shutdown = True
+        registry.token.shutdown = True
+
+        logger.info(f'Exit Code: {code}')
+        sys.exit(code.value)
+
+    def exit_aot_terminate(self, code: Optional[Union[ExitCode, int]] = None,
+                 msg: Optional[str] = None) -> None:
+        """Application exit method with proper exit code only for AOT.
+
+        The method will run the Python standard sys.exit() with the exit code
+        previously defined via :py:meth:`~tcex.tcex.TcEx.exit_code` or provided
+        during the call of this method.
+
+        Args:
+            code: The exit code value for the app.
+            msg: A message to log and add to message tc output.
+        """
+        code = ExitCode(code) if code is not None else self.exit_code
+
+        # aot notify
+        if ('tc_aot_enabled' in self.pre_run_inputs
+                and self.pre_run_inputs.get('tc_aot_enabled')):
+            # push exit message
+            self._aot_rpush(code.value)
 
         logger.info(f'Exit Code: {code}')
         sys.exit(code.value)
@@ -121,26 +142,12 @@ class ExitService:
                 logger.error(msg)
             self._message_tc(msg)
 
-    def _exit_playbook_handler(self, msg: str) -> None:
-        """Perform special action for PB Apps before exit."""
-        # write outputs before exiting
-        self.playbook.write_output()  # pylint: disable=no-member
-
-        # required only for tcex testing framework
-        if (
-            hasattr(self.inputs.model_unresolved, 'tcex_testing_context')
-            and self.inputs.model_unresolved.tcex_testing_context is not None
-        ):  # pragma: no cover
-            self.redis.hset(  # pylint: disable=no-member
-                self.inputs.model_unresolved.tcex_testing_context, '_exit_message', msg
-            )
-
     def _aot_rpush(self, exit_code: int) -> None:
         """Push message to AOT action channel."""
-        if self.inputs.model_unresolved.tc_playbook_db_type == 'Redis':
+        if self.pre_run_inputs.get('tc_playbook_db_type') == 'Redis':
             try:
                 # pylint: disable=no-member
-                self.redis.rpush(self.inputs.model_unresolved.tc_exit_channel, exit_code)
+                registry.redis.rpush(self.pre_run_inputs.get('tc_exit_channel'), exit_code)
             except Exception as e:  # pragma: no cover
                 self.exit(ExitCode.FAILURE, f'Exception during AOT exit push ({e}).')
 
@@ -158,8 +165,8 @@ class ExitService:
         if not isinstance(message, str):
             message = str(message)
 
-        if os.access(self.inputs.model_unresolved.tc_out_path, os.W_OK):
-            message_file = os.path.join(self.inputs.model_unresolved.tc_out_path, 'message.tc')
+        if os.access(self.pre_run_inputs.get('tc_out_path'), os.W_OK):
+            message_file = os.path.join(self.pre_run_inputs.get('tc_out_path'), 'message.tc')
         else:
             message_file = 'message.tc'
 
