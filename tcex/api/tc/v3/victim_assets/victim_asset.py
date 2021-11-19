@@ -103,4 +103,5 @@ class VictimAsset(ObjectABC):
 
         if not isinstance(data, GroupModel):
             raise RuntimeError('Invalid type passed in to stage_associated_group')
+        data._staged = True
         self.model.associated_groups.data.append(data)

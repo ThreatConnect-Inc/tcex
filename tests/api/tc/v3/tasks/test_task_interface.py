@@ -234,11 +234,11 @@ class TestTasks(TestV3):
         """Test Task Creation"""
         # [Pre-Requisite] - create case and provide a unique xid
         case_xid = f'{request.node.name}-{time.time()}'
-        _ = self.v3_helper.create_case(xid=case_xid)
+        case = self.v3_helper.create_case(xid=case_xid)
 
         # [Create Testing] define object data
         task_data = {
-            'case_xid': case_xid,
+            'case_xid': case.model.xid,
             'description': f'a description from {request.node.name}',
             'name': f'name-{request.node.name}',
             'workflow_phase': 0,

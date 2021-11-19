@@ -143,7 +143,7 @@ class TestWorkflowEvents(TestV3):
 
         # [Create Testing] define workflow_event data
         workflow_event_data = {
-            'case_xid': case_xid,
+            'case_xid': case.model.xid,
             'summary': request.node.name,
         }
 

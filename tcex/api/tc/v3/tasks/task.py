@@ -126,6 +126,7 @@ class Task(ObjectABC):
 
         if not isinstance(data, ArtifactModel):
             raise RuntimeError('Invalid type passed in to stage_artifact')
+        data._staged = True
         self.model.artifacts.data.append(data)
 
     def stage_note(self, data: Union[dict, 'ObjectABC', 'NoteModel']) -> None:
@@ -137,4 +138,5 @@ class Task(ObjectABC):
 
         if not isinstance(data, NoteModel):
             raise RuntimeError('Invalid type passed in to stage_note')
+        data._staged = True
         self.model.notes.data.append(data)

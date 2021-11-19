@@ -1,8 +1,9 @@
 """Case Management PyTest Helper Method"""
 # standard library
-from datetime import datetime
 import importlib
 import inspect
+import os
+from datetime import datetime
 from os import stat
 from random import randint
 from typing import Any, Dict, Optional
@@ -287,7 +288,7 @@ class V3Helper:
             CaseManagement.Case: A CM case object.
         """
         cases = self.v3.cases()
-        xid = kwargs.get('xid', f'xid-{inspect.stack()[1].function}')
+        xid = kwargs.get('xid', f'xid-{inspect.stack()[1].function}').replace('_', '-')
         cases.filter.xid(TqlOperator.EQ, xid)
         for case in cases:
             case.delete()
@@ -302,7 +303,7 @@ class V3Helper:
             'resolution': kwargs.get('resolution', 'Not Specified'),
             'severity': kwargs.get('severity', 'Low'),
             'status': kwargs.get('status', 'Open'),
-            'xid': kwargs.get('xid', f'xid-{inspect.stack()[1].function}'),
+            'xid': xid,
         }
 
         artifacts = self._to_list(kwargs.get('artifacts', []))
@@ -608,12 +609,12 @@ class V3Helper:
             except Exception:
                 pass
 
-        # # delete cases by tag
-        # if os.getenv('TCEX_CLEAN_CM'):
-        #     cases = self.v3_obj.cases()
-        #     cases.filter.tag(TqlOperator.EQ, 'pytest')
-        #     for case in cases:
-        #         case.delete()
+        # delete cases by tag
+        if os.getenv('TCEX_CLEAN_CM'):
+            cases = self.v3.cases()
+            cases.filter.tag(TqlOperator.EQ, 'PyTest')
+            for case in cases:
+                case.delete()
 
 
 class TestV3:

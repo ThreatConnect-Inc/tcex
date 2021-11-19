@@ -729,7 +729,8 @@ class GenerateModelABC(GenerateABC, ABC):
 
     def gen_model_private_attrs(self) -> str:
         """Generate doc string."""
-        method_override = False
+        associated_type = False
+        cm_type = False
         shared_type = False
 
         self._add_pydantic_private_attr()
@@ -742,17 +743,25 @@ class GenerateModelABC(GenerateABC, ABC):
             'workflow_events',
             'workflow_templates',
         ]:
-            method_override = True
+            cm_type = True
         elif self.type_.lower() in [
             'security_labels',
             'tags',
         ]:
             shared_type = True
+        elif self.type_.lower() in [
+            'groups',
+            'indicators',
+            'victim_assets',
+        ]:
+            associated_type = True
 
         return '\n'.join(
             [
-                f'{self.i1}_method_override = PrivateAttr({method_override})',
+                f'{self.i1}_associated_type = PrivateAttr({associated_type})',
+                f'{self.i1}_cm_type = PrivateAttr({cm_type})',
                 f'{self.i1}_shared_type = PrivateAttr({shared_type})',
+                f'{self.i1}_staged = PrivateAttr(False)',
                 '',
                 '',
             ]

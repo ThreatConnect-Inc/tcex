@@ -61,8 +61,10 @@ class TaskModel(
 ):
     """Task Model"""
 
-    _method_override = PrivateAttr(True)
+    _associated_type = PrivateAttr(False)
+    _cm_type = PrivateAttr(True)
     _shared_type = PrivateAttr(False)
+    _staged = PrivateAttr(False)
 
     artifacts: Optional['ArtifactsModel'] = Field(
         None,

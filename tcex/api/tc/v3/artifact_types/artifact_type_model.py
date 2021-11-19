@@ -60,8 +60,10 @@ class ArtifactTypeModel(
 ):
     """Artifact_Type Model"""
 
-    _method_override = PrivateAttr(True)
+    _associated_type = PrivateAttr(False)
+    _cm_type = PrivateAttr(True)
     _shared_type = PrivateAttr(False)
+    _staged = PrivateAttr(False)
 
     data_type: Optional[str] = Field(
         None,

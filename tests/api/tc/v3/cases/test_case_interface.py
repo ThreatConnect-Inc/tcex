@@ -326,6 +326,9 @@ class TestCases(TestV3):
         else:
             assert False, f'No case found for tql -> {cases.tql.as_str}'
 
+        # cleanup
+        case.delete()
+
     def test_case_get_by_tql_filter_fail_tql(self):
         """Test Case Get by TQL"""
         # retrieve object using TQL

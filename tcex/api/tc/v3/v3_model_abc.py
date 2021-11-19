@@ -35,6 +35,12 @@ class V3ModelABC(BaseModel, ABC):
         """Initialize class properties."""
         super().__init__(**kwargs)
 
+        # when "id" field is present it indicates that the data was returned from the
+        # API, otherwise the assumption is that the developer staged the data during
+        # instantiation of the object.
+        if kwargs and hasattr(self, 'id') and self.id is None:
+            self._staged = True
+
         # store initial dict hash of model
         self._dict_hash = self.gen_model_hash(self.json(sort_keys=True))
 
@@ -42,6 +48,7 @@ class V3ModelABC(BaseModel, ABC):
         self, field: str, method: str, mode: str, nested: bool, property_: dict, value: Any
     ) -> str:
         """Return True if the field is calculated to be included."""
+
         # MODE DELETE RULE: The "id" should be the only field included when delete mode
         #     is enabled.
         if mode == 'delete' and nested is True and field not in ['id', 'name']:
@@ -53,10 +60,21 @@ class V3ModelABC(BaseModel, ABC):
         if field == 'id' and nested is True and value:
             return True
 
+        # STAGED RULE: Staged item
+
+        # # Staged and nested have overlap
+        # if (
+        #     self._staged is True
+        #     and self.id is not None
+        #     # and nested is True
+        #     and mode.lower() not in ['replace']
+        # ):
+        #     return False
+
         # CM NESTED RULE: For nested CM objects the body should use the valid POST fields
         #    instead of the PUT fields. This handles including artifact type and other
         #    fields that are needed on the nested object.
-        # if method == 'PUT' and nested is True and self._method_override is True:
+        # if method == 'PUT' and nested is True and self._cm_type is True:
         #     method = 'POST'
 
         # NESTED RULE: For nested objects the body should use the valid POST fields
@@ -80,36 +98,164 @@ class V3ModelABC(BaseModel, ABC):
         return False
 
     def _calculate_nested_inclusion(self, method: str, mode: str, model: 'BaseModel') -> str:
-        """Return True if the field is calculated to be included."""
-        # EMPTY RULE: If there is not value in the model it should not be included.
+        """Return True if the field is calculated to be included.
+
+        Case Management Nested Logic:
+        * CM Types (e.g., artifacts, notes, task, etc) -> behavior is APPEND and duplicates will
+            be created if resent. Object with an ID should never be sent in parent update. Updating
+            the nested object should be done directly on the object.
+        * User/User Group Types -> ???
+        * Attributes -> behavior uses MODE and supports append, delete, and replace.
+        * Tags -> behavior is REPLACE on tags so all tags that need to be on the CM object should
+            be include in both POST and PUT.
+
+        Threat Intelligence Nested Logic:
+        * Associations (e.g., groups, indicators, victim assets) -> behavior uses MODE and supports
+            append, delete, and replace.
+        * Attributes -> behavior uses MODE and supports append, delete, and replace.
+        * Tags -> behavior uses MODE and supports append, delete, and replace.
+        * Security Labels -> behavior uses MODE and supports append, delete, and replace.
+
+        """
+        # EMPTY RULE: If there is no value in the model it should NOT be INCLUDED.
         if not model:
             return False
 
-        # METHOD RULE: When HTTP method is DELETE or GET no nested objects should be included.
+        # METHOD RULE: When HTTP method is DELETE or GET nested objects should NOT be INCLUDED.
         if method in ['DELETE', 'GET']:
             return False
 
-        # INCLUDE RULE:
-        # * HTTP Post Method -> Sub types should always be included.
-        # * ID is None       -> Indicates that and add_xxx method was used to add the nested model.
-        # * Model Updated    -> Indicates the model has changed.
-        # * Mode [delete]    -> Include for mode delete so that all nested items are deleted
-        #                       appropriately.
-        # * Mode [replace]   -> Include for mode replace or nested models would be removed by core.
-        # * Method Override  -> For CM object there is not support for mode, therefore nested
-        #                       shared object (e.g., tags) need to be sent on each submission.
-        #                       For artifact and others they should only be sent when modified
-        #                       or "new".
-        if (
-            method == 'POST'
-            or model.id is None
-            or model.updated is True
-            or mode in ['delete', 'replace']
-            or (self._method_override is True and model._method_override is False)
-        ):
+        # STAGED RULE: Any nested object provided by developer should be INCLUDED.
+        if model._staged is True:
             return True
 
-        # DEFAULT RULE: Fields should not be included unless the match a previous rule.
+        # POST RULE: When method is POST all nested object should be INCLUDED.
+        if method == 'POST':
+            return True
+
+        # What we know:
+        # * The method is PUT
+        # * The nested object was NOT added via the stage_xxx method
+        # * The nested object contains a ID or Name Field
+
+        # CM and TI endpoint behaves differently. Start with rules based on the parent type,
+        # then add more specific rules.
+
+        if self._cm_type is True:
+            #
+            # CM PARENT TYPES
+            #
+
+            # Nested Types:
+            # * CM Types (Artifact, Artifact Type, Case, Note, Task, Workflow Event/Template)
+            # * Attributes
+            # * Group (currently read-only)
+            # * Tags
+            # * Users
+
+            # Coverage:
+            # * Downloaded from API (e.g., case.get(id=123))
+            # * Added on instantiation
+            # * Added with stage_xxx() method
+
+            if model._cm_type is True:
+                # RULE: Short-Circuit Nested CM Types
+                # Nested CM types are updated through their direct endpoints and should
+                #    never be INCLUDED when updating the parent. For new nested CM types
+                #    added with the stage_xxx() method, the STAGED RULE would trigger
+                #    before this rule.
+                return False
+
+            if model._shared_type is True:
+                # RULE: Nested Tags
+                # Nested tags on a parent CM type behave as REPLACE mode and need to be
+                #     INCLUDED to prevent being removed.
+                return True
+
+            # RULE: Nested Attributes w/ APPEND mode
+            # Nested attributes on a parent CM type use the mode feature. When the mode
+            #     is APPEND and has been UPDATED, then the attributes should be INCLUDED.
+            #     For new nested objects added with the stage_xxx() method, the STAGED
+            #     RULE would trigger first.
+            # A secondary PATTERN concideration is that attributes can be immediately
+            #     updated using the attribute.updated() method. While this isn't as
+            #     efficient as updating them all in one request, it's is a simplier
+            #     development design pattern.
+
+            if mode == 'replace':
+                # RULE: Nested Attributes w/ REPLACE mode
+                # Nested attributes on a parent CM type use the mode feature. When the mode
+                #     is REPLACE the attributes should be INCLUDED.
+                return True
+
+            # RULE: Nested Attributes w/ DELETE mode
+            # Nested attributes on a parent CM type use the mode feature. When the mode
+            #     is DELETE the attribute should NOT be INCLUDED. Any attribute that was
+            #     added by the developer using the stage_xxx() method would have hit the
+            #     STAGED RULE above and would be INCLUDED.
+            # A secondary PATTERN concideration is that attributes can be immediately
+            #     deleted using the attribute.delete() method. While this isn't as
+            #     efficient as deleting them all in one request, it's is a simplier
+            #     development design pattern.
+
+            # TODO: @bpurdy why do we not have stage_assignee, stage_user_access, and other
+            #     nested USER types?
+            # Assignee ????
+
+            # All non-matching nested object that did not match a rule above will NOT be INCLUDED.
+            return False
+
+        #
+        # TI PARENT TYPES (Groups, Indicators, Victim, and Victims Assets)
+        #
+
+        # Nested Types:
+        # * Associations (Groups, Indicators, Victim Assets)
+        # * Attributes
+        # * Security Labels
+        # * Tags
+
+        # Coverage:
+        # * Downloaded from API
+        # * Added on instantiation
+        # * Added with stage_xxx() method
+
+        if mode == 'append' and self._associated_type:
+            # RULE: Nested Object w/ APPEND mode
+            # Nested object on a parent CM type use the mode feature. When the mode
+            #     is APPEND and not STAGED the object should NOT be INCLUDED.
+            return True
+
+        if mode == 'replace':
+            # RULE: Nested Object w/ REPLACE mode
+            # Nested object on a parent TI type use the mode feature. When the mode
+            #     is REPLACE the object should be INCLUDED.
+            return True
+
+        # * security_label -> delete (support id or name only)
+        # * tag -> delete (support id or name only)
+        # if mode == 'delete' and model._staged is True:
+        if (
+            mode == 'delete'
+            and (model._shared_type is True or self._associated_type is True)
+            and (model.id is not None or model.name is not None)
+        ):
+            # RULE: Nested Shared Object w/ DELETE mode (TAGS, SECURITY LABELS)
+            # Nested shared object on a parent TI type use the mode feature. When the mode
+            #     is DELETE the shard object should not be INCLUDED. Any object that was
+            #     added by the developer would have hit the STAGED RULE above and would
+            #     be INCLUDED.
+            return True
+
+        # * asssoc -> delete (support id only)
+        # * attribute -> delete (support id only)
+        # RULE: Nested Object w/ DELETE mode
+        # Nested object on a parent TI type use the mode feature. When the mode
+        #     is DELETE the object should not be INCLUDED. Any object that was
+        #     added by the developer would have hit the STAGED RULE above and would
+        #     be INCLUDED.
+
+        # All non-matching nested object that did not match a rule above will NOT be INCLUDED.
         return False
 
     def _process_nested_data_array(self, method: str, mode: str, nested_object: 'BaseModel'):
@@ -206,8 +352,8 @@ class V3ModelABC(BaseModel, ABC):
                         _body.setdefault(key, {})['data'] = _data
 
                         if value._mode_support:
-                            # Use the default mode defined in the model ("append") or the mode passed
-                            # into this method as an override.
+                            # Use the default mode defined in the model ("append") or the
+                            # mode passed into this method as an override.
                             _body.setdefault(key, {})['mode'] = mode or value.mode
 
                 elif hasattr(value, 'data'):

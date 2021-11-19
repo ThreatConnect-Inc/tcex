@@ -61,8 +61,10 @@ class TagModel(
 ):
     """Tag Model"""
 
-    _method_override = PrivateAttr(False)
+    _associated_type = PrivateAttr(False)
+    _cm_type = PrivateAttr(False)
     _shared_type = PrivateAttr(True)
+    _staged = PrivateAttr(False)
 
     cases: Optional['CasesModel'] = Field(
         None,

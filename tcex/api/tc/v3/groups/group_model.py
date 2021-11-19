@@ -61,8 +61,10 @@ class GroupModel(
 ):
     """Group Model"""
 
-    _method_override = PrivateAttr(False)
+    _associated_type = PrivateAttr(True)
+    _cm_type = PrivateAttr(False)
     _shared_type = PrivateAttr(False)
+    _staged = PrivateAttr(False)
 
     assignments: Optional['TaskAssigneesModel'] = Field(
         None,

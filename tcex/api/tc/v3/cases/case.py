@@ -165,6 +165,7 @@ class Case(ObjectABC):
 
         if not isinstance(data, ArtifactModel):
             raise RuntimeError('Invalid type passed in to stage_artifact')
+        data._staged = True
         self.model.artifacts.data.append(data)
 
     def stage_attribute(self, data: Union[dict, 'ObjectABC', 'CaseAttributeModel']) -> None:
@@ -176,6 +177,7 @@ class Case(ObjectABC):
 
         if not isinstance(data, CaseAttributeModel):
             raise RuntimeError('Invalid type passed in to stage_attribute')
+        data._staged = True
         self.model.attributes.data.append(data)
 
     def stage_note(self, data: Union[dict, 'ObjectABC', 'NoteModel']) -> None:
@@ -187,6 +189,7 @@ class Case(ObjectABC):
 
         if not isinstance(data, NoteModel):
             raise RuntimeError('Invalid type passed in to stage_note')
+        data._staged = True
         self.model.notes.data.append(data)
 
     def stage_tag(self, data: Union[dict, 'ObjectABC', 'TagModel']) -> None:
@@ -198,6 +201,7 @@ class Case(ObjectABC):
 
         if not isinstance(data, TagModel):
             raise RuntimeError('Invalid type passed in to stage_tag')
+        data._staged = True
         self.model.tags.data.append(data)
 
     def stage_task(self, data: Union[dict, 'ObjectABC', 'TaskModel']) -> None:
@@ -209,4 +213,5 @@ class Case(ObjectABC):
 
         if not isinstance(data, TaskModel):
             raise RuntimeError('Invalid type passed in to stage_task')
+        data._staged = True
         self.model.tasks.data.append(data)

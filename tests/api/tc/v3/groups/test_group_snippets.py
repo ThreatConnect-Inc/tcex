@@ -2,10 +2,9 @@
 # standard-library
 # standard library
 import base64
-
-# first-party
 import time
 
+# first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 
@@ -38,7 +37,7 @@ class TestGroupSnippets(TestV3):
         for group in groups:
             group.delete()
 
-    def test_adversary_create(self):
+    def test_group_create(self):
         """Test snippet"""
         # Begin Snippet
         group = self.tcex.v3.group(
@@ -52,7 +51,7 @@ class TestGroupSnippets(TestV3):
         # Add cleanup
         group.delete()
 
-    def test_adversary_stage_group_associations(self):
+    def test_group_stage_group_associations(self):
         """Test snippet"""
         # Begin Snippet
         group = self.tcex.v3.group(
@@ -70,7 +69,7 @@ class TestGroupSnippets(TestV3):
         # Add cleanup
         group.delete()
 
-    def test_adversary_stage_indicator_associations(self):
+    def test_group_stage_indicator_associations(self):
         """Test snippet"""
         # Begin Snippet
         group = self.tcex.v3.group(
@@ -88,7 +87,7 @@ class TestGroupSnippets(TestV3):
         # Add cleanup
         group.delete()
 
-    def test_adversary_stage_attribute(self):
+    def test_group_stage_attribute(self):
         """Test snippet"""
         # Begin Snippet
         group = self.tcex.v3.group(
@@ -109,7 +108,7 @@ class TestGroupSnippets(TestV3):
         # Add cleanup
         group.delete()
 
-    def test_adversary_stage_security_label(self):
+    def test_group_stage_security_label(self):
         """Test snippet"""
         # Begin Snippet
         group = self.tcex.v3.group(
@@ -127,7 +126,7 @@ class TestGroupSnippets(TestV3):
         # Add cleanup
         group.delete()
 
-    def test_adversary_stage_tag(self):
+    def test_group_stage_tag(self):
         """Test snippet"""
         # Begin Snippet
         group = self.tcex.v3.group(
@@ -145,7 +144,7 @@ class TestGroupSnippets(TestV3):
         # Add cleanup
         group.delete()
 
-    def test_adversary_delete_by_id(self):
+    def test_group_delete_by_id(self):
         """Test snippet"""
         group = self.tcex.v3.group(
             name='MyAdversary',
@@ -158,7 +157,7 @@ class TestGroupSnippets(TestV3):
         group.delete(params={'owner': 'TCI'})
         # End Snippet
 
-    def test_adversary_delete_by_summary(self):
+    def test_group_delete_by_summary(self):
         """Test snippet"""
         group = self.tcex.v3.group(
             name='MyAdversary',
@@ -171,7 +170,7 @@ class TestGroupSnippets(TestV3):
         group.delete(params={'owner': 'TCI'})
         # End Snippet
 
-    def test_adversary_delete_attribute(self):
+    def test_group_delete_attribute(self):
         """Test snippet"""
         group = self.v3_helper.create_group(
             name='MyAdversary',
@@ -194,7 +193,7 @@ class TestGroupSnippets(TestV3):
                 attribute.delete()
         # End Snippet
 
-    def test_adversary_get_by_id(self):
+    def test_group_get_by_id(self):
         """Test snippet"""
         group = self.tcex.v3.group(
             name='MyAdversary',
@@ -207,7 +206,7 @@ class TestGroupSnippets(TestV3):
         group.get()
         # End Snippet
 
-    def test_adversary_get_tql(self):
+    def test_group_get_tql(self):
         """Test snippet"""
         group = self.tcex.v3.group(
             name='MyAdversary',
@@ -225,7 +224,7 @@ class TestGroupSnippets(TestV3):
             print(group.model.dict(exclude_none=True))
         # End Snippet
 
-    def test_adversary_remove_group_associations(self):
+    def test_group_remove_group_associations(self):
         """Test snippet"""
         group = self.v3_helper.create_group(
             name='MyAdversary',
@@ -246,7 +245,7 @@ class TestGroupSnippets(TestV3):
                 association.remove()
         # End Snippet
 
-    def test_adversary_remove_indicator_associations(self):
+    def test_group_remove_indicator_associations(self):
         """Test snippet"""
         group = self.v3_helper.create_group(
             name='MyAdversary',
@@ -267,7 +266,7 @@ class TestGroupSnippets(TestV3):
                 association.remove()
         # End Snippet
 
-    def test_adversary_remove_security_label(self):
+    def test_group_remove_security_label(self):
         """Test snippet"""
         group = self.v3_helper.create_group(
             name='MyAdversary',
@@ -288,7 +287,7 @@ class TestGroupSnippets(TestV3):
                 security_label.remove()
         # End Snippet
 
-    def test_adversary_remove_tag(self):
+    def test_group_remove_tag(self):
         """Test snippet"""
         group = self.v3_helper.create_group(
             name='MyAdversary',
@@ -306,7 +305,7 @@ class TestGroupSnippets(TestV3):
                 tag.remove()
         # End Snippet
 
-    def test_adversary_remove_tag_using_mode(self):
+    def test_group_remove_tag_using_mode(self):
         """Test snippet"""
         group = self.v3_helper.create_group(
             name='MyAdversary',
@@ -325,7 +324,7 @@ class TestGroupSnippets(TestV3):
         updated_group.update()
         # End Snippet
 
-    def test_adversary_update(self):
+    def test_group_update(self):
         """Test snippet"""
         group = self.v3_helper.create_group(
             name='MyAdversary',

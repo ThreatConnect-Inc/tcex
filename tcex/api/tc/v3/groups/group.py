@@ -255,6 +255,7 @@ class Group(ObjectABC):
 
         if not isinstance(data, GroupModel):
             raise RuntimeError('Invalid type passed in to stage_associated_group')
+        data._staged = True
         self.model.associated_groups.data.append(data)
 
     def stage_associated_victim_asset(
@@ -268,6 +269,7 @@ class Group(ObjectABC):
 
         if not isinstance(data, VictimAssetModel):
             raise RuntimeError('Invalid type passed in to stage_associated_victim_asset')
+        data._staged = True
         self.model.assets.data.append(data)
 
     def stage_associated_indicator(self, data: Union[dict, 'ObjectABC', 'IndicatorModel']) -> None:
@@ -279,6 +281,7 @@ class Group(ObjectABC):
 
         if not isinstance(data, IndicatorModel):
             raise RuntimeError('Invalid type passed in to stage_associated_indicator')
+        data._staged = True
         self.model.associated_indicators.data.append(data)
 
     def stage_attribute(self, data: Union[dict, 'ObjectABC', 'GroupAttributeModel']) -> None:
@@ -290,6 +293,7 @@ class Group(ObjectABC):
 
         if not isinstance(data, GroupAttributeModel):
             raise RuntimeError('Invalid type passed in to stage_attribute')
+        data._staged = True
         self.model.attributes.data.append(data)
 
     def stage_security_label(self, data: Union[dict, 'ObjectABC', 'SecurityLabelModel']) -> None:
@@ -301,6 +305,7 @@ class Group(ObjectABC):
 
         if not isinstance(data, SecurityLabelModel):
             raise RuntimeError('Invalid type passed in to stage_security_label')
+        data._staged = True
         self.model.security_labels.data.append(data)
 
     def stage_tag(self, data: Union[dict, 'ObjectABC', 'TagModel']) -> None:
@@ -312,4 +317,5 @@ class Group(ObjectABC):
 
         if not isinstance(data, TagModel):
             raise RuntimeError('Invalid type passed in to stage_tag')
+        data._staged = True
         self.model.tags.data.append(data)

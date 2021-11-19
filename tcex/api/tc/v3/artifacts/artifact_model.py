@@ -61,8 +61,10 @@ class ArtifactModel(
 ):
     """Artifact Model"""
 
-    _method_override = PrivateAttr(True)
+    _associated_type = PrivateAttr(False)
+    _cm_type = PrivateAttr(True)
     _shared_type = PrivateAttr(False)
+    _staged = PrivateAttr(False)
 
     analytics_priority: Optional[str] = Field(
         None,

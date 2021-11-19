@@ -350,7 +350,6 @@ class GenerateObjectABC(GenerateABC, ABC):
         if type_.lower() == 'victim_assets':
             model_reference = self.utils.camel_string('assets')
 
-
         # get model from map and update requirements
         model_import_data = self._module_import_data(type_)
         self.requirements['standard library'].append('''from typing import Union''')
@@ -376,7 +375,9 @@ class GenerateObjectABC(GenerateABC, ABC):
                     f'''{self.i3}raise RuntimeError('Invalid type '''
                     f'''passed in to stage_{model_type.singular()}')'''
                 ),
-                f'''{self.i2}self.model.{model_reference.plural()}.data.append(data)''' '',
+                f'''{self.i2}data._staged = True''',
+                f'''{self.i2}self.model.{model_reference.plural()}.data.append(data)''',
+                '',
                 '',
             ]
         )

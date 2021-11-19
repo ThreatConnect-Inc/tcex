@@ -36,7 +36,7 @@ class TestVictimSnippets(TestV3):
             nationality='American',
             suborg='Sub Organization',
             type='Random Type',
-            work_location='Home'
+            work_location='Home',
         )
 
         victim.create(params={'owner': 'TCI'})
@@ -52,18 +52,6 @@ class TestVictimSnippets(TestV3):
             type='EmailAddress', address='malware@example.com', address_type='Trojan'
         )
         victim.stage_victim_asset(asset)
-
-        victim.update(params={'owner': 'TCI'})
-        # End Snippet
-
-    def test_victim_stage_group_associations(self):
-        """Test snippet"""
-        # Begin Snippet
-        victim = self.v3_helper.create_victim()
-
-        # Add attribute
-        association = self.tcex.v3.group(name='MyThreat', type='Threat')
-        victim.stage_associated_group(association)
 
         victim.update(params={'owner': 'TCI'})
         # End Snippet
@@ -177,7 +165,9 @@ class TestVictimSnippets(TestV3):
         """Test snippet"""
         victim = self.v3_helper.create_victim(
             assets={
-                'type': 'EmailAddress', 'address': 'malware@example.com', 'address_type': 'Trojan'
+                'type': 'EmailAddress',
+                'address': 'malware@example.com',
+                'address_type': 'Trojan',
             },
         )
         group = self.v3_helper.create_group()
@@ -190,25 +180,6 @@ class TestVictimSnippets(TestV3):
 
         for association in victim.associated_groups:
             print(association)
-        # End Snippet
-
-    def test_victim_remove_group_associations(self):
-        """Test snippet"""
-        victim = self.v3_helper.create_victim(
-            associated_groups=[
-                {'name': 'MyGroup0', 'type': 'Adversary'},
-                {'name': 'MyGroup', 'type': 'Adversary'},
-            ],
-        )
-
-        # Begin Snippet
-        victim = self.tcex.v3.victim(id=victim.model.id)
-
-        for association in victim.associated_groups:
-            if association.model.name == 'MyGroup':
-                # IMPORTANT the "remove()" method will remove the association from the group and
-                #    the "delete()" method will remove the association from the system.
-                association.remove()
         # End Snippet
 
     def test_victim_remove_security_label(self):

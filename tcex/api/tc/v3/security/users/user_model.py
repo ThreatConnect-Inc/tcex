@@ -60,8 +60,10 @@ class UserModel(
 ):
     """User Model"""
 
-    _method_override = PrivateAttr(False)
+    _associated_type = PrivateAttr(False)
+    _cm_type = PrivateAttr(False)
     _shared_type = PrivateAttr(False)
+    _staged = PrivateAttr(False)
 
     first_name: Optional[str] = Field(
         None,

@@ -111,4 +111,5 @@ class WorkflowEvent(ObjectABC):
 
         if not isinstance(data, NoteModel):
             raise RuntimeError('Invalid type passed in to stage_note')
+        data._staged = True
         self.model.notes.data.append(data)

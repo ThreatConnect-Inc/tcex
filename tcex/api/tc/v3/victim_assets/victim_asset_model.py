@@ -60,8 +60,10 @@ class VictimAssetModel(
 ):
     """Victim_Asset Model"""
 
-    _method_override = PrivateAttr(False)
+    _associated_type = PrivateAttr(True)
+    _cm_type = PrivateAttr(False)
     _shared_type = PrivateAttr(False)
+    _staged = PrivateAttr(False)
 
     account_name: Optional[str] = Field(
         None,
