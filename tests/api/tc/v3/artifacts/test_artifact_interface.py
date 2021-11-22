@@ -242,11 +242,11 @@ class TestArtifacts(TestV3):
         """Test Artifact Creation"""
         # [Pre-Requisite] - create case and provide a unique xid
         case_xid = f'{request.node.name}-{time.time()}'
-        _ = self.v3_helper.create_case(xid=case_xid)
+        case = self.v3_helper.create_case(xid=case_xid)
 
         # [Create Testing] define object data
         artifact_data = {
-            'case_xid': case_xid,
+            'case_xid': case.model.xid,
             'intel_type': 'indicator-ASN',
             'summary': f'asn{randint(100, 999)}',
             'type': 'ASN',

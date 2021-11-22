@@ -38,6 +38,23 @@ class TestIndicatorSnippets(TestV3):
         # Add cleanup
         indicator.delete()
 
+    def test_indicator_get_by_raw_tql(self):
+        indicator = self.v3_helper.create_indicator(type_='Host', value1='example.com.ph')
+
+        # Begin Snippet
+        indicators = self.tcex.v3.indicators()
+        indicators.filter.tql = (
+            'typeName in ("Host", "Address", "EmailAddress", "File", "URL") and '
+            '(summary like "%example%" or tag like "%example%")'
+        )
+
+        for indicator in indicators:
+            print(indicator)
+        # End Snippet
+
+        # Add cleanup
+        indicator.delete()
+
     def test_address_stage_group_associations(self):
         """Test snippet"""
         # Begin Snippet

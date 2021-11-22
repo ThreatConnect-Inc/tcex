@@ -183,11 +183,118 @@ class TestCases(TestV3):
         assert case.model.resolution == case_data.get('resolution')
         assert case.model.severity == case_data.get('severity')
         assert case.model.status == case_data.get('status')
-        assert case.model.xid == case_data.get('xid')
+        # assert case.model.xid == case_data.get('xid')
         assert case.model.created_by.user_name == os.getenv('TC_API_ACCESS_ID')
         # variable
         assert case.model.case_open_user.user_name == os.getenv('TC_API_ACCESS_ID')
         # env variable
+
+    def test_case_nested_objects(self, request: FixtureRequest):
+        # clean up
+        cases = self.tcex.v3.cases()
+        cases.filter.xid(TqlOperator.EQ, 'xid-test_case_create_and_retrieve_nested_types')
+        for case in cases:
+            case.delete()
+
+        # [Pre-Requisite] - create case with artifact data
+        artifact_data = {
+            'summary': f'asn{randint(100, 999)}',
+            'type': 'ASN',
+        }
+        case_data = {
+            'name': 'test_case_create_and_retrieve_nested_types',
+            'description': 'A description for test_case_create_and_retrieve_nested_types',
+            'owner': 'TCI',
+            'resolution': 'Not Specified',
+            'artifacts': {'data': [artifact_data]},
+            'attributes': {'data': [{'type': 'Description', 'value': 'Description 1'}]},
+            'tags': {'data': [{'name': 'Tag1'}]},
+            'severity': 'Low',
+            'status': 'Open',
+            'xid': 'xid-test_case_create_and_retrieve_nested_types',
+        }
+        case = self.tcex.v3.case(**case_data)
+        case.create()
+
+        # [Retrieve Testing] Verify that the attribute was created.
+        attributes_found = 0
+        for attribute in case.attributes:
+            attributes_found += 1
+            assert attribute.model.value == 'Description 1'
+        assert attributes_found == 1, 'No artifacts were created on the case'
+
+        # This is not currently supported
+        # case.update(mode='delete')
+        # attributes_found = 0
+        # for _ in case.attributes:
+        #     attributes_found += 1
+        # assert attributes_found == 0, 'Attributes were still found'
+
+        # [Retrieve Testing] Verify that the artifact was created.
+        artifacts_found = 0
+        for artifact in case.artifacts:
+            artifacts_found += 1
+            assert artifact.model.summary == artifact_data.get('summary')
+        assert artifacts_found == 1, 'No artifacts were created on the case'
+
+        # [Retrieve Testing] Verify that the tag was created.
+        tags_found = 0
+        for tag in case.tags:
+            tags_found += 1
+            assert tag.model.name in ['tag1']
+        assert artifacts_found == 1, 'No tags were created on the case'
+
+        # [Stage Testing] Add a new tag to the Case
+        case.stage_tag({'name': 'tag2'})
+        case.update()
+
+        # [Retrieve Testing] Verify that both tags exist now on the case.
+        tags_found = 0
+        for tag in case.tags:
+            tags_found += 1
+            assert tag.model.name in ['tag1', 'tag2']
+        assert tags_found == 2, 'No tags were created on the case'
+
+        # [Stage Testing] Refetch the case and stage a new tag on it.
+        case = self.v3.case(id=case.model.id)
+        case.stage_tag({'name': 'tag3'})
+        case.update()
+
+        # [Retrieve Testing] Verify that only the 1 new tag gets readded to the case, replacing
+        # all other tags.
+        tags_found = 0
+        for tag in case.tags:
+            tags_found += 1
+            assert tag.model.name in ['tag3']
+        assert tags_found == 1, 'The existing tags were not replaced'
+
+        # [Stage Testing] Stage another artifact onto the case.
+        artifact_data_2 = {
+            'summary': f'asn{randint(100, 999)}',
+            'type': 'ASN',
+        }
+        case.stage_artifact(artifact_data_2)
+        case.update()
+
+        # [Retrieve Testing] Verify that both artifacts exist under the case now.
+        artifacts_found = 0
+        for artifact in case.artifacts:
+            artifacts_found += 1
+            assert artifact.model.summary in [
+                artifact_data.get('summary'),
+                artifact_data_2.get('summary')
+            ]
+        assert artifacts_found == 2, 'Incorrect amount of artifacts were created on the case.'
+
+        # [Update Testing] Make no changes and resubmit the case, ensure that duplicate artifacts
+        # are not created.
+        case.update()
+
+        # [Retrieve Testing] Verify that duplicate artifacts were not created
+        artifacts_found = 0
+        for _ in case.artifacts:
+            artifacts_found += 1
+        assert artifacts_found == 2, 'Incorrect amount of artifacts were created on the case.'
 
     def test_case_all_filters(self, request: FixtureRequest):
         """Test TQL Filters for case on a Case"""
