@@ -38,6 +38,13 @@ class Group(Mappings):
         """Return True if object is a group."""
         return True
 
+    def pdf(self):
+        """Return True if object is a group."""
+        if self.can_update() is False or self.type.lower() in ['document', 'report']:
+            raise RuntimeError(f'Invalid type: {self.type} or group id not set.')
+
+        return self.tc_requests.pdf(self.api_type, self.api_branch, self.unique_id)
+
     @property
     def _metadata_map(self):
         """Return metadata map for Group objects."""

@@ -1043,6 +1043,22 @@ class TiTcRequest:
 
         yield from data
 
+    def pdf(self, main_type, sub_type, unique_id):
+        """Download a PDF of the group.
+
+        Args:
+            main_type (str): The TI type (e.g., groups or indicators).
+            sub_type (str): The TI sub type (e.g., adversaries or addresses).
+            unique_id (str): The unique ID of the Resource.
+
+        Returns:
+            requests.Response: A request Response object.
+        """
+        url = f'/v2/{main_type}/{unique_id}/pdf'
+        if sub_type:
+            url = f'/v2/{main_type}/{sub_type}/{unique_id}/pdf'
+        return self._get(url)
+
     def pivot_from_tag(self, target, tag_name, filters=None, owner=None, params=None):
         """
 
