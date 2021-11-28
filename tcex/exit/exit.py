@@ -94,10 +94,6 @@ class ExitService:
         # handle exit msg logging
         self._exit_msg_handler(code, msg)
 
-        # playbook exit
-        if registry.playbook:
-            self._exit_playbook_handler(msg)
-
         # aot notify
         if ('tc_aot_enabled' in self.pre_run_inputs
                 and self.pre_run_inputs.get('tc_aot_enabled')):
