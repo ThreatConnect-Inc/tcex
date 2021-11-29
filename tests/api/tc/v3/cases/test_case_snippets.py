@@ -74,6 +74,7 @@ class TestCaseSnippets(TestV3):
             status='Open',
             xid='MyCase-0001',
         )
+
         # Add attribute
         attribute = self.tcex.v3.case_attribute(
             value='An example description attribute.',
@@ -277,6 +278,16 @@ class TestCaseSnippets(TestV3):
         for case in cases:
             # IMPORTANT: this will return all cases with the name "MyCase"
             print(case.model.json(exclude_none=True))
+        # End Snippet
+
+    def test_case_get_single(self):
+        """Test snippet"""
+        case = self.v3_helper.create_case(name='MyCase')
+
+        # Begin Snippet
+        case = self.tcex.v3.case(id=case.model.id)
+        case.model.name = 'MyUpdatedCase'
+        case.update()
         # End Snippet
 
     def test_case_update(self):

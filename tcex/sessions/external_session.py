@@ -10,8 +10,10 @@ from requests import Response, Session, adapters, exceptions
 from requests.adapters import DEFAULT_POOLBLOCK, DEFAULT_POOLSIZE, DEFAULT_RETRIES
 from urllib3.util.retry import Retry
 
-from ..utils import Utils
-from .rate_limit_handler import RateLimitHandler
+# first-party
+from tcex.sessions.rate_limit_handler import RateLimitHandler
+from tcex.utils.requests_to_curl import RequestsToCurl
+from tcex.utils.utils import Utils
 
 # disable ssl warning message
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -38,6 +40,11 @@ def default_too_many_requests_handler(response: Response) -> float:
     except RuntimeError:
         # retry_after must be in seconds
         seconds = retry_after
+
+    # handle negative values
+    if seconds < 0:
+        seconds = retry_after
+
     return float(seconds)
 
 
@@ -145,6 +152,7 @@ class ExternalSession(Session):
         self._mask_patterns = None
         self._rate_limit_handler = RateLimitHandler()
         self._too_many_requests_handler = None
+        self.requests_to_curl = RequestsToCurl()
 
         # Add default Retry
         self.retry()
@@ -277,7 +285,7 @@ class ExternalSession(Session):
         if not response.ok or self.log_curl:
             try:
                 self.log.debug(
-                    self.utils.requests_to_curl(
+                    self.requests_to_curl.convert(
                         response.request,
                         mask_body=self.mask_body,
                         mask_headers=self.mask_headers,

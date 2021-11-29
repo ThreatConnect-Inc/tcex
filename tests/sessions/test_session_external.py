@@ -1,5 +1,6 @@
 """Test the TcEx Session Module."""
 # standard library
+from typing import TYPE_CHECKING
 from unittest.mock import MagicMock, PropertyMock
 
 # third-party
@@ -10,6 +11,10 @@ from urllib3.util.retry import Retry
 from tcex.sessions.external_session import default_too_many_requests_handler
 from tcex.sessions.rate_limit_handler import RateLimitHandler
 
+if TYPE_CHECKING:
+    # first-party
+    from tcex import TcEx
+
 # set max backoff seconds
 Retry.BACKOFF_MAX = 30
 
@@ -18,7 +23,7 @@ class TestUtils:
     """Test the TcEx Session Module."""
 
     @staticmethod
-    def test_session_external(tcex):
+    def test_session_external(tcex: 'TcEx'):
         """Test tc.session_external property.
 
         Args:
@@ -29,7 +34,7 @@ class TestUtils:
         assert r.status_code == 200
 
     @staticmethod
-    def test_session_external_base_url(tcex):
+    def test_session_external_base_url(tcex: 'TcEx'):
         """Test tc.session_external property.
 
         Args:
@@ -43,7 +48,7 @@ class TestUtils:
         assert r.status_code == 200
 
     @staticmethod
-    def test_session_external_mask_headers(tcex):
+    def test_session_external_mask_headers(tcex: 'TcEx'):
         """Test tc.session_external property.
 
         Args:
@@ -58,7 +63,7 @@ class TestUtils:
         assert r.status_code == 200
 
     @staticmethod
-    def test_session_external_proxy(tcex_proxy):
+    def test_session_external_proxy(tcex_proxy: 'TcEx'):
         """Test tc.session_external property with proxy.
 
         Args:
@@ -85,7 +90,7 @@ class TestUtils:
         assert default_too_many_requests_handler(response) == 0
 
     @staticmethod
-    def test_too_many_request_handler_properties(tcex):
+    def test_too_many_request_handler_properties(tcex: 'TcEx'):
         """Test the too_many_requests properties
 
         Args:
@@ -104,7 +109,7 @@ class TestUtils:
         assert s.too_many_requests_handler == test_handler
 
     @staticmethod
-    def test_rate_limit_handler(tcex):
+    def test_rate_limit_handler(tcex: 'TcEx'):
         """Test the rate limit handler properties
 
         Args:
@@ -127,7 +132,7 @@ class TestUtils:
         assert isinstance(s.rate_limit_handler, MyRateLimitHandler)
 
     @staticmethod
-    def test_retry(tcex):
+    def test_retry(tcex: 'TcEx'):
         """Test the retry method to validate that it only creates one instance of CustomAdpater.
 
         Args:
@@ -146,7 +151,7 @@ class TestUtils:
         assert s._custom_adapter.max_retries.status_forcelist[0] == 202
 
     @staticmethod
-    def test_429(tcex):
+    def test_429(tcex: 'TcEx'):
         """Test  429 handling.
 
         Args:

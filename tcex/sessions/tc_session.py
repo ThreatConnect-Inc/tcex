@@ -1,23 +1,26 @@
 """ThreatConnect Requests Session"""
 # standard library
-import base64
-import hashlib
-import hmac
 import logging
-import time
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict, Optional, Union
 
 # third-party
 import urllib3
-from requests import Session, adapters, auth, request
+from requests import Session, adapters
 from urllib3.util.retry import Retry
 
 # first-party
 from tcex.utils import Utils
+from tcex.utils.requests_to_curl import RequestsToCurl
 
 if TYPE_CHECKING:
+    # third-party
+    from requests import Response
+
     # first-party
-    from tcex.input.field_types.sensitive import Sensitive
+    from tcex.sessions.auth.hmac_auth import HmacAuth
+    from tcex.sessions.auth.tc_auth import TcAuth
+    from tcex.sessions.auth.token_auth import TokenAuth
+
 
 # disable ssl warning message
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -26,146 +29,74 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 logger = logging.getLogger('tcex')
 
 
-class HmacAuth(auth.AuthBase):
-    """ThreatConnect HMAC Authorization"""
-
-    def __init__(self, tc_api_access_id: str, tc_api_secret_key: 'Sensitive') -> None:
-        """Initialize the Class properties."""
-        super().__init__()
-        self.tc_api_access_id = tc_api_access_id
-        self.tc_api_secret_key = tc_api_secret_key
-
-    def __call__(self, r: request) -> request:
-        """Override of parent __call__ method."""
-        timestamp = int(time.time())
-        signature = f'{r.path_url}:{r.method}:{timestamp}'
-        hmac_signature = hmac.new(
-            self.tc_api_secret_key.value.encode(), signature.encode(), digestmod=hashlib.sha256
-        ).digest()
-        authorization = f'TC {self.tc_api_access_id}:{base64.b64encode(hmac_signature).decode()}'
-        r.headers['Authorization'] = authorization
-        r.headers['Timestamp'] = timestamp
-        return r
-
-
-class TokenAuth(auth.AuthBase):
-    """ThreatConnect Token Authorization"""
-
-    def __init__(self, token):
-        """Initialize Class Properties."""
-        super().__init__()
-        self.token = token
-
-    def __call__(self, r):
-        """Override of parent __call__ method."""
-        # TODO: [high] the token module requires some though for v3
-        if hasattr(self.token, 'token'):
-            # the token module has a property of "token" that
-            # returns the appropriate token (type: Sensitive)
-            token = self.token.token.value
-        elif callable(self.token):
-            # handle case where self.token is a callable
-            token = self.token()
-        else:
-            token = self.token
-
-        r.headers['Authorization'] = f'TC-Token {token}'
-        return r
-
-
 class TcSession(Session):
     """ThreatConnect REST API Requests Session"""
 
-    def __init__(self, tc_api_access_id, tc_api_secret_key, tc_base_url):
+    def __init__(
+        self,
+        auth: Union['HmacAuth', 'TokenAuth', 'TcAuth'],
+        base_url: str = None,
+        log_curl: Optional[bool] = False,
+        proxies: Optional[Dict[str, str]] = None,
+        proxies_enabled: Optional[bool] = False,
+        user_agent: Optional[dict] = None,
+        verify: Optional[Union[bool, str]] = True,
+    ):
         """Initialize the Class properties."""
         super().__init__()
-        self.tc_api_access_id = tc_api_access_id
-        self.tc_api_secret_key = tc_api_secret_key
-        self.tc_base_url = tc_base_url.strip('/')
+        self.base_url = base_url.strip('/')
         self.log = logger
+        self.log_curl = log_curl
 
         # properties
-        self._log_curl = False
-        self._token = None
-        self.auth = None
+        self.requests_to_curl = RequestsToCurl()
         self.utils = Utils()
+
+        # configure auth
+        self.auth = auth
+
+        # configure optional headers
+        if user_agent:
+            self.headers.update(user_agent)
+
+        # configure proxy
+        if proxies and proxies_enabled:
+            self.proxies = proxies
+
+        # configure verify
+        self.verify = verify
 
         # Add Retry
         self.retry()
 
-    def _configure_auth(self):
-        """Return Auth property for session."""
-        # Add ThreatConnect Authorization
-        # if self.token_available:
-        if self.token:
-            # service Apps only use tokens and playbook/runtime Apps will use token if available
-            self.auth = TokenAuth(self.token)
-            self.log.debug('feature=tc-session, event=auth, type=token')
-        elif self.tc_api_access_id and self.tc_api_secret_key:
-            try:
-                # for external Apps or testing Apps locally
-                self.auth = HmacAuth(self.tc_api_access_id, self.tc_api_secret_key)
-                self.log.debug('feature=tc-session, event=auth, type=hmac')
-            except AttributeError:  # pragma: no cover
-                raise RuntimeError('No valid ThreatConnect API credentials provided.')
-        else:  # pragma: no cover
-            raise RuntimeError('No valid ThreatConnect API credentials provided.')
-
-    @property
-    def log_curl(self) -> bool:
-        """Return whether or not requests will be logged as a curl command."""
-        return self._log_curl
-
-    @log_curl.setter
-    def log_curl(self, log_curl: bool):
-        """Enable or disable logging curl commands."""
-        self._log_curl = log_curl
-
-    @property
-    def token(self):
-        """Return token."""
-        return self._token
-
-    @token.setter
-    def token(self, token):
-        """Set token."""
-        self._token = token
-
-    # @property
-    # def token_available(self):
-    #     """Return true if the current App is a service App."""
-    #     return (
-    #         self.token is not None
-    #         and self.token.token is not None
-    #         and self.token.token_expires is not None
-    #     )
-
-    def request(self, method, url, **kwargs):  # pylint: disable=arguments-differ
-        """Override request method disabling verify on token renewal if disabled on session."""
-        if self.auth is None:
-            self._configure_auth()
-
-        # accept path for API calls instead of full URL
-        if not url.startswith('https'):
-            url = f'{self.tc_base_url}{url}'
-        response = super().request(method, url, **kwargs)
+    def _log_curl(self, response: 'Response') -> None:
+        """Log the curl equivalent command."""
 
         # don't show curl message for logging commands
-        if '/v2/logs/app' not in url:
+        if '/v2/logs/app' not in response.request.url:
+
             # APP-79 - adding logging of request as curl commands
             if not response.ok or self.log_curl:
                 try:
                     self.log.debug(
-                        self.utils.requests_to_curl(
+                        self.requests_to_curl.convert(
                             response.request, proxies=self.proxies, verify=self.verify
                         )
                     )
                 except Exception:  # nosec
                     pass  # logging curl command is best effort
 
+    def request(self, method, url, **kwargs):  # pylint: disable=arguments-differ
+        """Override request method disabling verify on token renewal if disabled on session."""
+        response = super().request(method, self.url(url), **kwargs)
+
+        # optionally log the curl command
+        self._log_curl(response)
+
+        # log request and response data
         self.log.debug(
             f'feature=tc-session, request-url={response.request.url}, '
-            f'status_code={response.status_code}, elapsed={response.elapsed}'
+            f'status-code={response.status_code}, elapsed={response.elapsed}'
         )
 
         return response
@@ -184,3 +115,12 @@ class TcSession(Session):
         )
         # mount all https requests
         self.mount('https://', adapters.HTTPAdapter(max_retries=retries))
+
+    def url(self, url: str) -> str:
+        """Return appropriate URL string.
+
+        The method allows the session to accept the URL Path or the full URL.
+        """
+        if not url.startswith('https'):
+            return f'{self.base_url}{url}'
+        return url

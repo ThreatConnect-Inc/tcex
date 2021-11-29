@@ -7,10 +7,9 @@ import os
 import platform
 import signal
 import threading
-from typing import Optional, Union
+from typing import TYPE_CHECKING, Dict, Optional, Union
 
 # third-party
-from redis import Redis
 from requests import Session
 
 # first-party
@@ -34,10 +33,16 @@ from tcex.pleb.scoped_property import scoped_property
 from tcex.services.api_service import ApiService
 from tcex.services.common_service_trigger import CommonServiceTrigger
 from tcex.services.webhook_trigger_service import WebhookTriggerService
+from tcex.sessions.auth.tc_auth import TcAuth
 from tcex.sessions.external_session import ExternalSession
 from tcex.sessions.tc_session import TcSession
 from tcex.tokens import Tokens
 from tcex.utils import Utils
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.sessions.auth.hmac_auth import HmacAuth
+    from tcex.sessions.auth.token_auth import TokenAuth
 
 
 class TcEx:
@@ -278,36 +283,37 @@ class TcEx:
             host=host, port=port, db=db, blocking_pool=blocking_pool, **kwargs
         ).client
 
-    def get_session_tc(self) -> TcSession:
-        """Return an instance of Requests Session configured for the ThreatConnect API."""
-        _session = TcSession(
+    def get_session_tc(
+        self,
+        auth: Optional[Union['HmacAuth', 'TokenAuth', 'TcAuth']] = None,
+        base_url: Optional[str] = None,
+        log_curl: Optional[bool] = False,
+        proxies: Optional[Dict[str, str]] = None,  # pylint: disable=redefined-outer-name
+        proxies_enabled: Optional[bool] = False,
+        verify: Optional[Union[bool, str]] = True,
+    ) -> TcSession:
+        """Return an instance of Requests Session configured for the ThreatConnect API.
+
+        No args are required to get a working instance of TC Session instance.
+
+        This method allows for getting a new instance of TC Session instance. This can be
+        very useful when connecting between multiple TC instances (e.g., migrating data).
+        """
+        auth = auth or TcAuth(
             tc_api_access_id=self.inputs.model_unresolved.tc_api_access_id,
             tc_api_secret_key=self.inputs.model_unresolved.tc_api_secret_key,
-            tc_base_url=self.inputs.model_unresolved.tc_api_path,
+            tc_token=self.token,
         )
 
-        # set verify
-        _session.verify = self.inputs.model_unresolved.tc_verify
-
-        # set token
-        _session.token = self.token
-
-        # update User-Agent
-        _session.headers.update(self._user_agent)
-
-        # add proxy support if requested
-        if self.inputs.model_unresolved.tc_proxy_tc:
-            _session.proxies = self.proxies
-            self.log.info(
-                f'Using proxy host {self.inputs.model_unresolved.tc_proxy_host}:'
-                f'{self.inputs.model_unresolved.tc_proxy_port} for ThreatConnect session.'
-            )
-
-        # enable curl logging if tc_log_curl param is set.
-        if self.inputs.model_unresolved.tc_log_curl:
-            _session.log_curl = True
-
-        return _session
+        return TcSession(
+            auth=auth,
+            base_url=base_url or self.inputs.model_unresolved.tc_api_path,
+            log_curl=log_curl or self.inputs.model_unresolved.tc_log_curl,
+            proxies=proxies or self.proxies,
+            proxies_enabled=proxies_enabled or self.inputs.model_unresolved.tc_proxy_tc,
+            user_agent=self._user_agent,
+            verify=verify or self.inputs.model_unresolved.tc_verify,
+        )
 
     def get_session_external(self) -> ExternalSession:
         """Return an instance of Requests Session configured for the ThreatConnect API."""
@@ -375,7 +381,7 @@ class TcEx:
         # add api handler
         if (
             self.inputs.contents.get('tc_token') is not None
-            and bool(self.inputs.contents.get('tc_log_to_api'))
+            and self.inputs.contents.get('tc_log_to_api') is True
         ):
             _logger.add_api_handler(
                 session_tc=self.get_session_tc(), level=self.inputs.model_unresolved.tc_log_level

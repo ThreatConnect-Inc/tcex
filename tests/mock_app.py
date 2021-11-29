@@ -12,7 +12,7 @@ from requests import Session
 from tcex.app_config.install_json import InstallJson
 from tcex.input.field_types.sensitive import Sensitive
 from tcex.pleb.registry import registry
-from tcex.sessions.tc_session import HmacAuth
+from tcex.sessions.auth.hmac_auth import HmacAuth
 from tcex.tcex import TcEx
 from tcex.utils.utils import Utils
 
@@ -285,6 +285,11 @@ class MockApp:
         # anything remaning in self.cd would be an arg to add.
         for k, v in self.cd.items():
             _config[k] = v
+
+        # only support one auth mechanism
+        if _config.get('tc_token'):
+            del _config['tc_api_access_id']
+            del _config['tc_api_secret_key']
 
         return _config
 

@@ -188,3 +188,9 @@ pytest --cov=tcex/app_feature/ --cov-report=term-missing tests/app_feature/
 ```bash
 pytest --cov=tcex/input/ --cov-report=term-missing tests/input/
 ```
+
+## Session Module
+
+```bash
+pytest --cov=tcex/sessions/ --cov-report=term-missing tests/sessions/
+```

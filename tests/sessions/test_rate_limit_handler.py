@@ -28,7 +28,7 @@ class TestRateLimitHandler:
         request: PreparedRequest = PreparedRequest()
 
         rate_limit_handler.pre_send(request)
-        time.sleep.assert_called_once_with(10)  # pylint: disable=no-member
+        time.sleep.assert_called_once_with(3)  # pylint: disable=no-member
 
     @staticmethod
     @patch('time.sleep', MagicMock(return_value=None))
