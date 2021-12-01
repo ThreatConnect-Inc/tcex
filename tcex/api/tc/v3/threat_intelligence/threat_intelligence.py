@@ -27,6 +27,27 @@ class ThreatIntelligence:
         """Initialize Class properties."""
         self.session = session
 
+    def create_entity(self, entity: dict, owner: str) -> dict:
+        """Create a CM object provided a dict and owner."""
+        print(entity)
+        entity_type = entity.pop('type').lower()
+        entity_type = entity_type.replace(' ', '_')
+        try:
+            obj = getattr(self, entity_type)(**entity)
+        except AttributeError:
+            return None
+
+        r = obj.submit()
+        data = {'status_code': r.status_code}
+        if r.ok:
+            data.update(r.json().get('data', {}))
+            print(r.json())
+            data['main_type'] = 'Case_Management'
+            data['sub_type'] = entity_type
+            data['owner'] = owner
+
+        return data
+
     def group(self, **kwargs) -> 'Group':
         """Return a instance of Group object.
 
