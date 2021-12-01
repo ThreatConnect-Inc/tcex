@@ -68,9 +68,6 @@ class Input:
         self.log = logger
         self.utils = Utils()
 
-        # add methods to registry
-        registry.add_method(self.resolve_variable)
-
     def _load_aot_params(
         self,
         tc_aot_enabled: bool,

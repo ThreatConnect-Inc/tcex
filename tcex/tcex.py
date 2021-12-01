@@ -76,6 +76,9 @@ class TcEx:
         self.inputs = Input(self._config, kwargs.get('config_file'))
 
         # add methods to registry
+        registry.add_method(self.inputs.resolve_variable)
+
+        # add methods to registry
         registry.register(self)
         registry.add_service(Input, self.inputs)
 
@@ -504,7 +507,7 @@ class TcEx:
         else:
             self.exit(1, 'Could not determine the service type.')
 
-        return Service()
+        return Service(self)
 
     @registry.factory(TcSession)
     @scoped_property
