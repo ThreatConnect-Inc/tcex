@@ -362,7 +362,6 @@ class CommonServiceTrigger(CommonService):
                     log_curl=registry.session_tc.log_curl,
                     proxies=registry.session_tc.proxies,
                     proxies_enabled=registry.session_tc.proxies,
-                    user_agent=registry.session_tc.user_agent,
                     verify=registry.session_tc.verify,
                 )
                 
