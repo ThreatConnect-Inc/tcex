@@ -4,6 +4,8 @@
 ```bash
 find tcex/api/tc/v3 -type f | xargs wc -l
 ```
+~66,000 Lines of Python code
+~47,000 Lines of test cases
 
 ## Test a specific module
 pytest tests/batch
@@ -44,18 +46,104 @@ pytest -n 12 --cov=. --cov-report=term-missing tests/
 pytest --cov=tcex/api/tc/v2/ --cov-report=term-missing tests/api/tc/v2/
 ```
 
+#### batch
+
+203 Test Cases
+
+
+```bash
+pytest --cov=tcex/api/tc/v2/batch --cov-report=term-missing tests/api/tc/v2/batch
+```
+
+
+#### Results
+
+```
+Name                                    Stmts   Miss  Cover
+-----------------------------------------------------------
+TOTAL                                    1627    560    66%
+```
+
 #### datastore
+
+20 Test Cases
+
+
+```bash
+pytest --cov=tcex/api/tc/v2/datastore --cov-report=term-missing tests/api/tc/v2/datastore
+```
+
+#### Results
+
+```
+Name                                    Stmts   Miss  Cover
+-----------------------------------------------------------
+TOTAL                                     151      3    98%
+```
 
 #### metrics
 
-#### notification
+4 Test Cases
+
+```bash
+pytest --cov=tcex/api/tc/v2/metrics --cov-report=term-missing tests/api/tc/v2/metrics
+```
+
+#### Results
+
+```
+Name                                    Stmts   Miss  Cover
+-----------------------------------------------------------
+TOTAL                                      64      1    98%
+```
+
+#### notifications
+
+3 Test Cases
+
+```bash
+pytest --cov=tcex/api/tc/v2/notifications --cov-report=term-missing tests/api/tc/v2/notifications
+```
+
+#### Results
+
+
+```
+Name                                    Stmts   Miss  Cover
+-----------------------------------------------------------
+TOTAL                                      35      1    97%
+```
 
 #### threat_intelligence
 
+387 Test Cases
+
+```bash
+pytest --cov=tcex/api/tc/v2/threat_intelligence --cov-report=term-missing tests/api/tc/v2/threat_intelligence
+```
+
+#### Results
+
+```
+Name                                    Stmts   Miss  Cover
+-----------------------------------------------------------
+TOTAL                                    2330    813    65%
+```
+
 ### v3
+
+169 Test Cases
 
 ```bash
 pytest --cov=tcex/api/tc/v3/ --cov-report=term-missing tests/api/tc/v3/
+```
+
+#### Results
+
+```
+Name                                    Stmts   Miss  Cover
+-----------------------------------------------------------
+TOTAL                                    4400    710    84%
 ```
 
 #### artifact_types
@@ -175,22 +263,165 @@ pytest --cov=tcex/api/tc/v3/workflow_templates --cov-report=term-missing tests/a
 ```
 
 ## app_config
+
+44 Test Cases
+
 ```bash
 pytest --cov=tcex/app_config/ --cov-report=term-missing tests/app_config/
 ```
 
+### Results
+
+```
+Name                                    Stmts   Miss  Cover
+-----------------------------------------------------------
+TOTAL                                     850      8    99%
+```
+
 ## app_feature
+
+6 Test Cases
+
 ```bash
 pytest --cov=tcex/app_feature/ --cov-report=term-missing tests/app_feature/
 ```
 
+### Results
+
+```
+Name                                    Stmts   Miss  Cover
+-----------------------------------------------------------
+TOTAL                                      67      2    97%
+```
+
+## bin
+
+8 Test Cases
+
+```bash
+pytest --cov=tcex/bin/ --cov-report=term-missing tests/bin/
+```
+
+## decorators
+
+48 Test Cases
+
+```bash
+pytest --cov=tcex/decorators/ --cov-report=term-missing tests/decorators/
+```
+
+### Results
+
+```
+Name                                    Stmts   Miss  Cover
+-----------------------------------------------------------
+TOTAL                                     143      0   100%
+```
+
 ## input
+
+361 Test Cases
+
 ```bash
 pytest --cov=tcex/input/ --cov-report=term-missing tests/input/
 ```
 
-## Session Module
+### Results
+
+```
+Name                                    Stmts   Miss  Cover
+-----------------------------------------------------------
+TOTAL                                     808     68    92%
+```
+
+## logger
+
+5 Test Cases
+
+```bash
+pytest --cov=tcex/logger/ --cov-report=term-missing tests/logger/
+```
+
+### Results
+
+```
+Name                                    Stmts   Miss  Cover
+-----------------------------------------------------------
+TOTAL                                     293     68    77%
+```
+
+## playbooks
+
+? Test Cases
+
+```bash
+pytest --cov=tcex/playbooks/ --cov-report=term-missing tests/playbooks/
+```
+
+### Results
+
+```
+Name                                    Stmts   Miss  Cover
+-----------------------------------------------------------
+```
+
+## sessions
+
+? Test Cases
 
 ```bash
 pytest --cov=tcex/sessions/ --cov-report=term-missing tests/sessions/
+```
+
+### Results
+
+```
+Name                                    Stmts   Miss  Cover
+-----------------------------------------------------------
+```
+
+## tcex methods
+
+? Test Cases
+
+```bash
+pytest --cov=tcex/tcex.py --cov-report=term-missing tests/tcex_methods/
+```
+
+### Results
+
+```
+Name                                    Stmts   Miss  Cover
+-----------------------------------------------------------
+```
+
+## tokens
+
+? Test Cases
+
+```bash
+pytest --cov=tcex/tokens/ --cov-report=term-missing tests/tokens/
+```
+
+### Results
+
+```
+Name                                    Stmts   Miss  Cover
+-----------------------------------------------------------
+```
+
+## utils
+
+80 Test Cases
+
+```bash
+pytest --cov=tcex/utils/ --cov-report=term-missing tests/utils/
+```
+
+### Results
+
+```
+Name                                    Stmts   Miss  Cover
+-----------------------------------------------------------
+TOTAL                                     351    118    66%
 ```

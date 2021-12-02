@@ -1,8 +1,4 @@
 """Test the TcEx API Snippets."""
-# standard-library
-# standard library
-import base64
-
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
@@ -45,41 +41,75 @@ class TestVictimSnippets(TestV3):
     def test_victim_stage_attribute(self):
         """Test snippet"""
         # Begin Snippet
-        victim = self.v3_helper.create_victim()
+        victim = self.tcex.v3.victim(
+            name='MyVictim',
+            description='Example Victim Description',
+            nationality='American',
+            suborg='Sub Organization',
+            type='Random Type',
+            work_location='Home',
+        )
 
-        # Add attribute
+        # stage attribute
         attribute = self.tcex.v3.victim_attribute(
             value='An example description attribute.',
             type='Description',
         )
         victim.stage_attribute(attribute)
 
-        victim.update(params={'owner': 'TCI'})
+        victim.create(params={'owner': 'TCI'})
         # End Snippet
+
+        # Add cleanup
+        victim.delete()
 
     def test_victim_stage_security_label(self):
         """Test snippet"""
         # Begin Snippet
-        victim = self.v3_helper.create_victim()
+        victim = self.tcex.v3.victim(
+            name='MyVictim',
+            description='Example Victim Description',
+            nationality='American',
+            suborg='Sub Organization',
+            type='Random Type',
+            work_location='Home',
+        )
 
-        # Add attribute
+        # stage security label
         security_label = self.tcex.v3.security_label(name='TLP:WHITE')
         victim.stage_security_label(security_label)
 
-        victim.update(params={'owner': 'TCI'})
+        victim.create(params={'owner': 'TCI'})
         # End Snippet
+
+        # Add cleanup
+        victim.delete()
 
     def test_victim_stage_tag(self):
         """Test snippet"""
         # Begin Snippet
-        victim = self.v3_helper.create_victim()
+        victim = self.tcex.v3.victim(
+            name='MyVictim',
+            description='Example Victim Description',
+            nationality='American',
+            suborg='Sub Organization',
+            type='Random Type',
+            work_location='Home',
+        )
 
-        # Add attribute
+        # stage tag
         tag = self.tcex.v3.tag(name='Example-Tag')
         victim.stage_tag(tag)
 
-        victim.update(params={'owner': 'TCI'})
+        victim.create(params={'owner': 'TCI'})
         # End Snippet
+
+        # Add cleanup
+        victim.delete()
+
+    #
+    # Delete
+    #
 
     def test_victim_delete_by_id(self):
         """Test snippet"""
@@ -125,26 +155,6 @@ class TestVictimSnippets(TestV3):
         for attribute in victim.attributes:
             if attribute.model.value == 'An example description attribute':
                 attribute.delete()
-        # End Snippet
-
-    def test_victim_get_by_id(self):
-        """Test snippet"""
-        victim = self.v3_helper.create_victim()
-
-        # Begin Snippet
-        victim = self.tcex.v3.victim(id=victim.model.id, params={'fields': ['_all_']})
-        victim.get()
-        # End Snippet
-
-    def test_victim_get_by_name(self):
-        """Test snippet"""
-        self.v3_helper.create_victim()
-
-        # Begin Snippet
-        victims = self.tcex.v3.victims()
-        victims.filter.name(TqlOperator.EQ, 'MyVictim')
-        for victim in victims:
-            print(victim.model.dict(exclude_none=True))
         # End Snippet
 
     def test_victim_remove_security_label(self):
@@ -199,6 +209,34 @@ class TestVictimSnippets(TestV3):
                 victim.stage_tag(tag)
         victim.update(mode='delete')
         # End Snippet
+
+    #
+    # Get Victim
+    #
+
+    def test_victim_get_by_id(self):
+        """Test snippet"""
+        victim = self.v3_helper.create_victim()
+
+        # Begin Snippet
+        victim = self.tcex.v3.victim(id=victim.model.id, params={'fields': ['_all_']})
+        victim.get()
+        # End Snippet
+
+    def test_victim_get_by_name(self):
+        """Test snippet"""
+        self.v3_helper.create_victim()
+
+        # Begin Snippet
+        victims = self.tcex.v3.victims()
+        victims.filter.name(TqlOperator.EQ, 'MyVictim')
+        for victim in victims:
+            print(victim.model.dict(exclude_none=True))
+        # End Snippet
+
+    #
+    # Update Victim
+    #
 
     def test_victim_update(self):
         """Test snippet"""

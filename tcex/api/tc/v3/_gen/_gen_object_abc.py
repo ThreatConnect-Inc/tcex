@@ -21,7 +21,7 @@ class GenerateObjectABC(GenerateABC, ABC):
 
         # properties
         self.requirements = {
-            'standard library': [],
+            'standard library': ['from typing import Union'],
             'third-party': [],
             'first-party': [
                 'from tcex.api.tc.v3.api_endpoints import ApiEndpoints',
@@ -263,35 +263,54 @@ class GenerateObjectABC(GenerateABC, ABC):
             ]
         )
 
-    # def _gen_code_object_base_filter_method(self) -> str:
-    #     """Return the method code.
+    def _gen_code_object_model_property(self) -> str:
+        """Return the method code.
 
-    #     @property
-    #     def _base_filter(self) -> dict:
-    #         '''Return the default filter.'''
-    #         return {
-    #             'keyword': 'artifactid',
-    #             'operator': TqlOperator.EQ,
-    #             'value': self.model.id,
-    #             'type_': 'integer',
-    #         }
-    #     """
-    #     return '\n'.join(
-    #         [
-    #             f'''{self.i1}@property''',
-    #             f'''{self.i1}def _base_filter(self) -> dict:''',
-    #             f'''{self.i2}"""Return the default filter."""''',
-    #             f'''{self.i2}return {{''',
-    #             f'''{self.i3}'keyword': '{self.type_.singular()}_id',''',
-    #             f'''{self.i3}'keyword': 'id',''',
-    #             f'''{self.i3}'operator': TqlOperator.EQ,''',
-    #             f'''{self.i3}'value': self.model.id,''',
-    #             f'''{self.i3}'type_': 'integer',''',
-    #             f'''{self.i2}}}''',
-    #             '',
-    #             '',
-    #         ]
-    #     )
+        Override the object ABC method so that the correct typing hint return
+        type can be used and the IDE will provide full model hinting.
+
+        @property
+        def model(self) -> 'CaseModel':
+            '''Return the model data.'''
+            return self._model
+
+        @model.setter
+        def model(self, data: Union['IndicatorModel', dict]) -> None:
+            '''Create model using the provided data.'''
+            if isinstance(data, type(self.model)):
+                # provided data is already a model, nothing required to change
+                self._model = data
+            elif isinstance(data, dict):
+                # provided data is raw response, load the model
+                self._model = type(self.model)(**data)
+            else:
+                raise RuntimeError(f'Invalid data type: {type(data)} provided.')
+        """
+        return '\n'.join(
+            [
+                f'''{self.i1}@property''',
+                f'''{self.i1}def model(self) -> '{self.type_.singular().pascal_case()}Model':''',
+                f'''{self.i2}"""Return the model data."""''',
+                f'''{self.i2}return self._model''',
+                '',
+                f'''{self.i1}@model.setter''',
+                (
+                    f'''{self.i1}def model(self, data: Union'''
+                    f'''['{self.type_.singular().pascal_case()}Model', dict]) -> None:'''
+                ),
+                f'''{self.i2}"""Create model using the provided data."""''',
+                f'''{self.i2}if isinstance(data, type(self.model)):''',
+                f'''{self.i3}# provided data is already a model, nothing required to change''',
+                f'''{self.i3}self._model = data''',
+                f'''{self.i2}elif isinstance(data, dict):''',
+                f'''{self.i3}# provided data is raw response, load the model''',
+                f'''{self.i3}self._model = type(self.model)(**data)''',
+                f'''{self.i2}else:''',
+                f'''{self.i3}raise RuntimeError(f'Invalid data type: {{type(data)}} provided.')''',
+                '',
+                '',
+            ]
+        )
 
     def _gen_code_object_as_entity_property_method(self) -> str:
         """Return the method code.
@@ -331,7 +350,9 @@ class GenerateObjectABC(GenerateABC, ABC):
             ]
         )
 
-    def _gen_code_object_add_type_method(self, type_: str, model_type: Optional[str] = None) -> str:
+    def _gen_code_object_stage_type_method(
+        self, type_: str, model_type: Optional[str] = None
+    ) -> str:
         """Return the method code.
 
         def stage_artifact(self, **kwargs) -> None:
@@ -340,6 +361,8 @@ class GenerateObjectABC(GenerateABC, ABC):
             ...
             '''
             self.model.artifacts.data.append(ArtifactModel(**kwargs))
+
+            _code += self._gen_code_object_add_type_method('users', 'user_access')
         """
         type_ = self.utils.camel_string(type_)
         model_type = self.utils.camel_string(model_type or type_)
@@ -349,10 +372,13 @@ class GenerateObjectABC(GenerateABC, ABC):
         # model name 'VictimAssets'
         if type_.lower() == 'victim_assets':
             model_reference = self.utils.camel_string('assets')
+        elif type_.lower() == 'users':
+            model_type = self.utils.camel_string('user_accesses')
+            model_reference = 'user_access'
 
         # get model from map and update requirements
         model_import_data = self._module_import_data(type_)
-        self.requirements['standard library'].append('''from typing import Union''')
+        # self.requirements['standard library'].append('''from typing import Union''')
         self.requirements['first-party'].append(
             f'''from {model_import_data.get('model_module')} '''
             f'''import {model_import_data.get('model_class')}'''
@@ -376,7 +402,7 @@ class GenerateObjectABC(GenerateABC, ABC):
                     f'''passed in to stage_{model_type.singular()}')'''
                 ),
                 f'''{self.i2}data._staged = True''',
-                f'''{self.i2}self.model.{model_reference.plural()}.data.append(data)''',
+                f'''{self.i2}self.model.{model_reference}.data.append(data)''',
                 '',
                 '',
             ]
@@ -427,6 +453,60 @@ class GenerateObjectABC(GenerateABC, ABC):
             ]
         )
 
+    def _gen_code_object_stage_assignee(self) -> str:
+        """Return the method code.
+
+        def stage_assignee(
+            self, type: str, data: Union[dict, 'ObjectABC', 'ArtifactModel']
+        ) -> None:
+            '''Stage artifact on the object.'''
+            if isinstance(data, ObjectABC):
+                data = data.model
+            elif type.lower() == 'user' and isinstance(data, dict):
+                data = UserModel(**data)
+            elif type.lower() == 'group' and isinstance(data, dict):
+                data = UserGroupModel(**data)
+
+            if not isinstance(data, (UserModel, UserGroupModel)):
+                raise RuntimeError('Invalid type passed in to stage_assignee')
+            data._staged = True
+            self.model.assignee._staged = True
+            self.model.assignee.type = type
+            self.model.assignee.data = data
+        """
+        self.requirements['first-party'].extend(
+            [
+                'from tcex.api.tc.v3.security.user_groups.user_group_model import UserGroupModel',
+                'from tcex.api.tc.v3.security.users.user_model import UserModel',
+            ]
+        )
+
+        return '\n'.join(
+            [
+                f'''{self.i1}# pylint: disable=redefined-builtin''',
+                (
+                    f'''{self.i1}def stage_assignee(self, type: str, data: '''
+                    f'''Union[dict, 'ObjectABC', 'ArtifactModel']) -> None:'''
+                ),
+                f'''{self.i2}"""Stage artifact on the object."""''',
+                f'''{self.i2}if isinstance(data, ObjectABC):''',
+                f'''{self.i3}data = data.model''',
+                f'''{self.i2}elif type.lower() == 'user' and isinstance(data, dict):''',
+                f'''{self.i3}data = UserModel(**data)''',
+                f'''{self.i2}elif type.lower() == 'group' and isinstance(data, dict):''',
+                f'''{self.i3}data = UserGroupModel(**data)''',
+                '',
+                f'''{self.i2}if not isinstance(data, (UserModel, UserGroupModel)):''',
+                f'''{self.i3}raise RuntimeError('Invalid type passed in to stage_assignee')''',
+                f'''{self.i2}data._staged = True''',
+                f'''{self.i2}self.model.assignee._staged = True''',
+                f'''{self.i2}self.model.assignee.type = type''',
+                f'''{self.i2}self.model.assignee.data = data''',
+                '',
+                '',
+            ]
+        )
+
     def _gen_code_object_type_property_method(
         self, type_: str, model_type: Optional[str] = None
     ) -> str:
@@ -448,6 +528,12 @@ class GenerateObjectABC(GenerateABC, ABC):
         # don't add import if class is in same file
         if self.type_ != type_:
             self.requirements['type-checking'].append(
+                f'''from {model_import_data.get('object_module')} '''
+                f'''import {model_import_data.get('object_class')}'''
+            )
+            print('type_', type_)
+            print('model_type', model_type)
+            print(
                 f'''from {model_import_data.get('object_module')} '''
                 f'''import {model_import_data.get('object_class')}'''
             )
@@ -609,8 +695,8 @@ class GenerateObjectABC(GenerateABC, ABC):
         # generate api_endpoint property method
         _code += self._gen_code_api_endpoint_property()
 
-        # generate base_filter property method
-        # _code += self._gen_code_object_base_filter_method()
+        # generate model property
+        _code += self._gen_code_object_model_property()
 
         # skip object that don't require as_entity method
         if self.type_ not in [
@@ -665,20 +751,21 @@ class GenerateObjectABC(GenerateABC, ABC):
         if 'artifacts' in add_properties:
             _code += self._gen_code_object_type_property_method('artifacts')
 
+        # generate victim assets property method
         if 'assets' in add_properties:
-            _code += self._gen_code_object_type_property_method('assets', 'victim_assets')
+            _code += self._gen_code_object_type_property_method('victim_assets')
 
-        # generate add_associated_group method
+        # generate associated_group property method
         if 'associatedGroups' in add_properties:
             _code += self._gen_code_object_type_property_method('groups', 'associated_groups')
 
-        # generate add_associated_indicator method
+        # generate associated_indicator property method
         if 'associatedIndicators' in add_properties:
             _code += self._gen_code_object_type_property_method(
                 'indicators', 'associated_indicators'
             )
 
-        # generate add_associated_indicator method
+        # generate associated_victim_asset property method
         if 'associatedVictimAssets' in add_properties:
             _code += self._gen_code_object_type_property_method(
                 'victim_assets', 'associated_victim_assets'
@@ -688,7 +775,7 @@ class GenerateObjectABC(GenerateABC, ABC):
         if 'attributes' in add_properties:
             _code += self._gen_code_object_type_property_method('attributes')
 
-        # generate cases add_property method
+        # generate cases property method
         if 'cases' in add_properties:
             _code += self._gen_code_object_type_property_method('cases')
 
@@ -708,55 +795,65 @@ class GenerateObjectABC(GenerateABC, ABC):
         if 'tasks' in add_properties:
             _code += self._gen_code_object_type_property_method('tasks')
 
+        #
         # Stage Method
+        #
 
-        # generate add_artifact method
+        # [custom] generate stage assignee method
+        if self.type_.lower() in ['cases', 'tasks'] and 'assignee' in add_properties:
+            _code += self._gen_code_object_stage_assignee()
+
+        # generate stage_artifact method
         if 'artifacts' in add_properties:
-            _code += self._gen_code_object_add_type_method('artifacts')
+            _code += self._gen_code_object_stage_type_method('artifacts')
 
-        # generate add_asset method
+        # generate stage_asset method
         if 'assets' in add_properties:
-            _code += self._gen_code_object_add_type_method('victim_assets')
+            _code += self._gen_code_object_stage_type_method('victim_assets')
 
-        # generate add_associated_group method
-        # victims have associatedGroups but groups must be associated to the asset not the victim
-        # object.
+        # generate stage_associated_group method
+        # victims have associatedGroups but groups must be
+        # associated to the asset not the victim object.
         if 'associatedGroups' in add_properties and self.type_.lower() not in ['victims']:
-            _code += self._gen_code_object_add_type_method('groups', 'associated_groups')
+            _code += self._gen_code_object_stage_type_method('groups', 'associated_groups')
 
-        # generate add_associated_group method
+        # generate stage_associated_group method
         if 'associatedVictimAssets' in add_properties:
-            _code += self._gen_code_object_add_type_method(
+            _code += self._gen_code_object_stage_type_method(
                 'victim_assets', 'associated_victim_assets'
             )
 
-        # generate add_associated_indicator method
+        # generate stage_associated_indicator method
         if 'associatedIndicators' in add_properties and self.type_ != 'indicators':
-            _code += self._gen_code_object_add_type_method('indicators', 'associated_indicators')
+            _code += self._gen_code_object_stage_type_method('indicators', 'associated_indicators')
 
-        # generate add_attribute method
+        # generate stage_attribute method
         if 'attributes' in add_properties:
-            _code += self._gen_code_object_add_type_method('attributes')
+            _code += self._gen_code_object_stage_type_method('attributes')
 
-        # generate add_case method
+        # generate stage_case method
         if 'cases' in add_properties:
-            _code += self._gen_code_object_add_type_method('cases')
+            _code += self._gen_code_object_stage_type_method('cases')
 
-        # generate add_note method
+        # generate stage_note method
         if 'notes' in add_properties:
-            _code += self._gen_code_object_add_type_method('notes')
+            _code += self._gen_code_object_stage_type_method('notes')
 
-        # generate add_security_labels method
+        # generate stage_security_labels method
         if 'securityLabels' in add_properties:
-            _code += self._gen_code_object_add_type_method('security_labels')
+            _code += self._gen_code_object_stage_type_method('security_labels')
 
-        # generate add_tag method
+        # generate stage_tag method
         if 'tags' in add_properties:
-            _code += self._gen_code_object_add_type_method('tags')
+            _code += self._gen_code_object_stage_type_method('tags')
 
-        # generate add_task method
+        # generate stage_task method
         if 'tasks' in add_properties:
-            _code += self._gen_code_object_add_type_method('tasks')
+            _code += self._gen_code_object_stage_type_method('tasks')
+
+        # generate stage_task method
+        if 'userAccess' in add_properties:
+            _code += self._gen_code_object_stage_type_method('users', 'user_access')
 
         return _code
 

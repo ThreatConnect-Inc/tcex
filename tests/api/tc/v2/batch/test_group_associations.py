@@ -1,4 +1,10 @@
 """Test the TcEx Batch Module."""
+# standard library
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex import TcEx
 
 
 # pylint: disable=no-self-use
@@ -10,9 +16,9 @@ class TestGroup1:
     def setup_class(self):
         """Configure setup before all tests."""
 
-    def test_group_associations(self, tcex):
+    def test_group_associations(self, tcex: 'TcEx'):
         """Test adversary creation"""
-        batch = tcex.batch(owner='TCI', halt_on_error=False)
+        batch = tcex.v2.batch(owner='TCI', halt_on_error=False)
 
         # reduce max chunk size to ensure associations are correct
         batch._batch_max_chunk = 2

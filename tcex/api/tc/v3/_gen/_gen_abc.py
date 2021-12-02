@@ -13,7 +13,7 @@ from requests.exceptions import ProxyError
 # first-party
 from tcex.backports import cached_property
 from tcex.input.field_types.sensitive import Sensitive
-from tcex.sessions.tc_session import HmacAuth
+from tcex.sessions.auth.hmac_auth import HmacAuth
 from tcex.utils import Utils
 
 

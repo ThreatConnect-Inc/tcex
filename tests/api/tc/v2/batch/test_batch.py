@@ -2,21 +2,26 @@
 # standard library
 import os
 from datetime import datetime, timedelta
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex import TcEx
 
 
 class TestBatch:
     """Test the TcEx Batch Module."""
 
     @staticmethod
-    def test_batch_action(tcex):
+    def test_batch_action(tcex: 'TcEx'):
         """Test batch attributes creation"""
-        batch = tcex.batch(action='Delete', owner=os.getenv('TC_OWNER'))
+        batch = tcex.v2.batch(action='Delete', owner=os.getenv('TC_OWNER'))
         assert batch.action == 'Delete'
 
     @staticmethod
-    def test_batch_group_existing(request, tcex):
+    def test_batch_group_existing(request, tcex: 'TcEx'):
         """Test batch attributes creation"""
-        batch = tcex.batch(owner=os.getenv('TC_OWNER'))
+        batch = tcex.v2.batch(owner=os.getenv('TC_OWNER'))
         group_data = {
             'first_seen': (datetime.now() - timedelta(days=2)).isoformat(),
             'name': request.node.name,
@@ -31,9 +36,9 @@ class TestBatch:
         assert batch.group_len == 1
 
     @staticmethod
-    def test_batch_group_existing_shelf(request, tcex):
+    def test_batch_group_existing_shelf(request, tcex: 'TcEx'):
         """Test batch attributes creation"""
-        batch = tcex.batch(owner=os.getenv('TC_OWNER'))
+        batch = tcex.v2.batch(owner=os.getenv('TC_OWNER'))
         group_data = {
             'first_seen': (datetime.now() - timedelta(days=2)).isoformat(),
             'name': request.node.name,
@@ -49,9 +54,9 @@ class TestBatch:
         assert batch.group_len == 1
 
     @staticmethod
-    def test_batch_group_file(request, tcex):
+    def test_batch_group_file(request, tcex: 'TcEx'):
         """Test batch attributes creation"""
-        batch = tcex.batch(owner=os.getenv('TC_OWNER'))
+        batch = tcex.v2.batch(owner=os.getenv('TC_OWNER'))
 
         def file_content(xid):
             """Return dummy file content."""
@@ -71,9 +76,9 @@ class TestBatch:
         assert file_content == group_data.get('file_content')(group_data.get('xid'))
 
     @staticmethod
-    def test_batch_indicator_existing(request, tcex):
+    def test_batch_indicator_existing(request, tcex: 'TcEx'):
         """Test batch attributes creation"""
-        batch = tcex.batch(owner=os.getenv('TC_OWNER'))
+        batch = tcex.v2.batch(owner=os.getenv('TC_OWNER'))
         indicator_data = {
             'confidence': 42,
             'ip': '1.1.1.1',
@@ -90,9 +95,9 @@ class TestBatch:
         assert batch.indicator_len == 1
 
     @staticmethod
-    def test_batch_indicator_existing_shelf(request, tcex):
+    def test_batch_indicator_existing_shelf(request, tcex: 'TcEx'):
         """Test batch attributes creation"""
-        batch = tcex.batch(owner=os.getenv('TC_OWNER'))
+        batch = tcex.v2.batch(owner=os.getenv('TC_OWNER'))
         indicator_data = {
             'confidence': 42,
             'ip': '1.1.1.1',
@@ -110,9 +115,9 @@ class TestBatch:
         assert batch.indicator_len == 1
 
     @staticmethod
-    def test_batch_indicator_expand(tcex):
+    def test_batch_indicator_expand(tcex: 'TcEx'):
         """Test batch attributes creation"""
-        batch = tcex.batch(owner=os.getenv('TC_OWNER'))
+        batch = tcex.v2.batch(owner=os.getenv('TC_OWNER'))
         indicator_data = (
             'e3fc50a88d0a364313df4b21ef20c29e : '
             '92170cdc034b2ff819323ff670d3b7266c8bffcd : '

@@ -18,9 +18,6 @@ from tcex.api.tc.v3.v3 import V3
 from tcex.app_config.install_json import InstallJson
 from tcex.app_feature import AdvancedRequest
 from tcex.backports import cached_property
-from tcex.batch.batch import Batch
-from tcex.batch.batch_submit import BatchSubmit
-from tcex.batch.batch_writer import BatchWriter
 from tcex.exit.exit import ExitCode, ExitService
 from tcex.input.input import Input
 from tcex.key_value_store import KeyValueApi, KeyValueRedis, RedisClient
@@ -120,87 +117,6 @@ class TcEx:
             output_prefix: A value to prepend to outputs.
         """
         return AdvancedRequest(self.inputs, self.playbook, session, timeout, output_prefix)
-
-    def batch(
-        self,
-        owner: str,
-        action: Optional[str] = 'Create',
-        attribute_write_type: Optional[str] = 'Replace',
-        halt_on_error: Optional[bool] = False,
-        playbook_triggers_enabled: Optional[bool] = False,
-        tag_write_type: Optional[str] = 'Replace',
-        security_label_write_type: Optional[str] = 'Replace',
-    ) -> Batch:
-        """Return instance of Batch
-
-        Args:
-            owner: The ThreatConnect owner for Batch action.
-            action: Action for the batch job ['Create', 'Delete'].
-            attribute_write_type: Write type for TI attributes ['Append', 'Replace'].
-            halt_on_error: If True any batch error will halt the batch job.
-            playbook_triggers_enabled: Deprecated input, will not be used.
-            security_label_write_type: Write type for labels ['Append', 'Replace'].
-            tag_write_type: Write type for tags ['Append', 'Replace'].
-        """
-        return Batch(
-            self.inputs,
-            self.session_tc,
-            owner,
-            action,
-            attribute_write_type,
-            halt_on_error,
-            playbook_triggers_enabled,
-            tag_write_type,
-            security_label_write_type,
-        )
-
-    def batch_submit(
-        self,
-        owner: str,
-        action: Optional[str] = 'Create',
-        attribute_write_type: Optional[str] = 'Replace',
-        halt_on_error: Optional[bool] = False,
-        playbook_triggers_enabled: Optional[bool] = False,
-        tag_write_type: Optional[str] = 'Replace',
-        security_label_write_type: Optional[str] = 'Replace',
-    ) -> BatchSubmit:
-        """Return instance of Batch
-
-        Args:
-            tcex: An instance of TcEx object.
-            owner: The ThreatConnect owner for Batch action.
-            action: Action for the batch job ['Create', 'Delete'].
-            attribute_write_type: Write type for TI attributes ['Append', 'Replace'].
-            halt_on_error: If True any batch error will halt the batch job.
-            playbook_triggers_enabled: Deprecated input, will not be used.
-            security_label_write_type: Write type for labels ['Append', 'Replace'].
-            tag_write_type: Write type for tags ['Append', 'Replace'].
-        """
-        return BatchSubmit(
-            self.inputs,
-            self.session_tc,
-            owner,
-            action,
-            attribute_write_type,
-            halt_on_error,
-            playbook_triggers_enabled,
-            tag_write_type,
-            security_label_write_type,
-        )
-
-    def batch_writer(self, output_dir: str, **kwargs) -> BatchWriter:
-        """Return instance of Batch
-
-        Args:
-            tcex: An instance of TcEx object.
-            output_dir: Deprecated input, will not be used.
-            output_extension (kwargs: str): Append this extension to output files.
-            write_callback (kwargs: Callable): A callback method to call when a batch json file
-                is written. The callback will be passed the fully qualified name of the written
-                file.
-            write_callback_kwargs (kwargs: dict): Additional values to send to callback method.
-        """
-        return BatchWriter(self.inputs, self.session_tc, output_dir, **kwargs)
 
     def exit(self, code: Optional[ExitCode] = None, msg: Optional[str] = None) -> None:
         """Application exit method with proper exit code
@@ -552,7 +468,7 @@ class TcEx:
     @property
     def v2(self) -> 'V2':
         """Return a case management instance."""
-        return V2(self.session_tc)
+        return V2(self.inputs, self.session_tc)
 
     @property
     def v3(self) -> 'V3':

@@ -23,7 +23,7 @@ class TestAttributes:
         self, name, description, attr_type, attr_value, displayed, source, tcex
     ):
         """Test batch attributes creation"""
-        batch = tcex.batch(owner='TCI')
+        batch = tcex.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'adversary', name])
         ti = batch.adversary(name=name, xid=xid)
 

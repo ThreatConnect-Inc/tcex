@@ -18,7 +18,7 @@ from requests import Session
 
 # first-party
 from tcex.api.tc.utils.threat_intel_utils import ThreatIntelUtils
-from tcex.batch.group import (
+from tcex.api.tc.v2.batch.group import (
     Adversary,
     Campaign,
     Document,
@@ -31,7 +31,7 @@ from tcex.batch.group import (
     Signature,
     Threat,
 )
-from tcex.batch.indicator import (
+from tcex.api.tc.v2.batch.indicator import (
     ASN,
     CIDR,
     URL,

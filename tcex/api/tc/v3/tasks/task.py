@@ -8,6 +8,8 @@ from tcex.api.tc.v3.artifacts.artifact_model import ArtifactModel
 from tcex.api.tc.v3.notes.note_model import NoteModel
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
+from tcex.api.tc.v3.security.user_groups.user_group_model import UserGroupModel
+from tcex.api.tc.v3.security.users.user_model import UserModel
 from tcex.api.tc.v3.tasks.task_filter import TaskFilter
 from tcex.api.tc.v3.tasks.task_model import TaskModel, TasksModel
 
@@ -93,6 +95,23 @@ class Task(ObjectABC):
         return ApiEndpoints.TASKS.value
 
     @property
+    def model(self) -> 'TaskModel':
+        """Return the model data."""
+        return self._model
+
+    @model.setter
+    def model(self, data: Union['TaskModel', dict]) -> None:
+        """Create model using the provided data."""
+        if isinstance(data, type(self.model)):
+            # provided data is already a model, nothing required to change
+            self._model = data
+        elif isinstance(data, dict):
+            # provided data is raw response, load the model
+            self._model = type(self.model)(**data)
+        else:
+            raise RuntimeError(f'Invalid data type: {type(data)} provided.')
+
+    @property
     def as_entity(self) -> dict:
         """Return the entity representation of the object."""
         type_ = self.type_
@@ -128,6 +147,23 @@ class Task(ObjectABC):
             raise RuntimeError('Invalid type passed in to stage_artifact')
         data._staged = True
         self.model.artifacts.data.append(data)
+
+    # pylint: disable=redefined-builtin
+    def stage_assignee(self, type: str, data: Union[dict, 'ObjectABC', 'ArtifactModel']) -> None:
+        """Stage artifact on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif type.lower() == 'user' and isinstance(data, dict):
+            data = UserModel(**data)
+        elif type.lower() == 'group' and isinstance(data, dict):
+            data = UserGroupModel(**data)
+
+        if not isinstance(data, (UserModel, UserGroupModel)):
+            raise RuntimeError('Invalid type passed in to stage_assignee')
+        data._staged = True
+        self.model.assignee._staged = True
+        self.model.assignee.type = type
+        self.model.assignee.data = data
 
     def stage_note(self, data: Union[dict, 'ObjectABC', 'NoteModel']) -> None:
         """Stage note on the object."""

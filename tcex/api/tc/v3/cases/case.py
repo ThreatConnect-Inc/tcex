@@ -11,6 +11,8 @@ from tcex.api.tc.v3.cases.case_model import CaseModel, CasesModel
 from tcex.api.tc.v3.notes.note_model import NoteModel
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
+from tcex.api.tc.v3.security.user_groups.user_group_model import UserGroupModel
+from tcex.api.tc.v3.security.users.user_model import UserModel
 from tcex.api.tc.v3.tags.tag_model import TagModel
 from tcex.api.tc.v3.tasks.task_model import TaskModel
 
@@ -108,6 +110,23 @@ class Case(ObjectABC):
         return ApiEndpoints.CASES.value
 
     @property
+    def model(self) -> 'CaseModel':
+        """Return the model data."""
+        return self._model
+
+    @model.setter
+    def model(self, data: Union['CaseModel', dict]) -> None:
+        """Create model using the provided data."""
+        if isinstance(data, type(self.model)):
+            # provided data is already a model, nothing required to change
+            self._model = data
+        elif isinstance(data, dict):
+            # provided data is raw response, load the model
+            self._model = type(self.model)(**data)
+        else:
+            raise RuntimeError(f'Invalid data type: {type(data)} provided.')
+
+    @property
     def as_entity(self) -> dict:
         """Return the entity representation of the object."""
         type_ = self.type_
@@ -168,6 +187,23 @@ class Case(ObjectABC):
         data._staged = True
         self.model.artifacts.data.append(data)
 
+    # pylint: disable=redefined-builtin
+    def stage_assignee(self, type: str, data: Union[dict, 'ObjectABC', 'ArtifactModel']) -> None:
+        """Stage artifact on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif type.lower() == 'user' and isinstance(data, dict):
+            data = UserModel(**data)
+        elif type.lower() == 'group' and isinstance(data, dict):
+            data = UserGroupModel(**data)
+
+        if not isinstance(data, (UserModel, UserGroupModel)):
+            raise RuntimeError('Invalid type passed in to stage_assignee')
+        data._staged = True
+        self.model.assignee._staged = True
+        self.model.assignee.type = type
+        self.model.assignee.data = data
+
     def stage_attribute(self, data: Union[dict, 'ObjectABC', 'CaseAttributeModel']) -> None:
         """Stage attribute on the object."""
         if isinstance(data, ObjectABC):
@@ -215,3 +251,15 @@ class Case(ObjectABC):
             raise RuntimeError('Invalid type passed in to stage_task')
         data._staged = True
         self.model.tasks.data.append(data)
+
+    def stage_user_access(self, data: Union[dict, 'ObjectABC', 'UserModel']) -> None:
+        """Stage user on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = UserModel(**data)
+
+        if not isinstance(data, UserModel):
+            raise RuntimeError('Invalid type passed in to stage_user_access')
+        data._staged = True
+        self.model.user_access.data.append(data)

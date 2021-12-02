@@ -1,6 +1,13 @@
 """Test the TcEx Batch Module."""
+# standard library
+from typing import TYPE_CHECKING
+
 # third-party
 import pytest
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex import TcEx
 
 
 # pylint: disable=no-self-use
@@ -19,9 +26,9 @@ class TestIndicator1:
             ('1.11.111.4', 'Example #4', 'PYTEST4', 'PyTest4'),
         ],
     )
-    def test_address(self, indicator, description, label, tag, tcex):
+    def test_address(self, indicator, description, label, tag, tcex: 'TcEx'):
         """Test address creation"""
-        batch = tcex.batch(owner='TCI')
+        batch = tcex.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'address', indicator])
         ti = batch.address(ip=indicator, rating='5.0', confidence='100', xid=xid)
         ti.attribute(attr_type='Description', attr_value=description, displayed=True)
@@ -41,9 +48,9 @@ class TestIndicator1:
             ('pytest-email_address-i1-004@test.com', 'Example #4', 'PYTEST:4', 'PyTest4'),
         ],
     )
-    def test_email_address(self, indicator, description, label, tag, tcex):
+    def test_email_address(self, indicator, description, label, tag, tcex: 'TcEx'):
         """Test email_address creation"""
-        batch = tcex.batch(owner='TCI')
+        batch = tcex.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'email_address', indicator])
         ti = batch.email_address(address=indicator, rating='5.0', confidence='100', xid=xid)
         ti.attribute(attr_type='Description', attr_value=description, displayed=True)
@@ -63,9 +70,9 @@ class TestIndicator1:
             ('d1', 'd1', 'd1', 'Example #4', 'PYTEST:4', 'PyTest4'),
         ],
     )
-    def test_file(self, md5, sha1, sha256, description, label, tag, tcex):
+    def test_file(self, md5, sha1, sha256, description, label, tag, tcex: 'TcEx'):
         """Test file creation"""
-        batch = tcex.batch(owner='TCI')
+        batch = tcex.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'file', md5, sha1, sha256])
         ti = batch.file(
             md5=md5 * 16,
@@ -92,9 +99,9 @@ class TestIndicator1:
             ('pytest-host-i1-004.com', 'Example #4', 'PYTEST:4', 'PyTest4'),
         ],
     )
-    def test_host(self, indicator, description, label, tag, tcex):
+    def test_host(self, indicator, description, label, tag, tcex: 'TcEx'):
         """Test host creation"""
-        batch = tcex.batch(owner='TCI')
+        batch = tcex.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'host', indicator])
         ti = batch.host(hostname=indicator, rating='5.0', confidence='100', xid=xid)
         ti.attribute(attr_type='Description', attr_value=description, displayed=True)
@@ -114,9 +121,9 @@ class TestIndicator1:
             ('https://pytest-url-i1-004.com', 'Example #4', 'PYTEST:4', 'PyTest4'),
         ],
     )
-    def test_url(self, indicator, description, label, tag, tcex):
+    def test_url(self, indicator, description, label, tag, tcex: 'TcEx'):
         """Test url creation"""
-        batch = tcex.batch(owner='TCI')
+        batch = tcex.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'url', indicator])
         ti = batch.url(text=indicator, rating='5.0', confidence='100', xid=xid)
         ti.attribute(attr_type='Description', attr_value=description, displayed=True)

@@ -15,10 +15,10 @@ from tcex.api.tc.v3.victims.victim_model import VictimModel, VictimsModel
 
 if TYPE_CHECKING:  # pragma: no cover
     # first-party
-    from tcex.api.tc.v3.assets.asset import Asset
     from tcex.api.tc.v3.groups.group import Group
     from tcex.api.tc.v3.security_labels.security_label import SecurityLabel
     from tcex.api.tc.v3.tags.tag import Tag
+    from tcex.api.tc.v3.victim_assets.victim_asset import VictimAsset
     from tcex.api.tc.v3.victim_attributes.victim_attribute import VictimAttribute
 
 
@@ -100,6 +100,23 @@ class Victim(ObjectABC):
         return ApiEndpoints.VICTIMS.value
 
     @property
+    def model(self) -> 'VictimModel':
+        """Return the model data."""
+        return self._model
+
+    @model.setter
+    def model(self, data: Union['VictimModel', dict]) -> None:
+        """Create model using the provided data."""
+        if isinstance(data, type(self.model)):
+            # provided data is already a model, nothing required to change
+            self._model = data
+        elif isinstance(data, dict):
+            # provided data is raw response, load the model
+            self._model = type(self.model)(**data)
+        else:
+            raise RuntimeError(f'Invalid data type: {type(data)} provided.')
+
+    @property
     def as_entity(self) -> dict:
         """Return the entity representation of the object."""
         type_ = self.type_
@@ -109,12 +126,12 @@ class Victim(ObjectABC):
         return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
 
     @property
-    def victim_assets(self) -> 'Asset':
-        """Yield Asset from Assets."""
+    def victim_assets(self) -> 'VictimAsset':
+        """Yield Victim_Asset from Victim_Assets."""
         # first-party
-        from tcex.api.tc.v3.assets.asset import Assets
+        from tcex.api.tc.v3.victim_assets.victim_asset import VictimAssets
 
-        yield from self._iterate_over_sublist(Assets)
+        yield from self._iterate_over_sublist(VictimAssets)
 
     @property
     def associated_groups(self) -> 'Group':

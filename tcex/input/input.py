@@ -57,8 +57,16 @@ def input_model(models: list) -> BaseModel:
 class Input:
     """Module to handle inputs for all App types."""
 
-    def __init__(self, config: Optional[dict] = None, config_file: Optional[str] = None) -> None:
-        """Initialize class properties."""
+    def __init__(
+        self, config: Optional[dict] = None, config_file: Optional[str] = None, **kwargs
+    ) -> None:
+        """Initialize class properties.
+
+        Keyword Args:
+            tc_session: pass a tc_session object to use, else will use the one from registry.
+        """
+
+        # TODO [HIGH] kwarg - don't add built-in models, supply custom TcSession object
         self.config = config
         self.config_file = config_file
 
@@ -67,6 +75,7 @@ class Input:
         self.ij = InstallJson()
         self.log = logger
         self.utils = Utils()
+        self.tc_session = kwargs.get('tc_session')
 
     def _load_aot_params(
         self,
@@ -101,7 +110,8 @@ class Input:
                 if msg_data is None:  # pragma: no cover
                     # send exit to tcex.exit method
                     registry.ExitService.exit_aot_terminate(
-                        code=1, msg='AOT subscription timeout reached.')
+                        code=1, msg='AOT subscription timeout reached.'
+                    )
 
                 msg_data = json.loads(msg_data[1])
                 msg_type = msg_data.get('type', 'terminate')
@@ -110,11 +120,13 @@ class Input:
                 elif msg_type == 'terminate':
                     # send exit to tcex.exit method
                     registry.ExitService.exit_aot_terminate(
-                        code=0, msg='Received AOT terminate message.')
+                        code=0, msg='Received AOT terminate message.'
+                    )
             except Exception as e:  # pragma: no cover
                 # send exit to tcex.exit method
                 registry.ExitService.exit_aot_terminate(
-                    code=1, msg=f'Exception during AOT subscription ({e}).')
+                    code=1, msg=f'Exception during AOT subscription ({e}).'
+                )
 
         return params
 
@@ -219,17 +231,8 @@ class Input:
         """Return contents of inputs from all locations."""
         _contents = {}
 
-        # config
-        if isinstance(self.config, dict):
-            _contents.update(self.config)
-
-        # config file
-        _contents.update(self._load_config_file())
-
-        # file params
-        _contents.update(self._load_file_params())
-
-        # aot params
+        # aot params - load first so that we block and don't read config params
+        #    before they are available.
         _contents.update(
             self._load_aot_params(
                 tc_aot_enabled=_contents.get('tc_aot_enabled', False),
@@ -240,6 +243,16 @@ class Input:
                 tc_terminate_seconds=_contents.get('tc_terminate_seconds'),
             )
         )
+
+        # config
+        if isinstance(self.config, dict):
+            _contents.update(self.config)
+
+        # config file
+        _contents.update(self._load_config_file())
+
+        # file params
+        _contents.update(self._load_file_params())
 
         return _contents
 
@@ -257,6 +270,12 @@ class Input:
             return _inputs
 
         for name, value in _inputs.items():
+            if name == 'tc_playbook_out_variables':
+                # for services, this input contains the name of the expected outputs.  If we don't
+                # skip this, we'll try to resolve the value (e.g.
+                # #Trigger:334:example.service_input!String), but that 1) won't work for services
+                # and 2) doesn't make sense.  Service configs will never have playbook variables.
+                continue
             if isinstance(value, list) and self.ij.model.runtime_level.lower() == 'playbook':
                 # list could contain playbook variables, try to resolve the value
                 updated_value_array = []
@@ -367,8 +386,7 @@ class Input:
 
         return properties
 
-    @staticmethod
-    def resolve_variable(provider: str, key: str, type_: str) -> Union[bytes, str]:
+    def resolve_variable(self, provider: str, key: str, type_: str) -> Union[bytes, str]:
         """Resolve FILE/KEYCHAIN/TEXT variables.
 
         Feature: PLAT-2688
@@ -381,7 +399,8 @@ class Input:
         data = None
 
         # retrieve value from API
-        r = registry.session_tc.get(f'/internal/variable/runtime/{provider}/{key}')
+        session = self.tc_session if self.tc_session else registry.session_tc
+        r = session.get(f'/internal/variable/runtime/{provider}/{key}')
         if r.ok:
             try:
                 data = r.json().get('data')
