@@ -57,10 +57,11 @@ def input_model(models: list) -> BaseModel:
 class Input:
     """Module to handle inputs for all App types."""
 
-    def __init__(self, config: Optional[dict] = None, config_file: Optional[str] = None,
-                 **kwargs) -> None:
+    def __init__(
+        self, config: Optional[dict] = None, config_file: Optional[str] = None, **kwargs
+    ) -> None:
         """Initialize class properties.
-        
+
         Keyword Args:
             tc_session: pass a tc_session object to use, else will use the one from registry.
         """
@@ -109,7 +110,8 @@ class Input:
                 if msg_data is None:  # pragma: no cover
                     # send exit to tcex.exit method
                     registry.ExitService.exit_aot_terminate(
-                        code=1, msg='AOT subscription timeout reached.')
+                        code=1, msg='AOT subscription timeout reached.'
+                    )
 
                 msg_data = json.loads(msg_data[1])
                 msg_type = msg_data.get('type', 'terminate')
@@ -118,11 +120,13 @@ class Input:
                 elif msg_type == 'terminate':
                     # send exit to tcex.exit method
                     registry.ExitService.exit_aot_terminate(
-                        code=0, msg='Received AOT terminate message.')
+                        code=0, msg='Received AOT terminate message.'
+                    )
             except Exception as e:  # pragma: no cover
                 # send exit to tcex.exit method
                 registry.ExitService.exit_aot_terminate(
-                    code=1, msg=f'Exception during AOT subscription ({e}).')
+                    code=1, msg=f'Exception during AOT subscription ({e}).'
+                )
 
         return params
 
@@ -381,10 +385,7 @@ class Input:
 
         return properties
 
-    @staticmethod
-    def resolve_variable(provider: str, key: str, type_: str) -> Union[
-        bytes,
-                                                                                         str]:
+    def resolve_variable(self, provider: str, key: str, type_: str) -> Union[bytes, str]:
         """Resolve FILE/KEYCHAIN/TEXT variables.
 
         Feature: PLAT-2688

@@ -263,36 +263,6 @@ class GenerateObjectABC(GenerateABC, ABC):
             ]
         )
 
-    # def _gen_code_object_base_filter_method(self) -> str:
-    #     """Return the method code.
-
-    #     @property
-    #     def _base_filter(self) -> dict:
-    #         '''Return the default filter.'''
-    #         return {
-    #             'keyword': 'artifactid',
-    #             'operator': TqlOperator.EQ,
-    #             'value': self.model.id,
-    #             'type_': 'integer',
-    #         }
-    #     """
-    #     return '\n'.join(
-    #         [
-    #             f'''{self.i1}@property''',
-    #             f'''{self.i1}def _base_filter(self) -> dict:''',
-    #             f'''{self.i2}"""Return the default filter."""''',
-    #             f'''{self.i2}return {{''',
-    #             f'''{self.i3}'keyword': '{self.type_.singular()}_id',''',
-    #             f'''{self.i3}'keyword': 'id',''',
-    #             f'''{self.i3}'operator': TqlOperator.EQ,''',
-    #             f'''{self.i3}'value': self.model.id,''',
-    #             f'''{self.i3}'type_': 'integer',''',
-    #             f'''{self.i2}}}''',
-    #             '',
-    #             '',
-    #         ]
-    #     )
-
     def _gen_code_object_model_property(self) -> str:
         """Return the method code.
 
@@ -380,7 +350,9 @@ class GenerateObjectABC(GenerateABC, ABC):
             ]
         )
 
-    def _gen_code_object_add_type_method(self, type_: str, model_type: Optional[str] = None) -> str:
+    def _gen_code_object_stage_type_method(
+        self, type_: str, model_type: Optional[str] = None
+    ) -> str:
         """Return the method code.
 
         def stage_artifact(self, **kwargs) -> None:
@@ -559,6 +531,12 @@ class GenerateObjectABC(GenerateABC, ABC):
                 f'''from {model_import_data.get('object_module')} '''
                 f'''import {model_import_data.get('object_class')}'''
             )
+            print('type_', type_)
+            print('model_type', model_type)
+            print(
+                f'''from {model_import_data.get('object_module')} '''
+                f'''import {model_import_data.get('object_class')}'''
+            )
         _code = [
             f'''{self.i1}@property''',
             (
@@ -720,9 +698,6 @@ class GenerateObjectABC(GenerateABC, ABC):
         # generate model property
         _code += self._gen_code_object_model_property()
 
-        # generate base_filter property method
-        # _code += self._gen_code_object_base_filter_method()
-
         # skip object that don't require as_entity method
         if self.type_ not in [
             'case_attributes',
@@ -776,20 +751,21 @@ class GenerateObjectABC(GenerateABC, ABC):
         if 'artifacts' in add_properties:
             _code += self._gen_code_object_type_property_method('artifacts')
 
+        # generate victim assets property method
         if 'assets' in add_properties:
-            _code += self._gen_code_object_type_property_method('assets', 'victim_assets')
+            _code += self._gen_code_object_type_property_method('victim_assets')
 
-        # generate add_associated_group method
+        # generate associated_group property method
         if 'associatedGroups' in add_properties:
             _code += self._gen_code_object_type_property_method('groups', 'associated_groups')
 
-        # generate add_associated_indicator method
+        # generate associated_indicator property method
         if 'associatedIndicators' in add_properties:
             _code += self._gen_code_object_type_property_method(
                 'indicators', 'associated_indicators'
             )
 
-        # generate add_associated_indicator method
+        # generate associated_victim_asset property method
         if 'associatedVictimAssets' in add_properties:
             _code += self._gen_code_object_type_property_method(
                 'victim_assets', 'associated_victim_assets'
@@ -799,7 +775,7 @@ class GenerateObjectABC(GenerateABC, ABC):
         if 'attributes' in add_properties:
             _code += self._gen_code_object_type_property_method('attributes')
 
-        # generate cases add_property method
+        # generate cases property method
         if 'cases' in add_properties:
             _code += self._gen_code_object_type_property_method('cases')
 
@@ -819,63 +795,65 @@ class GenerateObjectABC(GenerateABC, ABC):
         if 'tasks' in add_properties:
             _code += self._gen_code_object_type_property_method('tasks')
 
+        #
         # Stage Method
+        #
 
-        # generate stage_artifact method
-        if 'artifacts' in add_properties:
-            _code += self._gen_code_object_add_type_method('artifacts')
-
-        # generate stage assignee method
+        # [custom] generate stage assignee method
         if self.type_.lower() in ['cases', 'tasks'] and 'assignee' in add_properties:
             _code += self._gen_code_object_stage_assignee()
 
-        # generate add_asset method
+        # generate stage_artifact method
+        if 'artifacts' in add_properties:
+            _code += self._gen_code_object_stage_type_method('artifacts')
+
+        # generate stage_asset method
         if 'assets' in add_properties:
-            _code += self._gen_code_object_add_type_method('victim_assets')
+            _code += self._gen_code_object_stage_type_method('victim_assets')
 
-        # generate add_associated_group method
-        # victims have associatedGroups but groups must be associated to the asset not the victim
-        # object.
+        # generate stage_associated_group method
+        # victims have associatedGroups but groups must be
+        # associated to the asset not the victim object.
         if 'associatedGroups' in add_properties and self.type_.lower() not in ['victims']:
-            _code += self._gen_code_object_add_type_method('groups', 'associated_groups')
+            _code += self._gen_code_object_stage_type_method('groups', 'associated_groups')
 
-        # generate add_associated_group method
+        # generate stage_associated_group method
         if 'associatedVictimAssets' in add_properties:
-            _code += self._gen_code_object_add_type_method(
+            _code += self._gen_code_object_stage_type_method(
                 'victim_assets', 'associated_victim_assets'
             )
 
-        # generate add_associated_indicator method
+        # generate stage_associated_indicator method
         if 'associatedIndicators' in add_properties and self.type_ != 'indicators':
-            _code += self._gen_code_object_add_type_method('indicators', 'associated_indicators')
+            _code += self._gen_code_object_stage_type_method('indicators', 'associated_indicators')
 
-        # generate add_attribute method
+        # generate stage_attribute method
         if 'attributes' in add_properties:
-            _code += self._gen_code_object_add_type_method('attributes')
+            _code += self._gen_code_object_stage_type_method('attributes')
 
-        # generate add_case method
+        # generate stage_case method
         if 'cases' in add_properties:
-            _code += self._gen_code_object_add_type_method('cases')
+            _code += self._gen_code_object_stage_type_method('cases')
 
-        # generate add_note method
+        # generate stage_note method
         if 'notes' in add_properties:
-            _code += self._gen_code_object_add_type_method('notes')
+            _code += self._gen_code_object_stage_type_method('notes')
 
-        # generate add_security_labels method
+        # generate stage_security_labels method
         if 'securityLabels' in add_properties:
-            _code += self._gen_code_object_add_type_method('security_labels')
+            _code += self._gen_code_object_stage_type_method('security_labels')
 
-        # generate add_tag method
+        # generate stage_tag method
         if 'tags' in add_properties:
-            _code += self._gen_code_object_add_type_method('tags')
+            _code += self._gen_code_object_stage_type_method('tags')
 
-        # generate add_task method
+        # generate stage_task method
         if 'tasks' in add_properties:
-            _code += self._gen_code_object_add_type_method('tasks')
+            _code += self._gen_code_object_stage_type_method('tasks')
 
-        # generate add_task method
+        # generate stage_task method
         if 'userAccess' in add_properties:
-            _code += self._gen_code_object_add_type_method('users', 'user_access')
+            _code += self._gen_code_object_stage_type_method('users', 'user_access')
 
         return _code
 

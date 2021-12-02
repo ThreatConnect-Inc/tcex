@@ -1,6 +1,5 @@
 """Case Management Abstract Base Class"""
 # standard library
-import json
 import logging
 
 # import inspect
