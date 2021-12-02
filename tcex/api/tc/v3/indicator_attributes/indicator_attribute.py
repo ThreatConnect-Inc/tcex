@@ -1,4 +1,7 @@
 """IndicatorAttribute / IndicatorAttributes Object"""
+# standard library
+from typing import Union
+
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.indicator_attributes.indicator_attribute_filter import IndicatorAttributeFilter
@@ -75,3 +78,20 @@ class IndicatorAttribute(ObjectABC):
     def _api_endpoint(self) -> str:
         """Return the type specific API endpoint."""
         return ApiEndpoints.INDICATOR_ATTRIBUTES.value
+
+    @property
+    def model(self) -> 'IndicatorAttributeModel':
+        """Return the model data."""
+        return self._model
+
+    @model.setter
+    def model(self, data: Union['IndicatorAttributeModel', dict]) -> None:
+        """Create model using the provided data."""
+        if isinstance(data, type(self.model)):
+            # provided data is already a model, nothing required to change
+            self._model = data
+        elif isinstance(data, dict):
+            # provided data is raw response, load the model
+            self._model = type(self.model)(**data)
+        else:
+            raise RuntimeError(f'Invalid data type: {type(data)} provided.')

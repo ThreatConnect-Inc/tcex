@@ -87,6 +87,23 @@ class VictimAsset(ObjectABC):
         return ApiEndpoints.VICTIM_ASSETS.value
 
     @property
+    def model(self) -> 'VictimAssetModel':
+        """Return the model data."""
+        return self._model
+
+    @model.setter
+    def model(self, data: Union['VictimAssetModel', dict]) -> None:
+        """Create model using the provided data."""
+        if isinstance(data, type(self.model)):
+            # provided data is already a model, nothing required to change
+            self._model = data
+        elif isinstance(data, dict):
+            # provided data is raw response, load the model
+            self._model = type(self.model)(**data)
+        else:
+            raise RuntimeError(f'Invalid data type: {type(data)} provided.')
+
+    @property
     def associated_groups(self) -> 'Group':
         """Yield Group from Groups."""
         # first-party

@@ -28,8 +28,12 @@ class CustomJSONEncoder(JSONEncoder):
 class V3ModelABC(BaseModel, ABC):
     """V3 Base Model"""
 
+    _associated_type = PrivateAttr(False)
+    _cm_type = PrivateAttr(False)
     _dict_hash: str = PrivateAttr()
     _log = logger
+    _shared_type = PrivateAttr(False)
+    _staged = PrivateAttr(False)
 
     def __init__(self, **kwargs):
         """Initialize class properties."""
@@ -38,7 +42,7 @@ class V3ModelABC(BaseModel, ABC):
         # when "id" field is present it indicates that the data was returned from the
         # API, otherwise the assumption is that the developer staged the data during
         # instantiation of the object.
-        if kwargs and hasattr(self, 'id') and self.id is None:
+        if kwargs and hasattr(self, 'id') and self.id is None:  # pylint: disable=no-member
             self._staged = True
 
         # store initial dict hash of model
@@ -60,27 +64,10 @@ class V3ModelABC(BaseModel, ABC):
         if field == 'id' and nested is True and value:
             return True
 
-        # STAGED RULE: Staged item
-
-        # # Staged and nested have overlap
-        # if (
-        #     self._staged is True
-        #     and self.id is not None
-        #     # and nested is True
-        #     and mode.lower() not in ['replace']
-        # ):
-        #     return False
-
-        # CM NESTED RULE: For nested CM objects the body should use the valid POST fields
-        #    instead of the PUT fields. This handles including artifact type and other
-        #    fields that are needed on the nested object.
-        # if method == 'PUT' and nested is True and self._cm_type is True:
-        #     method = 'POST'
-
         # NESTED RULE: For nested objects the body should use the valid POST fields
         #    instead of the PUT fields if id is not available. This handles including
         #    artifact type, attributes and other fields that are needed on the nested object.
-        if method == 'PUT' and nested is True and not self.id:  # this is a new nested deal
+        if method == 'PUT' and nested is True and not self.id:  # pylint: disable=no-member
             method = 'POST'
 
         # SHARED TYPE RULE: For nested "shared types" objects the body should use the valid
@@ -97,6 +84,7 @@ class V3ModelABC(BaseModel, ABC):
         # DEFAULT RULE -> Fields should not be included unless the match a previous rule.
         return False
 
+    # pylint: disable=too-many-return-statements
     def _calculate_nested_inclusion(self, method: str, mode: str, model: 'BaseModel') -> str:
         """Return True if the field is calculated to be included.
 
@@ -133,10 +121,11 @@ class V3ModelABC(BaseModel, ABC):
         if method == 'POST':
             return True
 
-        # What we know:
+        # Current Object Restrictions:
         # * The method is PUT
         # * The nested object was NOT added via the stage_xxx method
         # * The nested object contains a ID or Name Field
+        # * The nested object could either have been set during initing the object or fetched.
 
         # CM and TI endpoint behaves differently. Start with rules based on the parent type,
         # then add more specific rules.
@@ -198,10 +187,6 @@ class V3ModelABC(BaseModel, ABC):
             #     efficient as deleting them all in one request, it's is a simplier
             #     development design pattern.
 
-            # TODO: @bpurdy why do we not have stage_assignee, stage_user_access, and other
-            #     nested USER types?
-            # Assignee ????
-
             # All non-matching nested object that did not match a rule above will NOT be INCLUDED.
             return False
 
@@ -234,7 +219,6 @@ class V3ModelABC(BaseModel, ABC):
 
         # * security_label -> delete (support id or name only)
         # * tag -> delete (support id or name only)
-        # if mode == 'delete' and model._staged is True:
         if (
             mode == 'delete'
             and (model._shared_type is True or self._associated_type is True)

@@ -28,13 +28,17 @@ class StringOperations:
                 return CamelString(camel_to_space(self).title().replace(' ', ''))
 
             def plural(self):
-                """Return inflect.singular_noun spelling of string."""
+                """Return inflect.plural spelling of string."""
                 return CamelString(inflect.plural(self.singular()))
 
             def singular(self):
-                """Return inflect.singular_noun spelling of string."""
-                _singular = inflect.singular_noun(self)
-                if _singular is False:
+                """Return inflect.singular spelling of string."""
+                try:
+                    _singular = inflect.singular(self)
+                except Exception:
+                    _singular = inflect.singular_noun(self)
+
+                if not _singular:
                     _singular = self
                 return CamelString(_singular)
 
@@ -101,13 +105,17 @@ class StringOperations:
                 return SnakeString(snake_to_pascal(self))
 
             def plural(self):
-                """Return inflect.singular_noun spelling of string."""
+                """Return inflect.plural spelling of string."""
                 return SnakeString(inflect.plural(self.singular()))
 
             def singular(self):
-                """Return inflect.singular_noun spelling of string."""
-                _singular = inflect.singular_noun(self)
-                if _singular is False:
+                """Return inflect.singular spelling of string."""
+                try:
+                    _singular = inflect.singular(self)
+                except Exception:
+                    _singular = inflect.singular_noun(self)
+
+                if not _singular:
                     _singular = self
                 return SnakeString(_singular)
 
