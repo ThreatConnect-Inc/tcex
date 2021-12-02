@@ -3,6 +3,8 @@
 from requests import Session
 
 # first-party
+from tcex.api.tc.utils.threat_intel_utils import ThreatIntelUtils
+
 from tcex.api.tc.v3.group_attributes.group_attribute import GroupAttribute, GroupAttributes
 from tcex.api.tc.v3.groups.group import Group, Groups
 from tcex.api.tc.v3.indicator_attributes.indicator_attribute import (
@@ -26,23 +28,35 @@ class ThreatIntelligence:
     def __init__(self, session: Session) -> None:
         """Initialize Class properties."""
         self.session = session
+        self._ti_utils = None
+
+    @property
+    def ti_utils(self):
+        if not self._ti_utils:
+            self._ti_utils = ThreatIntelUtils(session_tc=self.session)
+        return self._ti_utils
 
     def create_entity(self, entity: dict, owner: str) -> dict:
         """Create a CM object provided a dict and owner."""
-        print(entity)
-        entity_type = entity.pop('type').lower()
+        entity_type = entity.get('type').lower()
         entity_type = entity_type.replace(' ', '_')
         try:
-            obj = getattr(self, entity_type)(**entity)
+            if entity_type in (type_.lower() for type_ in self.ti_utils.group_types):
+                main_type = 'Group'
+                obj = self.group(**entity)
+            elif entity_type in (type_.lower() for type_ in self.ti_utils.indicator_types):
+                main_type = 'Indicator'
+                obj = self.indicator(**entity)
+            else:
+                raise RuntimeError(f'Invalid entity type provided for: {entity}')
         except AttributeError:
             return None
 
-        r = obj.submit()
+        r = obj.create()
         data = {'status_code': r.status_code}
         if r.ok:
             data.update(r.json().get('data', {}))
-            print(r.json())
-            data['main_type'] = 'Case_Management'
+            data['main_type'] = main_type
             data['sub_type'] = entity_type
             data['owner'] = owner
 
