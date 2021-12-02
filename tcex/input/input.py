@@ -58,7 +58,7 @@ class Input:
     """Module to handle inputs for all App types."""
 
     def __init__(self, config: Optional[dict] = None, config_file: Optional[str] = None,
-                 **kwarg) -> None:
+                 **kwargs) -> None:
         """Initialize class properties.
         
         Keyword Args:
