@@ -5,9 +5,9 @@ import uuid
 from typing import Callable, Optional
 
 # first-party
-from tcex.batch.attribute import Attribute
-from tcex.batch.security_label import SecurityLabel
-from tcex.batch.tag import Tag
+from tcex.api.tc.v2.batch.attribute import Attribute
+from tcex.api.tc.v2.batch.security_label import SecurityLabel
+from tcex.api.tc.v2.batch.tag import Tag
 from tcex.utils import Utils
 
 # import local modules for dynamic reference

@@ -3,6 +3,9 @@
 from typing import TYPE_CHECKING, Optional
 
 # first-party
+from tcex.api.tc.v2.batch.batch import Batch
+from tcex.api.tc.v2.batch.batch_submit import BatchSubmit
+from tcex.api.tc.v2.batch.batch_writer import BatchWriter
 from tcex.api.tc.v2.datastore.cache import Cache
 from tcex.api.tc.v2.datastore.datastore import DataStore
 from tcex.api.tc.v2.metrics.metrics import Metrics
@@ -13,6 +16,9 @@ if TYPE_CHECKING:
     # third-party
     from requests import Session
 
+    # first-party
+    from tcex.input.input import Input
+
 
 class V2:
     """Case Management
@@ -21,9 +27,89 @@ class V2:
         session_tc: An configured instance of request.Session with TC API Auth.
     """
 
-    def __init__(self, session_tc: 'Session') -> None:
+    def __init__(self, inputs: 'Input', session_tc: 'Session') -> None:
         """Initialize Class properties."""
+        self.inputs = inputs
         self.session_tc = session_tc
+
+    def batch(
+        self,
+        owner: str,
+        action: Optional[str] = 'Create',
+        attribute_write_type: Optional[str] = 'Replace',
+        halt_on_error: Optional[bool] = False,
+        playbook_triggers_enabled: Optional[bool] = False,
+        tag_write_type: Optional[str] = 'Replace',
+        security_label_write_type: Optional[str] = 'Replace',
+    ) -> 'Batch':
+        """Return instance of Batch
+
+        Args:
+            owner: The ThreatConnect owner for Batch action.
+            action: Action for the batch job ['Create', 'Delete'].
+            attribute_write_type: Write type for TI attributes ['Append', 'Replace'].
+            halt_on_error: If True any batch error will halt the batch job.
+            playbook_triggers_enabled: Deprecated input, will not be used.
+            security_label_write_type: Write type for labels ['Append', 'Replace'].
+            tag_write_type: Write type for tags ['Append', 'Replace'].
+        """
+        return Batch(
+            self.inputs,
+            self.session_tc,
+            owner,
+            action,
+            attribute_write_type,
+            halt_on_error,
+            playbook_triggers_enabled,
+            tag_write_type,
+            security_label_write_type,
+        )
+
+    def batch_submit(
+        self,
+        owner: str,
+        action: Optional[str] = 'Create',
+        attribute_write_type: Optional[str] = 'Replace',
+        halt_on_error: Optional[bool] = False,
+        playbook_triggers_enabled: Optional[bool] = False,
+        tag_write_type: Optional[str] = 'Replace',
+        security_label_write_type: Optional[str] = 'Replace',
+    ) -> 'BatchSubmit':
+        """Return instance of Batch
+
+        Args:
+            owner: The ThreatConnect owner for Batch action.
+            action: Action for the batch job ['Create', 'Delete'].
+            attribute_write_type: Write type for TI attributes ['Append', 'Replace'].
+            halt_on_error: If True any batch error will halt the batch job.
+            playbook_triggers_enabled: Deprecated input, will not be used.
+            security_label_write_type: Write type for labels ['Append', 'Replace'].
+            tag_write_type: Write type for tags ['Append', 'Replace'].
+        """
+        return BatchSubmit(
+            self.inputs,
+            self.session_tc,
+            owner,
+            action,
+            attribute_write_type,
+            halt_on_error,
+            playbook_triggers_enabled,
+            tag_write_type,
+            security_label_write_type,
+        )
+
+    def batch_writer(self, output_dir: str, **kwargs) -> 'BatchWriter':
+        """Return instance of Batch
+
+        Args:
+            output_dir: Deprecated input, will not be used.
+            output_extension (kwargs: str): Append this extension to output files.
+            write_callback (kwargs: Callable): A callback method to call when a batch json file
+                is written. The callback will be passed the fully qualified name of the written
+                file.
+            write_callback_kwargs (kwargs: dict): Additional values to send to callback method.
+        """
+        return BatchWriter(self.inputs, self.session_tc, output_dir, **kwargs)
 
     def cache(
         self,

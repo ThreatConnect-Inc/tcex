@@ -14,8 +14,8 @@ from typing import TYPE_CHECKING, Any, Callable, Optional, Tuple, Union
 from requests import Response, Session
 
 # first-party
-from tcex.batch.batch_submit import BatchSubmit
-from tcex.batch.batch_writer import BatchWriter, GroupType, IndicatorType
+from tcex.api.tc.v2.batch.batch_submit import BatchSubmit
+from tcex.api.tc.v2.batch.batch_writer import BatchWriter, GroupType, IndicatorType
 from tcex.exit.error_codes import handle_error
 
 if TYPE_CHECKING:
