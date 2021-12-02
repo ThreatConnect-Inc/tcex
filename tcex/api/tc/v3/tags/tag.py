@@ -1,7 +1,7 @@
 """Tag / Tags Object"""
 # standard library
 import json
-from typing import Optional
+from typing import Optional, Union
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -73,6 +73,23 @@ class Tag(ObjectABC):
     def _api_endpoint(self) -> str:
         """Return the type specific API endpoint."""
         return ApiEndpoints.TAGS.value
+
+    @property
+    def model(self) -> 'TagModel':
+        """Return the model data."""
+        return self._model
+
+    @model.setter
+    def model(self, data: Union['TagModel', dict]) -> None:
+        """Create model using the provided data."""
+        if isinstance(data, type(self.model)):
+            # provided data is already a model, nothing required to change
+            self._model = data
+        elif isinstance(data, dict):
+            # provided data is raw response, load the model
+            self._model = type(self.model)(**data)
+        else:
+            raise RuntimeError(f'Invalid data type: {type(data)} provided.')
 
     def remove(self, params: Optional[dict] = None) -> None:
         """Remove a nested object."""

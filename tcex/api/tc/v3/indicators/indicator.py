@@ -143,6 +143,23 @@ class Indicator(ObjectABC):
         return ApiEndpoints.INDICATORS.value
 
     @property
+    def model(self) -> 'IndicatorModel':
+        """Return the model data."""
+        return self._model
+
+    @model.setter
+    def model(self, data: Union['IndicatorModel', dict]) -> None:
+        """Create model using the provided data."""
+        if isinstance(data, type(self.model)):
+            # provided data is already a model, nothing required to change
+            self._model = data
+        elif isinstance(data, dict):
+            # provided data is raw response, load the model
+            self._model = type(self.model)(**data)
+        else:
+            raise RuntimeError(f'Invalid data type: {type(data)} provided.')
+
+    @property
     def as_entity(self) -> dict:
         """Return the entity representation of the object."""
         type_ = self.type_

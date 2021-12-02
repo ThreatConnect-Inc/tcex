@@ -43,9 +43,9 @@ def deps(
     """Install dependencies defined in the requirements.txt file.
 
 
-    If not Python version defined in the tcex.json file the version of Python calling this
+    If no Python version is defined in the tcex.json file, the version of Python calling this
     command will be used to create the lib_X.X.X directory. If multiple versions of Python
-    are defined in the tcex.json file then there will be multiple lib_X.X.X directories.
+    are defined in the tcex.json file, then there will be multiple lib_X.X.X directories created.
     """
     try:
         tcl = Dep(branch, no_cache_dir, proxy_host, proxy_port, proxy_user, proxy_pass)

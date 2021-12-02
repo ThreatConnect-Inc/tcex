@@ -22,6 +22,10 @@ class TestIndicatorSnippets(TestV3):
         for indicator in indicators:
             indicator.delete()
 
+    #
+    # Create Indicators
+    #
+
     def test_address_create(self):
         """Test snippet"""
         # Begin Snippet
@@ -38,23 +42,6 @@ class TestIndicatorSnippets(TestV3):
         # Add cleanup
         indicator.delete()
 
-    def test_indicator_get_by_raw_tql(self):
-        indicator = self.v3_helper.create_indicator(type_='Host', value1='example.com.ph')
-
-        # Begin Snippet
-        indicators = self.tcex.v3.indicators()
-        indicators.filter.tql = (
-            'typeName in ("Host", "Address", "EmailAddress", "File", "URL") and '
-            '(summary like "%example%" or tag like "%example%")'
-        )
-
-        for indicator in indicators:
-            print(indicator)
-        # End Snippet
-
-        # Add cleanup
-        indicator.delete()
-
     def test_address_stage_group_associations(self):
         """Test snippet"""
         # Begin Snippet
@@ -65,7 +52,7 @@ class TestIndicatorSnippets(TestV3):
             type='Address',
         )
 
-        # Add attribute
+        # Add association
         association = self.tcex.v3.group(name='MyGroup', type='Adversary')
         indicator.stage_associated_group(association)
 
@@ -137,6 +124,10 @@ class TestIndicatorSnippets(TestV3):
 
         # Add cleanup
         indicator.delete()
+
+    #
+    # Delete Indicators
+    #
 
     def test_address_delete_by_id(self):
         """Test snippet"""
@@ -254,6 +245,56 @@ class TestIndicatorSnippets(TestV3):
                 tag.remove()
         # End Snippet
 
+    #
+    # Get Indicators
+    #
+
+    def test_indicator_get_by_id(self):
+        """Test snippet"""
+        indicator = self.v3_helper.create_indicator(type_='Host', value1='example.com.ph')
+
+        # Begin Snippet
+        indicator = self.tcex.v3.indicator(id=indicator.model.id)
+        indicator.get()
+        # End Snippet
+
+        # Add cleanup
+        indicator.delete()
+
+    def test_indicator_get_by_summary(self):
+        """Test snippet"""
+        indicator = self.v3_helper.create_indicator(type_='Host', value1='example.com.ph')
+
+        # Begin Snippet
+        indicator = self.tcex.v3.indicator(summary=indicator.model.summary)
+        indicator.get()
+        # End Snippet
+
+        # Add cleanup
+        indicator.delete()
+
+    def test_indicator_get_by_raw_tql(self):
+        """Test snippet"""
+        indicator = self.v3_helper.create_indicator(type_='Host', value1='example.com.ph')
+
+        # Begin Snippet
+        indicators = self.tcex.v3.indicators()
+        indicators.filter.tql = (
+            'typeName in ("Host", "Address", "EmailAddress", "File", "URL") and '
+            '(summary like "%example%" or tag like "%example%")'
+        )
+
+        for indicator in indicators:
+            print(indicator)
+        # End Snippet
+
+        # Add cleanup
+        indicator.delete()
+
+    #
+    # Update Indicators
+    #
+
     def test_address_update(self):
         """Test snippet"""
         indicator = self.tcex.v3.indicator(
@@ -270,6 +311,10 @@ class TestIndicatorSnippets(TestV3):
         indicator.model.confidence = 50
         indicator.update(params={'owner': 'TCI'})
         # End Snippet
+
+    #
+    # Get Deleted Indicators
+    #
 
     def test_indicator_deleted(self):
         """Test snippet"""

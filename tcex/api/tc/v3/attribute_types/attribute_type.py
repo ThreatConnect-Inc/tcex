@@ -1,4 +1,7 @@
 """AttributeType / AttributeTypes Object"""
+# standard library
+from typing import Union
+
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.attribute_types.attribute_type_filter import AttributeTypeFilter
@@ -66,3 +69,20 @@ class AttributeType(ObjectABC):
     def _api_endpoint(self) -> str:
         """Return the type specific API endpoint."""
         return ApiEndpoints.ATTRIBUTE_TYPES.value
+
+    @property
+    def model(self) -> 'AttributeTypeModel':
+        """Return the model data."""
+        return self._model
+
+    @model.setter
+    def model(self, data: Union['AttributeTypeModel', dict]) -> None:
+        """Create model using the provided data."""
+        if isinstance(data, type(self.model)):
+            # provided data is already a model, nothing required to change
+            self._model = data
+        elif isinstance(data, dict):
+            # provided data is raw response, load the model
+            self._model = type(self.model)(**data)
+        else:
+            raise RuntimeError(f'Invalid data type: {type(data)} provided.')
