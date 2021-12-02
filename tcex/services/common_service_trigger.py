@@ -6,7 +6,12 @@ import threading
 import traceback
 from typing import Callable, Optional, Union
 
-from .common_service import CommonService
+from tcex.services.common_service import CommonService
+from tcex.input.input import Input
+from tcex.pleb.registry import registry
+from tcex.sessions.external_session import ExternalSession
+from tcex.sessions.auth.tc_auth import TcAuth
+from tcex.sessions.tc_session import TcSession
 
 
 class CommonServiceTrigger(CommonService):
@@ -33,6 +38,7 @@ class CommonServiceTrigger(CommonService):
         # config callbacks
         self.create_config_callback = None
         self.delete_config_callback = None
+        self.trigger_input_model = None
 
     def _tcex_testing(self, session_id: str, trigger_id: int) -> None:
         """Write data required for testing framework to Redis.
@@ -184,7 +190,8 @@ class CommonServiceTrigger(CommonService):
                 outputs: Union[list, str] = config.get('tc_playbook_out_variables') or []
                 if isinstance(outputs, str):
                     outputs = outputs.split(',')
-                playbook: object = self.tcex.pb(context=session_id, output_variables=outputs)
+                playbook: object = self.tcex.get_playbook(context=session_id,
+                                                        output_variables=outputs)
 
                 self.log.info(f'feature=trigger-service, event=fire-event, trigger-id={session_id}')
 
@@ -349,9 +356,23 @@ class CommonServiceTrigger(CommonService):
                 kwargs['url'] = message.get('url')
 
             try:
+                tc_session = TcSession(
+                    auth=TcAuth(tc_token=message.get('apiToken')),
+                    base_url=registry.session_tc.base_url,
+                    log_curl=registry.session_tc.log_curl,
+                    proxies=registry.session_tc.proxies,
+                    proxies_enabled=registry.session_tc.proxies,
+                    user_agent=registry.session_tc.user_agent,
+                    verify=registry.session_tc.verify,
+                )
+                
+                config_input = Input(config=config, tc_session=tc_session)
+                config_input.add_model(self.trigger_input_model)
+
                 # call callback for create config and handle exceptions to protect thread
                 # pylint: disable=not-callable
-                response: Optional[dict] = self.create_config_callback(trigger_id, config, **kwargs)
+                response: Optional[dict] = self.create_config_callback(trigger_id, config_input,
+                                                                       **kwargs)
                 if isinstance(response, dict):
                     status = response.get('status', False)
                     msg = response.get('msg')

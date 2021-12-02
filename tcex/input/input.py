@@ -57,8 +57,15 @@ def input_model(models: list) -> BaseModel:
 class Input:
     """Module to handle inputs for all App types."""
 
-    def __init__(self, config: Optional[dict] = None, config_file: Optional[str] = None) -> None:
-        """Initialize class properties."""
+    def __init__(self, config: Optional[dict] = None, config_file: Optional[str] = None,
+                 **kwarg) -> None:
+        """Initialize class properties.
+        
+        Keyword Args:
+            tc_session: pass a tc_session object to use, else will use the one from registry.
+        """
+
+        # TODO [HIGH] kwarg - don't add built-in models, supply custom TcSession object
         self.config = config
         self.config_file = config_file
 
@@ -67,6 +74,7 @@ class Input:
         self.ij = InstallJson()
         self.log = logger
         self.utils = Utils()
+        self.tc_session = kwargs.get('tc_session')
 
     def _load_aot_params(
         self,
@@ -257,6 +265,12 @@ class Input:
             return _inputs
 
         for name, value in _inputs.items():
+            if name == 'tc_playbook_out_variables':
+                # for services, this input contains the name of the expected outputs.  If we don't
+                # skip this, we'll try to resolve the value (e.g.
+                # #Trigger:334:example.service_input!String), but that 1) won't work for services
+                # and 2) doesn't make sense.  Service configs will never have playbook variables.
+                continue
             if isinstance(value, list) and self.ij.model.runtime_level.lower() == 'playbook':
                 # list could contain playbook variables, try to resolve the value
                 updated_value_array = []
@@ -368,7 +382,9 @@ class Input:
         return properties
 
     @staticmethod
-    def resolve_variable(provider: str, key: str, type_: str) -> Union[bytes, str]:
+    def resolve_variable(provider: str, key: str, type_: str) -> Union[
+        bytes,
+                                                                                         str]:
         """Resolve FILE/KEYCHAIN/TEXT variables.
 
         Feature: PLAT-2688
@@ -381,7 +397,8 @@ class Input:
         data = None
 
         # retrieve value from API
-        r = registry.session_tc.get(f'/internal/variable/runtime/{provider}/{key}')
+        session = self.tc_session if self.tc_session else registry.session_tc
+        r = session.get(f'/internal/variable/runtime/{provider}/{key}')
         if r.ok:
             try:
                 data = r.json().get('data')
