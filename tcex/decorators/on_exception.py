@@ -66,7 +66,7 @@ class OnException:
             # self.enable (e.g., True or 'fail_on_false') enables/disables this feature
             enabled = self.exit_enabled
             if not isinstance(self.exit_enabled, bool):
-                enabled = getattr(app.args, self.exit_enabled)
+                enabled = getattr(app.tcex.inputs.model, self.exit_enabled)
                 if not isinstance(enabled, bool):  # pragma: no cover
                     raise RuntimeError(
                         'The exit_enabled value must be a boolean or resolved to bool.'

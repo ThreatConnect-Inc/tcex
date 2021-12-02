@@ -1,6 +1,11 @@
 """Test the TcEx DataStore Module."""
 # standard library
 import time
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex import TcEx
 
 
 class TestCache:
@@ -17,7 +22,7 @@ class TestCache:
         """Return dummy data for cache callback."""
         return {'results': 'not-cached'}
 
-    def test_cache_add(self, tcex):
+    def test_cache_add(self, tcex: 'TcEx'):
         """Test adding data to a cache
 
         Args:
@@ -32,7 +37,7 @@ class TestCache:
         assert results.get('_id') == rid
         assert results.get('_shards').get('successful') == 1
 
-    def test_cache_delete(self, tcex):
+    def test_cache_delete(self, tcex: 'TcEx'):
         """Test deleting data from a cache
 
         Args:
@@ -52,7 +57,7 @@ class TestCache:
         assert results.get('_shards').get('successful') == 1
         assert results.get('result') == 'deleted'
 
-    def test_cache_get_cached(self, tcex):
+    def test_cache_get_cached(self, tcex: 'TcEx'):
         """Test getting data from a cache
 
         Args:
@@ -70,7 +75,7 @@ class TestCache:
         results = cache.get(rid=rid)
         assert results.get('cache-data', {}).get('results') == 'cached'
 
-    def test_cache_get_expired(self, tcex):
+    def test_cache_get_expired(self, tcex: 'TcEx'):
         """Test ttl on a cache item.
 
         Args:
@@ -88,7 +93,7 @@ class TestCache:
         results = cache.get(rid=rid, data_callback=self.expired_data_callback)
         assert results.get('cache-data') == self.expired_data_callback(rid)
 
-    def test_cache_update(self, tcex):
+    def test_cache_update(self, tcex: 'TcEx'):
         """Test update on cache data
 
         Args:

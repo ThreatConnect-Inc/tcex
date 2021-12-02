@@ -71,18 +71,6 @@ class DataStore:
             # delete temporary record
             self.delete(rid, False)
 
-    def _token_available(self) -> None:
-        """Raise an error if token is not available.
-
-        This check needs to be made after args are parsed to ensure token module has initialized.
-        """
-        # This module requires a token.
-        if self.session_tc.token.token is None:  # pragma: no cover
-            raise RuntimeError(
-                'The DataModel TcEx Module requires a Token to '
-                'interact with the ThreatConnect platform.'
-            )
-
     def _update_mappings(self) -> None:
         """Update the mappings for the current index."""
         headers = {'Content-Type': 'application/json', 'DB-Method': 'PUT'}
@@ -143,8 +131,6 @@ class DataStore:
         Returns:
             dict : The response data.
         """
-        self._token_available()  # ensure a token is available
-
         response_data = None
         headers = {'Content-Type': 'application/json', 'DB-Method': 'DELETE'}
         url = f'/v2/exchange/db/{self.domain}/{self.data_type}/{rid}'
@@ -192,8 +178,6 @@ class DataStore:
         Returns:
             dict : Python request response.
         """
-        self._token_available()  # ensure a token is available
-
         response_data = None
         headers = {'Content-Type': 'application/json', 'DB-Method': 'GET'}
         if rid is None:
@@ -252,8 +236,6 @@ class DataStore:
         Returns:
             dict : The response data.
         """
-        self._token_available()  # ensure a token is available
-
         response_data = None
         headers = {'Content-Type': 'application/json', 'DB-Method': 'POST'}
         url = f'/v2/exchange/db/{self.domain}/{self.data_type}/'
@@ -304,8 +286,6 @@ class DataStore:
         Returns:
             dict : The response dict.
         """
-        self._token_available()  # ensure a token is available
-
         response_data = None
         headers = {'Content-Type': 'application/json', 'DB-Method': 'PUT'}
         url = f'/v2/exchange/db/{self.domain}/{self.data_type}/{rid}'
