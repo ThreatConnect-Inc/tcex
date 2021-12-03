@@ -116,9 +116,6 @@ class VictimFilter(FilterABC):
     @property
     def has_victim(self):
         """Return **VictimFilter** for further filtering."""
-        # first-party
-        from tcex.api.tc.v3.victims.victim_filter import VictimFilter
-
         victims = VictimFilter(Tql())
         self._tql.add_filter('hasVictim', TqlOperator.EQ, victims, TqlType.SUB_QUERY)
         return victims

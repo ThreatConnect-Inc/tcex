@@ -362,6 +362,8 @@ class GenerateModelABC(GenerateABC, ABC):
             },
         }
 
+    # TODO: [low] bsummers - research combining this method with parent method
+    # pylint: disable=arguments-differ
     def _format_description(self, description: str, length: int) -> str:
         """Format description for field."""
         # fix descriptions coming from core API endpoint

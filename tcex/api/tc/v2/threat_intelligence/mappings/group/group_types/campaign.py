@@ -14,6 +14,7 @@ class Campaign(Group):
     """Unique API calls for Campaign API Endpoints
 
     Args:
+        ti (ThreatIntelligence): An instance of the ThreatIntelligence Class.
         name (str, kwargs): [Required for Create] The name for this Group.
         owner (str, kwargs): The name for this Group. Default to default Org when not provided
         first_seen (str, kwargs): The first seen datetime expression for this Group.

@@ -1,11 +1,20 @@
 """ThreatConnect TI Email"""
-from ..group import Group
+# standard library
+from typing import TYPE_CHECKING
+
+# first-party
+from tcex.api.tc.v2.threat_intelligence.mappings.group.group import Group
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.api.tc.v2.threat_intelligence.threat_intelligence import ThreatIntelligence
 
 
 class Email(Group):
     """Unique API calls for Email API Endpoints
 
     Args:
+        ti (ThreatIntelligence): An instance of the ThreatIntelligence Class.
         body (str): The body for this Email.
         from_addr (str, kwargs): The **from** address for this Email.
         header (str): The header for this Email.

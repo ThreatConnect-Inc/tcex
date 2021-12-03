@@ -3,6 +3,7 @@
 from typing import TYPE_CHECKING
 from urllib.parse import quote_plus
 
+# first-party
 from tcex.api.tc.v2.threat_intelligence.mappings.mappings import Mappings
 
 if TYPE_CHECKING:
@@ -13,7 +14,7 @@ if TYPE_CHECKING:
 class Group(Mappings):
     """Unique API calls for Group API Endpoints"""
 
-    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
+    def __init__(self, ti: 'ThreatIntelligence', **kwargs):
         """Initialize Class properties."""
         super().__init__(
             ti,
@@ -63,12 +64,7 @@ class Group(Mappings):
         return self.data.get('name') is not None
 
     def add_key_value(self, key, value):
-        """Convert the value and adds it as a data field.
-
-        Args:
-            key:
-            value:
-        """
+        """Convert the value and adds it as a data field."""
         key = self._metadata_map.get(key, key)
         if key in ['dateAdded', 'eventDate', 'firstSeen', 'publishDate']:
             self._data[key] = self._utils.any_to_datetime(value).strftime('%Y-%m-%dT%H:%M:%SZ')

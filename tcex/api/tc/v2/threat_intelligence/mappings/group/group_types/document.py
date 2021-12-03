@@ -1,12 +1,20 @@
 """ThreatConnect TI Document"""
-from ..group import Group
+# standard library
+from typing import TYPE_CHECKING
+
+# first-party
+from tcex.api.tc.v2.threat_intelligence.mappings.group.group import Group
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.api.tc.v2.threat_intelligence.threat_intelligence import ThreatIntelligence
 
 
 class Document(Group):
     """Unique API calls for Document API Endpoints
 
     Args:
-        tcex (TcEx): An instantiated instance of TcEx object.
+        ti (ThreatIntelligence): An instance of the ThreatIntelligence Class.
         name (str, kwargs): [Required for Create] The name for this Group.
         owner (str, kwargs): The name for this Group. Default to default Org when not provided
         file_name (str, kwargs): The name for the attached file for this Group.
@@ -93,14 +101,7 @@ class Document(Group):
         return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)
 
     def get_file_hash(self, hash_type='sha256'):
-        """
-        Getting the hash value of attached document
-        Args:
-            hash_type:
-
-        Returns:
-
-        """
+        """Get the hash value of attached document."""
         if not self.can_update():
             self._handle_error(910, [self.type])
 

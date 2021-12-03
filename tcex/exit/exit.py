@@ -4,19 +4,11 @@ import logging
 import os
 import sys
 from enum import Enum
-from typing import TYPE_CHECKING, Optional, Union
+from typing import Optional, Union
 
 # first-party
 from tcex.app_config import InstallJson
 from tcex.pleb.registry import registry
-
-if TYPE_CHECKING:
-    # third-party
-    from redis import Redis
-
-    # first-party
-    from tcex.playbook.playbook import Playbook
-    from tcex.tokens import Tokens
 
 # get tcex logger
 logger = logging.getLogger('tcex')
@@ -42,14 +34,10 @@ class ExitCode(Enum):
 class ExitService:
     """Provides functionality around exiting an app."""
 
-    def __init__(
-        self,
-        pre_run_inputs
-    ):
+    def __init__(self, pre_run_inputs):
         """."""
         self.ij = InstallJson()
         self.pre_run_inputs = pre_run_inputs
-
 
         self._exit_code = ExitCode.SUCCESS
 
@@ -95,8 +83,7 @@ class ExitService:
         self._exit_msg_handler(code, msg)
 
         # aot notify
-        if ('tc_aot_enabled' in self.pre_run_inputs
-                and self.pre_run_inputs.get('tc_aot_enabled')):
+        if 'tc_aot_enabled' in self.pre_run_inputs and self.pre_run_inputs.get('tc_aot_enabled'):
             # push exit message
             self._aot_rpush(code.value)
 
@@ -106,8 +93,11 @@ class ExitService:
         logger.info(f'Exit Code: {code}')
         sys.exit(code.value)
 
-    def exit_aot_terminate(self, code: Optional[Union[ExitCode, int]] = None,
-                 msg: Optional[str] = None) -> None:
+    # TODO: [med] @cblades - is msg required?
+    # pylint: disable=unused-argument
+    def exit_aot_terminate(
+        self, code: Optional[Union[ExitCode, int]] = None, msg: Optional[str] = None
+    ) -> None:
         """Application exit method with proper exit code only for AOT.
 
         The method will run the Python standard sys.exit() with the exit code
@@ -121,8 +111,7 @@ class ExitService:
         code = ExitCode(code) if code is not None else self.exit_code
 
         # aot notify
-        if ('tc_aot_enabled' in self.pre_run_inputs
-                and self.pre_run_inputs.get('tc_aot_enabled')):
+        if 'tc_aot_enabled' in self.pre_run_inputs and self.pre_run_inputs.get('tc_aot_enabled'):
             # push exit message
             self._aot_rpush(code.value)
 

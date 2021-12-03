@@ -2,14 +2,17 @@
 # standard library
 import json
 from random import randint
-from typing import List
 
+# third-party
 from pydantic import BaseModel
 
+# first-party
 from tcex.input.field_types import StringArray
 
 
 class TestInputModel(BaseModel):
+    """."""
+
     my_bool: bool
     my_multi: StringArray
 
@@ -35,7 +38,6 @@ class TestPlaybookAot:
             'tc_terminate_seconds': 60,
         }
         app = playbook_app(config_data=config_data)
-
 
         # send redis rpush AOT message
         aot_config_data = {'my_bool': 'true', 'my_multi': 'one|two'}

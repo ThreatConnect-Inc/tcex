@@ -725,7 +725,7 @@ class TiTcRequest:
 
     @property
     def victim_asset_type_mapping(self):
-        """Maps the asset type to the api endpoints needed."""
+        """Map the asset type to the api endpoints needed."""
         return {
             'email': 'emailAddresses',
             'network': 'networkAccounts',
@@ -784,17 +784,7 @@ class TiTcRequest:
     #
 
     def add_false_positive(self, main_type, sub_type, unique_id, owner=None):
-        """
-
-        Args:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-
-        Return:
-
-        """
+        """Add false positive to a TI object."""
         params = {'owner': owner} if owner else {}
 
         url = f'/v2/{main_type}/{sub_type}/{unique_id}/falsePositive'
@@ -805,17 +795,7 @@ class TiTcRequest:
         return r
 
     def owners(self, main_type, sub_type, unique_id, owner=None):
-        """
-
-        Args:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-
-        Return:
-
-        """
+        """Retrieve the owners of a TI object."""
         params = {'owner': owner} if owner else {}
         if not sub_type:
             url = f'/v2/{main_type}/{unique_id}/owners'
@@ -828,19 +808,7 @@ class TiTcRequest:
         return r
 
     def add_observations(self, main_type, sub_type, unique_id, data, owner=None):
-        """
-
-        Args:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-            data:
-
-        Return:
-
-        """
-
+        """Add observations to a TI object."""
         params = {'owner': owner} if owner else {}
 
         url = f'/v2/{main_type}/{sub_type}/{unique_id}/observations'
@@ -850,17 +818,7 @@ class TiTcRequest:
         return r
 
     def observation_count(self, main_type, sub_type, unique_id, owner=None):
-        """
-
-        Args:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-
-        Return:
-
-        """
+        """Retrieve the observation count of a TI object."""
         params = {'owner': owner} if owner else {}
 
         if not sub_type:
@@ -874,18 +832,7 @@ class TiTcRequest:
         return r
 
     def observations(self, main_type, sub_type, unique_id, owner=None, params=None):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            owner:
-            params:
-
-        Return:
-
-        """
+        """Retrieve the observations of a TI object."""
         params = params or {}
 
         if owner:
@@ -902,17 +849,7 @@ class TiTcRequest:
         return r
 
     def dns_resolution(self, main_type, sub_type, unique_id, owner=None):
-        """
-
-        Args:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-
-        Return:
-
-        """
+        """Return the DNS resolution of a TI object."""
         params = {'owner': owner} if owner else {}
 
         if not sub_type:
@@ -926,18 +863,7 @@ class TiTcRequest:
         return r
 
     def set_dns_resolution(self, main_type, sub_type, unique_id, value, owner=None):
-        """
-
-        Args:
-            value:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-
-        Return:
-
-        """
+        """Set the DNS resolution of a TI object."""
         params = {'owner': owner} if owner else {}
 
         data = {}
@@ -957,18 +883,7 @@ class TiTcRequest:
         return r
 
     def set_whois(self, main_type, sub_type, unique_id, value, owner=None):
-        """
-
-        Args:
-            value:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-
-        Return:
-
-        """
+        """Set the whois of a TI object."""
         params = {'owner': owner} if owner else {}
 
         data = {}
@@ -989,7 +904,7 @@ class TiTcRequest:
 
     @staticmethod
     def is_false(value):
-        """checks to see if a string is False"""
+        """Check to see if a string is False"""
         if not value:
             return False
         value = str(value)
@@ -997,7 +912,7 @@ class TiTcRequest:
 
     @staticmethod
     def is_true(value):
-        """checks to see if a string is True"""
+        """Check to see if a string is True"""
         if not value:
             return False
         value = str(value)
@@ -1006,19 +921,7 @@ class TiTcRequest:
     def deleted(
         self, main_type, sub_type, deleted_since=None, owner=None, filters=None, params=None
     ):
-        """
-
-        Args:
-            owner:
-            filters:
-            main_type:
-            sub_type:
-            deleted_since:
-            params:
-
-        Return:
-
-        """
+        """Delete a TI object."""
         params = params or {}
 
         if filters and filters.filters:
@@ -1044,18 +947,7 @@ class TiTcRequest:
         yield from data
 
     def pivot_from_tag(self, target, tag_name, filters=None, owner=None, params=None):
-        """
-
-        Args:
-            owner:
-            filters:
-            target:
-            tag_name:
-            params:
-
-        Return:
-
-        """
+        """Pivot from a tag."""
         sub_type = target.api_branch
         api_type = target.api_type
         api_entity = target.api_entity
@@ -1073,32 +965,11 @@ class TiTcRequest:
         return self._iterate(url, params, api_entity)
 
     def groups_from_tag(self, group, tag_name, filters=None, owner=None, params=None):
-        """
-
-        Args:
-            owner:
-            group:
-            tag_name:
-            filters:
-            params:
-
-        Return:
-
-        """
+        """Pivot groups from a tag."""
         return self.pivot_from_tag(group, tag_name, filters=filters, owner=owner, params=params)
 
     def indicators_from_tag(self, indicator, tag_name, filters=None, owner=None, params=None):
-        """
-        Args:
-            owner:
-            indicator:
-            tag_name:
-            filters:
-            params:
-
-        Return:
-
-        """
+        """Pivot indicators from a tag."""
         params = params or {}
 
         yield from self.pivot_from_tag(
@@ -1106,35 +977,13 @@ class TiTcRequest:
         )
 
     def victims_from_tag(self, victim, tag_name, filters=None, owner=None, params=None):
-        """
-
-        Args:
-            owner:
-            victim:
-            tag_name:
-            filters:
-            params:
-
-        Return:
-
-        """
+        """Pivot victims from a tag."""
         yield from self.pivot_from_tag(
             victim, tag_name, filters=filters, owner=owner, params=params
         )
 
     def indicator_associations(self, main_type, sub_type, unique_id, owner=None, params=None):
-        """
-
-        Args:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-            params:
-
-        Return:
-
-        """
+        """Return indicator associations."""
         params = params or {}
         if owner:
             params['owner'] = owner
@@ -1147,18 +996,7 @@ class TiTcRequest:
         yield from self._iterate(url, params, 'indicator')
 
     def group_associations(self, main_type, sub_type, unique_id, owner=None, params=None):
-        """
-
-        Args:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-            params:
-
-        Return:
-
-        """
+        """Return group associations."""
         params = params or {}
         if owner:
             params['owner'] = owner
@@ -1173,19 +1011,7 @@ class TiTcRequest:
     def victim_asset_associations(
         self, main_type, sub_type, unique_id, asset_type=None, owner=None, params=None
     ):
-        """
-
-        Args:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-            asset_type:
-            params:
-
-        Return:
-
-        """
+        """Return victim asset associations."""
         params = params or {}
 
         if owner:
@@ -1211,21 +1037,7 @@ class TiTcRequest:
         owner=None,
         params=None,
     ):
-        """
-
-        Args:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-            association_type:
-            api_branch:
-            api_entity:
-            params:
-
-        Return:
-
-        """
+        """Return indicator associations types."""
         params = params or {}
         if owner:
             params['owner'] = owner
@@ -1250,20 +1062,7 @@ class TiTcRequest:
         owner=None,
         params=None,
     ):
-        """
-        Args:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-            target:
-            api_branch:
-            api_entity:
-            params:
-
-        Return:
-
-        """
+        """Return group associations types."""
         params = params or {}
         if owner:
             params['owner'] = owner
@@ -1293,20 +1092,7 @@ class TiTcRequest:
         target_unique_id,
         owner=None,
     ):
-        """
-
-        Args:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-            target_type:
-            target_sub_type:
-            target_unique_id:
-
-        Return:
-
-        """
+        """Add an association."""
         return self._association(
             main_type,
             sub_type,
@@ -1327,20 +1113,7 @@ class TiTcRequest:
         target_unique_id,
         owner=None,
     ):
-        """
-
-        Args:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-            target_type:
-            target_sub_type:
-            target_unique_id:
-
-        Return:
-
-        """
+        """Delete an association."""
         return self._association(
             main_type,
             sub_type,
@@ -1363,20 +1136,7 @@ class TiTcRequest:
         action='ADD',
         owner=None,
     ):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            target_type:
-            target_sub_type:
-            target_unique_id:
-            action:
-
-        Return:
-
-        """
+        """Return associations."""
         action = action.upper()
         params = {'owner': owner} if owner else {}
         params['createActivityLog'] = False
@@ -1412,18 +1172,7 @@ class TiTcRequest:
         return r
 
     def victim(self, main_type, sub_type, unique_id, victim_id, params=None):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            victim_id:
-            params:
-
-        Return:
-
-        """
+        """Return victim."""
         params = params or {}
         params['createActivityLog'] = False
 
@@ -1435,17 +1184,7 @@ class TiTcRequest:
         return self._get(url, params)
 
     def victims(self, main_type, sub_type, unique_id, params=None):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            params:
-
-        Return:
-
-        """
+        """Return victims."""
         params = params or {}
 
         if not sub_type:
@@ -1456,15 +1195,7 @@ class TiTcRequest:
         yield from self._iterate(url, params, 'victim')
 
     def file_occurrences(self, main_type, sub_type, unique_id, owner=None):
-        """
-        Yields all occurrences a File has
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            owner:
-        """
+        """Return file occurrences."""
         url = f'/v2/{main_type}/{sub_type}/{unique_id}/fileOccurrences'
         params = {}
 
@@ -1474,7 +1205,7 @@ class TiTcRequest:
         yield from self._iterate(url, params, 'fileOccurrence')
 
     def get_file_hash(self, main_type, sub_type, unique_id, hash_type='sha256'):
-        """Gets the hash of a file."""
+        """Get the hash of a file."""
         if not sub_type:
             url = f'/v2/{main_type}/{unique_id}/download'
         else:
@@ -1494,22 +1225,11 @@ class TiTcRequest:
         return hashed_file
 
     def get_file_occurrence(self, main_type, sub_type, unique_id, occurrence_id, owner=None):
-        """
-        Gets a file occurrence given a occurrence_id
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            occurrence_id:
-            owner:
-
-        Returns:
-
-        """
+        """Get a file occurrence given a occurrence_id"""
         return self.file_occurrence(main_type, sub_type, unique_id, occurrence_id, owner)
 
     def delete_file_action(self, main_type, sub_type, unique_id, action, target, owner=None):
-        """Deletes a file action given a target"""
+        """Delete a file action given a target"""
         url = (
             f'/v2/{main_type}/{sub_type}/{unique_id}/actions/{action}'
             f'/{target.api_type}/{target.api_branch}/{target.unique_id}'
@@ -1522,7 +1242,7 @@ class TiTcRequest:
         return self._delete(url, params)
 
     def add_file_action(self, main_type, sub_type, unique_id, action, target, owner=None):
-        """Creates a file action given a target"""
+        """Create a file action given a target"""
         url = (
             f'/v2/{main_type}/{sub_type}/{unique_id}/actions/{action}'
             f'/{target.api_type}/{target.api_branch}/{target.unique_id}'
@@ -1535,7 +1255,7 @@ class TiTcRequest:
         return self._post(url, {}, params=params)
 
     def get_file_actions(self, main_type, sub_type, unique_id, action, target, owner=None):
-        """Yields a file action given a file action and a target"""
+        """Yield a file action given a file action and a target"""
         url = f'/v2/{main_type}/{sub_type}/{unique_id}/actions/{action}/{target.api_type}'
 
         if target.api_sub_type:
@@ -1549,36 +1269,13 @@ class TiTcRequest:
         yield from self._iterate(url, params, target.api_entity)
 
     def delete_file_occurrence(self, main_type, sub_type, unique_id, occurrence_id, owner=None):
-        """
-        Deletes a file occurrence given a occurrence_id
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            occurrence_id:
-            owner:
-
-        Returns:
-
-        """
+        """Delete a file occurrence given a occurrence_id."""
         return self.file_occurrence(main_type, sub_type, unique_id, occurrence_id, owner, 'DELETE')
 
     def file_occurrence(
         self, main_type, sub_type, unique_id, occurrence_id, owner=None, action='GET'
     ):
-        """
-        Gets a file occurrence given a occurrence_id
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            occurrence_id:
-            owner:
-            action:
-
-        Returns:
-
-        """
+        """Get a file occurrence given a occurrence_id."""
         url = f'/v2/{main_type}/{sub_type}/{unique_id}/fileOccurrences/{occurrence_id}'
         params = {}
 
@@ -1594,20 +1291,7 @@ class TiTcRequest:
         return None
 
     def add_file_occurrence(self, main_type, sub_type, unique_id, name, date, path, owner=None):
-        """
-        Adds a file occurrence to a File
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            name:
-            date:
-            path:
-            owner:
-
-        Returns:
-
-        """
+        """Add a file occurrence to a File."""
         url = f'/v2/{main_type}/{sub_type}/{unique_id}/fileOccurrences'
         params = {}
         if owner:
@@ -1615,20 +1299,7 @@ class TiTcRequest:
         return self._post_json(url, {'fileName': name, 'path': path, 'date': date})
 
     def tag(self, main_type, sub_type, unique_id, tag, action='GET', owner=None, params=None):
-        """
-
-        Args:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-            tag:
-            action:
-            params:
-
-        Return:
-
-        """
+        """Return tag on an entity."""
         params = params or {}
 
         if owner:
@@ -1651,67 +1322,21 @@ class TiTcRequest:
         return response
 
     def add_tag(self, main_type, sub_type, unique_id, tag, owner=None):
-        """
-
-        Args:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-            tag:
-
-        Return:
-
-        """
+        """Add tag on an entity."""
         return self.tag(main_type, sub_type, unique_id, tag, action='ADD', owner=owner)
 
     def delete_tag(self, main_type, sub_type, unique_id, tag, owner=None):
-        """
-
-        Args:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-            tag:
-
-        Return:
-
-        """
+        """Delete tag on an entity."""
         return self.tag(main_type, sub_type, unique_id, tag, action='DELETE', owner=owner)
 
     def get_tag(self, main_type, sub_type, unique_id, tag, owner=None, params=None):
-        """
-
-        Args:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-            tag:
-            params:
-
-        Return:
-
-        """
+        """Get tag on an entity."""
         params = params or {}
 
         return self.tag(main_type, sub_type, unique_id, tag, owner=owner, params=params)
 
     def tags(self, main_type, sub_type, unique_id, owner=None, filters=None, params=None):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            owner:
-            filters:
-            params:
-
-        Return:
-
-        """
+        """Return a list of tags on an entity."""
         params = params or {}
 
         if owner:
@@ -1726,40 +1351,19 @@ class TiTcRequest:
         yield from self._iterate(url, params, 'tag')
 
     def all_tags(self, owners=None, filters=None, params=None):
-        """
-
-        Args:
-            owners:
-            filters:
-            params:
-
-        Return:
-
-        """
+        """Return a list of all tags."""
         params = params or {}
 
         if owners:
             params['owner'] = owners
         if filters and filters.filters:
             params['filters'] = filters.filters_string
-        url = f'/v2/tags'
+        url = '/v2/tags'
 
         yield from self._iterate(url, params, 'tag')
 
     def labels(self, main_type, sub_type, unique_id, owner=None, filters=None, params=None):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            owner:
-            filters:
-            params:
-
-        Return:
-
-        """
+        """Return a list of labels on an entity."""
         params = params or {}
 
         if owner:
@@ -1774,34 +1378,11 @@ class TiTcRequest:
         yield from self._iterate(url, params, 'securityLabel')
 
     def add_label(self, main_type, sub_type, unique_id, label, owner=None):
-        """
-
-        Args:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-            label:
-
-        Return:
-
-        """
+        """Add a label on an entity."""
         return self.label(main_type, sub_type, unique_id, label, action='ADD', owner=owner)
 
     def get_label(self, main_type, sub_type, unique_id, label, owner=None, params=None):
-        """
-
-        Args:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-            label:
-            params:
-
-        Return:
-
-        """
+        """Get label on an entity."""
         params = params or {}
 
         return self.label(
@@ -1809,35 +1390,11 @@ class TiTcRequest:
         )
 
     def delete_label(self, main_type, sub_type, unique_id, label, owner=None):
-        """
-
-        Args:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-            label:
-
-        Return:
-
-        """
+        """Delete label on an entity."""
         return self.label(main_type, sub_type, unique_id, label, action='DELETE', owner=owner)
 
     def label(self, main_type, sub_type, unique_id, label, action='ADD', owner=None, params=None):
-        """
-
-        Args:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-            label:
-            action:
-            params:
-
-        Return:
-
-        """
+        """Return label on an entity."""
         params = params or {}
 
         if owner:
@@ -1862,19 +1419,7 @@ class TiTcRequest:
         return None
 
     def attributes(self, main_type, sub_type, unique_id, owner=None, params=None):
-        """
-
-        Args:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-            params:
-
-        Return:
-
-        """
-
+        """Return a list of attributes on an entity."""
         params = params or {}
 
         if owner:
@@ -1890,20 +1435,7 @@ class TiTcRequest:
     def attribute(
         self, main_type, sub_type, unique_id, attribute_id, action='GET', owner=None, params=None
     ):
-        """
-
-        Args:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-            attribute_id:
-            action:
-            params:
-
-        Return:
-
-        """
+        """Return attribute on an entity."""
         params = params or {}
         if owner:
             params['owner'] = owner
@@ -1922,36 +1454,13 @@ class TiTcRequest:
         return None
 
     def get_attribute(self, main_type, sub_type, unique_id, attribute_id, owner=None, params=None):
-        """
-
-        Args:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-            attribute_id:
-            params:
-
-        Return:
-
-        """
+        """Get attribute on an entity."""
         return self.attribute(
             main_type, sub_type, unique_id, attribute_id, action='GET', owner=owner, params=params
         )
 
     def delete_attribute(self, main_type, sub_type, unique_id, attribute_id, owner=None):
-        """
-
-        Args:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-            attribute_id:
-
-        Return:
-
-        """
+        """Delete attribute on an entity."""
         return self.attribute(
             main_type, sub_type, unique_id, attribute_id, action='DELETE', owner=owner
         )
@@ -1968,22 +1477,7 @@ class TiTcRequest:
         owner=None,
         params=None,
     ):
-        """
-
-        Args:
-            displayed:
-            source:
-            params:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-            attribute_type:
-            attribute_value:
-
-        Return:
-
-        """
+        """Add attribute on an entity."""
         if params is None:
             params = {}
         if owner:
@@ -2015,22 +1509,7 @@ class TiTcRequest:
         owner=None,
         params=None,
     ):
-        """
-
-        Args:
-            displayed:
-            source:
-            params:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-            attribute_type:
-            attribute_value:
-
-        Return:
-
-        """
+        """Update attribute on an entity."""
         if params is None:
             params = {}
         if owner:
@@ -2053,19 +1532,7 @@ class TiTcRequest:
     def attribute_labels(
         self, main_type, sub_type, unique_id, attribute_id, owner=None, params=None
     ):
-        """
-
-        Args:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-            attribute_id:
-            params:
-
-        Return:
-
-        """
+        """Add attribute label on an entity."""
         params = params or {}
         if owner:
             params['owner'] = owner
@@ -2088,21 +1555,7 @@ class TiTcRequest:
         owner=None,
         params=None,
     ):
-        """
-
-        Args:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-            attribute_id:
-            label:
-            action:
-            params:
-
-        Return:
-
-        """
+        """Return attribute label on an entity."""
         params = params or {}
         if owner:
             params['owner'] = owner
@@ -2132,20 +1585,7 @@ class TiTcRequest:
     def get_attribute_label(
         self, main_type, sub_type, unique_id, attribute_id, label, owner=None, params=None
     ):
-        """
-
-        Args:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-            attribute_id:
-            label:
-            params:
-
-        Return:
-
-        """
+        """Get attribute label on an entity."""
         return self.attribute_label(
             main_type, sub_type, unique_id, attribute_id, label, owner=owner, params=params
         )
@@ -2153,72 +1593,26 @@ class TiTcRequest:
     def delete_attribute_label(
         self, main_type, sub_type, unique_id, attribute_id, label, owner=None
     ):
-        """
-
-        Args:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-            attribute_id:
-            label:
-
-        Return:
-
-        """
+        """Delete attribute label on an entity."""
         return self.attribute_label(
             main_type, sub_type, unique_id, attribute_id, label, action='DELETE', owner=owner
         )
 
     def add_attribute_label(self, main_type, sub_type, unique_id, attribute_id, label, owner=None):
-        """
-
-        Args:
-            owner:
-            main_type:
-            sub_type:
-            unique_id:
-            attribute_id:
-            label:
-
-        Return:
-
-        """
+        """Add attribute label on an entity."""
         return self.attribute_label(
             main_type, sub_type, unique_id, attribute_id, label, action='ADD', owner=owner
         )
 
     def assignees(self, main_type, unique_id, params=None):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            params:
-
-        Return:
-
-        """
+        """Return assignees on an entity."""
         params = params or {}
 
         url = f'/v2/{main_type}/{unique_id}/assignees'
         yield from self._iterate(url, params, 'user')
 
     def assignee(self, main_type, unique_id, assignee_id, action='ADD', params=None):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            assignee_id:
-            action:
-            params:
-
-        Return:
-
-        """
+        """Manage assignee on an entity."""
         params = params or {}
 
         url = f'/v2/{main_type}/{unique_id}/assignees/{assignee_id}'
@@ -2231,80 +1625,28 @@ class TiTcRequest:
         return None
 
     def get_assignee(self, main_type, sub_type, unique_id, assignee_id, params=None):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            assignee_id:
-            params:
-
-        Return:
-
-        """
+        """Get assignee on an entity."""
         params = params or {}
 
         return self.assignee(main_type, sub_type, unique_id, assignee_id, params=params)
 
     def delete_assignee(self, main_type, sub_type, unique_id, assignee_id):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            assignee_id:
-
-        Return:
-
-        """
+        """Delete assignee on an entity."""
         return self.assignee(main_type, sub_type, unique_id, assignee_id, 'DELETE')
 
     def add_assignee(self, main_type, sub_type, unique_id, assignee_id):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            assignee_id:
-
-        Return:
-
-        """
+        """Add assignee on an entity."""
         return self.assignee(main_type, sub_type, unique_id, assignee_id, 'ADD')
 
     def escalatees(self, main_type, unique_id, params=None):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            params:
-
-        Return:
-
-        """
+        """Return escalatees on an entity."""
         params = params or {}
 
         url = f'/v2/{main_type}/{unique_id}/escalatees'
         yield from self._iterate(url, params, 'user')
 
     def escalatee(self, main_type, unique_id, escalatee_id, action='GET', params=None):
-        """
-
-        Args:
-            main_type:
-            unique_id:
-            escalatee_id:
-            action:
-            params:
-
-        Return:
-
-        """
+        """Manage escalatee on an entity."""
         params = params or {}
 
         url = f'/v2/{main_type}/{unique_id}/escalatees/{escalatee_id}'
@@ -2317,60 +1659,22 @@ class TiTcRequest:
         return None
 
     def get_escalatee(self, main_type, sub_type, unique_id, escalatee_id, params=None):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            escalatee_id:
-            params:
-
-        Return:
-
-        """
+        """Get escalatee on an entity."""
         params = params or {}
 
         return self.escalatee(main_type, sub_type, unique_id, escalatee_id, params=params)
 
     def delete_escalatee(self, main_type, sub_type, unique_id, escalatee_id):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            escalatee_id:
-
-        Return:
-
-        """
+        """Delete escalatee on an entity."""
         return self.escalatee(main_type, sub_type, unique_id, escalatee_id, 'DELETE')
 
     def add_escalatee(self, main_type, sub_type, unique_id, escalatee_id):
-        """
-
-        Args:
-            main_type:
-            sub_type:
-            unique_id:
-            escalatee_id:
-
-        Return:
-
-        """
+        """Add escalatee on an entity."""
         return self.escalatee(main_type, sub_type, unique_id, escalatee_id, 'ADD')
 
     @staticmethod
     def success(r):
-        """
-
-        Args:
-            r:
-
-        Return:
-
-        """
+        """Return True if response is successful."""
         status = True
         if r.ok:
             try:

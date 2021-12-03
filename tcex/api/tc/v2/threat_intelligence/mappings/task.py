@@ -1,8 +1,7 @@
-"""ThreatConnect TI Adversary """
+"""ThreatConnect TI Adversary"""
 # standard library
-from glob import escape
-from urllib.parse import quote_plus
 from typing import TYPE_CHECKING
+from urllib.parse import quote_plus
 
 from .mappings import Mappings
 
@@ -12,27 +11,26 @@ if TYPE_CHECKING:
 
 
 class Task(Mappings):
-    """Unique API calls for Tasks API Endpoints"""
+    """Unique API calls for Tasks API Endpoints.
+
+    Valid status:
+    + Not Started
+    + In Progress
+    + Completed
+    + Waiting on Someone
+    + Deferred
+
+    Args:
+        name (str, kwargs): [Required for Create] The name for this Group.
+        owner (str, kwargs): The name for this Group. Default to default Org when not provided
+        status (str, kwargs): Not started, In Progress, Completed, Waiting on Someone, Deferred
+        due_date (str, kwargs): Converted to %Y-%m-%dT%H:%M:%SZ date format
+        reminder_date (str, kwargs): Converted to %Y-%m-%dT%H:%M:%SZ date format
+        escalation_date (str, kwargs): Converted to %Y-%m-%dT%H:%M:%SZ date format
+    """
 
     def __init__(self, ti: 'ThreatIntelligence', **kwargs):
-        """Initialize Class Properties.
-
-        Valid status:
-        + Not Started
-        + In Progress
-        + Completed
-        + Waiting on Someone
-        + Deferred
-
-        Args:
-            name (str, kwargs): [Required for Create] The name for this Group.
-            owner (str, kwargs): The name for this Group. Default to default Org when not provided
-            status (str, kwargs): Not started, In Progress, Completed, Waiting on Someone, Deferred
-            due_date (str, kwargs): Converted to %Y-%m-%dT%H:%M:%SZ date format
-            reminder_date (str, kwargs): Converted to %Y-%m-%dT%H:%M:%SZ date format
-            escalation_date (str, kwargs): Converted to %Y-%m-%dT%H:%M:%SZ date format
-        """
-
+        """Initialize Class Properties."""
         super().__init__(
             ti,
             main_type='Task',
@@ -95,12 +93,7 @@ class Task(Mappings):
         return self.assignee(assignee)
 
     def add_key_value(self, key, value):
-        """Convert the value and adds it as a data field.
-
-        Args:
-            key:
-            value:
-        """
+        """Convert the value and adds it as a data field."""
         key = self._metadata_map.get(key, key)
         if key in ['unique_id', 'id']:
             self._unique_id = quote_plus(str(value))
@@ -117,7 +110,6 @@ class Task(Mappings):
 
         Return:
             obj: The response of the POST.
-
         """
         return self.escalatee(escalatee)
 
@@ -164,7 +156,6 @@ class Task(Mappings):
 
         Return:
             obj: The response of the DELETE.
-
         """
         return self.assignee(assignee, action='DELETE')
 
@@ -176,7 +167,6 @@ class Task(Mappings):
 
         Return:
             obj: The response of the DELETE.
-
         """
         return self.escalatee(escalatee, action='DELETE')
 

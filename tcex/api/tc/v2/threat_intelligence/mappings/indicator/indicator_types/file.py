@@ -1,14 +1,23 @@
 """ThreatConnect TI File"""
-from ..indicator import Indicator
+# standard library
+from typing import TYPE_CHECKING
+
+# first-party
+from tcex.api.tc.v2.threat_intelligence.mappings.indicator.indicator import Indicator
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.api.tc.v2.threat_intelligence.threat_intelligence import ThreatIntelligence
 
 
 class File(Indicator):
     """Unique API calls for File API Endpoints"""
 
-    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
+    def __init__(self, ti: 'ThreatIntelligence', **kwargs):
         """Initialize Class Properties.
 
         Args:
+            ti (ThreatIntelligence): An instance of the ThreatIntelligence Class.
             md5 (str, optional): The md5 value for this Indicator.
             sha1 (str, optional): The sha1 value for this Indicator.
             sha256 (str, optional): The sha256 value for this Indicator.

@@ -1,14 +1,23 @@
 """ThreatConnect TI Email Address"""
-from ..indicator import Indicator
+# standard library
+from typing import TYPE_CHECKING
+
+# first-party
+from tcex.api.tc.v2.threat_intelligence.mappings.indicator.indicator import Indicator
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.api.tc.v2.threat_intelligence.threat_intelligence import ThreatIntelligence
 
 
 class EmailAddress(Indicator):
     """Unique API calls for Email Address API Endpoints"""
 
-    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
+    def __init__(self, ti: 'ThreatIntelligence', **kwargs):
         """Initialize Class Properties.
 
         Args:
+            ti (ThreatIntelligence): An instance of the ThreatIntelligence Class.
             address (str): The value for this Indicator.
             active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
@@ -33,16 +42,9 @@ class EmailAddress(Indicator):
 
         If the address has been provided returns that the EmailAddress can be created, otherwise
         returns that the EmailAddress cannot be created.
-
-        Returns:
-
         """
         return not self.data.get('address') is None
 
-    def _set_unique_id(self, json_response):
-        """Set the unique_id provided a json response.
-
-        Args:
-            json_response:
-        """
+    def _set_unique_id(self, json_response: dict):
+        """Set the unique_id provided a json response."""
         self.unique_id = json_response.get('address', '')

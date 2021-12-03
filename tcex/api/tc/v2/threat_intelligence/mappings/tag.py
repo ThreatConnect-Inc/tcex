@@ -1,8 +1,14 @@
 """ThreatConnect TI Security Label"""
+# standard library
+from typing import TYPE_CHECKING
+
 # first-party
+from tcex.api.tc.v2.threat_intelligence.tcex_ti_tc_request import TiTcRequest
 from tcex.utils import Utils
 
-from ..tcex_ti_tc_request import TiTcRequest
+if TYPE_CHECKING:
+    # first-party
+    from tcex.api.tc.v2.threat_intelligence.threat_intelligence import ThreatIntelligence
 
 
 class Tag:
@@ -12,10 +18,9 @@ class Tag:
         group_type (str): The ThreatConnect define Group type.
         name (str): The name for this Group.
         xid (str, kwargs): The external id for this Group.
-
     """
 
-    def __init__(self, ti: 'ThreatIntelligenc', name):
+    def __init__(self, ti: 'ThreatIntelligence', name):
         """Initialize Class Properties."""
         self._name = name
 
@@ -34,13 +39,7 @@ class Tag:
         return True
 
     def groups(self, group_type=None, filters=None, owner=None, params=None):
-        """Get  all groups from a tag.
-
-        Args:
-            filters:
-            params:
-            group_type:
-        """
+        """Get all groups from a tag."""
         if group_type and group_type.lower() == 'task':
             group = self.ti.task()
         else:
@@ -50,13 +49,7 @@ class Tag:
         )
 
     def indicators(self, indicator_type=None, filters=None, owner=None, params=None):
-        """Get all indicators from a tag.
-
-        Args:
-            params:
-            filters:
-            indicator_type:
-        """
+        """Get all indicators from a tag."""
         indicator = self.ti.indicator(indicator_type)
         yield from self.tc_requests.indicators_from_tag(
             indicator, self.name, filters=filters, owner=owner, params=params
@@ -81,24 +74,10 @@ class Tag:
 
     @name.setter
     def name(self, name):
-        """Set  the tag name
-
-        Args:
-            name:
-
-        Returns:
-
-        """
+        """Set the tag name."""
         self._name = name
 
     @tc_requests.setter
     def tc_requests(self, tc_requests):
-        """Set the tc request object.
-
-        Args:
-            tc_requests:
-
-        Returns:
-
-        """
+        """Set the tc request object."""
         self._tc_requests = tc_requests

@@ -1,13 +1,6 @@
 """Test the TcEx API Module."""
 # standard library
 import os
-import time
-from datetime import datetime, timedelta
-from random import randint
-
-# third-party
-import pytest
-from pytest import FixtureRequest
 
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
@@ -16,6 +9,8 @@ from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 
 class TestGroups(TestV3):
     """Test TcEx API Interface."""
+
+    v3 = None
 
     def setup_method(self):
         """Configure setup before all tests."""
@@ -49,11 +44,14 @@ class TestGroups(TestV3):
         """Test snippet"""
 
         groups = self.v3.groups()
-        groups.filter.summary(TqlOperator.IN, [
-            'MyAdversary',
-            'StagedGroup1',
-            'StagedGroup2',
-            ])
+        groups.filter.summary(
+            TqlOperator.IN,
+            [
+                'MyAdversary',
+                'StagedGroup1',
+                'StagedGroup2',
+            ],
+        )
         for group in groups:
             group.delete()
 
@@ -64,11 +62,13 @@ class TestGroups(TestV3):
         group = self.tcex.v3.group(
             name='MyAdversary',
             type='Adversary',
-            associated_groups={'data': [
-                {'id': staged_group.model.id},
-                {'name': 'MyGroup0', 'type': 'Adversary'},
-                {'name': 'MyGroup', 'type': 'Adversary'},
-            ]}
+            associated_groups={
+                'data': [
+                    {'id': staged_group.model.id},
+                    {'name': 'MyGroup0', 'type': 'Adversary'},
+                    {'name': 'MyGroup', 'type': 'Adversary'},
+                ]
+            },
         )
         group.create()
 
@@ -115,7 +115,7 @@ class TestGroups(TestV3):
             found_groups += 1
         assert found_groups == 0
 
-    def test_group_create_and_retrieve_nested_types(self, request: FixtureRequest):
+    def test_group_create_and_retrieve_nested_types(self):
         """Test Object Creation
 
         A single test case to hit all sub-type creation (e.g., Notes).

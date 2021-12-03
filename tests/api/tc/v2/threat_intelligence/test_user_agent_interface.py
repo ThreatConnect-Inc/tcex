@@ -36,14 +36,15 @@ class TestUserAgentIndicators(TestThreatIntelligence):
             'owner': self.owner,
             'rating': randint(0, 5),
         }
-        ti = self.ti.user_agent(**indicator_data)
+        # user_agent method is dynamically generated
+        ti = self.ti.user_agent(**indicator_data)  # pylint: disable=no-member
         r = ti.create()
 
         # assert response
         assert r.status_code == 201
 
-        # retrieve indicator for asserts
-        ti = self.ti.user_agent(**indicator_data)
+        # retrieve indicator for asserts (user_agent method is dynamically generated)
+        ti = self.ti.user_agent(**indicator_data)  # pylint: disable=no-member
         r = ti.single()
         response_data = r.json()
         ti_data = response_data.get('data', {}).get(ti.api_entity)

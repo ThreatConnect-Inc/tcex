@@ -157,6 +157,7 @@ class Registry(Container):
 
     @property
     def exit(self) -> 'ExitService':
+        """@cblades"""
         return self.__getattr__('ExitService')
 
     @property

@@ -1,6 +1,6 @@
 """ThreatConnect TI Report"""
 # standard library
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 # first-party
 from tcex.api.tc.v2.threat_intelligence.mappings.group.group import Group
@@ -14,6 +14,7 @@ class Report(Group):
     """Unique API calls for Report API Endpoints
 
     Args:
+        ti (ThreatIntelligence): An instance of the ThreatIntelligence Class.
         name (str): The name for this Group.
         file_name (str, kwargs): The name for the attached file for this Group.
         publish_date (str, kwargs): The publish datetime expression for this Group.
@@ -24,16 +25,8 @@ class Report(Group):
 
         super().__init__(ti, sub_type='Report', api_entity='report', api_branch='reports', **kwargs)
 
-    def file_content(self, file_content, update_if_exists=True):
-        """Update  the file content.
-
-        Args:
-            file_content: The file_content to upload.
-            update_if_exists:
-
-        Returns:
-
-        """
+    def file_content(self, file_content: str, update_if_exists: Optional[bool] = True):
+        """Update the file content."""
         if not self.can_update():
             self._handle_error(910, [self.type])
 
@@ -46,12 +39,8 @@ class Report(Group):
             update_if_exists=update_if_exists,
         )
 
-    def file_name(self, file_name):
-        """Update the file_name.
-
-        Args:
-            file_name:
-        """
+    def file_name(self, file_name: str):
+        """Update the file_name."""
         if not self.can_update():
             self._handle_error(910, [self.type])
 
@@ -59,12 +48,8 @@ class Report(Group):
         request = {'fileName': file_name}
         return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)
 
-    def file_size(self, file_size):
-        """Update the file_size.
-
-        Args:
-            file_size:
-        """
+    def file_size(self, file_size: int):
+        """Update the file_size."""
         if not self.can_update():
             self._handle_error(910, [self.type])
 
@@ -72,15 +57,8 @@ class Report(Group):
         request = {'fileSize': file_size, 'fileName': self._data['fileName']}
         return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)
 
-    def get_file_hash(self, hash_type='sha256'):
-        """
-        Getting the hash value of attached document
-        Args:
-            hash_type:
-
-        Returns:
-
-        """
+    def get_file_hash(self, hash_type: Optional[str] = 'sha256'):
+        """Get the hash value of attached document"""
         if not self.can_update():
             self._handle_error(910, [self.type])
 
@@ -88,7 +66,7 @@ class Report(Group):
             self.api_type, self.api_branch, self.unique_id, hash_type=hash_type
         )
 
-    def status(self, status):
+    def status(self, status: str):
         """Update the status
 
         Valid status:
@@ -119,11 +97,7 @@ class Report(Group):
         return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)
 
     def download(self):
-        """Download the documents context.
-
-        Returns:
-
-        """
+        """Download the documents context."""
         if not self.can_update():
             self._handle_error(910, [self.type])
 

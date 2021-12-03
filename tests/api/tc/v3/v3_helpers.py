@@ -4,7 +4,6 @@ import importlib
 import inspect
 import os
 from datetime import datetime
-from os import stat
 from random import randint
 from typing import Any, Dict, Optional
 
@@ -534,7 +533,8 @@ class V3Helper:
             nationality (str, kwargs): Nationality of the Victim.
             org (str, kwargs): Org of the Victim.
             id (int, kwargs): The ID of the Victim.
-            owner_name (str, kwargs): The name of the Organization, Community, or Source that the item belongs to.
+            owner_name (str, kwargs): The name of the Organization, Community, or Source that the
+                item belongs to.
             security_labels (SecurityLabels, kwargs): A list of Security Labels corresponding to the
                 Intel item (NOTE: Setting this parameter will replace any existing tag(s) with the
                 one(s) specified).
@@ -561,15 +561,16 @@ class V3Helper:
         # create indicator
         victim = self.v3.victim(**victim_data)
 
-        associated_groups = self._to_list(kwargs.get('associated_groups', []))
+        # associated_groups = self._to_list(kwargs.get('associated_groups', []))
         attributes = self._to_list(kwargs.get('attributes', []))
         security_labels = self._to_list(kwargs.get('security_labels', []))
         tags = self._to_list(kwargs.get('tags', []))
         assets = self._to_list(kwargs.get('assets', []))
 
+        # TODO: [low] @bpurdy - victims don't have direct associations?
         # add associations
-        for associated_group in associated_groups:
-            victim.stage_associated_group(self.v3.group(**associated_group))
+        # for associated_group in associated_groups:
+        #     victim.stage_associated_group(self.v3.group(**associated_group))
 
         # add attributes
         for attribute in attributes:

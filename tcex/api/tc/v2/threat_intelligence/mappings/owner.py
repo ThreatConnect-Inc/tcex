@@ -1,11 +1,19 @@
 """ThreatConnect TI Generic Mappings Object"""
-from ..tcex_ti_tc_request import TiTcRequest
+# standard library
+from typing import TYPE_CHECKING
+
+# first-party
+from tcex.api.tc.v2.threat_intelligence.tcex_ti_tc_request import TiTcRequest
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.api.tc.v2.threat_intelligence.threat_intelligence import ThreatIntelligence
 
 
 class Owner:
     """Common API calls for for Indicators/SecurityLabels/Groups and Victims"""
 
-    def __init__(self, ti: 'ThreatIntelligenc'):
+    def __init__(self, ti: 'ThreatIntelligence'):
         """Initialize Class properties."""
         self._data = {}
 
@@ -37,38 +45,17 @@ class Owner:
 
     @api_entity.setter
     def api_entity(self, api_entity):
-        """Set the Api Entity
-
-        Args:
-            api_entity:
-
-        Returns:
-
-        """
+        """Set the Api Entity."""
         self._api_entity = api_entity
 
     @api_type.setter
     def api_type(self, api_type):
-        """Set the Api Type
-
-        Args:
-            api_type:
-
-        Returns:
-
-        """
+        """Set the Api Type."""
         self._api_type = api_type
 
     @tc_requests.setter
     def tc_requests(self, tc_requests):
-        """Set the Tc Request Object
-
-        Args:
-            tc_requests:
-
-        Returns:
-
-        """
+        """Set the Tc Request Object."""
         self._tc_requests = tc_requests
 
     def single(self, unique_id):
@@ -80,32 +67,17 @@ class Owner:
         )
 
     def many(self):
-        """Get all of the owners available.
-
-        Args:
-        """
+        """Get all of the owners available."""
         yield from self.tc_requests.many(self.api_type, None, self.api_entity)
 
     def mine(self):
-        """Get all of my owners available.
-
-        Returns:
-
-        """
+        """Get all of my owners available."""
         return self.tc_requests.mine()
 
     def members(self):
-        """Get all members for my owners
-
-        Returns:
-
-        """
+        """Get all members for my owners."""
         yield from self.tc_requests.many(self.api_type, 'mine/members', 'user')
 
     def metrics(self):
-        """Get all the metrics for owners
-
-        Returns:
-
-        """
+        """Get all the metrics for owners."""
         yield from self.tc_requests.many(self.api_type, 'metrics', 'ownerMetric')

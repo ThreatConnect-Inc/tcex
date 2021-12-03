@@ -1,9 +1,16 @@
 """ThreatConnect TI Indicator"""
 # standard library
 import json
+from typing import TYPE_CHECKING
 from urllib.parse import quote, unquote
 
-from ..mappings import Mappings
+# first-party
+from tcex.api.tc.v2.threat_intelligence.mappings.mappings import Mappings
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.api.tc.v2.threat_intelligence.threat_intelligence import ThreatIntelligence
+
 
 # import local modules for dynamic reference
 module = __import__(__name__)
@@ -51,11 +58,7 @@ def custom_indicator_class_factory(
             )
 
     def _set_unique_id(self, json_request):
-        """Set the unique ID.
-
-        Args:
-            json_request (dict): The JSON data for the request.
-        """
+        """Set the unique ID."""
         values = []
         for field in value_fields:
             value = json_request.get(field, '')
@@ -96,7 +99,7 @@ def custom_indicator_class_factory(
 class Indicator(Mappings):
     """Unique API calls for Indicator API Endpoints"""
 
-    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
+    def __init__(self, ti: 'ThreatIntelligence', **kwargs):
         """Initialize Class Properties."""
         super().__init__(
             ti,
@@ -153,12 +156,7 @@ class Indicator(Mappings):
         }
 
     def add_key_value(self, key, value):
-        """Convert the value and adds it as a data field.
-
-        Args:
-            key:
-            value:
-        """
+        """Convert the value and adds it as a data field."""
         key = self._metadata_map().get(key, key)
         if key in ['dateAdded', 'lastModified']:
             self._data[key] = self._utils.any_to_datetime(value).strftime('%Y-%m-%dT%H:%M:%SZ')
@@ -176,11 +174,9 @@ class Indicator(Mappings):
 
         Args:
             status:  Valid values to set to active are ['active', '2', '1' ] while
-            ['inactive', '-2', '-1', 0] will set it to inactive
+                ['inactive', '-2', '-1', 0] will set it to inactive
             cal_status:  Valid values to set to locked are ['locked', 'lock', '1' ] while
-            ['unlock', 'unlocked', '0'] will set it to inactive
-
-        Returns:
+                ['unlock', 'unlocked', '0'] will set it to inactive
         """
         if not self.can_update():
             self._handle_error(910, [self.type])
@@ -204,11 +200,7 @@ class Indicator(Mappings):
         )
 
     def rating(self, value):
-        """Update the Indicators rating
-
-        Args:
-            value:
-        """
+        """Update the Indicators rating."""
         if not self.can_update():
             self._handle_error(910, [self.type])
         request_data = {'rating': value}
@@ -217,11 +209,7 @@ class Indicator(Mappings):
         )
 
     def confidence(self, value):
-        """Update the Indicators confidence
-
-        Args:
-            value:
-        """
+        """Update the Indicators confidence."""
         if not self.can_update():
             self._handle_error(910, [self.type])
         request_data = {'confidence': value}
@@ -238,13 +226,7 @@ class Indicator(Mappings):
         )
 
     def add_observers(self, count, date_observed):
-        """Add a Indicator Observation
-
-        Args:
-            count:
-            date_observed:
-
-        """
+        """Add a Indicator Observation."""
         if not self.can_update():
             self._handle_error(910, [self.type])
 
@@ -260,11 +242,7 @@ class Indicator(Mappings):
         )
 
     def observation_count(self):
-        """Get the indicators observation count.
-
-        Returns:
-
-        """
+        """Get the indicators observation count."""
         if not self.can_update():
             self._handle_error(910, [self.type])
         return self.tc_requests.observation_count(
@@ -281,11 +259,7 @@ class Indicator(Mappings):
         )
 
     def observations(self):
-        """Return indicator observation data.
-
-        Returns:
-            [type]: [description]
-        """
+        """Return indicator observation data."""
         if not self.can_update():
             self._handle_error(910, [self.type])
         return self.tc_requests.observations(
@@ -293,16 +267,7 @@ class Indicator(Mappings):
         )
 
     def deleted(self, deleted_since=None, filters=None, params=None):
-        """Return deleted indicators from TC REST API.
-
-        Args:
-            deleted_since ([type]): [description]
-            filters ([type], optional): [description]. Defaults to None.
-            params ([type], optional): [description]. Defaults to None.
-
-        Returns:
-            [type]: [description]
-        """
+        """Return deleted indicators from TC REST API."""
         return self.tc_requests.deleted(
             self.api_type,
             self.api_branch,
@@ -315,11 +280,6 @@ class Indicator(Mappings):
     @staticmethod
     def build_summary(val1=None, val2=None, val3=None):
         """Construct an indicator summary given va1, va2, val3.
-
-        Args:
-            val1 (str, optional): Indicator value. Defaults to None.
-            val2 (str, optional): Indicator value. Defaults to None.
-            val3 (str, optional): Indicator value. Defaults to None.
 
         Returns:
             str: <space><colon><space> delimeted indicator summary.

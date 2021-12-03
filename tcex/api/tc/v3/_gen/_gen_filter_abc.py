@@ -359,57 +359,77 @@ class GenerateFilterABC(GenerateABC, ABC):
     def _gen_code_has_victim_asset_method(self) -> list:
         """Return code for has_victim_asset TQL filter methods."""
         self._add_tql_imports()
-        return [
+        _code = [
             f'{self.i1}@property',
             f'{self.i1}def has_victim_asset(self):',
             f'{self.i2}"""Return **VictimAssetFilter** for further filtering."""',
-            f'{self.i2}# first-party',
-            (
-                f'{self.i2}from tcex.api.tc.v3.victim_assets.victim_asset_filter import '
-                f'VictimAssetFilter'
-            ),
-            '',
-            f'{self.i2}victim_assets = VictimAssetFilter(Tql())',
-            (
-                f'''{self.i2}self._tql.add_filter('hasVictimAsset', '''
-                '''TqlOperator.EQ, victim_assets, TqlType.SUB_QUERY)'''
-            ),
-            f'{self.i2}return victim_assets',
-            '',
         ]
+        if self.type_ != 'victim_assets':
+            _code.extend(
+                [
+                    f'{self.i2}# first-party',
+                    (
+                        f'{self.i2}from tcex.api.tc.v3.victim_assets.victim_asset_filter import '
+                        f'VictimAssetFilter'
+                    ),
+                    '',
+                ]
+            )
+        _code.extend(
+            [
+                f'{self.i2}victim_assets = VictimAssetFilter(Tql())',
+                (
+                    f'''{self.i2}self._tql.add_filter('hasVictimAsset', '''
+                    '''TqlOperator.EQ, victim_assets, TqlType.SUB_QUERY)'''
+                ),
+                f'{self.i2}return victim_assets',
+                '',
+            ]
+        )
+        return _code
 
     def _gen_code_has_victim_method(self) -> list:
         """Return code for has_victim TQL filter methods."""
         self._add_tql_imports()
-        return [
+        _code = [
             f'{self.i1}@property',
             f'{self.i1}def has_victim(self):',
             f'{self.i2}"""Return **VictimFilter** for further filtering."""',
-            f'{self.i2}# first-party',
-            f'{self.i2}from tcex.api.tc.v3.victims.victim_filter import VictimFilter',
-            '',
-            f'{self.i2}victims = VictimFilter(Tql())',
-            (
-                f'''{self.i2}self._tql.add_filter('hasVictim', '''
-                '''TqlOperator.EQ, victims, TqlType.SUB_QUERY)'''
-            ),
-            f'{self.i2}return victims',
-            '',
         ]
+        if self.type_ != 'victims':
+            _code.extend(
+                [
+                    f'{self.i2}# first-party',
+                    f'{self.i2}from tcex.api.tc.v3.victims.victim_filter import VictimFilter',
+                    '',
+                ]
+            )
+        _code.extend(
+            [
+                f'{self.i2}victims = VictimFilter(Tql())',
+                (
+                    f'''{self.i2}self._tql.add_filter('hasVictim', '''
+                    '''TqlOperator.EQ, victims, TqlType.SUB_QUERY)'''
+                ),
+                f'{self.i2}return victims',
+                '',
+            ]
+        )
+        return _code
 
     def _gen_code_has_attribute_method(self) -> list:
         """Return code for has_attribute TQL filter methods."""
         self._add_tql_imports()
 
         # hasAttribute filter is present on groups/indicators/ and victims.
-        filter_type = f'GroupAttributeFilter'
-        import_path = f'group_attributes.group_attribute_filter'
+        filter_type = 'GroupAttributeFilter'
+        import_path = 'group_attributes.group_attribute_filter'
         if self.type_.lower() == 'indicators':
-            filter_type = f'IndicatorAttributeFilter'
-            import_path = f'indicator_attributes.indicator_attribute_filter'
+            filter_type = 'IndicatorAttributeFilter'
+            import_path = 'indicator_attributes.indicator_attribute_filter'
         elif self.type_.lower() == 'victims':
-            filter_type = f'VictimAttributeFilter'
-            import_path = f'victim_attributes.victim_attribute_filter'
+            filter_type = 'VictimAttributeFilter'
+            import_path = 'victim_attributes.victim_attribute_filter'
 
         return [
             f'{self.i1}@property',

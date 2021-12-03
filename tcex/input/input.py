@@ -231,8 +231,17 @@ class Input:
         """Return contents of inputs from all locations."""
         _contents = {}
 
-        # aot params - load first so that we block and don't read config params
-        #    before they are available.
+        # config
+        if isinstance(self.config, dict):
+            _contents.update(self.config)
+
+        # config file
+        _contents.update(self._load_config_file())
+
+        # file params
+        _contents.update(self._load_file_params())
+
+        # aot params - must be loaded last so that it has the kv store channels
         _contents.update(
             self._load_aot_params(
                 tc_aot_enabled=_contents.get('tc_aot_enabled', False),
@@ -243,16 +252,6 @@ class Input:
                 tc_terminate_seconds=_contents.get('tc_terminate_seconds'),
             )
         )
-
-        # config
-        if isinstance(self.config, dict):
-            _contents.update(self.config)
-
-        # config file
-        _contents.update(self._load_config_file())
-
-        # file params
-        _contents.update(self._load_file_params())
 
         return _contents
 

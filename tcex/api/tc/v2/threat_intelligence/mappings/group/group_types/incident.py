@@ -25,6 +25,7 @@ class Incident(Group):
     + Stalled
 
     Args:
+        ti (ThreatIntelligence): An instance of the ThreatIntelligence Class.
         event_date (str, kwargs): The incident event date expression for this Group.
         name (str, kwargs): [Required for Create] The name for this Group.
         status (str, kwargs): The status for this Group.
@@ -41,9 +42,6 @@ class Incident(Group):
 
         Args:
             event_date: Converted to %Y-%m-%dT%H:%M:%SZ date format.
-
-        Returns:
-
         """
         if not self.can_update():
             self._handle_error(910, [self.type])
@@ -69,10 +67,7 @@ class Incident(Group):
 
         Args:
             status: Closed, Containment Achieved, Deleted, Incident Reported, Open, New, Rejected,
-            Restoration Achieved, Stalled.
-
-        Returns:
-
+                Restoration Achieved, Stalled.
         """
         if not self.can_update():
             self._handle_error(910, [self.type])

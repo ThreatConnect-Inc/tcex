@@ -9,8 +9,8 @@ from requests import Session, adapters
 from urllib3.util.retry import Retry
 
 # first-party
-from tcex.utils import Utils
 from tcex.utils.requests_to_curl import RequestsToCurl
+from tcex.utils.utils import Utils
 
 if TYPE_CHECKING:
     # third-party

@@ -1,14 +1,12 @@
 """Test the TcEx API Module."""
 # standard library
 import os
-import time
 from datetime import datetime, timedelta
 from random import randint
 
 # third-party
 import pytest
 from pytest import FixtureRequest
-from typer import params
 
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
@@ -189,7 +187,8 @@ class TestCases(TestV3):
         assert case.model.case_open_user.user_name == os.getenv('TC_API_ACCESS_ID')
         # env variable
 
-    def test_case_nested_objects(self, request: FixtureRequest):
+    def test_case_nested_objects(self):
+        """Test nested objects on a Case"""
         # clean up
         cases = self.tcex.v3.cases()
         cases.filter.xid(TqlOperator.EQ, 'xid-test_case_create_and_retrieve_nested_types')
@@ -282,7 +281,7 @@ class TestCases(TestV3):
             artifacts_found += 1
             assert artifact.model.summary in [
                 artifact_data.get('summary'),
-                artifact_data_2.get('summary')
+                artifact_data_2.get('summary'),
             ]
         assert artifacts_found == 2, 'Incorrect amount of artifacts were created on the case.'
 
@@ -381,7 +380,7 @@ class TestCases(TestV3):
         note_id = case.model.notes.data[0].id
         task_id = case.model.tasks.data[0].id
         tag_id = case.model.tags.data[0].id
-        attribute_id = case.model.attributes.data[0].id
+        # attribute_id = case.model.attributes.data[0].id
         artifact_id = case.model.artifacts.data[0].id
 
         # [Retrieve Testing] retrieve object using tql filters
@@ -418,7 +417,7 @@ class TestCases(TestV3):
         cases.filter.id_as_string(TqlOperator.EQ, str(case.model.id))
         cases.filter.name(TqlOperator.EQ, case_data.get('name'))
         # cases.filter.owner(...)
-        cases.filter.owner_name(TqlOperator.EQ, case.model.owner),
+        cases.filter.owner_name(TqlOperator.EQ, case.model.owner)
         cases.filter.resolution(TqlOperator.EQ, case_data.get('resolution'))
         cases.filter.severity(TqlOperator.EQ, case_data.get('severity'))
         cases.filter.status(TqlOperator.EQ, case_data.get('status'))
@@ -452,7 +451,7 @@ class TestCases(TestV3):
         assert '950' in str(exc_info.value)
         assert cases.request.status_code == 400
 
-    def test_case_delete_by_id(self, request: FixtureRequest):
+    def test_case_delete_by_id(self):
         """Test Case Deletion"""
         # [Pre-Requisite] - create case and provide a unique xid
         case = self.v3_helper.create_case()
@@ -519,7 +518,8 @@ class TestCases(TestV3):
     #     case_2 = self.v3.case(**case_data)
     #     case_2.create()
     #
-    #     # [Pre-Requisite] - construct some timestamps in the future for completed and due by fields.
+    #     # [Pre-Requisite] - construct some timestamps in the future
+    #     #    for completed and due by fields.
     #     future_1 = datetime.now() + timedelta(days=10)
     #     future_2 = datetime.now() + timedelta(days=5)
     #

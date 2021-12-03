@@ -1,14 +1,23 @@
 """ThreatConnect TI Address"""
-from ..indicator import Indicator
+# standard library
+from typing import TYPE_CHECKING
+
+# first-party
+from tcex.api.tc.v2.threat_intelligence.mappings.indicator.indicator import Indicator
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.api.tc.v2.threat_intelligence.threat_intelligence import ThreatIntelligence
 
 
 class Address(Indicator):
     """Unique API calls for Address API Endpoints"""
 
-    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
+    def __init__(self, ti: 'ThreatIntelligence', **kwargs):
         """Initialize Class Properties.
 
         Args:
+            ti (ThreatIntelligence): An instance of the ThreatIntelligence Class.
             ip (str): The value for this Indicator.
             active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
@@ -25,11 +34,7 @@ class Address(Indicator):
         self.data['ip'] = self.unique_id
 
     def _set_unique_id(self, json_response):
-        """Set the unique_id provided a json response.
-
-        Args:
-            json_response:
-        """
+        """Set the unique_id provided a json response."""
         self.unique_id = json_response.get('ip', '')
 
     def can_create(self):
@@ -41,11 +46,7 @@ class Address(Indicator):
         return not self.data.get('ip') is None
 
     def dns_resolution(self):
-        """Update the DNS resolution.
-
-        Returns:
-
-        """
+        """Update the DNS resolution."""
         if not self.can_update():
             self._handle_error(910, [self.type])
         return self.tc_requests.dns_resolution(

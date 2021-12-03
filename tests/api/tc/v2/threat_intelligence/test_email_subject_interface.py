@@ -36,14 +36,15 @@ class TestEmailSubjectIndicators(TestThreatIntelligence):
             'owner': self.owner,
             'rating': randint(0, 5),
         }
-        ti = self.ti.email_subject(**indicator_data)
+        # email_subject method is dynamically generated
+        ti = self.ti.email_subject(**indicator_data)  # pylint: disable=no-member
         r = ti.create()
 
         # assert response
         assert r.status_code == 201
 
-        # retrieve indicator for asserts
-        ti = self.ti.email_subject(**indicator_data)
+        # retrieve indicator for asserts (email_subject method is dynamically generated)
+        ti = self.ti.email_subject(**indicator_data)  # pylint: disable=no-member
         r = ti.single()
         response_data = r.json()
         ti_data = response_data.get('data', {}).get(ti.api_entity)

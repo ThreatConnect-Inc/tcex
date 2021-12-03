@@ -17,7 +17,8 @@ if TYPE_CHECKING:
     # third-party
     import redis
 
-    from ..mock_app import MockApp
+    # first-party
+    from tests.mock_app import MockApp
 
 
 class TestInputsConfig:
@@ -88,8 +89,12 @@ class TestInputsConfig:
         assert tcex.inputs.model.external_config_item == config_data.get('external_config_item')
 
     @staticmethod
-    def test_config_file_kwarg():
+    def test_config_file_kwarg(playbook_app: 'MockApp'):
         """Test config file input method of TcEx"""
+        # have mockApp create an install.json file
+        _ = playbook_app()
+
+        # reset registry between tests
         registry._reset()
         config_file = Path('app_config.json')
 

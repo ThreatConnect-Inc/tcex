@@ -41,39 +41,21 @@ class SecurityLabel(Mappings):
 
     @staticmethod
     def is_security_label():
-        """Indicates that this is a security label object
-
-        Returns:
-
-        """
+        """Return indication that this is a security label object."""
         return True
 
     def can_create(self):
-        """If the name has been provided returns that the SecurityLabel can be created, otherwise
-        returns that the SecurityLabel cannot be created.
-
-        Returns:
-
-        """
+        """Return true if security label can be created."""
         if self._data.get('name'):
             return True
         return False
 
     def add_key_value(self, key, value):
-        """Converts the value and adds it as a data field.
-
-        Args:
-            key:
-            value:
-        """
+        """Convert the value and adds it as a data field."""
         self._data[key] = value
 
     def name(self, name):
-        """Updates the security labels name.
-
-        Args:
-            name:
-        """
+        """Update the security labels name."""
         self._data['name'] = name
         data = {'name': name}
         return self._tc_requests.update(
@@ -81,12 +63,7 @@ class SecurityLabel(Mappings):
         )
 
     def color(self, color):
-        """Updates the security labels color.
-
-        Args:
-            color:
-
-        """
+        """Update the security labels color."""
         self._data['color'] = color
         data = {'color': color}
         return self._tc_requests.update(
@@ -94,11 +71,7 @@ class SecurityLabel(Mappings):
         )
 
     def description(self, description):
-        """Updates the security labels description.
-
-        Args:
-            description:
-        """
+        """Update the security labels description."""
         self._data['description'] = description
         data = {'description': description}
         return self._tc_requests.update(
@@ -106,7 +79,7 @@ class SecurityLabel(Mappings):
         )
 
     def date_added(self, date_added):
-        """Updates the security labels date_added
+        """Update the security labels date_added.
 
         Args:
             date_added: Converted to %Y-%m-%dT%H:%M:%SZ date format

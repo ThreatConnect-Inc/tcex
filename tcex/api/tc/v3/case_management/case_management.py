@@ -474,6 +474,8 @@ class CaseManagement:
 
 
 # first-party
+# TODO: [low] @bsummers - can these be moved to the top?
+# pylint: disable=wrong-import-position
 from tcex.api.tc.v3.artifact_types.artifact_type import ArtifactType, ArtifactTypes
 from tcex.api.tc.v3.artifacts.artifact import Artifact, Artifacts
 from tcex.api.tc.v3.cases.case import Case, Cases

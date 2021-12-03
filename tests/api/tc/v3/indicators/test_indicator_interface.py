@@ -1,8 +1,6 @@
 """Test the TcEx API Module."""
 # standard library
 import os
-import time
-from datetime import datetime, timedelta
 from random import randint
 
 # third-party
@@ -15,6 +13,8 @@ from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 
 class TestIndicators(TestV3):
     """Test TcEx API Interface."""
+
+    v3 = None
 
     def setup_method(self):
         """Configure setup before all tests."""
@@ -70,7 +70,7 @@ class TestIndicators(TestV3):
 
     #     return
 
-    def test_indicator_create_and_retrieve_nested_types(self, request: FixtureRequest):
+    def test_indicator_create_and_retrieve_nested_types(self):
         """Test Object Creation
 
         A single test case to hit all sub-type creation (e.g., Notes).
@@ -121,17 +121,17 @@ class TestIndicators(TestV3):
             print('group name', group.model.name)
 
         # [Retrieve Testing] run assertions on returned data
-        indicator.model.summary == indicator_data.get('ip')
-        indicator.model.ip == indicator_data.get('ip')
+        assert indicator.model.summary == indicator_data.get('ip')
+        assert indicator.model.ip == indicator_data.get('ip')
 
         # [Retrieve Testing] run assertions on returned nested data
-        indicator.model.attributes.data[0].value == attribute_data.get('value')
+        assert indicator.model.attributes.data[0].value == attribute_data.get('value')
 
         # [Retrieve Testing] run assertions on returned nested data
-        indicator.model.security_labels.data[0].name == security_label_data.get('name')
+        assert indicator.model.security_labels.data[0].name == security_label_data.get('name')
 
         # [Retrieve Testing] run assertions on returned nested data
-        indicator.model.tags.data[0].name == tag_data.get('name')
+        assert indicator.model.tags.data[0].name == tag_data.get('name')
 
         # print('status_code', indicator.request.status_code)
         # print('method', indicator.request.request.method)
@@ -210,23 +210,25 @@ class TestIndicators(TestV3):
         indicator.get(params={'fields': ['_all_']})
 
         # [Create Testing] testing setters on model
-        indicator.model.active == indicator_data.get('active')
-        # indicator.model.associated_groups == indicator_data.get('associated_groups')
-        # indicator.model.associated_indicators == indicator_data.get('associated_indicators')
-        # indicator.model.attributes == indicator_data.get('attributes')
-        indicator.model.confidence == indicator_data.get('confidence')
-        indicator.model.date_added is not None
-        indicator.model.description == indicator_data.get('description')
-        indicator.model.id == indicator_data.get('id')
-        indicator.model.ip == indicator_data.get('value1')
-        indicator.model.last_modified is not None
-        indicator.model.owner_name == indicator_data.get('owner_name')
-        indicator.model.rating == indicator_data.get('rating')
-        # indicator.model.security_labels == indicator_data.get('security_labels')
-        indicator.model.summary == indicator_data.get('summary')
-        # indicator.model.tags == indicator_data.get('tags')
-        indicator.model.type == indicator_data.get('type')
-        indicator.model.web_link is not None
+        assert indicator.model.active == indicator_data.get('active')
+        # assert indicator.model.associated_groups == indicator_data.get('associated_groups')
+        # assert indicator.model.associated_indicators == indicator_data.get(
+        #     'associated_indicators'
+        # )
+        # assert indicator.model.attributes == indicator_data.get('attributes')
+        assert indicator.model.confidence == indicator_data.get('confidence')
+        assert indicator.model.date_added is not None
+        assert indicator.model.description == indicator_data.get('description')
+        assert indicator.model.id == indicator_data.get('id')
+        assert indicator.model.ip == indicator_data.get('value1')
+        assert indicator.model.last_modified is not None
+        assert indicator.model.owner_name == indicator_data.get('owner_name')
+        assert indicator.model.rating == indicator_data.get('rating')
+        # assert indicator.model.security_labels == indicator_data.get('security_labels')
+        assert indicator.model.summary == indicator_data.get('summary')
+        # assert indicator.model.tags == indicator_data.get('tags')
+        assert indicator.model.type == indicator_data.get('type')
+        assert indicator.model.web_link is not None
 
         # [Retrieve Testing] test as_entity
         assert indicator.as_entity.get('value') == indicator_data.get(
@@ -244,39 +246,3 @@ class TestIndicators(TestV3):
                 break
         else:
             assert False, f'Associated indicator {ai.model.summary} not found.'
-
-    def test_indicator_get_many(self):
-        """Test Indicators Get Many"""
-        # [Pre-Requisite] - create case
-        indicator_count = 10
-        indicator_ids = []
-        indicator_tag = 'TcEx-Indicator-Testing'
-        for _ in range(0, indicator_count):
-            # [Create Testing] define object data
-            indicator = self.v3_helper.create_indicator(
-                **{
-                    'active': True,
-                    'associated_groups': {'id': 8755},
-                    'attribute': {'type': 'Description', 'value': indicator_tag},
-                    'confidence': randint(0, 100),
-                    'description': 'TcEx Testing',
-                    'rating': randint(0, 5),
-                    'security_labels': {'name': 'TLP:WHITE'},
-                    'source': None,
-                    'tags': {'name': indicator_tag},
-                    'type': 'Address',
-                }
-            )
-            indicator_ids.append(indicator.model.id)
-
-        # [Retrieve Testing] iterate over all object looking for needle
-        indicators = self.v3.indicators()
-        indicators.filter.tag(TqlOperator.EQ, indicator_tag)
-        # capture indicator count before deleting the indicator
-        indicators_counts = len(indicators)
-        for _, indicator in enumerate(indicators):
-            assert indicator.model.id in indicator_ids
-            indicator_ids.remove(indicator.model.id)
-
-        assert indicators_counts == indicator_count
-        assert not indicator_ids, 'Not all indicators were returned.'

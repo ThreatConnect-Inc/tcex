@@ -3,9 +3,16 @@
 import os
 import uuid
 from random import randint
+from typing import TYPE_CHECKING
 
 # first-party
 from tests.mock_app import MockApp
+
+if TYPE_CHECKING:
+    # first party
+    # first-party
+    from tcex import TcEx
+    from tcex.api.tc.v2.threat_intelligence import ThreatIntelligence
 
 
 class TIHelper:
@@ -25,8 +32,8 @@ class TIHelper:
 
         # properties
         self.app = MockApp(runtime_level='Playbook')
-        self.tcex = self.app.tcex
-        self.ti = self.tcex.v2.ti
+        self.tcex: 'TcEx' = self.app.tcex
+        self.ti: 'ThreatIntelligence' = self.tcex.v2.ti
 
         # indicator_type_value_map
         self.im = {

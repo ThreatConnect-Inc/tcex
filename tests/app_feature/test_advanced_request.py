@@ -1,8 +1,12 @@
 """Test the TcEx App Feature Advance Request Module."""
-
-
 # standard library
 import json
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex import TcEx
+    from tests.mock_app import MockApp
 
 
 class TestAdvancedRequest:
@@ -12,7 +16,7 @@ class TestAdvancedRequest:
     tc_playbook_out_variables = None
 
     @staticmethod
-    def _load_data(tcex: object, context: str):
+    def _load_data(tcex: 'TcEx', context: str):
         """Load data from Redis into a dict.
 
         Args:
@@ -40,13 +44,13 @@ class TestAdvancedRequest:
         ]
 
     @staticmethod
-    def test_advanced_request_get_standard(playbook_app: callable):
+    def test_advanced_request_get_standard(playbook_app: 'MockApp'):
         """Test advanced request feature
 
         Args:
-            playbook_app (callable, fixture): The playbook_app fixture.
+            playbook_app ('MockApp', fixture): The playbook_app fixture.
         """
-        tcex = playbook_app(
+        tcex: 'TcEx' = playbook_app(
             config_data={
                 'tc_adv_req_exclude_null_params': False,
                 'tc_adv_req_fail_on_error': False,
@@ -77,13 +81,13 @@ class TestAdvancedRequest:
         assert data.get('args', {}).get('one') == '1'
         assert data.get('args', {}).get('two') == ''
 
-    def test_advanced_request_get_500(self, playbook_app: callable):
+    def test_advanced_request_get_500(self, playbook_app: 'MockApp'):
         """Test advanced request feature
 
         Args:
-            playbook_app (callable, fixture): The playbook_app fixture.
+            playbook_app ('MockApp', fixture): The playbook_app fixture.
         """
-        tcex = playbook_app(
+        tcex: 'TcEx' = playbook_app(
             config_data={
                 'tc_playbook_out_variables': self.tc_playbook_out_variables,
                 'tc_adv_req_exclude_null_params': False,
@@ -129,13 +133,13 @@ class TestAdvancedRequest:
         )
 
     @staticmethod
-    def test_advanced_request_get_exclude_null_params(playbook_app: callable):
+    def test_advanced_request_get_exclude_null_params(playbook_app: 'MockApp'):
         """Test advanced request feature
 
         Args:
-            playbook_app (callable, fixture): The playbook_app fixture.
+            playbook_app ('MockApp', fixture): The playbook_app fixture.
         """
-        tcex = playbook_app(
+        tcex: 'TcEx' = playbook_app(
             config_data={
                 'tc_adv_req_exclude_null_params': True,
                 'tc_adv_req_fail_on_error': False,
@@ -167,13 +171,13 @@ class TestAdvancedRequest:
         assert data.get('args', {}).get('two') is None
 
     @staticmethod
-    def test_advanced_request_post_str(playbook_app: callable):
+    def test_advanced_request_post_str(playbook_app: 'MockApp'):
         """Test advanced request feature
 
         Args:
-            playbook_app (callable, fixture): The playbook_app fixture.
+            playbook_app ('MockApp', fixture): The playbook_app fixture.
         """
-        tcex = playbook_app(
+        tcex: 'TcEx' = playbook_app(
             config_data={
                 'tc_adv_req_exclude_null_params': False,
                 'tc_adv_req_fail_on_error': False,
@@ -206,13 +210,13 @@ class TestAdvancedRequest:
         assert data.get('args', {}).get('one') == '1'
 
     @staticmethod
-    def test_advanced_request_post_bytes(playbook_app: callable):
+    def test_advanced_request_post_bytes(playbook_app: 'MockApp'):
         """Test advanced request feature
 
         Args:
-            playbook_app (callable, fixture): The playbook_app fixture.
+            playbook_app ('MockApp', fixture): The playbook_app fixture.
         """
-        tcex = playbook_app(
+        tcex: 'TcEx' = playbook_app(
             config_data={
                 'tc_adv_req_exclude_null_params': False,
                 'tc_adv_req_fail_on_error': False,
@@ -245,13 +249,13 @@ class TestAdvancedRequest:
         assert data.get('args', {}).get('one') == '1'
 
     @staticmethod
-    def test_advanced_request_post_urlencode(playbook_app: callable):
+    def test_advanced_request_post_urlencode(playbook_app: 'MockApp'):
         """Test advanced request feature
 
         Args:
-            playbook_app (callable, fixture): The playbook_app fixture.
+            playbook_app ('MockApp', fixture): The playbook_app fixture.
         """
-        tcex = playbook_app(
+        tcex: 'TcEx' = playbook_app(
             config_data={
                 'tc_adv_req_exclude_null_params': False,
                 'tc_adv_req_fail_on_error': False,

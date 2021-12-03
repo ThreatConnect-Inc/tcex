@@ -1,5 +1,14 @@
 """ThreatConnect TI Victim"""
-from .mappings import Mappings
+# standard library
+from typing import TYPE_CHECKING
+
+# first-party
+from tcex.api.tc.v2.threat_intelligence.mappings.mappings import Mappings
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.api.tc.v2.threat_intelligence.threat_intelligence import ThreatIntelligence
+
 
 # import local modules for dynamic reference
 module = __import__(__name__)
@@ -8,10 +17,11 @@ module = __import__(__name__)
 class Victim(Mappings):
     """Unique API calls for Victim API Endpoints"""
 
-    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
+    def __init__(self, ti: 'ThreatIntelligence', **kwargs):
         """Initialize Class properties.
 
         Args:
+            ti (ThreatIntelligence): An instance of the ThreatIntelligence Class.
             owner (str, kwargs): The owner for this Victim. Default to default Org when not provided
             name (str, kwargs): [Required for Create] The name for this Victim.
         """
@@ -140,8 +150,7 @@ class Victim(Mappings):
         }
 
     def assets(self, asset_type=None):
-        """
-        Gets the assets of a Victim
+        """Get the assets of a Victim.
 
         Valid asset_type and optional identifier:
         + email
@@ -155,7 +164,6 @@ class Victim(Mappings):
 
         Yield:
             Json: The asset being retrieved.
-
         """
         if not self.can_update():
             self._handle_error(910, [self.type])
@@ -251,8 +259,7 @@ class Victim(Mappings):
         return self.delete_asset(asset_id, 'WEB')
 
     def email_assets(self):
-        """
-        Gets the email assets of a Victim
+        """Get the email assets of a Victim
 
         Yield:
             Json: The asset being retrieved.
@@ -260,8 +267,7 @@ class Victim(Mappings):
         return self.assets(asset_type='EMAIL')
 
     def get_asset(self, asset_id, asset_type):
-        """
-        Gets the assets of a Victim
+        """Get the assets of a Victim
 
         Valid asset_type and optional identifier:
         + email
@@ -358,8 +364,7 @@ class Victim(Mappings):
         self._data['name'] = name
 
     def network_assets(self):
-        """
-        Gets the network assets of a Victim
+        """Get the network assets of a Victim
 
         Yield:
             Json: The asset being retrieved.
@@ -367,8 +372,7 @@ class Victim(Mappings):
         return self.assets(asset_type='NETWORK')
 
     def social_assets(self):
-        """
-        Gets the social assets of a Victim
+        """Get the social assets of a Victim
 
         Yield:
             Json: The asset being retrieved.
@@ -376,8 +380,7 @@ class Victim(Mappings):
         return self.assets(asset_type='SOCIAL')
 
     def phone_assets(self):
-        """
-        Gets the phone assets of a Victim
+        """Get the phone assets of a Victim
 
         Yield:
             Json: The asset being retrieved.
@@ -385,8 +388,7 @@ class Victim(Mappings):
         return self.assets(asset_type='PHONE')
 
     def update_asset(self, asset_type, asset_id, body=None):
-        """
-        Updates a asset of a Victim
+        """Update a asset of a Victim
 
         Valid asset_type and optional identifier:
         + email
@@ -498,8 +500,7 @@ class Victim(Mappings):
         return self.update_asset('WEB', asset_id, asset_data)
 
     def web_assets(self):
-        """
-        Gets the web assets of a Victim
+        """Get the web assets of a Victim
 
         Yield:
             Json: The asset being retrieved.

@@ -49,7 +49,6 @@ class GenerateArgsABC(GenerateABC, ABC):
         self,
         i1: Optional[str] = None,
         i2: Optional[str] = None,
-        nested_objects: Optional[bool] = True,
         updatable: Optional[bool] = True,
     ) -> str:
         """Model Map"""

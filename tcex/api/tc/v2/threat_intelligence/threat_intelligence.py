@@ -2,11 +2,7 @@
 # standard library
 import logging
 from functools import lru_cache
-from typing import Optional
-
-# third-party
-# import inflect
-from requests import Session
+from typing import TYPE_CHECKING, Optional
 
 # first-party
 from tcex.api.tc.v2.threat_intelligence.mappings.filters import Filters
@@ -52,7 +48,10 @@ from tcex.api.tc.v2.threat_intelligence.mappings.victim import Victim
 from tcex.exit.error_codes import TcExErrorCodes
 from tcex.utils import Utils
 
-# p = inflect.engine()
+if TYPE_CHECKING:
+    # third-party
+    from requests import Session
+
 
 # import local modules for dynamic reference
 module = __import__(__name__)

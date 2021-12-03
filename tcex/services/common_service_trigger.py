@@ -6,10 +6,10 @@ import threading
 import traceback
 from typing import Callable, Optional, Union
 
-from tcex.services.common_service import CommonService
+# first-party
 from tcex.input.input import Input
 from tcex.pleb.registry import registry
-from tcex.sessions.external_session import ExternalSession
+from tcex.services.common_service import CommonService
 from tcex.sessions.auth.tc_auth import TcAuth
 from tcex.sessions.tc_session import TcSession
 
@@ -190,8 +190,9 @@ class CommonServiceTrigger(CommonService):
                 outputs: Union[list, str] = config.get('tc_playbook_out_variables') or []
                 if isinstance(outputs, str):
                     outputs = outputs.split(',')
-                playbook: object = self.tcex.get_playbook(context=session_id,
-                                                        output_variables=outputs)
+                playbook: object = self.tcex.get_playbook(
+                    context=session_id, output_variables=outputs
+                )
 
                 self.log.info(f'feature=trigger-service, event=fire-event, trigger-id={session_id}')
 
@@ -364,14 +365,15 @@ class CommonServiceTrigger(CommonService):
                     proxies_enabled=registry.session_tc.proxies,
                     verify=registry.session_tc.verify,
                 )
-                
+
                 config_input = Input(config=config, tc_session=tc_session)
                 config_input.add_model(self.trigger_input_model)
 
                 # call callback for create config and handle exceptions to protect thread
                 # pylint: disable=not-callable
-                response: Optional[dict] = self.create_config_callback(trigger_id, config_input,
-                                                                       **kwargs)
+                response: Optional[dict] = self.create_config_callback(
+                    trigger_id, config_input, **kwargs
+                )
                 if isinstance(response, dict):
                     status = response.get('status', False)
                     msg = response.get('msg')

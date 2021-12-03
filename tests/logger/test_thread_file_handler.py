@@ -16,8 +16,11 @@ class TestApiHandler:
             tcex (TcEx, fixture): An instantiated instance of TcEx object.
         """
         tcex.logger.add_thread_file_handler(
-            name='pytest', filename=logfile, level='trace', path=tcex.inputs.model.tc_log_path,
-            thread_key='tester'
+            name='pytest',
+            filename=logfile,
+            level='trace',
+            path=tcex.inputs.model.tc_log_path,
+            thread_key='tester',
         )
 
         for _ in range(0, 20):

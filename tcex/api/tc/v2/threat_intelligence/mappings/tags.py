@@ -1,14 +1,20 @@
 """ThreatConnect TI Security Label"""
+# standard library
+from typing import TYPE_CHECKING
+
 # first-party
+from tcex.api.tc.v2.threat_intelligence.tcex_ti_tc_request import TiTcRequest
 from tcex.utils import Utils
 
-from ..tcex_ti_tc_request import TiTcRequest
+if TYPE_CHECKING:
+    # first-party
+    from tcex.api.tc.v2.threat_intelligence.threat_intelligence import ThreatIntelligence
 
 
 class Tags:
     """Unique API calls for Tags API Endpoints"""
 
-    def __init__(self, ti: 'ThreatIntelligenc'):
+    def __init__(self, ti: 'ThreatIntelligence'):
         """Initialize Class Properties."""
 
         # properties
@@ -32,12 +38,5 @@ class Tags:
 
     @tc_requests.setter
     def tc_requests(self, tc_requests):
-        """Set the tc request object.
-
-        Args:
-            tc_requests:
-
-        Returns:
-
-        """
+        """Set the tc request object."""
         self._tc_requests = tc_requests

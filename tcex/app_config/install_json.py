@@ -5,7 +5,7 @@ import logging
 import os
 from collections import OrderedDict
 from pathlib import Path
-from typing import List, Optional, Dict, Any
+from typing import Any, Dict, List, Optional
 
 # first-party
 from tcex.app_config.install_json_update import InstallJsonUpdate

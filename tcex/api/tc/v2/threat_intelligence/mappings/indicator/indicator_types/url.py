@@ -1,17 +1,24 @@
 """ThreatConnect TI URL"""
 # standard library
+from typing import TYPE_CHECKING
 from urllib.parse import quote_plus
 
-from ..indicator import Indicator
+# first-party
+from tcex.api.tc.v2.threat_intelligence.mappings.indicator.indicator import Indicator
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.api.tc.v2.threat_intelligence.threat_intelligence import ThreatIntelligence
 
 
 class URL(Indicator):
     """Unique API calls for URL API Endpoints"""
 
-    def __init__(self, ti: 'ThreatIntelligenc', **kwargs):
+    def __init__(self, ti: 'ThreatIntelligence', **kwargs):
         """Initialize Class Properties.
 
         Args:
+            ti (ThreatIntelligence): An instance of the ThreatIntelligence Class.
             text (str, kwargs): [Required for Create] The URL value for this Indicator.
             active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
@@ -37,9 +44,5 @@ class URL(Indicator):
         return not self.data.get('text') is None
 
     def _set_unique_id(self, json_response):
-        """Set the unique_id provided a json response.
-
-        Args:
-            json_response:
-        """
+        """Set the unique_id provided a json response."""
         self.unique_id = quote_plus(self.fully_decode_uri(json_response.get('text', '')))

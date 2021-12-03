@@ -20,6 +20,7 @@ class Event(Group):
     + No Further Action
 
     Args:
+        ti (ThreatIntelligence): An instance of the ThreatIntelligence Class.
         event_date (str, kwargs): The event "event date" datetime expression for this Group.
         name (str, kwargs): [Required for Create] The name for this Group.
         owner (str, kwargs): The name for this Group. Default to default Org when not provided

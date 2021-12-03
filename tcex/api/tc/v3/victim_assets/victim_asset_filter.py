@@ -69,9 +69,6 @@ class VictimAssetFilter(FilterABC):
     @property
     def has_victim_asset(self):
         """Return **VictimAssetFilter** for further filtering."""
-        # first-party
-        from tcex.api.tc.v3.victim_assets.victim_asset_filter import VictimAssetFilter
-
         victim_assets = VictimAssetFilter(Tql())
         self._tql.add_filter('hasVictimAsset', TqlOperator.EQ, victim_assets, TqlType.SUB_QUERY)
         return victim_assets
