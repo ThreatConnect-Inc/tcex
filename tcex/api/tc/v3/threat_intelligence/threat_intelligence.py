@@ -47,6 +47,9 @@ class ThreatIntelligence:
             elif entity_type in (type_.lower() for type_ in self.ti_utils.indicator_types):
                 main_type = 'Indicator'
                 obj = self.indicator(**entity)
+            elif entity_type in ['victim']:
+                main_type = 'Victim'
+                obj = self.victim(**entity)
             else:
                 raise RuntimeError(f'Invalid entity type provided for: {entity}')
         except AttributeError:
