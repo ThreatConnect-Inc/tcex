@@ -318,7 +318,13 @@ class Input:
 
                     # replace the *variable* with the lookup results (*v*) in the provided *value*
                     try:
-                        value = re.sub(variable, v, value)
+                        if value == variable and v is None:
+                            value = None
+                        else:
+                            # TODO: [med] how should we handle nested cases with v being None?
+                            # if v is None:
+                            #     v = 'None'
+                            value = re.sub(variable, v, value)
                     except Exception:
                         self.log.warning(f'Could not replace variable {variable} on input {name}.')
 
