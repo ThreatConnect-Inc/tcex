@@ -98,7 +98,7 @@ class TestTcexJson:
                 json.loads(tj.model.json(by_alias=True, exclude_defaults=True, exclude_none=True)),
                 ignore_order=True,
             )
-            assert ddiff == {}, f'Failed validation of file {fqfn.name}'
+            assert not ddiff, f'Failed validation of file {fqfn.name}'
 
     def test_print_warnings(self):
         """Test method"""
