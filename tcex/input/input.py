@@ -252,7 +252,6 @@ class Input:
                 tc_terminate_seconds=_contents.get('tc_terminate_seconds'),
             )
         )
-
         return _contents
 
     @cached_property

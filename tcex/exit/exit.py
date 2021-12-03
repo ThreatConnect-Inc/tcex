@@ -34,10 +34,10 @@ class ExitCode(Enum):
 class ExitService:
     """Provides functionality around exiting an app."""
 
-    def __init__(self, pre_run_inputs):
+    def __init__(self, inputs):
         """."""
         self.ij = InstallJson()
-        self.pre_run_inputs = pre_run_inputs
+        self.inputs = inputs
 
         self._exit_code = ExitCode.SUCCESS
 
@@ -82,8 +82,10 @@ class ExitService:
         # handle exit msg logging
         self._exit_msg_handler(code, msg)
 
+        self.exit_playbook_handler(msg)
+
         # aot notify
-        if 'tc_aot_enabled' in self.pre_run_inputs and self.pre_run_inputs.get('tc_aot_enabled'):
+        if 'tc_aot_enabled' in self.inputs.contents and self.inputs.contents.get('tc_aot_enabled'):
             # push exit message
             self._aot_rpush(code.value)
 
@@ -111,12 +113,26 @@ class ExitService:
         code = ExitCode(code) if code is not None else self.exit_code
 
         # aot notify
-        if 'tc_aot_enabled' in self.pre_run_inputs and self.pre_run_inputs.get('tc_aot_enabled'):
+        if 'tc_aot_enabled' in self.inputs.contents and self.inputs.contents.get('tc_aot_enabled'):
             # push exit message
             self._aot_rpush(code.value)
 
         logger.info(f'Exit Code: {code}')
         sys.exit(code.value)
+
+    def exit_playbook_handler(self, msg: str) -> None:
+        """Perform special action for PB Apps before exit."""
+        # write outputs before exiting
+        registry.playbook.write_output()  # pylint: disable=no-member
+
+        # required only for tcex testing framework
+        if (
+            hasattr(self.inputs.model_unresolved, 'tcex_testing_context')
+            and self.inputs.model_unresolved.tcex_testing_context is not None
+        ):  # pragma: no cover
+            self.redis_client.hset(  # pylint: disable=no-member
+                self.inputs.model_unresolved.tcex_testing_context, '_exit_message', msg
+            )
 
     def _exit_msg_handler(self, code: ExitCode, msg: str) -> None:
         """Handle exit message. Write to both log and message_tc."""
@@ -129,10 +145,10 @@ class ExitService:
 
     def _aot_rpush(self, exit_code: int) -> None:
         """Push message to AOT action channel."""
-        if self.pre_run_inputs.get('tc_playbook_db_type') == 'Redis':
+        if self.inputs.contents.get('tc_playbook_db_type') == 'Redis':
             try:
                 # pylint: disable=no-member
-                registry.redis.rpush(self.pre_run_inputs.get('tc_exit_channel'), exit_code)
+                registry.redis.rpush(self.inputs.contents.get('tc_exit_channel'), exit_code)
             except Exception as e:  # pragma: no cover
                 self.exit(ExitCode.FAILURE, f'Exception during AOT exit push ({e}).')
 
@@ -150,8 +166,8 @@ class ExitService:
         if not isinstance(message, str):
             message = str(message)
 
-        if os.access(self.pre_run_inputs.get('tc_out_path'), os.W_OK):
-            message_file = os.path.join(self.pre_run_inputs.get('tc_out_path'), 'message.tc')
+        if os.access(self.inputs.contents.get('tc_out_path'), os.W_OK):
+            message_file = os.path.join(self.inputs.contents.get('tc_out_path'), 'message.tc')
         else:
             message_file = 'message.tc'
 

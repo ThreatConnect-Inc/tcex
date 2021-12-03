@@ -156,12 +156,12 @@ class TcEx:
     def exit_service(self) -> ExitService:
         """Return an ExitService object."""
         # TODO: [high] @cblades - inputs being required for exit prevents AOT from exiting
-        return self.get_exit_service(self.inputs.contents)
+        return self.get_exit_service(self.inputs)
 
     @staticmethod
-    def get_exit_service(pre_run_params) -> ExitService:
+    def get_exit_service(inputs) -> ExitService:
         """Create an ExitService object."""
-        return ExitService(pre_run_params)
+        return ExitService(inputs)
 
     def get_playbook(
         self, context: Optional[str] = None, output_variables: Optional[list] = None

@@ -20,10 +20,18 @@ class scoped_property(typing.Generic[T]):
     for it.
     """
 
+    instances = []
+
     def __init__(self, wrapped: Callable):
         """Initialize."""
+
+        scoped_property.instances.append(self)
         self.wrapped = wrapped
         self.value = threading.local()
+
+    def __del__(self):
+        """Remove instance from the instances class variable when it's destroyed."""
+        scoped_property.instances = [i for i in scoped_property.instances if i != self]
 
     def __get__(self, instance: Any, owner: Any) -> T:
         """Return a thread-and-process-local value.
@@ -53,3 +61,8 @@ class scoped_property(typing.Generic[T]):
         data = wrapped(*args, **kwargs)
         setattr(self.value, 'data', (os.getpid(), data))
         return data
+
+    @staticmethod
+    def _reset():
+        for i in scoped_property.instances:
+            i.value = threading.local()
