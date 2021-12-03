@@ -758,7 +758,7 @@ class ThreatIntelligence:
                 # r = self.tcex.v2.ti.group(group_type=resource_type, name=d.get('name'))
                 r = self.group(group_type=resource_type, name=d.get('name'))
                 value = d.get('name')
-            elif resource_type.lower() in map(str.lower, self._indicator_types_data.keys()):
+            elif resource_type.lower() in map(str.lower, self._indicator_types_data):
                 # @bpurdy - is this okay?
                 # r = self.tcex.v2.ti.indicator(indicator_type=resource_type)
                 r = self.indicator(indicator_type=resource_type)

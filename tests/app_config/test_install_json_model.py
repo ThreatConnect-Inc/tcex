@@ -94,7 +94,7 @@ class TestInstallJson:
                 json.loads(ij.model.json(by_alias=True, exclude_defaults=True, exclude_none=True)),
                 ignore_order=True,
             )
-            assert ddiff == {}, f'Failed validation of file {fqfn}'
+            assert not ddiff, f'Failed validation of file {fqfn}'
 
     def test_app_prefix(self):
         """Test method"""

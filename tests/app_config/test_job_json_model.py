@@ -66,7 +66,7 @@ class TestJobJson:
                 json.loads(jj.model.json(by_alias=True, exclude_defaults=True, exclude_none=True)),
                 ignore_order=True,
             )
-            assert ddiff == {}, f'Failed validation of file {fqfn.name}'
+            assert not ddiff, f'Failed validation of file {fqfn.name}'
 
     def test_support(self):
         """Validate tcex.json files."""
