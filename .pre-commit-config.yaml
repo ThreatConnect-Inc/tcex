@@ -80,3 +80,4 @@ repos:
         language: system
         name: pylint
         types: [python]
+        args: ["--jobs=0"]
