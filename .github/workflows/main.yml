@@ -1,0 +1,110 @@
+name: build
+
+on:
+  push:
+    branches: [develop, main, "feature/3.0.0"]
+  pull_request:
+    branches: [develop, main, "feature/3.0.0"]
+  workflow_dispatch:
+
+jobs:
+  pre-flight:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.6]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      # Setup Python
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # Cache pre-commit
+      - uses: actions/cache@v2
+        with:
+          path: ${{ github.workspace }}/.cache/pre-commit-${{ matrix.python-version }}
+          key: pre-commit|${{ matrix.python-version }}|${{ hashFiles('.pre-commit-config.yaml') }}
+
+      # Get pip directory
+      - name: Get pip cache dir
+        id: pip-cache
+        run: |
+          echo "::set-output name=dir::$(pip cache dir)"
+
+      # Cache pip directory
+      - name: pip cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.pip-cache.outputs.dir }}
+          key: ${{ runner.os }}-pip-${{ matrix.python-version }}
+          restore-keys: |
+            ${{ runner.os }}-pip-${{ matrix.python-version }}
+
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install .[develop]
+
+      # Lint project using pre-commit config
+      - name: Lint with pre-commit
+        run: |
+          pre-commit --version
+          pre-commit install
+          pre-commit run --all-files
+        env:
+          PRE_COMMIT_HOME: ${{ github.workspace }}/.cache/pre-commit-${{ matrix.python-version }}
+
+  # test:
+  #   needs: pre-flight
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       python-version: [3.6, 3.9]
+
+  #   steps:
+  #     - uses: actions/checkout@v2
+
+  #     # Setup Python
+  #     - name: Set up Python ${{ matrix.python-version }}
+  #       uses: actions/setup-python@v2
+  #       with:
+  #         python-version: ${{ matrix.python-version }}
+
+  #     # Get pip directory
+  #     - name: Get pip cache dir
+  #       id: pip-cache
+  #       run: |
+  #         echo "::set-output name=dir::$(pip cache dir)"
+
+  #     # Cache pip directory
+  #     - name: pip cache
+  #       uses: actions/cache@v2
+  #       with:
+  #         path: ${{ steps.pip-cache.outputs.dir }}
+  #         key: ${{ runner.os }}-pip-${{ matrix.python-version }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-pip-${{ matrix.python-version }}
+
+  #     # Install dependencies
+  #     - name: Install dependencies
+  #       run: |
+  #         python -m pip install --upgrade pip
+  #         pip install .[develop]
+
+  #     # Test package and save artifacts
+  #     - name: Test with pytest
+  #       run: >
+  #         pytest tests/
+
+  #     # Artifact upload
+  #     - name: Upload pytest test results
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: pytest-results-${{ matrix.python-version }}
+  #         path: junit/test-results-${{ matrix.python-version }}.xml
+  #       if: ${{ always() }}
