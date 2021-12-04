@@ -57,8 +57,8 @@ shelf
 splunk
 sqlite
 stix
-strptime
 stmts
+strptime
 suricata
 taxii
 tcenhancedentityarray
@@ -83,6 +83,7 @@ unpickle
 unprocess
 unregister
 urllib
+virtualenv
 wfile
 xids
 yara

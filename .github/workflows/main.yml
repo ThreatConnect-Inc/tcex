@@ -32,7 +32,8 @@ jobs:
       - name: Set up Python ${{ matrix.python-version }}
         run: |
           pyenv install ${{ matrix.python-version }} -s
-          pyenv local ${{ matrix.python-version }}
+          pyenv virtualenv ${{ matrix.python-version }} tcex-${{ matrix.python-version }} -f
+          pyenv local tcex-${{ matrix.python-version }}
 
       # Cache pre-commit
       - name: Local pre-commit cache
@@ -81,7 +82,8 @@ jobs:
       - name: Set up Python ${{ matrix.python-version }}
         run: |
           pyenv install ${{ matrix.python-version }} -s
-          pyenv local ${{ matrix.python-version }}
+          pyenv virtualenv ${{ matrix.python-version }} tcex-${{ matrix.python-version }} -f
+          pyenv local tcex-${{ matrix.python-version }}
 
       # Cache key (for daily, weekly, monthly, or yearly)
       - name: Cache key
