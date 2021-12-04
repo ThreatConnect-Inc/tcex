@@ -55,6 +55,7 @@ jobs:
 
       # Lint project using pre-commit config
       - name: Lint with pre-commit
+        uses: actions/checkout@v2
         run: |
           pre-commit --version
           pre-commit install
