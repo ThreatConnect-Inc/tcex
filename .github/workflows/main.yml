@@ -55,7 +55,6 @@ jobs:
       # Lint project using pre-commit config
       - name: Lint with pre-commit
         run: |
-          ls -a
           pre-commit --version
           pre-commit install
           pre-commit run --all-files
