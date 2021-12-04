@@ -40,7 +40,7 @@ jobs:
         uses: MasterworksIO/action-local-cache@1.0.0
         with:
           path: ${{ github.workspace }}/.cache/pre-commit-${{ matrix.python-version }}
-          key: pre-commit|${{ matrix.python-version }}|${{ hashFiles('.pre-commit-config.yaml') }}
+          key: pre-commit-${{ matrix.python-version }}-${{ hashFiles('.pre-commit-config.yaml') }}
 
       # Cache pip cache
       - name: Local pip cache
