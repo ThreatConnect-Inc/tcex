@@ -42,7 +42,7 @@ jobs:
 
       # Get pip directory
       - name: Get pip cache dir
-        id: pip-cache
+        id: pip-cache-dir
         run: |
           echo "::set-output name=dir::$(pip cache dir)"
 
@@ -60,7 +60,7 @@ jobs:
         id: pip-cache
         uses: MasterworksIO/action-local-cache@1.0.0
         with:
-          path: ${{ steps.pip-cache.outputs.dir }}
+          path: ${{ steps.pip-cache-dir.outputs.dir }}
           key: ${{ runner.os }}-pip-${{ matrix.python-version }}
           # restore-keys: |
           #   ${{ runner.os }}-pip-${{ matrix.python-version }}
