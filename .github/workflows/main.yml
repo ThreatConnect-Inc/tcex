@@ -20,19 +20,20 @@ jobs:
       # Checkout Repo (required git 2.x.x to be installed on system w/remote-https support)
       - uses: actions/checkout@v2
 
+      # Cache key (for daily, weekly, monthly, or yearly)
+      - name: Cache key
+        id: cache-key
+        run: |
+          echo "::set-output name=daily::$(date +'%Y-%m-%d')"
+          echo "::set-output name=weekly::$(date +'%Y-%U')"
+          echo "::set-output name=monthly::$(date +'%Y-%m')"
+          echo "::set-output name=yearly::$(date +'%Y')"
+
       # Setup Python
       - name: Set up Python ${{ matrix.python-version }}
         run: |
           pyenv install ${{ matrix.python-version }} -s
           pyenv local ${{ matrix.python-version }}
-
-      # # Cache
-      # - name: Local cache
-      #   id: local-cache
-      #   uses: MasterworksIO/action-local-cache@1.0.0
-      #   with:
-      #     path: ${{ github.workspace }}/.cache
-      #     key: local-cache
 
       # Cache pre-commit
       - name: Local pre-commit cache
@@ -48,7 +49,7 @@ jobs:
         uses: MasterworksIO/action-local-cache@1.0.0
         with:
           path: ${{ github.workspace }}/.cache/pip-${{ matrix.python-version }}
-          key: ${{ runner.os }}-pip-${{ matrix.python-version }}
+          key: ${{ runner.os }}-pip-${{ matrix.python-version }}-{{ steps.cache-key.outputs.daily }}
 
       # Install dependencies
       - name: Install dependencies
