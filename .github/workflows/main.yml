@@ -21,11 +21,8 @@ jobs:
 
       # Setup Python
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          # architecture: x64
-          cache: "pip"
-          python-version: ${{ matrix.python-version }}
+        run: |
+          pyenv install ${{ matrix.python-version }} -s
 
       # Cache pre-commit
       - uses: actions/cache@v2
