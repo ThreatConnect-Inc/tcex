@@ -25,7 +25,6 @@ jobs:
         run: |
           pyenv install ${{ matrix.python-version }} -s
           pyenv local ${{ matrix.python-version }}
-          mkdir ${{ github.workspace }}/.cache
 
       # Cache
       - name: Local cache
