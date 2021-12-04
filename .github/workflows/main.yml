@@ -10,7 +10,6 @@ on:
 jobs:
   pre-flight:
     runs-on: [self-hosted]
-    # runs-on: ubuntu-latest
     strategy:
       matrix:
         os: [linux]
@@ -70,7 +69,7 @@ jobs:
 
   test:
     needs: pre-flight
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted]
     strategy:
       matrix:
         python-version: [3.6.15, 3.9.9]
