@@ -23,6 +23,8 @@ jobs:
       - name: Set up Python ${{ matrix.python-version }}
         run: |
           pyenv install ${{ matrix.python-version }} -s
+          pyenv shell ${{ matrix.python-version }}
+          pip install pip --upgrade
 
       # Cache pre-commit
       - uses: actions/cache@v2
