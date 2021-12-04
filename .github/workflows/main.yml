@@ -24,7 +24,6 @@ jobs:
         run: |
           pyenv install ${{ matrix.python-version }} -s
           pyenv local ${{ matrix.python-version }}
-          pip install pip --upgrade
 
       # Cache pre-commit
       - uses: actions/cache@v2
@@ -55,8 +54,8 @@ jobs:
 
       # Lint project using pre-commit config
       - name: Lint with pre-commit
-        uses: actions/checkout@v2
         run: |
+          ls -a
           pre-commit --version
           pre-commit install
           pre-commit run --all-files
