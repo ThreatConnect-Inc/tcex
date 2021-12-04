@@ -17,6 +17,7 @@ jobs:
         python-version: [3.6.15]
 
     steps:
+      # Checkout Repo (required git 2.x.x to be installed on system w/remote-https support)
       - uses: actions/checkout@v2
 
       # Setup Python
