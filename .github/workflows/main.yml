@@ -34,12 +34,6 @@ jobs:
           path: ${{ github.workspace }}/.cache
           key: local-cache
 
-      # Cache pre-commit
-      # - uses: actions/cache@v2
-      #   with:
-      #     path: ${{ github.workspace }}/.cache/pre-commit-${{ matrix.python-version }}
-      #     key: pre-commit|${{ matrix.python-version }}|${{ hashFiles('.pre-commit-config.yaml') }}
-
       # # Cache pre-commit
       # - name: Local pre-commit cache
       #   id: pre-commit-cache
@@ -47,21 +41,6 @@ jobs:
       #   with:
       #     path: ${{ github.workspace }}/.cache/pre-commit-${{ matrix.python-version }}
       #     key: pre-commit|${{ matrix.python-version }}|${{ hashFiles('.pre-commit-config.yaml') }}
-
-      # # Get pip directory
-      # - name: Get pip cache dir
-      #   id: pip-cache-dir
-      #   run: |
-      #     echo "::set-output name=dir::$(pip cache dir)"
-
-      # Cache pip directory
-      # - name: pip cache
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: ${{ steps.pip-cache.outputs.dir }}
-      #     key: ${{ runner.os }}-pip-${{ matrix.python-version }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-pip-${{ matrix.python-version }}
 
       # # Cache pip cache
       # - name: Local pip cache
