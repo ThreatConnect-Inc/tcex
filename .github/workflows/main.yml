@@ -25,6 +25,15 @@ jobs:
         run: |
           pyenv install ${{ matrix.python-version }} -s
           pyenv local ${{ matrix.python-version }}
+          mkdir ${{ github.workspace }}/.cache
+
+      # Cache
+      - name: Local cache
+        id: local-cache
+        uses: MasterworksIO/action-local-cache@1.0.0
+        with:
+          path: ${{ github.workspace }}/.cache
+          key: local-cache
 
       # Cache pre-commit
       # - uses: actions/cache@v2
@@ -81,14 +90,6 @@ jobs:
           pre-commit run --all-files
         env:
           PRE_COMMIT_HOME: ${{ github.workspace }}/.cache/pre-commit-${{ matrix.python-version }}
-
-      # Cache
-      - name: Local cache
-        id: local-cache
-        uses: MasterworksIO/action-local-cache@1.0.0
-        with:
-          path: ${{ github.workspace }}/.cache
-          key: local-cache
 
   # test:
   #   needs: pre-flight
