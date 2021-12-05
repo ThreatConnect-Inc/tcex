@@ -110,15 +110,24 @@ jobs:
         env:
           PIP_CACHE_DIR: ${{ github.workspace }}/.cache/pip-${{ matrix.python-version }}
 
-  #     # Test package and save artifacts
-  #     - name: Test with pytest
-  #       run: >
-  #         pytest tests/
+      # # Test package and save artifacts
+      # - name: Test with pytest
+      #   run: >
+      #     pytest --cov=.
+      #     --cov-report=term-missing
+      #     --cov-report=html:tests/reports/cov-report
+      #     --html=tests/reports/tcex-report.html
+      #     --self-contained-html tests/
 
-  #     # Artifact upload
-  #     - name: Upload pytest test results
-  #       uses: actions/upload-artifact@v2
-  #       with:
-  #         name: pytest-results-${{ matrix.python-version }}
-  #         path: junit/test-results-${{ matrix.python-version }}.xml
-  #       if: ${{ always() }}
+      # Test package and save artifacts
+      - name: Test with pytest
+        run: >
+          pytest --cov=tcex/app_config/ --cov-report=term-missing tests/app_config/
+
+      # # Artifact upload
+      # - name: Upload pytest test results
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: pytest-results-${{ matrix.python-version }}
+      #     path: junit/test-results-${{ matrix.python-version }}.xml
+      #   if: ${{ always() }}
