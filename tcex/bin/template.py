@@ -32,9 +32,7 @@ class Template(BinABC):
             'TCEX_TEMPLATE_URL',
             'https://api.github.com/repos/ThreatConnect-Inc/tcex-app-templates',
         )
-        self.base_raw_url = (
-            'https://raw.githubusercontent.com/ThreatConnect-Inc/tcex-app-templates'
-        )
+        self.base_raw_url = 'https://raw.githubusercontent.com/ThreatConnect-Inc/tcex-app-templates'
         self.errors = False
         self.password = os.getenv('TCEX_TEMPLATE_PASSWORD')
         self.template_configs = {}
@@ -180,8 +178,9 @@ class Template(BinABC):
 
         return md5.hexdigest()
 
-    def get_template_config(self, type_: str, template: str, branch: str = 'main') -> \
-            TemplateConfigModel:
+    def get_template_config(
+        self, type_: str, template: str, branch: str = 'main'
+    ) -> TemplateConfigModel:
         """Return the data from the template.yaml file."""
         self.log.info(
             f'action=get-template-config, type={type_}, '
@@ -253,8 +252,9 @@ class Template(BinABC):
         for selected_type in template_types:
             for td in self.contents(branch, selected_type):
                 if td.get('type') == 'dir':
-                    template_config = self.get_template_config(selected_type, td.get('name'),
-                                                               branch)
+                    template_config = self.get_template_config(
+                        selected_type, td.get('name'), branch
+                    )
                     if template_config is not None:
                         self.template_data.setdefault(selected_type, [])
                         self.template_data[selected_type].append(template_config)
