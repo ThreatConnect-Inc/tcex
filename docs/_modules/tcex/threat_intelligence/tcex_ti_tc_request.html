@@ -1232,6 +1232,22 @@
 
         <span class="k">yield from</span> <span class="n">data</span></div>
 
+<div class="viewcode-block" id="TiTcRequest.pdf"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.pdf">[docs]</a>    <span class="k">def</span> <span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_type</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Download a PDF of the group.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            main_type (str): The TI type (e.g., groups or indicators).</span>
+<span class="sd">            sub_type (str): The TI sub type (e.g., adversaries or addresses).</span>
+<span class="sd">            unique_id (str): The unique ID of the Resource.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            requests.Response: A request Response object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{</span><span class="n">main_type</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">unique_id</span><span class="si">}</span><span class="s1">/pdf&#39;</span>
+        <span class="k">if</span> <span class="n">sub_type</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/v2/</span><span class="si">{</span><span class="n">main_type</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">sub_type</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">unique_id</span><span class="si">}</span><span class="s1">/pdf&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="TiTcRequest.pivot_from_tag"><a class="viewcode-back" href="../../../tcex_docs/tcex.threat_intelligence.html#tcex.threat_intelligence.tcex_ti_tc_request.TiTcRequest.pivot_from_tag">[docs]</a>    <span class="k">def</span> <span class="nf">pivot_from_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">tag_name</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 

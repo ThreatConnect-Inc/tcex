@@ -90,7 +90,7 @@ class TestAdvancedRequest:
                 'tc_adv_req_fail_on_error': True,
                 'tc_adv_req_urlencode_body': False,
                 'tc_adv_req_body': None,
-                'tc_adv_req_headers': {'key': 'pytest', 'value': 'pytest'},
+                'tc_adv_req_headers': [{'key': 'pytest', 'value': 'pytest'}],
                 'tc_adv_req_http_method': 'GET',
                 'tc_adv_req_params': [{'key': 'one', 'value': '1'}, {'key': 'two', 'value': ''}],
                 'tc_adv_req_path': '/status/500',
