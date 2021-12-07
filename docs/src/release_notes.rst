@@ -3,6 +3,11 @@
 Release Notes
 #############
 
+2.0.27
+======
++ ESUP-212 - [CM] - Added support for both the read-only and readOnly properties.
++ APP-3200 - [CM] - Added support for PDF download in the CM module.
+
 2.0.26
 ======
 + APP-3130 - [TI] - Added ability to iterate over all Tags currently in system.

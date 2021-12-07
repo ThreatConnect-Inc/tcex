@@ -65,9 +65,9 @@ class CommonCaseManagement:
             data = pd.get('data')
 
             # get read-only value for display and required value
-            read_only = pd.get('read-only', False)
+            read_only = pd.get('readOnly', pd.get('read-only', False))
             if read_only is None and data:
-                read_only = data[0].get('read-only', False)
+                read_only = data[0].get('readOnly', pd.get('read-only', False))
 
             # get required value or default
             required = pd.get('required', False)
@@ -403,7 +403,7 @@ class CommonCaseManagement:
         for p, pd in sorted(self.properties.items()):
             # get read-only value for display and required value
             updatable = pd.get('updatable', True)
-            read_only = pd.get('readOnly', False)
+            read_only = pd.get('readOnly', pd.get('read-only', False))
             if not read_only:
                 if updatable:
                     put_properties.append(p)
@@ -415,7 +415,7 @@ class CommonCaseManagement:
         """Return all the properties available in POST requests."""
         post_properties = []
         for p, pd in sorted(self.properties.items()):
-            read_only = pd.get('readOnly', False)
+            read_only = pd.get('readOnly', pd.get('read-only', False))
             if not read_only:
                 post_properties.append(p)
 
