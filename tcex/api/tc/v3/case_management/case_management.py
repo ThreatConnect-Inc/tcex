@@ -209,10 +209,10 @@ class CaseManagement:
         except AttributeError:
             return None
 
-        r = obj.submit()
-        data = {'status_code': r.status_code}
-        if r.ok:
-            data.update(r.json().get('data', {}))
+        obj.create()
+        data = {'status_code': obj.request.status_code}
+        if obj.request.ok:
+            data.update(obj.request.json().get('data', {}))
             data['main_type'] = 'Case_Management'
             data['sub_type'] = entity_type
             data['owner'] = owner
