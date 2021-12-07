@@ -33,7 +33,7 @@ class Template(BinABC):
             'https://api.github.com/repos/ThreatConnect-Inc/tcex-app-templates',
         )
         self.base_raw_url = (
-            'https://raw.githubusercontent.com/ThreatConnect-Inc/tcex-app-templates/master'
+            'https://raw.githubusercontent.com/ThreatConnect-Inc/tcex-app-templates'
         )
         self.errors = False
         self.password = os.getenv('TCEX_TEMPLATE_PASSWORD')
@@ -71,7 +71,6 @@ class Template(BinABC):
         params = {'ref': branch}
         self.log.warning(f'Using branch for templates: {branch} ==> {url}')
         r = self.session.get(url, params=params)
-        print(r.request.url)
         if not r.ok:
             self.log.error(f'Failed retrieving contents for type {url}.')
             self.errors = True
@@ -181,7 +180,8 @@ class Template(BinABC):
 
         return md5.hexdigest()
 
-    def get_template_config(self, type_: str, template: str) -> TemplateConfigModel:
+    def get_template_config(self, type_: str, template: str, branch: str = 'main') -> \
+            TemplateConfigModel:
         """Return the data from the template.yaml file."""
         self.log.info(
             f'action=get-template-config, type={type_}, '
@@ -192,10 +192,14 @@ class Template(BinABC):
             if config is not None:
                 return config
 
-        url = f'{self.base_raw_url}/{type_}/{template}/template.yaml'
+        url = f'{self.base_raw_url}/{branch}/{type_}/{template}/template.yaml'
         if template == '_app_common':
             type_ = '_app_common'
-            url = f'{self.base_raw_url}/_app_common/template.yaml'
+            url = f'{self.base_raw_url}/{branch}/_app_common/template.yaml'
+
+        params = {}
+        if branch:
+            params['ref'] = branch
         r = self.session.get(url)
         self.log.debug(f'action=get-template-config, url={url}, status-code={r.status_code}')
         if not r.ok:
@@ -228,7 +232,7 @@ class Template(BinABC):
     def init(self, branch: str, type_: str, template: str) -> List[dict]:
         """Initialize an App with template files."""
         downloads = {}
-        for tp in self.template_parents(type_, template):
+        for tp in self.template_parents(type_, template, branch):
             for item in self.contents(branch, type_, tp):
                 if item.get('type') == 'file':
                     # overwrite name if found in later parent
@@ -249,7 +253,8 @@ class Template(BinABC):
         for selected_type in template_types:
             for td in self.contents(branch, selected_type):
                 if td.get('type') == 'dir':
-                    template_config = self.get_template_config(selected_type, td.get('name'))
+                    template_config = self.get_template_config(selected_type, td.get('name'),
+                                                               branch)
                     if template_config is not None:
                         self.template_data.setdefault(selected_type, [])
                         self.template_data[selected_type].append(template_config)
@@ -322,10 +327,10 @@ class Template(BinABC):
         with self.template_manifest_fqfn.open(mode='w') as fh:
             json.dump(self.template_manifest, fh)
 
-    def template_parents(self, type_: str, template: str) -> list:
+    def template_parents(self, type_: str, template: str, branch: str = 'Main') -> list:
         """Return all parents for the provided template."""
         # get the config for the requested template
-        template_config = self.get_template_config(type_, template)
+        template_config = self.get_template_config(type_, template, branch)
 
         # fail if template config can't be found
         if template_config is None:
@@ -337,7 +342,7 @@ class Template(BinABC):
         # iterate over each parent template
         app_templates = []
         for parent in template_config.template_parents:
-            parent_config = self.get_template_config(type_, parent)
+            parent_config = self.get_template_config(type_, parent, branch)
 
             # update templates
             app_templates.extend(
@@ -387,7 +392,7 @@ class Template(BinABC):
         # get the final contents after procession all parents
         contents = {}
         for tp in self.template_parents(type_, template):
-            template_config = self.get_template_config(type_, tp)
+            template_config = self.get_template_config(type_, tp, branch)
             for item in self.contents(branch, type_, tp):
                 if item.get('type') == 'file':
                     # determine if file requires user prompt
