@@ -281,12 +281,12 @@ class PlaybookABC(ABC):
             # embedded variable can be unquoted, which breaks JSON.
             value = self._wrap_embedded_keyvalue(value)
 
-            if embedded:
+            if embedded and not self.is_variable(value):
                 value = self._read_embedded(value)
 
             value = self._load_value(value)
         elif variable_type == 'String':
-            if embedded:
+            if embedded and not self.is_variable(value):
                 value = self._read_embedded(value)
 
             # coerce string values
@@ -338,7 +338,7 @@ class PlaybookABC(ABC):
             # embedded variable can be unquoted, which breaks JSON.
             value = self._wrap_embedded_keyvalue(value)
 
-            if embedded:
+            if embedded and not self.is_variable(value):
                 value = self._read_embedded(value)
 
             try:
@@ -346,7 +346,7 @@ class PlaybookABC(ABC):
             except ValueError as e:  # pragma: no cover
                 raise RuntimeError(f'Failed loading JSON data ({value}). Error: ({e})')
         elif variable_type == 'StringArray':
-            if embedded:
+            if embedded and not self.is_variable(value):
                 value = self._read_embedded(value)
 
             # convert int to str
@@ -537,6 +537,10 @@ class PlaybookABC(ABC):
         else:
             self.log.warning('The key or value field was None.')
         return data
+
+    def is_variable(self, key: str) -> bool:
+        """Return True if provided key is a properly formatted variable."""
+        raise NotImplementedError('Implemented in child class')
 
     def read_raw(self, key: str) -> str:
         """Read method of CRUD operation for raw data.

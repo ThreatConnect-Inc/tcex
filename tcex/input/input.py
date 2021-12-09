@@ -309,6 +309,7 @@ class Input:
                         value = registry.playbook.read(variable)
                         break
 
+                    # working with String type or Custom type
                     if match.group('origin') == '#':  # pb-variable
                         v = registry.playbook.read(variable)
                     elif match.group('origin') == '&':  # tc-variable
@@ -319,11 +320,17 @@ class Input:
                     # replace the *variable* with the lookup results (*v*) in the provided *value*
                     try:
                         if value == variable and v is None:
+                            # handle non-embedded null values
                             value = None
                         else:
-                            # TODO: [med] how should we handle nested cases with v being None?
-                            # if v is None:
-                            #     v = 'None'
+                            # handle embedded string with null values
+                            if v is None:
+                                # embedded
+                                value = '<null>'
+                                self.log.warning(
+                                    f'Could not replace variable {variable} on input {name}.'
+                                )
+
                             value = re.sub(variable, v, value)
                     except Exception:
                         self.log.warning(f'Could not replace variable {variable} on input {name}.')
