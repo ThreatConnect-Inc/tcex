@@ -12,6 +12,7 @@ from typing import Any, List, Optional, Union
 # first-party
 from tcex.key_value_store import KeyValueApi, KeyValueRedis
 from tcex.pleb.registry import registry
+from tcex.utils.utils import Utils
 
 # get tcex logger
 logger = logging.getLogger('tcex')
@@ -43,13 +44,7 @@ class PlaybookABC(ABC):
         self._output_variables_by_name = None
         self._output_variables_by_type = None
         self.log = logger
-
-        # match full variable
-        self._variable_match = re.compile(fr'^{self._variable_pattern}$')
-        # capture variable parts (exactly a variable)
-        self._variable_parse = re.compile(self._variable_pattern)
-        # match embedded variables without quotes (#App:7979:variable_name!StringArray)
-        self._vars_keyvalue_embedded = re.compile(fr'(?:\"\:\s?)[^\"]?{self._variable_pattern}')
+        self.utils = Utils()
 
     def _coerce_string_value(self, value: Union[bool, float, int, str]) -> str:
         """Return a string value from an bool or int."""
@@ -413,21 +408,20 @@ class PlaybookABC(ABC):
         if value is None:  # pragma: no cover
             return value
 
-        for match in re.finditer(self._variable_expansion_pattern, str(value)):
+        for match in re.finditer(self.utils.variable_expansion_pattern, str(value)):
             variable = match.group(0)  # the full variable pattern
             if match.group('origin') == '#':  # pb-variable
                 v = self.read(variable)
             elif match.group('origin') == '&':  # tc-variable
-                v = registry.resolve_variable(
-                    match.group('provider'), match.group('lookup'), match.group('id')
-                )
+                v = registry.resolve_variable(variable)
 
+            # TODO: [high] should this behavior be changed in 3.0?
             self.log.trace(f'embedded variable: {variable}, value: {v}')
             if isinstance(v, (dict, list)):
                 v = json.dumps(v)
                 # for KeyValueArray with nested dict/list type replace the
                 # quoted value to ensure the resulting data is loadable JSON
-                value = re.sub(f'"{variable}"', v, value)
+                value = value.replace(f'"{variable}"', v)
 
             if v is not None:
                 # only replace variable if a non-null value is returned from kv store
@@ -435,7 +429,7 @@ class PlaybookABC(ABC):
                 # are None.  Would like to be able to say if value is just the variable reference,
                 # sub None value, else insert '' in string.  That would require a kv-specific
                 # version of this method that gets the entire list/dict instead of just the string.
-                value = re.sub(variable, v, value)
+                value = value.replace(variable, v)
         return value
 
     @property
@@ -448,39 +442,6 @@ class PlaybookABC(ABC):
             'TCEntityArray',
             'TCEnhancedEntityArray',
         ]
-
-    @property
-    def _variable_expansion_pattern(self):
-        """Regex pattern to match and parse a playbook variable."""
-        return re.compile(
-            # Origin: "#" -> PB-Variable "&" -> TC-Variable
-            r'(?P<origin>#|&)'
-            r'(?:\{)?'  # drop "{"
-            # Provider: PB-Variable -> literal "App" or TC-Variable -> provider (e.g. TC|Vault)
-            r'(?P<provider>[A-Za-z]+):'
-            # ID: PB-Variable -> App ID or TC-Variable -> FILE|KEYCHAIN|TEXT
-            r'(?P<id>[\w]+):'
-            # Lookup: PB-Variable -> variable name or TC-Variable -> variable identifier
-            r'(?P<lookup>[A-Za-z0-9_\.\-\[\]]+)'
-            r'(?:\})?'  # drop "}"
-            # Type: PB-Variable -> variable type (e.g., String|StringArray)
-            r'(?:!(?P<type>[A-Za-z0-9_-]+))?'
-        )
-
-    @property
-    def _variable_pattern(self) -> str:
-        """Regex pattern to match and parse a playbook variable."""
-        return (
-            r'#([A-Za-z]+)'  # match literal (#App,#Trigger) at beginning of String
-            r':([\d]+)'  # app id (:7979)
-            r':([A-Za-z0-9_\.\-\[\]]+)'  # variable name (:variable_name)
-            r'!(StringArray|BinaryArray|KeyValueArray'  # variable type (array)
-            r'|TCEntityArray|TCEnhancedEntityArray'  # variable type (array)
-            r'|String|Binary|KeyValue|TCEntity|TCEnhancedEntity'  # variable type
-            r'|(?:(?!String)(?!Binary)(?!KeyValue)'  # non matching for custom
-            r'(?!TCEntity)(?!TCEnhancedEntity)'  # non matching for custom
-            r'[A-Za-z0-9_-]+))'  # variable type (custom)
-        )
 
     @property
     def _variable_single_types(self) -> List[str]:
@@ -507,12 +468,12 @@ class PlaybookABC(ABC):
         # TODO: need to verify if core still sends improper JSON for KeyValueArrays
         if data is not None:  # pragma: no cover
             variables = []
-            for v in re.finditer(self._vars_keyvalue_embedded, data):
+            for v in re.finditer(self.utils.variable_playbook_keyvalue_embedded, data):
                 variables.append(v.group(0))
 
             for var in set(variables):  # recursion over set to handle duplicates
                 # pull (#App:1441:embedded_string!String) from (": #App:1441:embedded_string!String)
-                variable_string = re.search(self._variable_parse, var).group(0)
+                variable_string = re.search(self.utils.variable_playbook_parse, var).group(0)
                 # reformat to replace the correct instance only, handling the case where a variable
                 # is embedded multiple times in the same key value array.
                 data = data.replace(var, f'": "{variable_string}"')

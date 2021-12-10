@@ -332,7 +332,7 @@ class Playbook(PlaybookABC):
         """Return True if provided key is a properly formatted variable."""
         if not isinstance(key, str):
             return False
-        if re.match(self._variable_match, key):
+        if re.match(self.utils.variable_playbook_match, key):
             return True
         return False
 
@@ -366,8 +366,8 @@ class Playbook(PlaybookABC):
         data = None
         if variable is not None:
             variable = variable.strip()
-            if re.match(self._variable_match, variable):
-                var = re.search(self._variable_parse, variable)
+            if re.match(self.utils.variable_playbook_match, variable):
+                var = re.search(self.utils.variable_playbook_parse, variable)
                 data = {
                     'root': var.group(0),
                     'job_id': var.group(2),
@@ -396,7 +396,7 @@ class Playbook(PlaybookABC):
         if isinstance(key, str):
             key = key.strip()
             variable_type = self.variable_type(key)
-            if re.match(self._variable_match, key):
+            if re.match(self.utils.variable_playbook_match, key):
                 # only log key if it's a variable
                 self.log.debug(f'read variable {key}')
                 if variable_type in self._variable_single_types:
@@ -660,8 +660,8 @@ class Playbook(PlaybookABC):
         var_type = 'String'
         if isinstance(variable, str):
             variable = variable.strip()
-            if re.match(self._variable_match, variable):
-                var_type = re.search(self._variable_parse, variable).group(4)
+            if re.match(self.utils.variable_playbook_match, variable):
+                var_type = re.search(self.utils.variable_playbook_parse, variable).group(4)
         return var_type
 
     def write_output(self):

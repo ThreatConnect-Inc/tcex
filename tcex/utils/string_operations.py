@@ -1,4 +1,4 @@
-"""TcEx Utilities Datetime Operations Module"""
+"""TcEx Utilities String Operations Module"""
 # standard library
 import random
 import re
@@ -10,7 +10,7 @@ from tcex.backports import cached_property
 
 
 class StringOperations:
-    """TcEx Utilities Datetime Operations Class"""
+    """TcEx Utilities String Operations Class"""
 
     def camel_string(self, string_: str) -> Any:
         """Return custom str with custom properties/methods."""

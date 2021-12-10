@@ -19,8 +19,6 @@ from tcex.input.models import feature_map, runtime_level_map
 from tcex.key_value_store import RedisClient
 from tcex.pleb.none_model import NoneModel
 from tcex.pleb.registry import registry
-
-# from tcex.tokens import Tokens
 from tcex.utils import Utils
 
 # get tcex logger
@@ -196,24 +194,6 @@ class Input:
 
         return file_content
 
-    @property
-    def _variable_expansion_pattern(self):
-        """Regex pattern to match and parse a playbook variable."""
-        return re.compile(
-            # Origin: "#" -> PB-Variable "&" -> TC-Variable
-            r'(?P<origin>#|&)'
-            r'(?:\{)?'  # drop "{"
-            # Provider: PB-Variable -> literal "App" or TC-Variable -> provider (e.g. TC|Vault)
-            r'(?P<provider>[A-Za-z]+):'
-            # ID: PB-Variable -> App ID or TC-Variable -> FILE|KEYCHAIN|TEXT
-            r'(?P<id>[\w]+):'
-            # Lookup: PB-Variable -> variable name or TC-Variable -> variable identifier
-            r'(?P<lookup>[A-Za-z0-9_\.\-\[\]]+)'
-            r'(?:\})?'  # drop "}"
-            # Type: PB-Variable -> variable type (e.g., String|StringArray)
-            r'(?:!(?P<type>[A-Za-z0-9_-]+))?'
-        )
-
     def add_model(self, model: BaseModel) -> None:
         """Add additional input models."""
         if model:
@@ -283,9 +263,13 @@ class Input:
                     # TODO: [high] does resolve variable need to be added here
                     updated_value_array.append(v)
                 _inputs[name] = updated_value_array
+            elif self.utils.is_playbook_variable(value):  # only matches playbook variables
+                value = registry.playbook.read(value)
+            elif self.utils.is_tc_variable(value):  # only matches playbook variables
+                value = self.resolve_variable(variable=value)
             elif isinstance(value, str):
                 # replace all embedded pb and tc variables (e.g., #APP:... and &{TC:...})
-                for match in re.finditer(self._variable_expansion_pattern, str(value)):
+                for match in re.finditer(self.utils.variable_expansion_pattern, str(value)):
                     variable = match.group(0)  # the full variable pattern
 
                     if match.group('type') in [
@@ -313,9 +297,7 @@ class Input:
                     if match.group('origin') == '#':  # pb-variable
                         v = registry.playbook.read(variable)
                     elif match.group('origin') == '&':  # tc-variable
-                        v = self.resolve_variable(
-                            match.group('provider'), match.group('lookup'), match.group('id')
-                        )
+                        v = self.resolve_variable(variable)
 
                     # replace the *variable* with the lookup results (*v*) in the provided *value*
                     try:
@@ -331,7 +313,7 @@ class Input:
                                     f'Could not replace variable {variable} on input {name}.'
                                 )
 
-                            value = re.sub(variable, v, value)
+                            value = value.replace(variable, v)
                     except Exception:
                         self.log.warning(f'Could not replace variable {variable} on input {name}.')
 
@@ -397,7 +379,7 @@ class Input:
 
         return properties
 
-    def resolve_variable(self, provider: str, key: str, type_: str) -> Union[bytes, str]:
+    def resolve_variable(self, variable: str) -> Union[bytes, str]:
         """Resolve FILE/KEYCHAIN/TEXT variables.
 
         Feature: PLAT-2688
@@ -407,9 +389,13 @@ class Input:
             "data": "value"
         }
         """
-        data = None
+        match = re.match(Utils().variable_tc_match, variable)
+        key = match.group('key')
+        provider = match.group('provider')
+        type_ = match.group('type')
 
         # retrieve value from API
+        data = None
         session = self.tc_session if self.tc_session else registry.session_tc
         r = session.get(f'/internal/variable/runtime/{provider}/{key}')
         if r.ok:

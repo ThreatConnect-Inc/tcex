@@ -11,9 +11,10 @@ import jmespath
 from tcex.utils.aes_operations import AesOperations
 from tcex.utils.datetime_operations import DatetimeOperations
 from tcex.utils.string_operations import StringOperations
+from tcex.utils.variables import Variables
 
 
-class Utils(AesOperations, DatetimeOperations, StringOperations):
+class Utils(AesOperations, DatetimeOperations, StringOperations, Variables):
     """TcEx Utilities Class"""
 
     @staticmethod
@@ -131,46 +132,3 @@ class Utils(AesOperations, DatetimeOperations, StringOperations):
         if len(numbers) == 1:
             asn = f'ASN{numbers[0]}'
         return asn
-
-    @property
-    def variable_match(self) -> Any:
-        """Return compiled re pattern."""
-        return re.compile(fr'^{self.variable_pattern}$')
-
-    def variable_method_name(self, variable: str) -> str:
-        """Convert variable name to a valid method name.
-
-        #App:9876:string.operation!String -> string_operation_string
-
-        Args:
-            variable: The variable name to convert.
-        """
-        method_name = None
-        if variable is not None:
-            variable = variable.strip()
-            if re.match(self.variable_match, variable):
-                var = re.search(self.variable_parse, variable)
-                variable_name = var.group(3).replace('.', '_').lower()
-                variable_type = var.group(4).lower()
-                method_name = f'{variable_name}_{variable_type}'
-        return method_name
-
-    @property
-    def variable_parse(self) -> Any:
-        """Return compiled re pattern."""
-        return re.compile(self.variable_pattern)
-
-    @property
-    def variable_pattern(self) -> str:
-        """Regex pattern to match and parse a playbook variable."""
-        return (
-            r'#([A-Za-z]+)'  # match literal (#App) at beginning of String
-            r':([\d]+)'  # app id (:7979)
-            r':([A-Za-z0-9_\.\-\[\]]+)'  # variable name (:variable_name)
-            r'!(StringArray|BinaryArray|KeyValueArray'  # variable type (array)
-            r'|TCEntityArray|TCEnhancedEntityArray'  # variable type (array)
-            r'|String|Binary|KeyValue|TCEntity|TCEnhancedEntity'  # variable type
-            r'|(?:(?!String)(?!Binary)(?!KeyValue)'  # non matching for custom
-            r'(?!TCEntity)(?!TCEnhancedEntity)'  # non matching for custom
-            r'[A-Za-z0-9_-]+))'  # variable type (custom)
-        )
