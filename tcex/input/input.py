@@ -262,7 +262,7 @@ class Input:
                         v = registry.playbook.read(v)
                     # TODO: [high] does resolve variable need to be added here
                     updated_value_array.append(v)
-                _inputs[name] = updated_value_array
+                value = updated_value_array
             elif self.utils.is_playbook_variable(value):  # only matches playbook variables
                 value = registry.playbook.read(value)
             elif self.utils.is_tc_variable(value):  # only matches playbook variables
@@ -317,7 +317,7 @@ class Input:
                     except Exception:
                         self.log.warning(f'Could not replace variable {variable} on input {name}.')
 
-                _inputs[name] = value
+            _inputs[name] = value
 
         # update contents
         self.contents_update(_inputs)
