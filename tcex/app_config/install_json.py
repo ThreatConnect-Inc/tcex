@@ -5,7 +5,7 @@ import logging
 import os
 from collections import OrderedDict
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 # first-party
 from tcex.app_config.install_json_update import InstallJsonUpdate
@@ -13,6 +13,11 @@ from tcex.app_config.install_json_validate import InstallJsonValidate
 from tcex.app_config.models import InstallJsonModel
 from tcex.backports import cached_property
 from tcex.pleb.singleton import Singleton
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.app_config.models.install_json_model import ParamsModel
+
 
 __all__ = ['InstallJson']
 
@@ -150,8 +155,17 @@ class InstallJson(metaclass=Singleton):
         """Return the Install JSON model."""
         return InstallJsonModel(**self.contents)
 
-    # TODO: [med] if this is not needed by the testing framework it can be removed.
-    # [bnp] it is currently used when generating profiles via the tcex-test create command.
+    @property
+    def params_dict(self) -> List['ParamsModel']:
+        """Return params as name/model.
+
+        Used in tcex_testing for dynamic generation of output variables.
+        """
+        params = {}
+        for p in self.model.params:
+            params.setdefault(p.name, p)
+        return params
+
     def params_to_args(
         self,
         name: Optional[str] = None,
@@ -162,6 +176,8 @@ class InstallJson(metaclass=Singleton):
         input_permutations: Optional[list] = None,
     ) -> Dict[str, Any]:
         """Return params as cli args.
+
+        Used by tcex_testing project.
 
         Args:
             name: The name of the input to return.
