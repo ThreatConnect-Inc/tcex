@@ -114,7 +114,7 @@ class BinABC(ABC):
         typer.secho(text_wrapped, fg=fg_color, bold=bold)
 
     @staticmethod
-    def print_divider(char: Optional[str] = '-', count: Optional[int] = 80, **kwargs) -> None:
+    def print_divider(char: Optional[str] = '-', count: Optional[int] = 100, **kwargs) -> None:
         """Print Divider."""
         bold = kwargs.get('bold', False)
         fg_color = getattr(typer.colors, kwargs.get('fg_color', 'bright_white').upper())

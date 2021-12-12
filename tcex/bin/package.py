@@ -88,7 +88,7 @@ class Package(BinABC):
         exclude_list = self._build_excludes_glob
         if src == os.getcwd():
             # get excludes that are specific to the Apps base directory
-            exclude_list = self._build_excludes_base
+            exclude_list.extend(self._build_excludes_base)
 
         excluded_files = []
         for n in names:
@@ -216,10 +216,11 @@ class Package(BinABC):
         # create App package
         shutil.make_archive(zip_fqpn, format='zip', root_dir=tmp_path, base_dir=app_name)
 
-        # rename the app swapping .zip for .tcx
-        shutil.move(zip_fqpn.with_suffix('.zip'), zip_fqpn.with_suffix('.tcx'))
+        # rename the app swapping .zip for .tcx, some filename have "v1.0" which causes
+        # the extra dot to be treated as an extension in pathlib.
+        zip_fqfn = os.path.join(app_path, self.output_dir, f'{app_name}.zip')
+        tcx_fqfn = os.path.join(app_path, self.output_dir, f'{app_name}.tcx')
+        shutil.move(zip_fqfn, tcx_fqfn)
 
         # update package data
-        self.package_data['package'].append(
-            {'action': 'App Package:', 'output': zip_fqpn.with_suffix('.tcx')}
-        )
+        self.package_data['package'].append({'action': 'App Package:', 'output': tcx_fqfn})

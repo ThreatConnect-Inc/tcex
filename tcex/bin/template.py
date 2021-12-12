@@ -286,7 +286,7 @@ class Template(BinABC):
                 self.print_setting('Contributor', config.contributor, fg_color='green', bold=False)
                 self.print_setting('Summary', config.summary, fg_color='green', bold=False)
                 install_cmd = f'tcex init --type {type_} --template {config.name}'
-                if branch is not None:
+                if branch != 'main':
                     install_cmd += f' --branch {branch}'
                 self.print_setting(
                     'Install Command',
@@ -294,7 +294,9 @@ class Template(BinABC):
                     fg_color='white',
                     bold=False,
                 )
-                self.print_divider()
+                # looks cleaner just to have a blank line
+                # self.print_divider()
+                print('')
 
     @cached_property
     def project_sha(self) -> str:
