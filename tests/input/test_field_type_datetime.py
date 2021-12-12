@@ -225,7 +225,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
     @pytest.mark.parametrize(
         'to_parse,operator,delta',
         [
-            # operator doesnt matter for 'now', as the time delta is 0
+            # operator doesn't matter for 'now', as the time delta is 0
             ('now', sub, timedelta(hours=0)),
             ('1 years ago', sub, relativedelta(years=1)),
             ('in 1 years', add, relativedelta(years=1)),

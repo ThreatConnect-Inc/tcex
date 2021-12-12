@@ -663,7 +663,7 @@ class TestV3:
         we can validate that the filter method provides all required filters for the object.
         """
         for keyword in self.v3_helper.v3_obj_collection.tql_keywords:
-            # covert camel keyword from API to snake before comparing
+            # convert camel keyword from API to snake before comparing
             keyword = self.utils.camel_to_snake(keyword)
             if keyword not in self.v3_helper.v3_obj_collection.filter.implemented_keywords:
                 assert False, f'Missing TQL keyword {keyword}.'

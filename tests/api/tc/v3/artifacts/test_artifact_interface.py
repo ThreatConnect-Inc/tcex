@@ -204,7 +204,7 @@ class TestArtifacts(TestV3):
         # [Create Testing] create the task object
         task = self.v3.task(**task_data)
 
-        # [Create Testing] create the task ot the TC API
+        # [Create Testing] create the task with the TC API
         task.create()
 
         # [Create Testing] define object data
@@ -218,7 +218,7 @@ class TestArtifacts(TestV3):
         # [Create Testing] create the object object
         artifact = self.v3.artifact(**artifact_data)
 
-        # [Create Testing] create the object ot the TC API
+        # [Create Testing] create the object with the TC API
         artifact.create()
 
         # [Retrieve Testing] retrieve object using tql filters
@@ -354,7 +354,7 @@ class TestArtifacts(TestV3):
         # [Create Testing] create the task object
         task = self.v3.task(**task_data)
 
-        # [Create Testing] create the task ot the TC API
+        # [Create Testing] create the task with the TC API
         task.create()
 
         # [Create Testing] define the object file data

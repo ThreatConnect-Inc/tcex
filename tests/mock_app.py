@@ -282,7 +282,7 @@ class MockApp:
         ]:
             _config.update(self._config_service)
 
-        # anything remaning in self.cd would be an arg to add.
+        # anything remaining in self.cd would be an arg to add.
         for k, v in self.cd.items():
             _config[k] = v
 

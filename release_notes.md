@@ -150,7 +150,7 @@ Testing framework
 + APP-79 - Added curl command to the log file at debug level to assist in troubleshooting.
 + APP-80 - Added support for __comment__ in testing profile.
 + APP-87 - Added check for invalid values in profile for Boolean inputs.
-+ APP-102	- Addded pytest fixture for testing sessions.
++ APP-102	- Added pytest fixture for testing sessions.
 + APP-557	- Added update logic for profiles to convert static String inputs to Staged KVStore variables.
 + APP-561 - Updated pre-commit template file to support large files on commit.
 + APP-676 - Updated --interactive mode to support all input types.

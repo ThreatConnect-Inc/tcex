@@ -259,7 +259,7 @@ class TestCases(TestV3):
         case.stage_tag({'name': 'tag3'})
         case.update()
 
-        # [Retrieve Testing] Verify that only the 1 new tag gets readded to the case, replacing
+        # [Retrieve Testing] Verify that only the 1 new tag gets re-added to the case, replacing
         # all other tags.
         tags_found = 0
         for tag in case.tags:

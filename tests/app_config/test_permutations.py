@@ -22,7 +22,7 @@ class TestPermutation:
             permutation.ij = self.ij('tcpb', 'app_1')
             permutation.lj = self.lj('tcpb', 'app_1')
         except Exception as ex:
-            assert False, f'Failed intializing permutation ({ex})'
+            assert False, f'Failed initializing permutation ({ex})'
 
         print('\n----------------')
         # print('tj.model.lib_versions', tj.model.lib_versions)
@@ -64,7 +64,7 @@ class TestPermutation:
             permutation.ij = self.ij('tcpb', 'app_1')
             permutation.lj = self.lj('tcpb', 'app_1')
         except Exception as ex:
-            assert False, f'Failed intializing permutation ({ex})'
+            assert False, f'Failed initializing permutation ({ex})'
 
         return permutation
 
