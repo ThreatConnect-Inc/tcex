@@ -4,7 +4,7 @@ import logging
 
 
 class CacheHandler(logging.Handler):
-    """Logger handler for caching event until all handlers are availabe."""
+    """Logger handler for caching event until all handlers are available."""
 
     def __init__(self, max_cache=100):
         """Initialize Class properties.

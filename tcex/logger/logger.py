@@ -200,7 +200,7 @@ class Logger:
             path: The path for the logfile.
             formatter: The logging formatter to use.
             handler_key: Additional properties for handler to thread condition.
-            max_log_count: The maximun number of logs to keep that match the provided pattern.
+            max_log_count: The maximum number of logs to keep that match the provided pattern.
             pattern: The pattern used to match the log files.
             thread_key: Additional properties for handler to thread condition.
         """

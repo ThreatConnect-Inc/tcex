@@ -92,7 +92,7 @@ class CaseFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            case_occurrence_time: The date/time the case occured.
+            case_occurrence_time: The date/time the case occurred.
         """
         case_occurrence_time = self.utils.any_to_datetime(case_occurrence_time).strftime(
             '%Y-%m-%dT%H:%M:%S'

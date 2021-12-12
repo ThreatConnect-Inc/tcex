@@ -39,7 +39,7 @@ class BinABC(ABC):
 
     @cached_property
     def cli_out_path(self) -> Path:  # pylint: disable=no-self-use
-        """Return the path to the tcex cli comman out directory."""
+        """Return the path to the tcex cli command out directory."""
         _out_path = Path(os.path.expanduser('~/.tcex'))
         _out_path.mkdir(exist_ok=True, parents=True)
         return _out_path

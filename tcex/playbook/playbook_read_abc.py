@@ -112,7 +112,7 @@ class PlaybookReadABC(PlaybookABC, ABC):
             # -------------------------------------------------------------
 
             # An upstream Apps KeyValue output can be used in a KeyValueList input, but
-            # Apps SHOULD NOT be writting KeyValueArray with nested variables. This means
+            # Apps SHOULD NOT be writing KeyValueArray with nested variables. This means
             # that there will only ever be 1 levels of nesting.
 
             # KeyValueList Input -> Nested KeyValue/KeyValueArray, the nested
@@ -177,7 +177,7 @@ class PlaybookReadABC(PlaybookABC, ABC):
         * Only String and KeyValueArray variables can have embedded variables.
         * Variables can only be embedded one level deep.
 
-        This method will automatically covert variables embedded in a string with value retrieved
+        This method will automatically convert variables embedded in a string with value retrieved
         from DB. If there are no keys/variables the raw string will be returned.
 
         Examples::

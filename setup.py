@@ -22,6 +22,7 @@ with open('README.md') as f:
 dev_packages = [
     'bandit',
     'black',
+    'codespell',
     'deepdiff',
     'flake8',
     'isort',

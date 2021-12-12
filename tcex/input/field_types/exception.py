@@ -6,7 +6,7 @@ class ConfigurationException(ValueError):
 
 
 class HeterogenousArrayException(ValueError):
-    """Raised when Array implementation is found to be not homogenous within assertion method"""
+    """Raised when Array implementation is found to be not homogeneous within assertion method"""
 
 
 class EmptyArrayException(ValueError):

@@ -63,8 +63,10 @@ class Package(BinABC):
             '.git',  # git directory
             '.gitlab-ci.yml',  # gitlab ci file
             '.gitmodules',  # git modules
+            '.history',  # vscode history plugin
             '.idea',  # PyCharm
             '.python-version',  # pyenv
+            '.template_manifest.json',  # template manifest file
             '.vscode',  # Visual Studio Code
             'app.yaml',  # requirements builder configuration file
             'artifacts',  # pytest in CI/CD
@@ -74,7 +76,6 @@ class Package(BinABC):
             'JIRA.html',  # documentation file
             'JIRA.md',  # documentation file
             'README.html',  # documentation file
-            # 'tcex.json',
             'test-reports',  # pytest in CI/CD
             'tests',  # pytest test directory
         ]

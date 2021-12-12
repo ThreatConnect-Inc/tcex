@@ -134,7 +134,7 @@ class AbstractArray(list, ABC):
         return value
 
     @classmethod
-    def _assert_homogenous(cls, value: list):
+    def _assert_homogeneous(cls, value: list):
         """Assert that Array contains only members of Array implementation's type.
 
         An empty Array will not raise a ValueError.

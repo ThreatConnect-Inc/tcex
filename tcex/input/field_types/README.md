@@ -405,7 +405,7 @@ The 'key' key must be a non-empty string.
 
 The 'value' key may be a String, StringArray, Binary, BinaryArray, TCEntity, TCEntityArray, and it also may be another
 KeyValue or a KeyValueArray. Note that this means that the value may be a single value or a list (Array) type. If the
-'value' key is a list type, then it must be a homogenous list. That is, the list may contain only Strings, only Binaries,
+'value' key is a list type, then it must be a homogeneous list. That is, the list may contain only Strings, only Binaries,
 only TCEntities, or only KeyValues.
 
 The 'value' key may also be None

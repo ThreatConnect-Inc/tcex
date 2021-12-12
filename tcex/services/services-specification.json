@@ -83,7 +83,7 @@
             "type": "string"
           },
           "config": {
-            "description": "The Playbook args/inputs. The contents of this object is depdent on the inputs defined in the install.json file (excluding ServiceConfig items).",
+            "description": "The Playbook args/inputs. The contents of this object is dependent on the inputs defined in the install.json file (excluding ServiceConfig items).",
             "properties": {
               "cc_action": {
                 "type": "string"
@@ -151,7 +151,7 @@
             "type": "string"
           },
           "config": {
-            "description": "The Playbook args/inputs. The contents of this object is depdent on the inputs defined in the install.json file (excluding ServiceConfig items).",
+            "description": "The Playbook args/inputs. The contents of this object is dependent on the inputs defined in the install.json file (excluding ServiceConfig items).",
             "properties": {
               "cc_action": {
                 "type": "string"
@@ -178,7 +178,7 @@
             "type": "integer"
           },
           "url": {
-            "description": "The unique URL for the currrent webhook trigger.",
+            "description": "The unique URL for the current webhook trigger.",
             "type": "string"
           }
         },
@@ -214,7 +214,7 @@
             "type": "string"
           },
           "message": {
-            "description": "A response message describing the status of the messsage. This value is displayed in the UI to a user if the status is \"Failed\".",
+            "description": "A response message describing the status of the message. This value is displayed in the UI to a user if the status is \"Failed\".",
             "type": "string"
           },
           "status": {
@@ -292,7 +292,7 @@
             "type": "string"
           },
           "message": {
-            "description": "A response message describing the status of the messsage. This value is current unused.",
+            "description": "A response message describing the status of the message. This value is current unused.",
             "type": "string"
           },
           "status": {
@@ -638,7 +638,7 @@
             "type": "string"
           },
           "headers": {
-            "description": "The HTTP headers for the reponse.",
+            "description": "The HTTP headers for the response.",
             "items": {},
             "type": "array"
           },
@@ -928,7 +928,7 @@
             "type": "string"
           },
           "headers": {
-            "description": "The HTTP headers for the reponse.",
+            "description": "The HTTP headers for the response.",
             "items": {},
             "type": "array"
           },
@@ -1042,7 +1042,7 @@
             "type": "string"
           },
           "headers": {
-            "description": "The HTTP headers for the reponse.",
+            "description": "The HTTP headers for the response.",
             "items": {},
             "type": "array"
           },

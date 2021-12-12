@@ -282,7 +282,7 @@ class Indicator(Mappings):
         """Construct an indicator summary given va1, va2, val3.
 
         Returns:
-            str: <space><colon><space> delimeted indicator summary.
+            str: <space><colon><space> delimited indicator summary.
         """
         summary = []
         if val1 is not None:

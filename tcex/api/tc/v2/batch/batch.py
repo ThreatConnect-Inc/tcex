@@ -1050,7 +1050,7 @@ class Batch(BatchWriter, BatchSubmit):
         return t
 
     def write_error_json(self, errors: list) -> None:
-        """Write the errors to a JSON file for debuging purposes.
+        """Write the errors to a JSON file for debugging purposes.
 
         Args:
             errors: A list of errors to write out.

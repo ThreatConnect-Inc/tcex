@@ -58,7 +58,13 @@ class Template(BinABC):
         # cache is valid
         return True
 
-    def contents(self, branch: str, type_: str, template: Optional[str] = None) -> dict:
+    def contents(
+        self,
+        branch: str,
+        type_: str,
+        template: Optional[str] = None,
+        app_builder: Optional[bool] = False,
+    ) -> dict:
         """Yield template contents."""
         url = f'{self.base_url}/contents/{type_}/{template}'
         if template is None:
@@ -74,6 +80,10 @@ class Template(BinABC):
             self.errors = True
 
         for content in r.json():
+            # exclusion - this file is only needed for building App Builder templates
+            if content.get('name') == '.appbuilderconfig' and app_builder is False:
+                continue
+
             # exclusions - files that should not be part of the App
             if content.get('name') in ['.gitignore', 'template.yaml']:
                 continue
@@ -228,11 +238,11 @@ class Template(BinABC):
                 self.errors = True
             return None
 
-    def init(self, branch: str, type_: str, template: str) -> List[dict]:
+    def init(self, branch: str, type_: str, template: str, app_builder: bool) -> List[dict]:
         """Initialize an App with template files."""
         downloads = {}
         for tp in self.template_parents(type_, template, branch):
-            for item in self.contents(branch, type_, tp):
+            for item in self.contents(branch, type_, tp, app_builder):
                 if item.get('type') == 'file':
                     # overwrite name if found in later parent
                     downloads[item.get('name')] = item
@@ -267,7 +277,7 @@ class Template(BinABC):
                 f'''see logs at {os.path.join(self.cli_out_path, 'tcex.log')}.'''
             )
 
-    def print_list(self) -> None:
+    def print_list(self, branch: Optional[str] = None) -> None:
         """Print the list output."""
         for type_, templates in self.template_data.items():
             self.print_title(f'''{type_.replace('_', ' ').title()} Templates''')
@@ -275,9 +285,12 @@ class Template(BinABC):
                 self.print_setting('Template', config.name, fg_color='green', bold=False)
                 self.print_setting('Contributor', config.contributor, fg_color='green', bold=False)
                 self.print_setting('Summary', config.summary, fg_color='green', bold=False)
+                install_cmd = f'tcex init --type {type_} --template {config.name}'
+                if branch is not None:
+                    install_cmd += f' --branch {branch}'
                 self.print_setting(
                     'Install Command',
-                    f'tcex init --type {type_} --template {config.name}',
+                    install_cmd,
                     fg_color='white',
                     bold=False,
                 )
@@ -325,7 +338,8 @@ class Template(BinABC):
     def template_manifest_write(self) -> None:
         """Write the template manifest file."""
         with self.template_manifest_fqfn.open(mode='w') as fh:
-            json.dump(self.template_manifest, fh)
+            fh.write(json.dumps(self.template_manifest, indent=2, sort_keys=True))
+            fh.write('\n')
 
     def template_parents(self, type_: str, template: str, branch: str = 'Main') -> list:
         """Return all parents for the provided template."""

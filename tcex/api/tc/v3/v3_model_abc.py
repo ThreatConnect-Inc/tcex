@@ -168,7 +168,7 @@ class V3ModelABC(BaseModel, ABC):
             #     RULE would trigger first.
             # A secondary PATTERN concideration is that attributes can be immediately
             #     updated using the attribute.updated() method. While this isn't as
-            #     efficient as updating them all in one request, it's is a simplier
+            #     efficient as updating them all in one request, it's is a simpler
             #     development design pattern.
 
             if mode == 'replace':
@@ -184,7 +184,7 @@ class V3ModelABC(BaseModel, ABC):
             #     STAGED RULE above and would be INCLUDED.
             # A secondary PATTERN concideration is that attributes can be immediately
             #     deleted using the attribute.delete() method. While this isn't as
-            #     efficient as deleting them all in one request, it's is a simplier
+            #     efficient as deleting them all in one request, it's is a simpler
             #     development design pattern.
 
             # All non-matching nested object that did not match a rule above will NOT be INCLUDED.

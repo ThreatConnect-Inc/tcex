@@ -188,7 +188,7 @@ class Permutation:
             # core expects true/false so we convert bool value to string and lower
             value = str(value).lower()
         else:  # pragma: no cover
-            # no other types can be used in a layout.json diplay clause
+            # no other types can be used in a layout.json display clause
             return
 
         # only column defined in install.json can be updated
@@ -330,7 +330,7 @@ class Permutation:
             sys.exit(1)
 
         if 'sqlite3' not in sys.modules:  # pragma: no cover
-            print('The sqlite3 module needs to be build-in to Python for this feature.')
+            print('The sqlite3 module needs to be built-in to Python for this feature.')
             sys.exit(1)
 
         # create db for permutations testing

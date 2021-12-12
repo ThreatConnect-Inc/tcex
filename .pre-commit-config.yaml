@@ -3,20 +3,26 @@ repos:
     rev: v4.0.1
     hooks:
       - id: check-added-large-files
-      - id: check-builtin-literals
       - id: check-ast
+      - id: check-byte-order-marker
       - id: check-builtin-literals
       - id: check-case-conflict
       - id: check-docstring-first
       - id: check-json
       - id: check-merge-conflict
       - id: check-symlinks
-      - id: debug-statements
       - id: check-toml
+      - id: check-yaml
       - id: debug-statements
+      - id: detect-aws-credentials
+      - id: detect-private-key
       - id: double-quote-string-fixer
       - id: end-of-file-fixer
       - id: mixed-line-ending
+      - id: no-commit-to-branch
+        args:
+          - --branch
+          - main
       - id: pretty-format-json
         args:
           - --autofix
@@ -37,6 +43,10 @@ repos:
     rev: 21.11b1
     hooks:
       - id: black
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.1.0
+    hooks:
+      - id: codespell
   - repo: https://gitlab.com/pycqa/flake8
     rev: 3.9.2
     hooks:

@@ -78,7 +78,7 @@ class KeyValueArray(AbstractArray):
         The 'value' key may be a String, StringArray, Binary, BinaryArray, TCEntity, TCEntityArray,
         and it also may be another KeyValue or a KeyValueArray. Note that this means that the value
         may be a single value or a list (Array) type. If the 'value' key is a list type, then
-        it must be a homogenous list. That is, the list may contain only Strings, only Binaries,
+        it must be a homogeneous list. That is, the list may contain only Strings, only Binaries,
         only TCEntities, or only KeyValues.
 
         The 'value' key may also be None.
@@ -97,15 +97,15 @@ class KeyValueArray(AbstractArray):
         if cls.is_array(key_value):
             # should contain String, Binary, TCEntity, or KeyValues. 'value' cannot be list of lists
             if not any(isinstance(item, list) for item in key_value):
-                # should be homogenous (add 'cls' because 'value' could be a list of KeyValues)
+                # should be homogeneous (add 'cls' because 'value' could be a list of KeyValues)
                 for _type in [StringArray, BinaryArray, TCEntityArray, cls]:
                     try:
-                        _type._assert_homogenous(key_value)
+                        _type._assert_homogeneous(key_value)
                     except HeterogenousArrayException:
-                        # 'value' part of KeyValue is not homogenous array of current _type
+                        # 'value' part of KeyValue is not homogeneous array of current _type
                         pass
                     else:
-                        # No exception was raised, must be homogenous list of current _type
+                        # No exception was raised, must be homogeneous list of current _type
                         is_member = True
                         break
         # 'value' part of KeyValue is a single value.
@@ -126,7 +126,7 @@ class KeyValueArray(AbstractArray):
                         is_member = True
                         break
 
-        # was not homogenous array of any of the accepted types
+        # was not homogeneous array of any of the accepted types
         # was not member of any of the accepted types
         return is_member
 

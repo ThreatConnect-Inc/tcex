@@ -47,7 +47,7 @@ class EnvPath(Path):
             except IndexError:
                 return string
 
-        # covert value to Path and return original value
+        # convert value to Path and return original value
         p = _EnvPath(os.path.expanduser(string))
         p.original_value = value
         return p

@@ -54,7 +54,7 @@ class TcEx:
 
     def __init__(self, **kwargs):
         """Initialize Class Properties."""
-        # catch interupt signals specifically based on thread name
+        # catch interrupt signals specifically based on thread name
         signal.signal(signal.SIGINT, self._signal_handler)
         if platform.system() != 'Windows':
             signal.signal(signal.SIGHUP, self._signal_handler)

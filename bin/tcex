@@ -71,6 +71,9 @@ def init(
     branch: Optional[str] = typer.Option(
         'main', help='The git branch of the tcex-app-template repository to use.'
     ),
+    app_builder: Optional[bool] = typer.Option(
+        False, help='Include .appbuilderconfig file in template download.'
+    ),
 ):
     """Initialize a new App from a template.
 
@@ -88,17 +91,18 @@ def init(
 
     try:
         tt.print_title('Installing template files ...', divider=False, fg_color='white')
-        downloads = tt.init(branch, type_, template)
+        downloads = tt.init(branch, type_, template, app_builder)
         typer.echo('')  # add additional space before progress bar
         with typer.progressbar(downloads, label='Downloading', width=80) as progress:
             for item in progress:
                 tt.download_template_file(item)
 
-        # update tcex.json file
-        tt.update_tcex_json()
+        # update tcex.json file with template data, external App do not support tcex.json
+        if type_ != 'external':
+            tt.update_tcex_json()
 
-        # update manifest
-        tt.template_manifest_write()
+            # update manifest
+            tt.template_manifest_write()
 
         typer.echo('\n')
         tt.print_title('Installation Summary')
@@ -128,7 +132,7 @@ def list(
     tt = Template()
     try:
         tt.list(branch, type_)
-        tt.print_list()
+        tt.print_list(branch)
         tt.print_error_message()
     except Exception as ex:
         typer.echo(f'Failed getting App templates: {ex}', err=True)
@@ -208,6 +212,14 @@ def update(
     is provided it will be used instead of the value in the tcex.json file. The tcex.json
     file will also be updated with new values.
     """
+    # external Apps do not support update
+    if not os.path.isfile('tcex.json'):
+        typer.secho(
+            'Update requires a tcex.json file, "external" App templates can not be update.',
+            fg=typer.colors.RED,
+        )
+        raise typer.Exit(code=1)
+
     tt = Template()
     try:
         downloads = tt.update(branch, template, type_, force)
@@ -215,8 +227,8 @@ def update(
         if not downloads:
             typer.secho('\nNo files to update.', fg=typer.colors.GREEN)
         else:
+            typer.echo('')  # add additional space before progress bar
             with typer.progressbar(downloads, label='Downloading', length=80) as progress:
-                typer.echo('')  # add additional space before progress bar
                 for item in progress:
                     tt.download_template_file(item)
 

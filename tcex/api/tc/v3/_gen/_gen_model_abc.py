@@ -770,7 +770,7 @@ class GenerateModelABC(GenerateABC, ABC):
         )
 
     def gen_requirements_first_party_forward_reference(self):
-        """Generate first-party forward reference, imported at the botton of the file."""
+        """Generate first-party forward reference, imported at the bottom of the file."""
         _libs = []
         for from_, libs in self.requirements.items():
             if from_ not in ['first-party-forward-reference']:
@@ -785,7 +785,7 @@ class GenerateModelABC(GenerateABC, ABC):
         return '\n'.join(_libs)
 
     def gen_forward_reference(self):
-        """Generate first-party forward reference, imported at the botton of the file."""
+        """Generate first-party forward reference, imported at the bottom of the file."""
         return '\n'.join(
             [
                 '',

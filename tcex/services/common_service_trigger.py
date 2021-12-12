@@ -283,7 +283,7 @@ class CommonServiceTrigger(CommonService):
             self.logger.remove_handler_by_name(self.thread_name)
 
     def log_config(self, trigger_id: str, config: dict) -> None:
-        """Log the config wile hiding encrypted values.
+        """Log the config while hiding encrypted values.
 
         Args:
             trigger_id: The current trigger Id.
