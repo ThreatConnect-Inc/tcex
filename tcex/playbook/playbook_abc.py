@@ -1,17 +1,12 @@
 """Playbook ABC"""
 # standard library
-import base64
-import json
 import logging
 import re
 from abc import ABC
-from collections import OrderedDict
-from collections.abc import Iterable
-from typing import Any, List, Optional, Union
+from typing import List, Optional, Union
 
 # first-party
 from tcex.key_value_store import KeyValueApi, KeyValueRedis
-from tcex.pleb.registry import registry
 from tcex.utils.utils import Utils
 
 # get tcex logger
@@ -41,7 +36,7 @@ class PlaybookABC(ABC):
         self.key_value_store = key_value_store
 
         # properties
-        self._output_variables_by_name = None
+        self._output_variables_by_key = None
         self._output_variables_by_type = None
         self.log = logger
         self.utils = Utils()
@@ -60,106 +55,6 @@ class PlaybookABC(ABC):
             value = str(value)
 
         return value
-
-    def _create(
-        self, key: str, value: Union[bytes, str], validate: Optional[bool] = True
-    ) -> Optional[int]:
-        """Create the value in Redis if applicable."""
-        if key is None or value is None:
-            self.log.warning('The key or value field is None.')
-            return None
-
-        # get variable type from variable value
-        variable_type = self.variable_type(key)
-
-        if variable_type == 'Binary':
-            # if not isinstance(value, bytes):
-            #     value = value.encode('utf-8')
-            if validate and not isinstance(value, bytes):
-                raise RuntimeError('Invalid data provided for Binary.')
-            value = base64.b64encode(value).decode('utf-8')
-        elif variable_type == 'KeyValue':
-            if validate and (not isinstance(value, dict) or not self._is_key_value(value)):
-                raise RuntimeError('Invalid data provided for KeyValue.')
-        elif variable_type == 'String':
-            # coerce string values
-            value = self._coerce_string_value(value)
-
-            if validate and not isinstance(value, str):
-                raise RuntimeError('Invalid data provided for String.')
-        elif variable_type == 'TCEntity':
-            if validate and (not isinstance(value, dict) or not self._is_tc_entity(value)):
-                raise RuntimeError('Invalid data provided for TcEntity.')
-
-        # self.log.trace(f'pb create - context: {self._context}, key: {key}, value: {value}')
-        try:
-            value = json.dumps(value)
-        except ValueError as e:  # pragma: no cover
-            raise RuntimeError(f'Failed to serialize value ({e}).')
-
-        try:
-            return self.key_value_store.create(self._context, key.strip(), value)
-        except RuntimeError as e:
-            self.log.error(e)
-        return None
-
-    def _create_array(self, key: str, value: list, validate: Optional[bool] = True):
-        """Create the value in Redis if applicable."""
-        if key is None or value is None:
-            self.log.warning('The key or value field is None.')
-            return None
-
-        # get variable type from variable value
-        variable_type = self.variable_type(key)
-
-        # Enhanced entity array is the wild-wild west, don't validate it
-        if variable_type != 'TCEnhancedEntityArray':
-            if validate and (not isinstance(value, Iterable) or isinstance(value, (str, dict))):
-                raise RuntimeError(f'Invalid data provided for {variable_type}.')
-
-            value = [
-                *value
-            ]  # spread the value so that we know it's a list (as opposed to an iterable)
-
-        if variable_type == 'BinaryArray':
-            value_encoded = []
-            for v in value:
-                if v is not None:
-                    if validate and not isinstance(v, bytes):
-                        raise RuntimeError('Invalid data provided for Binary.')
-                    # if not isinstance(v, bytes):
-                    #     v = v.encode('utf-8')
-                    v = base64.b64encode(v).decode('utf-8')
-                value_encoded.append(v)
-            value = value_encoded
-        elif variable_type == 'KeyValueArray':
-            if validate and not self._is_key_value_array(value):
-                raise RuntimeError('Invalid data provided for KeyValueArray.')
-        elif variable_type == 'StringArray':
-            value_coerced = []
-            for v in value:
-                # coerce string values
-                v = self._coerce_string_value(v)
-
-                if validate and not isinstance(v, (type(None), str)):
-                    raise RuntimeError('Invalid data provided for StringArray.')
-                value_coerced.append(v)
-            value = value_coerced
-        elif variable_type == 'TCEntityArray':
-            if validate and not self._is_tc_entity_array(value):
-                raise RuntimeError('Invalid data provided for TcEntityArray.')
-
-        # self.log.trace(f'pb create - context: {self._context}, key: {key}, value: {value}')
-        try:
-            value = json.dumps(value)
-        except ValueError as e:  # pragma: no cover
-            raise RuntimeError(f'Failed to serialize value ({e}).')
-
-        try:
-            return self.key_value_store.create(self._context, key.strip(), value)
-        except RuntimeError as e:
-            self.log.error(e)
-        return None
 
     @staticmethod
     def _decode_binary(data: bytes) -> str:
@@ -199,237 +94,45 @@ class PlaybookABC(ABC):
                 return False
         return True
 
-    @staticmethod
-    def _load_value(value: str) -> dict:
-        """Return the loaded JSON value or raise an error.
-
-        Args:
-            value (str): The data from key/value store.
-
-        Raises:
-            RuntimeError: Raise error when data can't be loaded as JSON data.
-
-        Returns:
-            any: The de-serialized value from the key/value store.
-        """
-        try:
-            return json.loads(value, object_pairs_hook=OrderedDict)
-        except ValueError as e:  # pragma: no cover
-            raise RuntimeError(f'Failed to JSON load data "{value}" ({e}).')
-
     def _parse_output_variables(self) -> None:
         """Parse the output variables provided to Playbook Class.
 
-        **Example Variable Format**::
+        Example Variable Format:
 
-            ['#App:1234:status!String', '#App:1234:status_code!String']
+        ['#App:1234:status!String', '#App:1234:status_code!String']
         """
-        self._output_variables_by_name = {}
+        self._output_variables_by_key = {}
         self._output_variables_by_type = {}
         for ov in self._output_variables:
             # parse the variable to get individual parts
             parsed_variable = self.parse_variable(ov)
-            variable_name = parsed_variable.get('name')
+            variable_key = parsed_variable.get('key')
             variable_type = parsed_variable.get('type')
 
-            # store the variables in dict by name (e.g. "status_code")
-            self._output_variables_by_name[variable_name] = {'variable': ov}
+            # store the variables in dict by key (e.g. "status_code")
+            self._output_variables_by_key[variable_key] = {'variable': ov}
 
-            # store the variables in dict by name-type (e.g. "status_code-String")
-            self._output_variables_by_type[f'{variable_name}-{variable_type}'] = {'variable': ov}
+            # store the variables in dict by key-type (e.g. "status_code-String")
+            self._output_variables_by_type[f'{variable_key}-{variable_type}'] = {'variable': ov}
 
-    def _read(
-        self,
-        key: str,
-        embedded: Optional[bool] = True,
-        b64decode: Optional[bool] = True,
-        decode: Optional[bool] = False,
-    ) -> any:
-        """Read the value from Redis if applicable."""
-        if key is None:
-            self.log.warning('The key is None.')
-            return None
+    @staticmethod
+    def _process_space_patterns(string: str) -> str:
+        r"""Return the string with \s replace with spaces."""
+        # replace "\s" with a space only for user input.
+        # using '\\s' will prevent replacement.
+        string = re.sub(r'(?<!\\)\\s', ' ', string)
+        string = re.sub(r'\\\\s', r'\\s', string)
+        return string
 
-        # get variable type from variable value
-        variable_type = self.variable_type(key)
-
-        try:
-            value = self.key_value_store.read(self._context, key.strip())
-        except RuntimeError as e:
-            self.log.error(e)
-            return None
-
+    @staticmethod
+    def _to_array(value: Optional[Union[List, str]]) -> List:
+        """Return the provided array as a list."""
         if value is None:
-            return value
-
-        # moved decode from key value store to here
-        value = value.decode()
-
-        if variable_type == 'Binary':
-            value = self._load_value(value)
-
-            if b64decode:
-                value = base64.b64decode(value)
-                if decode:
-                    value = self._decode_binary(value)
-        elif variable_type == 'KeyValue':
-            # embedded variable can be unquoted, which breaks JSON.
-            value = self._wrap_embedded_keyvalue(value)
-
-            if embedded and not self.is_variable(value):
-                value = self._read_embedded(value)
-
-            value = self._load_value(value)
-        elif variable_type == 'String':
-            if embedded and not self.is_variable(value):
-                value = self._read_embedded(value)
-
-            # coerce string values
-            value = self._coerce_string_value(self._load_value(value))
-        elif variable_type == 'TCEntity':
-            value = self._load_value(value)
-
-        return value
-
-    def _read_array(
-        self,
-        key: str,
-        embedded: Optional[bool] = True,
-        b64decode: Optional[bool] = True,
-        decode: Optional[bool] = False,
-    ) -> List[Any]:
-        """Create the value in Redis if applicable."""
-        if key is None:  # pragma: no cover
-            self.log.warning('The null value for key was provided.')
-            return None
-
-        # get variable type from variable value
-        variable_type = self.variable_type(key)
-
-        try:
-            value = self.key_value_store.read(self._context, key.strip())
-        except RuntimeError as e:
-            self.log.error(e)
-            return None
-
-        if value is None:
-            return value
-
-        # moved decode from key value store to here
-        value = value.decode()
-
-        if variable_type == 'BinaryArray':
-            value = json.loads(value, object_pairs_hook=OrderedDict)
-
-            values = []
-            for v in value:
-                if v is not None and b64decode:
-                    v = base64.b64decode(v)
-                    if decode:
-                        v = self._decode_binary(v)
-                values.append(v)
-            value = values
-        elif variable_type == 'KeyValueArray':
-            # embedded variable can be unquoted, which breaks JSON.
-            value = self._wrap_embedded_keyvalue(value)
-
-            if embedded and not self.is_variable(value):
-                value = self._read_embedded(value)
-
-            try:
-                value = json.loads(value, object_pairs_hook=OrderedDict)
-            except ValueError as e:  # pragma: no cover
-                raise RuntimeError(f'Failed loading JSON data ({value}). Error: ({e})')
-        elif variable_type == 'StringArray':
-            if embedded and not self.is_variable(value):
-                value = self._read_embedded(value)
-
-            # convert int to str
-            value_coerced = []
-            for v in self._load_value(value):
-                # coerce string values
-                value_coerced.append(self._coerce_string_value(v))
-            value = value_coerced
-        elif variable_type in ['TCEntityArray', 'TCEnhancedEntity', 'TCEnhancedEntityArray']:
-            value = self._load_value(value)
-
-        # self.log.trace(f'pb create - context: {self._context}, key: {key}, value: {value}')
-        return value
-
-    def _read_embedded(self, value: str) -> str:
-        """Read method for "embedded" variables.
-
-        .. Note:: The ``read()`` method will automatically determine if the input is a variable or
-            needs to be searched for embedded variables.
-
-        Embedded variable rules:
-
-        * Only user input can have embedded variables.
-        * Only String and KeyValueArray variables can have embedded variables.
-        * Variables can only be embedded one level deep.
-
-        This method will automatically covert variables embedded in a string with value retrieved
-        from DB. If there are no keys/variables the raw string will be returned.
-
-        Examples::
-
-            DB Values
-            #App:7979:variable_name!String:
-                "embedded \\"variable\\""
-            #App:7979:two!String:
-                "two"
-            #App:7979:variable_name!StringArray:
-                ["one", "two", "three"]
-
-            Examples 1:
-                Input:  "This input has a embedded #App:7979:variable_name!String"
-
-            Examples 2:
-                Input: ["one", #App:7979:two!String, "three"]
-
-            Examples 3:
-                Input: [{
-                    "key": "embedded string",
-                    "value": "This input has a embedded #App:7979:variable_name!String"
-                }, {
-                    "key": "string array",
-                    "value": #App:7979:variable_name!StringArray
-                }, {
-                    "key": "string",
-                    "value": #App:7979:variable_name!String
-                }]
-
-        Args:
-            value (str): The value to parsed and updated from the DB.
-
-        Returns:
-            (str): Results retrieved from DB
-        """
-        if value is None:  # pragma: no cover
-            return value
-
-        for match in re.finditer(self.utils.variable_expansion_pattern, str(value)):
-            variable = match.group(0)  # the full variable pattern
-            if match.group('origin') == '#':  # pb-variable
-                v = self.read(variable)
-            elif match.group('origin') == '&':  # tc-variable
-                v = registry.resolve_variable(variable)
-
-            # TODO: [high] should this behavior be changed in 3.0?
-            self.log.trace(f'embedded variable: {variable}, value: {v}')
-            if isinstance(v, (dict, list)):
-                v = json.dumps(v)
-                # for KeyValueArray with nested dict/list type replace the
-                # quoted value to ensure the resulting data is loadable JSON
-                value = value.replace(f'"{variable}"', v)
-
-            if v is not None:
-                # only replace variable if a non-null value is returned from kv store
-                # APP-1030 need to revisit this to handle variable references in kv/kv_arrays that
-                # are None.  Would like to be able to say if value is just the variable reference,
-                # sub None value, else insert '' in string.  That would require a kv-specific
-                # version of this method that gets the entire list/dict instead of just the string.
-                value = value.replace(variable, v)
+            # Adding none value to list breaks App logic. It's better to not request
+            # Array and build array externally if None values are required.
+            value = []
+        elif not isinstance(value, list):
+            value = [value]
         return value
 
     @property
@@ -459,73 +162,7 @@ class PlaybookABC(ABC):
         """Return list of standard playbook variable types."""
         return self._variable_single_types + self._variable_array_types
 
-    def _wrap_embedded_keyvalue(self, data: str) -> str:
-        """Wrap keyvalue embedded variable in double quotes.
-
-        Args:
-            data: The data with embedded variables.
-        """
-        # TODO: need to verify if core still sends improper JSON for KeyValueArrays
-        if data is not None:  # pragma: no cover
-            variables = []
-            for v in re.finditer(self.utils.variable_playbook_keyvalue_embedded, data):
-                variables.append(v.group(0))
-
-            for var in set(variables):  # recursion over set to handle duplicates
-                # pull (#App:1441:embedded_string!String) from (": #App:1441:embedded_string!String)
-                variable_string = re.search(self.utils.variable_playbook_parse, var).group(0)
-                # reformat to replace the correct instance only, handling the case where a variable
-                # is embedded multiple times in the same key value array.
-                data = data.replace(var, f'": "{variable_string}"')
-        return data
-
-    def create_raw(self, key: str, value: Union[bytes, int, str]) -> str:
-        """Create method of CRUD operation for raw data.
-
-        Raw data can only be a byte, str or int. Other data
-        structures (dict, list, etc) must be serialized.
-
-        Args:
-            key: The variable to write to the DB.
-            value: The data to write to the DB.
-        """
-        data = None
-        if key is not None and value is not None:
-            try:
-                data = self.key_value_store.create(self._context, key.strip(), value)
-            except RuntimeError as e:
-                self.log.error(e)
-        else:
-            self.log.warning('The key or value field was None.')
-        return data
-
-    def is_variable(self, key: str) -> bool:
-        """Return True if provided key is a properly formatted variable."""
-        raise NotImplementedError('Implemented in child class')
-
-    def read_raw(self, key: str) -> str:
-        """Read method of CRUD operation for raw data.
-
-        Bytes input will be returned a as string as there is no way
-        to determine data from redis originated as bytes or string.
-
-        Args:
-            key: The variable to read from the DB.
-        """
-        value = None
-        if key is not None:
-            value = self.key_value_store.read(self._context, key.strip())
-        else:
-            self.log.warning('The key field was None.')
-        return value
-
     def parse_variable(self, variable: str) -> dict:  # pragma: no cover
-        """Set placeholder for child method."""
-        raise NotImplementedError('Implemented in child class')
-
-    def read(
-        self, key: str, array: Optional[bool] = False, embedded: Optional[bool] = True
-    ) -> Any:  # pragma: no cover
         """Set placeholder for child method."""
         raise NotImplementedError('Implemented in child class')
 

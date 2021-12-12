@@ -41,7 +41,7 @@ class Variables:
             # TC-Variable: provider (e.g. TC|Vault)
             r'(?P<provider>[A-Za-z]+):'
             # ID:
-            # PB-Variable: App ID (e.g., 334)
+            # PB-Variable: Job ID (e.g., 334)
             # TC-Variable: One of (FILE|KEYCHAIN|TEXT)
             r'(?P<id>[\w]+):'
             # Lookup:
@@ -82,14 +82,22 @@ class Variables:
     def variable_playbook_pattern(self) -> str:
         """Regex pattern to match and parse a playbook variable."""
         return (
-            r'#([A-Za-z]+)'  # match literal (#App,#Trigger) at beginning of String
-            r':([\d]+)'  # app id (:7979)
-            r':([A-Za-z0-9_\.\-\[\]]+)'  # variable name (:variable_name)
-            r'!(StringArray|BinaryArray|KeyValueArray'  # variable type (array)
-            r'|TCEntityArray|TCEnhancedEntityArray'  # variable type (array)
-            r'|String|Binary|KeyValue|TCEntity|TCEnhancedEntity'  # variable type
-            r'|(?:(?!String)(?!Binary)(?!KeyValue)'  # non matching for custom
-            r'(?!TCEntity)(?!TCEnhancedEntity)'  # non matching for custom
+            # App Type: one of the following types (APP|Trigger)
+            r'#(?P<app_type>[A-Za-z]+)'
+            # TODO: [high] confirm this is correct
+            # Job ID: the Id of the running job (e.g, 7979).
+            r':(?P<job_id>[\d]+)'
+            # Key: the variable key (e.g., api_token)
+            r':(?P<key>[A-Za-z0-9_\.\-\[\]]+)'
+            # Type: one of the following types
+            #     (Binary|BinaryArray|KeyValue|KeyValueArray|
+            #      String|StringArray|TCEntity|TCEntityArray|
+            #      or <custom>)
+            r'!(?P<type>StringArray|BinaryArray|KeyValueArray'
+            r'|TCEntityArray|TCEnhancedEntityArray'
+            r'|String|Binary|KeyValue|TCEntity|TCEnhancedEntity'
+            r'|(?:(?!String)(?!Binary)(?!KeyValue)'
+            r'(?!TCEntity)(?!TCEnhancedEntity)'
             r'[A-Za-z0-9_-]+))'  # variable type (custom)
         )
 

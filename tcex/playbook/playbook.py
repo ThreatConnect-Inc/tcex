@@ -5,10 +5,11 @@ from typing import Any, List, Optional, Union
 
 # first-party
 from tcex.key_value_store import KeyValueApi, KeyValueRedis
-from tcex.playbook.playbook_abc import PlaybookABC
+from tcex.playbook.playbook_read_abc import PlaybookReadABC
+from tcex.playbook.playbook_write_abc import PlaybookWriteABC
 
 
-class Playbook(PlaybookABC):
+class Playbook(PlaybookReadABC, PlaybookWriteABC):
     """Playbook methods for accessing key value store.
 
     Args:
@@ -98,18 +99,12 @@ class Playbook(PlaybookABC):
             self.output_data[index] = {'key': key, 'type': variable_type, 'value': value}
 
     def check_output_variable(self, variable: str) -> bool:
-        """Check to see if output variable was requested by downstream app.
+        """Return True if output variable was requested by downstream app.
 
         Using the auto generated dictionary of output variables check to see if provided
         variable was requested by downstream app.
-
-        Args:
-            variable: The variable name, not the full variable.
-
-        Returns:
-            (bool): True, if match found.
         """
-        return variable in self.output_variables_by_name
+        return variable in self.output_variables_by_key
 
     def create(self, key: str, value: Any) -> str:
         """Create method of CRUD operation for working with KeyValue DB.
@@ -299,13 +294,13 @@ class Playbook(PlaybookABC):
             v = self.output_variables_by_type.get(key_type)
             self.log.info(f"Variable {v.get('variable')} was requested by downstream App.")
             results = self.create(v.get('variable'), value)
-        elif self.output_variables_by_name.get(key) is not None and variable_type is None:
+        elif self.output_variables_by_key.get(key) is not None and variable_type is None:
             # variable key has been requested
-            v = self.output_variables_by_name.get(key)
+            v = self.output_variables_by_key.get(key)
             self.log.info(f"Variable {v.get('variable')} was requested by downstream App.")
             results = self.create(v.get('variable'), value)
         else:
-            self.log.trace(f'requested output variables: {self.output_variables_by_name}')
+            self.log.trace(f'requested output variables: {self.output_variables_by_key}')
             self.log.debug(f'Variable {key} was NOT requested by downstream app.')
 
         return results
@@ -329,19 +324,15 @@ class Playbook(PlaybookABC):
         return data
 
     def is_variable(self, key: str) -> bool:
-        """Return True if provided key is a properly formatted variable."""
-        if not isinstance(key, str):
-            return False
-        if re.match(self.utils.variable_playbook_match, key):
-            return True
-        return False
+        """Return True if provided key is a properly formatted playbook variable."""
+        return self.utils.is_playbook_variable(key)
 
     @property
-    def output_variables_by_name(self) -> dict:
+    def output_variables_by_key(self) -> dict:
         """Return output variables stored as name dict."""
-        if self._output_variables_by_name is None:
+        if self._output_variables_by_key is None:
             self._parse_output_variables()
-        return self._output_variables_by_name
+        return self._output_variables_by_key
 
     @property
     def output_variables_by_type(self) -> dict:
@@ -369,276 +360,258 @@ class Playbook(PlaybookABC):
             if re.match(self.utils.variable_playbook_match, variable):
                 var = re.search(self.utils.variable_playbook_parse, variable)
                 data = {
-                    'root': var.group(0),
-                    'job_id': var.group(2),
-                    'name': var.group(3),
-                    'type': var.group(4),
+                    'app_type': var.group('app_type'),
+                    'job_id': var.group('job_id'),
+                    'key': var.group('key'),
+                    'type': var.group('type'),
                 }
         return data
 
-    def read(self, key: str, array: Optional[bool] = False, embedded: Optional[bool] = True) -> Any:
+    def read(
+        self, key: str, array: Optional[bool] = False
+    ) -> Optional[Union[bytes, dict, list, str]]:
         """Read method of CRUD operation for working with KeyValue DB.
 
         This method will automatically check to see if a single variable is passed
         or if "mixed" data is passed and return the results from the DB. It will also
         automatically determine the variable type to read.
-
-        Args:
-            key: The variable to read from the DB.
-            array: Convert string/dict to Array/List before returning.
-            embedded: Resolve embedded variables.
-
-        Returns:
-            (any): Results retrieved from DB
         """
-        # if a non-variable value is passed it should be the default
         value = key
         if isinstance(key, str):
             key = key.strip()
             variable_type = self.variable_type(key)
+
             if re.match(self.utils.variable_playbook_match, key):
                 # only log key if it's a variable
                 self.log.debug(f'read variable {key}')
-                if variable_type in self._variable_single_types:
-                    value = self._read(key=key, embedded=embedded)
-                elif variable_type in self._variable_array_types:
-                    value = self._read_array(key=key, embedded=embedded)
+
+                if variable_type in self._variable_types:
+                    value = self.read_any(key=key)
                 else:
                     value = self.read_raw(key)
             else:
                 if variable_type == 'String':
-                    # replace "\s" with a space only for user input.
-                    # using '\\s' will prevent replacement.
-                    value = re.sub(r'(?<!\\)\\s', ' ', value)
-                    value = re.sub(r'\\\\s', r'\\s', value)
+                    value = self._process_space_patterns(value)
 
-                if embedded:
-                    # check for any embedded variables
-                    value = self._read_embedded(value)
-
-        # return data as a list
-        if array and not isinstance(value, list):
-            if value is not None:
-                value = [value]
-            else:
-                # Adding none value to list breaks App logic. It's better to not request
-                # Array and build array externally if None values are required.
-                value = []
+        if array is True:
+            value = self._to_array(value)
 
         return value
 
-    def _entity_field(
-        self, key: str, field: str, entity_type: Optional[Any] = None, default: Optional[Any] = None
-    ) -> list:
-        """Read the value of the given key and return the data at the given field of the value.
+    def read_any(self, key: str) -> Optional[Union[bytes, dict, list, str]]:
+        """Return the value from the keystore for all types.
 
-        This method is used by functions designed to make it easier to get
-        data from a particular field from TC(Enhanced)Entity(Array).
-
-        Args:
-            key: The variable to read from the DB.
-            field: The field to find in the data.
-            entity_type: The type of data being collected (valid values: ['groups', 'indicators']).
-            default: The value to use for malformed TCEntities or TCEnhancedEntities.
-
-        Returns:
-            (list): A list of strings containing the desired values.
+        This is a quick helper method, for more advanced features
+        the individual read methods should be used (e.g., read_binary).
         """
-        read_results = self.read(key, array=True)
-        if not read_results:
-            return []
+        if self._null_key_check(key) is True:
+            return None
 
+        key = key.strip()  # clean up key
         variable_type = self.variable_type(key).lower()
-        enhanced_entity_field = None
-        VALID_ENTITY_TYPES = ['group', 'indicator']
-
-        # handle the odd format of tcEnhancedEntityArrays which follow the format detailed here:
-        # https://docs.threatconnect.com/en/latest/rest_api/
-        # indicators/indicators.html#batch-indicator-input-file-format-v2
-        if read_results and variable_type == 'tcenhancedentityarray':
-            # type specific values
-            if entity_type == 'indicator' and field == 'value':
-                enhanced_entity_field = 'summary'
-            elif entity_type == 'group' and field == 'value':
-                enhanced_entity_field = 'name'
-            elif entity_type not in VALID_ENTITY_TYPES:  # pragma: no cover
-                message = (
-                    f'Invalid entity_type ({entity_type}). Valid options: {VALID_ENTITY_TYPES}.'
-                )
-                raise RuntimeError(message)
-
-            read_results = read_results[0].get(entity_type, [])
-
-        is_tc_enhanced = enhanced_entity_field and variable_type in [
-            'tcenhancedentity',
-            'tcenhancedentityarray',
-        ]
-        is_tc_entity = variable_type in ['tcentity', 'tcentityarray']
-
-        if is_tc_enhanced:
-            values = [i.get(enhanced_entity_field, default) for i in read_results]
-        elif is_tc_entity:
-            values = [i.get(field, default) for i in read_results]
-        else:
-            values = read_results
-
-        return values
-
-    def read_indicator_values(self, key: str, default: Optional[Any] = None) -> list:
-        """Read the value of the given key and return indicators from the value.
-
-        This method will call the `read` method and then will process the data so as to return a
-        list of strings where each string is an indicator (the summary of an indicator - e.g.
-        ["foo.example.com", "bar.example.com"]).
-
-        Args:
-            key: The variable to read from the DB.
-            default: The value to use for malformed TCEntities or TCEnhancedEntities.
-
-        Returns:
-            (list): A list of strings containing the indicators
-        """
-        return self._entity_field(key, 'value', entity_type='indicator', default=default)
-
-    def read_group_values(self, key: str, default: Optional[Any] = None) -> list:
-        """Read the value of the given key and return group names from the value.
-
-        This method will call the `read` method and then will process the data
-        so as to return a list of strings where each string is a group name.
-
-        Args:
-            key: The variable to read from the DB.
-            default: The value to use for malformed TCEntities or TCEnhancedEntities.
-
-        Returns:
-            (list): A list of strings containing the group names
-        """
-        return self._entity_field(key, 'value', entity_type='group', default=default)
-
-    def read_group_ids(self, key: str, default: Optional[Any] = None) -> list:
-        """Read the value of the given key and return group ids from the value.
-
-        This method will call the `read` method and then will process the data
-        so as to return a list of strings where each string is a group id.
-
-        Args:
-            key: The variable to read from the DB.
-            default: The value to use for malformed TCEntities or TCEnhancedEntities.
-
-        Returns:
-            (list): A list of strings containing the group ids
-        """
-        return self._entity_field(key, 'id', entity_type='group', default=default)
-
-    def read_choice(self, key: str, alt_key: str) -> Optional[str]:
-        """Read method for choice inputs.
-
-        Behavior:
-        * If key is "-- Select --" return None.
-        * If key is "-- Variable Input --" return resolved alt_key.
-        * Else return resolved value for key.
-
-        Args:
-            key: The variable to read from KeyValue Store.
-            alt_key: The alternate variable to read from the KeyValue Store.
-        """
-        if key is None:
-            return None
-
-        if key.strip() == '-- Select --':
-            return None
-
-        if key.strip() == '-- Variable Input --':
-            return self.read(alt_key)
-
-        return self.read(key)
-
-    def read_array(self, key: str, embedded: Optional[bool] = True) -> List[Any]:
-        """Read playbook variable and return array for any variable type.
-
-        Args:
-            key: The variable to read from the DB.
-            embedded: Resolve embedded variables.
-        """
-        return self.read(key, True, embedded)
+        variable_type_map = {
+            'binary': self.read_binary,
+            'binaryarray': self.read_binary_array,
+            'keyvalue': self.read_key_value,
+            'keyvaluearray': self.read_key_value_array,
+            'string': self.read_string,
+            'stringarray': self.read_string_array,
+            'tcentity': self.read_tc_entity,
+            'tcentityarray': self.read_tc_entity_array,
+            'tcenhancedentity': self.read_tc_entity,
+        }
+        return variable_type_map.get(variable_type)(key)
 
     def read_binary(
-        self, key: str, b64decode: Optional[bool] = True, decode: Optional[bool] = False
-    ) -> Union[bytes, str]:
-        """Read method of CRUD operation for binary data.
+        self,
+        key: str,
+        b64decode: Optional[bool] = True,
+        decode: Optional[bool] = False,
+    ) -> Optional[Union[str, bytes]]:
+        """Read the value from key value store.
 
-        Args:
-            key: The variable to read from the DB.
-            b64decode: If true the data will be base64 decoded.
-            decode: If true the data will be decoded to a String.
+        Binary data should be stored as base64 encoded string.
         """
-        return self._read(key, b64decode=b64decode, decode=decode)
+        if self._null_key_check(key) is True:
+            return None
+
+        key = key.strip()  # clean up key
+        data: Optional[str] = self._get_data(key)
+        return self._process_binary(data, b64decode=b64decode, decode=decode, serialized=True)
 
     def read_binary_array(
-        self, key: str, b64decode: Optional[bool] = True, decode: Optional[bool] = False
-    ) -> List[Union[bytes, str]]:
-        """Read method of CRUD operation for binary array data.
+        self,
+        key: str,
+        b64decode: Optional[bool] = True,
+        decode: Optional[bool] = False,
+    ) -> Optional[List[Union[bytes, str]]]:
+        """Read the value from key value store.
 
-        Args:
-            key: The variable to read from the DB.
-            b64decode: If true the data will be base64 decoded.
-            decode: If true the data will be decoded to a String.
+        BinaryArray data should be stored as base64 encoded serialized string.
         """
-        return self._read_array(key, b64decode=b64decode, decode=decode)
+        if self._null_key_check(key) is True:
+            return None
 
-    def read_key_value(self, key: str, embedded: Optional[bool] = True) -> dict:
-        """Read method of CRUD operation for key/value data.
+        key = key.strip()  # clean up key
+        data: Optional[str] = self._get_data(key)
+        if data is not None:
+            # data should be base64 encoded bytes string
 
-        Args:
-            key: The variable to read from the DB.
-            embedded: Resolve embedded variables.
+            # decode the entire response, but not the items in the array?
+            data = data.decode()
+
+            # Array type is serialized before writing to redis, deserialize the data
+            data = self._load_data(data)
+
+            values = []
+            for d in data:
+                # d should be a base64 encoded string
+                values.append(
+                    self._process_binary(d, b64decode=b64decode, decode=decode, serialized=False)
+                )
+            data = values
+
+        return data
+
+    def read_key_value(
+        self,
+        key: str,
+        resolve_embedded: Optional[bool] = True,
+    ) -> Optional[dict]:
+        """Read the value from key value store.
+
+        KeyValue data should be stored as a JSON string.
         """
-        return self._read(key, embedded=embedded)
+        if self._null_key_check(key) is True:
+            return None
 
-    def read_key_value_array(self, key: str, embedded: Optional[bool] = True) -> List[dict]:
-        """Read method of CRUD operation for key/value array data.
+        key = key.strip()  # clean up key
+        data: Optional[str] = self._get_data(key)
+        return self._process_key_value(data, resolve_embedded=resolve_embedded, serialized=True)
 
-        Args:
-            key: The variable to read from the DB.
-            embedded: Resolve embedded variables.
+    def read_key_value_array(
+        self,
+        key: str,
+        resolve_embedded: Optional[bool] = True,
+    ) -> Optional[List[str]]:
+        """Read the value from key value store.
+
+        KeyValueArray data should be stored as serialized string.
         """
-        return self._read_array(key, embedded=embedded)
+        if self._null_key_check(key) is True:
+            return None
 
-    def read_string(self, key: str, embedded: Optional[bool] = True) -> str:
-        """Read method of CRUD operation for string data.
+        key = key.strip()  # clean up key
+        data: Optional[str] = self._get_data(key)
+        if data is not None:
+            # data should be string
 
-        Args:
-            key: The variable to read from the DB.
-            embedded: Resolve embedded variables.
+            # decode the entire response, but not the items in the array?
+            data = data.decode()
+
+            # Array type is serialized before writing to redis, deserialize the data
+            data = self._load_data(data)
+
+            values = []
+            for d in data:
+                # d should be a base64 encoded string
+                values.append(
+                    self._process_key_value(d, resolve_embedded=resolve_embedded, serialized=False)
+                )
+            data = values
+
+        return data
+
+    def read_string(
+        self,
+        key: str,
+        resolve_embedded: Optional[bool] = True,
+    ) -> Optional[str]:
+        """Read the value from key value store.
+
+        String data should be stored as serialized string.
         """
-        return self._read(key, embedded=embedded)
+        if self._null_key_check(key) is True:
+            return None
 
-    def read_string_array(self, key: str, embedded: Optional[bool] = True) -> List[str]:
-        """Read method of CRUD operation for string array data.
+        key = key.strip()  # clean up key
+        data: Optional[str] = self._get_data(key)
+        return self._process_string(data, resolve_embedded=resolve_embedded, serialized=True)
 
-        Args:
-            key: The variable to read from the DB.
-            embedded: Resolve embedded variables.
+    def read_string_array(
+        self,
+        key: str,
+        resolve_embedded: Optional[bool] = True,
+    ) -> Optional[List[str]]:
+        """Read the value from key value store.
+
+        StringArray data should be stored as serialized string.
         """
-        return self._read_array(key, embedded=embedded)
+        if self._null_key_check(key) is True:
+            return None
 
-    def read_tc_entity(self, key: str, embedded: Optional[bool] = True) -> dict:
-        """Read method of CRUD operation for TC entity data.
+        key = key.strip()  # clean up key
+        data: Optional[str] = self._get_data(key)
+        if data is not None:
+            # data should be string
 
-        Args:
-            key: The variable to read from the DB.
-            embedded: Resolve embedded variables.
+            # decode the entire response, but not the items in the array?
+            data = data.decode()
+
+            # Array type is serialized before writing to redis, deserialize the data
+            data = self._load_data(data)
+
+            values = []
+            for d in data:
+                # d should be a base64 encoded string
+                values.append(
+                    self._process_string(d, resolve_embedded=resolve_embedded, serialized=False)
+                )
+            data = values
+
+        return data
+
+    def read_tc_entity(self, key: str) -> Optional[dict]:
+        """Read the value from key value store.
+
+        TCEntity data should be stored as serialized string.
         """
-        return self._read(key, embedded=embedded)
+        if self._null_key_check(key) is True:
+            return None
 
-    def read_tc_entity_array(self, key: str, embedded: Optional[bool] = True) -> List[dict]:
-        """Read method of CRUD operation for TC entity array data.
+        key = key.strip()  # clean up key
+        data: Optional[str] = self._get_data(key)
+        return self._process_tc_entity(data, serialized=True)
 
-        Args:
-            key: The variable to read from the DB.
-            embedded: Resolve embedded variables.
+    def read_tc_entity_array(
+        self,
+        key: str,
+    ) -> Optional[List[str]]:
+        """Read the value from key value store.
+
+        TCEntityArray data should be stored as serialized string.
         """
-        return self._read_array(key, embedded=embedded)
+        if self._null_key_check(key) is True:
+            return None
+
+        key = key.strip()  # clean up key
+        data: Optional[str] = self._get_data(key)
+        if data is not None:
+            # data should be string
+
+            # decode the entire response, but not the items in the array?
+            data = data.decode()
+
+            # Array type is serialized before writing to redis, deserialize the data
+            data = self._load_data(data)
+
+            values = []
+            for d in data:
+                # d should be a base64 encoded string
+                values.append(self._process_tc_entity(d, serialized=False))
+            data = values
+
+        return data
 
     def variable_type(self, variable: str) -> str:
         """Get the Type from the variable string or default to String type.
@@ -646,22 +619,19 @@ class Playbook(PlaybookABC):
         The default type is "String" for those cases when the input variable is
         contains not "DB variable" and is just a String.
 
-        **Example Variable**::
+        Example Variable:
 
-            #App:1234:output!StringArray returns **StringArray**
+        #App:1234:output!StringArray returns **StringArray**
 
-        **Example String**::
+        Example String:
 
-            "My Data" returns **String**
-
-        Args:
-            variable: The variable to be parsed
+        "My Data" returns **String**
         """
         var_type = 'String'
         if isinstance(variable, str):
             variable = variable.strip()
             if re.match(self.utils.variable_playbook_match, variable):
-                var_type = re.search(self.utils.variable_playbook_parse, variable).group(4)
+                var_type = re.search(self.utils.variable_playbook_parse, variable).group('type')
         return var_type
 
     def write_output(self):
