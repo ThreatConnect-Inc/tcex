@@ -192,6 +192,7 @@ def update(
     template: Optional[str] = typer.Option(
         None, help='Only provide this value if changing the saved value.'
     ),
+    type_: str = typer.Option(None, '--type', help='The App type being initialized.'),
     branch: Optional[str] = typer.Option(
         'main', help='The git branch of the tcex-app-template repository to use.'
     ),
@@ -209,7 +210,7 @@ def update(
     """
     tt = Template()
     try:
-        downloads = tt.update(branch, template, force)
+        downloads = tt.update(branch, template, type_, force)
         tt.print_title('Updating template files ...', divider=False, fg_color='white')
         if not downloads:
             typer.secho('\nNo files to update.', fg=typer.colors.GREEN)
@@ -221,6 +222,9 @@ def update(
 
         # update manifest
         tt.template_manifest_write()
+
+        # update tcex.json file
+        tt.update_tcex_json()
 
         typer.echo('\n')
         tt.print_title('Update Summary')

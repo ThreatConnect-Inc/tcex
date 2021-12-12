@@ -384,16 +384,21 @@ class Template(BinABC):
             'webhook_trigger_service',
         ]
 
-    def update(self, branch: str, template: str, ignore_hash=False) -> List[dict]:
+    def update(self, branch: str, template: str, type_: str, ignore_hash=False) -> List[dict]:
         """Initialize an App with template files."""
+        if template is not None:
+            self.tj.model.template_name = template
+        if type_ is not None:
+            self.tj.model.template_type = type_
+
         template = template or self.tj.model.template_name
-        type_ = self.tj.model.template_type
+        type_ = type_ or self.tj.model.template_type
 
         # get the final contents after procession all parents
         contents = {}
-        for tp in self.template_parents(type_, template):
-            template_config = self.get_template_config(type_, tp, branch)
-            for item in self.contents(branch, type_, tp):
+        for tp in self.template_parents(self.tj.model.template_type, self.tj.model.template_name):
+            template_config = self.get_template_config(self.tj.model.template_type, tp, branch)
+            for item in self.contents(branch, self.tj.model.template_type, tp):
                 if item.get('type') == 'file':
                     # determine if file requires user prompt
                     prompt = True
