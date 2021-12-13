@@ -21,6 +21,7 @@ class Deploy(BinABC):
 
     def __init__(
         self,
+        server: str,
         app_file: str,
         proxy_host: str,
         proxy_port: int,
@@ -34,6 +35,7 @@ class Deploy(BinABC):
         self.proxy_port = proxy_port
         self.proxy_user = proxy_user
         self.proxy_pass = proxy_pass
+        self.server = server
 
     @staticmethod
     def _handle_missing_environment(variable: str) -> None:
@@ -88,10 +90,7 @@ class Deploy(BinABC):
     @property
     def base_url(self):
         """Authenticate with TcEx."""
-        base_url = os.getenv('TC_API_PATH')
-        if base_url is None:
-            self._handle_missing_environment('TC_API_PATH')
-        return base_url
+        return f'https://{self.server}/api'
 
     # pylint: disable=consider-using-with
     def deploy_app(self):

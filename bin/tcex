@@ -66,6 +66,7 @@ def deps(
 
 @app.command()
 def deploy(
+    server: str = typer.Argument(..., envvar='TC_DEPLOY_SERVER'),
     app_file: Optional[str] = typer.Option(
         None,
         help='The fully qualified path to App file. Will be auto-detected if not provided.',
@@ -95,7 +96,7 @@ def deploy(
     * TC_API_SECRET_KEY
     """
     try:
-        tcd = Deploy(app_file, proxy_host, proxy_port, proxy_user, proxy_pass)
+        tcd = Deploy(server, app_file, proxy_host, proxy_port, proxy_user, proxy_pass)
 
         # deploy the App
         tcd.deploy_app()
