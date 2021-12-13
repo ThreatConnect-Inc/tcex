@@ -12,7 +12,6 @@ from tcex.app_config.install_json_update import InstallJsonUpdate
 from tcex.app_config.install_json_validate import InstallJsonValidate
 from tcex.app_config.models import InstallJsonModel
 from tcex.backports import cached_property
-from tcex.pleb.singleton import Singleton
 
 if TYPE_CHECKING:
     # first-party
@@ -22,8 +21,12 @@ if TYPE_CHECKING:
 __all__ = ['InstallJson']
 
 
-class InstallJson(metaclass=Singleton):
-    """Provide a model for the install.json config file."""
+class InstallJson:
+    """Provide a model for the install.json config file.
+
+    This class can't be a Singleton because it's used by the package
+    command to create a install.json file in the build directory.
+    """
 
     def __init__(
         self,

@@ -211,13 +211,18 @@ def get_commit_hash() -> Optional[str]:
     return commit_hash
 
 
+def app_id() -> str:
+    """Return a generate id for the current App."""
+    return uuid.uuid5(uuid.NAMESPACE_X500, os.path.basename(os.getcwd()).lower())
+
+
 class InstallJsonModel(BaseModel):
     """Install JSON Model"""
 
     allow_on_demand: bool
     allow_run_as_user: Optional[bool]
     api_user_token_param: Optional[bool]
-    app_id: UUID5 = uuid.uuid5(uuid.NAMESPACE_X500, os.path.basename(os.getcwd()).lower())
+    app_id: UUID5 = Field(default_factory=app_id)
     commit_hash: Optional[str] = Field(default_factory=get_commit_hash)
     display_name: constr(min_length=3, max_length=100)
     display_path: Optional[constr(min_length=3, max_length=100)]

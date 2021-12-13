@@ -187,11 +187,12 @@ class Package(BinABC):
                 for data in [
                     list_data[i : i + n] for i in range(0, len(list_data), n)  # noqa: E203
                 ]:
-                    print(f"{''!s:<20}{c.Style.BRIGHT}{c.Fore.CYAN} {', '.join(data)!s:<50}")
+                    print(f'''{''!s:<20}{c.Style.BRIGHT}{c.Fore.CYAN} {', '.join(data)!s:<50}''')
 
             else:
                 print(
-                    f"{p.get('action')!s:<20}{c.Style.BRIGHT}{c.Fore.CYAN} {p.get('output')!s:<50}"
+                    f'''{p.get('action')!s:<20}{c.Style.BRIGHT}'''
+                    f'''{c.Fore.CYAN} {p.get('output')!s:<50}'''
                 )
 
         # ignore exit code

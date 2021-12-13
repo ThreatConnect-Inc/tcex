@@ -11,7 +11,7 @@ import colorama as c
 import typer
 
 # first-party
-from tcex.bin import Dep, Package, Template, Validate
+from tcex.bin import Dep, Deploy, Package, Template, Validate
 
 
 app = typer.Typer()
@@ -62,6 +62,47 @@ def deps(
     except Exception as ex:
         typer.echo(f'Exception: {ex}', err=True)
         raise typer.Exit(code=1)
+
+
+@app.command()
+def deploy(
+    app_file: Optional[str] = typer.Option(
+        None,
+        help='The fully qualified path to App file. Will be auto-detected if not provided.',
+    ),
+    proxy_host: Optional[str] = typer.Option(
+        None, help='(Advanced) Hostname for the proxy server.'
+    ),
+    proxy_port: Optional[int] = typer.Option(
+        None, help='(Advanced) Port number for the proxy server.'
+    ),
+    proxy_user: Optional[str] = typer.Option(
+        None, help='(Advanced) Username for the proxy server.'
+    ),
+    proxy_pass: Optional[str] = typer.Option(
+        None, help='(Advanced) Password for the proxy server.'
+    ),
+):
+    """Deploy App to ThreatConnect via internal API.
+
+    WARNING: This command is not intended for production use and requires special configuration
+    in the ThreatConnect platform to work.
+
+    This command REQUIRES the following environment variables to be set.
+
+    * TC_API_PATH
+    * TC_API_ACCESS_ID
+    * TC_API_SECRET_KEY
+    """
+    try:
+        tcd = Deploy(app_file, proxy_host, proxy_port, proxy_user, proxy_pass)
+
+        # deploy the App
+        tcd.deploy_app()
+    except Exception as ex:
+        typer.echo(f'Exception: {ex}', err=True)
+        # raise typer.Exit(code=1)
+        raise
 
 
 @app.command()
