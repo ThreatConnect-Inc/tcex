@@ -52,6 +52,18 @@ def input_model(models: list) -> BaseModel:
     return InputModel
 
 
+class BinaryVariable(bytes):
+    """Ensure an array is always returned for the input."""
+
+    _variable_type = 'Binary'
+
+
+class StringVariable(str):
+    """Ensure an array is always returned for the input."""
+
+    _variable_type = 'String'
+
+
 class Input:
     """Module to handle inputs for all App types."""
 
@@ -254,6 +266,7 @@ class Input:
                 # #Trigger:334:example.service_input!String), but that 1) won't work for services
                 # and 2) doesn't make sense.  Service configs will never have playbook variables.
                 continue
+
             if isinstance(value, list) and self.ij.model.runtime_level.lower() == 'playbook':
                 # list could contain playbook variables, try to resolve the value
                 updated_value_array = []
@@ -264,7 +277,21 @@ class Input:
                     updated_value_array.append(v)
                 value = updated_value_array
             elif self.utils.is_playbook_variable(value):  # only matches playbook variables
+                # when using Union[Bytes, String] in App input model the value
+                # can be coerced to the wrong type. the BinaryVariable and
+                # StringVariable custom types allows for the validator in Binary
+                # and String types to raise a value error.
+                variable_type = self.utils.get_playbook_variable_type(value)
                 value = registry.playbook.read(value)
+                if value is not None:
+                    if variable_type.lower() == 'binary':
+                        value = BinaryVariable(value)
+                    elif variable_type.lower() == 'binaryarray':
+                        value = [BinaryVariable(v) for v in value]
+                    elif variable_type.lower() == 'string':
+                        value = StringVariable(value)
+                    elif variable_type.lower() == 'stringarray':
+                        value = [StringVariable(v) for v in value]
             elif self.utils.is_tc_variable(value):  # only matches playbook variables
                 value = self.resolve_variable(variable=value)
             elif isinstance(value, str):
@@ -282,10 +309,7 @@ class Input:
                         'TCEntityArray',
                     ]:
                         # "mixed" types are not supported
-                        if (
-                            value != variable
-                            and self.ij.model.get_param(name).allow_nested is False
-                        ):
+                        if self.ij.model.get_param(name).allow_nested is False:
                             raise RuntimeError(
                                 f'''{match.group('type')} variables '''
                                 '''can not be in mixed string.'''
@@ -313,7 +337,7 @@ class Input:
                                     f'Could not replace variable {variable} on input {name}.'
                                 )
 
-                            value = value.replace(variable, v)
+                            value = StringVariable(value.replace(variable, v))
                     except Exception:
                         self.log.warning(f'Could not replace variable {variable} on input {name}.')
 

@@ -7,6 +7,27 @@ from typing import Any
 class Variables:
     """TcEx Utilities Variables Class"""
 
+    def get_playbook_variable_type(self, variable: str) -> str:
+        """Get the Type from the variable string or default to String type.
+
+        The default type is "String" for those cases when the input variable is
+        contains not "DB variable" and is just a String.
+
+        Example Variable:
+
+        #App:1234:output!StringArray returns **StringArray**
+
+        Example String:
+
+        "My Data" returns **String**
+        """
+        var_type = 'String'
+        if isinstance(variable, str):
+            variable = variable.strip()
+            if re.match(self.variable_playbook_match, variable):
+                var_type = re.search(self.variable_playbook_parse, variable).group('type')
+        return var_type
+
     def is_playbook_variable(self, key: str) -> bool:
         """Return True if provided key is a properly formatted playbook variable."""
         if not isinstance(key, str):

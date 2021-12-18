@@ -627,12 +627,7 @@ class Playbook(PlaybookReadABC, PlaybookWriteABC):
 
         "My Data" returns **String**
         """
-        var_type = 'String'
-        if isinstance(variable, str):
-            variable = variable.strip()
-            if re.match(self.utils.variable_playbook_match, variable):
-                var_type = re.search(self.utils.variable_playbook_parse, variable).group('type')
-        return var_type
+        return self.utils.get_playbook_variable_type(variable)
 
     def write_output(self):
         """Write all stored output data to storage."""
