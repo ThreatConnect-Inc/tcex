@@ -2,6 +2,7 @@
 # standard library
 import os
 import shutil
+from typing import TYPE_CHECKING
 
 # third-party
 import pytest
@@ -9,6 +10,11 @@ import redis
 
 # first-party
 from tests.mock_app import MockApp
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex import TcEx
+    from tcex.playbook.playbook import Playbook
 
 #
 # fixtures
@@ -46,7 +52,14 @@ def owner_id():
 
 
 @pytest.fixture()
-def playbook_app():
+def playbook() -> 'Playbook':
+    """Return an instance of tcex.playbook."""
+    app = MockApp(runtime_level='Playbook')
+    return app.tcex.playbook
+
+
+@pytest.fixture()
+def playbook_app() -> 'MockApp':
     """Mock a playbook App."""
 
     def app(**kwargs):
@@ -58,7 +71,7 @@ def playbook_app():
 
 
 @pytest.fixture()
-def redis_client():
+def redis_client() -> redis.Redis:
     """Return instance of redis_client."""
     host = os.getenv('tc_playbook_db_path', 'localhost')
     port = os.getenv('tc_playbook_db_port', '6379')
@@ -66,7 +79,7 @@ def redis_client():
 
 
 @pytest.fixture()
-def service_app():
+def service_app() -> 'MockApp':
     """Mock a service App."""
 
     def app(**kwargs):
@@ -78,21 +91,21 @@ def service_app():
 
 
 @pytest.fixture()
-def tc_log_file():
+def tc_log_file() -> str:
     """Return tcex config data."""
     app = MockApp(runtime_level='Playbook')
     return app.tcex_log_file
 
 
 @pytest.fixture()
-def tcex():
+def tcex() -> 'TcEx':
     """Return an instance of tcex."""
     app = MockApp(runtime_level='Playbook')
     return app.tcex
 
 
 @pytest.fixture()
-def tcex_hmac():
+def tcex_hmac() -> 'TcEx':
     """Return an instance of tcex with hmac auth."""
     config_data_ = {
         'tc_token': None,
@@ -104,7 +117,7 @@ def tcex_hmac():
 
 # @pytest.fixture(scope='module')
 @pytest.fixture()
-def tcex_proxy():
+def tcex_proxy() -> 'TcEx':
     """Return an instance of tcex with proxy configured.
 
     mitmproxy -p 4242 --ssl-insecure

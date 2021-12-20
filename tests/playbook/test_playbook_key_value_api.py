@@ -1,6 +1,14 @@
 """Test the TcEx Batch Module."""
+# standard library
+from typing import TYPE_CHECKING, Any
+
 # third-party
 import pytest
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex import TcEx
+    from tests.mock_app import MockApp
 
 
 class MockApi:
@@ -117,7 +125,9 @@ class TestPlaybookKeyValueApi:
             ('#App:0001:dup.name!StringArray', ['dup name']),
         ],
     )
-    def test_playbook_key_value_api(self, variable, value, playbook_app, monkeypatch):
+    def test_playbook_key_value_api(
+        self, variable: str, value: Any, playbook_app: 'MockApp', monkeypatch: 'pytest.MonkeyPatch'
+    ):
         """Test the create output method of Playbook module.
 
         Args:
@@ -126,7 +136,7 @@ class TestPlaybookKeyValueApi:
             playbook_app (callable, fixture): The playbook_app fixture.
             monkeypatch (monkeypatch): Pytest monkeypatch.
         """
-        tcex = playbook_app(
+        tcex: 'TcEx' = playbook_app(
             config_data={
                 'tc_playbook_out_variables': self.tc_playbook_out_variables,
                 'tc_playbook_db_type': 'TCKeyValueAPI',
@@ -134,9 +144,7 @@ class TestPlaybookKeyValueApi:
         ).tcex
 
         # parse variable and send to create_output() method
-        parsed_variable = tcex.playbook.parse_variable(variable)
-        variable_name = parsed_variable.get('name')
-        variable_type = parsed_variable.get('type')
+        variable_model = tcex.utils.get_playbook_variable_model(variable)
 
         # setup mock key value api service
         mock_api = MockApi()
@@ -153,6 +161,6 @@ class TestPlaybookKeyValueApi:
         monkeypatch.setattr(tcex.session_tc, 'get', mp_get)
         monkeypatch.setattr(tcex.session_tc, 'put', mp_put)
 
-        tcex.playbook.create_output(variable_name, value, variable_type)
-        result = tcex.playbook.read(variable)
+        tcex.playbook.create.variable(variable_model.key, value, variable_model.type)
+        result = tcex.playbook.read.variable(variable)
         assert result == value, f'result of ({result}) does not match ({value})'

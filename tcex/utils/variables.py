@@ -1,32 +1,24 @@
 """TcEx Utilities Variables Operations Module"""
 # standard library
 import re
-from typing import Any
+from typing import Any, List
+
+# first-party
+from tcex.utils.models import PlaybookVariableModel
 
 
 class Variables:
     """TcEx Utilities Variables Class"""
 
-    def get_playbook_variable_type(self, variable: str) -> str:
-        """Get the Type from the variable string or default to String type.
-
-        The default type is "String" for those cases when the input variable is
-        contains not "DB variable" and is just a String.
-
-        Example Variable:
-
-        #App:1234:output!StringArray returns **StringArray**
-
-        Example String:
-
-        "My Data" returns **String**
-        """
-        var_type = 'String'
-        if isinstance(variable, str):
+    def get_playbook_variable_model(self, variable: str) -> 'PlaybookVariableModel':
+        """Return data model of playbook variable (e.g., #App:1234:output!String)."""
+        data = None
+        if variable is not None:
             variable = variable.strip()
             if re.match(self.variable_playbook_match, variable):
-                var_type = re.search(self.variable_playbook_parse, variable).group('type')
-        return var_type
+                var = re.search(self.variable_playbook_parse, variable)
+                data = PlaybookVariableModel(**var.groupdict())
+        return data
 
     def is_playbook_variable(self, key: str) -> bool:
         """Return True if provided key is a properly formatted playbook variable."""
@@ -157,3 +149,30 @@ class Variables:
     def variable_tc_parse(self):
         """Return regex pattern for tc variable search."""
         return re.compile(self.variable_tc_pattern)
+
+    @property
+    def variable_playbook_array_types(self) -> List[str]:
+        """Return list of standard playbook array variable types."""
+        return [
+            'BinaryArray',
+            'KeyValueArray',
+            'StringArray',
+            'TCEntityArray',
+            'TCEnhancedEntityArray',
+        ]
+
+    @property
+    def variable_playbook_single_types(self) -> List[str]:
+        """Return list of standard playbook single variable types."""
+        return [
+            'Binary',
+            'KeyValue',
+            'String',
+            'TCEntity',
+            'TCEnhancedEntity',
+        ]
+
+    @property
+    def variable_playbook_types(self) -> List[str]:
+        """Return list of standard playbook variable types."""
+        return self.variable_playbook_single_types + self.variable_playbook_array_types

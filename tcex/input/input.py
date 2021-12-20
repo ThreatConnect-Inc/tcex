@@ -272,7 +272,7 @@ class Input:
                 updated_value_array = []
                 for v in value:
                     if isinstance(v, str):
-                        v = registry.playbook.read(v)
+                        v = registry.playbook.read.variable(v)
                     # TODO: [high] does resolve variable need to be added here
                     updated_value_array.append(v)
                 value = updated_value_array
@@ -281,17 +281,17 @@ class Input:
                 # can be coerced to the wrong type. the BinaryVariable and
                 # StringVariable custom types allows for the validator in Binary
                 # and String types to raise a value error.
-                variable_type = self.utils.get_playbook_variable_type(value)
-                value = registry.playbook.read(value)
+                variable_type = self.utils.get_playbook_variable_model(value).type
+                value = registry.playbook.read.variable(value)
                 if value is not None:
                     if variable_type.lower() == 'binary':
                         value = BinaryVariable(value)
                     elif variable_type.lower() == 'binaryarray':
-                        value = [BinaryVariable(v) for v in value]
+                        value = [v if v is None else BinaryVariable(v) for v in value]
                     elif variable_type.lower() == 'string':
                         value = StringVariable(value)
                     elif variable_type.lower() == 'stringarray':
-                        value = [StringVariable(v) for v in value]
+                        value = [v if v is None else StringVariable(v) for v in value]
             elif self.utils.is_tc_variable(value):  # only matches playbook variables
                 value = self.resolve_variable(variable=value)
             elif isinstance(value, str):
@@ -314,12 +314,12 @@ class Input:
                                 f'''{match.group('type')} variables '''
                                 '''can not be in mixed string.'''
                             )
-                        value = registry.playbook.read(variable)
+                        value = registry.playbook.read.variable(variable)
                         break
 
                     # working with String type or Custom type
                     if match.group('origin') == '#':  # pb-variable
-                        v = registry.playbook.read(variable)
+                        v = registry.playbook.read.variable(variable)
                     elif match.group('origin') == '&':  # tc-variable
                         v = self.resolve_variable(variable)
 

@@ -1,6 +1,16 @@
 """Test the TcEx Batch Module."""
+# standard library
+from typing import TYPE_CHECKING, Any, Dict, List, Union
+
 # third-party
 import pytest
+
+# first-party
+from tcex.input.field_models import KeyValue
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.playbook.playbook import Playbook
 
 
 # pylint: disable=no-self-use
@@ -14,22 +24,21 @@ class TestUtils:
             ('#App:0002:kv2!KeyValue', {'key': 'two', 'value': '2'}),
             ('#App:0002:kv3!KeyValue', {'key': 'three', 'value': '3'}),
             ('#App:0002:kv4!KeyValue', {'key': 'four', 'value': '4'}),
+            ('#App:0002:kv5!KeyValue', KeyValue(**{'key': 'five', 'value': '5'})),
         ],
     )
-    def test_playbook_key_value(self, variable, value, tcex):
-        """Test the string array method of Playbook module.
-
-        Args:
-            variable (str): The key/variable to create in Key Value Store.
-            value (str): The value to store in Key Value Store.
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
-        """
-        tcex.playbook.create_key_value(variable, value)
-        result = tcex.playbook.read_key_value(variable)
+    def test_playbook_key_value_pass(
+        self, variable: str, value: Union[dict, KeyValue], playbook: 'Playbook'
+    ):
+        """Test playbook variables."""
+        playbook.create.key_value(variable, value, when_requested=False)
+        result = playbook.read.key_value(variable)
+        if isinstance(value, KeyValue):
+            value = value.dict(exclude_unset=True)
         assert result == value, f'result of ({result}) does not match ({value})'
 
-        tcex.playbook.delete(variable)
-        assert tcex.playbook.read(variable) is None
+        playbook.delete.variable(variable)
+        assert playbook.read.variable(variable) is None
 
     @pytest.mark.parametrize(
         'variable,value',
@@ -40,17 +49,11 @@ class TestUtils:
             ('#App:0002:b4!WrongType', 'wrong type'),
         ],
     )
-    def test_playbook_key_value_fail(self, variable, value, tcex):
-        """Test the string array method of Playbook module.
-
-        Args:
-            variable (str): The key/variable to create in Key Value Store.
-            value (str): The value to store in Key Value Store.
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
-        """
+    def test_playbook_key_value_fail(self, variable: str, value: Any, playbook: 'Playbook'):
+        """Test playbook variables."""
         try:
-            tcex.playbook.create_key_value(variable, value)
-            assert False, f'{value} is not a valid Binary value'
+            playbook.create.key_value(variable, value, when_requested=False)
+            assert False, f'{value} is not a valid Key Value type'
         except RuntimeError:
             assert True
 
@@ -75,20 +78,16 @@ class TestUtils:
             ),
         ],
     )
-    def test_playbook_key_value_array(self, variable, value, tcex):
-        """Test the string array method of Playbook module.
-
-        Args:
-            variable (str): The key/variable to create in Key Value Store.
-            value (str): The value to store in Key Value Store.
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
-        """
-        tcex.playbook.create_key_value_array(variable, value)
-        result = tcex.playbook.read_key_value_array(variable)
+    def test_playbook_key_value_array_pass(
+        self, variable: str, value: List[Dict[str, str]], playbook: 'Playbook'
+    ):
+        """Test playbook variables."""
+        playbook.create.key_value_array(variable, value, when_requested=False)
+        result = playbook.read.key_value_array(variable)
         assert result == value, f'result of ({result}) does not match ({value})'
 
-        tcex.playbook.delete(variable)
-        assert tcex.playbook.read(variable) is None
+        playbook.delete.variable(variable)
+        assert playbook.read.variable(variable) is None
 
     @pytest.mark.parametrize(
         'variable,value',
@@ -101,16 +100,10 @@ class TestUtils:
             ('#App:0002:b3!WrongType', 'wrong type'),
         ],
     )
-    def test_playbook_key_value_array_fail(self, variable, value, tcex):
-        """Test the string array method of Playbook module.
-
-        Args:
-            variable (str): The key/variable to create in Key Value Store.
-            value (str): The value to store in Key Value Store.
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
-        """
+    def test_playbook_key_value_array_fail(self, variable: str, value: Any, playbook: 'Playbook'):
+        """Test playbook variables."""
         try:
-            tcex.playbook.create_key_value_array(variable, value)
-            assert False, f'{value} is not a valid Binary Array value'
+            playbook.create.key_value_array(variable, value, when_requested=False)
+            assert False, f'{value} is not a valid Key Value Array value'
         except RuntimeError:
             assert True

@@ -1,6 +1,16 @@
 """Test the TcEx Batch Module."""
+# standard library
+from typing import TYPE_CHECKING, Any, Dict, List, Union
+
 # third-party
 import pytest
+
+# first-party
+from tcex.input.field_models import KeyValue
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.playbook.playbook import Playbook
 
 
 # pylint: disable=no-self-use
@@ -16,20 +26,16 @@ class TestUtils:
             ('#App:0002:te4!TCEntity', {'id': '004', 'value': '3.3.3.3', 'type': 'Address'}),
         ],
     )
-    def test_playbook_tc_entity(self, variable, value, tcex):
-        """Test the string array method of Playbook module.
-
-        Args:
-            variable (str): The key/variable to create in Key Value Store.
-            value (str): The value to store in Key Value Store.
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
-        """
-        tcex.playbook.create_tc_entity(variable, value)
-        result = tcex.playbook.read_tc_entity(variable)
+    def test_playbook_tc_entity_pass(
+        self, variable: str, value: Union[dict, KeyValue], playbook: 'Playbook'
+    ):
+        """Test playbook variables."""
+        playbook.create.tc_entity(variable, value, when_requested=False)
+        result = playbook.read.tc_entity(variable)
         assert result == value, f'result of ({result}) does not match ({value})'
 
-        tcex.playbook.delete(variable)
-        assert tcex.playbook.read(variable) is None
+        playbook.delete.variable(variable)
+        assert playbook.read.variable(variable) is None
 
     @pytest.mark.parametrize(
         'variable,value',
@@ -40,17 +46,11 @@ class TestUtils:
             ('#App:0002:b4!WrongType', 'wrong type'),
         ],
     )
-    def test_playbook_tc_entity_fail(self, variable, value, tcex):
-        """Test the string array method of Playbook module.
-
-        Args:
-            variable (str): The key/variable to create in Key Value Store.
-            value (str): The value to store in Key Value Store.
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
-        """
+    def test_playbook_tc_entity_fail(self, variable: str, value: Any, playbook: 'Playbook'):
+        """Test playbook variables."""
         try:
-            tcex.playbook.create_tc_entity(variable, value)
-            assert False, f'{value} is not a valid Binary value'
+            playbook.create.tc_entity(variable, value, when_requested=False)
+            assert False, f'{value} is not a valid TCEntity value'
         except RuntimeError:
             assert True
 
@@ -87,20 +87,16 @@ class TestUtils:
             ),
         ],
     )
-    def test_playbook_tc_entity_array(self, variable, value, tcex):
-        """Test the string array method of Playbook module.
-
-        Args:
-            variable (str): The key/variable to create in Key Value Store.
-            value (str): The value to store in Key Value Store.
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
-        """
-        tcex.playbook.create_tc_entity_array(variable, value)
-        result = tcex.playbook.read_tc_entity_array(variable)
+    def test_playbook_tc_entity_array_pass(
+        self, variable: str, value: List[Dict[str, str]], playbook: 'Playbook'
+    ):
+        """Test playbook variables."""
+        playbook.create.tc_entity_array(variable, value, when_requested=False)
+        result = playbook.read.tc_entity_array(variable)
         assert result == value, f'result of ({result}) does not match ({value})'
 
-        tcex.playbook.delete(variable)
-        assert tcex.playbook.read(variable) is None
+        playbook.delete.variable(variable)
+        assert playbook.read.variable(variable) is None
 
     @pytest.mark.parametrize(
         'variable,value',
@@ -116,16 +112,9 @@ class TestUtils:
             ('#App:0003:tea3!WrongType', 'wrong type'),
         ],
     )
-    def test_playbook_tc_entity_array_fail(self, variable, value, tcex):
-        """Test the string array method of Playbook module.
+    def test_playbook_tc_entity_array_fail(self, variable: str, value: Any, playbook: 'Playbook'):
+        """Test playbook variables."""
+        with pytest.raises(RuntimeError) as ex:
+            playbook.create.tc_entity_array(variable, value, when_requested=False)
 
-        Args:
-            variable (str): The key/variable to create in Key Value Store.
-            value (str): The value to store in Key Value Store.
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
-        """
-        try:
-            tcex.playbook.create_tc_entity_array(variable, value)
-            assert False, f'{value} is not a valid Binary Array value'
-        except RuntimeError:
-            assert True
+        assert 'Invalid ' in str(ex.value)

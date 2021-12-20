@@ -138,11 +138,11 @@ class TestInstallJson:
 
         # test OWNERS
         valid_values = ij.expand_valid_values(['${OWNERS}'])
-        assert valid_values == []
+        assert not valid_values
 
         # test USERS
         valid_values = ij.expand_valid_values(['${USERS}'])
-        assert valid_values == []
+        assert not valid_values
 
     # def test_params_to_args(self):
     #     """Test method"""
