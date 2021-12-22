@@ -43,7 +43,9 @@ class PlaybookRead:
     def _check_variable_type(self, variable: str, type_: str) -> bool:
         """Validate the correct type was passed to the method."""
         if self.utils.get_playbook_variable_model(variable).type.lower() != type_.lower():
-            raise RuntimeError(f'The variable provided ({variable}) is not a {type_} variable.')
+            raise RuntimeError(
+                f'Invalid variable provided ({variable}), variable must be of type {type_}.'
+            )
 
     def _coerce_string_value(self, value: Union[bool, float, int, str]) -> str:
         """Return a string value from an bool or int."""
@@ -349,7 +351,7 @@ class PlaybookRead:
             'stringarray': self.string_array,
             'tcentity': self.tc_entity,
             'tcentityarray': self.tc_entity_array,
-            'tcenhancedentity': self.tc_entity,
+            # 'tcenhancedentity': self.tc_entity,
         }
         return variable_type_map.get(variable_type, self.raw)(key)
 
@@ -461,6 +463,17 @@ class PlaybookRead:
 
         return data
 
+    def raw(self, key: str) -> Optional[any]:
+        """Read method of CRUD operation for raw data.
+
+        Bytes input will be returned a as string as there is no way
+        to determine data from redis originated as bytes or string.
+        """
+        if self._null_key_check(key) is True:
+            return None
+
+        return self.key_value_store.read(self.context, key.strip())
+
     def string(
         self,
         key: str,
@@ -559,17 +572,6 @@ class PlaybookRead:
             data = values
 
         return data
-
-    def raw(self, key: str) -> Optional[any]:
-        """Read method of CRUD operation for raw data.
-
-        Bytes input will be returned a as string as there is no way
-        to determine data from redis originated as bytes or string.
-        """
-        if self._null_key_check(key) is True:
-            return None
-
-        return self.key_value_store.read(self.context, key.strip())
 
     def variable(
         self, key: str, array: Optional[bool] = False

@@ -31,10 +31,20 @@ class PlaybookCreate:
         self.output_variables = output_variables
 
         # properties
-        # self._output_variables_by_key = None
-        # self._output_variables_by_type = None
         self.log = logger
         self.utils = Utils()
+
+    @staticmethod
+    def _check_iterable(value: str, validate: bool) -> None:
+        """Raise an exception if value is not an Iterable.
+
+        Validation:
+          - not a dict (dicts are iterable)
+          - not a string (strings are iterable)
+          - is Iterable
+        """
+        if validate is True and (isinstance(value, (dict, str)) or not isinstance(value, Iterable)):
+            raise RuntimeError('Invalid data provided for KeyValueArray.')
 
     def _check_null(self, key: str, value: Any) -> bool:
         """Return True if key or value is null."""
@@ -85,8 +95,7 @@ class PlaybookCreate:
             return self.key_value_store.create(self.context, key.strip(), value)
         except RuntimeError as e:  # pragma: no cover
             self.log.error(e)
-
-        return None
+            return None
 
     def _get_variable(self, key: str, variable_type: Optional[str] = None) -> str:
         """Return properly formatted variable.
@@ -115,30 +124,6 @@ class PlaybookCreate:
             return None
         # key was already a properly formatted variable
         return key
-
-    # def _parse_output_variables(self) -> None:
-    #     """Parse the output variables provided to Playbook Class.
-
-    #     Example Variable Format:
-
-    #     ['#App:1234:status!String', '#App:1234:status_code!String']
-    #     """
-    #     self._output_variables_by_key = {}
-    #     self._output_variables_by_type = {}
-    #     for ov in self.output_variables:
-    #         # parse the variable to get individual parts
-    #         variable_model = self.utils.get_playbook_variable_model(ov)
-
-    #         # store the variables in dict by key (e.g. "status_code")
-    #         self._output_variables_by_key[variable_model.key] = {'variable': ov}
-
-    #         # store the variables in dict by key-type (e.g. "status_code-String")
-    #         self._output_variables_by_type[f'{variable_model.key}-{variable_model.type}'] = {
-    #             'variable': ov
-    #         }
-
-    def _pre_create_checks(self, type_: str):
-        """Run standard pre create checks."""
 
     @staticmethod
     def _serialize_data(value: str) -> str:
@@ -185,20 +170,6 @@ class PlaybookCreate:
             return False
         return all(x in data for x in ['id', 'value', 'type'])
 
-    # @property
-    # def output_variables_by_key(self) -> dict:
-    #     """Return output variables stored as name dict."""
-    #     if self._output_variables_by_key is None:
-    #         self._parse_output_variables()
-    #     return self._output_variables_by_key
-
-    # @property
-    # def output_variables_by_type(self) -> dict:
-    #     """Return output variables stored as name-type dict."""
-    #     if self._output_variables_by_type is None:
-    #         self._parse_output_variables()
-    #     return self._output_variables_by_type
-
     def any(
         self,
         key: str,
@@ -227,7 +198,6 @@ class PlaybookCreate:
 
         # convert key to variable if required
         variable = self._get_variable(key, variable_type)
-
         if self._check_requested(variable, when_requested) is False:
             return None
 
@@ -244,9 +214,11 @@ class PlaybookCreate:
             'stringarray': self.string_array,
             'tcentity': self.tc_entity,
             'tcentityarray': self.tc_entity_array,
-            'tcenhancedentity': self.tc_enhanced_entity_array,
+            # 'tcenhancedentity': self.tc_enhanced_entity_array,
         }
-        return variable_type_map.get(variable_type, self.raw)(variable, value, validate)
+        return variable_type_map.get(variable_type, self.raw)(
+            variable, value, validate, when_requested
+        )
 
     def binary(
         self,
@@ -264,7 +236,7 @@ class PlaybookCreate:
         if self._check_requested(variable, when_requested) is False:
             return None
 
-        # quick check to ensure an invalid key was not provided
+        # quick check to ensure an invalid type was not provided
         self._check_variable_type(variable, 'Binary')
 
         # basic validation of value
@@ -274,7 +246,7 @@ class PlaybookCreate:
         # prepare value - playbook Binary fields are base64 encoded
         value = base64.b64encode(value).decode('utf-8')
         value = self._serialize_data(value)
-        return self._create_data(key, value)
+        return self._create_data(variable, value)
 
     def binary_array(
         self,
@@ -287,13 +259,16 @@ class PlaybookCreate:
         if self._check_null(key, value) is True:
             return None
 
+        # validate array type provided
+        self._check_iterable(value, validate)
+
         # convert key to variable if required
         variable = self._get_variable(key, 'BinaryArray')
         if self._check_requested(variable, when_requested) is False:
             return None
 
-        # quick check to ensure an invalid key was not provided
-        self._check_variable_type(key, 'BinaryArray')
+        # quick check to ensure an invalid type was not provided
+        self._check_variable_type(variable, 'BinaryArray')
 
         # basic validation and prep of value
         value_encoded = []
@@ -306,7 +281,7 @@ class PlaybookCreate:
         value = value_encoded
 
         value = self._serialize_data(value)
-        return self._create_data(key, value)
+        return self._create_data(variable, value)
 
     def key_value(
         self,
@@ -324,8 +299,8 @@ class PlaybookCreate:
         if self._check_requested(variable, when_requested) is False:
             return None
 
-        # quick check to ensure an invalid key was not provided
-        self._check_variable_type(key, 'KeyValue')
+        # quick check to ensure an invalid type was not provided
+        self._check_variable_type(variable, 'KeyValue')
 
         # basic validation and prep of value
         value = self._process_object_types(value, validate)
@@ -333,7 +308,7 @@ class PlaybookCreate:
             raise RuntimeError('Invalid data provided for KeyValueArray.')
 
         value = self._serialize_data(value)
-        return self._create_data(key, value)
+        return self._create_data(variable, value)
 
     def key_value_array(
         self,
@@ -346,17 +321,16 @@ class PlaybookCreate:
         if self._check_null(key, value) is True:
             return None
 
+        # validate array type provided
+        self._check_iterable(value, validate)
+
         # convert key to variable if required
         variable = self._get_variable(key, 'KeyValueArray')
         if self._check_requested(variable, when_requested) is False:
             return None
 
-        # quick check to ensure an invalid key was not provided
-        self._check_variable_type(key, 'KeyValueArray')
-
-        # list is technically an Iterable, but callng it out is more explicit
-        if validate and (isinstance(value, str) or not isinstance(value, (Iterable, list))):
-            raise RuntimeError('Invalid data provided for KeyValueArray.')
+        # quick check to ensure an invalid type was not provided
+        self._check_variable_type(variable, 'KeyValueArray')
 
         # basic validation and prep of value
         _value = []
@@ -368,7 +342,7 @@ class PlaybookCreate:
         value = _value
 
         value = self._serialize_data(value)
-        return self._create_data(key, value)
+        return self._create_data(variable, value)
 
     def string(
         self,
@@ -386,8 +360,8 @@ class PlaybookCreate:
         if self._check_requested(variable, when_requested) is False:
             return None
 
-        # quick check to ensure an invalid key was not provided
-        self._check_variable_type(key, 'String')
+        # quick check to ensure an invalid type was not provided
+        self._check_variable_type(variable, 'String')
 
         # coerce string values
         value = self._coerce_string_value(value)
@@ -397,7 +371,7 @@ class PlaybookCreate:
             raise RuntimeError('Invalid data provided for String.')
 
         value = self._serialize_data(value)
-        return self._create_data(key, value)
+        return self._create_data(variable, value)
 
     def string_array(
         self,
@@ -410,17 +384,16 @@ class PlaybookCreate:
         if self._check_null(key, value) is True:
             return None
 
+        # validate array type provided
+        self._check_iterable(value, validate)
+
         # convert key to variable if required
-        variable = self._get_variable(key, 'String')
+        variable = self._get_variable(key, 'StringArray')
         if self._check_requested(variable, when_requested) is False:
             return None
 
-        # quick check to ensure an invalid key was not provided
-        self._check_variable_type(key, 'StringArray')
-
-        # list is technically an Iterable, but callng it out is more explicit
-        if validate and (isinstance(value, str) or not isinstance(value, (Iterable, list))):
-            raise RuntimeError('Invalid data provided for StringArray.')
+        # quick check to ensure an invalid type was not provided
+        self._check_variable_type(variable, 'StringArray')
 
         # basic validation and prep of value
         value_coerced = []
@@ -435,10 +408,16 @@ class PlaybookCreate:
         value = value_coerced
 
         value = self._serialize_data(value)
-        return self._create_data(key, value)
+        return self._create_data(variable, value)
 
     # pylint: disable=unused-argument
-    def raw(self, key: str, value: Union[bytes, str, int], validate: Optional[bool] = True) -> str:
+    def raw(
+        self,
+        key: str,
+        value: Union[bytes, str, int],
+        validate: Optional[bool] = True,
+        when_requested: Optional[bool] = True,
+    ) -> str:
         """Create method of CRUD operation for raw data.
 
         Raw data can only be a byte, str or int. Other data
@@ -465,8 +444,8 @@ class PlaybookCreate:
         if self._check_requested(variable, when_requested) is False:
             return None
 
-        # quick check to ensure an invalid key was not provided
-        self._check_variable_type(key, 'TCEntity')
+        # quick check to ensure an invalid type was not provided
+        self._check_variable_type(variable, 'TCEntity')
 
         # basic validation
         value = self._process_object_types(value, validate)
@@ -474,7 +453,7 @@ class PlaybookCreate:
             raise RuntimeError('Invalid data provided for TcEntityArray.')
 
         value = self._serialize_data(value)
-        return self._create_data(key, value)
+        return self._create_data(variable, value)
 
     def tc_entity_array(
         self,
@@ -487,13 +466,16 @@ class PlaybookCreate:
         if self._check_null(key, value) is True:
             return None
 
+        # validate array type provided
+        self._check_iterable(value, validate)
+
         # convert key to variable if required
         variable = self._get_variable(key, 'TCEntityArray')
         if self._check_requested(variable, when_requested) is False:
             return None
 
-        # quick check to ensure an invalid key was not provided
-        self._check_variable_type(key, 'TCEntityArray')
+        # quick check to ensure an invalid type was not provided
+        self._check_variable_type(variable, 'TCEntityArray')
 
         # basic validation and prep of value
         _value = []
@@ -505,35 +487,7 @@ class PlaybookCreate:
         value = _value
 
         value = self._serialize_data(value)
-        return self._create_data(key, value)
-
-    def tc_enhanced_entity_array(
-        self,
-        key: str,
-        value: List[dict],
-        validate: Optional[bool] = True,
-        when_requested: Optional[bool] = True,
-    ):
-        """Create the value in Redis if applicable."""
-        if self._check_null(key, value) is True:
-            return None
-
-        # convert key to variable if required
-        variable = self._get_variable(key, 'TCEntityArray')
-        if self._check_requested(variable, when_requested) is False:
-            return None
-
-        # quick check to ensure an invalid key was not provided
-        self._check_variable_type(key, 'TCEnhancedEntityArray')
-
-        # list is technically an Iterable, but callng it out is more explicit
-        if validate and (isinstance(value, str) or not isinstance(value, (Iterable, list))):
-            raise RuntimeError('Invalid data provided for TCEnhancedEntityArray.')
-
-        value = [*value]  # spread the value so that we know it's a list (as opposed to an iterable)
-
-        value = self._serialize_data(value)
-        return self._create_data(key, value)
+        return self._create_data(variable, value)
 
     def variable(
         self,

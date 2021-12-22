@@ -68,12 +68,12 @@ class WriteOutput:
                 data = self.default
 
             index = f'{self.key}-{self.variable_type}'
-            if app.tcex.playbook.output_data.get(index) and not self.overwrite:
+            if app.tcex.playbook.output.data.get(index) and not self.overwrite:
                 # skip data since a previous value has already been written
                 pass
             else:
                 # store data returned by function call or default
-                app.tcex.playbook.add_output(self.key, data, self.variable_type)
+                app.tcex.playbook.output.add(self.key, data, self.variable_type)
             return data
 
         return output(instance, *args, **kwargs)

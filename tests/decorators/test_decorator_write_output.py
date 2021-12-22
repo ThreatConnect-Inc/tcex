@@ -41,9 +41,9 @@ class TestWriteOutputDecorators:
         self.write_output_string(value)
 
         # trigger write of all output variables to kv store
-        self.tcex.playbook.write_output()
+        self.tcex.playbook.output.process()
 
-        assert self.tcex.playbook.read(variable) == value
+        assert self.tcex.playbook.read.variable(variable) == value
 
     @WriteOutput(key='color', variable_type='String', default='red', overwrite=False)
     def write_output_string_default(self, color):
@@ -74,10 +74,10 @@ class TestWriteOutputDecorators:
         self.write_output_string_default('overwrite')  # this call should get ignored
 
         # trigger write of all output variables to kv store
-        self.tcex.playbook.write_output()
+        self.tcex.playbook.output.process()
         expected = value or 'red'  # must match default arg on decorator
 
-        result = self.tcex.playbook.read(variable)
+        result = self.tcex.playbook.read.variable(variable)
         assert result == expected, f'result of ({result}) does not match ({expected})'
 
     @WriteOutput(key='color', variable_type='String', default='red', overwrite=True)
@@ -110,8 +110,8 @@ class TestWriteOutputDecorators:
         self.write_output_string_overwrite(expected)
 
         # trigger write of all output variables to kv store
-        self.tcex.playbook.write_output()
+        self.tcex.playbook.output.process()
         expected = 'red'  # must match default arg on decorator
 
-        result = self.tcex.playbook.read(variable)
+        result = self.tcex.playbook.read.variable(variable)
         assert result == expected, f'result of ({result}) does not match ({expected})'

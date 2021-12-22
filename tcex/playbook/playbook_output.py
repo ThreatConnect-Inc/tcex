@@ -93,7 +93,7 @@ class PlaybookOutput:
         else:
             self.data[index]['value'] = value
 
-    def create(self):
+    def process(self):
         """Create all stored output data to storage."""
         for data in self.data.values():
             self.playbook.create.variable(data.get('key'), data.get('value'), data.get('type'))

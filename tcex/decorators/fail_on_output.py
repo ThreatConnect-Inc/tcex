@@ -94,7 +94,7 @@ class FailOnOutput:
 
                 if failed:
                     if self.write_output:
-                        app.tcex.playbook.write_output()
+                        app.tcex.playbook.output.process()
                         if hasattr(app, 'write_output'):
                             app.write_output()
                     app.exit_message = self.get_fail_msg(app)  # for test cases
