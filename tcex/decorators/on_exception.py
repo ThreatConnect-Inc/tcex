@@ -80,7 +80,7 @@ class OnException:
                 app.exit_message = self.exit_msg  # for test cases
                 if enabled:
                     if self.write_output:
-                        app.tcex.playbook.write_output()
+                        app.tcex.playbook.output.create()
                         if hasattr(app, 'write_output'):
                             app.write_output()
                     app.tcex.exit(ExitCode.FAILURE, self.exit_msg)
