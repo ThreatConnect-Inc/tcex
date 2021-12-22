@@ -123,7 +123,7 @@ class ExitService:
     def exit_playbook_handler(self, msg: str) -> None:
         """Perform special action for PB Apps before exit."""
         # write outputs before exiting
-        registry.playbook.write_output()  # pylint: disable=no-member
+        registry.playbook.output.create()
 
         # required only for tcex testing framework
         if (
