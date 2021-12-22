@@ -531,12 +531,6 @@ class GenerateObjectABC(GenerateABC, ABC):
                 f'''from {model_import_data.get('object_module')} '''
                 f'''import {model_import_data.get('object_class')}'''
             )
-            print('type_', type_)
-            print('model_type', model_type)
-            print(
-                f'''from {model_import_data.get('object_module')} '''
-                f'''import {model_import_data.get('object_class')}'''
-            )
         _code = [
             f'''{self.i1}@property''',
             (
@@ -799,13 +793,13 @@ class GenerateObjectABC(GenerateABC, ABC):
         # Stage Method
         #
 
-        # [custom] generate stage assignee method
-        if self.type_.lower() in ['cases', 'tasks'] and 'assignee' in add_properties:
-            _code += self._gen_code_object_stage_assignee()
-
         # generate stage_artifact method
         if 'artifacts' in add_properties:
             _code += self._gen_code_object_stage_type_method('artifacts')
+
+        # [custom] generate stage assignee method
+        if self.type_.lower() in ['cases', 'tasks'] and 'assignee' in add_properties:
+            _code += self._gen_code_object_stage_assignee()
 
         # generate stage_asset method
         if 'assets' in add_properties:

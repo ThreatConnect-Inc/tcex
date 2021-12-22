@@ -89,8 +89,6 @@ class Group(ObjectABC):
         header (str, kwargs): The email Header field.
         malware (bool, kwargs): Is the document malware?
         name (str, kwargs): The name of the group.
-        owner_name (str, kwargs): The name of the Organization, Community, or Source that the item
-            belongs to.
         password (str, kwargs): The password associated with the document (Required if Malware is
             true).
         publish_date (str, kwargs): The date and time that the report was first created.
@@ -103,7 +101,6 @@ class Group(ObjectABC):
         subject (str, kwargs): The email Subject section.
         tags (Tags, kwargs): A list of Tags corresponding to the item (NOTE: Setting this parameter
             will replace any existing tag(s) with the one(s) specified).
-        to (str, kwargs): The email To field .
         type (str, kwargs): The **type** for the Group.
         xid (str, kwargs): The xid of the item.
     """

@@ -113,7 +113,7 @@ class GroupModel(
         read_only=False,
         title='body',
     )
-    created_by: Optional[str] = Field(
+    created_by: Optional['UserModel'] = Field(
         None,
         allow_mutation=False,
         description='The **created by** for the Group.',
@@ -145,6 +145,7 @@ class GroupModel(
     )
     due_date: Optional[datetime] = Field(
         None,
+        applies_to=['Task'],
         description='The date and time that the Task is due.',
         methods=['POST', 'PUT'],
         read_only=False,
@@ -168,6 +169,7 @@ class GroupModel(
     )
     escalation_date: Optional[datetime] = Field(
         None,
+        applies_to=['Task'],
         description='The escalation date and time.',
         methods=['POST', 'PUT'],
         read_only=False,
@@ -184,7 +186,7 @@ class GroupModel(
     file_name: Optional[str] = Field(
         None,
         applies_to=['Document', 'Report', 'Signature'],
-        conditional_required=['Document', 'Report'],
+        conditional_required=['Document', 'Report', 'Signature'],
         description='The document or signature file name.',
         methods=['POST', 'PUT'],
         max_length=100,
@@ -285,9 +287,9 @@ class GroupModel(
     )
     owner_name: Optional[str] = Field(
         None,
+        allow_mutation=False,
         description='The name of the Organization, Community, or Source that the item belongs to.',
-        methods=['POST', 'PUT'],
-        read_only=False,
+        read_only=True,
         title='ownerName',
     )
     password: Optional[str] = Field(
@@ -316,6 +318,7 @@ class GroupModel(
     )
     reminder_date: Optional[datetime] = Field(
         None,
+        applies_to=['Task'],
         description='The reminder date and time.',
         methods=['POST', 'PUT'],
         read_only=False,
@@ -396,10 +399,10 @@ class GroupModel(
     )
     to: Optional[str] = Field(
         None,
+        allow_mutation=False,
         applies_to=['Email'],
         description='The email To field .',
-        methods=['POST', 'PUT'],
-        read_only=False,
+        read_only=True,
         title='to',
     )
     type: Optional[str] = Field(
@@ -455,6 +458,12 @@ class GroupModel(
             return TagsModel()
         return v
 
+    @validator('created_by', always=True)
+    def _validate_created_by(cls, v):
+        if not v:
+            return UserModel()
+        return v
+
     @validator('associated_victim_assets', always=True)
     def _validate_associated_victim_assets(cls, v):
         if not v:
@@ -465,10 +474,10 @@ class GroupModel(
 # first-party
 from tcex.api.tc.v3.group_attributes.group_attribute_model import GroupAttributesModel
 from tcex.api.tc.v3.indicators.indicator_model import IndicatorsModel
-
-# TODO: [low] @bsummers - research cause of linting issue
-# pylint: disable=unused-import
-from tcex.api.tc.v3.security.task_assignee_model import TaskAssigneesModel
+from tcex.api.tc.v3.security.task_assignee_model import (  # pylint: disable=unused-import
+    TaskAssigneesModel,
+)
+from tcex.api.tc.v3.security.users.user_model import UserModel
 from tcex.api.tc.v3.security_labels.security_label_model import SecurityLabelsModel
 from tcex.api.tc.v3.tags.tag_model import TagsModel
 from tcex.api.tc.v3.victim_assets.victim_asset_model import VictimAssetsModel

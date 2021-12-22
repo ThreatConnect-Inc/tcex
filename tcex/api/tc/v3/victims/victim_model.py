@@ -96,11 +96,11 @@ class VictimModel(
     )
     description: Optional[str] = Field(
         None,
+        allow_mutation=False,
         description='Description of the Victim.',
-        methods=['POST', 'PUT'],
         max_length=255,
         min_length=0,
-        read_only=False,
+        read_only=True,
         title='description',
     )
     id: Optional[int] = Field(
@@ -138,9 +138,9 @@ class VictimModel(
     )
     owner_name: Optional[str] = Field(
         None,
+        allow_mutation=False,
         description='The name of the Organization, Community, or Source that the item belongs to.',
-        methods=['POST', 'PUT'],
-        read_only=False,
+        read_only=True,
         title='ownerName',
     )
     security_labels: Optional['SecurityLabelsModel'] = Field(
@@ -172,13 +172,12 @@ class VictimModel(
         read_only=False,
         title='tags',
     )
-    type: Optional[str] = Field(
+    web_link: Optional[str] = Field(
         None,
-        description='The **type** for the Victim.',
-        methods=['POST', 'PUT'],
-        min_length=1,
-        read_only=False,
-        title='type',
+        allow_mutation=False,
+        description='A link to the ThreatConnect details page for this entity.',
+        read_only=True,
+        title='webLink',
     )
     work_location: Optional[str] = Field(
         None,

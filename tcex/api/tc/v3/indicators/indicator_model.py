@@ -88,7 +88,7 @@ class IndicatorModel(
             'The email address associated with this indicator (EmailAddress specific summary '
             'field).'
         ),
-        methods=['POST', 'PUT'],
+        methods=['POST'],
         read_only=False,
         title='address',
     )
@@ -131,9 +131,9 @@ class IndicatorModel(
     )
     description: Optional[str] = Field(
         None,
+        allow_mutation=False,
         description='The indicator description text.',
-        methods=['POST', 'PUT'],
-        read_only=False,
+        read_only=True,
         title='description',
     )
     dns_active: bool = Field(
@@ -156,7 +156,7 @@ class IndicatorModel(
         applies_to=['Host'],
         conditional_required=['Host'],
         description='The host name of the indicator (Host specific summary field).',
-        methods=['POST', 'PUT'],
+        methods=['POST'],
         read_only=False,
         title='hostName',
     )
@@ -173,7 +173,7 @@ class IndicatorModel(
         description=(
             'The ip address associated with this indicator (Address specific summary field).'
         ),
-        methods=['POST', 'PUT'],
+        methods=['POST'],
         read_only=False,
         title='ip',
     )
@@ -202,7 +202,7 @@ class IndicatorModel(
         None,
         applies_to=['File'],
         description='The md5 associated with this indicator (File specific summary field).',
-        methods=['POST', 'PUT'],
+        methods=['POST'],
         read_only=False,
         title='md5',
     )
@@ -215,9 +215,9 @@ class IndicatorModel(
     )
     owner_name: Optional[str] = Field(
         None,
+        allow_mutation=False,
         description='The name of the Organization, Community, or Source that the item belongs to.',
-        methods=['POST', 'PUT'],
-        read_only=False,
+        read_only=True,
         title='ownerName',
     )
     private_flag: bool = Field(
@@ -250,7 +250,7 @@ class IndicatorModel(
         None,
         applies_to=['File'],
         description='The sha1 associated with this indicator (File specific summary field).',
-        methods=['POST', 'PUT'],
+        methods=['POST'],
         read_only=False,
         title='sha1',
     )
@@ -258,7 +258,7 @@ class IndicatorModel(
         None,
         applies_to=['File'],
         description='The sha256 associated with this indicator (File specific summary field).',
-        methods=['POST', 'PUT'],
+        methods=['POST'],
         read_only=False,
         title='sha256',
     )
@@ -272,9 +272,9 @@ class IndicatorModel(
     )
     source: Optional[str] = Field(
         None,
+        allow_mutation=False,
         description='The source for this indicator.',
-        methods=['POST', 'PUT'],
-        read_only=False,
+        read_only=True,
         title='source',
     )
     summary: Optional[str] = Field(
@@ -299,7 +299,7 @@ class IndicatorModel(
         applies_to=['URL'],
         conditional_required=['URL'],
         description='The url text value of the indicator (Url specific summary field).',
-        methods=['POST', 'PUT'],
+        methods=['POST'],
         read_only=False,
         title='text',
     )
@@ -335,21 +335,21 @@ class IndicatorModel(
     value1: Optional[str] = Field(
         None,
         description='Custom Indicator summary field value1.',
-        methods=['POST', 'PUT'],
+        methods=['POST'],
         read_only=False,
         title='value1',
     )
     value2: Optional[str] = Field(
         None,
         description='Custom Indicator summary field value2.',
-        methods=['POST', 'PUT'],
+        methods=['POST'],
         read_only=False,
         title='value2',
     )
     value3: Optional[str] = Field(
         None,
         description='Custom Indicator summary field value3.',
-        methods=['POST', 'PUT'],
+        methods=['POST'],
         read_only=False,
         title='value3',
     )

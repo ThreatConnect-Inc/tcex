@@ -68,19 +68,15 @@ class Victim(ObjectABC):
         assets (VictimAssets, kwargs): A list of victim assets corresponding to the Victim.
         associated_groups (Groups, kwargs): A list of groups that this victim is associated with.
         attributes (VictimAttributes, kwargs): A list of Attributes corresponding to the Victim.
-        description (str, kwargs): Description of the Victim.
         name (str, kwargs): Name of the Victim.
         nationality (str, kwargs): Nationality of the Victim.
         org (str, kwargs): Org of the Victim.
-        owner_name (str, kwargs): The name of the Organization, Community, or Source that the item
-            belongs to.
         security_labels (SecurityLabels, kwargs): A list of Security Labels corresponding to the
             Intel item (NOTE: Setting this parameter will replace any existing tag(s) with
             the one(s) specified).
         suborg (str, kwargs): Suborg of the Victim.
         tags (Tags, kwargs): A list of Tags corresponding to the item (NOTE: Setting this parameter
             will replace any existing tag(s) with the one(s) specified).
-        type (str, kwargs): The **type** for the Victim.
         work_location (str, kwargs): Work location of the Victim.
     """
 

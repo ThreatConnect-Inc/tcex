@@ -99,14 +99,11 @@ class Indicator(ObjectABC):
         attributes (IndicatorAttributes, kwargs): A list of Attributes corresponding to the
             Indicator.
         confidence (int, kwargs): The indicator threat confidence.
-        description (str, kwargs): The indicator description text.
         dns_active (bool, kwargs): Is dns active for the indicator?
         host_name (str, kwargs): The host name of the indicator (Host specific summary field).
         ip (str, kwargs): The ip address associated with this indicator (Address specific summary
             field).
         md5 (str, kwargs): The md5 associated with this indicator (File specific summary field).
-        owner_name (str, kwargs): The name of the Organization, Community, or Source that the item
-            belongs to.
         private_flag (bool, kwargs): Is this indicator private?
         rating (int, kwargs): The indicator threat rating.
         security_labels (SecurityLabels, kwargs): A list of Security Labels corresponding to the
@@ -116,7 +113,6 @@ class Indicator(ObjectABC):
         sha256 (str, kwargs): The sha256 associated with this indicator (File specific summary
             field).
         size (int, kwargs): The size of the file.
-        source (str, kwargs): The source for this indicator.
         tags (Tags, kwargs): A list of Tags corresponding to the item (NOTE: Setting this parameter
             will replace any existing tag(s) with the one(s) specified).
         text (str, kwargs): The url text value of the indicator (Url specific summary field).

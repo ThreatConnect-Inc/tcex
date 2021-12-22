@@ -152,6 +152,13 @@ class VictimAssetModel(
         read_only=False,
         title='victimId',
     )
+    web_link: Optional[str] = Field(
+        None,
+        allow_mutation=False,
+        description='A link to the ThreatConnect details page for this entity.',
+        read_only=True,
+        title='webLink',
+    )
     website: Optional[str] = Field(
         None,
         applies_to=['WebSite'],
