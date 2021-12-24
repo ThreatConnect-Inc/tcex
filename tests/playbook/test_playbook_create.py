@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, Optional, Union
 import pytest
 
 # first-party
-from tcex.input.field_models import KeyValue
+from tcex.input.field_types import KeyValue
 
 if TYPE_CHECKING:
     # first-party

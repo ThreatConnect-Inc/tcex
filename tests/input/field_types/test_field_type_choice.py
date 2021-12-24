@@ -12,7 +12,9 @@ from tcex.input.field_types import Choice
 from .utils import InputTest
 
 if TYPE_CHECKING:
-    from ..mock_app import MockApp
+    # first-party
+    from tcex import TcEx
+    from tests.mock_app import MockApp
 
 
 class TestInputsFieldTypeChoice(InputTest):
@@ -32,7 +34,7 @@ class TestInputsFieldTypeChoice(InputTest):
             my_choice: Choice
 
         config_data = {'my_choice': 'Valid Choice'}
-        tcex = playbook_app(config_data=config_data).tcex
+        tcex: 'TcEx' = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
         assert tcex.inputs.model.my_choice.value == 'Valid Choice'
 
@@ -50,7 +52,7 @@ class TestInputsFieldTypeChoice(InputTest):
             my_choice: Optional[Choice]
 
         config_data = {'my_choice': None}
-        tcex = playbook_app(config_data=config_data).tcex
+        tcex: 'TcEx' = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
         assert tcex.inputs.model.my_choice is None
 
@@ -68,7 +70,7 @@ class TestInputsFieldTypeChoice(InputTest):
             my_choice: Choice
 
         config_data = {'my_choice': None}
-        tcex = playbook_app(config_data=config_data).tcex
+        tcex: 'TcEx' = playbook_app(config_data=config_data).tcex
         with pytest.raises(ValidationError) as exc_info:
             tcex.inputs.add_model(PytestModel)
 
@@ -88,7 +90,7 @@ class TestInputsFieldTypeChoice(InputTest):
             my_choice: Choice
 
         config_data = {'my_choice': 'Initial Value'}
-        tcex = playbook_app(config_data=config_data).tcex
+        tcex: 'TcEx' = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
         assert tcex.inputs.model.my_choice.value == 'Initial Value'
 
@@ -121,6 +123,6 @@ class TestInputsFieldTypeChoice(InputTest):
             my_choice: Choice
 
         config_data = {'my_choice': '-- Select --'}
-        tcex = playbook_app(config_data=config_data).tcex
+        tcex: 'TcEx' = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
         assert tcex.inputs.model.my_choice.value is None

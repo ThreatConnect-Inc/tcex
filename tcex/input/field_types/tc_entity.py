@@ -1,9 +1,16 @@
 """TCEntity Playbook Type"""
 # standard library
-from typing import Dict, Optional
+from typing import TYPE_CHECKING, Dict, Optional
 
 # third-party
 from pydantic import BaseModel, Extra, validator
+
+# first-party
+from tcex.input.field_types.exception import InvalidEmptyValue
+
+if TYPE_CHECKING:  # pragma: no cover
+    # third-party
+    from pydantic.fields import ModelField
 
 
 # pylint: disable=no-self-argument, no-self-use
@@ -21,13 +28,10 @@ class TCEntity(BaseModel):
     rating: Optional[int]
 
     @validator('id', 'type', 'value')
-    def non_empty_string(cls, v: Dict[str, str]) -> Dict[str, str]:
+    def non_empty_string(cls, v: Dict[str, str], field: 'ModelField') -> Dict[str, str]:
         """Validate that the value is a non-empty string."""
         if isinstance(v, str) and v.replace(' ', '') == '':  # None value are automatically covered
-            raise ValueError('Empty value is not allowed.')
-
-        if v == '':  # None value are automatically covered
-            raise ValueError('Empty value is not allowed.')
+            raise InvalidEmptyValue(field_name=field.name)
         return v
 
     class Config:

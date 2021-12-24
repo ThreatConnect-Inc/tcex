@@ -320,7 +320,7 @@ TOTAL                                     143      0   100%
 
 ## input
 
-361 Test Cases
+256 Test Cases
 
 ```bash
 pytest --cov=tcex/input/ --cov-report=term-missing tests/input/
@@ -331,7 +331,7 @@ pytest --cov=tcex/input/ --cov-report=term-missing tests/input/
 ```
 Name                                    Stmts   Miss  Cover
 -----------------------------------------------------------
-TOTAL                                     808     68    92%
+TOTAL                                    698     79    89%
 ```
 
 ## logger

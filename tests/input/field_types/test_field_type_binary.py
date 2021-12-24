@@ -7,9 +7,9 @@ import pytest
 from pydantic import BaseModel, validator
 
 # first-party
-from tcex.input.field_models import String, always_array, string
+from tcex.input.field_types import Binary, always_array, binary
 from tcex.pleb.scoped_property import scoped_property
-from tests.input.field_models.utils import InputTest
+from tests.input.field_types.utils import InputTest
 
 if TYPE_CHECKING:
     # third-party
@@ -34,11 +34,11 @@ class TestInputsFieldTypes(InputTest):
             # Pass Testing
             #
             # required, normal input
-            ('string', 'string', False, False),
+            (b'bytes', b'bytes', False, False),
             # required, empty input
-            ('', '', False, False),
+            (b'', b'', False, False),
             # optional, empty input
-            ('', '', True, False),
+            (b'', b'', True, False),
             # optional, null input
             (None, None, True, False),
             #
@@ -48,7 +48,7 @@ class TestInputsFieldTypes(InputTest):
             (None, None, False, True),
         ],
     )
-    def test_field_model_string_input(
+    def test_field_model_binary_input(
         self,
         input_value: str,
         expected: str,
@@ -58,7 +58,7 @@ class TestInputsFieldTypes(InputTest):
     ):
         """Test Binary field type.
 
-        Playbook Data Type: String
+        Playbook Data Type: Binary
         Validation: Not null
         """
 
@@ -67,20 +67,20 @@ class TestInputsFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: String
+                my_data: Binary
 
         else:
 
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Optional[String]
+                my_data: Optional[Binary]
 
         self._type_validation(
             PytestModel,
             input_name='my_data',
             input_value=input_value,
-            input_type='String',
+            input_type='Binary',
             expected=expected,
             fail_test=fail_test,
             playbook_app=playbook_app,
@@ -89,71 +89,66 @@ class TestInputsFieldTypes(InputTest):
     @pytest.mark.parametrize(
         (
             'input_value,expected,allow_empty,conditional_required,'
-            'max_length,min_length,regex,optional,fail_test'
+            'max_length,min_length,optional,fail_test'
         ),
         [
             #
             # Pass Testing
             #
             # required, normal input
-            ('string', 'string', True, None, None, None, None, False, False),
+            (b'bytes', b'bytes', True, None, None, None, False, False),
             # required, empty input
-            ('', '', True, None, None, None, None, False, False),
+            (b'', b'', True, None, None, None, False, False),
             # optional, empty input
-            ('', '', True, None, None, None, None, True, False),
+            (b'', b'', True, None, None, None, True, False),
             # optional, null input
-            (None, None, True, None, None, None, None, True, False),
+            (None, None, True, None, None, None, True, False),
             # required, normal input, max_length=10
-            ('string', 'string', True, None, 10, None, None, False, False),
+            (b'bytes', b'bytes', True, None, 10, None, False, False),
             # optional, normal input, max_length=10
-            ('string', 'string', True, None, 10, None, None, True, False),
+            (b'bytes', b'bytes', True, None, 10, None, True, False),
             # required, normal input, min_length=2
-            ('string', 'string', True, None, None, 2, None, False, False),
+            (b'bytes', b'bytes', True, None, None, 2, False, False),
             # optional, normal input, min_length=2
-            ('string', 'string', True, None, None, 2, None, True, False),
-            # required, normal input, regex=string
-            ('string', 'string', True, None, None, None, r'^string$', True, False),
+            (b'bytes', b'bytes', True, None, None, 2, True, False),
             # optional, null input, conditional_required=True
-            (None, None, True, {'conditional': 'optional'}, None, None, None, True, False),
+            (None, None, True, {'conditional': 'optional'}, None, None, True, False),
             #
             # Fail Testing
             #
             # required, null input
-            (None, None, True, None, None, None, None, False, True),
+            (None, None, True, None, None, None, False, True),
             # required, empty input, allow_empty=False
-            ('', None, False, None, None, None, None, False, True),
-            # required, empty input, conditional_required=True
-            ('', 'string', True, {'conditional': 'required'}, None, None, None, False, True),
+            (b'', None, False, None, None, None, False, True),
+            # required, normal input, conditional_required=True
+            (b'', b'bytes', True, {'conditional': 'required'}, None, None, False, True),
             # required, null input, conditional_required=True
-            (None, 'string', True, {'conditional': 'required'}, None, None, None, False, True),
+            (None, 'string', True, {'conditional': 'required'}, None, None, False, True),
             # required, normal input, max_length=2
-            ('string', 'string', True, None, 2, None, None, False, True),
+            (b'bytes', b'bytes', True, None, 2, None, False, True),
             # optional, normal input, max_length=2
-            ('string', 'string', True, None, 2, None, None, True, True),
+            (b'bytes', b'bytes', True, None, 2, None, True, True),
             # required, normal input, min_length=10
-            ('string', 'string', True, None, None, 10, None, False, True),
+            (b'bytes', b'bytes', True, None, None, 10, False, True),
             # optional, normal input, min_length=10
-            ('string', 'string', True, None, None, 10, None, True, True),
-            # required, normal input, regex=string
-            ('string', 'string', True, None, None, None, r'^string-extra$', True, True),
+            (b'bytes', b'bytes', True, None, None, 10, True, True),
         ],
     )
-    def test_field_model_string_custom_input(
+    def test_field_model_binary_custom_input(
         self,
         input_value: str,
         expected: str,
         allow_empty: bool,
-        conditional_required: Optional[Dict[str, str]],
+        conditional_required: Dict[str, str],
         max_length: int,
         min_length: int,
-        regex: Optional[str],
         optional: bool,
         fail_test: bool,
         playbook_app: 'MockApp',
     ):
         """Test Binary field type.
 
-        Playbook Data Type: String
+        Playbook Data Type: Binary
         Validation: Not null
         """
 
@@ -162,13 +157,12 @@ class TestInputsFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                conditional: str = 'required'
-                my_data: string(
+                conditional: Optional[str] = 'required'
+                my_data: binary(
                     allow_empty=allow_empty,
                     # conditional_required=conditional_required,
                     max_length=max_length,
                     min_length=min_length,
-                    regex=regex,
                 )
 
                 @validator('my_data', allow_reuse=True, always=True, pre=True)
@@ -187,14 +181,13 @@ class TestInputsFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                conditional: str = 'required'
+                conditional: Optional[str] = 'required'
                 my_data: Optional[
-                    string(
+                    binary(
                         allow_empty=allow_empty,
                         # conditional_required=conditional_required,
                         max_length=max_length,
                         min_length=min_length,
-                        regex=regex,
                     )
                 ]
 
@@ -213,7 +206,7 @@ class TestInputsFieldTypes(InputTest):
             PytestModel,
             input_name='my_data',
             input_value=input_value,
-            input_type='String',
+            input_type='Binary',
             expected=expected,
             fail_test=fail_test,
             playbook_app=playbook_app,
@@ -226,7 +219,7 @@ class TestInputsFieldTypes(InputTest):
             # Pass Testing
             #
             # required, normal input
-            (['string'], ['string'], False, False),
+            ([b'bytes'], [b'bytes'], False, False),
             # required, empty input
             ([], [], False, False),
             # optional, empty input
@@ -240,7 +233,7 @@ class TestInputsFieldTypes(InputTest):
             (None, None, False, True),
         ],
     )
-    def test_field_model_string_array_input(
+    def test_field_model_binary_array_input(
         self,
         input_value: str,
         expected: str,
@@ -250,7 +243,7 @@ class TestInputsFieldTypes(InputTest):
     ):
         """Test Binary field type.
 
-        Playbook Data Type: String
+        Playbook Data Type: Binary
         Validation: Not null
         """
 
@@ -259,20 +252,20 @@ class TestInputsFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: List[String]
+                my_data: List[Binary]
 
         else:
 
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Optional[List[String]]
+                my_data: Optional[List[Binary]]
 
         self._type_validation(
             PytestModel,
             input_name='my_data',
             input_value=input_value,
-            input_type='StringArray',
+            input_type='BinaryArray',
             expected=expected,
             fail_test=fail_test,
             playbook_app=playbook_app,
@@ -284,28 +277,26 @@ class TestInputsFieldTypes(InputTest):
             #
             # Pass Testing
             #
-            # required, string input
-            ('string', ['string'], 'String', False, False),
+            # required, bytes input
+            (b'bytes', [b'bytes'], 'Binary', False, False),
             # required, array input
-            (['string'], ['string'], 'StringArray', False, False),
-            # required, empty string input
-            ('', [''], 'String', False, False),
-            # required, empty array input
-            ([], [], 'StringArray', False, False),
-            # optional, empty string input
-            ('', [''], 'String', True, False),
-            # optional, empty array input
-            ([], [], 'StringArray', True, False),
+            ([b'bytes'], [b'bytes'], 'BinaryArray', False, False),
+            # required, empty input
+            (b'', [b''], 'Binary', False, False),
+            # required, empty input
+            ([], [], 'BinaryArray', False, False),
+            # optional, empty input
+            (b'', [b''], 'Binary', True, False),
             # optional, null input
-            (None, [], 'String', True, False),
+            (None, [], 'Binary', True, False),
             #
             # Fail Testing
             #
             # required, null input
-            (None, None, 'String', False, True),
+            (None, None, 'Binary', False, True),
         ],
     )
-    def test_field_model_string_union_input(
+    def test_field_model_binary_union_input(
         self,
         input_value: str,
         expected: str,
@@ -316,7 +307,7 @@ class TestInputsFieldTypes(InputTest):
     ):
         """Test Binary field type.
 
-        Playbook Data Type: String
+        Playbook Data Type: Binary
         Validation: Not null
         """
 
@@ -325,7 +316,7 @@ class TestInputsFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Union[String, List[String]]
+                my_data: Union[Binary, List[Binary]]
 
                 _always_array = validator('my_data', allow_reuse=True)(always_array)
 
@@ -334,7 +325,7 @@ class TestInputsFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Optional[Union[String, List[String]]]
+                my_data: Union[Optional[Binary], Optional[List[Binary]]]
 
                 _always_array = validator('my_data', allow_reuse=True)(always_array)
 

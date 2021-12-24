@@ -2,19 +2,21 @@
 # standard library
 # import json
 # from random import randint
+# standard library
+from typing import List
 
 # third-party
 from pydantic import BaseModel
 
 # first-party
-from tcex.input.field_types import StringArray
+from tcex.input.field_types import String
 
 
 class TestInputModel(BaseModel):
     """."""
 
     my_bool: bool
-    my_multi: StringArray
+    my_multi: List[String]
 
 
 class TestPlaybookAot:

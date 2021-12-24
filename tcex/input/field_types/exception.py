@@ -1,25 +1,80 @@
 """Field type exception classes"""
 
 
-class ConfigurationException(ValueError):
-    """Raised when unexpected configuration values are received by functions in customizable.py"""
+class InvalidEmptyValue(ValueError):
+    """Raise customized exception."""
+
+    def __init__(self, field_name: str):
+        """Customize the exception message."""
+        super().__init__(
+            f'Invalid input for field {field_name}: an empty value is not allowed for this field.'
+        )
 
 
-class HeterogenousArrayException(ValueError):
-    """Raised when Array implementation is found to be not homogeneous within assertion method"""
+class InvalidEntityType(ValueError):
+    """Raise customized exception."""
+
+    def __init__(self, field_name: str, entity_type: str, value: str):
+        """Customize the exception message."""
+        super().__init__(
+            f'Invalid input for field {field_name}: {value} is not a {entity_type} type.'
+        )
 
 
-class EmptyArrayException(ValueError):
-    """Raised when Array implementation is found to be empty within assertion method"""
+class InvalidInput(ValueError):
+    """Raise customized exception."""
+
+    def __init__(self, field_name: str, error: str):
+        """Customize the exception message."""
+        super().__init__(f'Invalid input for field {field_name}: {error}')
 
 
-class InvalidMemberException(ValueError):
-    """Raised when Array is found to contain a member that is not of Array's type"""
+class InvalidIntegerValue(ValueError):
+    """Raise customized exception."""
+
+    def __init__(self, field_name: str, constraint: int, operation: str):
+        """Customize the exception message."""
+        super().__init__(
+            f'Invalid input for field {field_name}: value must be {operation} {constraint}.'
+        )
 
 
-class EmptyMemberException(ValueError):
-    """Raised when Array is found to contain a member that is of Array's type but is empty"""
+class InvalidLengthValue(ValueError):
+    """Raise customized exception."""
+
+    def __init__(self, field_name: str, constraint: int, operation: str):
+        """Customize the exception message."""
+        super().__init__(
+            f'Invalid input for field {field_name}: value must '
+            f'have a {operation} length of {constraint}.'
+        )
 
 
-class NullMemberException(ValueError):
-    """Raised when Array is found to contain a member that is of Array's type but is Null"""
+class InvalidPatternValue(ValueError):
+    """Raise customized exception."""
+
+    def __init__(self, field_name: str, pattern: str):
+        """Customize the exception message."""
+        super().__init__(
+            f'Invalid input for field {field_name}: value did not match pattern "{pattern}".'
+        )
+
+
+class InvalidType(ValueError):
+    """Raise customized exception."""
+
+    def __init__(self, field_name: str, expected_types: str, provided_type: str):
+        """Customize the exception message."""
+        super().__init__(
+            f'Invalid input for field {field_name}: {provided_type} is not a {expected_types} type.'
+        )
+
+
+class InvalidVariableType(ValueError):
+    """Raise customized exception."""
+
+    def __init__(self, field_name: str, expected_type: str, provided_type: str):
+        """Customize the exception message."""
+        super().__init__(
+            f'Invalid input for field {field_name}: {provided_type} is not a {expected_type} type.'
+        )

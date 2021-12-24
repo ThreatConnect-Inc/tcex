@@ -7,6 +7,7 @@ import pytest
 from pydantic import BaseModel, ValidationError
 
 # first-party
+from tcex.input.field_types.sensitive import Sensitive
 from tcex.pleb.registry import registry
 
 if TYPE_CHECKING:
@@ -20,7 +21,7 @@ class InputTest:
     @staticmethod
     def _stage_key_value(config_key, variable_name, value, tcex):
         """Write values to key value store. Expects dictionary of variable_name: value"""
-        registry.Playbook.create(variable_name, value)
+        registry.Playbook.create.any(variable_name, value, validate=False, when_requested=False)
 
         # force inputs to resolve newly inserted key-values from key value store
         if 'contents_resolved' in tcex.inputs.__dict__:
@@ -94,6 +95,12 @@ class InputTest:
                 validation_ran = True
                 assert (
                     tcex.inputs.model.my_data.dict(exclude_unset=True) == expected
+                ), f'{tcex.inputs.model.my_data} != {expected}'
+            elif isinstance(tcex.inputs.model.my_data, Sensitive):
+                # validate all non-array, non-model types
+                validation_ran = True
+                assert (
+                    tcex.inputs.model.my_data.value == expected
                 ), f'{tcex.inputs.model.my_data} != {expected}'
             else:
                 # validate all non-array, non-model types

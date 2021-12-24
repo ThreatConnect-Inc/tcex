@@ -1,25 +1,29 @@
 """Sensitive Field Type"""
-# TODO: [high] update docstrings
 # standard library
 import logging
-from typing import Any, Callable, Dict, Optional
+from typing import TYPE_CHECKING, Any, Callable, Dict, Optional, Union
+
+# first-party
+from tcex.input.field_types.exception import InvalidEmptyValue, InvalidLengthValue, InvalidType
+
+if TYPE_CHECKING:  # pragma: no cover
+    # third-party
+    from pydantic.fields import ModelField
+
+    # first-party
+    from tcex.input.input import StringVariable
+
 
 # get tcex logger
 logger = logging.getLogger('tcex')
 
 
-def _update_not_none(mapping: Dict[Any, Any], **update: Any) -> None:
-    """."""
-    mapping.update({k: v for k, v in update.items() if v is not None})
-
-
-# TODO: [low] do we need all these methods (e.g., __repr__, __len__)
 class Sensitive:
-    """Field Type to hold sensitive data."""
+    """Sensitive Field Type"""
 
+    allow_empty: bool = True
     min_length: Optional[int] = None
     max_length: Optional[int] = None
-    _optional = False
 
     def __init__(self, value: str):
         """Initialize the Sensitive object."""
@@ -31,7 +35,11 @@ class Sensitive:
     @classmethod
     def __get_validators__(cls) -> Callable:
         """Define one or more validators for Pydantic custom type."""
-        yield cls._validate
+        yield cls.validate_type
+        yield cls.validate_allow_empty
+        yield cls.validate_max_length
+        yield cls.validate_min_length
+        yield cls.wrap_type
 
     def __len__(self) -> int:
         """Return the length of the sensitive value."""
@@ -39,7 +47,11 @@ class Sensitive:
 
     @classmethod
     def __modify_schema__(cls, field_schema: Dict[str, Any]) -> None:
-        """."""
+        """Modify the field schema."""
+
+        def _update_not_none(mapping: Dict[Any, Any], **update: Any) -> None:
+            mapping.update({k: v for k, v in update.items() if v is not None})
+
         _update_not_none(
             field_schema,
             type='string',
@@ -58,39 +70,70 @@ class Sensitive:
 
         If App is running in > DEBUG logging level and the sensitive data is greater
         than X, then show the first and last character of the value. This is very
-        helpful in debugging App where the incorrect creds could have been passed.
+        helpful in debugging App where the incorrect credential could have been passed.
         """
-        if self._sensitive_value and logger.getEffectiveLevel() >= 10:  # DEBUG
+        if self._sensitive_value and logger.getEffectiveLevel() <= 10:  # DEBUG or TRACE
             if isinstance(self.value, str) and len(self.value) >= 10:
                 return f'''{self.value[:1]}{'*' * 4}{self.value[-1:]}'''
-        return '**********' if self.value else ''
+        return '**********'
 
     @classmethod
-    def _validate(cls, value: Any) -> 'Sensitive':
-        """Pydantic validate method."""
-        if isinstance(value, cls):
-            return value
+    def validate_allow_empty(cls, value: Union[str, 'StringVariable'], field: 'ModelField') -> str:
+        """Raise exception if value is empty and allow_empty is False."""
+        if cls.allow_empty is False:
+            if isinstance(value, str) and value.replace(' ', '') == '':
+                raise InvalidEmptyValue(field_name=field.name)
 
-        if not isinstance(value, (bytes, str)):
-            raise ValueError(
-                f'Sensitive Type expects String or Bytes values, received: {type(value)}'
+        return value
+
+    @classmethod
+    def validate_max_length(cls, value: Union[str, 'StringVariable'], field: 'ModelField') -> str:
+        """Raise exception if value does not match pattern."""
+        if cls.max_length is not None and len(value) > cls.max_length:
+            raise InvalidLengthValue(
+                field_name=field.name, constraint=cls.max_length, operation='max'
             )
+        return value
 
-        if value in ('', b'') and not cls._optional:
-            raise ValueError(
-                'Sensitive value may not be empty. Consider using Optional field variant '
-                'definition if empty values are necessary.'
+    @classmethod
+    def validate_min_length(cls, value: Union[str, 'StringVariable'], field: 'ModelField') -> str:
+        """Raise exception if value does not match pattern."""
+        if cls.min_length is not None and len(value) < cls.min_length:
+            raise InvalidLengthValue(
+                field_name=field.name, constraint=cls.min_length, operation='min'
             )
+        return value
 
-        return cls(value)
+    @classmethod
+    def validate_type(cls, value: Union[str, 'StringVariable'], field: 'ModelField') -> str:
+        """Raise exception if value is not a String type."""
+        if not isinstance(value, (bytes, str, Sensitive)):
+            raise InvalidType(
+                field_name=field.name, expected_types='(bytes, str)', provided_type=type(value)
+            )
+        return value
 
     @property
     def value(self) -> str:
         """Return the actual value."""
         return self._sensitive_value
 
+    # TODO: [high] @phuerta - is there a better way to handle this?
+    @classmethod
+    def wrap_type(cls, value: Union[str, 'StringVariable']) -> str:
+        """Raise exception if value is not a String type."""
+        return cls(value)
 
-class SensitiveOptional(Sensitive):
-    """Optional Field Type to hold sensitive data."""
 
-    _optional = True
+def sensitive(
+    allow_empty: bool = True,
+    max_length: Optional[int] = None,
+    min_length: Optional[int] = None,
+) -> type:
+    """Return configured instance of String."""
+    namespace = dict(
+        allow_empty=allow_empty,
+        max_length=max_length,
+        min_length=min_length,
+    )
+    return type('ConstrainedSensitive', (Sensitive,), namespace)

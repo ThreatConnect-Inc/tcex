@@ -1,23 +1,28 @@
-"""String Playbook Type"""
+"""Integer Field Type"""
 # standard library
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Union
+from typing import TYPE_CHECKING, Any, Callable, Dict, Union
 
 # third-party
 from pydantic.types import OptionalInt
 
-if TYPE_CHECKING:
+# first-party
+from tcex.input.field_types.exception import InvalidIntegerValue, InvalidType, InvalidVariableType
+
+if TYPE_CHECKING:  # pragma: no cover
+    # third-party
+    from pydantic.fields import ModelField
+
     # first-party
     from tcex.input.input import StringVariable
 
 
 class Integer(int):
-    """Ensure an array is always returned for the input."""
+    """Integer Field Type"""
 
     ge: OptionalInt = None
     gt: OptionalInt = None
     le: OptionalInt = None
     lt: OptionalInt = None
-    return_array: bool = False
 
     @classmethod
     def __modify_schema__(cls, field_schema: Dict[str, Any]) -> None:
@@ -40,49 +45,50 @@ class Integer(int):
         yield cls.validate_variable_type
         yield cls.validate_type
         yield cls.validate_value
-        yield cls.validate_return_array
 
     @classmethod
-    def validate_return_array(cls, value: Union[int, str, 'StringVariable']) -> List[int]:
-        """Return an array if return_array is True."""
-        if cls.return_array is True and not isinstance(value, list):
-            return [value]
-        return value
-
-    @classmethod
-    def validate_type(cls, value: Union[int, str, 'StringVariable']) -> int:
+    def validate_type(cls, value: Union[int, str, 'StringVariable'], field: 'ModelField') -> int:
         """Raise exception if value is not a String type."""
-        if not isinstance(
-            value,
-            (
-                int,
-                str,
-            ),
-        ):
-            raise ValueError(f'{value} is not the correct type.')
+        if not isinstance(value, (int, str)):
+            raise InvalidType(
+                field_name=field.name, expected_types='(int, str)', provided_type=type(value)
+            )
         return value
 
     @classmethod
-    def validate_value(cls, value: Union[int, str, 'StringVariable']) -> int:
+    def validate_value(cls, value: Union[int, str, 'StringVariable'], field: 'ModelField') -> int:
         """Raise exception if value does not meet criteria."""
-        print('value', value)
-        value = int(value)
-        if cls.gt is not None and not value > cls.gt:
-            raise ValueError(f'Value must be greater than {cls.gt}.')
-        if cls.ge is not None and not value >= cls.ge:
-            raise ValueError(f'Value must be greater than or equal to {cls.ge}.')
+        if isinstance(value, str):
+            value = int(value)
 
-        if cls.lt is not None and not value < cls.lt:
-            raise ValueError(f'Value must be less than {cls.lt}.')
+        if cls.ge is not None and not value >= cls.ge:
+            raise InvalidIntegerValue(
+                field_name=field.name, operation='greater than or equal to', constraint=cls.ge
+            )
+        if cls.gt is not None and not value > cls.gt:
+            raise InvalidIntegerValue(
+                field_name=field.name, operation='greater than', constraint=cls.gt
+            )
+
         if cls.le is not None and not value <= cls.le:
-            raise ValueError(f'Value must be less than or equal to {cls.le}.')
+            raise InvalidIntegerValue(
+                field_name=field.name, operation='less than or equal to', constraint=cls.le
+            )
+        if cls.lt is not None and not value < cls.lt:
+            raise InvalidIntegerValue(
+                field_name=field.name, operation='less than', constraint=cls.lt
+            )
         return value
 
     @classmethod
-    def validate_variable_type(cls, value: Union[int, str, 'StringVariable']) -> int:
+    def validate_variable_type(
+        cls, value: Union[int, str, 'StringVariable'], field: 'ModelField'
+    ) -> int:
         """Raise exception if value is not a String type."""
         if hasattr(value, '_variable_type') and value._variable_type != 'String':
-            raise ValueError(f'{value} is not a String type.')
+            raise InvalidVariableType(
+                field_name=field.name, expected_type='String', provided_type=value._variable_type
+            )
         return value
 
 

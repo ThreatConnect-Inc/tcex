@@ -7,9 +7,9 @@ import pytest
 from pydantic import BaseModel, validator
 
 # first-party
-from tcex.input.field_models import GroupEntity, IndicatorEntity, TCEntity, always_array
+from tcex.input.field_types import GroupEntity, IndicatorEntity, TCEntity, always_array
 from tcex.pleb.scoped_property import scoped_property
-from tests.input.field_models.utils import InputTest
+from tests.input.field_types.utils import InputTest
 
 if TYPE_CHECKING:
     # first-party

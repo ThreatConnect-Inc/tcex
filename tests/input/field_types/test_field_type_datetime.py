@@ -13,11 +13,12 @@ from pydantic import BaseModel, ValidationError
 
 # first-party
 from tcex.input.field_types import DateTime
-
-from .utils import InputTest
+from tests.input.field_types.utils import InputTest
 
 if TYPE_CHECKING:
-    from ..mock_app import MockApp
+    # first-party
+    from tcex import TcEx
+    from tests.mock_app import MockApp
 
 
 class TestInputsFieldTypeArrowDateTime(InputTest):
@@ -68,7 +69,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
 
         config_data = {'my_datetime': to_parse}
         app = playbook_app(config_data=config_data)
-        tcex = app.tcex
+        tcex: 'TcEx' = app.tcex
         tcex.inputs.add_model(PytestModel)
 
         assert tcex.inputs.model.my_datetime.isoformat() == '2020-01-01T00:00:00+00:00'
@@ -131,7 +132,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
 
         config_data = {'my_datetime': to_parse}
         app = playbook_app(config_data=config_data)
-        tcex = app.tcex
+        tcex: 'TcEx' = app.tcex
         tcex.inputs.add_model(PytestModel)
 
         assert tcex.inputs.model.my_datetime.isoformat() == '2020-05-27T10:30:35+00:00'
@@ -158,7 +159,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
 
         config_data = {'my_datetime': to_parse}
         app = playbook_app(config_data=config_data)
-        tcex = app.tcex
+        tcex: 'TcEx' = app.tcex
         tcex.inputs.add_model(PytestModel)
 
         assert tcex.inputs.model.my_datetime.isoformat() == '2021-11-08T23:59:17.728793+00:00'
@@ -184,7 +185,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
 
         config_data = {'my_datetime': to_parse}
         app = playbook_app(config_data=config_data)
-        tcex = app.tcex
+        tcex: 'TcEx' = app.tcex
         tcex.inputs.add_model(PytestModel)
 
         assert tcex.inputs.model.my_datetime.isoformat() == '2021-11-08T23:59:17.728000+00:00'
@@ -200,7 +201,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
 
         config_data = {'my_datetime': '1636415957'}
         app = playbook_app(config_data=config_data)
-        tcex = app.tcex
+        tcex: 'TcEx' = app.tcex
         tcex.inputs.add_model(PytestModel)
 
         assert tcex.inputs.model.my_datetime.isoformat() == '2021-11-08T23:59:17+00:00'
@@ -216,7 +217,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
 
         config_data = {'my_datetime': '2021-11-15T02:13:57.021291-08:00'}
         app = playbook_app(config_data=config_data)
-        tcex = app.tcex
+        tcex: 'TcEx' = app.tcex
         tcex.inputs.add_model(PytestModel)
 
         assert tcex.inputs.model.my_datetime.isoformat() == '2021-11-15T02:13:57.021291-08:00'
@@ -282,7 +283,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
 
         config_data = {'my_datetime': to_parse}
         app = playbook_app(config_data=config_data)
-        tcex = app.tcex
+        tcex: 'TcEx' = app.tcex
         tcex.inputs.add_model(PytestModel)
 
         expected_parse_result = operator(now, delta)
@@ -332,7 +333,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
 
         config_data = {'my_datetime': to_parse}
         app = playbook_app(config_data=config_data)
-        tcex = app.tcex
+        tcex: 'TcEx' = app.tcex
         with pytest.raises(ValidationError) as exc_info:
             tcex.inputs.add_model(PytestModel)
             print('')
@@ -353,7 +354,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
 
         config_data = {'my_datetime': None}
         app = playbook_app(config_data=config_data)
-        tcex = app.tcex
+        tcex: 'TcEx' = app.tcex
         with pytest.raises(ValidationError) as exc_info:
             tcex.inputs.add_model(PytestModel)
 
@@ -370,7 +371,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
 
         config_data = {'my_datetime': None}
         app = playbook_app(config_data=config_data)
-        tcex = app.tcex
+        tcex: 'TcEx' = app.tcex
         tcex.inputs.add_model(PytestModel)
 
         assert tcex.inputs.model.my_datetime is None

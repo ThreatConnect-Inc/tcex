@@ -177,7 +177,7 @@ class Input:
 
         # tc_app_param_file is a fully qualified file name
         fqfn = Path(tc_app_param_file)
-        if not fqfn.is_file():
+        if not fqfn.is_file():  # pragma: no cover
             self.log.error(
                 'feature=inputs, event=load-file-params, '
                 f'exception=file-not-found, filename={fqfn.name}'
@@ -256,7 +256,7 @@ class Input:
         _inputs = self.contents
 
         # support external Apps that don't have an install.json
-        if not self.ij.fqfn.is_file():
+        if not self.ij.fqfn.is_file():  # pragma: no cover
             return _inputs
 
         for name, value in _inputs.items():
