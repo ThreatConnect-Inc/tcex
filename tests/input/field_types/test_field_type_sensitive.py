@@ -144,7 +144,6 @@ class TestInputsFieldTypeSensitive(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                conditional: str = 'required'
                 my_data: sensitive(
                     allow_empty=allow_empty,
                     max_length=max_length,
@@ -156,7 +155,6 @@ class TestInputsFieldTypeSensitive(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                conditional: str = 'required'
                 my_data: Optional[
                     sensitive(
                         allow_empty=allow_empty,

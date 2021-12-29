@@ -390,7 +390,7 @@ class TestInputsFieldTypes(InputTest):
 
                 my_data: Union[TCEntity, List[TCEntity]]
 
-                _always_array = validator('my_data', allow_reuse=True)(always_array)
+                _always_array = validator('my_data', allow_reuse=True)(always_array())
 
         else:
 
@@ -399,7 +399,7 @@ class TestInputsFieldTypes(InputTest):
 
                 my_data: Optional[Union[TCEntity, List[TCEntity]]]
 
-                _always_array = validator('my_data', allow_reuse=True)(always_array)
+                _always_array = validator('my_data', allow_reuse=True)(always_array())
 
         self._type_validation(
             PytestModel,

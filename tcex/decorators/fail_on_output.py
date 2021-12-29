@@ -72,8 +72,9 @@ class FailOnOutput:
 
             # self.enable (e.g., True or 'fail_on_false') enables/disables this feature
             enabled = self.fail_enabled
-            if not isinstance(self.fail_enabled, bool):
-                enabled = getattr(app.tcex.inputs.model, self.fail_enabled)
+            if not isinstance(enabled, bool):
+                # get enabled value from App inputs
+                enabled = getattr(app.tcex.inputs.model, enabled)
                 if not isinstance(enabled, bool):  # pragma: no cover
                     raise RuntimeError(
                         'The fail_enabled value must be a boolean or resolved to bool.'

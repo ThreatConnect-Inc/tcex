@@ -79,9 +79,8 @@ class ExitService:
             msg: A message to log and add to message tc output.
         """
         code = ExitCode(code) if code is not None else self.exit_code
-        # handle exit msg logging
-        self._exit_msg_handler(code, msg)
 
+        # playbook exit handler
         self.exit_playbook_handler(msg)
 
         # aot notify
@@ -92,7 +91,10 @@ class ExitService:
         # exit token renewal thread
         registry.token.shutdown = True
 
-        logger.info(f'Exit Code: {code}')
+        # handle exit msg logging
+        self._exit_msg_handler(code, msg)
+
+        logger.info(f'exit-code={code}')
         sys.exit(code.value)
 
     # TODO: [med] @cblades - is msg required?
@@ -117,7 +119,7 @@ class ExitService:
             # push exit message
             self._aot_rpush(code.value)
 
-        logger.info(f'Exit Code: {code}')
+        logger.info(f'exit-code={code}')
         sys.exit(code.value)
 
     def exit_playbook_handler(self, msg: str) -> None:
@@ -137,10 +139,11 @@ class ExitService:
     def _exit_msg_handler(self, code: ExitCode, msg: str) -> None:
         """Handle exit message. Write to both log and message_tc."""
         if msg is not None:
+            log_msg = msg.replace('\n', ',')
             if code in [ExitCode.SUCCESS, ExitCode.PARTIAL_FAILURE]:
-                logger.info(msg)
+                logger.info(f'exit-message="{log_msg}"')
             else:
-                logger.error(msg)
+                logger.error(f'exit-message="{log_msg}"')
             self._message_tc(msg)
 
     def _aot_rpush(self, exit_code: int) -> None:

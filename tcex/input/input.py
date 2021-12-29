@@ -6,7 +6,7 @@ import os
 import re
 from base64 import b64decode
 from pathlib import Path
-from typing import Dict, Optional, Union
+from typing import TYPE_CHECKING, Dict, Optional, Union
 
 # third-party
 from pydantic import BaseModel, Extra
@@ -20,6 +20,10 @@ from tcex.key_value_store import RedisClient
 from tcex.pleb.none_model import NoneModel
 from tcex.pleb.registry import registry
 from tcex.utils import Utils
+
+if TYPE_CHECKING:
+    # third-party
+    from pydantic import ValidationError
 
 # get tcex logger
 logger = logging.getLogger('tcex')
@@ -253,7 +257,7 @@ class Input:
         Job, Playbook, and Service Apps call can have a tc-variable, but only
         Playbook Apps will have a playbook variable.
         """
-        _inputs = self.contents
+        _inputs = self.contents.copy()
 
         # support external Apps that don't have an install.json
         if not self.ij.fqfn.is_file():  # pragma: no cover
@@ -442,3 +446,23 @@ class Input:
             )
 
         return data
+
+    @staticmethod
+    def validation_exit_message(ex: 'ValidationError') -> None:
+        """Format and return validation error message."""
+        _exit_message = {}
+        for err in ex.errors():
+            # deduplicate error messagese
+            err_loc = ','.join(err.get('loc'))
+            err_msg = err.get('msg')
+            _exit_message.setdefault(err_loc, [])
+            if err_msg not in _exit_message[err_loc]:
+                _exit_message[err_loc].append(err_msg)
+
+        # format error messages
+        _exit_message_list = ['Input validation errors']
+        for loc, err_list in _exit_message.items():
+            _exit_message_list.append(f'''{loc}: {', '.join(err_list)}''')
+
+        # exit with error message
+        return '\n'.join(_exit_message_list)

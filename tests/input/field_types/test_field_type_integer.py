@@ -288,7 +288,7 @@ class TestInputsFieldTypes(InputTest):
 
                 my_data: Union[Integer, List[Integer]]
 
-                _always_array = validator('my_data', allow_reuse=True)(always_array)
+                _always_array = validator('my_data', allow_reuse=True)(always_array())
 
         else:
 
@@ -297,7 +297,7 @@ class TestInputsFieldTypes(InputTest):
 
                 my_data: Optional[Union[Integer, List[Integer]]]
 
-                _always_array = validator('my_data', allow_reuse=True)(always_array)
+                _always_array = validator('my_data', allow_reuse=True)(always_array())
 
         self._type_validation(
             PytestModel,

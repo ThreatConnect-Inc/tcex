@@ -1,20 +1,17 @@
 """Testing TcEx Input module field types."""
 # standard library
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Dict, List, Optional, Union
 
 # third-party
 import pytest
 from pydantic import BaseModel, validator
 
 # first-party
-from tcex.input.field_types import String, always_array, string
+from tcex.input.field_types import String, always_array, conditional_required, string
 from tcex.pleb.scoped_property import scoped_property
 from tests.input.field_types.utils import InputTest
 
 if TYPE_CHECKING:
-    # third-party
-    from pydantic.fields import ModelField
-
     # first-party
     from tests.mock_app import MockApp
 
@@ -88,7 +85,7 @@ class TestInputsFieldTypes(InputTest):
 
     @pytest.mark.parametrize(
         (
-            'input_value,expected,allow_empty,conditional_required,'
+            'input_value,expected,allow_empty,conditional_required_rules,'
             'max_length,min_length,regex,optional,fail_test'
         ),
         [
@@ -114,7 +111,17 @@ class TestInputsFieldTypes(InputTest):
             # required, normal input, regex=string
             ('string', 'string', True, None, None, None, r'^string$', True, False),
             # optional, null input, conditional_required=True
-            (None, None, True, {'conditional': 'optional'}, None, None, None, True, False),
+            (
+                None,
+                None,
+                True,
+                [{'field': 'conditional', 'op': 'eq', 'value': 'optional'}],
+                None,
+                None,
+                None,
+                True,
+                False,
+            ),
             #
             # Fail Testing
             #
@@ -123,9 +130,29 @@ class TestInputsFieldTypes(InputTest):
             # required, empty input, allow_empty=False
             ('', None, False, None, None, None, None, False, True),
             # required, empty input, conditional_required=True
-            ('', 'string', True, {'conditional': 'required'}, None, None, None, False, True),
+            (
+                '',
+                'string',
+                True,
+                [{'field': 'conditional', 'op': 'eq', 'value': 'required'}],
+                None,
+                None,
+                None,
+                False,
+                True,
+            ),
             # required, null input, conditional_required=True
-            (None, 'string', True, {'conditional': 'required'}, None, None, None, False, True),
+            (
+                None,
+                'string',
+                True,
+                [{'field': 'conditional', 'op': 'eq', 'value': 'required'}],
+                None,
+                None,
+                None,
+                False,
+                True,
+            ),
             # required, normal input, max_length=2
             ('string', 'string', True, None, 2, None, None, False, True),
             # optional, normal input, max_length=2
@@ -143,7 +170,7 @@ class TestInputsFieldTypes(InputTest):
         input_value: str,
         expected: str,
         allow_empty: bool,
-        conditional_required: Optional[Dict[str, str]],
+        conditional_required_rules: Optional[List[Dict[str, str]]],
         max_length: int,
         min_length: int,
         regex: Optional[str],
@@ -165,22 +192,14 @@ class TestInputsFieldTypes(InputTest):
                 conditional: str = 'required'
                 my_data: string(
                     allow_empty=allow_empty,
-                    # conditional_required=conditional_required,
                     max_length=max_length,
                     min_length=min_length,
                     regex=regex,
                 )
 
-                @validator('my_data', allow_reuse=True, always=True, pre=True)
-                def _conditional_required(cls, v: str, field: 'ModelField', values: Dict[str, Any]):
-                    if conditional_required:
-                        for conditional_key, conditional_value in conditional_required.items():
-                            if values.get(conditional_key) == conditional_value and not v:
-                                raise ValueError(
-                                    f'Value is required for field "{field.name}" when '
-                                    f'"{conditional_key}" equals "{conditional_value}".'
-                                )
-                    return v
+                _conditional_required = validator(
+                    'my_data', allow_reuse=True, always=True, pre=True
+                )(conditional_required(rules=conditional_required_rules))
 
         else:
 
@@ -191,23 +210,15 @@ class TestInputsFieldTypes(InputTest):
                 my_data: Optional[
                     string(
                         allow_empty=allow_empty,
-                        # conditional_required=conditional_required,
                         max_length=max_length,
                         min_length=min_length,
                         regex=regex,
                     )
                 ]
 
-                @validator('my_data', allow_reuse=True, always=True, pre=True)
-                def _conditional_required(cls, v: str, field: 'ModelField', values: Dict[str, Any]):
-                    if conditional_required:
-                        for conditional_key, conditional_value in conditional_required.items():
-                            if values.get(conditional_key) == conditional_value and not v:
-                                raise ValueError(
-                                    f'Value is required for field "{field.name}" when '
-                                    f'"{conditional_key}" equals "{conditional_value}".'
-                                )
-                    return v
+                _conditional_required = validator(
+                    'my_data', allow_reuse=True, always=True, pre=True
+                )(conditional_required(rules=conditional_required_rules))
 
         self._type_validation(
             PytestModel,
@@ -327,7 +338,7 @@ class TestInputsFieldTypes(InputTest):
 
                 my_data: Union[String, List[String]]
 
-                _always_array = validator('my_data', allow_reuse=True)(always_array)
+                _always_array = validator('my_data', allow_reuse=True)(always_array())
 
         else:
 
@@ -336,7 +347,7 @@ class TestInputsFieldTypes(InputTest):
 
                 my_data: Optional[Union[String, List[String]]]
 
-                _always_array = validator('my_data', allow_reuse=True)(always_array)
+                _always_array = validator('my_data', allow_reuse=True)(always_array())
 
         self._type_validation(
             PytestModel,

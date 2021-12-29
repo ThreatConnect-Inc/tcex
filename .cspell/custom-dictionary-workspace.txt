@@ -21,6 +21,7 @@ fnmatch
 fpfn
 fqfn
 fqpn
+functool
 getsizeof
 hdel
 hget

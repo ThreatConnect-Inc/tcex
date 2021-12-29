@@ -2,6 +2,14 @@
 # standard library
 import json
 import uuid
+from typing import TYPE_CHECKING
+
+# third-party
+import pytest
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex import TcEx
 
 
 class MockPost:
@@ -52,11 +60,11 @@ class TestDataStore:
         self.data_type = 'pytest'
 
     @staticmethod
-    def test_create_index_fail_test(tcex, monkeypatch):
+    def test_create_index_fail_test(tcex: 'TcEx', monkeypatch):
         """Test failure to create an index.
 
         Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx.
+            tcex (fixture): An instantiated instance of TcEx.
             monkeypatch (_pytest.monkeypatch.MonkeyPatch, fixture): Pytest monkeypatch
         """
         # monkeypatch method
@@ -73,7 +81,7 @@ class TestDataStore:
         except RuntimeError:
             assert True
 
-    def test_data_store_local_index(self, tcex):
+    def test_data_store_local_index(self, tcex: 'TcEx'):
         """Test creating a local datastore index
 
         Args:
@@ -82,7 +90,7 @@ class TestDataStore:
         tcex.v2.datastore('local', self.data_type)
 
     @staticmethod
-    def test_data_store_local_new_index(tcex):
+    def test_data_store_local_new_index(tcex: 'TcEx'):
         """Test creating a local datastore index
 
         Args:
@@ -98,7 +106,7 @@ class TestDataStore:
         assert results.get('_id') == rid
         assert results.get('_shards').get('successful') == 1
 
-    def test_data_store_local_add(self, tcex):
+    def test_data_store_local_add(self, tcex: 'TcEx'):
         """Test local datastore add
 
         Args:
@@ -113,7 +121,7 @@ class TestDataStore:
         assert results.get('_id') == rid
         assert results.get('_shards').get('successful') == 1
 
-    def test_data_store_local_add_fail(self, tcex, monkeypatch):
+    def test_data_store_local_add_fail(self, tcex: 'TcEx', monkeypatch):
         """Test failure of data store add
 
         Args:
@@ -137,7 +145,7 @@ class TestDataStore:
         except RuntimeError:
             assert True
 
-    def test_data_store_local_delete(self, tcex):
+    def test_data_store_local_delete(self, tcex: 'TcEx'):
         """Test local datastore delete
 
         Args:
@@ -156,7 +164,7 @@ class TestDataStore:
         assert results.get('_shards').get('successful') == 1
         assert results.get('result') == 'deleted'
 
-    def test_data_store_local_delete_fail(self, tcex, monkeypatch):
+    def test_data_store_local_delete_fail(self, tcex: 'TcEx', monkeypatch):
         """Test failure of data store local delete
 
         Args:
@@ -180,7 +188,7 @@ class TestDataStore:
         except RuntimeError:
             assert True
 
-    def test_data_store_local_get(self, tcex):
+    def test_data_store_local_get(self, tcex: 'TcEx'):
         """Test local datastore get
 
         Args:
@@ -202,7 +210,7 @@ class TestDataStore:
         # delete
         ds.delete(rid)
 
-    def test_data_store_local_get_no_rid(self, tcex):
+    def test_data_store_local_get_no_rid(self, tcex: 'TcEx'):
         """Test local datastore get no reid
 
         Args:
@@ -213,7 +221,7 @@ class TestDataStore:
         results = ds.get()
         assert results.get('hits') is not None
 
-    def test_data_store_local_get_fail(self, tcex, monkeypatch):
+    def test_data_store_local_get_fail(self, tcex: 'TcEx', monkeypatch):
         """Test failure of data store local get
 
         Args:
@@ -235,22 +243,25 @@ class TestDataStore:
         except RuntimeError:
             assert True
 
-    def test_data_store_organization_add(self, tcex):
+    @pytest.mark.parametrize(
+        'rid,data',
+        [
+            ('one', {'one': 1}),
+        ],
+    )
+    def test_data_store_organization_add(self, rid: str, data: dict, tcex: 'TcEx'):
         """Test organization datastore add
 
         Args:
             tcex (TcEx, fixture): An instantiated instance of TcEx.
         """
-        data = {'one': 1}
-        rid = 'one'
-
         ds = tcex.v2.datastore('organization', self.data_type)
 
         results = ds.add(rid=rid, data=data)
         assert results.get('_id') == rid
         assert results.get('_shards').get('successful') == 1
 
-    def test_data_store_organization_delete(self, tcex):
+    def test_data_store_organization_delete(self, tcex: 'TcEx'):
         """Test organization datastore delete
 
         Args:
@@ -269,7 +280,7 @@ class TestDataStore:
         assert results.get('_shards').get('successful') == 1
         assert results.get('result') == 'deleted'
 
-    def test_data_store_organization_get(self, tcex):
+    def test_data_store_organization_get(self, tcex: 'TcEx'):
         """Test organization datastore get
 
         Args:
@@ -291,7 +302,7 @@ class TestDataStore:
         # delete
         ds.delete(rid)
 
-    def test_data_store_local_put(self, tcex):
+    def test_data_store_local_put(self, tcex: 'TcEx'):
         """Test local datastore put
 
         Args:
@@ -309,7 +320,7 @@ class TestDataStore:
         assert results.get('_id') == rid
         assert results.get('_shards').get('successful') == 1
 
-    def test_data_store_local_put_fail(self, monkeypatch, tcex):
+    def test_data_store_local_put_fail(self, monkeypatch, tcex: 'TcEx'):
         """Test failure of data store local put
 
         Args:
