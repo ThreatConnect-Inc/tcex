@@ -327,7 +327,7 @@ class GenerateObjectABC(GenerateABC, ABC):
 
             return {'type': 'Artifact', 'id': self.model.id, 'value': self.model.summary}
         """
-        name_entities = ['artifact_types', 'cases', 'tags', 'tasks', 'workflow_templates']
+        name_entities = ['artifact_types', 'cases', 'tags', 'tasks', 'workflow_templates', 'groups']
         value_type = 'summary'
         if self.type_.lower() in name_entities:
             value_type = 'name'
@@ -554,12 +554,56 @@ class GenerateObjectABC(GenerateABC, ABC):
                 ]
             )
 
+        # Custom logic to ensure that when iterating over the associated indicators or associated
+        # groups then the item currently being iterated over is not included in the results.
+        if (
+                (self.type_ == 'indicators' and model_type == 'associated_indicators') or
+                (self.type_ == 'groups' and model_type == 'associated_groups')
+        ):
+            _code.extend(
+                [
+                    f'''{self.i2}# Ensure the current item is not returned as a association''',
+                    (
+                        f'''{self.i2}for {type_.singular()} in self._iterate_over_sublist'''
+                        f'''({model_import_data.get('object_collection_class')}):'''
+                    ),
+                ]
+            )
+            if self.type_ == 'indicator':
+                _code.extend(
+                    [
+                        (
+                            f'''{self.i3}if {type_.singular()}.model.summary == '''
+                            '''self.model.summary:'''
+                        ),
+                    ]
+                )
+            else:
+                _code.extend(
+                    [
+                        (
+                            f'''{self.i3}if {type_.singular()}.model.id == '''
+                            '''self.model.id:'''
+                        ),
+                    ]
+                )
+            _code.extend(
+                [
+                    f'''{self.i4}continue''',
+                    f'''{self.i3}yield {type_.singular()}'''
+                ]
+            )
+        else:
+            _code.extend(
+                [
+                    (
+                        f'''{self.i2}yield from self._iterate_over_sublist'''
+                        f'''({model_import_data.get('object_collection_class')})'''
+                    ),
+                ]
+            )
         _code.extend(
             [
-                (
-                    f'''{self.i2}yield from self._iterate_over_sublist'''
-                    f'''({model_import_data.get('object_collection_class')})'''
-                ),
                 '',
                 '',
             ]

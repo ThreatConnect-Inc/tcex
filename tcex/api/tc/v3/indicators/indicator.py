@@ -210,7 +210,11 @@ class Indicator(ObjectABC):
     @property
     def associated_indicators(self) -> 'Indicator':
         """Yield Indicator from Indicators."""
-        yield from self._iterate_over_sublist(Indicators)
+        # Ensure the current item is not returned as a association
+        for indicator in self._iterate_over_sublist(Indicators):
+            if indicator.model.id == self.model.id:
+                continue
+            yield indicator
 
     @property
     def attributes(self) -> 'IndicatorAttribute':

@@ -144,7 +144,7 @@ class Group(ObjectABC):
         if hasattr(self.model, 'type'):
             type_ = self.model.type
 
-        return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
+        return {'type': type_, 'id': self.model.id, 'value': self.model.name}
 
     def remove(self, params: Optional[dict] = None) -> None:
         """Remove a nested object."""
@@ -218,7 +218,11 @@ class Group(ObjectABC):
     @property
     def associated_groups(self) -> 'Group':
         """Yield Group from Groups."""
-        yield from self._iterate_over_sublist(Groups)
+        # Ensure the current item is not returned as a association
+        for group in self._iterate_over_sublist(Groups):
+            if group.model.id == self.model.id:
+                continue
+            yield group
 
     @property
     def associated_indicators(self) -> 'Indicator':
