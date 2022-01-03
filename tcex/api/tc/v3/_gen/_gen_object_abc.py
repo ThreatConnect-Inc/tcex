@@ -556,9 +556,8 @@ class GenerateObjectABC(GenerateABC, ABC):
 
         # Custom logic to ensure that when iterating over the associated indicators or associated
         # groups then the item currently being iterated over is not included in the results.
-        if (
-                (self.type_ == 'indicators' and model_type == 'associated_indicators') or
-                (self.type_ == 'groups' and model_type == 'associated_groups')
+        if (self.type_ == 'indicators' and model_type == 'associated_indicators') or (
+            self.type_ == 'groups' and model_type == 'associated_groups'
         ):
             _code.extend(
                 [
@@ -581,18 +580,10 @@ class GenerateObjectABC(GenerateABC, ABC):
             else:
                 _code.extend(
                     [
-                        (
-                            f'''{self.i3}if {type_.singular()}.model.id == '''
-                            '''self.model.id:'''
-                        ),
+                        (f'''{self.i3}if {type_.singular()}.model.id == self.model.id:'''),
                     ]
                 )
-            _code.extend(
-                [
-                    f'''{self.i4}continue''',
-                    f'''{self.i3}yield {type_.singular()}'''
-                ]
-            )
+            _code.extend([f'''{self.i4}continue''', f'''{self.i3}yield {type_.singular()}'''])
         else:
             _code.extend(
                 [

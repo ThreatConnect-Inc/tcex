@@ -85,7 +85,7 @@ class Package(BinABC):
 
     def exclude_files(self, src: str, names: list):
         """Ignore exclude files in shutil.copytree (callback)."""
-        exclude_list = self._build_excludes_glob
+        exclude_list = list(self._build_excludes_glob)
         if src == os.getcwd():
             # get excludes that are specific to the Apps base directory
             exclude_list.extend(self._build_excludes_base)
