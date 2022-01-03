@@ -35,6 +35,7 @@ from tcex.sessions.external_session import ExternalSession
 from tcex.sessions.tc_session import TcSession
 from tcex.tokens import Tokens
 from tcex.utils import Utils
+from tcex.utils.file_operations import FileOperations
 
 if TYPE_CHECKING:
     # first-party
@@ -157,6 +158,11 @@ class TcEx:
         """Return an ExitService object."""
         # TODO: [high] @cblades - inputs being required for exit prevents AOT from exiting
         return self.get_exit_service(self.inputs)
+
+    @cached_property
+    def file_operations(self) -> 'FileOperations':  # pylint: disable=no-self-use
+        """Include the Utils module."""
+        return FileOperations(temp_path=self.inputs.model_unresolved.tc_temp_path)
 
     @staticmethod
     def get_exit_service(inputs) -> ExitService:

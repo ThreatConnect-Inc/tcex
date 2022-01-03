@@ -64,7 +64,6 @@ class KeyValueRedis(KeyValueABC):
         Args:
             context: A specific context for the create.
             key: The field name (key) for the kv pair in Redis.
-            decode: encoding to use to decode retrieved value or False to not decode value.
 
         Returns:
             str: The response data from Redis.

@@ -63,7 +63,7 @@ class BinABC(ABC):
         logging.setLoggerClass(TraceLogger)
 
         # init logger
-        logger = logging.getLogger('tcex-cli-Logger')
+        logger = logging.getLogger('tcex-cli')
 
         # set logger level
         logger.setLevel(logging.TRACE)  # pylint: disable=no-member

@@ -5,7 +5,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import TYPE_CHECKING, Dict, List, Optional
 
 # third-party
 import yaml
@@ -18,6 +18,10 @@ from tinydb import Query, TinyDB
 from tcex.app_config.models import TemplateConfigModel
 from tcex.backports import cached_property
 from tcex.bin.bin_abc import BinABC
+
+if TYPE_CHECKING:  # pragma: no cover
+    # third-party
+    from requests import Response
 
 
 class Template(BinABC):
@@ -73,10 +77,9 @@ class Template(BinABC):
             url = f'{self.base_url}/contents/{template}'
 
         params = {'ref': branch}
-        self.log.warning(f'Using branch for templates: {branch} ==> {url}')
-        r = self.session.get(url, params=params)
+        r: 'Response' = self.session.get(url, params=params)
         if not r.ok:
-            self.log.error(f'Failed retrieving contents for type {url}.')
+            self.log.error(f'Failed retrieving contents for type {r.request.url}.')
             self.errors = True
 
         for content in r.json():

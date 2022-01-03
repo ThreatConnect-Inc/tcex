@@ -24,12 +24,14 @@ class Binary(bytes):
     allow_empty: bool = True
     max_length: int = None
     min_length: int = None
+    strip: bool = False
 
     @classmethod
     def __get_validators__(cls) -> Callable:
         """Run validators / modifiers on input."""
         yield cls.validate_variable_type
         yield cls.validate_type
+        yield cls.validate_strip
         yield cls.validate_allow_empty
         yield cls.validate_max_length
         yield cls.validate_min_length
@@ -62,6 +64,13 @@ class Binary(bytes):
         return value
 
     @classmethod
+    def validate_strip(cls, value: Union[bytes, 'BinaryVariable']) -> bytes:
+        """Raise exception if value is not a Binary type."""
+        if cls.strip is True:
+            value = value.strip()
+        return value
+
+    @classmethod
     def validate_type(cls, value: Union[bytes, 'BinaryVariable'], field: 'ModelField') -> bytes:
         """Raise exception if value is not a Binary type."""
         if not isinstance(value, bytes):
@@ -86,12 +95,13 @@ def binary(
     allow_empty: bool = True,
     min_length: int = None,
     max_length: int = None,
+    strip: bool = False,
 ) -> type:
     """Return customized Binary type."""
     namespace = dict(
         allow_empty=allow_empty,
-        # conditional_required=conditional_required,
         max_length=max_length,
         min_length=min_length,
+        strip=strip,
     )
     return type('CustomizedBinary', (Binary,), namespace)

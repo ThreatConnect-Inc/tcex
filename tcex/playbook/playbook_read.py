@@ -47,17 +47,16 @@ class PlaybookRead:
                 f'Invalid variable provided ({variable}), variable must be of type {type_}.'
             )
 
-    def _coerce_string_value(self, value: Union[bool, float, int, str]) -> str:
+    @staticmethod
+    def _coerce_string_value(value: Union[bool, float, int, str]) -> str:
         """Return a string value from an bool or int."""
         # coerce bool before int as python says a bool is an int
         if isinstance(value, bool):
             # coerce bool to str type
-            self.log.warning(f'Coercing bool value ({value}) to a string ("{str(value).lower()}").')
             value = str(value).lower()
 
         # coerce int to str type
         if isinstance(value, (float, int)):
-            self.log.warning(f'Coercing float/int value ({value}) to a string ("{str(value)}").')
             value = str(value)
 
         return value
@@ -492,11 +491,7 @@ class PlaybookRead:
         data: Optional[str] = self._get_data(key)
         return self._process_string(data, resolve_embedded=resolve_embedded, serialized=True)
 
-    def string_array(
-        self,
-        key: str,
-        resolve_embedded: Optional[bool] = True,
-    ) -> Optional[List[str]]:
+    def string_array(self, key: str) -> Optional[List[str]]:
         """Read the value from key value store.
 
         StringArray data should be stored as serialized string.
@@ -511,7 +506,7 @@ class PlaybookRead:
         if data is not None:
             # data should be string
 
-            # decode the entire response, but not the items in the array?
+            # decode the entire response
             data = data.decode()
 
             # Array type is serialized before writing to redis, deserialize the data
@@ -519,10 +514,7 @@ class PlaybookRead:
 
             values = []
             for d in data:
-                # d should be a base64 encoded string
-                values.append(
-                    self._process_string(d, resolve_embedded=resolve_embedded, serialized=False)
-                )
+                values.append(self._process_string(d, resolve_embedded=False, serialized=False))
             data = values
 
         return data
@@ -559,7 +551,7 @@ class PlaybookRead:
         if data is not None:
             # data should be string
 
-            # decode the entire response, but not the items in the array?
+            # decode the entire response
             data = data.decode()
 
             # Array type is serialized before writing to redis, deserialize the data

@@ -73,17 +73,16 @@ class PlaybookCreate:
                 f'Invalid variable provided ({variable}), variable must be of type {type_}.'
             )
 
-    def _coerce_string_value(self, value: Union[bool, float, int, str]) -> str:
+    @staticmethod
+    def _coerce_string_value(value: Union[bool, float, int, str]) -> str:
         """Return a string value from an bool or int."""
         # coerce bool before int as python says a bool is an int
         if isinstance(value, bool):
             # coerce bool to str type
-            self.log.warning(f'Coercing bool value ({value}) to a string ("{str(value).lower()}").')
             value = str(value).lower()
 
         # coerce int to str type
         if isinstance(value, (float, int)):
-            self.log.warning(f'Coercing float/int value ({value}) to a string ("{str(value)}").')
             value = str(value)
 
         return value

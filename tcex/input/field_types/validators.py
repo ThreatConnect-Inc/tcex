@@ -11,19 +11,36 @@ if TYPE_CHECKING:  # pragma: no cover
     from pydantic.fields import ModelField
 
 
-def always_array(allow_empty: Optional[bool] = True) -> List[Any]:
-    """Return customized validator that always returns a list."""
+def always_array(
+    allow_empty: Optional[bool] = True,
+    include_empty: Optional[bool] = False,
+    include_null: Optional[bool] = False,
+) -> List[Any]:
+    """Return customized validator that always returns a list.
+
+    Args:
+        allow_empty: If True, return empty list if input is empty.
+        include_empty: If True, will wrap empty string in list. This does not
+            affect list with existing empty strings.
+        include_null: If True, will wrap null value in list. This does not
+            affect list with existing null values.
+    """
 
     def _always_array(value: Any, field: 'ModelField') -> List[Any]:
         """Return validator."""
-        if allow_empty is False and value in [None, '', []]:
-            raise InvalidEmptyValue(field_name={field.name})
-
-        if value is None:
-            value = []
-
-        if not isinstance(value, list):
+        if include_empty is True and value == '':
             value = [value]
+
+        if include_null is True and value is None:
+            value = [value]
+
+        if value in (None, ''):
+            value = []
+        elif not isinstance(value, list):
+            value = [value]
+
+        if allow_empty is False and value == []:
+            raise InvalidEmptyValue(field_name=field.name)
 
         return value
 

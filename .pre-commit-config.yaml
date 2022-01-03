@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.0.1
+    rev: v4.1.0
     hooks:
       - id: check-added-large-files
       - id: check-ast
@@ -15,6 +15,8 @@ repos:
       - id: check-yaml
       - id: debug-statements
       - id: detect-aws-credentials
+        args:
+          - --allow-missing-credentials
       - id: detect-private-key
       - id: double-quote-string-fixer
       - id: end-of-file-fixer
@@ -40,7 +42,7 @@ repos:
               ^tests/
           )
   - repo: https://github.com/psf/black
-    rev: 21.11b1
+    rev: 21.12b0
     hooks:
       - id: black
   - repo: https://github.com/codespell-project/codespell
@@ -52,7 +54,7 @@ repos:
     hooks:
       - id: flake8
   - repo: https://github.com/pre-commit/mirrors-isort
-    rev: v5.9.3
+    rev: v5.10.1
     hooks:
       - id: isort
         exclude: |
@@ -72,7 +74,7 @@ repos:
               ^tests/
           )
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.29.1
+    rev: v2.31.0
     hooks:
       - id: pyupgrade
         args:

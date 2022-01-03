@@ -1,6 +1,7 @@
 """App Decorators Module."""
 # standard library
 import traceback
+from typing import Optional
 
 # third-party
 import wrapt
@@ -33,7 +34,12 @@ class OnException:
             If enabled, will call app.write_output() when an exception is raised.
     """
 
-    def __init__(self, exit_msg=None, exit_enabled=True, write_output=True):
+    def __init__(
+        self,
+        exit_msg: Optional[str] = None,
+        exit_enabled: Optional[bool] = True,
+        write_output: Optional[bool] = True,
+    ):
         """Initialize Class properties"""
         self.exit_enabled = exit_enabled
         self.exit_msg = exit_msg or 'An exception has been caught. See the logs for more details.'
@@ -71,16 +77,16 @@ class OnException:
                     raise RuntimeError(
                         'The exit_enabled value must be a boolean or resolved to bool.'
                     )
-                app.tcex.log.debug(f'Fail enabled is {enabled} ({self.exit_enabled}).')
+                app.log.debug(f'Fail enabled is {enabled} ({self.exit_enabled}).')
 
             try:
                 return wrapped(*args, **kwargs)
             except Exception:
-                app.tcex.log.error(traceback.format_exc())
+                app.log.error(traceback.format_exc())
                 app.exit_message = self.exit_msg  # for test cases
                 if enabled:
                     if self.write_output:
-                        app.tcex.playbook.output.process()
+                        app.playbook.output.process()
                         if hasattr(app, 'write_output'):
                             app.write_output()
                     app.tcex.exit(ExitCode.FAILURE, self.exit_msg)

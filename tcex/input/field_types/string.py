@@ -27,6 +27,7 @@ class String(str):
     max_length: Optional[int] = None
     min_length: Optional[int] = None
     regex: Optional[str] = None
+    strip: bool = False
     validate_always = True
 
     @classmethod
@@ -34,6 +35,7 @@ class String(str):
         """Run validators / modifiers on input."""
         yield cls.validate_variable_type
         yield cls.validate_type
+        yield cls.validate_strip
         yield cls.validate_allow_empty
         yield cls.validate_max_length
         yield cls.validate_min_length
@@ -43,7 +45,7 @@ class String(str):
     def validate_allow_empty(cls, value: Union[str, 'StringVariable'], field: 'ModelField') -> str:
         """Raise exception if value is empty and allow_empty is False."""
         if cls.allow_empty is False:
-            if isinstance(value, str) and value.replace(' ', '') == '':
+            if isinstance(value, str) and value == '':
                 raise InvalidEmptyValue(field_name=field.name)
 
         return value
@@ -75,6 +77,13 @@ class String(str):
         return value
 
     @classmethod
+    def validate_strip(cls, value: Union[bytes, 'StringVariable']) -> bytes:
+        """Raise exception if value is not a Binary type."""
+        if cls.strip is True:
+            value = value.strip()
+        return value
+
+    @classmethod
     def validate_type(cls, value: Union[str, 'StringVariable'], field: 'ModelField') -> str:
         """Raise exception if value is not a String type."""
         if not isinstance(value, str):
@@ -100,6 +109,7 @@ def string(
     max_length: Optional[int] = None,
     min_length: Optional[int] = None,
     regex: Optional[str] = None,
+    strip: bool = False,
 ) -> type:
     """Return configured instance of String."""
     namespace = dict(
@@ -107,5 +117,6 @@ def string(
         max_length=max_length,
         min_length=min_length,
         regex=regex,
+        strip=strip,
     )
     return type('ConstrainedString', (String,), namespace)
