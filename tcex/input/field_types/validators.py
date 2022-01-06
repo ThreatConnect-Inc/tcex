@@ -86,7 +86,7 @@ def conditional_required(rules: List[Dict[str, str]] = True) -> Any:
 
     def _conditional_required(value: str, field: 'ModelField', values: Dict[str, Any]):
         """Return validator."""
-        for rule in rules:
+        for rule in rules or []:
             # the conditional field must be set above the conditionally required field
             conditional_field = values.get(rule.get('field'))
             conditional_operator = get_operator(rule.get('op', 'eq'))
