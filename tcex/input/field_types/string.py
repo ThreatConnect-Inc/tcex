@@ -28,7 +28,6 @@ class String(str):
     min_length: Optional[int] = None
     regex: Optional[str] = None
     strip: bool = False
-    validate_always = True
 
     @classmethod
     def __get_validators__(cls) -> Callable:

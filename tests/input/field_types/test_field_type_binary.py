@@ -7,6 +7,7 @@ import pytest
 from pydantic import BaseModel, validator
 
 # first-party
+from tcex.backports import cached_property
 from tcex.input.field_types import Binary, always_array, binary, conditional_required
 from tcex.pleb.scoped_property import scoped_property
 from tests.input.field_types.utils import InputTest
@@ -22,6 +23,7 @@ class TestInputsFieldTypes(InputTest):
 
     def setup_method(self):
         """Configure setup before all tests."""
+        cached_property._reset()
         scoped_property._reset()
 
     @pytest.mark.parametrize(
@@ -184,7 +186,6 @@ class TestInputsFieldTypes(InputTest):
                 conditional: Optional[str] = 'required'
                 my_data: binary(
                     allow_empty=allow_empty,
-                    # conditional_required=conditional_required,
                     max_length=max_length,
                     min_length=min_length,
                 )
@@ -202,7 +203,6 @@ class TestInputsFieldTypes(InputTest):
                 my_data: Optional[
                     binary(
                         allow_empty=allow_empty,
-                        # conditional_required=conditional_required,
                         max_length=max_length,
                         min_length=min_length,
                     )

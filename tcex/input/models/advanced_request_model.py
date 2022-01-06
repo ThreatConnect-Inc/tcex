@@ -1,12 +1,16 @@
 """Advanced Settings Model"""
+# pylint: disable=no-self-argument,no-self-use,wrong-import-position
 # standard library
 from typing import Any, List, Optional
 
 # third-party
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
+
+# first-party
+from tcex.input.field_types import EditChoice
 
 
-class AdvancedRequestModel(BaseModel):
+class _AdvancedRequestModel(BaseModel):
     """Advanced Settings Model
 
     * why was input included -> feature (what feature?), runtime_level
@@ -36,19 +40,19 @@ class AdvancedRequestModel(BaseModel):
         inclusion_reason='feature (advancedRequest)',
         requires_definition=True,
     )
-    tc_adv_req_headers: List[Optional[dict]] = Field(
+    tc_adv_req_headers: Optional[List[dict]] = Field(
         None,
         description='The HTTP headers for the request.',
         inclusion_reason='feature (advancedRequest)',
         requires_definition=True,
     )
-    tc_adv_req_http_method: str = Field(
+    tc_adv_req_http_method: EditChoice = Field(
         None,
         description='The HTTP method for the request.',
         inclusion_reason='feature (advancedRequest)',
         requires_definition=True,
     )
-    tc_adv_req_params: List[Optional[dict]] = Field(
+    tc_adv_req_params: Optional[List[dict]] = Field(
         None,
         description='The HTTP query params for the request.',
         inclusion_reason='feature (advancedRequest)',
@@ -66,3 +70,11 @@ class AdvancedRequestModel(BaseModel):
         inclusion_reason='feature (advancedRequest)',
         requires_definition=True,
     )
+
+    @validator('tc_adv_req_headers', 'tc_adv_req_params', always=True, pre=True)
+    def _always_array(cls, value: Optional[str]) -> list:
+        """Return array value for headers and params."""
+        print('value', value)
+        if not value:
+            value = []
+        return value

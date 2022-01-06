@@ -76,7 +76,7 @@ class TestAdvancedRequest:
         assert r.status_code == 200
         # assert headers
         assert data.get('headers', {}).get('Pytest') == 'pytest'
-        assert data.get('headers', {}).get('User-Agent') == 'TcEx/3.0.0, Pytest/1.0.0'
+        assert 'TcEx/3' in data.get('headers', {}).get('User-Agent')
         # assert params
         assert data.get('args', {}).get('one') == '1'
         assert data.get('args', {}).get('two') == ''
@@ -165,7 +165,7 @@ class TestAdvancedRequest:
         assert r.status_code == 200
         # assert headers
         assert data.get('headers', {}).get('Pytest') == 'pytest'
-        assert data.get('headers', {}).get('User-Agent') == 'TcEx/3.0.0, Pytest/1.0.0'
+        assert 'TcEx/3' in data.get('headers', {}).get('User-Agent')
         # assert params
         assert data.get('args', {}).get('one') == '1'
         assert data.get('args', {}).get('two') is None
@@ -205,7 +205,7 @@ class TestAdvancedRequest:
         assert data.get('data') == tcex.inputs.model.tc_adv_req_body
         # assert headers
         assert data.get('headers', {}).get('Pytest') == 'pytest'
-        assert data.get('headers', {}).get('User-Agent') == 'TcEx/3.0.0, Pytest/1.0.0'
+        assert 'TcEx/3' in data.get('headers', {}).get('User-Agent')
         # assert params
         assert data.get('args', {}).get('one') == '1'
 
@@ -244,7 +244,7 @@ class TestAdvancedRequest:
         assert data.get('data') == tcex.inputs.model.tc_adv_req_body
         # assert headers
         assert data.get('headers', {}).get('Pytest') == 'pytest'
-        assert data.get('headers', {}).get('User-Agent') == 'TcEx/3.0.0, Pytest/1.0.0'
+        assert 'TcEx/3' in data.get('headers', {}).get('User-Agent')
         # assert params
         assert data.get('args', {}).get('one') == '1'
 
@@ -284,6 +284,6 @@ class TestAdvancedRequest:
         assert data.get('form', {}).get('two') == '2'
         # assert headers
         assert data.get('headers', {}).get('Pytest') == 'pytest'
-        assert data.get('headers', {}).get('User-Agent') == 'TcEx/3.0.0, Pytest/1.0.0'
+        assert 'TcEx/3' in data.get('headers', {}).get('User-Agent')
         # assert params
         assert data.get('args', {}).get('one') == '1'

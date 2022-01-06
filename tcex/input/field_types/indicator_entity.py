@@ -21,14 +21,18 @@ class IndicatorEntity(TCEntity):
     """Indicator Entity Field (Model) Type"""
 
     @validator('type')
+    def is_empty(cls, value: Dict[str, str], field: 'ModelField') -> Dict[str, str]:
+        """Validate that the value is a non-empty string."""
+        if isinstance(value, str) and value.replace(' ', '') == '':
+            raise InvalidEmptyValue(field_name=field.name)
+        return value
+
+    @validator('type')
     def is_type(cls, value: Dict[str, str], field: 'ModelField') -> Dict[str, str]:
         """Validate that the value is a non-empty string.
 
         Without the always and pre args, None values will validated before this validator is called.
         """
-        if isinstance(value, str) and value.replace(' ', '') == '':
-            raise InvalidEmptyValue(field_name=field.name)
-
         ti_utils = ThreatIntelUtils(session_tc=registry.session_tc)
         if value not in ti_utils.indicator_types:
             raise InvalidEntityType(field_name=field.name, entity_type='Indicator', value=value)

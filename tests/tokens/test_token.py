@@ -133,7 +133,7 @@ class TestToken:
         tcex.token.token_expires = '1700000000'
 
         try:
-            r = tcex.session.get('/v2/owners')
+            r = tcex.session_tc.get('/v2/owners')
             assert tcex.token.token_expires == 1700000000  # coverage
             assert r.status_code == 200, f'Failed API call ({r.text})'
         except RuntimeError:

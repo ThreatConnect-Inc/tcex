@@ -1,52 +1,27 @@
 """Choice Field Type"""
 # standard library
-import logging
-from typing import TYPE_CHECKING, Any, Callable
+from typing import Callable
 
 # first-party
-from tcex.input.field_types.exception import InvalidEmptyValue, InvalidType
-
-if TYPE_CHECKING:  # pragma: no cover
-    # third-party
-    from pydantic.fields import ModelField
+from tcex.input.field_types.edit_choice import EditChoice
 
 
-# get tcex logger
-logger = logging.getLogger('tcex')
-
-
-class Choice:
+class Choice(EditChoice):
     """Choice Field Type"""
-
-    def __init__(self, value):
-        """Initialize choice type"""
-        if isinstance(value, Choice):
-            self._value = value.value
-        else:
-            self._value = value
-
-    @property
-    def value(self) -> str:
-        """Return the selection. Return None if selection is '-- Select --'"""
-        return None if self._value == '-- Select --' else self._value
 
     @classmethod
     def __get_validators__(cls) -> Callable:
-        """Define one or more validators for Pydantic custom type."""
-        yield cls._validate
+        """Run validators / modifiers on input."""
+        yield cls.modifier_select
+        yield from super().__get_validators__()
 
     @classmethod
-    def _validate(cls, value: Any, field: 'ModelField') -> 'Choice':
-        """Pydantic validate method."""
-        if isinstance(value, cls):
-            return value
+    def modifier_select(cls, value: str) -> str:
+        """Modify value if -- Select -- option is selected.
 
-        if not isinstance(value, (int, str)):
-            raise InvalidType(
-                field_name=field.name, expected_types='(int, str)', provided_type=type(value)
-            )
-
-        if isinstance(value, str) and value.replace(' ', '') == '':
-            raise InvalidEmptyValue(field_name=field.name)
-
-        return cls(value)
+        Job Apps: If not selection None is sent.
+        PB Apps: '-- Select --' has to be added to validValues by developer.
+        """
+        if value == '-- Select --':
+            value = None
+        return value

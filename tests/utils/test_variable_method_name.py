@@ -11,5 +11,5 @@ class TestVariableMethodName:
         Args:
             tcex (TcEx, fixture): An instantiated instance of TcEx object.
         """
-        method = tcex.utils.variable_method_name('#App:9876:string.operation!String')
+        method = tcex.utils.variable_playbook_method_name('#App:9876:string.operation!String')
         assert method == 'string_operation_string'

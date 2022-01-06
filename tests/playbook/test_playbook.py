@@ -129,7 +129,7 @@ class TestUtils:
             value = od.get('value')
 
             variable_model = tcex.utils.get_playbook_variable_model(variable)
-            playbook.output.add(variable_model.key, value, variable_model.type)
+            playbook.output[variable_model.key] = value
 
             if variable in expected_data:
                 if isinstance(value, list):
@@ -140,7 +140,7 @@ class TestUtils:
                 expected_data.setdefault(variable, value)
 
         # write output
-        playbook.output.create()
+        playbook.output.process()
 
         # validate output
         for variable, value in expected_data.items():
@@ -200,12 +200,12 @@ class TestUtils:
             value = od.get('value')
 
             variable_model = tcex.utils.get_playbook_variable_model(variable)
-            playbook.output.add(variable_model.key, value, variable_model.type, append_array=False)
+            playbook.output[variable_model.key] = value
 
             expected_data[variable] = value
 
         # write output
-        playbook.output.create()
+        playbook.output.process()
 
         # validate output
         for variable, value in expected_data.items():
@@ -257,14 +257,12 @@ class TestUtils:
 
             variable_model = tcex.utils.get_playbook_variable_model(variable)
             for v in value:
-                playbook.output.add(
-                    variable_model.key, v, variable_model.type, append_array=od.get('append')
-                )
+                playbook.output[variable_model.key] = v
 
             expected_data[variable] = od.get('expected')
 
         # write output
-        playbook.output.create()
+        playbook.output.process()
 
         # validate output
         for variable, value in expected_data.items():

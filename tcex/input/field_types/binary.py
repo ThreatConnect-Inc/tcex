@@ -66,7 +66,7 @@ class Binary(bytes):
     @classmethod
     def validate_strip(cls, value: Union[bytes, 'BinaryVariable']) -> bytes:
         """Raise exception if value is not a Binary type."""
-        if cls.strip is True:
+        if value is not None and cls.strip is True:
             value = value.strip()
         return value
 

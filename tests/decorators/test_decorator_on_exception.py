@@ -1,10 +1,10 @@
-"""Test the TcEx Debug Decorator."""
+"""Test TcEx Module"""
 # first-party
 from tcex.decorators.on_exception import OnException
 
 
 # pylint: disable=no-self-use
-class TestIterateOnArgDecorators:
+class TestOnExceptionDecorators:
     """Test the TcEx Decorators."""
 
     args = None

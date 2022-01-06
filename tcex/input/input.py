@@ -15,7 +15,7 @@ from pydantic import BaseModel, Extra
 from tcex.app_config.install_json import InstallJson
 from tcex.backports import cached_property
 from tcex.input.field_types import Sensitive
-from tcex.input.models import feature_map, runtime_level_map
+from tcex.input.models import feature_map, runtime_level_map, tc_action_map
 from tcex.key_value_store import RedisClient
 from tcex.pleb.none_model import NoneModel
 from tcex.pleb.registry import registry
@@ -219,6 +219,10 @@ class Input:
         if 'model' in self.__dict__:
             del self.__dict__['model']
 
+        # add App level models based on special "tc_action" input
+        if hasattr(self.model_unresolved, 'tc_action'):
+            self._models.extend(tc_action_map.get(self.model_unresolved.tc_action, []))
+
         # force data model to load so that validation is done at this EXACT point
         _ = self.model
 
@@ -390,7 +394,7 @@ class Input:
 
         # add all models for any supported features of the App
         for feature in self.ij.model.features:
-            self._models.extend(feature_map.get(feature))
+            self._models.extend(feature_map.get(feature, []))
 
         # add all models based on the runtime level of the App
         self._models.extend(runtime_level_map.get(self.ij.model.runtime_level.lower()))

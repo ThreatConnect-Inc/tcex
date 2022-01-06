@@ -77,7 +77,7 @@ class AdvancedRequest:
         }]
         """
         for header_data in self.inputs.model.tc_adv_req_headers:
-            value: str = self.playbook.read(header_data.get('value'))
+            value: str = self.playbook.read.variable(header_data.get('value'))
             self.headers[str(header_data.get('key'))] = str(value)
 
     def configure_params(self) -> None:
@@ -90,7 +90,7 @@ class AdvancedRequest:
         """
         for param_data in self.inputs.model.tc_adv_req_params:
             param: str = str(param_data.get('key'))
-            values: str = self.playbook.read(param_data.get('value'))
+            values: str = self.playbook.read.variable(param_data.get('value'))
             if not isinstance(values, list):
                 values: list = [values]
             for value in values:
@@ -129,17 +129,19 @@ class AdvancedRequest:
             raise RuntimeError(f'Exception during request ({e}).')
 
         # write outputs as soon as they are available
-        self.playbook.add_output(
+        self.playbook.create.variable(
             f'{self.output_prefix}.request.headers', json.dumps(dict(response.headers)), 'String'
         )
-        self.playbook.add_output(
+        self.playbook.create.variable(
             f'{self.output_prefix}.request.ok', str(response.ok).lower(), 'String'
         )
-        self.playbook.add_output(f'{self.output_prefix}.request.reason', response.reason, 'String')
-        self.playbook.add_output(
+        self.playbook.create.variable(
+            f'{self.output_prefix}.request.reason', response.reason, 'String'
+        )
+        self.playbook.create.variable(
             f'{self.output_prefix}.request.status_code', response.status_code, 'String'
         )
-        self.playbook.add_output(
+        self.playbook.create.variable(
             f'{self.output_prefix}.request.url', response.request.url, 'String'
         )
 
@@ -151,8 +153,10 @@ class AdvancedRequest:
             raise RuntimeError('Download was larger than maximum supported 500 MB.')
 
         # write content after size validation
-        self.playbook.add_output(f'{self.output_prefix}.request.content', response.text, 'String')
-        self.playbook.add_output(
+        self.playbook.create.variable(
+            f'{self.output_prefix}.request.content', response.text, 'String'
+        )
+        self.playbook.create.variable(
             f'{self.output_prefix}.request.content.binary', response.content, 'Binary'
         )
 
