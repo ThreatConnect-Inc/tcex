@@ -118,7 +118,6 @@ class Sensitive:
         """Return the actual value."""
         return self._sensitive_value
 
-    # TODO: [high] @phuerta - is there a better way to handle this?
     @classmethod
     def wrap_type(cls, value: Union[str, 'StringVariable']) -> str:
         """Raise exception if value is not a String type."""

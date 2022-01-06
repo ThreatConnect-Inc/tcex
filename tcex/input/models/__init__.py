@@ -7,6 +7,7 @@ from tcex.input.models.aot_execution_enabled_model import AotExecutionEnabledMod
 from tcex.input.models.api_model import ApiModel
 from tcex.input.models.batch_model import BatchModel
 from tcex.input.models.cal_settings_model import CalSettingsModel
+from tcex.input.models.create_config_model import CreateConfigModel
 from tcex.input.models.logging_model import LoggingModel
 from tcex.input.models.model_map import feature_map, runtime_level_map, tc_action_map
 from tcex.input.models.organization_model import OrganizationModel

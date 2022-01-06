@@ -16,7 +16,7 @@ class TestVictimAttributeSnippets(TestV3):
         self.v3 = self.v3_helper.v3
         self.tcex = self.v3_helper.tcex
 
-    # TODO [PLAT - 4144] - next url is invalid
+    # TODO [PLAT-4144] - next url is invalid
     # def test_victim_attributes_get_all(self):
     #     """Test snippet"""
     #     # Begin Snippet
