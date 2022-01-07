@@ -73,7 +73,7 @@ class Playbook:
 
         "My Data" returns **String**
         """
-        return self.utils.get_playbook_variable_model(variable).type
+        return self.utils.get_playbook_variable_type(variable)
 
     @cached_property
     def create(self) -> 'PlaybookCreate':

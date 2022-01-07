@@ -300,11 +300,11 @@ class TestInputsFieldTypes(InputTest):
             # required, array input
             (['string'], ['string'], 'StringArray', False, False),
             # required, empty string input
-            ('', [''], 'String', False, False),
+            ('', [], 'String', False, False),
             # required, empty array input
             ([], [], 'StringArray', False, False),
             # optional, empty string input
-            ('', [''], 'String', True, False),
+            ('', [], 'String', True, False),
             # optional, empty array input
             ([], [], 'StringArray', True, False),
             # optional, null input
@@ -358,3 +358,100 @@ class TestInputsFieldTypes(InputTest):
             fail_test=fail_test,
             playbook_app=playbook_app,
         )
+
+    @pytest.mark.parametrize(
+        ('nested_reference,nested_value,value,expected_value'),
+        [
+            (
+                '#App:1234:my_ref!String',
+                'nested string',
+                'string with nested string: #App:1234:my_ref!String',
+                'string with nested string: nested string',
+            ),
+            (
+                '#App:1234:my_ref!StringArray',
+                ['nested string'],
+                'string with nested value: #App:1234:my_ref!StringArray',
+                'string with nested value: ["nested string"]',
+            ),
+            (
+                '#App:1234:my_ref!Binary',
+                b'nested string',
+                'string with nested string: #App:1234:my_ref!Binary',
+                'string with nested string: <binary>',
+            ),
+            (
+                '#App:1234:my_ref!BinaryArray',
+                [b'nested string'],
+                'string with nested string: #App:1234:my_ref!BinaryArray',
+                'string with nested string: <binary>',
+            ),
+            (
+                '#App:1234:my_ref!KeyValue',
+                {'key': 'key', 'value': 'value', 'type': 'any'},
+                'string with nested string: #App:1234:my_ref!KeyValue',
+                'string with nested string: {"key": "key", "value": "value", "type": "any"}',
+            ),
+            (
+                '#App:1234:my_ref!KeyValueArray',
+                [{'key': 'key', 'value': 'value', 'type': 'any'}],
+                'string with nested string: #App:1234:my_ref!KeyValueArray',
+                'string with nested string: [{"key": "key", "value": "value", "type": "any"}]',
+            ),
+            (
+                '#App:1234:my_ref!TCEntity',
+                {'id': '1', 'value': '1.1.1.1', 'type': 'Address'},
+                'string with nested string: #App:1234:my_ref!TCEntity',
+                'string with nested string: {"id": "1", "value": "1.1.1.1", "type": "Address"}',
+            ),
+            (
+                '#App:1234:my_ref!TCEntityArray',
+                [{'id': '1', 'value': '1.1.1.1', 'type': 'Address'}],
+                'string with nested string: #App:1234:my_ref!TCEntityArray',
+                'string with nested string: [{"id": "1", "value": "1.1.1.1", "type": "Address"}]',
+            ),
+            (
+                '#App:1234:my_ref!String',
+                None,
+                'string with nested string: #App:1234:my_ref!String',
+                'string with nested string: <null>',
+            ),
+        ],
+    )
+    def test_field_type_string_with_nested_reference(
+        self,
+        nested_reference,
+        nested_value,
+        value,
+        expected_value,
+        playbook_app: 'MockApp',
+    ):
+        """Test String field type with nested reference.
+
+        Args:
+            nested_reference: nested variable reference found within string
+            nested_value: the value that nested_reference should resolve to
+            value: the String value exactly as passed in from the UI
+            expected_value: The String value as passed in from the UI after nested reference
+            is resolved
+            playbook_app (fixture): An instance of MockApp.
+        """
+
+        class PytestModel(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: String
+
+        config_data = {'my_data': '#App:1234:my_data!String'}
+        app = playbook_app(config_data=config_data)
+        tcex = app.tcex
+        self._stage_key_value('my_ref', nested_reference, nested_value, tcex)
+        self._stage_key_value(
+            'my_data',
+            '#App:1234:my_data!String',
+            value,
+            tcex,
+        )
+        tcex.inputs.add_model(PytestModel)
+
+        assert tcex.inputs.model.my_data == expected_value

@@ -11,6 +11,7 @@ from typing import Any, List, Optional, Union
 from tcex.key_value_store import KeyValueApi, KeyValueRedis
 from tcex.pleb.registry import registry
 from tcex.utils.utils import Utils
+from tcex.utils.variables import BinaryVariable, StringVariable
 
 # get tcex logger
 logger = logging.getLogger('tcex')
@@ -42,7 +43,7 @@ class PlaybookRead:
 
     def _check_variable_type(self, variable: str, type_: str) -> bool:
         """Validate the correct type was passed to the method."""
-        if self.utils.get_playbook_variable_model(variable).type.lower() != type_.lower():
+        if self.utils.get_playbook_variable_type(variable).lower() != type_.lower():
             raise RuntimeError(
                 f'Invalid variable provided ({variable}), variable must be of type {type_}.'
             )
@@ -109,7 +110,7 @@ class PlaybookRead:
                 data = self._load_data(data)
 
             if b64decode is True:
-                data = base64.b64decode(data)
+                data = BinaryVariable(base64.b64decode(data))
                 if decode is True:
                     # allow developer to decided if they want bytes or str
                     data = self._decode_binary(data)
@@ -209,7 +210,7 @@ class PlaybookRead:
                 data = self._read_embedded(data)
 
             # coerce data back to string, since technically TC doesn't support bool, int, etc
-            data = self._coerce_string_value(data)
+            data = StringVariable(self._coerce_string_value(data))
 
         return data
 
@@ -287,21 +288,25 @@ class PlaybookRead:
 
             # TODO: [high] should this behavior be changed in 3.0?
             self.log.trace(f'embedded variable: {variable}, value: {v}')
+
+            if match.group('type') in ['Binary', 'BinaryArray']:
+                self.log.trace(
+                    f'Binary types may not be embedded into strings. Could not embed: {variable}'
+                )
+                v = '<binary>'
+
             if isinstance(v, (dict, list)):
                 v = json.dumps(v)
-                # for KeyValueArray with nested dict/list type replace the
-                # quoted value to ensure the resulting data is loadable JSON
-                value = value.replace(f'"{variable}"', v)
 
-            if v is not None:
-                # only replace variable if a non-null value is returned from kv store
-                # APP-1030 need to revisit this to handle variable references in kv/kv_arrays that
-                # are None.  Would like to be able to say if value is just the variable reference,
-                # sub None value, else insert '' in string.  That would require a kv-specific
-                # version of this method that gets the entire list/dict instead of just the string.
-                value = value.replace(variable, v)
-                # value = re.sub(variable, v, value)
-        return value
+            elif v is None:
+                v = '<null>'
+
+            # value.replace was chosen over re.sub due to an issue encountered while testing an app.
+            # re.sub will handle escaped characters like \t, value.replace would not handle these
+            # scenarios.
+            value = value.replace(variable, v)
+
+        return StringVariable(value)
 
     @staticmethod
     def _to_array(value: Optional[Union[List, str]]) -> List:
@@ -314,22 +319,6 @@ class PlaybookRead:
             value = [value]
         return value
 
-    def _wrap_embedded_keyvalue(self, data: str) -> str:
-        """Wrap keyvalue embedded variable in double quotes."""
-        # TODO: need to verify if core still sends improper JSON for KeyValueArrays
-        if data is not None:  # pragma: no cover
-            variables = []
-            for v in re.finditer(self.utils.variable_playbook_keyvalue_embedded, data):
-                variables.append(v.group(0))
-
-            for var in set(variables):  # recursion over set to handle duplicates
-                # pull (#App:1441:embedded_string!String) from (": #App:1441:embedded_string!String)
-                variable_string = re.search(self.utils.variable_playbook_parse, var).group(0)
-                # reformat to replace the correct instance only, handling the case where a variable
-                # is embedded multiple times in the same key value array.
-                data = data.replace(var, f'": "{variable_string}"')
-        return data
-
     def any(self, key: str) -> Optional[Union[bytes, dict, list, str]]:
         """Return the value from the keystore for all types.
 
@@ -340,7 +329,7 @@ class PlaybookRead:
             return None
 
         key = key.strip()  # clean up key
-        variable_type = self.utils.get_playbook_variable_model(key).type.lower()
+        variable_type = self.utils.get_playbook_variable_type(key).lower()
         variable_type_map = {
             'binary': self.binary,
             'binaryarray': self.binary_array,
@@ -352,7 +341,19 @@ class PlaybookRead:
             'tcentityarray': self.tc_entity_array,
             # 'tcenhancedentity': self.tc_entity,
         }
-        return variable_type_map.get(variable_type, self.raw)(key)
+        value = variable_type_map.get(variable_type, self.raw)(key)
+
+        if value is not None:
+            if variable_type == 'binary':
+                value = BinaryVariable(value)
+            elif variable_type == 'binaryarray':
+                value = [v if v is None else BinaryVariable(v) for v in value]
+            elif variable_type == 'string':
+                value = StringVariable(value)
+            elif variable_type == 'stringarray':
+                value = [v if v is None else StringVariable(v) for v in value]
+
+        return value
 
     def binary(
         self,

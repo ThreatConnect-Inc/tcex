@@ -7,7 +7,9 @@ import pytest
 from pydantic import BaseModel, ValidationError
 
 # first-party
+from tcex.backports import cached_property
 from tcex.input.field_types import Choice
+from tcex.pleb.scoped_property import scoped_property
 from tests.input.field_types.utils import InputTest
 
 if TYPE_CHECKING:
@@ -16,8 +18,14 @@ if TYPE_CHECKING:
     from tests.mock_app import MockApp
 
 
+# pylint: disable=no-self-argument, no-self-use
 class TestInputsFieldTypeChoice(InputTest):
     """Test TcEx Inputs Config."""
+
+    def setup_method(self):
+        """Configure setup before all tests."""
+        scoped_property._reset()
+        cached_property._reset()
 
     @staticmethod
     def test_field_type_choice(playbook_app: 'MockApp'):
@@ -118,6 +126,11 @@ class TestInputsFieldTypeChoice(InputTest):
             #
             # required, normal input
             ('choice_1', 'choice_1', False, False),
+            # Choice input initialized with None (can happen in optional choice fields for job apps)
+            (None, None, True, False),
+            # Choice input initialized with -- Select -- special value
+            ('-- Select --', None, True, False),
+            ('-- Select --', None, False, True),
         ],
     )
     def test_field_type_choice_select_value(
@@ -147,16 +160,11 @@ class TestInputsFieldTypeChoice(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_choice: Optional[Choice]
-
-        # config_data = {'my_choice': '-- Select --'}
-        # tcex: 'TcEx' = playbook_app(config_data=config_data).tcex
-        # tcex.inputs.add_model(PytestModel)
-        # assert tcex.inputs.model.my_choice is None
+                my_choice_optional: Optional[Choice]
 
         self._type_validation(
             PytestModel,
-            input_name='my_data',
+            input_name='my_choice_optional' if optional else 'my_choice',
             input_value=input_value,
             input_type='String',
             expected=expected,

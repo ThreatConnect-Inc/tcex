@@ -302,7 +302,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
         #
         # Get time delta between expected result and result and calculate difference in seconds
         second_difference = abs(math.floor((expected_parse_result - result).total_seconds()))
-        assert 0 <= second_difference <= 2
+        assert 0 <= second_difference <= 3
 
     @staticmethod
     @pytest.mark.parametrize(

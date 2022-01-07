@@ -68,7 +68,7 @@ class PlaybookCreate:
 
     def _check_variable_type(self, variable: str, type_: str) -> bool:
         """Validate the correct type was passed to the method."""
-        if self.utils.get_playbook_variable_model(variable).type.lower() != type_.lower():
+        if self.utils.get_playbook_variable_type(variable).lower() != type_.lower():
             raise RuntimeError(
                 f'Invalid variable provided ({variable}), variable must be of type {type_}.'
             )
@@ -201,7 +201,7 @@ class PlaybookCreate:
             return None
 
         # get the type from the variable
-        variable_type = self.utils.get_playbook_variable_model(variable).type.lower()
+        variable_type = self.utils.get_playbook_variable_type(variable).lower()
 
         # map type to create method
         variable_type_map = {

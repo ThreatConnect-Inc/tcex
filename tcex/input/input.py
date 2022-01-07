@@ -56,18 +56,6 @@ def input_model(models: list) -> BaseModel:
     return InputModel
 
 
-class BinaryVariable(bytes):
-    """Ensure an array is always returned for the input."""
-
-    _variable_type = 'Binary'
-
-
-class StringVariable(str):
-    """Ensure an array is always returned for the input."""
-
-    _variable_type = 'String'
-
-
 class Input:
     """Module to handle inputs for all App types."""
 
@@ -289,65 +277,11 @@ class Input:
                 # can be coerced to the wrong type. the BinaryVariable and
                 # StringVariable custom types allows for the validator in Binary
                 # and String types to raise a value error.
-                variable_type = self.utils.get_playbook_variable_model(value).type
                 value = registry.playbook.read.variable(value)
-                if value is not None:
-                    if variable_type.lower() == 'binary':
-                        value = BinaryVariable(value)
-                    elif variable_type.lower() == 'binaryarray':
-                        value = [v if v is None else BinaryVariable(v) for v in value]
-                    elif variable_type.lower() == 'string':
-                        value = StringVariable(value)
-                    elif variable_type.lower() == 'stringarray':
-                        value = [v if v is None else StringVariable(v) for v in value]
             elif self.utils.is_tc_variable(value):  # only matches playbook variables
                 value = self.resolve_variable(variable=value)
             elif isinstance(value, str):
-                # replace all embedded pb and tc variables (e.g., #APP:... and &{TC:...})
-                for match in re.finditer(self.utils.variable_expansion_pattern, str(value)):
-                    variable = match.group(0)  # the full variable pattern
-
-                    if match.group('type') in [
-                        'Binary',
-                        'BinaryArray',
-                        'KeyValue',
-                        'KeyValueArray',
-                        'StringArray',
-                        'TCEntity',
-                        'TCEntityArray',
-                    ]:
-                        # "mixed" types are not supported
-                        if self.ij.model.get_param(name).allow_nested is False:
-                            raise RuntimeError(
-                                f'''{match.group('type')} variables '''
-                                '''can not be in mixed string.'''
-                            )
-                        value = registry.playbook.read.variable(variable)
-                        break
-
-                    # working with String type or Custom type
-                    if match.group('origin') == '#':  # pb-variable
-                        v = registry.playbook.read.variable(variable)
-                    elif match.group('origin') == '&':  # tc-variable
-                        v = self.resolve_variable(variable)
-
-                    # replace the *variable* with the lookup results (*v*) in the provided *value*
-                    try:
-                        if value == variable and v is None:
-                            # handle non-embedded null values
-                            value = None
-                        else:
-                            # handle embedded string with null values
-                            if v is None:
-                                # embedded
-                                value = '<null>'
-                                self.log.warning(
-                                    f'Could not replace variable {variable} on input {name}.'
-                                )
-
-                            value = StringVariable(value.replace(variable, v))
-                    except Exception:
-                        self.log.warning(f'Could not replace variable {variable} on input {name}.')
+                value = registry.playbook.read._read_embedded(value)
 
             _inputs[name] = value
 

@@ -1,12 +1,15 @@
 """KeyValue Playbook Type"""
 # standard library
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 # third-party
 from pydantic import BaseModel, validator
 
 # first-party
+from tcex.input.field_types.binary import Binary
 from tcex.input.field_types.exception import InvalidEmptyValue
+from tcex.input.field_types.string import String
+from tcex.input.field_types.tc_entity import TCEntity
 
 if TYPE_CHECKING:  # pragma: no cover
     # third-party
@@ -19,7 +22,16 @@ class KeyValue(BaseModel):
 
     key: str
     type: Optional[str]
-    value: Any
+    value: Union[
+        List['KeyValue'],
+        'KeyValue',
+        List[TCEntity],
+        TCEntity,
+        List[String],
+        String,
+        List[Binary],
+        Binary,
+    ]
 
     @validator('key')
     def non_empty_string(cls, value: str, field: 'ModelField') -> Dict[str, Any]:
@@ -32,3 +44,6 @@ class KeyValue(BaseModel):
         """Model Config"""
 
         validate_assignment = True
+
+
+KeyValue.update_forward_refs()

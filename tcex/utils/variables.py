@@ -7,6 +7,18 @@ from typing import Any, List
 from tcex.utils.models import PlaybookVariableModel
 
 
+class BinaryVariable(bytes):
+    """Bytes object with internal variable type field. Used when reading playbook variables"""
+
+    _variable_type = 'Binary'
+
+
+class StringVariable(str):
+    """String object with internal variable type field. Used when reading playbook variables"""
+
+    _variable_type = 'String'
+
+
 class Variables:
     """TcEx Utilities Variables Class"""
 
@@ -19,6 +31,11 @@ class Variables:
                 var = re.search(self.variable_playbook_parse, variable)
                 data = PlaybookVariableModel(**var.groupdict())
         return data
+
+    def get_playbook_variable_type(self, variable: str) -> str:
+        """Get variable type"""
+        model = self.get_playbook_variable_model(variable)
+        return 'String' if model is None else model.type
 
     def is_playbook_variable(self, key: str) -> bool:
         """Return True if provided key is a properly formatted playbook variable."""

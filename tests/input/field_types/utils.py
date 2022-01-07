@@ -54,7 +54,7 @@ class InputTest:
         config_data = {input_name: f'#App:1234:{input_name}!{input_type}'}
         app = playbook_app(config_data=config_data)
         tcex = app.tcex
-        self._stage_key_value('my_data', f'#App:1234:{input_name}!{input_type}', input_value, tcex)
+        self._stage_key_value(input_name, f'#App:1234:{input_name}!{input_type}', input_value, tcex)
 
         validation_ran = False
         if fail_test is True:
@@ -66,20 +66,19 @@ class InputTest:
             assert 'validation error' in err_msg
         else:
             tcex.inputs.add_model(model)
-            if isinstance(tcex.inputs.model.my_data, list):
+            model_input_value = getattr(tcex.inputs.model, input_name)
+            if isinstance(model_input_value, list):
                 # validate empty array
-                if not tcex.inputs.model.my_data:
+                if not model_input_value:
                     validation_ran = True
-                    assert (
-                        tcex.inputs.model.my_data == expected
-                    ), f'{tcex.inputs.model.my_data } != {expected}'
+                    assert model_input_value == expected, f'{model_input_value } != {expected}'
 
                 # validate all array types
-                for index, item in enumerate(tcex.inputs.model.my_data):
+                for index, item in enumerate(model_input_value):
                     if isinstance(item, BaseModel):
                         # validate all array model types, assuming the models
                         # convert to dicts that match the expected value.
-                        item = tcex.inputs.model.my_data[index].dict(exclude_unset=True)
+                        item = model_input_value[index].dict(exclude_unset=True)
                         expected = expected[index]
 
                         validation_ran = True
@@ -89,24 +88,20 @@ class InputTest:
                         expected = expected[index]
                         validation_ran = True
                         assert item == expected, f'{item} != {expected}'
-            elif isinstance(tcex.inputs.model.my_data, BaseModel):
+            elif isinstance(model_input_value, BaseModel):
                 # validate all non-array model types, assuming the models
                 # convert to dicts that match the expected value.
                 validation_ran = True
                 assert (
-                    tcex.inputs.model.my_data.dict(exclude_unset=True) == expected
-                ), f'{tcex.inputs.model.my_data} != {expected}'
-            elif isinstance(tcex.inputs.model.my_data, Sensitive):
+                    model_input_value.dict(exclude_unset=True) == expected
+                ), f'{model_input_value} != {expected}'
+            elif isinstance(model_input_value, Sensitive):
                 # validate all non-array, non-model types
                 validation_ran = True
-                assert (
-                    tcex.inputs.model.my_data.value == expected
-                ), f'{tcex.inputs.model.my_data} != {expected}'
+                assert model_input_value.value == expected, f'{model_input_value} != {expected}'
             else:
                 # validate all non-array, non-model types
                 validation_ran = True
-                assert (
-                    tcex.inputs.model.my_data == expected
-                ), f'{tcex.inputs.model.my_data} != {expected}'
+                assert model_input_value == expected, f'{model_input_value} != {expected}'
 
         assert validation_ran is True
