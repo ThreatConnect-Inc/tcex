@@ -187,7 +187,7 @@ class CommonServiceTrigger(CommonService):
 
                 # get an instance of PB module with current
                 # session_id and outputs to pass to callback
-                outputs: Union[list, str] = config.get('tc_playbook_out_variables') or []
+                outputs: Union[list, str] = config.model.tc_playbook_out_variables or []
                 if isinstance(outputs, str):
                     outputs = outputs.split(',')
                 playbook: object = self.tcex.get_playbook(
@@ -369,6 +369,7 @@ class CommonServiceTrigger(CommonService):
                 config_input = Input(config=config, tc_session=tc_session)
                 config_input.add_model(self.trigger_input_model)
 
+                self.configs[trigger_id] = config_input
                 # call callback for create config and handle exceptions to protect thread
                 # pylint: disable=not-callable
                 response: Optional[dict] = self.create_config_callback(

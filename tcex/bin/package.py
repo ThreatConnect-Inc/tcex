@@ -79,7 +79,7 @@ class Package(BinABC):
             'test-reports',  # pytest in CI/CD
             'tests',  # pytest test directory
         ]
-        excludes.extend(self._build_excludes_base)
+        # excludes.extend(self._build_excludes_base)
         excludes.extend(self._excludes)
         excludes.extend(self.tj.model.package.excludes)
         return excludes
