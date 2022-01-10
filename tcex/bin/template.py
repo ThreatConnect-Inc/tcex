@@ -197,7 +197,7 @@ class Template(BinABC):
         """Return the data from the template.yaml file."""
         self.log.info(
             f'action=get-template-config, type={type_}, '
-            f'template={template}, cache-valid={self.cache_valid}'
+            f'template={template}, cache-valid={self.cache_valid}, branch={branch}'
         )
         if self.cache_valid is True:
             config = self.db_get_config(type_, template)
@@ -346,7 +346,7 @@ class Template(BinABC):
             fh.write(json.dumps(self.template_manifest, indent=2, sort_keys=True))
             fh.write('\n')
 
-    def template_parents(self, type_: str, template: str, branch: str = 'Main') -> list:
+    def template_parents(self, type_: str, template: str, branch: str = 'main') -> list:
         """Return all parents for the provided template."""
         # get the config for the requested template
         template_config = self.get_template_config(type_, template, branch)
@@ -415,7 +415,9 @@ class Template(BinABC):
 
         # get the final contents after procession all parents
         contents = {}
-        for tp in self.template_parents(self.tj.model.template_type, self.tj.model.template_name):
+        for tp in self.template_parents(
+            self.tj.model.template_type, self.tj.model.template_name, branch
+        ):
             template_config = self.get_template_config(self.tj.model.template_type, tp, branch)
             for item in self.contents(branch, self.tj.model.template_type, tp):
                 if item.get('type') == 'file':
