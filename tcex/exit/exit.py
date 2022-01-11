@@ -126,7 +126,7 @@ class ExitService:
             self._aot_rpush(code.value)
 
         logger.info(f'exit-code={code}')
-        sys.exit(code.value)
+        sys.exit(code)
 
     def exit_playbook_handler(self, msg: str) -> None:
         """Perform special action for PB Apps before exit."""
