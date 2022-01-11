@@ -14,7 +14,7 @@ from tcex.pleb.registry import registry
 logger = logging.getLogger('tcex')
 
 
-class ExitCode(Enum):
+class ExitCode(int, Enum):
     """Valid exit codes for a ThreatConnect app.
 
     Note not all exit codes are valid for all app types: partial failure is not valid for playbook
@@ -81,7 +81,8 @@ class ExitService:
         code = ExitCode(code) if code is not None else self.exit_code
 
         # playbook exit handler
-        self.exit_playbook_handler(msg)
+        if self.ij.model.runtime_level.lower() == 'playbook':
+            self.exit_playbook_handler(msg)
 
         # aot notify
         if 'tc_aot_enabled' in self.inputs.contents and self.inputs.contents.get('tc_aot_enabled'):
@@ -91,6 +92,11 @@ class ExitService:
         # exit token renewal thread
         registry.token.shutdown = True
 
+        # exit
+        self._exit(code, msg)
+
+    def _exit(self, code: int, msg: str):
+        """Exit the App"""
         # handle exit msg logging
         self._exit_msg_handler(code, msg)
 
@@ -132,7 +138,7 @@ class ExitService:
             hasattr(self.inputs.model_unresolved, 'tcex_testing_context')
             and self.inputs.model_unresolved.tcex_testing_context is not None
         ):  # pragma: no cover
-            self.redis_client.hset(  # pylint: disable=no-member
+            registry.redis_client.hset(  # pylint: disable=no-member
                 self.inputs.model_unresolved.tcex_testing_context, '_exit_message', msg
             )
 
@@ -151,9 +157,9 @@ class ExitService:
         if self.inputs.contents.get('tc_playbook_db_type') == 'Redis':
             try:
                 # pylint: disable=no-member
-                registry.redis.rpush(self.inputs.contents.get('tc_exit_channel'), exit_code)
+                registry.redis_client.rpush(self.inputs.contents.get('tc_exit_channel'), exit_code)
             except Exception as e:  # pragma: no cover
-                self.exit(ExitCode.FAILURE, f'Exception during AOT exit push ({e}).')
+                self._exit(ExitCode.FAILURE, f'Exception during AOT exit push ({e}).')
 
     def _message_tc(self, message: str, max_length: Optional[int] = 255) -> None:
         """Write data to message_tc file in TcEX specified directory.

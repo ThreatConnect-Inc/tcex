@@ -106,7 +106,7 @@ class Input:
                 self.log.info('feature=inputs, event=blocking-for-aot')
                 msg_data = redis_client.blpop(
                     keys=tc_action_channel,
-                    timeout=tc_terminate_seconds,
+                    timeout=int(tc_terminate_seconds),
                 )
 
                 if msg_data is None:  # pragma: no cover
@@ -232,7 +232,7 @@ class Input:
         # aot params - must be loaded last so that it has the kv store channels
         _contents.update(
             self._load_aot_params(
-                tc_aot_enabled=_contents.get('tc_aot_enabled', False),
+                tc_aot_enabled=self.utils.to_bool(_contents.get('tc_aot_enabled', False)),
                 tc_kvstore_type=_contents.get('tc_kvstore_type'),
                 tc_kvstore_host=_contents.get('tc_kvstore_host'),
                 tc_kvstore_port=_contents.get('tc_kvstore_port'),
@@ -263,25 +263,34 @@ class Input:
                 # and 2) doesn't make sense.  Service configs will never have playbook variables.
                 continue
 
-            if isinstance(value, list) and self.ij.model.runtime_level.lower() == 'playbook':
-                # list could contain playbook variables, try to resolve the value
-                updated_value_array = []
-                for v in value:
-                    if isinstance(v, str):
-                        v = registry.playbook.read.variable(v)
-                    # TODO: [high] does resolve variable need to be added here
-                    updated_value_array.append(v)
-                value = updated_value_array
-            elif self.utils.is_playbook_variable(value):  # only matches playbook variables
-                # when using Union[Bytes, String] in App input model the value
-                # can be coerced to the wrong type. the BinaryVariable and
-                # StringVariable custom types allows for the validator in Binary
-                # and String types to raise a value error.
-                value = registry.playbook.read.variable(value)
-            elif self.utils.is_tc_variable(value):  # only matches playbook variables
+            if self.utils.is_tc_variable(value):  # only matches playbook variables
                 value = self.resolve_variable(variable=value)
-            elif isinstance(value, str):
-                value = registry.playbook.read._read_embedded(value)
+            elif self.ij.model.runtime_level.lower() == 'playbook':
+                if isinstance(value, list):
+                    # list could contain playbook variables, try to resolve the value
+                    updated_value_array = []
+                    for v in value:
+                        if isinstance(v, str):
+                            v = registry.playbook.read.variable(v)
+                        # TODO: [high] does resolve variable need to be added here
+                        updated_value_array.append(v)
+                    value = updated_value_array
+                elif self.utils.is_playbook_variable(value):  # only matches playbook variables
+                    # when using Union[Bytes, String] in App input model the value
+                    # can be coerced to the wrong type. the BinaryVariable and
+                    # StringVariable custom types allows for the validator in Binary
+                    # and String types to raise a value error.
+                    value = registry.playbook.read.variable(value)
+                elif isinstance(value, str):
+                    value = registry.playbook.read._read_embedded(value)
+            else:
+                for match in re.finditer(self.utils.variable_tc_pattern, str(value)):
+                    variable = match.group(0)  # the full variable pattern
+                    if match.group('type').lower() == 'file':
+                        v = '<file>'
+                    else:
+                        v = self.resolve_variable(variable=variable)
+                    value = value.replace(variable, v)
 
             _inputs[name] = value
 
@@ -371,8 +380,6 @@ class Input:
                 if type_.lower() == 'file':
                     data = b64decode(data)  # returns bytes
                 elif type_.lower() == 'keychain':
-                    # TODO: [high] will the developer know this is sensitive
-                    #              and access the "value" property
                     data = Sensitive(data)
             except Exception as ex:
                 raise RuntimeError(
