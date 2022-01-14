@@ -35,6 +35,7 @@ docs/src/_templates
 # IDE Exclusions
 #-------------------------------------------------
 .c9
+.history
 .idea
 .project
 .python-version

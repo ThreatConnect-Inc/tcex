@@ -33,7 +33,14 @@ def retry_session(retries=3, backoff_factor=0.8, status_forcelist=(500, 502, 504
 class Tokens:
     """Service methods for customer Service (e.g., Triggers)."""
 
-    def __init__(self, token_url: str, sleep_interval: int, verify: bool, logger: object):
+    def __init__(
+        self,
+        token_url: str,
+        sleep_interval: int,
+        verify: bool,
+        logger: object,
+        proxies: Optional[dict],
+    ):
         """Initialize the Class properties.
 
         Args:
@@ -41,6 +48,7 @@ class Tokens:
             sleep_interval: Token monitor sleep interval.
             verify: A boolean to enable/disable SSL verification.
             logger: An pre-configured instance of a logger.
+            proxies: Optional proxy settings.
         """
         self.token_url = token_url
         self.sleep_interval = sleep_interval
@@ -51,6 +59,8 @@ class Tokens:
         self.lock = threading.Lock()
         # session with retry for token renewal
         self.session: Session = retry_session()
+        # add proxies
+        self.session.proxies = proxies
         # shutdown boolean
         self.shutdown = False
         # token map for storing keys -> tokens -> threads

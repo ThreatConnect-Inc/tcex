@@ -1066,9 +1066,16 @@ class TcEx:
     def token(self) -> Tokens:
         """Return token object."""
         if self._token is None:
+            proxies = None
+            if self.default_args.tc_proxy_tc:
+                proxies = self.proxies
             sleep_interval = int(os.getenv('TC_TOKEN_SLEEP_INTERVAL', '30'))
             self._token = Tokens(
-                self.default_args.tc_api_path, sleep_interval, self.default_args.tc_verify, self.log
+                self.default_args.tc_api_path,
+                sleep_interval,
+                self.default_args.tc_verify,
+                self.log,
+                proxies,
             )
         return self._token
 
