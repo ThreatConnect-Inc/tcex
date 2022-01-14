@@ -3,6 +3,10 @@
 Release Notes
 #############
 
+2.0.28
+======
++ APP-3325 - [Token] - Added proxy support to token renewal (ENV Server).
+
 2.0.27
 ======
 + ESUP-212 - [CM] - Added support for both the read-only and readOnly properties.
