@@ -110,6 +110,7 @@ def deploy(
 def init(
     type_: str = typer.Option(..., '--type', help='The App type being initialized.', prompt=True),
     template: str = typer.Option(..., help='The App template to be used.', prompt=True),
+    force: bool = typer.Option(False, help='Force App init even if files exist in directory.'),
     branch: Optional[str] = typer.Option(
         'main', help='The git branch of the tcex-app-template repository to use.'
     ),
@@ -122,7 +123,7 @@ def init(
     Templates can be found at: https://github.com/ThreatConnect-Inc/tcex-app-templates
     """
     tt = Template()
-    if os.listdir(os.getcwd()):
+    if os.listdir(os.getcwd()) and force is False:
         tt.print_block(
             'The current directory does not appear to be empty. Apps should '
             'be initialized in an empty directory. If attempting to update an '

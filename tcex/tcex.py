@@ -446,9 +446,14 @@ class TcEx:
     @cached_property
     def token(self) -> 'Tokens':
         """Return token object."""
+        _proxies = None
+        if self.inputs.model_unresolved.tc_proxy_tc is True:
+            _proxies = self.proxies
+
         _tokens = Tokens(
             self.inputs.model_unresolved.tc_api_path,
             self.inputs.model_unresolved.tc_verify,
+            _proxies,
         )
 
         # register token for Apps that pass token on start

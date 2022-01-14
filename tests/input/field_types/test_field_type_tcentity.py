@@ -7,7 +7,13 @@ import pytest
 from pydantic import BaseModel, validator
 
 # first-party
-from tcex.input.field_types import GroupEntity, IndicatorEntity, TCEntity, always_array
+from tcex.input.field_types import (
+    GroupEntity,
+    IndicatorEntity,
+    TCEntity,
+    always_array,
+    indicator_entity,
+)
 from tcex.pleb.scoped_property import scoped_property
 from tests.input.field_types.utils import InputTest
 
@@ -512,6 +518,71 @@ class TestInputsFieldTypes(InputTest):
                 """Test Model for Inputs"""
 
                 my_data: Optional[IndicatorEntity]
+
+        self._type_validation(
+            PytestModel,
+            input_name='my_data',
+            input_value=input_value,
+            input_type='TCEntity',
+            expected=expected,
+            fail_test=fail_test,
+            playbook_app=playbook_app,
+        )
+
+    @pytest.mark.parametrize(
+        'input_value,expected,indicator_types,optional,fail_test',
+        [
+            #
+            # Pass Testing
+            #
+            # required, normal input
+            (
+                {'id': 123, 'type': 'Address', 'value': '1.1.1.1', 'rating': '5'},
+                {'id': 123, 'type': 'Address', 'value': '1.1.1.1', 'rating': 5},
+                ['Address'],
+                False,
+                False,
+            ),
+            #
+            # Fail Testing
+            #
+            (
+                {'id': 123, 'type': 'Address', 'value': 'bad.com', 'rating': '5'},
+                None,
+                ['Host'],
+                False,
+                True,
+            ),
+        ],
+    )
+    def test_field_model_custom_indicator_entity_input(
+        self,
+        input_value: str,
+        expected: str,
+        indicator_types: list,
+        optional: bool,
+        fail_test: bool,
+        playbook_app: 'MockApp',
+    ):
+        """Test Binary field type.
+
+        Playbook Data Type: String
+        Validation: Not null
+        """
+
+        if optional is False:
+
+            class PytestModel(BaseModel):
+                """Test Model for Inputs"""
+
+                my_data: indicator_entity(indicator_types=indicator_types)
+
+        else:
+
+            class PytestModel(BaseModel):
+                """Test Model for Inputs"""
+
+                my_data: Optional[indicator_entity(indicator_types=indicator_types)]
 
         self._type_validation(
             PytestModel,

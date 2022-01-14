@@ -41,12 +41,18 @@ def retry_session(retries=3, backoff_factor=0.8, status_forcelist=(500, 502, 504
 class Tokens(metaclass=Singleton):
     """Service methods for customer Service (e.g., Triggers)."""
 
-    def __init__(self, token_url: Optional[str], verify: Optional[bool] = True):
+    def __init__(
+        self,
+        token_url: Optional[str],
+        verify: Optional[bool] = True,
+        proxies: Optional[dict] = None,
+    ):
         """Initialize the Class properties.
 
         Args:
             token_url: The ThreatConnect URL for token renewal.
             verify: A boolean to enable/disable SSL verification.
+            proxies: A dictionary of proxy settings.
         """
         self.token_url = token_url
         self.verify = verify
@@ -60,6 +66,7 @@ class Tokens(metaclass=Singleton):
         self.log = logger
         # session with retry for token renewal
         self.session: Session = retry_session()
+        self.session.proxies = proxies  # add proxies to session
         self.sleep_interval = int(os.getenv('TC_TOKEN_SLEEP_INTERVAL', '150'))
         self.shutdown = False  # shutdown boolean
         # token map for storing keys -> tokens -> threads

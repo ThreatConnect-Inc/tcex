@@ -37,5 +37,5 @@ class TCEntity(BaseModel):
     class Config:
         """Model Config"""
 
-        validate_assignment = True
         extra = Extra.allow
+        validate_assignment = True

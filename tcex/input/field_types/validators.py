@@ -1,7 +1,10 @@
 """Model Validator/Modifier"""
 # standard library
 import operator
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+
+# third-party
+from pydantic import BaseModel
 
 # first-party
 from tcex.input.field_types.exception import InvalidEmptyValue, InvalidInput
@@ -98,3 +101,65 @@ def conditional_required(rules: List[Dict[str, str]] = True) -> Any:
         return value
 
     return _conditional_required
+
+
+def entity_input(
+    only_value: Optional[bool] = False, type_filter: Optional[List[str]] = None
+) -> Union[str, List[Any]]:
+    """Return customized validator.
+
+    only_value:
+
+    When accepting String and TCEntity as PB data types, it is often easier to always work with
+    the value. This validator will ensure that only the value is returned.
+
+    type_filter:
+
+    When accepting a TCEntity/TCEntityArray as input, it is sometimes preferred not to fail
+    when the wrong type is found, but to instead filter out the entities with the wrong types.
+
+    Example Usage:
+
+    MyModel(BaseModel):
+        ip_address: Union[
+            AddressEntity,
+            ip_address(strip_port=True)
+        ]
+
+        _entity_field = validator('ip_address', allow_reuse=True)(entity_field(only_value=True))
+
+    If input takes String, StringArray, TCEntity, and TCEntityArray it may be helpful to always
+    return an array.
+    """
+
+    def _entity_input(
+        value: Union['BaseModel', List['BaseModel'], str, List[str]], field: 'ModelField'
+    ) -> Union[List[str], str]:
+        """Return value from String or TCEntity."""
+
+        def _get_value(value: Union[str, 'BaseModel']) -> Union['BaseModel', str]:
+            """Return value"""
+            if isinstance(value, BaseModel):
+                if isinstance(type_filter, list) and value.type not in type_filter:
+                    return None
+
+                if only_value is True:
+                    return value.value
+            return value
+
+        if isinstance(value, list):
+            _values = []
+            for v in value:
+                _value = _get_value(v)
+                if _value is not None:
+                    _values.append(_value)
+            value = _values
+        else:
+            _value = _get_value(value)
+
+        if field.allow_none is True and value in [[], None]:
+            raise ValueError()
+
+        return value
+
+    return _entity_input

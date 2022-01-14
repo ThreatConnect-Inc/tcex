@@ -1,6 +1,6 @@
 """Group Entity Field (Model) Type"""
 # standard library
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING, Dict, List
 
 # third-party
 from pydantic import validator
@@ -21,7 +21,7 @@ class GroupEntity(TCEntity):
     """Group Entity Field (Model) Type"""
 
     @validator('type')
-    def is_type(cls, value: Dict[str, str], field: 'ModelField') -> Dict[str, str]:
+    def is_type(cls, value: str, field: 'ModelField') -> str:
         """Validate that the value is a non-empty string.
 
         Without the always and pre args, None values will validated before this validator is called.
@@ -33,3 +33,41 @@ class GroupEntity(TCEntity):
         if value not in ti_utils.group_types:
             raise InvalidEntityType(field_name=field.name, entity_type='Group', value=value)
         return value
+
+
+def group_entity(group_types: List[str] = None) -> type:
+    """Return custom model for Group Entity."""
+
+    class CustomGroupEntity(GroupEntity):
+        """Group Entity Field (Model) Type"""
+
+        @validator('type', allow_reuse=True)
+        def is_empty(cls, value: str, field: 'ModelField') -> Dict[str, str]:
+            """Validate that the value is a non-empty string."""
+            if isinstance(value, str) and value.replace(' ', '') == '':
+                raise InvalidEmptyValue(field_name=field.name)
+            return value
+
+        @validator('type', allow_reuse=True)
+        def is_type(cls, value: str, field: 'ModelField') -> Dict[str, str]:
+            """Validate that the entity is of a specific Group type."""
+            if value.lower() not in [i.lower() for i in group_types]:
+                raise InvalidEntityType(
+                    field_name=field.name, entity_type=str(group_types), value=value
+                )
+            return value
+
+    return CustomGroupEntity
+
+
+AdversaryEntity: GroupEntity = group_entity(group_types=['Adversary'])
+CampaignEntity: GroupEntity = group_entity(group_types=['Campaign'])
+DocumentEntity: GroupEntity = group_entity(group_types=['Document'])
+EmailEntity: GroupEntity = group_entity(group_types=['Email'])
+EventEntity: GroupEntity = group_entity(group_types=['Event'])
+IncidentEntity: GroupEntity = group_entity(group_types=['Incident'])
+IntrusionSetEntity: GroupEntity = group_entity(group_types=['Intrusion Set'])
+SignatureEntity: GroupEntity = group_entity(group_types=['Signature'])
+ReportEntity: GroupEntity = group_entity(group_types=['Report'])
+ThreatEntity: GroupEntity = group_entity(group_types=['Threat'])
+TaskEntity: GroupEntity = group_entity(group_types=['Task'])
