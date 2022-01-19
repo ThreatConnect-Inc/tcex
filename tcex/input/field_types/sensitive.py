@@ -25,7 +25,7 @@ class Sensitive:
     min_length: Optional[int] = None
     max_length: Optional[int] = None
 
-    def __init__(self, value: str):
+    def __init__(self, value: Union[str, 'Sensitive']):
         """Initialize the Sensitive object."""
         if isinstance(value, Sensitive):
             self._sensitive_value = value.value

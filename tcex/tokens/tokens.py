@@ -13,7 +13,7 @@ from urllib3.util.retry import Retry
 
 # first-party
 from tcex.input.field_types.sensitive import Sensitive
-from tcex.pleb.singleton import Singleton
+from tcex.pleb.threading import ExceptionThread
 from tcex.utils import Utils
 
 # get tcex logger
@@ -38,7 +38,7 @@ def retry_session(retries=3, backoff_factor=0.8, status_forcelist=(500, 502, 504
     return session
 
 
-class Tokens(metaclass=Singleton):
+class Tokens:
     """Service methods for customer Service (e.g., Triggers)."""
 
     def __init__(
@@ -62,8 +62,18 @@ class Tokens(metaclass=Singleton):
             raise ValueError('A value for token_url is required.')
 
         # properties
-        self.lock = threading.Lock()
+        #
+        # Threading event that is used as a barrier that determines whether a token can be retrieved
+        # from this module or not (via the token property). The barrier only blocks access to the
+        # token property whenever token renewal is taking place in order to keep from returning
+        # stale tokens.
+        self.barrier = threading.Event()
+        # Setting barrier event to True disables barrier, which makes the token property
+        # accessible (default behavior)
+        self.barrier.set()
+
         self.log = logger
+        self.monitor_thread = None
         # session with retry for token renewal
         self.session: Session = retry_session()
         self.session.proxies = proxies  # add proxies to session
@@ -71,7 +81,10 @@ class Tokens(metaclass=Singleton):
         self.shutdown = False  # shutdown boolean
         # token map for storing keys -> tokens -> threads
         self.token_map = {}
-        self.token_window = 300  # seconds to pad before token renewal
+        # amount of time to wait before starting renewal process (after enabling barrier)
+        # buffer allows any other threads using a token to possibly finish their work
+        self.token_renewal_buffer_time = 5
+        self.token_window = 600  # seconds to pad before token renewal
         self.utils = Utils
 
         # start token renewal process
@@ -102,8 +115,8 @@ class Tokens(metaclass=Singleton):
             )
             return
 
-        self.token_map[key] = {'token': token, 'token_expires': int(expires)}
-        self.log.info(
+        self.token_map[key] = {'token': Sensitive(token), 'token_expires': int(expires)}
+        self.log.debug(
             f'feature=token, action=token-register, key={key}, '
             f'token={token}, expiration={expires}'
         )
@@ -154,12 +167,41 @@ class Tokens(metaclass=Singleton):
     @property
     def token(self) -> Optional[Sensitive]:
         """Return token for current thread."""
-        return self.token_map.get(self.key, {}).get('token')
+        # wait until renewal barrier is set to True (meaning no renewal is in progress). If already
+        # true, then simply proceed.
+
+        # perform three attempts - safety net in case of heavily overloaded monitor. If we cannot
+        # retrieve a token after three attempts, there must be an issue
+        for i in range(3):
+            if self.barrier.wait(timeout=self.token_renewal_buffer_time + 10):
+                return self.token_map.get(self.key, {}).get('token')
+
+            self.log.debug(
+                'Timeout expired while waiting for token renewal barrier to be disabled. '
+                f'Attempts: {i + 1}'
+            )
+
+            if not self.monitor_thread.is_alive():
+                break
+
+        self.log.error(
+            'Could not retrieve TC token. Token renewal monitor did not disable token barrier. '
+            f'Token renewal monitor thread alive: {self.monitor_thread.is_alive()}'
+        )
+
+        # timeout expired, monitor likely offline
+        exc = RuntimeError(
+            'Timeout expired while waiting for renewal thread to disable token barrier.'
+        )
+        if self.monitor_thread.exception is not None:
+            raise exc from self.monitor_thread.exception
+
+        raise exc
 
     @token.setter
     def token(self, token: Sensitive) -> None:
         """Set token for current thread."""
-        self.token_map.setdefault(self.key, {})['token'] = token
+        self.token_map.setdefault(self.key, {})['token'] = Sensitive(token)
 
     @property
     def token_expires(self) -> Optional[int]:
@@ -173,13 +215,20 @@ class Tokens(metaclass=Singleton):
 
     def token_renewal(self) -> None:
         """Start token renewal monitor thread."""
-        t = threading.Thread(name='token-renewal', target=self.token_renewal_monitor, daemon=True)
-        t.start()
+        self.monitor_thread = ExceptionThread(
+            name='token-renewal', target=self.token_renewal_monitor, daemon=True
+        )
+        self.monitor_thread.start()
 
     def token_renewal_monitor(self) -> None:
         """Monitor token expiration and renew when required."""
         self.log.debug('feature=token, event=renewal-monitor-started')
         while True:
+            # Clear renewal barrier (setting it to False), which blocks access to token via
+            # the token property.
+            self.barrier.clear()
+            self.log.debug('Token renewal barrier enabled.')
+            time.sleep(self.token_renewal_buffer_time)
             for key, token_data in dict(self.token_map).items():
                 # calculate the time left to sleep
                 sleep_seconds = (
@@ -197,25 +246,25 @@ class Tokens(metaclass=Singleton):
                     continue
 
                 # renew token data
-                with self.lock:
+                try:
+                    api_token_data = self.renew_token(token_data.get('token'))
+                    self.token_map[key]['token'] = Sensitive(api_token_data['apiToken'])
+                    self.token_map[key]['token_expires'] = int(api_token_data['apiTokenExpires'])
+                    self.log.info(
+                        f'''feature=token, action=token-renewed, key={key}, '''
+                        f'''token={api_token_data['apiToken']}, '''
+                        f'''expires={api_token_data['apiTokenExpires']}'''
+                    )
+                except RuntimeError as e:
+                    self.log.error(e)
                     try:
-                        api_token_data = self.renew_token(token_data.get('token'))
-                        self.token_map[key]['token'] = Sensitive(api_token_data['apiToken'])
-                        self.token_map[key]['token_expires'] = int(
-                            api_token_data['apiTokenExpires']
-                        )
-                        self.log.info(
-                            f'''feature=token, action=token-renewed, key={key}, '''
-                            f'''token={api_token_data['apiToken']}, '''
-                            f'''expires={api_token_data['apiTokenExpires']}'''
-                        )
-                    except RuntimeError as e:
-                        self.log.error(e)
-                        try:
-                            del self.token_map[key]
-                            self.log.error(f'feature=token, event=token-removal-failure, key={key}')
-                        except KeyError:  # pragma: no cover
-                            pass
+                        del self.token_map[key]
+                        self.log.error(f'feature=token, event=token-removal-failure, key={key}')
+                    except KeyError:  # pragma: no cover
+                        pass
+            # renewal loop is finished, grant access to token via token property once again
+            self.barrier.set()
+            self.log.debug('Token renewal barrier disabled.')
             time.sleep(self.sleep_interval)
             if self.shutdown:
                 break
@@ -238,6 +287,6 @@ class Tokens(metaclass=Singleton):
         """
         try:
             del self.token_map[key]
-            self.log.info(f'feature=token, action=token-unregister, key={key}')
+            self.log.debug(f'feature=token, action=token-unregister, key={key}')
         except KeyError:
             pass

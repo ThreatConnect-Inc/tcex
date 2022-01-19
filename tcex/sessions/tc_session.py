@@ -90,6 +90,15 @@ class TcSession(Session):
         """Override request method disabling verify on token renewal if disabled on session."""
         response = super().request(method, self.url(url), **kwargs)
 
+        # retry request in case we encountered a race condition with token renewal monitor
+        if response.status_code == 401:
+            self.log.debug(
+                f'Unexpected response received while attempting to send a request using internal '
+                f'session object. Retrying request. feature=tc-session, '
+                f'request-url={response.request.url}, status-code={response.status_code}'
+            )
+            response = super().request(method, self.url(url), **kwargs)
+
         # optionally log the curl command
         self._log_curl(response)
 
