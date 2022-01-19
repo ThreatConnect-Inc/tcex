@@ -208,11 +208,12 @@ class DatetimeOperations:
             'year': 'years',
         }
 
-        if value.strip().lower() == 'now':
+        value = value.lower().strip()
+        if value == 'now':
             return now
 
         # pluralize singular time terms as applicable. Arrow does not support singular terms
-        terms = [plurals.get(term.lower(), term) for term in value.split()]
+        terms = [plurals.get(term, term) for term in value.split()]
         value = ' '.join(terms)
 
         return now.dehumanize(value)

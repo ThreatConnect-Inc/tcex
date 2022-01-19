@@ -244,6 +244,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             ('in 2 seconds', add, timedelta(seconds=2)),
             # same as above, but with singular terms
             ('1 year ago', sub, relativedelta(years=1)),
+            ('1 Year ago', sub, relativedelta(years=1)),
             ('in 1 year', add, relativedelta(years=1)),
             ('1 month ago', sub, relativedelta(months=1)),
             ('in 1 month', add, relativedelta(months=1)),
@@ -257,6 +258,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             ('in 2 minute', add, timedelta(minutes=2)),
             ('1 second ago', sub, timedelta(seconds=1)),
             ('in 1 second', add, timedelta(seconds=1)),
+            ('120 Days Ago', sub, timedelta(days=120)),
         ],
     )
     def test_field_type_datetime_human_input(playbook_app: 'MockApp', to_parse, operator, delta):
