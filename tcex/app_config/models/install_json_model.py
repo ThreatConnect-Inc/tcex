@@ -7,7 +7,7 @@ from typing import Dict, List, Optional, Union
 
 # third-party
 from pydantic import BaseModel, Field, validator
-from pydantic.types import UUID5, constr
+from pydantic.types import UUID4, UUID5, constr
 from semantic_version import Version
 
 # first-party
@@ -222,7 +222,7 @@ class InstallJsonModel(BaseModel):
     allow_on_demand: bool
     allow_run_as_user: Optional[bool]
     api_user_token_param: Optional[bool]
-    app_id: UUID5 = Field(default_factory=app_id)
+    app_id: Union[UUID4, UUID5] = Field(default_factory=app_id)
     commit_hash: Optional[str] = Field(default_factory=get_commit_hash)
     display_name: constr(min_length=3, max_length=100)
     display_path: Optional[constr(min_length=3, max_length=100)]
