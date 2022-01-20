@@ -9,10 +9,10 @@ import pytest
 import redis
 
 # first-party
-from tests.mock_app import MockApp
-from tcex.pleb.registry import registry
 from tcex.backports import cached_property
+from tcex.pleb.registry import registry
 from tcex.pleb.scoped_property import scoped_property
+from tests.mock_app import MockApp
 
 if TYPE_CHECKING:
     # first-party

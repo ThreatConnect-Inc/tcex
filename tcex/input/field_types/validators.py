@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Union
 from pydantic import BaseModel, validator
 
 # first-party
-from tcex.input.field_types.exception import InvalidEmptyValue, InvalidInput
+from tcex.input.field_types.exception import InvalidEmptyValue, InvalidInput, InvalidType
 
 if TYPE_CHECKING:  # pragma: no cover
     # third-party
@@ -185,29 +185,31 @@ def modify_advanced_settings(input_name) -> Callable:
                 error='Value for field is None (null) and field is not Optional',
             )
 
-        # should never be anything other than string, but may be worth adding a check
-        # in case advanced settings for playbooks/services are ever a thing
-        if isinstance(value, str):
-            entries = value.split('|')
+        if not isinstance(value, str):
+            raise InvalidType(
+                field_name=field.name, expected_types='(str)', provided_type=type(value)
+            )
 
-            for entry in entries:
-                key_value = entry.split('=', maxsplit=1)
+        entries = value.split('|')
 
-                if len(key_value) == 1:
-                    continue
+        for entry in entries:
+            key_value = entry.split('=', maxsplit=1)
 
-                key, value = key_value
-                key = key.strip()
-                if not key:
-                    continue
+            if len(key_value) == 1:
+                continue
 
-                if key in settings:
-                    raise InvalidInput(
-                        field_name=field.name,
-                        error=f'Duplicate key "{key}" defined in Advanced Settings input.',
-                    )
+            key, value = key_value
+            key = key.strip()
+            if not key:
+                continue
 
-                settings[key] = value
+            if key in settings:
+                raise InvalidInput(
+                    field_name=field.name,
+                    error=f'Duplicate key "{key}" defined in Advanced Settings input.',
+                )
+
+            settings[key] = value
 
         return settings
 
