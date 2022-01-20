@@ -18,6 +18,7 @@ def always_array(
     allow_empty: Optional[bool] = True,
     include_empty: Optional[bool] = False,
     include_null: Optional[bool] = False,
+    split_csv: Optional[bool] = False,
 ) -> List[Any]:
     """Return customized validator that always returns a list.
 
@@ -27,10 +28,16 @@ def always_array(
             affect list with existing empty strings.
         include_null: If True, will wrap null value in list. This does not
             affect list with existing null values.
+        split_csv: if True and input value is a string, then string will be split on comma. No
+        further processing is done on result of splitting on comma
     """
 
     def _always_array(value: Any, field: 'ModelField') -> List[Any]:
         """Return validator."""
+
+        if split_csv and isinstance(value, str) and value:
+            value = value.split(',')
+
         if include_empty is True and value == '':
             value = [value]
 
@@ -104,19 +111,34 @@ def conditional_required(rules: List[Dict[str, str]] = True) -> Any:
 
 
 def entity_input(
-    only_value: Optional[bool] = False, type_filter: Optional[List[str]] = None
+    allow_empty: Optional[bool] = False,
+    only_value: Optional[bool] = False,
+    type_filter: Optional[List[str]] = None,
 ) -> Union[str, List[Any]]:
     """Return customized validator.
+
+    allow_empty:
+
+    If this is False, an emptiness check is performed on the final value that is to be returned
+    just before returning it. If the return value is either an empty string or an empty list, then
+    an error is raised. If allow_empty is True, then the final value is not guaranteed not to be
+    an empty string or empty list. Note: this occurs after the only_value and type_filter logic.
+    If the value to be returned is a list that is not empty, no checks are performed on the list
+    members.
 
     only_value:
 
     When accepting String and TCEntity as PB data types, it is often easier to always work with
-    the value. This validator will ensure that only the value is returned.
+    the value. This validator will ensure that only the value of the TCEntities is returned.
+    Strings will be returned as is.
 
     type_filter:
 
-    When accepting a TCEntity/TCEntityArray as input, it is sometimes preferred not to fail
-    when the wrong type is found, but to instead filter out the entities with the wrong types.
+    Filter TCEntities for a particular type. This parameter expects a list of strings with each
+    string being a target TCEntity type to filter for. This parameter only has an effect when this
+    method is working with TCEntities. When working with Strings, the values are not verified to be
+    of any particular TCEntity type and are returned as is. Note: if target type list contains
+    more than one type and only_value is True, then an array of values of mixed types could occur.
 
     Example Usage:
 
@@ -127,9 +149,6 @@ def entity_input(
         ]
 
         _entity_field = validator('ip_address', allow_reuse=True)(entity_field(only_value=True))
-
-    If input takes String, StringArray, TCEntity, and TCEntityArray it may be helpful to always
-    return an array.
     """
 
     def _entity_input(
@@ -157,8 +176,11 @@ def entity_input(
         else:
             value = _get_value(value)
 
-        if field.allow_none is True and value in [[], None]:
-            raise ValueError()
+        if field.allow_none is False and value is None:
+            raise InvalidInput(field_name=field.name, error='None value is not allowed.')
+
+        if allow_empty is False and value in ['', []]:
+            raise InvalidInput(field_name=field.name, error='Empty value is not allowed.')
 
         return value
 
