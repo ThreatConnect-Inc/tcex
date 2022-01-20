@@ -22,4 +22,9 @@ from tcex.input.field_types.key_value import KeyValue
 from tcex.input.field_types.sensitive import Sensitive, sensitive
 from tcex.input.field_types.string import String, string
 from tcex.input.field_types.tc_entity import TCEntity
-from tcex.input.field_types.validators import always_array, conditional_required, entity_input
+from tcex.input.field_types.validators import (
+    always_array,
+    conditional_required,
+    entity_input,
+    modify_advanced_settings,
+)

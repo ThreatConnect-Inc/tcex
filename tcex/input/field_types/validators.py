@@ -1,10 +1,10 @@
 """Model Validator/Modifier"""
 # standard library
 import operator
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Union
 
 # third-party
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 
 # first-party
 from tcex.input.field_types.exception import InvalidEmptyValue, InvalidInput
@@ -155,7 +155,7 @@ def entity_input(
                     _values.append(_value)
             value = _values
         else:
-            _value = _get_value(value)
+            value = _get_value(value)
 
         if field.allow_none is True and value in [[], None]:
             raise ValueError()
@@ -163,3 +163,52 @@ def entity_input(
         return value
 
     return _entity_input
+
+
+def modify_advanced_settings(input_name) -> Callable:
+    """Return validator that parses an advanced settings string and returns a dictionary
+
+    :param input_name: the name of the input (within the app model) that will receive the
+    pipe-delimited advanced settings string. In other words, the name of the input field
+    that this validator should act on to parse the pipe-delimited string into a dictionary
+    """
+
+    def _modify_advanced_settings(value: Any, field: 'ModelField') -> Dict[str, str]:
+        """Return validator."""
+        settings = {}
+
+        if value is None:
+            if field.allow_none:
+                return value
+            raise InvalidInput(
+                field_name=field.name,
+                error='Value for field is None (null) and field is not Optional',
+            )
+
+        # should never be anything other than string, but may be worth adding a check
+        # in case advanced settings for playbooks/services are ever a thing
+        if isinstance(value, str):
+            entries = value.split('|')
+
+            for entry in entries:
+                key_value = entry.split('=', maxsplit=1)
+
+                if len(key_value) == 1:
+                    continue
+
+                key, value = key_value
+                key = key.strip()
+                if not key:
+                    continue
+
+                if key in settings:
+                    raise InvalidInput(
+                        field_name=field.name,
+                        error=f'Duplicate key "{key}" defined in Advanced Settings input.',
+                    )
+
+                settings[key] = value
+
+        return settings
+
+    return validator(input_name, pre=True, allow_reuse=True)(_modify_advanced_settings)

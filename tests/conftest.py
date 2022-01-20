@@ -10,6 +10,9 @@ import redis
 
 # first-party
 from tests.mock_app import MockApp
+from tcex.pleb.registry import registry
+from tcex.backports import cached_property
+from tcex.pleb.scoped_property import scoped_property
 
 if TYPE_CHECKING:
     # first-party
@@ -100,6 +103,9 @@ def tc_log_file() -> str:
 @pytest.fixture()
 def tcex() -> 'TcEx':
     """Return an instance of tcex."""
+    registry._reset()
+    cached_property._reset()
+    scoped_property._reset()
     app = MockApp(runtime_level='Playbook')
     return app.tcex
 

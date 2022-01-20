@@ -130,7 +130,6 @@ class TestInputsConfig:
         Args:
             tcex (TcEx, fixture): An instantiated instance of TcEx.
         """
-        registry._reset()
         # print(tcex.inputs.model.tc_token.get_secret_value())
         # print(tcex.inputs.model.tc_token_expires)
         assert tcex.inputs.model.tc_token
