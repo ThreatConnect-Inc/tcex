@@ -1,7 +1,7 @@
 """Test the TcEx Session Module."""
 # standard library
 from typing import TYPE_CHECKING
-from unittest.mock import MagicMock, PropertyMock
+from unittest.mock import PropertyMock, patch
 
 # third-party
 from requests import PreparedRequest, Response, Session
@@ -167,9 +167,8 @@ class TestUtils:
         request.url = 'https://www.google.com'
         response.request = request
 
-        Session.request = MagicMock(return_value=response)
-
-        response = s.get('https://www.google.com', verify=False)
+        with patch.object(Session, 'request', return_value=response):
+            response = s.get('https://www.google.com', verify=False)
 
         assert response.status_code == 429
 
