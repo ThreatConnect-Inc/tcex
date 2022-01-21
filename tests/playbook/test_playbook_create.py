@@ -6,7 +6,9 @@ from typing import TYPE_CHECKING, Any, Optional, Union
 import pytest
 
 # first-party
+from tcex.backports import cached_property
 from tcex.input.field_types import KeyValue
+from tcex.pleb.scoped_property import scoped_property
 
 if TYPE_CHECKING:
     # first-party
@@ -35,6 +37,11 @@ class TestPlaybookCreate:
             # '#App:0001:tee1!TCEnhanceEntity',
             '#App:0001:r1!Raw',
         ]
+
+    def setup_method(self):
+        """Configure setup before all tests."""
+        scoped_property._reset()
+        cached_property._reset()
 
     @pytest.mark.parametrize(
         'key,value,expected',

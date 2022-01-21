@@ -3,17 +3,27 @@
 import json
 from typing import TYPE_CHECKING
 
+# first-party
+from tcex.backports import cached_property
+from tcex.pleb.scoped_property import scoped_property
+
 if TYPE_CHECKING:
     # first-party
     from tcex import TcEx
     from tests.mock_app import MockApp
 
 
+# pylint: disable=no-self-use
 class TestAdvancedRequest:
     """Test the TcEx App Feature Advance Request Module."""
 
     # properties
     tc_playbook_out_variables = None
+
+    def setup_method(self):
+        """Configure setup before all tests."""
+        scoped_property._reset()
+        cached_property._reset()
 
     @staticmethod
     def _load_data(tcex: 'TcEx', context: str):

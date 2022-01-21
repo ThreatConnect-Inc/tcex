@@ -179,19 +179,24 @@ class TestIndicators(TestV3):
         """Test Artifact get single attached to task by id"""
         associated_indicator = self.v3_helper.create_indicator()
         associated_group = self.v3_helper.create_group(
-            **{'associated_indicators': associated_indicator.model.gen_body(method='POST')}
+            **{
+                'associated_indicators': associated_indicator.model.gen_body(
+                    method='PUT', nested=True
+                )
+            }
         )
 
         # [Create testing] define object data
         indicator_data = {
             'active': True,
-            'associated_groups': associated_group.model.gen_body(method='POST'),
+            'associated_groups': associated_group.model.gen_body(
+                method='PUT', mode='append', nested=True
+            ),
             'attribute': {'type': 'Description', 'value': request.node.name},
             'confidence': randint(0, 100),
-            'description': 'TcEx Testing',
             # for create indicator send value1 instead of ip
             'value1': f'123.{randint(1,255)}.{randint(1,255)}.{randint(1,255)}',
-            'ownerName': 'TCI',
+            'owner_name': 'TCI',
             'rating': randint(0, 5),
             'security_labels': {'name': 'TLP:WHITE'},
             'source': None,
@@ -218,14 +223,12 @@ class TestIndicators(TestV3):
         # assert indicator.model.attributes == indicator_data.get('attributes')
         assert indicator.model.confidence == indicator_data.get('confidence')
         assert indicator.model.date_added is not None
-        assert indicator.model.description == indicator_data.get('description')
-        assert indicator.model.id == indicator_data.get('id')
         assert indicator.model.ip == indicator_data.get('value1')
         assert indicator.model.last_modified is not None
         assert indicator.model.owner_name == indicator_data.get('owner_name')
         assert indicator.model.rating == indicator_data.get('rating')
         # assert indicator.model.security_labels == indicator_data.get('security_labels')
-        assert indicator.model.summary == indicator_data.get('summary')
+        assert indicator.model.summary == indicator_data.get('value1')
         # assert indicator.model.tags == indicator_data.get('tags')
         assert indicator.model.type == indicator_data.get('type')
         assert indicator.model.web_link is not None
@@ -241,7 +244,7 @@ class TestIndicators(TestV3):
 
         # [Retrieve Testing] test associated_indicators
         for ai in indicator.associated_indicators:
-            if ai.model.summary == indicator.model.summary:
+            if ai.model.summary == associated_indicator.model.summary:
                 # found the associated indicator
                 break
         else:

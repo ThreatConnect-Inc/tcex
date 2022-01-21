@@ -1,6 +1,11 @@
 """Test the TcEx Batch Module."""
 # standard library
 import os
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex import TcEx
 
 
 class TestMessageTc:
@@ -10,11 +15,11 @@ class TestMessageTc:
         """Configure setup before all tests."""
 
     @staticmethod
-    def test_message_tc(tcex):
+    def test_message_tc(tcex: 'TcEx') -> None:
         """Test message tc method.
 
         Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+            tcex (fixture): An instantiated instance of TcEx object.
         """
         # get the current out path from tcex
         message_tc_file = os.path.join(tcex.inputs.model.tc_out_path, 'message.tc')
@@ -43,11 +48,11 @@ class TestMessageTc:
         assert message == message_tc, 'message.tc did not match message'
 
     @staticmethod
-    def test_message_tc_long_message(tcex):
+    def test_message_tc_long_message(tcex: 'TcEx') -> None:
         """Test long provided to message.tc method.
 
         Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+            tcex (fixture): An instantiated instance of TcEx object.
         """
         # get the current out path from tcex
         message_tc_file = os.path.join(tcex.inputs.model.tc_out_path, 'message.tc')
@@ -81,11 +86,11 @@ class TestMessageTc:
         assert message[-255:] == message_tc, 'message.tc did not match message'
 
     @staticmethod
-    def test_message_tc_multiple_messages(tcex):
+    def test_message_tc_multiple_messages(tcex: 'TcEx') -> None:
         """Test long provided to message.tc method.
 
         Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+            tcex (fixture): An instantiated instance of TcEx object.
         """
         # get the current out path from tcex
         message_tc_file = os.path.join(tcex.inputs.model.tc_out_path, 'message.tc')

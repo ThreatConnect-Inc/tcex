@@ -1,46 +1,35 @@
 """Test the TcEx Utils Module."""
+# first-party
+from tcex.utils import Utils
 
 
-# pylint: disable=no-self-use
 class TestFlattenList:
     """Test the TcEx Utils Module."""
 
-    def test_flat_list(self, tcex):
-        """Test a list that's already flat
-
-        Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
-        """
+    @staticmethod
+    def test_flat_list():
+        """Test Case"""
         lst = [1, 2, 3]
-        flst = tcex.utils.flatten_list(lst)
-        assert flst == lst
+        flattened_list = Utils().flatten_list(lst)
+        assert flattened_list == lst
 
-    def test_list_of_lists(self, tcex):
-        """Test a list that's comprised of other lists
-
-        Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
-        """
+    @staticmethod
+    def test_list_of_lists():
+        """Test Case"""
         lst = [[1, 2, 3], [4, 5, 6]]
-        flst = tcex.utils.flatten_list(lst)
-        assert flst == [1, 2, 3, 4, 5, 6]
+        flattened_list = Utils().flatten_list(lst)
+        assert flattened_list == [1, 2, 3, 4, 5, 6]
 
-    def test_list_of_lists_depth(self, tcex):
-        """Test a list that's comprised of other lists that have other lists (arbitrary depth)
-
-        Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
-        """
+    @staticmethod
+    def test_list_of_lists_depth():
+        """Test Case"""
         lst = [[1, 2, 3], [4, 5, [6, 7]]]
-        flst = tcex.utils.flatten_list(lst)
-        assert flst == [1, 2, 3, 4, 5, 6, 7]
+        flattened_list = Utils().flatten_list(lst)
+        assert flattened_list == [1, 2, 3, 4, 5, 6, 7]
 
-    def test_list_of_lists_and_singles(self, tcex):
-        """Test a list that's comprised of other lists and single values
-
-        Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
-        """
+    @staticmethod
+    def test_list_of_lists_and_singles():
+        """Test Case"""
         lst = [[1, 2, 3], [4, 5, 6], 7]
-        flst = tcex.utils.flatten_list(lst)
-        assert flst == [1, 2, 3, 4, 5, 6, 7]
+        flattened_list = Utils().flatten_list(lst)
+        assert flattened_list == [1, 2, 3, 4, 5, 6, 7]

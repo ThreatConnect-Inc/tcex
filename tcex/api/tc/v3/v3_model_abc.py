@@ -34,6 +34,7 @@ class V3ModelABC(BaseModel, ABC):
     _log = logger
     _shared_type = PrivateAttr(False)
     _staged = PrivateAttr(False)
+    id: int = None
 
     def __init__(self, **kwargs):
         """Initialize class properties."""
@@ -53,12 +54,30 @@ class V3ModelABC(BaseModel, ABC):
     ) -> str:
         """Return True if the field is calculated to be included."""
 
+        # INDICATOR ID RULE: If an indicator has a ID set, then the indicator fields
+        #     cannot be provided (updateable is false) or the API request will fail.
+        if self.id is not None and field in [
+            'address',
+            'file',
+            'hostName',
+            'ip',
+            'md5',
+            'sha1',
+            'sha256',
+            'text',
+            'url',
+            'value1',
+            'value2',
+            'value3',
+        ]:
+            return False
+
         # MODE DELETE RULE: The "id" should be the only field included when delete mode
         #     is enabled.
         if mode == 'delete' and nested is True and field not in ['id', 'name']:
             return False
 
-        # ID RULE: The "id" should not be included for ANY method on parent object,
+        # ID RULE: The "id" should not be included for ANY HTTP method on parent object,
         #     but for nested objects the "id" field should be included when available.
         #     PLAT-4074 - updating nested object using "replace"
         if field == 'id' and nested is True and value:

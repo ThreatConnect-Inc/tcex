@@ -31,7 +31,7 @@ class ThreatIntelligence:
 
     @property
     def ti_utils(self):
-        """@bpurdy"""
+        """Return instance of Threat Intel Utils."""
         if not self._ti_utils:
             self._ti_utils = ThreatIntelUtils(session_tc=self.session)
         return self._ti_utils

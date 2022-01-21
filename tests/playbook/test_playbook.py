@@ -91,13 +91,8 @@ class TestUtils:
                         'variable': '#App:0001:kva1!KeyValueArray',
                         'value': [{'key': 'one', 'value': '1'}, {'key': 'two', 'value': '2'}],
                     },
-                    {
-                        'variable': '#App:0001:kva1!KeyValueArray',
-                        'value': {'key': 'three', 'value': '3'},
-                    },
                     {'variable': '#App:0001:s1!String', 'value': '1'},
                     {'variable': '#App:0001:sa1!StringArray', 'value': ['a', 'b', 'c']},
-                    {'variable': '#App:0001:sa1!StringArray', 'value': ['d', 'e', 'f']},
                     {
                         'variable': '#App:0001:te1!TCEntity',
                         'value': {'id': '123', 'type': 'Address', 'value': '1.1.1.1'},
@@ -150,128 +145,6 @@ class TestUtils:
 
             playbook.delete.variable(variable)
             assert playbook.read.variable(variable) is None
-
-    @pytest.mark.parametrize(
-        'output_data',
-        [
-            (
-                [
-                    {'variable': '#App:0001:b1!Binary', 'value': b'bytes'},
-                    {
-                        'variable': '#App:0001:ba1!BinaryArray',
-                        'value': [b'not', b'really', b'binary'],
-                    },
-                    {'variable': '#App:0001:kv1!KeyValue', 'value': {'key': 'one', 'value': '1'}},
-                    {
-                        'variable': '#App:0001:kva1!KeyValueArray',
-                        'value': [{'key': 'one', 'value': '1'}, {'key': 'two', 'value': '2'}],
-                    },
-                    {'variable': '#App:0001:s1!String', 'value': '1'},
-                    {'variable': '#App:0001:sa1!StringArray', 'value': ['a', 'b', 'c']},
-                    {'variable': '#App:0001:sa1!StringArray', 'value': ['d', 'e', 'f']},
-                    {
-                        'variable': '#App:0001:te1!TCEntity',
-                        'value': {'id': '123', 'type': 'Address', 'value': '1.1.1.1'},
-                    },
-                    {
-                        'variable': '#App:0001:tea1!TCEntityArray',
-                        'value': [
-                            {'id': '001', 'type': 'Address', 'value': '1.1.1.1'},
-                            {'id': '002', 'type': 'Address', 'value': '2.2.2.2'},
-                        ],
-                    },
-                    {'variable': '#App:0001:r1!Raw', 'value': b'raw data'},
-                    {'variable': '#App:0001:n1!None', 'value': None},
-                ]
-            )
-        ],
-    )
-    def test_playbook_output_add_no_append(self, output_data: List[dict], playbook_app: 'MockApp'):
-        """Test playbook variables."""
-        tcex: 'TcEx' = playbook_app(
-            config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
-        ).tcex
-        playbook: 'Playbook' = tcex.playbook
-
-        # add all output
-        expected_data = {}
-        for od in output_data:
-            variable = od.get('variable')
-            value = od.get('value')
-
-            variable_model = tcex.utils.get_playbook_variable_model(variable)
-            playbook.output[variable_model.key] = value
-
-            expected_data[variable] = value
-
-        # write output
-        playbook.output.process()
-
-        # validate output
-        for variable, value in expected_data.items():
-            result = tcex.playbook.read.variable(variable)
-
-            assert result == value, f'result of ({result}) does not match ({value})'
-
-            tcex.playbook.delete.variable(variable)
-            assert tcex.playbook.read.variable(variable) is None
-
-    @pytest.mark.parametrize(
-        'output_data',
-        [
-            (
-                [
-                    {
-                        'variable': '#App:0001:sa1!StringArray',
-                        'value': ['a', 'b', None, 'c'],
-                        'expected': ['a', 'b', None, 'c'],
-                        'append': True,
-                    },
-                    {
-                        'variable': '#App:0001:sa2!StringArray',
-                        'value': [['d', 'e'], None],
-                        'expected': ['d', 'e'],
-                        'append': False,
-                    },
-                ]
-            )
-        ],
-    )
-    def test_playbook_output_add_append_logic(
-        self, output_data: List[dict], playbook_app: 'MockApp'
-    ):
-        """Test playbook variables."""
-        tcex: 'TcEx' = playbook_app(
-            config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
-        ).tcex
-        playbook: 'Playbook' = tcex.playbook
-
-        # reset previous outputs
-        playbook.output.data = {}
-
-        # add all output
-        expected_data = {}
-        for od in output_data:
-            variable = od.get('variable')
-            value = od.get('value')
-
-            variable_model = tcex.utils.get_playbook_variable_model(variable)
-            for v in value:
-                playbook.output[variable_model.key] = v
-
-            expected_data[variable] = od.get('expected')
-
-        # write output
-        playbook.output.process()
-
-        # validate output
-        for variable, value in expected_data.items():
-            result = tcex.playbook.read.variable(variable)
-
-            assert result == value, f'result of ({result}) does not match ({value})'
-
-            tcex.playbook.delete.variable(variable)
-            assert tcex.playbook.read.variable(variable) is None
 
     @pytest.mark.parametrize(
         'variable,value',

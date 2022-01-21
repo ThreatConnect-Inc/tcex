@@ -304,7 +304,7 @@ pytest --cov=tcex/bin/ --cov-report=term-missing tests/bin/
 
 ## decorators
 
-48 Test Cases
+36 Test Cases
 
 ```bash
 pytest --cov=tcex/decorators/ --cov-report=term-missing tests/decorators/
@@ -315,12 +315,12 @@ pytest --cov=tcex/decorators/ --cov-report=term-missing tests/decorators/
 ```
 Name                                    Stmts   Miss  Cover
 -----------------------------------------------------------
-TOTAL                                     143      0   100%
+TOTAL                                     131      0   100%
 ```
 
 ## input
 
-256 Test Cases
+356 Test Cases
 
 ```bash
 pytest --cov=tcex/input/ --cov-report=term-missing tests/input/
@@ -331,7 +331,7 @@ pytest --cov=tcex/input/ --cov-report=term-missing tests/input/
 ```
 Name                                    Stmts   Miss  Cover
 -----------------------------------------------------------
-TOTAL                                    698     79    89%
+TOTAL                                    898     90    90%
 ```
 
 ## logger
@@ -352,10 +352,10 @@ TOTAL                                     293     68    77%
 
 ## playbooks
 
-? Test Cases
+289 Test Cases
 
 ```bash
-pytest --cov=tcex/playbooks/ --cov-report=term-missing tests/playbooks/
+pytest --cov=tcex/playbook/ --cov-report=term-missing tests/playbook/
 ```
 
 ### Results
@@ -363,11 +363,12 @@ pytest --cov=tcex/playbooks/ --cov-report=term-missing tests/playbooks/
 ```
 Name                                    Stmts   Miss  Cover
 -----------------------------------------------------------
+TOTAL                                     513     20    96%
 ```
 
 ## sessions
 
-? Test Cases
+17 Cases
 
 ```bash
 pytest --cov=tcex/sessions/ --cov-report=term-missing tests/sessions/
@@ -378,6 +379,7 @@ pytest --cov=tcex/sessions/ --cov-report=term-missing tests/sessions/
 ```
 Name                                    Stmts   Miss  Cover
 -----------------------------------------------------------
+TOTAL                                     293     40    86%
 ```
 
 ## tcex methods
@@ -397,7 +399,7 @@ Name                                    Stmts   Miss  Cover
 
 ## tokens
 
-? Test Cases
+8 Test Cases
 
 ```bash
 pytest --cov=tcex/tokens/ --cov-report=term-missing tests/tokens/
@@ -408,11 +410,12 @@ pytest --cov=tcex/tokens/ --cov-report=term-missing tests/tokens/
 ```
 Name                                    Stmts   Miss  Cover
 -----------------------------------------------------------
+TOTAL                                     132      5    96%
 ```
 
 ## utils
 
-80 Test Cases
+116 Test Cases
 
 ```bash
 pytest --cov=tcex/utils/ --cov-report=term-missing tests/utils/
@@ -423,5 +426,5 @@ pytest --cov=tcex/utils/ --cov-report=term-missing tests/utils/
 ```
 Name                                    Stmts   Miss  Cover
 -----------------------------------------------------------
-TOTAL                                     351    118    66%
+TOTAL                                     424    125    71%
 ```

@@ -1,4 +1,7 @@
 """Test TcEx Module"""
+# standard library
+import logging
+
 # first-party
 from tcex.decorators.on_exception import OnException
 
@@ -9,6 +12,8 @@ class TestOnExceptionDecorators:
 
     args = None
     exit_message = None
+    log = logging.getLogger('dummy')
+    playbook = None
     tcex = None
 
     @OnException(exit_msg='on_exception method failed', exit_enabled='fail_on_error')
@@ -24,6 +29,7 @@ class TestOnExceptionDecorators:
         """
         config_data = {'fail_on_error': True}
         self.tcex = playbook_app(config_data=config_data).tcex
+        self.playbook = self.tcex.playbook
 
         # call method with decorator
         try:
@@ -46,6 +52,7 @@ class TestOnExceptionDecorators:
         """
         config_data = {'fail_on_error': False}
         self.tcex = playbook_app(config_data=config_data).tcex
+        self.playbook = self.tcex.playbook
 
         # call method with decorator
         self.on_exception_exit_enabled_false()

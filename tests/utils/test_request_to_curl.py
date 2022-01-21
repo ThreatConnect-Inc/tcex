@@ -18,11 +18,7 @@ class TestRequestToCurl:
     """Test the TcEx Utils Module."""
 
     def test_curl_get(self):
-        """Test an IPv4 address
-
-        Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
-        """
+        """Test Case"""
         r = requests.get('https://www.google.com')
         r_curl = requests_to_curl.convert(r.request)
         r_curl_expected = re.compile(
@@ -33,11 +29,7 @@ class TestRequestToCurl:
         assert r_curl_expected.match(r_curl)
 
     def test_curl_get_insecure(self):
-        """Test an IPv4 address
-
-        Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
-        """
+        """Test Case"""
         r = requests.get('https://www.google.com')
         r_curl = requests_to_curl.convert(r.request, verify=False)
         r_curl_expected = re.compile(
@@ -49,11 +41,7 @@ class TestRequestToCurl:
         assert r_curl_expected.match(r_curl)
 
     def test_curl_get_mask(self):
-        """Test an IPv4 address
-
-        Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
-        """
+        """Test Case"""
         headers = {
             'authorization': 'sensitive information that should not be readable',
             'pytest': 'mask',
@@ -71,11 +59,7 @@ class TestRequestToCurl:
         assert r_curl_expected.match(r_curl)
 
     def test_curl_get_proxies(self):
-        """Test an IPv4 address
-
-        Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
-        """
+        """Test Case"""
         headers = {'authorization': 'sensitive information that should not be readable'}
         r = requests.get('https://www.google.com', headers=headers)
         r_curl = requests_to_curl.convert(
@@ -90,11 +74,7 @@ class TestRequestToCurl:
         assert r_curl_expected.match(r_curl)
 
     def test_curl_get_proxies_with_auth(self):
-        """Test an IPv4 address
-
-        Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
-        """
+        """Test Case"""
         headers = {'authorization': 'sensitive information that should not be readable'}
         r = requests.get('https://www.google.com', headers=headers)
         r_curl = requests_to_curl.convert(
@@ -110,11 +90,7 @@ class TestRequestToCurl:
         assert r_curl_expected.match(r_curl)
 
     def test_curl_post(self):
-        """Test an IPv4 address
-
-        Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
-        """
+        """Test Case"""
         r = requests.post('https://www.google.com', data='test')
         r_curl = requests_to_curl.convert(r.request)
         r_curl_expected = re.compile(
@@ -126,11 +102,7 @@ class TestRequestToCurl:
         assert r_curl_expected.match(r_curl)
 
     def test_curl_mask_body(self):
-        """Test an IPv4 address
-
-        Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
-        """
+        """Test Case"""
         r = requests.post('https://www.google.com', data='test')
         r_curl = requests_to_curl.convert(r.request, mask_body=True)
         r_curl_expected = re.compile(
@@ -142,11 +114,7 @@ class TestRequestToCurl:
         assert r_curl_expected.match(r_curl)
 
     def test_curl_post_bytes(self):
-        """Test an IPv4 address
-
-        Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
-        """
+        """Test Case"""
         r = requests.post('https://www.google.com', data=b'test')
         r_curl = requests_to_curl.convert(r.request)
         r_curl_expected = re.compile(
@@ -158,11 +126,7 @@ class TestRequestToCurl:
         assert r_curl_expected.match(r_curl)
 
     def test_curl_post_bytes_binary(self):
-        """Test an IPv4 address
-
-        Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
-        """
+        """Test Case"""
         data = b64decode(
             'UEsDBAoAAAAAACSE+FBT/FFnAgAAAAIAAAAEABwAYmxhaFVUCQADk1MbX5RTG191eAsAAQT2AQAABBQAAAAxC'
             'lBLAQIeAwoAAAAAACSE+FBT/FFnAgAAAAIAAAAEABgAAAAAAAEAAAC0gQAAAABibGFoVVQFAAOTUxtfdXgLAA'

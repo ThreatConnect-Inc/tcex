@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING, Dict, Optional, Union
 from requests import Session
 
 # first-party
+from tcex.api.tc.utils.threat_intel_utils import ThreatIntelUtils
 from tcex.api.tc.v2.v2 import V2
 from tcex.api.tc.v3.v3 import V3
 from tcex.app_config.install_json import InstallJson
@@ -470,6 +471,11 @@ class TcEx:
     def set_exit_code(self, exit_code: int):
         """Set the exit code (registry)"""
         self.exit_code = exit_code
+
+    @property
+    def ti_utils(self) -> 'ThreatIntelUtils':
+        """Return instance of Threat Intel Utils."""
+        return ThreatIntelUtils(self.session_tc)
 
     @cached_property
     def utils(self) -> 'Utils':  # pylint: disable=no-self-use

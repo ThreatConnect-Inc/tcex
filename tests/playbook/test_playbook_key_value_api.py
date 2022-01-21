@@ -5,6 +5,10 @@ from typing import TYPE_CHECKING, Any
 # third-party
 import pytest
 
+# first-party
+from tcex.backports import cached_property
+from tcex.pleb.scoped_property import scoped_property
+
 if TYPE_CHECKING:
     # first-party
     from tcex import TcEx
@@ -97,6 +101,11 @@ class TestPlaybookKeyValueApi:
             '#App:0001:dup.name!StringArray',
         ]
 
+    def setup_method(self):
+        """Configure setup before all tests."""
+        scoped_property._reset()
+        cached_property._reset()
+
     @pytest.mark.parametrize(
         'variable,value',
         [
@@ -131,9 +140,9 @@ class TestPlaybookKeyValueApi:
         """Test the create output method of Playbook module.
 
         Args:
-            variable (str): The key/variable to create in Key Value Store.
-            value (str): The value to store in Key Value Store.
-            playbook_app (callable, fixture): The playbook_app fixture.
+            variable: The key/variable to create in Key Value Store.
+            value: The value to store in Key Value Store.
+            playbook_app (fixture): The playbook_app fixture.
             monkeypatch (monkeypatch): Pytest monkeypatch.
         """
         tcex: 'TcEx' = playbook_app(
