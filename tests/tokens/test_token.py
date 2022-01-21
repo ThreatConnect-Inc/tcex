@@ -37,7 +37,7 @@ class TestToken:
         """Return the current thread name."""
         return threading.current_thread().name
 
-    def test_token_registration_process(self, service_app):
+    def test_token_registration_process(self, service_app, monkeypatch):
         """Test registration of token.
 
         Usage of token is out of scope of this test. This simply tests that register_token
@@ -47,6 +47,7 @@ class TestToken:
             service_app (MockApp, fixture): An instantiated instance of MockApp.
         """
         # get clean instance of tcex
+        monkeypatch.setenv('TC_TOKEN_SLEEP_INTERVAL', '1')
         tcex = service_app().tcex
 
         # get token from fixture
@@ -70,7 +71,7 @@ class TestToken:
         tcex.token.shutdown = True  # coverage
 
     @staticmethod
-    def test_token_setters(service_app):
+    def test_token_setters(service_app, monkeypatch):
         """Test using token and token_expires setters.
 
         Test setter logic only.
@@ -78,6 +79,7 @@ class TestToken:
         Args:
             service_app (MockApp, fixture): An instantiated instance of MockApp.
         """
+        monkeypatch.setenv('TC_TOKEN_SLEEP_INTERVAL', '1')
         # get clean instance of tcex
         tcex = service_app().tcex
 
@@ -96,12 +98,13 @@ class TestToken:
         assert tcex.token.token.value == token
 
     @staticmethod
-    def test_invalid_unregister_token(service_app):
+    def test_invalid_unregister_token(service_app, monkeypatch):
         """Test invalid token unregister.
 
         Args:
             service_app (MockApp, fixture): An instantiated instance of MockApp.
         """
+        monkeypatch.setenv('TC_TOKEN_SLEEP_INTERVAL', '1')
         # coverage: hit except on unregister_token()
         service_app().tcex.token.unregister_token('zzzzzz')
 
