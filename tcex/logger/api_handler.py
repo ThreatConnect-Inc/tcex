@@ -19,6 +19,7 @@ class ApiHandler(logging.Handler):
         self.session = session
         self.flush_limit = flush_limit
         self._entries = []
+        self._entries_lock = threading.Lock()
         self.in_token_renewal = False
 
     def flush(self):
@@ -45,12 +46,28 @@ class ApiHandler(logging.Handler):
         ) and not self.in_token_renewal:
             self.log_to_api(self.entries)
 
+    def handle(self, record):
+        """Override base handle method to add logic that prevents threading deadlocks"""
+        # append log entries from child threads to _entries to avoid deadlocks within handle method.
+        # Otherwise, token monitor thread would try to acquire I/O lock within super().handle
+        # when attempting to log messages (meaning token barrier is enabled in tokens.py).
+        # if the main thread currently has the I/O lock from within super().handle and is trying
+        # to retrieve a token from tokens.py to log to API, then a deadlock occurs because the
+        # main thread is waiting for the barrier to be disabled, and the token thread is waiting
+        # for the I/O lock from super().handle.
+        if threading.current_thread().name != 'MainThread':
+            with self._entries_lock:
+                self._entries.append(record)
+        else:
+            super().handle(record)
+
     @property
     def entries(self):
         """Return a copy and clear self._entries."""
-        entries = list(self._entries)
-        self._entries = []
-        return entries
+        with self._entries_lock:
+            entries = list(self._entries)
+            self._entries = []
+            return entries
 
     def log_to_api(self, entries):
         """Send log events to the ThreatConnect API"""
