@@ -97,6 +97,7 @@ unpickle
 unprocess
 unregister
 urlencode
+urlencoding
 urllib
 virtualenv
 wfile
