@@ -13,8 +13,6 @@ from typing import Dict, Union
 
 # third-party
 import colorama as c
-
-# from jsonschema import SchemaError, ValidationError, validate
 from pydantic import ValidationError
 from stdlib_list import stdlib_list
 
