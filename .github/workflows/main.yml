@@ -2,9 +2,9 @@ name: build
 
 on:
   push:
-    branches: [develop, main, "feature/3.0.0"]
+    branches: [develop, main, github-action-testing]
   pull_request:
-    branches: [develop, main, "feature/3.0.0"]
+    branches: [develop, main]
   workflow_dispatch:
 
 jobs:
@@ -32,8 +32,8 @@ jobs:
       - name: Set up Python ${{ matrix.python-version }}
         run: |
           pyenv install ${{ matrix.python-version }} -s
-          pyenv virtualenv ${{ matrix.python-version }} tcex-${{ matrix.python-version }} -f
-          pyenv local tcex-${{ matrix.python-version }}
+          pyenv virtualenv ${{ matrix.python-version }} tcex-${{ runner.name }}-${{ matrix.python-version }} -f
+          pyenv local tcex-${{ runner.name }}-${{ matrix.python-version }}
 
       # Cache pre-commit
       - name: Local pre-commit cache
@@ -73,7 +73,7 @@ jobs:
     runs-on: [self-hosted]
     strategy:
       matrix:
-        python-version: [3.6.15, 3.9.9]
+        python-version: [3.6.15, 3.9.10]
 
     steps:
       - uses: actions/checkout@v2
@@ -82,8 +82,8 @@ jobs:
       - name: Set up Python ${{ matrix.python-version }}
         run: |
           pyenv install ${{ matrix.python-version }} -s
-          pyenv virtualenv ${{ matrix.python-version }} tcex-${{ matrix.python-version }} -f
-          pyenv local tcex-${{ matrix.python-version }}
+          pyenv virtualenv ${{ matrix.python-version }} tcex-${{ runner.name }}-${{ matrix.python-version }} -f
+          pyenv local tcex-${{ runner.name }}-${{ matrix.python-version }}
 
       # Cache key (for daily, weekly, monthly, or yearly)
       - name: Cache key
@@ -119,10 +119,15 @@ jobs:
       #     --html=tests/reports/tcex-report.html
       #     --self-contained-html tests/
 
-      # Test package and save artifacts
-      - name: Test with pytest
+      # Test App Config module
+      - name: Test App Config Module
         run: >
           pytest --cov=tcex/app_config/ --cov-report=term-missing tests/app_config/
+
+      # # Test Utils module
+      # - name: Test Utils Module
+      #   run: >
+      #     pytest --cov=tcex/utils/ --cov-report=term-missing tests/utils/
 
       # # Artifact upload
       # - name: Upload pytest test results

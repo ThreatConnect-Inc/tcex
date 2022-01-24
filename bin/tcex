@@ -20,13 +20,14 @@ app = typer.Typer()
 @app.command()
 def deps(
     branch: Optional[str] = typer.Option(
-        'master',
+        'main',
         help=(
             'The git branch of the tcex repository to use. '
             'This override what is in the requirements.txt file.',
         ),
     ),
     no_cache_dir: Optional[bool] = typer.Option(False, help='Do not use pip cache directory.'),
+    pre: Optional[bool] = typer.Option(False, help='Install pre-release packages.'),
     proxy_host: Optional[str] = typer.Option(
         None, help='(Advanced) Hostname for the proxy server.'
     ),
@@ -48,12 +49,12 @@ def deps(
     are defined in the tcex.json file, then there will be multiple lib_X.X.X directories created.
     """
     try:
-        tcl = Dep(branch, no_cache_dir, proxy_host, proxy_port, proxy_user, proxy_pass)
+        tcl = Dep(branch, no_cache_dir, pre, proxy_host, proxy_port, proxy_user, proxy_pass)
 
         # configure proxy settings
         tcl.configure_proxy()
 
-        if branch != 'master':
+        if branch != 'main':
             # create temp requirements.txt file pointing to tcex branch
             tcl.create_temp_requirements()
 
