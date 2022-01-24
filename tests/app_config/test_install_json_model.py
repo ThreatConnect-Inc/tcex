@@ -371,26 +371,28 @@ class TestInstallJson:
 
     def test_model_app_output_var_typ(self):
         """Test method"""
-        ij = self.ij_bad(app_type='tcpb')
-        assert ij.model.app_output_var_type == 'App'
+        try:
+            ij = self.ij_bad(app_type='tcpb')
+            assert ij.model.app_output_var_type == 'App'
 
-        # cleanup temp file
-        ij.fqfn.unlink()
+            # cleanup temp file
+            ij.fqfn.unlink()
 
-        ij = self.ij_bad(app_type='tcvc')
-        assert ij.model.app_output_var_type == 'Trigger'
-
-        # cleanup temp file
-        ij.fqfn.unlink()
+            ij = self.ij_bad(app_type='tcvc')
+            assert ij.model.app_output_var_type == 'Trigger'
+        finally:
+            # cleanup temp file
+            ij.fqfn.unlink()
 
     def test_model_commit_hash(self):
         """Test method"""
         ij = self.ij_bad(app_type='tcpb')
 
-        assert ij.model.commit_hash
-
-        # cleanup temp file
-        ij.fqfn.unlink()
+        try:
+            assert ij.model.commit_hash
+        finally:
+            # cleanup temp file
+            ij.fqfn.unlink()
 
     def test_model_filter_params(self):
         """Test method"""
