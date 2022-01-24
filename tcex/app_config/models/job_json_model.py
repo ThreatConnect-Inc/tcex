@@ -7,6 +7,9 @@ from pydantic import BaseModel
 
 __all__ = ['JobJsonModel']
 
+# third-party
+from semantic_version import Version
+
 
 def snake_to_camel(snake_string: str) -> str:
     """Convert snake_case to camelCase"""
@@ -41,7 +44,7 @@ class JobJsonModel(BaseModel):
     notify_on_partial_failure: bool = False
     params: List[ParamsModel]
     program_name: str
-    program_version: str
+    program_version: Version
     publish_auth: bool = False
     schedule_cron_format: str
     schedule_start_date: int
@@ -51,4 +54,5 @@ class JobJsonModel(BaseModel):
         """DataModel Config"""
 
         alias_generator = snake_to_camel
+        arbitrary_types_allowed = True
         validate_assignment = True
