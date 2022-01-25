@@ -24,6 +24,7 @@ class ExitCode(int, Enum):
     SUCCESS = 0
     FAILURE = 1
     PARTIAL_FAILURE = 3
+    HARD_FAILURE = 4
 
     def __str__(self):
         """@cblades"""
