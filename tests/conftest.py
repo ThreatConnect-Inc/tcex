@@ -124,9 +124,9 @@ def tcex() -> 'TcEx':
     registry._reset()
     cached_property._reset()
     scoped_property._reset()
-    tcex = MockApp(runtime_level='Playbook').tcex
-    yield tcex
-    tcex.token.shutdown = True
+    _tcex = MockApp(runtime_level='Playbook').tcex
+    yield _tcex
+    _tcex.token.shutdown = True
 
 
 @pytest.fixture()
