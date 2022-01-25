@@ -51,26 +51,36 @@ def owner_id():
                 break
         return id_
 
-    return get_owner_id
+    yield get_owner_id
+
+    tcex_.token.shutdown = True
 
 
 @pytest.fixture()
 def playbook() -> 'Playbook':
     """Return an instance of tcex.playbook."""
     app = MockApp(runtime_level='Playbook')
-    return app.tcex.playbook
+    yield app.tcex.playbook
+    app.tcex.token.shutdown = True
 
 
 @pytest.fixture()
 def playbook_app() -> 'MockApp':
     """Mock a playbook App."""
+    app_refs = []
 
     def app(**kwargs):
+        nonlocal app_refs
         if kwargs.get('runtime_level') is None:
             kwargs['runtime_level'] = 'Playbook'
-        return MockApp(**kwargs)
+        _app = MockApp(**kwargs)
+        app_refs.append(_app)
+        return _app
 
-    return app
+    yield app
+
+    for _app in app_refs:
+        _app.tcex.token.shutdown = True
 
 
 @pytest.fixture()
@@ -84,20 +94,28 @@ def redis_client() -> redis.Redis:
 @pytest.fixture()
 def service_app() -> 'MockApp':
     """Mock a service App."""
+    app_refs = []
 
     def app(**kwargs):
+        nonlocal app_refs
         if kwargs.get('runtime_level') is None:
             kwargs['runtime_level'] = 'TriggerService'
-        return MockApp(**kwargs)
+        _app = MockApp(**kwargs)
+        app_refs.append(_app)
+        return _app
 
-    return app
+    yield app
+
+    for _app in app_refs:
+        _app.tcex.token.shutdown = True
 
 
 @pytest.fixture()
 def tc_log_file() -> str:
     """Return tcex config data."""
     app = MockApp(runtime_level='Playbook')
-    return app.tcex_log_file
+    yield app.tcex_log_file
+    app.tcex.token.shutdown = True
 
 
 @pytest.fixture()
@@ -106,8 +124,9 @@ def tcex() -> 'TcEx':
     registry._reset()
     cached_property._reset()
     scoped_property._reset()
-    app = MockApp(runtime_level='Playbook')
-    return app.tcex
+    tcex = MockApp(runtime_level='Playbook').tcex
+    yield tcex
+    tcex.token.shutdown = True
 
 
 @pytest.fixture()
@@ -118,7 +137,8 @@ def tcex_hmac() -> 'TcEx':
         'tc_token_expires': None,
     }
     app = MockApp(runtime_level='Playbook', config_data=config_data_)
-    return app.tcex
+    yield app.tcex
+    app.tcex.token.shutdown = True
 
 
 # @pytest.fixture(scope='module')
@@ -133,7 +153,8 @@ def tcex_proxy() -> 'TcEx':
         'tc_proxy_external': True,
     }
     app = MockApp(runtime_level='Playbook', config_data=config_data_)
-    return app.tcex
+    yield app.tcex
+    app.tcex.token.shutdown = True
 
 
 #
