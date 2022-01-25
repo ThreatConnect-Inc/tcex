@@ -12,15 +12,31 @@ from tcex.input.field_types import Sensitive
 from tcex.pleb.scoped_property import scoped_property
 
 
-def await_token_renewal_cycle(token_service):
+def await_token_barrier_enabled(token_service, timeout=120):
+    """Await for token barrier to be enabled"""
+    while token_service._barrier.is_set():
+        time.sleep(1)
+        timeout -= 1
+        if timeout <= 0:
+            raise RuntimeError('Timeout expired while waiting for token barrier to be enabled')
+
+
+def await_token_barrier_disabled(token_service, timeout=60):
+    """Await token service to be disabled"""
+    result = token_service._barrier.wait(timeout=timeout)
+
+    if not result:
+        raise RuntimeError('Timeout Expired while waiting for token barrier to be disabled')
+
+
+def await_token_renewal_cycle(token_service, timeout=60):
     """Await for a token renewal cycle to take place and finish"""
     # wait until renewal monitor has enabled the barrier (is_set == False), which
     # means that renewal monitor has started renewal process
-    while token_service.barrier.is_set():
-        time.sleep(1)
+    await_token_barrier_enabled(token_service, timeout)
 
     # wait until renewal monitor has disabled the barrier, meaning that renewal is done
-    token_service.barrier.wait()
+    await_token_barrier_disabled(token_service, timeout)
 
 
 # pylint: disable=no-self-argument, no-self-use
@@ -247,8 +263,7 @@ class TestToken:
 
         # wait until renewal monitor enters a renewal cycle. Monitor should enable the barrier
         # but the exception will cause it to exit before it disables the barrier.
-        while app.tcex.token.barrier.is_set():
-            time.sleep(1)
+        await_token_barrier_enabled(app.tcex.token)
 
         # attempt to retrieve token. Barrier await timeout should expire. RuntimeError expected
         with pytest.raises(RuntimeError):

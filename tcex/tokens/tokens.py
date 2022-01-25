@@ -67,13 +67,13 @@ class Tokens:
         # from this module or not (via the token property). The barrier only blocks access to the
         # token property whenever token renewal is taking place in order to keep from returning
         # stale tokens.
-        self.barrier = threading.Event()
+        self._barrier = threading.Event()
         # Setting barrier event to True disables barrier, which makes the token property
         # accessible (default behavior)
-        self.barrier.set()
+        self._barrier.set()
 
         # threading event that denotes whether renewal monitor should sleep after a renewal cycle
-        self.monitor_sleep = threading.Event()
+        self._monitor_sleep_interval = threading.Event()
 
         self.log = logger
         self.monitor_thread = None
@@ -175,7 +175,7 @@ class Tokens:
         down immediately (or after its current renewal cycle).
         """
         if value is True:
-            self.monitor_sleep.set()
+            self._monitor_sleep_interval.set()
 
         self._shutdown = value
 
@@ -193,7 +193,7 @@ class Tokens:
         # perform three attempts - safety net in case of heavily overloaded monitor. If we cannot
         # retrieve a token after three attempts, there must be an issue
         for i in range(3):
-            if self.barrier.wait(timeout=self.token_renewal_buffer_time + 10):
+            if self._barrier.wait(timeout=self.token_renewal_buffer_time + 10):
                 return self.token_map.get(self.key, {}).get('token')
 
             self.log.debug(
@@ -246,9 +246,9 @@ class Tokens:
         while True:
             # Clear renewal barrier (setting it to False), which blocks access to token via
             # the token property.
-            self.barrier.clear()
+            self._barrier.clear()
             self.log.debug('Token renewal barrier enabled.')
-            self.monitor_sleep.wait(self.token_renewal_buffer_time)
+            self._monitor_sleep_interval.wait(self.token_renewal_buffer_time)
             for key, token_data in dict(self.token_map).items():
                 # calculate the time left to sleep
                 sleep_seconds = (
@@ -283,14 +283,14 @@ class Tokens:
                     except KeyError:  # pragma: no cover
                         pass
             # renewal loop is finished, grant access to token via token property once again
-            self.barrier.set()
+            self._barrier.set()
             self.log.debug('Token renewal barrier disabled.')
 
             # if monitor has not been shutdown, renewal monitor will sleep for sleep_interval
             # seconds. If monitor has been shutdown, monitor does not sleep and proceeds to
             # the shutdown logic within the if statement below. If the monitor is already sleeping,
             # the monitor wakes up and proceeds to the shutdown logic.
-            self.monitor_sleep.wait(self.sleep_interval)
+            self._monitor_sleep_interval.wait(self.sleep_interval)
             if self.shutdown is True:
                 self.log.debug('Token renewal monitor shutdown signal received')
                 break
