@@ -1065,7 +1065,7 @@ class BatchWriter:
 
                 if saved:
                     try:
-                        del self._groups[xid]
+                        del self.groups[xid]
                     except KeyError:
                         # if group was saved twice it would already be delete
                         pass
@@ -1078,7 +1078,7 @@ class BatchWriter:
 
                 if saved:
                     try:
-                        del self._indicators[xid]
+                        del self.indicators[xid]
                     except KeyError:
                         # if indicator was saved twice it would already be delete
                         pass
