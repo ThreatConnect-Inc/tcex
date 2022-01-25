@@ -208,6 +208,11 @@ def get_commit_hash() -> Optional[str]:
             if os.path.isfile(hash_file):
                 with open(hash_file) as f:
                     commit_hash = f.read().strip()
+
+    if commit_hash is None:
+        # gitlab / github CI environment variable
+        commit_hash = os.getenv('CI_COMMIT_SHA') or os.getenv('GITHUB_SHA')
+
     return commit_hash
 
 

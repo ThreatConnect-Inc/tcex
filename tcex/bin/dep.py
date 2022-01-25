@@ -26,6 +26,7 @@ class Dep(BinABC):
         self,
         branch: str,
         no_cache_dir: bool,
+        pre: bool,
         proxy_host: str,
         proxy_port: int,
         proxy_user: str,
@@ -35,6 +36,7 @@ class Dep(BinABC):
         super().__init__()
         self.branch = branch
         self.no_cache_dir = no_cache_dir
+        self.pre = pre
         self.proxy_host = proxy_host
         self.proxy_port = proxy_port
         self.proxy_user = proxy_user
@@ -77,6 +79,8 @@ class Dep(BinABC):
         ]
         if self.no_cache_dir:
             exe_command.append('--no-cache-dir')
+        if self.pre:
+            exe_command.append('--pre')
 
         if self.proxy_enabled:
             # trust the pypi hosts to avoid ssl errors
@@ -225,7 +229,7 @@ class Dep(BinABC):
             ):
                 self.latest_version = python_version
 
-        if self.branch != 'master':
+        if self.branch != 'main':
             # remove temp requirements.txt file
             self.requirements_fqfn.unlink()
 
