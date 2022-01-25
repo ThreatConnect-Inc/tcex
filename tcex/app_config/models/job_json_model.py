@@ -8,6 +8,9 @@ from semantic_version import Version
 
 __all__ = ['JobJsonModel']
 
+# third-party
+from semantic_version import Version
+
 
 def snake_to_camel(snake_string: str) -> str:
     """Convert snake_case to camelCase"""
