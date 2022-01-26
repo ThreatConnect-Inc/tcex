@@ -27,11 +27,6 @@ class TestEmailGroups(TestThreatIntelligence):
         self.ti = self.ti_helper.ti
         self.tcex = self.ti_helper.tcex
 
-    def teardown_method(self):
-        """Configure teardown before all tests."""
-        if os.getenv('TEARDOWN_METHOD') is None:
-            self.ti_helper.cleanup()
-
     def tests_ti_email_create(self):
         """Create a group using specific interface."""
         group_data = {

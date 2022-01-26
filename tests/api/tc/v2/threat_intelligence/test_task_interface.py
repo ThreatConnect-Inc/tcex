@@ -22,11 +22,6 @@ class TestTask(TestThreatIntelligence):
         self.ti = self.ti_helper.ti
         self.tcex = self.ti_helper.tcex
 
-    def teardown_method(self):
-        """Configure teardown before all tests."""
-        if os.getenv('TEARDOWN_METHOD') is None:
-            self.ti_helper.cleanup()
-
     def tests_ti_task_create(self):
         """Create a task using specific interface."""
         task_data = {

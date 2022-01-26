@@ -29,11 +29,6 @@ class TestAddressIndicators(TestThreatIntelligence):
         self.ti = self.ti_helper.ti
         self.tcex = self.ti_helper.tcex
 
-    def teardown_method(self):
-        """Configure teardown before all tests."""
-        if os.getenv('TEARDOWN_METHOD') is None:
-            self.ti_helper.cleanup()
-
     def tests_ti_association_example_1(self):
         """Testing TI module"""
         rand_ip = self.ti_helper.rand_ip()

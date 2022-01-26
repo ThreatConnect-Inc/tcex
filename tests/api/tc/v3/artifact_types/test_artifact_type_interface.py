@@ -22,11 +22,6 @@ class TestArtifactTypes(TestV3):
         self.v3 = self.v3_helper.v3
         self.tcex = self.v3_helper.tcex
 
-    def teardown_method(self):
-        """Configure teardown before all tests."""
-        if os.getenv('TEARDOWN_METHOD') is None:
-            self.v3_helper.cleanup()
-
     def test_artifact_type_api_options(self):
         """Test filter keywords."""
         super().obj_api_options()
