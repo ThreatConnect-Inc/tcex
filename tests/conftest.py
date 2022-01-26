@@ -31,17 +31,23 @@ if TYPE_CHECKING:
 #     app = MockApp(runtime_level='Playbook')
 #     return app.config_data
 
+def _reset_modules():
+    """Reset modules that cached_property, scoped_property and registry"""
+    registry._reset()
+    cached_property._reset()
+    scoped_property._reset()
 
 @pytest.fixture()
 def owner_id():
     """Return an owner id."""
-    tcex_ = MockApp(runtime_level='Playbook').tcex
+    _reset_modules()
+    _tcex = MockApp(runtime_level='Playbook').tcex
 
     def get_owner_id(name):
         """Return owner Id give the name."""
         id_ = None
         for o in (
-            tcex_.session_tc.get('/v2/owners')  # pylint: disable=no-member
+            _tcex.session_tc.get('/v2/owners')  # pylint: disable=no-member
             .json()
             .get('data', [])
             .get('owner', [])
@@ -53,12 +59,13 @@ def owner_id():
 
     yield get_owner_id
 
-    tcex_.token.shutdown = True
+    _tcex.token.shutdown = True
 
 
 @pytest.fixture()
 def playbook() -> 'Playbook':
     """Return an instance of tcex.playbook."""
+    _reset_modules()
     app = MockApp(runtime_level='Playbook')
     yield app.tcex.playbook
     app.tcex.token.shutdown = True
@@ -67,6 +74,7 @@ def playbook() -> 'Playbook':
 @pytest.fixture()
 def playbook_app() -> 'MockApp':
     """Mock a playbook App."""
+    _reset_modules()
     app_refs = []
 
     def app(**kwargs):
@@ -94,6 +102,7 @@ def redis_client() -> redis.Redis:
 @pytest.fixture()
 def service_app() -> 'MockApp':
     """Mock a service App."""
+    _reset_modules()
     app_refs = []
 
     def app(**kwargs):
@@ -113,6 +122,7 @@ def service_app() -> 'MockApp':
 @pytest.fixture()
 def tc_log_file() -> str:
     """Return tcex config data."""
+    _reset_modules()
     app = MockApp(runtime_level='Playbook')
     yield app.tcex_log_file
     app.tcex.token.shutdown = True
@@ -121,9 +131,7 @@ def tc_log_file() -> str:
 @pytest.fixture()
 def tcex() -> 'TcEx':
     """Return an instance of tcex."""
-    registry._reset()
-    cached_property._reset()
-    scoped_property._reset()
+    _reset_modules()
     _tcex = MockApp(runtime_level='Playbook').tcex
     yield _tcex
     _tcex.token.shutdown = True
@@ -132,6 +140,7 @@ def tcex() -> 'TcEx':
 @pytest.fixture()
 def tcex_hmac() -> 'TcEx':
     """Return an instance of tcex with hmac auth."""
+    _reset_modules()
     config_data_ = {
         'tc_token': None,
         'tc_token_expires': None,
@@ -148,6 +157,7 @@ def tcex_proxy() -> 'TcEx':
 
     mitmproxy -p 4242 --ssl-insecure
     """
+    _reset_modules()
     config_data_ = {
         'tc_proxy_tc': True,
         'tc_proxy_external': True,
