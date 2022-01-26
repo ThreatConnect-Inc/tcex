@@ -110,8 +110,8 @@ class TestAddressIndicators(TestThreatIntelligence):
         indicator_kwargs = {'ip': rand_ip, 'rating': randint(0, 5), 'confidence': randint(0, 100)}
         indicator = self.ti.indicator('address', self.owner, **indicator_kwargs)
         indicator.create()
-        today = datetime.strftime(datetime.now(), '%Y-%m-%d')
-        tomorrow = datetime.strftime(datetime.now() + timedelta(1), '%Y-%m-%d')
+        today = datetime.strftime(datetime.utcnow(), '%Y-%m-%d')
+        tomorrow = datetime.strftime(datetime.utcnow() + timedelta(1), '%Y-%m-%d')
         filters = self.tcex.v2.ti.filters()
         filters.add_filter('dateAdded', '>', today)
         filters.add_filter('dateAdded', '<', tomorrow)
