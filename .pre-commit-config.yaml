@@ -92,4 +92,4 @@ repos:
         language: system
         name: pylint
         types: [python]
-        args: ["--jobs=1"]
+        args: ["--jobs=2"]
