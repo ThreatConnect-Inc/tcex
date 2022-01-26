@@ -1,6 +1,5 @@
 """Test the TcEx API Module."""
 # standard library
-import os
 from random import randint
 
 # third-party

@@ -1,6 +1,4 @@
 """Test the TcEx API Module."""
-# standard library
-import os
 
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator

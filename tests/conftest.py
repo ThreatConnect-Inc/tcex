@@ -31,11 +31,13 @@ if TYPE_CHECKING:
 #     app = MockApp(runtime_level='Playbook')
 #     return app.config_data
 
+
 def _reset_modules():
     """Reset modules that cached_property, scoped_property and registry"""
     registry._reset()
     cached_property._reset()
     scoped_property._reset()
+
 
 @pytest.fixture()
 def owner_id():

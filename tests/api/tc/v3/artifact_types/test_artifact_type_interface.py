@@ -1,7 +1,4 @@
 """Test the TcEx API Module."""
-# standard library
-import os
-
 # third-party
 import pytest
 

@@ -1,7 +1,6 @@
 """Test the TcEx API Module."""
 # standard library
 import datetime
-import os
 import time
 from random import randint
 
