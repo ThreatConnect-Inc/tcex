@@ -57,10 +57,10 @@ class V3ModelABC(BaseModel, ABC):
 
         # INDICATOR ID RULE: If an indicator has a ID set, then the indicator fields
         #     cannot be provided (updateable is false) or the API request will fail.
-        #     Since Note model CAN update the `text` field we need to specifically omit
-        #     it from falling into this check.
+        #     Since Note model CAN update the `text` field we need to specifically state
+        #     that this test is for the `Indicator Model` only.
         if (
-            self.__config__.title != 'Note Model'
+            self.__config__.title == 'Indicator Model'
             and self.id is not None
             and field
             in [
