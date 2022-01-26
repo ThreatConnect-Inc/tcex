@@ -229,6 +229,7 @@ class InstallJsonModel(BaseModel):
     api_user_token_param: Optional[bool]
     app_id: Union[UUID4, UUID5] = Field(default_factory=app_id)
     commit_hash: Optional[str] = Field(default_factory=get_commit_hash)
+    deprecates_apps: Optional[List[str]]
     display_name: constr(min_length=3, max_length=100)
     display_path: Optional[constr(min_length=3, max_length=100)]
     docker_image: Optional[str]
