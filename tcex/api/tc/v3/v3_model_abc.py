@@ -59,20 +59,25 @@ class V3ModelABC(BaseModel, ABC):
         #     cannot be provided (updateable is false) or the API request will fail.
         #     Since Note model CAN update the `text` field we need to specifically omit
         #     it from falling into this check.
-        if self.__config__.title != 'Note Model' and self.id is not None and field in [
-            'address',
-            'file',
-            'hostName',
-            'ip',
-            'md5',
-            'sha1',
-            'sha256',
-            'text',
-            'url',
-            'value1',
-            'value2',
-            'value3',
-        ]:
+        if (
+            self.__config__.title != 'Note Model'
+            and self.id is not None
+            and field
+            in [
+                'address',
+                'file',
+                'hostName',
+                'ip',
+                'md5',
+                'sha1',
+                'sha256',
+                'text',
+                'url',
+                'value1',
+                'value2',
+                'value3',
+            ]
+        ):
             return False
 
         # MODE DELETE RULE: The "id" should be the only field included when delete mode
