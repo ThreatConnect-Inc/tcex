@@ -50,7 +50,8 @@ class Dep(BinABC):
             f'lib_{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}'
         )
         self.proxy_enabled = False
-        self.proxy_env = {'CI_JOB_TOKEN': os.getenv('CI_JOB_TOKEN')}
+        ci_token = os.getenv('CI_JOB_TOKEN')
+        self.proxy_env = {'CI_JOB_TOKEN': ci_token} if ci_token else {}
         self.requirements_fqfn = (
             Path('requirements_dev.txt') if self.dev else Path('requirements.txt')
         )

@@ -122,7 +122,7 @@ jobs:
       # Test App Config module
       - name: Test App Config Module
         run: >
-          pytest --cov=tcex --cov-report=term-missing -n auto --dist loadfile tests || pytest --last-failed
+          pytest --cov=tcex --cov-report=term-missing -n auto --dist loadfile tests || pytest --last-failed || pytest --last-failed
 
       # # Test Utils module
       # - name: Test Utils Module
