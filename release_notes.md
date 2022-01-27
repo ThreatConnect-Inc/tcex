@@ -14,6 +14,7 @@
 + APP-2434 - [TcEx] Added support for protecting sensitive values in Apps and framework.
 + APP-2498 - [TcEx] Added typing hints to public methods.
 + APP-2660 - [AppConfig] Updated install.json module to fully support all feature types.
++ APP-3353 - [AppConfig] Added support for new deprecatesApps and output.encrypt fields in the install.json.
 + APP-3014 - [API] Updated path structure of all TC API module code.
 + APP-2487 - [Docs] Moved all documentation to hosted site.
 + APP-3343 - [STIX] Moved STIX module to new repo.

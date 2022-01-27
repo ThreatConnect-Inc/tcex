@@ -12,6 +12,7 @@ from typing import Any, Optional
 from pydantic import BaseModel, PrivateAttr
 
 # get tcex logger
+
 logger = logging.getLogger('tcex')
 
 
@@ -56,20 +57,27 @@ class V3ModelABC(BaseModel, ABC):
 
         # INDICATOR ID RULE: If an indicator has a ID set, then the indicator fields
         #     cannot be provided (updateable is false) or the API request will fail.
-        if self.id is not None and field in [
-            'address',
-            'file',
-            'hostName',
-            'ip',
-            'md5',
-            'sha1',
-            'sha256',
-            'text',
-            'url',
-            'value1',
-            'value2',
-            'value3',
-        ]:
+        #     Since Note model CAN update the `text` field we need to specifically state
+        #     that this test is for the `Indicator Model` only.
+        if (
+            self.__config__.title == 'Indicator Model'
+            and self.id is not None
+            and field
+            in [
+                'address',
+                'file',
+                'hostName',
+                'ip',
+                'md5',
+                'sha1',
+                'sha256',
+                'text',
+                'url',
+                'value1',
+                'value2',
+                'value3',
+            ]
+        ):
             return False
 
         # MODE DELETE RULE: The "id" should be the only field included when delete mode
