@@ -657,3 +657,19 @@ class Threat(Group):
             xid (str, kwargs): The external id for this Group.
         """
         super().__init__('Threat', name, **kwargs)
+
+
+class Vulnerability(Group):
+    """ThreatConnect Batch Vulnerability Object"""
+
+    __slots__ = []
+
+    def __init__(self, name: str, **kwargs) -> None:
+        """Initialize Class Properties.
+
+        Args:
+            name: The name for this Group.
+            date_added (str, kwargs): The date timestamp the Indicator was created.
+            xid (str, kwargs): The external id for this Group.
+        """
+        super().__init__('Vulnerability', name, **kwargs)
