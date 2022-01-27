@@ -76,9 +76,16 @@ class TestTcexCliDeps:
 
     def test_tcex_deps_proxy(self) -> None:
         """Test Case"""
-        proxy_host = 'localhost'
-        proxy_port = '4242'
-        result = self._run_command(['deps', '--proxy-host', proxy_host, '--proxy-port', proxy_port])
+        proxy_host = os.getenv('TC_PROXY_HOST')
+        proxy_port = os.getenv('TC_PROXY_PORT')
+        proxy_user = os.getenv('TC_PROXY_USERNAME')
+        proxy_pass = os.getenv('TC_PROXY_PASSWORD')
+
+        command = ['deps', '--proxy-host', proxy_host, '--proxy-port', proxy_port]
+        if proxy_user and proxy_pass:
+            command.extend(['--proxy-user', proxy_user, '--proxy-pass', proxy_pass])
+
+        result = self._run_command(command)
         assert result.exit_code == 0
 
         # iterate over command output for validations

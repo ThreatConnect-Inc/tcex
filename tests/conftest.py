@@ -5,11 +5,13 @@ import shutil
 from typing import TYPE_CHECKING
 
 # third-party
+import fakeredis
 import pytest
 import redis
 
 # first-party
 from tcex.backports import cached_property
+from tcex.key_value_store import RedisClient
 from tcex.pleb.registry import registry
 from tcex.pleb.scoped_property import scoped_property
 from tests.mock_app import MockApp
@@ -96,9 +98,7 @@ def playbook_app() -> 'MockApp':
 @pytest.fixture()
 def redis_client() -> redis.Redis:
     """Return instance of redis_client."""
-    host = os.getenv('tc_playbook_db_path', 'localhost')
-    port = os.getenv('tc_playbook_db_port', '6379')
-    return redis.Redis(host=host, port=port)
+    return fakeredis.FakeRedis()
 
 
 @pytest.fixture()
@@ -187,6 +187,11 @@ def pytest_configure(config):  # pylint: disable=unused-argument
         os.makedirs('log/DEBUG', exist_ok=True)
     except OSError:
         pass
+
+    # Replace Redis with FakeRedis for testing
+    client_prop = cached_property(lambda *args: fakeredis.FakeRedis())
+    client_prop.__set_name__(RedisClient, 'client')
+    RedisClient.client = client_prop
 
 
 def pytest_sessionstart(session):  # pylint: disable=unused-argument

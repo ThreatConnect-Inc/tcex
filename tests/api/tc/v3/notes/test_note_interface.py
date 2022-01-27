@@ -109,12 +109,14 @@ class TestNotes(TestV3):
         # error -> "(952, 'Error during GET. API status code: 404, ..."
         assert '952' in str(exc_info.value)
 
+    @pytest.mark.xfail(reason='Awaiting PR that fixes this test')
     def test_note_on_case(self, request: FixtureRequest):
         """Test Note functions on a Case Object"""
         # [Pre-Requisite] - create case
         case = self.v3_helper.create_case()
         self._test_note_on_obj(request, case)
 
+    @pytest.mark.xfail(reason='Awaiting PR that fixes this test')
     def test_note_on_artifact(self, request: FixtureRequest):
         """Test Note functions on a Artifact Object"""
         # [Pre-Requisite] - create case
@@ -132,6 +134,7 @@ class TestNotes(TestV3):
         artifact.create()
         self._test_note_on_obj(request, artifact)
 
+    @pytest.mark.xfail(reason='Awaiting PR that fixes this test')
     def test_note_on_task(self, request: FixtureRequest):
         """Test Note functions on a Task Object"""
         # [Pre-Requisite] - create case

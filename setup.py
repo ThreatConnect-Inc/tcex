@@ -35,6 +35,7 @@ dev_packages = [
     'pytest-html',
     'pytest-xdist>=2.0.0',
     'pyupgrade',
+    'fakeredis==1.7.0',
 ]
 
 
