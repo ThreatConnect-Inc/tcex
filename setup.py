@@ -1,6 +1,7 @@
 """Setup for TcEx Module."""
 # standard library
 import os
+import sys
 
 # third-party
 from setuptools import find_packages, setup
@@ -20,7 +21,6 @@ with open('README.md') as f:
     readme = f.read()
 
 dev_packages = [
-    'bandit',
     'black',
     'codespell',
     'deepdiff',
@@ -36,6 +36,10 @@ dev_packages = [
     'pytest-xdist>=2.0.0',
     'pyupgrade',
 ]
+if sys.version_info <= (3, 7):
+    dev_packages.append('bandit==1.7.1')
+else:
+    dev_packages.append('bandit')
 
 
 setup(
