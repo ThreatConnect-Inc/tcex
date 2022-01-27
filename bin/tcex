@@ -26,6 +26,7 @@ def deps(
             'This override what is in the requirements.txt file.',
         ),
     ),
+    dev: Optional[bool] = typer.Option(False, help='Install development dependencies.'),
     no_cache_dir: Optional[bool] = typer.Option(False, help='Do not use pip cache directory.'),
     pre: Optional[bool] = typer.Option(False, help='Install pre-release packages.'),
     proxy_host: Optional[str] = typer.Option(
@@ -49,7 +50,7 @@ def deps(
     are defined in the tcex.json file, then there will be multiple lib_X.X.X directories created.
     """
     try:
-        tcl = Dep(branch, no_cache_dir, pre, proxy_host, proxy_port, proxy_user, proxy_pass)
+        tcl = Dep(branch, dev, no_cache_dir, pre, proxy_host, proxy_port, proxy_user, proxy_pass)
 
         # configure proxy settings
         tcl.configure_proxy()

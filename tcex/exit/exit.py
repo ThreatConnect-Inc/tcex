@@ -181,10 +181,6 @@ class ExitService:
         else:
             message_file = 'message.tc'
 
-        if os.path.isfile(message_file):
-            with open(message_file) as mh:
-                message = mh.read() + message
-
         if not message.endswith('\n'):
             message += '\n'
         with open(message_file, 'w') as mh:
