@@ -11,6 +11,7 @@ from pydantic import BaseModel, Extra
 
 # first-party
 from tcex import TcEx
+from tcex.input.input import Input
 from tcex.pleb.registry import registry
 
 if TYPE_CHECKING:
@@ -25,7 +26,7 @@ class TestInputsConfig:
     """Test TcEx Inputs Config."""
 
     @staticmethod
-    def test_aot_inputs(playbook_app: 'MockApp', redis_client: 'redis.Redis'):
+    def test_aot_inputs(playbook_app: 'MockApp', redis_client: 'redis.Redis', monkeypatch):
         """Test AOT input method of TcEx
 
         Args:
@@ -51,6 +52,9 @@ class TestInputsConfig:
             'tc_aot_enabled': True,
         }
         app = playbook_app(config_data=config_data)
+
+        # ensure inputs object has same FakeRedis instance as the one we will push data to
+        monkeypatch.setattr(Input, '_get_redis_client', lambda *args, **kwargs: redis_client)
 
         # send redis rpush AOT message
         aot_config_data = {'my_bool': 'true', 'my_multi': 'one|two'}

@@ -1,6 +1,5 @@
 """Test the TcEx API Module."""
 # standard library
-import os
 import time
 from datetime import datetime, timedelta
 from random import randint
@@ -25,12 +24,6 @@ class TestTasks(TestV3):
         self.v3_helper = V3Helper('tasks')
         self.v3 = self.v3_helper.v3
         self.tcex = self.v3_helper.tcex
-
-    # TODO: @bpurdy - move this to parent class and clean up other test classes
-    def teardown_method(self):
-        """Configure teardown before all tests."""
-        if os.getenv('TEARDOWN_METHOD') is None:
-            self.v3_helper.cleanup()
 
     def test_task_api_options(self):
         """Test filter keywords."""

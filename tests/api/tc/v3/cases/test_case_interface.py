@@ -25,13 +25,6 @@ class TestCases(TestV3):
         self.v3 = self.v3_helper.v3
         self.tcex = self.v3_helper.tcex
 
-    def teardown_method(self):
-        """Configure teardown before all tests."""
-        # Ya - It was to make testing easier since we were manually verifying the objects were
-        # created correctly and they kept getting deleted which was annoying.
-        if os.getenv('TEARDOWN_METHOD') is None:
-            self.v3_helper.cleanup()
-
     def test_case_api_options(self):
         """Test filter keywords."""
         super().obj_api_options()

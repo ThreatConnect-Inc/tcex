@@ -23,11 +23,6 @@ class TestUserAgentIndicators(TestThreatIntelligence):
         self.ti = self.ti_helper.ti
         self.tcex = self.ti_helper.tcex
 
-    def teardown_method(self):
-        """Configure teardown before all tests."""
-        if os.getenv('TEARDOWN_METHOD') is None:
-            self.ti_helper.cleanup()
-
     def tests_ti_user_agent_create(self):
         """Create an indicator using specific interface."""
         indicator_data = {

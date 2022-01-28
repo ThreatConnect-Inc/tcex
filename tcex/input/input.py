@@ -79,6 +79,11 @@ class Input:
         self.utils = Utils()
         self.tc_session = kwargs.get('tc_session')
 
+    @staticmethod
+    def _get_redis_client(host, port, db):
+        """Return RedisClient client"""
+        return RedisClient(host=host, port=port, db=db).client
+
     def _load_aot_params(
         self,
         tc_aot_enabled: bool,
@@ -96,11 +101,11 @@ class Input:
         if tc_kvstore_type == 'Redis':
 
             # get an instance of redis client
-            redis_client = RedisClient(
+            redis_client = self._get_redis_client(
                 host=tc_kvstore_host,
                 port=tc_kvstore_port,
                 db=0,
-            ).client
+            )
 
             try:
                 self.log.info('feature=inputs, event=blocking-for-aot')
