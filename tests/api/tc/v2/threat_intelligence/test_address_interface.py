@@ -29,11 +29,6 @@ class TestAddressIndicators(TestThreatIntelligence):
         self.ti = self.ti_helper.ti
         self.tcex = self.ti_helper.tcex
 
-    def teardown_method(self):
-        """Configure teardown before all tests."""
-        if os.getenv('TEARDOWN_METHOD') is None:
-            self.ti_helper.cleanup()
-
     def tests_ti_association_example_1(self):
         """Testing TI module"""
         rand_ip = self.ti_helper.rand_ip()
@@ -110,8 +105,8 @@ class TestAddressIndicators(TestThreatIntelligence):
         indicator_kwargs = {'ip': rand_ip, 'rating': randint(0, 5), 'confidence': randint(0, 100)}
         indicator = self.ti.indicator('address', self.owner, **indicator_kwargs)
         indicator.create()
-        today = datetime.strftime(datetime.now(), '%Y-%m-%d')
-        tomorrow = datetime.strftime(datetime.now() + timedelta(1), '%Y-%m-%d')
+        today = datetime.strftime(datetime.utcnow(), '%Y-%m-%d')
+        tomorrow = datetime.strftime(datetime.utcnow() + timedelta(1), '%Y-%m-%d')
         filters = self.tcex.v2.ti.filters()
         filters.add_filter('dateAdded', '>', today)
         filters.add_filter('dateAdded', '<', tomorrow)

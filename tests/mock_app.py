@@ -46,6 +46,7 @@ class MockApp:
         self.tc_token_url = os.getenv('TC_TOKEN_URL')
         self.tc_token_svc_id = os.getenv('TC_TOKEN_SVC_ID')
         self.utils = Utils()
+        self._tcex = None
 
         # External Apps don't require an install.json file
         if self.runtime_level.lower() != 'external':
@@ -416,9 +417,12 @@ class MockApp:
     def tcex(self) -> TcEx:
         """Return an instance of tcex."""
         # write file params and initialize new tcex instance
+        if self._tcex is not None:
+            return self._tcex
+
         self.mock_file_params()
         registry._reset()
-        tcex = TcEx()
+        self._tcex = TcEx()
 
         # cleanup environment variables
         if os.getenv('TC_APP_PARAM_FILE', None):
@@ -426,7 +430,7 @@ class MockApp:
         if os.getenv('TC_APP_PARAM_KEY', None):
             del os.environ['TC_APP_PARAM_KEY']
 
-        return tcex
+        return self._tcex
 
     @property
     def tcex_log_file(self) -> str:

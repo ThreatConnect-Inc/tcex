@@ -625,6 +625,14 @@ class TestV3:
     tcex = None
     utils = Utils()
 
+    def teardown_method(self):
+        """Clean up resources"""
+        if os.getenv('TEARDOWN_METHOD') is None:
+            self.v3_helper.cleanup()
+
+        # clean up monitor thread
+        self.v3_helper.tcex.token.shutdown = True
+
     def obj_api_options(self):
         """Test filter keywords.
 

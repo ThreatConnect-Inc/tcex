@@ -47,7 +47,7 @@ lib*
 *.log
 local-*
 log/*
-requirements.txt
+^requirements.txt
 permutations.json
 templates
 threatconnect*

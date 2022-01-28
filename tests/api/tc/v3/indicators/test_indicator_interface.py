@@ -1,6 +1,5 @@
 """Test the TcEx API Module."""
 # standard library
-import os
 from random import randint
 
 # third-party
@@ -34,11 +33,6 @@ class TestIndicators(TestV3):
         groups.filter.tag(TqlOperator.EQ, 'pytest')
         for group in groups:
             group.delete()
-
-    def teardown_method(self):
-        """Configure teardown before all tests."""
-        if os.getenv('TEARDOWN_METHOD') is None:
-            self.v3_helper.cleanup()
 
     def test_indicator_api_options(self):
         """Test filter keywords."""
