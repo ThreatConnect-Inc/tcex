@@ -1,3 +1,8 @@
+# Prerequisites
+
+* A Group must be create in the TC instance (Org Settings -> Groups)
+* The Description Attribute must include Case and URL (System Settings -> Attribute Types)
+
 # General Test Command
 
 ## Code Stats
