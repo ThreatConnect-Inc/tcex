@@ -118,6 +118,7 @@ jobs:
           --cov=. --cov-report=term-missing --cov-report=html:tests/reports/cov-report
           --html=tests/reports/tcex-report-${{ matrix.python-version }}.html --self-contained-html
           tests/
+          || pytest --last-failed
 
       # Artifact upload
       - name: Upload pytest test results
