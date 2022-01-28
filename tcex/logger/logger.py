@@ -8,18 +8,14 @@ import sys
 from typing import TYPE_CHECKING, Optional
 
 # first-party
+# pylint: disable=no-name-in-module
 from tcex.app_config.install_json import InstallJson
-from tcex.logger.api_handler import (  # pylint: disable=no-name-in-module
-    ApiHandler,
-    ApiHandlerFormatter,
-)
-from tcex.logger.cache_handler import CacheHandler  # pylint: disable=no-name-in-module
-from tcex.logger.pattern_file_handler import PatternFileHandler  # pylint: disable=no-name-in-module
-from tcex.logger.rotating_file_handler_custom import (  # pylint: disable=no-name-in-module
-    RotatingFileHandlerCustom,
-)
-from tcex.logger.thread_file_handler import ThreadFileHandler  # pylint: disable=no-name-in-module
-from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
+from tcex.logger.api_handler import ApiHandler, ApiHandlerFormatter
+from tcex.logger.cache_handler import CacheHandler
+from tcex.logger.pattern_file_handler import PatternFileHandler
+from tcex.logger.rotating_file_handler_custom import RotatingFileHandlerCustom
+from tcex.logger.thread_file_handler import ThreadFileHandler
+from tcex.logger.trace_logger import TraceLogger
 
 if TYPE_CHECKING:
     # third-party

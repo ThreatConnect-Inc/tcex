@@ -17,6 +17,7 @@ dendrol
 deps
 deque
 encrypter
+envvar
 escalatees
 ESUP
 fget

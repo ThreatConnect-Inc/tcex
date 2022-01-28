@@ -22,6 +22,8 @@ class Deploy(BinABC):
     def __init__(
         self,
         server: str,
+        allow_all_orgs: bool,
+        allow_distribution: bool,
         app_file: str,
         proxy_host: str,
         proxy_port: int,
@@ -31,6 +33,8 @@ class Deploy(BinABC):
         """Initialize Class properties."""
         super().__init__()
         self._app_file = app_file
+        self.allow_all_orgs = allow_all_orgs
+        self.allow_distribution = allow_distribution
         self.proxy_host = proxy_host
         self.proxy_port = proxy_port
         self.proxy_user = proxy_user
@@ -95,27 +99,36 @@ class Deploy(BinABC):
     # pylint: disable=consider-using-with
     def deploy_app(self):
         """Deploy the App to ThreatConnect Exchange."""
-        self.print_block('Uploading App ...\n', fg_color='green')
+        self.print_block('\nUploading App ...\n', fg_color='green')
         files = {
-            'allowAllOrgs': 'true',
-            'allowAppDistribution': 'false',
+            'allowAllOrgs': self.allow_all_orgs,
+            'allowAppDistribution': self.allow_distribution,
             'fileData': ('filename', open(self.app_file, 'rb'), 'application/octet-stream'),
         }
-        response = self.session.post('/internal/apps/exchange/install', files=files)
+        try:
+            response = self.session.post('/internal/apps/exchange/install', files=files, timeout=60)
+        except Exception as err:
+            self.print_title('Failed Deploying App', fg_color='red')
+            self.print_block(str(err), max_length=120)
+            sys.exit(0)
 
         if not response.ok:
-            err = response.text or response.reason
-            self.print_failure(f'Failed to upload App to {response.request.url} ({err}).')
+            reason = response.text or response.reason
+            self.print_title('Failed Deploying App', fg_color='red')
+            self.print_setting('File Name', os.path.basename(self.app_file))
+            self.print_setting('Reason', reason)
+            self.print_setting('Status Code', response.status_code)
+            self.print_setting('URL', response.request.url)
         else:
             response_data = response.json()[0]
-            self.print_title('Deploy App')
+            self.print_title('Successfully Deployed App')
             self.print_setting('File Name', os.path.basename(self.app_file))
             self.print_setting('Display Name', response_data.get('displayName'))
-            # self.print_setting('ID', response_data.get('id'))
             self.print_setting('Program Name', response_data.get('programName'))
             self.print_setting('Program Version', response_data.get('programVersion'))
+            self.print_setting('Allow All Orgs', self.allow_all_orgs)
+            self.print_setting('Allow Distribution', self.allow_distribution)
             self.print_setting('Status Code', response.status_code)
-            # self.print_setting('Results', response.text)
             self.print_setting('URL', response.request.url)
 
     @property
