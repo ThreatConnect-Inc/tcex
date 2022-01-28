@@ -99,6 +99,8 @@ class InputTest:
                 # validate all non-array, non-model types
                 validation_ran = True
                 assert model_input_value.value == expected, f'{model_input_value} != {expected}'
+                # manual testing of sensitive_filter
+                tcex.log.error(model_input_value.value)
             else:
                 # validate all non-array, non-model types
                 validation_ran = True
