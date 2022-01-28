@@ -49,7 +49,7 @@ class TestTcexCliDeps:
 
         return result
 
-    def test_tcex_deps(
+    def test_tcex_deps_std(
         self, monkeypatch: 'pytest.Monkeypatch', request: 'pytest.FixtureRequest'
     ) -> None:
         """Test Case"""
