@@ -5,10 +5,14 @@ import shutil
 from importlib.machinery import SourceFileLoader
 from importlib.util import module_from_spec, spec_from_loader
 from pathlib import Path
-from typing import List
+from typing import TYPE_CHECKING, List
 
 # third-party
 from typer.testing import CliRunner
+
+if TYPE_CHECKING:
+    # third-party
+    import pytest
 
 # dynamically load bin/tcex file
 spec = spec_from_loader('app', SourceFileLoader('app', 'bin/tcex'))
@@ -25,27 +29,34 @@ runner = CliRunner()
 class TestTcexCliInit:
     """Tcex CLI Testing."""
 
-    app_dir = Path('tests/bin/app/tcpb/app_init')
-    project_dir = os.getcwd()
+    # def setup_method(self, monkeypatch):
+    #     """Configure teardown before all tests."""
+    #     tcex_test_dir = os.getenv('TCEX_TEST_DIR')
+    #     self.app_dir = Path(os.path.join(tcex_test_dir, 'bin', 'app', 'tcpb', 'app_init'))
+    #     self.app_dir.mkdir(exist_ok=True, parents=True)
 
-    def setup_method(self):
-        """Configure teardown before all tests."""
-        self.app_dir.mkdir(exist_ok=True, parents=True)
+    #     # return to project directory
+    #     monkeypatch.chdir(self.app_dir)
 
-        # return to project directory
-        os.chdir(self.app_dir)
+    # def teardown_method(self):
+    #     """Configure teardown before all tests."""
+    #     # return to project directory
+    #     # os.chdir(self.project_dir)
 
-    def teardown_method(self):
-        """Configure teardown before all tests."""
-        # return to project directory
-        os.chdir(self.project_dir)
-
-        # clean up temp app directory
-        shutil.rmtree(self.app_dir)
+    #     # clean up temp app directory
+    #     shutil.rmtree(self.app_dir)
 
     @staticmethod
-    def _run_command(args: List[str]) -> str:
+    def _run_command(args: List[str], monkeypatch, request) -> str:
         """Test Case"""
+        working_dir = Path(os.path.join(request.fspath.dirname, 'app', 'tcpb', 'app_init'))
+
+        # create working directory
+        working_dir.mkdir(exist_ok=True, parents=True)
+
+        # change to testing directory
+        monkeypatch.chdir(working_dir)
+
         result = runner.invoke(app, args)
         return result
 
@@ -71,9 +82,13 @@ class TestTcexCliInit:
     #     assert os.path.isfile('app.py')
     #     assert os.path.isfile('external_app.py')
 
-    def test_tcex_init_organization_basic(self) -> None:
+    def test_tcex_init_organization_basic(
+        self, monkeypatch: 'pytest.Monkeypatch', request: 'pytest.FixtureRequest'
+    ) -> None:
         """Test Case"""
-        result = self._run_command(['init', '--type', 'organization', '--template', 'basic'])
+        result = self._run_command(
+            ['init', '--type', 'organization', '--template', 'basic'], monkeypatch, request
+        )
         assert result.exit_code == 0, result.stdout
 
         # spot check a few template files
@@ -82,9 +97,16 @@ class TestTcexCliInit:
         assert os.path.isfile('job_app.py')
         assert os.path.isfile('tcex.json')
 
-    def test_tcex_init_playbook_basic(self) -> None:
+        # cleanup
+        shutil.rmtree(os.getcwd())
+
+    def test_tcex_init_playbook_basic(
+        self, monkeypatch: 'pytest.Monkeypatch', request: 'pytest.FixtureRequest'
+    ) -> None:
         """Test Case"""
-        result = self._run_command(['init', '--type', 'playbook', '--template', 'basic'])
+        result = self._run_command(
+            ['init', '--type', 'playbook', '--template', 'basic'], monkeypatch, request
+        )
         assert result.exit_code == 0, result.stdout
 
         # spot check a few template files
@@ -93,23 +115,16 @@ class TestTcexCliInit:
         assert os.path.isfile('playbook_app.py')
         assert os.path.isfile('tcex.json')
 
-    # TODO: [med] update this once template is done
-    # def test_tcex_init_trigger_basic(self) -> None:
-    #     """Test Case"""
-    #     result = self._run_command(['init', '--type', 'trigger_service', '--template', 'basic'])
-    #     assert result.exit_code == 0, result.stdout
-
-    #     # spot check a few template files
-    #     assert os.path.isfile('app.py')
-    #     assert os.path.isfile('install.json')
-    #     assert os.path.isfile('service_app.py')
-    #     assert os.path.isfile('tcex.json')
+        # cleanup
+        shutil.rmtree(os.getcwd())
 
     # TODO: [med] update this once template is done
-    # def test_tcex_init_webhook_trigger_basic(self) -> None:
+    # def test_tcex_init_trigger_basic(
+    #     self, monkeypatch: 'pytest.Monkeypatch', request: 'pytest.FixtureRequest'
+    # ) -> None:
     #     """Test Case"""
     #     result = self._run_command(
-    #         ['init', '--type', 'webhook_trigger_service', '--template', 'basic']
+    #         ['init', '--type', 'trigger_service', '--template', 'basic'], monkeypatch, request
     #     )
     #     assert result.exit_code == 0, result.stdout
 
@@ -118,3 +133,27 @@ class TestTcexCliInit:
     #     assert os.path.isfile('install.json')
     #     assert os.path.isfile('service_app.py')
     #     assert os.path.isfile('tcex.json')
+
+    #     # cleanup
+    #     shutil.rmtree(os.getcwd())
+
+    # TODO: [med] update this once template is done
+    # def test_tcex_init_webhook_trigger_basic(
+    #     self, monkeypatch: 'pytest.Monkeypatch', request: 'pytest.FixtureRequest'
+    # ) -> None:
+    #     """Test Case"""
+    #     result = self._run_command(
+    #         ['init', '--type', 'webhook_trigger_service', '--template', 'basic'],
+    #         monkeypatch,
+    #         request,
+    #     )
+    #     assert result.exit_code == 0, result.stdout
+
+    #     # spot check a few template files
+    #     assert os.path.isfile('app.py')
+    #     assert os.path.isfile('install.json')
+    #     assert os.path.isfile('service_app.py')
+    #     assert os.path.isfile('tcex.json')
+
+    #     # cleanup
+    #     shutil.rmtree(os.getcwd())

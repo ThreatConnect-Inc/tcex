@@ -1,6 +1,9 @@
 """Base pytest configuration file."""
 # standard library
+import hashlib
+import logging
 import os
+import re
 import shutil
 from typing import TYPE_CHECKING
 
@@ -21,17 +24,11 @@ if TYPE_CHECKING:
     from tcex import TcEx
     from tcex.playbook.playbook import Playbook
 
+logger = logging.getLogger('tcex')
+
 #
 # fixtures
 #
-
-
-# TODO: [med] this is not longer support, where is it needed?
-# @pytest.fixture()
-# def config_data():
-#     """Return tcex config data."""
-#     app = MockApp(runtime_level='Playbook')
-#     return app.config_data
 
 
 def _reset_modules():
@@ -39,6 +36,26 @@ def _reset_modules():
     registry._reset()
     cached_property._reset()
     scoped_property._reset()
+
+
+@pytest.fixture(autouse=True)
+def change_test_dir(request, monkeypatch):
+    """Change the test working directory to prevent conflicts with other tests."""
+    test_name = request.node.name
+
+    start_index = re.search(r'\W+', test_name)
+    if start_index is not None:
+        test_name_prefix = test_name[: start_index.start()]
+        test_name_hash = hashlib.sha256(test_name[start_index.start() :].encode()).hexdigest()
+        test_name = f'{test_name_prefix}_{test_name_hash}'
+
+    temp_test_path = os.path.join(
+        request.fspath.dirname.replace(os.getcwd(), f'{os.getcwd()}/log'), test_name
+    )
+    logger.debug('Working directory: test-name={request.node.name}, test-path={temp_test_path}')
+    os.makedirs(temp_test_path, exist_ok=True)
+    os.makedirs(os.path.join(temp_test_path, 'DEBUG'), exist_ok=True)
+    monkeypatch.chdir(temp_test_path)
 
 
 @pytest.fixture()
@@ -121,13 +138,13 @@ def service_app() -> 'MockApp':
         _app.tcex.token.shutdown = True
 
 
-@pytest.fixture()
-def tc_log_file() -> str:
-    """Return tcex config data."""
-    _reset_modules()
-    app = MockApp(runtime_level='Playbook')
-    yield app.tcex_log_file
-    app.tcex.token.shutdown = True
+# @pytest.fixture()
+# def tc_log_file() -> str:
+#     """Return tcex config data."""
+#     _reset_modules()
+#     app = MockApp(runtime_level='Playbook')
+#     yield 'test.log'
+#     app.tcex.token.shutdown = True
 
 
 @pytest.fixture()
@@ -180,11 +197,11 @@ def pytest_configure(config):  # pylint: disable=unused-argument
     Allows plugins and conftest files to perform initial configuration. This hook is called for
     every plugin and initial conftest file after command line options have been parsed.
     """
+    os.environ['TCEX_TEST_DIR'] = os.path.join(os.getcwd(), 'tests')
 
     # remove log directory
     try:
         shutil.rmtree('log')
-        os.makedirs('log/DEBUG', exist_ok=True)
     except OSError:
         pass
 
