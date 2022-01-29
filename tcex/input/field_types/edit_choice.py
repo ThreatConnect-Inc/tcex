@@ -22,8 +22,6 @@ class EditChoice(str):
     * EditChoice (dynamic values supported)
     """
 
-    ij = InstallJson()
-
     @classmethod
     def __get_validators__(cls) -> Callable:
         """Run validators / modifiers on input."""
@@ -48,7 +46,8 @@ class EditChoice(str):
     @classmethod
     def validate_valid_values(cls, value: str, field: 'ModelField') -> str:
         """Raise exception if value is not a String type."""
-        _valid_values = cls.ij.model.get_param(field.name).valid_values or []
+        ij = InstallJson()
+        _valid_values = ij.model.get_param(field.name).valid_values or []
         for vv in _valid_values:
             if vv.lower() == value.lower():
                 value = vv

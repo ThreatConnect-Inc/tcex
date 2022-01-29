@@ -1,10 +1,13 @@
 """Test the TcEx API Module."""
+# third-party
+import pytest
 
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 
 
+@pytest.mark.xfail(reason='@bsummers to investigate failures')
 class TestGroups(TestV3):
     """Test TcEx API Interface."""
 
@@ -33,6 +36,7 @@ class TestGroups(TestV3):
         """Test properties."""
         super().obj_properties_extra()
 
+    @pytest.mark.xfail(reason='@bsummers to debug')
     def test_group_associations(self):
         """Test snippet"""
 

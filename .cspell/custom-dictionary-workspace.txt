@@ -25,6 +25,7 @@ fnmatch
 fpfn
 fqfn
 fqpn
+fspath
 functool
 getsizeof
 hdel
@@ -64,6 +65,7 @@ rpush
 safetag
 safeurl
 secho
+setenv
 shelf
 splunk
 sqlite

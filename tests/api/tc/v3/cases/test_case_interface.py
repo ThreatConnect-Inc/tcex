@@ -200,7 +200,7 @@ class TestCases(TestV3):
             'resolution': 'Not Specified',
             'artifacts': {'data': [artifact_data]},
             'attributes': {'data': [{'type': 'Description', 'value': 'Description 1'}]},
-            'tags': {'data': [{'name': 'Tag1'}]},
+            'tags': {'data': [{'name': 'tag1'}]},
             'severity': 'Low',
             'status': 'Open',
             'xid': 'xid-test_case_create_and_retrieve_nested_types',
@@ -233,7 +233,7 @@ class TestCases(TestV3):
         tags_found = 0
         for tag in case.tags:
             tags_found += 1
-            assert tag.model.name in ['tag1']
+            assert tag.model.name.lower() in ['tag1']
         assert artifacts_found == 1, 'No tags were created on the case'
 
         # [Stage Testing] Add a new tag to the Case
@@ -244,7 +244,7 @@ class TestCases(TestV3):
         tags_found = 0
         for tag in case.tags:
             tags_found += 1
-            assert tag.model.name in ['tag1', 'tag2']
+            assert tag.model.name.lower() in ['tag1', 'tag2']
         assert tags_found == 2, 'No tags were created on the case'
 
         # [Stage Testing] Refetch the case and stage a new tag on it.
