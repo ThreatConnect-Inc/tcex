@@ -38,6 +38,7 @@ class TestIndicator2:
         ti.tag(name=tag)
         batch.save(ti)
         batch_status = batch.submit_all()
+        batch.close()
         assert batch_status[0].get('status') == 'Completed'
         assert batch_status[0].get('successCount') == 1
 
@@ -66,6 +67,7 @@ class TestIndicator2:
         ti.tag(name=tag)
         batch.save(ti)
         batch_status = batch.submit_all()
+        batch.close()
         assert batch_status[0].get('status') == 'Completed'
         assert batch_status[0].get('successCount') == 1
 
@@ -94,6 +96,7 @@ class TestIndicator2:
         ti.tag(name=tag)
         batch.save(ti)
         batch_status = batch.submit_all()
+        batch.close()
         assert batch_status[0].get('status') == 'Completed'
         assert batch_status[0].get('successCount') == 1
 
@@ -118,6 +121,7 @@ class TestIndicator2:
         ti.tag(name=tag)
         batch.save(ti)
         batch_status = batch.submit_all()
+        batch.close()
         assert batch_status[0].get('status') == 'Completed'
         assert batch_status[0].get('successCount') == 1
 
@@ -142,5 +146,6 @@ class TestIndicator2:
         ti.tag(name=tag)
         batch.save(ti)
         batch_status = batch.submit_all()
+        batch.close()
         assert batch_status[0].get('status') == 'Completed'
         assert batch_status[0].get('successCount') == 1
