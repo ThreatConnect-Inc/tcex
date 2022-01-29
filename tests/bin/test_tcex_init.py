@@ -5,14 +5,11 @@ import shutil
 from importlib.machinery import SourceFileLoader
 from importlib.util import module_from_spec, spec_from_loader
 from pathlib import Path
-from typing import TYPE_CHECKING, List
+from typing import List
 
 # third-party
+import pytest
 from typer.testing import CliRunner
-
-if TYPE_CHECKING:
-    # third-party
-    import pytest
 
 # dynamically load bin/tcex file
 spec = spec_from_loader('app', SourceFileLoader('app', 'bin/tcex'))
@@ -26,6 +23,7 @@ app = tcex_cli.app
 runner = CliRunner()
 
 
+@pytest.mark.xfail(reason='To many request to github will cause this to fail.')
 class TestTcexCliInit:
     """Tcex CLI Testing."""
 
