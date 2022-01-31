@@ -120,7 +120,7 @@ jobs:
           --durations=25
           --html=tests/reports/tcex-report-${{ matrix.python-version }}.html --self-contained-html
           tests/
-          || pytest --last-failed
+          || python rerun_failed_test.py
 
       # Artifact upload
       - name: Upload pytest test results
