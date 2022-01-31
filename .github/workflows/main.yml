@@ -69,10 +69,10 @@ jobs:
           PRE_COMMIT_HOME: ${{ github.workspace }}/.cache/pre-commit-${{ matrix.python-version }}
 
   test:
-    fail-fast: false
     needs: pre-flight
     runs-on: [self-hosted]
     strategy:
+      fail-fast: false
       matrix:
         python-version: [3.6.15, 3.9.10]
 
