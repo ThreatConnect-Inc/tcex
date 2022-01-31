@@ -7,8 +7,6 @@ from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 
 
-# @pytest.mark.xdist_group(name='group-interface')
-# @pytest.mark.xfail(reason='@bsummers to investigate failures')
 class TestGroups(TestV3):
     """Test TcEx API Interface."""
 

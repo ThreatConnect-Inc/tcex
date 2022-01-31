@@ -7,7 +7,6 @@ from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 
 
-# @pytest.mark.xdist_group(name='indicator-snippets')
 class TestIndicatorSnippets(TestV3):
     """Test TcEx API Interface."""
 
@@ -189,7 +188,6 @@ class TestIndicatorSnippets(TestV3):
                 attribute.delete()
         # End Snippet
 
-    # @pytest.mark.xfail(reason='Sometimes fails due to a Query Timeout issue from core')
     def test_address_remove_associations(self):
         """Test snippet"""
         indicator = self.v3_helper.create_indicator(

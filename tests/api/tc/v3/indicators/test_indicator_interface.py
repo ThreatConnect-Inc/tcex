@@ -12,8 +12,6 @@ if TYPE_CHECKING:
     import pytest
 
 
-# @pytest.mark.xdist_group(name='indicator-interface')
-# @pytest.mark.xfail(reason='@bsummers to investigate failures')
 class TestIndicators(TestV3):
     """Test TcEx API Interface."""
 

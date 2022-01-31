@@ -3,15 +3,11 @@
 import base64
 import time
 
-# third-party
-import pytest
-
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 
 
-@pytest.mark.xdist_group(name='group-snippets')
 class TestGroupSnippets(TestV3):
     """Test TcEx API Interface."""
 

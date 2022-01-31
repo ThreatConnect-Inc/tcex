@@ -11,7 +11,6 @@ if TYPE_CHECKING:
 
 
 @pytest.mark.run(order=1)
-@pytest.mark.xdist_group(name='logging-tests')
 class TestStreamHandler:
     """Test Module"""
 

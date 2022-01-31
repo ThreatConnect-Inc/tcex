@@ -1,6 +1,5 @@
 """Test Module"""
 # standard library
-import logging
 import os
 from random import randint
 from typing import TYPE_CHECKING
@@ -15,18 +14,17 @@ if TYPE_CHECKING:
 
 
 @pytest.mark.run(order=1)
-@pytest.mark.xdist_group(name='logging-tests')
 class TestLogs:
     """Test Module"""
 
     @staticmethod
     def test_logger_level(tcex: 'TcEx', caplog: 'pytest.LogCaptureFixture'):
         """Test Case"""
-        trace_logging_message = 'TRACE LOGGING'
-        debug_logging_message = 'DEBUG LOGGING'
-        info_logging_message = 'INFO LOGGING'
-        warning_logging_message = 'WARNING LOGGING'
-        error_logging_message = 'ERROR LOGGING'
+        trace_logging_message = 'STD TRACE LOGGING'
+        debug_logging_message = 'STD DEBUG LOGGING'
+        info_logging_message = 'STD INFO LOGGING'
+        warning_logging_message = 'STD WARNING LOGGING'
+        error_logging_message = 'STD ERROR LOGGING'
         for _ in range(0, 5):
             tcex.log.trace(trace_logging_message)
             tcex.log.debug(debug_logging_message)
@@ -43,15 +41,6 @@ class TestLogs:
         assert info_logging_message in caplog.text
         assert warning_logging_message in caplog.text
         assert error_logging_message in caplog.text
-
-        # update handler log level and ensure log event is not logged
-        caplog.clear()
-        tcex.log.level = logging.INFO
-        log_msg = 'LOGGING TRACE AT INFO'
-        tcex.log.trace(log_msg)
-        assert log_msg not in caplog.text
-
-        tcex.logger.update_handler_level('trace')
 
     @staticmethod
     def test_logger_rotate(playbook_app: 'MockApp'):

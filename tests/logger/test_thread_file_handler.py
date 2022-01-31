@@ -14,7 +14,6 @@ if TYPE_CHECKING:
 
 
 @pytest.mark.run(order=1)
-@pytest.mark.xdist_group(name='logging-tests')
 class TestThreadFileHandler:
     """Test Module"""
 
@@ -29,13 +28,7 @@ class TestThreadFileHandler:
             thread_key='tester',
         )
 
-        for _ in range(0, 20):
-            tcex.log.trace('THREAD TRACE LOGGING')
-            tcex.log.debug('THREAD DEBUG LOGGING')
-            tcex.log.info('THREAD INFO LOGGING')
-            tcex.log.warning('THREAD WARNING LOGGING')
-            tcex.log.error('THREAD ERROR LOGGING')
-
+        tcex.log.trace('THREAD TRACE LOGGING')
         tcex.logger.remove_handler_by_name(handler_name='pytest')
 
     def test_thread_file_handler(self, tcex: 'TcEx'):

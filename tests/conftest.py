@@ -52,7 +52,7 @@ def change_test_dir(request, monkeypatch):
     temp_test_path = os.path.join(
         request.fspath.dirname.replace(os.getcwd(), f'{os.getcwd()}/log'), test_name
     )
-    logger.debug('Working directory: test-name={request.node.name}, test-path={temp_test_path}')
+    logger.debug(f'Working directory: test-name={request.node.name}, test-path={temp_test_path}')
     os.makedirs(temp_test_path, exist_ok=True)
     os.makedirs(os.path.join(temp_test_path, 'DEBUG'), exist_ok=True)
     monkeypatch.chdir(temp_test_path)
