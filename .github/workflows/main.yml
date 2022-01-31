@@ -55,7 +55,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install .[develop]
+          pip install .[develop] --force
         env:
           PIP_CACHE_DIR: ${{ github.workspace }}/.cache/pip-${{ matrix.python-version }}
 
@@ -69,6 +69,7 @@ jobs:
           PRE_COMMIT_HOME: ${{ github.workspace }}/.cache/pre-commit-${{ matrix.python-version }}
 
   test:
+    fail-fast: false
     needs: pre-flight
     runs-on: [self-hosted]
     strategy:
@@ -106,7 +107,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install .[develop]
+          pip install .[develop] --force
         env:
           PIP_CACHE_DIR: ${{ github.workspace }}/.cache/pip-${{ matrix.python-version }}
 
