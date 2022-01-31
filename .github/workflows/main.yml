@@ -55,7 +55,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install .[develop] --force
+          pip install .[develop]
         env:
           PIP_CACHE_DIR: ${{ github.workspace }}/.cache/pip-${{ matrix.python-version }}
 
@@ -107,7 +107,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install .[develop] --force
+          pip install .[develop]
         env:
           PIP_CACHE_DIR: ${{ github.workspace }}/.cache/pip-${{ matrix.python-version }}
 
@@ -120,7 +120,7 @@ jobs:
           --durations=25
           --html=tests/reports/tcex-report-${{ matrix.python-version }}.html --self-contained-html
           tests/
-          || python tests/rerun_failed_test.py
+          || pytest --last-failed --last-failed-no-failures none
 
       # Artifact upload
       - name: Upload pytest test results

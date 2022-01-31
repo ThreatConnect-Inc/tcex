@@ -3,6 +3,7 @@
 import importlib
 import inspect
 import os
+import time
 from datetime import datetime
 from random import randint
 from typing import Any, Dict, Optional
@@ -297,7 +298,7 @@ class V3Helper:
             'resolution': kwargs.get('resolution', 'Not Specified'),
             'severity': kwargs.get('severity', 'Low'),
             'status': kwargs.get('status', 'Open'),
-            'xid': kwargs.get('xid', f'xid-{test_case_name}').replace('_', '-'),
+            'xid': kwargs.get('xid', f'xid-{test_case_name}-{time.time()}'),
         }
 
         artifacts = self._to_list(kwargs.get('artifacts', []))
@@ -367,7 +368,7 @@ class V3Helper:
             'file_name': kwargs.get('file_name'),
             'name': name,
             'type': type_,
-            'xid': kwargs.get('xid', f'xid-{test_case_name}'),
+            'xid': kwargs.get('xid', f'xid-{test_case_name}-{time.time()}'),
         }
         # add source
         if kwargs.get('source') is not None:
