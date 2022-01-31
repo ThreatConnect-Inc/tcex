@@ -11,7 +11,6 @@ from typing import Any, Dict, Optional
 from pydantic import BaseModel
 
 # first-party
-from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tcex.utils.utils import Utils
 from tests.mock_app import MockApp
 
@@ -286,23 +285,19 @@ class V3Helper:
         Returns:
             CaseManagement.Case: A CM case object.
         """
-        cases = self.v3.cases()
-        xid = kwargs.get('xid', f'xid-{inspect.stack()[1].function}').replace('_', '-')
-        cases.filter.xid(TqlOperator.EQ, xid)
-        for case in cases:
-            case.delete()
+        # Use the test case name in xid and to control delete
+        test_case_name = inspect.stack()[1].function
 
+        # create case
         case_data = {
             'assignee': kwargs.get('assignee'),
             'date_added': kwargs.get('date_added'),
-            'description': kwargs.get(
-                'description', f'A description for {inspect.stack()[1].function}'
-            ),
-            'name': kwargs.get('name', inspect.stack()[1].function),
+            'description': kwargs.get('description', f'A description for {test_case_name}'),
+            'name': kwargs.get('name', test_case_name),
             'resolution': kwargs.get('resolution', 'Not Specified'),
             'severity': kwargs.get('severity', 'Low'),
             'status': kwargs.get('status', 'Open'),
-            'xid': xid,
+            'xid': kwargs.get('xid', f'xid-{test_case_name}').replace('_', '-'),
         }
 
         artifacts = self._to_list(kwargs.get('artifacts', []))
@@ -327,7 +322,7 @@ class V3Helper:
             case.stage_note(self.v3.note(**note))
 
         # add tags
-        case.stage_tag(self.v3.tag(name='pytest'))
+        case.stage_tag(self.v3.tag(name=test_case_name))
         for tag in tags:
             case.stage_tag(self.v3.tag(**tag))
 
@@ -361,18 +356,18 @@ class V3Helper:
         Returns:
             V3.Group: A group object.
         """
-        name = kwargs.get('name', inspect.stack()[1].function)
+        # Use the test case name in xid and to control delete
+        test_case_name = inspect.stack()[1].function
 
-        groups = self.tcex.v3.groups()
-        groups.filter.summary(TqlOperator.EQ, name)
-        for group in groups:
-            group.delete()
+        # use incoming name or test case name
+        name = kwargs.get('name', test_case_name)
 
+        # create group
         group_data = {
             'file_name': kwargs.get('file_name'),
             'name': name,
             'type': type_,
-            'xid': kwargs.get('xid', f'xid-{inspect.stack()[1].function}'),
+            'xid': kwargs.get('xid', f'xid-{test_case_name}'),
         }
         # add source
         if kwargs.get('source') is not None:
@@ -404,7 +399,7 @@ class V3Helper:
             group.stage_security_label(self.v3.security_label(**security_label))
 
         # add tags
-        group.stage_tag(self.v3.tag(name='pytest'))
+        group.stage_tag(self.v3.tag(name=test_case_name))
         for tag in tags:
             group.stage_tag(self.v3.tag(**tag))
 
@@ -436,6 +431,10 @@ class V3Helper:
         Returns:
             V3.Indicator: A indicator object.
         """
+        # Use the test case name in xid and to control delete
+        test_case_name = inspect.stack()[1].function
+
+        # create indicator
         value_1 = kwargs.get('value1', f'123.{randint(1,255)}.{randint(1,255)}.{randint(1,255)}')
 
         def value_1_map():
@@ -507,7 +506,7 @@ class V3Helper:
             indicator.stage_security_label(self.v3.security_label(**security_label))
 
         # add tags
-        indicator.stage_tag(self.v3.tag(name='pytest'))
+        indicator.stage_tag(self.v3.tag(name=test_case_name))
         for tag in tags:
             indicator.stage_tag(self.v3.tag(**tag))
 
@@ -541,15 +540,17 @@ class V3Helper:
             suborg (str, kwargs): Suborg of the Victim.
             tags (Tags, kwargs): A list of Tags corresponding to the item (NOTE: Setting this
                 parameter will replace any existing tag(s) with the one(s) specified)
-            type (str, kwargs): The type for the Victim.
             work_location (str, kwargs): Work Location of the Victim.
 
         Returns:
             V3.Victim: A victim object.
         """
+        # Use the test case name in xid and to control delete
+        test_case_name = inspect.stack()[1].function
+
+        # create victim
         victim_data = {
-            'name': kwargs.get('name', inspect.stack()[1].function),
-            'type': 'A Random Type',
+            'name': kwargs.get('name', test_case_name),
             'description': kwargs.get('description') or 'Example Victim Description',
             'nationality': kwargs.get('nationality') or 'American',
             'org': kwargs.get('org') or 'TCI',
@@ -585,13 +586,9 @@ class V3Helper:
             victim.stage_victim_asset(self.v3.victim_asset(**asset))
 
         # add tags
-        victim.stage_tag(self.v3.tag(name='pytest'))
+        victim.stage_tag(self.v3.tag(name=test_case_name))
         for tag in tags:
             victim.stage_tag(self.v3.tag(**tag))
-
-        # add assets
-        # for tag in tags:
-        #     victim.stage_asset(self.v3.victim_asset(**tag))
 
         # create object
         victim.create()
@@ -609,13 +606,6 @@ class V3Helper:
                 obj.delete()
             except Exception:
                 pass
-
-        # delete cases by tag
-        if os.getenv('TCEX_CLEAN_CM'):
-            cases = self.v3.cases()
-            cases.filter.tag(TqlOperator.EQ, 'PyTest')
-            for case in cases:
-                case.delete()
 
 
 class TestV3:

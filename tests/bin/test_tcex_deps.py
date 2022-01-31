@@ -5,14 +5,11 @@ import shutil
 from importlib.machinery import SourceFileLoader
 from importlib.util import module_from_spec, spec_from_loader
 from pathlib import Path
-from typing import TYPE_CHECKING, List
+from typing import List
 
 # third-party
+import pytest
 from typer.testing import CliRunner
-
-if TYPE_CHECKING:
-    # third-party
-    import pytest
 
 # dynamically load bin/tcex file
 spec = spec_from_loader('app', SourceFileLoader('app', 'bin/tcex'))
@@ -27,6 +24,8 @@ runner = CliRunner()
 
 
 # pylint: disable=no-self-use
+@pytest.mark.run(order=2)
+@pytest.mark.xdist_group(name='tcex-deps')
 class TestTcexCliDeps:
     """Tcex CLI Testing."""
 

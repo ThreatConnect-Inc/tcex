@@ -1,39 +1,42 @@
 """Test the TcEx API Module."""
 # standard library
 from random import randint
-
-# third-party
-import pytest
+from typing import TYPE_CHECKING
 
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 
+if TYPE_CHECKING:
+    # third-party
+    import pytest
 
-@pytest.mark.xfail(reason='@bsummers to investigate failures')
+
+# @pytest.mark.xdist_group(name='indicator-interface')
+# @pytest.mark.xfail(reason='@bsummers to investigate failures')
 class TestIndicators(TestV3):
     """Test TcEx API Interface."""
 
     v3 = None
 
-    def setup_method(self):
+    def setup_method(self, method: callable):
         """Configure setup before all tests."""
         print('')  # ensure any following print statements will be on new line
         self.v3_helper = V3Helper('indicators')
         self.v3 = self.v3_helper.v3
         self.tcex = self.v3_helper.tcex
 
-        # cleanup between tests
-        indicators = self.v3.indicators()
-        indicators.filter.tag(TqlOperator.EQ, 'pytest')
-        for indicator in indicators:
-            indicator.delete()
-
-        # cleanup between tests
-        groups = self.v3.groups()
-        groups.filter.tag(TqlOperator.EQ, 'pytest')
+        # remove an previous groups with the next test case name as a tag
+        groups = self.tcex.v3.groups()
+        groups.filter.tag(TqlOperator.EQ, method.__name__)
         for group in groups:
             group.delete()
+
+        # remove an previous indicators with the next test case name as a tag
+        indicators = self.v3.indicators()
+        indicators.filter.tag(TqlOperator.EQ, method.__name__)
+        for indicator in indicators:
+            indicator.delete()
 
     def test_indicator_api_options(self):
         """Test filter keywords."""
@@ -134,25 +137,25 @@ class TestIndicators(TestV3):
         # print('body', indicator.request.request.body)
         # print('text', indicator.request.text)
 
-    def test_indicator_get_many(self):
+    def test_indicator_get_many(self, request: 'pytest.FixtureRequest'):
         """Test Indicators Get Many"""
         # [Pre-Requisite] - create case
         indicator_count = 10
         indicator_ids = []
-        indicator_tag = 'TcEx-Indicator-Testing'
+        indicator_tag = request.node.name
         for _ in range(0, indicator_count):
             # [Create Testing] define object data
             indicator = self.v3_helper.create_indicator(
                 **{
                     'active': True,
-                    'associated_groups': {'id': 8755},
                     'attribute': {'type': 'Description', 'value': indicator_tag},
                     'confidence': randint(0, 100),
                     'description': 'TcEx Testing',
-                    'rating': randint(0, 5),
+                    'rating': randint(1, 5),
                     'security_labels': {'name': 'TLP:WHITE'},
                     'source': None,
-                    'tags': {'name': indicator_tag},
+                    # automatically set by create_indicator
+                    # 'tags': {'name': indicator_tag},
                     'type': 'Address',
                 }
             )
@@ -192,7 +195,7 @@ class TestIndicators(TestV3):
             # for create indicator send value1 instead of ip
             'value1': f'123.{randint(1,255)}.{randint(1,255)}.{randint(1,255)}',
             'owner_name': 'TCI',
-            'rating': randint(0, 5),
+            'rating': randint(1, 5),
             'security_labels': {'name': 'TLP:WHITE'},
             'source': None,
             'tags': {'name': request.node.name},

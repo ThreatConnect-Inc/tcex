@@ -1,24 +1,28 @@
 """Test the TcEx API Snippets."""
+# third-party
+import pytest
+
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 
 
+@pytest.mark.xdist_group(name='case-snippets')
 class TestCaseSnippets(TestV3):
     """Test TcEx API Interface."""
 
     v3 = None
 
-    def setup_method(self):
+    def setup_method(self, method: callable):
         """Configure setup before all tests."""
         print('')  # ensure any following print statements will be on new line
         self.v3_helper = V3Helper('cases')
         self.v3 = self.v3_helper.v3
         self.tcex = self.v3_helper.tcex
 
-        # remove old cases
-        cases = self.tcex.v3.cases()
-        cases.filter.name(TqlOperator.EQ, 'MyCase')
+        # remove an previous cases with the next test case name as a tag
+        cases = self.v3.cases()
+        cases.filter.tag(TqlOperator.EQ, method.__name__)
         for case in cases:
             case.delete()
 

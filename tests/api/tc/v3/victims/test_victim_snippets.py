@@ -1,9 +1,13 @@
 """Test the TcEx API Snippets."""
+# third-party
+import pytest
+
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 
 
+@pytest.mark.xdist_group(name='victim-snippets')
 class TestVictimSnippets(TestV3):
     """Test TcEx API Interface."""
 
@@ -16,12 +20,6 @@ class TestVictimSnippets(TestV3):
         self.v3_helper = V3Helper('victims')
         self.v3 = self.v3_helper.v3
         self.tcex = self.v3_helper.tcex
-
-        # remove old victims
-        victims = self.tcex.v3.victims()
-        victims.filter.summary(TqlOperator.EQ, 'MyVictim')
-        for victim in victims:
-            victim.delete()
 
     def test_victim_create(self):
         """Test snippet"""
@@ -37,6 +35,9 @@ class TestVictimSnippets(TestV3):
 
         victim.create(params={'owner': 'TCI'})
         # End Snippet
+
+        # Add cleanup
+        victim.delete()
 
     def test_victim_stage_attribute(self):
         """Test snippet"""

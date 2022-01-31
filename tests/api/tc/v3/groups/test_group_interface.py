@@ -1,24 +1,31 @@
 """Test the TcEx API Module."""
 # third-party
-import pytest
+# import pytest
 
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 
 
-@pytest.mark.xfail(reason='@bsummers to investigate failures')
+# @pytest.mark.xdist_group(name='group-interface')
+# @pytest.mark.xfail(reason='@bsummers to investigate failures')
 class TestGroups(TestV3):
     """Test TcEx API Interface."""
 
     v3 = None
 
-    def setup_method(self):
+    def setup_method(self, method: callable):
         """Configure setup before all tests."""
         print('')  # ensure any following print statements will be on new line
         self.v3_helper = V3Helper('groups')
         self.v3 = self.v3_helper.v3
         self.tcex = self.v3_helper.tcex
+
+        # remove an previous groups with the next test case name as a tag
+        groups = self.tcex.v3.groups()
+        groups.filter.tag(TqlOperator.EQ, method.__name__)
+        for group in groups:
+            group.delete()
 
     def test_group_api_options(self):
         """Test filter keywords."""
@@ -36,7 +43,6 @@ class TestGroups(TestV3):
         """Test properties."""
         super().obj_properties_extra()
 
-    @pytest.mark.xfail(reason='@bsummers to debug')
     def test_group_associations(self):
         """Test snippet"""
 
@@ -44,26 +50,28 @@ class TestGroups(TestV3):
         groups.filter.summary(
             TqlOperator.IN,
             [
-                'MyAdversary',
-                'StagedGroup1',
-                'StagedGroup2',
+                'MyAdversary-00',
+                'StagedGroup-00',
+                'StagedGroup-02',
             ],
         )
         for group in groups:
             group.delete()
 
         # [Pre-Requisite] - Create Groups
-        staged_group = self.v3_helper.create_group(name='StagedGroup1', xid='staged_group-xid')
-        staged_group_2 = self.v3_helper.create_group(name='StagedGroup2', xid='staged_group_2-xid')
+        staged_group = self.v3_helper.create_group(name='StagedGroup-00', xid='staged_group_00-xid')
+        staged_group_2 = self.v3_helper.create_group(
+            name='StagedGroup-02', xid='staged_group_02-xid'
+        )
 
         group = self.tcex.v3.group(
-            name='MyAdversary',
+            name='MyAdversary-01',
             type='Adversary',
             associated_groups={
                 'data': [
                     {'id': staged_group.model.id},
-                    {'name': 'MyGroup0', 'type': 'Adversary'},
-                    {'name': 'MyGroup', 'type': 'Adversary'},
+                    {'name': 'MyGroup-00', 'type': 'Adversary'},
+                    {'name': 'MyGroup-02', 'type': 'Adversary'},
                 ]
             },
         )
@@ -86,7 +94,7 @@ class TestGroups(TestV3):
             found_groups += 1
             if associated_group.model.id == staged_group_2.model.id:
                 staged_group_found = True
-        assert found_groups == 4, 'Invalid amount of groups retrieved'
+        assert found_groups == 4, f'Invalid amount of groups ({found_groups}) retrieved'
         assert staged_group_found, 'Newly staged group not retrieved'
 
         group = self.v3.group(id=group.model.id)

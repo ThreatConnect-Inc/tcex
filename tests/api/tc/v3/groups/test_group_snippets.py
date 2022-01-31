@@ -1,21 +1,24 @@
 """Test the TcEx API Snippets."""
-# standard-library
 # standard library
 import base64
 import time
+
+# third-party
+import pytest
 
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 
 
+@pytest.mark.xdist_group(name='group-snippets')
 class TestGroupSnippets(TestV3):
     """Test TcEx API Interface."""
 
     example_pdf = None
     v3 = None
 
-    def setup_method(self):
+    def setup_method(self, method: callable):
         """Configure setup before all tests."""
         print('')  # ensure any following print statements will be on new line
         self.v3_helper = V3Helper('groups')
@@ -31,9 +34,9 @@ class TestGroupSnippets(TestV3):
             r'PAovUm9vdCAzIDAgUgo+PgolJUVPRgo='
         )
 
-        # remove old cases
+        # remove an previous groups with the next test case name as a tag
         groups = self.tcex.v3.groups()
-        groups.filter.summary(TqlOperator.EQ, 'MyAdversary')
+        groups.filter.tag(TqlOperator.EQ, method.__name__)
         for group in groups:
             group.delete()
 
@@ -82,7 +85,7 @@ class TestGroupSnippets(TestV3):
         )
 
         # Add association
-        association = self.tcex.v3.indicator(ip='111.111.111.111', type='Address')
+        association = self.tcex.v3.indicator(ip='222.222.222.100', type='Address')
         group.stage_associated_indicator(association)
 
         group.create(params={'owner': 'TCI'})
@@ -215,8 +218,8 @@ class TestGroupSnippets(TestV3):
             name='MyAdversary',
             type='Adversary',
             associated_indicators=[
-                {'ip': '111.111.111.111', 'type': 'Address'},
-                {'ip': '222.222.222.222', 'type': 'Address'},
+                {'ip': '222.222.222.101', 'type': 'Address'},
+                {'ip': '222.222.222.102', 'type': 'Address'},
             ],
         )
 
@@ -224,7 +227,7 @@ class TestGroupSnippets(TestV3):
         group = self.tcex.v3.group(id=group.model.id)
 
         for association in group.associated_indicators:
-            if association.model.summary == '222.222.222.222':
+            if association.model.summary == '222.222.222.102':
                 # IMPORTANT: the "remove()" method will remove the association from the group and
                 #    the "delete()" method will remove the indicator from the system.
                 association.remove()
