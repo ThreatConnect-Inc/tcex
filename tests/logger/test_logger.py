@@ -1,21 +1,23 @@
-"""Test the TcEx Logger Module."""
+"""Test Module"""
 # standard library
 import logging
 import os
 from random import randint
 from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    # third-party
-    import pytest
+# third-party
+import pytest
 
+if TYPE_CHECKING:
     # first-party
     from tcex import TcEx
     from tests.mock_app import MockApp
 
 
+@pytest.mark.run(order=1)
+@pytest.mark.xdist_group(name='logging-tests')
 class TestLogs:
-    """Test the TcEx Logger Module."""
+    """Test Module"""
 
     @staticmethod
     def test_logger_level(tcex: 'TcEx', caplog: 'pytest.LogCaptureFixture'):

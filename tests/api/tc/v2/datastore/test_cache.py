@@ -3,6 +3,9 @@
 import time
 from typing import TYPE_CHECKING
 
+# third-party
+import pytest
+
 if TYPE_CHECKING:
     # first-party
     from tcex import TcEx
@@ -57,6 +60,7 @@ class TestCache:
         assert results.get('_shards').get('successful') == 1
         assert results.get('result') == 'deleted'
 
+    @pytest.mark.xfail(reason='random API errors')
     def test_cache_get_cached(self, tcex: 'TcEx'):
         """Test getting data from a cache
 

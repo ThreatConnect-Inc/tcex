@@ -1,20 +1,26 @@
-"""Test the TcEx Batch Module."""
+"""Test Module"""
 # standard library
 import os
 import threading
+import time
+from typing import TYPE_CHECKING
+
+# third-party
+import pytest
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex import TcEx
 
 
-class TestApiHandler:
-    """Test the TcEx API Handler Module."""
+@pytest.mark.run(order=1)
+@pytest.mark.xdist_group(name='logging-tests')
+class TestThreadFileHandler:
+    """Test Module"""
 
     @staticmethod
-    def logging_thread(logfile, tcex):
-        """Test thread logging
-
-        Args:
-            logfile (str): The logfile name.
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
-        """
+    def logging_thread(logfile: str, tcex: 'TcEx'):
+        """Test Case"""
         tcex.logger.add_thread_file_handler(
             name='pytest',
             filename=logfile,
@@ -32,18 +38,12 @@ class TestApiHandler:
 
         tcex.logger.remove_handler_by_name(handler_name='pytest')
 
-    def test_thread_file_handler(self, tcex):
-        """Test thread logging
-
-        Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
-        """
+    def test_thread_file_handler(self, tcex: 'TcEx'):
+        """Test Case"""
         logfile = tcex.inputs.model.tc_log_file.replace('.log', '-thread.log')
         t = threading.Thread(name='pytest', target=self.logging_thread, args=(logfile, tcex))
-        # standard library
-        import time
 
-        time.sleep(5)
+        time.sleep(2)
         t.start()
         t.join()
 
