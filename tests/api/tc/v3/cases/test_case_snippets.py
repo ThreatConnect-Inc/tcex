@@ -26,7 +26,7 @@ class TestCaseSnippets(TestV3):
         """Test snippet"""
         # Begin Snippet
         case = self.tcex.v3.case(
-            name='MyCase',
+            name='MyCase-0001',
             description='An example case description.',
             resolution='Not Specified',
             severity='Low',
@@ -44,11 +44,11 @@ class TestCaseSnippets(TestV3):
         """Test snippet"""
         # Begin Snippet
         case = self.tcex.v3.case(
-            name='MyCase',
+            name='MyCase-0002',
             description='An example case description.',
             severity='Low',
             status='Open',
-            xid='MyCase-0001',
+            xid='MyCase-0002',
         )
 
         # Add artifact
@@ -68,11 +68,11 @@ class TestCaseSnippets(TestV3):
         """Test snippet"""
         # Begin Snippet
         case = self.tcex.v3.case(
-            name='MyCase',
+            name='MyCase-0003',
             description='An example case description.',
             severity='Low',
             status='Open',
-            xid='MyCase-0001',
+            xid='MyCase-0003',
         )
 
         # Add attribute
@@ -92,11 +92,11 @@ class TestCaseSnippets(TestV3):
         """Test snippet"""
         # Begin Snippet
         case = self.tcex.v3.case(
-            name='MyCase',
+            name='MyCase-0004',
             description='An example case description.',
             severity='Low',
             status='Open',
-            xid='MyCase-0001',
+            xid='MyCase-0004',
         )
 
         # Add note
@@ -113,11 +113,11 @@ class TestCaseSnippets(TestV3):
         """Test snippet"""
         # Begin Snippet
         case = self.tcex.v3.case(
-            name='MyCase',
+            name='MyCase-0005',
             description='An example case description.',
             severity='Low',
             status='Open',
-            xid='MyCase-0001',
+            xid='MyCase-0005',
         )
 
         # Add tag
@@ -134,11 +134,11 @@ class TestCaseSnippets(TestV3):
         """Test snippet"""
         # Begin Snippet
         case = self.tcex.v3.case(
-            name='MyCase',
+            name='MyCase-0006',
             description='An example case description.',
             severity='Low',
             status='Open',
-            xid='MyCase-0001',
+            xid='MyCase-0006',
         )
 
         # Add task
@@ -162,20 +162,20 @@ class TestCaseSnippets(TestV3):
 
     def test_case_delete_by_name(self):
         """Test snippet"""
-        case = self.v3_helper.create_case(name='MyCase')
+        case = self.v3_helper.create_case(name='MyCase-0007')
 
         # Begin Snippet
         cases = self.tcex.v3.cases()
-        cases.filter.name(TqlOperator.EQ, 'MyCase')
+        cases.filter.name(TqlOperator.EQ, 'MyCase-0007')
         for case in cases:
-            # IMPORTANT: this will delete all cases with the name "MyCase"
+            # IMPORTANT: this will delete all cases with the name "MyCase-0007"
             case.delete()
         # End Snippet
 
     def test_case_delete_artifact(self):
         """Test snippet"""
         case = self.v3_helper.create_case(
-            name='MyCase', artifacts={'type': 'ASN', 'summary': 'ASN1234'}
+            name='MyCase-0007', artifacts={'type': 'ASN', 'summary': 'ASN1234'}
         )
 
         # Begin Snippet
@@ -190,7 +190,7 @@ class TestCaseSnippets(TestV3):
     def test_case_delete_attribute(self):
         """Test snippet"""
         case = self.v3_helper.create_case(
-            name='MyCase',
+            name='MyCase-0008',
             attributes={'type': 'Description', 'value': 'An Example Case Description'},
         )
 
@@ -207,7 +207,7 @@ class TestCaseSnippets(TestV3):
     def test_case_delete_note(self):
         """Test snippet"""
         case = self.v3_helper.create_case(
-            name='MyCase',
+            name='MyCase-0009',
             notes={'text': 'An Example Note'},
         )
 
@@ -224,7 +224,7 @@ class TestCaseSnippets(TestV3):
     def test_case_remove_tag(self):
         """Test snippet"""
         case = self.v3_helper.create_case(
-            name='MyCase',
+            name='MyCase-10',
             tags=[
                 {'name': 'Example-Tag'},
             ],
@@ -244,7 +244,7 @@ class TestCaseSnippets(TestV3):
     def test_case_delete_task(self):
         """Test snippet"""
         case = self.v3_helper.create_case(
-            name='MyCase',
+            name='MyCase-11',
             task={
                 'description': 'An Example Task Description',
                 'name': 'MyTask',
@@ -262,7 +262,7 @@ class TestCaseSnippets(TestV3):
 
     def test_case_iterate(self):
         """Test snippet"""
-        case = self.v3_helper.create_case(name='MyCase')
+        case = self.v3_helper.create_case(name='MyCase-12')
 
         # Begin Snippet
         for case in self.tcex.v3.cases():
@@ -270,19 +270,19 @@ class TestCaseSnippets(TestV3):
 
     def test_case_get_by_name(self):
         """Test snippet"""
-        case = self.v3_helper.create_case(name='MyCase')
+        case = self.v3_helper.create_case(name='MyCase-13')
 
         # Begin Snippet
         cases = self.tcex.v3.cases()
-        cases.filter.name(TqlOperator.EQ, 'MyCase')
+        cases.filter.name(TqlOperator.EQ, 'MyCase-13')
         for case in cases:
-            # IMPORTANT: this will return all cases with the name "MyCase"
+            # IMPORTANT: this will return all cases with the name "MyCase-13"
             print(case.model.json(exclude_none=True))
         # End Snippet
 
     def test_case_update(self):
         """Test snippet"""
-        case = self.v3_helper.create_case(name='MyCase')
+        case = self.v3_helper.create_case(name='MyCase-14')
 
         # Begin Snippet
         case = self.tcex.v3.case(id=case.model.id)

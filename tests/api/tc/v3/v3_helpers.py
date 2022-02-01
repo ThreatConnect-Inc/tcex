@@ -6,7 +6,7 @@ import os
 import time
 from datetime import datetime
 from random import randint
-from typing import Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
 # third-party
 from pydantic import BaseModel
@@ -14,6 +14,10 @@ from pydantic import BaseModel
 # first-party
 from tcex.utils.utils import Utils
 from tests.mock_app import MockApp
+
+if TYPE_CHECKING:
+    # third-party
+    import pytest
 
 
 class V3Helper:
@@ -687,3 +691,8 @@ class TestV3:
             if prop in ['id', 'webLink']:
                 continue
             assert prop in self.v3_helper.v3_obj.properties, f'Extra {prop} property.'
+
+    @staticmethod
+    def xid(request: 'pytest.FixtureRequest') -> str:
+        """Return a valid for a test case."""
+        return f'{request.node.name}-{time.time()}'
