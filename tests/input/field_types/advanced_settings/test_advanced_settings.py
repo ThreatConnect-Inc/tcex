@@ -245,6 +245,8 @@ class TestInputsFieldTypes(InputTest):
             # Required Testing - AdvancedSettingsModel sets 'my_setting' as required String
             #
             ('my_setting=value', {'my_setting': 'value'}, False, Extra.ignore, False),
+            # keys are not case sensitive
+            ('My_Setting=value', {'my_setting': 'value'}, False, Extra.ignore, False),
             # key should be stripped
             (' my_setting=value', {'my_setting': 'value'}, False, Extra.ignore, False),
             ('my_setting =value', {'my_setting': 'value'}, False, Extra.ignore, False),
