@@ -42,5 +42,11 @@ def choice(value_transformations: Optional[Dict[str, str]] = None) -> type:
     If this field were to be initialized with 'my_choice', then the final value found in the input
     model would be 'My Choice'.
     """
+    if not isinstance(value_transformations, (dict, type(None))):
+        raise ValueError(
+            '"value_transformations" customization expects a dictionary value. Received: '
+            f'{type(value_transformations)}'
+        )
+
     namespace = dict(_value_transformations=value_transformations)
     return type('CustomChoice', (Choice,), namespace)
