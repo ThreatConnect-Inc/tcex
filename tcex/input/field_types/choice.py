@@ -1,6 +1,6 @@
 """Choice Field Type"""
 # standard library
-from typing import Callable
+from typing import Callable, Dict, Optional
 
 # first-party
 from tcex.input.field_types.edit_choice import EditChoice
@@ -29,3 +29,9 @@ class Choice(EditChoice):
             value = None
 
         return value
+
+
+def choice(value_transformations: Optional[Dict[str, str]] = None) -> type:
+    """Return configured instance of String."""
+    namespace = dict(_value_transformations=value_transformations)
+    return type('CustomChoice', (Choice,), namespace)
