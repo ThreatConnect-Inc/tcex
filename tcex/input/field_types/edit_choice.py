@@ -86,18 +86,6 @@ def edit_choice(
     If this field were to be initialized with 'my_choice', then the final value found in the input
     model would be 'My Choice'.
     """
-    if not isinstance(allow_additional, bool):
-        raise ValueError(
-            '"allow_additional" customization expects a boolean value. Received: '
-            f'{type(allow_additional)}'
-        )
-
-    if not isinstance(value_transformations, (dict, type(None))):
-        raise ValueError(
-            '"value_transformations" customization expects a dictionary value. Received: '
-            f'{type(value_transformations)}'
-        )
-
     namespace = dict(
         _value_transformations=value_transformations,
         _allow_additional=allow_additional,
