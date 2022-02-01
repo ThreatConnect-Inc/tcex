@@ -243,6 +243,8 @@ class Tokens:
     def token_renewal_monitor(self) -> None:
         """Monitor token expiration and renew when required."""
         self.log.debug('feature=token, event=renewal-monitor-started')
+        self._barrier.set()
+        self._monitor_sleep_interval.wait(self.sleep_interval)
         while True:
             # Clear renewal barrier (setting it to False), which blocks access to token via
             # the token property.

@@ -21,9 +21,19 @@ pytest tests/case_management/test_artifact_interface.py
 ## Test a specific test case in a file
 pytest tests/case_management/test_artifact_interface.py::test_artifact_type_api_options
 
-## Coverage Testing
+## Basic Full Run
 ```bash
-pytest -n auto --dist loadfile --cov=. --cov-report=term-missing --cov-report=html:tests/reports/cov-report --html=tests/reports/tcex-report.html --self-contained-html tests/
+pytest -n auto --dist loadgroup tests
+```
+
+## Coverage Testing w/ Coverage and HTML Report
+```bash
+pytest \
+  -n auto --dist loadgroup \
+  --cov=. --cov-report=term-missing --cov-report=html:tests/reports/cov-report \
+  --durations=25 \
+  --html=tests/reports/tcex-report.html --self-contained-html \
+  tests
 ```
 
 ```bash

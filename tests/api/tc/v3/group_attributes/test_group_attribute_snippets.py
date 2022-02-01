@@ -67,5 +67,4 @@ class TestGroupAttributeSnippets(TestV3):
         # Begin Snippet
         group_attribute = self.tcex.v3.group_attribute(id=attribute_id)
         group_attribute.get()
-        print(group_attribute.model.dict(exclude_none=True))
         # End Snippet
