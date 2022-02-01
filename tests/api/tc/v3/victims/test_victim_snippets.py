@@ -17,12 +17,6 @@ class TestVictimSnippets(TestV3):
         self.v3 = self.v3_helper.v3
         self.tcex = self.v3_helper.tcex
 
-        # remove old victims
-        victims = self.tcex.v3.victims()
-        victims.filter.summary(TqlOperator.EQ, 'MyVictim')
-        for victim in victims:
-            victim.delete()
-
     def test_victim_create(self):
         """Test snippet"""
         # Begin Snippet
@@ -37,6 +31,9 @@ class TestVictimSnippets(TestV3):
 
         victim.create(params={'owner': 'TCI'})
         # End Snippet
+
+        # Add cleanup
+        victim.delete()
 
     def test_victim_stage_attribute(self):
         """Test snippet"""

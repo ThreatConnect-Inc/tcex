@@ -23,6 +23,7 @@ app = tcex_cli.app
 runner = CliRunner()
 
 
+@pytest.mark.run(order=2)
 @pytest.mark.xfail(reason='To many request to github will cause this to fail.')
 class TestTcexCliInit:
     """Tcex CLI Testing."""
@@ -85,7 +86,9 @@ class TestTcexCliInit:
     ) -> None:
         """Test Case"""
         result = self._run_command(
-            ['init', '--type', 'organization', '--template', 'basic'], monkeypatch, request
+            ['init', '--type', 'organization', '--template', 'basic', '--force'],
+            monkeypatch,
+            request,
         )
         assert result.exit_code == 0, result.stdout
 

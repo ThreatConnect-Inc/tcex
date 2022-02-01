@@ -107,13 +107,7 @@ class ObjectABC(ABC):
             self.request = self._session.request(
                 method, url, data=body, headers=headers, params=params
             )
-            # log content for debugging
-            self.log.debug(
-                f'action=submit, method={self.request.request.method}, '
-                f'url={self.request.request.url}, '
-                f'status_code={self.request.status_code}, '
-                f'''body={self.request.request.body}'''
-            )
+            self.log.debug(f'feature=api-tc-v3, request-body={self.request.request.body}')
         except (ConnectionError, ProxyError, RetryError):  # pragma: no cover
             handle_error(
                 code=951,
@@ -268,7 +262,7 @@ class ObjectABC(ABC):
         response_text = 'response text: (text to large to log)'
         if len(response.content) < 5000:  # check size of content for performance
             response_text = response.text
-        self.log.debug(f'response text: {response_text}')
+        self.log.debug(f'feature=api-tc-v3, response-body={response_text}')
 
     @property
     def model(self) -> 'V3Type':

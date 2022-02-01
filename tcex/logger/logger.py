@@ -124,7 +124,7 @@ class Logger:
         for h in self._logger.handlers:
             self._logger.removeHandler(h)
 
-    def update_handler_level(self, level: int) -> None:
+    def update_handler_level(self, level: str) -> None:
         """Update all handlers log level.
 
         Args:

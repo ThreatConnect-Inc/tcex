@@ -12,7 +12,7 @@ from pydantic import BaseModel
 from tcex.input.field_types import String
 
 
-class TestInputModel(BaseModel):
+class InputModel(BaseModel):
     """."""
 
     my_bool: bool

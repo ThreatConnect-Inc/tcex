@@ -1,6 +1,6 @@
 """Test the TcEx API Snippets."""
 # third-party
-import pytest
+# import pytest
 
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
@@ -12,16 +12,16 @@ class TestIndicatorSnippets(TestV3):
 
     v3 = None
 
-    def setup_method(self):
+    def setup_method(self, method: callable):
         """Configure setup before all tests."""
         print('')  # ensure any following print statements will be on new line
         self.v3_helper = V3Helper('indicators')
         self.v3 = self.v3_helper.v3
         self.tcex = self.v3_helper.tcex
 
-        # remove old objects
-        indicators = self.tcex.v3.indicators()
-        indicators.filter.summary(TqlOperator.EQ, '111.111.111.111')
+        # remove an previous indicators with the next test case name as a tag
+        indicators = self.v3.indicators()
+        indicators.filter.tag(TqlOperator.EQ, method.__name__)
         for indicator in indicators:
             indicator.delete()
 
@@ -34,7 +34,7 @@ class TestIndicatorSnippets(TestV3):
         # Begin Snippet
         indicator = self.tcex.v3.indicator(
             confidence=74,
-            ip='111.111.111.111',
+            ip='111.111.111.100',
             rating=4,
             type='Address',
         )
@@ -50,7 +50,7 @@ class TestIndicatorSnippets(TestV3):
         # Begin Snippet
         indicator = self.tcex.v3.indicator(
             confidence=74,
-            ip='111.111.111.111',
+            ip='111.111.111.102',
             rating=4,
             type='Address',
         )
@@ -70,7 +70,7 @@ class TestIndicatorSnippets(TestV3):
         # Begin Snippet
         indicator = self.tcex.v3.indicator(
             confidence=74,
-            ip='111.111.111.111',
+            ip='111.111.111.104',
             rating=4,
             type='Address',
         )
@@ -93,7 +93,7 @@ class TestIndicatorSnippets(TestV3):
         # Begin Snippet
         indicator = self.tcex.v3.indicator(
             confidence=74,
-            ip='111.111.111.111',
+            ip='111.111.111.106',
             rating=4,
             type='Address',
         )
@@ -113,7 +113,7 @@ class TestIndicatorSnippets(TestV3):
         # Begin Snippet
         indicator = self.tcex.v3.indicator(
             confidence=74,
-            ip='111.111.111.111',
+            ip='111.111.111.108',
             rating=4,
             type='Address',
         )
@@ -136,7 +136,7 @@ class TestIndicatorSnippets(TestV3):
         """Test snippet"""
         indicator = self.tcex.v3.indicator(
             confidence=74,
-            ip='111.111.111.111',
+            ip='111.111.111.110',
             rating=4,
             type='Address',
         )
@@ -151,14 +151,14 @@ class TestIndicatorSnippets(TestV3):
         """Test snippet"""
         indicator = self.tcex.v3.indicator(
             confidence=74,
-            ip='111.111.111.111',
+            ip='111.111.111.112',
             rating=4,
             type='Address',
         )
         indicator.create(params={'owner': 'TCI'})
 
         # Begin Snippet
-        indicator = self.tcex.v3.indicator(summary='111.111.111.111')
+        indicator = self.tcex.v3.indicator(summary='111.111.111.112')
         indicator.delete(params={'owner': 'TCI'})
         # End Snippet
 
@@ -166,7 +166,7 @@ class TestIndicatorSnippets(TestV3):
         """Test snippet"""
         indicator = self.v3_helper.create_indicator(
             confidence=74,
-            value1='111.111.111.111',
+            value1='111.111.111.114',
             rating=4,
             type='Address',
             attributes=[
@@ -182,17 +182,16 @@ class TestIndicatorSnippets(TestV3):
         )
 
         # Begin Snippet
-        indicator = self.tcex.v3.indicator(summary='111.111.111.111')
+        indicator = self.tcex.v3.indicator(summary='111.111.111.114')
         for attribute in indicator.attributes:
             if attribute.model.value == 'An example description attribute':
                 attribute.delete()
         # End Snippet
 
-    @pytest.mark.xfail(reason='Sometimes fails due to a Query Timeout issue from core')
     def test_address_remove_associations(self):
         """Test snippet"""
         indicator = self.v3_helper.create_indicator(
-            value1='111.111.111.111',
+            value1='111.111.111.116',
             type='Address',
             associated_groups=[
                 {'name': 'MyGroup0', 'type': 'Adversary'},
@@ -201,7 +200,7 @@ class TestIndicatorSnippets(TestV3):
         )
 
         # Begin Snippet
-        indicator = self.tcex.v3.indicator(summary='111.111.111.111')
+        indicator = self.tcex.v3.indicator(summary='111.111.111.116')
 
         for association in indicator.associated_groups:
             if association.model.name == 'MyGroup':
@@ -213,7 +212,7 @@ class TestIndicatorSnippets(TestV3):
     def test_address_remove_security_label(self):
         """Test snippet"""
         indicator = self.v3_helper.create_indicator(
-            value1='111.111.111.111',
+            value1='111.111.111.118',
             type='Address',
             security_labels=[
                 {'name': 'TLP:WHITE'},
@@ -222,7 +221,7 @@ class TestIndicatorSnippets(TestV3):
         )
 
         # Begin Snippet
-        indicator = self.tcex.v3.indicator(summary='111.111.111.111')
+        indicator = self.tcex.v3.indicator(summary='111.111.111.118')
 
         for security_label in indicator.security_labels:
             if security_label.model.name == 'TLP:WHITE':
@@ -234,13 +233,13 @@ class TestIndicatorSnippets(TestV3):
     def test_address_remove_tag(self):
         """Test snippet"""
         indicator = self.v3_helper.create_indicator(
-            value1='111.111.111.111',
+            value1='111.111.111.120',
             type='Address',
             tags={'name': 'Example-Tag'},
         )
 
         # Begin Snippet
-        indicator = self.tcex.v3.indicator(summary='111.111.111.111')
+        indicator = self.tcex.v3.indicator(summary='111.111.111.120')
 
         for tag in indicator.tags:
             if tag.model.name == 'Example-Tag':
@@ -255,7 +254,7 @@ class TestIndicatorSnippets(TestV3):
 
     def test_indicator_get_by_id(self):
         """Test snippet"""
-        indicator = self.v3_helper.create_indicator(type_='Host', value1='example.com.ph')
+        indicator = self.v3_helper.create_indicator(type_='Host', value1='example-00.com')
 
         # Begin Snippet
         indicator = self.tcex.v3.indicator(id=indicator.model.id)
@@ -267,7 +266,7 @@ class TestIndicatorSnippets(TestV3):
 
     def test_indicator_get_by_summary(self):
         """Test snippet"""
-        indicator = self.v3_helper.create_indicator(type_='Host', value1='example.com.ph')
+        indicator = self.v3_helper.create_indicator(type_='Host', value1='example-02.com')
 
         # Begin Snippet
         indicator = self.tcex.v3.indicator(summary=indicator.model.summary)
@@ -279,7 +278,7 @@ class TestIndicatorSnippets(TestV3):
 
     def test_indicator_get_by_raw_tql(self):
         """Test snippet"""
-        indicator = self.v3_helper.create_indicator(type_='Host', value1='example.com.ph')
+        indicator = self.v3_helper.create_indicator(type_='Host', value1='example-04.com')
 
         # Begin Snippet
         indicators = self.tcex.v3.indicators()
@@ -303,14 +302,14 @@ class TestIndicatorSnippets(TestV3):
         """Test snippet"""
         indicator = self.tcex.v3.indicator(
             confidence=74,
-            ip='111.111.111.111',
+            ip='111.111.111.122',
             rating=4,
             type='Address',
         )
         indicator.create(params={'owner': 'TCI'})
 
         # Begin Snippet
-        indicator = self.tcex.v3.indicator(summary='111.111.111.111')
+        indicator = self.tcex.v3.indicator(summary='111.111.111.122')
         # This will update the confidence to "50"
         indicator.model.confidence = 50
         indicator.update(params={'owner': 'TCI'})
@@ -323,7 +322,7 @@ class TestIndicatorSnippets(TestV3):
     def test_indicator_deleted(self):
         """Test snippet"""
         indicator = self.v3_helper.create_indicator(
-            value1='111.111.111.111',
+            value1='111.111.111.124',
             type='Address',
         )
         indicator.delete()

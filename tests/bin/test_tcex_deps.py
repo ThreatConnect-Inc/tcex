@@ -5,14 +5,11 @@ import shutil
 from importlib.machinery import SourceFileLoader
 from importlib.util import module_from_spec, spec_from_loader
 from pathlib import Path
-from typing import TYPE_CHECKING, List
+from typing import List
 
 # third-party
+import pytest
 from typer.testing import CliRunner
-
-if TYPE_CHECKING:
-    # third-party
-    import pytest
 
 # dynamically load bin/tcex file
 spec = spec_from_loader('app', SourceFileLoader('app', 'bin/tcex'))
@@ -27,6 +24,7 @@ runner = CliRunner()
 
 
 # pylint: disable=no-self-use
+@pytest.mark.run(order=2)
 class TestTcexCliDeps:
     """Tcex CLI Testing."""
 
@@ -39,13 +37,27 @@ class TestTcexCliDeps:
             elif lib_dir.is_symlink():
                 lib_dir.unlink()
 
-    def _run_command(self, args: List[str], monkeypatch, request) -> str:
+    def _run_command(
+        self,
+        args: List[str],
+        new_app_dir: str,
+        monkeypatch: 'pytest.MonkeyPatch',
+        request: 'pytest.FixtureRequest',
+    ) -> str:
         """Test Case"""
-        # change to testing directory
-        monkeypatch.chdir(os.path.join(request.fspath.dirname, 'app', 'tcpb', 'app_1'))
+        app_path = os.path.join(request.fspath.dirname, 'app', 'tcpb', 'app_1')
+        new_app_path = os.path.join(request.fspath.dirname, 'app', 'tcpb', new_app_dir)
+        shutil.copytree(app_path, new_app_path)
 
-        result = runner.invoke(app, args)
-        assert os.path.isdir(os.path.join('lib_latest', 'tcex'))
+        # change to testing directory
+        monkeypatch.chdir(new_app_path)
+
+        try:
+            result = runner.invoke(app, args)
+            assert os.path.isdir(os.path.join('lib_latest', 'tcex'))
+        finally:
+            # clean up
+            shutil.rmtree(new_app_path)
 
         return result
 
@@ -53,7 +65,7 @@ class TestTcexCliDeps:
         self, monkeypatch: 'pytest.Monkeypatch', request: 'pytest.FixtureRequest'
     ) -> None:
         """Test Case"""
-        result = self._run_command(['deps'], monkeypatch, request)
+        result = self._run_command(['deps'], 'app_std', monkeypatch, request)
         assert result.exit_code == 0
 
     def test_tcex_deps_branch(
@@ -61,7 +73,7 @@ class TestTcexCliDeps:
     ) -> None:
         """Test Case"""
         branch = 'develop'
-        result = self._run_command(['deps', '--branch', branch], monkeypatch, request)
+        result = self._run_command(['deps', '--branch', branch], 'app_branch', monkeypatch, request)
         assert result.exit_code == 0
 
         # iterate over command output for validations
@@ -87,7 +99,7 @@ class TestTcexCliDeps:
         if proxy_user and proxy_pass:
             command.extend(['--proxy-user', proxy_user, '--proxy-pass', proxy_pass])
 
-        result = self._run_command(command, monkeypatch, request)
+        result = self._run_command(command, 'app_proxy', monkeypatch, request)
         assert result.exit_code == 0
 
         # iterate over command output for validations
