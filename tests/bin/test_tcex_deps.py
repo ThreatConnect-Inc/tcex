@@ -46,7 +46,7 @@ class TestTcexCliDeps:
     ) -> str:
         """Test Case"""
         app_path = os.path.join(request.fspath.dirname, 'app', 'tcpb', 'app_1')
-        new_app_path = os.path.join(request.fspath.dirname, 'app', 'tcpb', new_app_dir)
+        new_app_path = os.path.join(os.getcwd(), 'app', 'tcpb', new_app_dir)
         shutil.copytree(app_path, new_app_path)
 
         # change to testing directory

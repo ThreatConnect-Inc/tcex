@@ -21,7 +21,7 @@ class TestVictimSnippets(TestV3):
         """Test snippet"""
         # Begin Snippet
         victim = self.tcex.v3.victim(
-            name='MyVictim',
+            name='MyVictim-01',
             description='Example Victim Description',
             nationality='American',
             suborg='Sub Organization',
@@ -39,7 +39,7 @@ class TestVictimSnippets(TestV3):
         """Test snippet"""
         # Begin Snippet
         victim = self.tcex.v3.victim(
-            name='MyVictim',
+            name='MyVictim-02',
             description='Example Victim Description',
             nationality='American',
             suborg='Sub Organization',
@@ -64,7 +64,7 @@ class TestVictimSnippets(TestV3):
         """Test snippet"""
         # Begin Snippet
         victim = self.tcex.v3.victim(
-            name='MyVictim',
+            name='MyVictim-03',
             description='Example Victim Description',
             nationality='American',
             suborg='Sub Organization',
@@ -86,7 +86,7 @@ class TestVictimSnippets(TestV3):
         """Test snippet"""
         # Begin Snippet
         victim = self.tcex.v3.victim(
-            name='MyVictim',
+            name='MyVictim-04',
             description='Example Victim Description',
             nationality='American',
             suborg='Sub Organization',
@@ -119,17 +119,17 @@ class TestVictimSnippets(TestV3):
 
     def test_victim_delete_by_name(self):
         """Test snippet"""
-        victim = self.tcex.v3.victim(
-            name='MyVictim',
-            type='Why is this a thing???',
-        )
-        victim.create(params={'owner': 'TCI'})
+        victim = self.v3_helper.create_victim(name='MyVictim-05')
+        # victim = self.tcex.v3.victim(
+        #     name='MyVictim',
+        # )
+        # victim.create(params={'owner': 'TCI'})
 
         # Begin Snippet
         victims = self.tcex.v3.victims()
-        victims.filter.name(TqlOperator.EQ, 'MyVictim')
+        victims.filter.name(TqlOperator.EQ, 'MyVictim-05')
         for victim in victims:
-            # IMPORTANT: this will delete all victims with the name "MyVictim"
+            # IMPORTANT: this will delete all victims with the name "MyVictim-05"
             victim.delete()
         # End Snippet
 
@@ -222,11 +222,11 @@ class TestVictimSnippets(TestV3):
 
     def test_victim_get_by_name(self):
         """Test snippet"""
-        self.v3_helper.create_victim()
+        self.v3_helper.create_victim(name='MyVictim-06')
 
         # Begin Snippet
         victims = self.tcex.v3.victims()
-        victims.filter.name(TqlOperator.EQ, 'MyVictim')
+        victims.filter.name(TqlOperator.EQ, 'MyVictim-06')
         for victim in victims:
             print(victim.model.dict(exclude_none=True))
         # End Snippet
@@ -242,6 +242,6 @@ class TestVictimSnippets(TestV3):
         # Begin Snippet
         victim = self.tcex.v3.victim(id=victim.model.id)
         # This will update the name to "MyVictim"
-        victim.model.name = 'MyVictim'
+        victim.model.name = 'MyVictim-07'
         victim.update(params={'owner': 'TCI'})
         # End Snippet

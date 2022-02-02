@@ -6,7 +6,6 @@ from random import randint
 
 # third-party
 import pytest
-from pytest import FixtureRequest
 
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
@@ -41,7 +40,7 @@ class TestTasks(TestV3):
         """Test properties."""
         super().obj_properties_extra()
 
-    def test_task_create_and_retrieve_nested_types(self, request: FixtureRequest):
+    def test_task_create_and_retrieve_nested_types(self, request: 'pytest.FixtureRequest'):
         """Test Object Creation
 
         A single test case to hit all sub-type creation (e.g., Notes).
@@ -53,10 +52,10 @@ class TestTasks(TestV3):
         task_data = {
             'case_id': case.model.id,
             'description': f'a description from {request.node.name}',
-            'name': f'name-{request.node.name}',
+            'name': request.node.name,
             'workflow_phase': 0,
             'workflow_step': 1,
-            'xid': f'{request.node.name}-{time.time()}',
+            'xid': self.xid(request),
         }
 
         artifact_data = {
@@ -121,7 +120,7 @@ class TestTasks(TestV3):
         assert task.model.workflow_step == task_data.get('workflow_step')
         assert task.model.required is False
 
-    def test_task_all_filters(self, request: FixtureRequest):
+    def test_task_all_filters(self, request: 'pytest.FixtureRequest'):
         """Test TQL Filters for task on a Case"""
         # [Pre-Requisite] - create case
         case = self.v3_helper.create_case()
@@ -135,12 +134,12 @@ class TestTasks(TestV3):
         task_data = {
             'case_id': case.model.id,
             'description': f'a description from {request.node.name}',
-            'name': f'name-{request.node.name}',
+            'name': request.node.name,
             'workflow_phase': 0,
             'workflow_step': 1,
             'completed_date': future_1,
             'due_date': future_2,
-            'xid': f'{request.node.name}-{time.time()}',
+            'xid': self.xid(request),
         }
 
         # [Create Testing] define nested note data
@@ -223,20 +222,20 @@ class TestTasks(TestV3):
         assert '950' in str(exc_info.value)
         assert tasks.request.status_code == 400
 
-    def test_task_create_by_case_xid(self, request: FixtureRequest):
+    def test_task_create_by_case_xid(self, request: 'pytest.FixtureRequest'):
         """Test Task Creation"""
         # [Pre-Requisite] - create case and provide a unique xid
-        case_xid = f'{request.node.name}-{time.time()}'
+        case_xid = self.xid(request)
         case = self.v3_helper.create_case(xid=case_xid)
 
         # [Create Testing] define object data
         task_data = {
             'case_xid': case.model.xid,
             'description': f'a description from {request.node.name}',
-            'name': f'name-{request.node.name}',
+            'name': request.node.name,
             'workflow_phase': 0,
             'workflow_step': 1,
-            'xid': f'{request.node.name}-{time.time()}',
+            'xid': self.xid(request),
         }
 
         # [Create Testing] create the object
@@ -262,7 +261,7 @@ class TestTasks(TestV3):
         assert task.model.workflow_step == task_data.get('workflow_step')
         assert task.model.required is False
 
-    def test_task_delete_by_id(self, request: FixtureRequest):
+    def test_task_delete_by_id(self, request: 'pytest.FixtureRequest'):
         """Test Task Deletion"""
         # [Pre-Requisite] - create case and provide a unique xid
         case = self.v3_helper.create_case()
@@ -271,10 +270,10 @@ class TestTasks(TestV3):
         task_data = {
             'case_id': case.model.id,
             'description': f'a description from {request.node.name}',
-            'name': f'name-{request.node.name}',
+            'name': request.node.name,
             'workflow_phase': 0,
             'workflow_step': 1,
-            'xid': f'{request.node.name}-{time.time()}',
+            'xid': self.xid(request),
         }
 
         # [Create Testing] create the object
@@ -298,7 +297,7 @@ class TestTasks(TestV3):
         # error -> "(952, 'Error during GET. API status code: 404, ..."
         assert '952' in str(exc_info.value)
 
-    def test_task_get_many(self):
+    def test_task_get_many(self, request: 'pytest.FixtureRequest'):
         """Test Task Get Many"""
         # [Pre-Requisite] - create case
         case = self.v3_helper.create_case()
@@ -309,7 +308,7 @@ class TestTasks(TestV3):
             task_data = {
                 'case_id': case.model.id,
                 'description': 'a description from pytest test',
-                'name': f'name-{randint(100, 999)}',
+                'name': f'{request.node.name}-{randint(100, 999)}',
             }
 
             # [Create Testing] create the object
@@ -329,7 +328,7 @@ class TestTasks(TestV3):
         assert len(tasks) == task_count
         assert not task_ids, 'Not all tasks were returned.'
 
-    def test_task_get_single_by_id_properties(self, request: FixtureRequest):
+    def test_task_get_single_by_id_properties(self, request: 'pytest.FixtureRequest'):
         """Test Task get single attached to task by id"""
         # [Pre-Requisite] - create case
         case = self.v3_helper.create_case()
@@ -337,8 +336,8 @@ class TestTasks(TestV3):
         # [Pre-Requisite] - create a task which the main task is dependent on
         task_data = {
             'case_id': case.model.id,
-            'description': 'a description from pytest test',
-            'name': 'name-depended_task',
+            'description': f'a description for {request.node.name}',
+            'name': request.node.name,
             'workflow_phase': 0,
             'workflow_step': 1,
         }
@@ -387,7 +386,7 @@ class TestTasks(TestV3):
             'dependent_on_id': task_2.model.id,
             'description': f'a description from {request.node.name}',
             'due_date': future_1,
-            'name': f'name-{request.node.name}',
+            'name': request.node.name,
             'notes': note_data,
             'status': 'Pending',  # It is always pending because of the depended on task
             'required': False,
@@ -438,7 +437,7 @@ class TestTasks(TestV3):
             artifact_summaries.remove(artifact.summary)
         assert not artifact_summaries, 'Incorrect amount of artifacts were retrieved'
 
-    def test_task_update_properties(self, request: FixtureRequest):
+    def test_task_update_properties(self, request: 'pytest.FixtureRequest'):
         """Test updating artifacts properties"""
         # [Pre-Requisite] - create case
         case = self.v3_helper.create_case()
@@ -450,8 +449,8 @@ class TestTasks(TestV3):
         task_data = {
             'assignee': assignee,
             'case_id': case.model.id,
-            'description': 'a description from pytest test',
-            'name': 'name-depended_task',
+            'description': f'a description for {request.node.name}',
+            'name': f'dependent on {request.node.name}',
         }
         task = self.v3.task(**task_data)
         task.create()
@@ -463,7 +462,7 @@ class TestTasks(TestV3):
         task_data = {
             # 'assignee': assignee,
             'description': f'a description from {request.node.name}',
-            'name': f'name-{request.node.name}',
+            'name': request.node.name,
         }
 
         # task.model.assignee = assignee

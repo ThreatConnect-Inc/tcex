@@ -38,11 +38,11 @@ class Template(BinABC):
         )
         self.base_raw_url = 'https://raw.githubusercontent.com/ThreatConnect-Inc/tcex-app-templates'
         self.errors = False
-        self.password = os.getenv('TCEX_TEMPLATE_PASSWORD')
+        self.password = os.getenv('GITHUB_PAT')
         self.template_configs = {}
         self.template_data = {}
         self.template_manifest_fqfn = Path('.template_manifest.json')
-        self.username = os.getenv('TCEX_TEMPLATE_USERNAME')
+        self.username = os.getenv('GITHUB_USER')
 
     @cached_property
     def cache_valid(self) -> bool:
