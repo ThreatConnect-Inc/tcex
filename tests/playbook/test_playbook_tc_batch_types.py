@@ -1,11 +1,11 @@
 """Test the TcEx Batch Module."""
 # standard library
 import json
+import os
 from typing import TYPE_CHECKING, Any
 
 # third-party
 import pytest
-import os
 
 if TYPE_CHECKING:
     # first-party
@@ -26,8 +26,7 @@ class TestUtils:
         ],
     )
     def test_playbook_tc_batch_pass(
-            self, variable: str, filename: str, playbook: 'Playbook',
-            request: 'pytest.FixtureRequest'
+        self, variable: str, filename: str, playbook: 'Playbook', request: 'pytest.FixtureRequest'
     ):
         """Test playbook variables."""
         abspath = os.path.join(request.fspath.dirname, 'batch_test_input', f'{filename}.json')
