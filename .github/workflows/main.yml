@@ -121,9 +121,6 @@ jobs:
           --html=tests/reports/tcex-report-${{ matrix.python-version }}.html --self-contained-html
           tests/
           || pytest --last-failed --last-failed-no-failures none
-        env:
-          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_USER: $env:GITHUB_ACTOR
 
       # Artifact upload
       - name: Upload pytest test results
