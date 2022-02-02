@@ -403,7 +403,7 @@ class Input:
         _exit_message = {}
         for err in ex.errors():
             # deduplicate error messagese
-            err_loc = ','.join(err.get('loc'))
+            err_loc = ','.join([str(e) for e in err.get('loc')])
             err_msg = err.get('msg')
             _exit_message.setdefault(err_loc, [])
             if err_msg not in _exit_message[err_loc]:
