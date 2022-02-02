@@ -12,18 +12,35 @@ from tcex.input.field_types import Sensitive
 from tcex.pleb.scoped_property import scoped_property
 
 
-def await_token_renewal_cycle(token_service):
+def await_token_barrier_enabled(token_service, timeout=120):
+    """Await for token barrier to be enabled"""
+    while token_service._barrier.is_set():
+        time.sleep(1)
+        timeout -= 1
+        if timeout <= 0:
+            raise RuntimeError('Timeout expired while waiting for token barrier to be enabled')
+
+
+def await_token_barrier_disabled(token_service, timeout=60):
+    """Await token service to be disabled"""
+    result = token_service._barrier.wait(timeout=timeout)
+
+    if not result:
+        raise RuntimeError('Timeout Expired while waiting for token barrier to be disabled')
+
+
+def await_token_renewal_cycle(token_service, timeout=60):
     """Await for a token renewal cycle to take place and finish"""
     # wait until renewal monitor has enabled the barrier (is_set == False), which
     # means that renewal monitor has started renewal process
-    while token_service.barrier.is_set():
-        time.sleep(1)
+    await_token_barrier_enabled(token_service, timeout)
 
     # wait until renewal monitor has disabled the barrier, meaning that renewal is done
-    token_service.barrier.wait()
+    await_token_barrier_disabled(token_service, timeout)
 
 
 # pylint: disable=no-self-argument, no-self-use
+@pytest.mark.run(order=3)
 class TestToken:
     """Test the TcEx Batch Module."""
 
@@ -46,29 +63,30 @@ class TestToken:
         Args:
             service_app (MockApp, fixture): An instantiated instance of MockApp.
         """
-        # get clean instance of tcex
         monkeypatch.setenv('TC_TOKEN_SLEEP_INTERVAL', '1')
-        tcex = service_app().tcex
+        app = service_app()
 
         # get token from fixture
-        tc_token = service_app().service_token
+        tc_token = app.service_token
         tc_token_expires = int(time.time()) + 999
 
-        tcex.token.register_token(key=self.thread_name, token=tc_token, expires=tc_token_expires)
-        assert isinstance(tcex.token.token, Sensitive), 'Token was not wrapped with Sensitive'
-        assert tc_token == tcex.token.token.value
-        assert tc_token_expires == tcex.token.token_expires
+        app.tcex.token.register_token(
+            key=self.thread_name, token=tc_token, expires=tc_token_expires
+        )
+        assert isinstance(app.tcex.token.token, Sensitive), 'Token was not wrapped with Sensitive'
+        assert tc_token == app.tcex.token.token.value
+        assert tc_token_expires == app.tcex.token.token_expires
 
         # test registering with Sensitive
-        tcex.token.register_token(
+        app.tcex.token.register_token(
             key=self.thread_name, token=Sensitive(tc_token), expires=tc_token_expires
         )
-        assert isinstance(tcex.token.token, Sensitive), 'Token should be a Sensitive object'
-        assert tc_token == tcex.token.token.value
-        assert tc_token_expires == tcex.token.token_expires
+        assert isinstance(app.tcex.token.token, Sensitive), 'Token should be a Sensitive object'
+        assert tc_token == app.tcex.token.token.value
+        assert tc_token_expires == app.tcex.token.token_expires
 
-        tcex.token.unregister_token(self.thread_name)
-        tcex.token.shutdown = True  # coverage
+        app.tcex.token.unregister_token(self.thread_name)
+        app.tcex.token.shutdown = True  # coverage
 
     @staticmethod
     def test_token_setters(service_app, monkeypatch):
@@ -80,22 +98,24 @@ class TestToken:
             service_app (MockApp, fixture): An instantiated instance of MockApp.
         """
         monkeypatch.setenv('TC_TOKEN_SLEEP_INTERVAL', '1')
-        # get clean instance of tcex
-        tcex = service_app().tcex
+
+        app = service_app()
 
         # set token values
-        token = service_app().api_token
-        tcex.token.token = token
-        tcex.token.token_expires = '1700000000'
+        token = app.api_token
+        app.tcex.token.token = token
+        app.tcex.token.token_expires = '1700000000'
 
-        assert isinstance(tcex.token.token, Sensitive), 'Token value was not wrapped with Sensitive'
-        assert tcex.token.token.value == token
-        assert tcex.token.token_expires == 1700000000
+        assert isinstance(
+            app.tcex.token.token, Sensitive
+        ), 'Token value was not wrapped with Sensitive'
+        assert app.tcex.token.token.value == token
+        assert app.tcex.token.token_expires == 1700000000
 
         # test setting a Sensitive
-        tcex.token.token = Sensitive(token)
-        assert isinstance(tcex.token.token, Sensitive), 'Token should be a Sensitive object'
-        assert tcex.token.token.value == token
+        app.tcex.token.token = Sensitive(token)
+        assert isinstance(app.tcex.token.token, Sensitive), 'Token should be a Sensitive object'
+        assert app.tcex.token.token.value == token
 
     @staticmethod
     def test_invalid_unregister_token(service_app, monkeypatch):
@@ -191,29 +211,30 @@ class TestToken:
         # renewal monitor renews it.
         monkeypatch.setenv('TC_TOKEN_SLEEP_INTERVAL', '10')
 
-        # get clean instance of tcex
-        tcex = service_app().tcex
+        app = service_app()
 
         # Initialize Tokens module, which starts token renewal monitor and immediately kicks off
         # first renewal cycle. Wait until initial cycle is finished before staging test token
-        await_token_renewal_cycle(tcex.token)
+        await_token_renewal_cycle(app.tcex.token)
 
         # get token from fixture
-        tc_token = service_app().service_token
+        tc_token = app.service_token
         # Token itself is valid, but we tell tokens.py that it is now expired
         tc_token_expires = int(time.time()) - 999  # expire token immediately
 
-        tcex.token.register_token(key=self.thread_name, token=tc_token, expires=tc_token_expires)
+        app.tcex.token.register_token(
+            key=self.thread_name, token=tc_token, expires=tc_token_expires
+        )
 
         # "expired" token registered successfully.
-        assert tcex.token.token.value == tc_token
+        assert app.tcex.token.token.value == tc_token
 
-        await_token_renewal_cycle(tcex.token)
+        await_token_renewal_cycle(app.tcex.token)
 
-        assert tcex.token.token.value != tc_token, 'Token not was not renewed'
-        assert tcex.session_tc.get('/v2/owners').ok, 'API call failed after token renewal'
+        assert app.tcex.token.token.value != tc_token, 'Token not was not renewed'
+        assert app.tcex.session_tc.get('/v2/owners').ok, 'API call failed after token renewal'
 
-        tcex.token.unregister_token(self.thread_name)
+        app.tcex.token.unregister_token(self.thread_name)
 
     def test_token_renewal_monitor_thread_exits_unexpectedly(self, service_app, monkeypatch):
         """Test scenario where an unhandled exception occurs within the token renewal monitor,
@@ -224,30 +245,30 @@ class TestToken:
         """
         monkeypatch.setenv('TC_TOKEN_SLEEP_INTERVAL', '5')
 
-        # get clean instance of tcex
-        tcex = service_app().tcex
+        app = service_app()
         # Initialize Tokens module, which starts token renewal monitor and immediately kicks off
         # first renewal cycle. Wait until initial cycle is finished before intentionally
         # corrupting monitor thread state. Otherwise, test executes too fast and the
         # corrupted state is never used, as everything happens within the initial renewal cycle
-        await_token_renewal_cycle(tcex.token)
-        tc_token = service_app().service_token
+        await_token_renewal_cycle(app.tcex.token)
+        tc_token = app.service_token
         tc_token_expires = int(time.time()) - 999
         # stage token to give renewal monitor some work
-        tcex.token.register_token(key=self.thread_name, token=tc_token, expires=tc_token_expires)
+        app.tcex.token.register_token(
+            key=self.thread_name, token=tc_token, expires=tc_token_expires
+        )
 
         # set token_window to a value that is not an integer to cause an exception
         # within the renewal monitor on purpose
-        tcex.token.token_window = 'not an integer'
+        app.tcex.token.token_window = 'not an integer'
 
         # wait until renewal monitor enters a renewal cycle. Monitor should enable the barrier
         # but the exception will cause it to exit before it disables the barrier.
-        while tcex.token.barrier.is_set():
-            time.sleep(1)
+        await_token_barrier_enabled(app.tcex.token)
 
         # attempt to retrieve token. Barrier await timeout should expire. RuntimeError expected
         with pytest.raises(RuntimeError):
-            _ = tcex.token.token
+            _ = app.tcex.token.token
 
     def test_token_race_condition(self, service_app, monkeypatch):
         """Test race condition that can occur when token is renewed.
@@ -273,15 +294,14 @@ class TestToken:
         # begin code that patches TokenAuth so that it grabs original API token, but waits
         # until the renewal monitor has renewed the token in order to use it.
 
-        # get clean instance of tcex
-        tcex = service_app().tcex
+        app = service_app()
 
         # Initialize Tokens module, which starts token renewal monitor and immediately kicks off
         # first renewal cycle. Wait until initial cycle is finished before staging test token
-        await_token_renewal_cycle(tcex.token)
+        await_token_renewal_cycle(app.tcex.token)
 
         # get new API token
-        tc_token = Sensitive(service_app().service_token)
+        tc_token = Sensitive(app.service_token)
 
         # register new token with expiration time in the past, so that renewal monitor
         # renews this token upon next execution of token renewal logic
@@ -291,7 +311,7 @@ class TestToken:
         # used. The token header is no longer valid because the renewal monitor would have
         # renewed the token being used in the header, which causes the old token to not be valid
         # anymore.
-        original_token_header_method = getattr(tcex.session_tc.auth, '_token_header')
+        original_token_header_method = getattr(app.tcex.session_tc.auth, '_token_header')
 
         first_generation_of_header = True
 
@@ -319,10 +339,10 @@ class TestToken:
                 assert tc_token.value in header, 'Original token has been unexpectedly renewed.'
 
                 # await for renewal cycle, which should renew the token
-                await_token_renewal_cycle(tcex.token)
+                await_token_renewal_cycle(app.tcex.token)
 
                 # ensure token has been renewed
-                assert tc_token.value != tcex.token.token.value, 'Original token not renewed'
+                assert tc_token.value != app.tcex.token.token.value, 'Original token not renewed'
 
                 # the token in the header is now stale, return stale header
                 log.info('returning stale header')
@@ -334,19 +354,19 @@ class TestToken:
             assert tc_token.value not in header
             return header
 
-        monkeypatch.setattr(tcex.session_tc.auth, '_token_header', mock_token_header)
+        monkeypatch.setattr(app.tcex.session_tc.auth, '_token_header', mock_token_header)
 
         # register "expired" token for the current thread. Note: Token is actually good,
         # but we are setting a bad expiration time on the token service so that the
         # renewal monitor knows to renew it.
-        tcex.token.register_token(
+        app.tcex.token.register_token(
             key=threading.current_thread().name, token=tc_token, expires=tc_token_expires
         )
 
         # make request which should first use a stale token then should automatically retry
         # with renewed token
-        r = tcex.session_tc.get('/v2/owners')
+        r = app.tcex.session_tc.get('/v2/owners')
         if not r.ok:
             assert False, f'API call failed {r.text}'
 
-        tcex.token.unregister_token(threading.current_thread().name)
+        app.tcex.token.unregister_token(threading.current_thread().name)

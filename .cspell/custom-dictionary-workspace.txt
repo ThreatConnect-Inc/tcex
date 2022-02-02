@@ -17,6 +17,7 @@ dendrol
 deps
 deque
 encrypter
+envvar
 escalatees
 ESUP
 fget
@@ -24,6 +25,7 @@ fnmatch
 fpfn
 fqfn
 fqpn
+fspath
 functool
 getsizeof
 hdel
@@ -42,6 +44,7 @@ itertools
 jmespath
 kvstore
 loadfile
+loadgroup
 loadscope
 maxkb
 mitmproxy
@@ -63,6 +66,7 @@ rpush
 safetag
 safeurl
 secho
+setenv
 shelf
 splunk
 sqlite
@@ -101,5 +105,6 @@ urlencoding
 urllib
 virtualenv
 wfile
+xdist
 xids
 yara

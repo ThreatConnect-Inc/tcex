@@ -35,9 +35,12 @@ class TestTcexJson:
     def ij(app_name: str = 'app_1', app_type: str = 'tcpb'):
         """Return install.json instance."""
         # reset singleton
-        InstallJson._instances = {}
+        # InstallJson._instances = {}
+        tcex_test_dir = os.getenv('TCEX_TEST_DIR')
 
-        ij_fqfn = os.path.join('tests', 'app_config', 'apps', app_type, app_name, 'install.json')
+        ij_fqfn = os.path.join(
+            tcex_test_dir, 'app_config', 'apps', app_type, app_name, 'install.json'
+        )
         fqfn = Path(ij_fqfn)
         try:
             return InstallJson(filename=fqfn.name, path=fqfn.parent)
@@ -49,8 +52,9 @@ class TestTcexJson:
         """Return tcex.json instance."""
         # reset singleton
         TcexJson._instances = {}
+        tcex_test_dir = os.getenv('TCEX_TEST_DIR')
 
-        tj_fqfn = os.path.join('tests', 'app_config', 'apps', app_type, app_name, 'tcex.json')
+        tj_fqfn = os.path.join(tcex_test_dir, 'app_config', 'apps', app_type, app_name, 'tcex.json')
         fqfn = Path(tj_fqfn)
         try:
             return TcexJson(filename=fqfn.name, path=fqfn.parent)
@@ -62,8 +66,9 @@ class TestTcexJson:
         """Return tcex.json instance with "bad" file."""
         # reset singleton
         TcexJson._instances = {}
+        tcex_test_dir = os.getenv('TCEX_TEST_DIR')
 
-        base_fqpn = os.path.join('tests', 'app_config', 'apps', app_type, app_name)
+        base_fqpn = os.path.join(tcex_test_dir, 'app_config', 'apps', app_type, app_name)
         shutil.copy2(
             f'{base_fqpn}/tcex-template.json',
             f'{base_fqpn}/tcex.json',
@@ -77,7 +82,8 @@ class TestTcexJson:
     @staticmethod
     def model_validate(path: str) -> None:
         """Validate input model in and out."""
-        tj_path = Path(path)
+        tcex_test_dir = os.getenv('TCEX_TEST_DIR')
+        tj_path = Path(os.path.join(tcex_test_dir, path))
         for fqfn in tj_path.glob('**/*tcex.json'):
             # reset singleton
             TcexJson._instances = {}

@@ -5,6 +5,7 @@ from importlib.util import module_from_spec, spec_from_loader
 from typing import List
 
 # third-party
+import pytest
 from typer.testing import CliRunner
 
 # dynamically load bin/tcex file
@@ -19,6 +20,8 @@ app = tcex_cli.app
 runner = CliRunner()
 
 
+@pytest.mark.run(order=2)
+@pytest.mark.xfail(reason='To many request to github will cause this to fail.')
 class TestTcexCliList:
     """Tcex CLI Testing."""
 

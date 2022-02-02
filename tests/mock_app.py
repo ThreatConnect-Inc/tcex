@@ -2,7 +2,6 @@
 # standard library
 import json
 import os
-import re
 import uuid
 from typing import Dict, Optional, Union
 
@@ -46,6 +45,7 @@ class MockApp:
         self.tc_token_url = os.getenv('TC_TOKEN_URL')
         self.tc_token_svc_id = os.getenv('TC_TOKEN_SVC_ID')
         self.utils = Utils()
+        self._tcex = None
 
         # External Apps don't require an install.json file
         if self.runtime_level.lower() != 'external':
@@ -77,10 +77,10 @@ class MockApp:
             'tc_log_to_api': self.getenv('tc_log_to_api', 'false', True),
             # paths
             'tc_api_path': self.getenv('tc_api_path'),
-            'tc_in_path': self.getenv('tc_in_path', 'log'),
-            'tc_log_path': self.getenv('tc_log_path', 'log'),
-            'tc_out_path': self.getenv('tc_out_api', 'log'),
-            'tc_temp_path': self.getenv('tc_temp_path', 'log'),
+            'tc_in_path': self.getenv('tc_in_path', ''),
+            'tc_log_path': self.getenv('tc_log_path', ''),
+            'tc_out_path': self.getenv('tc_out_api', ''),
+            'tc_temp_path': self.getenv('tc_temp_path', ''),
             # proxy
             'tc_proxy_tc': self.getenv('tc_proxy_tc', 'false', True),
             'tc_proxy_external': self.getenv('tc_proxy_external', 'false', True),
@@ -235,7 +235,7 @@ class MockApp:
         """Write the App encrypted fileParams file."""
         config_data = json.dumps(config).encode()
         config_key = self.utils.random_string(16)
-        config_file = os.path.join(self.temp_path, 'app_params.aes')
+        config_file = 'app_params.aes'
 
         # encrypt the serialized config data
         encrypted_contents = self.utils.encrypt_aes_cbc(config_key, config_data)
@@ -275,7 +275,7 @@ class MockApp:
         _config.update(self._config_proxy)
 
         # create log structure for feature/test (e.g., args/test_args.log)
-        _config['tc_log_file'] = self.tcex_log_file
+        _config['tc_log_file'] = 'test.log'
 
         # add job and playbook configs
         if self.runtime_level.lower() in ['job', 'playbook']:
@@ -384,41 +384,15 @@ class MockApp:
         return _session
 
     @property
-    def temp_path(self) -> str:
-        """Return temp path for current test case.
-
-        Possible Name:
-        input/test_field_type_key_value_array_input_kv_and_kv_array_staged-key_value0
-        -#App:1234:my_key_value!KeyValue
-        """
-        try:
-            test_data = os.getenv('PYTEST_CURRENT_TEST').split(' ')[0].split('::')
-            test_feature = '-'.join(test_data[0].split('/')[1:-1])
-            test_name = (
-                test_data[-1]
-                .replace('/', '-')
-                .replace('[', '-')
-                .replace(']', '')
-                .replace('#', '-')
-                .replace('!', '')
-                .replace(':', '')
-            )
-        except AttributeError:
-            # TODO: remove this once tcex_init file is removed
-            test_feature = 'tcex_init_legacy'
-            test_name = 'app'
-
-        temp_path = os.path.join('log', test_feature, test_name)
-        os.makedirs(temp_path, exist_ok=True)
-        return temp_path
-
-    @property
     def tcex(self) -> TcEx:
         """Return an instance of tcex."""
         # write file params and initialize new tcex instance
+        if self._tcex is not None:
+            return self._tcex
+
         self.mock_file_params()
         registry._reset()
-        tcex = TcEx()
+        self._tcex = TcEx()
 
         # cleanup environment variables
         if os.getenv('TC_APP_PARAM_FILE', None):
@@ -426,16 +400,4 @@ class MockApp:
         if os.getenv('TC_APP_PARAM_KEY', None):
             del os.environ['TC_APP_PARAM_KEY']
 
-        return tcex
-
-    @property
-    def tcex_log_file(self) -> str:
-        """Return log file name for current test case.
-
-        Possible Name:
-        input/test_field_type_key_value_array_input_kv_and_kv_array_staged-key_value0
-        -#App:1234:my_key_value!KeyValue].log
-        """
-        # tcex will add log, so it needs to be removed
-        temp_path = re.sub('^log/', '', self.temp_path)
-        return os.path.join(temp_path, 'test.log')
+        return self._tcex

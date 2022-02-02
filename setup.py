@@ -33,8 +33,10 @@ dev_packages = [
     'pytest',
     'pytest-cov',
     'pytest-html',
-    'pytest-xdist>=2.0.0',
+    'pytest-ordering',
+    'pytest-xdist>=2.5.0',
     'pyupgrade',
+    'fakeredis==1.7.0',
 ]
 if sys.version_info <= (3, 7):
     dev_packages.append('bandit==1.7.1')

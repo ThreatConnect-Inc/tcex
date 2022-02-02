@@ -13,7 +13,7 @@ class TraceLogger(logging.Logger):
 
     # supports updated call for Python 3.8
     def findCaller(
-        self, stack_info=False, stack_level=1
+        self, stack_info=False, stacklevel=1
     ):  # pylint: disable=arguments-differ,unused-argument
         """Find the caller for the current log event.
 

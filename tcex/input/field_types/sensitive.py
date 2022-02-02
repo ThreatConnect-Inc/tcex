@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, Callable, Dict, Optional, Union
 
 # first-party
 from tcex.input.field_types.exception import InvalidEmptyValue, InvalidLengthValue, InvalidType
+from tcex.logger.sensitive_filter import SensitiveFilter  # pylint: disable=no-name-in-module
 
 if TYPE_CHECKING:  # pragma: no cover
     # third-party
@@ -15,7 +16,9 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 # get tcex logger
+filter_sensitive = SensitiveFilter(name='sensitive_filter')
 logger = logging.getLogger('tcex')
+logger.addFilter(filter_sensitive)
 
 
 class Sensitive:
@@ -31,6 +34,7 @@ class Sensitive:
             self._sensitive_value = value.value
         else:
             self._sensitive_value = value
+        filter_sensitive.add(self._sensitive_value)
 
     @classmethod
     def __get_validators__(cls) -> Callable:

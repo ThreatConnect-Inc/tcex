@@ -72,6 +72,7 @@ jobs:
     needs: pre-flight
     runs-on: [self-hosted]
     strategy:
+      fail-fast: false
       matrix:
         python-version: [3.6.15, 3.9.10]
 
@@ -110,29 +111,21 @@ jobs:
         env:
           PIP_CACHE_DIR: ${{ github.workspace }}/.cache/pip-${{ matrix.python-version }}
 
-      # # Test package and save artifacts
-      # - name: Test with pytest
-      #   run: >
-      #     pytest --cov=.
-      #     --cov-report=term-missing
-      #     --cov-report=html:tests/reports/cov-report
-      #     --html=tests/reports/tcex-report.html
-      #     --self-contained-html tests/
-
       # Test App Config module
-      - name: Test App Config Module
+      - name: Test with pytest
         run: >
-          pytest --cov=tcex/app_config/ --cov-report=term-missing tests/app_config/
+          pytest
+          -n auto --dist loadgroup
+          --cov=. --cov-report=term-missing --cov-report=html:tests/reports/cov-report-${{ matrix.python-version }}.html
+          --durations=25
+          --html=tests/reports/tcex-report-${{ matrix.python-version }}.html --self-contained-html
+          tests/
+          || pytest --last-failed --last-failed-no-failures none
 
-      # # Test Utils module
-      # - name: Test Utils Module
-      #   run: >
-      #     pytest --cov=tcex/utils/ --cov-report=term-missing tests/utils/
-
-      # # Artifact upload
-      # - name: Upload pytest test results
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: pytest-results-${{ matrix.python-version }}
-      #     path: junit/test-results-${{ matrix.python-version }}.xml
-      #   if: ${{ always() }}
+      # Artifact upload
+      - name: Upload pytest test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: pytest-results-${{ matrix.python-version }}
+          path: tests/reports/tcex-report-${{ matrix.python-version }}.html
+        if: ${{ always() }}

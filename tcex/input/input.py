@@ -79,6 +79,11 @@ class Input:
         self.utils = Utils()
         self.tc_session = kwargs.get('tc_session')
 
+    @staticmethod
+    def _get_redis_client(host, port, db):
+        """Return RedisClient client"""
+        return RedisClient(host=host, port=port, db=db).client
+
     def _load_aot_params(
         self,
         tc_aot_enabled: bool,
@@ -96,11 +101,11 @@ class Input:
         if tc_kvstore_type == 'Redis':
 
             # get an instance of redis client
-            redis_client = RedisClient(
+            redis_client = self._get_redis_client(
                 host=tc_kvstore_host,
                 port=tc_kvstore_port,
                 db=0,
-            ).client
+            )
 
             try:
                 self.log.info('feature=inputs, event=blocking-for-aot')
@@ -398,7 +403,7 @@ class Input:
         _exit_message = {}
         for err in ex.errors():
             # deduplicate error messagese
-            err_loc = ','.join(err.get('loc'))
+            err_loc = ','.join([str(e) for e in err.get('loc')])
             err_msg = err.get('msg')
             _exit_message.setdefault(err_loc, [])
             if err_msg not in _exit_message[err_loc]:

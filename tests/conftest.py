@@ -1,15 +1,20 @@
 """Base pytest configuration file."""
 # standard library
+import hashlib
+import logging
 import os
+import re
 import shutil
 from typing import TYPE_CHECKING
 
 # third-party
+import fakeredis
 import pytest
 import redis
 
 # first-party
 from tcex.backports import cached_property
+from tcex.key_value_store import RedisClient
 from tcex.pleb.registry import registry
 from tcex.pleb.scoped_property import scoped_property
 from tests.mock_app import MockApp
@@ -19,29 +24,51 @@ if TYPE_CHECKING:
     from tcex import TcEx
     from tcex.playbook.playbook import Playbook
 
+logger = logging.getLogger('tcex')
+
 #
 # fixtures
 #
 
 
-# TODO: [med] this is not longer support, where is it needed?
-# @pytest.fixture()
-# def config_data():
-#     """Return tcex config data."""
-#     app = MockApp(runtime_level='Playbook')
-#     return app.config_data
+def _reset_modules():
+    """Reset modules that cached_property, scoped_property and registry"""
+    registry._reset()
+    cached_property._reset()
+    scoped_property._reset()
+
+
+@pytest.fixture(autouse=True)
+def change_test_dir(request, monkeypatch):
+    """Change the test working directory to prevent conflicts with other tests."""
+    test_name = request.node.name
+
+    start_index = re.search(r'\W+', test_name)
+    if start_index is not None:
+        test_name_prefix = test_name[: start_index.start()]
+        test_name_hash = hashlib.sha256(test_name[start_index.start() :].encode()).hexdigest()
+        test_name = f'{test_name_prefix}_{test_name_hash}'
+
+    temp_test_path = os.path.join(
+        request.fspath.dirname.replace(os.getcwd(), f'{os.getcwd()}/log'), test_name
+    )
+    logger.debug(f'Working directory: test-name={request.node.name}, test-path={temp_test_path}')
+    os.makedirs(temp_test_path, exist_ok=True)
+    os.makedirs(os.path.join(temp_test_path, 'DEBUG'), exist_ok=True)
+    monkeypatch.chdir(temp_test_path)
 
 
 @pytest.fixture()
 def owner_id():
     """Return an owner id."""
-    tcex_ = MockApp(runtime_level='Playbook').tcex
+    _reset_modules()
+    _tcex = MockApp(runtime_level='Playbook').tcex
 
     def get_owner_id(name):
         """Return owner Id give the name."""
         id_ = None
         for o in (
-            tcex_.session_tc.get('/v2/owners')  # pylint: disable=no-member
+            _tcex.session_tc.get('/v2/owners')  # pylint: disable=no-member
             .json()
             .get('data', [])
             .get('owner', [])
@@ -51,74 +78,95 @@ def owner_id():
                 break
         return id_
 
-    return get_owner_id
+    yield get_owner_id
+
+    _tcex.token.shutdown = True
 
 
 @pytest.fixture()
 def playbook() -> 'Playbook':
     """Return an instance of tcex.playbook."""
+    _reset_modules()
     app = MockApp(runtime_level='Playbook')
-    return app.tcex.playbook
+    yield app.tcex.playbook
+    app.tcex.token.shutdown = True
 
 
 @pytest.fixture()
 def playbook_app() -> 'MockApp':
     """Mock a playbook App."""
+    _reset_modules()
+    app_refs = []
 
     def app(**kwargs):
+        nonlocal app_refs
         if kwargs.get('runtime_level') is None:
             kwargs['runtime_level'] = 'Playbook'
-        return MockApp(**kwargs)
+        _app = MockApp(**kwargs)
+        app_refs.append(_app)
+        return _app
 
-    return app
+    yield app
+
+    for _app in app_refs:
+        _app.tcex.token.shutdown = True
 
 
 @pytest.fixture()
 def redis_client() -> redis.Redis:
     """Return instance of redis_client."""
-    host = os.getenv('tc_playbook_db_path', 'localhost')
-    port = os.getenv('tc_playbook_db_port', '6379')
-    return redis.Redis(host=host, port=port)
+    return fakeredis.FakeRedis()
 
 
 @pytest.fixture()
 def service_app() -> 'MockApp':
     """Mock a service App."""
+    _reset_modules()
+    app_refs = []
 
     def app(**kwargs):
+        nonlocal app_refs
         if kwargs.get('runtime_level') is None:
             kwargs['runtime_level'] = 'TriggerService'
-        return MockApp(**kwargs)
+        _app = MockApp(**kwargs)
+        app_refs.append(_app)
+        return _app
 
-    return app
+    yield app
+
+    for _app in app_refs:
+        _app.tcex.token.shutdown = True
 
 
-@pytest.fixture()
-def tc_log_file() -> str:
-    """Return tcex config data."""
-    app = MockApp(runtime_level='Playbook')
-    return app.tcex_log_file
+# @pytest.fixture()
+# def tc_log_file() -> str:
+#     """Return tcex config data."""
+#     _reset_modules()
+#     app = MockApp(runtime_level='Playbook')
+#     yield 'test.log'
+#     app.tcex.token.shutdown = True
 
 
 @pytest.fixture()
 def tcex() -> 'TcEx':
     """Return an instance of tcex."""
-    registry._reset()
-    cached_property._reset()
-    scoped_property._reset()
-    app = MockApp(runtime_level='Playbook')
-    return app.tcex
+    _reset_modules()
+    _tcex = MockApp(runtime_level='Playbook').tcex
+    yield _tcex
+    _tcex.token.shutdown = True
 
 
 @pytest.fixture()
 def tcex_hmac() -> 'TcEx':
     """Return an instance of tcex with hmac auth."""
+    _reset_modules()
     config_data_ = {
         'tc_token': None,
         'tc_token_expires': None,
     }
     app = MockApp(runtime_level='Playbook', config_data=config_data_)
-    return app.tcex
+    yield app.tcex
+    app.tcex.token.shutdown = True
 
 
 # @pytest.fixture(scope='module')
@@ -128,12 +176,14 @@ def tcex_proxy() -> 'TcEx':
 
     mitmproxy -p 4242 --ssl-insecure
     """
+    _reset_modules()
     config_data_ = {
         'tc_proxy_tc': True,
         'tc_proxy_external': True,
     }
     app = MockApp(runtime_level='Playbook', config_data=config_data_)
-    return app.tcex
+    yield app.tcex
+    app.tcex.token.shutdown = True
 
 
 #
@@ -147,13 +197,18 @@ def pytest_configure(config):  # pylint: disable=unused-argument
     Allows plugins and conftest files to perform initial configuration. This hook is called for
     every plugin and initial conftest file after command line options have been parsed.
     """
+    os.environ['TCEX_TEST_DIR'] = os.path.join(os.getcwd(), 'tests')
 
     # remove log directory
     try:
         shutil.rmtree('log')
-        os.makedirs('log/DEBUG', exist_ok=True)
     except OSError:
         pass
+
+    # Replace Redis with FakeRedis for testing
+    client_prop = cached_property(lambda *args: fakeredis.FakeRedis())
+    client_prop.__set_name__(RedisClient, 'client')
+    RedisClient.client = client_prop
 
 
 def pytest_sessionstart(session):  # pylint: disable=unused-argument

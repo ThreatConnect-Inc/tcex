@@ -1,7 +1,7 @@
 """Test the default RateLimitHandler"""
 # standard library
 import time
-from unittest.mock import MagicMock, PropertyMock, patch
+from unittest.mock import MagicMock, patch
 
 # third-party
 from requests import PreparedRequest, Response
@@ -20,15 +20,16 @@ class TestRateLimitHandler:
         """Test the pre_send method."""
         rate_limit_handler = RateLimitHandler()
         response: Response = Response()
-        type(response).ok = PropertyMock(True)
-        response.headers = {'X-RateLimit-Remaining': 0, 'X-RateLimit-Reset': 10}
 
-        rate_limit_handler.post_send(response)
+        with patch.object(Response, 'ok', True):
+            response.headers = {'X-RateLimit-Remaining': 0, 'X-RateLimit-Reset': 10}
 
-        request: PreparedRequest = PreparedRequest()
+            rate_limit_handler.post_send(response)
 
-        rate_limit_handler.pre_send(request)
-        time.sleep.assert_called_once_with(3)  # pylint: disable=no-member
+            request: PreparedRequest = PreparedRequest()
+
+            rate_limit_handler.pre_send(request)
+            time.sleep.assert_called_once_with(3)  # pylint: disable=no-member
 
     @staticmethod
     @patch('time.sleep', MagicMock(return_value=None))
@@ -37,14 +38,14 @@ class TestRateLimitHandler:
         """Test the pre_send method."""
         rate_limit_handler = RateLimitHandler()
         response: Response = Response()
-        type(response).ok = PropertyMock(True)
-        response.headers = {'X-RateLimit-Remaining': 0, 'X-RateLimit-Reset': 1600284000}
+        with patch.object(Response, 'ok', True):
+            response.headers = {'X-RateLimit-Remaining': 0, 'X-RateLimit-Reset': 1600284000}
 
-        rate_limit_handler.post_send(response)
-        request: PreparedRequest = PreparedRequest()
+            rate_limit_handler.post_send(response)
+            request: PreparedRequest = PreparedRequest()
 
-        rate_limit_handler.pre_send(request)
-        time.sleep.assert_called_once_with(1000)  # pylint: disable=no-member
+            rate_limit_handler.pre_send(request)
+            time.sleep.assert_called_once_with(1000)  # pylint: disable=no-member
 
     @staticmethod
     @patch('time.sleep', MagicMock(return_value=None))
@@ -53,17 +54,17 @@ class TestRateLimitHandler:
         """Test the pre_send method."""
         rate_limit_handler = RateLimitHandler()
         response: Response = Response()
-        type(response).ok = PropertyMock(True)
-        response.headers = {
-            'X-RateLimit-Remaining': 0,
-            'X-RateLimit-Reset': 'Wed, 16 Sep 2020 19:04:00 GMT',
-        }
+        with patch.object(Response, 'ok', True):
+            response.headers = {
+                'X-RateLimit-Remaining': 0,
+                'X-RateLimit-Reset': 'Wed, 16 Sep 2020 19:04:00 GMT',
+            }
 
-        rate_limit_handler.post_send(response)
-        request: PreparedRequest = PreparedRequest()
+            rate_limit_handler.post_send(response)
+            request: PreparedRequest = PreparedRequest()
 
-        rate_limit_handler.pre_send(request)
-        time.sleep.assert_called_once_with(40.0)  # pylint: disable=no-member
+            rate_limit_handler.pre_send(request)
+            time.sleep.assert_called_once_with(40.0)  # pylint: disable=no-member
 
     @staticmethod
     def test_post_send():
@@ -72,16 +73,16 @@ class TestRateLimitHandler:
             limit_remaining_header='remaining', limit_reset_header='reset'
         )
 
-        response: Response = Response()
-        type(response).ok = PropertyMock(True)
-        response.headers = {
-            'X-RateLimit-Remaining': 10,
-            'X-RateLimit-Reset': 10,
-            'remaining': 50,
-            'reset': 100000,
-        }
+        with patch.object(Response, 'ok', True):
+            response: Response = Response()
+            response.headers = {
+                'X-RateLimit-Remaining': 10,
+                'X-RateLimit-Reset': 10,
+                'remaining': 50,
+                'reset': 100000,
+            }
 
-        rate_limit_handler.post_send(response)
+            rate_limit_handler.post_send(response)
 
         assert rate_limit_handler.last_limit_reset_value == 100000, 'Got wrong last reset value'
         assert rate_limit_handler.last_limit_remaining_value == 50, 'Got wrong last remaining value'

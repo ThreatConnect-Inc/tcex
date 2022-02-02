@@ -1,3 +1,8 @@
+# Prerequisites
+
+* A Group must be create in the TC instance (Org Settings -> Groups)
+* The Description Attribute must include Case and URL (System Settings -> Attribute Types)
+
 # General Test Command
 
 ## Code Stats
@@ -16,24 +21,27 @@ pytest tests/case_management/test_artifact_interface.py
 ## Test a specific test case in a file
 pytest tests/case_management/test_artifact_interface.py::test_artifact_type_api_options
 
-## Coverage Testing
+## Basic Full Run
 ```bash
-pytest --cov=. --cov-report=term-missing --cov-report=html:tests/reports/cov-report --html=tests/reports/tcex-report.html --self-contained-html tests/
+pytest -n auto --dist loadgroup tests
 ```
 
+## Coverage Testing w/ Coverage and HTML Report
 ```bash
-> pytest --ignore-glob='*tokens*' --cov=tcex/ --cov-report=term-missing tests
-> 2 failed, 871 passed, 28 warnings in 728.86s (0:12:08)
+pytest \
+  -n auto --dist loadgroup \
+  --cov=. --cov-report=term-missing --cov-report=html:tests/reports/cov-report \
+  --durations=25 \
+  --html=tests/reports/tcex-report.html --self-contained-html \
+  tests
 ```
 
-```bash
-> pytest -n 12 --ignore-glob='*tokens*' --cov=tcex/ --cov-report=term-missing tests
-> 4 failed, 869 passed, 28 warnings in 105.62s (0:01:45)`
-```
+### Results
 
-```bash
-> pytest -n 12 --cov=tcex/ --cov-report=term-missing tests
-> 5 failed, 875 passed, 28 warnings in 105.23s (0:01:45)
+```
+Name                                    Stmts   Miss  Cover
+-----------------------------------------------------------
+TOTAL                                   13959   3314    76%
 ```
 
 # Module Testing
@@ -42,8 +50,18 @@ pytest --cov=. --cov-report=term-missing --cov-report=html:tests/reports/cov-rep
 
 ### v2
 
+616 Test Cases
+
 ```bash
-pytest --cov=tcex/api/tc/v2/ --cov-report=term-missing tests/api/tc/v2/
+pytest -n auto --dist loadgroup --cov=tcex/api/tc/v2/ --cov-report=term-missing tests/api/tc/v2/
+```
+
+#### Results
+
+```
+Name                                    Stmts   Miss  Cover
+-----------------------------------------------------------
+TOTAL                                    4316   1402    68%
 ```
 
 #### batch
@@ -52,7 +70,7 @@ pytest --cov=tcex/api/tc/v2/ --cov-report=term-missing tests/api/tc/v2/
 
 
 ```bash
-pytest --cov=tcex/api/tc/v2/batch --cov-report=term-missing tests/api/tc/v2/batch
+pytest -n auto --cov=tcex/api/tc/v2/batch --cov-report=term-missing tests/api/tc/v2/batch
 ```
 
 
@@ -70,7 +88,7 @@ TOTAL                                    1627    560    66%
 
 
 ```bash
-pytest --cov=tcex/api/tc/v2/datastore --cov-report=term-missing tests/api/tc/v2/datastore
+pytest -n auto --cov=tcex/api/tc/v2/datastore --cov-report=term-missing tests/api/tc/v2/datastore
 ```
 
 #### Results
@@ -86,7 +104,7 @@ TOTAL                                     151      3    98%
 4 Test Cases
 
 ```bash
-pytest --cov=tcex/api/tc/v2/metrics --cov-report=term-missing tests/api/tc/v2/metrics
+pytest -n 4 --cov=tcex/api/tc/v2/metrics --cov-report=term-missing tests/api/tc/v2/metrics
 ```
 
 #### Results
@@ -102,7 +120,7 @@ TOTAL                                      64      1    98%
 3 Test Cases
 
 ```bash
-pytest --cov=tcex/api/tc/v2/notifications --cov-report=term-missing tests/api/tc/v2/notifications
+pytest -n 3 --cov=tcex/api/tc/v2/notifications --cov-report=term-missing tests/api/tc/v2/notifications
 ```
 
 #### Results
@@ -119,7 +137,7 @@ TOTAL                                      35      1    97%
 387 Test Cases
 
 ```bash
-pytest --cov=tcex/api/tc/v2/threat_intelligence --cov-report=term-missing tests/api/tc/v2/threat_intelligence
+pytest -n auto --cov=tcex/api/tc/v2/threat_intelligence --cov-report=term-missing tests/api/tc/v2/threat_intelligence
 ```
 
 #### Results
@@ -127,7 +145,7 @@ pytest --cov=tcex/api/tc/v2/threat_intelligence --cov-report=term-missing tests/
 ```
 Name                                    Stmts   Miss  Cover
 -----------------------------------------------------------
-TOTAL                                    2330    813    65%
+TOTAL                                    2396    836    65%
 ```
 
 ### v3
@@ -135,7 +153,7 @@ TOTAL                                    2330    813    65%
 169 Test Cases
 
 ```bash
-pytest --cov=tcex/api/tc/v3/ --cov-report=term-missing tests/api/tc/v3/
+pytest -n auto --cov=tcex/api/tc/v3/ --cov-report=term-missing tests/api/tc/v3/
 ```
 
 #### Results
@@ -143,7 +161,7 @@ pytest --cov=tcex/api/tc/v3/ --cov-report=term-missing tests/api/tc/v3/
 ```
 Name                                    Stmts   Miss  Cover
 -----------------------------------------------------------
-TOTAL                                    4400    710    84%
+TOTAL                                    4426    718    84%
 ```
 
 #### artifact_types
@@ -155,7 +173,6 @@ pytest --cov=tcex/api/tc/v3/artifact_types --cov-report=term-missing tests/api/t
 ```bash
 pytest --cov=tcex/api/tc/v3/artifacts --cov-report=term-missing tests/api/tc/v3/artifacts
 ```
-
 
 #### attribute_types
 ```bash
@@ -267,7 +284,7 @@ pytest --cov=tcex/api/tc/v3/workflow_templates --cov-report=term-missing tests/a
 44 Test Cases
 
 ```bash
-pytest --cov=tcex/app_config/ --cov-report=term-missing tests/app_config/
+pytest -n auto --cov=tcex/app_config/ --cov-report=term-missing tests/app_config/
 ```
 
 ### Results
@@ -283,7 +300,7 @@ TOTAL                                     850      8    99%
 6 Test Cases
 
 ```bash
-pytest --cov=tcex/app_feature/ --cov-report=term-missing tests/app_feature/
+pytest -n 6 --cov=tcex/app_feature/ --cov-report=term-missing tests/app_feature/
 ```
 
 ### Results
@@ -299,7 +316,7 @@ TOTAL                                      67      2    97%
 8 Test Cases
 
 ```bash
-pytest --cov=tcex/bin/ --cov-report=term-missing tests/bin/
+pytest -n 8 --cov=tcex/bin/ --cov-report=term-missing tests/bin/
 ```
 
 ## decorators
@@ -307,7 +324,7 @@ pytest --cov=tcex/bin/ --cov-report=term-missing tests/bin/
 36 Test Cases
 
 ```bash
-pytest --cov=tcex/decorators/ --cov-report=term-missing tests/decorators/
+pytest -n auto --cov=tcex/decorators/ --cov-report=term-missing tests/decorators/
 ```
 
 ### Results
@@ -323,7 +340,7 @@ TOTAL                                     131      0   100%
 356 Test Cases
 
 ```bash
-pytest --cov=tcex/input/ --cov-report=term-missing tests/input/
+pytest -n auto --cov=tcex/input/ --cov-report=term-missing tests/input/
 ```
 
 ### Results
@@ -339,7 +356,7 @@ TOTAL                                    898     90    90%
 5 Test Cases
 
 ```bash
-pytest --cov=tcex/logger/ --cov-report=term-missing tests/logger/
+pytest -n 5 --cov=tcex/logger/ --cov-report=term-missing tests/logger/
 ```
 
 ### Results
@@ -355,7 +372,7 @@ TOTAL                                     293     68    77%
 289 Test Cases
 
 ```bash
-pytest --cov=tcex/playbook/ --cov-report=term-missing tests/playbook/
+pytest -n auto --cov=tcex/playbook/ --cov-report=term-missing tests/playbook/
 ```
 
 ### Results
@@ -371,7 +388,7 @@ TOTAL                                     513     20    96%
 17 Cases
 
 ```bash
-pytest --cov=tcex/sessions/ --cov-report=term-missing tests/sessions/
+pytest -n auto --cov=tcex/sessions/ --cov-report=term-missing tests/sessions/
 ```
 
 ### Results
@@ -384,10 +401,10 @@ TOTAL                                     293     40    86%
 
 ## tcex methods
 
-? Test Cases
+3 Test Cases
 
 ```bash
-pytest --cov=tcex/tcex.py --cov-report=term-missing tests/tcex_methods/
+pytest tests/tcex_methods/
 ```
 
 ### Results
@@ -402,7 +419,7 @@ Name                                    Stmts   Miss  Cover
 8 Test Cases
 
 ```bash
-pytest --cov=tcex/tokens/ --cov-report=term-missing tests/tokens/
+pytest -n 8 --cov=tcex/tokens/ --cov-report=term-missing tests/tokens/
 ```
 
 ### Results
@@ -418,7 +435,7 @@ TOTAL                                     132      5    96%
 116 Test Cases
 
 ```bash
-pytest --cov=tcex/utils/ --cov-report=term-missing tests/utils/
+pytest -n auto --cov=tcex/utils/ --cov-report=term-missing tests/utils/
 ```
 
 ### Results
@@ -426,5 +443,5 @@ pytest --cov=tcex/utils/ --cov-report=term-missing tests/utils/
 ```
 Name                                    Stmts   Miss  Cover
 -----------------------------------------------------------
-TOTAL                                     424    125    71%
+TOTAL                                     411    122    70%
 ```
