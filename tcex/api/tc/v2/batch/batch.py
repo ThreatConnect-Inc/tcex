@@ -928,10 +928,11 @@ class Batch(BatchWriter, BatchSubmit):
                     self.debug_path_files,
                     f'''{api_branch}--{xid}--{content_data.get('fileName').replace('/', ':')}''',
                 )
-                with open(fqfn, 'wb') as fh:
-                    if not isinstance(content, bytes):
-                        content = content.encode()
-                    fh.write(content)
+                if os.path.isdir(os.path.dirname(fqfn)):
+                    with open(fqfn, 'wb') as fh:
+                        if not isinstance(content, bytes):
+                            content = content.encode()
+                        fh.write(content)
 
             # Post File
             url = f'/v2/groups/{api_branch}/{xid}/upload'
