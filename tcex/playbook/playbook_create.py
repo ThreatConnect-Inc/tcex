@@ -163,6 +163,17 @@ class PlaybookCreate:
         return variable in self.output_variables
 
     @staticmethod
+    def is_tc_batch(data: dict) -> bool:
+        """Return True if provided data has proper structure for TC Batch."""
+        if not isinstance(data, dict):
+            return False
+        if not isinstance(data.get('indicator', []), List):
+            return False
+        if not isinstance(data.get('group', []), List):
+            return False
+        return True
+
+    @staticmethod
     def is_tc_entity(data: dict) -> bool:
         """Return True if provided data has proper structure for TC Entity."""
         if not isinstance(data, dict):
@@ -213,7 +224,7 @@ class PlaybookCreate:
             'stringarray': self.string_array,
             'tcentity': self.tc_entity,
             'tcentityarray': self.tc_entity_array,
-            # 'tcenhancedentity': self.tc_enhanced_entity_array,
+            'tcbatch': self.tc_batch,
         }
         return variable_type_map.get(variable_type, self.raw)(
             variable, value, validate, when_requested
@@ -426,6 +437,33 @@ class PlaybookCreate:
             return None
 
         return self._create_data(key, value)
+
+    def tc_batch(
+        self,
+        key: str,
+        value: Union[BaseModel, dict],
+        validate: Optional[bool] = True,
+        when_requested: Optional[bool] = True,
+    ) -> Optional[int]:
+        """Create the value in Redis if applicable."""
+        if self._check_null(key, value) is True:
+            return None
+
+        # convert key to variable if required
+        variable = self._get_variable(key, 'TCBatch')
+        if self._check_requested(variable, when_requested) is False:
+            return None
+
+        # quick check to ensure an invalid type was not provided
+        self._check_variable_type(variable, 'TCBatch')
+
+        # basic validation
+        value = self._process_object_types(value, validate)
+        if validate and not self.is_tc_batch(value):
+            raise RuntimeError('Invalid data provided for TcBatch.')
+
+        value = self._serialize_data(value)
+        return self._create_data(variable, value)
 
     def tc_entity(
         self,

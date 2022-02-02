@@ -1,0 +1,401 @@
+{
+  "association": [],
+  "group": [],
+  "indicator": [
+    {
+      "associatedGroups": [
+        {
+          "dateAdded": null,
+          "groupXid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:3650668"
+        }
+      ],
+      "attribute": [
+        {
+          "dateAdded": "2017-02-09T17:10:47Z",
+          "displayed": true,
+          "lastModified": "2017-02-09T17:11:10Z",
+          "type": "Source",
+          "value": "ThreatConnect Research Team Analysis",
+          "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:149288999"
+        },
+        {
+          "dateAdded": "2017-02-09T17:10:47Z",
+          "displayed": true,
+          "lastModified": "2017-02-09T17:11:10Z",
+          "type": "Description",
+          "value": "Command and control domain.",
+          "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:149289000"
+        },
+        {
+          "dateAdded": "2017-02-09T17:10:47Z",
+          "displayed": false,
+          "lastModified": "2017-02-09T17:11:10Z",
+          "type": "Source",
+          "value": "ThreatConnect Research Team Analysis",
+          "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:149289001"
+        },
+        {
+          "dateAdded": "2017-02-09T17:10:47Z",
+          "displayed": false,
+          "lastModified": "2017-02-09T17:11:10Z",
+          "type": "Description",
+          "value": "Command and control domain.",
+          "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:149289002"
+        },
+        {
+          "dateAdded": "2017-02-09T17:10:47Z",
+          "displayed": false,
+          "lastModified": "2017-02-09T17:11:10Z",
+          "type": "Source",
+          "value": "https://securelist.com/files/2014/11/darkhotelappendixindicators_kl.pdf",
+          "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:149289003"
+        },
+        {
+          "dateAdded": "2017-02-09T17:10:47Z",
+          "displayed": false,
+          "lastModified": "2017-02-09T17:11:10Z",
+          "type": "Description",
+          "value": "Darkhotel APT",
+          "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:149289004"
+        }
+      ],
+      "confidence": 100,
+      "dateAdded": "2013-09-09T15:48:54Z",
+      "flag1": true,
+      "flag2": true,
+      "flag3": true,
+      "intValue1": 0,
+      "intValue2": 4002735,
+      "intValue3": 0,
+      "lastModified": "2017-02-09T17:10:47Z",
+      "rating": 5.0,
+      "summary": "pb.upinfo.biz",
+      "tag": [
+        {
+          "name": "Advanced Persistent Threat"
+        },
+        {
+          "name": "China"
+        }
+      ],
+      "threatAssessConfidence": 87.54,
+      "threatAssessRating": 4.26,
+      "type": "Host",
+      "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:24348498"
+    },
+    {
+      "associatedGroups": [
+        {
+          "dateAdded": null,
+          "groupXid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:3650668"
+        }
+      ],
+      "attribute": [
+        {
+          "dateAdded": "2017-02-09T17:11:10Z",
+          "displayed": true,
+          "lastModified": "2017-02-09T17:11:10Z",
+          "type": "Source",
+          "value": "Automated Malware Analysis provided by Joe Sandbox",
+          "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:149289012"
+        },
+        {
+          "dateAdded": "2017-02-09T17:11:10Z",
+          "displayed": true,
+          "lastModified": "2017-02-09T17:11:10Z",
+          "type": "Description",
+          "value": "C2 domain.",
+          "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:149289013"
+        }
+      ],
+      "confidence": 100,
+      "dateAdded": "2013-09-09T16:14:55Z",
+      "flag1": true,
+      "flag2": true,
+      "flag3": true,
+      "intValue1": 0,
+      "intValue2": 4036514,
+      "intValue3": 0,
+      "lastModified": "2017-02-09T17:11:10Z",
+      "rating": 5.0,
+      "summary": "win7smartupdate.com",
+      "tag": [
+        {
+          "name": "Advanced Persistent Threat"
+        },
+        {
+          "name": "China"
+        },
+        {
+          "name": "Korea"
+        }
+      ],
+      "threatAssessConfidence": 100.0,
+      "threatAssessRating": 5.0,
+      "type": "Host",
+      "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:24348506"
+    },
+    {
+      "associatedGroups": [
+        {
+          "dateAdded": null,
+          "groupXid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:3650668"
+        },
+        {
+          "associationNumber": 2,
+          "dateAdded": null,
+          "groupXid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:3650670"
+        }
+      ],
+      "attribute": [
+        {
+          "dateAdded": "2017-02-09T17:11:10Z",
+          "displayed": true,
+          "lastModified": "2017-02-09T17:11:23Z",
+          "type": "Source",
+          "value": "Automated Malware Analysis provided by Joe Sandbox",
+          "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:149289014"
+        },
+        {
+          "dateAdded": "2017-02-09T17:11:10Z",
+          "displayed": true,
+          "lastModified": "2017-02-09T17:11:23Z",
+          "type": "Description",
+          "value": "Second stage malware binary.",
+          "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:149289015"
+        }
+      ],
+      "confidence": 100,
+      "dateAdded": "2013-09-09T16:14:55Z",
+      "lastModified": "2017-02-09T17:11:10Z",
+      "rating": 5.0,
+      "summary": "http://win7smartupdate.com/windowsverify/msverify.exe",
+      "tag": [
+        {
+          "name": "Advanced Persistent Threat"
+        },
+        {
+          "name": "China"
+        },
+        {
+          "name": "Korea"
+        }
+      ],
+      "threatAssessConfidence": 100.0,
+      "threatAssessRating": 5.0,
+      "type": "URL",
+      "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:24348507"
+    },
+    {
+      "associatedGroups": [
+        {
+          "dateAdded": null,
+          "groupXid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:3650668"
+        },
+        {
+          "associationNumber": 1,
+          "dateAdded": null,
+          "groupXid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:3650669"
+        }
+      ],
+      "attribute": [
+        {
+          "dateAdded": "2017-02-09T17:11:10Z",
+          "displayed": true,
+          "lastModified": "2017-02-09T17:11:17Z",
+          "type": "Source",
+          "value": "https://www.virustotal.com/en/file/1ab4dacc068dbd89507b91e49b40d7711b4bd0e59592247fc42f66a2333ce5d8/analysis/",
+          "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:149289016"
+        },
+        {
+          "dateAdded": "2017-02-09T17:11:10Z",
+          "displayed": true,
+          "lastModified": "2017-02-09T17:11:17Z",
+          "type": "Description",
+          "value": "CVE-2012-0158 document exploit.",
+          "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:149289017"
+        }
+      ],
+      "confidence": 100,
+      "dateAdded": "2013-09-09T16:14:55Z",
+      "fileAction": {
+        "children": [
+          {
+            "children": [
+              {
+                "indicatorXid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:24348508",
+                "relationship": "File Archive"
+              }
+            ],
+            "relationship": "File Archive"
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "indicatorXid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:24348509",
+                        "relationship": "File Archive"
+                      }
+                    ],
+                    "relationship": "File Archive"
+                  },
+                  {
+                    "children": [
+                      {
+                        "indicatorXid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:24348509",
+                        "relationship": "File Drop"
+                      }
+                    ],
+                    "relationship": "File Drop"
+                  },
+                  {
+                    "children": [
+                      {
+                        "indicatorXid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:24348507",
+                        "parentIndicatorXid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:24348509",
+                        "relationship": "File Traffic"
+                      },
+                      {
+                        "indicatorXid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:24348509",
+                        "relationship": "File Traffic"
+                      }
+                    ],
+                    "relationship": "File Traffic"
+                  },
+                  {
+                    "children": [
+                      {
+                        "indicatorXid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:24348509",
+                        "relationship": "File DNS Query"
+                      }
+                    ],
+                    "relationship": "File DNS Query"
+                  },
+                  {
+                    "children": [
+                      {
+                        "indicatorXid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:24348509",
+                        "relationship": "File Mutex"
+                      }
+                    ],
+                    "relationship": "File Mutex"
+                  },
+                  {
+                    "children": [
+                      {
+                        "indicatorXid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:24348509",
+                        "relationship": "File Registry Key"
+                      }
+                    ],
+                    "relationship": "File Registry Key"
+                  },
+                  {
+                    "children": [
+                      {
+                        "indicatorXid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:24348509",
+                        "relationship": "File User Agent"
+                      }
+                    ],
+                    "relationship": "File User Agent"
+                  }
+                ],
+                "indicatorXid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:24348509",
+                "parentIndicatorXid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:24348508",
+                "relationship": "File Drop"
+              },
+              {
+                "indicatorXid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:24348508",
+                "relationship": "File Drop"
+              }
+            ],
+            "relationship": "File Drop"
+          },
+          {
+            "children": [
+              {
+                "indicatorXid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:24348508",
+                "relationship": "File Traffic"
+              }
+            ],
+            "relationship": "File Traffic"
+          },
+          {
+            "children": [
+              {
+                "indicatorXid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:24348508",
+                "relationship": "File DNS Query"
+              }
+            ],
+            "relationship": "File DNS Query"
+          },
+          {
+            "children": [
+              {
+                "indicatorXid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:24348508",
+                "relationship": "File Mutex"
+              }
+            ],
+            "relationship": "File Mutex"
+          },
+          {
+            "children": [
+              {
+                "indicatorXid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:24348508",
+                "relationship": "File Registry Key"
+              }
+            ],
+            "relationship": "File Registry Key"
+          },
+          {
+            "children": [
+              {
+                "indicatorXid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:24348508",
+                "relationship": "File User Agent"
+              }
+            ],
+            "relationship": "File User Agent"
+          }
+        ],
+        "fileData": {
+          "date": "2013-08-14T00:00:00Z",
+          "fileName": "\uc804\uc2b9\uae30\ub150\uc6b0\ud45c.doc"
+        },
+        "indicatorXid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:24348508"
+      },
+      "fileOccurrence": [
+        {
+          "date": "2013-08-14T00:00:00Z",
+          "fileName": "\uc804\uc2b9\uae30\ub150\uc6b0\ud45c.doc"
+        }
+      ],
+      "intValue1": 145254,
+      "lastModified": "2017-02-09T17:11:10Z",
+      "rating": 5.0,
+      "summary": "922464B77FC10791F155AA683A248738 : EC86990C7190A2216F55D09999250D5B41E1C046 : 1AB4DACC068DBD89507B91E49B40D7711B4BD0E59592247FC42F66A2333CE5D8",
+      "tag": [
+        {
+          "name": "Advanced Persistent Threat"
+        },
+        {
+          "name": "China"
+        },
+        {
+          "name": "Korea"
+        },
+        {
+          "name": "CVE-2012-0158"
+        }
+      ],
+      "threatAssessConfidence": 100.0,
+      "threatAssessRating": 5.0,
+      "type": "File",
+      "value1": "922464B77FC10791F155AA683A248738",
+      "value2": "EC86990C7190A2216F55D09999250D5B41E1C046",
+      "value3": "1AB4DACC068DBD89507B91E49B40D7711B4BD0E59592247FC42F66A2333CE5D8",
+      "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:24348508"
+    }
+  ]
+}

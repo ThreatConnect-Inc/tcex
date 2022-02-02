@@ -214,6 +214,19 @@ class PlaybookRead:
 
         return data
 
+    def _process_tc_batch(self, data: str, serialized: bool) -> Optional[dict]:
+        """Process the provided."""
+        if data is not None:
+            # decode in case data comes back from kvstore as bytes
+            if isinstance(data, bytes):
+                data = data.decode()
+
+            # Single type are serialized, array types are not
+            if serialized is True:
+                data = self._load_data(data)
+
+        return data
+
     def _process_tc_entity(self, data: str, serialized: bool) -> Optional[dict]:
         """Process the provided."""
         if data is not None:
@@ -337,6 +350,7 @@ class PlaybookRead:
             'keyvaluearray': self.key_value_array,
             'string': self.string,
             'stringarray': self.string_array,
+            'tcbatch': self.tc_batch,
             'tcentity': self.tc_entity,
             'tcentityarray': self.tc_entity_array,
             # 'tcenhancedentity': self.tc_entity,
@@ -519,6 +533,21 @@ class PlaybookRead:
             data = values
 
         return data
+
+    def tc_batch(self, key: str) -> Optional[dict]:
+        """Read the value from key value store.
+
+        TCBatch data should be stored as serialized string.
+        """
+        print('entering tc_batch')
+        if self._null_key_check(key) is True:
+            return None
+
+        # quick check to ensure an invalid key was not provided
+        self._check_variable_type(key, 'TCBatch')
+
+        data: Optional[str] = self._get_data(key)
+        return self._process_tc_batch(data, serialized=True)
 
     def tc_entity(self, key: str) -> Optional[dict]:
         """Read the value from key value store.
