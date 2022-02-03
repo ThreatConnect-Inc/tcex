@@ -1,0 +1,233 @@
+{
+  "group": [
+    {
+      "associatedGroupXid": [
+        "e336e2dd-5dfb-48cd-a33a-f8809e83e904:3650669",
+        "e336e2dd-5dfb-48cd-a33a-f8809e83e904:3650670",
+        "e336e2dd-5dfb-48cd-a33a-f8809e83e904:3650671"
+      ],
+      "attribute": [
+        {
+          "dateAdded": "2017-02-09T17:11:11Z",
+          "displayed": true,
+          "lastModified": "2017-02-09T17:11:11Z",
+          "type": "Description",
+          "value": "Indicators associated with a Korean language document exploit that translates to \"Victory Commemorative Stamp\". The malware family used has been observed before in 20130704A: Nuclear Power Doc Exploit.",
+          "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:8564792"
+        },
+        {
+          "dateAdded": "2017-02-09T17:11:11Z",
+          "displayed": false,
+          "lastModified": "2017-02-09T17:11:11Z",
+          "type": "Tactics, Techniques, and Procedures",
+          "value": "The final stage implant uses the internal XOR key of \"Error Code.\" for some of its functions. It uses the following initial callback: \"/read.php?id=user&file=default.jpg\" Server responds with 7 bytes. Second callback: \"/read.php?id={unique id generated from computer info}&file={specific value}.jpg\" Server response: 7 bytes Third callback: \"/read.php?id={unique id generated from computer info}&file={first four bytes from last response}{specific value}.jpg\" Finally, the malware downloads an LZW co",
+          "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:8564793"
+        },
+        {
+          "dateAdded": "2017-02-09T17:11:11Z",
+          "displayed": false,
+          "lastModified": "2017-02-09T17:11:11Z",
+          "type": "Additional Analysis and Context",
+          "value": "YARA Signature:\r\n\r\nrule APT_cyslog\r\n{\r\nmeta:\r\n\tauthor = \"ThreatConnect Intel Research Team - Wes Hurd\" \r\n\texample = \"822871578022C1292C9CB051CCEEDFE2\"\r\n\tlicense = \"Usage of this signature is subject to the ThreatConnect Terms of Service, which are incorporated herein by reference.\"\r\nstrings:\r\n\t$k = \"/kernelmf12.exe\"\r\n\t$m = \"/msverify.exe\"\r\n\t$S = \"SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\Shell Folders\"\r\ncondition:\r\n\t$S and ($k or $m)\r\n}\r\n\r\nrule APT_dvresuauw\r\n{\r\nmeta:\r\n\tauthor = \"ThreatConnect Intel Research Team - Wes Hurd\" \r\n\texample = \"6f70025c24489e04c7641a4318a80a28\"\r\n\tlicense = \"Usage of this signature is subject to the ThreatConnect Terms of Service, which are incorporated herein by reference.\"\r\nstrings:\r\n\t$4 = \"%4d/%2d/%2d_%2d:%2d\"\r\n\t$P = \"[Proto]  [Local Address]  [L Port]  [Remote Address]  [R Port]  [State]\"\r\n\t$s = \"%s %-25s %10lu %s\"\r\n\t$U = \"Up resetting => %d min OK\"\r\ncondition:\r\n\t2 of them\r\n}\r\n\r\nrule APT_read_PHP\r\n{\r\nmeta:\r\n\tauthor = \"ThreatConnect Intel Research Team - Wes Hurd\" \r\n\texample = \"0073900EB39A818C55A236AB63D2144B\"\r\n\tlicense = \"Usage of this signature is subject to the ThreatConnect Terms of Service, which are incorporated herein by reference.\"\r\nstrings:\r\n\t$B = \"BitDefenderCheckAgent\"\r\n\t$s = \"secure.hotelreykjavik.is\"\r\n\t$S = \"SystemFunction036\"\r\ncondition:\r\n\tall of them\r\n}",
+          "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:8564794"
+        }
+      ],
+      "dateAdded": "2013-09-09T16:14:55Z",
+      "eventDate": "2013-08-14T00:00:00Z",
+      "name": "20130814A: Victory Commemorative Stamp Document Exploit",
+      "publishRootItem": true,
+      "status": "None",
+      "tag": [
+        {
+          "name": "Advanced Persistent Threat"
+        },
+        {
+          "name": "China"
+        },
+        {
+          "name": "Korea"
+        },
+        {
+          "name": "YARA"
+        },
+        {
+          "name": "CVE-2012-0158"
+        },
+        {
+          "name": "Tapaoux"
+        },
+        {
+          "name": "Darkhotel"
+        }
+      ],
+      "type": "Incident",
+      "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:3650668"
+    },
+    {
+      "associatedGroupXid": [
+        "e336e2dd-5dfb-48cd-a33a-f8809e83e904:3650668",
+        "e336e2dd-5dfb-48cd-a33a-f8809e83e904:3624843"
+      ],
+      "attribute": [
+        {
+          "dateAdded": "2017-02-09T17:10:13Z",
+          "displayed": true,
+          "lastModified": "2017-02-09T17:10:13Z",
+          "source": "Open source research",
+          "type": "Description",
+          "value": "DarkHotel is an advanced persistent threat (APT) group likely originating from South Korean that uses custom malware implants and command and control (C2) domains. DarkHotel is known to have used Egobot, Nemim, and Tapaoux malware, among others.\r\n\r\nDarkHotel uses spearphishing and targets CEOs, senior vice presidents, sales and marketing directors and top R&D staff of mostly Asian including large electronics manufacturing companies, pharmaceuticals, automotive manufacturer offshoring services, automotive assembly, distribution, sales, and services, cosmetics, and law enforcement and military services. DarkHotel has also maintained a capability to use hotel networks to follow and hit selected targets as they travel around the world.\r\n\r\nPast analysis has shown that the victims connecting through hotel Wi-Fi were prompted to install malware disguised as legitimate updates. To do so, DarkHotel first remotely compromised the hotel's web, admin and possibly, the back office hotel systems. This suggests that DarkHotel was aware of when the target would be checking in to their room, and what the room number was. \r\n\r\nDarkHotel also used forged and stolen certificates with 'weak' 512 bit RSA keys to make their malware appear genuine. These stolen certificates where used with a range of Flash zero-day exploits, including ones targeting vulnerabilities in Windows 8.1.",
+          "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:8564767"
+        },
+        {
+          "dateAdded": "2017-02-09T17:10:13Z",
+          "displayed": false,
+          "lastModified": "2017-02-09T17:10:13Z",
+          "type": "Source",
+          "value": "1. http://securelist.com/blog/research/66779/the-darkhotel-apt/\r\n2. http://www.threatconnect.com/news/getting-leftof-boom-threatconnect-enables-proactive-cybersecurity/\r\n3. http://www.securelist.com/en/blog/8177/CVE_2014_0497_a_0_day_vulnerability\r\n4. http://www.symantec.com/connect/blogs/backdooregobot-how-effectively-execute-targeted-campaign\r\n5. http://www.symantec.com/connect/blogs/infostealernemim-how-pervasive-infostealer-continues-evolve\r\n6. https://securelist.com/files/2014/11/darkhotel_kl_07.11.pdf\r\n7. https://blog.kaspersky.com/darkhotel-apt/6613/\r\n8. http://www.networkworld.com/article/2846003/security0/darkhotel-apt-hackers-campaign-followed-global-ceos-using-hotel-networks.html",
+          "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:8564768"
+        },
+        {
+          "dateAdded": "2017-02-09T17:10:13Z",
+          "displayed": false,
+          "lastModified": "2017-02-09T17:10:13Z",
+          "type": "Attribution Assessment",
+          "value": "This actor is likely attributed to a group operating in Korea according to industry partners and evidence in the malware and targeting. A relatively high level of sophistication and lack of infrastructure in China suggests that this actor is not Chinese or North Korean.",
+          "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:8564769"
+        },
+        {
+          "dateAdded": "2017-02-09T17:10:13Z",
+          "displayed": false,
+          "lastModified": "2017-02-09T17:10:13Z",
+          "type": "Additional Analysis and Context",
+          "value": "Group Aliases:\r\n\r\n- DarkHotel (Kaspersky)\r\n- Tapaoux",
+          "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:8564770"
+        },
+        {
+          "dateAdded": "2017-02-09T17:10:13Z",
+          "displayed": false,
+          "lastModified": "2017-02-09T17:10:13Z",
+          "type": "Capabilities",
+          "value": "Custom Malware:\r\n\r\n- Doutrad\r\n- Egobot\r\n- Nemim\r\n- Riberow\r\n- Schedasl\r\n- Tapaoux",
+          "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:8564771"
+        },
+        {
+          "dateAdded": "2017-02-09T17:10:13Z",
+          "displayed": false,
+          "lastModified": "2017-02-09T17:10:13Z",
+          "type": "Adversary Motivation Type",
+          "value": "Nation State",
+          "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:8564772"
+        },
+        {
+          "dateAdded": "2017-02-09T17:10:13Z",
+          "displayed": false,
+          "lastModified": "2017-02-09T17:10:13Z",
+          "type": "Tactics, Techniques, and Procedures",
+          "value": "- advanced mathematical and crypto-analytical offensive capabilities \r\n- undermining trust extended to the Certificate Authorities\r\nand public key infrastructure\r\n- infect and persistently abuse hotel and business center Wi-Fi and physical connections, as well as p2p file sharing networks\r\n- use of spearphishing\r\n- a larger, dynamic infrastructure built of apache webservers, dynamic dns\r\nrecords, crypto libraries, and php webapps \r\n- use of 0-days",
+          "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:8564773"
+        },
+        {
+          "dateAdded": "2017-02-09T17:10:13Z",
+          "displayed": false,
+          "lastModified": "2017-02-09T17:10:13Z",
+          "type": "Attribution Confidence",
+          "value": "65",
+          "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:8564774"
+        },
+        {
+          "dateAdded": "2017-02-09T17:10:13Z",
+          "displayed": false,
+          "lastModified": "2017-02-09T17:10:13Z",
+          "type": "Date of Discovery",
+          "value": "2010-08-05",
+          "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:8564775"
+        },
+        {
+          "dateAdded": "2017-02-09T17:10:13Z",
+          "displayed": false,
+          "lastModified": "2017-02-09T17:10:13Z",
+          "type": "Origin Country",
+          "value": "Korea, Republic Of",
+          "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:8564776"
+        }
+      ],
+      "dateAdded": "2017-01-05T18:52:49Z",
+      "name": "DarkHotel / Tapaoux",
+      "tag": [
+        {
+          "name": "Advanced Persistent Threat"
+        },
+        {
+          "name": "Taiwan"
+        },
+        {
+          "name": "Korea"
+        },
+        {
+          "name": "medical"
+        },
+        {
+          "name": "Japan"
+        },
+        {
+          "name": "CVE-2012-0158"
+        },
+        {
+          "name": "India"
+        },
+        {
+          "name": "Malaysia"
+        },
+        {
+          "name": "North Korea"
+        },
+        {
+          "name": "APT"
+        },
+        {
+          "name": "Tapaoux"
+        },
+        {
+          "name": "Nemim"
+        },
+        {
+          "name": "Darkhotel"
+        },
+        {
+          "name": "Egobot"
+        },
+        {
+          "name": "Nuclear"
+        },
+        {
+          "name": "CVE-2014-0497"
+        }
+      ],
+      "type": "Threat",
+      "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:3650665"
+    },
+    {
+      "associatedGroupXid": [
+        "e336e2dd-5dfb-48cd-a33a-f8809e83e904:3650670"
+      ],
+      "dateAdded": "2017-01-05T18:58:00Z",
+      "type": "File Drop",
+      "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:3650669"
+    },
+    {
+      "dateAdded": "2017-01-05T18:58:07Z",
+      "type": "File Traffic",
+      "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:3650670"
+    },
+    {
+      "dateAdded": "2017-01-05T18:58:14Z",
+      "type": "File Traffic",
+      "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:3650671"
+    },
+    {
+      "dateAdded": "2017-01-05T18:57:16Z",
+      "type": "File Traffic",
+      "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:3624843"
+    }
+  ]
+}

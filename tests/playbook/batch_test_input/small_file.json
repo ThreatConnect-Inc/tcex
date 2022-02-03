@@ -1,0 +1,72 @@
+{
+  "group": [
+    {
+      "dateAdded": "2013-09-09T16:14:55Z",
+      "eventDate": "2013-08-14T00:00:00Z",
+      "name": "20130814A: Victory Commemorative Stamp Document Exploit",
+      "publishRootItem": true,
+      "status": "None",
+      "type": "Incident",
+      "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:3650668"
+    }
+  ],
+  "indicator": [
+    {
+      "associatedGroups": [
+        {
+          "dateAdded": null,
+          "groupXid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:3650668"
+        }
+      ],
+      "attribute": [
+        {
+          "dateAdded": "2017-02-09T17:10:47Z",
+          "displayed": true,
+          "lastModified": "2017-02-09T17:11:10Z",
+          "type": "Source",
+          "value": "ThreatConnect Research Team Analysis",
+          "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:149288999"
+        },
+        {
+          "dateAdded": "2017-02-09T17:10:47Z",
+          "displayed": true,
+          "lastModified": "2017-02-09T17:11:10Z",
+          "type": "Description",
+          "value": "Command and control domain.",
+          "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:149289000"
+        },
+        {
+          "dateAdded": "2017-02-09T17:10:47Z",
+          "displayed": false,
+          "lastModified": "2017-02-09T17:11:10Z",
+          "type": "Source",
+          "value": "ThreatConnect Research Team Analysis",
+          "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:149289001"
+        }
+      ],
+      "confidence": 100,
+      "dateAdded": "2013-09-09T15:48:54Z",
+      "flag1": true,
+      "flag2": true,
+      "flag3": true,
+      "intValue1": 0,
+      "intValue2": 4002735,
+      "intValue3": 0,
+      "lastModified": "2017-02-09T17:10:47Z",
+      "rating": 5.0,
+      "summary": "pb.upinfo.biz",
+      "tag": [
+        {
+          "name": "Advanced Persistent Threat"
+        },
+        {
+          "name": "China"
+        }
+      ],
+      "threatAssessConfidence": 87.54,
+      "threatAssessRating": 4.26,
+      "type": "Host",
+      "xid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904:24348498"
+    }
+  ]
+}
