@@ -539,7 +539,6 @@ class PlaybookRead:
 
         TCBatch data should be stored as serialized string.
         """
-        print('entering tc_batch')
         if self._null_key_check(key) is True:
             return None
 
