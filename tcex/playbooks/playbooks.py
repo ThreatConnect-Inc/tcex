@@ -332,6 +332,9 @@ class Playbooks(PlaybooksBase):
             if code == 3:
                 self.log.info('Changing exit code from 3 to 0.')
                 code = 0  # playbooks doesn't support partial failure
+        elif code == 4:
+            # hard fail on retry logic (don't retry)
+            code = 4
         elif code not in [0, 1]:
             code = 1
 

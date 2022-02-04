@@ -16,6 +16,12 @@
     "commitHash": {
       "type": "string"
     },
+    "deprecatesApps": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
     "deprecation": {
       "items": {
         "additionalProperties": false,
@@ -231,6 +237,12 @@
         "retry": {
           "additionalProperties": false,
           "properties": {
+            "actions": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
             "allowed": {
               "type": "boolean"
             },
