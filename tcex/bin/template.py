@@ -81,7 +81,7 @@ class Template(BinABC):
         if not r.ok:
             self.log.error(
                 f'action=get-contents, url={r.request.url}, '
-                f'status_code={r.status_code}, headers={r.request.headers}, '
+                f'status_code={r.status_code}, headers={r.headers}, '
                 f'response={r.text or r.reason}'
             )
             self.errors = True
@@ -176,7 +176,7 @@ class Template(BinABC):
         if not r.ok:
             self.log.error(
                 f'action=download-template-file, url={r.request.url}, '
-                f'status_code={r.status_code}, headers={r.request.headers}, '
+                f'status_code={r.status_code}, headers={r.headers}, '
                 f'response={r.text or r.reason}'
             )
 
@@ -225,7 +225,7 @@ class Template(BinABC):
         if not r.ok:
             self.log.error(
                 f'action=get-template-config, url={r.request.url}, '
-                f'status_code={r.status_code}, headers={r.request.headers}, '
+                f'status_code={r.status_code}, headers={r.headers}, '
                 f'response={r.text or r.reason}'
             )
             self.errors = True
@@ -318,7 +318,7 @@ class Template(BinABC):
         if not r.ok:
             self.log.error(
                 f'action=get-project-sha, url={r.request.url}, '
-                f'status_code={r.status_code}, headers={r.request.headers}, '
+                f'status_code={r.status_code}, headers={r.headers}, '
                 f'response={r.text or r.reason}'
             )
             self.errors = True
