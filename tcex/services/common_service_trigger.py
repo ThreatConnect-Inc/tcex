@@ -187,7 +187,7 @@ class CommonServiceTrigger(CommonService):
 
                 # get an instance of PB module with current
                 # session_id and outputs to pass to callback
-                outputs: Union[list, str] = config.model.tc_playbook_out_variables or []
+                outputs: Union[list, str] = config.tc_playbook_out_variables or []
                 if isinstance(outputs, str):
                     outputs = outputs.split(',')
                 playbook: object = self.tcex.get_playbook(
@@ -366,14 +366,23 @@ class CommonServiceTrigger(CommonService):
                     verify=registry.session_tc.verify,
                 )
 
-                config_input = Input(config=config, tc_session=tc_session)
-                config_input.add_model(self.trigger_input_model)
+                # Resolve any variables in config
+                updated_config = {
+                    k: (registry.inputs.resolve_variable(v)
+                            if registry.inputs.utils.is_tc_variable(v)
+                            else v)
+                    for k, v in config.items()
+                }
+                updated_config['trigger_id'] = trigger_id
+
+                # Instantiate trigger input model
+                config_input = self.trigger_input_model(**updated_config)
 
                 self.configs[trigger_id] = config_input
                 # call callback for create config and handle exceptions to protect thread
                 # pylint: disable=not-callable
                 response: Optional[dict] = self.create_config_callback(
-                    trigger_id, config_input, **kwargs
+                    config_input, **kwargs
                 )
                 if isinstance(response, dict):
                     status = response.get('status', False)
