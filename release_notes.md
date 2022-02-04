@@ -4,6 +4,8 @@
 
 ### 3.0.0
 
+> New docs site: https://threatconnect.readme.io/docs/overview
+
 + APP-2294 - [TI] Added support for V3 TI API.
 + APP-3028 - [CM] Updated Case Manage V3 modules to use datamodels for consistency with TI module.
 + APP-2296 - [Inputs] Changed inputs model logic to use datamodels.
@@ -13,8 +15,11 @@
 + APP-2488 - [TI] Moved common TI methods to new ti_utils module.
 + APP-2434 - [TcEx] Added support for protecting sensitive values in Apps and framework.
 + APP-2498 - [TcEx] Added typing hints to public methods.
++ APP-3346 - [TcEx] Added support for exit code of 4 (hard fail/no retry) for playbook Apps.
++ APP-3347 - [TcEx] Change message.tc (exit message) behavior to rewrite file on each execution.
 + APP-2660 - [AppConfig] Updated install.json module to fully support all feature types.
 + APP-3353 - [AppConfig] Added support for new deprecatesApps and output.encrypt fields in the install.json.
++ APP-3389 - [AppConfig] Added support for Action based retries in Playbook Apps.
 + APP-3014 - [API] Updated path structure of all TC API module code.
 + APP-2487 - [Docs] Moved all documentation to hosted site.
 + APP-3343 - [STIX] Moved STIX module to new repo.
