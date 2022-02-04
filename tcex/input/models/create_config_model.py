@@ -9,6 +9,7 @@ from pydantic import BaseModel, root_validator, validator
 
 class CreateConfigModel(BaseModel):
     """Create Config Model"""
+
     tc_playbook_out_variables: List[str]
     trigger_id: int
 

@@ -7,11 +7,8 @@ import traceback
 from typing import Callable, Optional, Union
 
 # first-party
-from tcex.input.input import Input
 from tcex.pleb.registry import registry
 from tcex.services.common_service import CommonService
-from tcex.sessions.auth.tc_auth import TcAuth
-from tcex.sessions.tc_session import TcSession
 
 
 class CommonServiceTrigger(CommonService):
@@ -357,33 +354,25 @@ class CommonServiceTrigger(CommonService):
                 kwargs['url'] = message.get('url')
 
             try:
-                tc_session = TcSession(
-                    auth=TcAuth(tc_token=message.get('apiToken')),
-                    base_url=registry.session_tc.base_url,
-                    log_curl=registry.session_tc.log_curl,
-                    proxies=registry.session_tc.proxies,
-                    proxies_enabled=registry.session_tc.proxies,
-                    verify=registry.session_tc.verify,
-                )
-
                 # Resolve any variables in config
                 updated_config = {
-                    k: (registry.inputs.resolve_variable(v)
-                            if registry.inputs.utils.is_tc_variable(v)
-                            else v)
+                    k: (
+                        registry.inputs.resolve_variable(v)
+                        if registry.inputs.utils.is_tc_variable(v)
+                        else v
+                    )
                     for k, v in config.items()
                 }
                 updated_config['trigger_id'] = trigger_id
 
                 # Instantiate trigger input model
+                # pylint: disable=not-callable
                 config_input = self.trigger_input_model(**updated_config)
 
                 self.configs[trigger_id] = config_input
                 # call callback for create config and handle exceptions to protect thread
                 # pylint: disable=not-callable
-                response: Optional[dict] = self.create_config_callback(
-                    config_input, **kwargs
-                )
+                response: Optional[dict] = self.create_config_callback(config_input, **kwargs)
                 if isinstance(response, dict):
                     status = response.get('status', False)
                     msg = response.get('msg')
