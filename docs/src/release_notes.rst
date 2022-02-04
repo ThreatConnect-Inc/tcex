@@ -3,6 +3,13 @@
 Release Notes
 #############
 
+2.0.29
+======
++ APP-3385 - [Playbook] Added support for exit code of 4 in Playbook Apps (hard failure - no retry).
++ APP-3387 - [TcEx] Change message.tc (exit message) behavior to rewrite file on each execution.
++ APP-3386 - [App Config] Added support for action based retries in Playbook Apps.
++ APP-3388 - [App Config] Added support for DeprecatesApps feature so that during install replaced Apps can be deprecated.
+
 2.0.28
 ======
 + APP-3325 - [Token] - Added proxy support to token renewal (ENV Server).

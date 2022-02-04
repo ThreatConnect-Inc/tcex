@@ -347,7 +347,7 @@ class TcEx:
 
         if code is None:
             code = self.exit_code
-        elif code in [0, 1, 3]:
+        elif code in [0, 1, 3, 4]:
             pass
         else:
             self.log.error('Invalid exit code')
@@ -678,10 +678,6 @@ class TcEx:
             message_file = os.path.join(self.default_args.tc_out_path, 'message.tc')
         else:
             message_file = 'message.tc'
-
-        if os.path.isfile(message_file):
-            with open(message_file) as mh:
-                message = mh.read() + message
 
         if not message.endswith('\n'):
             message += '\n'
