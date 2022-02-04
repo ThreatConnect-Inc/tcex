@@ -347,7 +347,7 @@ class TcEx:
 
         if code is None:
             code = self.exit_code
-        elif code in [0, 1, 3]:
+        elif code in [0, 1, 3, 4]:
             pass
         else:
             self.log.error('Invalid exit code')
