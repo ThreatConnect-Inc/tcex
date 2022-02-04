@@ -79,7 +79,11 @@ class Template(BinABC):
         params = {'ref': branch}
         r: 'Response' = self.session.get(url, params=params)
         if not r.ok:
-            self.log.error(f'Failed retrieving contents for type {r.request.url}.')
+            self.log.error(
+                f'action=get-contents, url={r.request.url}, '
+                f'status_code={r.status_code}, headers={r.request.headers}, '
+                f'response={r.text or r.reason}'
+            )
             self.errors = True
 
         for content in r.json():
@@ -166,11 +170,15 @@ class Template(BinABC):
         destination = Path(os.path.join(os.getcwd(), name))
         self.log.info(f'action=download-template-file, file={name}')
 
-        r = self.session.get(
+        r: 'Response' = self.session.get(
             download_url, allow_redirects=True, headers={'Cache-Control': 'no-cache'}
         )
         if not r.ok:
-            self.log.errors(f'Could not download template file ({download_url}).')
+            self.log.error(
+                f'action=download-template-file, url={r.request.url}, '
+                f'status_code={r.status_code}, headers={r.request.headers}, '
+                f'response={r.text or r.reason}'
+            )
 
         # write destination file
         destination.open(mode='wb').write(r.content)
@@ -212,12 +220,13 @@ class Template(BinABC):
         params = {}
         if branch:
             params['ref'] = branch
-        r = self.session.get(url)
+        r: 'Response' = self.session.get(url)
         self.log.debug(f'action=get-template-config, url={url}, status-code={r.status_code}')
         if not r.ok:
             self.log.error(
-                f'action=get-template-config, type={type_}, template={template}, '
-                f'status-code={r.status_code}, exception=template-not-found'
+                f'action=get-template-config, url={r.request.url}, '
+                f'status_code={r.status_code}, headers={r.request.headers}, '
+                f'response={r.text or r.reason}'
             )
             self.errors = True
             return None
@@ -305,10 +314,13 @@ class Template(BinABC):
     def project_sha(self) -> str:
         """Return the current commit sha for the tcex-app-templates project."""
         params = {'perPage': '1'}
-        r = self.session.get(f'{self.base_url}/commits', params=params)
+        r: 'Response' = self.session.get(f'{self.base_url}/commits', params=params)
         if not r.ok:
-            err = r.text or r.reason
-            self.log.error(f'Error trying to retrieve git commit ({err}).')
+            self.log.error(
+                f'action=get-project-sha, url={r.request.url}, '
+                f'status_code={r.status_code}, headers={r.request.headers}, '
+                f'response={r.text or r.reason}'
+            )
             self.errors = True
             return None
 
