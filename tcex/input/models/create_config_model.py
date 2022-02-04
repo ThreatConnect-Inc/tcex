@@ -20,7 +20,6 @@ class CreateConfigModel(BaseModel):
         """
         return v.split(',') if v else []
 
-
     # TODO: [low] workaround for PLAT-4393
     @root_validator(pre=True)
     def empty_str_to_none(cls, values: Dict[str, Any]):
