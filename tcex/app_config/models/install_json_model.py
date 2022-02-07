@@ -146,6 +146,7 @@ class OutputVariablesModel(BaseModel):
 class RetryModel(BaseModel):
     """Model for install_json.playbook.retry"""
 
+    actions: Optional[List[str]]
     allowed: bool = False
     default_delay_minutes: Optional[int] = 1
     default_max_retries: Optional[int] = 1
