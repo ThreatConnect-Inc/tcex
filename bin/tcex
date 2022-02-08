@@ -11,7 +11,7 @@ import colorama as c
 import typer
 
 # first-party
-from tcex.bin import Dep, Deploy, Package, Template, Validate
+from tcex.bin import Dep, Deploy, GenConfig, Package, Template, Validate
 
 
 app = typer.Typer()
@@ -119,6 +119,34 @@ def deploy(
         typer.echo(f'Exception: {ex}', err=True)
         # raise typer.Exit(code=1)
         raise
+
+
+@app.command()
+def genconfig(
+    all_: bool = typer.Option(False, '--all', help='Generate all configuration files.'),
+    app_input: bool = typer.Option(False, help='Generate app_input.py.'),
+    install_json: bool = typer.Option(False, help='Generate install.json.'),
+    layout_json: bool = typer.Option(False, help='Generate layout.json.'),
+    force: bool = typer.Option(False, help='Force overwrite of config file.'),
+):
+    """Generate App configuration file.
+
+    Generate one or more configuration files for the App.
+    """
+    gc = GenConfig(force)
+    try:
+        if app_input is True or all_ is True:
+            gc.generate_app_input()
+
+        if install_json is True or all_ is True:
+            gc.generate_install_json()
+
+        if layout_json is True or all_ is True:
+            gc.generate_layout_json()
+    except Exception as ex:
+        raise ex
+        # typer.echo(f'Failed getting App templates: {ex}', err=True)
+        # raise typer.Exit(code=1)
 
 
 @app.command()

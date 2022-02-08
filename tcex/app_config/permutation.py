@@ -346,12 +346,16 @@ class Permutation:
         # output permutations
         self.write_permutations_file()
 
-    def validate_input_variable(self, input_name: str, inputs: dict) -> bool:
+    def validate_input_variable(
+        self, input_name: str, inputs: dict, display: Optional[str] = None
+    ) -> bool:
         """Return True if the provided variables display where clause returns results.
 
         Args:
             input_name: The input variable name (e.g. tc_action).
             inputs: The current name/value dict.
+            display: An optional display clause to validate. If not provided the
+                display clause will be retrieved from the layout.json file.
 
         Returns:
             bool: True if the display value returns results.
@@ -372,11 +376,12 @@ class Permutation:
         for name, val in inputs.items():
             self.db_update_record(table, name, val)
 
-        lj_data = self.lj.model.get_param(input_name)
-        if isinstance(lj_data, NoneModel):  # pragma: no cover
-            # this shouldn't happen as all ij inputs must be in lj
-            raise RuntimeError(f'The provided input {input_name} was not found in layout.json.')
-        display = lj_data.display
+        if display is None:
+            lj_data = self.lj.model.get_param(input_name)
+            if isinstance(lj_data, NoneModel):  # pragma: no cover
+                # this shouldn't happen as all ij inputs must be in lj
+                raise RuntimeError(f'The provided input {input_name} was not found in layout.json.')
+            display = lj_data.display
 
         # check if provided variable meets display requirements
         valid = self.validate_layout_display(table, display)

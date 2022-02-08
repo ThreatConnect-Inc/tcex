@@ -284,7 +284,7 @@ class InstallJsonModel(BaseModel):
         service_config: Optional[bool] = None,
         _type: Optional[str] = None,
         input_permutations: Optional[List] = None,
-    ) -> Dict[str, ParamsModel]:
+    ) -> Dict[str, 'ParamsModel']:
         """Return params as name/data dict.
 
         Args:
@@ -328,12 +328,12 @@ class InstallJsonModel(BaseModel):
             params.setdefault(p.name, p)
         return params
 
-    def get_param(self, name: str) -> Union[NoneModel, ParamsModel]:
+    def get_param(self, name: str) -> Union['NoneModel', 'ParamsModel']:
         """Return param for the matching name or {}."""
         return self.params_dict.get(name) or NoneModel()
 
     @property
-    def optional_params(self) -> Dict[str, ParamsModel]:
+    def optional_params(self) -> Dict[str, 'ParamsModel']:
         """Return params as name/data model."""
         return {p.name: p for p in self.params if p.required is False}
 
@@ -348,26 +348,26 @@ class InstallJsonModel(BaseModel):
         return [p.name for p in self.params]
 
     @property
-    def params_dict(self) -> Dict[str, ParamsModel]:
+    def params_dict(self) -> Dict[str, 'ParamsModel']:
         """Return params as name/data dict."""
         return {p.name: p for p in self.params}
 
     @property
-    def playbook_outputs(self) -> Dict[str, ParamsModel]:
+    def playbook_outputs(self) -> Dict[str, 'ParamsModel']:
         """Return outputs as name/data model."""
         return {o.name: o for o in self.playbook.output_variables}
 
     @property
-    def required_params(self) -> Dict[str, ParamsModel]:
+    def required_params(self) -> Dict[str, 'ParamsModel']:
         """Return params as name/data dict."""
         return {p.name: p for p in self.params if p.required is True}
 
     @property
-    def service_config_params(self) -> Dict[str, ParamsModel]:
+    def service_config_params(self) -> Dict[str, 'ParamsModel']:
         """Return params as name/data dict."""
         return {p.name: p for p in self.params if p.service_config is True}
 
     @property
-    def service_playbook_params(self) -> Dict[str, ParamsModel]:
+    def service_playbook_params(self) -> Dict[str, 'ParamsModel']:
         """Return params as name/data dict."""
         return {p.name: p for p in self.params if p.service_config is False}

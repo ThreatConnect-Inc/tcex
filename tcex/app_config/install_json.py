@@ -17,8 +17,8 @@ if TYPE_CHECKING:
     # first-party
     from tcex.app_config.models.install_json_model import ParamsModel
 
-
-__all__ = ['InstallJson']
+# get tcex logger
+logger = logging.getLogger('tcex')
 
 
 class InstallJson:
@@ -32,15 +32,14 @@ class InstallJson:
         self,
         filename: Optional[str] = None,
         path: Optional[str] = None,
-        logger: Optional[logging.Logger] = None,
     ) -> None:
         """Initialize class properties."""
         filename = filename or 'install.json'
         path = path or os.getcwd()
-        self.log = logger or logging.getLogger('install_json')
 
         # properties
         self.fqfn = Path(os.path.join(path, filename))
+        self.log = logger
 
     @property
     def app_prefix(self) -> str:

@@ -1,10 +1,12 @@
 """TcEx Utilities Module"""
 # standard library
+import ast
 import ipaddress
 import re
-from typing import Any, List, Optional, Union
+from typing import Any, List, Optional, Pattern, Union
 
 # third-party
+import astunparse
 import jmespath
 
 # first-party
@@ -16,6 +18,39 @@ from tcex.utils.variables import Variables
 
 class Utils(AesOperations, DatetimeOperations, StringOperations, Variables):
     """TcEx Utilities Class"""
+
+    @staticmethod
+    def find_line_in_code(
+        needle: str,
+        code: str,
+        trigger_start: Optional[Pattern] = None,
+        trigger_stop: Optional[Pattern] = None,
+    ) -> str:
+        """Return matching line of code in a class definition.
+
+        Args:
+            needle: The string to search for.
+            code: The contents of the Python file to search.
+            trigger_start: The regex pattern to use to trigger the search.
+            trigger_stop: The regex pattern to use to stop the search.
+        """
+        magnet_on = not trigger_start
+        for line in astunparse.unparse(ast.parse(code)).split('\n'):
+            if line.lstrip()[:1] not in ("'", '"'):
+                # Find class before looking for needle
+                if trigger_start is not None and re.match(trigger_start, line):
+                    magnet_on = True
+                    continue
+
+                # find need now that class definition is found
+                if magnet_on is True and re.match(needle, line):
+                    line = line.strip()
+                    return line
+
+                # break if needle not found before next class definition
+                if trigger_stop is not None and re.match(trigger_stop, line) and magnet_on is True:
+                    break
+        return None
 
     @staticmethod
     def flatten_list(lst: List[Any]) -> List[Any]:

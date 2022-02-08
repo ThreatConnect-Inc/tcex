@@ -232,8 +232,7 @@
         "String",
         "StringArray",
         "TCEntity",
-        "TCEntityArray",
-        "TCEnhancedEntityArray"
+        "TCEntityArray"
       ],
       "required": true,
       "sequence": 17,
@@ -341,8 +340,7 @@
         "String",
         "StringArray",
         "TCEntity",
-        "TCEntityArray",
-        "TCEnhancedEntityArray"
+        "TCEntityArray"
       ],
       "required": true,
       "sequence": 24,

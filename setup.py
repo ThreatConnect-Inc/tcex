@@ -68,6 +68,7 @@ setup(
     include_package_data=True,
     install_requires=[
         'arrow',
+        'astunparse',
         'backports.cached-property; python_version < "3.8.0"',
         'colorama>=0.3.9',
         'future',
