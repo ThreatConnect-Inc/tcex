@@ -25,7 +25,14 @@ class Tql:
             try:
                 filters.append(f'''{keyword}({value._tql.as_str})''')
             except Exception:
-                if tql_filter.get('type') == TqlType.STRING:
+                if isinstance(value, List):
+                    if tql_filter.get('type') == TqlType.INTEGER:
+                        value = [str(int_) for int_ in value]
+                    elif tql_filter.get('type') == TqlType.STRING:
+                        value = [f'"{str(str_)}"' for str_ in value]
+                    value = ','.join(value)
+                    value = f'({value})'
+                elif tql_filter.get('type') == TqlType.STRING:
                     value = f'"{value}"'
                 filters.append(f'''{keyword} {tql_filter.get('operator').name} {value}''')
 

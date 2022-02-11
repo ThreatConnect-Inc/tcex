@@ -76,19 +76,7 @@ class ThreatIntelUtils:
         Returns:
             A list of ThreatConnect Group types.
         """
-        return [
-            'Adversary',
-            'Campaign',
-            'Document',
-            'Email',
-            'Event',
-            'Incident',
-            'Intrusion Set',
-            'Signature',
-            'Report',
-            'Threat',
-            'Task',
-        ]
+        return self.group_types_data.keys()
 
     @property
     def group_types_data(self) -> Dict[str, dict]:

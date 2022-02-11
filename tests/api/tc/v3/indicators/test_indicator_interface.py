@@ -1,6 +1,6 @@
 """Test the TcEx API Module."""
 # standard library
-from random import randint
+from random import randint, sample
 from typing import TYPE_CHECKING
 
 # first-party
@@ -170,6 +170,57 @@ class TestIndicators(TestV3):
 
         assert indicators_counts == indicator_count
         assert not indicator_ids, 'Not all indicators were returned.'
+
+    def test_indicator_in_operator(self, request: 'pytest.FixtureRequest'):
+        """Test Indicators Get Many"""
+        # [Pre-Requisite] - create case
+        indicator_count = 10
+        indicator_ids = []
+        indicator_addresses = []
+        indicator_tag = request.node.name
+        for _ in range(0, indicator_count):
+            # [Create Testing] define object data
+            indicator = self.v3_helper.create_indicator(
+                **{
+                    'active': True,
+                    'attribute': {'type': 'Description', 'value': indicator_tag},
+                    'confidence': randint(0, 100),
+                    'description': 'TcEx Testing',
+                    'rating': randint(1, 5),
+                    'security_labels': {'name': 'TLP:WHITE'},
+                    'source': None,
+                    # automatically set by create_indicator
+                    # 'tags': {'name': indicator_tag},
+                    'type': 'Address',
+                }
+            )
+            indicator_ids.append(indicator.model.id)
+            indicator_addresses.append(indicator.model.ip)
+
+        chosen_indicator_addresses = sample(indicator_addresses, 3)
+        indicators = self.v3.indicators()
+        indicators.filter.summary(TqlOperator.IN, chosen_indicator_addresses)
+        # capture indicator count before deleting the indicator
+        assert len(indicators) == 3
+
+        # [TQLOperator.IN with String Testing] asset that the objects expected are returned
+        for indicator in indicators:
+            assert indicator.model.ip in chosen_indicator_addresses
+            chosen_indicator_addresses.remove(indicator.model.ip)
+
+        assert not chosen_indicator_addresses, 'Not all indicators addresses were returned'
+
+        chosen_indicator_ids = sample(indicator_ids, 3)
+        indicators = self.v3.indicators()
+        indicators.filter.id(TqlOperator.IN, chosen_indicator_ids)
+        assert len(indicators) == 3
+
+        # [TQLOperator.IN with Int Testing] asset that the objects expected are returned
+        for indicator in indicators:
+            assert indicator.model.id in chosen_indicator_ids
+            chosen_indicator_ids.remove(indicator.model.id)
+
+        assert not chosen_indicator_ids, 'Not all indicators ids were returned'
 
     def test_indicator_address(self, request: 'pytest.FixtureRequest'):
         """Test Artifact get single attached to task by id"""
