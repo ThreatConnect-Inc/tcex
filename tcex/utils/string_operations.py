@@ -209,11 +209,21 @@ class StringOperations:
 
     @staticmethod
     def wrap_string(
-        line: str, wrap_chars: Optional[List[str]] = None, length: Optional[int] = 100
+        line: str,
+        wrap_chars: Optional[List[str]] = None,
+        length: Optional[int] = 100,
+        force_wrap=True,
     ) -> str:
         """Wrap a long string to a given length.
 
         Lines will only be broken on instances of strings from wrap_chars.
+
+        Params:
+            line - the string to break into lines
+            wrap_chars - list of strings line should be broken on
+            length - max length for any single line
+            force_wrap - if True, line will be broken even if no string from wrap_chars is
+                available
         """
         wrap_chars = wrap_chars or [' ']
 
@@ -225,6 +235,8 @@ class StringOperations:
             """Tokenize the input into strings and separators (from wrap_chars)."""
             if curr in wrap_chars:
                 return acc + [curr] + ['']
+            if len(acc[-1]) == length and force_wrap:
+                return acc + [curr]
             acc[-1] += curr
             return acc
 

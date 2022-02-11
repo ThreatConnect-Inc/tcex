@@ -7,7 +7,7 @@ class TestWrapString:
     """Test the TcEx Utils Module."""
 
     @staticmethod
-    def test_1():
+    def test_happy_path():
         """Test long string with single separator."""
         # flake8: noqa: E501; pylint: disable=line-too-long
         s = '# vv: Build|Difference|Duplicates|Fill|Intersection|Is In|Is Subset|Is Superset|Length|Pop|Reverse|Reverse Sort|Slice|Sort|Sort Lowercase|Symmetric Difference|Unique|Union'
@@ -25,14 +25,18 @@ class TestWrapString:
         assert answer == '\n'.join(correct)
 
     @staticmethod
-    def test_unwrappable():
+    def test_wraping():
         """Test long string that can't be wrapped."""
         # flake8: noqa: E501; pylint: disable=line-too-long
+
         s = '# vv: Build|Difference|Duplicates|Fill|Intersection|Is In|Is Subset|Is Superset|Length|Pop|Reverse|Reverse Sort|Slice|Sort|Sort Lowercase|Symmetric Difference|Unique|Union'
 
-        answer = Utils.wrap_string(s, (','))
-
+        answer = Utils.wrap_string(s, (','), force_wrap=False)
         assert answer == s
+
+        answer = Utils.wrap_string(s, (','), force_wrap=True)
+        expected = [str(s[:100]), str(s[100:])]
+        assert answer == '\n'.join(expected)
 
     @staticmethod
     def test_empty_input():
