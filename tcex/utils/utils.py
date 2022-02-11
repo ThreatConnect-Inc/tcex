@@ -2,7 +2,6 @@
 # standard library
 import ipaddress
 import re
-from functools import reduce
 from typing import Any, List, Optional, Union
 
 # third-party
@@ -133,40 +132,3 @@ class Utils(AesOperations, DatetimeOperations, StringOperations, Variables):
         if len(numbers) == 1:
             asn = f'ASN{numbers[0]}'
         return asn
-
-    @staticmethod
-    def wrap_string(
-        string: str, wrap_chars: Optional[List[str]] = None, length: Optional[int] = 100
-    ) -> str:
-        """Wrap a long string to a given length.
-
-        Lines will only be broken on instances of strings from wrap_chars.
-        """
-        wrap_chars = wrap_chars or [' ']
-
-        # if line is already shorter than max length, we're all good!
-        if len(string) < length:
-            return string
-
-        def _tokenize(acc, curr):
-            """Tokenize the input into strings and separators (from wrap_chars)."""
-            if curr in wrap_chars:
-                return acc + [curr] + ['']
-            acc[-1] += curr
-            return acc
-
-        tokens = reduce(_tokenize, string, [''])
-
-        def _chop(acc, curr):
-            """Build strings in acc such that no string is greater than length chars.
-
-            Breaks at chars in wrap_chars.
-            """
-            if len(acc[-1]) + len(curr) < length:
-                acc[-1] += curr
-                return acc
-            return acc + [curr]
-
-        lines = reduce(_chop, tokens, [''])
-
-        return '\n'.join(lines)
