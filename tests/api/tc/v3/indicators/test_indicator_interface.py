@@ -1,7 +1,6 @@
 """Test the TcEx API Module."""
 # standard library
-import random
-from random import randint
+from random import randint, sample
 from typing import TYPE_CHECKING
 
 # first-party
@@ -198,7 +197,7 @@ class TestIndicators(TestV3):
             indicator_ids.append(indicator.model.id)
             indicator_addresses.append(indicator.model.ip)
 
-        chosen_indicator_addresses = random.sample(indicator_addresses, 3)
+        chosen_indicator_addresses = sample(indicator_addresses, 3)
         indicators = self.v3.indicators()
         indicators.filter.summary(TqlOperator.IN, chosen_indicator_addresses)
         # capture indicator count before deleting the indicator
@@ -211,7 +210,7 @@ class TestIndicators(TestV3):
 
         assert not chosen_indicator_addresses, 'Not all indicators addresses were returned'
 
-        chosen_indicator_ids = random.sample(indicator_ids, 3)
+        chosen_indicator_ids = sample(indicator_ids, 3)
         indicators = self.v3.indicators()
         indicators.filter.id(TqlOperator.IN, chosen_indicator_ids)
         assert len(indicators) == 3
