@@ -93,6 +93,7 @@ class ObjectABC(ABC):
                 'unique_id': unique_id_data.get('value'),
             }
             yield obj
+        self.request = sublist.request
 
     def _request(
         self,
