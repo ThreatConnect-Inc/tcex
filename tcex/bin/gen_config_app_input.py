@@ -124,8 +124,7 @@ class GenConfigAppInput(BinABC):
         _code.append('')
         return _code
 
-    @staticmethod
-    def _code_app_inputs_data_comments(input_data: 'ParamsModel') -> str:
+    def _code_app_inputs_data_comments(self, input_data: 'ParamsModel') -> str:
         """Return comments for a single input."""
         # append comment for playbookDataTypes
         comments = []
@@ -137,13 +136,11 @@ class GenConfigAppInput(BinABC):
             valid_values_str = '|'.join(input_data.valid_values)
             comments.append(f'vv: {valid_values_str}')
 
-        return ''
-        # waiting on util method ...
-        # if comments:
-        #     comment = ', '.join(comments)
-        #     comment_wrapped = self.utils.wrap_string(comment, [' ', '|'], 80).split('\n')
-        #     return '\n'.join([f'{self.i1}# {c}' for c in comment_wrapped])
-        # return None
+        if comments:
+            comment = ', '.join(comments)
+            comment_wrapped = self.utils.wrap_string(comment, [' ', '|'], 80).split('\n')
+            return '\n'.join([f'{self.i1}# {c}' for c in comment_wrapped])
+        return None
 
     def _extract_type_from_definition(self, input_name: str, type_definition: str) -> str:
         """Extract the type from the type definition.
