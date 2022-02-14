@@ -6,6 +6,7 @@ from typing import Dict, List, Optional
 from urllib.parse import quote
 
 # third-party
+import jmespath
 from requests import Session
 
 # first-party
@@ -28,6 +29,33 @@ class ThreatIntelUtils:
 
         # properties
         self.log = logger
+        self._ti = None
+
+    @property
+    def resolvable_variables(self) -> Dict:
+        """Return a dict of all the supported resolvable variables.
+
+        Each entry in the dict has the variables corresponding url and jmspath for their values
+        if available. Some variables do not have this data since no api endpoint is supported.
+        """
+
+        return {
+            '${API_USERS}': {'url': '/v3/security/users', 'jmspath': 'data[*].userName'},
+            '${ARTIFACT_TYPES}': {'url': '/v3/artifactTypes', 'jmspath': 'data[*].name'},
+            '${ATTRIBUTES}': {'url': '/v3/attributeTypes', 'jmspath': 'data[*].name'},
+            '${GROUP_TYPES}': None,  # Special Case since there is no api endpoint
+            '${INDICATOR_TYPES}': {
+                'url': '/v2/types/indicatorTypes',
+                'jmspath': 'data.indicatorType[*].name',
+            },
+            '${OWNERS}': {'url': '/v3/security/owners', 'jmspath': 'data[*].name'},
+            '${USER_GROUPS}': {'url': '/v3/security/userGroups', 'jmspath': 'data[*].name'},
+            '${USERS}': {'url': '/v3/security/users', 'jmspath': 'data[*].userName'},
+            '${WORKFLOW_TEMPLATES}': {
+                'url': '/v3/workflowTemplates?tql=active = true',
+                'jmspath': 'data[*].name',
+            },
+        }
 
     def _association_types(self) -> None:
         """Retrieve Custom Indicator Associations types from the ThreatConnect API."""
@@ -167,6 +195,49 @@ class ThreatIntelUtils:
             (list): A list of ThreatConnect Indicator types.
         """
         return list(self.indicator_types_data.keys())
+
+    def resolve_variables(self, inputs: List[str]) -> List[str]:
+        """Resolve all of the provided inputs if appropriate.
+
+        Args:
+            inputs: A list of strings to resolve if string matches a entry in the
+            "resolved_variables" dict.
+        """
+        resolved_inputs = []
+        for input_ in inputs:
+            if not input_:
+                resolved_inputs.append(None)
+                continue
+            if input_.strip() not in self.resolvable_variables:
+                resolved_inputs.append(input_)
+                continue
+            input_ = input_.strip()
+            if input_ == '${GROUP_TYPES}':
+                for type_ in self.group_types:
+                    resolved_inputs.append(type_)
+                continue
+
+            resolvable_variable_details = self.resolvable_variables[input_]
+            r = self.session_tc.get(resolvable_variable_details.get('url'))
+
+            if not r.ok:
+                raise RuntimeError('Could not retrieve indicator types from ThreatConnect API.')
+
+            json_ = r.json()
+            # No TQL filter to filter out API users during REST call so have to do it manually here.
+            if input_ in ['${API_USERS}', '${USERS}']:
+                temp_data = []
+                for item in json_.get('data', []):
+                    if item.get('role') == 'Api User' and input_ == '${API_USERS}':
+                        temp_data.append(item)
+                    elif item.get('role') != 'Api User' and input_ == '${USERS}':
+                        temp_data.append(item)
+                json_['data'] = temp_data
+
+            for item in jmespath.search(resolvable_variable_details.get('jmspath'), json_):
+                resolved_inputs.append(str(item))
+
+        return resolved_inputs
 
     @cached_property
     def indicator_types_data(self) -> Dict[str, dict]:
