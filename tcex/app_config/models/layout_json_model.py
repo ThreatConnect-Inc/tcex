@@ -1,4 +1,5 @@
 """Layout JSON Model"""
+# pylint: disable=no-self-argument,no-self-use; noqa: N805
 # standard library
 from collections import OrderedDict
 from typing import Dict, List, Optional, Union
@@ -77,7 +78,7 @@ class LayoutJsonModel(BaseModel):
 
     def get_output(self, name: str) -> Union['NoneModel', 'OutputsModel']:
         """Return layout.json outputs in a flattened dict with name param as key."""
-        return self.outputs_.get(name) or NoneModel
+        return self.outputs_.get(name) or NoneModel()
 
     @property
     def outputs_(self) -> Dict[str, 'OutputsModel']:

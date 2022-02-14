@@ -5,7 +5,7 @@ import logging
 import os
 from collections import OrderedDict
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 # first-party
 from tcex.app_config.models import LayoutJsonModel
@@ -17,20 +17,25 @@ if TYPE_CHECKING:  # pragma: no cover
     from tcex.app_config.models.install_json_model import OutputVariablesModel, ParamsModel
 
 # get tcex logger
-logger = logging.getLogger('tcex')
+tcex_logger = logging.getLogger('tcex')
 
 
 class LayoutJson(metaclass=Singleton):
     """Provide a model for the layout.json config file."""
 
-    def __init__(self, filename=None, path=None):
+    def __init__(
+        self,
+        filename: Optional[str] = None,
+        path: Optional[str] = None,
+        logger: Optional[logging.Logger] = None,
+    ) -> None:
         """Initialize class properties."""
         filename = filename or 'layout.json'
         path = path or os.getcwd()
+        self.log = logger or tcex_logger
 
         # properties
         self.fqfn = Path(os.path.join(path, filename))
-        self.log = logger
 
     @cached_property
     def contents(self) -> dict:

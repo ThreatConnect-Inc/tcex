@@ -2,15 +2,19 @@
 # standard library
 import os
 import re
-from typing import List, Optional, Tuple
+from typing import TYPE_CHECKING, List, Optional, Tuple
 
 # first-party
 import tcex.input.field_types as FieldTypes  # noqa: N812
-from tcex.app_config.models.install_json_model import ParamsModel
 from tcex.app_config.permutation import Permutation
 from tcex.backports import cached_property
 from tcex.bin.bin_abc import BinABC
-from tcex.bin.gen_config_app_input_map import app_input_map
+from tcex.bin.gen_config_app_input_static import GenConfigAppInputStatic
+from tcex.pleb.none_model import NoneModel
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.app_config.models.install_json_model import ParamsModel
 
 
 class GenConfigAppInput(BinABC):
@@ -25,9 +29,10 @@ class GenConfigAppInput(BinABC):
         self.class_model_map = {}
         self.field_type_modules = set()
         self.filename = 'app_inputs.py'
-        self.typing_modules = {'Optional'}
+        self.input_static = GenConfigAppInputStatic()
+        self.typing_modules = set()
         self.pydantic_modules = {'BaseModel'}
-        self.permutations = Permutation()
+        self.permutations = Permutation(self.log)
         self.report_mismatch = []
 
     def _add_action_classes(self) -> None:
@@ -38,62 +43,24 @@ class GenConfigAppInput(BinABC):
             self._app_inputs_data[class_name] = {}
 
     def _add_input_to_action_class(
-        self, param_data: 'ParamsModel', tc_action: Optional[str] = None
+        self, applies_to_all: bool, param_data: 'ParamsModel', tc_action: Optional[str] = None
     ) -> None:
         """Add input data to Action class."""
-        tc_action_class = self._gen_tc_action_class_name(tc_action) or 'AppBaseModel'
+        tc_action_class = 'AppBaseModel'
+        if applies_to_all is False:
+            tc_action_class = self._gen_tc_action_class_name(tc_action)
         self.app_inputs_data[tc_action_class][param_data.name] = param_data
 
-    @property
-    def _code_app_inputs_class(self) -> list:
-        """Return app_inputs.py AppInput class."""
-        class_model_map = ''
-        for action, class_name in self.class_model_map.items():
-            class_model_map += f'\'{action}\': {class_name},'
-        class_model_map = f'{{{class_model_map}}}'
-        return [
-            '''class AppInputs:''',
-            f'''{self.i1}"""App Inputs"""''',
-            '',
-            f'''{self.i1}def __init__(self, inputs: 'BaseModel') -> None:''',
-            f'''{self.i2}"""Initialize class properties."""''',
-            f'''{self.i2}self.inputs = inputs''',
-            '',
-            f'''{self.i1}def get_model(self, tc_action: Optional[str] = None) -> 'BaseModel':''',
-            f'''{self.i2}"""Return the model based on the current action."""''',
-            f'''{self.i2}tc_action = tc_action or self.inputs.model_unresolved.tc_action''',
-            f'''{self.i2}action_model_map = {class_model_map}''',
-            f'''{self.i2}return action_model_map.get(tc_action)''',
-            '',
-            f'''{self.i1}def update_inputs(self) -> None:''',
-            f'''{self.i2}"""Add custom App models to inputs.''',
-            '',
-            f'''{self.i2}Input will be validate when the model is added an any exceptions will''',
-            f'''{self.i2}cause the App to exit with a status code of 1.''',
-            f'''{self.i2}"""''',
-            f'''{self.i2}self.inputs.add_model(self.get_model())''',
-            '',
-            '',
-        ]
+    def _add_typing_import_module(self, type_: str) -> None:
+        """Add the appropriate import module for typing."""
+        if 'List[' in type_:
+            self.typing_modules.add('List')
 
-    @property
-    def _code_app_inputs_prefix(self) -> list:
-        """Return app_inputs.py prefix data."""
-        field_types_modules = ', '.join(sorted(list(self.field_type_modules)))
-        pydantic_modules = ', '.join(sorted(list(self.pydantic_modules)))
-        typing_modules = ', '.join(sorted(list(self.typing_modules)))
-        return [
-            '"""App Inputs"""',
-            '# pylint: disable=no-self-argument, no-self-use',
-            '# standard library',
-            f'from typing import {typing_modules}',
-            '',
-            '# third-party',
-            f'from pydantic import {pydantic_modules}',
-            f'from tcex.input.field_types import {field_types_modules}',
-            '',
-            '',
-        ]
+        if 'Optional[' in type_:
+            self.typing_modules.add('Optional')
+
+        if 'Union[' in type_:
+            self.typing_modules.add('Union')
 
     @property
     def _code_app_inputs_data(self) -> None:
@@ -113,12 +80,17 @@ class GenConfigAppInput(BinABC):
             _code.extend(
                 [
                     f'class {class_name}({base_class}):',
-                    f'{class_comment}' '',
+                    f'{class_comment}',
+                    '',
                 ]
             )
             _always_array = []
             _entity_input = []
             for input_name, input_data in sorted(class_inputs.items()):
+                # skip special inputs
+                if input_name in ['tc_log_level']:
+                    continue
+
                 # add comment
                 _comment = self._code_app_inputs_data_comments(input_data)
                 if _comment is not None:
@@ -152,7 +124,8 @@ class GenConfigAppInput(BinABC):
         _code.append('')
         return _code
 
-    def _code_app_inputs_data_comments(self, input_data: 'ParamsModel') -> str:
+    @staticmethod
+    def _code_app_inputs_data_comments(input_data: 'ParamsModel') -> str:
         """Return comments for a single input."""
         # append comment for playbookDataTypes
         comments = []
@@ -164,23 +137,13 @@ class GenConfigAppInput(BinABC):
             valid_values_str = '|'.join(input_data.valid_values)
             comments.append(f'vv: {valid_values_str}')
 
-        if comments:
-            comment = ', '.join(comments)
-            return f'{self.i1}# {comment}'
-        return None
-
-    def _extract_tc_action_clause(self, display_clause: Optional[str]) -> Optional[str]:
-        """Extract the tc_action part of the display clause."""
-        if display_clause is not None:
-            # action_clause_extract_pattern = r'''tc_action\sin\s\('.*'\)'''
-            action_clause_extract_pattern = r'(tc_action\sin\s\([^\)]*\))'
-            _tc_action_clause = re.search(
-                action_clause_extract_pattern, display_clause, re.IGNORECASE
-            )
-            if _tc_action_clause is not None:
-                self.log.debug(f'action=extract-action-clause, display-clause={display_clause}')
-                return _tc_action_clause.group(1)
-        return None
+        return ''
+        # waiting on util method ...
+        # if comments:
+        #     comment = ', '.join(comments)
+        #     comment_wrapped = self.utils.wrap_string(comment, [' ', '|'], 80).split('\n')
+        #     return '\n'.join([f'{self.i1}# {c}' for c in comment_wrapped])
+        # return None
 
     def _extract_type_from_definition(self, input_name: str, type_definition: str) -> str:
         """Extract the type from the type definition.
@@ -216,11 +179,6 @@ class GenConfigAppInput(BinABC):
 
     def _extract_type_from_method(self, type_data: str) -> str:
         """Extract type data from method (e.g. binary(min_length=2) -> binary)."""
-        # type_pattern = r'(\w+)(?:.*)?'
-        # extract_type = re.search(type_pattern, type_data)
-        # if extract_type is not None:
-        #     return extract_type.group(1)
-        # return type_data
         remove_args_pattern = r'\([^\)]*\)'
         type_data = re.sub(remove_args_pattern, '', type_data)
         self.log.debug(f'action=remove-args-pattern, types-data={type_data}')
@@ -238,20 +196,21 @@ class GenConfigAppInput(BinABC):
 
     def _extract_type_from_union(self, type_data: str) -> str:
         """Extract type data from Union[]."""
-        union_extract_pattern = r'Union\[\(?(.*)\)\]'
+        union_extract_pattern = r'Union\[(\((.+)\)|.+)\]'
         extracted_data = re.search(union_extract_pattern, type_data)
         if extracted_data is not None:
-            type_data = extracted_data.group(1)
+            # return the last matched group that is not None
+            type_data = [g for g in extracted_data.groups() if g is not None][-1]
             self.log.debug(f'action=extract-type-from-union, type-data={type_data}')
-            return extracted_data.group(1)
+            return type_data
         return type_data
 
     def _generate_app_inputs_to_action(self) -> None:
         """Generate App Input dict from install.json and layout.json."""
         if not self.lj.has_layout:
             # process Apps WITHOUT a layout.json file
-            for ij_data in self.ij.model.params_dict.values:
-                self._add_input_to_action_class(ij_data)
+            for ij_data in self.ij.model.params_dict.values():
+                self._add_input_to_action_class(True, ij_data)
         else:
             # TODO: handle Service Apps
 
@@ -261,25 +220,16 @@ class GenConfigAppInput(BinABC):
                     # AdvancedRequestModel is included in tcex
                     continue
 
-                for ij_data in self._params_data:
-                    display = self._extract_tc_action_clause(
-                        self.lj.model.get_param(ij_data.name).display
-                    )
-                    self.log.debug(f'input-name={ij_data.name}, display={display}')
+                # for applies_to_all, ij_data in self.permutations.inputs_by_action(tc_action):
+                for input_data in self.permutations.inputs_by_action(tc_action):
+                    applies_to_all = input_data.get('applies_to_all')
+                    ij_data = input_data.get('input')
+                    self._add_input_to_action_class(applies_to_all, ij_data, tc_action)
 
-                    if display is None or ij_data.hidden is True:
-                        # when there is no display clause or the input is hidden,
-                        # then the input gets added to the AppBaseModel
-                        self._add_input_to_action_class(ij_data)
-                    elif ij_data.service_config:
-                        # inputs that are serviceConfig are not applicable for profiles
-                        continue
-                    elif self.permutations.validate_input_variable(
-                        ij_data.name, {'tc_action': tc_action}, display
-                    ):
-                        # each input will be checked for permutations
-                        # if the App has layout and not hidden
-                        self._add_input_to_action_class(ij_data, tc_action)
+                    self.log.debug(
+                        f'''action=inputs-to-action, input-name={ij_data.name}, '''
+                        f'''applies-to-all={applies_to_all}'''
+                    )
 
     @staticmethod
     def _gen_tc_action_class_name(tc_action: str) -> str:
@@ -299,33 +249,38 @@ class GenConfigAppInput(BinABC):
         if input_data.encrypt is True:
             lookup_key = 'Encrypt'
 
+        # lookup input name in standards map to get pre-defined type.
+        standard_name_type = self._standard_field_to_type_map(input_data.name)
+
         # get the type value and field type
-        if input_data.type == 'Boolean':
+        if standard_name_type is not None:
+            type_ = standard_name_type.get('type')
+            field_types.append(standard_name_type.get('field_type'))
+        elif input_data.type == 'Boolean':
             type_ = 'bool'
         elif (
             input_data.encrypt is False
             and input_data.type == 'String'
-            and input_data.playbook_data_type is not None
+            and input_data.playbook_data_type not in [[], None]
         ):
             type_, field_types = self._gen_type_from_playbook_data_type(
                 required_key, input_data.playbook_data_type
             )
         else:
             try:
-                type_ = app_input_map[lookup_key][required_key]['type']
-                field_types = [app_input_map[lookup_key][required_key]['field_type']]
-            except AttributeError as ex:
-                self.print_failure(f'Failed looking up type data for {lookup_key} ({ex}).')
+                type_ = self.input_static.type_map[lookup_key][required_key]['type']
+                field_types = [self.input_static.type_map[lookup_key][required_key]['field_type']]
+            except (AttributeError, KeyError) as ex:
+                self.print_failure(f'Failed looking up type data for {input_data.type} ({ex}).')
 
         # wrap type data in Optional for non-required inputs
         if input_data.required is False and input_data.type not in ('Boolean'):
-            self.typing_modules.add('Optional')
             type_ = f'Optional[{type_}]'
 
         # append default if one exists
-        if input_data.default is not None and input_data.type in ('Choice', 'String'):
-            type_ += f' = \'{input_data.default}\''
-        elif input_data.type == 'Boolean':
+        # if input_data.default is not None and input_data.type in ('Choice', 'String'):
+        #     type_ += f' = \'{input_data.default}\''
+        if input_data.type == 'Boolean':
             type_ += ' = False'
 
         # get the current value from the app_inputs.py file
@@ -349,6 +304,9 @@ class GenConfigAppInput(BinABC):
                 if hasattr(FieldTypes, field_type):
                     self.field_type_modules.add(field_type)
 
+        # add import data
+        self._add_typing_import_module(type_)
+
         return type_
 
     def _gen_type_from_playbook_data_type(
@@ -360,40 +318,24 @@ class GenConfigAppInput(BinABC):
             self.typing_modules.add('Any')
 
         if len(playbook_data_types) == 1:
-            _field_types = [app_input_map[playbook_data_types[0]][required_key]['field_type']]
-            _types = app_input_map[playbook_data_types[0]][required_key]['type']
+            _field_types = [
+                self.input_static.type_map[playbook_data_types[0]][required_key]['field_type']
+            ]
+            _types = self.input_static.type_map[playbook_data_types[0]][required_key]['type']
         else:
-            # more than one type, so add Union
-            self.typing_modules.add('Union')
-
             _types = []
             _field_types = []
             for lookup_key in playbook_data_types:
-                _field_types.append(app_input_map[lookup_key][required_key]['field_type'])
-                _types.append(app_input_map[lookup_key][required_key]['type'])
+                _field_types.append(
+                    self.input_static.type_map[lookup_key][required_key]['field_type']
+                )
+                _types.append(self.input_static.type_map[lookup_key][required_key]['type'])
             _types = f'''Union[{', '.join(_types)}]'''
 
         return _types, _field_types
 
     def _get_current_type(self, class_name: str, input_name: str) -> str:
         """Return the type from the current app_input.py file if found."""
-        # Testing
-        #
-        # instead of parsing the code it would interesting if the type was able to be
-        # pulled from the Pydantic model. below is an example of how this may be possible.
-        # however, it does not seem to be possible to get the original typing string.
-        # if os.path.isfile('app_inputs.py'):
-        #     import importlib.util
-
-        #     spec = importlib.util.spec_from_file_location(
-        #         'app_inputs', os.path.join('app_inputs.py')
-        #     )
-        #     foo = importlib.util.module_from_spec(spec)
-        #     spec.loader.exec_module(foo)
-        #     # print('dir', dir(foo.Action1Model.__fields__['string_required']))
-        #     print('_type', foo.Action1Model.__fields__['string_required'].type_)
-        #     print('_type_display', foo.Action1Model.__fields__['string_required']._type_display())
-
         # Try to capture the value from the specific class first. If not
         # found, search the entire app_inputs.py file.
         type_defintion = (
@@ -460,25 +402,30 @@ class GenConfigAppInput(BinABC):
         self.log.debug(f'current-field-types={types}, current-type-data={current_type_data}')
         return types
 
-    @property
-    def _params_data(self) -> Tuple[str, 'ParamsModel']:
-        """Return param data."""
-        # using inputs from layout.json since they are required to be in order
-        # (display field can only use inputs previously defined)
-        for input_name in self.lj.model.params:
-            # get data from install.json based on name
-            ij_data = self.ij.model.get_param(input_name)
-            yield ij_data
-
-        # hidden fields will not be in layout.json so they need to be include manually
-        for input_name, ij_data in self.ij.model.filter_params(hidden=True).items():
-            yield ij_data
+    @staticmethod
+    def _standard_field_to_type_map(input_name: str) -> str:
+        """Return the type for "standard" input fields."""
+        _field_name_to_type_map = {
+            'confidence_rating': {
+                'type': 'integer(ge=0, le=100)',
+                'field_type': 'integer',
+            },
+            'last_run': {
+                'type': 'DateTime',
+                'field_type': 'DateTime',
+            },
+            'threat_rating': {
+                'type': 'integer(ge=0, le=5)',
+                'field_type': 'integer',
+            },
+        }
+        return _field_name_to_type_map.get(input_name)
 
     @property
     def _tc_actions(self):
         """Return tc_action input valid values."""
         _tc_action = self.ij.model.get_param('tc_action')
-        if isinstance(_tc_action, ParamsModel):
+        if not isinstance(_tc_action, NoneModel):
             return _tc_action.valid_values
         return []
 
@@ -500,7 +447,6 @@ class GenConfigAppInput(BinABC):
         single_type = False
         for _type in input_data.playbook_data_type:
             if _type in self.utils.variable_playbook_array_types:
-                self.typing_modules.add('List')
                 array_type = True
             elif _type in self.utils.variable_playbook_single_types:
                 single_type = True
@@ -556,7 +502,14 @@ class GenConfigAppInput(BinABC):
         _code_inputs = self._code_app_inputs_data
 
         # create the app_inputs.py code
-        code = self._code_app_inputs_prefix
+        code = self.input_static.template_app_inputs_prefix(
+            self.field_type_modules, self.pydantic_modules, self.typing_modules
+        )
         code.extend(_code_inputs)
-        code.extend(self._code_app_inputs_class)
+        if not isinstance(self.ij.model.get_param('tc_action'), NoneModel):
+            # the App support tc_action and should use the tc_action input class
+            self.typing_modules.add('Optional')
+            code.extend(self.input_static.template_app_inputs_class_tc_action(self.class_model_map))
+        else:
+            code.extend(self.input_static.template_app_inputs_class)
         return code

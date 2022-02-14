@@ -78,6 +78,7 @@ setup(
         'pyaes',
         'pydantic',
         'python-dateutil>=2.6.1',
+        'pyyaml',
         'redis>=2.10.6',
         'requests',
         'semantic_version',

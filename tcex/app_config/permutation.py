@@ -5,9 +5,10 @@ import json
 import logging
 import os
 import random
+import re
 import sys
 from pathlib import Path
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 try:
     # standard library
@@ -23,13 +24,16 @@ from tcex.app_config.models.layout_json_model import OutputsModel, ParametersMod
 from tcex.backports import cached_property
 from tcex.pleb.none_model import NoneModel
 
+# get tcex logger
+tcex_logger = logging.getLogger('tcex')
+
 
 class Permutation:
     """Permutations Module"""
 
     def __init__(self, logger: Optional[logging.Logger] = None) -> None:
         """Initialize Class properties"""
-        self.log = logger or logging.getLogger('permutations')
+        self.log = logger or tcex_logger
 
         # properties
         self._input_names = None
@@ -37,8 +41,8 @@ class Permutation:
         self._input_permutations = None
         self._output_permutations = None
         self.fqfn = Path(os.getcwd(), 'permutations.json')
-        self.ij = InstallJson()
-        self.lj = LayoutJson()
+        self.ij = InstallJson(logger=self.log)
+        self.lj = LayoutJson(logger=self.log)
 
     def _gen_permutations(self, index: Optional[int] = 0, params: Optional[list] = None) -> None:
         """Iterate recursively over layout.json parameter names to build permutations.
@@ -115,6 +119,20 @@ class Permutation:
                 outputs.append(o)
             self._output_permutations.append(outputs)
 
+    @property
+    def _params_data(self) -> Tuple[str, 'ParamsModel']:
+        """Return all defined params from layout.json/install.json, including hidden params."""
+        # using inputs from layout.json since they are required to be in order
+        # (display field can only use inputs previously defined)
+        for input_name in self.lj.model.params:
+            # get data from install.json based on name
+            ij_data = self.ij.model.get_param(input_name)
+            yield ij_data
+
+        # hidden fields will not be in layout.json so they need to be include manually
+        for input_name, ij_data in self.ij.model.filter_params(hidden=True).items():
+            yield ij_data
+
     @cached_property
     def db_conn(self) -> sqlite3.Connection:
         """Create a temporary in memory DB and return the connection."""
@@ -133,6 +151,7 @@ class Permutation:
             columns: The DB column names.
         """
         columns = ', '.join([f'''"{c.strip('"').strip("'")}" text''' for c in set(columns)])
+        self.log.debug(f'action=db-create-table, table-name={table_name}, columns={columns}')
         sql = f'CREATE TABLE IF NOT EXISTS {table_name} ({columns});'
         try:
             cr = self.db_conn.cursor()
@@ -163,15 +182,17 @@ class Permutation:
             table_name: The DB table name.
             columns: The DB column names.
         """
+        # sort and unique columns
+        columns = sorted(list(set(columns)))
         bindings = ', '.join(['?'] * len(columns))
-        columns_string = ', '.join([f'''"{c.strip('"').strip("'")}"''' for c in set(columns)])
+        columns_string = ', '.join([f'''"{c.strip('"').strip("'")}"''' for c in columns])
         values = [None] * len(columns)
         try:
             sql = f'''INSERT INTO {table_name} ({columns_string}) VALUES ({bindings})'''
             cur = self.db_conn.cursor()
             cur.execute(sql, values)
-        except sqlite3.OperationalError as e:  # pragma: no cover
-            self.handle_error(f'SQL insert failed - SQL: "{sql}", Error: "{e}"')
+        except sqlite3.OperationalError as ex:  # pragma: no cover
+            self.handle_error(f'SQL insert failed - SQL: "{sql}", Error: "{ex}"')
 
     def db_update_record(self, table_name: str, column: str, value: str) -> None:
         """Update a single column in the row-column create in db_insert_record.
@@ -201,14 +222,26 @@ class Permutation:
             except sqlite3.OperationalError as e:  # pragma: no cover
                 self.handle_error(f'SQL update failed - SQL: "{sql}", Error: "{e}"')
 
-    @staticmethod
-    def handle_error(err: str, halt: Optional[bool] = True) -> None:  # pragma: no cover
+    def extract_tc_action_clause(self, display_clause: Optional[str]) -> Optional[str]:
+        """Extract the tc_action part of the display clause."""
+        if display_clause is not None:
+            action_clause_extract_pattern = r'(tc_action\sin\s\([^\)]*\))'
+            _tc_action_clause = re.search(
+                action_clause_extract_pattern, display_clause, re.IGNORECASE
+            )
+            if _tc_action_clause is not None:
+                self.log.debug(f'action=extract-action-clause, display-clause={display_clause}')
+                return _tc_action_clause.group(1)
+        return None
+
+    def handle_error(self, err: str, halt: Optional[bool] = True) -> None:  # pragma: no cover
         """Print errors message and optionally exit.
 
         Args:
             err: The error message to print.
             halt: If True, the script will exit.
         """
+        self.log.error(err)
         print(err)
         if halt:
             sys.exit(1)
@@ -229,6 +262,31 @@ class Permutation:
 
             # drop database
             self.db_drop_table(self._input_table)
+
+    def inputs_by_action(self, action: str, include_hidden: Optional[bool] = True) -> List[str]:
+        """Return all inputs for the provided action."""
+        for ij_data in self._params_data:
+            # get a display clause with just the tc_action condition
+            display = self.extract_tc_action_clause(self.lj.model.get_param(ij_data.name).display)
+            self.log.debug(f'action=input-by-action, input-name={ij_data.name}, display={display}')
+
+            if ij_data.service_config:
+                # inputs that are serviceConfig are not applicable for profiles
+                continue
+
+            if display is None:
+                # when there is no display clause or the input is hidden,
+                # then the input gets added to the AppBaseModel
+                applies_to_all = True
+            elif ij_data.hidden is True and include_hidden is True:
+                applies_to_all = True
+            elif self.validate_input_variable(ij_data.name, {'tc_action': action}, display):
+                # each input will be checked for permutations if the App has layout and not hidden
+                applies_to_all = False
+            else:
+                continue
+
+            yield {'applies_to_all': applies_to_all, 'input': ij_data}
 
     def input_dict(self, permutation_id: int) -> dict:
         """Return all input permutation names for provided permutation id.
@@ -285,6 +343,10 @@ class Permutation:
             self.init_permutations()
         return self._output_permutations
 
+    def outputs_by_action(self, action: str) -> List[str]:
+        """Return all inputs for the provided action."""
+        yield from self.outputs_by_inputs({'tc_action': action})
+
     def outputs_by_inputs(self, inputs: Dict[str, str]) -> List[List[dict]]:
         """Return all output based on provided inputs
 
@@ -301,27 +363,21 @@ class Permutation:
         for name, val in inputs.items():
             self.db_update_record(table, name, val)
 
-        outputs = []
+        # outputs = []
         # iterate of InstallJsonModel -> PlaybookModel -> OutputVariablesModel
         for o in self.ij.model.playbook.output_variables:
-            # if self.lj.model.get_output(o.name) is None:
             lj_output = self.lj.model.get_output(o.name)
             if isinstance(lj_output, NoneModel):  # pragma: no cover
                 # an output not listed in layout.json should always be shown
-                valid = True
-            else:
+                yield o
+            elif self.validate_layout_display(table, lj_output.display):
                 # all other outputs must be validated
-                valid = self.validate_layout_display(table, lj_output.display)
-
-            if valid:
-                # valid outputs get added to array
-                # TODO: [med] validate this needs to be a dict instead of model
-                outputs.append(o.dict())
+                yield o
 
         # drop database
         self.db_drop_table(table)
 
-        return outputs
+        # return outputs
 
     def permutations(self) -> None:
         """Process layout.json names/display to get all permutations of args."""
