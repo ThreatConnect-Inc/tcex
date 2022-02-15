@@ -1,4 +1,5 @@
 ajfmuyodhscwegea
+astunparse
 autofix
 blpop
 cacert
@@ -8,9 +9,11 @@ chdir
 coveragerc
 ctypes
 curlify
+curr
 datamodels
 dbfilename
 ddiff
+debugpy
 decrypter
 deepdiff
 dendrol
@@ -63,6 +66,7 @@ rargs
 reqs
 rfile
 rpush
+ruamel
 safetag
 safeurl
 secho
@@ -97,6 +101,7 @@ tinydb
 typer
 tzlocal
 unconfigure
+unparse
 unpickle
 unprocess
 unregister

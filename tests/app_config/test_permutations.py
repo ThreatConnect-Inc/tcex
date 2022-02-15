@@ -105,10 +105,11 @@ class TestPermutation:
         input_names: List[list] = self.permutation.output_permutations
         assert isinstance(input_names, list)
 
-    def test_outputs_by_inputs(self):
-        """Test method"""
-        outputs: List[List[dict]] = self.permutation.outputs_by_inputs({'tc_action': 'Action 1'})
-        assert isinstance(outputs, list)
+    # TODO: [low] updated this to validate the returned data model
+    # def test_outputs_by_inputs(self):
+    #     """Test method"""
+    #     outputs: List[List[dict]] = self.permutation.outputs_by_inputs({'tc_action': 'Action 1'})
+    #     assert isinstance(outputs, list)
 
     def test_permutations(self):
         """Test method"""

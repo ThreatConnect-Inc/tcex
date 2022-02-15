@@ -9,7 +9,6 @@ from typing import Optional, Union
 import requests
 
 # first-party
-from tcex.app_config.install_json import InstallJson
 from tcex.input.input import Input
 from tcex.playbook import Playbook
 
@@ -24,8 +23,8 @@ class AdvancedRequest:
         inputs: The instance of App inputs.
         playbooks: An instance Playbooks.
         session: An instance of Requests Session object.
+        output_prefix: The output prefix.
         timeout: The timeout value for the request.
-        output_prefix: The prefix for any output variables created with advanced requests.
     """
 
     def __init__(
@@ -33,14 +32,15 @@ class AdvancedRequest:
         inputs: Input,
         playbook: Playbook,
         session: requests.Session,
+        output_prefix: str,
         timeout: Optional[int] = 600,
-        output_prefix: Optional[str] = None,
     ) -> None:
         """Initialize class properties."""
         self.inputs = inputs
-        self.output_prefix: str = output_prefix or InstallJson().model.playbook.output_prefix
+        self.output_prefix: str = output_prefix
         self.playbook = playbook
         self.session = session
+        self.timeout: int = timeout or 600
 
         # properties
         self.allow_redirects: bool = True
@@ -50,7 +50,6 @@ class AdvancedRequest:
         self.max_mb: int = 500
         self.mt: callable = MimeTypes()
         self.params: dict = {}
-        self.timeout: int = timeout or 600
 
     def configure_body(self) -> None:
         """Configure Body"""

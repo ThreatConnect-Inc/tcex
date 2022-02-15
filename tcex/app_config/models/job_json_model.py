@@ -1,4 +1,5 @@
 """TcEx JSON Model"""
+# pylint: disable=no-self-argument,no-self-use; noqa: N805
 # standard library
 from typing import List, Optional, Union
 
@@ -16,7 +17,7 @@ def snake_to_camel(snake_string: str) -> str:
 
 
 class ParamsModel(BaseModel):
-    """Model for install_json.params"""
+    """Model for jj.params"""
 
     default: Optional[Union[bool, str]]
     name: str
@@ -29,8 +30,8 @@ class ParamsModel(BaseModel):
         validate_assignment = True
 
 
-class JobJsonModel(BaseModel):
-    """TcEx JSON Model"""
+class JobJsonCommonModel(BaseModel):
+    """Model for common field in job.json."""
 
     allow_on_demand: bool = False
     enable_notifications: bool = False
@@ -41,15 +42,27 @@ class JobJsonModel(BaseModel):
     notify_on_failure: bool = False
     notify_on_partial_failure: bool = False
     params: List[ParamsModel]
-    program_name: str
-    program_version: Version
     publish_auth: bool = False
     schedule_cron_format: str
     schedule_start_date: int
     schedule_type: str
 
-    @validator('program_version', pre=True)
-    def version(cls, v):  # pylint: disable=E0213,R0201
+    class Config:
+        """DataModel Config"""
+
+        alias_generator = snake_to_camel
+        arbitrary_types_allowed = True
+        validate_assignment = True
+
+
+class JobJsonModel(JobJsonCommonModel):
+    """Model for field in job.json."""
+
+    program_name: str
+    program_version: str
+
+    @validator('program_version')
+    def version(cls, v):
         """Return a version object for "version" fields."""
         if v is not None:
             return Version(v)
@@ -60,5 +73,5 @@ class JobJsonModel(BaseModel):
 
         alias_generator = snake_to_camel
         arbitrary_types_allowed = True
-        json_encoders = {Version: lambda v: str(v)}  # pylint: disable=W0108
+        json_encoders = {Version: lambda v: str(v)}  # pylint: disable=unnecessary-lambda
         validate_assignment = True

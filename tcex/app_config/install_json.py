@@ -17,8 +17,8 @@ if TYPE_CHECKING:
     # first-party
     from tcex.app_config.models.install_json_model import ParamsModel
 
-
-__all__ = ['InstallJson']
+# get tcex logger
+tcex_logger = logging.getLogger('tcex')
 
 
 class InstallJson:
@@ -37,7 +37,7 @@ class InstallJson:
         """Initialize class properties."""
         filename = filename or 'install.json'
         path = path or os.getcwd()
-        self.log = logger or logging.getLogger('install_json')
+        self.log = logger or tcex_logger
 
         # properties
         self.fqfn = Path(os.path.join(path, filename))
