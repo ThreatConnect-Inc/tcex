@@ -10,7 +10,7 @@
 ```bash
 find tcex/api/tc/v3 -type f | xargs wc -l
 ```
-~66,000 Lines of Python code
+~66,000 Lines of Python codes
 ~47,000 Lines of test cases
 
 ## Test a specific module
