@@ -352,16 +352,16 @@ class RetryModel(BaseModel):
             'Optional property that specifies whether the Playbook App can retry its ' 'execution.'
         ),
     )
-    default_delay_minutes: Optional[int] = Field(
-        2,
+    default_delay_minutes: int = Field(
+        ...,
         description=(
             'Optional property that specifies the number of minutes between each new '
             'retry in case of failure. This property assumes that the allowed property '
             'is set to true to allow the App to retry.'
         ),
     )
-    default_max_retries: Optional[int] = Field(
-        5,
+    default_max_retries: int = Field(
+        ...,
         description=(
             'Optional property that specifies the maximum number of times the Playbook '
             'App can retry in case of failure. This property assumes that the allowed '
@@ -473,7 +473,7 @@ class InstallJsonCommonModel(BaseModel):
         ),
     )
     allow_run_as_user: Optional[bool] = Field(
-        True,
+        False,
         description='Controls whether a Playbook App supports run-as-users.',
     )
     api_user_token_param: Optional[bool] = Field(
@@ -650,7 +650,7 @@ class InstallJsonModel(InstallJsonCommonModel, InstallJsonOrganizationModel):
     """Install JSON Model"""
 
     commit_hash: Optional[str] = Field(
-        None,
+        default_factory=get_commit_hash,
         description='The git commit hash from when the App was built.',
     )
     docker_image: Optional[str] = Field(

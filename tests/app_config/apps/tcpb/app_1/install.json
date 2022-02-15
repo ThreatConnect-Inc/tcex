@@ -352,7 +352,6 @@
     }
   ],
   "playbook": {
-    "outputPrefix": "app_1",
     "outputVariables": [
       {
         "name": "action_1.binary.output1",
