@@ -95,6 +95,19 @@ class TestInputsFieldTypes(InputTest):
             #
             # required, normal input
             ('choice_1', 'choice_1', False, False, None, False),
+            #
+            # Test magic variable expansion
+            #
+            # pass in artifact type
+            ('password', 'Password', False, False, None, False),
+            # pass in attribute
+            ('description', 'Description', False, False, None, False),
+            # pass in group type
+            ('Report', 'Report', False, False, None, False),
+            # pass in indicator type
+            ('Host', 'Host', False, False, None, False),
+            # pass in Owner
+            ('TCI', 'TCI', False, False, None, False),
             # optional, null input
             (None, None, True, False, None, False),
             # pass transformations dict, valid value should be transformed

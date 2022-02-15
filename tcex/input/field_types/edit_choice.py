@@ -3,8 +3,10 @@
 from typing import TYPE_CHECKING, Callable, Dict, Optional
 
 # first-party
+from tcex.api.tc.utils.threat_intel_utils import ThreatIntelUtils
 from tcex.app_config.install_json import InstallJson
 from tcex.input.field_types.exception import InvalidEmptyValue, InvalidInput, InvalidType
+from tcex.pleb.registry import registry
 
 if TYPE_CHECKING:  # pragma: no cover
     # third-party
@@ -53,7 +55,10 @@ class EditChoice(str):
             raise InvalidEmptyValue(field.name)
 
         ij = InstallJson()
-        _valid_values = ij.model.get_param(field.name).valid_values or []
+        ti_utils = ThreatIntelUtils(registry.session_tc)
+        _valid_values = ti_utils.resolve_variables(
+            ij.model.get_param(field.name).valid_values or []
+        )
         for vv in _valid_values:
             if vv.lower() == value.lower():
                 value = vv
