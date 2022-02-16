@@ -204,6 +204,10 @@ class Validate(BinABC):
             # can't proceed if install.json can't be read
             return
 
+        if not self.ij.model.feeds:
+            # if no jobs, skip!
+            return
+
         # use developer defined app version (deprecated) or package_version from InstallJson model
         app_version = self.tj.model.package.app_version or self.ij.model.package_version
         program_name = (f'''{self.tj.model.package.app_name}_{app_version}''').replace('_', ' ')
@@ -287,6 +291,7 @@ class Validate(BinABC):
         """
         # do not track hidden or serviceConfig inputs as they should not be in layouts.json
         ij_input_names = list(self.ij.model.filter_params(service_config=False, hidden=False))
+        # pylint: disable=no-member
         ij_output_names = [o.name for o in self.ij.model.playbook.output_variables]
 
         # Check for duplicate inputs

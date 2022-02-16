@@ -4,7 +4,7 @@ import json
 import os
 import threading
 import traceback
-from typing import Callable, Optional, Union
+from typing import Any, Callable, Optional, Union
 
 # first-party
 from tcex.pleb.registry import registry
@@ -210,6 +210,25 @@ class CommonServiceTrigger(CommonService):
                 )
             except Exception:
                 self.log.trace(traceback.format_exc())
+
+    def update_trigger_value(self, trigger_id: int, input_name: str, new_value: Any) -> None:
+        """Send UpdateTriggerValue command.
+
+        Args:
+            trigger_id: the ID of the trigger to update.
+            input_name: the name of the input to update.
+            new_value: the new value for the input.
+        """
+
+        msg = {
+            'command': 'UpdateTriggerValue',
+            'triggerId': trigger_id,
+            'inputName': input_name,
+            'inputValue': new_value,
+        }
+
+        self.log.info(f'feature=service, event=update-trigger-value, msg={msg}')
+        self.message_broker.publish(json.dumps(msg), self.args.tc_svc_client_topic)
 
     def fire_event_publish(
         self, trigger_id: int, session_id: str, request_key: Optional[str] = None
