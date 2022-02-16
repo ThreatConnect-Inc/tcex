@@ -81,7 +81,7 @@ class GenConfigAppSpecYml(BinABC):
             _output_data_temp = {}
             if self.lj.has_layout:
                 # layout based Apps could will have a display clause for each output
-                for _, o in self.ij.model.playbook_outputs.items():
+                for o in self.ij.model.playbook_outputs.values():
                     o = self.lj.get_output(o.name)
                     _output_data_temp.setdefault(o.display or '1', []).append(o.name)
             else:
