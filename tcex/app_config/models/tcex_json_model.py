@@ -1,4 +1,5 @@
 """TcEx JSON Model"""
+# pylint: disable=no-self-argument,no-self-use; noqa: N805
 # standard library
 from enum import Enum
 from pathlib import PosixPath
@@ -34,7 +35,7 @@ class PackageModel(BaseModel):
     output_dir: str = 'target'
 
     @validator('excludes')
-    def sorted(cls, v):  # pylint: disable=E0213,R0201
+    def sorted(cls, v):
         """Change value for excludes field."""
         # the requirements.txt file is required for App Builder
         v = [e for e in v if e != 'requirements.txt']

@@ -5,6 +5,7 @@ import logging
 import os
 from collections import OrderedDict
 from pathlib import Path
+from typing import Optional
 
 # third-party
 import colorama as c
@@ -15,23 +16,27 @@ from tcex.app_config.models import TcexJsonModel
 from tcex.app_config.tcex_json_update import TcexJsonUpdate
 from tcex.backports import cached_property
 
-# from tcex.pleb.singleton import Singleton
+# get tcex logger
+tcex_logger = logging.getLogger('tcex')
 
 
-# TODO: [low] nested ij singleton prevents singleton use on tj class
-# class TcexJson(metaclass=Singleton):
 class TcexJson:
     """Provide a model for the tcex.json config file."""
 
-    def __init__(self, filename=None, path=None, logger=None):
+    def __init__(
+        self,
+        filename: Optional[str] = None,
+        path: Optional[str] = None,
+        logger: Optional[logging.Logger] = None,
+    ) -> None:
         """Initialize class properties."""
         filename = filename or 'tcex.json'
         path = path or os.getcwd()
-        self.log = logger or logging.getLogger('tcex_json')
+        self.log = logger or tcex_logger
 
         # properties
         self.fqfn = Path(os.path.join(path, filename))
-        self.ij = InstallJson()
+        self.ij = InstallJson(logger=self.log)
 
     @cached_property
     def contents(self) -> dict:

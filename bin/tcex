@@ -11,7 +11,7 @@ import colorama as c
 import typer
 
 # first-party
-from tcex.bin import Dep, Deploy, Package, Template, Validate
+from tcex.bin import Dep, Deploy, GenConfig, Package, Template, Validate
 
 
 app = typer.Typer()
@@ -119,6 +119,51 @@ def deploy(
         typer.echo(f'Exception: {ex}', err=True)
         # raise typer.Exit(code=1)
         raise
+
+
+@app.command()
+def genconfig(
+    all_: bool = typer.Option(False, '--all', help='Generate all configuration files.'),
+    app_input: bool = typer.Option(False, help='Generate app_input.py.'),
+    app_spec: bool = typer.Option(False, help='Generate app_spec.yml.'),
+    install_json: bool = typer.Option(False, help='Generate install.json.'),
+    job_json: bool = typer.Option(False, help='Generate job.json.'),
+    layout_json: bool = typer.Option(False, help='Generate layout.json.'),
+    readme_md: bool = typer.Option(False, help='Generate README.md.'),
+    overwrite: bool = typer.Option(False, help='Force overwrite of config file.'),
+    schema: bool = typer.Option(False, help='When set output schema instead of file.'),
+):
+    """Generate App configuration file.
+
+    Generate one or more configuration files for the App.
+    """
+    gc = GenConfig(overwrite)
+    try:
+        if app_spec is True:
+            gc.generate_app_spec(schema)
+        else:
+            if install_json is True or all_ is True:
+                gc.generate_install_json(schema)
+
+            if layout_json is True or all_ is True:
+                gc.generate_layout_json(schema)
+
+            if job_json is True or all_ is True:
+                gc.generate_job_json(schema)
+
+            if app_input is True or all_ is True:
+                gc.generate_app_input()
+
+            if readme_md is True or all_ is True:
+                gc.generate_readme_md()
+
+        gc.print_summary()
+        gc.print_report()
+    except Exception as ex:
+        # TODO: [high] revert this
+        raise
+        # typer.echo(f'Failed generating code/config: {ex}', err=True)
+        # raise typer.Exit(code=1)
 
 
 @app.command()

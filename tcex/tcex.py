@@ -109,16 +109,19 @@ class TcEx:
         }
 
     def advanced_request(
-        self, session: Session, timeout: Optional[int] = 600, output_prefix: Optional[str] = None
+        self,
+        session: Session,
+        output_prefix: str,
+        timeout: Optional[int] = 600,
     ) -> AdvancedRequest:
         """Return instance of AdvancedRequest.
 
         Args:
             session: An instance of requests.Session.
-            timeout: The number of second before timing out the request.
             output_prefix: A value to prepend to outputs.
+            timeout: The number of second before timing out the request.
         """
-        return AdvancedRequest(self.inputs, self.playbook, session, timeout, output_prefix)
+        return AdvancedRequest(self.inputs, self.playbook, session, output_prefix, timeout)
 
     def exit(self, code: Optional[ExitCode] = None, msg: Optional[str] = None) -> None:
         """Application exit method with proper exit code

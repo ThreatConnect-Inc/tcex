@@ -178,7 +178,17 @@ class MockApp:
                     'required': True,
                     'sequence': 2,
                     'type': 'Choice',
-                    'validValues': ['-- Select --', 'choice_1', 'choice_2', 'choice_3'],
+                    'validValues': [
+                        '-- Select --',
+                        'choice_1',
+                        'choice_2',
+                        'choice_3',
+                        '${ATTRIBUTES}',
+                        '${ARTIFACT_TYPES}',
+                        '${GROUP_TYPES}',
+                        '${INDICATOR_TYPES}',
+                        '${OWNERS}',
+                    ],
                 },
                 {
                     'label': 'My Choice',

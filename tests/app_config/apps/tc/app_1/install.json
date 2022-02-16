@@ -1,6 +1,5 @@
 {
   "allowOnDemand": true,
-  "apiUserTokenParam": true,
   "appId": "f0a3fa03-8df8-52fe-9c64-5970c0bf4cdf",
   "commitHash": "abc123",
   "displayName": "TcEx TC App 1",

@@ -5,21 +5,30 @@ import logging
 import os
 from collections import OrderedDict
 from pathlib import Path
+from typing import Optional
 
 # first-party
 from tcex.app_config.models import JobJsonModel
 from tcex.backports import cached_property
 from tcex.pleb.singleton import Singleton
 
+# get tcex logger
+tcex_logger = logging.getLogger('tcex')
+
 
 class JobJson(metaclass=Singleton):
     """Provide a model for the tcex.json config file."""
 
-    def __init__(self, filename=None, path=None, logger=None):
+    def __init__(
+        self,
+        filename: Optional[str] = None,
+        path: Optional[str] = None,
+        logger: Optional[logging.Logger] = None,
+    ):
         """Initialize class properties."""
         filename = filename or 'tcex.json'
         path = path or os.getcwd()
-        self.log = logger or logging.getLogger('tcex_json')
+        self.log = logger or tcex_logger
 
         # properties
         self.fqfn = Path(os.path.join(path, filename))

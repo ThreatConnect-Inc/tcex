@@ -1,7 +1,8 @@
 # Prerequisites
 
-* A Group must be create in the TC instance (Org Settings -> Groups)
-* The Description Attribute must include Case and URL (System Settings -> Attribute Types)
++ A Group must be create in the TC instance (Org Settings -> Groups)
++ The Description Attribute must include Case and URL (System Settings -> Attribute Types)
++ A Service App needs to be created "DO NOT DELETE - TcEx Test Service App"
 
 # General Test Command
 
