@@ -62,6 +62,7 @@ def deps(
         # install debs
         tcl.install_deps()
     except Exception as ex:
+        tcl.log.error(traceback.format_exc())
         typer.echo(f'Exception: {ex}', err=True)
         raise typer.Exit(code=1)
 
@@ -116,9 +117,9 @@ def deploy(
         # deploy the App
         tcd.deploy_app()
     except Exception as ex:
+        tcd.log.error(traceback.format_exc())
         typer.echo(f'Exception: {ex}', err=True)
-        # raise typer.Exit(code=1)
-        raise
+        raise typer.Exit(code=1)
 
 
 @app.command()
@@ -160,10 +161,9 @@ def genconfig(
         gc.print_summary()
         gc.print_report()
     except Exception as ex:
-        # TODO: [high] revert this
-        raise
-        # typer.echo(f'Failed generating code/config: {ex}', err=True)
-        # raise typer.Exit(code=1)
+        gc.log.error(traceback.format_exc())
+        typer.echo(f'Failed generating code/config: {ex}', err=True)
+        raise typer.Exit(code=1)
 
 
 @app.command()
@@ -214,9 +214,9 @@ def init(
         tt.print_setting('Files Downloaded', len(downloads))
         tt.print_setting('Branch', branch)
     except Exception as ex:
+        tt.log.error(traceback.format_exc())
         typer.echo(f'Failed initializing App ({ex}).', err=True)
-        # raise typer.Exit(code=1)
-        raise
+        raise typer.Exit(code=1)
 
 
 @app.command('list')
@@ -238,6 +238,7 @@ def _list(
         tt.print_list(branch)
         tt.print_error_message()
     except Exception as ex:
+        tt.log.error(traceback.format_exc())
         typer.echo(f'Failed getting App templates: {ex}', err=True)
         raise typer.Exit(code=1)
 
@@ -289,11 +290,11 @@ def package(
             tcp.print_results()
     except Exception:
         # TODO: [med] update this to a more user friendly error message.
+        tcv.log.error(traceback.format_exc())
         typer.echo(f'{c.Style.BRIGHT}{c.Fore.RED}{traceback.format_exc()}', err=True)
         raise typer.Exit(code=tcv.exit_code)
 
 
-# TODO --force
 @app.command()
 def update(
     template: Optional[str] = typer.Option(
@@ -348,6 +349,7 @@ def update(
         tt.print_setting('Files Updated', len(downloads))
         tt.print_setting('Branch', branch)
     except Exception as ex:
+        tt.log.error(traceback.format_exc())
         typer.echo(f'Failed updating App ({ex}).', err=True)
         raise typer.Exit(code=1)
 
@@ -385,6 +387,7 @@ def validate(
             tcv.check_job_json()
             tcv.print_results()
     except Exception as ex:
+        tcv.log.error(traceback.format_exc())
         typer.echo(f'Validate Exception: {ex}', err=True)
         raise typer.Exit(code=1)
 
