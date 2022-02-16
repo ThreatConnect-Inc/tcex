@@ -79,8 +79,14 @@ class GenConfigAppSpecYml(BinABC):
         if self.ij.model.runtime_level.lower() != 'organization':
             # build outputs based on display value
             _output_data_temp = {}
-            for o in self.lj.model.outputs:
-                _output_data_temp.setdefault(o.display, []).append(o.name)
+            if self.lj.has_layout:
+                # layout based Apps could will have a display clause for each output
+                for o in self.ij.model.playbook_outputs.values():
+                    o = self.lj.get_output(o.name)
+                    _output_data_temp.setdefault(o.display or '1', []).append(o.name)
+            else:
+                for _, o in self.ij.model.playbook_outputs.items():
+                    _output_data_temp.setdefault('1', []).append(o.name)
 
             _output_data = []
             for display, names in _output_data_temp.items():
@@ -91,8 +97,6 @@ class GenConfigAppSpecYml(BinABC):
                 _output_data.append({'display': display, 'outputVariables': _output_variables})
 
             app_spec_yml_data['outputData'] = _output_data
-
-            # if not in layout.json and not hidden, add to output data
 
     def _add_playbook(self, app_spec_yml_data: dict) -> None:
         """Add asy.playbook."""
@@ -177,14 +181,6 @@ class GenConfigAppSpecYml(BinABC):
 
         # force order of keys
         return self.asy.dict_to_yaml(self.asy.order_data(asy_data))
-
-        # return self.asy.dict_to_yaml(
-        #     json.loads(
-        #         AppSpecYmlModel(**app_spec_yml_data).json(
-        #             by_alias=True, exclude_defaults=True, exclude_none=True, exclude_unset=True
-        #         )
-        #     )
-        # )
 
     @staticmethod
     def generate_schema():

@@ -115,6 +115,7 @@ class ParamsSpecModel(ParamsModel):
 
         alias_generator = snake_to_camel
         smart_union = True
+        use_enum_values = True
         validate_assignment = True
 
 

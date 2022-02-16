@@ -212,7 +212,7 @@ class Validate(BinABC):
         app_version = self.tj.model.package.app_version or self.ij.model.package_version
         program_name = (f'''{self.tj.model.package.app_name}_{app_version}''').replace('_', ' ')
         status = True
-        for feed in self.ij.model.feeds:
+        for feed in self.ij.model.feeds or []:
             if feed.job_file in self.invalid_json_files:
                 # no need to check if schema if json is invalid
                 continue

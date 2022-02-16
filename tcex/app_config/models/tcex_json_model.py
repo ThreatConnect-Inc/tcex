@@ -72,4 +72,5 @@ class TcexJsonModel(BaseModel):
         """DataModel Config"""
 
         json_encoders = {PosixPath: lambda v: v.original_value}
+        use_enum_values = True
         validate_assignment = True
