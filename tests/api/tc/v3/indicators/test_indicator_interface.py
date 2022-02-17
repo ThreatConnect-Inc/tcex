@@ -135,6 +135,81 @@ class TestIndicators(TestV3):
         # print('body', indicator.request.request.body)
         # print('text', indicator.request.text)
 
+    def test_case_associations(self):
+        """Test Indicator -> Case Associations"""
+
+        # [Pre-Requisite] - clean up past runs.
+        cases = self.v3.cases()
+        cases.filter.name(TqlOperator.IN, ['MyCase-20', 'MyCase-21', 'MyCase-22'])
+
+        for case in cases:
+            case.delete()
+
+        # [Pre-Requisite] - create case
+        case_2 = self.v3_helper.create_case(name='MyCase-20')
+        case_3 = self.v3_helper.create_case(name='MyCase-21')
+
+        # [Create Testing] define object data
+        indicator = self.v3.indicator(
+            **{
+                'ip': '43.24.65.49',
+                'type': 'Address',
+            }
+        )
+
+        association_data = {'name': 'MyCase-22', 'severity': 'Low', 'status': 'Open'}
+
+        self.v3_helper._associations(indicator, case_2, case_3, association_data)
+
+        indicator.delete()
+
+    def test_artifact_associations(self):
+        """Test snippet"""
+
+        # self.v3_helper.tql_clear(['MyAdversary-03'], self.v3.groups())
+        self.v3_helper.tql_clear(['MyCase-20'], self.v3.cases(), field='name')
+
+        case = self.v3_helper.create_case(name='MyCase-20')
+
+        # [Create Testing] define object data
+        artifact = self.v3.artifact(
+            **{
+                'case_id': case.model.id,
+                'intel_type': 'indicator-ASN',
+                'summary': 'asn111',
+                'type': 'ASN',
+            }
+        )
+        artifact.create()
+
+        artifact_2 = self.v3.artifact(
+            **{
+                'case_id': case.model.id,
+                'intel_type': 'indicator-ASN',
+                'summary': 'asn112',
+                'type': 'ASN',
+            }
+        )
+        artifact_2.create()
+
+        artifact_3 = {
+            'case_id': case.model.id,
+            'intel_type': 'indicator-ASN',
+            'summary': 'asn113',
+            'type': 'ASN',
+        }
+
+        indicator = self.v3.indicator(
+            **{
+                'ip': '43.243.63.18',
+                'type': 'Address',
+            }
+        )
+
+        self.v3_helper._associations(indicator, artifact, artifact_2, artifact_3)
+
+        indicator.delete()
+
     def test_indicator_get_many(self, request: 'pytest.FixtureRequest'):
         """Test Indicators Get Many"""
         # [Pre-Requisite] - create case

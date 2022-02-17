@@ -162,8 +162,9 @@ class TestTasks(TestV3):
         # [Create Testing] create the object to the TC API
         task.create()
 
-        task.model.status = 'Closed'
-        task.update()
+        # TODO: Uncomment out once core address update with status code.
+        # task.model.status = 'Closed'
+        # task.update()
 
         # [Retrieve Testing] create the object with id filter,
         # using object id from the object created above

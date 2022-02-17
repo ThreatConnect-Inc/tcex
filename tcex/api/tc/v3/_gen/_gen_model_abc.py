@@ -48,11 +48,14 @@ class GenerateModelABC(GenerateABC, ABC):
     def _configure_type(self, type_: str, field: str) -> str:
         """Return hint type."""
         _types = self._prop_type_common()
-        _types.update(self._prop_type_custom(type_, field))
+        _types.update(self._prop_type_custom(type_))
+
+        # Ensure dict is lowercase.
+        _types = {k.lower(): v for k, v in _types.items()}
 
         # handle types
         type_ = self._fix_type(type_)  # swap Attribute for specific type (e.g., CaseAttribute)
-        type_data = _types.get(type_, {})
+        type_data = _types.get(type_.lower(), {})
         requirement_data = type_data.get('requirement')
 
         # add additional requirements, if not current model type
@@ -63,7 +66,9 @@ class GenerateModelABC(GenerateABC, ABC):
                 self.requirements[from_].append(import_)
 
         # add validator
-        self.validators[type_] = type_data.get('validator')
+        for custom_type in self._prop_type_custom(type_):
+            if custom_type.lower() == type_.lower():
+                self.validators.setdefault(type_, []).append(field)
 
         return type_data.get('type', type_)
 
@@ -90,7 +95,7 @@ class GenerateModelABC(GenerateABC, ABC):
             ),
         }
 
-    def _gen_code_validator_method(self, type_: str, field: str) -> str:
+    def _gen_code_validator_method(self, type_: str, fields: list[str]) -> str:
         """Return the validator code
 
         @validator('artifact_type', always=True)
@@ -99,10 +104,13 @@ class GenerateModelABC(GenerateABC, ABC):
                 return ArtifactTypeModel()
             return v
         """
+        type_ = self.utils.camel_string(type_)
+
+        fields = ', '.join(f'\'{field}\'' for field in fields)
         return '\n'.join(
             [
-                f'''{self.i1}@validator('{field}', always=True)''',
-                f'''{self.i1}def _validate_{field}(cls, v):''',
+                f'''{self.i1}@validator({fields}, always=True)''',
+                f'''{self.i1}def _validate_{type_.snake_case()}(cls, v):''',
                 f'''{self.i2}if not v:''',
                 f'''{self.i3}return {type_}Model()''',
                 f'''{self.i2}return v''',
@@ -153,29 +161,25 @@ class GenerateModelABC(GenerateABC, ABC):
             },
         }
 
-    def _prop_type_custom(self, type_: str, field: str) -> dict:
+    def _prop_type_custom(self, type_: str) -> dict:
         """Return cm types."""
         type_ = self._fix_type(self.utils.snake_string(type_))
         return {
             'AdversaryAssets': {
                 'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',
-                'validator': self._gen_code_validator_method(type_, field),
             },
             'Artifact': {
                 'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',
-                'validator': self._gen_code_validator_method(type_, field),
             },
             'Artifacts': {
                 'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',
-                'validator': self._gen_code_validator_method(type_, field),
             },
             'ArtifactType': {
                 'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',
-                'validator': self._gen_code_validator_method(type_, field),
             },
             'Assignee': {
                 'requirement': {
@@ -183,7 +187,6 @@ class GenerateModelABC(GenerateABC, ABC):
                     'import': 'from tcex.api.tc.v3.security.assignee_model import AssigneeModel',
                 },
                 'type': 'Optional[\'AssigneeModel\']',
-                'validator': self._gen_code_validator_method(type_, field),
             },
             'Attributes': {
                 'requirement': {
@@ -193,12 +196,10 @@ class GenerateModelABC(GenerateABC, ABC):
                     ),
                 },
                 'type': f'Optional[\'{type_}Model\']',
-                'validator': self._gen_code_validator_method(type_, field),
             },
             'Case': {
                 'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',
-                'validator': self._gen_code_validator_method(type_, field),
             },
             'CaseAttributes': {
                 'requirement': {
@@ -209,12 +210,10 @@ class GenerateModelABC(GenerateABC, ABC):
                     ),
                 },
                 'type': f'Optional[\'{type_}Model\']',
-                'validator': self._gen_code_validator_method(type_, field),
             },
             'Cases': {
                 'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',
-                'validator': self._gen_code_validator_method(type_, field),
             },
             'FileAction': {
                 'requirement': {
@@ -224,7 +223,6 @@ class GenerateModelABC(GenerateABC, ABC):
                     ),
                 },
                 'type': f'Optional[\'{type_}Model\']',
-                'validator': self._gen_code_validator_method(type_, field),
             },
             'FileOccurrences': {
                 'requirement': {
@@ -235,7 +233,6 @@ class GenerateModelABC(GenerateABC, ABC):
                     ),
                 },
                 'type': f'Optional[\'{type_}Model\']',
-                'validator': self._gen_code_validator_method(type_, field),
             },
             'GroupAttributes': {
                 'requirement': {
@@ -246,12 +243,10 @@ class GenerateModelABC(GenerateABC, ABC):
                     ),
                 },
                 'type': f'Optional[\'{type_}Model\']',
-                'validator': self._gen_code_validator_method(type_, field),
             },
             'Groups': {
                 'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',
-                'validator': self._gen_code_validator_method(type_, field),
             },
             'IndicatorAttributes': {
                 'requirement': {
@@ -262,42 +257,34 @@ class GenerateModelABC(GenerateABC, ABC):
                     ),
                 },
                 'type': f'Optional[\'{type_}Model\']',
-                'validator': self._gen_code_validator_method(type_, field),
             },
             'Indicators': {
                 'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',
-                'validator': self._gen_code_validator_method(type_, field),
             },
             'Note': {
                 'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',
-                'validator': self._gen_code_validator_method(type_, field),
             },
             'Notes': {
                 'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',
-                'validator': self._gen_code_validator_method(type_, field),
             },
             'SecurityLabels': {
                 'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',
-                'validator': self._gen_code_validator_method(type_, field),
             },
             'Tag': {
                 'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',
-                'validator': self._gen_code_validator_method(type_, field),
             },
             'Tags': {
                 'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',
-                'validator': self._gen_code_validator_method(type_, field),
             },
             'Task': {
                 'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',
-                'validator': self._gen_code_validator_method(type_, field),
             },
             'TaskAssignees': {
                 'requirement': {
@@ -312,27 +299,22 @@ class GenerateModelABC(GenerateABC, ABC):
             'Tasks': {
                 'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',
-                'validator': self._gen_code_validator_method(type_, field),
             },
             'User': {
                 'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',
-                'validator': self._gen_code_validator_method(type_, field),
             },
             'Users': {
                 'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',
-                'validator': self._gen_code_validator_method(type_, field),
             },
             'Victims': {
                 'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',
-                'validator': self._gen_code_validator_method(type_, field),
             },
             'VictimAssets': {
                 'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',
-                'validator': self._gen_code_validator_method(type_, field),
             },
             'VictimAttributes': {
                 'requirement': {
@@ -343,22 +325,18 @@ class GenerateModelABC(GenerateABC, ABC):
                     ),
                 },
                 'type': f'Optional[\'{type_}Model\']',
-                'validator': self._gen_code_validator_method(type_, field),
             },
             'WorkflowEvent': {
                 'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',
-                'validator': self._gen_code_validator_method(type_, field),
             },
             'WorkflowEvents': {
                 'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',
-                'validator': self._gen_code_validator_method(type_, field),
             },
             'WorkflowTemplate': {
                 'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',
-                'validator': self._gen_code_validator_method(type_, field),
             },
         }
 
@@ -478,6 +456,8 @@ class GenerateModelABC(GenerateABC, ABC):
             'indicator_attributes',
             'indicators',
             'security_labels',
+            'cases',
+            'artifacts',
             'tags',
             # 'task_assignments',
         ]:
@@ -653,6 +633,15 @@ class GenerateModelABC(GenerateABC, ABC):
             field_required_alt_field = field_data.get('requiredAltField')
             field_updatable = field_data.get('updatable', True)
 
+            # Bandage to fix core issue. Core should be sending us back `updatable false` on these
+            # fields.
+            if field_name in ['owner', 'ownerId'] and self.type_.lower() in [
+                'cases',
+                'tasks',
+                'workflow_templates',
+            ]:
+                field_updatable = False
+
             # method rules
             if field_read_only is False:
                 field_methods.append('POST')
@@ -805,8 +794,10 @@ class GenerateModelABC(GenerateABC, ABC):
         validators = dict(
             sorted({k: v for k, v in self.validators.items() if v is not None}.items())
         )
-        for validator in validators.values():
-            _v.append(validator)
+        for key, fields in validators.items():
+            if not fields:
+                continue
+            _v.append(self._gen_code_validator_method(key, fields))
 
         # add blank line above validators only if validators exists
         if _v:

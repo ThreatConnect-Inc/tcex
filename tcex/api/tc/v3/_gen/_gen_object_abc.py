@@ -556,9 +556,14 @@ class GenerateObjectABC(GenerateABC, ABC):
 
         # Custom logic to ensure that when iterating over the associated indicators or associated
         # groups then the item currently being iterated over is not included in the results.
-        if (self.type_ == 'indicators' and model_type == 'associated_indicators') or (
-            self.type_ == 'groups' and model_type == 'associated_groups'
+        if (
+            self.type_ in ['indicators', 'groups', 'artifacts', 'cases']
+            and model_type == f'associated_{self.type_}'
         ):
+            #                                            ''associated_indicators') or (
+            # if (self.type_ == 'indicators' and model_type == 'associated_indicators') or (
+            #     self.type_ == 'groups' and model_type == 'associated_groups'
+            # ):
             _code.extend(
                 [
                     f'''{self.i2}# Ensure the current item is not returned as a association''',
@@ -784,6 +789,14 @@ class GenerateObjectABC(GenerateABC, ABC):
         if 'assets' in add_properties:
             _code += self._gen_code_object_type_property_method('victim_assets')
 
+        # generate associated_case property method
+        if 'associatedArtifacts' in add_properties:
+            _code += self._gen_code_object_type_property_method('artifacts', 'associated_artifacts')
+
+        # generate associated_case property method
+        if 'associatedCases' in add_properties:
+            _code += self._gen_code_object_type_property_method('cases', 'associated_cases')
+
         # generate associated_group property method
         if 'associatedGroups' in add_properties:
             _code += self._gen_code_object_type_property_method('groups', 'associated_groups')
@@ -841,6 +854,12 @@ class GenerateObjectABC(GenerateABC, ABC):
             _code += self._gen_code_object_stage_type_method('victim_assets')
 
         # generate stage_associated_group method
+        if 'associatedCases' in add_properties:
+            _code += self._gen_code_object_stage_type_method('cases', 'associated_cases')
+
+        if 'associatedArtifacts' in add_properties:
+            _code += self._gen_code_object_stage_type_method('artifacts', 'associated_artifacts')
+
         # victims have associatedGroups but groups must be
         # associated to the asset not the victim object.
         if 'associatedGroups' in add_properties and self.type_.lower() not in ['victims']:

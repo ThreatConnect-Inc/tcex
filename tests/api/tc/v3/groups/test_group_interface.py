@@ -41,20 +41,70 @@ class TestGroups(TestV3):
         """Test properties."""
         super().obj_properties_extra()
 
+    def test_artifact_associations(self):
+        """Test snippet"""
+
+        self.v3_helper.tql_clear(['MyAdversary-03'], self.v3.groups())
+        self.v3_helper.tql_clear(['MyCase-03'], self.v3.cases(), field='name')
+
+        case = self.v3_helper.create_case(name='MyCase-03')
+
+        # [Create Testing] define object data
+        artifact = self.v3.artifact(
+            **{
+                'case_id': case.model.id,
+                'intel_type': 'indicator-ASN',
+                'summary': 'asn101',
+                'type': 'ASN',
+            }
+        )
+        artifact.create()
+
+        artifact_2 = self.v3.artifact(
+            **{
+                'case_id': case.model.id,
+                'intel_type': 'indicator-ASN',
+                'summary': 'asn102',
+                'type': 'ASN',
+            }
+        )
+        artifact_2.create()
+
+        artifact_3 = {
+            'case_id': case.model.id,
+            'intel_type': 'indicator-ASN',
+            'summary': 'asn103',
+            'type': 'ASN',
+        }
+
+        group = self.tcex.v3.group(name='MyAdversary-03', type='Adversary')
+
+        self.v3_helper._associations(group, artifact, artifact_2, artifact_3)
+
+    def test_case_associations(self):
+        """Test snippet"""
+
+        self.v3_helper.tql_clear(['MyAdversary-02'], self.v3.groups())
+        self.v3_helper.tql_clear(
+            ['MyCase-00', 'MyCase-01', 'MyCase-02'], self.v3.cases(), field='name'
+        )
+
+        case = self.v3_helper.create_case(name='MyCase-00')
+        case_2 = self.v3_helper.create_case(name='MyCase-01')
+        case_3 = {'name': 'MyCase-02', 'severity': 'Low', 'status': 'Open'}
+
+        group = self.tcex.v3.group(
+            name='MyAdversary-02',
+            type='Adversary',
+        )
+        self.v3_helper._associations(group, case, case_2, case_3)
+
     def test_group_associations(self):
         """Test snippet"""
 
-        groups = self.v3.groups()
-        groups.filter.summary(
-            TqlOperator.IN,
-            [
-                'MyAdversary-00',
-                'StagedGroup-00',
-                'StagedGroup-02',
-            ],
+        self.v3_helper.tql_clear(
+            ['MyAdversary-01', 'StagedGroup-00', 'StagedGroup-02'], self.v3.groups()
         )
-        for group in groups:
-            group.delete()
 
         # [Pre-Requisite] - Create Groups
         staged_group = self.v3_helper.create_group(name='StagedGroup-00', xid='staged_group_00-xid')

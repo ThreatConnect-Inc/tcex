@@ -34,7 +34,7 @@ class CaseFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            assignee_name: The assigned user or group ID for the case.
+            assignee_name: The user or group name assigned to the Case.
         """
         self._tql.add_filter('assigneeName', operator, assignee_name, TqlType.STRING)
 
@@ -317,7 +317,7 @@ class CaseFilter(FilterABC):
         self._tql.add_filter('tag', operator, tag, TqlType.STRING)
 
     def target_id(self, operator: Enum, target_id: int) -> None:
-        """Filter Assignee based on **targetId** keyword.
+        """Filter Assignee ID based on **targetId** keyword.
 
         Args:
             operator: The operator enum for the filter.

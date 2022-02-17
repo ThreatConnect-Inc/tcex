@@ -59,6 +59,8 @@ class WorkflowTemplate(ObjectABC):
         config_attribute (object, kwargs): The **config attribute** for the Workflow_Template.
         description (str, kwargs): The **description** for the Workflow_Template.
         name (str, kwargs): The **name** for the Workflow_Template.
+        owner (str, kwargs): The name of the Owner of the Case.
+        owner_id (int, kwargs): The name of the Owner of the Case.
         version (int, kwargs): The **version** for the Workflow_Template.
     """
 

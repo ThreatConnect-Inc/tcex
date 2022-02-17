@@ -20,7 +20,7 @@ class CasesModel(
 ):
     """Cases Model"""
 
-    _mode_support = PrivateAttr(False)
+    _mode_support = PrivateAttr(True)
 
     data: Optional[List['CaseModel']] = Field(
         [],
@@ -79,6 +79,27 @@ class CaseModel(
         methods=['POST', 'PUT'],
         read_only=False,
         title='assignee',
+    )
+    associated_cases: Optional['CasesModel'] = Field(
+        None,
+        description='A list of Cases associated with this Case.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='associatedCases',
+    )
+    associated_groups: Optional['GroupsModel'] = Field(
+        None,
+        description='A list of Groups associated with this Case.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='associatedGroups',
+    )
+    associated_indicators: Optional['IndicatorsModel'] = Field(
+        None,
+        description='A list of Indicators associated with this Case.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='associatedIndicators',
     )
     attributes: Optional['CaseAttributesModel'] = Field(
         None,
@@ -190,10 +211,17 @@ class CaseModel(
     )
     owner: Optional[str] = Field(
         None,
-        allow_mutation=False,
         description='The name of the Owner of the Case.',
-        read_only=True,
+        methods=['POST'],
+        read_only=False,
         title='owner',
+    )
+    owner_id: Optional[int] = Field(
+        None,
+        description='The name of the Owner of the Case.',
+        methods=['POST'],
+        read_only=False,
+        title='ownerId',
     )
     related: Optional['CasesModel'] = Field(
         None,
@@ -287,15 +315,27 @@ class CaseModel(
         return v
 
     @validator('attributes', always=True)
-    def _validate_attributes(cls, v):
+    def _validate_case_attributes(cls, v):
         if not v:
             return CaseAttributesModel()
         return v
 
-    @validator('related', always=True)
-    def _validate_related(cls, v):
+    @validator('associated_cases', 'related', always=True)
+    def _validate_cases(cls, v):
         if not v:
             return CasesModel()
+        return v
+
+    @validator('associated_groups', always=True)
+    def _validate_groups(cls, v):
+        if not v:
+            return GroupsModel()
+        return v
+
+    @validator('associated_indicators', always=True)
+    def _validate_indicators(cls, v):
+        if not v:
+            return IndicatorsModel()
         return v
 
     @validator('notes', always=True)
@@ -316,14 +356,21 @@ class CaseModel(
             return TasksModel()
         return v
 
-    @validator('created_by', always=True)
-    def _validate_created_by(cls, v):
+    @validator(
+        'case_close_user',
+        'case_detection_user',
+        'case_occurrence_user',
+        'case_open_user',
+        'created_by',
+        always=True,
+    )
+    def _validate_user(cls, v):
         if not v:
             return UserModel()
         return v
 
     @validator('user_access', always=True)
-    def _validate_user_access(cls, v):
+    def _validate_users(cls, v):
         if not v:
             return UsersModel()
         return v
@@ -344,6 +391,8 @@ class CaseModel(
 # first-party
 from tcex.api.tc.v3.artifacts.artifact_model import ArtifactsModel
 from tcex.api.tc.v3.case_attributes.case_attribute_model import CaseAttributesModel
+from tcex.api.tc.v3.groups.group_model import GroupsModel
+from tcex.api.tc.v3.indicators.indicator_model import IndicatorsModel
 from tcex.api.tc.v3.notes.note_model import NotesModel
 from tcex.api.tc.v3.security.assignee_model import AssigneeModel
 from tcex.api.tc.v3.security.users.user_model import UserModel, UsersModel
