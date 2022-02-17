@@ -17,6 +17,7 @@ from pydantic import ValidationError
 from stdlib_list import stdlib_list
 
 # first-party
+from tcex.app_config import Permutation
 from tcex.app_config.install_json import InstallJson
 from tcex.app_config.job_json import JobJson
 from tcex.app_config.layout_json import LayoutJson
@@ -43,6 +44,7 @@ class Validate(BinABC):
     def __init__(self, ignore_validation: bool) -> None:
         """Initialize Class properties."""
         super().__init__()
+        self.permutations = Permutation()
         self.ignore_validation = ignore_validation
 
         # class properties
