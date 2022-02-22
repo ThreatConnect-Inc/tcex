@@ -1,15 +1,13 @@
 """Test the TcEx API Module."""
 # standard library
 from random import randint, sample
-from typing import TYPE_CHECKING
+
+# third-party
+import pytest
 
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
-
-if TYPE_CHECKING:
-    # third-party
-    import pytest
 
 
 class TestIndicators(TestV3):
@@ -44,10 +42,12 @@ class TestIndicators(TestV3):
         """Test filter keywords."""
         super().obj_filter_keywords()
 
+    @pytest.mark.xfail(reason='Verify TC Version running against.')
     def test_indicator_object_properties(self):
         """Test properties."""
         super().obj_properties()
 
+    @pytest.mark.xfail(reason='Verify TC Version running against.')
     def test_indicator_object_properties_extra(self):
         """Test properties."""
         super().obj_properties_extra()
@@ -135,80 +135,82 @@ class TestIndicators(TestV3):
         # print('body', indicator.request.request.body)
         # print('text', indicator.request.text)
 
-    # def test_case_associations(self):
-    #     """Test Indicator -> Case Associations"""
-    #
-    #     # [Pre-Requisite] - clean up past runs.
-    #     cases = self.v3.cases()
-    #     cases.filter.name(TqlOperator.IN, ['MyCase-20', 'MyCase-21', 'MyCase-22'])
-    #
-    #     for case in cases:
-    #         case.delete()
-    #
-    #     # [Pre-Requisite] - create case
-    #     case_2 = self.v3_helper.create_case(name='MyCase-20')
-    #     case_3 = self.v3_helper.create_case(name='MyCase-21')
-    #
-    #     # [Create Testing] define object data
-    #     indicator = self.v3.indicator(
-    #         **{
-    #             'ip': '43.24.65.49',
-    #             'type': 'Address',
-    #         }
-    #     )
-    #
-    #     association_data = {'name': 'MyCase-22', 'severity': 'Low', 'status': 'Open'}
-    #
-    #     self.v3_helper._associations(indicator, case_2, case_3, association_data)
-    #
-    #     indicator.delete()
-    #
-    # def test_artifact_associations(self):
-    #     """Test snippet"""
-    #
-    #     # self.v3_helper.tql_clear(['MyAdversary-03'], self.v3.groups())
-    #     self.v3_helper.tql_clear(['MyCase-20'], self.v3.cases(), field='name')
-    #
-    #     case = self.v3_helper.create_case(name='MyCase-20')
-    #
-    #     # [Create Testing] define object data
-    #     artifact = self.v3.artifact(
-    #         **{
-    #             'case_id': case.model.id,
-    #             'intel_type': 'indicator-ASN',
-    #             'summary': 'asn111',
-    #             'type': 'ASN',
-    #         }
-    #     )
-    #     artifact.create()
-    #
-    #     artifact_2 = self.v3.artifact(
-    #         **{
-    #             'case_id': case.model.id,
-    #             'intel_type': 'indicator-ASN',
-    #             'summary': 'asn112',
-    #             'type': 'ASN',
-    #         }
-    #     )
-    #     artifact_2.create()
-    #
-    #     artifact_3 = {
-    #         'case_id': case.model.id,
-    #         'intel_type': 'indicator-ASN',
-    #         'summary': 'asn113',
-    #         'type': 'ASN',
-    #     }
-    #
-    #     indicator = self.v3.indicator(
-    #         **{
-    #             'ip': '43.243.63.18',
-    #             'type': 'Address',
-    #         }
-    #     )
-    #
-    #     self.v3_helper._associations(indicator, artifact, artifact_2, artifact_3)
-    #
-    #     indicator.delete()
+    @pytest.mark.xfail(reason='Verify TC Version running against.')
+    def test_case_associations(self):
+        """Test Indicator -> Case Associations"""
+
+        # [Pre-Requisite] - clean up past runs.
+        cases = self.v3.cases()
+        cases.filter.name(TqlOperator.IN, ['MyCase-20', 'MyCase-21', 'MyCase-22'])
+
+        for case in cases:
+            case.delete()
+
+        # [Pre-Requisite] - create case
+        case_2 = self.v3_helper.create_case(name='MyCase-20')
+        case_3 = self.v3_helper.create_case(name='MyCase-21')
+
+        # [Create Testing] define object data
+        indicator = self.v3.indicator(
+            **{
+                'ip': '43.24.65.49',
+                'type': 'Address',
+            }
+        )
+
+        association_data = {'name': 'MyCase-22', 'severity': 'Low', 'status': 'Open'}
+
+        self.v3_helper._associations(indicator, case_2, case_3, association_data)
+
+        indicator.delete()
+
+    @pytest.mark.xfail(reason='Verify TC Version running against.')
+    def test_artifact_associations(self):
+        """Test snippet"""
+
+        # self.v3_helper.tql_clear(['MyAdversary-03'], self.v3.groups())
+        self.v3_helper.tql_clear(['MyCase-20'], self.v3.cases(), field='name')
+
+        case = self.v3_helper.create_case(name='MyCase-20')
+
+        # [Create Testing] define object data
+        artifact = self.v3.artifact(
+            **{
+                'case_id': case.model.id,
+                'intel_type': 'indicator-ASN',
+                'summary': 'asn111',
+                'type': 'ASN',
+            }
+        )
+        artifact.create()
+
+        artifact_2 = self.v3.artifact(
+            **{
+                'case_id': case.model.id,
+                'intel_type': 'indicator-ASN',
+                'summary': 'asn112',
+                'type': 'ASN',
+            }
+        )
+        artifact_2.create()
+
+        artifact_3 = {
+            'case_id': case.model.id,
+            'intel_type': 'indicator-ASN',
+            'summary': 'asn113',
+            'type': 'ASN',
+        }
+
+        indicator = self.v3.indicator(
+            **{
+                'ip': '43.243.63.18',
+                'type': 'Address',
+            }
+        )
+
+        self.v3_helper._associations(indicator, artifact, artifact_2, artifact_3)
+
+        indicator.delete()
 
     def test_indicator_get_many(self, request: 'pytest.FixtureRequest'):
         """Test Indicators Get Many"""
