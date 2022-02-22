@@ -46,48 +46,48 @@ class TestCases(TestV3):
         """Test properties."""
         super().obj_properties_extra()
 
-    def test_indicator_associations(self):
-        """Test Case -> Indicator Associations"""
-
-        self.v3_helper.tql_clear(['MyCase-19'], self.v3.cases(), 'name')
-
-        indicator = self.v3.indicator(
-            **{
-                'ip': '43.24.65.37',
-                'type': 'Address',
-            }
-        )
-        indicator.create()
-        indicator_2 = self.v3.indicator(
-            **{
-                'ip': '43.24.65.38',
-                'type': 'Address',
-            }
-        )
-        indicator_2.create()
-        indicator_3 = {'ip': '43.24.65.39', 'type': 'Address'}
-
-        # [Pre-Requisite] - create case
-        case = self.v3.case(**{'name': 'MyCase-19', 'severity': 'Low', 'status': 'Open'})
-
-        self.v3_helper._associations(case, indicator, indicator_2, indicator_3)
-
-    def test_group_associations(self):
-        """Test Case -> Group Associations"""
-        # [Pre-Requisite] - clean up past runs.
-        self.v3_helper.tql_clear(['MyCase-11'], self.v3.cases(), 'name')
-        self.v3_helper.tql_clear(
-            ['MyAdversary-13', 'StagedGroup-12', 'StagedGroup-13'], self.v3.groups()
-        )
-
-        case = self.v3.case(**{'name': 'MyCase-11', 'severity': 'Low', 'status': 'Open'})
-
-        group_2 = self.v3_helper.create_group(name='StagedGroup-12', xid='staged_group_12-xid')
-        group_3 = self.v3_helper.create_group(name='StagedGroup-13', xid='staged_group_13-xid')
-
-        association_data = {'name': 'MyAdversary-13', 'type': 'Adversary'}
-
-        self.v3_helper._associations(case, group_2, group_3, association_data)
+    # def test_indicator_associations(self):
+    #     """Test Case -> Indicator Associations"""
+    #
+    #     self.v3_helper.tql_clear(['MyCase-19'], self.v3.cases(), 'name')
+    #
+    #     indicator = self.v3.indicator(
+    #         **{
+    #             'ip': '43.24.65.37',
+    #             'type': 'Address',
+    #         }
+    #     )
+    #     indicator.create()
+    #     indicator_2 = self.v3.indicator(
+    #         **{
+    #             'ip': '43.24.65.38',
+    #             'type': 'Address',
+    #         }
+    #     )
+    #     indicator_2.create()
+    #     indicator_3 = {'ip': '43.24.65.39', 'type': 'Address'}
+    #
+    #     # [Pre-Requisite] - create case
+    #     case = self.v3.case(**{'name': 'MyCase-19', 'severity': 'Low', 'status': 'Open'})
+    #
+    #     self.v3_helper._associations(case, indicator, indicator_2, indicator_3)
+    #
+    # def test_group_associations(self):
+    #     """Test Case -> Group Associations"""
+    #     # [Pre-Requisite] - clean up past runs.
+    #     self.v3_helper.tql_clear(['MyCase-11'], self.v3.cases(), 'name')
+    #     self.v3_helper.tql_clear(
+    #         ['MyAdversary-13', 'StagedGroup-12', 'StagedGroup-13'], self.v3.groups()
+    #     )
+    #
+    #     case = self.v3.case(**{'name': 'MyCase-11', 'severity': 'Low', 'status': 'Open'})
+    #
+    #     group_2 = self.v3_helper.create_group(name='StagedGroup-12', xid='staged_group_12-xid')
+    #     group_3 = self.v3_helper.create_group(name='StagedGroup-13', xid='staged_group_13-xid')
+    #
+    #     association_data = {'name': 'MyAdversary-13', 'type': 'Adversary'}
+    #
+    #     self.v3_helper._associations(case, group_2, group_3, association_data)
 
     # TODO: Uncomment once core addresses the `has_case` tql (PLAT-4695)
     # def test_case_associations(self):

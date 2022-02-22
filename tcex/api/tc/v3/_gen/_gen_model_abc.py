@@ -641,6 +641,7 @@ class GenerateModelABC(GenerateABC, ABC):
                 'workflow_templates',
             ]:
                 field_updatable = False
+                field_read_only = True
 
             # method rules
             if field_read_only is False:

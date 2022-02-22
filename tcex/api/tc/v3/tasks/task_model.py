@@ -185,9 +185,9 @@ class TaskModel(
     )
     owner: Optional[str] = Field(
         None,
+        allow_mutation=False,
         description='The name of the Owner of the Case.',
-        methods=['POST'],
-        read_only=False,
+        read_only=True,
         title='owner',
     )
     parent_case: Optional['CaseModel'] = Field(

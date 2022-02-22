@@ -198,23 +198,33 @@ class GenerateFilterABC(GenerateABC, ABC):
         ]
 
     def _gen_code_has_case_method(self) -> list:
-        """Return code for has_case TQL filter methods."""
+        """Return code for has_group TQL filter methods."""
         self._add_tql_imports()
-        return [
+        _code = [
             f'{self.i1}@property',
             f'{self.i1}def has_case(self):',
             f'{self.i2}"""Return **CaseFilter** for further filtering."""',
-            f'{self.i2}# first-party',
-            f'{self.i2}from tcex.api.tc.v3.cases.case_filter import CaseFilter',
-            '',
-            f'{self.i2}cases = CaseFilter(Tql())',
-            (
-                f'''{self.i2}self._tql.add_filter('hasCase', '''
-                '''TqlOperator.EQ, cases, TqlType.SUB_QUERY)'''
-            ),
-            f'{self.i2}return cases',
-            '',
         ]
+        if self.type_ != 'cases':
+            _code.extend(
+                [
+                    f'{self.i2}# first-party',
+                    f'{self.i2}from tcex.api.tc.v3.cases.case_filter import CaseFilter',
+                    '',
+                ]
+            )
+        _code.extend(
+            [
+                f'{self.i2}cases = CaseFilter(Tql())',
+                (
+                    f'''{self.i2}self._tql.add_filter('hasCase', '''
+                    '''TqlOperator.EQ, cases, TqlType.SUB_QUERY)'''
+                ),
+                f'{self.i2}return cases',
+                '',
+            ]
+        )
+        return _code
 
     def _gen_code_has_group_method(self) -> list:
         """Return code for has_group TQL filter methods."""
@@ -488,6 +498,7 @@ class GenerateFilterABC(GenerateABC, ABC):
             if keyword.snake_case() == 'has_artifact':
                 _filter_class.extend(self._gen_code_has_artifact_method())
             elif keyword.snake_case() == 'has_case':
+                print('getting here')
                 _filter_class.extend(self._gen_code_has_case_method())
             elif keyword.snake_case() == 'has_group':
                 _filter_class.extend(self._gen_code_has_group_method())

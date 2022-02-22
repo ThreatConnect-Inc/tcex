@@ -87,8 +87,6 @@ class Case(ObjectABC):
         description (str, kwargs): The description of the Case.
         name (str, kwargs): The name of the Case.
         notes (Notes, kwargs): A list of Notes corresponding to the Case.
-        owner (str, kwargs): The name of the Owner of the Case.
-        owner_id (int, kwargs): The name of the Owner of the Case.
         resolution (str, kwargs): The Case resolution.
         severity (str, kwargs): The Case severity.
         status (str, kwargs): The Case status.

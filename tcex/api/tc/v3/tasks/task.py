@@ -73,7 +73,6 @@ class Task(ObjectABC):
         duration_type (str, kwargs): The **duration type** for the Task.
         name (str, kwargs): The **name** for the Task.
         notes (Notes, kwargs): A list of Notes corresponding to the Task.
-        owner (str, kwargs): The name of the Owner of the Case.
         required (bool, kwargs): Flag indicating whether or not the task is required.
         status (str, kwargs): The **status** for the Task.
         workflow_phase (int, kwargs): The phase of the workflow.

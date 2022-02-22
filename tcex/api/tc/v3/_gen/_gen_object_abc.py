@@ -560,10 +560,6 @@ class GenerateObjectABC(GenerateABC, ABC):
             self.type_ in ['indicators', 'groups', 'artifacts', 'cases']
             and model_type == f'associated_{self.type_}'
         ):
-            #                                            ''associated_indicators') or (
-            # if (self.type_ == 'indicators' and model_type == 'associated_indicators') or (
-            #     self.type_ == 'groups' and model_type == 'associated_groups'
-            # ):
             _code.extend(
                 [
                     f'''{self.i2}# Ensure the current item is not returned as a association''',

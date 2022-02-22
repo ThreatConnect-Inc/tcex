@@ -211,16 +211,16 @@ class CaseModel(
     )
     owner: Optional[str] = Field(
         None,
+        allow_mutation=False,
         description='The name of the Owner of the Case.',
-        methods=['POST'],
-        read_only=False,
+        read_only=True,
         title='owner',
     )
     owner_id: Optional[int] = Field(
         None,
-        description='The name of the Owner of the Case.',
-        methods=['POST'],
-        read_only=False,
+        allow_mutation=False,
+        description='The id of the Owner of the Case.',
+        read_only=True,
         title='ownerId',
     )
     related: Optional['CasesModel'] = Field(

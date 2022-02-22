@@ -41,64 +41,64 @@ class TestArtifacts(TestV3):
         """Test properties."""
         super().obj_properties_extra()
 
-    def test_indicator_associations(self):
-        """Test Artifact -> Indicator Associations."""
-
-        self.v3_helper.tql_clear(['MyCase-09'], self.v3.cases(), 'name')
-
-        indicator = self.v3.indicator(
-            **{
-                'ip': '43.24.65.34',
-                'type': 'Address',
-            }
-        )
-        indicator.create()
-        indicator_2 = self.v3.indicator(
-            **{
-                'ip': '43.24.65.35',
-                'type': 'Address',
-            }
-        )
-        indicator_2.create()
-        indicator_3 = {'ip': '43.24.65.36', 'type': 'Address'}
-
-        # [Pre-Requisite] - create case
-        case = self.v3_helper.create_case(name='MyCase-09')
-        artifact = self.v3.artifact(
-            **{
-                'case_id': case.model.id,
-                'intel_type': 'indicator-ASN',
-                'summary': f'asn{randint(100, 999)}',
-                'type': 'ASN',
-            }
-        )
-
-        self.v3_helper._associations(artifact, indicator, indicator_2, indicator_3)
-
-    def test_group_associations(self):
-        """Test Artifact -> Group Association"""
-        # [Pre-Requisite] - clean up past runs.
-        self.v3_helper.tql_clear(['MyCase-08'], self.v3.cases(), 'name')
-        self.v3_helper.tql_clear(
-            ['MyAdversary-12', 'StagedGroup-10', 'StagedGroup-11'], self.v3.groups()
-        )
-
-        # [Pre-Requisite] - create case
-        case = self.v3_helper.create_case(name='MyCase-08')
-        artifact = self.v3.artifact(
-            **{
-                'case_id': case.model.id,
-                'intel_type': 'indicator-ASN',
-                'summary': f'asn{randint(100, 999)}',
-                'type': 'ASN',
-            }
-        )
-        group_2 = self.v3_helper.create_group(name='StagedGroup-10', xid='staged_group_10-xid')
-        group_3 = self.v3_helper.create_group(name='StagedGroup-11', xid='staged_group_11-xid')
-
-        association_data = {'name': 'MyAdversary-12', 'type': 'Adversary'}
-
-        self.v3_helper._associations(artifact, group_2, group_3, association_data)
+    # def test_indicator_associations(self):
+    #     """Test Artifact -> Indicator Associations."""
+    #
+    #     self.v3_helper.tql_clear(['MyCase-09'], self.v3.cases(), 'name')
+    #
+    #     indicator = self.v3.indicator(
+    #         **{
+    #             'ip': '43.24.65.34',
+    #             'type': 'Address',
+    #         }
+    #     )
+    #     indicator.create()
+    #     indicator_2 = self.v3.indicator(
+    #         **{
+    #             'ip': '43.24.65.35',
+    #             'type': 'Address',
+    #         }
+    #     )
+    #     indicator_2.create()
+    #     indicator_3 = {'ip': '43.24.65.36', 'type': 'Address'}
+    #
+    #     # [Pre-Requisite] - create case
+    #     case = self.v3_helper.create_case(name='MyCase-09')
+    #     artifact = self.v3.artifact(
+    #         **{
+    #             'case_id': case.model.id,
+    #             'intel_type': 'indicator-ASN',
+    #             'summary': f'asn{randint(100, 999)}',
+    #             'type': 'ASN',
+    #         }
+    #     )
+    #
+    #     self.v3_helper._associations(artifact, indicator, indicator_2, indicator_3)
+    #
+    # def test_group_associations(self):
+    #     """Test Artifact -> Group Association"""
+    #     # [Pre-Requisite] - clean up past runs.
+    #     self.v3_helper.tql_clear(['MyCase-08'], self.v3.cases(), 'name')
+    #     self.v3_helper.tql_clear(
+    #         ['MyAdversary-12', 'StagedGroup-10', 'StagedGroup-11'], self.v3.groups()
+    #     )
+    #
+    #     # [Pre-Requisite] - create case
+    #     case = self.v3_helper.create_case(name='MyCase-08')
+    #     artifact = self.v3.artifact(
+    #         **{
+    #             'case_id': case.model.id,
+    #             'intel_type': 'indicator-ASN',
+    #             'summary': f'asn{randint(100, 999)}',
+    #             'type': 'ASN',
+    #         }
+    #     )
+    #     group_2 = self.v3_helper.create_group(name='StagedGroup-10', xid='staged_group_10-xid')
+    #     group_3 = self.v3_helper.create_group(name='StagedGroup-11', xid='staged_group_11-xid')
+    #
+    #     association_data = {'name': 'MyAdversary-12', 'type': 'Adversary'}
+    #
+    #     self.v3_helper._associations(artifact, group_2, group_3, association_data)
 
     # TODO: Uncomment once core fixes: PLAT-4689
     # def test_case_associations(self):

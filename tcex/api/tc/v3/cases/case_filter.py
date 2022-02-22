@@ -175,6 +175,13 @@ class CaseFilter(FilterABC):
         return artifacts
 
     @property
+    def has_case(self):
+        """Return **CaseFilter** for further filtering."""
+        cases = CaseFilter(Tql())
+        self._tql.add_filter('hasCase', TqlOperator.EQ, cases, TqlType.SUB_QUERY)
+        return cases
+
+    @property
     def has_group(self):
         """Return **GroupFilter** for further filtering."""
         # first-party
