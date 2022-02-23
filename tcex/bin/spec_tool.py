@@ -136,6 +136,8 @@ class SpecTool(BinABC):
         if schema:
             print(gen.generate_schema())
         else:
+            if not self.asy.has_spec:
+                self.print_failure(f'No {self.asy.fqfn.name} file found.')
 
             try:
                 ij = gen.generate()
@@ -158,6 +160,8 @@ class SpecTool(BinABC):
         if schema:
             print(gen.generate_schema())
         elif self.asy.model.runtime_level.lower() != 'organization':
+            if not self.asy.has_spec:
+                self.print_failure(f'No {self.asy.fqfn.name} file found.')
 
             try:
                 lj = gen.generate()
@@ -180,6 +184,9 @@ class SpecTool(BinABC):
         if schema:
             print(gen.generate_schema())
         elif self.asy.model.runtime_level.lower() == 'organization':
+            if not self.asy.has_spec:
+                self.print_failure(f'No {self.asy.fqfn.name} file found.')
+
             try:
                 for filename, job in gen.generate():
                     if job is not None:
@@ -197,6 +204,9 @@ class SpecTool(BinABC):
 
     def generate_readme_md(self) -> None:
         """Generate the README.me file."""
+        if not self.asy.has_spec:
+            self.print_failure(f'No {self.asy.fqfn.name} file found.')
+
         gen = SpecToolReadmeMd(self.asy)
         readme_md = gen.generate()
         self.write_app_file(gen.filename, '\n'.join(readme_md))
