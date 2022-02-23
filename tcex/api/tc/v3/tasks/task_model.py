@@ -154,6 +154,13 @@ class TaskModel(
         read_only=True,
         title='duration',
     )
+    duration_type: Optional[str] = Field(
+        None,
+        description='The **duration type** for the Task.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='durationType',
+    )
     id: Optional[int] = Field(
         None,
         description='The ID of the item.',
@@ -175,6 +182,13 @@ class TaskModel(
         methods=['POST', 'PUT'],
         read_only=False,
         title='notes',
+    )
+    owner: Optional[str] = Field(
+        None,
+        allow_mutation=False,
+        description='The name of the Owner of the Case.',
+        read_only=True,
+        title='owner',
     )
     parent_case: Optional['CaseModel'] = Field(
         None,
@@ -238,7 +252,7 @@ class TaskModel(
         return v
 
     @validator('parent_case', always=True)
-    def _validate_parent_case(cls, v):
+    def _validate_case(cls, v):
         if not v:
             return CaseModel()
         return v

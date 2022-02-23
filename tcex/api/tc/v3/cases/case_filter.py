@@ -34,7 +34,7 @@ class CaseFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            assignee_name: The assigned user or group ID for the case.
+            assignee_name: The user or group name assigned to the Case.
         """
         self._tql.add_filter('assigneeName', operator, assignee_name, TqlType.STRING)
 
@@ -173,6 +173,13 @@ class CaseFilter(FilterABC):
         artifacts = ArtifactFilter(Tql())
         self._tql.add_filter('hasArtifact', TqlOperator.EQ, artifacts, TqlType.SUB_QUERY)
         return artifacts
+
+    @property
+    def has_case(self):
+        """Return **CaseFilter** for further filtering."""
+        cases = CaseFilter(Tql())
+        self._tql.add_filter('hasCase', TqlOperator.EQ, cases, TqlType.SUB_QUERY)
+        return cases
 
     @property
     def has_group(self):
@@ -317,7 +324,7 @@ class CaseFilter(FilterABC):
         self._tql.add_filter('tag', operator, tag, TqlType.STRING)
 
     def target_id(self, operator: Enum, target_id: int) -> None:
-        """Filter Assignee based on **targetId** keyword.
+        """Filter Assignee ID based on **targetId** keyword.
 
         Args:
             operator: The operator enum for the filter.

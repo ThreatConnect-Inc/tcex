@@ -75,6 +75,20 @@ class GroupModel(
         read_only=False,
         title='assignments',
     )
+    associated_artifacts: Optional['ArtifactsModel'] = Field(
+        None,
+        description='A list of Artifacts associated with this Group.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='associatedArtifacts',
+    )
+    associated_cases: Optional['CasesModel'] = Field(
+        None,
+        description='A list of Cases associated with this Group.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='associatedCases',
+    )
     associated_groups: Optional['GroupsModel'] = Field(
         None,
         description='A list of groups associated with this group.',
@@ -428,20 +442,32 @@ class GroupModel(
         title='xid',
     )
 
+    @validator('associated_artifacts', always=True)
+    def _validate_artifacts(cls, v):
+        if not v:
+            return ArtifactsModel()
+        return v
+
+    @validator('associated_cases', always=True)
+    def _validate_cases(cls, v):
+        if not v:
+            return CasesModel()
+        return v
+
     @validator('attributes', always=True)
-    def _validate_attributes(cls, v):
+    def _validate_group_attributes(cls, v):
         if not v:
             return GroupAttributesModel()
         return v
 
     @validator('associated_groups', always=True)
-    def _validate_associated_groups(cls, v):
+    def _validate_groups(cls, v):
         if not v:
             return GroupsModel()
         return v
 
     @validator('associated_indicators', always=True)
-    def _validate_associated_indicators(cls, v):
+    def _validate_indicators(cls, v):
         if not v:
             return IndicatorsModel()
         return v
@@ -458,20 +484,28 @@ class GroupModel(
             return TagsModel()
         return v
 
+    @validator('assignments', always=True)
+    def _validate_task_assignees(cls, v):
+        if not v:
+            return TaskAssigneesModel()
+        return v
+
     @validator('created_by', always=True)
-    def _validate_created_by(cls, v):
+    def _validate_user(cls, v):
         if not v:
             return UserModel()
         return v
 
     @validator('associated_victim_assets', always=True)
-    def _validate_associated_victim_assets(cls, v):
+    def _validate_victim_assets(cls, v):
         if not v:
             return VictimAssetsModel()
         return v
 
 
 # first-party
+from tcex.api.tc.v3.artifacts.artifact_model import ArtifactsModel
+from tcex.api.tc.v3.cases.case_model import CasesModel
 from tcex.api.tc.v3.group_attributes.group_attribute_model import GroupAttributesModel
 from tcex.api.tc.v3.indicators.indicator_model import IndicatorsModel
 from tcex.api.tc.v3.security.task_assignee_model import (  # pylint: disable=unused-import

@@ -171,7 +171,7 @@ class WorkflowEventModel(
     )
 
     @validator('parent_case', always=True)
-    def _validate_parent_case(cls, v):
+    def _validate_case(cls, v):
         if not v:
             return CaseModel()
         return v

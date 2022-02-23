@@ -190,7 +190,7 @@ class VictimModel(
     )
 
     @validator('associated_groups', always=True)
-    def _validate_associated_groups(cls, v):
+    def _validate_groups(cls, v):
         if not v:
             return GroupsModel()
         return v
@@ -208,13 +208,13 @@ class VictimModel(
         return v
 
     @validator('assets', always=True)
-    def _validate_assets(cls, v):
+    def _validate_victim_assets(cls, v):
         if not v:
             return VictimAssetsModel()
         return v
 
     @validator('attributes', always=True)
-    def _validate_attributes(cls, v):
+    def _validate_victim_attributes(cls, v):
         if not v:
             return VictimAttributesModel()
         return v

@@ -6,12 +6,18 @@ from typing import TYPE_CHECKING, Union
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.artifacts.artifact_filter import ArtifactFilter
 from tcex.api.tc.v3.artifacts.artifact_model import ArtifactModel, ArtifactsModel
+from tcex.api.tc.v3.cases.case_model import CaseModel
+from tcex.api.tc.v3.groups.group_model import GroupModel
+from tcex.api.tc.v3.indicators.indicator_model import IndicatorModel
 from tcex.api.tc.v3.notes.note_model import NoteModel
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 
 if TYPE_CHECKING:  # pragma: no cover
     # first-party
+    from tcex.api.tc.v3.cases.case import Case
+    from tcex.api.tc.v3.groups.group import Group
+    from tcex.api.tc.v3.indicators.indicator import Indicator
     from tcex.api.tc.v3.notes.note import Note
 
 
@@ -58,6 +64,10 @@ class Artifact(ObjectABC):
     """Artifacts Object.
 
     Args:
+        associated_cases (Cases, kwargs): A list of Cases associated with this Artifact.
+        associated_groups (Groups, kwargs): A list of Groups associated with this Artifact.
+        associated_indicators (Indicators, kwargs): A list of Indicators associated with this
+            Artifact.
         case_id (int, kwargs): The **case id** for the Artifact.
         case_xid (str, kwargs): The **case xid** for the Artifact.
         derived_link (bool, kwargs): Flag to specify if this artifact should be used for potentially
@@ -116,12 +126,72 @@ class Artifact(ObjectABC):
         return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
 
     @property
+    def associated_cases(self) -> 'Case':
+        """Yield Case from Cases."""
+        # first-party
+        from tcex.api.tc.v3.cases.case import Cases
+
+        yield from self._iterate_over_sublist(Cases)
+
+    @property
+    def associated_groups(self) -> 'Group':
+        """Yield Group from Groups."""
+        # first-party
+        from tcex.api.tc.v3.groups.group import Groups
+
+        yield from self._iterate_over_sublist(Groups)
+
+    @property
+    def associated_indicators(self) -> 'Indicator':
+        """Yield Indicator from Indicators."""
+        # first-party
+        from tcex.api.tc.v3.indicators.indicator import Indicators
+
+        yield from self._iterate_over_sublist(Indicators)
+
+    @property
     def notes(self) -> 'Note':
         """Yield Note from Notes."""
         # first-party
         from tcex.api.tc.v3.notes.note import Notes
 
         yield from self._iterate_over_sublist(Notes)
+
+    def stage_associated_case(self, data: Union[dict, 'ObjectABC', 'CaseModel']) -> None:
+        """Stage case on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = CaseModel(**data)
+
+        if not isinstance(data, CaseModel):
+            raise RuntimeError('Invalid type passed in to stage_associated_case')
+        data._staged = True
+        self.model.associated_cases.data.append(data)
+
+    def stage_associated_group(self, data: Union[dict, 'ObjectABC', 'GroupModel']) -> None:
+        """Stage group on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = GroupModel(**data)
+
+        if not isinstance(data, GroupModel):
+            raise RuntimeError('Invalid type passed in to stage_associated_group')
+        data._staged = True
+        self.model.associated_groups.data.append(data)
+
+    def stage_associated_indicator(self, data: Union[dict, 'ObjectABC', 'IndicatorModel']) -> None:
+        """Stage indicator on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = IndicatorModel(**data)
+
+        if not isinstance(data, IndicatorModel):
+            raise RuntimeError('Invalid type passed in to stage_associated_indicator')
+        data._staged = True
+        self.model.associated_indicators.data.append(data)
 
     def stage_note(self, data: Union[dict, 'ObjectABC', 'NoteModel']) -> None:
         """Stage note on the object."""
