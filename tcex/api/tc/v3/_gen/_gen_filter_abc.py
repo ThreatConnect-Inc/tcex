@@ -198,7 +198,7 @@ class GenerateFilterABC(GenerateABC, ABC):
         ]
 
     def _gen_code_has_case_method(self) -> list:
-        """Return code for has_group TQL filter methods."""
+        """Return code for has_case TQL filter methods."""
         self._add_tql_imports()
         _code = [
             f'{self.i1}@property',
