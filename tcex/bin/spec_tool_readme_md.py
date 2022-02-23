@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from tcex.app_config.models.app_spec_yml_model import SectionsModel
 
 
-class GenConfigReadmeMd(BinABC):
+class SpecToolReadmeMd(BinABC):
     """Generate App Config File"""
 
     def __init__(self, asy: 'AppSpecYml') -> None:

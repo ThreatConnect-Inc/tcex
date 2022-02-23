@@ -8,7 +8,7 @@ from tcex.app_config.models import AppSpecYmlModel
 from tcex.bin.bin_abc import BinABC
 
 
-class GenConfigAppSpecYml(BinABC):
+class SpecToolAppSpecYml(BinABC):
     """Generate App Config File"""
 
     def __init__(self) -> None:
