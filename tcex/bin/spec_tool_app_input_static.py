@@ -5,7 +5,7 @@
 from typing import List
 
 
-class GenConfigAppInputStatic:
+class SpecToolAppInputStatic:
     """Generate App Config File"""
 
     def __init__(self) -> None:

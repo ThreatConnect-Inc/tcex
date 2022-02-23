@@ -11,7 +11,7 @@ import colorama as c
 import typer
 
 # first-party
-from tcex.bin import Dep, Deploy, GenConfig, Package, Template, Validate
+from tcex.bin import Dep, Deploy, SpecTool, Package, Template, Validate
 
 
 app = typer.Typer()
@@ -123,7 +123,7 @@ def deploy(
 
 
 @app.command()
-def genconfig(
+def spectool(
     all_: bool = typer.Option(False, '--all', help='Generate all configuration files.'),
     app_input: bool = typer.Option(False, help='Generate app_input.py.'),
     app_spec: bool = typer.Option(False, help='Generate app_spec.yml.'),
@@ -138,7 +138,7 @@ def genconfig(
 
     Generate one or more configuration files for the App.
     """
-    gc = GenConfig(overwrite)
+    gc = SpecTool(overwrite)
     try:
         if app_spec is True:
             gc.generate_app_spec(schema)
