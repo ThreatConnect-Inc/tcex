@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from tcex.app_config import AppSpecYml
 
 
-class GenConfigInstallJson(BinABC):
+class SpecToolInstallJson(BinABC):
     """Generate App Config File"""
 
     def __init__(self, asy: 'AppSpecYml') -> None:
@@ -85,7 +85,7 @@ class GenConfigInstallJson(BinABC):
                 ],
                 'type': self.asy.model.category,
             }
-            if self.asy.model.playbook.retry.allowed is True:
+            if self.asy.model.playbook and self.asy.model.playbook.retry.allowed is True:
                 install_json_data['playbook']['retry'] = self.asy.model.retry.dict(by_alias=True)
 
     @property
