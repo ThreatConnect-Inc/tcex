@@ -498,7 +498,6 @@ class GenerateFilterABC(GenerateABC, ABC):
             if keyword.snake_case() == 'has_artifact':
                 _filter_class.extend(self._gen_code_has_artifact_method())
             elif keyword.snake_case() == 'has_case':
-                print('getting here')
                 _filter_class.extend(self._gen_code_has_case_method())
             elif keyword.snake_case() == 'has_group':
                 _filter_class.extend(self._gen_code_has_group_method())
