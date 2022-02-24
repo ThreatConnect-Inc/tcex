@@ -391,7 +391,7 @@ class CommonService:
             else:  # pylint: disable=useless-else-on-loop
                 self.log.info('feature=service, event=service-ready')
                 ready_command = {'command': 'Ready'}
-                if self.ij.model.runtime_level.lower() in ['apiservice']:
+                if self.ij.model.runtime_level.lower() in ['apiservice'] and self.ij.model.service:
                     ready_command['discoveryTypes'] = self.ij.model.service.discovery_types
                 self.message_broker.publish(
                     json.dumps(ready_command), self.args.tc_svc_client_topic
