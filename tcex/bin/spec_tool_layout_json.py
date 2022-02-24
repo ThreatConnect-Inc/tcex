@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from tcex.app_config import AppSpecYml
 
 
-class GenConfigLayoutJson(BinABC):
+class SpecToolLayoutJson(BinABC):
     """Generate App Config File"""
 
     def __init__(self, asy: 'AppSpecYml') -> None:

@@ -13,15 +13,15 @@ from pydantic import ValidationError
 # first-party
 from tcex.app_config import AppSpecYml
 from tcex.bin.bin_abc import BinABC
-from tcex.bin.gen_config_app_input import GenConfigAppInput
-from tcex.bin.gen_config_app_spec_yml import GenConfigAppSpecYml
-from tcex.bin.gen_config_install_json import GenConfigInstallJson
-from tcex.bin.gen_config_job_json import GenConfigJobJson
-from tcex.bin.gen_config_layout_json import GenConfigLayoutJson
-from tcex.bin.gen_config_readme_md import GenConfigReadmeMd
+from tcex.bin.spec_tool_app_input import SpecToolAppInput
+from tcex.bin.spec_tool_app_spec_yml import SpecToolAppSpecYml
+from tcex.bin.spec_tool_install_json import SpecToolInstallJson
+from tcex.bin.spec_tool_job_json import SpecToolJobJson
+from tcex.bin.spec_tool_layout_json import SpecToolLayoutJson
+from tcex.bin.spec_tool_readme_md import SpecToolReadmeMd
 
 
-class GenConfig(BinABC):
+class SpecTool(BinABC):
     """Generate App Config Files"""
 
     def __init__(self, overwrite: bool = False) -> None:
@@ -102,7 +102,7 @@ class GenConfig(BinABC):
         # force migration of app.yaml file
         _ = self.asy.model.app_id
 
-        gen = GenConfigAppInput()
+        gen = SpecToolAppInput()
         code = gen.generate()
         self.write_app_file(gen.filename, self.format_code('\n'.join(code)))
         if gen.report_mismatch:
@@ -119,7 +119,7 @@ class GenConfig(BinABC):
 
     def generate_app_spec(self, schema: bool) -> None:
         """Generate the app_spec.yml file."""
-        gen = GenConfigAppSpecYml()
+        gen = SpecToolAppSpecYml()
         if schema:
             print(gen.generate_schema())
         else:
@@ -132,7 +132,7 @@ class GenConfig(BinABC):
 
     def generate_install_json(self, schema: bool) -> None:
         """Generate the install.json file."""
-        gen = GenConfigInstallJson(self.asy)
+        gen = SpecToolInstallJson(self.asy)
         if schema:
             print(gen.generate_schema())
         else:
@@ -154,7 +154,7 @@ class GenConfig(BinABC):
 
     def generate_layout_json(self, schema: bool) -> None:
         """Generate the layout.json file."""
-        gen = GenConfigLayoutJson(self.asy)
+        gen = SpecToolLayoutJson(self.asy)
         if schema:
             print(gen.generate_schema())
         elif self.asy.model.runtime_level.lower() != 'organization':
@@ -176,7 +176,7 @@ class GenConfig(BinABC):
 
     def generate_job_json(self, schema: bool) -> None:
         """Generate the job.json file."""
-        gen = GenConfigJobJson(self.asy)
+        gen = SpecToolJobJson(self.asy)
         if schema:
             print(gen.generate_schema())
         elif self.asy.model.runtime_level.lower() == 'organization':
@@ -197,7 +197,7 @@ class GenConfig(BinABC):
 
     def generate_readme_md(self) -> None:
         """Generate the README.me file."""
-        gen = GenConfigReadmeMd(self.asy)
+        gen = SpecToolReadmeMd(self.asy)
         readme_md = gen.generate()
         self.write_app_file(gen.filename, '\n'.join(readme_md))
 

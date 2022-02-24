@@ -38,13 +38,79 @@ class TestCases(TestV3):
         """Test filter keywords."""
         super().obj_filter_keywords()
 
+    @pytest.mark.xfail(reason='Verify TC Version running against.')
     def test_case_object_properties(self):
         """Test properties."""
         super().obj_properties()
 
+    @pytest.mark.xfail(reason='Verify TC Version running against.')
     def test_case_object_properties_extra(self):
         """Test properties."""
         super().obj_properties_extra()
+
+    @pytest.mark.xfail(reason='Verify TC Version running against.')
+    def test_indicator_associations(self):
+        """Test Case -> Indicator Associations"""
+
+        self.v3_helper.tql_clear(['MyCase-19'], self.v3.cases(), 'name')
+
+        indicator = self.v3.indicator(
+            **{
+                'ip': '43.24.65.37',
+                'type': 'Address',
+            }
+        )
+        indicator.create()
+        indicator_2 = self.v3.indicator(
+            **{
+                'ip': '43.24.65.38',
+                'type': 'Address',
+            }
+        )
+        indicator_2.create()
+        indicator_3 = {'ip': '43.24.65.39', 'type': 'Address'}
+
+        # [Pre-Requisite] - create case
+        case = self.v3.case(**{'name': 'MyCase-19', 'severity': 'Low', 'status': 'Open'})
+
+        self.v3_helper._associations(case, indicator, indicator_2, indicator_3)
+
+    @pytest.mark.xfail(reason='Verify TC Version running against.')
+    def test_group_associations(self):
+        """Test Case -> Group Associations"""
+        # [Pre-Requisite] - clean up past runs.
+        self.v3_helper.tql_clear(['MyCase-11'], self.v3.cases(), 'name')
+        self.v3_helper.tql_clear(
+            ['MyAdversary-13', 'StagedGroup-12', 'StagedGroup-13'], self.v3.groups()
+        )
+
+        case = self.v3.case(**{'name': 'MyCase-11', 'severity': 'Low', 'status': 'Open'})
+
+        group_2 = self.v3_helper.create_group(name='StagedGroup-12', xid='staged_group_12-xid')
+        group_3 = self.v3_helper.create_group(name='StagedGroup-13', xid='staged_group_13-xid')
+
+        association_data = {'name': 'MyAdversary-13', 'type': 'Adversary'}
+
+        self.v3_helper._associations(case, group_2, group_3, association_data)
+
+    @pytest.mark.xfail(reason='Remove XFail once core fixes PLAT-4695')
+    def test_case_associations(self):
+        """Test Case -> Case Associations"""
+        # [Pre-Requisite] - clean up past runs.
+        self.v3_helper.tql_clear(
+            ['MyCase-10', 'MyCase-11', 'MyCase-12', 'MyCase-13'], self.v3.cases(), 'name'
+        )
+
+        # [Pre-Requisite] - create cas
+        case_2 = self.v3_helper.create_case(name='MyCase-10')
+        case_3 = self.v3_helper.create_case(name='MyCase-11')
+
+        # [Create Testing] define object data
+        case = self.v3.case(**{'name': 'MyCase-12', 'severity': 'Low', 'status': 'Open'})
+
+        association_data = {'name': 'MyCase-13', 'severity': 'Low', 'status': 'Open'}
+
+        self.v3_helper._associations(case, case_2, case_3, association_data)
 
     def test_case_create_and_retrieve_nested_types(self, request: 'pytest.FixtureRequest'):
         """Test Object Creation
@@ -252,7 +318,7 @@ class TestCases(TestV3):
         # [Stage Testing] Refetch the case and stage a new tag on it.
         case = self.v3.case(id=case.model.id)
         case.stage_tag({'name': f'{request.node.name}-3'})
-        case.update()
+        case.update(mode='Replace')
 
         # [Retrieve Testing] Verify that only the 1 new tag gets re-added to the case, replacing
         # all other tags.

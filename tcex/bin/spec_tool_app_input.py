@@ -9,7 +9,7 @@ import tcex.input.field_types as FieldTypes  # noqa: N812
 from tcex.app_config.permutation import Permutation
 from tcex.backports import cached_property
 from tcex.bin.bin_abc import BinABC
-from tcex.bin.gen_config_app_input_static import GenConfigAppInputStatic
+from tcex.bin.spec_tool_app_input_static import SpecToolAppInputStatic
 from tcex.pleb.none_model import NoneModel
 
 if TYPE_CHECKING:
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from tcex.app_config.models.install_json_model import ParamsModel
 
 
-class GenConfigAppInput(BinABC):
+class SpecToolAppInput(BinABC):
     """Generate App Config File"""
 
     def __init__(self) -> None:
@@ -29,7 +29,7 @@ class GenConfigAppInput(BinABC):
         self.class_model_map = {}
         self.field_type_modules = set()
         self.filename = 'app_inputs.py'
-        self.input_static = GenConfigAppInputStatic()
+        self.input_static = SpecToolAppInputStatic()
         self.typing_modules = set()
         self.pydantic_modules = {'BaseModel'}
         self.permutations = Permutation(self.log)

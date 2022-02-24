@@ -138,6 +138,20 @@ class WorkflowTemplateModel(
         read_only=False,
         title='name',
     )
+    owner: Optional[str] = Field(
+        None,
+        allow_mutation=False,
+        description='The name of the Owner of the Case.',
+        read_only=True,
+        title='owner',
+    )
+    owner_id: Optional[int] = Field(
+        None,
+        allow_mutation=False,
+        description='The name of the Owner of the Case.',
+        read_only=True,
+        title='ownerId',
+    )
     version: Optional[int] = Field(
         None,
         description='The **version** for the Workflow_Template.',

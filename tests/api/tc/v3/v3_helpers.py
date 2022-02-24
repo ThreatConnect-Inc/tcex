@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING, Any, Dict, Optional
 from pydantic import BaseModel
 
 # first-party
+from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tcex.utils.utils import Utils
 from tests.mock_app import MockApp
 
@@ -59,6 +60,73 @@ class V3Helper:
         v3_obj = v3_class(session=self.tcex.session_tc)
         # print(f'method=import_module, v3-obj-type={type(v3_obj)}')
         return v3_obj
+
+    @staticmethod
+    def tql_clear(names, collection, field='summary'):
+        """Use TQL to delete TC Objects."""
+
+        getattr(collection.filter, field)(TqlOperator.IN, names)
+        for obj in collection:
+            obj.delete()
+
+    def _associations(self, root, association_1, association_2, association_data):
+        """Helper method to test associations."""
+
+        obj_type = root.__class__.__name__.lower()
+        association_type = association_1.__class__.__name__
+        if association_type not in ['Case', 'Artifact', 'Group', 'Indicator']:
+            assert False
+        association_type = association_type.lower()
+
+        generator = f'associated_{(association_type + "s")}'
+        stagger = f'stage_associated_{association_type}'
+
+        data_ = [{'id': association_1.model.id}, association_data]
+        getattr(root.model, generator).data = data_
+
+        root.create()
+
+        found_associations = 0
+        for _ in getattr(root, generator):
+            found_associations += 1
+        assert found_associations == 2
+
+        # [Append Testing] - Stage a new group as a association
+        getattr(root, stagger)({'id': association_2.model.id})
+        root.update()
+
+        # [Retrieve Testing] - Validate that the group staged is associated.
+        found_association = 0
+        staged_association_found = False
+        for association in getattr(root, generator):
+            found_association += 1
+            if association.model.id == association_2.model.id:
+                staged_association_found = True
+        assert found_association == 3, f'Invalid amount of groups ({found_association}) retrieved'
+        assert staged_association_found, 'Newly staged group not retrieved'
+
+        root = getattr(self.v3, obj_type)(id=root.model.id)
+        # [Stage Testing] - Stage a new group as a association
+        getattr(root, stagger)({'id': association_2.model.id})
+        # [Replace Testing] - Replace the current associations with the newly staged association
+        root.update(mode='replace')
+
+        # [Retrieve Testing] - Validate that only the staged group is associated.
+        found_associations = 0
+        for _ in getattr(root, generator):
+            found_associations += 1
+        assert found_associations == 1
+
+        root = getattr(self.v3, obj_type)(id=root.model.id)
+        # [Stage Testing] - Stage a new group as a association
+        getattr(root, stagger)({'id': association_2.model.id})
+        # [Delete Testing] - Delete the newly staged association
+        root.update(mode='delete')
+
+        found_associations = 0
+        for _ in getattr(root, generator):
+            found_associations += 1
+        assert found_associations == 0
 
     @staticmethod
     def _module_map(module: str) -> Dict:
