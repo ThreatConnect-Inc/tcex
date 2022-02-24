@@ -1,6 +1,7 @@
 """TcEx Generate Configurations CLI Command"""
 # standard library
 import json
+import os
 
 # first-party
 from tcex.app_config import AppSpecYml, InstallJson, JobJson, LayoutJson
@@ -50,6 +51,26 @@ class SpecToolAppSpecYml(BinABC):
         if self.ij.model.runtime_level.lower() != 'organization':
             _category = self.ij.model.playbook.type or ''
         app_spec_yml_data['category'] = _category
+
+    def _add_feeds(self, app_spec_yml_data: dict) -> None:
+        """Add organization feeds section."""
+        if self.ij.model.runtime_level.lower() != 'organization':
+            return
+
+        feeds = []
+        for feed in self.ij.model.feeds:
+            if not os.path.isfile(feed.job_file):
+                self.log.error(
+                    f'feature=app-spec-yml, exception=failed-reading-file, filename={feed.job_file}'
+                )
+                continue
+            with open(feed.job_file) as f:
+                job = json.load(f)
+            feed = feed.dict(by_alias=True)
+            feed['job'] = job
+            feeds.append(feed)
+        app_spec_yml_data.setdefault('organization', {})
+        app_spec_yml_data['organization']['feeds'] = feeds
 
     def _add_note_per_action(self, app_spec_yml_data: dict) -> None:
         """Add note per action."""
