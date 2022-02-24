@@ -38,6 +38,14 @@ class SpecTool(BinABC):
         # rename app.yaml to app_spec.yml
         self.rename_app_file('app.yaml', 'app_spec.yml')
 
+    def _check_has_spec(self):
+        """Validate that the app_spec.yml file exists."""
+        if not self.asy.has_spec:
+            self.print_failure(
+                f'No {self.asy.fqfn.name} file found.\nTry running `tcex spectool '
+                f'--app-spec` first to generate the {self.asy.fqfn.name} specification file.'
+            )
+
     @property
     def _git_installed(self) -> bool:
         """Check if git is installed."""
@@ -136,6 +144,8 @@ class SpecTool(BinABC):
         if schema:
             print(gen.generate_schema())
         else:
+            # check that app_spec.yml exists
+            self._check_has_spec()
 
             try:
                 ij = gen.generate()
@@ -158,6 +168,8 @@ class SpecTool(BinABC):
         if schema:
             print(gen.generate_schema())
         elif self.asy.model.runtime_level.lower() != 'organization':
+            # check that app_spec.yml exists
+            self._check_has_spec()
 
             try:
                 lj = gen.generate()
@@ -180,6 +192,9 @@ class SpecTool(BinABC):
         if schema:
             print(gen.generate_schema())
         elif self.asy.model.runtime_level.lower() == 'organization':
+            # check that app_spec.yml exists
+            self._check_has_spec()
+
             try:
                 for filename, job in gen.generate():
                     if job is not None:
@@ -197,6 +212,9 @@ class SpecTool(BinABC):
 
     def generate_readme_md(self) -> None:
         """Generate the README.me file."""
+        # check that app_spec.yml exists
+        self._check_has_spec()
+
         gen = SpecToolReadmeMd(self.asy)
         readme_md = gen.generate()
         self.write_app_file(gen.filename, '\n'.join(readme_md))
