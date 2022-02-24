@@ -52,6 +52,24 @@ class WorkflowTemplateFilter(FilterABC):
         """
         self._tql.add_filter('name', operator, name, TqlType.STRING)
 
+    def owner(self, operator: Enum, owner: int) -> None:
+        """Filter Owner ID based on **owner** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            owner: The Owner ID for the template.
+        """
+        self._tql.add_filter('owner', operator, owner, TqlType.INTEGER)
+
+    def owner_name(self, operator: Enum, owner_name: str) -> None:
+        """Filter Owner Name based on **ownerName** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            owner_name: The owner name for the template.
+        """
+        self._tql.add_filter('ownerName', operator, owner_name, TqlType.STRING)
+
     def target_id(self, operator: Enum, target_id: int) -> None:
         """Filter Target ID based on **targetId** keyword.
 

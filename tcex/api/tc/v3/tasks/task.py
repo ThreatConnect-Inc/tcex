@@ -70,6 +70,7 @@ class Task(ObjectABC):
         dependent_on_id (int, kwargs): The ID of another Task that this Task is dependent upon.
         description (str, kwargs): The **description** for the Task.
         due_date (str, kwargs): The due date of the Task.
+        duration_type (str, kwargs): The **duration type** for the Task.
         name (str, kwargs): The **name** for the Task.
         notes (Notes, kwargs): A list of Notes corresponding to the Task.
         required (bool, kwargs): Flag indicating whether or not the task is required.

@@ -92,6 +92,20 @@ class IndicatorModel(
         read_only=False,
         title='address',
     )
+    associated_artifacts: Optional['ArtifactsModel'] = Field(
+        None,
+        description='A list of Artifacts associated with this Indicator.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='associatedArtifacts',
+    )
+    associated_cases: Optional['CasesModel'] = Field(
+        None,
+        description='A list of Cases associated with this Indicator.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='associatedCases',
+    )
     associated_groups: Optional['GroupsModel'] = Field(
         None,
         description='A list of groups that this indicator is associated with.',
@@ -369,20 +383,32 @@ class IndicatorModel(
         title='whoisActive',
     )
 
+    @validator('associated_artifacts', always=True)
+    def _validate_artifacts(cls, v):
+        if not v:
+            return ArtifactsModel()
+        return v
+
+    @validator('associated_cases', always=True)
+    def _validate_cases(cls, v):
+        if not v:
+            return CasesModel()
+        return v
+
     @validator('associated_groups', always=True)
-    def _validate_associated_groups(cls, v):
+    def _validate_groups(cls, v):
         if not v:
             return GroupsModel()
         return v
 
     @validator('attributes', always=True)
-    def _validate_attributes(cls, v):
+    def _validate_indicator_attributes(cls, v):
         if not v:
             return IndicatorAttributesModel()
         return v
 
     @validator('associated_indicators', always=True)
-    def _validate_associated_indicators(cls, v):
+    def _validate_indicators(cls, v):
         if not v:
             return IndicatorsModel()
         return v
@@ -401,6 +427,8 @@ class IndicatorModel(
 
 
 # first-party
+from tcex.api.tc.v3.artifacts.artifact_model import ArtifactsModel
+from tcex.api.tc.v3.cases.case_model import CasesModel
 from tcex.api.tc.v3.groups.group_model import GroupsModel
 from tcex.api.tc.v3.indicator_attributes.indicator_attribute_model import IndicatorAttributesModel
 from tcex.api.tc.v3.security_labels.security_label_model import SecurityLabelsModel

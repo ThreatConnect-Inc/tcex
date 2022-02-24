@@ -5,6 +5,8 @@ from typing import TYPE_CHECKING, Optional, Union
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
+from tcex.api.tc.v3.artifacts.artifact_model import ArtifactModel
+from tcex.api.tc.v3.cases.case_model import CaseModel
 from tcex.api.tc.v3.group_attributes.group_attribute_model import GroupAttributeModel
 from tcex.api.tc.v3.groups.group_filter import GroupFilter
 from tcex.api.tc.v3.groups.group_model import GroupModel, GroupsModel
@@ -20,6 +22,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from requests import Response
 
     # first-party
+    from tcex.api.tc.v3.artifacts.artifact import Artifact
+    from tcex.api.tc.v3.cases.case import Case
     from tcex.api.tc.v3.group_attributes.group_attribute import GroupAttribute
     from tcex.api.tc.v3.indicators.indicator import Indicator
     from tcex.api.tc.v3.security_labels.security_label import SecurityLabel
@@ -72,6 +76,8 @@ class Group(ObjectABC):
     Args:
         assignments (TaskAssignees, kwargs): A list of assignees and escalatees associated with this
             group (Task specific).
+        associated_artifacts (Artifacts, kwargs): A list of Artifacts associated with this Group.
+        associated_cases (Cases, kwargs): A list of Cases associated with this Group.
         associated_groups (Groups, kwargs): A list of groups associated with this group.
         associated_indicators (Indicators, kwargs): A list of indicators associated with this group.
         associated_victim_assets (VictimAssets, kwargs): A list of victim assets associated with
@@ -216,6 +222,22 @@ class Group(ObjectABC):
         return self.request
 
     @property
+    def associated_artifacts(self) -> 'Artifact':
+        """Yield Artifact from Artifacts."""
+        # first-party
+        from tcex.api.tc.v3.artifacts.artifact import Artifacts
+
+        yield from self._iterate_over_sublist(Artifacts)
+
+    @property
+    def associated_cases(self) -> 'Case':
+        """Yield Case from Cases."""
+        # first-party
+        from tcex.api.tc.v3.cases.case import Cases
+
+        yield from self._iterate_over_sublist(Cases)
+
+    @property
     def associated_groups(self) -> 'Group':
         """Yield Group from Groups."""
         # Ensure the current item is not returned as a association
@@ -263,6 +285,30 @@ class Group(ObjectABC):
         from tcex.api.tc.v3.tags.tag import Tags
 
         yield from self._iterate_over_sublist(Tags)
+
+    def stage_associated_case(self, data: Union[dict, 'ObjectABC', 'CaseModel']) -> None:
+        """Stage case on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = CaseModel(**data)
+
+        if not isinstance(data, CaseModel):
+            raise RuntimeError('Invalid type passed in to stage_associated_case')
+        data._staged = True
+        self.model.associated_cases.data.append(data)
+
+    def stage_associated_artifact(self, data: Union[dict, 'ObjectABC', 'ArtifactModel']) -> None:
+        """Stage artifact on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = ArtifactModel(**data)
+
+        if not isinstance(data, ArtifactModel):
+            raise RuntimeError('Invalid type passed in to stage_associated_artifact')
+        data._staged = True
+        self.model.associated_artifacts.data.append(data)
 
     def stage_associated_group(self, data: Union[dict, 'ObjectABC', 'GroupModel']) -> None:
         """Stage group on the object."""

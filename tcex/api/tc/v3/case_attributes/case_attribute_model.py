@@ -134,7 +134,7 @@ class CaseAttributeModel(
     )
 
     @validator('created_by', always=True)
-    def _validate_created_by(cls, v):
+    def _validate_user(cls, v):
         if not v:
             return UserModel()
         return v

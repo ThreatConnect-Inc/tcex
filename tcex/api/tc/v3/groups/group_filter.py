@@ -285,6 +285,16 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('isGroup', operator, is_group, TqlType.BOOLEAN)
 
+    def last_modified(self, operator: Enum, last_modified: str) -> None:
+        """Filter Last Modified based on **lastModified** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            last_modified: The date the group was last modified.
+        """
+        last_modified = self.utils.any_to_datetime(last_modified).strftime('%Y-%m-%dT%H:%M:%S')
+        self._tql.add_filter('lastModified', operator, last_modified, TqlType.STRING)
+
     def owner(self, operator: Enum, owner: int) -> None:
         """Filter Owner ID based on **owner** keyword.
 
@@ -456,11 +466,11 @@ class GroupFilter(FilterABC):
         self._tql.add_filter('taskEscalationDate', operator, task_escalation_date, TqlType.STRING)
 
     def task_last_modified(self, operator: Enum, task_last_modified: str) -> None:
-        """Filter Last Modified (Task) based on **taskLastModified** keyword.
+        """Filter Last Modified based on **taskLastModified** keyword.
 
         Args:
             operator: The operator enum for the filter.
-            task_last_modified: The date the task was last modified.
+            task_last_modified: The date the group was last modified.
         """
         task_last_modified = self.utils.any_to_datetime(task_last_modified).strftime(
             '%Y-%m-%dT%H:%M:%S'

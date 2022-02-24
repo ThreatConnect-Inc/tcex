@@ -20,7 +20,7 @@ class ArtifactsModel(
 ):
     """Artifacts Model"""
 
-    _mode_support = PrivateAttr(False)
+    _mode_support = PrivateAttr(True)
 
     data: Optional[List['ArtifactModel']] = Field(
         [],
@@ -107,6 +107,27 @@ class ArtifactModel(
         description='The **artifact type** for the Artifact.',
         read_only=True,
         title='artifactType',
+    )
+    associated_cases: Optional['CasesModel'] = Field(
+        None,
+        description='A list of Cases associated with this Artifact.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='associatedCases',
+    )
+    associated_groups: Optional['GroupsModel'] = Field(
+        None,
+        description='A list of Groups associated with this Artifact.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='associatedGroups',
+    )
+    associated_indicators: Optional['IndicatorsModel'] = Field(
+        None,
+        description='A list of Indicators associated with this Artifact.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='associatedIndicators',
     )
     case_id: Optional[int] = Field(
         None,
@@ -252,9 +273,27 @@ class ArtifactModel(
         return v
 
     @validator('parent_case', always=True)
-    def _validate_parent_case(cls, v):
+    def _validate_case(cls, v):
         if not v:
             return CaseModel()
+        return v
+
+    @validator('associated_cases', always=True)
+    def _validate_cases(cls, v):
+        if not v:
+            return CasesModel()
+        return v
+
+    @validator('associated_groups', always=True)
+    def _validate_groups(cls, v):
+        if not v:
+            return GroupsModel()
+        return v
+
+    @validator('associated_indicators', always=True)
+    def _validate_indicators(cls, v):
+        if not v:
+            return IndicatorsModel()
         return v
 
     @validator('notes', always=True)
@@ -272,7 +311,9 @@ class ArtifactModel(
 
 # first-party
 from tcex.api.tc.v3.artifact_types.artifact_type_model import ArtifactTypeModel
-from tcex.api.tc.v3.cases.case_model import CaseModel
+from tcex.api.tc.v3.cases.case_model import CaseModel, CasesModel
+from tcex.api.tc.v3.groups.group_model import GroupsModel
+from tcex.api.tc.v3.indicators.indicator_model import IndicatorsModel
 from tcex.api.tc.v3.notes.note_model import NotesModel
 from tcex.api.tc.v3.tasks.task_model import TaskModel
 
