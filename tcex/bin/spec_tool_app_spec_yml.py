@@ -3,6 +3,9 @@
 import json
 import os
 
+# third-party
+from semantic_version import Version
+
 # first-party
 from tcex.app_config import AppSpecYml, InstallJson, JobJson, LayoutJson
 from tcex.app_config.models import AppSpecYmlModel
