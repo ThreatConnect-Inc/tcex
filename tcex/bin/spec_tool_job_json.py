@@ -28,7 +28,8 @@ class SpecToolJobJson(BinABC):
         if self.asy.model.organization and self.asy.model.organization.feeds:
             for feed in self.asy.model.organization.feeds:
                 _job_data = feed.job.dict(by_alias=True)
-                _job_data['programName'] = self.tj.model.package.app_name.replace('_', ' ')
+                app_name = self.tj.model.package.app_name.replace('_', ' ')
+                _job_data['programName'] = f'{app_name} v{self.asy.model.program_version.major}'
                 _job_data['programVersion'] = str(self.asy.model.program_version)
                 yield feed.job_file, JobJsonModel(**_job_data)
 

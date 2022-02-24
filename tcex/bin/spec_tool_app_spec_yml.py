@@ -1,6 +1,10 @@
 """TcEx Generate Configurations CLI Command"""
 # standard library
 import json
+import os
+
+# third-party
+from semantic_version import Version
 
 # first-party
 from tcex.app_config import AppSpecYml, InstallJson, JobJson, LayoutJson
@@ -51,6 +55,26 @@ class SpecToolAppSpecYml(BinABC):
             _category = self.ij.model.playbook.type or ''
         app_spec_yml_data['category'] = _category
 
+    def _add_feeds(self, app_spec_yml_data: dict) -> None:
+        """Add organization feeds section."""
+        if self.ij.model.runtime_level.lower() != 'organization':
+            return
+
+        feeds = []
+        for feed in self.ij.model.feeds:
+            if not os.path.isfile(feed.job_file):
+                self.log.error(
+                    f'feature=app-spec-yml, exception=failed-reading-file, filename={feed.job_file}'
+                )
+                continue
+            with open(feed.job_file) as f:
+                job = json.load(f)
+            feed = feed.dict(by_alias=True)
+            feed['job'] = job
+            feeds.append(feed)
+        app_spec_yml_data.setdefault('organization', {})
+        app_spec_yml_data['organization']['feeds'] = feeds
+
     def _add_note_per_action(self, app_spec_yml_data: dict) -> None:
         """Add note per action."""
         _notes_per_action = []
@@ -82,7 +106,7 @@ class SpecToolAppSpecYml(BinABC):
             if self.lj.has_layout:
                 # layout based Apps could will have a display clause for each output
                 for o in self.ij.model.playbook_outputs.values():
-                    o = self.lj.get_output(o.name)
+                    o = self.lj.model.get_output(o.name)
                     _output_data_temp.setdefault(o.display or '1', []).append(o.name)
             else:
                 for _, o in self.ij.model.playbook_outputs.items():
@@ -117,6 +141,20 @@ class SpecToolAppSpecYml(BinABC):
 
     def _add_sections(self, app_spec_yml_data: dict) -> None:
         """Return params from ij and lj formatted for app_spec."""
+        sections = []
+        for section in self._current_data:
+            _section_data = {'sectionName': section.get('title'), 'params': []}
+            for p in section.get('parameters', []):
+                param = self.ij.model.get_param(p.get('name')).dict(by_alias=True)
+                param['display'] = p.get('display')
+                _section_data['params'].append(param)
+            sections.append(_section_data)
+
+        app_spec_yml_data['sections'] = sections
+
+    @property
+    def _current_data(self):
+        """Retrieve the appropriate data regardless of if its a layout based app."""
         if self.lj.has_layout:
             # handle layout based Apps
             _current_data = [i.dict(by_alias=True) for i in self.lj.model.inputs]
@@ -128,21 +166,30 @@ class SpecToolAppSpecYml(BinABC):
                     'title': 'Inputs',
                 }
             ]
+        return _current_data
 
-        sections = []
-        for section in _current_data:
-            _section_data = {'sectionName': section.get('title'), 'params': []}
+    def _is_64_min_version(self) -> bool:
+        """Return params from ij and lj formatted for app_spec."""
+
+        for section in self._current_data:
             for p in section.get('parameters', []):
                 param = self.ij.model.get_param(p.get('name')).dict(by_alias=True)
-                param['display'] = p.get('display')
-                _section_data['params'].append(param)
-            sections.append(_section_data)
+                if param['type'].lower() == 'editchoice':
+                    return True
+        return False
 
-        app_spec_yml_data['sections'] = sections
+    def _add_min_tc_version(self, app_spec_yml_data: dict) -> None:
+        """Add the correct min TC server version."""
+
+        if self._is_64_min_version() and self.ij.model.min_server_version < Version('6.4.0'):
+            app_spec_yml_data['minServerVersion'] = '6.4.0'
 
     def generate(self) -> None:
         """Generate the layout.json file data."""
         app_spec_yml_data = {}
+
+        # add feeds
+        self._add_feeds(app_spec_yml_data)
 
         # add release notes
         self._add_release_notes(app_spec_yml_data)
