@@ -68,12 +68,12 @@ class SpecToolInstallJson(BinABC):
             # publish_out_files
             _publish_out_files = self.asy.model.organization.publish_out_files
             if _publish_out_files:
-                install_json_data['publish_out_files'] = _publish_out_files
+                install_json_data['publishOutFiles'] = _publish_out_files
 
             # repeating_minutes
             _repeating_minutes = self.asy.model.organization.repeating_minutes
             if _repeating_minutes:
-                install_json_data['repeating_minutes'] = _repeating_minutes
+                install_json_data['repeatingMinutes'] = _repeating_minutes
 
     def _add_type_playbook_fields(self, install_json_data: dict) -> None:
         """Add field that apply to ALL App types."""
@@ -99,6 +99,7 @@ class SpecToolInstallJson(BinABC):
 
     def generate(self) -> None:
         """Generate the install.json file data."""
+        # all keys added to dict must be in camelCase
         install_json_data = {}
 
         # add standard fields

@@ -252,6 +252,11 @@ class AppSpecYml:
         """Convert dict to yaml."""
         return yaml.dump(data, Dumper=Dumper, default_flow_style=False, sort_keys=False)
 
+    @property
+    def has_spec(self):
+        """Return True if App has app_spec.yml file."""
+        return self.fqfn.is_file()
+
     @cached_property
     def model(self) -> 'AppSpecYmlModel':
         """Return the Install JSON model."""
