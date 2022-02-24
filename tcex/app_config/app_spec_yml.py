@@ -144,6 +144,9 @@ class AppSpecYml:
                 if param.get('name') is None:
                     param['name'] = param.get('label').replace(' ', '_').lower()
 
+                if 'sequence' in param:
+                    del param['sequence']
+
                 if param.get('type') is None:
                     param['type'] = 'String'
 
