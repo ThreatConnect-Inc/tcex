@@ -78,7 +78,9 @@ class SpecToolInstallJson(BinABC):
     def _add_type_playbook_fields(self, install_json_data: dict) -> None:
         """Add field that apply to ALL App types."""
         if self.asy.model.runtime_level.lower() in [
-            'playbook', 'triggerservice', 'webhooktriggerservice'
+            'playbook',
+            'triggerservice',
+            'webhooktriggerservice',
         ]:
             install_json_data['allowRunAsUser'] = self.asy.model.allow_run_as_user
             install_json_data['playbook'] = {

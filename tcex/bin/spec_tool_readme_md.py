@@ -68,10 +68,9 @@ class SpecToolReadmeMd(BinABC):
         readme_md.append(f'{header_value} Inputs')
         readme_md.append('')
 
-
     @staticmethod
     def _add_service_config_title(readme_md: List[str], header: int) -> None:
-        """Add title for input section."""
+        """Add title for service configuration section."""
         header_value = '#' * header
         readme_md.append(f'{header_value} Service Configuration')
         readme_md.append('')
@@ -243,7 +242,9 @@ class SpecToolReadmeMd(BinABC):
                     readme_md.append('---')
 
         elif self.asy.model.runtime_level.lower() in [
-            'triggerservice', 'webhooktriggerservice', 'organization'
+            'triggerservice',
+            'webhooktriggerservice',
+            'organization',
         ]:
             service_config = []
             non_service_config = []
