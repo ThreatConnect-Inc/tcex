@@ -1,7 +1,7 @@
 """Group / Groups Object"""
 # standard library
 import json
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Iterator, Optional, Union
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -222,7 +222,7 @@ class Group(ObjectABC):
         return self.request
 
     @property
-    def associated_artifacts(self) -> 'Artifact':
+    def associated_artifacts(self) -> Iterator['Artifact']:
         """Yield Artifact from Artifacts."""
         # first-party
         from tcex.api.tc.v3.artifacts.artifact import Artifacts
@@ -230,7 +230,7 @@ class Group(ObjectABC):
         yield from self._iterate_over_sublist(Artifacts)
 
     @property
-    def associated_cases(self) -> 'Case':
+    def associated_cases(self) -> Iterator['Case']:
         """Yield Case from Cases."""
         # first-party
         from tcex.api.tc.v3.cases.case import Cases
@@ -238,7 +238,7 @@ class Group(ObjectABC):
         yield from self._iterate_over_sublist(Cases)
 
     @property
-    def associated_groups(self) -> 'Group':
+    def associated_groups(self) -> Iterator['Group']:
         """Yield Group from Groups."""
         # Ensure the current item is not returned as a association
         for group in self._iterate_over_sublist(Groups):
@@ -247,7 +247,7 @@ class Group(ObjectABC):
             yield group
 
     @property
-    def associated_indicators(self) -> 'Indicator':
+    def associated_indicators(self) -> Iterator['Indicator']:
         """Yield Indicator from Indicators."""
         # first-party
         from tcex.api.tc.v3.indicators.indicator import Indicators
@@ -255,7 +255,7 @@ class Group(ObjectABC):
         yield from self._iterate_over_sublist(Indicators)
 
     @property
-    def associated_victim_assets(self) -> 'VictimAsset':
+    def associated_victim_assets(self) -> Iterator['VictimAsset']:
         """Yield Victim_Asset from Victim_Assets."""
         # first-party
         from tcex.api.tc.v3.victim_assets.victim_asset import VictimAssets
@@ -263,7 +263,7 @@ class Group(ObjectABC):
         yield from self._iterate_over_sublist(VictimAssets)
 
     @property
-    def attributes(self) -> 'GroupAttribute':
+    def attributes(self) -> Iterator['GroupAttribute']:
         """Yield Attribute from Attributes."""
         # first-party
         from tcex.api.tc.v3.group_attributes.group_attribute import GroupAttributes
@@ -271,7 +271,7 @@ class Group(ObjectABC):
         yield from self._iterate_over_sublist(GroupAttributes)
 
     @property
-    def security_labels(self) -> 'SecurityLabel':
+    def security_labels(self) -> Iterator['SecurityLabel']:
         """Yield Security_Label from Security_Labels."""
         # first-party
         from tcex.api.tc.v3.security_labels.security_label import SecurityLabels
@@ -279,7 +279,7 @@ class Group(ObjectABC):
         yield from self._iterate_over_sublist(SecurityLabels)
 
     @property
-    def tags(self) -> 'Tag':
+    def tags(self) -> Iterator['Tag']:
         """Yield Tag from Tags."""
         # first-party
         from tcex.api.tc.v3.tags.tag import Tags

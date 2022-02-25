@@ -2,7 +2,7 @@
 # standard library
 import json
 from datetime import datetime
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Iterator, Optional, Union
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -207,7 +207,7 @@ class Indicator(ObjectABC):
         return self.request
 
     @property
-    def associated_artifacts(self) -> 'Artifact':
+    def associated_artifacts(self) -> Iterator['Artifact']:
         """Yield Artifact from Artifacts."""
         # first-party
         from tcex.api.tc.v3.artifacts.artifact import Artifacts
@@ -215,7 +215,7 @@ class Indicator(ObjectABC):
         yield from self._iterate_over_sublist(Artifacts)
 
     @property
-    def associated_cases(self) -> 'Case':
+    def associated_cases(self) -> Iterator['Case']:
         """Yield Case from Cases."""
         # first-party
         from tcex.api.tc.v3.cases.case import Cases
@@ -223,7 +223,7 @@ class Indicator(ObjectABC):
         yield from self._iterate_over_sublist(Cases)
 
     @property
-    def associated_groups(self) -> 'Group':
+    def associated_groups(self) -> Iterator['Group']:
         """Yield Group from Groups."""
         # first-party
         from tcex.api.tc.v3.groups.group import Groups
@@ -231,7 +231,7 @@ class Indicator(ObjectABC):
         yield from self._iterate_over_sublist(Groups)
 
     @property
-    def associated_indicators(self) -> 'Indicator':
+    def associated_indicators(self) -> Iterator['Indicator']:
         """Yield Indicator from Indicators."""
         # Ensure the current item is not returned as a association
         for indicator in self._iterate_over_sublist(Indicators):
@@ -240,7 +240,7 @@ class Indicator(ObjectABC):
             yield indicator
 
     @property
-    def attributes(self) -> 'IndicatorAttribute':
+    def attributes(self) -> Iterator['IndicatorAttribute']:
         """Yield Attribute from Attributes."""
         # first-party
         from tcex.api.tc.v3.indicator_attributes.indicator_attribute import IndicatorAttributes
@@ -248,7 +248,7 @@ class Indicator(ObjectABC):
         yield from self._iterate_over_sublist(IndicatorAttributes)
 
     @property
-    def security_labels(self) -> 'SecurityLabel':
+    def security_labels(self) -> Iterator['SecurityLabel']:
         """Yield Security_Label from Security_Labels."""
         # first-party
         from tcex.api.tc.v3.security_labels.security_label import SecurityLabels
@@ -256,7 +256,7 @@ class Indicator(ObjectABC):
         yield from self._iterate_over_sublist(SecurityLabels)
 
     @property
-    def tags(self) -> 'Tag':
+    def tags(self) -> Iterator['Tag']:
         """Yield Tag from Tags."""
         # first-party
         from tcex.api.tc.v3.tags.tag import Tags
