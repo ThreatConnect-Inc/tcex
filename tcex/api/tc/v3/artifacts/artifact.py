@@ -1,12 +1,11 @@
 """Artifact / Artifacts Object"""
 # standard library
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Iterator, Union
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.artifacts.artifact_filter import ArtifactFilter
 from tcex.api.tc.v3.artifacts.artifact_model import ArtifactModel, ArtifactsModel
-from tcex.api.tc.v3.cases.case_model import CaseModel
 from tcex.api.tc.v3.groups.group_model import GroupModel
 from tcex.api.tc.v3.indicators.indicator_model import IndicatorModel
 from tcex.api.tc.v3.notes.note_model import NoteModel
@@ -15,7 +14,6 @@ from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 
 if TYPE_CHECKING:  # pragma: no cover
     # first-party
-    from tcex.api.tc.v3.cases.case import Case
     from tcex.api.tc.v3.groups.group import Group
     from tcex.api.tc.v3.indicators.indicator import Indicator
     from tcex.api.tc.v3.notes.note import Note
@@ -64,7 +62,6 @@ class Artifact(ObjectABC):
     """Artifacts Object.
 
     Args:
-        associated_cases (Cases, kwargs): A list of Cases associated with this Artifact.
         associated_groups (Groups, kwargs): A list of Groups associated with this Artifact.
         associated_indicators (Indicators, kwargs): A list of Indicators associated with this
             Artifact.
@@ -126,15 +123,7 @@ class Artifact(ObjectABC):
         return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
 
     @property
-    def associated_cases(self) -> 'Case':
-        """Yield Case from Cases."""
-        # first-party
-        from tcex.api.tc.v3.cases.case import Cases
-
-        yield from self._iterate_over_sublist(Cases)
-
-    @property
-    def associated_groups(self) -> 'Group':
+    def associated_groups(self) -> Iterator['Group']:
         """Yield Group from Groups."""
         # first-party
         from tcex.api.tc.v3.groups.group import Groups
@@ -142,7 +131,7 @@ class Artifact(ObjectABC):
         yield from self._iterate_over_sublist(Groups)
 
     @property
-    def associated_indicators(self) -> 'Indicator':
+    def associated_indicators(self) -> Iterator['Indicator']:
         """Yield Indicator from Indicators."""
         # first-party
         from tcex.api.tc.v3.indicators.indicator import Indicators
@@ -150,24 +139,12 @@ class Artifact(ObjectABC):
         yield from self._iterate_over_sublist(Indicators)
 
     @property
-    def notes(self) -> 'Note':
+    def notes(self) -> Iterator['Note']:
         """Yield Note from Notes."""
         # first-party
         from tcex.api.tc.v3.notes.note import Notes
 
         yield from self._iterate_over_sublist(Notes)
-
-    def stage_associated_case(self, data: Union[dict, 'ObjectABC', 'CaseModel']) -> None:
-        """Stage case on the object."""
-        if isinstance(data, ObjectABC):
-            data = data.model
-        elif isinstance(data, dict):
-            data = CaseModel(**data)
-
-        if not isinstance(data, CaseModel):
-            raise RuntimeError('Invalid type passed in to stage_associated_case')
-        data._staged = True
-        self.model.associated_cases.data.append(data)
 
     def stage_associated_group(self, data: Union[dict, 'ObjectABC', 'GroupModel']) -> None:
         """Stage group on the object."""
