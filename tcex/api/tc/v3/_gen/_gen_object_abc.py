@@ -525,6 +525,9 @@ class GenerateObjectABC(GenerateABC, ABC):
         # get model from map and update requirements
         model_import_data = self._module_import_data(type_)
 
+        # Add Iterator to imports:
+        self.requirements['standard library'].append({'module': 'typing', 'imports': ['Iterator']})
+
         # don't add import if class is in same file
         if self.type_ != type_:
             self.requirements['type-checking'].append(
@@ -535,7 +538,7 @@ class GenerateObjectABC(GenerateABC, ABC):
             f'''{self.i1}@property''',
             (
                 f'''{self.i1}def {model_type.plural()}(self) ->'''
-                f''' '{model_import_data.get('object_class')}':'''
+                f''' Iterator['{model_import_data.get('object_class')}']:'''
             ),
             (
                 f'''{self.i2}"""Yield {type_.singular().pascal_case()} '''

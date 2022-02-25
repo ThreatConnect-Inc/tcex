@@ -3,7 +3,7 @@
 import sys
 from abc import ABC
 from textwrap import TextWrapper
-from typing import Dict
+from typing import Dict, List
 
 # first-party
 from tcex.api.tc.v3._gen._gen_abc import GenerateABC
@@ -95,7 +95,7 @@ class GenerateModelABC(GenerateABC, ABC):
             ),
         }
 
-    def _gen_code_validator_method(self, type_: str, fields: list[str]) -> str:
+    def _gen_code_validator_method(self, type_: str, fields: List[str]) -> str:
         """Return the validator code
 
         @validator('artifact_type', always=True)
