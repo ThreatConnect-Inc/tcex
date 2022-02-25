@@ -68,6 +68,14 @@ class SpecToolReadmeMd(BinABC):
         readme_md.append(f'{header_value} Inputs')
         readme_md.append('')
 
+
+    @staticmethod
+    def _add_service_config_title(readme_md: List[str], header: int) -> None:
+        """Add title for input section."""
+        header_value = '#' * header
+        readme_md.append(f'{header_value} Service Configuration')
+        readme_md.append('')
+
     def _add_param(self, readme_md: List[str], param: 'ParamsModel') -> None:
         """Add params data to readme.md.
 
@@ -118,13 +126,18 @@ class SpecToolReadmeMd(BinABC):
             readme_md.append(f'{self.i1}> **Valid Values:** {_valid_values}')
             readme_md.append('')
 
-    def _add_outputs(self, readme_md: List[str], action: str) -> None:
+    def _add_outputs(self, readme_md: List[str], action: str = None) -> None:
         """Add output data to readme.md."""
         if self.asy.model.output_variables:
             readme_md.append('### Outputs')
             readme_md.append('')
-            for output in self.permutations.outputs_by_action(action):
+            outputs = self.ij.model.playbook.output_variables
+            if action:
+                outputs = self.permutations.outputs_by_action(action)
+
+            for output in outputs:
                 readme_md.append(f'{self.i1}- {output.name} *({output.type})*')
+
             readme_md.append('')
 
     def _has_section_params(self, section: 'SectionsModel', action: str) -> bool:
@@ -229,14 +242,39 @@ class SpecToolReadmeMd(BinABC):
                     # add horizontal rule
                     readme_md.append('---')
 
-        elif self.asy.model.runtime_level.lower() == 'organization':
-            # add inputs and sections
-            self._add_inputs_title(readme_md, 2)
+        elif self.asy.model.runtime_level.lower() in [
+            'triggerservice', 'webhooktriggerservice', 'organization'
+        ]:
+            service_config = []
+            non_service_config = []
 
+            # Separate Params into service configuration params and other parameters
             for param in self.asy.model.params:
                 if param.disabled is True or param.hidden is True:
                     continue
+                if param.service_config is True:
+                    service_config.append(param)
+                else:
+                    non_service_config.append(param)
 
+            # Add service configuration params to ReadMe file.
+            if service_config:
+                self._add_service_config_title(readme_md, 1)
+
+                for param in service_config:
+                    # add param data
+                    self._add_param(readme_md, param)
+
+                    # add param note data
+                    self._add_param_note(readme_md, param)
+
+                    # add param valid_values data
+                    self._add_param_valid_values(readme_md, param)
+
+            # add inputs and sections
+            self._add_inputs_title(readme_md, 3)
+
+            for param in non_service_config:
                 # add param data
                 self._add_param(readme_md, param)
 
@@ -245,6 +283,9 @@ class SpecToolReadmeMd(BinABC):
 
                 # add param valid_values data
                 self._add_param_valid_values(readme_md, param)
+
+            # add output data
+            self._add_outputs(readme_md)
 
         # add labels
         self._add_labels(readme_md)
