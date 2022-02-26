@@ -1,6 +1,6 @@
 """Task / Tasks Object"""
 # standard library
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Iterator, Union
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -122,7 +122,7 @@ class Task(ObjectABC):
         return {'type': type_, 'id': self.model.id, 'value': self.model.name}
 
     @property
-    def artifacts(self) -> 'Artifact':
+    def artifacts(self) -> Iterator['Artifact']:
         """Yield Artifact from Artifacts."""
         # first-party
         from tcex.api.tc.v3.artifacts.artifact import Artifacts
@@ -130,7 +130,7 @@ class Task(ObjectABC):
         yield from self._iterate_over_sublist(Artifacts)
 
     @property
-    def notes(self) -> 'Note':
+    def notes(self) -> Iterator['Note']:
         """Yield Note from Notes."""
         # first-party
         from tcex.api.tc.v3.notes.note import Notes

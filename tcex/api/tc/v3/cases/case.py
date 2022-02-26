@@ -1,6 +1,6 @@
 """Case / Cases Object"""
 # standard library
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Iterator, Union
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -143,7 +143,7 @@ class Case(ObjectABC):
         return {'type': type_, 'id': self.model.id, 'value': self.model.name}
 
     @property
-    def artifacts(self) -> 'Artifact':
+    def artifacts(self) -> Iterator['Artifact']:
         """Yield Artifact from Artifacts."""
         # first-party
         from tcex.api.tc.v3.artifacts.artifact import Artifacts
@@ -151,7 +151,7 @@ class Case(ObjectABC):
         yield from self._iterate_over_sublist(Artifacts)
 
     @property
-    def associated_cases(self) -> 'Case':
+    def associated_cases(self) -> Iterator['Case']:
         """Yield Case from Cases."""
         # Ensure the current item is not returned as a association
         for case in self._iterate_over_sublist(Cases):
@@ -160,7 +160,7 @@ class Case(ObjectABC):
             yield case
 
     @property
-    def associated_groups(self) -> 'Group':
+    def associated_groups(self) -> Iterator['Group']:
         """Yield Group from Groups."""
         # first-party
         from tcex.api.tc.v3.groups.group import Groups
@@ -168,7 +168,7 @@ class Case(ObjectABC):
         yield from self._iterate_over_sublist(Groups)
 
     @property
-    def associated_indicators(self) -> 'Indicator':
+    def associated_indicators(self) -> Iterator['Indicator']:
         """Yield Indicator from Indicators."""
         # first-party
         from tcex.api.tc.v3.indicators.indicator import Indicators
@@ -176,7 +176,7 @@ class Case(ObjectABC):
         yield from self._iterate_over_sublist(Indicators)
 
     @property
-    def attributes(self) -> 'CaseAttribute':
+    def attributes(self) -> Iterator['CaseAttribute']:
         """Yield Attribute from Attributes."""
         # first-party
         from tcex.api.tc.v3.case_attributes.case_attribute import CaseAttributes
@@ -184,7 +184,7 @@ class Case(ObjectABC):
         yield from self._iterate_over_sublist(CaseAttributes)
 
     @property
-    def notes(self) -> 'Note':
+    def notes(self) -> Iterator['Note']:
         """Yield Note from Notes."""
         # first-party
         from tcex.api.tc.v3.notes.note import Notes
@@ -192,7 +192,7 @@ class Case(ObjectABC):
         yield from self._iterate_over_sublist(Notes)
 
     @property
-    def tags(self) -> 'Tag':
+    def tags(self) -> Iterator['Tag']:
         """Yield Tag from Tags."""
         # first-party
         from tcex.api.tc.v3.tags.tag import Tags
@@ -200,7 +200,7 @@ class Case(ObjectABC):
         yield from self._iterate_over_sublist(Tags)
 
     @property
-    def tasks(self) -> 'Task':
+    def tasks(self) -> Iterator['Task']:
         """Yield Task from Tasks."""
         # first-party
         from tcex.api.tc.v3.tasks.task import Tasks
