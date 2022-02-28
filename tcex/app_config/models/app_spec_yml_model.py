@@ -396,7 +396,9 @@ class AppSpecYmlModel(InstallJsonCommonModel):
             param.type == 'String'
             and not param.valid_values
             and (
-                'String' in param.playbook_data_type or self.runtime_level.lower() == 'organization'
+                'String' in param.playbook_data_type
+                or self.runtime_level.lower()
+                in ['organization', 'triggerservice', 'webhooktriggerservice']
             )
         ):
             param.valid_values = ['${TEXT}']
