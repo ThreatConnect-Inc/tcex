@@ -20,6 +20,7 @@ class ParamsModel(BaseModel):
     """Model for jj.params"""
 
     default: Optional[Union[bool, str]]
+    encrypt: Optional[bool] = False
     name: str
     prevent_updates: bool = False
 

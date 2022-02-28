@@ -121,15 +121,15 @@ class FeedsModel(BaseModel):
     source_description: str = Field(
         ...,
         description=(
-            'Optional property that provides the source’s description as it will be '
-            'displayed in the ThreatConnect platform.'
+            '''Optional property that provides the source's description as it will be '''
+            '''displayed in the ThreatConnect platform.'''
         ),
     )
     source_name: str = Field(
         ...,
         description=(
-            'Optional property that provides the name of the source in which the feed’s '
-            'content will be created.'
+            '''Optional property that provides the name of the source in which the feed's '''
+            '''content will be created.'''
         ),
     )
 

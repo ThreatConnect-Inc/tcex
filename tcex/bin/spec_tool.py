@@ -171,20 +171,24 @@ class SpecTool(BinABC):
             # check that app_spec.yml exists
             self._check_has_spec()
 
-            try:
-                lj = gen.generate()
-            except ValidationError as ex:
-                self.print_failure(f'Failed Generating layout.json:\n{ex}')
+            # only App with a "tc_action" input should have a layout.json file
+            if not [p for p in self.asy.model.params if p.name == 'tc_action']:
+                self.log.info('action=generate-layout-json, results=no-action-input')
+            else:
+                try:
+                    lj = gen.generate()
+                except ValidationError as ex:
+                    self.print_failure(f'Failed Generating layout.json:\n{ex}')
 
-            config = lj.json(
-                by_alias=True,
-                exclude_defaults=False,
-                exclude_none=True,
-                exclude_unset=True,
-                indent=2,
-                sort_keys=True,
-            )
-            self.write_app_file(gen.filename, f'{config}\n')
+                config = lj.json(
+                    by_alias=True,
+                    exclude_defaults=False,
+                    exclude_none=True,
+                    exclude_unset=True,
+                    indent=2,
+                    sort_keys=True,
+                )
+                self.write_app_file(gen.filename, f'{config}\n')
 
     def generate_job_json(self, schema: bool) -> None:
         """Generate the job.json file."""
