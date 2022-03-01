@@ -7,8 +7,8 @@ from typing import Optional, Union
 from pydantic import Field, validator
 
 # first-party
-from tcex.api.tc.v3.security.user_groups.user_group_model import UserGroupModel
-from tcex.api.tc.v3.security.users.user_model import UserModel
+from tcex.api.tc.v3.security.assignee_user_group_model import AssigneeUserGroupModel
+from tcex.api.tc.v3.security.assignee_user_model import AssigneeUserModel
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
 from tcex.utils import Utils
 
@@ -29,7 +29,7 @@ class AssigneeModel(
         title='type',
     )
 
-    data: Optional[Union[UserModel, UserGroupModel]] = Field(
+    data: Optional[Union[AssigneeUserModel, AssigneeUserGroupModel]] = Field(
         None,
         description='The **Data** for the Assignee.',
         methods=['POST', 'PUT'],
