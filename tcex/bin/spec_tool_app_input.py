@@ -62,6 +62,16 @@ class SpecToolAppInput(BinABC):
         if 'Union[' in type_:
             self.typing_modules.add('Union')
 
+    def class_comment(self, model_class: str) -> str:
+        """Return the appropriate comment for the provided class."""
+        _class_comment = f'{self.i1}"""Action Model"""'
+        _comment_map = {
+            'AppBaseModel': self.input_static.app_base_model_class_comment,
+            'ServiceConfigModel': self.input_static.service_config_model_class_comment,
+            'TriggerConfigModel': self.input_static.trigger_config_model_class_comment,
+        }
+        return _comment_map.get(model_class, _class_comment)
+
     @property
     def _code_app_inputs_data(self) -> None:
         """Return app_inputs.py input data."""
@@ -70,12 +80,11 @@ class SpecToolAppInput(BinABC):
         for class_name, class_inputs in self.app_inputs_data.items():
             # determine the base class for the current action class
             base_class = 'AppBaseModel'
-            class_comment = f'{self.i1}"""Action Model"""'
-            if class_name == 'AppBaseModel':
+            class_comment = self.class_comment(class_name)
+            if class_name in ['AppBaseModel', 'ServiceConfigModel']:
                 base_class = 'BaseModel'
-                class_comment = (
-                    f'{self.i1}"""Base model for the App containing any common inputs."""'
-                )
+            elif class_name == 'TriggerConfigModel':
+                base_class = 'CreateConfigModel'
 
             _code.extend(
                 [
@@ -204,13 +213,17 @@ class SpecToolAppInput(BinABC):
 
     def _generate_app_inputs_to_action(self) -> None:
         """Generate App Input dict from install.json and layout.json."""
-        if not self.lj.has_layout:
+        if self.ij.model.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+            for ij_data in self.ij.model.params_dict.values():
+                class_name = 'Trigger Config'
+                if ij_data.service_config is True:
+                    class_name = 'Service Config'
+                self._add_input_to_action_class(False, ij_data, class_name)
+        elif not self.lj.has_layout:
             # process Apps WITHOUT a layout.json file
             for ij_data in self.ij.model.params_dict.values():
                 self._add_input_to_action_class(True, ij_data)
         else:
-            # TODO: handle Service Apps
-
             # process Apps WITH a layout.json file
             for tc_action in self._tc_actions:
                 if tc_action == 'Advanced Request':
@@ -278,7 +291,7 @@ class SpecToolAppInput(BinABC):
         # if input_data.default is not None and input_data.type in ('Choice', 'String'):
         #     type_ += f' = \'{input_data.default}\''
         if input_data.type == 'Boolean':
-            type_ += ' = False'
+            type_ += f' = {input_data.default or False}'
 
         # get the current value from the app_inputs.py file
         current_type = self._get_current_type(class_name, input_data.name)
@@ -411,6 +424,14 @@ class SpecToolAppInput(BinABC):
                 'type': 'DateTime',
                 'field_type': 'DateTime',
             },
+            'max_historical_poll_start': {
+                'type': 'DateTime',
+                'field_type': 'DateTime',
+            },
+            'poll_interval': {
+                'type': 'integer(gt=0)',
+                'field_type': 'integer',
+            },
             'threat_rating': {
                 'type': 'integer(ge=0, le=5)',
                 'field_type': 'integer',
@@ -482,7 +503,13 @@ class SpecToolAppInput(BinABC):
     def app_inputs_data(self) -> dict:
         """Return base App inputs data."""
         if self._app_inputs_data is None:
-            self._app_inputs_data = {'AppBaseModel': {}}
+            if self.ij.model.runtime_level.lower() in [
+                'triggerservice',
+                'webhooktriggerservice',
+            ]:
+                self._app_inputs_data = {'ServiceConfigModel': {}, 'TriggerConfigModel': {}}
+            else:
+                self._app_inputs_data = {'AppBaseModel': {}}
 
             # add a model for each action (for layout based Apps)
             self._add_action_classes()

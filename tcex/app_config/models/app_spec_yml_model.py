@@ -372,6 +372,23 @@ class AppSpecYmlModel(InstallJsonCommonModel):
             _release_notes.append('')
         return _release_notes
 
+    @property
+    def requires_layout(self):
+        """Return True if App requires a layout.json file."""
+        if self.runtime_level.lower() == 'organization':
+            return False
+
+        for section in self.sections:
+            for param in section.params:
+                if param.display:
+                    return True
+
+        for output_data in self.output_data:
+            if output_data.display not in [None, '1', '']:
+                return True
+
+        return False
+
     def _set_default_playbook_data_type(self, param: 'ParamsSpecModel'):
         """Set default playbookDataType for String type params.
 
@@ -396,7 +413,9 @@ class AppSpecYmlModel(InstallJsonCommonModel):
             param.type == 'String'
             and not param.valid_values
             and (
-                'String' in param.playbook_data_type or self.runtime_level.lower() == 'organization'
+                'String' in param.playbook_data_type
+                or self.runtime_level.lower()
+                in ['organization', 'triggerservice', 'webhooktriggerservice']
             )
         ):
             param.valid_values = ['${TEXT}']

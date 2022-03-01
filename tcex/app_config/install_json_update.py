@@ -159,7 +159,7 @@ class InstallJsonUpdate:
 
     def update_playbook_data_types(self) -> None:
         """Update program main on App type."""
-        if self.ij.model.runtime_level != 'Playbook':
+        if self.ij.model.runtime_level.lower() != 'playbook':
             return
 
         for param in self.ij.model.params:
