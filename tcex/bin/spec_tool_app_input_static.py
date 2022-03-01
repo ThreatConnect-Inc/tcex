@@ -77,7 +77,7 @@ class SpecToolAppInputStatic:
                 '',
                 f'''{self.i1}This is the configuration input that gets sent to the service''',
                 f'''{self.i1}when a Playbook is enabled (createConfig).''',
-                '''"""''',
+                f'''{self.i1}"""''',
                 '',
                 '',
             ]
