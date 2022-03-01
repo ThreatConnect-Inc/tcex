@@ -171,10 +171,7 @@ class SpecTool(BinABC):
             # check that app_spec.yml exists
             self._check_has_spec()
 
-            # only App with a "tc_action" input should have a layout.json file
-            if not [p for p in self.asy.model.params if p.name == 'tc_action']:
-                self.log.info('action=generate-layout-json, results=no-action-input')
-            else:
+            if self.asy.model.requires_layout:
                 try:
                     lj = gen.generate()
                 except ValidationError as ex:

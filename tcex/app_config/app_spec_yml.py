@@ -101,6 +101,10 @@ class AppSpecYml:
         for k, v in dict(contents).get('app').items():
             contents[k] = v
 
+        # assure minServerVersion exists
+        if contents.get('minServerVersion') is None:
+            contents['minServerVersion'] = '6.0.0'
+
         # remove "app" from "app_spec"
         del contents['app']
 
@@ -190,8 +194,10 @@ class AppSpecYml:
         """Migrate 1.0.0 schema to 1.1.0 schema."""
         outputs = []
         contents['outputData'] = contents.pop('outputGroups', {})
-        for output, group in contents.get('outputData').items():
-            output_data = {'display': output, 'outputVariables': []}
+        for display, group in contents.get('outputData').items():
+            if display == '''tc_action not in ('')''':
+                display = '1'
+            output_data = {'display': display, 'outputVariables': []}
 
             for variable_type, variables in group.items():
                 for name in variables:
