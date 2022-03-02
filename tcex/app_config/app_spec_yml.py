@@ -41,6 +41,139 @@ class AppSpecYml:
         # properties
         self.fqfn = Path(os.path.join(path, filename))
 
+    @property
+    def _feature_data_advanced_request_inputs(self):
+        """Return all inputs for advanced request."""
+        return [
+            {
+                'display': '''tc_action in ('Advanced Request')''',
+                'label': 'API Endpoint/Path',
+                'name': 'tc_adv_req_path',
+                'note': 'The API Path request.',
+                'playbookDataType': ['String'],
+                'required': True,
+                'type': 'String',
+                'validValues': ['${TEXT}'],
+            },
+            {
+                'display': '''tc_action in ('Advanced Request')''',
+                'default': 'GET',
+                'label': 'HTTP Method',
+                'name': 'tc_adv_req_http_method',
+                'note': 'HTTP method to use.',
+                'required': True,
+                'type': 'Choice',
+                'validValues': ['GET', 'POST', 'DELETE', 'PUT', 'HEAD', 'PATCH', 'OPTIONS'],
+            },
+            {
+                'display': '''tc_action in ('Advanced Request')''',
+                'label': 'Query Parameters',
+                'name': 'tc_adv_req_params',
+                'note': (
+                    'Query parameters to append to the URL. For sensitive information like API '
+                    'keys, using variables is recommended to ensure that the Playbook will not '
+                    'export sensitive data.'
+                ),
+                'playbookDataType': ['String', 'StringArray'],
+                'required': False,
+                'type': 'KeyValueList',
+                'validValues': ['${KEYCHAIN}', '${TEXT}'],
+            },
+            {
+                'display': '''tc_action in ('Advanced Request')''',
+                'label': 'Exclude Empty/Null Parameters',
+                'name': 'tc_adv_req_exclude_null_params',
+                'note': (
+                    '''Some API endpoint don't handle null/empty query parameters properly '''
+                    '''(e.g., ?name=&type=String). If selected this options will exclude any '''
+                    '''query parameters that has a null/empty value.'''
+                ),
+                'type': 'Boolean',
+            },
+            {
+                'display': '''tc_action in ('Advanced Request')''',
+                'label': 'Headers',
+                'name': 'tc_adv_req_headers',
+                'note': (
+                    'Headers to include in the request. When using Multi-part Form/File data, '
+                    'do **not** add a **Content-Type** header. For sensitive information like '
+                    'API keys, using variables is recommended to ensure that the Playbook will '
+                    'not export sensitive data.'
+                ),
+                'playbookDataType': ['String'],
+                'required': False,
+                'type': 'KeyValueList',
+                'validValues': ['${KEYCHAIN}', '${TEXT}'],
+            },
+            {
+                'display': (
+                    '''tc_action in ('Advanced Request') AND tc_adv_req_http_method '''
+                    '''in ('POST', 'PUT', 'DELETE', 'PATCH')'''
+                ),
+                'label': 'Body',
+                'name': 'tc_adv_req_body',
+                'note': 'Content of the HTTP request.',
+                'playbookDataType': ['String', 'Binary'],
+                'required': False,
+                'type': 'String',
+                'validValues': ['${KEYCHAIN}', '${TEXT}'],
+                'viewRows': 4,
+            },
+            {
+                'display': (
+                    '''tc_action in ('Advanced Request') AND tc_adv_req_http_method '''
+                    '''in ('POST', 'PUT', 'DELETE', 'PATCH')'''
+                ),
+                'label': 'URL Encode JSON Body',
+                'name': 'tc_adv_req_urlencode_body',
+                'note': (
+                    ''''URL encode a JSON-formatted body. Typically used for'''
+                    ''' 'x-www-form-urlencoded' data, where the data can be configured in the '''
+                    '''body as a JSON string.'''
+                ),
+                'type': 'Boolean',
+            },
+            {
+                'display': '''tc_action in ('Advanced Request')''',
+                'default': True,
+                'label': 'Fail for Status',
+                'name': 'tc_adv_req_fail_on_error',
+                'note': 'Fail if the response status code is 4XX - 5XX.',
+                'type': 'Boolean',
+            },
+        ]
+
+    @staticmethod
+    def _feature_data_advanced_request_outputs(prefix: str) -> dict:
+        """Return all outputs for advanced request."""
+        return {
+            'display': 'tc_action in (\'Advanced Request\')',
+            'outputVariables': [
+                {
+                    'name': f'{prefix}.request.content',
+                },
+                {
+                    'name': f'{prefix}.request.content.binary',
+                    'type': 'Binary',
+                },
+                {
+                    'name': f'{prefix}.request.headers',
+                },
+                {
+                    'name': f'{prefix}.request.ok',
+                },
+                {
+                    'name': f'{prefix}.request.reason',
+                },
+                {
+                    'name': f'{prefix}.request.status_code',
+                },
+                {
+                    'name': f'{prefix}.request.url',
+                },
+            ],
+        }
+
     def _migrate_schema_100_to_110(self, contents: dict) -> None:
         """Migrate 1.0.0 schema to 1.1.0 schema."""
         # moved app.* to top level
@@ -73,8 +206,8 @@ class AppSpecYml:
         # migrate app.retry to playbook.retry
         self._migrate_schema_100_to_110_retry(contents)
 
-        # remove deprecated playbook.outputPrefix field
-        if contents.get('outputPrefix') is not None:
+        # remove playbook.outputPrefix field if advancedRequest is not defined as a feature
+        if 'advancedRequest' not in contents.get('features', []):
             del contents['outputPrefix']
 
         # update the schema version
@@ -199,6 +332,10 @@ class AppSpecYml:
                 display = '1'
             output_data = {'display': display, 'outputVariables': []}
 
+            # fix schema when output type is assumed
+            if isinstance(group, list):
+                group = {'String': group}
+
             for variable_type, variables in group.items():
                 for name in variables:
                     disabled = False
@@ -268,7 +405,31 @@ class AppSpecYml:
 
     @cached_property
     def model(self) -> 'AppSpecYmlModel':
-        """Return the Install JSON model."""
+        """Return the Install JSON model.
+
+        If writing app_spec.yml file after the method then the model will include
+        advancedRequest inputs/outputs, etc.
+        """
+        _contents = self.contents
+        # special case for dynamic handling of advancedRequest feature
+        if 'advancedRequest' in _contents.get('features', []):
+
+            # Add "Advanced Request" action to Valid Values
+            # when "advancedRequest" feature is enabled
+            for section in _contents.get('sections', []):
+                for param in section.get('params', []):
+                    if param.get('name') == 'tc_action' and 'Advanced Request' not in param.get(
+                        'validValues', []
+                    ):
+                        param['validValues'].append('Advanced Request')
+
+                if section.get('sectionName') == 'Configure':
+                    section['params'].extend(self._feature_data_advanced_request_inputs)
+
+            # add outputs
+            prefix = _contents.get('outputPrefix', '')
+            _contents['outputData'].append(self._feature_data_advanced_request_outputs(prefix))
+
         return AppSpecYmlModel(**self.contents)
 
     @staticmethod
@@ -305,6 +466,8 @@ class AppSpecYml:
         asy_data_ordered['sections'] = asy_data.get('sections')
         if asy_data.get('outputData'):
             asy_data_ordered['outputData'] = asy_data.get('outputData')
+        if asy_data.get('outputPrefix'):
+            asy_data_ordered['outputPrefix'] = asy_data.get('outputPrefix')
 
         # standard fields
         asy_data_ordered['allowOnDemand'] = asy_data.get('allowOnDemand', True)

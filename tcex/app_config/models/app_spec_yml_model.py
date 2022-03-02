@@ -211,6 +211,13 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         None,
         description='The outputs data for Playbook and Service Apps.',
     )
+    output_prefix: Optional[str] = Field(
+        None,
+        description=(
+            'The prefix for output variables, used for advanced request outputs. This value '
+            'should match what is passed to the advanced request method in the playbook App.'
+        ),
+    )
 
     # @validator('sections', pre=True)
     # def _sections(cls, v: str, values: dict) -> dict:
@@ -398,7 +405,7 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         """
         if self.runtime_level.lower() == 'playbook':
             # by rule any input of type String must have String and playbookDataType
-            if param.type == 'String' and not param.playbook_data_type:
+            if param.type in ['KeyValueList', 'String'] and not param.playbook_data_type:
                 param.playbook_data_type = ['String']
 
     def _set_default_valid_values(self, param: 'ParamsSpecModel'):
@@ -410,7 +417,7 @@ class AppSpecYmlModel(InstallJsonCommonModel):
           * The playbookDataType supports String
         """
         if (
-            param.type == 'String'
+            param.type in ['KeyValueList', 'String']
             and not param.valid_values
             and (
                 'String' in param.playbook_data_type
