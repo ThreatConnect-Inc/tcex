@@ -242,14 +242,13 @@ class GroupModel(
     )
     from_: Optional[str] = Field(
         None,
-        alias='from',
         applies_to=['Email'],
         description='The email From field.',
         methods=['POST', 'PUT'],
         max_length=100,
         min_length=0,
         read_only=False,
-        title='from_',
+        title='from',
     )
     header: Optional[str] = Field(
         None,

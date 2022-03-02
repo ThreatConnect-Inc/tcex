@@ -577,12 +577,11 @@ class GenerateModelABC(GenerateABC, ABC):
         _model = []
         for field_name, field_data in sorted(self._type_properties.items()):
             field_name = self.utils.camel_string(field_name)
-            field_alias = None  # only required when field matches a python reserved word
+            field_title = field_name  # only required when field matches a python reserved word
             field_type = field_data.get('type')  # the defined field type
 
             # fix python reserved words
             if field_name in ['from']:
-                field_alias = field_name
                 field_name = self.utils.camel_string(f'{field_name}_')
 
             if field_data.get('data') is not None:
@@ -664,10 +663,6 @@ class GenerateModelABC(GenerateABC, ABC):
             if field_read_only is True and field_name != 'id':
                 _model.append(f'''{self.i2}allow_mutation=False,''')  # readOnly/mutation setting
 
-            # alias
-            if field_alias is not None:
-                _model.append(f'''{self.i2}alias='{field_alias}',''')
-
             # applies_to
             if field_applies_to is not None:
                 _model.append(f'''{self.i2}applies_to={field_applies_to},''')
@@ -712,7 +707,7 @@ class GenerateModelABC(GenerateABC, ABC):
                 _model.append(f'''{self.i2}required_alt_field='{field_required_alt_field}',''')
 
             # title
-            _model.append(f'''{self.i2}title='{field_name}',''')
+            _model.append(f'''{self.i2}title='{field_title}',''')
 
             _model.append(f'''{self.i1})''')
         _model.append('')
