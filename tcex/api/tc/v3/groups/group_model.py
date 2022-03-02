@@ -242,6 +242,7 @@ class GroupModel(
     )
     from_: Optional[str] = Field(
         None,
+        alias='from',
         applies_to=['Email'],
         description='The email From field.',
         methods=['POST', 'PUT'],
