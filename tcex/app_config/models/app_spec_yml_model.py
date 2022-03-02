@@ -219,42 +219,25 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         ),
     )
 
-    # @validator('sections', pre=True)
-    # def _sections(cls, v: str, values: dict) -> dict:
-    #     """Return a version object for "version" fields."""
-    #     # set defaults for playbook apps
-    #     # params are formatted as camelCase
-    #     # values comes in with snake_case
-    #     for section in v:
-    #         for param in section.get('params'):
-    #             # update playbook data types
-    #             if values.get('runtime_level').lower() == 'playbook':
-    #                 # by rule any input of type String must have String and playbookDataType
-    #                 if param.get('type', 'String') == 'String' and not param.get(
-    #                     'playbookDataType'
-    #                 ):
-    #                     param['playbookDataType'] = ['String']
-
-    #             # update valid values in params
-    #             if (
-    #                 param.get('type', 'String') == 'String'
-    #                 and not param.get('validValues')
-    #                 and (
-    #                     'String' in param.get('playbookDataType', [])
-    #                     or values.get('runtime_level').lower() == 'organization'
-    #                 )
-    #             ):
-    #                 param['validValues'] = ['${TEXT}']
-    #                 if param.get('encrypt') is True:
-    #                     param['validValues'] = ['${KEYCHAIN}']
-    #     return v  # pragma: no cover
-
     @validator('schema_version')
     def _version(cls, v: str):
         """Return a version object for "version" fields."""
         if v is not None:
             return Version(v)
         return v  # pragma: no cover
+
+    @validator('output_prefix', always=True, pre=True)
+    def _output_prefix(cls, v: str, values: dict):
+        """Validate output_prefix is set when required."""
+        if 'advancedRequest' in values.get('features', []):
+            if v is None:
+                raise ValueError(
+                    'The outputPrefix field is required when feature advancedRequest is enabled.'
+                )
+        else:
+            # remove output_prefix if not required
+            v = None
+        return v
 
     class Config:
         """DataModel Config"""
@@ -405,7 +388,10 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         """
         if self.runtime_level.lower() == 'playbook':
             # by rule any input of type String must have String and playbookDataType
-            if param.type in ['KeyValueList', 'String'] and not param.playbook_data_type:
+            if (
+                param.type in ['EditChoice', 'KeyValueList', 'String']
+                and not param.playbook_data_type
+            ):
                 param.playbook_data_type = ['String']
 
     def _set_default_valid_values(self, param: 'ParamsSpecModel'):
