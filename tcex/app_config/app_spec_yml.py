@@ -206,26 +206,11 @@ class AppSpecYml:
         # migrate app.retry to playbook.retry
         self._migrate_schema_100_to_110_retry(contents)
 
-        # remove playbook.outputPrefix field if advancedRequest is not defined as a feature
-        if 'advancedRequest' not in contents.get('features', []):
-            del contents['outputPrefix']
-
         # update the schema version
         contents['schemaVersion'] = contents.get('schemaVersion') or '1.1.0'
 
         # dict -> mode -> dict (filtered)
-        contents = json.loads(
-            AppSpecYmlModel(**contents).json(
-                by_alias=True,
-                exclude_defaults=True,
-                exclude_none=True,
-                exclude_unset=True,
-                sort_keys=True,
-            )
-        )
-
-        # write the new contents to the file
-        self.write(contents)
+        self.rewrite_contents(contents)
 
     @staticmethod
     def _migrate_schema_100_to_110_app(contents: dict) -> None:
@@ -286,25 +271,6 @@ class AppSpecYml:
 
                 if param.get('type') is None:
                     param['type'] = 'String'
-
-                # This can probably be removed. Default values are set when
-                # writing the output files instead of keeping in the model.
-
-                # if (
-                #     contents['runtimeLevel'].lower() == 'playbook'
-                #     and param.get('playbookDataType') is None
-                #     and param.get('type') == 'String'
-                # ):
-                #     param['playbookDataType'] = ['String']
-
-                # if (
-                #     param.get('validValues') is None
-                #     and param.get('type') == 'String'
-                #     and 'String' in param.get('playbookDataType', [])
-                # ):
-                #     param['validValues'] = ['${TEXT}']
-                #     if param.get('encrypt') is True:
-                #         param['validValues'] = ['${KEYCHAIN}']
 
     @staticmethod
     def _migrate_schema_100_to_110_notes_per_action(contents: dict) -> None:
@@ -367,31 +333,36 @@ class AppSpecYml:
     @cached_property
     def contents(self) -> dict:
         """Return install.json file contents."""
-        contents = {}
-        if self.fqfn.is_file():
-            try:
-                with self.fqfn.open() as fh:
-                    contents = yaml.load(fh, Loader=Loader)  # nosec
-            except (OSError, ValueError):  # pragma: no cover
+
+        def _load_contents() -> dict:
+            """Load contents from file."""
+            contents = {}
+            if self.fqfn.is_file():
+                try:
+                    with self.fqfn.open() as fh:
+                        contents = yaml.load(fh, Loader=Loader)  # nosec
+                except (OSError, ValueError):  # pragma: no cover
+                    self.log.error(
+                        f'feature=app-spec-yml, exception=failed-reading-file, filename={self.fqfn}'
+                    )
+            else:  # pragma: no cover
                 self.log.error(
-                    f'feature=app-spec-yml, exception=failed-reading-file, filename={self.fqfn}'
+                    f'feature=app-spec-yml, exception=file-not-found, filename={self.fqfn}'
                 )
-        else:  # pragma: no cover
-            self.log.error(f'feature=app-spec-yml, exception=file-not-found, filename={self.fqfn}')
+
+            return contents
+
+        contents = _load_contents()
 
         # migrate schema from 1.0.0 to 1.1.0
         if contents.get('schemaVersion', '1.0.0') == '1.0.0':
             self._migrate_schema_100_to_110(contents)
-
-            # clear cache for data property
-            if 'contents' in self.__dict__:
-                del self.__dict__['contents']
-
-            # read contents again after migration
-            return self.contents
+        else:
+            # reformat file
+            self.rewrite_contents(contents)
 
         # migrate schema
-        return contents
+        return _load_contents()
 
     @staticmethod
     def dict_to_yaml(data: dict) -> str:
@@ -482,6 +453,23 @@ class AppSpecYml:
         asy_data_ordered['schemaVersion'] = str(asy_data.get('schemaVersion', '1.1.0'))
 
         return asy_data_ordered
+
+    def rewrite_contents(self, contents: dict):
+        """Rewrite app_spec.yml file."""
+        contents = json.loads(
+            AppSpecYmlModel(**contents).json(
+                by_alias=True,
+                exclude_defaults=True,
+                exclude_none=True,
+                exclude_unset=True,
+                sort_keys=True,
+            )
+        )
+
+        # write the new contents to the file
+        self.write(contents)
+
+        return contents
 
     def write(self, contents: dict) -> None:
         """Write yaml to file."""
