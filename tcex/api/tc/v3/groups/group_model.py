@@ -249,7 +249,7 @@ class GroupModel(
         max_length=100,
         min_length=0,
         read_only=False,
-        title='from_',
+        title='from',
     )
     header: Optional[str] = Field(
         None,
