@@ -190,7 +190,6 @@ class SpecToolReadmeMd(BinABC):
         if self.asy.model.runtime_level.lower() == 'playbook':
             actions = self.ij.model.get_param('tc_action').valid_values or []
             if actions:
-
                 # add title for actions section
                 self._add_actions_title(readme_md)
 
@@ -240,6 +239,47 @@ class SpecToolReadmeMd(BinABC):
 
                     # add horizontal rule
                     readme_md.append('---')
+            # add non action based sections
+            else:
+                # add inputs and sections
+                self._add_inputs_title(readme_md, 3)
+
+                for section in self.asy.model.sections:
+                    # don't show the section if it has no params
+                    valid_section = False
+                    for sp in section.params:
+                        if sp.disabled is False and sp.hidden is False:
+                            valid_section = True
+
+                    if valid_section is False:
+                        continue
+
+                    # add section title
+                    self._add_section_title(readme_md, section)
+
+                    # add params
+                    for param in section.params:
+                        if param.disabled is True or param.hidden is True:
+                            continue
+
+                        # don't add tc_action param since it's the top level action
+                        if param.name == 'tc_action':
+                            continue
+
+                        # add param data
+                        self._add_param(readme_md, param)
+
+                        # add param note data
+                        self._add_param_note(readme_md, param)
+
+                        # add param playbook data types data
+                        self._add_param_pb_data_type(readme_md, param)
+
+                        # add param valid_values data
+                        self._add_param_valid_values(readme_md, param)
+
+                # add output data
+                self._add_outputs(readme_md)
 
         elif self.asy.model.runtime_level.lower() in [
             'triggerservice',

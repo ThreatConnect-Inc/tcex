@@ -264,7 +264,7 @@ class AppSpecYml:
             # add missing name
             for param in section['params']:
                 if param.get('name') is None:
-                    param['name'] = param.get('label').replace(' ', '_').lower()
+                    param['name'] = param.get('label')
 
                 if 'sequence' in param:
                     del param['sequence']
