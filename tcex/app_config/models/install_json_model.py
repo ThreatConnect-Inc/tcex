@@ -300,6 +300,16 @@ class ParamsModel(BaseModel):
         ),
     )
 
+    @validator('name')
+    def name(cls, v):
+        """Return the transformed "name" field."""
+        if v is not None:
+            v = v.lower().replace(' ', '_')
+
+            # remove all characters not in [a-z][0-9_]
+            v = ''.join([x for x in v if x.isidentifier()])
+        return v
+
     class Config:
         """DataModel Config"""
 
