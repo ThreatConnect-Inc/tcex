@@ -93,6 +93,13 @@ class OutputDataModel(BaseModel):
         alias_generator = snake_to_camel
         validate_assignment = True
 
+    @validator('display')
+    def _display(cls, v: str):
+        """Normalize "always True" expression for display clause."""
+        if v is not None and v.lower() == '''tc_action not in ('')''':
+            v = '1'
+        return v  # pragma: no cover
+
 
 class ParamsSpecModel(ParamsModel):
     """Model for app_spec.params."""
