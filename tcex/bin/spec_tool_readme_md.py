@@ -1,6 +1,6 @@
 """TcEx Generate Configurations CLI Command"""
 # standard library
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, Optional
 
 # first-party
 from tcex.app_config.permutation import Permutation
@@ -78,8 +78,8 @@ class SpecToolReadmeMd(BinABC):
     def _add_param(self, readme_md: List[str], param: 'ParamsModel') -> None:
         """Add params data to readme.md.
 
-        **API Key** *(String)*
-        _**Duration**_ *(String, Optional)*
+        **API Key** _(String)_
+        _**Duration**_ _(String, Optional)_
         """
         label = f'**{param.label}**'
         type_data = f'{param.type}'
@@ -99,8 +99,37 @@ class SpecToolReadmeMd(BinABC):
                 default_value = param.default
             type_data += f''', Default: {str(default_value).replace('|', ', ')}'''
 
-        readme_md.append(f'{self.i1}{label} *({type_data})*')
+        readme_md.append(f'{self.i1}{label} _({type_data})_')
         readme_md.append('')
+
+    def _add_params(
+        self, readme_md: List[str], section: 'SectionsModel', action: Optional[str] = None
+    ) -> None:
+        # add params
+        for param in section.params:
+            if param.disabled is True or param.hidden is True:
+                continue
+
+            # don't add tc_action param since it's the top level action
+            if param.name == 'tc_action':
+                continue
+
+            if action is not None:
+                # validate that the input is valid for the current action
+                if self._valid_param_for_action(param, action) is False:
+                    continue
+
+            # add param data
+            self._add_param(readme_md, param)
+
+            # add param note data
+            self._add_param_note(readme_md, param)
+
+            # add param playbook data types data
+            self._add_param_pb_data_type(readme_md, param)
+
+            # add param valid_values data
+            self._add_param_valid_values(readme_md, param)
 
     def _add_param_note(self, readme_md: List[str], param: 'ParamsModel') -> None:
         """Add note data to readme.md."""
@@ -165,6 +194,102 @@ class SpecToolReadmeMd(BinABC):
         readme_md.append(f'### *{section.section_name}*')
         readme_md.append('')
 
+    def _add_params_for_playbook_action_app(self, readme_md: List[str], actions: List[str]) -> None:
+        """Add inputs for playbook action app."""
+        # add title for actions section
+        self._add_actions_title(readme_md)
+
+        for action in actions:
+
+            # add title for action sub section
+            self._add_actions_sub_title(readme_md, action)
+
+            # add inputs and sections
+            self._add_inputs_title(readme_md, 3)
+
+            for section in self.asy.model.sections:
+                # don't show the section if it has no params
+                if self._has_section_params(section, action) is False:
+                    continue
+
+                # add section title
+                self._add_section_title(readme_md, section)
+
+                # add params
+                self._add_params(readme_md, section, action)
+
+            # add output data
+            self._add_outputs(readme_md, action)
+
+            # add horizontal rule
+            readme_md.append('---')
+
+    def _add_params_for_playbook_std_app(self, readme_md: List[str]) -> None:
+        """Add inputs for playbook standard app."""
+        self._add_inputs_title(readme_md, 3)
+
+        for section in self.asy.model.sections:
+            # don't show the section if it has no params
+            valid_section = False
+            for sp in section.params:
+                if sp.disabled is False and sp.hidden is False:
+                    valid_section = True
+
+            if valid_section is False:
+                continue
+
+            # add section title
+            self._add_section_title(readme_md, section)
+
+            self._add_params(readme_md, section)
+
+            # add output data
+            self._add_outputs(readme_md)
+
+    def _add_params_for_non_playbook_apps(self, readme_md: List[str]) -> None:
+        """Add inputs for non playbook app."""
+        service_config = []
+        non_service_config = []
+
+        # Separate Params into service configuration params and other parameters
+        for param in self.asy.model.params:
+            if param.disabled is True or param.hidden is True:
+                continue
+            if param.service_config is True:
+                service_config.append(param)
+            else:
+                non_service_config.append(param)
+
+        # Add service configuration params to ReadMe file.
+        if service_config:
+            self._add_service_config_title(readme_md, 1)
+
+            for param in service_config:
+                # add param data
+                self._add_param(readme_md, param)
+
+                # add param note data
+                self._add_param_note(readme_md, param)
+
+                # add param valid_values data
+                self._add_param_valid_values(readme_md, param)
+
+        # add inputs and sections
+        self._add_inputs_title(readme_md, 3)
+
+        for param in non_service_config:
+            # add param data
+            self._add_param(readme_md, param)
+
+            # add param note data
+            self._add_param_note(readme_md, param)
+
+            # add param valid_values data
+            self._add_param_valid_values(readme_md, param)
+
+        # add output data
+        self._add_outputs(readme_md)
+
     def generate(self) -> List[str]:
         """Generate the layout.json file data."""
         readme_md = []
@@ -186,149 +311,26 @@ class SpecToolReadmeMd(BinABC):
         # add description
         self._add_description(readme_md)
 
-        # add actions
+        # add inputs
         if self.asy.model.runtime_level.lower() == 'playbook':
             actions = self.ij.model.get_param('tc_action').valid_values or []
             if actions:
-                # add title for actions section
-                self._add_actions_title(readme_md)
-
-                for action in actions:
-
-                    # add title for action sub section
-                    self._add_actions_sub_title(readme_md, action)
-
-                    # add inputs and sections
-                    self._add_inputs_title(readme_md, 3)
-
-                    for section in self.asy.model.sections:
-                        # don't show the section if it has no params
-                        if self._has_section_params(section, action) is False:
-                            continue
-
-                        # add section title
-                        self._add_section_title(readme_md, section)
-
-                        # add params
-                        for param in section.params:
-                            if param.disabled is True or param.hidden is True:
-                                continue
-
-                            # don't add tc_action param since it's the top level action
-                            if param.name == 'tc_action':
-                                continue
-
-                            # validate that the input is valid for the current action
-                            if self._valid_param_for_action(param, action) is False:
-                                continue
-
-                            # add param data
-                            self._add_param(readme_md, param)
-
-                            # add param note data
-                            self._add_param_note(readme_md, param)
-
-                            # add param playbook data types data
-                            self._add_param_pb_data_type(readme_md, param)
-
-                            # add param valid_values data
-                            self._add_param_valid_values(readme_md, param)
-
-                    # add output data
-                    self._add_outputs(readme_md, action)
-
-                    # add horizontal rule
-                    readme_md.append('---')
-            # add non action based sections
+                # add inputs for action based sections
+                self._add_params_for_playbook_action_app(readme_md, actions)
             else:
-                # add inputs and sections
-                self._add_inputs_title(readme_md, 3)
-
-                for section in self.asy.model.sections:
-                    # don't show the section if it has no params
-                    valid_section = False
-                    for sp in section.params:
-                        if sp.disabled is False and sp.hidden is False:
-                            valid_section = True
-
-                    if valid_section is False:
-                        continue
-
-                    # add section title
-                    self._add_section_title(readme_md, section)
-
-                    # add params
-                    for param in section.params:
-                        if param.disabled is True or param.hidden is True:
-                            continue
-
-                        # don't add tc_action param since it's the top level action
-                        if param.name == 'tc_action':
-                            continue
-
-                        # add param data
-                        self._add_param(readme_md, param)
-
-                        # add param note data
-                        self._add_param_note(readme_md, param)
-
-                        # add param playbook data types data
-                        self._add_param_pb_data_type(readme_md, param)
-
-                        # add param valid_values data
-                        self._add_param_valid_values(readme_md, param)
-
-                # add output data
-                self._add_outputs(readme_md)
+                # add inputs for non action based sections
+                self._add_params_for_playbook_std_app(readme_md)
 
         elif self.asy.model.runtime_level.lower() in [
             'triggerservice',
             'webhooktriggerservice',
             'organization',
         ]:
-            service_config = []
-            non_service_config = []
-
-            # Separate Params into service configuration params and other parameters
-            for param in self.asy.model.params:
-                if param.disabled is True or param.hidden is True:
-                    continue
-                if param.service_config is True:
-                    service_config.append(param)
-                else:
-                    non_service_config.append(param)
-
-            # Add service configuration params to ReadMe file.
-            if service_config:
-                self._add_service_config_title(readme_md, 1)
-
-                for param in service_config:
-                    # add param data
-                    self._add_param(readme_md, param)
-
-                    # add param note data
-                    self._add_param_note(readme_md, param)
-
-                    # add param valid_values data
-                    self._add_param_valid_values(readme_md, param)
-
-            # add inputs and sections
-            self._add_inputs_title(readme_md, 3)
-
-            for param in non_service_config:
-                # add param data
-                self._add_param(readme_md, param)
-
-                # add param note data
-                self._add_param_note(readme_md, param)
-
-                # add param valid_values data
-                self._add_param_valid_values(readme_md, param)
-
-            # add output data
-            self._add_outputs(readme_md)
+            self._add_params_for_non_playbook_apps(readme_md)
 
         # add labels
         self._add_labels(readme_md)
 
+        # add end of file newline
+        readme_md.append('')
         return readme_md

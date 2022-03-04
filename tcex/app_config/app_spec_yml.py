@@ -127,7 +127,7 @@ class AppSpecYml:
                 'label': 'URL Encode JSON Body',
                 'name': 'tc_adv_req_urlencode_body',
                 'note': (
-                    ''''URL encode a JSON-formatted body. Typically used for'''
+                    '''URL encode a JSON-formatted body. Typically used for'''
                     ''' 'x-www-form-urlencoded' data, where the data can be configured in the '''
                     '''body as a JSON string.'''
                 ),
@@ -294,8 +294,6 @@ class AppSpecYml:
         outputs = []
         contents['outputData'] = contents.pop('outputGroups', {})
         for display, group in contents.get('outputData').items():
-            if display == '''tc_action not in ('')''':
-                display = '1'
             output_data = {'display': display, 'outputVariables': []}
 
             # fix schema when output type is assumed
