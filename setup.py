@@ -24,6 +24,7 @@ dev_packages = [
     'black',
     'codespell',
     'deepdiff',
+    'fakeredis==1.7.0',
     'flake8',
     'isort',
     'mako',
@@ -36,7 +37,6 @@ dev_packages = [
     'pytest-ordering',
     'pytest-xdist>=2.5.0',
     'pyupgrade',
-    'fakeredis==1.7.0',
 ]
 if sys.version_info <= (3, 7):
     dev_packages.append('bandit==1.7.1')
@@ -92,7 +92,6 @@ setup(
     long_description_content_type='text/markdown',
     name=metadata['__package_name__'],
     packages=find_packages(exclude=['tests', 'tests.*']),
-    # package_data={'': ['*.json']},
     package_dir={'tcex': 'tcex'},
     project_urls={
         'Documentation': 'https://github.com/ThreatConnect-Inc/tcex',

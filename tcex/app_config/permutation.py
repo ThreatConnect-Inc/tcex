@@ -225,7 +225,8 @@ class Permutation:
     def extract_tc_action_clause(self, display_clause: Optional[str]) -> Optional[str]:
         """Extract the tc_action part of the display clause."""
         if display_clause is not None:
-            action_clause_extract_pattern = r'(tc_action\sin\s\([^\)]*\))'
+            # action_clause_extract_pattern = r'(tc_action\sin\s\([^\)]*\))'
+            action_clause_extract_pattern = r'''(tc_action\sin\s\(.+?(?<='\)))'''
             _tc_action_clause = re.search(
                 action_clause_extract_pattern, display_clause, re.IGNORECASE
             )
