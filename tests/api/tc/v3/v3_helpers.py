@@ -3,9 +3,10 @@
 import importlib
 import inspect
 import os
+import time
 from datetime import datetime
 from random import randint
-from typing import Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
 # third-party
 from pydantic import BaseModel
@@ -14,6 +15,10 @@ from pydantic import BaseModel
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tcex.utils.utils import Utils
 from tests.mock_app import MockApp
+
+if TYPE_CHECKING:
+    # third-party
+    import pytest
 
 
 class V3Helper:
@@ -55,6 +60,73 @@ class V3Helper:
         v3_obj = v3_class(session=self.tcex.session_tc)
         # print(f'method=import_module, v3-obj-type={type(v3_obj)}')
         return v3_obj
+
+    @staticmethod
+    def tql_clear(names, collection, field='summary'):
+        """Use TQL to delete TC Objects."""
+
+        getattr(collection.filter, field)(TqlOperator.IN, names)
+        for obj in collection:
+            obj.delete()
+
+    def _associations(self, root, association_1, association_2, association_data):
+        """Helper method to test associations."""
+
+        obj_type = root.__class__.__name__.lower()
+        association_type = association_1.__class__.__name__
+        if association_type not in ['Case', 'Artifact', 'Group', 'Indicator']:
+            assert False
+        association_type = association_type.lower()
+
+        generator = f'associated_{(association_type + "s")}'
+        stagger = f'stage_associated_{association_type}'
+
+        data_ = [{'id': association_1.model.id}, association_data]
+        getattr(root.model, generator).data = data_
+
+        root.create()
+
+        found_associations = 0
+        for _ in getattr(root, generator):
+            found_associations += 1
+        assert found_associations == 2
+
+        # [Append Testing] - Stage a new group as a association
+        getattr(root, stagger)({'id': association_2.model.id})
+        root.update()
+
+        # [Retrieve Testing] - Validate that the group staged is associated.
+        found_association = 0
+        staged_association_found = False
+        for association in getattr(root, generator):
+            found_association += 1
+            if association.model.id == association_2.model.id:
+                staged_association_found = True
+        assert found_association == 3, f'Invalid amount of groups ({found_association}) retrieved'
+        assert staged_association_found, 'Newly staged group not retrieved'
+
+        root = getattr(self.v3, obj_type)(id=root.model.id)
+        # [Stage Testing] - Stage a new group as a association
+        getattr(root, stagger)({'id': association_2.model.id})
+        # [Replace Testing] - Replace the current associations with the newly staged association
+        root.update(mode='replace')
+
+        # [Retrieve Testing] - Validate that only the staged group is associated.
+        found_associations = 0
+        for _ in getattr(root, generator):
+            found_associations += 1
+        assert found_associations == 1
+
+        root = getattr(self.v3, obj_type)(id=root.model.id)
+        # [Stage Testing] - Stage a new group as a association
+        getattr(root, stagger)({'id': association_2.model.id})
+        # [Delete Testing] - Delete the newly staged association
+        root.update(mode='delete')
+
+        found_associations = 0
+        for _ in getattr(root, generator):
+            found_associations += 1
+        assert found_associations == 0
 
     @staticmethod
     def _module_map(module: str) -> Dict:
@@ -286,23 +358,19 @@ class V3Helper:
         Returns:
             CaseManagement.Case: A CM case object.
         """
-        cases = self.v3.cases()
-        xid = kwargs.get('xid', f'xid-{inspect.stack()[1].function}').replace('_', '-')
-        cases.filter.xid(TqlOperator.EQ, xid)
-        for case in cases:
-            case.delete()
+        # Use the test case name in xid and to control delete
+        test_case_name = inspect.stack()[1].function
 
+        # create case
         case_data = {
             'assignee': kwargs.get('assignee'),
             'date_added': kwargs.get('date_added'),
-            'description': kwargs.get(
-                'description', f'A description for {inspect.stack()[1].function}'
-            ),
-            'name': kwargs.get('name', inspect.stack()[1].function),
+            'description': kwargs.get('description', f'A description for {test_case_name}'),
+            'name': kwargs.get('name', test_case_name),
             'resolution': kwargs.get('resolution', 'Not Specified'),
             'severity': kwargs.get('severity', 'Low'),
             'status': kwargs.get('status', 'Open'),
-            'xid': xid,
+            'xid': kwargs.get('xid', f'xid-{test_case_name}-{time.time()}'),
         }
 
         artifacts = self._to_list(kwargs.get('artifacts', []))
@@ -327,7 +395,7 @@ class V3Helper:
             case.stage_note(self.v3.note(**note))
 
         # add tags
-        case.stage_tag(self.v3.tag(name='pytest'))
+        case.stage_tag(self.v3.tag(name=test_case_name))
         for tag in tags:
             case.stage_tag(self.v3.tag(**tag))
 
@@ -361,18 +429,18 @@ class V3Helper:
         Returns:
             V3.Group: A group object.
         """
-        name = kwargs.get('name', inspect.stack()[1].function)
+        # Use the test case name in xid and to control delete
+        test_case_name = inspect.stack()[1].function
 
-        groups = self.tcex.v3.groups()
-        groups.filter.summary(TqlOperator.EQ, name)
-        for group in groups:
-            group.delete()
+        # use incoming name or test case name
+        name = kwargs.get('name', test_case_name)
 
+        # create group
         group_data = {
             'file_name': kwargs.get('file_name'),
             'name': name,
             'type': type_,
-            'xid': kwargs.get('xid', f'xid-{inspect.stack()[1].function}'),
+            'xid': kwargs.get('xid', f'xid-{test_case_name}-{time.time()}'),
         }
         # add source
         if kwargs.get('source') is not None:
@@ -404,7 +472,7 @@ class V3Helper:
             group.stage_security_label(self.v3.security_label(**security_label))
 
         # add tags
-        group.stage_tag(self.v3.tag(name='pytest'))
+        group.stage_tag(self.v3.tag(name=test_case_name))
         for tag in tags:
             group.stage_tag(self.v3.tag(**tag))
 
@@ -436,6 +504,10 @@ class V3Helper:
         Returns:
             V3.Indicator: A indicator object.
         """
+        # Use the test case name in xid and to control delete
+        test_case_name = inspect.stack()[1].function
+
+        # create indicator
         value_1 = kwargs.get('value1', f'123.{randint(1,255)}.{randint(1,255)}.{randint(1,255)}')
 
         def value_1_map():
@@ -507,7 +579,7 @@ class V3Helper:
             indicator.stage_security_label(self.v3.security_label(**security_label))
 
         # add tags
-        indicator.stage_tag(self.v3.tag(name='pytest'))
+        indicator.stage_tag(self.v3.tag(name=test_case_name))
         for tag in tags:
             indicator.stage_tag(self.v3.tag(**tag))
 
@@ -541,15 +613,17 @@ class V3Helper:
             suborg (str, kwargs): Suborg of the Victim.
             tags (Tags, kwargs): A list of Tags corresponding to the item (NOTE: Setting this
                 parameter will replace any existing tag(s) with the one(s) specified)
-            type (str, kwargs): The type for the Victim.
             work_location (str, kwargs): Work Location of the Victim.
 
         Returns:
             V3.Victim: A victim object.
         """
+        # Use the test case name in xid and to control delete
+        test_case_name = inspect.stack()[1].function
+
+        # create victim
         victim_data = {
-            'name': kwargs.get('name', inspect.stack()[1].function),
-            'type': 'A Random Type',
+            'name': kwargs.get('name', test_case_name),
             'description': kwargs.get('description') or 'Example Victim Description',
             'nationality': kwargs.get('nationality') or 'American',
             'org': kwargs.get('org') or 'TCI',
@@ -585,13 +659,9 @@ class V3Helper:
             victim.stage_victim_asset(self.v3.victim_asset(**asset))
 
         # add tags
-        victim.stage_tag(self.v3.tag(name='pytest'))
+        victim.stage_tag(self.v3.tag(name=test_case_name))
         for tag in tags:
             victim.stage_tag(self.v3.tag(**tag))
-
-        # add assets
-        # for tag in tags:
-        #     victim.stage_asset(self.v3.victim_asset(**tag))
 
         # create object
         victim.create()
@@ -610,13 +680,6 @@ class V3Helper:
             except Exception:
                 pass
 
-        # delete cases by tag
-        if os.getenv('TCEX_CLEAN_CM'):
-            cases = self.v3.cases()
-            cases.filter.tag(TqlOperator.EQ, 'PyTest')
-            for case in cases:
-                case.delete()
-
 
 class TestV3:
     """Test TcEx V3 Base Class"""
@@ -624,6 +687,14 @@ class TestV3:
     v3_helper = None
     tcex = None
     utils = Utils()
+
+    def teardown_method(self):
+        """Clean up resources"""
+        if os.getenv('TEARDOWN_METHOD') is None:
+            self.v3_helper.cleanup()
+
+        # clean up monitor thread
+        self.v3_helper.tcex.token.shutdown = True
 
     def obj_api_options(self):
         """Test filter keywords.
@@ -688,3 +759,8 @@ class TestV3:
             if prop in ['id', 'webLink']:
                 continue
             assert prop in self.v3_helper.v3_obj.properties, f'Extra {prop} property.'
+
+    @staticmethod
+    def xid(request: 'pytest.FixtureRequest') -> str:
+        """Return a valid for a test case."""
+        return f'{request.node.name}-{time.time()}'

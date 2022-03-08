@@ -221,7 +221,7 @@ def modify_advanced_settings(input_name) -> Callable:
                 continue
 
             key, value = key_value
-            key = key.strip()
+            key = key.strip().lower()
             if not key:
                 continue
 

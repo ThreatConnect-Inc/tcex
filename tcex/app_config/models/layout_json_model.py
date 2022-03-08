@@ -1,5 +1,7 @@
 """Layout JSON Model"""
+# pylint: disable=no-self-argument,no-self-use; noqa: N805
 # standard library
+from collections import OrderedDict
 from typing import Dict, List, Optional, Union
 
 # third-party
@@ -70,16 +72,16 @@ class LayoutJsonModel(BaseModel):
         alias_generator = snake_to_camel
         validate_assignment = True
 
-    def get_param(self, name: str) -> Union[NoneModel, ParametersModel]:
+    def get_param(self, name: str) -> Union['NoneModel', 'ParametersModel']:
         """Return the param or a None Model."""
         return self.params.get(name) or NoneModel()
 
-    def get_output(self, name) -> Union[NoneModel, OutputsModel]:
+    def get_output(self, name: str) -> Union['NoneModel', 'OutputsModel']:
         """Return layout.json outputs in a flattened dict with name param as key."""
-        return self.outputs_.get(name) or NoneModel
+        return self.outputs_.get(name) or NoneModel()
 
     @property
-    def outputs_(self) -> Dict[str, OutputsModel]:
+    def outputs_(self) -> Dict[str, 'OutputsModel']:
         """Return layout.json outputs in a flattened dict with name param as key."""
         return {o.name: o for o in self.outputs}
 
@@ -89,9 +91,12 @@ class LayoutJsonModel(BaseModel):
         return list(self.params.keys())
 
     @property
-    def params(self) -> Dict[str, ParametersModel]:
+    def params(self) -> Dict[str, 'ParametersModel']:
         """Return layout.json params in a flattened dict with name param as key."""
-        parameters = {}
+        # return {p.name: p for i in self.inputs for p in i.parameters}
+
+        # order is required for display clauses to be evaluated correctly
+        parameters = OrderedDict()  # remove after python 3.7
         for i in self.inputs:
             for p in i.parameters:
                 parameters.setdefault(p.name, p)

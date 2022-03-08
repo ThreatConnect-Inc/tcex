@@ -481,6 +481,14 @@ class TestThreatIntelligence:
     ti = None
     ti_helper = None
 
+    def teardown_method(self):
+        """Clean up resources"""
+        if os.getenv('TEARDOWN_METHOD') is None:
+            self.ti_helper.cleanup()
+
+        # clean up monitor thread
+        self.ti_helper.tcex.token.shutdown = True
+
     def _add_group_fields(self, group_data):
         """Add any required or optional fields to the request body."""
         for k, v in self.required_fields.items():

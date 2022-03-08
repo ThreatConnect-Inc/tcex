@@ -43,9 +43,12 @@ class TestInstallJson:
     def ij(app_name: str = 'app_1', app_type: str = 'tcpb'):
         """Return install.json instance."""
         # reset singleton
-        InstallJson._instances = {}
+        # InstallJson._instances = {}
+        tcex_test_dir = os.getenv('TCEX_TEST_DIR')
 
-        ij_fqfn = os.path.join('tests', 'app_config', 'apps', app_type, app_name, 'install.json')
+        ij_fqfn = os.path.join(
+            tcex_test_dir, 'app_config', 'apps', app_type, app_name, 'install.json'
+        )
         fqfn = Path(ij_fqfn)
         try:
             _ij = InstallJson(filename=fqfn.name, path=fqfn.parent)
@@ -57,9 +60,10 @@ class TestInstallJson:
     def ij_bad(app_name: str = 'app_bad_install_json', app_type: str = 'tcpb'):
         """Return install.json instance with "bad" file."""
         # reset singleton
-        InstallJson._instances = {}
+        # InstallJson._instances = {}
+        tcex_test_dir = os.getenv('TCEX_TEST_DIR')
 
-        base_fqpn = os.path.join('tests', 'app_config', 'apps', app_type, app_name)
+        base_fqpn = os.path.join(tcex_test_dir, 'app_config', 'apps', app_type, app_name)
         shutil.copy2(
             os.path.join(base_fqpn, 'install-template.json'),
             os.path.join(base_fqpn, 'install.json'),
@@ -73,10 +77,11 @@ class TestInstallJson:
     @staticmethod
     def model_validate(path: str) -> None:
         """Validate input model in and out."""
-        ij_path = Path(path)
+        tcex_test_dir = os.getenv('TCEX_TEST_DIR')
+        ij_path = Path(os.path.join(tcex_test_dir, path))
         for fqfn in sorted(ij_path.glob('**/*install.json')):
             # reset singleton
-            InstallJson._instances = {}
+            # InstallJson._instances = {}
 
             fqfn = Path(fqfn)
             with fqfn.open() as fh:
@@ -371,26 +376,29 @@ class TestInstallJson:
 
     def test_model_app_output_var_typ(self):
         """Test method"""
-        ij = self.ij_bad(app_type='tcpb')
-        assert ij.model.app_output_var_type == 'App'
+        try:
+            ij = self.ij_bad(app_type='tcpb')
+            assert ij.model.app_output_var_type == 'App'
 
-        # cleanup temp file
-        ij.fqfn.unlink()
+            # cleanup temp file
+            ij.fqfn.unlink()
 
-        ij = self.ij_bad(app_type='tcvc')
-        assert ij.model.app_output_var_type == 'Trigger'
+            ij = self.ij_bad(app_type='tcvc')
+            assert ij.model.app_output_var_type == 'Trigger'
+        finally:
+            # cleanup temp file
+            ij.fqfn.unlink()
 
-        # cleanup temp file
-        ij.fqfn.unlink()
-
-    def test_model_commit_hash(self):
+    def test_model_commit_hash(self, monkeypatch):
         """Test method"""
+        monkeypatch.setenv('CI_COMMIT_SHA', '1234567890123456789012345678901234567890')
         ij = self.ij_bad(app_type='tcpb')
 
-        assert ij.model.commit_hash
-
-        # cleanup temp file
-        ij.fqfn.unlink()
+        try:
+            assert ij.model.commit_hash == os.getenv('CI_COMMIT_SHA')
+        finally:
+            # cleanup temp file
+            ij.fqfn.unlink()
 
     def test_model_filter_params(self):
         """Test method"""
@@ -432,20 +440,20 @@ class TestInstallJson:
 
     def test_tc_support(self) -> None:
         """Validate install.json files."""
-        self.model_validate('tests/app_config/apps/tc')
+        self.model_validate('app_config/apps/tc')
 
     def test_tcpb_support(self) -> None:
         """Validate install.json files."""
-        self.model_validate('tests/app_config/apps/tcpb')
+        self.model_validate('app_config/apps/tcpb')
 
     def test_tcva_support(self) -> None:
         """Validate install.json files."""
-        self.model_validate('tests/app_config/apps/tcva')
+        self.model_validate('app_config/apps/tcva')
 
     def test_tcvc_support(self) -> None:
         """Validate install.json files."""
-        self.model_validate('tests/app_config/apps/tcvc')
+        self.model_validate('app_config/apps/tcvc')
 
     def test_tcvw_support(self) -> None:
         """Validate install.json files."""
-        self.model_validate('tests/app_config/apps/tcvw')
+        self.model_validate('app_config/apps/tcvw')

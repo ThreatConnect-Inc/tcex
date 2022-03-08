@@ -30,6 +30,7 @@ from tcex.api.tc.v2.batch.group import (
     Report,
     Signature,
     Threat,
+    Vulnerability,
 )
 from tcex.api.tc.v2.batch.indicator import (
     ASN,
@@ -67,6 +68,7 @@ GroupType = Union[
     Report,
     Signature,
     Threat,
+    Vulnerability,
 ]
 
 # define IndicatorType
@@ -1065,7 +1067,7 @@ class BatchWriter:
 
                 if saved:
                     try:
-                        del self._groups[xid]
+                        del self.groups[xid]
                     except KeyError:
                         # if group was saved twice it would already be delete
                         pass
@@ -1078,7 +1080,7 @@ class BatchWriter:
 
                 if saved:
                     try:
-                        del self._indicators[xid]
+                        del self.indicators[xid]
                     except KeyError:
                         # if indicator was saved twice it would already be delete
                         pass
@@ -1168,6 +1170,22 @@ class BatchWriter:
         """
         indicator_obj = URL(text, **kwargs)
         return self._indicator(indicator_obj, kwargs.get('store', True))
+
+    def vulnerability(self, name: str, **kwargs) -> Vulnerability:
+        """Add Vulnerability data to Batch.
+
+        Args:
+            name: The name for this Group.
+            date_added (str, kwargs): The date timestamp the Indicator was created.
+            xid (str, kwargs): The external id for this Group.
+            store: (bool, kwargs): Advanced - Defaults to True. If True
+                the indicator data will be stored in instance list.
+
+        Returns:
+            Vulnerability: An instance of the Vulnerability class.
+        """
+        group_obj = Vulnerability(name, **kwargs)
+        return self._group(group_obj, kwargs.get('store', True))
 
     def write_batch_json(self, content: dict) -> None:
         """Write batch json data to a file."""

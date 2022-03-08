@@ -24,6 +24,7 @@ class ExitCode(int, Enum):
     SUCCESS = 0
     FAILURE = 1
     PARTIAL_FAILURE = 3
+    HARD_FAILURE = 4
 
     def __str__(self):
         """@cblades"""
@@ -179,10 +180,6 @@ class ExitService:
             message_file = os.path.join(self.inputs.contents.get('tc_out_path'), 'message.tc')
         else:
             message_file = 'message.tc'
-
-        if os.path.isfile(message_file):
-            with open(message_file) as mh:
-                message = mh.read() + message
 
         if not message.endswith('\n'):
             message += '\n'

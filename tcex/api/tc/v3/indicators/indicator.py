@@ -2,10 +2,12 @@
 # standard library
 import json
 from datetime import datetime
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Iterator, Optional, Union
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
+from tcex.api.tc.v3.artifacts.artifact_model import ArtifactModel
+from tcex.api.tc.v3.cases.case_model import CaseModel
 from tcex.api.tc.v3.groups.group_model import GroupModel
 from tcex.api.tc.v3.indicator_attributes.indicator_attribute_model import IndicatorAttributeModel
 from tcex.api.tc.v3.indicators.indicator_filter import IndicatorFilter
@@ -17,6 +19,8 @@ from tcex.api.tc.v3.tags.tag_model import TagModel
 
 if TYPE_CHECKING:  # pragma: no cover
     # first-party
+    from tcex.api.tc.v3.artifacts.artifact import Artifact
+    from tcex.api.tc.v3.cases.case import Case
     from tcex.api.tc.v3.groups.group import Group
     from tcex.api.tc.v3.indicator_attributes.indicator_attribute import IndicatorAttribute
     from tcex.api.tc.v3.security_labels.security_label import SecurityLabel
@@ -93,6 +97,9 @@ class Indicator(ObjectABC):
         active_locked (bool, kwargs): Lock the indicator active value?
         address (str, kwargs): The email address associated with this indicator (EmailAddress
             specific summary field).
+        associated_artifacts (Artifacts, kwargs): A list of Artifacts associated with this
+            Indicator.
+        associated_cases (Cases, kwargs): A list of Cases associated with this Indicator.
         associated_groups (Groups, kwargs): A list of groups that this indicator is associated with.
         associated_indicators (Indicators, kwargs): A list of indicators associated with this
             indicator.
@@ -200,7 +207,23 @@ class Indicator(ObjectABC):
         return self.request
 
     @property
-    def associated_groups(self) -> 'Group':
+    def associated_artifacts(self) -> Iterator['Artifact']:
+        """Yield Artifact from Artifacts."""
+        # first-party
+        from tcex.api.tc.v3.artifacts.artifact import Artifacts
+
+        yield from self._iterate_over_sublist(Artifacts)
+
+    @property
+    def associated_cases(self) -> Iterator['Case']:
+        """Yield Case from Cases."""
+        # first-party
+        from tcex.api.tc.v3.cases.case import Cases
+
+        yield from self._iterate_over_sublist(Cases)
+
+    @property
+    def associated_groups(self) -> Iterator['Group']:
         """Yield Group from Groups."""
         # first-party
         from tcex.api.tc.v3.groups.group import Groups
@@ -208,7 +231,7 @@ class Indicator(ObjectABC):
         yield from self._iterate_over_sublist(Groups)
 
     @property
-    def associated_indicators(self) -> 'Indicator':
+    def associated_indicators(self) -> Iterator['Indicator']:
         """Yield Indicator from Indicators."""
         # Ensure the current item is not returned as a association
         for indicator in self._iterate_over_sublist(Indicators):
@@ -217,7 +240,7 @@ class Indicator(ObjectABC):
             yield indicator
 
     @property
-    def attributes(self) -> 'IndicatorAttribute':
+    def attributes(self) -> Iterator['IndicatorAttribute']:
         """Yield Attribute from Attributes."""
         # first-party
         from tcex.api.tc.v3.indicator_attributes.indicator_attribute import IndicatorAttributes
@@ -225,7 +248,7 @@ class Indicator(ObjectABC):
         yield from self._iterate_over_sublist(IndicatorAttributes)
 
     @property
-    def security_labels(self) -> 'SecurityLabel':
+    def security_labels(self) -> Iterator['SecurityLabel']:
         """Yield Security_Label from Security_Labels."""
         # first-party
         from tcex.api.tc.v3.security_labels.security_label import SecurityLabels
@@ -233,12 +256,36 @@ class Indicator(ObjectABC):
         yield from self._iterate_over_sublist(SecurityLabels)
 
     @property
-    def tags(self) -> 'Tag':
+    def tags(self) -> Iterator['Tag']:
         """Yield Tag from Tags."""
         # first-party
         from tcex.api.tc.v3.tags.tag import Tags
 
         yield from self._iterate_over_sublist(Tags)
+
+    def stage_associated_case(self, data: Union[dict, 'ObjectABC', 'CaseModel']) -> None:
+        """Stage case on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = CaseModel(**data)
+
+        if not isinstance(data, CaseModel):
+            raise RuntimeError('Invalid type passed in to stage_associated_case')
+        data._staged = True
+        self.model.associated_cases.data.append(data)
+
+    def stage_associated_artifact(self, data: Union[dict, 'ObjectABC', 'ArtifactModel']) -> None:
+        """Stage artifact on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = ArtifactModel(**data)
+
+        if not isinstance(data, ArtifactModel):
+            raise RuntimeError('Invalid type passed in to stage_associated_artifact')
+        data._staged = True
+        self.model.associated_artifacts.data.append(data)
 
     def stage_associated_group(self, data: Union[dict, 'ObjectABC', 'GroupModel']) -> None:
         """Stage group on the object."""

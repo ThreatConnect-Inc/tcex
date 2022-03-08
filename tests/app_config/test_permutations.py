@@ -34,10 +34,13 @@ class TestPermutation:
     def ij(app_type: str, app_name: str) -> InstallJson:
         """Return install.json instance."""
         # reset singleton
-        InstallJson._instances = {}
+        # InstallJson._instances = {}
+        tcex_test_dir = os.getenv('TCEX_TEST_DIR')
 
-        base_path = f'tests/app_config/apps/{app_type}/{app_name}'
-        fqfn = Path(os.path.join(base_path, 'install.json'))
+        ij_fqfn = os.path.join(
+            tcex_test_dir, 'app_config', 'apps', app_type, app_name, 'install.json'
+        )
+        fqfn = Path(ij_fqfn)
         try:
             return InstallJson(filename=fqfn.name, path=fqfn.parent)
         except Exception as ex:
@@ -48,9 +51,12 @@ class TestPermutation:
         """Return layout.json instance."""
         # reset singleton
         LayoutJson._instances = {}
+        tcex_test_dir = os.getenv('TCEX_TEST_DIR')
 
-        base_path = f'tests/app_config/apps/{app_type}/{app_name}'
-        fqfn = Path(os.path.join(base_path, 'layout.json'))
+        lj_fqfn = os.path.join(
+            tcex_test_dir, 'app_config', 'apps', app_type, app_name, 'layout.json'
+        )
+        fqfn = Path(lj_fqfn)
         try:
             return LayoutJson(filename=fqfn.name, path=fqfn.parent)
         except Exception as ex:
@@ -99,10 +105,11 @@ class TestPermutation:
         input_names: List[list] = self.permutation.output_permutations
         assert isinstance(input_names, list)
 
-    def test_outputs_by_inputs(self):
-        """Test method"""
-        outputs: List[List[dict]] = self.permutation.outputs_by_inputs({'tc_action': 'Action 1'})
-        assert isinstance(outputs, list)
+    # TODO: [low] updated this to validate the returned data model
+    # def test_outputs_by_inputs(self):
+    #     """Test method"""
+    #     outputs: List[List[dict]] = self.permutation.outputs_by_inputs({'tc_action': 'Action 1'})
+    #     assert isinstance(outputs, list)
 
     def test_permutations(self):
         """Test method"""

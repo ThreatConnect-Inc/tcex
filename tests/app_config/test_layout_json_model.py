@@ -40,9 +40,12 @@ class TestLayoutJson:
     def ij(app_name: str = 'app_1', app_type: str = 'tcpb'):
         """Return install.json instance."""
         # reset singleton
-        InstallJson._instances = {}
+        # InstallJson._instances = {}
+        tcex_test_dir = os.getenv('TCEX_TEST_DIR')
 
-        ij_fqfn = os.path.join('tests', 'app_config', 'apps', app_type, app_name, 'install.json')
+        ij_fqfn = os.path.join(
+            tcex_test_dir, 'app_config', 'apps', app_type, app_name, 'install.json'
+        )
         fqfn = Path(ij_fqfn)
         try:
             return InstallJson(filename=fqfn.name, path=fqfn.parent)
@@ -54,8 +57,11 @@ class TestLayoutJson:
         """Return layout.json instance."""
         # reset singleton
         LayoutJson._instances = {}
+        tcex_test_dir = os.getenv('TCEX_TEST_DIR')
 
-        lj_fqfn = os.path.join('tests', 'app_config', 'apps', app_type, app_name, 'layout.json')
+        lj_fqfn = os.path.join(
+            tcex_test_dir, 'app_config', 'apps', app_type, app_name, 'layout.json'
+        )
         fqfn = Path(lj_fqfn)
         try:
             return LayoutJson(filename=fqfn.name, path=fqfn.parent)
@@ -67,8 +73,9 @@ class TestLayoutJson:
         """Return layout.json instance with "bad" file."""
         # reset singleton
         LayoutJson._instances = {}
+        tcex_test_dir = os.getenv('TCEX_TEST_DIR')
 
-        base_fqpn = os.path.join('tests', 'app_config', 'apps', app_type, app_name)
+        base_fqpn = os.path.join(tcex_test_dir, 'app_config', 'apps', app_type, app_name)
         shutil.copy2(
             os.path.join(base_fqpn, 'layout-template.json'),
             os.path.join(base_fqpn, 'layout.json'),
@@ -82,7 +89,8 @@ class TestLayoutJson:
     @staticmethod
     def model_validate(path: str) -> None:
         """Validate input model in and out."""
-        lj_path = Path(path)
+        tcex_test_dir = os.getenv('TCEX_TEST_DIR')
+        lj_path = Path(os.path.join(tcex_test_dir, path))
         for fqfn in sorted(lj_path.glob('**/*layout.json')):
             # reset singleton
             LayoutJson._instances = {}

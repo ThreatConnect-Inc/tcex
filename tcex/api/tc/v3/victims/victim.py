@@ -1,6 +1,6 @@
 """Victim / Victims Object"""
 # standard library
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Iterator, Union
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -122,7 +122,7 @@ class Victim(ObjectABC):
         return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
 
     @property
-    def victim_assets(self) -> 'VictimAsset':
+    def victim_assets(self) -> Iterator['VictimAsset']:
         """Yield Victim_Asset from Victim_Assets."""
         # first-party
         from tcex.api.tc.v3.victim_assets.victim_asset import VictimAssets
@@ -130,7 +130,7 @@ class Victim(ObjectABC):
         yield from self._iterate_over_sublist(VictimAssets)
 
     @property
-    def associated_groups(self) -> 'Group':
+    def associated_groups(self) -> Iterator['Group']:
         """Yield Group from Groups."""
         # first-party
         from tcex.api.tc.v3.groups.group import Groups
@@ -138,7 +138,7 @@ class Victim(ObjectABC):
         yield from self._iterate_over_sublist(Groups)
 
     @property
-    def attributes(self) -> 'VictimAttribute':
+    def attributes(self) -> Iterator['VictimAttribute']:
         """Yield Attribute from Attributes."""
         # first-party
         from tcex.api.tc.v3.victim_attributes.victim_attribute import VictimAttributes
@@ -146,7 +146,7 @@ class Victim(ObjectABC):
         yield from self._iterate_over_sublist(VictimAttributes)
 
     @property
-    def security_labels(self) -> 'SecurityLabel':
+    def security_labels(self) -> Iterator['SecurityLabel']:
         """Yield Security_Label from Security_Labels."""
         # first-party
         from tcex.api.tc.v3.security_labels.security_label import SecurityLabels
@@ -154,7 +154,7 @@ class Victim(ObjectABC):
         yield from self._iterate_over_sublist(SecurityLabels)
 
     @property
-    def tags(self) -> 'Tag':
+    def tags(self) -> Iterator['Tag']:
         """Yield Tag from Tags."""
         # first-party
         from tcex.api.tc.v3.tags.tag import Tags

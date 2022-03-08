@@ -4,14 +4,11 @@ import json
 import os
 import threading
 import traceback
-from typing import Callable, Optional, Union
+from typing import Any, Callable, Optional, Union
 
 # first-party
-from tcex.input.input import Input
 from tcex.pleb.registry import registry
 from tcex.services.common_service import CommonService
-from tcex.sessions.auth.tc_auth import TcAuth
-from tcex.sessions.tc_session import TcSession
 
 
 class CommonServiceTrigger(CommonService):
@@ -187,7 +184,7 @@ class CommonServiceTrigger(CommonService):
 
                 # get an instance of PB module with current
                 # session_id and outputs to pass to callback
-                outputs: Union[list, str] = config.model.tc_playbook_out_variables or []
+                outputs: Union[list, str] = config.tc_playbook_out_variables or []
                 if isinstance(outputs, str):
                     outputs = outputs.split(',')
                 playbook: object = self.tcex.get_playbook(
@@ -213,6 +210,25 @@ class CommonServiceTrigger(CommonService):
                 )
             except Exception:
                 self.log.trace(traceback.format_exc())
+
+    def update_trigger_value(self, trigger_id: int, input_name: str, new_value: Any) -> None:
+        """Send UpdateTriggerValue command.
+
+        Args:
+            trigger_id: the ID of the trigger to update.
+            input_name: the name of the input to update.
+            new_value: the new value for the input.
+        """
+
+        msg = {
+            'command': 'UpdateTriggerValue',
+            'triggerId': trigger_id,
+            'inputName': input_name,
+            'inputValue': new_value,
+        }
+
+        self.log.info(f'feature=service, event=update-trigger-value, msg={msg}')
+        self.message_broker.publish(json.dumps(msg), self.args.tc_svc_client_topic)
 
     def fire_event_publish(
         self, trigger_id: int, session_id: str, request_key: Optional[str] = None
@@ -357,24 +373,25 @@ class CommonServiceTrigger(CommonService):
                 kwargs['url'] = message.get('url')
 
             try:
-                tc_session = TcSession(
-                    auth=TcAuth(tc_token=message.get('apiToken')),
-                    base_url=registry.session_tc.base_url,
-                    log_curl=registry.session_tc.log_curl,
-                    proxies=registry.session_tc.proxies,
-                    proxies_enabled=registry.session_tc.proxies,
-                    verify=registry.session_tc.verify,
-                )
+                # Resolve any variables in config
+                updated_config = {
+                    k: (
+                        registry.inputs.resolve_variable(v)
+                        if registry.inputs.utils.is_tc_variable(v)
+                        else v
+                    )
+                    for k, v in config.items()
+                }
+                updated_config['trigger_id'] = trigger_id
 
-                config_input = Input(config=config, tc_session=tc_session)
-                config_input.add_model(self.trigger_input_model)
+                # Instantiate trigger input model
+                # pylint: disable=not-callable
+                config_input = self.trigger_input_model(**updated_config)
 
                 self.configs[trigger_id] = config_input
                 # call callback for create config and handle exceptions to protect thread
                 # pylint: disable=not-callable
-                response: Optional[dict] = self.create_config_callback(
-                    trigger_id, config_input, **kwargs
-                )
+                response: Optional[dict] = self.create_config_callback(config_input, **kwargs)
                 if isinstance(response, dict):
                     status = response.get('status', False)
                     msg = response.get('msg')

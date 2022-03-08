@@ -1,6 +1,6 @@
 """WorkflowEvent / WorkflowEvents Object"""
 # standard library
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Iterator, Union
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -112,7 +112,7 @@ class WorkflowEvent(ObjectABC):
         return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
 
     @property
-    def notes(self) -> 'Note':
+    def notes(self) -> Iterator['Note']:
         """Yield Note from Notes."""
         # first-party
         from tcex.api.tc.v3.notes.note import Notes

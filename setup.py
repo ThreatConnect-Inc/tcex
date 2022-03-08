@@ -1,6 +1,7 @@
 """Setup for TcEx Module."""
 # standard library
 import os
+import sys
 
 # third-party
 from setuptools import find_packages, setup
@@ -20,10 +21,10 @@ with open('README.md') as f:
     readme = f.read()
 
 dev_packages = [
-    'bandit',
     'black',
     'codespell',
     'deepdiff',
+    'fakeredis==1.7.0',
     'flake8',
     'isort',
     'mako',
@@ -33,9 +34,14 @@ dev_packages = [
     'pytest',
     'pytest-cov',
     'pytest-html',
-    'pytest-xdist>=2.0.0',
+    'pytest-ordering',
+    'pytest-xdist>=2.5.0',
     'pyupgrade',
 ]
+if sys.version_info <= (3, 7):
+    dev_packages.append('bandit==1.7.1')
+else:
+    dev_packages.append('bandit')
 
 
 setup(
@@ -51,6 +57,7 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Topic :: Security',
@@ -61,30 +68,23 @@ setup(
     include_package_data=True,
     install_requires=[
         'arrow',
+        'astunparse',
         'backports.cached-property; python_version < "3.8.0"',
         'colorama>=0.3.9',
         'future',
-        'hvac>=0.3.0',
         'inflect>=0.2.5',
         'jmespath',
-        'jsonschema>=2.6.0',
-        'lark',
         'paho-mqtt',
-        'parsedatetime',
         'pyaes',
         'pydantic',
         'python-dateutil>=2.6.1',
-        'pytz',
         'pyyaml',
         'redis>=2.10.6',
         'requests',
         'semantic_version',
-        'six>=1.11.0',
         'stdlib-list>=0.6.0',
-        'stix2',
         'tinydb',
         'typer',
-        'tzlocal',
         'wrapt',
     ],
     license=metadata['__license__'],
@@ -92,10 +92,9 @@ setup(
     long_description_content_type='text/markdown',
     name=metadata['__package_name__'],
     packages=find_packages(exclude=['tests', 'tests.*']),
-    package_data={'': ['*.json', '*.lark']},
     package_dir={'tcex': 'tcex'},
     project_urls={
-        'Documentation': 'https://threatconnect-inc.github.io/tcex/',
+        'Documentation': 'https://github.com/ThreatConnect-Inc/tcex',
         'Source': 'https://github.com/ThreatConnect-Inc/tcex',
     },
     python_requires='>=3.6',

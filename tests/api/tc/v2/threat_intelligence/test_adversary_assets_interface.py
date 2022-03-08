@@ -21,11 +21,6 @@ class TestAdversaryAssets(TestThreatIntelligence):
         self.ti = self.ti_helper.ti
         self.tcex = self.ti_helper.tcex
 
-    def teardown_method(self):
-        """Configure teardown before all tests."""
-        if os.getenv('TEARDOWN_METHOD') is None:
-            self.ti_helper.cleanup()
-
     def tests_ti_groups_to_indicators(self):
         """Test the TI module."""
         helper_ti = self.ti_helper.create_group()

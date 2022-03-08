@@ -1,6 +1,6 @@
 """Choice Field Type"""
 # standard library
-from typing import Callable
+from typing import Callable, Dict, Optional
 
 # first-party
 from tcex.input.field_types.edit_choice import EditChoice
@@ -29,3 +29,18 @@ class Choice(EditChoice):
             value = None
 
         return value
+
+
+def choice(value_transformations: Optional[Dict[str, str]] = None) -> type:
+    """Return configured instance of String.
+
+    :param value_transformations: dictionary that dictates how a choice should be transformed.
+    Dictionary keys should be the field's valid values as defined in the install.json. Example:
+
+    value_transformations: {'my_choice': 'My Choice'}
+
+    If this field were to be initialized with 'my_choice', then the final value found in the input
+    model would be 'My Choice'.
+    """
+    namespace = dict(_value_transformations=value_transformations)
+    return type('CustomChoice', (Choice,), namespace)

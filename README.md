@@ -4,30 +4,32 @@ The ThreatConnect&trade; TcEx App Framework provides functionality for writing T
 
 ## Requirements
 
+ * arrow (https://pypi.python.org/pypi/arrow)
+ * backports.cached-property (https://pypi.org/project/backports.cached-property/)
  * colorama (https://pypi.python.org/pypi/colorama)
  * future (https://pypi.org/project/future/)
- * hvac (https://pypi.python.org/pypi/hvac)
  * inflect (https://pypi.python.org/pypi/inflect)
- * jsonschema (https://pypi.python.org/pypi/jsonschema)
- * lark (https://pypi.org/project/lark/)
+ * jmespath (https://pypi.org/project/jmespath/)
  * paho-mqtt (https://pypi.org/project/paho-mqtt/)
- * parsedatetime (https://pypi.python.org/pypi/parsedatetime)
+ * pyaes (https://pypi.org/project/pyaes/)
+ * pydantic (https://pypi.org/project/pydantic/)
  * python-dateutil (https://pypi.python.org/pypi/python-dateutil)
- * pytz (https://pypi.python.org/pypi/pytz)
  * redis (https://pypi.python.org/pypi/redis)
  * requests (http://docs.python-requests.org/en/latest)
- * six (https://pypi.python.org/pypi/six)
+ * sematic_version (https://pypi.org/project/semantic-version/)
  * stdlib-list (https://pypi.org/project/stdlib-list/)
- * tzlocal (https://pypi.python.org/pypi/tzlocal)
+ * tinydb (https://pypi.python.org/pypi/tinydb)
+ * typer (https://pypi.python.org/pypi/typer)
  * wrapt (https://pypi.org/project/wrapt/)
 
 ### Development Requirements
 
+ * bandit (https://pypi.org/project/bandit/)
  * black (https://pypi.org/project/black/)
- * CommonMark (https://pypi.org/project/commonmark/)
+ * codespell (https://pypi.org/project/codespell/)
  * deepdiff (https://pypi.org/project/deepdiff/)
  * flake8 (https://pypi.org/project/flake8/)
- * jmespath (https://pypi.org/project/jmespath/)
+ * isort (https://pypi.org/project/isort/)
  * mako (https://pypi.org/project/mako/)
  * pre-commit (https://pypi.org/project/pre-commit/)
  * pydocstyle (https://pypi.org/project/pydocstyle/)
@@ -36,10 +38,7 @@ The ThreatConnect&trade; TcEx App Framework provides functionality for writing T
  * pytest-cov (https://pypi.org/project/pytest-cov/)
  * pytest-html (https://pypi.org/project/pytest-html/)
  * pytest-xdist (https://pypi.org/project/pytest-xdist/)
- * recommonmark (https://pypi.org/project/recommonmark/)
- * reno (https://pypi.org/project/reno/)
- * sphinx (https://pypi.org/project/Sphinx/)
- * sphinx-rtd-theme (https://pypi.org/project/sphinx-rtd-theme/)
+ * pyupgrade (https://pypi.org/project/pyupgrade/)
 
 ## Installation
 
@@ -59,11 +58,11 @@ python setup.py install --force
 
 ## Documentation
 
-https://docs.threatconnect.com/en/latest/tcex/tcex.html
+https://threatconnect.readme.io/docs/overview
 
 ## Release Notes
 
-https://docs.threatconnect.com/en/latest/tcex/release_notes.html
+https://threatconnect.readme.io/docs/release-notes
 
 ## Contact
 

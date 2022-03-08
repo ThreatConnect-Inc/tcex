@@ -51,6 +51,7 @@ runtime_level_map = {
         ApiModel,
         BatchModel,
         LoggingModel,
+        ProxyModel,
     ],
     'organization': [
         ApiModel,

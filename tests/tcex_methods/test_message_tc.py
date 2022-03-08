@@ -115,9 +115,4 @@ class TestMessageTc:
         with open(message_tc_file) as fh:
             message_tc = fh.read()
 
-        # add a new line if not already there (tcex will add a newline if it doesn't exist)
-        message = '\n'.join([message, message, message, message])
-        if not message.endswith('\n'):
-            message += '\n'
-
-        assert message[-255:] == message_tc, 'message.tc did not match message'
+        assert f'{message[-255:]}\n' == message_tc, 'message.tc did not match message'

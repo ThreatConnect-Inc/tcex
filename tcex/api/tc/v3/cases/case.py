@@ -1,6 +1,6 @@
 """Case / Cases Object"""
 # standard library
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Iterator, Union
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -8,6 +8,8 @@ from tcex.api.tc.v3.artifacts.artifact_model import ArtifactModel
 from tcex.api.tc.v3.case_attributes.case_attribute_model import CaseAttributeModel
 from tcex.api.tc.v3.cases.case_filter import CaseFilter
 from tcex.api.tc.v3.cases.case_model import CaseModel, CasesModel
+from tcex.api.tc.v3.groups.group_model import GroupModel
+from tcex.api.tc.v3.indicators.indicator_model import IndicatorModel
 from tcex.api.tc.v3.notes.note_model import NoteModel
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
@@ -20,6 +22,8 @@ if TYPE_CHECKING:  # pragma: no cover
     # first-party
     from tcex.api.tc.v3.artifacts.artifact import Artifact
     from tcex.api.tc.v3.case_attributes.case_attribute import CaseAttribute
+    from tcex.api.tc.v3.groups.group import Group
+    from tcex.api.tc.v3.indicators.indicator import Indicator
     from tcex.api.tc.v3.notes.note import Note
     from tcex.api.tc.v3.tags.tag import Tag
     from tcex.api.tc.v3.tasks.task import Task
@@ -70,6 +74,9 @@ class Case(ObjectABC):
     Args:
         artifacts (Artifacts, kwargs): A list of Artifacts corresponding to the Case.
         assignee (Assignee, kwargs): The user or group Assignee object for the Case.
+        associated_cases (Cases, kwargs): A list of Cases associated with this Case.
+        associated_groups (Groups, kwargs): A list of Groups associated with this Case.
+        associated_indicators (Indicators, kwargs): A list of Indicators associated with this Case.
         attributes (CaseAttributes, kwargs): A list of Attributes corresponding to the Case.
         case_close_time (str, kwargs): The date and time that the Case was closed.
         case_detection_time (str, kwargs): The date and time that ends the user initiated Case
@@ -136,7 +143,7 @@ class Case(ObjectABC):
         return {'type': type_, 'id': self.model.id, 'value': self.model.name}
 
     @property
-    def artifacts(self) -> 'Artifact':
+    def artifacts(self) -> Iterator['Artifact']:
         """Yield Artifact from Artifacts."""
         # first-party
         from tcex.api.tc.v3.artifacts.artifact import Artifacts
@@ -144,7 +151,32 @@ class Case(ObjectABC):
         yield from self._iterate_over_sublist(Artifacts)
 
     @property
-    def attributes(self) -> 'CaseAttribute':
+    def associated_cases(self) -> Iterator['Case']:
+        """Yield Case from Cases."""
+        # Ensure the current item is not returned as a association
+        for case in self._iterate_over_sublist(Cases):
+            if case.model.id == self.model.id:
+                continue
+            yield case
+
+    @property
+    def associated_groups(self) -> Iterator['Group']:
+        """Yield Group from Groups."""
+        # first-party
+        from tcex.api.tc.v3.groups.group import Groups
+
+        yield from self._iterate_over_sublist(Groups)
+
+    @property
+    def associated_indicators(self) -> Iterator['Indicator']:
+        """Yield Indicator from Indicators."""
+        # first-party
+        from tcex.api.tc.v3.indicators.indicator import Indicators
+
+        yield from self._iterate_over_sublist(Indicators)
+
+    @property
+    def attributes(self) -> Iterator['CaseAttribute']:
         """Yield Attribute from Attributes."""
         # first-party
         from tcex.api.tc.v3.case_attributes.case_attribute import CaseAttributes
@@ -152,7 +184,7 @@ class Case(ObjectABC):
         yield from self._iterate_over_sublist(CaseAttributes)
 
     @property
-    def notes(self) -> 'Note':
+    def notes(self) -> Iterator['Note']:
         """Yield Note from Notes."""
         # first-party
         from tcex.api.tc.v3.notes.note import Notes
@@ -160,7 +192,7 @@ class Case(ObjectABC):
         yield from self._iterate_over_sublist(Notes)
 
     @property
-    def tags(self) -> 'Tag':
+    def tags(self) -> Iterator['Tag']:
         """Yield Tag from Tags."""
         # first-party
         from tcex.api.tc.v3.tags.tag import Tags
@@ -168,7 +200,7 @@ class Case(ObjectABC):
         yield from self._iterate_over_sublist(Tags)
 
     @property
-    def tasks(self) -> 'Task':
+    def tasks(self) -> Iterator['Task']:
         """Yield Task from Tasks."""
         # first-party
         from tcex.api.tc.v3.tasks.task import Tasks
@@ -203,6 +235,42 @@ class Case(ObjectABC):
         self.model.assignee._staged = True
         self.model.assignee.type = type
         self.model.assignee.data = data
+
+    def stage_associated_case(self, data: Union[dict, 'ObjectABC', 'CaseModel']) -> None:
+        """Stage case on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = CaseModel(**data)
+
+        if not isinstance(data, CaseModel):
+            raise RuntimeError('Invalid type passed in to stage_associated_case')
+        data._staged = True
+        self.model.associated_cases.data.append(data)
+
+    def stage_associated_group(self, data: Union[dict, 'ObjectABC', 'GroupModel']) -> None:
+        """Stage group on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = GroupModel(**data)
+
+        if not isinstance(data, GroupModel):
+            raise RuntimeError('Invalid type passed in to stage_associated_group')
+        data._staged = True
+        self.model.associated_groups.data.append(data)
+
+    def stage_associated_indicator(self, data: Union[dict, 'ObjectABC', 'IndicatorModel']) -> None:
+        """Stage indicator on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = IndicatorModel(**data)
+
+        if not isinstance(data, IndicatorModel):
+            raise RuntimeError('Invalid type passed in to stage_associated_indicator')
+        data._staged = True
+        self.model.associated_indicators.data.append(data)
 
     def stage_attribute(self, data: Union[dict, 'ObjectABC', 'CaseAttributeModel']) -> None:
         """Stage attribute on the object."""

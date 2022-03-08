@@ -6,7 +6,6 @@ from random import randint
 
 # third-party
 import pytest
-from pytest import FixtureRequest
 
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
@@ -18,19 +17,18 @@ class TestCases(TestV3):
 
     v3 = None
 
-    def setup_method(self):
+    def setup_method(self, method: callable):
         """Configure setup before all tests."""
         print('')  # ensure any following print statements will be on new line
         self.v3_helper = V3Helper('cases')
         self.v3 = self.v3_helper.v3
         self.tcex = self.v3_helper.tcex
 
-    def teardown_method(self):
-        """Configure teardown before all tests."""
-        # Ya - It was to make testing easier since we were manually verifying the objects were
-        # created correctly and they kept getting deleted which was annoying.
-        if os.getenv('TEARDOWN_METHOD') is None:
-            self.v3_helper.cleanup()
+        # remove an previous cases with the next test case name as a tag
+        cases = self.v3.cases()
+        cases.filter.tag(TqlOperator.EQ, method.__name__)
+        for case in cases:
+            case.delete()
 
     def test_case_api_options(self):
         """Test filter keywords."""
@@ -40,15 +38,81 @@ class TestCases(TestV3):
         """Test filter keywords."""
         super().obj_filter_keywords()
 
+    @pytest.mark.xfail(reason='Verify TC Version running against.')
     def test_case_object_properties(self):
         """Test properties."""
         super().obj_properties()
 
+    @pytest.mark.xfail(reason='Verify TC Version running against.')
     def test_case_object_properties_extra(self):
         """Test properties."""
         super().obj_properties_extra()
 
-    def test_case_create_and_retrieve_nested_types(self, request: FixtureRequest):
+    @pytest.mark.xfail(reason='Verify TC Version running against.')
+    def test_indicator_associations(self):
+        """Test Case -> Indicator Associations"""
+
+        self.v3_helper.tql_clear(['MyCase-19'], self.v3.cases(), 'name')
+
+        indicator = self.v3.indicator(
+            **{
+                'ip': '43.24.65.37',
+                'type': 'Address',
+            }
+        )
+        indicator.create()
+        indicator_2 = self.v3.indicator(
+            **{
+                'ip': '43.24.65.38',
+                'type': 'Address',
+            }
+        )
+        indicator_2.create()
+        indicator_3 = {'ip': '43.24.65.39', 'type': 'Address'}
+
+        # [Pre-Requisite] - create case
+        case = self.v3.case(**{'name': 'MyCase-19', 'severity': 'Low', 'status': 'Open'})
+
+        self.v3_helper._associations(case, indicator, indicator_2, indicator_3)
+
+    @pytest.mark.xfail(reason='Verify TC Version running against.')
+    def test_group_associations(self):
+        """Test Case -> Group Associations"""
+        # [Pre-Requisite] - clean up past runs.
+        self.v3_helper.tql_clear(['MyCase-11'], self.v3.cases(), 'name')
+        self.v3_helper.tql_clear(
+            ['MyAdversary-13', 'StagedGroup-12', 'StagedGroup-13'], self.v3.groups()
+        )
+
+        case = self.v3.case(**{'name': 'MyCase-11', 'severity': 'Low', 'status': 'Open'})
+
+        group_2 = self.v3_helper.create_group(name='StagedGroup-12', xid='staged_group_12-xid')
+        group_3 = self.v3_helper.create_group(name='StagedGroup-13', xid='staged_group_13-xid')
+
+        association_data = {'name': 'MyAdversary-13', 'type': 'Adversary'}
+
+        self.v3_helper._associations(case, group_2, group_3, association_data)
+
+    @pytest.mark.xfail(reason='Remove XFail once core fixes PLAT-4695')
+    def test_case_associations(self):
+        """Test Case -> Case Associations"""
+        # [Pre-Requisite] - clean up past runs.
+        self.v3_helper.tql_clear(
+            ['MyCase-10', 'MyCase-11', 'MyCase-12', 'MyCase-13'], self.v3.cases(), 'name'
+        )
+
+        # [Pre-Requisite] - create cas
+        case_2 = self.v3_helper.create_case(name='MyCase-10')
+        case_3 = self.v3_helper.create_case(name='MyCase-11')
+
+        # [Create Testing] define object data
+        case = self.v3.case(**{'name': 'MyCase-12', 'severity': 'Low', 'status': 'Open'})
+
+        association_data = {'name': 'MyCase-13', 'severity': 'Low', 'status': 'Open'}
+
+        self.v3_helper._associations(case, case_2, case_3, association_data)
+
+    def test_case_create_and_retrieve_nested_types(self, request: 'pytest.FixtureRequest'):
         """Test Object Creation
 
         A single test case to hit all sub-type creation (e.g., Notes).
@@ -56,14 +120,14 @@ class TestCases(TestV3):
         assignee = {'type': 'User', 'data': {'user_name': 'bpurdy@threatconnect.com'}}
 
         case_data = {
-            'name': 'test_case_create_and_retrieve_nested_types',
-            'description': 'A description for test_case_create_and_retrieve_nested_types',
+            'name': request.node.name,
+            'description': f'A description for {request.node.name}',
             'owner': 'TCI',
             'resolution': 'Not Specified',
             'assignee': assignee,
             'severity': 'Low',
             'status': 'Open',
-            'xid': 'xid-test_case_create_and_retrieve_nested_types',
+            'xid': self.xid(request),
         }
 
         # [Pre-Requisite] - create case
@@ -187,30 +251,27 @@ class TestCases(TestV3):
         assert case.model.case_open_user.user_name == os.getenv('TC_API_ACCESS_ID')
         # env variable
 
-    def test_case_nested_objects(self):
-        """Test nested objects on a Case"""
-        # clean up
-        cases = self.tcex.v3.cases()
-        cases.filter.xid(TqlOperator.EQ, 'xid-test_case_create_and_retrieve_nested_types')
-        for case in cases:
-            case.delete()
+        # cleanup
+        case.delete()
 
+    def test_case_nested_objects(self, request: 'pytest.FixtureRequest'):
+        """Test nested objects on a Case"""
         # [Pre-Requisite] - create case with artifact data
         artifact_data = {
             'summary': f'asn{randint(100, 999)}',
             'type': 'ASN',
         }
         case_data = {
-            'name': 'test_case_create_and_retrieve_nested_types',
-            'description': 'A description for test_case_create_and_retrieve_nested_types',
+            'name': request.node.name,
+            'description': f'A description for {request.node.name}',
             'owner': 'TCI',
             'resolution': 'Not Specified',
             'artifacts': {'data': [artifact_data]},
             'attributes': {'data': [{'type': 'Description', 'value': 'Description 1'}]},
-            'tags': {'data': [{'name': 'Tag1'}]},
+            'tags': {'data': [{'name': request.node.name}]},
             'severity': 'Low',
             'status': 'Open',
-            'xid': 'xid-test_case_create_and_retrieve_nested_types',
+            'xid': self.xid(request),
         }
         case = self.tcex.v3.case(**case_data)
         case.create()
@@ -240,31 +301,31 @@ class TestCases(TestV3):
         tags_found = 0
         for tag in case.tags:
             tags_found += 1
-            assert tag.model.name in ['tag1']
-        assert artifacts_found == 1, 'No tags were created on the case'
+            assert tag.model.name.lower() in [request.node.name]
+        assert tags_found == 1, 'No tags were created on the case'
 
         # [Stage Testing] Add a new tag to the Case
-        case.stage_tag({'name': 'tag2'})
+        case.stage_tag({'name': f'{request.node.name}-2'})
         case.update()
 
         # [Retrieve Testing] Verify that both tags exist now on the case.
         tags_found = 0
         for tag in case.tags:
             tags_found += 1
-            assert tag.model.name in ['tag1', 'tag2']
+            assert tag.model.name.lower() in [request.node.name, f'{request.node.name}-2']
         assert tags_found == 2, 'No tags were created on the case'
 
         # [Stage Testing] Refetch the case and stage a new tag on it.
         case = self.v3.case(id=case.model.id)
-        case.stage_tag({'name': 'tag3'})
-        case.update()
+        case.stage_tag({'name': f'{request.node.name}-3'})
+        case.update(mode='Replace')
 
         # [Retrieve Testing] Verify that only the 1 new tag gets re-added to the case, replacing
         # all other tags.
         tags_found = 0
         for tag in case.tags:
             tags_found += 1
-            assert tag.model.name in ['tag3']
+            assert tag.model.name in [f'{request.node.name}-3']
         assert tags_found == 1, 'The existing tags were not replaced'
 
         # [Stage Testing] Stage another artifact onto the case.
@@ -295,7 +356,10 @@ class TestCases(TestV3):
             artifacts_found += 1
         assert artifacts_found == 2, 'Incorrect amount of artifacts were created on the case.'
 
-    def test_case_all_filters(self, request: FixtureRequest):
+        # cleanup
+        case.delete()
+
+    def test_case_all_filters(self, request: 'pytest.FixtureRequest'):
         """Test TQL Filters for case on a Case"""
 
         case_open_time = datetime.now() - timedelta(days=15)
@@ -307,8 +371,8 @@ class TestCases(TestV3):
 
         # [Create Testing] define case data
         case_data = {
-            'name': 'test_case_all_filters',
-            'description': 'A description for test_case_all_filters',
+            'name': request.node.name,
+            'description': f'A description for {request.node.name}',
             'owner': 'TCI',
             'resolution': 'Not Specified',
             'severity': 'Low',
@@ -441,14 +505,12 @@ class TestCases(TestV3):
         cases = self.v3.cases()
         cases.filter.tql = 'Invalid TQL'
 
-        # [Fail Testing] validate the object is removed
-        with pytest.raises(RuntimeError) as exc_info:
+        # [Fail Testing] assert RuntimeError is raised and error message contains the correct code.
+        with pytest.raises(RuntimeError, match='950'):
             for _ in cases:
                 pass
 
-        # [Fail Testing] assert error message contains the correct code
-        # error -> "(950, 'Error during pagination. API status code: 400, ..."
-        assert '950' in str(exc_info.value)
+        # check status code
         assert cases.request.status_code == 400
 
     def test_case_delete_by_id(self):
@@ -463,13 +525,10 @@ class TestCases(TestV3):
         # [Delete Testing] remove the object
         case.delete()
 
-        # [Delete Testing] validate the object is removed
-        with pytest.raises(RuntimeError) as exc_info:
+        # [Delete Testing] assert RuntimeError is raised and
+        #     error message contains the correct code.
+        with pytest.raises(RuntimeError, match='952'):
             case.get()
-
-        # [Delete Testing] assert error message contains the correct code
-        # error -> "(952, 'Error during GET. API status code: 404, ..."
-        assert '952' in str(exc_info.value)
 
     # def test_case_get_many(self):
     #     """Test Case Get Many"""

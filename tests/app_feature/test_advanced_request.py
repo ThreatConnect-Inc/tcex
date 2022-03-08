@@ -77,7 +77,7 @@ class TestAdvancedRequest:
         se.base_url = 'https://httpbin.tci.ninja'
         se.verify = False
 
-        ar = tcex.advanced_request(session=se, timeout=60)
+        ar = tcex.advanced_request(session=se, output_prefix='pytest', timeout=60)
 
         r = ar.request()
         data = r.json()
@@ -115,7 +115,7 @@ class TestAdvancedRequest:
         se.base_url = 'https://httpbin.tci.ninja'
         se.verify = False
 
-        ar = tcex.advanced_request(session=se, timeout=60)
+        ar = tcex.advanced_request(session=se, output_prefix='pytest', timeout=60)
 
         try:
             ar.request()
@@ -166,7 +166,7 @@ class TestAdvancedRequest:
         se.base_url = 'https://httpbin.tci.ninja'
         se.verify = False
 
-        ar = tcex.advanced_request(session=se, timeout=60)
+        ar = tcex.advanced_request(session=se, output_prefix='pytest', timeout=60)
 
         r = ar.request()
         data = r.json()
@@ -204,7 +204,7 @@ class TestAdvancedRequest:
         se.base_url = 'https://httpbin.tci.ninja'
         se.verify = False
 
-        ar = tcex.advanced_request(session=se, timeout=60)
+        ar = tcex.advanced_request(session=se, output_prefix='pytest', timeout=60)
 
         r = ar.request()
         data = r.json()
@@ -243,7 +243,7 @@ class TestAdvancedRequest:
         se.base_url = 'https://httpbin.tci.ninja'
         se.verify = False
 
-        ar = tcex.advanced_request(session=se, timeout=60)
+        ar = tcex.advanced_request(session=se, output_prefix='pytest', timeout=60)
 
         r = ar.request()
         data = r.json()
@@ -282,7 +282,7 @@ class TestAdvancedRequest:
         se.base_url = 'https://httpbin.tci.ninja'
         se.verify = False
 
-        ar = tcex.advanced_request(session=se, timeout=60)
+        ar = tcex.advanced_request(session=se, output_prefix='pytest', timeout=60)
 
         r = ar.request()
         data = r.json()

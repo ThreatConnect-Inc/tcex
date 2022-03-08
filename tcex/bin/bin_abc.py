@@ -15,13 +15,13 @@ from click import Choice
 # first-party
 from tcex.app_config.install_json import InstallJson
 from tcex.app_config.layout_json import LayoutJson
-from tcex.app_config.permutation import Permutation
 from tcex.app_config.tcex_json import TcexJson
 from tcex.backports import cached_property
 from tcex.logger.rotating_file_handler_custom import (  # pylint: disable=no-name-in-module
     RotatingFileHandlerCustom,
 )
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
+from tcex.utils.utils import Utils
 
 
 class BinABC(ABC):
@@ -32,10 +32,13 @@ class BinABC(ABC):
         # properties
         self.app_path = os.getcwd()
         self.exit_code = 0
+        self.i1 = ' ' * 4  # indent level 1
+        self.i2 = ' ' * 8  # indent level 2
+        self.i3 = ' ' * 12  # indent level 3
         self.ij = InstallJson()
         self.lj = LayoutJson()
-        self.permutations = Permutation()
         self.tj = TcexJson()
+        self.utils = Utils()
 
     @cached_property
     def cli_out_path(self) -> Path:  # pylint: disable=no-self-use
@@ -82,7 +85,9 @@ class BinABC(ABC):
         lfh.setLevel(logging_level)
 
         # create formatter
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        formatter = logging.Formatter(
+            '%(asctime)s - %(name)s - %(levelname)s - %(message)s ' '(%(filename)s:%(lineno)d)'
+        )
         if logging_level < 10:
             formatter = logging.Formatter(
                 '%(asctime)s - %(name)s - %(levelname)s - %(message)s'

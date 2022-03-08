@@ -1,6 +1,6 @@
 """Task / Tasks Object"""
 # standard library
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Iterator, Union
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -70,6 +70,7 @@ class Task(ObjectABC):
         dependent_on_id (int, kwargs): The ID of another Task that this Task is dependent upon.
         description (str, kwargs): The **description** for the Task.
         due_date (str, kwargs): The due date of the Task.
+        duration_type (str, kwargs): The **duration type** for the Task.
         name (str, kwargs): The **name** for the Task.
         notes (Notes, kwargs): A list of Notes corresponding to the Task.
         required (bool, kwargs): Flag indicating whether or not the task is required.
@@ -121,7 +122,7 @@ class Task(ObjectABC):
         return {'type': type_, 'id': self.model.id, 'value': self.model.name}
 
     @property
-    def artifacts(self) -> 'Artifact':
+    def artifacts(self) -> Iterator['Artifact']:
         """Yield Artifact from Artifacts."""
         # first-party
         from tcex.api.tc.v3.artifacts.artifact import Artifacts
@@ -129,7 +130,7 @@ class Task(ObjectABC):
         yield from self._iterate_over_sublist(Artifacts)
 
     @property
-    def notes(self) -> 'Note':
+    def notes(self) -> Iterator['Note']:
         """Yield Note from Notes."""
         # first-party
         from tcex.api.tc.v3.notes.note import Notes

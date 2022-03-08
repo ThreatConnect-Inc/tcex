@@ -1,6 +1,6 @@
 """VictimAsset / VictimAssets Object"""
 # standard library
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Iterator, Union
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -104,7 +104,7 @@ class VictimAsset(ObjectABC):
             raise RuntimeError(f'Invalid data type: {type(data)} provided.')
 
     @property
-    def associated_groups(self) -> 'Group':
+    def associated_groups(self) -> Iterator['Group']:
         """Yield Group from Groups."""
         # first-party
         from tcex.api.tc.v3.groups.group import Groups

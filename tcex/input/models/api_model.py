@@ -1,4 +1,5 @@
 """API Model"""
+# pylint: disable=no-self-argument,no-self-use
 # standard library
 from typing import Optional
 

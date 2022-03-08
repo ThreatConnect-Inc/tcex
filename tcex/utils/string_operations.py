@@ -3,7 +3,8 @@
 import random
 import re
 import string
-from typing import Any, Optional, Union
+from functools import reduce
+from typing import Any, List, Optional, Union
 
 # first-party
 from tcex.backports import cached_property
@@ -205,3 +206,52 @@ class StringOperations:
     def _camel_pattern(self) -> Any:
         """Return compiled re pattern."""
         return re.compile(r'(?<!^)(?=[A-Z])')
+
+    @staticmethod
+    def wrap_string(
+        line: str,
+        wrap_chars: Optional[List[str]] = None,
+        length: Optional[int] = 100,
+        force_wrap=True,
+    ) -> str:
+        """Wrap a long string to a given length.
+
+        Lines will only be broken on instances of strings from wrap_chars.
+
+        Params:
+            line - the string to break into lines
+            wrap_chars - list of strings line should be broken on
+            length - max length for any single line
+            force_wrap - if True, line will be broken even if no string from wrap_chars is
+                available
+        """
+        wrap_chars = wrap_chars or [' ']
+
+        # if line is already shorter than max length, we're all good!
+        if len(line) < length:
+            return line
+
+        def _tokenize(acc, curr):
+            """Tokenize the input into strings and separators (from wrap_chars)."""
+            if curr in wrap_chars:
+                return acc + [curr] + ['']
+            if len(acc[-1]) == length and force_wrap:
+                return acc + [curr]
+            acc[-1] += curr
+            return acc
+
+        tokens = reduce(_tokenize, line, [''])
+
+        def _chop(acc, curr):
+            """Build strings in acc such that no string is greater than length chars.
+
+            Breaks at chars in wrap_chars.
+            """
+            if len(acc[-1]) + len(curr) < length:
+                acc[-1] += curr
+                return acc
+            return acc + [curr]
+
+        lines = reduce(_chop, tokens, [''])
+
+        return '\n'.join(lines).strip()

@@ -13,12 +13,11 @@ from typing import Dict, Union
 
 # third-party
 import colorama as c
-
-# from jsonschema import SchemaError, ValidationError, validate
 from pydantic import ValidationError
 from stdlib_list import stdlib_list
 
 # first-party
+from tcex.app_config import Permutation
 from tcex.app_config.install_json import InstallJson
 from tcex.app_config.job_json import JobJson
 from tcex.app_config.layout_json import LayoutJson
@@ -45,6 +44,7 @@ class Validate(BinABC):
     def __init__(self, ignore_validation: bool) -> None:
         """Initialize Class properties."""
         super().__init__()
+        self.permutations = Permutation()
         self.ignore_validation = ignore_validation
 
         # class properties
@@ -206,11 +206,15 @@ class Validate(BinABC):
             # can't proceed if install.json can't be read
             return
 
+        if not self.ij.model.feeds:
+            # if no jobs, skip!
+            return
+
         # use developer defined app version (deprecated) or package_version from InstallJson model
         app_version = self.tj.model.package.app_version or self.ij.model.package_version
         program_name = (f'''{self.tj.model.package.app_name}_{app_version}''').replace('_', ' ')
         status = True
-        for feed in self.ij.model.feeds:
+        for feed in self.ij.model.feeds or []:
             if feed.job_file in self.invalid_json_files:
                 # no need to check if schema if json is invalid
                 continue
@@ -289,6 +293,7 @@ class Validate(BinABC):
         """
         # do not track hidden or serviceConfig inputs as they should not be in layouts.json
         ij_input_names = list(self.ij.model.filter_params(service_config=False, hidden=False))
+        # pylint: disable=no-member
         ij_output_names = [o.name for o in self.ij.model.playbook.output_variables]
 
         # Check for duplicate inputs

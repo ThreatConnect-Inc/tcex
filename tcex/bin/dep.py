@@ -25,7 +25,9 @@ class Dep(BinABC):
     def __init__(
         self,
         branch: str,
+        dev: bool,
         no_cache_dir: bool,
+        pre: bool,
         proxy_host: str,
         proxy_port: int,
         proxy_user: str,
@@ -34,7 +36,9 @@ class Dep(BinABC):
         """Initialize Class properties."""
         super().__init__()
         self.branch = branch
+        self.dev = dev
         self.no_cache_dir = no_cache_dir
+        self.pre = pre
         self.proxy_host = proxy_host
         self.proxy_port = proxy_port
         self.proxy_user = proxy_user
@@ -46,14 +50,17 @@ class Dep(BinABC):
             f'lib_{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}'
         )
         self.proxy_enabled = False
-        self.proxy_env = {}
-        self.requirements_fqfn = Path('requirements.txt')
+        ci_token = os.getenv('CI_JOB_TOKEN')
+        self.proxy_env = {'CI_JOB_TOKEN': ci_token} if ci_token else {}
+        self.requirements_fqfn = (
+            Path('requirements_dev.txt') if self.dev else Path('requirements.txt')
+        )
         self.static_lib_dir = 'lib_latest'
 
         # update tcex.json
         self.tj.update.multiple()
 
-    def _build_command(self, python_executable: Path, lib_dir: Path) -> str:
+    def _build_command(self, python_executable: Path, lib_dir: Path) -> List[str]:
         """Build the pip command for installing dependencies.
 
         Args:
@@ -77,7 +84,8 @@ class Dep(BinABC):
         ]
         if self.no_cache_dir:
             exe_command.append('--no-cache-dir')
-
+        if self.pre:
+            exe_command.append('--pre')
         if self.proxy_enabled:
             # trust the pypi hosts to avoid ssl errors
             trusted_hosts = ['pypi.org', 'pypi.python.org', 'files.pythonhosted.org']
@@ -123,10 +131,12 @@ class Dep(BinABC):
 
             # update proxy properties
             self.proxy_enabled = True
-            self.proxy_env = {
-                'HTTP_PROXY': f'http://{proxy_url}',
-                'HTTPS_PROXY': f'http://{proxy_url}',
-            }
+            self.proxy_env.update(
+                {
+                    'HTTP_PROXY': f'http://{proxy_url}',
+                    'HTTPS_PROXY': f'http://{proxy_url}',
+                }
+            )
 
             # display proxy setting
             self.print_setting('Using Proxy Server', f'{self.proxy_host}:{self.proxy_port}')
@@ -225,7 +235,7 @@ class Dep(BinABC):
             ):
                 self.latest_version = python_version
 
-        if self.branch != 'master':
+        if self.branch != 'main':
             # remove temp requirements.txt file
             self.requirements_fqfn.unlink()
 

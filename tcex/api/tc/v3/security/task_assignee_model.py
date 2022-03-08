@@ -6,7 +6,7 @@ from enum import Enum
 from typing import List, Optional
 
 # third-party
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, PrivateAttr
 
 # first-party
 from tcex.api.tc.v3.security.users.user_model import UserModel
@@ -29,11 +29,20 @@ class TaskAssigneesModel(
 ):
     """Task Assignees Model"""
 
+    _mode_support = PrivateAttr(True)
+
     data: Optional[List['TaskAssigneeModel']] = Field(
         [],
         description='The data for the Groups.',
         methods=['POST', 'PUT'],
         title='data',
+    )
+
+    mode: str = Field(
+        'append',
+        description='The PUT mode for nested objects (append, delete, replace). Default: append',
+        methods=['POST', 'PUT'],
+        title='append',
     )
 
 
@@ -87,7 +96,7 @@ class TaskAssigneeModel(
         description='The **User Data** for the Assignee.',
         methods=['POST', 'PUT'],
         read_only=False,
-        title='data',
+        title='user',
     )
 
 

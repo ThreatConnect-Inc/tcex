@@ -1,4 +1,5 @@
 """Install JSON Model"""
+# pylint: disable=no-self-argument,no-self-use; noqa: N805
 # standard library
 from typing import List, Optional
 
@@ -20,7 +21,7 @@ class TemplateConfigModel(BaseModel):
     version: Version
 
     @validator('version', pre=True)
-    def version_validator(cls, v):  # pylint: disable=E0213,R0201
+    def version_validator(cls, v):
         """Return a version object for "version" fields."""
         if v is not None:
             return Version(v)
@@ -30,5 +31,5 @@ class TemplateConfigModel(BaseModel):
         """DataModel Config"""
 
         arbitrary_types_allowed = True
-        json_encoders = {Version: lambda v: str(v)}  # pylint: disable=W0108
+        json_encoders = {Version: lambda v: str(v)}  # pylint: disable=unnecessary-lambda
         validate_assignment = True

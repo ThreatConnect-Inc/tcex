@@ -1,7 +1,7 @@
 """Test the TcEx Session Module."""
 # standard library
 from typing import TYPE_CHECKING
-from unittest.mock import PropertyMock, patch
+from unittest.mock import patch
 
 # third-party
 from requests import PreparedRequest, Response, Session
@@ -159,16 +159,15 @@ class TestUtils:
         """
         s = tcex.session_external
 
-        response: Response = Response()
-        type(response).ok = PropertyMock(False)
-        response.headers = {'Retry-After': 10}
-        response.status_code = 429
-        request = PreparedRequest()
-        request.url = 'https://www.google.com'
-        response.request = request
-
-        with patch.object(Session, 'request', return_value=response):
-            response = s.get('https://www.google.com', verify=False)
+        with patch.object(Response, 'ok', False):
+            response: Response = Response()
+            response.headers = {'Retry-After': 10}
+            response.status_code = 429
+            request = PreparedRequest()
+            request.url = 'https://www.google.com'
+            response.request = request
+            with patch.object(Session, 'request', return_value=response):
+                response = s.get('https://www.google.com', verify=False)
 
         assert response.status_code == 429
 

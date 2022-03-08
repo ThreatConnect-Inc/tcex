@@ -1,133 +1,32 @@
-name: build
+name: Lint Project
 
 on:
   push:
-    branches: [develop, main, "feature/3.0.0"]
+    branches: [develop, main]
   pull_request:
-    branches: [develop, main, "feature/3.0.0"]
-  workflow_dispatch:
+    branches: [develop, main]
 
 jobs:
-  pre-flight:
-    runs-on: [self-hosted]
+  build:
+    runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        os: [linux]
-        python-version: [3.6.15]
+        python-version: ['3.9']
 
     steps:
-      # Checkout Repo (required git 2.x.x to be installed on system w/remote-https support)
       - uses: actions/checkout@v2
-
-      # Cache key (for daily, weekly, monthly, or yearly)
-      - name: Cache key
-        id: cache-key
-        run: |
-          echo "::set-output name=daily::$(date +'%Y-%m-%d')"
-          echo "::set-output name=weekly::$(date +'%Y-%U')"
-          echo "::set-output name=monthly::$(date +'%Y-%m')"
-          echo "::set-output name=yearly::$(date +'%Y')"
-
-      # Setup Python
       - name: Set up Python ${{ matrix.python-version }}
-        run: |
-          pyenv install ${{ matrix.python-version }} -s
-          pyenv virtualenv ${{ matrix.python-version }} tcex-${{ matrix.python-version }} -f
-          pyenv local tcex-${{ matrix.python-version }}
-
-      # Cache pre-commit
-      - name: Local pre-commit cache
-        id: pre-commit-cache
-        uses: MasterworksIO/action-local-cache@1.0.0
+        uses: actions/setup-python@v2
         with:
-          path: ${{ github.workspace }}/.cache/pre-commit-${{ matrix.python-version }}
-          key: pre-commit-${{ matrix.python-version }}-${{ hashFiles('.pre-commit-config.yaml') }}
-
-      # Cache pip cache
-      - name: Local pip cache
-        id: pip-cache
-        uses: MasterworksIO/action-local-cache@1.0.0
-        with:
-          path: ${{ github.workspace }}/.cache/pip-${{ matrix.python-version }}
-          key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ steps.cache-key.outputs.daily }}
-
-      # Install dependencies
+          python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install .[develop]
-        env:
-          PIP_CACHE_DIR: ${{ github.workspace }}/.cache/pip-${{ matrix.python-version }}
-
-      # Lint project using pre-commit config
+          pip install .[dev]
+          pip freeze
       - name: Lint with pre-commit
         run: |
           pre-commit --version
           pre-commit install
           pre-commit run --all-files
-        env:
-          PRE_COMMIT_HOME: ${{ github.workspace }}/.cache/pre-commit-${{ matrix.python-version }}
-
-  test:
-    needs: pre-flight
-    runs-on: [self-hosted]
-    strategy:
-      matrix:
-        python-version: [3.6.15, 3.9.9]
-
-    steps:
-      - uses: actions/checkout@v2
-
-      # Setup Python
-      - name: Set up Python ${{ matrix.python-version }}
-        run: |
-          pyenv install ${{ matrix.python-version }} -s
-          pyenv virtualenv ${{ matrix.python-version }} tcex-${{ matrix.python-version }} -f
-          pyenv local tcex-${{ matrix.python-version }}
-
-      # Cache key (for daily, weekly, monthly, or yearly)
-      - name: Cache key
-        id: cache-key
-        run: |
-          echo "::set-output name=daily::$(date +'%Y-%m-%d')"
-          echo "::set-output name=weekly::$(date +'%Y-%U')"
-          echo "::set-output name=monthly::$(date +'%Y-%m')"
-          echo "::set-output name=yearly::$(date +'%Y')"
-
-      # Cache pip cache
-      - name: Local pip cache
-        id: pip-cache
-        uses: MasterworksIO/action-local-cache@1.0.0
-        with:
-          path: ${{ github.workspace }}/.cache/pip-${{ matrix.python-version }}
-          key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ steps.cache-key.outputs.daily }}
-
-      # Install dependencies
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install .[develop]
-        env:
-          PIP_CACHE_DIR: ${{ github.workspace }}/.cache/pip-${{ matrix.python-version }}
-
-      # # Test package and save artifacts
-      # - name: Test with pytest
-      #   run: >
-      #     pytest --cov=.
-      #     --cov-report=term-missing
-      #     --cov-report=html:tests/reports/cov-report
-      #     --html=tests/reports/tcex-report.html
-      #     --self-contained-html tests/
-
-      # Test package and save artifacts
-      - name: Test with pytest
-        run: >
-          pytest --cov=tcex/app_config/ --cov-report=term-missing tests/app_config/
-
-      # # Artifact upload
-      # - name: Upload pytest test results
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: pytest-results-${{ matrix.python-version }}
-      #     path: junit/test-results-${{ matrix.python-version }}.xml
-      #   if: ${{ always() }}

@@ -67,10 +67,13 @@ class Tokens:
         # from this module or not (via the token property). The barrier only blocks access to the
         # token property whenever token renewal is taking place in order to keep from returning
         # stale tokens.
-        self.barrier = threading.Event()
+        self._barrier = threading.Event()
         # Setting barrier event to True disables barrier, which makes the token property
         # accessible (default behavior)
-        self.barrier.set()
+        self._barrier.set()
+
+        # threading event that denotes whether renewal monitor should sleep after a renewal cycle
+        self._monitor_sleep_interval = threading.Event()
 
         self.log = logger
         self.monitor_thread = None
@@ -78,7 +81,7 @@ class Tokens:
         self.session: Session = retry_session()
         self.session.proxies = proxies  # add proxies to session
         self.sleep_interval = int(os.getenv('TC_TOKEN_SLEEP_INTERVAL', '150'))
-        self.shutdown = False  # shutdown boolean
+        self._shutdown = False  # shutdown boolean
         # token map for storing keys -> tokens -> threads
         self.token_map = {}
         # amount of time to wait before starting renewal process (after enabling barrier)
@@ -160,6 +163,23 @@ class Tokens:
         return api_token_data
 
     @property
+    def shutdown(self) -> bool:
+        """Retrieve shutdown property"""
+        return self._shutdown
+
+    @shutdown.setter
+    def shutdown(self, value: bool):
+        """Set shutdown property.
+
+        If new value is True, set the monitor_sleep Event so that renewal monitor knows to shut
+        down immediately (or after its current renewal cycle).
+        """
+        if value is True:
+            self._monitor_sleep_interval.set()
+
+        self._shutdown = value
+
+    @property
     def thread_name(self) -> str:
         """Return the current thread name."""
         return threading.current_thread().name
@@ -173,7 +193,7 @@ class Tokens:
         # perform three attempts - safety net in case of heavily overloaded monitor. If we cannot
         # retrieve a token after three attempts, there must be an issue
         for i in range(3):
-            if self.barrier.wait(timeout=self.token_renewal_buffer_time + 10):
+            if self._barrier.wait(timeout=self.token_renewal_buffer_time + 10):
                 return self.token_map.get(self.key, {}).get('token')
 
             self.log.debug(
@@ -223,12 +243,14 @@ class Tokens:
     def token_renewal_monitor(self) -> None:
         """Monitor token expiration and renew when required."""
         self.log.debug('feature=token, event=renewal-monitor-started')
+        self._barrier.set()
+        self._monitor_sleep_interval.wait(self.sleep_interval)
         while True:
             # Clear renewal barrier (setting it to False), which blocks access to token via
             # the token property.
-            self.barrier.clear()
+            self._barrier.clear()
             self.log.debug('Token renewal barrier enabled.')
-            time.sleep(self.token_renewal_buffer_time)
+            self._monitor_sleep_interval.wait(self.token_renewal_buffer_time)
             for key, token_data in dict(self.token_map).items():
                 # calculate the time left to sleep
                 sleep_seconds = (
@@ -263,10 +285,16 @@ class Tokens:
                     except KeyError:  # pragma: no cover
                         pass
             # renewal loop is finished, grant access to token via token property once again
-            self.barrier.set()
+            self._barrier.set()
             self.log.debug('Token renewal barrier disabled.')
-            time.sleep(self.sleep_interval)
-            if self.shutdown:
+
+            # if monitor has not been shutdown, renewal monitor will sleep for sleep_interval
+            # seconds. If monitor has been shutdown, monitor does not sleep and proceeds to
+            # the shutdown logic within the if statement below. If the monitor is already sleeping,
+            # the monitor wakes up and proceeds to the shutdown logic.
+            self._monitor_sleep_interval.wait(self.sleep_interval)
+            if self.shutdown is True:
+                self.log.debug('Token renewal monitor shutdown signal received')
                 break
 
     @property
