@@ -24,7 +24,7 @@ class TestRequestToCurl:
         r_curl_expected = re.compile(
             r'''curl -X GET -H 'Accept: \*/\*' -H 'Accept-Encoding: deflate' '''
             '''-H 'Connection: keep-alive' -H 'User-Agent: '''
-            '''python-requests/[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,3}' https://www.google.com/'''
+            r'''python-requests/[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,3}' https://www\.google\.com/'''
         )
         assert r_curl_expected.match(r_curl)
 
@@ -34,9 +34,9 @@ class TestRequestToCurl:
         r_curl = requests_to_curl.convert(r.request, verify=False)
         r_curl_expected = re.compile(
             r'''curl -X GET -H 'Accept: \*/\*' -H 'Accept-Encoding: deflate' '''
-            '''-H 'Connection: keep-alive' -H 'User-Agent: '''
-            '''python-requests/[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,3}' --insecure '''
-            '''https://www.google.com/'''
+            r'''-H 'Connection: keep-alive' -H 'User-Agent: '''
+            r'''python-requests/[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,3}' --insecure '''
+            r'''https://www\.google\.com/'''
         )
         assert r_curl_expected.match(r_curl)
 
@@ -52,9 +52,9 @@ class TestRequestToCurl:
         )
         r_curl_expected = re.compile(
             r'''curl -X GET -H 'Accept: \*/\*' -H 'Accept-Encoding: deflate' '''
-            '''-H 'Connection: keep-alive' -H 'User-Agent: '''
+            r'''-H 'Connection: keep-alive' -H 'User-Agent: '''
             r'''python-requests/[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,3}' -H 'authorization: s\*\*\*\*e' '''
-            r'''-H 'pytest: m\*\*\*\*k' --insecure https://www.google.com/'''
+            r'''-H 'pytest: m\*\*\*\*k' --insecure https://www\.google\.com/'''
         )
         assert r_curl_expected.match(r_curl)
 
@@ -67,9 +67,9 @@ class TestRequestToCurl:
         )
         r_curl_expected = re.compile(
             r'''curl -X GET -H 'Accept: \*/\*' -H 'Accept-Encoding: deflate' '''
-            '''-H 'Connection: keep-alive' -H 'User-Agent: '''
+            r'''-H 'Connection: keep-alive' -H 'User-Agent: '''
             r'''python-requests/[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,3}' -H 'authorization: s\*\*\*\*e' '''
-            '''--proxy www.google.com --insecure https://www.google.com/'''
+            r'''--proxy www\.google\.com --insecure https://www\.google\.com/'''
         )
         assert r_curl_expected.match(r_curl)
 
@@ -82,10 +82,10 @@ class TestRequestToCurl:
         )
         r_curl_expected = re.compile(
             r'''curl -X GET -H 'Accept: \*/\*' -H 'Accept-Encoding: deflate' '''
-            '''-H 'Connection: keep-alive' -H 'User-Agent: '''
+            r'''-H 'Connection: keep-alive' -H 'User-Agent: '''
             r'''python-requests/[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,3}' -H 'authorization: s\*\*\*\*e' '''
-            '''--proxy-user user:xxxxx --proxy www.google.com --insecure '''
-            '''https://www.google.com/'''
+            r'''--proxy-user user:xxxxx --proxy www\.google\.com --insecure '''
+            r'''https://www\.google\.com/'''
         )
         assert r_curl_expected.match(r_curl)
 
@@ -95,9 +95,9 @@ class TestRequestToCurl:
         r_curl = requests_to_curl.convert(r.request)
         r_curl_expected = re.compile(
             r'''curl -X POST -H 'Accept: \*/\*' -H 'Accept-Encoding: deflate' '''
-            '''-H 'Connection: keep-alive' -H 'Content-Length: 4' -H 'User-Agent: '''
-            '''python-requests/[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,3}' -d \"test\" '''
-            '''https://www.google.com/'''
+            r'''-H 'Connection: keep-alive' -H 'Content-Length: 4' -H 'User-Agent: '''
+            r'''python-requests/[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,3}' -d \"test\" '''
+            r'''https://www\.google\.com/'''
         )
         assert r_curl_expected.match(r_curl)
 
@@ -107,9 +107,9 @@ class TestRequestToCurl:
         r_curl = requests_to_curl.convert(r.request, mask_body=True)
         r_curl_expected = re.compile(
             r'''curl -X POST -H 'Accept: \*/\*' -H 'Accept-Encoding: deflate' '''
-            '''-H 'Connection: keep-alive' -H 'Content-Length: 4' -H 'User-Agent: '''
+            r'''-H 'Connection: keep-alive' -H 'Content-Length: 4' -H 'User-Agent: '''
             '''python-requests/[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,3}' -d \"t\\*\\*\\*\\*t\" '''
-            '''https://www.google.com/'''
+            r'''https://www\.google\.com/'''
         )
         assert r_curl_expected.match(r_curl)
 
@@ -119,9 +119,9 @@ class TestRequestToCurl:
         r_curl = requests_to_curl.convert(r.request)
         r_curl_expected = re.compile(
             r'''curl -X POST -H 'Accept: \*/\*' -H 'Accept-Encoding: deflate' '''
-            '''-H 'Connection: keep-alive' -H 'Content-Length: 4' -H 'User-Agent: '''
-            '''python-requests/[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,3}' -d \"test\" '''
-            '''https://www.google.com/'''
+            r'''-H 'Connection: keep-alive' -H 'Content-Length: 4' -H 'User-Agent: '''
+            r'''python-requests/[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,3}' -d \"test\" '''
+            r'''https://www\.google\.com/'''
         )
         assert r_curl_expected.match(r_curl)
 
@@ -137,8 +137,8 @@ class TestRequestToCurl:
         filename = re.search(r'(@\/tmp\/[a-z0-9].+)\s(?:http)', r_curl)[1]
         r_curl_expected = re.compile(
             r'''curl -X POST -H 'Accept: \*/\*' -H 'Accept-Encoding: deflate' '''
-            '''-H 'Connection: keep-alive' -H 'Content-Length: 160' -H 'User-Agent: '''
-            f'''python-requests/[0-9]{{1,2}}.[0-9]{{1,2}}.[0-9]{{1,3}}' --data-binary {filename} '''
-            '''https://www.google.com/'''
+            r'''-H 'Connection: keep-alive' -H 'Content-Length: 160' -H 'User-Agent: '''
+            r'''python-requests/[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,3}' '''
+            rf'''--data-binary {filename} https://www\.google\.com/'''
         )
         assert r_curl_expected.match(r_curl) is not None
