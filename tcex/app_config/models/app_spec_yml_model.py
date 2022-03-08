@@ -321,8 +321,8 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         """Return ij.playbook.outputVariables."""
         return [
             ov
-            for output in self.output_data
-            for ov in output.output_variables
+            for output in self.output_data or []
+            for ov in output.output_variables or []
             if ov.disabled is False
         ]
 
