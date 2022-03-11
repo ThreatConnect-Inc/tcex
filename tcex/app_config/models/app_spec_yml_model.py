@@ -5,7 +5,7 @@ from copy import deepcopy
 from typing import List, Optional
 
 # third-party
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, validator, root_validator
 from semantic_version import Version
 
 # first-party
@@ -225,6 +225,17 @@ class AppSpecYmlModel(InstallJsonCommonModel):
             'should match what is passed to the advanced request method in the playbook App.'
         ),
     )
+
+    @root_validator
+    def _validate_no_input_duplication(cls, values):
+        """Validate that no two parameters have the same name."""
+        all_input_names = []
+        for section in values.get('sections', []):
+            for param in section.params:
+                if param.name in all_input_names:
+                    raise ValueError(f'Parameter with name {param.name} is defined twice.')
+                all_input_names.append(param.name)
+        return values
 
     @validator('schema_version')
     def _version(cls, v: str):
