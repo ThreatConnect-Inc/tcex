@@ -229,12 +229,17 @@ class AppSpecYmlModel(InstallJsonCommonModel):
     @root_validator
     def _validate_no_input_duplication(cls, values):
         """Validate that no two parameters have the same name."""
-        all_input_names = []
+        duplicates = {}
         for section in values.get('sections', []):
             for param in section.params:
-                if param.name in all_input_names:
-                    raise ValueError(f'Parameter with name {param.name} is defined twice.')
-                all_input_names.append(param.name)
+                duplicates.setdefault(param.name, []).append(param.label)
+
+        # strip out non-duplicates
+        duplicates = {k: v for k, v in duplicates.items() if len(v) > 1}
+
+        if duplicates:
+            formatted_duplicates = [f'{k}({len(v)})' for k, v in duplicates.items()]
+            raise ValueError(f'Found duplicate parameters: {", ".join(formatted_duplicates)}')
         return values
 
     @validator('schema_version')
