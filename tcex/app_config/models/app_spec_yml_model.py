@@ -5,7 +5,7 @@ from copy import deepcopy
 from typing import List, Optional
 
 # third-party
-from pydantic import BaseModel, Field, validator, root_validator
+from pydantic import BaseModel, Field, root_validator, validator
 from semantic_version import Version
 
 # first-party
