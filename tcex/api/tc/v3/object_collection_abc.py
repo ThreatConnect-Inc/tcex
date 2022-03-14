@@ -70,7 +70,7 @@ class ObjectCollectionABC(ABC):
 
     def __len__(self) -> int:
         """Return the length of the collection."""
-        parameters = self._params
+        parameters = self._params.copy()
         parameters['resultLimit'] = 1
         parameters['count'] = True
         tql_string = self.tql.raw_tql
