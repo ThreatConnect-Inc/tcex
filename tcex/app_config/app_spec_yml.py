@@ -471,5 +471,5 @@ class AppSpecYml:
 
     def write(self, contents: dict) -> None:
         """Write yaml to file."""
-        with self.fqfn.open(mode='w') as fh:
+        with self.fqfn.open(mode='w', encoding='utf-8') as fh:
             fh.write(self.dict_to_yaml(self.order_data(contents)))

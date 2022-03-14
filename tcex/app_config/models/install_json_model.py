@@ -2,6 +2,7 @@
 # pylint: disable=no-self-argument,no-self-use; noqa: N805
 # standard library
 import os
+import re
 import uuid
 from enum import Enum
 from typing import Dict, List, Optional, Union
@@ -306,8 +307,8 @@ class ParamsModel(BaseModel):
         if v is not None:
             v = v.lower().replace(' ', '_')
 
-            # remove all characters not in [a-z][0-9_]
-            v = ''.join([x for x in v if x.isidentifier()])
+            # remove all non-alphanumeric characters and underscores
+            v = re.sub(r'[^a-zA-Z0-9_]', '', v)
         return v
 
     class Config:

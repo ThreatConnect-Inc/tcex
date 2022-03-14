@@ -245,13 +245,14 @@ class SpecToolAppInput(BinABC):
     def _gen_tc_action_class_name(tc_action: str) -> str:
         """Format the action to a proper class name."""
         if tc_action is not None:
-            # remove all characters not in [a-z][0-9_]
-            tc_action = ''.join([x for x in tc_action if x.isidentifier()])
-
             # split to make pascal case
-            _parts = tc_action.replace('_', ' ').split(' ')
+            _parts = [p.title() for p in tc_action.replace('_', ' ').split(' ')]
 
-            return ''.join([f'{p.title()}' for p in _parts]) + 'Model'
+            # title case each word
+            tc_action = ''.join([f'{p.title()}' for p in _parts]) + 'Model'
+
+            # remove all non-alphanumeric characters and underscores
+            tc_action = re.sub(r'[^a-zA-Z0-9]', '', tc_action)
         return tc_action
 
     def _gen_type(self, class_name: str, input_data: 'ParamsModel') -> str:

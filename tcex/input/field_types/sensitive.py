@@ -12,7 +12,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from pydantic.fields import ModelField
 
     # first-party
-    from tcex.input.input import StringVariable
+    from tcex.utils.variables import StringVariable
 
 
 # get tcex logger
