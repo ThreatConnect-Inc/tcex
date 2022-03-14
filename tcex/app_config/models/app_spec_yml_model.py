@@ -198,6 +198,17 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         None,
         description='A section for settings related to the organization (job) Apps.',
     )
+    output_data: Optional[List[OutputDataModel]] = Field(
+        None,
+        description='The outputs data for Playbook and Service Apps.',
+    )
+    output_prefix: Optional[str] = Field(
+        None,
+        description=(
+            'The prefix for output variables, used for advanced request outputs. This value '
+            'should match what is passed to the advanced request method in the playbook App.'
+        ),
+    )
     playbook: Optional[PlaybookSpecModel] = Field(
         None,
         description='The playbook section of the install.json.',
@@ -213,17 +224,6 @@ class AppSpecYmlModel(InstallJsonCommonModel):
     sections: List[SectionsModel] = Field(
         ...,
         description='Layout sections for an App including params.',
-    )
-    output_data: Optional[List[OutputDataModel]] = Field(
-        None,
-        description='The outputs data for Playbook and Service Apps.',
-    )
-    output_prefix: Optional[str] = Field(
-        None,
-        description=(
-            'The prefix for output variables, used for advanced request outputs. This value '
-            'should match what is passed to the advanced request method in the playbook App.'
-        ),
     )
 
     @validator('schema_version')
