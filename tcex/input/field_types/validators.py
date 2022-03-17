@@ -113,6 +113,7 @@ def conditional_required(rules: List[Dict[str, str]] = True) -> Any:
 def entity_input(
     allow_empty: Optional[bool] = False,
     only_value: Optional[bool] = False,
+    only_id: Optional[bool] = False,
     type_filter: Optional[List[str]] = None,
 ) -> Union[str, List[Any]]:
     """Return customized validator.
@@ -131,6 +132,12 @@ def entity_input(
     When accepting String and TCEntity as PB data types, it is often easier to always work with
     the value. This validator will ensure that only the value of the TCEntities is returned.
     Strings will be returned as is.
+
+    only_id:
+
+    When accepting String and TCEntity as PB data types, it is often useful to always work with
+    the id. This validator will ensure that only the id of the TCEntities is returned.
+    Integer will be returned as is.
 
     type_filter:
 
@@ -164,6 +171,8 @@ def entity_input(
 
                 if only_value is True:
                     return value.value
+                if only_id is True:
+                    return value.id
             return value
 
         if isinstance(value, list):
