@@ -50,11 +50,7 @@ class UserGroups(ObjectCollectionABC):
 
 
 class UserGroup(ObjectABC):
-    """UserGroups Object.
-
-    Args:
-        name (str, kwargs): The **name** for the User_Group.
-    """
+    """UserGroups Object."""
 
     def __init__(self, **kwargs) -> None:
         """Initialize class properties."""

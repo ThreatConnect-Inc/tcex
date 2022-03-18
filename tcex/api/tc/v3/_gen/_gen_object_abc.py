@@ -328,18 +328,22 @@ class GenerateObjectABC(GenerateABC, ABC):
             return {'type': 'Artifact', 'id': self.model.id, 'value': self.model.summary}
         """
         name_entities = ['artifact_types', 'cases', 'tags', 'tasks', 'workflow_templates', 'groups']
+        # check if groups or indicators and if so use the self.model.type else use self.type_
         value_type = 'summary'
         if self.type_.lower() in name_entities:
             value_type = 'name'
 
-        return '\n'.join(
+        as_entity_property_method = [
+            f'''{self.i1}@property''',
+            f'''{self.i1}def as_entity(self) -> dict:''',
+            f'''{self.i2}"""Return the entity representation of the object."""''',
+        ]
+        if self.type_.lower() in ['groups', 'indicators']:
+            as_entity_property_method.append(f'''{self.i2}type_ = self.model.type''')
+        else:
+            as_entity_property_method.append(f'''{self.i2}type_ = self.type_''')
+        as_entity_property_method.extend(
             [
-                f'''{self.i1}@property''',
-                f'''{self.i1}def as_entity(self) -> dict:''',
-                f'''{self.i2}"""Return the entity representation of the object."""''',
-                f'''{self.i2}type_ = self.type_''',
-                f'''{self.i2}if hasattr(self.model, 'type'):''',
-                f'''{self.i3}type_ = self.model.type''',
                 '',
                 (
                     f'''{self.i2}return {{'type': type_, 'id': '''
@@ -349,6 +353,7 @@ class GenerateObjectABC(GenerateABC, ABC):
                 '',
             ]
         )
+        return '\n'.join(as_entity_property_method)
 
     def _gen_code_object_stage_type_method(
         self, type_: str, model_type: Optional[str] = None
