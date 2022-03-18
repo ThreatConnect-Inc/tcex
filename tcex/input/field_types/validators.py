@@ -164,15 +164,15 @@ def entity_input(
                 if isinstance(type_filter, list) and value.type not in type_filter:
                     return None
 
-                if only_field.lower() not in [None, 'value', 'id']:
-                    raise InvalidInput(
-                        field_name=field.name, error=f'Only Field {only_field} is not allowed.'
-                    )
-
+                if only_field is None:
+                    return value
                 if only_field.lower() == 'value':
                     return value.value
                 if only_field.lower() == 'id':
                     return value.id
+                raise InvalidInput(
+                    field_name=field.name, error=f'Only Field {only_field} is not allowed.'
+                )
 
             return value
 
