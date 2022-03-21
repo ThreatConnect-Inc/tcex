@@ -2,6 +2,11 @@
 
 ## 3.x
 
+### 3.0.1
+
+-   APP-3432x - [CLI] Fixed issue where numeric values are getting stripped from input name during validation.
+-   APP-3433x - [CLI] Fixed issue where class names are getting improperly title cased when generating app_inputs.py.
+
 ### 3.0.0
 
 > New docs site: https://threatconnect.readme.io/docs/overview

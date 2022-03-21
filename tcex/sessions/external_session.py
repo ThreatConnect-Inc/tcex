@@ -15,6 +15,9 @@ from tcex.sessions.rate_limit_handler import RateLimitHandler
 from tcex.utils.requests_to_curl import RequestsToCurl
 from tcex.utils.utils import Utils
 
+# get tcex logger
+logger = logging.getLogger('tcex')
+
 # disable ssl warning message
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -136,11 +139,10 @@ class ExternalSession(Session):
         'utils',
     ]
 
-    def __init__(self, base_url: Optional[str] = None, logger: Optional[object] = None):
+    def __init__(self, base_url: Optional[str] = None):
         """Initialize the Class properties."""
         super().__init__()
-        self._base_url: str = base_url
-        self.log: object = logger or logging.getLogger('session')
+        self._base_url = base_url
 
         self._custom_adapter: Optional[CustomAdapter] = None
         self.utils: object = Utils()
@@ -152,6 +154,7 @@ class ExternalSession(Session):
         self._mask_patterns = None
         self._rate_limit_handler = RateLimitHandler()
         self._too_many_requests_handler = None
+        self.log = logger
         self.requests_to_curl = RequestsToCurl()
 
         # Add default Retry
