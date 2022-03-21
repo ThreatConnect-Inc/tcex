@@ -40,7 +40,7 @@ class AppBaseModel(BaseModel):
     _always_array = validator('string_advanced', allow_reuse=True)(always_array())
 
     # add entity_input validator for supported types
-    _entity_input = validator('string_advanced', allow_reuse=True)(entity_input(only_value=True))
+    _entity_input = validator('string_advanced', allow_reuse=True)(entity_input(only_field='value'))
 
 
 class Action1Model(AppBaseModel):
@@ -70,7 +70,7 @@ class Action1Model(AppBaseModel):
     _always_array = validator('string_required', allow_reuse=True)(always_array())
 
     # add entity_input validator for supported types
-    _entity_input = validator('string_required', allow_reuse=True)(entity_input(only_value=True))
+    _entity_input = validator('string_required', allow_reuse=True)(entity_input(only_field='value'))
 
 
 class Action2Model(AppBaseModel):

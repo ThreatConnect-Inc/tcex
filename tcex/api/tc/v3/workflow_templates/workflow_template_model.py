@@ -1,7 +1,7 @@
 """Workflow_Template / Workflow_Templates Model"""
 # pylint: disable=no-member,no-self-argument,no-self-use,wrong-import-position
 # standard library
-from typing import List, Optional
+from typing import List, Optional, Union
 
 # third-party
 from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
@@ -93,7 +93,7 @@ class WorkflowTemplateModel(
         read_only=True,
         title='configArtifact',
     )
-    config_attribute: Optional[dict] = Field(
+    config_attribute: Union[Optional[dict], Optional[List[dict]]] = Field(
         None,
         description='The **config attribute** for the Workflow_Template.',
         methods=['POST', 'PUT'],
@@ -107,7 +107,7 @@ class WorkflowTemplateModel(
         read_only=True,
         title='configPlaybook',
     )
-    config_task: Optional[dict] = Field(
+    config_task: Union[Optional[dict], Optional[List[dict]]] = Field(
         None,
         allow_mutation=False,
         description='The **config task** for the Workflow_Template.',
