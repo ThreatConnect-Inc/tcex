@@ -14,6 +14,7 @@ import typer
 from tcex.bin import Dep, Deploy, SpecTool, Package, Template, Validate
 
 
+# initialize typer
 app = typer.Typer()
 
 
@@ -50,19 +51,19 @@ def deps(
     are defined in the tcex.json file, then there will be multiple lib_X.X.X directories created.
     """
     try:
-        tcl = Dep(branch, dev, no_cache_dir, pre, proxy_host, proxy_port, proxy_user, proxy_pass)
+        tcd = Dep(branch, dev, no_cache_dir, pre, proxy_host, proxy_port, proxy_user, proxy_pass)
 
         # configure proxy settings
-        tcl.configure_proxy()
+        tcd.configure_proxy()
 
         if branch != 'main':
             # create temp requirements.txt file pointing to tcex branch
-            tcl.create_temp_requirements()
+            tcd.create_temp_requirements()
 
         # install debs
-        tcl.install_deps()
+        tcd.install_deps()
     except Exception as ex:
-        tcl.log.error(traceback.format_exc())
+        tcd.log.error(traceback.format_exc())
         typer.echo(f'Exception: {ex}', err=True)
         raise typer.Exit(code=1)
 

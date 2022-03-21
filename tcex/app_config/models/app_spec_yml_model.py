@@ -5,7 +5,7 @@ from copy import deepcopy
 from typing import List, Optional
 
 # third-party
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, root_validator, validator
 from semantic_version import Version
 
 # first-party
@@ -198,6 +198,17 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         None,
         description='A section for settings related to the organization (job) Apps.',
     )
+    output_data: Optional[List[OutputDataModel]] = Field(
+        None,
+        description='The outputs data for Playbook and Service Apps.',
+    )
+    output_prefix: Optional[str] = Field(
+        None,
+        description=(
+            'The prefix for output variables, used for advanced request outputs. This value '
+            'should match what is passed to the advanced request method in the playbook App.'
+        ),
+    )
     playbook: Optional[PlaybookSpecModel] = Field(
         None,
         description='The playbook section of the install.json.',
@@ -214,17 +225,22 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         ...,
         description='Layout sections for an App including params.',
     )
-    output_data: Optional[List[OutputDataModel]] = Field(
-        None,
-        description='The outputs data for Playbook and Service Apps.',
-    )
-    output_prefix: Optional[str] = Field(
-        None,
-        description=(
-            'The prefix for output variables, used for advanced request outputs. This value '
-            'should match what is passed to the advanced request method in the playbook App.'
-        ),
-    )
+
+    @root_validator
+    def _validate_no_input_duplication(cls, values):
+        """Validate that no two parameters have the same name."""
+        duplicates = {}
+        for section in values.get('sections', []):
+            for param in section.params:
+                duplicates.setdefault(param.name, []).append(param.label)
+
+        # strip out non-duplicates
+        duplicates = {k: v for k, v in duplicates.items() if len(v) > 1}
+
+        if duplicates:
+            formatted_duplicates = [f'{k}({len(v)})' for k, v in duplicates.items()]
+            raise ValueError(f'Found duplicate parameters: {", ".join(formatted_duplicates)}')
+        return values
 
     @validator('schema_version')
     def _version(cls, v: str):
