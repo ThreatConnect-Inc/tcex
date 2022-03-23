@@ -2,7 +2,7 @@
 # pylint: disable=no-member,no-self-argument,no-self-use,wrong-import-position
 # standard library
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Union
 
 # third-party
 from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
@@ -117,7 +117,7 @@ class TaskModel(
         read_only=True,
         title='configPlaybook',
     )
-    config_task: Optional[dict] = Field(
+    config_task: Union[Optional[dict], Optional[List[dict]]] = Field(
         None,
         allow_mutation=False,
         description='The **config task** for the Task.',

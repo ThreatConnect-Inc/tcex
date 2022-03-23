@@ -21,12 +21,11 @@ if TYPE_CHECKING:
     from tcex.sessions.auth.tc_auth import TcAuth
     from tcex.sessions.auth.token_auth import TokenAuth
 
+# get tcex logger
+logger = logging.getLogger('tcex')
 
 # disable ssl warning message
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-# get tcex logger
-logger = logging.getLogger('tcex')
 
 
 class TcSession(Session):

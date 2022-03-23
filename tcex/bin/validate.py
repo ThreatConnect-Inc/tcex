@@ -329,7 +329,7 @@ class Validate(BinABC):
                     # update validation data errors
                     self.validation_data['errors'].append(
                         'Layouts input.parameters[].name validations failed '
-                        f'''("{p.get('name')}" is defined in layout.json, '''
+                        f'''("{p.name}" is defined in layout.json, '''
                         'but hidden or not found in install.json).'
                     )
                     status = False

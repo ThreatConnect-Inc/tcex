@@ -145,7 +145,8 @@ class GenerateModelABC(GenerateABC, ABC):
                 'type': 'Optional[int]',
             },
             'JsonNode': {
-                'type': 'Optional[dict]',
+                'requirement': {'from': 'standard library', 'import': 'from typing import Union'},
+                'type': 'Union[Optional[dict], Optional[List[dict]]]',
             },
             'Links': {
                 'type': 'Optional[dict]',

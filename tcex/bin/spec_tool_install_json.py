@@ -90,7 +90,9 @@ class SpecToolInstallJson(BinABC):
                 'type': self.asy.model.category,
             }
             if self.asy.model.playbook and self.asy.model.playbook.retry.allowed is True:
-                install_json_data['playbook']['retry'] = self.asy.model.retry.dict(by_alias=True)
+                install_json_data['playbook']['retry'] = self.asy.model.playbook.retry.dict(
+                    by_alias=True
+                )
 
     @property
     def _note_per_action(self):

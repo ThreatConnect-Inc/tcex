@@ -112,7 +112,7 @@ def conditional_required(rules: List[Dict[str, str]] = True) -> Any:
 
 def entity_input(
     allow_empty: Optional[bool] = False,
-    only_value: Optional[bool] = False,
+    only_field: Optional[str] = None,
     type_filter: Optional[List[str]] = None,
 ) -> Union[str, List[Any]]:
     """Return customized validator.
@@ -126,11 +126,13 @@ def entity_input(
     If the value to be returned is a list that is not empty, no checks are performed on the list
     members.
 
-    only_value:
+    only_field:
+
+    Valid inputs for this field are [`value`, `id`].
 
     When accepting String and TCEntity as PB data types, it is often easier to always work with
-    the value. This validator will ensure that only the value of the TCEntities is returned.
-    Strings will be returned as is.
+    the value or id of the TCEntity. This validator will ensure that only the value or id of the
+    TCEntities is returned.
 
     type_filter:
 
@@ -162,8 +164,16 @@ def entity_input(
                 if isinstance(type_filter, list) and value.type not in type_filter:
                     return None
 
-                if only_value is True:
+                if only_field is None:
+                    return value
+                if only_field.lower() == 'value':
                     return value.value
+                if only_field.lower() == 'id':
+                    return value.id
+                raise InvalidInput(
+                    field_name=field.name, error=f'Only Field {only_field} is not allowed.'
+                )
+
             return value
 
         if isinstance(value, list):

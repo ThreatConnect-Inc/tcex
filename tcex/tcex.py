@@ -246,7 +246,7 @@ class TcEx:
 
     def get_session_external(self) -> ExternalSession:
         """Return an instance of Requests Session configured for the ThreatConnect API."""
-        _session_external = ExternalSession(logger=self.log)
+        _session_external = ExternalSession()
 
         # add User-Agent to headers
         _session_external.headers.update(self._user_agent)

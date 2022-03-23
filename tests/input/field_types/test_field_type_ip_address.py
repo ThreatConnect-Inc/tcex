@@ -279,7 +279,7 @@ class TestInputsIpAddressFieldTypes(InputTest):
                 ]
 
                 _entity_input = validator('my_data', allow_reuse=True)(
-                    entity_input(only_value=True)
+                    entity_input(only_field='value')
                 )
                 _always_array = validator('my_data', allow_reuse=True)(
                     always_array(allow_empty=False)
@@ -300,7 +300,7 @@ class TestInputsIpAddressFieldTypes(InputTest):
                 ]
 
                 _entity_input = validator('my_data', allow_reuse=True)(
-                    entity_input(only_value=True)
+                    entity_input(only_field='value')
                 )
                 _always_array = validator('my_data', allow_reuse=True)(
                     always_array(allow_empty=False)
