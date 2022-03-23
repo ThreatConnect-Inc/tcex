@@ -327,7 +327,7 @@ class AppSpecYml:
     def _migrate_schema_100_to_110_jira_notes(contents: dict) -> None:
         """Migrate 1.0.0 schema to 1.1.0 schema."""
         jira_notes = []
-        for k, v in contents.get('jira').items():
+        for k, v in contents.get('jira', {}).items():
             # look for the trailer to find our items
             if k == '_TRAILER_':
                 for item in v:

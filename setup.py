@@ -26,7 +26,7 @@ dev_packages = [
     'deepdiff',
     'fakeredis==1.7.0',
     'flake8',
-    'isort',
+    'isort>=5.0.0',
     'mako',
     'pre-commit',
     'pydocstyle',

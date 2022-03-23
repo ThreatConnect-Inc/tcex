@@ -4,12 +4,16 @@
 
 ### 3.0.1
 
--   APP-3432x - [CLI] Fixed issue where numeric values are getting stripped from input name during validation.
--   APP-3433x - [CLI] Fixed issue where class names are getting improperly title cased when generating app_inputs.py.
+-   APP-3432 - [CLI] Fixed issue where numeric values are getting stripped from input name during validation
+-   APP-3433 - [CLI] Fixed issue where class names are getting improperly title cased when generating app_inputs.py
+-   APP-3434 - [CLI] Added validation to spectool to ensure input names are unique
+-   APP-3443 - [CLI] Fixed logging issue on error message for validate feature
+-   APP-3448 - [AppConfig] Added entry to spec file for storing local notes
 -   APP-3450 - [CM] Updated Case Management as_entity method
--   APP-3451 - [Inputs] Added BaseModels to verify against for Case Management types
--   APP-3452 - [Inputs] Added support for `only_fields` parameter on entity_input validation
--   APP-3453 - [CM] Updated to better handle JsonNode types
+-   APP-3451 - [Inputs] Add Case Management field types to use in app_inputs.py file
+-   APP-3452 - [Inputs] Added support for only_fields (replacing only_value) parameter on entity_input validation
+-   APP-3453 - [CM] Updated CM logic to better handle JsonNode types defined by TC OPTIONS endpoint.
+-   APP-3454 - [CLI] Fixed issue with Retry entry when generating spec files.
 
 ### 3.0.0
 
