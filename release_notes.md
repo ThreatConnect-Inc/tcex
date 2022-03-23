@@ -6,6 +6,10 @@
 
 -   APP-3432x - [CLI] Fixed issue where numeric values are getting stripped from input name during validation.
 -   APP-3433x - [CLI] Fixed issue where class names are getting improperly title cased when generating app_inputs.py.
+-   APP-3450 - [CM] Updated Case Management as_entity method
+-   APP-3451 - [Inputs] Added BaseModels to verify against for Case Management types
+-   APP-3452 - [Inputs] Added support for `only_fields` parameter on entity_input validation
+-   APP-3453 - [CM] Updated to better handle JsonNode types
 
 ### 3.0.0
 

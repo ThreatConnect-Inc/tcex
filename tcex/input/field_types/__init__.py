@@ -3,6 +3,15 @@
 # flake8:noqa
 # first-party
 from tcex.input.field_types.binary import Binary, binary
+from tcex.input.field_types.case_management_entity import (
+    ArtifactEntity,
+    ArtifactTypeEntity,
+    CaseEntity,
+    NoteEntity,
+    TaskEntity,
+    WorkflowEventEntity,
+    WorkflowTemplateEntity,
+)
 from tcex.input.field_types.choice import Choice, choice
 from tcex.input.field_types.datetime import DateTime
 from tcex.input.field_types.edit_choice import EditChoice, edit_choice
