@@ -213,6 +213,10 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         None,
         description='The playbook section of the install.json.',
     )
+    internalNotes: Optional[List[str]] = Field(
+        None,
+        description='Internal notes for the App.',
+    )
     release_notes: List[ReleaseNoteModel] = Field(
         ...,
         description='The release notes for the App.',

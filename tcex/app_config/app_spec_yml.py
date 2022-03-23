@@ -200,6 +200,9 @@ class AppSpecYml:
         # migrate app.playbookType to category
         contents['category'] = contents.pop('playbookType', '')
 
+        # migrate app.jira to internalNotes schema
+        self._migrate_schema_100_to_110_jira_notes(contents)
+
         # migrate app.releaseNotes to new schema
         self._migrate_schema_100_to_110_release_notes(contents)
 
@@ -321,6 +324,17 @@ class AppSpecYml:
         contents['outputData'] = outputs
 
     @staticmethod
+    def _migrate_schema_100_to_110_jira_notes(contents: dict) -> None:
+        """Migrate 1.0.0 schema to 1.1.0 schema."""
+        jira_notes = []
+        for k, v in contents.get('jira').items():
+            # look for the trailer to find our items
+            if k == '_TRAILER_':
+                for item in v:
+                    jira_notes.append(item)
+        contents['internalNotes'] = jira_notes
+
+    @staticmethod
     def _migrate_schema_100_to_110_release_notes(contents: dict) -> None:
         """Migrate 1.0.0 schema to 1.1.0 schema."""
         release_notes = []
@@ -413,6 +427,8 @@ class AppSpecYml:
         asy_data_ordered['programVersion'] = asy_data.get('programVersion')
         if asy_data.get('displayPath') is not None:
             asy_data_ordered['displayPath'] = asy_data.get('displayPath')
+        if asy_data.get('internalNotes') is not None:
+            asy_data_ordered['internalNotes'] = asy_data.get('internalNotes', [])
         asy_data_ordered['releaseNotes'] = asy_data.get('releaseNotes', [])
         asy_data_ordered['deprecatedApps'] = asy_data.get('deprecatedApps', [])
         asy_data_ordered['features'] = asy_data.get('features')
