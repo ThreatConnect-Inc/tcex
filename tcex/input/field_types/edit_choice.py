@@ -1,6 +1,5 @@
 """Valid Values Field Type"""
 # standard library
-import re
 from typing import TYPE_CHECKING, Callable, Dict, Optional
 
 # first-party
@@ -27,7 +26,6 @@ class EditChoice(str):
     """
 
     _allow_additional = False
-    _auto_transformations = None
     _value_transformations = None
 
     @classmethod
@@ -83,19 +81,11 @@ class EditChoice(str):
         if isinstance(cls._value_transformations, dict):
             value = cls._value_transformations.get(value, value)
 
-        if cls._auto_transformations is True:
-            value = value.lower().replace(' ', '_')
-
-            # remove all non-alphanumeric characters and underscores
-            value = re.sub(r'[^a-zA-Z0-9_]', '', value)
-
         return value
 
 
 def edit_choice(
-    allow_additional: bool = False,
-    value_transformations: Optional[Dict[str, str]] = None,
-    auto_transformations: Optional[bool] = False,
+    allow_additional: bool = False, value_transformations: Optional[Dict[str, str]] = None
 ) -> type:
     """Return configured instance of String.
 
@@ -105,15 +95,12 @@ def edit_choice(
     Dictionary keys should be the field's valid values as defined in the install.json. Example:
 
     value_transformations: {'my_choice': 'My Choice'}
-    :param auto_transformations: bool that enables auto transformation of values.
-
 
     If this field were to be initialized with 'my_choice', then the final value found in the input
     model would be 'My Choice'.
     """
     namespace = dict(
-        _allow_additional=allow_additional,
-        _auto_transformations=auto_transformations,
         _value_transformations=value_transformations,
+        _allow_additional=allow_additional,
     )
     return type('CustomEditChoice', (EditChoice,), namespace)
