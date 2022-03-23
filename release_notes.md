@@ -2,6 +2,10 @@
 
 ## 3.x
 
+### 3.0.2
+
+-   APP-3456 - [Batch] Added support for the following group types: Attack Pattern, Course of Action, Malware, Tactic, and Tool
+
 ### 3.0.1
 
 -   APP-3432 - [CLI] Fixed issue where numeric values are getting stripped from input name during validation
@@ -12,8 +16,8 @@
 -   APP-3450 - [CM] Updated Case Management as_entity method
 -   APP-3451 - [Inputs] Add Case Management field types to use in app_inputs.py file
 -   APP-3452 - [Inputs] Added support for only_fields (replacing only_value) parameter on entity_input validation
--   APP-3453 - [CM] Updated CM logic to better handle JsonNode types defined by TC OPTIONS endpoint.
--   APP-3454 - [CLI] Fixed issue with Retry entry when generating spec files.
+-   APP-3453 - [CM] Updated CM logic to better handle JsonNode types defined by TC OPTIONS endpoint
+-   APP-3454 - [CLI] Fixed issue with Retry entry when generating spec files
 
 ### 3.0.0
 
