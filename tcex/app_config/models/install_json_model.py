@@ -303,7 +303,10 @@ class ParamsModel(BaseModel):
 
     @validator('name')
     def _name(cls, v):
-        """Return the transformed "name" field."""
+        """Return the transformed "name" field.
+
+        Used to replace labels for fields non-alphanumeric chars (migrate label to name).
+        """
         if v is not None:
             v = v.lower().replace(' ', '_')
 

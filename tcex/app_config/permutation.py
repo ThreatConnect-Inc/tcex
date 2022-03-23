@@ -8,7 +8,7 @@ import random
 import re
 import sys
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Tuple, Union
 
 try:
     # standard library
@@ -23,6 +23,11 @@ from tcex.app_config.models.install_json_model import ParamsModel
 from tcex.app_config.models.layout_json_model import OutputsModel, ParametersModel
 from tcex.backports import cached_property
 from tcex.pleb.none_model import NoneModel
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.app_config.models.install_json_model import OutputVariablesModel
+
 
 # get tcex logger
 tcex_logger = logging.getLogger('tcex')
@@ -348,7 +353,7 @@ class Permutation:
         """Return all inputs for the provided action."""
         yield from self.outputs_by_inputs({'tc_action': action})
 
-    def outputs_by_inputs(self, inputs: Dict[str, str]) -> List[List[dict]]:
+    def outputs_by_inputs(self, inputs: Dict[str, str]) -> Iterable['OutputVariablesModel']:
         """Return all output based on provided inputs
 
         Args:
