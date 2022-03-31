@@ -17,6 +17,7 @@ class Group:
     __slots__ = [
         '_attributes',
         '_file_content',
+        '_group_data',
         '_labels',
         '_name',
         '_processed',
@@ -336,7 +337,7 @@ class Campaign(Group):
 class Document(Group):
     """ThreatConnect Batch Document Object"""
 
-    __slots__ = ['_file_data', '_group_data']
+    __slots__ = ['_file_data']
 
     def __init__(self, name: str, file_name: str, **kwargs) -> None:
         """Initialize Class Properties.
