@@ -354,15 +354,12 @@ class SpecToolAppInput(BinABC):
         """Return the type from the current app_input.py file if found."""
         # Try to capture the value from the specific class first. If not
         # found, search the entire app_inputs.py file.
-        type_defintion = (
-            self.utils.find_line_in_code(
-                needle=rf'\s+{input_name}: ',
-                code=self.app_inputs_contents,
-                trigger_start=rf'^class {class_name}',
-                trigger_stop=r'^class ',
-            )
-            or self.utils.find_line_in_code(needle=f'{input_name}: ', code=self.app_inputs_contents)
-        )
+        type_defintion = self.utils.find_line_in_code(
+            needle=rf'\s+{input_name}: ',
+            code=self.app_inputs_contents,
+            trigger_start=rf'^class {class_name}',
+            trigger_stop=r'^class ',
+        ) or self.utils.find_line_in_code(needle=f'{input_name}: ', code=self.app_inputs_contents)
         # type_definition -> "string_encrypt: Optional[Sensitive]"
         self.log.debug(
             f'action=find-definition, input-name={input_name}, type-definition={type_defintion}'

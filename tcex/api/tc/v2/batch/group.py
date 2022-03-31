@@ -17,7 +17,6 @@ class Group:
     __slots__ = [
         '_attributes',
         '_file_content',
-        '_group_data',
         '_labels',
         '_name',
         '_processed',
