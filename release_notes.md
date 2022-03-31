@@ -1,6 +1,8 @@
 # Release Notes
 
-## 3.x
+### 3.0.2
+
+- APP-3468 - [Pleb] Fix ScopedProperty for multiprocess use.
 
 ### 3.0.1
 
