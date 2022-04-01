@@ -75,6 +75,7 @@ class InstallJsonUpdate:
                     'aotExecutionEnabled',
                     'appBuilderCompliant',
                     'fileParams',
+                    'runtimeVariables',
                     'secureParams',
                 ]
             )

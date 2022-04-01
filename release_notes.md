@@ -7,6 +7,7 @@
 -   APP-3456 - [Batch] Added batch support for the following group types: Attack Pattern, Course of Action, Malware, Tactic, and Tool
 -   APP-3459 - [CLI] Added support for deprecated_apps in spectool when generating install.json
 -   APP-3471 - [Session] Updated external session to better support Retry-After for non compliant API providers
+-   APP-3472 - [CLI] Updated `package` command to add `runtimeVariables` to features in install.json
 
 ### 3.0.1
 
