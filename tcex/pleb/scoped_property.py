@@ -47,7 +47,7 @@ class scoped_property(typing.Generic[T]):
             # the same process (threads are duplicated when a process is forked).
             pid, value = self.value.data
             if pid != os.getpid():
-                return self._create_value(self.wrapped, (instance,))
+                return self._create_value(self.wrapped, instance)
 
             return value
 
