@@ -3,6 +3,7 @@
 import base64
 import json
 import logging
+import os
 from typing import Any, Dict, Iterable, List, Optional, Union
 
 # third-party
@@ -56,6 +57,17 @@ class PlaybookCreate:
         if value is None:
             self.log.warning(f'The provided value for key {key} was None.')
             invalid = True
+
+            # specifically to allow the tcex-test framework to validate outputs
+            if (
+                os.getenv('TC_PLAYBOOK_WRITE_NULL') is not None
+                and self.key_value_store.kv_type == 'redis'
+            ):
+                variable = self._get_variable(key)
+                self.log.trace(f'event=writing-null-to-kvstore, variable={variable}')
+                self.key_value_store.redis_client.hset(
+                    self.context, f'{variable}_NULL_VALIDATION', ''
+                )
 
         return invalid
 

@@ -31,7 +31,7 @@ repos:
       - id: requirements-txt-fixer
       - id: trailing-whitespace
   - repo: https://github.com/pycqa/bandit
-    rev: 1.7.4
+    rev: 1.7.1
     hooks:
       - id: bandit
         exclude: |
@@ -74,7 +74,7 @@ repos:
               ^tests/
           )
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.31.1
+    rev: v2.31.0
     hooks:
       - id: pyupgrade
         args:
@@ -84,7 +84,7 @@ repos:
     rev: v0.1
     hooks:
       - id: xenon
-        args: ["--max-average=B", "-e=tests*"]
+        args: ['--max-average=B', '-e=tests*']
   - repo: local
     hooks:
       - id: pylint
@@ -92,4 +92,4 @@ repos:
         language: system
         name: pylint
         types: [python]
-        args: ["--jobs=2"]
+        args: ['--jobs=2']

@@ -37,9 +37,12 @@ def default_too_many_requests_handler(response: Response) -> float:
         The number of seconds to wait before sending the next request, from the Retry-After header.
     """
     utils = Utils()
+    # the Retry-After value can be a str/int/float. as a string
+    # it can be a full date (e.g., "2022-03-26T00:00:00Z")
     retry_after = response.headers.get('Retry-After', 0)
     try:
-        seconds = utils.any_to_datetime(float(retry_after)).timestamp() - time.time()
+        # always convert value to seconds if possible
+        seconds = utils.any_to_datetime(retry_after).timestamp() - time.time()
     except RuntimeError:
         # retry_after must be in seconds
         seconds = retry_after

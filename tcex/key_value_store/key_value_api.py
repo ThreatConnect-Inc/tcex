@@ -21,6 +21,7 @@ class KeyValueApi(KeyValueABC):
 
         # properties
         self.ij = InstallJson()
+        self.kv_type = 'api'
 
     def create(self, context: str, key: str, value: Any) -> str:
         """Create key/value pair in remote KV store.

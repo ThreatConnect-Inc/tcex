@@ -20,7 +20,10 @@ class KeyValueRedis(KeyValueABC):
 
     def __init__(self, redis_client: 'RedisClient'):
         """Initialize the Class properties."""
-        self._redis_client = redis_client
+        self.redis_client = redis_client
+
+        # properties
+        self.kv_type = 'redis'
 
     def create(self, context: str, key: str, value: Any) -> None:
         """Create key/value pair in Redis.
@@ -33,7 +36,7 @@ class KeyValueRedis(KeyValueABC):
         Returns:
             str: The response from Redis.
         """
-        return self._redis_client.hset(context, key, value)
+        return self.redis_client.hset(context, key, value)
 
     def delete(self, context: str, key: str) -> str:
         """Alias for hdel method.
@@ -45,7 +48,7 @@ class KeyValueRedis(KeyValueABC):
         Returns:
             str: The response from Redis.
         """
-        return self._redis_client.hdel(context, key)
+        return self.redis_client.hdel(context, key)
 
     def hgetall(self, context: str):
         """Read data from Redis for the current context.
@@ -56,7 +59,7 @@ class KeyValueRedis(KeyValueABC):
         Returns:
             list: The response data from Redis.
         """
-        return self._redis_client.hgetall(context)
+        return self.redis_client.hgetall(context)
 
     def read(self, context: str, key: str) -> Any:
         """Read data from Redis for the provided key.
@@ -82,4 +85,4 @@ class KeyValueRedis(KeyValueABC):
         Returns:
             Optional[bytes]: the raw value from redis, if any
         """
-        return self._redis_client.hget(context, key)
+        return self.redis_client.hget(context, key)
