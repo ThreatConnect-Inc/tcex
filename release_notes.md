@@ -3,6 +3,7 @@
 ### 3.0.2
 
 - APP-3468 - [Pleb] Fix ScopedProperty for multiprocess use.
+- APP-3470 - [Sensitive] Don't add empty strings to the sensitive filter.
 
 ### 3.0.1
 
