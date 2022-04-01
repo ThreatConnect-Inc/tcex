@@ -2,14 +2,16 @@
 
 ### 3.0.2
 
-- APP-3468 - [Pleb] Fix ScopedProperty for multiprocess use.
+-   APP-3468 - [Pleb] Fix ScopedProperty for multiprocess use.
 
 ### 3.0.2
 
--   APP-3456 - [Batch] Added batch support for the following group types: Attack Pattern, Course of Action, Malware, Tactic, and Tool
+-   APP-3456 - [Batch] Added support for the following group types: Attack Pattern, Course of Action, Malware, Tactic, and Tool
 -   APP-3459 - [CLI] Added support for deprecated_apps in spectool when generating install.json
+-   APP-3468 - [Pleb] Fix ScopedProperty to properly invoke it's wrapped function
+-   APP-3470 - [Logging] Update logging filter to handle empty sensitive values
 -   APP-3471 - [Session] Updated external session to better support Retry-After for non compliant API providers
--   APP-3472 - [CLI] Updated `package` command to add `runtimeVariables` to features in install.json
+-   APP-3472 - [CLI] Updated package command to add runtimeVariables to features in install.json
 -   APP-3473 - [Playbooks] Added a feature to playbooks module to write additional data to KV store for test validation
 
 ### 3.0.1
