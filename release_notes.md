@@ -4,7 +4,7 @@
 
 - APP-3468 - [Pleb] Fix ScopedProperty for multiprocess use.
 - APP-3470 - [Sensitive] Don't add empty strings to the sensitive filter.
- 
+
 ### 3.0.1
 
 -   APP-3432 - [CLI] Fixed issue where numeric values are getting stripped from input name during validation
