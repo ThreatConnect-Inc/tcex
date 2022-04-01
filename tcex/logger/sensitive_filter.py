@@ -13,7 +13,9 @@ class SensitiveFilter(logging.Filter):
 
     def add(self, value: str) -> None:
         """Add sensitive value to registry."""
-        self._sensitive_registry.add(str(value))
+        if value:
+            # don't add empty string
+            self._sensitive_registry.add(str(value))
 
     def filter(self, record: logging.LogRecord) -> bool:
         """Filter the record"""
