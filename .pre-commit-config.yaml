@@ -31,7 +31,7 @@ repos:
       - id: requirements-txt-fixer
       - id: trailing-whitespace
   - repo: https://github.com/pycqa/bandit
-    rev: 1.7.1
+    rev: 1.7.4
     hooks:
       - id: bandit
         exclude: |
@@ -42,7 +42,7 @@ repos:
               ^tests/
           )
   - repo: https://github.com/psf/black
-    rev: 21.12b0
+    rev: 22.3.0
     hooks:
       - id: black
   - repo: https://github.com/codespell-project/codespell
@@ -74,7 +74,7 @@ repos:
               ^tests/
           )
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.31.0
+    rev: v2.31.1
     hooks:
       - id: pyupgrade
         args:

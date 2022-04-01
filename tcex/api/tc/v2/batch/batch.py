@@ -527,7 +527,7 @@ class Batch(BatchWriter, BatchSubmit):
         with open(self.debug_path_xids, 'a') as fh:
             fh.write(f'{xid}\n')
 
-    def submit(  # pylint: disable=arguments-differ
+    def submit(  # pylint: disable=arguments-differ, arguments-renamed
         self,
         poll: Optional[bool] = True,
         errors: Optional[bool] = True,
