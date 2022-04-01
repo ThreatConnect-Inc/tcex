@@ -34,6 +34,7 @@ class Sensitive:
             self._sensitive_value = value.value
         else:
             self._sensitive_value = value
+        filter_sensitive.add(self._sensitive_value)
 
     @classmethod
     def __get_validators__(cls) -> Callable:
