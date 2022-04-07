@@ -305,7 +305,7 @@ class AppSpecYmlModel(InstallJsonCommonModel):
 
     def get_note_per_action(self, action: str) -> 'NotesPerActionModel':
         """Return the note_per_action for the provided action."""
-        for npa in self.note_per_action:
+        for npa in self.note_per_action or []:
             if npa.action == action:
                 return npa
         return NoneModel()

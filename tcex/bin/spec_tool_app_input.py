@@ -481,8 +481,8 @@ class SpecToolAppInput(BinABC):
             '',
             f'{self.i1}# add entity_input validator for supported types',
             (
-                f'{self.i1}_entity_input = validator({_entity_input}, '
-                'allow_reuse=True)(entity_input(only_value=True))'
+                f'''{self.i1}_entity_input = validator({_entity_input}, '''
+                '''allow_reuse=True)(entity_input(only_field='value'))'''
             ),
         ]
 
