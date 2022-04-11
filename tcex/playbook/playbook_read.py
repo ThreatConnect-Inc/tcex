@@ -95,9 +95,6 @@ class PlaybookRead:
             self.log.warning('The provided key was None.')
             return True
 
-        if self.utils.is_playbook_variable(key):
-            # only log key if it's a variable
-            self.log.debug(f'read variable {key}')
         return False
 
     def _process_binary(
@@ -608,8 +605,6 @@ class PlaybookRead:
             key = key.strip()
 
             if re.match(self.utils.variable_playbook_match, key):
-                # only log key if it's a variable
-                self.log.debug(f'read variable {key}')
                 value = self.any(key=key)
             else:
                 # replace space patterns

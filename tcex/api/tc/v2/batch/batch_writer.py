@@ -20,16 +20,21 @@ from requests import Session
 from tcex.api.tc.utils.threat_intel_utils import ThreatIntelUtils
 from tcex.api.tc.v2.batch.group import (
     Adversary,
+    AttackPattern,
     Campaign,
+    CourseOfAction,
     Document,
     Email,
     Event,
     Group,
     Incident,
     IntrusionSet,
+    Malware,
     Report,
     Signature,
+    Tactic,
     Threat,
+    Tool,
     Vulnerability,
 )
 from tcex.api.tc.v2.batch.indicator import (
@@ -58,16 +63,21 @@ logger = logging.getLogger('tcex')
 # define GroupType
 GroupType = Union[
     Adversary,
+    AttackPattern,
     Campaign,
+    CourseOfAction,
     Document,
     Email,
     Event,
     Group,
     Incident,
     IntrusionSet,
+    Malware,
     Report,
     Signature,
+    Tactic,
     Threat,
+    Tool,
     Vulnerability,
 ]
 
@@ -437,6 +447,22 @@ class BatchWriter:
         group_obj = Adversary(name, **kwargs)
         return self._group(group_obj, kwargs.get('store', True))
 
+    def attack_pattern(self, name: str, **kwargs) -> AttackPattern:
+        """Add Attack Pattern data to Batch object.
+
+        Args:
+            name: The name for this Group.
+            date_added (str, kwargs): The date timestamp the Indicator was created.
+            xid (str, kwargs): The external id for this Group.
+            store: (bool, kwargs): Advanced - Defaults to True. If True
+                the indicator data will be stored in instance list.
+
+        Returns:
+            AttackPattern: An instance of the AttackPattern class.
+        """
+        group_obj = AttackPattern(name, **kwargs)
+        return self._group(group_obj, kwargs.get('store', True))
+
     def asn(self, as_number: str, **kwargs) -> ASN:
         """Add ASN data to Batch.
 
@@ -511,6 +537,22 @@ class BatchWriter:
             self.log.warning(
                 f'action=batch-close, filename={self.indicator_shelf_fqfn} exception={ex}'
             )
+
+    def course_of_action(self, name: str, **kwargs) -> CourseOfAction:
+        """Add Course Of Action Pattern data to Batch object.
+
+        Args:
+            name: The name for this Group.
+            date_added (str, kwargs): The date timestamp the Indicator was created.
+            xid (str, kwargs): The external id for this Group.
+            store: (bool, kwargs): Advanced - Defaults to True. If True
+                the indicator data will be stored in instance list.
+
+        Returns:
+            CourseOfAction: An instance of the CourseOfAction class.
+        """
+        group_obj = CourseOfAction(name, **kwargs)
+        return self._group(group_obj, kwargs.get('store', True))
 
     @property
     def data(self) -> dict:
@@ -975,6 +1017,22 @@ class BatchWriter:
         group_obj = IntrusionSet(name, **kwargs)
         return self._group(group_obj, kwargs.get('store', True))
 
+    def malware(self, name: str, **kwargs) -> Malware:
+        """Add Malware data to Batch object.
+
+        Args:
+            name: The name for this Group.
+            date_added (str, kwargs): The date timestamp the Indicator was created.
+            xid (str, kwargs): The external id for this Group.
+            store: (bool, kwargs): Advanced - Defaults to True. If True
+                the indicator data will be stored in instance list.
+
+        Returns:
+            Malware: An instance of the Malware class.
+        """
+        group_obj = Malware(name, **kwargs)
+        return self._group(group_obj, kwargs.get('store', True))
+
     def mutex(self, mutex: str, **kwargs) -> Mutex:
         """Add Mutex data to Batch.
 
@@ -1117,6 +1175,22 @@ class BatchWriter:
         group_obj = Signature(name, file_name, file_type, file_text, **kwargs)
         return self._group(group_obj, kwargs.get('store', True))
 
+    def tactic(self, name: str, **kwargs) -> Tactic:
+        """Add Tactic data to Batch object.
+
+        Args:
+            name: The name for this Group.
+            date_added (str, kwargs): The date timestamp the Indicator was created.
+            xid (str, kwargs): The external id for this Group.
+            store: (bool, kwargs): Advanced - Defaults to True. If True
+                the indicator data will be stored in instance list.
+
+        Returns:
+            Tactic: An instance of the Tactic class.
+        """
+        group_obj = Tactic(name, **kwargs)
+        return self._group(group_obj, kwargs.get('store', True))
+
     def threat(self, name: str, **kwargs) -> Threat:
         """Add Threat data to Batch.
 
@@ -1131,6 +1205,22 @@ class BatchWriter:
             Threat: An instance of the Threat class.
         """
         group_obj = Threat(name, **kwargs)
+        return self._group(group_obj, kwargs.get('store', True))
+
+    def tool(self, name: str, **kwargs) -> Tool:
+        """Add Tool data to Batch object.
+
+        Args:
+            name: The name for this Group.
+            date_added (str, kwargs): The date timestamp the Indicator was created.
+            xid (str, kwargs): The external id for this Group.
+            store: (bool, kwargs): Advanced - Defaults to True. If True
+                the indicator data will be stored in instance list.
+
+        Returns:
+            Tool: An instance of the Tool class.
+        """
+        group_obj = Tool(name, **kwargs)
         return self._group(group_obj, kwargs.get('store', True))
 
     def user_agent(self, text: str, **kwargs) -> UserAgent:

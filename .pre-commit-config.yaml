@@ -42,7 +42,7 @@ repos:
               ^tests/
           )
   - repo: https://github.com/psf/black
-    rev: 21.12b0
+    rev: 22.3.0
     hooks:
       - id: black
   - repo: https://github.com/codespell-project/codespell
@@ -84,7 +84,7 @@ repos:
     rev: v0.1
     hooks:
       - id: xenon
-        args: ["--max-average=B", "-e=tests*"]
+        args: ['--max-average=B', '-e=tests*']
   - repo: local
     hooks:
       - id: pylint
@@ -92,4 +92,4 @@ repos:
         language: system
         name: pylint
         types: [python]
-        args: ["--jobs=2"]
+        args: ['--jobs=2']

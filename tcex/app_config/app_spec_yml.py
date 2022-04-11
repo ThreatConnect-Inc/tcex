@@ -430,7 +430,7 @@ class AppSpecYml:
         if asy_data.get('internalNotes') is not None:
             asy_data_ordered['internalNotes'] = asy_data.get('internalNotes', [])
         asy_data_ordered['releaseNotes'] = asy_data.get('releaseNotes', [])
-        asy_data_ordered['deprecatedApps'] = asy_data.get('deprecatedApps', [])
+        asy_data_ordered['deprecatesApps'] = asy_data.get('deprecatesApps', [])
         asy_data_ordered['features'] = asy_data.get('features')
         asy_data_ordered['labels'] = asy_data.get('labels', [])
         asy_data_ordered['minServerVersion'] = asy_data.get('minServerVersion')

@@ -23,7 +23,6 @@ with open('README.md') as f:
 dev_packages = [
     'black',
     'codespell',
-    'deepdiff',
     'fakeredis==1.7.0',
     'flake8',
     'isort>=5.0.0',
@@ -39,9 +38,10 @@ dev_packages = [
     'pyupgrade',
 ]
 if sys.version_info <= (3, 7):
-    dev_packages.append('bandit==1.7.1')
+    # these packages dropped support for 3.6
+    dev_packages.extend(['bandit==1.7.1', 'deepdiff==5.7.0'])
 else:
-    dev_packages.append('bandit')
+    dev_packages.extend(['bandit', 'deepdiff'])
 
 
 setup(
