@@ -74,7 +74,6 @@ class _AdvancedRequestModel(BaseModel):
     @validator('tc_adv_req_headers', 'tc_adv_req_params', always=True, pre=True)
     def _always_array(cls, value: Optional[str]) -> list:
         """Return array value for headers and params."""
-        print('value', value)
         if not value:
             value = []
         return value
