@@ -1,5 +1,8 @@
 # Release Notes
 
+### 3.0.3
+-   APP-3489 - [CLI] fix bug that was causing click ~=8.1.0 to break on help strings.
+
 ### 3.0.2
 
 -   APP-3456 - [Batch] Added support for the following group types: Attack Pattern, Course of Action, Malware, Tactic, and Tool
