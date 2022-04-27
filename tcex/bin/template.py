@@ -450,6 +450,8 @@ class Template(BinABC):
 
             if fqfn.is_file():
                 file_hash = self.file_hash(fqfn)
+            else:
+                continue
 
             # has the file hash changed since init or last update
             if not ignore_hash and self.template_manifest.get(name, {}).get('md5') == file_hash:
