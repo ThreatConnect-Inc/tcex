@@ -1,7 +1,9 @@
 # Release Notes
 
 ### 3.0.3
--   APP-3489 - [CLI] fix bug that was causing click ~=8.1.0 to break on help strings.
+
+- APP-3489 - [CLI] fix bug that was causing click ~=8.1.0 to break on help strings.
+- APP-3498 - [CLI] fix bug handling non-file objects when running tcex update.
 
 ### 3.0.2
 
