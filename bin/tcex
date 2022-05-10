@@ -24,7 +24,7 @@ def deps(
         'main',
         help=(
             'The git branch of the tcex repository to use. '
-            'This override what is in the requirements.txt file.',
+            'This override what is in the requirements.txt file.'
         ),
     ),
     dev: Optional[bool] = typer.Option(False, help='Install development dependencies.'),
