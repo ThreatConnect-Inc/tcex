@@ -216,10 +216,10 @@ class TcEx:
         self,
         auth: Optional[Union['HmacAuth', 'TokenAuth', 'TcAuth']] = None,
         base_url: Optional[str] = None,
-        log_curl: Optional[bool] = False,
+        log_curl: Optional[bool] = None,
         proxies: Optional[Dict[str, str]] = None,  # pylint: disable=redefined-outer-name
-        proxies_enabled: Optional[bool] = False,
-        verify: Optional[Union[bool, str]] = True,
+        proxies_enabled: Optional[bool] = None,
+        verify: Optional[Union[bool, str]] = None,
     ) -> TcSession:
         """Return an instance of Requests Session configured for the ThreatConnect API.
 
@@ -228,6 +228,15 @@ class TcEx:
         This method allows for getting a new instance of TC Session instance. This can be
         very useful when connecting between multiple TC instances (e.g., migrating data).
         """
+        if log_curl is None:
+            log_curl = self.inputs.model_unresolved.tc_log_curl
+
+        if proxies_enabled is None:
+            proxies_enabled = self.inputs.model_unresolved.tc_proxy_tc
+
+        if verify is None:
+            verify = self.inputs.model_unresolved.tc_verify
+
         auth = auth or TcAuth(
             tc_api_access_id=self.inputs.model_unresolved.tc_api_access_id,
             tc_api_secret_key=self.inputs.model_unresolved.tc_api_secret_key,
@@ -237,11 +246,11 @@ class TcEx:
         return TcSession(
             auth=auth,
             base_url=base_url or self.inputs.model_unresolved.tc_api_path,
-            log_curl=log_curl or self.inputs.model_unresolved.tc_log_curl,
+            log_curl=log_curl,
             proxies=proxies or self.proxies,
-            proxies_enabled=proxies_enabled or self.inputs.model_unresolved.tc_proxy_tc,
+            proxies_enabled=proxies_enabled,
             user_agent=self._user_agent,
-            verify=verify or self.inputs.model_unresolved.tc_verify,
+            verify=verify,
         )
 
     def get_session_external(self) -> ExternalSession:

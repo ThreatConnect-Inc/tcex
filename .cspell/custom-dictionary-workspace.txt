@@ -63,6 +63,7 @@ pycache
 pytz
 pyyaml
 rargs
+relativedelta
 reqs
 rfile
 rpush
@@ -72,6 +73,7 @@ safeurl
 secho
 setenv
 shelf
+spectool
 splunk
 sqlite
 stdlib
