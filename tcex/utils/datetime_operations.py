@@ -61,12 +61,12 @@ class DatetimeOperations:
 
     def chunk_date_range(
         self,
-        start_date: Union[int, str, datetime, _arrow.Arrow],
-        end_date: Union[int, str, datetime, _arrow.Arrow],
+        start_date: Union[int, str, datetime, '_arrow.Arrow'],
+        end_date: Union[int, str, datetime, '_arrow.Arrow'],
         chunk_size: int,
         chunk_unit: Optional[str] = 'months',
         date_format: Optional[str] = None,
-    ) -> Tuple[Union[_arrow.Arrow, str], Union[_arrow.Arrow, str]]:
+    ) -> Tuple[Union['_arrow.Arrow', str], Union['_arrow.Arrow', str]]:
         """Chunk a date range based on unit and size
 
         Args:

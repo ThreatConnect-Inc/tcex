@@ -182,10 +182,6 @@ class SectionsModel(BaseModel):
 class AppSpecYmlModel(InstallJsonCommonModel):
     """Model for the app_spec.yml file."""
 
-    # app_name: str = Field(
-    #     None,
-    #     description='The package name for the App.',
-    # )
     category: str = Field(
         ...,
         description='The category of the App. Also playbook.type for playbook Apps.',
@@ -208,6 +204,10 @@ class AppSpecYmlModel(InstallJsonCommonModel):
             'The prefix for output variables, used for advanced request outputs. This value '
             'should match what is passed to the advanced request method in the playbook App.'
         ),
+    )
+    package_name: str = Field(
+        None,
+        description='The package name (app_name in tcex.json) for the App.',
     )
     playbook: Optional[PlaybookSpecModel] = Field(
         None,

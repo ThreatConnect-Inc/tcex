@@ -19,6 +19,7 @@ from tcex.bin.spec_tool_install_json import SpecToolInstallJson
 from tcex.bin.spec_tool_job_json import SpecToolJobJson
 from tcex.bin.spec_tool_layout_json import SpecToolLayoutJson
 from tcex.bin.spec_tool_readme_md import SpecToolReadmeMd
+from tcex.bin.spec_tool_tcex_json import SpecToolTcexJson
 
 
 class SpecTool(BinABC):
@@ -154,7 +155,7 @@ class SpecTool(BinABC):
 
             config = ij.json(
                 by_alias=True,
-                exclude_defaults=True,
+                exclude_defaults=False,
                 exclude_none=True,
                 exclude_unset=True,
                 indent=2,
@@ -219,6 +220,30 @@ class SpecTool(BinABC):
         gen = SpecToolReadmeMd(self.asy)
         readme_md = gen.generate()
         self.write_app_file(gen.filename, '\n'.join(readme_md))
+
+    def generate_tcex_json(self, schema: bool) -> None:
+        """Generate the tcex.json file."""
+        gen = SpecToolTcexJson(self.asy)
+        if schema:
+            print(gen.generate_schema())
+        else:
+            # check that app_spec.yml exists
+            self._check_has_spec()
+
+            try:
+                tj = gen.generate()
+            except ValidationError as ex:
+                self.print_failure(f'Failed Generating tcex.json:\n{ex}')
+
+            config = tj.json(
+                by_alias=True,
+                exclude_defaults=False,
+                exclude_none=True,
+                exclude_unset=True,
+                indent=2,
+                sort_keys=True,
+            )
+            self.write_app_file(gen.filename, f'{config}\n')
 
     def rename_app_file(self, src_filename: str, dest_filename: str) -> None:
         """Rename the app.yaml file to app_spec.yml."""

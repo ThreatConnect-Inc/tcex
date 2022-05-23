@@ -134,6 +134,7 @@ def spectool(
     readme_md: bool = typer.Option(False, help='Generate README.md.'),
     overwrite: bool = typer.Option(False, help='Force overwrite of config file.'),
     schema: bool = typer.Option(False, help='When set output schema instead of file.'),
+    tcex_json: bool = typer.Option(False, help='Generate tcex.json.'),
 ):
     """Generate App configuration file.
 
@@ -152,6 +153,9 @@ def spectool(
 
             if job_json is True or all_ is True:
                 gc.generate_job_json(schema)
+
+            if tcex_json is True or all_ is True:
+                gc.generate_tcex_json(schema)
 
             if app_input is True or all_ is True:
                 gc.generate_app_input()

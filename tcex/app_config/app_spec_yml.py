@@ -379,7 +379,12 @@ class AppSpecYml:
     @staticmethod
     def dict_to_yaml(data: dict) -> str:
         """Convert dict to yaml."""
-        return yaml.dump(data, Dumper=Dumper, default_flow_style=False, sort_keys=False)
+        return yaml.dump(
+            data,
+            Dumper=Dumper,
+            default_flow_style=False,
+            sort_keys=False,
+        )
 
     @property
     def has_spec(self):
@@ -422,6 +427,7 @@ class AppSpecYml:
 
         # "important" fields
         asy_data_ordered['displayName'] = asy_data.get('displayName')
+        asy_data_ordered['packageName'] = asy_data.get('packageName')
         asy_data_ordered['appId'] = asy_data.get('appId')
         asy_data_ordered['category'] = asy_data.get('category', '')
         asy_data_ordered['programVersion'] = asy_data.get('programVersion')
@@ -449,7 +455,7 @@ class AppSpecYml:
 
         # inputs / outputs
         asy_data_ordered['sections'] = asy_data.get('sections')
-        if asy_data.get('outputData'):
+        if asy_data.get('runtimeLevel').lower() not in ('apiservice', 'organization'):
             asy_data_ordered['outputData'] = asy_data.get('outputData')
         if asy_data.get('outputPrefix'):
             asy_data_ordered['outputPrefix'] = asy_data.get('outputPrefix')
@@ -470,12 +476,16 @@ class AppSpecYml:
 
     def rewrite_contents(self, contents: dict):
         """Rewrite app_spec.yml file."""
+        # fix for null appId value
+        if 'appId' in contents and contents.get('appId') is None:
+            del contents['appId']
+
         contents = json.loads(
             AppSpecYmlModel(**contents).json(
                 by_alias=True,
-                exclude_defaults=True,
+                exclude_defaults=False,
                 exclude_none=True,
-                exclude_unset=True,
+                exclude_unset=False,
                 sort_keys=True,
             )
         )
