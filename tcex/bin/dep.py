@@ -32,7 +32,7 @@ class Dep(BinABC):
         proxy_port: int,
         proxy_user: str,
         proxy_pass: str,
-    ) -> None:
+    ):
         """Initialize Class properties."""
         super().__init__()
         self.branch = branch
@@ -96,7 +96,7 @@ class Dep(BinABC):
 
         return exe_command
 
-    def _create_lib_latest(self) -> None:
+    def _create_lib_latest(self):
         """Create the lib_latest symlink for App Builder."""
         if platform.system() == 'Windows':
             shutil.copytree(f'lib_{self.latest_version}', self.static_lib_dir)
@@ -108,12 +108,12 @@ class Dep(BinABC):
             os.symlink(f'lib_{self.latest_version}', self.static_lib_dir)
 
     @staticmethod
-    def _remove_previous(fqpn: Path) -> None:
+    def _remove_previous(fqpn: Path):
         """Remove previous lib directory recursively."""
         if os.access(fqpn, os.W_OK):
             shutil.rmtree(fqpn)
 
-    def configure_proxy(self) -> None:
+    def configure_proxy(self):
         """Configure proxy settings using environment variables."""
         if os.getenv('HTTP_PROXY') or os.getenv('HTTPS_PROXY'):
             # don't change proxy settings if the OS already has them configured.
@@ -141,7 +141,7 @@ class Dep(BinABC):
             # display proxy setting
             self.print_setting('Using Proxy Server', f'{self.proxy_host}:{self.proxy_port}')
 
-    def create_temp_requirements(self) -> None:
+    def create_temp_requirements(self):
         """Create a temporary requirements.txt.
 
         This allows testing again a git branch instead of pulling from pypi.
@@ -167,7 +167,7 @@ class Dep(BinABC):
         # display branch setting
         self.print_setting('Using Branch', self.branch)
 
-    def install_deps(self) -> None:
+    def install_deps(self):
         """Install Required Libraries using pip."""
         # check for requirements.txt
         if not self.requirements_fqfn.is_file():

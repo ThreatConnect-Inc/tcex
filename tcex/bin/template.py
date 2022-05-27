@@ -27,7 +27,7 @@ if TYPE_CHECKING:  # pragma: no cover
 class Template(BinABC):
     """Install dependencies for App."""
 
-    def __init__(self) -> None:
+    def __init__(self):
         """Initialize class properties."""
         super().__init__()
 
@@ -102,14 +102,14 @@ class Template(BinABC):
             yield content
 
     @cached_property
-    def db(self) -> TinyDB:
+    def db(self) -> 'TinyDB':
         """Return db instance."""
         try:
             return TinyDB(os.path.join(self.cli_out_path, 'tcex.json'))
         except Exception:
             return None
 
-    def db_add_config(self, config: TemplateConfigModel) -> None:
+    def db_add_config(self, config: TemplateConfigModel):
         """Add a config to the DB."""
         Config = Query()
         try:
@@ -123,7 +123,7 @@ class Template(BinABC):
             self.log.error(f'Failed inserting config in db ({ex}).')
             self.errors = True
 
-    def db_add_sha(self, sha: str) -> None:
+    def db_add_sha(self, sha: str):
         """Add a config to the DB."""
         SHA = Query()
         try:
@@ -132,7 +132,7 @@ class Template(BinABC):
             self.log.error(f'Failed inserting config in db ({ex}).')
             self.errors = True
 
-    def db_get_config(self, type_: str, template: str) -> TemplateConfigModel:
+    def db_get_config(self, type_: str, template: str) -> 'TemplateConfigModel':
         """Get a config from the DB."""
         Config = Query()
         try:
@@ -148,7 +148,7 @@ class Template(BinABC):
             self.errors = True
             return None
 
-    def db_get_sha(self, sha: str) -> None:
+    def db_get_sha(self, sha: str):
         """Get repo SHA from the DB."""
         SHA = Query()
         try:
@@ -161,7 +161,7 @@ class Template(BinABC):
             self.errors = True
             return None
 
-    def download_template_file(self, item: dict) -> None:
+    def download_template_file(self, item: dict):
         """Download the provided source file to the provided destination."""
         download_url = item.get('download_url')
         name = item.get('name')
@@ -201,7 +201,7 @@ class Template(BinABC):
 
     def get_template_config(
         self, type_: str, template: str, branch: str = 'main'
-    ) -> TemplateConfigModel:
+    ) -> 'TemplateConfigModel':
         """Return the data from the template.yaml file."""
         self.log.info(
             f'action=get-template-config, type={type_}, '
@@ -263,7 +263,7 @@ class Template(BinABC):
 
         return downloads.values()
 
-    def list(self, branch: str, type_: Optional[str] = None) -> None:
+    def list(self, branch: str, type_: Optional[str] = None):
         """List template types."""
         template_types = self.template_types
         if type_ is not None:
@@ -281,7 +281,7 @@ class Template(BinABC):
                         self.template_data.setdefault(selected_type, [])
                         self.template_data[selected_type].append(template_config)
 
-    def print_error_message(self) -> None:
+    def print_error_message(self):
         """Print error message, if applicable."""
         if self.errors is True:
             print(
@@ -289,7 +289,7 @@ class Template(BinABC):
                 f'''see logs at {os.path.join(self.cli_out_path, 'tcex.log')}.'''
             )
 
-    def print_list(self, branch: Optional[str] = None) -> None:
+    def print_list(self, branch: Optional[str] = None):
         """Print the list output."""
         for type_, templates in self.template_data.items():
             self.print_title(f'''{type_.replace('_', ' ').title()} Templates''')
@@ -333,7 +333,7 @@ class Template(BinABC):
         return commits_data[0].get('sha')
 
     @cached_property
-    def session(self) -> Session:
+    def session(self) -> 'Session':
         """Return session object"""
         session = Session()
         session.headers.update({'Cache-Control': 'no-cache'})
@@ -345,14 +345,14 @@ class Template(BinABC):
         return session
 
     @cached_property
-    def template_manifest(self) -> None:
+    def template_manifest(self):
         """Write the template manifest file."""
         if self.template_manifest_fqfn.is_file():
             with self.template_manifest_fqfn.open() as fh:
                 return json.load(fh)
         return {}
 
-    def template_manifest_write(self) -> None:
+    def template_manifest_write(self):
         """Write the template manifest file."""
         with self.template_manifest_fqfn.open(mode='w') as fh:
             fh.write(json.dumps(self.template_manifest, indent=2, sort_keys=True))
@@ -481,7 +481,7 @@ class Template(BinABC):
 
         return downloads
 
-    def update_tcex_json(self) -> None:
+    def update_tcex_json(self):
         """Update the tcex.json file."""
         self.tj.model.template_repo_hash = self.project_sha
         self.tj.write()

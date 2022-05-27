@@ -6,6 +6,12 @@ from typing import Any, Dict, List
 # third-party
 from pydantic import BaseModel, root_validator, validator
 
+# first-party
+from tcex.app_config import InstallJson
+
+# get instance of InstallJson
+ij = InstallJson()
+
 
 class CreateConfigModel(BaseModel):
     """Create Config Model"""
@@ -14,18 +20,31 @@ class CreateConfigModel(BaseModel):
     trigger_id: int
 
     @validator('tc_playbook_out_variables', pre=True)
-    def listify_tc_playbook_out_variables(cls, v):
+    def _tc_playbook_out_variables(cls, v):
         """Convert tc_playbook_out_variables into a list of strings.
 
-        This value comes-in as a comma-seperated list.
+        This value comes-in as a comma-separated list.
         """
         return v.split(',') if v else []
 
     # TODO: [low] workaround for PLAT-4393
     @root_validator(pre=True)
-    def empty_str_to_none(cls, values: Dict[str, Any]):
+    def _update_inputs(cls, values: Dict[str, Any]):
         """Convert empty strings to None.
 
-        Core sends '' for field that are not populated instead of sending a null value.
+        Workarounds for core issues:
+            - Core sends '' for field that are not populated instead of sending a null value.
+            - Core sends a string for multi-value inputs instead of an array.
         """
-        return {k: v if v != '' else None for k, v in values.items()}
+        for field, value in values.items():
+            param = ij.model.get_param(field)
+            if param.type is not None and (
+                param.type.lower() == 'multichoice' or param.allow_multiple
+            ):
+                if value is not None and not isinstance(value, list):
+                    values[field] = value.split(ij.model.list_delimiter or '|')
+
+            if value == '':
+                values[field] = None
+
+        return values

@@ -34,7 +34,7 @@ class ObjectABC(ABC):
     methods are used.
     """
 
-    def __init__(self, session) -> None:
+    def __init__(self, session):
         """Initialize class properties."""
         self._session = session
 
@@ -102,7 +102,7 @@ class ObjectABC(ABC):
         body: Optional[Union[bytes, str]] = None,
         params: Optional[dict] = None,
         headers: Optional[dict] = None,
-    ) -> Response:
+    ) -> 'Response':
         """Handle standard request with error checking."""
         try:
             self.request = self._session.request(
@@ -138,7 +138,7 @@ class ObjectABC(ABC):
             self.log_response_text(self.request)
 
     @staticmethod
-    def _validate_id(id_: int, url: str) -> None:
+    def _validate_id(id_: int, url: str):
         """Raise exception is id is not provided."""
         if not id_:  # pragma: no cover
             message = '{"message": "No ID provided.", "status": "Error"}'
@@ -154,7 +154,7 @@ class ObjectABC(ABC):
         """Return the available query param field names for this object."""
         return [fd.get('name') for fd in self.fields]
 
-    def create(self, params: Optional[dict] = None) -> Response:
+    def create(self, params: Optional[dict] = None) -> 'Response':
         """Create or Update the Case Management object.
 
         This is determined based on if the id is already present in the object.
@@ -177,7 +177,7 @@ class ObjectABC(ABC):
 
         return self.request
 
-    def delete(self, params: Optional[dict] = None) -> None:
+    def delete(self, params: Optional[dict] = None):
         """Delete the object."""
         method = 'DELETE'
         body = self.model.gen_body_json(method)
@@ -258,7 +258,7 @@ class ObjectABC(ABC):
 
         return self.request
 
-    def log_response_text(self, response: Response) -> None:
+    def log_response_text(self, response: Response):
         """Log the response text."""
         response_text = 'response text: (text to large to log)'
         if len(response.content) < 5000:  # check size of content for performance
@@ -271,7 +271,7 @@ class ObjectABC(ABC):
         return self._model
 
     @model.setter
-    def model(self, data: Union['V3Type', dict]) -> None:
+    def model(self, data: Union['V3Type', dict]):
         """Create model using the provided data."""
         if isinstance(data, type(self.model)):
             # provided data is already a model, nothing required to change
@@ -330,7 +330,7 @@ class ObjectABC(ABC):
             status = False
         return status
 
-    def update(self, mode: Optional[str] = None, params: Optional[dict] = None) -> Response:
+    def update(self, mode: Optional[str] = None, params: Optional[dict] = None) -> 'Response':
         """Create or Update the Case Management object.
 
         This is determined based on if the id is already present in the object.

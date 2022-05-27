@@ -17,10 +17,10 @@ from pydantic import ValidationError
 from stdlib_list import stdlib_list
 
 # first-party
-from tcex.app_config import Permutation
 from tcex.app_config.install_json import InstallJson
 from tcex.app_config.job_json import JobJson
 from tcex.app_config.layout_json import LayoutJson
+from tcex.app_config.permutation import Permutation
 from tcex.app_config.tcex_json import TcexJson
 from tcex.bin.bin_abc import BinABC
 
@@ -41,7 +41,7 @@ class Validate(BinABC):
     * layout.json schema
     """
 
-    def __init__(self, ignore_validation: bool) -> None:
+    def __init__(self, ignore_validation: bool):
         """Initialize Class properties."""
         super().__init__()
         self.permutations = Permutation()
@@ -72,7 +72,7 @@ class Validate(BinABC):
             'feeds': [],
         }
 
-    def _check_node_import(self, node: Union[ast.Import, ast.ImportFrom], filename: str) -> None:
+    def _check_node_import(self, node: Union[ast.Import, ast.ImportFrom], filename: str):
         """."""
         if isinstance(node, ast.Import):
             for n in node.names:
@@ -100,7 +100,7 @@ class Validate(BinABC):
                     {'filename': filename, 'module': m, 'status': m_status}
                 )
 
-    def check_imports(self) -> None:
+    def check_imports(self):
         """Check the projects top level directory for missing imports.
 
         This method will check only files ending in **.py** and does not handle imports validation
@@ -177,7 +177,7 @@ class Validate(BinABC):
                 pass
         return found
 
-    def check_install_json(self) -> None:
+    def check_install_json(self):
         """Check all install.json files for valid schema."""
         if 'install.json' in self.invalid_json_files:
             return
@@ -200,7 +200,7 @@ class Validate(BinABC):
 
         self.validation_data['schema'].append({'filename': self.ij.fqfn.name, 'status': status})
 
-    def check_job_json(self) -> None:
+    def check_job_json(self):
         """Validate feed files for feed job apps."""
         if 'install.json' in self.invalid_json_files:
             # can't proceed if install.json can't be read
@@ -259,7 +259,7 @@ class Validate(BinABC):
 
             self.validation_data['schema'].append({'filename': feed.job_file, 'status': status})
 
-    def check_layout_json(self) -> None:
+    def check_layout_json(self):
         """Check all layout.json files for valid schema."""
         if not self.lj.has_layout or 'layout.json' in self.invalid_json_files:
             return
@@ -285,7 +285,7 @@ class Validate(BinABC):
         if status is True:
             self.check_layout_params()
 
-    def check_layout_params(self) -> None:
+    def check_layout_params(self):
         """Check that the layout.json is consistent with install.json.
 
         The layout.json files references the params.name from the install.json file.  The method
@@ -393,7 +393,7 @@ class Validate(BinABC):
         # update validation data for module
         self.validation_data['layouts'].append({'params': 'outputs', 'status': status})
 
-    def check_syntax(self, app_path=None) -> None:
+    def check_syntax(self, app_path=None):
         """Run syntax on each ".py" and ".json" file.
 
         Args:
@@ -439,7 +439,7 @@ class Validate(BinABC):
             # store status for this file
             self.validation_data['fileSyntax'].append({'filename': fqfn.name, 'status': status})
 
-    def interactive(self) -> None:
+    def interactive(self):
         """[App Builder] Run in interactive mode."""
         while True:
             line = sys.stdin.readline().strip()
@@ -456,12 +456,12 @@ class Validate(BinABC):
             # reset validation_data
             self.validation_data = self._validation_data
 
-    def print_json(self) -> None:
+    def print_json(self):
         """[App Builder] Print JSON output."""
         print(json.dumps({'validation_data': self.validation_data}))
 
     # TODO: [low] switch to typer echo?
-    def _print_file_syntax_results(self) -> None:
+    def _print_file_syntax_results(self):
         """Print file syntax results."""
         if self.validation_data.get('fileSyntax'):
             print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Validated File Syntax:')
@@ -471,7 +471,7 @@ class Validate(BinABC):
                 status_value = self.status_value(f.get('status'))
                 print(f"{f.get('filename')!s:<60}{status_color}{status_value!s:<25}")
 
-    def _print_imports_results(self) -> None:
+    def _print_imports_results(self):
         """Print import results."""
         if self.validation_data.get('moduleImports'):
             print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Validated Imports:')
@@ -484,7 +484,7 @@ class Validate(BinABC):
                     f'''{f.get('module')!s:<30}{status_color}{status_value!s:<25}'''
                 )
 
-    def _print_schema_results(self) -> None:
+    def _print_schema_results(self):
         """Print schema results."""
         if self.validation_data.get('schema'):
             print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Validated Schema:')
@@ -494,7 +494,7 @@ class Validate(BinABC):
                 status_value = self.status_value(f.get('status'))
                 print(f'''{f.get('filename')!s:<60}{status_color}{status_value!s:<25}''')
 
-    def _print_layouts_results(self) -> None:
+    def _print_layouts_results(self):
         """Print layout results."""
         if self.validation_data.get('layouts'):
             print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Validated Layouts:')
@@ -504,7 +504,7 @@ class Validate(BinABC):
                 status_value = self.status_value(f.get('status'))
                 print(f"{f.get('params')!s:<60}{status_color}{status_value!s:<25}")
 
-    def _print_feed_results(self) -> None:
+    def _print_feed_results(self):
         """Print feed results."""
         if self.validation_data.get('feeds'):
             print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Validated Feed Jobs:')
@@ -514,7 +514,7 @@ class Validate(BinABC):
                 status_value = self.status_value(f.get('status'))
                 print(f"{f.get('name')!s:<60}{status_color}{status_value!s:<25}")
 
-    def _print_errors(self) -> None:
+    def _print_errors(self):
         """Print errors results."""
         if self.validation_data.get('errors'):
             print('\n')  # separate errors from normal output
@@ -526,7 +526,7 @@ class Validate(BinABC):
             if not self.ignore_validation:
                 self.exit_code = 1
 
-    def print_results(self) -> None:
+    def print_results(self):
         """Print results."""
         # Validating Syntax
         self._print_file_syntax_results()

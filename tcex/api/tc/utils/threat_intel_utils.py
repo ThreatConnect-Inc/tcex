@@ -23,7 +23,7 @@ class ThreatIntelUtils:
     INDICATOR = 'Indicator'
     GROUP = 'Group'
 
-    def __init__(self, session_tc: Session) -> None:
+    def __init__(self, session_tc: Session):
         """Initialize class properties."""
         self.session_tc = session_tc
 
@@ -57,7 +57,7 @@ class ThreatIntelUtils:
             },
         }
 
-    def _association_types(self) -> None:
+    def _association_types(self):
         """Retrieve Custom Indicator Associations types from the ThreatConnect API."""
 
     @staticmethod

@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 class RequestsToCurl:
     """TcEx Utilities Request to Curl Class"""
 
-    def __init__(self) -> None:
+    def __init__(self):
         """Initialize the Class properties."""
         self.utils = Utils()
 

@@ -32,7 +32,7 @@ class Playbook:
         key_value_store: Union[KeyValueApi, KeyValueRedis],
         context: Optional[str] = None,
         output_variables: Optional[list] = None,
-    ) -> None:
+    ):
         """Initialize the class properties."""
         self.context = context
         self.key_value_store = key_value_store

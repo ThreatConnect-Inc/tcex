@@ -12,7 +12,7 @@ from tcex.api.tc.v3._gen._gen_abc import GenerateABC
 class GenerateArgsABC(GenerateABC, ABC):
     """Generate docstring for Model."""
 
-    def __init__(self, type_: Any) -> None:
+    def __init__(self, type_: Any):
         """Initialize class properties."""
         super().__init__(type_)
         self.type_ = self.utils.snake_string(self._type_map(type_))

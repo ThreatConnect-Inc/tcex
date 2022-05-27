@@ -28,7 +28,7 @@ class V3Helper:
         v3_object: The name of the object (e.g., artifact) being tested.
     """
 
-    def __init__(self, v3_object: str) -> None:
+    def __init__(self, v3_object: str):
         """Initialize Class Properties"""
         self.app = MockApp(runtime_level='Playbook')
         self.tcex = self.app.tcex
@@ -256,7 +256,7 @@ class V3Helper:
         return _modules.get(module)
 
     @staticmethod
-    def assert_generator(model: 'BaseModel', object_name: str) -> None:
+    def assert_generator(model: 'BaseModel', object_name: str):
         """Print assert statements for the provided model.
 
         self.v3_helper.assert_generator(owner.model, 'owners')
@@ -270,7 +270,7 @@ class V3Helper:
                 value = f'\'{value}\''
             print(f'''{' ' * 8}assert {object_name}.model.{key} == {value}''')
 
-    def tql_generator(self, model: 'BaseModel', object_name: str) -> None:
+    def tql_generator(self, model: 'BaseModel', object_name: str):
         """Print TQL filter.
 
         group.get(params={'fields': ['_all_']})

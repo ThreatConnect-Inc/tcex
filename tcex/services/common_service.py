@@ -76,9 +76,7 @@ class CommonService:
             thread_key='session_id',
         )
 
-    def process_acknowledged_command(
-        self, message: dict
-    ) -> None:  # pylint: disable=unused-argument
+    def process_acknowledged_command(self, message: dict):  # pylint: disable=unused-argument
         """Process the Acknowledge command.
 
         Args:
@@ -86,7 +84,7 @@ class CommonService:
         """
         self.log.info(f'feature=service, event=acknowledge, message={message}')
 
-    def add_metric(self, label: str, value: Union[int, str]) -> None:
+    def add_metric(self, label: str, value: Union[int, str]):
         """Add a metric.
 
         Metrics are reported in heartbeat message.
@@ -117,11 +115,11 @@ class CommonService:
         """
         return str(uuid.uuid4())
 
-    def heartbeat(self) -> None:
+    def heartbeat(self):
         """Start heartbeat process."""
         self.service_thread(name='heartbeat', target=self.heartbeat_monitor)
 
-    def heartbeat_broker_check(self) -> None:
+    def heartbeat_broker_check(self):
         """Send self check message to ensure communications with message broker."""
         message = {
             'command': 'BrokerCheck',
@@ -135,7 +133,7 @@ class CommonService:
         # allow time for message to be received
         time.sleep(5)
 
-    def heartbeat_monitor(self) -> None:
+    def heartbeat_monitor(self):
         """Publish heartbeat on timer."""
         self.log.info('feature=service, event=heartbeat-monitor-started')
         while True:
@@ -154,7 +152,7 @@ class CommonService:
             time.sleep(self.heartbeat_sleep_time)
             self.heartbeat_watchdog += 1
 
-    def increment_metric(self, label: str, value: Optional[int] = 1) -> None:
+    def increment_metric(self, label: str, value: Optional[int] = 1):
         """Increment a metric if already exists.
 
         Args:
@@ -164,7 +162,7 @@ class CommonService:
         if self._metrics.get(label) is not None:
             self._metrics[label] += value
 
-    def listen(self) -> None:
+    def listen(self):
         """List for message coming from broker."""
         self.message_broker.add_on_connect_callback(self.on_connect_handler)
         self.message_broker.add_on_message_callback(
@@ -208,9 +206,7 @@ class CommonService:
         else:
             self.log.error('feature=service, event=invalid-metrics')
 
-    def on_connect_handler(
-        self, client, userdata, flags, rc  # pylint: disable=unused-argument
-    ) -> None:
+    def on_connect_handler(self, client, userdata, flags, rc):  # pylint: disable=unused-argument
         """On connect method for mqtt broker."""
         self.log.info(
             f'feature=service, event=topic-subscription, topic={self.args.tc_svc_server_topic}'
@@ -218,9 +214,7 @@ class CommonService:
         self.message_broker.client.subscribe(self.args.tc_svc_server_topic)
         self.message_broker.client.disable_logger()
 
-    def on_message_handler(
-        self, client, userdata, message  # pylint: disable=unused-argument
-    ) -> None:
+    def on_message_handler(self, client, userdata, message):  # pylint: disable=unused-argument
         """On message for mqtt."""
         try:
             # messages on server topic must be json objects
@@ -254,7 +248,7 @@ class CommonService:
             trigger_id=trigger_id,
         )
 
-    def process_broker_check(self, message: dict) -> None:
+    def process_broker_check(self, message: dict):
         """Implement parent method to log a broker check message.
 
         .. code-block:: python
@@ -270,7 +264,7 @@ class CommonService:
         """
         self.log.warning(f'feature=service, event=broker-check, message={message}')
 
-    def process_heartbeat_command(self, message: dict) -> None:  # pylint: disable=unused-argument
+    def process_heartbeat_command(self, message: dict):  # pylint: disable=unused-argument
         """Process the HeartBeat command.
 
         .. code-block:: python
@@ -296,7 +290,7 @@ class CommonService:
         )
         self.log.info(f'feature=service, event=heartbeat-sent, metrics={self.metrics}')
 
-    def process_logging_change_command(self, message: dict) -> None:
+    def process_logging_change_command(self, message: dict):
         """Process the LoggingChange command.
 
         .. code-block:: python
@@ -315,7 +309,7 @@ class CommonService:
         self.log.info(f'feature=service, event=logging-change, level={level}')
         self.logger.update_handler_level(level)
 
-    def process_invalid_command(self, message: dict) -> None:
+    def process_invalid_command(self, message: dict):
         """Process all invalid commands.
 
         Args:
@@ -325,7 +319,7 @@ class CommonService:
             f'feature=service, event=invalid-command-received, message="""({message})""".'
         )
 
-    def process_shutdown_command(self, message: dict) -> None:
+    def process_shutdown_command(self, message: dict):
         """Implement parent method to process the shutdown command.
 
         .. code-block:: python
@@ -406,7 +400,7 @@ class CommonService:
         kwargs: Optional[dict] = None,
         session_id: Optional[str] = None,
         trigger_id: Optional[int] = None,
-    ) -> None:
+    ):
         """Start a message thread.
 
         Args:
@@ -451,7 +445,7 @@ class CommonService:
                 trigger_id = int(trigger_id)
         return trigger_id
 
-    def update_metric(self, label: str, value: Union[int, str]) -> None:
+    def update_metric(self, label: str, value: Union[int, str]):
         """Update a metric if already exists.
 
         Args:

@@ -18,7 +18,7 @@ class TagFilter(FilterABC):
         """Return the API endpoint."""
         return ApiEndpoints.TAGS.value
 
-    def associated_case(self, operator: Enum, associated_case: int) -> None:
+    def associated_case(self, operator: Enum, associated_case: int):
         """Filter associatedCase based on **associatedCase** keyword.
 
         Args:
@@ -27,7 +27,7 @@ class TagFilter(FilterABC):
         """
         self._tql.add_filter('associatedCase', operator, associated_case, TqlType.INTEGER)
 
-    def associated_group(self, operator: Enum, associated_group: int) -> None:
+    def associated_group(self, operator: Enum, associated_group: int):
         """Filter associatedGroup based on **associatedGroup** keyword.
 
         Args:
@@ -36,7 +36,7 @@ class TagFilter(FilterABC):
         """
         self._tql.add_filter('associatedGroup', operator, associated_group, TqlType.INTEGER)
 
-    def associated_indicator(self, operator: Enum, associated_indicator: int) -> None:
+    def associated_indicator(self, operator: Enum, associated_indicator: int):
         """Filter associatedIndicator based on **associatedIndicator** keyword.
 
         Args:
@@ -45,7 +45,7 @@ class TagFilter(FilterABC):
         """
         self._tql.add_filter('associatedIndicator', operator, associated_indicator, TqlType.INTEGER)
 
-    def associated_victim(self, operator: Enum, associated_victim: int) -> None:
+    def associated_victim(self, operator: Enum, associated_victim: int):
         """Filter associatedVictim based on **associatedVictim** keyword.
 
         Args:
@@ -54,7 +54,7 @@ class TagFilter(FilterABC):
         """
         self._tql.add_filter('associatedVictim', operator, associated_victim, TqlType.INTEGER)
 
-    def case_id(self, operator: Enum, case_id: int) -> None:
+    def case_id(self, operator: Enum, case_id: int):
         """Filter Case ID based on **caseId** keyword.
 
         Args:
@@ -63,7 +63,7 @@ class TagFilter(FilterABC):
         """
         self._tql.add_filter('caseId', operator, case_id, TqlType.INTEGER)
 
-    def description(self, operator: Enum, description: str) -> None:
+    def description(self, operator: Enum, description: str):
         """Filter Description based on **description** keyword.
 
         Args:
@@ -112,7 +112,7 @@ class TagFilter(FilterABC):
         self._tql.add_filter('hasVictim', TqlOperator.EQ, victims, TqlType.SUB_QUERY)
         return victims
 
-    def id(self, operator: Enum, id: int) -> None:  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int):  # pylint: disable=redefined-builtin
         """Filter ID based on **id** keyword.
 
         Args:
@@ -121,7 +121,7 @@ class TagFilter(FilterABC):
         """
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
-    def last_used(self, operator: Enum, last_used: str) -> None:
+    def last_used(self, operator: Enum, last_used: str):
         """Filter LastUsed based on **lastUsed** keyword.
 
         Args:
@@ -131,7 +131,7 @@ class TagFilter(FilterABC):
         last_used = self.utils.any_to_datetime(last_used).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('lastUsed', operator, last_used, TqlType.STRING)
 
-    def name(self, operator: Enum, name: str) -> None:
+    def name(self, operator: Enum, name: str):
         """Filter Name based on **name** keyword.
 
         Args:
@@ -140,7 +140,7 @@ class TagFilter(FilterABC):
         """
         self._tql.add_filter('name', operator, name, TqlType.STRING)
 
-    def owner(self, operator: Enum, owner: int) -> None:
+    def owner(self, operator: Enum, owner: int):
         """Filter Owner ID based on **owner** keyword.
 
         Args:
@@ -149,7 +149,7 @@ class TagFilter(FilterABC):
         """
         self._tql.add_filter('owner', operator, owner, TqlType.INTEGER)
 
-    def owner_name(self, operator: Enum, owner_name: str) -> None:
+    def owner_name(self, operator: Enum, owner_name: str):
         """Filter Owner Name based on **ownerName** keyword.
 
         Args:
@@ -158,7 +158,7 @@ class TagFilter(FilterABC):
         """
         self._tql.add_filter('ownerName', operator, owner_name, TqlType.STRING)
 
-    def summary(self, operator: Enum, summary: str) -> None:
+    def summary(self, operator: Enum, summary: str):
         """Filter Summary based on **summary** keyword.
 
         Args:

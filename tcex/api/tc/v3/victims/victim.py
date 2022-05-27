@@ -38,7 +38,7 @@ class Victims(ObjectCollectionABC):
         params (dict): Additional query params (see example above).
     """
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs):
         """Initialize class properties."""
         super().__init__(
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
@@ -80,7 +80,7 @@ class Victim(ObjectABC):
         work_location (str, kwargs): Work location of the Victim.
     """
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs):
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
 
@@ -101,7 +101,7 @@ class Victim(ObjectABC):
         return self._model
 
     @model.setter
-    def model(self, data: Union['VictimModel', dict]) -> None:
+    def model(self, data: Union['VictimModel', dict]):
         """Create model using the provided data."""
         if isinstance(data, type(self.model)):
             # provided data is already a model, nothing required to change
@@ -159,7 +159,7 @@ class Victim(ObjectABC):
 
         yield from self._iterate_over_sublist(Tags)
 
-    def stage_victim_asset(self, data: Union[dict, 'ObjectABC', 'VictimAssetModel']) -> None:
+    def stage_victim_asset(self, data: Union[dict, 'ObjectABC', 'VictimAssetModel']):
         """Stage victim_asset on the object."""
         if isinstance(data, ObjectABC):
             data = data.model
@@ -171,7 +171,7 @@ class Victim(ObjectABC):
         data._staged = True
         self.model.assets.data.append(data)
 
-    def stage_attribute(self, data: Union[dict, 'ObjectABC', 'VictimAttributeModel']) -> None:
+    def stage_attribute(self, data: Union[dict, 'ObjectABC', 'VictimAttributeModel']):
         """Stage attribute on the object."""
         if isinstance(data, ObjectABC):
             data = data.model
@@ -183,7 +183,7 @@ class Victim(ObjectABC):
         data._staged = True
         self.model.attributes.data.append(data)
 
-    def stage_security_label(self, data: Union[dict, 'ObjectABC', 'SecurityLabelModel']) -> None:
+    def stage_security_label(self, data: Union[dict, 'ObjectABC', 'SecurityLabelModel']):
         """Stage security_label on the object."""
         if isinstance(data, ObjectABC):
             data = data.model
@@ -195,7 +195,7 @@ class Victim(ObjectABC):
         data._staged = True
         self.model.security_labels.data.append(data)
 
-    def stage_tag(self, data: Union[dict, 'ObjectABC', 'TagModel']) -> None:
+    def stage_tag(self, data: Union[dict, 'ObjectABC', 'TagModel']):
         """Stage tag on the object."""
         if isinstance(data, ObjectABC):
             data = data.model

@@ -102,7 +102,7 @@ class ApiService(CommonService):
             self.log.trace(traceback.format_exc())
         return headers_
 
-    def process_run_service_response(self, *args, **kwargs) -> None:
+    def process_run_service_response(self, *args, **kwargs):
         """Handle service event responses.
 
         ('200 OK', [('content-type', 'application/json'), ('content-length', '103')])
@@ -131,7 +131,7 @@ class ApiService(CommonService):
             self.log.trace(traceback.format_exc())
             self.increment_metric('Errors')
 
-    def process_run_service_command(self, message: dict) -> None:
+    def process_run_service_command(self, message: dict):
         """Process the RunService command.
 
         .. code-block:: python

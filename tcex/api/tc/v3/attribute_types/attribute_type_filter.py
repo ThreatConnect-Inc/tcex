@@ -16,7 +16,7 @@ class AttributeTypeFilter(FilterABC):
         """Return the API endpoint."""
         return ApiEndpoints.ATTRIBUTE_TYPES.value
 
-    def associated_type(self, operator: Enum, associated_type: str) -> None:
+    def associated_type(self, operator: Enum, associated_type: str):
         """Filter Associated Type based on **associatedType** keyword.
 
         Args:
@@ -25,7 +25,7 @@ class AttributeTypeFilter(FilterABC):
         """
         self._tql.add_filter('associatedType', operator, associated_type, TqlType.STRING)
 
-    def description(self, operator: Enum, description: str) -> None:
+    def description(self, operator: Enum, description: str):
         """Filter Description based on **description** keyword.
 
         Args:
@@ -34,7 +34,7 @@ class AttributeTypeFilter(FilterABC):
         """
         self._tql.add_filter('description', operator, description, TqlType.STRING)
 
-    def id(self, operator: Enum, id: int) -> None:  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int):  # pylint: disable=redefined-builtin
         """Filter ID based on **id** keyword.
 
         Args:
@@ -43,7 +43,7 @@ class AttributeTypeFilter(FilterABC):
         """
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
-    def maxsize(self, operator: Enum, maxsize: int) -> None:
+    def maxsize(self, operator: Enum, maxsize: int):
         """Filter Maxsize based on **maxsize** keyword.
 
         Args:
@@ -52,7 +52,7 @@ class AttributeTypeFilter(FilterABC):
         """
         self._tql.add_filter('maxsize', operator, maxsize, TqlType.INTEGER)
 
-    def name(self, operator: Enum, name: str) -> None:
+    def name(self, operator: Enum, name: str):
         """Filter Name based on **name** keyword.
 
         Args:
@@ -61,7 +61,7 @@ class AttributeTypeFilter(FilterABC):
         """
         self._tql.add_filter('name', operator, name, TqlType.STRING)
 
-    def owner(self, operator: Enum, owner: int) -> None:
+    def owner(self, operator: Enum, owner: int):
         """Filter Owner ID based on **owner** keyword.
 
         Args:
@@ -70,7 +70,7 @@ class AttributeTypeFilter(FilterABC):
         """
         self._tql.add_filter('owner', operator, owner, TqlType.INTEGER)
 
-    def owner_name(self, operator: Enum, owner_name: str) -> None:
+    def owner_name(self, operator: Enum, owner_name: str):
         """Filter Owner Name based on **ownerName** keyword.
 
         Args:
@@ -79,7 +79,7 @@ class AttributeTypeFilter(FilterABC):
         """
         self._tql.add_filter('ownerName', operator, owner_name, TqlType.STRING)
 
-    def system(self, operator: Enum, system: bool) -> None:
+    def system(self, operator: Enum, system: bool):
         """Filter SystemLevel based on **system** keyword.
 
         Args:

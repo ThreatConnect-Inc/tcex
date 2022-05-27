@@ -10,11 +10,11 @@ if TYPE_CHECKING:  # pragma: no cover
 class TcexJsonUpdate:
     """Update install.json file with current standards and schema."""
 
-    def __init__(self, tj: 'TcexJson') -> None:  # pylint: disable=E0601
+    def __init__(self, tj: 'TcexJson'):  # pylint: disable=E0601
         """Initialize class properties."""
         self.tj = tj
 
-    def multiple(self, template: Optional[str] = None) -> None:
+    def multiple(self, template: Optional[str] = None):
         """Update the contents of the tcex.json file."""
 
         # update app_name
@@ -36,7 +36,7 @@ class TcexJsonUpdate:
         # write updated profile
         self.tj.write()
 
-    def update_package_app_name(self) -> None:
+    def update_package_app_name(self):
         """Update the package app_name in the tcex.json file."""
         if (
             self.tj.model.package.app_name is None
@@ -59,13 +59,13 @@ class TcexJsonUpdate:
             # update App name
             self.tj.model.package.app_name = _app_name
 
-    # def update_deprecated_fields(self) -> None:
+    # def update_deprecated_fields(self):
     #     """Update deprecated fields in the tcex.json file."""
     #     deprecated_fields = ['profile_include_dirs']
     #     for d in deprecated_fields:
     #         setattr(self.tj.model, d, None)
 
-    def update_package_excludes(self) -> None:
+    def update_package_excludes(self):
         """Update the excludes values in the tcex.json file."""
         for i in [
             '.gitignore',
@@ -79,7 +79,7 @@ class TcexJsonUpdate:
                 # TODO: [low] pydantic doesn't seem to allow removing items from list???
                 self.tj.model.package.excludes.append(i)
 
-    def update_lib_versions(self) -> None:
+    def update_lib_versions(self):
         """Update the lib_versions array in the tcex.json file."""
         if os.getenv('TCEX_LIB_VERSIONS') and not self.tj.model.lib_versions:
             _lib_versions = []

@@ -24,9 +24,7 @@ class Package(BinABC):
     install.json file or files will be automatically run before packaging the app.
     """
 
-    def __init__(
-        self, excludes: Optional[List[str]], ignore_validation: bool, output_dir: Path
-    ) -> None:
+    def __init__(self, excludes: Optional[List[str]], ignore_validation: bool, output_dir: Path):
         """Initialize Class properties."""
         super().__init__()
         self._excludes = excludes or []
@@ -99,14 +97,14 @@ class Package(BinABC):
         return excluded_files
 
     @cached_property
-    def build_fqpn(self) -> Path:
+    def build_fqpn(self) -> 'Path':
         """Return the fully qualified path name of the build directory."""
         build_fqpn = Path(os.path.join(self.app_path, self.output_dir.name, 'build'))
         build_fqpn.mkdir(exist_ok=True, parents=True)
         return build_fqpn
 
     @cached_property
-    def template_fqpn(self) -> Path:
+    def template_fqpn(self) -> 'Path':
         """Return the fully qualified path name of the template directory."""
         template_fqpn = Path(os.path.join(self.build_fqpn, 'template'))
         if os.access(template_fqpn, os.W_OK):
@@ -119,7 +117,7 @@ class Package(BinABC):
         )
         return template_fqpn
 
-    def package(self) -> None:
+    def package(self):
         """Build the App package for deployment to ThreatConnect Exchange."""
         # copy project directory to temp location to use as template for multiple builds
         shutil.copytree(self.app_path, self.template_fqpn, False, ignore=self.exclude_files)
@@ -158,13 +156,13 @@ class Package(BinABC):
         # cleanup build directory
         shutil.rmtree(app_path_fqpn)
 
-    def print_json(self) -> None:
+    def print_json(self):
         """[App Builder] Print JSON output containing results of the package command."""
         print(
             json.dumps({'package_data': self.package_data, 'validation_data': self.validation_data})
         )
 
-    def print_results(self) -> None:
+    def print_results(self):
         """Print results of the package command."""
         # Updates
         if self.package_data.get('updates'):
@@ -204,7 +202,7 @@ class Package(BinABC):
                 print(f'{c.Fore.RED}{error}')
                 self.exit_code = 1
 
-    def zip_file(self, app_path: Path, app_name: Path, tmp_path: Path) -> None:
+    def zip_file(self, app_path: Path, app_name: Path, tmp_path: Path):
         """Zip the App with tcex extension.
 
         Args:

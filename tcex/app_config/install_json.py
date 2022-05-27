@@ -33,7 +33,7 @@ class InstallJson:
         filename: Optional[str] = None,
         path: Optional[str] = None,
         logger: Optional[logging.Logger] = None,
-    ) -> None:
+    ):
         """Initialize class properties."""
         filename = filename or 'install.json'
         path = path or os.getcwd()
@@ -154,7 +154,7 @@ class InstallJson:
 
     # @cached_property
     @property
-    def model(self) -> InstallJsonModel:
+    def model(self) -> 'InstallJsonModel':
         """Return the Install JSON model."""
         return InstallJsonModel(**self.contents)
 
@@ -237,16 +237,16 @@ class InstallJson:
         return ','.join(self.tc_playbook_out_variables)
 
     @property
-    def update(self) -> InstallJsonUpdate:
+    def update(self) -> 'InstallJsonUpdate':
         """Return InstallJsonUpdate instance."""
         return InstallJsonUpdate(ij=self)
 
     @property
-    def validate(self) -> InstallJsonValidate:
+    def validate(self) -> 'InstallJsonValidate':
         """Validate install.json."""
         return InstallJsonValidate(ij=self)
 
-    def write(self) -> None:
+    def write(self):
         """Write current data file."""
         data = self.model.json(
             by_alias=True, exclude_defaults=True, exclude_none=True, indent=2, sort_keys=True

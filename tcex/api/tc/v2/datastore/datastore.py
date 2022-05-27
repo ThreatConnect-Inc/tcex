@@ -41,7 +41,7 @@ class DataStore:
 
     def __init__(
         self, session_tc: 'Session', domain: str, data_type: str, mapping: Optional[dict] = None
-    ) -> None:
+    ):
         """Initialize class properties."""
         self.domain = domain
         self.data_type = data_type
@@ -55,7 +55,7 @@ class DataStore:
         self._create_index()  # create the initial index.
         self._update_mappings()  # update mappings
 
-    def _create_index(self) -> None:
+    def _create_index(self):
         """Create index if it doesn't exist."""
         if not self.index_exists:
             rid = 'temp-index-create'
@@ -71,7 +71,7 @@ class DataStore:
             # delete temporary record
             self.delete(rid, False)
 
-    def _update_mappings(self) -> None:
+    def _update_mappings(self):
         """Update the mappings for the current index."""
         headers = {'Content-Type': 'application/json', 'DB-Method': 'PUT'}
         url = f'/v2/exchange/db/{self.domain}/{self.data_type}/_mappings'

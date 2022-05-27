@@ -34,7 +34,7 @@ class WorkflowEvents(ObjectCollectionABC):
         params (dict): Additional query params (see example above).
     """
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs):
         """Initialize class properties."""
         super().__init__(
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
@@ -70,7 +70,7 @@ class WorkflowEvent(ObjectABC):
         summary (str, kwargs): The **summary** for the Workflow_Event.
     """
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs):
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
 
@@ -91,7 +91,7 @@ class WorkflowEvent(ObjectABC):
         return self._model
 
     @model.setter
-    def model(self, data: Union['WorkflowEventModel', dict]) -> None:
+    def model(self, data: Union['WorkflowEventModel', dict]):
         """Create model using the provided data."""
         if isinstance(data, type(self.model)):
             # provided data is already a model, nothing required to change
@@ -117,7 +117,7 @@ class WorkflowEvent(ObjectABC):
 
         yield from self._iterate_over_sublist(Notes)
 
-    def stage_note(self, data: Union[dict, 'ObjectABC', 'NoteModel']) -> None:
+    def stage_note(self, data: Union[dict, 'ObjectABC', 'NoteModel']):
         """Stage note on the object."""
         if isinstance(data, ObjectABC):
             data = data.model

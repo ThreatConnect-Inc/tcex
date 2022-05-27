@@ -42,7 +42,7 @@ class FilterABC(ABC):
         return self._tql
 
     @tql.setter
-    def tql(self, tql: str) -> None:
+    def tql(self, tql: str):
         """Filter objects based on TQL expression.
 
         Args:

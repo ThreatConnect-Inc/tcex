@@ -11,10 +11,7 @@ import sys
 import time
 import uuid
 from collections import deque
-from typing import Optional, Tuple, Union
-
-# third-party
-from requests import Session
+from typing import TYPE_CHECKING, Optional, Tuple, Union
 
 # first-party
 from tcex.api.tc.utils.threat_intel_utils import ThreatIntelUtils
@@ -51,8 +48,14 @@ from tcex.api.tc.v2.batch.indicator import (
     UserAgent,
     custom_indicator_class_factory,
 )
-from tcex.input.input import Input
 from tcex.utils import Utils
+
+if TYPE_CHECKING:
+    # third-party
+    from requests import Session
+
+    # first-party
+    from tcex.input.input import Input
 
 # import local modules for dynamic reference
 module = __import__(__name__)
@@ -106,7 +109,7 @@ class BatchWriter:
         output_dir: The directory to write the batch JSON data.
     """
 
-    def __init__(self, inputs: Input, session_tc: Session, output_dir: str, **kwargs) -> None:
+    def __init__(self, inputs: 'Input', session_tc: 'Session', output_dir: str, **kwargs):
         """Initialize Class properties."""
         self.inputs = inputs
         self.output_dir = output_dir
@@ -137,7 +140,7 @@ class BatchWriter:
         # build custom indicator classes
         self._gen_indicator_class()
 
-    def _gen_indicator_class(self) -> None:  # pragma: no cover
+    def _gen_indicator_class(self):  # pragma: no cover
         """Generate Custom Indicator Classes."""
         for entry in self.tic.indicator_types_data.values():
             name = entry.get('name')
@@ -168,8 +171,8 @@ class BatchWriter:
             self._gen_indicator_method(name, custom_class, value_count)
 
     def _gen_indicator_method(
-        self, name: str, custom_class: IndicatorType, value_count: int
-    ) -> None:  # pragma: no cover
+        self, name: str, custom_class: 'IndicatorType', value_count: int
+    ):  # pragma: no cover
         """Dynamically generate custom Indicator methods.
 
         Args:
@@ -203,8 +206,8 @@ class BatchWriter:
         setattr(self, method_name, method)
 
     def _group(
-        self, group_data: Union[dict, GroupType], store: Optional[bool] = True
-    ) -> Union[dict, GroupType]:
+        self, group_data: Union[dict, 'GroupType'], store: Optional[bool] = True
+    ) -> Union[dict, 'GroupType']:
         """Return previously stored group or new group.
 
         Args:
@@ -243,8 +246,8 @@ class BatchWriter:
         return group_data
 
     def _indicator(
-        self, indicator_data: Union[dict, IndicatorType], store: Optional[bool] = True
-    ) -> Union[dict, IndicatorType]:
+        self, indicator_data: Union[dict, 'IndicatorType'], store: Optional[bool] = True
+    ) -> Union[dict, 'IndicatorType']:
         """Return previously stored indicator or new indicator.
 
         Args:
@@ -315,7 +318,7 @@ class BatchWriter:
 
         return indicator_list
 
-    def add_group(self, group_data: dict, **kwargs) -> Union[dict, GroupType]:
+    def add_group(self, group_data: dict, **kwargs) -> Union[dict, 'GroupType']:
         """Add a group to Batch Job.
 
         .. code-block:: javascript
@@ -348,7 +351,7 @@ class BatchWriter:
         """
         return self._group(group_data, kwargs.get('store', True))
 
-    def add_indicator(self, indicator_data: dict, **kwargs) -> Union[dict, IndicatorType]:
+    def add_indicator(self, indicator_data: dict, **kwargs) -> Union[dict, 'IndicatorType']:
         """Add an indicator to Batch Job.
 
         .. code-block:: javascript
@@ -412,7 +415,7 @@ class BatchWriter:
                 indicator_data['flag2'] = whois_active
         return self._indicator(indicator_data, kwargs.get('store', True))
 
-    def address(self, ip: str, **kwargs) -> Address:
+    def address(self, ip: str, **kwargs) -> 'Address':
         """Add Address data to Batch.
 
         Args:
@@ -431,7 +434,7 @@ class BatchWriter:
         indicator_obj = Address(ip, **kwargs)
         return self._indicator(indicator_obj, kwargs.get('store', True))
 
-    def adversary(self, name: str, **kwargs) -> Adversary:
+    def adversary(self, name: str, **kwargs) -> 'Adversary':
         """Add Adversary data to Batch.
 
         Args:
@@ -447,7 +450,7 @@ class BatchWriter:
         group_obj = Adversary(name, **kwargs)
         return self._group(group_obj, kwargs.get('store', True))
 
-    def attack_pattern(self, name: str, **kwargs) -> AttackPattern:
+    def attack_pattern(self, name: str, **kwargs) -> 'AttackPattern':
         """Add Attack Pattern data to Batch object.
 
         Args:
@@ -463,7 +466,7 @@ class BatchWriter:
         group_obj = AttackPattern(name, **kwargs)
         return self._group(group_obj, kwargs.get('store', True))
 
-    def asn(self, as_number: str, **kwargs) -> ASN:
+    def asn(self, as_number: str, **kwargs) -> 'ASN':
         """Add ASN data to Batch.
 
         Args:
@@ -482,7 +485,7 @@ class BatchWriter:
         indicator_obj = ASN(as_number, **kwargs)
         return self._indicator(indicator_obj, kwargs.get('store', True))
 
-    def campaign(self, name: str, **kwargs) -> Campaign:
+    def campaign(self, name: str, **kwargs) -> 'Campaign':
         """Add Campaign data to Batch.
 
         Args:
@@ -499,7 +502,7 @@ class BatchWriter:
         group_obj = Campaign(name, **kwargs)
         return self._group(group_obj, kwargs.get('store', True))
 
-    def cidr(self, block: str, **kwargs) -> CIDR:
+    def cidr(self, block: str, **kwargs) -> 'CIDR':
         """Add CIDR data to Batch.
 
         Args:
@@ -518,7 +521,7 @@ class BatchWriter:
         indicator_obj = CIDR(block, **kwargs)
         return self._indicator(indicator_obj, kwargs.get('store', True))
 
-    def close(self) -> None:
+    def close(self):
         """Cleanup batch job."""
         self.dump()
 
@@ -538,7 +541,7 @@ class BatchWriter:
                 f'action=batch-close, filename={self.indicator_shelf_fqfn} exception={ex}'
             )
 
-    def course_of_action(self, name: str, **kwargs) -> CourseOfAction:
+    def course_of_action(self, name: str, **kwargs) -> 'CourseOfAction':
         """Add Course Of Action Pattern data to Batch object.
 
         Args:
@@ -590,7 +593,7 @@ class BatchWriter:
 
         return data
 
-    def data_group_association(self, data: dict, tracker: dict, xid: str) -> None:
+    def data_group_association(self, data: dict, tracker: dict, xid: str):
         """Return group dict array following all associations.
 
         The *data* dict is passed by reference to make it easier to update both the group data
@@ -628,7 +631,7 @@ class BatchWriter:
                 xids.extend(group_data.get('associatedGroupXid', []))
 
     @staticmethod
-    def data_group_type(group_data: Union[dict, GroupType]) -> Tuple[dict, dict]:
+    def data_group_type(group_data: Union[dict, 'GroupType']) -> Tuple[dict, dict]:
         """Return dict representation of group data and file data.
 
         Args:
@@ -712,7 +715,7 @@ class BatchWriter:
 
         return False
 
-    def document(self, name: str, file_name: str, **kwargs) -> Document:
+    def document(self, name: str, file_name: str, **kwargs) -> 'Document':
         """Add Document data to Batch.
 
         Args:
@@ -733,7 +736,7 @@ class BatchWriter:
         group_obj = Document(name, file_name, **kwargs)
         return self._group(group_obj, kwargs.get('store', True))
 
-    def dump(self) -> None:
+    def dump(self):
         """Process Batch request to ThreatConnect API."""
         content = self.data
         content.pop('file', {})
@@ -756,7 +759,7 @@ class BatchWriter:
         # reset batch size after dump
         self._batch_size = 0
 
-    def email(self, name: str, subject: str, header: str, body: str, **kwargs) -> Email:
+    def email(self, name: str, subject: str, header: str, body: str, **kwargs) -> 'Email':
         """Add Email data to Batch.
 
         Args:
@@ -777,7 +780,7 @@ class BatchWriter:
         group_obj = Email(name, subject, header, body, **kwargs)
         return self._group(group_obj, kwargs.get('store', True))
 
-    def email_address(self, address: str, **kwargs) -> EmailAddress:
+    def email_address(self, address: str, **kwargs) -> 'EmailAddress':
         """Add Email Address data to Batch.
 
         Args:
@@ -796,7 +799,7 @@ class BatchWriter:
         indicator_obj = EmailAddress(address, **kwargs)
         return self._indicator(indicator_obj, kwargs.get('store', True))
 
-    def event(self, name: str, **kwargs) -> Event:
+    def event(self, name: str, **kwargs) -> 'Event':
         """Add Event data to Batch.
 
         Args:
@@ -820,7 +823,7 @@ class BatchWriter:
         sha1: Optional[str] = None,
         sha256: Optional[str] = None,
         **kwargs,
-    ) -> File:
+    ) -> 'File':
         """Add File data to Batch.
 
         .. note:: A least one file hash value must be specified.
@@ -865,7 +868,7 @@ class BatchWriter:
             identifier = hashlib.sha256(identifier.encode('utf-8')).hexdigest()
         return hashlib.sha256(identifier.encode('utf-8')).hexdigest()
 
-    def group(self, group_type: str, name: str, **kwargs) -> GroupType:
+    def group(self, group_type: str, name: str, **kwargs) -> 'GroupType':
         """Add Group data to Batch.
 
         Args:
@@ -905,13 +908,13 @@ class BatchWriter:
         return self._groups
 
     @property
-    def groups_shelf(self) -> shelve.DbfilenameShelf:
+    def groups_shelf(self) -> 'shelve.DbfilenameShelf':
         """Return dictionary of all Groups data."""
         if self._groups_shelf is None:
             self._groups_shelf = shelve.open(self.group_shelf_fqfn, writeback=False)  # nosec
         return self._groups_shelf
 
-    def host(self, hostname: str, **kwargs) -> Host:
+    def host(self, hostname: str, **kwargs) -> 'Host':
         """Add Host data to Batch.
 
         Args:
@@ -932,7 +935,7 @@ class BatchWriter:
         indicator_obj = Host(hostname, **kwargs)
         return self._indicator(indicator_obj, kwargs.get('store', True))
 
-    def incident(self, name: str, **kwargs) -> Incident:
+    def incident(self, name: str, **kwargs) -> 'Incident':
         """Add Incident data to Batch.
 
         Args:
@@ -950,7 +953,7 @@ class BatchWriter:
         group_obj = Incident(name, **kwargs)
         return self._group(group_obj, kwargs.get('store', True))
 
-    def indicator(self, indicator_type: str, summary: str, **kwargs) -> IndicatorType:
+    def indicator(self, indicator_type: str, summary: str, **kwargs) -> 'IndicatorType':
         """Add Indicator data to Batch.
 
         Args:
@@ -993,7 +996,7 @@ class BatchWriter:
         return self._indicators
 
     @property
-    def indicators_shelf(self) -> shelve.DbfilenameShelf:
+    def indicators_shelf(self) -> 'shelve.DbfilenameShelf':
         """Return dictionary of all Indicator data."""
         if self._indicators_shelf is None:
             self._indicators_shelf = shelve.open(  # nosec
@@ -1001,7 +1004,7 @@ class BatchWriter:
             )
         return self._indicators_shelf
 
-    def intrusion_set(self, name: str, **kwargs) -> IntrusionSet:
+    def intrusion_set(self, name: str, **kwargs) -> 'IntrusionSet':
         """Add Intrusion Set data to Batch.
 
         Args:
@@ -1017,7 +1020,7 @@ class BatchWriter:
         group_obj = IntrusionSet(name, **kwargs)
         return self._group(group_obj, kwargs.get('store', True))
 
-    def malware(self, name: str, **kwargs) -> Malware:
+    def malware(self, name: str, **kwargs) -> 'Malware':
         """Add Malware data to Batch object.
 
         Args:
@@ -1033,7 +1036,7 @@ class BatchWriter:
         group_obj = Malware(name, **kwargs)
         return self._group(group_obj, kwargs.get('store', True))
 
-    def mutex(self, mutex: str, **kwargs) -> Mutex:
+    def mutex(self, mutex: str, **kwargs) -> 'Mutex':
         """Add Mutex data to Batch.
 
         Args:
@@ -1054,7 +1057,7 @@ class BatchWriter:
 
     def registry_key(
         self, key_name: str, value_name: str, value_type: str, **kwargs
-    ) -> RegistryKey:
+    ) -> 'RegistryKey':
         """Add Registry Key data to Batch.
 
         Args:
@@ -1075,7 +1078,7 @@ class BatchWriter:
         indicator_obj = RegistryKey(key_name, value_name, value_type, **kwargs)
         return self._indicator(indicator_obj, kwargs.get('store', True))
 
-    def report(self, name: str, **kwargs) -> Report:
+    def report(self, name: str, **kwargs) -> 'Report':
         """Add Report data to Batch.
 
         Args:
@@ -1095,7 +1098,7 @@ class BatchWriter:
         group_obj = Report(name, **kwargs)
         return self._group(group_obj, kwargs.get('store', True))
 
-    def save(self, resource: Union[dict, GroupType, IndicatorType]) -> None:
+    def save(self, resource: Union[dict, 'GroupType', 'IndicatorType']):
         """Save group|indicator dict, GroupType, or IndicatorTypes to shelve.
 
         Best effort to save group/indicator data to disk.  If for any reason the save fails
@@ -1145,7 +1148,7 @@ class BatchWriter:
 
     def signature(
         self, name: str, file_name: str, file_type: str, file_text: str, **kwargs
-    ) -> Signature:
+    ) -> 'Signature':
         """Add Signature data to Batch.
 
         Valid file_types:
@@ -1175,7 +1178,7 @@ class BatchWriter:
         group_obj = Signature(name, file_name, file_type, file_text, **kwargs)
         return self._group(group_obj, kwargs.get('store', True))
 
-    def tactic(self, name: str, **kwargs) -> Tactic:
+    def tactic(self, name: str, **kwargs) -> 'Tactic':
         """Add Tactic data to Batch object.
 
         Args:
@@ -1191,7 +1194,7 @@ class BatchWriter:
         group_obj = Tactic(name, **kwargs)
         return self._group(group_obj, kwargs.get('store', True))
 
-    def threat(self, name: str, **kwargs) -> Threat:
+    def threat(self, name: str, **kwargs) -> 'Threat':
         """Add Threat data to Batch.
 
         Args:
@@ -1207,7 +1210,7 @@ class BatchWriter:
         group_obj = Threat(name, **kwargs)
         return self._group(group_obj, kwargs.get('store', True))
 
-    def tool(self, name: str, **kwargs) -> Tool:
+    def tool(self, name: str, **kwargs) -> 'Tool':
         """Add Tool data to Batch object.
 
         Args:
@@ -1223,7 +1226,7 @@ class BatchWriter:
         group_obj = Tool(name, **kwargs)
         return self._group(group_obj, kwargs.get('store', True))
 
-    def user_agent(self, text: str, **kwargs) -> UserAgent:
+    def user_agent(self, text: str, **kwargs) -> 'UserAgent':
         """Add User Agent data to Batch.
 
         Args:
@@ -1242,7 +1245,7 @@ class BatchWriter:
         indicator_obj = UserAgent(text, **kwargs)
         return self._indicator(indicator_obj, kwargs.get('store', True))
 
-    def url(self, text: str, **kwargs) -> URL:
+    def url(self, text: str, **kwargs) -> 'URL':
         """Add URL Address data to Batch.
 
         Args:
@@ -1261,7 +1264,7 @@ class BatchWriter:
         indicator_obj = URL(text, **kwargs)
         return self._indicator(indicator_obj, kwargs.get('store', True))
 
-    def vulnerability(self, name: str, **kwargs) -> Vulnerability:
+    def vulnerability(self, name: str, **kwargs) -> 'Vulnerability':
         """Add Vulnerability data to Batch.
 
         Args:
@@ -1277,7 +1280,7 @@ class BatchWriter:
         group_obj = Vulnerability(name, **kwargs)
         return self._group(group_obj, kwargs.get('store', True))
 
-    def write_batch_json(self, content: dict) -> None:
+    def write_batch_json(self, content: dict):
         """Write batch json data to a file."""
         if content:
             # get timestamp as a string without decimal place and consistent length

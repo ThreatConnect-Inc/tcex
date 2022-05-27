@@ -18,7 +18,7 @@ class ArtifactFilter(FilterABC):
         """Return the API endpoint."""
         return ApiEndpoints.ARTIFACTS.value
 
-    def analytics_score(self, operator: Enum, analytics_score: int) -> None:
+    def analytics_score(self, operator: Enum, analytics_score: int):
         """Filter Analytics Score based on **analyticsScore** keyword.
 
         Args:
@@ -27,7 +27,7 @@ class ArtifactFilter(FilterABC):
         """
         self._tql.add_filter('analyticsScore', operator, analytics_score, TqlType.INTEGER)
 
-    def case_id(self, operator: Enum, case_id: int) -> None:
+    def case_id(self, operator: Enum, case_id: int):
         """Filter Case ID based on **caseId** keyword.
 
         Args:
@@ -36,7 +36,7 @@ class ArtifactFilter(FilterABC):
         """
         self._tql.add_filter('caseId', operator, case_id, TqlType.INTEGER)
 
-    def date_added(self, operator: Enum, date_added: str) -> None:
+    def date_added(self, operator: Enum, date_added: str):
         """Filter Date Added based on **dateAdded** keyword.
 
         Args:
@@ -96,7 +96,7 @@ class ArtifactFilter(FilterABC):
         self._tql.add_filter('hasTask', TqlOperator.EQ, tasks, TqlType.SUB_QUERY)
         return tasks
 
-    def id(self, operator: Enum, id: int) -> None:  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int):  # pylint: disable=redefined-builtin
         """Filter ID based on **id** keyword.
 
         Args:
@@ -105,7 +105,7 @@ class ArtifactFilter(FilterABC):
         """
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
-    def indicator_active(self, operator: Enum, indicator_active: bool) -> None:
+    def indicator_active(self, operator: Enum, indicator_active: bool):
         """Filter Active Status based on **indicatorActive** keyword.
 
         Args:
@@ -114,7 +114,7 @@ class ArtifactFilter(FilterABC):
         """
         self._tql.add_filter('indicatorActive', operator, indicator_active, TqlType.BOOLEAN)
 
-    def note_id(self, operator: Enum, note_id: int) -> None:
+    def note_id(self, operator: Enum, note_id: int):
         """Filter Note ID based on **noteId** keyword.
 
         Args:
@@ -123,7 +123,7 @@ class ArtifactFilter(FilterABC):
         """
         self._tql.add_filter('noteId', operator, note_id, TqlType.INTEGER)
 
-    def source(self, operator: Enum, source: str) -> None:
+    def source(self, operator: Enum, source: str):
         """Filter Source based on **source** keyword.
 
         Args:
@@ -132,7 +132,7 @@ class ArtifactFilter(FilterABC):
         """
         self._tql.add_filter('source', operator, source, TqlType.STRING)
 
-    def summary(self, operator: Enum, summary: str) -> None:
+    def summary(self, operator: Enum, summary: str):
         """Filter Summary based on **summary** keyword.
 
         Args:
@@ -141,7 +141,7 @@ class ArtifactFilter(FilterABC):
         """
         self._tql.add_filter('summary', operator, summary, TqlType.STRING)
 
-    def task_id(self, operator: Enum, task_id: int) -> None:
+    def task_id(self, operator: Enum, task_id: int):
         """Filter Task ID based on **taskId** keyword.
 
         Args:
@@ -150,7 +150,7 @@ class ArtifactFilter(FilterABC):
         """
         self._tql.add_filter('taskId', operator, task_id, TqlType.INTEGER)
 
-    def type(self, operator: Enum, type: str) -> None:  # pylint: disable=redefined-builtin
+    def type(self, operator: Enum, type: str):  # pylint: disable=redefined-builtin
         """Filter typeName based on **type** keyword.
 
         Args:
@@ -159,7 +159,7 @@ class ArtifactFilter(FilterABC):
         """
         self._tql.add_filter('type', operator, type, TqlType.STRING)
 
-    def type_name(self, operator: Enum, type_name: str) -> None:
+    def type_name(self, operator: Enum, type_name: str):
         """Filter typeName based on **typeName** keyword.
 
         Args:

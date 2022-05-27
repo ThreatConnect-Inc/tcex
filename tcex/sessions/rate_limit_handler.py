@@ -80,7 +80,7 @@ class RateLimitHandler:
         """Set the threshold for remaining requests."""
         self._remaining_threshold = remaining_threshold
 
-    def post_send(self, response: Response) -> None:
+    def post_send(self, response: Response):
         """Extract rate-limiting information from a response after a request has been sent.
 
         Args:
@@ -96,7 +96,7 @@ class RateLimitHandler:
             )
             self._last_limit_reset_value = response.headers.get(self.limit_reset_header)
 
-    def pre_send(self, request: PreparedRequest) -> None:
+    def pre_send(self, request: PreparedRequest):
         """Call before request is sent and provides an opportunity to pause for rate limiting.
 
         Compares rate-limit values from prior requests to determine if we should wait before sending
@@ -112,7 +112,7 @@ class RateLimitHandler:
         ):
             self.sleep(request)
 
-    def sleep(self, request: PreparedRequest) -> None:  # pylint: disable=unused-argument
+    def sleep(self, request: PreparedRequest):  # pylint: disable=unused-argument
         """Sleeps to rate-limit.
 
         Sleeps until the time specified in X-RateLimit-Reset.

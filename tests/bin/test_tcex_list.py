@@ -36,7 +36,7 @@ class TestTcexCliList:
         result = runner.invoke(app, args)
         return result
 
-    def test_tcex_list(self) -> None:
+    def test_tcex_list(self):
         """Test Case"""
         result = self._run_command(['list'])
         assert result.exit_code == 0, result.stdout
@@ -51,7 +51,7 @@ class TestTcexCliList:
         # assert 'Webhook Trigger Service Templates' in result.stdout
 
     # TODO: [med] update this once template is done
-    # def test_tcex_list_external_api_service(self) -> None:
+    # def test_tcex_list_external_api_service(self):
     #     """Test Case"""
     #     result = self._run_command(['list', '--type', 'api_service'])
     #     assert result.exit_code == 0, result.stdout
@@ -60,7 +60,7 @@ class TestTcexCliList:
     #     assert 'basic' in result.stdout
 
     # TODO: [med] update this once template is done
-    # def test_tcex_list_external_basic(self) -> None:
+    # def test_tcex_list_external_basic(self):
     #     """Test Case"""
     #     result = self._run_command(['list', '--type', 'external'])
     #     assert result.exit_code == 0, result.stdout
@@ -68,7 +68,7 @@ class TestTcexCliList:
     #     # spot check a few lines of outputs
     #     assert 'basic' in result.stdout
 
-    def test_tcex_list_organization_basic(self) -> None:
+    def test_tcex_list_organization_basic(self):
         """Test Case"""
         result = self._run_command(['list', '--type', 'organization'])
         assert result.exit_code == 0, result.stdout
@@ -76,7 +76,7 @@ class TestTcexCliList:
         # spot check a few lines of outputs
         assert 'basic' in result.stdout
 
-    def test_tcex_list_playbook_basic(self) -> None:
+    def test_tcex_list_playbook_basic(self):
         """Test Case"""
         result = self._run_command(['list', '--type', 'playbook'])
         assert result.exit_code == 0, f'{result.stdout}'
@@ -85,7 +85,7 @@ class TestTcexCliList:
         assert 'basic' in result.stdout
 
     # TODO: [med] update this once template is done
-    # def test_tcex_list_trigger_basic(self) -> None:
+    # def test_tcex_list_trigger_basic(self):
     #     """Test Case"""
     #     result = self._run_command(['list', '--type', 'trigger_service'])
     #     assert result.exit_code == 0, result.stdout
@@ -94,7 +94,7 @@ class TestTcexCliList:
     #     assert 'basic' in result.stdout
 
     # TODO: [med] update this once template is done
-    # def test_tcex_list_webhook_trigger_basic(self) -> None:
+    # def test_tcex_list_webhook_trigger_basic(self):
     #     """Test Case"""
     #     result = self._run_command(['list', '--type', 'webhook_trigger_service'])
     #     assert result.exit_code == 0, result.stdout

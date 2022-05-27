@@ -15,7 +15,7 @@ from tcex.bin.bin_abc import BinABC
 class SpecToolAppSpecYml(BinABC):
     """Generate App Config File"""
 
-    def __init__(self) -> None:
+    def __init__(self):
         """Initialize class properties."""
         super().__init__()
 
@@ -26,7 +26,7 @@ class SpecToolAppSpecYml(BinABC):
         self.jj = JobJson(logger=self.log)
         self.lj = LayoutJson(logger=self.log)
 
-    def _add_standard_fields(self, app_spec_yml_data: dict) -> None:
+    def _add_standard_fields(self, app_spec_yml_data: dict):
         """Add field that apply to ALL App types."""
         app_spec_yml_data.update(
             {
@@ -48,14 +48,14 @@ class SpecToolAppSpecYml(BinABC):
             }
         )
 
-    def _add_category(self, app_spec_yml_data: dict) -> None:
+    def _add_category(self, app_spec_yml_data: dict):
         """Add category."""
         _category = ''
         if self.ij.model.runtime_level.lower() != 'organization':
             _category = self.ij.model.playbook.type or ''
         app_spec_yml_data['category'] = _category
 
-    def _add_feeds(self, app_spec_yml_data: dict) -> None:
+    def _add_feeds(self, app_spec_yml_data: dict):
         """Add organization feeds section."""
         if self.ij.model.runtime_level.lower() != 'organization':
             return
@@ -75,7 +75,7 @@ class SpecToolAppSpecYml(BinABC):
         app_spec_yml_data.setdefault('organization', {})
         app_spec_yml_data['organization']['feeds'] = feeds
 
-    def _add_note_per_action(self, app_spec_yml_data: dict) -> None:
+    def _add_note_per_action(self, app_spec_yml_data: dict):
         """Add note per action."""
         _notes_per_action = []
         param = self.ij.model.get_param('tc_action')
@@ -85,7 +85,7 @@ class SpecToolAppSpecYml(BinABC):
 
             app_spec_yml_data['notesPerAction'] = _notes_per_action
 
-    def _add_organization(self, app_spec_yml_data: dict) -> None:
+    def _add_organization(self, app_spec_yml_data: dict):
         """Add asy.organization."""
         if self.ij.model.runtime_level.lower() == 'organization':
             app_spec_yml_data.setdefault('organization', {})
@@ -98,7 +98,7 @@ class SpecToolAppSpecYml(BinABC):
                     'repeatingMinutes'
                 ] = self.ij.model.repeating_minutes
 
-    def _add_output_data(self, app_spec_yml_data: dict) -> None:
+    def _add_output_data(self, app_spec_yml_data: dict):
         """Add asy.outputData."""
         if self.ij.model.runtime_level.lower() != 'organization':
             # build outputs based on display value
@@ -122,7 +122,7 @@ class SpecToolAppSpecYml(BinABC):
 
             app_spec_yml_data['outputData'] = _output_data
 
-    def _add_playbook(self, app_spec_yml_data: dict) -> None:
+    def _add_playbook(self, app_spec_yml_data: dict):
         """Add asy.playbook."""
         if self.ij.model.runtime_level.lower() != 'organization':
             app_spec_yml_data.setdefault('playbook', {})
@@ -130,7 +130,7 @@ class SpecToolAppSpecYml(BinABC):
                 app_spec_yml_data['playbook']['retry'] = self.ij.model.playbook.retry
 
     @staticmethod
-    def _add_release_notes(app_spec_yml_data: dict) -> None:
+    def _add_release_notes(app_spec_yml_data: dict):
         """Add release_notes."""
         app_spec_yml_data['releaseNotes'] = [
             {
@@ -139,7 +139,7 @@ class SpecToolAppSpecYml(BinABC):
             }
         ]
 
-    def _add_sections(self, app_spec_yml_data: dict) -> None:
+    def _add_sections(self, app_spec_yml_data: dict):
         """Return params from ij and lj formatted for app_spec."""
         sections = []
         for section in self._current_data:
@@ -178,13 +178,13 @@ class SpecToolAppSpecYml(BinABC):
                     return True
         return False
 
-    def _add_min_tc_version(self, app_spec_yml_data: dict) -> None:
+    def _add_min_tc_version(self, app_spec_yml_data: dict):
         """Add the correct min TC server version."""
 
         if self._is_64_min_version() and self.ij.model.min_server_version < Version('6.4.0'):
             app_spec_yml_data['minServerVersion'] = '6.4.0'
 
-    def generate(self) -> None:
+    def generate(self):
         """Generate the layout.json file data."""
         app_spec_yml_data = {}
 

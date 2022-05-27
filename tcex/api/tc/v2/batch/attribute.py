@@ -16,7 +16,7 @@ class Attribute:
         displayed: Optional[bool] = False,
         source: Optional[str] = None,
         formatter: Optional[Callable[[str], str]] = None,
-    ) -> None:
+    ):
         """Initialize Class Properties.
 
         Args:
@@ -88,5 +88,5 @@ class Attribute:
         return self._attribute_data.get('value')
 
     def __str__(self) -> str:
-        """Return string represtentation of object."""
+        """Return string representation of object."""
         return json.dumps(self.data, indent=4)

@@ -9,7 +9,7 @@ from tcex.api.tc.v3.tql.tql_type import TqlType
 class Tql:
     """ThreatConnect TQL"""
 
-    def __init__(self) -> None:
+    def __init__(self):
         """Initialize Class Properties"""
         self._filters = []
         self.raw_tql = None
@@ -44,13 +44,13 @@ class Tql:
         return self._filters
 
     @filters.setter
-    def filters(self, filters: List[dict]) -> None:
+    def filters(self, filters: List[dict]):
         """Set the filters"""
         self._filters = filters
 
     def add_filter(
         self, keyword: str, operator: str, value: str, type_: Optional[TqlType] = TqlType.STRING
-    ) -> None:
+    ):
         """Add a filter to the current obj
 
         Args:
@@ -63,6 +63,6 @@ class Tql:
             {'keyword': keyword, 'operator': operator, 'value': value, 'type': type_}
         )
 
-    def set_raw_tql(self, tql: str) -> None:
+    def set_raw_tql(self, tql: str):
         """Set a raw TQL filter"""
         self.raw_tql = tql

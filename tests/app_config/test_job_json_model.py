@@ -44,7 +44,7 @@ class TestJobJson:
             assert False, f'Failed parsing file {fqfn.name} ({ex})'
 
     @staticmethod
-    def model_validate(path: str) -> None:
+    def model_validate(path: str):
         """Validate input model in and out."""
         jj_path = Path(path)
         for fqfn in jj_path.glob('**/*job.json'):

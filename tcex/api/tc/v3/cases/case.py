@@ -45,7 +45,7 @@ class Cases(ObjectCollectionABC):
         params (dict): Additional query params (see example above).
     """
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs):
         """Initialize class properties."""
         super().__init__(
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
@@ -101,7 +101,7 @@ class Case(ObjectABC):
         xid (str, kwargs): The **xid** for the Case.
     """
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs):
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
 
@@ -122,7 +122,7 @@ class Case(ObjectABC):
         return self._model
 
     @model.setter
-    def model(self, data: Union['CaseModel', dict]) -> None:
+    def model(self, data: Union['CaseModel', dict]):
         """Create model using the provided data."""
         if isinstance(data, type(self.model)):
             # provided data is already a model, nothing required to change
@@ -205,7 +205,7 @@ class Case(ObjectABC):
 
         yield from self._iterate_over_sublist(Tasks)
 
-    def stage_artifact(self, data: Union[dict, 'ObjectABC', 'ArtifactModel']) -> None:
+    def stage_artifact(self, data: Union[dict, 'ObjectABC', 'ArtifactModel']):
         """Stage artifact on the object."""
         if isinstance(data, ObjectABC):
             data = data.model
@@ -218,7 +218,7 @@ class Case(ObjectABC):
         self.model.artifacts.data.append(data)
 
     # pylint: disable=redefined-builtin
-    def stage_assignee(self, type: str, data: Union[dict, 'ObjectABC', 'ArtifactModel']) -> None:
+    def stage_assignee(self, type: str, data: Union[dict, 'ObjectABC', 'ArtifactModel']):
         """Stage artifact on the object."""
         if isinstance(data, ObjectABC):
             data = data.model
@@ -234,7 +234,7 @@ class Case(ObjectABC):
         self.model.assignee.type = type
         self.model.assignee.data = data
 
-    def stage_associated_case(self, data: Union[dict, 'ObjectABC', 'CaseModel']) -> None:
+    def stage_associated_case(self, data: Union[dict, 'ObjectABC', 'CaseModel']):
         """Stage case on the object."""
         if isinstance(data, ObjectABC):
             data = data.model
@@ -246,7 +246,7 @@ class Case(ObjectABC):
         data._staged = True
         self.model.associated_cases.data.append(data)
 
-    def stage_associated_group(self, data: Union[dict, 'ObjectABC', 'GroupModel']) -> None:
+    def stage_associated_group(self, data: Union[dict, 'ObjectABC', 'GroupModel']):
         """Stage group on the object."""
         if isinstance(data, ObjectABC):
             data = data.model
@@ -258,7 +258,7 @@ class Case(ObjectABC):
         data._staged = True
         self.model.associated_groups.data.append(data)
 
-    def stage_associated_indicator(self, data: Union[dict, 'ObjectABC', 'IndicatorModel']) -> None:
+    def stage_associated_indicator(self, data: Union[dict, 'ObjectABC', 'IndicatorModel']):
         """Stage indicator on the object."""
         if isinstance(data, ObjectABC):
             data = data.model
@@ -270,7 +270,7 @@ class Case(ObjectABC):
         data._staged = True
         self.model.associated_indicators.data.append(data)
 
-    def stage_attribute(self, data: Union[dict, 'ObjectABC', 'CaseAttributeModel']) -> None:
+    def stage_attribute(self, data: Union[dict, 'ObjectABC', 'CaseAttributeModel']):
         """Stage attribute on the object."""
         if isinstance(data, ObjectABC):
             data = data.model
@@ -282,7 +282,7 @@ class Case(ObjectABC):
         data._staged = True
         self.model.attributes.data.append(data)
 
-    def stage_note(self, data: Union[dict, 'ObjectABC', 'NoteModel']) -> None:
+    def stage_note(self, data: Union[dict, 'ObjectABC', 'NoteModel']):
         """Stage note on the object."""
         if isinstance(data, ObjectABC):
             data = data.model
@@ -294,7 +294,7 @@ class Case(ObjectABC):
         data._staged = True
         self.model.notes.data.append(data)
 
-    def stage_tag(self, data: Union[dict, 'ObjectABC', 'TagModel']) -> None:
+    def stage_tag(self, data: Union[dict, 'ObjectABC', 'TagModel']):
         """Stage tag on the object."""
         if isinstance(data, ObjectABC):
             data = data.model
@@ -306,7 +306,7 @@ class Case(ObjectABC):
         data._staged = True
         self.model.tags.data.append(data)
 
-    def stage_task(self, data: Union[dict, 'ObjectABC', 'TaskModel']) -> None:
+    def stage_task(self, data: Union[dict, 'ObjectABC', 'TaskModel']):
         """Stage task on the object."""
         if isinstance(data, ObjectABC):
             data = data.model
@@ -318,7 +318,7 @@ class Case(ObjectABC):
         data._staged = True
         self.model.tasks.data.append(data)
 
-    def stage_user_access(self, data: Union[dict, 'ObjectABC', 'UserModel']) -> None:
+    def stage_user_access(self, data: Union[dict, 'ObjectABC', 'UserModel']):
         """Stage user on the object."""
         if isinstance(data, ObjectABC):
             data = data.model

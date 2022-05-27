@@ -18,7 +18,7 @@ class VictimAssetFilter(FilterABC):
         """Return the API endpoint."""
         return ApiEndpoints.VICTIM_ASSETS.value
 
-    def asset(self, operator: Enum, asset: str) -> None:
+    def asset(self, operator: Enum, asset: str):
         """Filter Asset based on **asset** keyword.
 
         Args:
@@ -27,7 +27,7 @@ class VictimAssetFilter(FilterABC):
         """
         self._tql.add_filter('asset', operator, asset, TqlType.STRING)
 
-    def associated_group(self, operator: Enum, associated_group: int) -> None:
+    def associated_group(self, operator: Enum, associated_group: int):
         """Filter associatedGroup based on **associatedGroup** keyword.
 
         Args:
@@ -73,7 +73,7 @@ class VictimAssetFilter(FilterABC):
         self._tql.add_filter('hasVictimAsset', TqlOperator.EQ, victim_assets, TqlType.SUB_QUERY)
         return victim_assets
 
-    def id(self, operator: Enum, id: int) -> None:  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int):  # pylint: disable=redefined-builtin
         """Filter ID based on **id** keyword.
 
         Args:
@@ -82,7 +82,7 @@ class VictimAssetFilter(FilterABC):
         """
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
-    def owner(self, operator: Enum, owner: int) -> None:
+    def owner(self, operator: Enum, owner: int):
         """Filter Owner ID based on **owner** keyword.
 
         Args:
@@ -91,7 +91,7 @@ class VictimAssetFilter(FilterABC):
         """
         self._tql.add_filter('owner', operator, owner, TqlType.INTEGER)
 
-    def owner_name(self, operator: Enum, owner_name: str) -> None:
+    def owner_name(self, operator: Enum, owner_name: str):
         """Filter Owner Name based on **ownerName** keyword.
 
         Args:
@@ -100,7 +100,7 @@ class VictimAssetFilter(FilterABC):
         """
         self._tql.add_filter('ownerName', operator, owner_name, TqlType.STRING)
 
-    def summary(self, operator: Enum, summary: str) -> None:
+    def summary(self, operator: Enum, summary: str):
         """Filter Summary based on **summary** keyword.
 
         Args:
@@ -109,7 +109,7 @@ class VictimAssetFilter(FilterABC):
         """
         self._tql.add_filter('summary', operator, summary, TqlType.STRING)
 
-    def type(self, operator: Enum, type: int) -> None:  # pylint: disable=redefined-builtin
+    def type(self, operator: Enum, type: int):  # pylint: disable=redefined-builtin
         """Filter Type ID based on **type** keyword.
 
         Args:
@@ -118,7 +118,7 @@ class VictimAssetFilter(FilterABC):
         """
         self._tql.add_filter('type', operator, type, TqlType.INTEGER)
 
-    def type_name(self, operator: Enum, type_name: str) -> None:
+    def type_name(self, operator: Enum, type_name: str):
         """Filter Type Name based on **typeName** keyword.
 
         Args:
@@ -127,7 +127,7 @@ class VictimAssetFilter(FilterABC):
         """
         self._tql.add_filter('typeName', operator, type_name, TqlType.STRING)
 
-    def victim_id(self, operator: Enum, victim_id: int) -> None:
+    def victim_id(self, operator: Enum, victim_id: int):
         """Filter Victim ID based on **victimId** keyword.
 
         Args:
@@ -136,7 +136,7 @@ class VictimAssetFilter(FilterABC):
         """
         self._tql.add_filter('victimId', operator, victim_id, TqlType.INTEGER)
 
-    def victim_name(self, operator: Enum, victim_name: str) -> None:
+    def victim_name(self, operator: Enum, victim_name: str):
         """Filter Victim Name based on **victimName** keyword.
 
         Args:

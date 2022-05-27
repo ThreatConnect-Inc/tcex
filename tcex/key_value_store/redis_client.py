@@ -34,7 +34,7 @@ class RedisClient:
         db: Optional[int] = 0,
         blocking_pool: Optional[bool] = False,
         **kwargs
-    ) -> None:
+    ):
         """Initialize class properties"""
         pool = redis.ConnectionPool
         if blocking_pool:
@@ -43,6 +43,6 @@ class RedisClient:
         self.pool = pool(host=host, port=port, db=db, **kwargs)
 
     @cached_property
-    def client(self) -> redis.Redis:
+    def client(self) -> 'redis.Redis':
         """Return an instance of redis.client.Redis."""
         return redis.Redis(connection_pool=self.pool)

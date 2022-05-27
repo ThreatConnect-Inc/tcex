@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class SpecToolInstallJson(BinABC):
     """Generate App Config File"""
 
-    def __init__(self, asy: 'AppSpecYml') -> None:
+    def __init__(self, asy: 'AppSpecYml'):
         """Initialize class properties."""
         super().__init__()
         self.asy = asy
@@ -22,7 +22,7 @@ class SpecToolInstallJson(BinABC):
         # properties
         self.filename = 'install.json'
 
-    def _add_standard_fields(self, install_json_data: dict) -> None:
+    def _add_standard_fields(self, install_json_data: dict):
         """Add field that apply to ALL App types."""
         install_json_data.update(
             {
@@ -46,12 +46,12 @@ class SpecToolInstallJson(BinABC):
             }
         )
 
-    def _add_type_api_service_fields(self, install_json_data: dict) -> None:
+    def _add_type_api_service_fields(self, install_json_data: dict):
         """Add field that apply to ALL App types."""
         if self.asy.model.runtime_level.lower() == 'apiservice':
             install_json_data['displayPath'] = self.asy.model.display_path
 
-    def _add_type_organization_fields(self, install_json_data: dict) -> None:
+    def _add_type_organization_fields(self, install_json_data: dict):
         """Add field that apply to ALL App types."""
         if self.asy.model.organization:
             # the nested job object is not part of the install.json, it
@@ -75,7 +75,7 @@ class SpecToolInstallJson(BinABC):
             if _repeating_minutes:
                 install_json_data['repeatingMinutes'] = _repeating_minutes
 
-    def _add_type_playbook_fields(self, install_json_data: dict) -> None:
+    def _add_type_playbook_fields(self, install_json_data: dict):
         """Add field that apply to ALL App types."""
         if self.asy.model.runtime_level.lower() in [
             'playbook',
@@ -103,7 +103,7 @@ class SpecToolInstallJson(BinABC):
             note_per_action = '\n\n'.join(self.asy.model.note_per_action_formatted)
         return note_per_action
 
-    def generate(self) -> None:
+    def generate(self):
         """Generate the install.json file data."""
         # all keys added to dict must be in camelCase
         install_json_data = {}

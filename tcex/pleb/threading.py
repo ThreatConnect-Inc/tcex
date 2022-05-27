@@ -14,7 +14,7 @@ class ExceptionThread(threading.Thread):
         super().__init__(*args, **kwargs)
         self.exception = None
 
-    def run(self) -> None:
+    def run(self):
         """Run thread logic"""
         try:
             super().run()

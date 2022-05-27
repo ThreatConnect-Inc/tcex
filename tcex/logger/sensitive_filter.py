@@ -11,7 +11,7 @@ class SensitiveFilter(logging.Filter):
         super().__init__(name)
         self._sensitive_registry = set()
 
-    def add(self, value: str) -> None:
+    def add(self, value: str):
         """Add sensitive value to registry."""
         if value:
             # don't add empty string

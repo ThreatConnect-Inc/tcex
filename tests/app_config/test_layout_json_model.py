@@ -87,7 +87,7 @@ class TestLayoutJson:
             assert False, f'Failed parsing file {fqfn.name} ({ex})'
 
     @staticmethod
-    def model_validate(path: str) -> None:
+    def model_validate(path: str):
         """Validate input model in and out."""
         tcex_test_dir = os.getenv('TCEX_TEST_DIR')
         lj_path = Path(os.path.join(tcex_test_dir, path))

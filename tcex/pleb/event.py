@@ -10,7 +10,7 @@ class Event(metaclass=Singleton):
         """."""
         self.channels = {}
 
-    def send(self, channel: str, **kwargs) -> None:
+    def send(self, channel: str, **kwargs):
         """Send message to channel."""
         for callback in self.channels.get(channel, []):
             callback(**kwargs)

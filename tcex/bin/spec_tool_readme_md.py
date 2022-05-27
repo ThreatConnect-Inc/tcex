@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 class SpecToolReadmeMd(BinABC):
     """Generate App Config File"""
 
-    def __init__(self, asy: 'AppSpecYml') -> None:
+    def __init__(self, asy: 'AppSpecYml'):
         """Initialize class properties."""
         super().__init__()
         self.asy = asy
@@ -27,14 +27,14 @@ class SpecToolReadmeMd(BinABC):
         self.permutations = Permutation(self.log)
 
     @staticmethod
-    def _add_actions_title(readme_md: List[str]) -> None:
+    def _add_actions_title(readme_md: List[str]):
         """Add title for action section."""
         readme_md.append('# Actions')
         readme_md.append('')
         readme_md.append('---')
         readme_md.append('')
 
-    def _add_actions_sub_title(self, readme_md: List[str], action: str) -> None:
+    def _add_actions_sub_title(self, readme_md: List[str], action: str):
         """Add title for sub action section."""
         readme_md.append(f'## {action}')
         npa = self.asy.model.get_note_per_action(action).note
@@ -42,7 +42,7 @@ class SpecToolReadmeMd(BinABC):
             readme_md.append(self.asy.model.get_note_per_action(action).note)
             readme_md.append('')
 
-    def _add_labels(self, readme_md: List[str]) -> None:
+    def _add_labels(self, readme_md: List[str]):
         """Add labels data to readme.md."""
         if self.asy.model.labels:
             readme_md.append('# Labels')
@@ -50,7 +50,7 @@ class SpecToolReadmeMd(BinABC):
             _labels = ', '.join(sorted(self.asy.model.labels))
             readme_md.append(f'- {_labels}')
 
-    def _add_description(self, readme_md: List[str]) -> None:
+    def _add_description(self, readme_md: List[str]):
         """Add top level description/note data to readme.md."""
         if self.asy.model.note:
             readme_md.append('# Description')
@@ -62,20 +62,20 @@ class SpecToolReadmeMd(BinABC):
                 readme_md.append('')
 
     @staticmethod
-    def _add_inputs_title(readme_md: List[str], header: int) -> None:
+    def _add_inputs_title(readme_md: List[str], header: int):
         """Add title for input section."""
         header_value = '#' * header
         readme_md.append(f'{header_value} Inputs')
         readme_md.append('')
 
     @staticmethod
-    def _add_service_config_title(readme_md: List[str], header: int) -> None:
+    def _add_service_config_title(readme_md: List[str], header: int):
         """Add title for service configuration section."""
         header_value = '#' * header
         readme_md.append(f'{header_value} Service Configuration')
         readme_md.append('')
 
-    def _add_param(self, readme_md: List[str], param: 'ParamsModel') -> None:
+    def _add_param(self, readme_md: List[str], param: 'ParamsModel'):
         """Add params data to readme.md.
 
         **API Key** _(String)_
@@ -104,7 +104,7 @@ class SpecToolReadmeMd(BinABC):
 
     def _add_params(
         self, readme_md: List[str], section: 'SectionsModel', action: Optional[str] = None
-    ) -> None:
+    ):
         # add params
         for param in section.params:
             if param.disabled is True or param.hidden is True:
@@ -131,13 +131,13 @@ class SpecToolReadmeMd(BinABC):
             # add param valid_values data
             self._add_param_valid_values(readme_md, param)
 
-    def _add_param_note(self, readme_md: List[str], param: 'ParamsModel') -> None:
+    def _add_param_note(self, readme_md: List[str], param: 'ParamsModel'):
         """Add note data to readme.md."""
         if param.note:
             readme_md.append(f'{self.i1}{param.note}')
             readme_md.append('')
 
-    def _add_param_pb_data_type(self, readme_md: List[str], param: 'ParamsModel') -> None:
+    def _add_param_pb_data_type(self, readme_md: List[str], param: 'ParamsModel'):
         """Add playbook data types values data to readme.md."""
         # matching current format where single 'String' is not displayed
         if param.playbook_data_type and param.playbook_data_type != ['String']:
@@ -145,7 +145,7 @@ class SpecToolReadmeMd(BinABC):
             readme_md.append(f'{self.i1}> **Allows:** {_pdt}')
             readme_md.append('')
 
-    def _add_param_valid_values(self, readme_md: List[str], param: 'ParamsModel') -> None:
+    def _add_param_valid_values(self, readme_md: List[str], param: 'ParamsModel'):
         """Add valid values data to readme.md."""
         # matching current format where TEXT and KEYCHAIN were excluded.
         valid_values = [p for p in param.valid_values if not p.startswith('${')]
@@ -154,7 +154,7 @@ class SpecToolReadmeMd(BinABC):
             readme_md.append(f'{self.i1}> **Valid Values:** {_valid_values}')
             readme_md.append('')
 
-    def _add_outputs(self, readme_md: List[str], action: str = None) -> None:
+    def _add_outputs(self, readme_md: List[str], action: str = None):
         """Add output data to readme.md."""
         if self.asy.model.output_variables:
             readme_md.append('### Outputs')
@@ -189,12 +189,12 @@ class SpecToolReadmeMd(BinABC):
         )
 
     @staticmethod
-    def _add_section_title(readme_md: List[str], section: 'SectionsModel') -> None:
+    def _add_section_title(readme_md: List[str], section: 'SectionsModel'):
         """Add title for input section."""
         readme_md.append(f'### *{section.section_name}*')
         readme_md.append('')
 
-    def _add_params_for_playbook_action_app(self, readme_md: List[str], actions: List[str]) -> None:
+    def _add_params_for_playbook_action_app(self, readme_md: List[str], actions: List[str]):
         """Add inputs for playbook action app."""
         # add title for actions section
         self._add_actions_title(readme_md)
@@ -224,7 +224,7 @@ class SpecToolReadmeMd(BinABC):
             # add horizontal rule
             readme_md.append('---')
 
-    def _add_params_for_playbook_std_app(self, readme_md: List[str]) -> None:
+    def _add_params_for_playbook_std_app(self, readme_md: List[str]):
         """Add inputs for playbook standard app."""
         self._add_inputs_title(readme_md, 3)
 
@@ -246,7 +246,7 @@ class SpecToolReadmeMd(BinABC):
             # add output data
             self._add_outputs(readme_md)
 
-    def _add_params_for_non_playbook_apps(self, readme_md: List[str]) -> None:
+    def _add_params_for_non_playbook_apps(self, readme_md: List[str]):
         """Add inputs for non playbook app."""
         service_config = []
         non_service_config = []
