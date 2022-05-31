@@ -4,7 +4,7 @@
 from typing import List, Optional, Union
 
 # third-party
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, Field, validator
 from semantic_version import Version
 
 __all__ = ['JobJsonModel']
@@ -36,16 +36,41 @@ class ParamsModel(BaseModel):
 class JobJsonCommonModel(BaseModel):
     """Model for common field in job.json."""
 
-    allow_on_demand: bool = False
-    enable_notifications: bool = False
+    allow_on_demand: bool = Field(
+        ...,
+        description='If true, the job can be run on demand.',
+    )
+    enable_notifications: bool = Field(
+        ..., description='Enables pass/fail notifications for this job.'
+    )
     job_name: str
-    notify_email: str = ''
-    notify_include_log_files: bool = False
-    notify_on_complete: bool = False
-    notify_on_failure: bool = False
-    notify_on_partial_failure: bool = False
+    notify_email: str = Field(
+        ...,
+        description='Email address to send notifications to.',
+    )
+    notify_include_log_files: bool = Field(
+        ...,
+        description='If true, the job log files will be included in the notification email.',
+    )
+    notify_on_complete: bool = Field(
+        ...,
+        description='If true, a notification will be sent when the job completes.',
+    )
+    notify_on_failure: bool = Field(
+        ...,
+        description='If true, a notification will be sent when the job fails.',
+    )
+    notify_on_partial_failure: bool = Field(
+        ...,
+        description=(
+            'If true, a notification will be sent when the job completes with partial success.'
+        ),
+    )
     params: List[ParamsModel]
-    publish_auth: bool = False
+    publish_auth: bool = Field(
+        ...,
+        description='If true, the job will publish the authentication token.',
+    )
     schedule_cron_format: str
     schedule_start_date: int
     schedule_type: str
