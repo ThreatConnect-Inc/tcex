@@ -61,7 +61,7 @@ class SpecToolAppSpecYml(BinABC):
             return
 
         feeds = []
-        for feed in self.ij.model.feeds:
+        for feed in self.ij.model.feeds or []:
             if not os.path.isfile(feed.job_file):
                 self.log.error(
                     f'feature=app-spec-yml, exception=failed-reading-file, filename={feed.job_file}'

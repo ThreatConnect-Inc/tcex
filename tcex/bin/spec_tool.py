@@ -153,9 +153,12 @@ class SpecTool(BinABC):
             except ValidationError as ex:
                 self.print_failure(f'Failed Generating install.json:\n{ex}')
 
+            # exclude_defaults - if False then all unused fields are added in - not good.
+            # exclude_none - this should be safe to leave as True.
+            # exclude_unset - this should be safe to leave as True.
             config = ij.json(
                 by_alias=True,
-                exclude_defaults=False,
+                exclude_defaults=True,
                 exclude_none=True,
                 exclude_unset=True,
                 indent=2,
@@ -178,9 +181,12 @@ class SpecTool(BinABC):
                 except ValidationError as ex:
                     self.print_failure(f'Failed Generating layout.json:\n{ex}')
 
+                # exclude_defaults - if False then all unused fields are added in - not good.
+                # exclude_none - this should be safe to leave as True.
+                # exclude_unset - this should be safe to leave as True.
                 config = lj.json(
                     by_alias=True,
-                    exclude_defaults=False,
+                    exclude_defaults=True,
                     exclude_none=True,
                     exclude_unset=True,
                     indent=2,
@@ -202,7 +208,7 @@ class SpecTool(BinABC):
                     if job is not None:
                         config = job.json(
                             by_alias=True,
-                            exclude_defaults=False,
+                            exclude_defaults=True,
                             exclude_none=True,
                             exclude_unset=True,
                             indent=2,
@@ -235,9 +241,12 @@ class SpecTool(BinABC):
             except ValidationError as ex:
                 self.print_failure(f'Failed Generating tcex.json:\n{ex}')
 
+            # exclude_defaults - if False then all unused fields are added in - not good.
+            # exclude_none - this should be safe to leave as True.
+            # exclude_unset - this should be safe to leave as True.
             config = tj.json(
                 by_alias=True,
-                exclude_defaults=False,
+                exclude_defaults=True,
                 exclude_none=True,
                 exclude_unset=True,
                 indent=2,

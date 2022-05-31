@@ -282,9 +282,6 @@ class TestToken:
         request is reattempted, tc_session should request a new token from tokens.py, and tokens.py
         should only return the new token after the renewal process is complete. This test exercises
         this scenario.
-
-        Args:
-            service_app (MockApp, fixture): An instantiated instance of MockApp.
         """
 
         # reduce the amount of time between token renewal cycles, but make it long enough
