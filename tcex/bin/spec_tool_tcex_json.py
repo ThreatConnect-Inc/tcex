@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 class SpecToolTcexJson(BinABC):
     """Generate App Config File"""
 
-    def __init__(self, asy: 'AppSpecYml') -> None:
+    def __init__(self, asy: 'AppSpecYml'):
         """Initialize class properties."""
         super().__init__()
         self.asy = asy
@@ -24,7 +24,7 @@ class SpecToolTcexJson(BinABC):
         self.filename = 'tcex.json'
         self.tj = TcexJson()
 
-    def generate(self) -> None:
+    def generate(self):
         """Generate the layout.json file data."""
 
         tcex_json_data = self.tj.model.dict()

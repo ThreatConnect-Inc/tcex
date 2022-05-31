@@ -18,7 +18,7 @@ class IndicatorFilter(FilterABC):
         """Return the API endpoint."""
         return ApiEndpoints.INDICATORS.value
 
-    def active_locked(self, operator: Enum, active_locked: bool) -> None:
+    def active_locked(self, operator: Enum, active_locked: bool):
         """Filter Indicator Status Locked based on **activeLocked** keyword.
 
         Args:
@@ -27,7 +27,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('activeLocked', operator, active_locked, TqlType.BOOLEAN)
 
-    def address_asn(self, operator: Enum, address_asn: int) -> None:
+    def address_asn(self, operator: Enum, address_asn: int):
         """Filter ASN (Address) based on **addressAsn** keyword.
 
         Args:
@@ -36,7 +36,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('addressAsn', operator, address_asn, TqlType.INTEGER)
 
-    def address_cidr(self, operator: Enum, address_cidr: str) -> None:
+    def address_cidr(self, operator: Enum, address_cidr: str):
         """Filter CIDR (Address) based on **addressCidr** keyword.
 
         Args:
@@ -45,7 +45,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('addressCidr', operator, address_cidr, TqlType.STRING)
 
-    def address_city(self, operator: Enum, address_city: str) -> None:
+    def address_city(self, operator: Enum, address_city: str):
         """Filter City (Address) based on **addressCity** keyword.
 
         Args:
@@ -54,7 +54,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('addressCity', operator, address_city, TqlType.STRING)
 
-    def address_country_code(self, operator: Enum, address_country_code: str) -> None:
+    def address_country_code(self, operator: Enum, address_country_code: str):
         """Filter Country Code (Address) based on **addressCountryCode** keyword.
 
         Args:
@@ -63,7 +63,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('addressCountryCode', operator, address_country_code, TqlType.STRING)
 
-    def address_country_name(self, operator: Enum, address_country_name: str) -> None:
+    def address_country_name(self, operator: Enum, address_country_name: str):
         """Filter Country Name (Address) based on **addressCountryName** keyword.
 
         Args:
@@ -72,7 +72,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('addressCountryName', operator, address_country_name, TqlType.STRING)
 
-    def address_ip_val(self, operator: Enum, address_ip_val: int) -> None:
+    def address_ip_val(self, operator: Enum, address_ip_val: int):
         """Filter Value (Address) based on **addressIpVal** keyword.
 
         Args:
@@ -81,7 +81,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('addressIpVal', operator, address_ip_val, TqlType.INTEGER)
 
-    def address_is_ipv6(self, operator: Enum, address_is_ipv6: bool) -> None:
+    def address_is_ipv6(self, operator: Enum, address_is_ipv6: bool):
         """Filter Type (Address) based on **addressIsIpv6** keyword.
 
         Args:
@@ -90,7 +90,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('addressIsIpv6', operator, address_is_ipv6, TqlType.BOOLEAN)
 
-    def address_registering_org(self, operator: Enum, address_registering_org: str) -> None:
+    def address_registering_org(self, operator: Enum, address_registering_org: str):
         """Filter Registering Org (Address) based on **addressRegisteringOrg** keyword.
 
         Args:
@@ -101,7 +101,7 @@ class IndicatorFilter(FilterABC):
             'addressRegisteringOrg', operator, address_registering_org, TqlType.STRING
         )
 
-    def address_state(self, operator: Enum, address_state: str) -> None:
+    def address_state(self, operator: Enum, address_state: str):
         """Filter State (Address) based on **addressState** keyword.
 
         Args:
@@ -110,7 +110,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('addressState', operator, address_state, TqlType.STRING)
 
-    def address_timezone(self, operator: Enum, address_timezone: str) -> None:
+    def address_timezone(self, operator: Enum, address_timezone: str):
         """Filter Time Zone (Address) based on **addressTimezone** keyword.
 
         Args:
@@ -119,7 +119,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('addressTimezone', operator, address_timezone, TqlType.STRING)
 
-    def associated_group(self, operator: Enum, associated_group: int) -> None:
+    def associated_group(self, operator: Enum, associated_group: int):
         """Filter associatedGroup based on **associatedGroup** keyword.
 
         Args:
@@ -128,7 +128,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('associatedGroup', operator, associated_group, TqlType.INTEGER)
 
-    def attribute(self, operator: Enum, attribute: str) -> None:
+    def attribute(self, operator: Enum, attribute: str):
         """Filter attribute based on **attribute** keyword.
 
         Args:
@@ -137,7 +137,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('attribute', operator, attribute, TqlType.STRING)
 
-    def confidence(self, operator: Enum, confidence: int) -> None:
+    def confidence(self, operator: Enum, confidence: int):
         """Filter Confidence Rating based on **confidence** keyword.
 
         Args:
@@ -146,7 +146,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('confidence', operator, confidence, TqlType.INTEGER)
 
-    def date_added(self, operator: Enum, date_added: str) -> None:
+    def date_added(self, operator: Enum, date_added: str):
         """Filter Date Added based on **dateAdded** keyword.
 
         Args:
@@ -156,7 +156,7 @@ class IndicatorFilter(FilterABC):
         date_added = self.utils.any_to_datetime(date_added).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('dateAdded', operator, date_added, TqlType.STRING)
 
-    def description(self, operator: Enum, description: str) -> None:
+    def description(self, operator: Enum, description: str):
         """Filter Description based on **description** keyword.
 
         Args:
@@ -165,7 +165,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('description', operator, description, TqlType.STRING)
 
-    def false_positive_count(self, operator: Enum, false_positive_count: int) -> None:
+    def false_positive_count(self, operator: Enum, false_positive_count: int):
         """Filter False Positive Count based on **falsePositiveCount** keyword.
 
         Args:
@@ -175,7 +175,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('falsePositiveCount', operator, false_positive_count, TqlType.INTEGER)
 
-    def file_size(self, operator: Enum, file_size: int) -> None:
+    def file_size(self, operator: Enum, file_size: int):
         """Filter Size (File) based on **fileSize** keyword.
 
         Args:
@@ -273,7 +273,7 @@ class IndicatorFilter(FilterABC):
         self._tql.add_filter('hasVictimAsset', TqlOperator.EQ, victim_assets, TqlType.SUB_QUERY)
         return victim_assets
 
-    def host_dns_active(self, operator: Enum, host_dns_active: bool) -> None:
+    def host_dns_active(self, operator: Enum, host_dns_active: bool):
         """Filter DNS Active (Host) based on **hostDnsActive** keyword.
 
         Args:
@@ -282,7 +282,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('hostDnsActive', operator, host_dns_active, TqlType.BOOLEAN)
 
-    def host_whois_active(self, operator: Enum, host_whois_active: bool) -> None:
+    def host_whois_active(self, operator: Enum, host_whois_active: bool):
         """Filter Whois Active (Host) based on **hostWhoisActive** keyword.
 
         Args:
@@ -291,7 +291,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('hostWhoisActive', operator, host_whois_active, TqlType.BOOLEAN)
 
-    def id(self, operator: Enum, id: int) -> None:  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int):  # pylint: disable=redefined-builtin
         """Filter ID based on **id** keyword.
 
         Args:
@@ -300,7 +300,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
-    def indicator_active(self, operator: Enum, indicator_active: bool) -> None:
+    def indicator_active(self, operator: Enum, indicator_active: bool):
         """Filter Indicator Status based on **indicatorActive** keyword.
 
         Args:
@@ -309,7 +309,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('indicatorActive', operator, indicator_active, TqlType.BOOLEAN)
 
-    def last_false_positive(self, operator: Enum, last_false_positive: str) -> None:
+    def last_false_positive(self, operator: Enum, last_false_positive: str):
         """Filter False Positive Last Observed based on **lastFalsePositive** keyword.
 
         Args:
@@ -321,7 +321,7 @@ class IndicatorFilter(FilterABC):
         )
         self._tql.add_filter('lastFalsePositive', operator, last_false_positive, TqlType.STRING)
 
-    def last_modified(self, operator: Enum, last_modified: str) -> None:
+    def last_modified(self, operator: Enum, last_modified: str):
         """Filter Last Modified based on **lastModified** keyword.
 
         Args:
@@ -331,7 +331,7 @@ class IndicatorFilter(FilterABC):
         last_modified = self.utils.any_to_datetime(last_modified).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('lastModified', operator, last_modified, TqlType.STRING)
 
-    def last_observed(self, operator: Enum, last_observed: str) -> None:
+    def last_observed(self, operator: Enum, last_observed: str):
         """Filter Last Observed based on **lastObserved** keyword.
 
         Args:
@@ -341,7 +341,7 @@ class IndicatorFilter(FilterABC):
         last_observed = self.utils.any_to_datetime(last_observed).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('lastObserved', operator, last_observed, TqlType.STRING)
 
-    def observation_count(self, operator: Enum, observation_count: int) -> None:
+    def observation_count(self, operator: Enum, observation_count: int):
         """Filter Observation Count based on **observationCount** keyword.
 
         Args:
@@ -350,7 +350,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('observationCount', operator, observation_count, TqlType.INTEGER)
 
-    def owner(self, operator: Enum, owner: int) -> None:
+    def owner(self, operator: Enum, owner: int):
         """Filter Owner ID based on **owner** keyword.
 
         Args:
@@ -359,7 +359,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('owner', operator, owner, TqlType.INTEGER)
 
-    def owner_name(self, operator: Enum, owner_name: str) -> None:
+    def owner_name(self, operator: Enum, owner_name: str):
         """Filter Owner Name based on **ownerName** keyword.
 
         Args:
@@ -368,7 +368,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('ownerName', operator, owner_name, TqlType.STRING)
 
-    def rating(self, operator: Enum, rating: int) -> None:
+    def rating(self, operator: Enum, rating: int):
         """Filter Threat Rating based on **rating** keyword.
 
         Args:
@@ -377,7 +377,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('rating', operator, rating, TqlType.INTEGER)
 
-    def security_label(self, operator: Enum, security_label: str) -> None:
+    def security_label(self, operator: Enum, security_label: str):
         """Filter Security Label based on **securityLabel** keyword.
 
         Args:
@@ -386,7 +386,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('securityLabel', operator, security_label, TqlType.STRING)
 
-    def source(self, operator: Enum, source: str) -> None:
+    def source(self, operator: Enum, source: str):
         """Filter Source based on **source** keyword.
 
         Args:
@@ -395,7 +395,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('source', operator, source, TqlType.STRING)
 
-    def summary(self, operator: Enum, summary: str) -> None:
+    def summary(self, operator: Enum, summary: str):
         """Filter Summary based on **summary** keyword.
 
         Args:
@@ -404,7 +404,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('summary', operator, summary, TqlType.STRING)
 
-    def tag(self, operator: Enum, tag: str) -> None:
+    def tag(self, operator: Enum, tag: str):
         """Filter Tag based on **tag** keyword.
 
         Args:
@@ -413,7 +413,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('tag', operator, tag, TqlType.STRING)
 
-    def tag_owner(self, operator: Enum, tag_owner: int) -> None:
+    def tag_owner(self, operator: Enum, tag_owner: int):
         """Filter Tag Owner ID based on **tagOwner** keyword.
 
         Args:
@@ -422,7 +422,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('tagOwner', operator, tag_owner, TqlType.INTEGER)
 
-    def tag_owner_name(self, operator: Enum, tag_owner_name: str) -> None:
+    def tag_owner_name(self, operator: Enum, tag_owner_name: str):
         """Filter Tag Owner Name based on **tagOwnerName** keyword.
 
         Args:
@@ -431,7 +431,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('tagOwnerName', operator, tag_owner_name, TqlType.STRING)
 
-    def threat_assess_score(self, operator: Enum, threat_assess_score: int) -> None:
+    def threat_assess_score(self, operator: Enum, threat_assess_score: int):
         """Filter ThreatAssess Score based on **threatAssessScore** keyword.
 
         Args:
@@ -440,7 +440,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('threatAssessScore', operator, threat_assess_score, TqlType.INTEGER)
 
-    def type(self, operator: Enum, type: int) -> None:  # pylint: disable=redefined-builtin
+    def type(self, operator: Enum, type: int):  # pylint: disable=redefined-builtin
         """Filter Type ID based on **type** keyword.
 
         Args:
@@ -449,7 +449,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('type', operator, type, TqlType.INTEGER)
 
-    def type_name(self, operator: Enum, type_name: str) -> None:
+    def type_name(self, operator: Enum, type_name: str):
         """Filter Type Name based on **typeName** keyword.
 
         Args:
@@ -458,7 +458,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('typeName', operator, type_name, TqlType.STRING)
 
-    def value1(self, operator: Enum, value1: str) -> None:
+    def value1(self, operator: Enum, value1: str):
         """Filter value1 based on **value1** keyword.
 
         Args:
@@ -467,7 +467,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('value1', operator, value1, TqlType.STRING)
 
-    def value2(self, operator: Enum, value2: str) -> None:
+    def value2(self, operator: Enum, value2: str):
         """Filter value2 based on **value2** keyword.
 
         Args:
@@ -476,7 +476,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('value2', operator, value2, TqlType.STRING)
 
-    def value3(self, operator: Enum, value3: str) -> None:
+    def value3(self, operator: Enum, value3: str):
         """Filter value3 based on **value3** keyword.
 
         Args:

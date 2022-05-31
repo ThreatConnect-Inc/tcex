@@ -18,7 +18,7 @@ class IndicatorAttributeFilter(FilterABC):
         """Return the API endpoint."""
         return ApiEndpoints.INDICATOR_ATTRIBUTES.value
 
-    def date_added(self, operator: Enum, date_added: str) -> None:
+    def date_added(self, operator: Enum, date_added: str):
         """Filter Date Added based on **dateAdded** keyword.
 
         Args:
@@ -28,7 +28,7 @@ class IndicatorAttributeFilter(FilterABC):
         date_added = self.utils.any_to_datetime(date_added).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('dateAdded', operator, date_added, TqlType.STRING)
 
-    def date_val(self, operator: Enum, date_val: str) -> None:
+    def date_val(self, operator: Enum, date_val: str):
         """Filter Date based on **dateVal** keyword.
 
         Args:
@@ -38,7 +38,7 @@ class IndicatorAttributeFilter(FilterABC):
         date_val = self.utils.any_to_datetime(date_val).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('dateVal', operator, date_val, TqlType.STRING)
 
-    def displayed(self, operator: Enum, displayed: bool) -> None:
+    def displayed(self, operator: Enum, displayed: bool):
         """Filter Displayed based on **displayed** keyword.
 
         Args:
@@ -67,7 +67,7 @@ class IndicatorAttributeFilter(FilterABC):
         self._tql.add_filter('hasSecurityLabel', TqlOperator.EQ, security_labels, TqlType.SUB_QUERY)
         return security_labels
 
-    def id(self, operator: Enum, id: int) -> None:  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int):  # pylint: disable=redefined-builtin
         """Filter ID based on **id** keyword.
 
         Args:
@@ -76,7 +76,7 @@ class IndicatorAttributeFilter(FilterABC):
         """
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
-    def indicator_id(self, operator: Enum, indicator_id: int) -> None:
+    def indicator_id(self, operator: Enum, indicator_id: int):
         """Filter Indicator ID based on **indicatorId** keyword.
 
         Args:
@@ -85,7 +85,7 @@ class IndicatorAttributeFilter(FilterABC):
         """
         self._tql.add_filter('indicatorId', operator, indicator_id, TqlType.INTEGER)
 
-    def int_val(self, operator: Enum, int_val: int) -> None:
+    def int_val(self, operator: Enum, int_val: int):
         """Filter Integer Value based on **intVal** keyword.
 
         Args:
@@ -94,7 +94,7 @@ class IndicatorAttributeFilter(FilterABC):
         """
         self._tql.add_filter('intVal', operator, int_val, TqlType.INTEGER)
 
-    def last_modified(self, operator: Enum, last_modified: str) -> None:
+    def last_modified(self, operator: Enum, last_modified: str):
         """Filter Last Modified based on **lastModified** keyword.
 
         Args:
@@ -104,7 +104,7 @@ class IndicatorAttributeFilter(FilterABC):
         last_modified = self.utils.any_to_datetime(last_modified).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('lastModified', operator, last_modified, TqlType.STRING)
 
-    def max_size(self, operator: Enum, max_size: int) -> None:
+    def max_size(self, operator: Enum, max_size: int):
         """Filter Max Size based on **maxSize** keyword.
 
         Args:
@@ -113,7 +113,7 @@ class IndicatorAttributeFilter(FilterABC):
         """
         self._tql.add_filter('maxSize', operator, max_size, TqlType.INTEGER)
 
-    def owner(self, operator: Enum, owner: int) -> None:
+    def owner(self, operator: Enum, owner: int):
         """Filter Owner ID based on **owner** keyword.
 
         Args:
@@ -122,7 +122,7 @@ class IndicatorAttributeFilter(FilterABC):
         """
         self._tql.add_filter('owner', operator, owner, TqlType.INTEGER)
 
-    def owner_name(self, operator: Enum, owner_name: str) -> None:
+    def owner_name(self, operator: Enum, owner_name: str):
         """Filter Owner Name based on **ownerName** keyword.
 
         Args:
@@ -131,7 +131,7 @@ class IndicatorAttributeFilter(FilterABC):
         """
         self._tql.add_filter('ownerName', operator, owner_name, TqlType.STRING)
 
-    def source(self, operator: Enum, source: str) -> None:
+    def source(self, operator: Enum, source: str):
         """Filter Source based on **source** keyword.
 
         Args:
@@ -140,7 +140,7 @@ class IndicatorAttributeFilter(FilterABC):
         """
         self._tql.add_filter('source', operator, source, TqlType.STRING)
 
-    def text(self, operator: Enum, text: str) -> None:
+    def text(self, operator: Enum, text: str):
         """Filter Text based on **text** keyword.
 
         Args:
@@ -149,7 +149,7 @@ class IndicatorAttributeFilter(FilterABC):
         """
         self._tql.add_filter('text', operator, text, TqlType.STRING)
 
-    def type(self, operator: Enum, type: int) -> None:  # pylint: disable=redefined-builtin
+    def type(self, operator: Enum, type: int):  # pylint: disable=redefined-builtin
         """Filter Type ID based on **type** keyword.
 
         Args:
@@ -158,7 +158,7 @@ class IndicatorAttributeFilter(FilterABC):
         """
         self._tql.add_filter('type', operator, type, TqlType.INTEGER)
 
-    def type_name(self, operator: Enum, type_name: str) -> None:
+    def type_name(self, operator: Enum, type_name: str):
         """Filter Type Name based on **typeName** keyword.
 
         Args:
@@ -167,7 +167,7 @@ class IndicatorAttributeFilter(FilterABC):
         """
         self._tql.add_filter('typeName', operator, type_name, TqlType.STRING)
 
-    def user(self, operator: Enum, user: str) -> None:
+    def user(self, operator: Enum, user: str):
         """Filter User based on **user** keyword.
 
         Args:

@@ -15,11 +15,12 @@ from requests import Response, Session
 
 # first-party
 from tcex.api.tc.v2.batch.batch_submit import BatchSubmit
-from tcex.api.tc.v2.batch.batch_writer import BatchWriter, GroupType, IndicatorType
+from tcex.api.tc.v2.batch.batch_writer import BatchWriter
 from tcex.exit.error_codes import handle_error
 
 if TYPE_CHECKING:
     # first-party
+    from tcex.api.tc.v2.batch.batch_writer import GroupType, IndicatorType
     from tcex.input import Input
 
 
@@ -49,7 +50,7 @@ class Batch(BatchWriter, BatchSubmit):
         playbook_triggers_enabled: Optional[bool] = False,
         tag_write_type: Optional[str] = 'Replace',
         security_label_write_type: Optional[str] = 'Replace',
-    ) -> None:
+    ):
         """Initialize Class properties."""
         BatchWriter.__init__(self, inputs=inputs, session_tc=session_tc, output_dir='')
         BatchSubmit.__init__(
@@ -108,8 +109,8 @@ class Batch(BatchWriter, BatchSubmit):
         self.debug_path_xids = os.path.join(self.debug_path, 'xids-saved')
 
     def _group(
-        self, group_data: Union[dict, GroupType], store: Optional[bool] = True
-    ) -> Union[dict, GroupType]:
+        self, group_data: Union[dict, 'GroupType'], store: Optional[bool] = True
+    ) -> Union[dict, 'GroupType']:
         """Return previously stored group or new group.
 
         Args:
@@ -141,8 +142,8 @@ class Batch(BatchWriter, BatchSubmit):
         return group_data
 
     def _indicator(
-        self, indicator_data: Union[dict, IndicatorType], store: Optional[bool] = True
-    ) -> Union[dict, IndicatorType]:
+        self, indicator_data: Union[dict, 'IndicatorType'], store: Optional[bool] = True
+    ) -> Union[dict, 'IndicatorType']:
         """Return previously stored indicator or new indicator.
 
         Args:
@@ -170,7 +171,7 @@ class Batch(BatchWriter, BatchSubmit):
             self.indicators[xid] = indicator_data
         return indicator_data
 
-    def close(self) -> None:
+    def close(self):
         """Cleanup batch job."""
         # allow pol thread to complete before wrapping up
         if hasattr(self._submit_thread, 'is_alive'):
@@ -225,7 +226,7 @@ class Batch(BatchWriter, BatchSubmit):
 
         return data
 
-    def data_group_association(self, data: dict, tracker: dict, xid: str) -> None:
+    def data_group_association(self, data: dict, tracker: dict, xid: str):
         """Return group dict array following all associations.
 
         The *data* dict is passed by reference to make it easier to update both the group data
@@ -265,7 +266,7 @@ class Batch(BatchWriter, BatchSubmit):
                 xids.extend(group_data.get('associatedGroupXid', []))
 
     @staticmethod
-    def data_group_type(group_data: Union[dict, GroupType]) -> Tuple[dict, dict]:
+    def data_group_type(group_data: Union[dict, 'GroupType']) -> Tuple[dict, dict]:
         """Return dict representation of group data and file data.
 
         Args:
@@ -406,7 +407,7 @@ class Batch(BatchWriter, BatchSubmit):
         if isinstance(value, bool):
             self._halt_on_file_error = value
 
-    def process_all(self, process_files: Optional[bool] = True) -> None:
+    def process_all(self, process_files: Optional[bool] = True):
         """Process Batch request to ThreatConnect API.
 
         Args:
@@ -434,7 +435,7 @@ class Batch(BatchWriter, BatchSubmit):
         if process_files:
             self.process_files(file_data)
 
-    def process_files(self, file_data: dict) -> None:
+    def process_files(self, file_data: dict):
         """Process Files for Documents and Reports to ThreatConnect API.
 
         Args:
@@ -782,7 +783,7 @@ class Batch(BatchWriter, BatchSubmit):
         callback: Callable[..., Any],
         file_data: dict,
         halt_on_error: Optional[bool] = True,
-    ) -> None:
+    ):
         """Submit data in a thread."""
         batch_id = batch_data.get('id')
         self.log.info(f'feature=batch, event=progress, batch-id={batch_id}')
@@ -1031,7 +1032,7 @@ class Batch(BatchWriter, BatchSubmit):
         target: Callable[[], bool],
         args: Optional[tuple] = None,
         kwargs: Optional[dict] = None,
-    ) -> None:
+    ):
         """Start a submit thread.
 
         Args:
@@ -1050,7 +1051,7 @@ class Batch(BatchWriter, BatchSubmit):
             self.log.trace(traceback.format_exc())
         return t
 
-    def write_error_json(self, errors: list) -> None:
+    def write_error_json(self, errors: list):
         """Write the errors to a JSON file for debugging purposes.
 
         Args:
@@ -1065,7 +1066,7 @@ class Batch(BatchWriter, BatchSubmit):
             with gzip.open(error_json_file, mode='wt', encoding='utf-8') as fh:
                 json.dump(errors, fh)
 
-    def write_batch_json(self, content: dict) -> None:
+    def write_batch_json(self, content: dict):
         """Write batch json data to a file."""
         if self.debug and content:
             # get timestamp as a string without decimal place and consistent length

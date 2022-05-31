@@ -27,7 +27,7 @@ from tcex.utils.utils import Utils
 class BinABC(ABC):
     """Base Class for ThreatConnect command line tools."""
 
-    def __init__(self) -> None:
+    def __init__(self):
         """Initialize Class properties."""
         # properties
         self.app_path = os.getcwd()
@@ -41,14 +41,14 @@ class BinABC(ABC):
         self.utils = Utils()
 
     @cached_property
-    def cli_out_path(self) -> Path:  # pylint: disable=no-self-use
+    def cli_out_path(self) -> 'Path':  # pylint: disable=no-self-use
         """Return the path to the tcex cli command out directory."""
         _out_path = Path(os.path.expanduser('~/.tcex'))
         _out_path.mkdir(exist_ok=True, parents=True)
         return _out_path
 
     @staticmethod
-    def handle_error(err, halt: Optional[bool] = True) -> None:
+    def handle_error(err, halt: Optional[bool] = True):
         """Print errors message and optionally exit.
 
         Args:
@@ -60,7 +60,7 @@ class BinABC(ABC):
             sys.exit(1)
 
     @cached_property
-    def log(self) -> logging.Logger:
+    def log(self) -> 'logging.Logger':
         """Return the configured logger."""
         # create logger based on custom TestLogger
         logging.setLoggerClass(TraceLogger)
@@ -103,7 +103,7 @@ class BinABC(ABC):
         return logger
 
     @staticmethod
-    def print_block(text: str, max_length: Optional[int] = 80, **kwargs) -> None:
+    def print_block(text: str, max_length: Optional[int] = 80, **kwargs):
         """Print Divider."""
         bold = kwargs.get('bold', False)
         fg_color = getattr(typer.colors, kwargs.get('fg_color', 'white').upper())
@@ -119,7 +119,7 @@ class BinABC(ABC):
         typer.secho(text_wrapped, fg=fg_color, bold=bold)
 
     @staticmethod
-    def print_divider(char: Optional[str] = '-', count: Optional[int] = 100, **kwargs) -> None:
+    def print_divider(char: Optional[str] = '-', count: Optional[int] = 100, **kwargs):
         """Print Divider."""
         bold = kwargs.get('bold', False)
         fg_color = getattr(typer.colors, kwargs.get('fg_color', 'bright_white').upper())
@@ -128,14 +128,14 @@ class BinABC(ABC):
         typer.secho(char * count, fg=fg_color, bold=bold)
 
     @staticmethod
-    def print_failure(message: str, exit_: Optional[bool] = True) -> None:
+    def print_failure(message: str, exit_: Optional[bool] = True):
         """Print Failure."""
         typer.secho(message, fg=typer.colors.RED, bold=True)
         if exit_ is True:
             sys.exit(1)
 
     @staticmethod
-    def print_setting(label: str, value: str, **kwargs) -> None:
+    def print_setting(label: str, value: str, **kwargs):
         """Print Setting."""
         bold = kwargs.get('bold', True)
         fg_color = getattr(typer.colors, kwargs.get('fg_color', 'magenta').upper())
@@ -146,7 +146,7 @@ class BinABC(ABC):
         typer.echo(f'{indent}{label:<20}: {value_display}')
 
     @staticmethod
-    def print_title(title: str, divider: Optional[bool] = True, **kwargs) -> None:
+    def print_title(title: str, divider: Optional[bool] = True, **kwargs):
         """Print Title."""
         bold = kwargs.get('bold', True)
         fg_color = getattr(typer.colors, kwargs.get('fg_color', 'cyan').upper())
@@ -172,7 +172,7 @@ class BinABC(ABC):
         )
 
     @staticmethod
-    def update_system_path() -> None:
+    def update_system_path():
         """Update the system path to ensure project modules and dependencies can be found."""
         cwd = os.getcwd()
         lib_dir = os.path.join(os.getcwd(), 'lib_')

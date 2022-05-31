@@ -18,7 +18,7 @@ class TaskFilter(FilterABC):
         """Return the API endpoint."""
         return ApiEndpoints.TASKS.value
 
-    def assigned_to_user_or_group(self, operator: Enum, assigned_to_user_or_group: str) -> None:
+    def assigned_to_user_or_group(self, operator: Enum, assigned_to_user_or_group: str):
         """Filter Assigned To User or Group based on **assignedToUserOrGroup** keyword.
 
         Args:
@@ -29,7 +29,7 @@ class TaskFilter(FilterABC):
             'assignedToUserOrGroup', operator, assigned_to_user_or_group, TqlType.STRING
         )
 
-    def assignee_name(self, operator: Enum, assignee_name: str) -> None:
+    def assignee_name(self, operator: Enum, assignee_name: str):
         """Filter Assignee Name based on **assigneeName** keyword.
 
         Args:
@@ -38,7 +38,7 @@ class TaskFilter(FilterABC):
         """
         self._tql.add_filter('assigneeName', operator, assignee_name, TqlType.STRING)
 
-    def automated(self, operator: Enum, automated: bool) -> None:
+    def automated(self, operator: Enum, automated: bool):
         """Filter Automated based on **automated** keyword.
 
         Args:
@@ -47,7 +47,7 @@ class TaskFilter(FilterABC):
         """
         self._tql.add_filter('automated', operator, automated, TqlType.BOOLEAN)
 
-    def case_id(self, operator: Enum, case_id: int) -> None:
+    def case_id(self, operator: Enum, case_id: int):
         """Filter Case ID based on **caseId** keyword.
 
         Args:
@@ -56,7 +56,7 @@ class TaskFilter(FilterABC):
         """
         self._tql.add_filter('caseId', operator, case_id, TqlType.INTEGER)
 
-    def case_id_as_string(self, operator: Enum, case_id_as_string: str) -> None:
+    def case_id_as_string(self, operator: Enum, case_id_as_string: str):
         """Filter CaseID As String based on **caseIdAsString** keyword.
 
         Args:
@@ -65,7 +65,7 @@ class TaskFilter(FilterABC):
         """
         self._tql.add_filter('caseIdAsString', operator, case_id_as_string, TqlType.STRING)
 
-    def case_severity(self, operator: Enum, case_severity: str) -> None:
+    def case_severity(self, operator: Enum, case_severity: str):
         """Filter Case Severity based on **caseSeverity** keyword.
 
         Args:
@@ -74,7 +74,7 @@ class TaskFilter(FilterABC):
         """
         self._tql.add_filter('caseSeverity', operator, case_severity, TqlType.STRING)
 
-    def completed_by(self, operator: Enum, completed_by: str) -> None:
+    def completed_by(self, operator: Enum, completed_by: str):
         """Filter Completed By based on **completedBy** keyword.
 
         Args:
@@ -83,7 +83,7 @@ class TaskFilter(FilterABC):
         """
         self._tql.add_filter('completedBy', operator, completed_by, TqlType.STRING)
 
-    def completed_date(self, operator: Enum, completed_date: str) -> None:
+    def completed_date(self, operator: Enum, completed_date: str):
         """Filter Completed Date based on **completedDate** keyword.
 
         Args:
@@ -93,7 +93,7 @@ class TaskFilter(FilterABC):
         completed_date = self.utils.any_to_datetime(completed_date).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('completedDate', operator, completed_date, TqlType.STRING)
 
-    def description(self, operator: Enum, description: str) -> None:
+    def description(self, operator: Enum, description: str):
         """Filter Description based on **description** keyword.
 
         Args:
@@ -102,7 +102,7 @@ class TaskFilter(FilterABC):
         """
         self._tql.add_filter('description', operator, description, TqlType.STRING)
 
-    def due_date(self, operator: Enum, due_date: str) -> None:
+    def due_date(self, operator: Enum, due_date: str):
         """Filter Due Date based on **dueDate** keyword.
 
         Args:
@@ -142,7 +142,7 @@ class TaskFilter(FilterABC):
         self._tql.add_filter('hasNote', TqlOperator.EQ, notes, TqlType.SUB_QUERY)
         return notes
 
-    def id(self, operator: Enum, id: int) -> None:  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int):  # pylint: disable=redefined-builtin
         """Filter ID based on **id** keyword.
 
         Args:
@@ -151,7 +151,7 @@ class TaskFilter(FilterABC):
         """
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
-    def name(self, operator: Enum, name: str) -> None:
+    def name(self, operator: Enum, name: str):
         """Filter Name based on **name** keyword.
 
         Args:
@@ -160,7 +160,7 @@ class TaskFilter(FilterABC):
         """
         self._tql.add_filter('name', operator, name, TqlType.STRING)
 
-    def owner(self, operator: Enum, owner: int) -> None:
+    def owner(self, operator: Enum, owner: int):
         """Filter Owner ID based on **owner** keyword.
 
         Args:
@@ -169,7 +169,7 @@ class TaskFilter(FilterABC):
         """
         self._tql.add_filter('owner', operator, owner, TqlType.INTEGER)
 
-    def owner_name(self, operator: Enum, owner_name: str) -> None:
+    def owner_name(self, operator: Enum, owner_name: str):
         """Filter Owner Name based on **ownerName** keyword.
 
         Args:
@@ -178,7 +178,7 @@ class TaskFilter(FilterABC):
         """
         self._tql.add_filter('ownerName', operator, owner_name, TqlType.STRING)
 
-    def required(self, operator: Enum, required: bool) -> None:
+    def required(self, operator: Enum, required: bool):
         """Filter Required based on **required** keyword.
 
         Args:
@@ -187,7 +187,7 @@ class TaskFilter(FilterABC):
         """
         self._tql.add_filter('required', operator, required, TqlType.BOOLEAN)
 
-    def status(self, operator: Enum, status: str) -> None:
+    def status(self, operator: Enum, status: str):
         """Filter Status based on **status** keyword.
 
         Args:
@@ -196,7 +196,7 @@ class TaskFilter(FilterABC):
         """
         self._tql.add_filter('status', operator, status, TqlType.STRING)
 
-    def target_id(self, operator: Enum, target_id: int) -> None:
+    def target_id(self, operator: Enum, target_id: int):
         """Filter Assignee based on **targetId** keyword.
 
         Args:
@@ -205,7 +205,7 @@ class TaskFilter(FilterABC):
         """
         self._tql.add_filter('targetId', operator, target_id, TqlType.INTEGER)
 
-    def target_type(self, operator: Enum, target_type: str) -> None:
+    def target_type(self, operator: Enum, target_type: str):
         """Filter Target Type based on **targetType** keyword.
 
         Args:
@@ -214,7 +214,7 @@ class TaskFilter(FilterABC):
         """
         self._tql.add_filter('targetType', operator, target_type, TqlType.STRING)
 
-    def workflow_phase(self, operator: Enum, workflow_phase: int) -> None:
+    def workflow_phase(self, operator: Enum, workflow_phase: int):
         """Filter Workflow Phase based on **workflowPhase** keyword.
 
         Args:
@@ -223,7 +223,7 @@ class TaskFilter(FilterABC):
         """
         self._tql.add_filter('workflowPhase', operator, workflow_phase, TqlType.INTEGER)
 
-    def workflow_step(self, operator: Enum, workflow_step: int) -> None:
+    def workflow_step(self, operator: Enum, workflow_step: int):
         """Filter Workflow Step based on **workflowStep** keyword.
 
         Args:
@@ -232,7 +232,7 @@ class TaskFilter(FilterABC):
         """
         self._tql.add_filter('workflowStep', operator, workflow_step, TqlType.INTEGER)
 
-    def xid(self, operator: Enum, xid: str) -> None:
+    def xid(self, operator: Enum, xid: str):
         """Filter XID based on **xid** keyword.
 
         Args:

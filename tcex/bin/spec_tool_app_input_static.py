@@ -9,7 +9,7 @@ from tcex.app_config.install_json import InstallJson
 class SpecToolAppInputStatic:
     """Generate App Config File"""
 
-    def __init__(self) -> None:
+    def __init__(self):
         """Initialize class properties."""
 
         # class properties
@@ -28,11 +28,11 @@ class SpecToolAppInputStatic:
             '''class AppInputs:''',
             f'''{self.i1}"""App Inputs"""''',
             '',
-            f'''{self.i1}def __init__(self, inputs: 'BaseModel') -> None:''',
+            f'''{self.i1}def __init__(self, inputs: 'BaseModel'):''',
             f'''{self.i2}"""Initialize class properties."""''',
             f'''{self.i2}self.inputs = inputs''',
             '',
-            f'''{self.i1}def update_inputs(self) -> None:''',
+            f'''{self.i1}def update_inputs(self):''',
             f'''{self.i2}"""Add custom App models to inputs.''',
             '',
             f'''{self.i2}Input will be validate when the model is added an any exceptions will''',
@@ -94,7 +94,7 @@ class SpecToolAppInputStatic:
             '''class AppInputs:''',
             f'''{self.i1}"""App Inputs"""''',
             '',
-            f'''{self.i1}def __init__(self, inputs: 'BaseModel') -> None:''',
+            f'''{self.i1}def __init__(self, inputs: 'BaseModel'):''',
             f'''{self.i2}"""Initialize class properties."""''',
             f'''{self.i2}self.inputs = inputs''',
             '',
@@ -104,7 +104,7 @@ class SpecToolAppInputStatic:
             f'''{self.i2}action_model_map = {cmm}''',
             f'''{self.i2}return action_model_map.get(tc_action)''',
             '',
-            f'''{self.i1}def update_inputs(self) -> None:''',
+            f'''{self.i1}def update_inputs(self):''',
             f'''{self.i2}"""Add custom App models to inputs.''',
             '',
             f'''{self.i2}Input will be validate when the model is added an any exceptions will''',

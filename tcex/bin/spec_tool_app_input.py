@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 class SpecToolAppInput(BinABC):
     """Generate App Config File"""
 
-    def __init__(self) -> None:
+    def __init__(self):
         """Initialize class properties."""
         super().__init__()
 
@@ -35,7 +35,7 @@ class SpecToolAppInput(BinABC):
         self.permutations = Permutation(self.log)
         self.report_mismatch = []
 
-    def _add_action_classes(self) -> None:
+    def _add_action_classes(self):
         """Add actions to the App."""
         for action in self._tc_actions:
             class_name = self._gen_tc_action_class_name(action)
@@ -44,14 +44,14 @@ class SpecToolAppInput(BinABC):
 
     def _add_input_to_action_class(
         self, applies_to_all: bool, param_data: 'ParamsModel', tc_action: Optional[str] = None
-    ) -> None:
+    ):
         """Add input data to Action class."""
         tc_action_class = 'AppBaseModel'
         if applies_to_all is False:
             tc_action_class = self._gen_tc_action_class_name(tc_action)
         self.app_inputs_data[tc_action_class][param_data.name] = param_data
 
-    def _add_typing_import_module(self, type_: str) -> None:
+    def _add_typing_import_module(self, type_: str):
         """Add the appropriate import module for typing."""
         if 'List[' in type_:
             self.typing_modules.add('List')
@@ -73,7 +73,7 @@ class SpecToolAppInput(BinABC):
         return _comment_map.get(model_class, _class_comment)
 
     @property
-    def _code_app_inputs_data(self) -> None:
+    def _code_app_inputs_data(self):
         """Return app_inputs.py input data."""
         _code = []
         # sorting of the inputs can only be done at this point
@@ -211,7 +211,7 @@ class SpecToolAppInput(BinABC):
             return type_data
         return type_data
 
-    def _generate_app_inputs_to_action(self) -> None:
+    def _generate_app_inputs_to_action(self):
         """Generate App Input dict from install.json and layout.json."""
         if self.ij.model.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
             for ij_data in self.ij.model.params_dict.values():
@@ -518,7 +518,7 @@ class SpecToolAppInput(BinABC):
             self._add_action_classes()
         return self._app_inputs_data
 
-    def generate(self) -> None:
+    def generate(self):
         """Generate App Config File"""
         self.log.debug('--- generate: AppConfig ---')
 

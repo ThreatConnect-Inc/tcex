@@ -35,7 +35,7 @@ class Artifacts(ObjectCollectionABC):
         params (dict): Additional query params (see example above).
     """
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs):
         """Initialize class properties."""
         super().__init__(
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
@@ -81,7 +81,7 @@ class Artifact(ObjectABC):
         type (str, kwargs): The **type** for the Artifact.
     """
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs):
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
 
@@ -102,7 +102,7 @@ class Artifact(ObjectABC):
         return self._model
 
     @model.setter
-    def model(self, data: Union['ArtifactModel', dict]) -> None:
+    def model(self, data: Union['ArtifactModel', dict]):
         """Create model using the provided data."""
         if isinstance(data, type(self.model)):
             # provided data is already a model, nothing required to change
@@ -144,7 +144,7 @@ class Artifact(ObjectABC):
 
         yield from self._iterate_over_sublist(Notes)
 
-    def stage_associated_group(self, data: Union[dict, 'ObjectABC', 'GroupModel']) -> None:
+    def stage_associated_group(self, data: Union[dict, 'ObjectABC', 'GroupModel']):
         """Stage group on the object."""
         if isinstance(data, ObjectABC):
             data = data.model
@@ -156,7 +156,7 @@ class Artifact(ObjectABC):
         data._staged = True
         self.model.associated_groups.data.append(data)
 
-    def stage_associated_indicator(self, data: Union[dict, 'ObjectABC', 'IndicatorModel']) -> None:
+    def stage_associated_indicator(self, data: Union[dict, 'ObjectABC', 'IndicatorModel']):
         """Stage indicator on the object."""
         if isinstance(data, ObjectABC):
             data = data.model
@@ -168,7 +168,7 @@ class Artifact(ObjectABC):
         data._staged = True
         self.model.associated_indicators.data.append(data)
 
-    def stage_note(self, data: Union[dict, 'ObjectABC', 'NoteModel']) -> None:
+    def stage_note(self, data: Union[dict, 'ObjectABC', 'NoteModel']):
         """Stage note on the object."""
         if isinstance(data, ObjectABC):
             data = data.model

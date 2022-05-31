@@ -25,7 +25,7 @@ from tcex.bin.spec_tool_tcex_json import SpecToolTcexJson
 class SpecTool(BinABC):
     """Generate App Config Files"""
 
-    def __init__(self, overwrite: bool = False) -> None:
+    def __init__(self, overwrite: bool = False):
         """Initialize class properties."""
         super().__init__()
         self.overwrite = overwrite
@@ -106,7 +106,7 @@ class SpecTool(BinABC):
 
         return _code
 
-    def generate_app_input(self) -> None:
+    def generate_app_input(self):
         """Generate the app_input.py file."""
         # force migration of app.yaml file
         _ = self.asy.model.app_id
@@ -126,7 +126,7 @@ class SpecTool(BinABC):
                 )
             self.report_data['Mismatch Report'] = _report
 
-    def generate_app_spec(self, schema: bool) -> None:
+    def generate_app_spec(self, schema: bool):
         """Generate the app_spec.yml file."""
         gen = SpecToolAppSpecYml()
         if schema:
@@ -139,7 +139,7 @@ class SpecTool(BinABC):
 
             self.write_app_file(gen.filename, f'{config}\n')
 
-    def generate_install_json(self, schema: bool) -> None:
+    def generate_install_json(self, schema: bool):
         """Generate the install.json file."""
         gen = SpecToolInstallJson(self.asy)
         if schema:
@@ -153,9 +153,12 @@ class SpecTool(BinABC):
             except ValidationError as ex:
                 self.print_failure(f'Failed Generating install.json:\n{ex}')
 
+            # exclude_defaults - if False then all unused fields are added in - not good.
+            # exclude_none - this should be safe to leave as True.
+            # exclude_unset - this should be safe to leave as True.
             config = ij.json(
                 by_alias=True,
-                exclude_defaults=False,
+                exclude_defaults=True,
                 exclude_none=True,
                 exclude_unset=True,
                 indent=2,
@@ -163,7 +166,7 @@ class SpecTool(BinABC):
             )
             self.write_app_file(gen.filename, f'{config}\n')
 
-    def generate_layout_json(self, schema: bool) -> None:
+    def generate_layout_json(self, schema: bool):
         """Generate the layout.json file."""
         gen = SpecToolLayoutJson(self.asy)
         if schema:
@@ -178,9 +181,12 @@ class SpecTool(BinABC):
                 except ValidationError as ex:
                     self.print_failure(f'Failed Generating layout.json:\n{ex}')
 
+                # exclude_defaults - if False then all unused fields are added in - not good.
+                # exclude_none - this should be safe to leave as True.
+                # exclude_unset - this should be safe to leave as True.
                 config = lj.json(
                     by_alias=True,
-                    exclude_defaults=False,
+                    exclude_defaults=True,
                     exclude_none=True,
                     exclude_unset=True,
                     indent=2,
@@ -188,7 +194,7 @@ class SpecTool(BinABC):
                 )
                 self.write_app_file(gen.filename, f'{config}\n')
 
-    def generate_job_json(self, schema: bool) -> None:
+    def generate_job_json(self, schema: bool):
         """Generate the job.json file."""
         gen = SpecToolJobJson(self.asy)
         if schema:
@@ -202,7 +208,7 @@ class SpecTool(BinABC):
                     if job is not None:
                         config = job.json(
                             by_alias=True,
-                            exclude_defaults=False,
+                            exclude_defaults=True,
                             exclude_none=True,
                             exclude_unset=True,
                             indent=2,
@@ -212,7 +218,7 @@ class SpecTool(BinABC):
             except ValidationError as ex:
                 self.print_failure(f'Failed Generating job.json:\n{ex}')
 
-    def generate_readme_md(self) -> None:
+    def generate_readme_md(self):
         """Generate the README.me file."""
         # check that app_spec.yml exists
         self._check_has_spec()
@@ -221,7 +227,7 @@ class SpecTool(BinABC):
         readme_md = gen.generate()
         self.write_app_file(gen.filename, '\n'.join(readme_md))
 
-    def generate_tcex_json(self, schema: bool) -> None:
+    def generate_tcex_json(self, schema: bool):
         """Generate the tcex.json file."""
         gen = SpecToolTcexJson(self.asy)
         if schema:
@@ -235,9 +241,12 @@ class SpecTool(BinABC):
             except ValidationError as ex:
                 self.print_failure(f'Failed Generating tcex.json:\n{ex}')
 
+            # exclude_defaults - if False then all unused fields are added in - not good.
+            # exclude_none - this should be safe to leave as True.
+            # exclude_unset - this should be safe to leave as True.
             config = tj.json(
                 by_alias=True,
-                exclude_defaults=False,
+                exclude_defaults=True,
                 exclude_none=True,
                 exclude_unset=True,
                 indent=2,
@@ -245,7 +254,7 @@ class SpecTool(BinABC):
             )
             self.write_app_file(gen.filename, f'{config}\n')
 
-    def rename_app_file(self, src_filename: str, dest_filename: str) -> None:
+    def rename_app_file(self, src_filename: str, dest_filename: str):
         """Rename the app.yaml file to app_spec.yml."""
         if os.path.isfile(src_filename):
             self.log.debug(

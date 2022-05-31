@@ -25,10 +25,10 @@ class Integer(int):
     lt: OptionalInt = None
 
     @classmethod
-    def __modify_schema__(cls, field_schema: Dict[str, Any]) -> None:
+    def __modify_schema__(cls, field_schema: Dict[str, Any]):
         """Modify the field schema."""
 
-        def update_not_none(mapping: Dict[Any, Any], **update: Any) -> None:
+        def update_not_none(mapping: Dict[Any, Any], **update: Any):
             mapping.update({k: v for k, v in update.items() if v is not None})
 
         update_not_none(

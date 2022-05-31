@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class SpecToolLayoutJson(BinABC):
     """Generate App Config File"""
 
-    def __init__(self, asy: 'AppSpecYml') -> None:
+    def __init__(self, asy: 'AppSpecYml'):
         """Initialize class properties."""
         super().__init__()
         self.asy = asy
@@ -22,7 +22,7 @@ class SpecToolLayoutJson(BinABC):
         # properties
         self.filename = 'layout.json'
 
-    def generate(self) -> None:
+    def generate(self):
         """Generate the layout.json file data."""
 
         layout_json_data = {

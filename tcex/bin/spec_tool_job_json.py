@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 class SpecToolJobJson(BinABC):
     """Generate App Config File"""
 
-    def __init__(self, asy: 'AppSpecYml') -> None:
+    def __init__(self, asy: 'AppSpecYml'):
         """Initialize class properties."""
         super().__init__()
         self.asy = asy
@@ -23,7 +23,7 @@ class SpecToolJobJson(BinABC):
         # properties
         self.tj = TcexJson(logger=self.log)
 
-    def generate(self) -> None:
+    def generate(self):
         """Generate the layout.json file data."""
         if self.asy.model.organization and self.asy.model.organization.feeds:
             for feed in self.asy.model.organization.feeds:

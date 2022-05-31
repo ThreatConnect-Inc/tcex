@@ -68,7 +68,7 @@ class TcSession(Session):
         # Add Retry
         self.retry()
 
-    def _log_curl(self, response: 'Response') -> None:
+    def _log_curl(self, response: 'Response'):
         """Log the curl equivalent command."""
 
         # don't show curl message for logging commands

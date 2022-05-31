@@ -36,7 +36,7 @@ class PlaybookCreate:
         self.utils = Utils()
 
     @staticmethod
-    def _check_iterable(value: str, validate: bool) -> None:
+    def _check_iterable(value: str, validate: bool):
         """Raise an exception if value is not an Iterable.
 
         Validation:
@@ -71,7 +71,7 @@ class PlaybookCreate:
 
         return invalid
 
-    def _check_requested(self, variable: str, when_requested: bool) -> None:
+    def _check_requested(self, variable: str, when_requested: bool):
         """Return True if output variable was requested by downstream app."""
         if when_requested is True and not self.is_requested(variable):
             self.log.debug(f'Variable {variable} was NOT requested by downstream app.')
@@ -99,7 +99,7 @@ class PlaybookCreate:
 
         return value
 
-    def _create_data(self, key: str, value: Any) -> None:
+    def _create_data(self, key: str, value: Any):
         """Write data to key value store."""
         self.log.debug(f'writing variable {key.strip()}')
         try:

@@ -35,7 +35,7 @@ class Tasks(ObjectCollectionABC):
         params (dict): Additional query params (see example above).
     """
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs):
         """Initialize class properties."""
         super().__init__(
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
@@ -80,7 +80,7 @@ class Task(ObjectABC):
         xid (str, kwargs): The **xid** for the Task.
     """
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs):
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
 
@@ -101,7 +101,7 @@ class Task(ObjectABC):
         return self._model
 
     @model.setter
-    def model(self, data: Union['TaskModel', dict]) -> None:
+    def model(self, data: Union['TaskModel', dict]):
         """Create model using the provided data."""
         if isinstance(data, type(self.model)):
             # provided data is already a model, nothing required to change
@@ -135,7 +135,7 @@ class Task(ObjectABC):
 
         yield from self._iterate_over_sublist(Notes)
 
-    def stage_artifact(self, data: Union[dict, 'ObjectABC', 'ArtifactModel']) -> None:
+    def stage_artifact(self, data: Union[dict, 'ObjectABC', 'ArtifactModel']):
         """Stage artifact on the object."""
         if isinstance(data, ObjectABC):
             data = data.model
@@ -148,7 +148,7 @@ class Task(ObjectABC):
         self.model.artifacts.data.append(data)
 
     # pylint: disable=redefined-builtin
-    def stage_assignee(self, type: str, data: Union[dict, 'ObjectABC', 'ArtifactModel']) -> None:
+    def stage_assignee(self, type: str, data: Union[dict, 'ObjectABC', 'ArtifactModel']):
         """Stage artifact on the object."""
         if isinstance(data, ObjectABC):
             data = data.model
@@ -164,7 +164,7 @@ class Task(ObjectABC):
         self.model.assignee.type = type
         self.model.assignee.data = data
 
-    def stage_note(self, data: Union[dict, 'ObjectABC', 'NoteModel']) -> None:
+    def stage_note(self, data: Union[dict, 'ObjectABC', 'NoteModel']):
         """Stage note on the object."""
         if isinstance(data, ObjectABC):
             data = data.model

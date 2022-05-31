@@ -33,7 +33,7 @@ class BatchSubmit:
         playbook_triggers_enabled: Optional[bool] = False,
         tag_write_type: Optional[str] = 'Replace',
         security_label_write_type: Optional[str] = 'Replace',
-    ) -> None:
+    ):
         """Initialize Class properties.
 
         Args:
@@ -86,7 +86,7 @@ class BatchSubmit:
         return self._action
 
     @action.setter
-    def action(self, action) -> None:
+    def action(self, action):
         """Set batch action."""
         self._action = action
 
@@ -96,7 +96,7 @@ class BatchSubmit:
         return self._attribute_write_type
 
     @attribute_write_type.setter
-    def attribute_write_type(self, write_type: str) -> None:
+    def attribute_write_type(self, write_type: str):
         """Set batch attribute write type."""
         self._attribute_write_type = write_type
 
@@ -199,7 +199,7 @@ class BatchSubmit:
 
         return errors
 
-    def file_merge_mode(self, value: str) -> None:
+    def file_merge_mode(self, value: str):
         """Set the file merge mode for the entire batch job.
 
         Args:
@@ -213,7 +213,7 @@ class BatchSubmit:
         return self._halt_on_error
 
     @halt_on_error.setter
-    def halt_on_error(self, halt_on_error: bool) -> None:
+    def halt_on_error(self, halt_on_error: bool):
         """Set batch halt on error setting."""
         self._halt_on_error = halt_on_error
 
@@ -223,7 +223,7 @@ class BatchSubmit:
         return self._halt_on_batch_error
 
     @halt_on_batch_error.setter
-    def halt_on_batch_error(self, value: bool) -> None:
+    def halt_on_batch_error(self, value: bool):
         """Set batch halt on batch error value."""
         if isinstance(value, bool):
             self._halt_on_batch_error = value
@@ -234,7 +234,7 @@ class BatchSubmit:
         return self._halt_on_poll_error
 
     @halt_on_poll_error.setter
-    def halt_on_poll_error(self, value: bool) -> None:
+    def halt_on_poll_error(self, value: bool):
         """Set batch halt on poll error value."""
         if isinstance(value, bool):
             self._halt_on_poll_error = value
@@ -379,7 +379,7 @@ class BatchSubmit:
         return self._poll_timeout
 
     @poll_timeout.setter
-    def poll_timeout(self, seconds: int) -> None:
+    def poll_timeout(self, seconds: int):
         """Set the poll timeout value."""
         self._poll_timeout = int(seconds)
 
@@ -389,7 +389,7 @@ class BatchSubmit:
         return self._security_label_write_type
 
     @security_label_write_type.setter
-    def security_label_write_type(self, write_type: str) -> None:
+    def security_label_write_type(self, write_type: str):
         """Set batch security label write type."""
         self._security_label_write_type = write_type
 
@@ -499,6 +499,6 @@ class BatchSubmit:
         return self._tag_write_type
 
     @tag_write_type.setter
-    def tag_write_type(self, write_type: str) -> None:
+    def tag_write_type(self, write_type: str):
         """Set batch tag write type."""
         self._tag_write_type = write_type

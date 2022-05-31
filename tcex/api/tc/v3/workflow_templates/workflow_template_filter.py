@@ -16,7 +16,7 @@ class WorkflowTemplateFilter(FilterABC):
         """Return the API endpoint."""
         return ApiEndpoints.WORKFLOW_TEMPLATES.value
 
-    def active(self, operator: Enum, active: bool) -> None:
+    def active(self, operator: Enum, active: bool):
         """Filter Active based on **active** keyword.
 
         Args:
@@ -25,7 +25,7 @@ class WorkflowTemplateFilter(FilterABC):
         """
         self._tql.add_filter('active', operator, active, TqlType.BOOLEAN)
 
-    def description(self, operator: Enum, description: str) -> None:
+    def description(self, operator: Enum, description: str):
         """Filter Description based on **description** keyword.
 
         Args:
@@ -34,7 +34,7 @@ class WorkflowTemplateFilter(FilterABC):
         """
         self._tql.add_filter('description', operator, description, TqlType.STRING)
 
-    def id(self, operator: Enum, id: int) -> None:  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int):  # pylint: disable=redefined-builtin
         """Filter ID based on **id** keyword.
 
         Args:
@@ -43,7 +43,7 @@ class WorkflowTemplateFilter(FilterABC):
         """
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
-    def name(self, operator: Enum, name: str) -> None:
+    def name(self, operator: Enum, name: str):
         """Filter Name based on **name** keyword.
 
         Args:
@@ -52,7 +52,7 @@ class WorkflowTemplateFilter(FilterABC):
         """
         self._tql.add_filter('name', operator, name, TqlType.STRING)
 
-    def owner(self, operator: Enum, owner: int) -> None:
+    def owner(self, operator: Enum, owner: int):
         """Filter Owner ID based on **owner** keyword.
 
         Args:
@@ -61,7 +61,7 @@ class WorkflowTemplateFilter(FilterABC):
         """
         self._tql.add_filter('owner', operator, owner, TqlType.INTEGER)
 
-    def owner_name(self, operator: Enum, owner_name: str) -> None:
+    def owner_name(self, operator: Enum, owner_name: str):
         """Filter Owner Name based on **ownerName** keyword.
 
         Args:
@@ -70,7 +70,7 @@ class WorkflowTemplateFilter(FilterABC):
         """
         self._tql.add_filter('ownerName', operator, owner_name, TqlType.STRING)
 
-    def target_id(self, operator: Enum, target_id: int) -> None:
+    def target_id(self, operator: Enum, target_id: int):
         """Filter Target ID based on **targetId** keyword.
 
         Args:
@@ -79,7 +79,7 @@ class WorkflowTemplateFilter(FilterABC):
         """
         self._tql.add_filter('targetId', operator, target_id, TqlType.INTEGER)
 
-    def target_type(self, operator: Enum, target_type: str) -> None:
+    def target_type(self, operator: Enum, target_type: str):
         """Filter Target Type based on **targetType** keyword.
 
         Args:
@@ -88,7 +88,7 @@ class WorkflowTemplateFilter(FilterABC):
         """
         self._tql.add_filter('targetType', operator, target_type, TqlType.STRING)
 
-    def version(self, operator: Enum, version: int) -> None:
+    def version(self, operator: Enum, version: int):
         """Filter Version based on **version** keyword.
 
         Args:

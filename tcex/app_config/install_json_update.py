@@ -11,7 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
 class InstallJsonUpdate:
     """Update install.json file with current standards and schema."""
 
-    def __init__(self, ij: 'InstallJson') -> None:  # pylint: disable=E0601
+    def __init__(self, ij: 'InstallJson'):  # pylint: disable=E0601
         """Initialize class properties."""
         self.ij = ij
 
@@ -22,7 +22,7 @@ class InstallJsonUpdate:
         sequence: Optional[bool] = True,
         valid_values: Optional[bool] = True,
         playbook_data_types: Optional[bool] = True,
-    ) -> None:
+    ):
         """Update the profile with all required changes.
 
         Args:
@@ -55,7 +55,7 @@ class InstallJsonUpdate:
         # write updated profile
         self.ij.write()
 
-    # def update_display_name(self, json_data: dict) -> None:
+    # def update_display_name(self, json_data: dict):
     #     """Update the displayName parameter."""
     #     if not self.ij.model.display_name:
     #         display_name = os.path.basename(os.getcwd()).replace(self.app_prefix, '')
@@ -63,7 +63,7 @@ class InstallJsonUpdate:
     #         display_name = ' '.join([a.title() for a in display_name.split(' ')])
     #     self.ij.model.display_name = self.ij.model.display_name or display_name
 
-    def update_features(self) -> None:
+    def update_features(self):
         """Update feature set based on App type."""
         features = ['runtimeVariables']
 
@@ -113,16 +113,16 @@ class InstallJsonUpdate:
 
         self.ij.model.features = sorted(list(set(features)))
 
-    def update_program_main(self) -> None:
+    def update_program_main(self):
         """Update program main."""
         self.ij.model.program_main = 'run'
 
-    def update_sequence_numbers(self) -> None:
+    def update_sequence_numbers(self):
         """Update program sequence numbers."""
         for sequence, param in enumerate(self.ij.model.params, start=1):
             param.sequence = sequence
 
-    def update_valid_values(self) -> None:
+    def update_valid_values(self):
         """Update program main on App type."""
         for param in self.ij.model.params:
             if param.type not in ['String', 'KeyValueList']:
@@ -158,7 +158,7 @@ class InstallJsonUpdate:
                 if f'${{ORGANIZATION:{store}}}' in param.valid_values:
                     param.valid_values.remove(f'${{ORGANIZATION:{store}}}')
 
-    def update_playbook_data_types(self) -> None:
+    def update_playbook_data_types(self):
         """Update program main on App type."""
         if self.ij.model.runtime_level.lower() != 'playbook':
             return

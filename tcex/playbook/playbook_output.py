@@ -18,7 +18,7 @@ class PlaybookOutput(dict):
         playbook: An instance of Playbook.
     """
 
-    def __init__(self, playbook: 'Playbook') -> None:
+    def __init__(self, playbook: 'Playbook'):
         """Initialize the class properties."""
         super().__init__()
         self.playbook = playbook

@@ -50,10 +50,10 @@ class Sensitive:
         return len(self._sensitive_value)
 
     @classmethod
-    def __modify_schema__(cls, field_schema: Dict[str, Any]) -> None:
+    def __modify_schema__(cls, field_schema: Dict[str, Any]):
         """Modify the field schema."""
 
-        def _update_not_none(mapping: Dict[Any, Any], **update: Any) -> None:
+        def _update_not_none(mapping: Dict[Any, Any], **update: Any):
             mapping.update({k: v for k, v in update.items() if v is not None})
 
         _update_not_none(

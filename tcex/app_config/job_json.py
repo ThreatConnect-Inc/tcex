@@ -52,12 +52,12 @@ class JobJson(metaclass=Singleton):
         return _contents
 
     @cached_property
-    def model(self) -> JobJsonModel:
+    def model(self) -> 'JobJsonModel':
         """Return the Install JSON model."""
         return JobJsonModel(**self.contents)
 
     # TODO: [low] possibly add auto fix of version and program name and then uncomment this code.
-    # def write(self) -> None:
+    # def write(self):
     #     """Write current data file."""
     #     data = self.model.json(
     #         by_alias=True, exclude_defaults=True, exclude_none=True, indent=2, sort_keys=True

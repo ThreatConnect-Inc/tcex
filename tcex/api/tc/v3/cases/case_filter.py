@@ -18,7 +18,7 @@ class CaseFilter(FilterABC):
         """Return the API endpoint."""
         return ApiEndpoints.CASES.value
 
-    def assigned_to_user_or_group(self, operator: Enum, assigned_to_user_or_group: str) -> None:
+    def assigned_to_user_or_group(self, operator: Enum, assigned_to_user_or_group: str):
         """Filter Assigned To User or Group based on **assignedToUserOrGroup** keyword.
 
         Args:
@@ -29,7 +29,7 @@ class CaseFilter(FilterABC):
             'assignedToUserOrGroup', operator, assigned_to_user_or_group, TqlType.STRING
         )
 
-    def assignee_name(self, operator: Enum, assignee_name: str) -> None:
+    def assignee_name(self, operator: Enum, assignee_name: str):
         """Filter Assignee based on **assigneeName** keyword.
 
         Args:
@@ -38,7 +38,7 @@ class CaseFilter(FilterABC):
         """
         self._tql.add_filter('assigneeName', operator, assignee_name, TqlType.STRING)
 
-    def attribute(self, operator: Enum, attribute: str) -> None:
+    def attribute(self, operator: Enum, attribute: str):
         """Filter attribute based on **attribute** keyword.
 
         Args:
@@ -47,7 +47,7 @@ class CaseFilter(FilterABC):
         """
         self._tql.add_filter('attribute', operator, attribute, TqlType.STRING)
 
-    def case_close_time(self, operator: Enum, case_close_time: str) -> None:
+    def case_close_time(self, operator: Enum, case_close_time: str):
         """Filter Case Close Time based on **caseCloseTime** keyword.
 
         Args:
@@ -57,7 +57,7 @@ class CaseFilter(FilterABC):
         case_close_time = self.utils.any_to_datetime(case_close_time).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('caseCloseTime', operator, case_close_time, TqlType.STRING)
 
-    def case_close_user(self, operator: Enum, case_close_user: str) -> None:
+    def case_close_user(self, operator: Enum, case_close_user: str):
         """Filter Case Close User based on **caseCloseUser** keyword.
 
         Args:
@@ -66,7 +66,7 @@ class CaseFilter(FilterABC):
         """
         self._tql.add_filter('caseCloseUser', operator, case_close_user, TqlType.STRING)
 
-    def case_detection_time(self, operator: Enum, case_detection_time: str) -> None:
+    def case_detection_time(self, operator: Enum, case_detection_time: str):
         """Filter Case Detection Time based on **caseDetectionTime** keyword.
 
         Args:
@@ -78,7 +78,7 @@ class CaseFilter(FilterABC):
         )
         self._tql.add_filter('caseDetectionTime', operator, case_detection_time, TqlType.STRING)
 
-    def case_detection_user(self, operator: Enum, case_detection_user: str) -> None:
+    def case_detection_user(self, operator: Enum, case_detection_user: str):
         """Filter Case Detection User based on **caseDetectionUser** keyword.
 
         Args:
@@ -87,7 +87,7 @@ class CaseFilter(FilterABC):
         """
         self._tql.add_filter('caseDetectionUser', operator, case_detection_user, TqlType.STRING)
 
-    def case_occurrence_time(self, operator: Enum, case_occurrence_time: str) -> None:
+    def case_occurrence_time(self, operator: Enum, case_occurrence_time: str):
         """Filter Case Occurrence Time based on **caseOccurrenceTime** keyword.
 
         Args:
@@ -99,7 +99,7 @@ class CaseFilter(FilterABC):
         )
         self._tql.add_filter('caseOccurrenceTime', operator, case_occurrence_time, TqlType.STRING)
 
-    def case_occurrence_user(self, operator: Enum, case_occurrence_user: str) -> None:
+    def case_occurrence_user(self, operator: Enum, case_occurrence_user: str):
         """Filter Case Occurrence User based on **caseOccurrenceUser** keyword.
 
         Args:
@@ -108,7 +108,7 @@ class CaseFilter(FilterABC):
         """
         self._tql.add_filter('caseOccurrenceUser', operator, case_occurrence_user, TqlType.STRING)
 
-    def case_open_time(self, operator: Enum, case_open_time: str) -> None:
+    def case_open_time(self, operator: Enum, case_open_time: str):
         """Filter Case Open Time based on **caseOpenTime** keyword.
 
         Args:
@@ -118,7 +118,7 @@ class CaseFilter(FilterABC):
         case_open_time = self.utils.any_to_datetime(case_open_time).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('caseOpenTime', operator, case_open_time, TqlType.STRING)
 
-    def case_open_user(self, operator: Enum, case_open_user: str) -> None:
+    def case_open_user(self, operator: Enum, case_open_user: str):
         """Filter Case Opening User based on **caseOpenUser** keyword.
 
         Args:
@@ -127,7 +127,7 @@ class CaseFilter(FilterABC):
         """
         self._tql.add_filter('caseOpenUser', operator, case_open_user, TqlType.STRING)
 
-    def created_by(self, operator: Enum, created_by: str) -> None:
+    def created_by(self, operator: Enum, created_by: str):
         """Filter Creator based on **createdBy** keyword.
 
         Args:
@@ -136,7 +136,7 @@ class CaseFilter(FilterABC):
         """
         self._tql.add_filter('createdBy', operator, created_by, TqlType.STRING)
 
-    def created_by_id(self, operator: Enum, created_by_id: int) -> None:
+    def created_by_id(self, operator: Enum, created_by_id: int):
         """Filter Creator ID based on **createdById** keyword.
 
         Args:
@@ -145,7 +145,7 @@ class CaseFilter(FilterABC):
         """
         self._tql.add_filter('createdById', operator, created_by_id, TqlType.INTEGER)
 
-    def date_added(self, operator: Enum, date_added: str) -> None:
+    def date_added(self, operator: Enum, date_added: str):
         """Filter Date Added based on **dateAdded** keyword.
 
         Args:
@@ -155,7 +155,7 @@ class CaseFilter(FilterABC):
         date_added = self.utils.any_to_datetime(date_added).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('dateAdded', operator, date_added, TqlType.STRING)
 
-    def description(self, operator: Enum, description: str) -> None:
+    def description(self, operator: Enum, description: str):
         """Filter Description based on **description** keyword.
 
         Args:
@@ -231,7 +231,7 @@ class CaseFilter(FilterABC):
         self._tql.add_filter('hasTask', TqlOperator.EQ, tasks, TqlType.SUB_QUERY)
         return tasks
 
-    def has_workflow_template(self, operator: Enum, has_workflow_template: int) -> None:
+    def has_workflow_template(self, operator: Enum, has_workflow_template: int):
         """Filter Associated Workflow Template based on **hasWorkflowTemplate** keyword.
 
         Args:
@@ -242,7 +242,7 @@ class CaseFilter(FilterABC):
             'hasWorkflowTemplate', operator, has_workflow_template, TqlType.INTEGER
         )
 
-    def id(self, operator: Enum, id: int) -> None:  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int):  # pylint: disable=redefined-builtin
         """Filter ID based on **id** keyword.
 
         Args:
@@ -251,7 +251,7 @@ class CaseFilter(FilterABC):
         """
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
-    def id_as_string(self, operator: Enum, id_as_string: str) -> None:
+    def id_as_string(self, operator: Enum, id_as_string: str):
         """Filter ID As String based on **idAsString** keyword.
 
         Args:
@@ -260,7 +260,7 @@ class CaseFilter(FilterABC):
         """
         self._tql.add_filter('idAsString', operator, id_as_string, TqlType.STRING)
 
-    def name(self, operator: Enum, name: str) -> None:
+    def name(self, operator: Enum, name: str):
         """Filter Name based on **name** keyword.
 
         Args:
@@ -269,7 +269,7 @@ class CaseFilter(FilterABC):
         """
         self._tql.add_filter('name', operator, name, TqlType.STRING)
 
-    def owner(self, operator: Enum, owner: int) -> None:
+    def owner(self, operator: Enum, owner: int):
         """Filter Owner ID based on **owner** keyword.
 
         Args:
@@ -278,7 +278,7 @@ class CaseFilter(FilterABC):
         """
         self._tql.add_filter('owner', operator, owner, TqlType.INTEGER)
 
-    def owner_name(self, operator: Enum, owner_name: str) -> None:
+    def owner_name(self, operator: Enum, owner_name: str):
         """Filter Owner Name based on **ownerName** keyword.
 
         Args:
@@ -287,7 +287,7 @@ class CaseFilter(FilterABC):
         """
         self._tql.add_filter('ownerName', operator, owner_name, TqlType.STRING)
 
-    def resolution(self, operator: Enum, resolution: str) -> None:
+    def resolution(self, operator: Enum, resolution: str):
         """Filter Resolution based on **resolution** keyword.
 
         Args:
@@ -296,7 +296,7 @@ class CaseFilter(FilterABC):
         """
         self._tql.add_filter('resolution', operator, resolution, TqlType.STRING)
 
-    def severity(self, operator: Enum, severity: str) -> None:
+    def severity(self, operator: Enum, severity: str):
         """Filter Severity based on **severity** keyword.
 
         Args:
@@ -305,7 +305,7 @@ class CaseFilter(FilterABC):
         """
         self._tql.add_filter('severity', operator, severity, TqlType.STRING)
 
-    def status(self, operator: Enum, status: str) -> None:
+    def status(self, operator: Enum, status: str):
         """Filter Status based on **status** keyword.
 
         Args:
@@ -314,7 +314,7 @@ class CaseFilter(FilterABC):
         """
         self._tql.add_filter('status', operator, status, TqlType.STRING)
 
-    def tag(self, operator: Enum, tag: str) -> None:
+    def tag(self, operator: Enum, tag: str):
         """Filter Tag based on **tag** keyword.
 
         Args:
@@ -323,7 +323,7 @@ class CaseFilter(FilterABC):
         """
         self._tql.add_filter('tag', operator, tag, TqlType.STRING)
 
-    def target_id(self, operator: Enum, target_id: int) -> None:
+    def target_id(self, operator: Enum, target_id: int):
         """Filter Assignee ID based on **targetId** keyword.
 
         Args:
@@ -332,7 +332,7 @@ class CaseFilter(FilterABC):
         """
         self._tql.add_filter('targetId', operator, target_id, TqlType.INTEGER)
 
-    def target_type(self, operator: Enum, target_type: str) -> None:
+    def target_type(self, operator: Enum, target_type: str):
         """Filter Target Type based on **targetType** keyword.
 
         Args:
@@ -341,7 +341,7 @@ class CaseFilter(FilterABC):
         """
         self._tql.add_filter('targetType', operator, target_type, TqlType.STRING)
 
-    def type_name(self, operator: Enum, type_name: str) -> None:
+    def type_name(self, operator: Enum, type_name: str):
         """Filter Name based on **typeName** keyword.
 
         Args:
@@ -350,7 +350,7 @@ class CaseFilter(FilterABC):
         """
         self._tql.add_filter('typeName', operator, type_name, TqlType.STRING)
 
-    def xid(self, operator: Enum, xid: str) -> None:
+    def xid(self, operator: Enum, xid: str):
         """Filter XID based on **xid** keyword.
 
         Args:

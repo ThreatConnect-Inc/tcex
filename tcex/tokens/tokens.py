@@ -104,7 +104,7 @@ class Tokens:
             key: str = self.trigger_id
         return key
 
-    def register_token(self, key: str, token: Sensitive, expires: int) -> None:
+    def register_token(self, key: str, token: Sensitive, expires: int):
         """Register a token.
 
         Args:
@@ -124,7 +124,7 @@ class Tokens:
             f'token={token}, expiration={expires}'
         )
 
-    def renew_token(self, token: Sensitive) -> None:
+    def renew_token(self, token: Sensitive):
         """Renew expired ThreatConnect Token.
 
         This method will renew a token and update the token_map with new token and expiration.
@@ -185,7 +185,7 @@ class Tokens:
         return threading.current_thread().name
 
     @property
-    def token(self) -> Optional[Sensitive]:
+    def token(self) -> Optional['Sensitive']:
         """Return token for current thread."""
         # wait until renewal barrier is set to True (meaning no renewal is in progress). If already
         # true, then simply proceed.
@@ -219,7 +219,7 @@ class Tokens:
         raise exc
 
     @token.setter
-    def token(self, token: Sensitive) -> None:
+    def token(self, token: 'Sensitive'):
         """Set token for current thread."""
         self.token_map.setdefault(self.key, {})['token'] = Sensitive(token)
 
@@ -229,18 +229,18 @@ class Tokens:
         return self.token_map.get(self.key, {}).get('token_expires')
 
     @token_expires.setter
-    def token_expires(self, expires) -> None:
+    def token_expires(self, expires):
         """Set token expires for current thread."""
         self.token_map.setdefault(self.key, {})['token_expires'] = int(expires)
 
-    def token_renewal(self) -> None:
+    def token_renewal(self):
         """Start token renewal monitor thread."""
         self.monitor_thread = ExceptionThread(
             name='token-renewal', target=self.token_renewal_monitor, daemon=True
         )
         self.monitor_thread.start()
 
-    def token_renewal_monitor(self) -> None:
+    def token_renewal_monitor(self):
         """Monitor token expiration and renew when required."""
         self.log.debug('feature=token, event=renewal-monitor-started')
         self._barrier.set()
@@ -307,7 +307,7 @@ class Tokens:
             trigger_id = int(trigger_id)
         return trigger_id
 
-    def unregister_token(self, key: str) -> None:
+    def unregister_token(self, key: str):
         """Unregister a token.
 
         Args:

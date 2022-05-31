@@ -75,7 +75,7 @@ class TestInstallJson:
             assert False, f'Failed parsing file {fqfn.name} ({ex})'
 
     @staticmethod
-    def model_validate(path: str) -> None:
+    def model_validate(path: str):
         """Validate input model in and out."""
         tcex_test_dir = os.getenv('TCEX_TEST_DIR')
         ij_path = Path(os.path.join(tcex_test_dir, path))
@@ -438,22 +438,22 @@ class TestInstallJson:
         """Test method"""
         assert self.ij(app_type='tcvc').model.service_playbook_params
 
-    def test_tc_support(self) -> None:
+    def test_tc_support(self):
         """Validate install.json files."""
         self.model_validate('app_config/apps/tc')
 
-    def test_tcpb_support(self) -> None:
+    def test_tcpb_support(self):
         """Validate install.json files."""
         self.model_validate('app_config/apps/tcpb')
 
-    def test_tcva_support(self) -> None:
+    def test_tcva_support(self):
         """Validate install.json files."""
         self.model_validate('app_config/apps/tcva')
 
-    def test_tcvc_support(self) -> None:
+    def test_tcvc_support(self):
         """Validate install.json files."""
         self.model_validate('app_config/apps/tcvc')
 
-    def test_tcvw_support(self) -> None:
+    def test_tcvw_support(self):
         """Validate install.json files."""
         self.model_validate('app_config/apps/tcvw')

@@ -36,7 +36,7 @@ tcex_logger = logging.getLogger('tcex')
 class Permutation:
     """Permutations Module"""
 
-    def __init__(self, logger: Optional[logging.Logger] = None) -> None:
+    def __init__(self, logger: Optional[logging.Logger] = None):
         """Initialize Class properties"""
         self.log = logger or tcex_logger
 
@@ -49,7 +49,7 @@ class Permutation:
         self.ij = InstallJson(logger=self.log)
         self.lj = LayoutJson(logger=self.log)
 
-    def _gen_permutations(self, index: Optional[int] = 0, params: Optional[list] = None) -> None:
+    def _gen_permutations(self, index: Optional[int] = 0, params: Optional[list] = None):
         """Iterate recursively over layout.json parameter names to build permutations.
 
         .. NOTE:: Permutations are for layout.json based Apps.
@@ -139,7 +139,7 @@ class Permutation:
             yield ij_data
 
     @cached_property
-    def db_conn(self) -> sqlite3.Connection:
+    def db_conn(self) -> 'sqlite3.Connection':
         """Create a temporary in memory DB and return the connection."""
         try:
             return sqlite3.connect(':memory:')
@@ -148,7 +148,7 @@ class Permutation:
 
         return None
 
-    def db_create_table(self, table_name: str, columns: List[str]) -> None:
+    def db_create_table(self, table_name: str, columns: List[str]):
         """Create a temporary DB table.
 
         Args:
@@ -164,7 +164,7 @@ class Permutation:
         except sqlite3.Error as e:  # pragma: no cover
             self.handle_error(f'SQL create db failed - SQL: "{sql}", Error: "{e}"')
 
-    def db_drop_table(self, table_name: str) -> None:
+    def db_drop_table(self, table_name: str):
         """Drop a DB table.
 
         Args:
@@ -177,7 +177,7 @@ class Permutation:
         except sqlite3.Error as e:  # pragma: no cover
             self.handle_error(f'SQL drop db failed - SQL: "{sql}", Error: "{e}"')
 
-    def db_insert_record(self, table_name: str, columns: List[str]) -> None:
+    def db_insert_record(self, table_name: str, columns: List[str]):
         """Insert records into DB.
 
         A single row will all values as None so that values can be updated one at a
@@ -199,7 +199,7 @@ class Permutation:
         except sqlite3.OperationalError as ex:  # pragma: no cover
             self.handle_error(f'SQL insert failed - SQL: "{sql}", Error: "{ex}"')
 
-    def db_update_record(self, table_name: str, column: str, value: str) -> None:
+    def db_update_record(self, table_name: str, column: str, value: str):
         """Update a single column in the row-column create in db_insert_record.
 
         Args:
@@ -240,7 +240,7 @@ class Permutation:
                 return _tc_action_clause.group(1)
         return None
 
-    def handle_error(self, err: str, halt: Optional[bool] = True) -> None:  # pragma: no cover
+    def handle_error(self, err: str, halt: Optional[bool] = True):  # pragma: no cover
         """Print errors message and optionally exit.
 
         Args:
@@ -253,7 +253,7 @@ class Permutation:
             sys.exit(1)
 
     # TODO: [low] improve this logic
-    def init_permutations(self) -> None:
+    def init_permutations(self):
         """Process layout.json names/display to get all permutations of args."""
         if self._input_permutations is None and self._output_permutations is None:
             self._input_permutations = []
@@ -385,7 +385,7 @@ class Permutation:
 
         # return outputs
 
-    def permutations(self) -> None:
+    def permutations(self):
         """Process layout.json names/display to get all permutations of args."""
         if not self.lj.has_layout:  # pragma: no cover
             print('Only Apps with a layout.json are supported.')
@@ -479,7 +479,7 @@ class Permutation:
                 sys.exit(1)
         return display
 
-    def write_permutations_file(self) -> None:
+    def write_permutations_file(self):
         """Print all valid permutations."""
         permutations = []
         for index, p in enumerate(self.input_permutations):

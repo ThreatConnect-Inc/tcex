@@ -28,7 +28,7 @@ runner = CliRunner()
 class TestTcexCliDeps:
     """Tcex CLI Testing."""
 
-    def teardown_method(self) -> None:
+    def teardown_method(self):
         """Configure teardown before all tests."""
         # cleanup
         for lib_dir in Path('.').glob('lib_*'):
@@ -63,14 +63,14 @@ class TestTcexCliDeps:
 
     def test_tcex_deps_std(
         self, monkeypatch: 'pytest.Monkeypatch', request: 'pytest.FixtureRequest'
-    ) -> None:
+    ):
         """Test Case"""
         result = self._run_command(['deps'], 'app_std', monkeypatch, request)
         assert result.exit_code == 0
 
     def test_tcex_deps_branch(
         self, monkeypatch: 'pytest.Monkeypatch', request: 'pytest.FixtureRequest'
-    ) -> None:
+    ):
         """Test Case"""
         branch = 'develop'
         result = self._run_command(['deps', '--branch', branch], 'app_branch', monkeypatch, request)
@@ -88,7 +88,7 @@ class TestTcexCliDeps:
 
     def test_tcex_deps_proxy(
         self, monkeypatch: 'pytest.Monkeypatch', request: 'pytest.FixtureRequest'
-    ) -> None:
+    ):
         """Test Case"""
         proxy_host = os.getenv('TC_PROXY_HOST')
         proxy_port = os.getenv('TC_PROXY_PORT')

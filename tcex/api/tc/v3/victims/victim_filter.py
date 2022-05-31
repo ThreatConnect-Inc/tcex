@@ -18,7 +18,7 @@ class VictimFilter(FilterABC):
         """Return the API endpoint."""
         return ApiEndpoints.VICTIMS.value
 
-    def asset_name(self, operator: Enum, asset_name: str) -> None:
+    def asset_name(self, operator: Enum, asset_name: str):
         """Filter Asset Name based on **assetName** keyword.
 
         Args:
@@ -27,7 +27,7 @@ class VictimFilter(FilterABC):
         """
         self._tql.add_filter('assetName', operator, asset_name, TqlType.STRING)
 
-    def asset_type(self, operator: Enum, asset_type: int) -> None:
+    def asset_type(self, operator: Enum, asset_type: int):
         """Filter Asset Type ID based on **assetType** keyword.
 
         Args:
@@ -36,7 +36,7 @@ class VictimFilter(FilterABC):
         """
         self._tql.add_filter('assetType', operator, asset_type, TqlType.INTEGER)
 
-    def asset_typename(self, operator: Enum, asset_typename: str) -> None:
+    def asset_typename(self, operator: Enum, asset_typename: str):
         """Filter Asset Type Name based on **assetTypename** keyword.
 
         Args:
@@ -45,7 +45,7 @@ class VictimFilter(FilterABC):
         """
         self._tql.add_filter('assetTypename', operator, asset_typename, TqlType.STRING)
 
-    def attribute(self, operator: Enum, attribute: str) -> None:
+    def attribute(self, operator: Enum, attribute: str):
         """Filter attribute based on **attribute** keyword.
 
         Args:
@@ -54,7 +54,7 @@ class VictimFilter(FilterABC):
         """
         self._tql.add_filter('attribute', operator, attribute, TqlType.STRING)
 
-    def description(self, operator: Enum, description: str) -> None:
+    def description(self, operator: Enum, description: str):
         """Filter Description based on **description** keyword.
 
         Args:
@@ -130,7 +130,7 @@ class VictimFilter(FilterABC):
         self._tql.add_filter('hasVictimAsset', TqlOperator.EQ, victim_assets, TqlType.SUB_QUERY)
         return victim_assets
 
-    def id(self, operator: Enum, id: int) -> None:  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int):  # pylint: disable=redefined-builtin
         """Filter ID based on **id** keyword.
 
         Args:
@@ -139,7 +139,7 @@ class VictimFilter(FilterABC):
         """
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
-    def name(self, operator: Enum, name: str) -> None:
+    def name(self, operator: Enum, name: str):
         """Filter Name based on **name** keyword.
 
         Args:
@@ -148,7 +148,7 @@ class VictimFilter(FilterABC):
         """
         self._tql.add_filter('name', operator, name, TqlType.STRING)
 
-    def nationality(self, operator: Enum, nationality: str) -> None:
+    def nationality(self, operator: Enum, nationality: str):
         """Filter Nationality based on **nationality** keyword.
 
         Args:
@@ -157,7 +157,7 @@ class VictimFilter(FilterABC):
         """
         self._tql.add_filter('nationality', operator, nationality, TqlType.STRING)
 
-    def organization(self, operator: Enum, organization: str) -> None:
+    def organization(self, operator: Enum, organization: str):
         """Filter Organization based on **organization** keyword.
 
         Args:
@@ -166,7 +166,7 @@ class VictimFilter(FilterABC):
         """
         self._tql.add_filter('organization', operator, organization, TqlType.STRING)
 
-    def owner(self, operator: Enum, owner: int) -> None:
+    def owner(self, operator: Enum, owner: int):
         """Filter Owner ID based on **owner** keyword.
 
         Args:
@@ -175,7 +175,7 @@ class VictimFilter(FilterABC):
         """
         self._tql.add_filter('owner', operator, owner, TqlType.INTEGER)
 
-    def owner_name(self, operator: Enum, owner_name: str) -> None:
+    def owner_name(self, operator: Enum, owner_name: str):
         """Filter Owner Name based on **ownerName** keyword.
 
         Args:
@@ -184,7 +184,7 @@ class VictimFilter(FilterABC):
         """
         self._tql.add_filter('ownerName', operator, owner_name, TqlType.STRING)
 
-    def security_label(self, operator: Enum, security_label: str) -> None:
+    def security_label(self, operator: Enum, security_label: str):
         """Filter Security Label based on **securityLabel** keyword.
 
         Args:
@@ -193,7 +193,7 @@ class VictimFilter(FilterABC):
         """
         self._tql.add_filter('securityLabel', operator, security_label, TqlType.STRING)
 
-    def sub_org(self, operator: Enum, sub_org: str) -> None:
+    def sub_org(self, operator: Enum, sub_org: str):
         """Filter Sub-organization based on **subOrg** keyword.
 
         Args:
@@ -202,7 +202,7 @@ class VictimFilter(FilterABC):
         """
         self._tql.add_filter('subOrg', operator, sub_org, TqlType.STRING)
 
-    def summary(self, operator: Enum, summary: str) -> None:
+    def summary(self, operator: Enum, summary: str):
         """Filter Summary based on **summary** keyword.
 
         Args:
@@ -211,7 +211,7 @@ class VictimFilter(FilterABC):
         """
         self._tql.add_filter('summary', operator, summary, TqlType.STRING)
 
-    def tag(self, operator: Enum, tag: str) -> None:
+    def tag(self, operator: Enum, tag: str):
         """Filter Tag based on **tag** keyword.
 
         Args:
@@ -220,7 +220,7 @@ class VictimFilter(FilterABC):
         """
         self._tql.add_filter('tag', operator, tag, TqlType.STRING)
 
-    def tag_owner(self, operator: Enum, tag_owner: int) -> None:
+    def tag_owner(self, operator: Enum, tag_owner: int):
         """Filter Tag Owner ID based on **tagOwner** keyword.
 
         Args:
@@ -229,7 +229,7 @@ class VictimFilter(FilterABC):
         """
         self._tql.add_filter('tagOwner', operator, tag_owner, TqlType.INTEGER)
 
-    def tag_owner_name(self, operator: Enum, tag_owner_name: str) -> None:
+    def tag_owner_name(self, operator: Enum, tag_owner_name: str):
         """Filter Tag Owner Name based on **tagOwnerName** keyword.
 
         Args:
@@ -238,7 +238,7 @@ class VictimFilter(FilterABC):
         """
         self._tql.add_filter('tagOwnerName', operator, tag_owner_name, TqlType.STRING)
 
-    def work_location(self, operator: Enum, work_location: str) -> None:
+    def work_location(self, operator: Enum, work_location: str):
         """Filter Work Location based on **workLocation** keyword.
 
         Args:

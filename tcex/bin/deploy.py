@@ -29,7 +29,7 @@ class Deploy(BinABC):
         proxy_port: int,
         proxy_user: str,
         proxy_pass: str,
-    ) -> None:
+    ):
         """Initialize Class properties."""
         super().__init__()
         self._app_file = app_file
@@ -42,7 +42,7 @@ class Deploy(BinABC):
         self.server = server
 
     @staticmethod
-    def _handle_missing_environment(variable: str) -> None:
+    def _handle_missing_environment(variable: str):
         """Print error on missing environment variable."""
         typer.secho(
             f'Could not find environment variable: {variable}.',

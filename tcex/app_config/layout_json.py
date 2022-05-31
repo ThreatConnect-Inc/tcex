@@ -28,7 +28,7 @@ class LayoutJson(metaclass=Singleton):
         filename: Optional[str] = None,
         path: Optional[str] = None,
         logger: Optional[logging.Logger] = None,
-    ) -> None:
+    ):
         """Initialize class properties."""
         filename = filename or 'layout.json'
         path = path or os.getcwd()
@@ -97,7 +97,7 @@ class LayoutJson(metaclass=Singleton):
         return self.fqfn.is_file()
 
     @cached_property
-    def model(self) -> LayoutJsonModel:
+    def model(self) -> 'LayoutJsonModel':
         """Return the Install JSON model."""
         return LayoutJsonModel(**self.contents)
 
@@ -106,7 +106,7 @@ class LayoutJson(metaclass=Singleton):
         """Return InstallJsonUpdate instance."""
         return LayoutJsonUpdate(lj=self)
 
-    def write(self, data: str) -> None:
+    def write(self, data: str):
         """Write updated file.
 
         Args:
@@ -119,11 +119,11 @@ class LayoutJson(metaclass=Singleton):
 class LayoutJsonUpdate:
     """Update layout.json file with current standards and schema."""
 
-    def __init__(self, lj: LayoutJson) -> None:
+    def __init__(self, lj: LayoutJson):
         """Initialize class properties."""
         self.lj = lj
 
-    def multiple(self) -> None:
+    def multiple(self):
         """Update the layouts.json file."""
         # APP-86 - sort output data by name
         self.update_sort_outputs()
@@ -133,7 +133,7 @@ class LayoutJsonUpdate:
         )
         self.lj.write(data)
 
-    def update_sort_outputs(self) -> None:
+    def update_sort_outputs(self):
         """Sort output field by name."""
         # APP-86 - sort output data by name
         self.lj.model.outputs = sorted(

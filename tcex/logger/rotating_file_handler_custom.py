@@ -49,7 +49,7 @@ class RotatingFileHandlerCustom(RotatingFileHandler):
         return name + '.gz'
 
     @staticmethod
-    def custom_gzip_rotator(source: str, dest: str) -> None:
+    def custom_gzip_rotator(source: str, dest: str):
         """Rotate and compress log file.
 
         Args:

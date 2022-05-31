@@ -20,7 +20,7 @@ from tcex.utils import Utils
 class GenerateABC(ABC):
     """Generate Abstract Base Class"""
 
-    def __init__(self, type_: Any) -> None:
+    def __init__(self, type_: Any):
         """Initialize class properties."""
         self.type_ = type_
 
@@ -201,7 +201,7 @@ class GenerateABC(ABC):
         return '\n'.join(_libs)
 
     @property
-    def session(self) -> Session:
+    def session(self) -> 'Session':
         """Return Session configured for TC API."""
         _session = Session()
         _session.auth = HmacAuth(

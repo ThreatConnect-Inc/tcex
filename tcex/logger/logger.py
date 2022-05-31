@@ -26,7 +26,7 @@ if TYPE_CHECKING:
 class Logger:
     """Framework logger module."""
 
-    def __init__(self, logger_name: str) -> None:
+    def __init__(self, logger_name: str):
         """Initialize Class Properties."""
         self.logger_name = logger_name
 
@@ -34,7 +34,7 @@ class Logger:
         self.ij = InstallJson()
 
     @property
-    def _logger(self) -> logging.Logger:
+    def _logger(self) -> 'logging.Logger':
         """Return the logger. The inputs.model property is not available in init."""
         logging.setLoggerClass(TraceLogger)
         logger = logging.getLogger(self.logger_name)
@@ -42,7 +42,7 @@ class Logger:
         return logger
 
     @property
-    def _formatter(self) -> None:
+    def _formatter(self):
         """Return log formatter."""
         tx_format = (
             '%(asctime)s - %(name)s - %(levelname)8s - %(message)s '
@@ -51,7 +51,7 @@ class Logger:
         return logging.Formatter(tx_format)
 
     @property
-    def _formatter_thread_name(self) -> None:
+    def _formatter_thread_name(self):
         """Return log formatter."""
         tx_format = (
             '%(asctime)s - %(name)s - %(levelname)8s - %(message)s '
@@ -74,7 +74,7 @@ class Logger:
         return False
 
     @property
-    def log(self) -> logging.Logger:
+    def log(self) -> 'logging.Logger':
         """Return logger."""
         return self._logger
 
@@ -91,7 +91,7 @@ class Logger:
         level = level or 'debug'
         return logging.getLevelName(level.upper())
 
-    def remove_handler_by_name(self, handler_name: str) -> None:
+    def remove_handler_by_name(self, handler_name: str):
         """Remove a file handler by name.
 
         Args:
@@ -102,7 +102,7 @@ class Logger:
                 self._logger.removeHandler(h)
                 break
 
-    def replay_cached_events(self, handler_name: Optional[str] = 'cache') -> None:
+    def replay_cached_events(self, handler_name: Optional[str] = 'cache'):
         """Replay cached log events and remove handler."""
         for h in self._logger.handlers:
             if h.get_name() == handler_name:
@@ -115,7 +115,7 @@ class Logger:
         # remove the cache handler
         self.remove_handler_by_name(handler_name=handler_name)
 
-    def shutdown(self) -> None:
+    def shutdown(self):
         """Close all handlers.
 
         Args:
@@ -124,7 +124,7 @@ class Logger:
         for h in self._logger.handlers:
             self._logger.removeHandler(h)
 
-    def update_handler_level(self, level: str) -> None:
+    def update_handler_level(self, level: str):
         """Update all handlers log level.
 
         Args:
@@ -142,7 +142,7 @@ class Logger:
 
     def add_api_handler(
         self, session_tc: 'Session', name: Optional[str] = 'api', level: Optional[str] = None
-    ) -> None:
+    ):
         """Add API logging handler.
 
         Args:
@@ -157,7 +157,7 @@ class Logger:
         api.setFormatter(ApiHandlerFormatter())
         self._logger.addHandler(api)
 
-    def add_cache_handler(self, name: str) -> None:
+    def add_cache_handler(self, name: str):
         """Add cache logging handler.
 
         Args:
@@ -183,7 +183,7 @@ class Logger:
         handler_key: Optional[str] = None,
         max_log_count: Optional[int] = 100,
         thread_key: Optional[str] = None,
-    ) -> None:
+    ):
         """Add custom file logging handler.
 
         This handler is intended for service Apps that need to log events based on the
@@ -224,7 +224,7 @@ class Logger:
         level: str,
         formatter: Optional[str] = None,
         mode: Optional[str] = 'a',
-    ) -> None:
+    ):
         """Add custom file logging handler.
 
         Args:
@@ -254,7 +254,7 @@ class Logger:
         name: Optional[str] = 'sh',
         formatter: Optional[str] = None,
         level: Optional[int] = None,
-    ) -> None:
+    ):
         """Add stream logging handler.
 
         Args:
@@ -283,7 +283,7 @@ class Logger:
         max_bytes: Optional[int] = 0,
         mode: Optional[str] = 'a',
         thread_key: Optional[str] = None,
-    ) -> None:
+    ):
         """Add custom file logging handler.
 
         This handler is intended for service Apps that need to log events based on the
@@ -319,7 +319,7 @@ class Logger:
     # App info logging
     #
 
-    def log_info(self, inputs: 'BaseModel') -> None:
+    def log_info(self, inputs: 'BaseModel'):
         """Send System and App data to logs.
 
         Args:
@@ -331,7 +331,7 @@ class Logger:
         self._log_tcex_version()
         self._log_tc_proxy(inputs)
 
-    def _log_app_data(self) -> None:
+    def _log_app_data(self):
         """Log the App data information as a best effort."""
         try:
             self.log.info(f'app-name="{self.ij.model.display_name}"')
@@ -346,12 +346,12 @@ class Logger:
         except Exception:  # nosec; pragma: no cover
             pass
 
-    def _log_platform(self) -> None:
+    def _log_platform(self):
         """Log the current Platform."""
         self.log.info(f'platform="{platform.platform()}"')
         self.log.info(f'pid={os.getpid()}')
 
-    def _log_python_version(self) -> None:
+    def _log_python_version(self):
         """Log the current Python version."""
         self.log.info(
             f'python-version={sys.version_info.major}.'
@@ -359,7 +359,7 @@ class Logger:
             f'{sys.version_info.micro}'
         )
 
-    def _log_tc_proxy(self, inputs: 'BaseModel') -> None:
+    def _log_tc_proxy(self, inputs: 'BaseModel'):
         """Log the proxy settings.
 
         Args:
@@ -368,7 +368,7 @@ class Logger:
         if inputs.tc_proxy_tc:
             self.log.info(f'proxy-server-tc={inputs.tc_proxy_host}:{inputs.tc_proxy_port}')
 
-    def _log_tcex_version(self) -> None:
+    def _log_tcex_version(self):
         """Log the current TcEx version number."""
         app_path = str(pathlib.Path().parent.absolute())
         full_path = str(pathlib.Path(__file__).parent.absolute())

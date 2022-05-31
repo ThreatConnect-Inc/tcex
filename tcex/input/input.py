@@ -32,7 +32,7 @@ logger = logging.getLogger('tcex')
 json_encoders = {Sensitive: lambda v: str(v)}  # pylint: disable=W0108
 
 
-def input_model(models: list) -> BaseModel:
+def input_model(models: list) -> 'BaseModel':
     """Return Input Model."""
 
     class InputModel(*models):
@@ -59,9 +59,7 @@ def input_model(models: list) -> BaseModel:
 class Input:
     """Module to handle inputs for all App types."""
 
-    def __init__(
-        self, config: Optional[dict] = None, config_file: Optional[str] = None, **kwargs
-    ) -> None:
+    def __init__(self, config: Optional[dict] = None, config_file: Optional[str] = None, **kwargs):
         """Initialize class properties.
 
         Keyword Args:
@@ -203,7 +201,7 @@ class Input:
 
         return file_content
 
-    def add_model(self, model: BaseModel) -> None:
+    def add_model(self, model: BaseModel):
         """Add additional input models."""
         if model:
             self._models.insert(0, model)
@@ -304,7 +302,7 @@ class Input:
         return dict(sorted(_inputs.items()))
 
     # TODO: [high] - can this be replaced with a pydantic root validator?
-    def contents_update(self, inputs: dict) -> None:
+    def contents_update(self, inputs: dict):
         """Update inputs provided by AOT to be of the proper value and type."""
         for name, value in inputs.items():
             # ThreatConnect AOT params could be updated in the future to proper JSON format.
@@ -324,12 +322,12 @@ class Input:
                 inputs[name] = value.lower() == 'true'
 
     @cached_property
-    def model(self) -> BaseModel:
+    def model(self) -> 'BaseModel':
         """Return the Input Model."""
         return input_model(self.models)(**self.contents_resolved)
 
     @cached_property
-    def model_unresolved(self) -> BaseModel:
+    def model_unresolved(self) -> 'BaseModel':
         """Return the Input Model using contents (no resolved values)."""
         return input_model(self.models)(**self.contents)
 
@@ -398,7 +396,7 @@ class Input:
         return data
 
     @staticmethod
-    def validation_exit_message(ex: 'ValidationError') -> None:
+    def validation_exit_message(ex: 'ValidationError'):
         """Format and return validation error message."""
         _exit_message = {}
         for err in ex.errors():

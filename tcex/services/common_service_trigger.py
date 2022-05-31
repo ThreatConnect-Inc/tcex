@@ -37,7 +37,7 @@ class CommonServiceTrigger(CommonService):
         self.delete_config_callback = None
         self.trigger_input_model = None
 
-    def _tcex_testing(self, session_id: str, trigger_id: int) -> None:
+    def _tcex_testing(self, session_id: str, trigger_id: int):
         """Write data required for testing framework to Redis.
 
         Args:
@@ -63,7 +63,7 @@ class CommonServiceTrigger(CommonService):
                 f'context={session_id}, trigger-id={trigger_id}'
             )
 
-    def _tcex_testing_fired_events(self, session_id: str, fired: bool) -> None:
+    def _tcex_testing_fired_events(self, session_id: str, fired: bool):
         """Write fired event data to KV Store to be used in test validation.
 
         Args:
@@ -87,7 +87,7 @@ class CommonServiceTrigger(CommonService):
         )
         return command_map
 
-    def create_config(self, trigger_id: int, message: str, status: bool) -> None:
+    def create_config(self, trigger_id: int, message: str, status: bool):
         """Add config item to service config object.
 
         Args:
@@ -125,7 +125,7 @@ class CommonServiceTrigger(CommonService):
             )
             self.log.trace(traceback.format_exc())
 
-    def delete_config(self, trigger_id: int, message: str, status: str) -> None:
+    def delete_config(self, trigger_id: int, message: str, status: str):
         """Delete config item from config object.
 
         Args:
@@ -157,7 +157,7 @@ class CommonServiceTrigger(CommonService):
             )
             # self.log.trace(traceback.format_exc())
 
-    def fire_event(self, callback: Callable[[], bool], **kwargs) -> None:
+    def fire_event(self, callback: Callable[[], bool], **kwargs):
         """Trigger a FireEvent command.
 
         Args:
@@ -211,7 +211,7 @@ class CommonServiceTrigger(CommonService):
             except Exception:
                 self.log.trace(traceback.format_exc())
 
-    def update_trigger_value(self, trigger_id: int, input_name: str, new_value: Any) -> None:
+    def update_trigger_value(self, trigger_id: int, input_name: str, new_value: Any):
         """Send UpdateTriggerValue command.
 
         Args:
@@ -232,7 +232,7 @@ class CommonServiceTrigger(CommonService):
 
     def fire_event_publish(
         self, trigger_id: int, session_id: str, request_key: Optional[str] = None
-    ) -> None:
+    ):
         """Send FireEvent command.
 
         Args:
@@ -260,7 +260,7 @@ class CommonServiceTrigger(CommonService):
         trigger_id: int,
         config: dict,
         **kwargs: str,
-    ) -> None:
+    ):
         """Fire event for trigger.
 
         Args:
@@ -298,7 +298,7 @@ class CommonServiceTrigger(CommonService):
         finally:
             self.logger.remove_handler_by_name(self.thread_name)
 
-    def log_config(self, trigger_id: str, config: dict) -> None:
+    def log_config(self, trigger_id: str, config: dict):
         """Log the config while hiding encrypted values.
 
         Args:
@@ -315,7 +315,7 @@ class CommonServiceTrigger(CommonService):
             f'feature=service, event=create-config, trigger_id={trigger_id}, config={logged_config}'
         )
 
-    def process_create_config_command(self, message: dict) -> None:
+    def process_create_config_command(self, message: dict):
         """Process the CreateConfig command.
 
         .. code-block:: python
@@ -411,7 +411,7 @@ class CommonServiceTrigger(CommonService):
         # create config after callback to report status and message
         self.create_config(trigger_id, msg, status)
 
-    def process_delete_config_command(self, message: dict) -> None:
+    def process_delete_config_command(self, message: dict):
         """Process the DeleteConfig command.
 
         .. code-block:: python

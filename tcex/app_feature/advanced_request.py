@@ -34,7 +34,7 @@ class AdvancedRequest:
         session: requests.Session,
         output_prefix: str,
         timeout: Optional[int] = 600,
-    ) -> None:
+    ):
         """Initialize class properties."""
         self.inputs = inputs
         self.output_prefix: str = output_prefix
@@ -51,7 +51,7 @@ class AdvancedRequest:
         self.mt: callable = MimeTypes()
         self.params: dict = {}
 
-    def configure_body(self) -> None:
+    def configure_body(self):
         """Configure Body"""
         self.data: Union[bytes, str] = self.inputs.model.tc_adv_req_body
         if self.data is not None:
@@ -67,7 +67,7 @@ class AdvancedRequest:
             except ValueError:  # pragma: no cover
                 self.log.error('Failed loading body as JSON data.')
 
-    def configure_headers(self) -> None:
+    def configure_headers(self):
         """Configure Headers
 
         [{
@@ -79,7 +79,7 @@ class AdvancedRequest:
             value: str = self.playbook.read.variable(header_data.get('value'))
             self.headers[str(header_data.get('key'))] = str(value)
 
-    def configure_params(self) -> None:
+    def configure_params(self):
         """Configure Params
 
         [{
@@ -101,7 +101,7 @@ class AdvancedRequest:
                 else:
                     self.params.setdefault(param, []).append(str(value))
 
-    def request(self) -> None:
+    def request(self):
         """Make the HTTP request."""
         # configure body
         self.configure_body()
