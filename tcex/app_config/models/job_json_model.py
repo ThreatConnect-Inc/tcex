@@ -28,6 +28,8 @@ class ParamsModel(BaseModel):
         """DataModel Config"""
 
         alias_generator = snake_to_camel
+        # without smart_union the default value as a string of "0" would be converted to a bool
+        smart_union = True
         validate_assignment = True
 
 
