@@ -480,10 +480,13 @@ class AppSpecYml:
         if 'appId' in contents and contents.get('appId') is None:
             del contents['appId']
 
+        # exclude_defaults - if False then all unused fields are added in - not good.
+        # exclude_none - this should be safe to leave as True.
+        # exclude_unset - this should be False to ensure that all fields are included.
         contents = json.loads(
             AppSpecYmlModel(**contents).json(
                 by_alias=True,
-                exclude_defaults=False,
+                exclude_defaults=True,
                 exclude_none=True,
                 exclude_unset=False,
                 sort_keys=True,
