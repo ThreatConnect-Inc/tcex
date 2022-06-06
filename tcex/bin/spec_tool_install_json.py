@@ -120,6 +120,10 @@ class SpecToolInstallJson(BinABC):
         # add app type organization fields
         self._add_type_playbook_fields(install_json_data)
 
+        # update sequence numbers
+        for sequence, param in enumerate(install_json_data.get('params'), start=1):
+            param['sequence'] = sequence
+
         return InstallJsonModel(**install_json_data)
 
     @staticmethod
