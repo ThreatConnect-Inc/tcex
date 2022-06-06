@@ -117,15 +117,11 @@ class ParamsSpecModel(ParamsModel):
         description='',
     )
 
-    @validator('sequence')
-    def _sequence(cls, _: str):
-        """Remove sequence from app_spec params"""
-        return None
-
     class Config:
         """DataModel Config"""
 
         alias_generator = snake_to_camel
+        fields = {'sequence': {'exclude': True}}
         smart_union = True
         use_enum_values = True
         validate_assignment = True
