@@ -117,6 +117,11 @@ class ParamsSpecModel(ParamsModel):
         description='',
     )
 
+    @validator('sequence')
+    def _sequence(cls, _: str):
+        """Remove sequence from app_spec params"""
+        return None
+
     class Config:
         """DataModel Config"""
 
