@@ -29,7 +29,7 @@ dev_packages = [
     'mako',
     'pre-commit',
     'pydocstyle',
-    'pylint>=2.5.0',
+    'pylint>=2.5.0,<2.14.0',
     'pytest',
     'pytest-cov',
     'pytest-html',
