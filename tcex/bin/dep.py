@@ -155,6 +155,7 @@ class Dep(BinABC):
         with Path('requirements.lock').open(mode='w') as fh:
             self.print_setting('Lock File Created', 'requirements.lock')
             fh.write(self.requirements_lock)
+            fh.write('')
 
     def create_temp_requirements(self):
         """Create a temporary requirements.txt.
@@ -403,12 +404,13 @@ class Dep(BinABC):
     @staticmethod
     def update_requirements_dev_txt():
         """Update the requirements_dev.txt file to support lock file."""
-        with open('requirements_dev.txt', mode='r+') as fh:
-            _lines = ''
-            for line in fh.readlines():
-                _lines += line.replace('requirements.txt', 'requirements.lock')
+        if os.path.isfile('requirements_dev.txt'):
+            with open('requirements_dev.txt', mode='r+') as fh:
+                _lines = ''
+                for line in fh.readlines():
+                    _lines += line.replace('requirements.txt', 'requirements.lock')
 
-            # write back
-            fh.seek(0)
-            fh.write(_lines)
-            fh.truncate()
+                # write back
+                fh.seek(0)
+                fh.write(_lines)
+                fh.truncate()

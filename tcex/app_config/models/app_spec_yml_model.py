@@ -312,7 +312,7 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         """Return formatted note_per_action."""
         _note_per_action = ['\n\nThe following actions are included:']
         _note_per_action.extend(
-            [f'- **{npa.action}** - {npa.note}' for npa in self.note_per_action]
+            [f'-   **{npa.action}** - {npa.note}' for npa in self.note_per_action]
         )
         return _note_per_action
 
@@ -382,7 +382,7 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         for release_note in self.release_notes:
             _release_notes.append(f'### {release_note.version}')
             _release_notes.append('')
-            _release_notes.extend([f'* {rn}' for rn in release_note.notes])
+            _release_notes.extend([f'-   {rn}' for rn in release_note.notes])
             _release_notes.append('')
         return _release_notes
 
