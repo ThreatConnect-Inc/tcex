@@ -29,6 +29,7 @@ class SpecToolInstallJson(BinABC):
                 'allowOnDemand': self.asy.model.allow_on_demand,
                 'apiUserTokenParam': self.asy.model.api_user_token_param,
                 'appId': self.asy.model.app_id,
+                'category': self.asy.model.category,
                 'deprecatesApps': self.asy.model.deprecates_apps,
                 'displayName': self.asy.model.display_name,
                 'features': self.asy.model.features,

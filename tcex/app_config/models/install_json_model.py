@@ -510,6 +510,10 @@ class InstallJsonCommonModel(BaseModel):
             'field should not be changed.'
         ),
     )
+    category: str = Field(
+        ...,
+        description='The category of the App. Also playbook.type for playbook Apps.',
+    )
     deprecates_apps: Optional[List[str]] = Field(
         None,
         description=(

@@ -8,7 +8,7 @@ import subprocess  # nosec
 import sys
 from distutils.version import StrictVersion  # pylint: disable=no-name-in-module
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 from urllib.parse import quote
 
 # third-party
@@ -16,6 +16,7 @@ import typer
 
 # first-party
 from tcex.app_config.models.tcex_json_model import LibVersionModel
+from tcex.backports import cached_property
 from tcex.bin.bin_abc import BinABC
 
 
@@ -52,13 +53,16 @@ class Dep(BinABC):
         self.proxy_enabled = False
         ci_token = os.getenv('CI_JOB_TOKEN')
         self.proxy_env = {'CI_JOB_TOKEN': ci_token} if ci_token else {}
-        self.requirements_fqfn = (
-            Path('requirements_dev.txt') if self.dev else Path('requirements.txt')
-        )
+        self.requirements_fqfn_branch = None
         self.static_lib_dir = 'lib_latest'
 
         # update tcex.json
         self.tj.update.multiple()
+
+    @property
+    def has_requirements_lock(self):
+        """Return True if requirements.lock exists."""
+        return Path('requirements.lock').exists()
 
     def _build_command(self, python_executable: Path, lib_dir: Path) -> List[str]:
         """Build the pip command for installing dependencies.
@@ -70,13 +74,18 @@ class Dep(BinABC):
         Returns:
             list: The Python pip command with all required args.
         """
+        # support temp (branch) requirements.txt file
+        _requirements_fqfn = str(self.requirements_fqfn)
+        if self.requirements_fqfn_branch:
+            _requirements_fqfn = str(self.requirements_fqfn_branch)
+
         exe_command = [
             str(python_executable),
             '-m',
             'pip',
             'install',
             '-r',
-            str(self.requirements_fqfn),
+            _requirements_fqfn,
             '--ignore-installed',
             '--quiet',
             '--target',
@@ -141,17 +150,27 @@ class Dep(BinABC):
             # display proxy setting
             self.print_setting('Using Proxy Server', f'{self.proxy_host}:{self.proxy_port}')
 
+    def create_requirements_lock(self):
+        """Create the requirements.lock file."""
+        with Path('requirements.lock').open(mode='w') as fh:
+            self.print_setting('Lock File Created', 'requirements.lock')
+            fh.write(self.requirements_lock)
+
     def create_temp_requirements(self):
         """Create a temporary requirements.txt.
 
-        This allows testing again a git branch instead of pulling from pypi.
+        This allows testing against a git branch instead of pulling from pypi.
         """
+        _requirements_fqfn = Path('requirements.txt')
+        if self.has_requirements_lock:
+            _requirements_fqfn = Path('requirements.lock')
+
         # Replace tcex version with develop branch of tcex
-        with self.requirements_fqfn.open() as fh:
+        with _requirements_fqfn.open() as fh:
             current_requirements = fh.read().strip().split('\n')
 
-        self.requirements_fqfn = Path(f'temp-{self.requirements_fqfn}')
-        with self.requirements_fqfn.open(mode='w') as fh:
+        self.requirements_fqfn_branch = Path(f'temp-{_requirements_fqfn}')
+        with self.requirements_fqfn_branch.open(mode='w') as fh:
             requirements = []
             for line in current_requirements:
                 if not line:
@@ -171,7 +190,12 @@ class Dep(BinABC):
         """Install Required Libraries using pip."""
         # check for requirements.txt
         if not self.requirements_fqfn.is_file():
-            self.handle_error('A requirements.txt file is required to install modules.')
+            self.handle_error(
+                f'A {str(self.requirements_fqfn)} file is required to install modules.'
+            )
+
+        # update requirements_dev.txt file
+        self.update_requirements_dev_txt()
 
         # install all requested lib directories
         for lib_version in self.lib_versions:
@@ -235,12 +259,15 @@ class Dep(BinABC):
             ):
                 self.latest_version = python_version
 
-        if self.branch != 'main':
+        if self.requirements_fqfn_branch:
             # remove temp requirements.txt file
-            self.requirements_fqfn.unlink()
+            self.requirements_fqfn_branch.unlink()
 
         # create lib_latest directory
         self._create_lib_latest()
+
+        if self.has_requirements_lock is False:
+            self.create_requirements_lock()
 
     @property
     def lib_versions(self) -> List[LibVersionModel]:
@@ -255,3 +282,133 @@ class Dep(BinABC):
         return [
             LibVersionModel(**{'python_executable': sys.executable, 'lib_dir': self.lib_directory})
         ]
+
+    @cached_property
+    def requirements_fqfn(self):
+        """Return the appropriate requirements.txt file."""
+        if self.dev:
+            _requirements_file = Path('requirements_dev.txt')
+        elif self.has_requirements_lock:
+            _requirements_file = Path('requirements.lock')
+        else:
+            _requirements_file = Path('requirements.txt')
+
+        self.print_setting('Requirements File', str(_requirements_file))
+        return _requirements_file
+
+    @property
+    def requirements_lock(self) -> str:
+        """Return python packages for requirements.txt."""
+        lib_directories = [lib_model.lib_dir for lib_model in self.lib_versions]
+
+        # if we only have one current Python version building the requirements.txt file
+        # is straight forward, just include all packages pinned to the current version.
+        if len(lib_directories) == 1:
+            _requirements = self.requirements_lock_data(lib_directories[0])
+            # sort packages alphabetically
+            return '\n'.join(sorted(_requirements.splitlines()))
+
+        requirements = {}
+        source_requirements = set()
+        for lib_dir in lib_directories:
+            # extract python major.minor
+            python_version = str(lib_dir).replace('lib_', '')
+            python_version_major = python_version.split('.', 1)[0]
+            python_version_minor = python_version.split('.', 2)[1]
+
+            for requirement in self.requirements_lock_data(lib_dir).splitlines():
+                if not requirement:
+                    # skip empty lines
+                    continue
+
+                try:
+                    if ' @ ' in requirement:
+                        source_requirements.add(requirement)
+                    else:
+                        package_name = requirement.split('==')[0]
+                        package_version = requirement.split('==')[1]
+                        requirements.setdefault(package_name, {})
+                        requirements[package_name][
+                            f'{python_version_major}.{python_version_minor}'
+                        ] = package_version
+                except Exception as ex:
+                    self.log.error(
+                        f'event=get-requirements-txt, requirement={requirement}, error="{ex}"'
+                    )
+        _requirements = self.requirements_lock_diff(requirements, len(lib_directories))
+        _requirements.extend(source_requirements)
+        return '\n'.join(sorted(_requirements))
+
+    def requirements_lock_data(self, lib_dir: str) -> str:
+        """Return the Python packages for the provided directory."""
+        lib_dir_path = os.path.join(self.app_path, lib_dir)
+        cmd = f'pip freeze --path "{lib_dir_path}"'
+        self.log.debug(f'event=get-requirements-lock-data, cmd={cmd}')
+        try:
+            output = subprocess.run(  # pylint: disable=subprocess-run-check
+                cmd, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE  # nosec
+            )
+        except Exception as ex:
+            self.log.error(f'event=pip-freeze, error="{ex}"')
+            typer.echo('Failure: could not get requirements lock data.')
+            sys.exit(1)
+
+        if output.returncode != 0:
+            self.log.error(f'event=pip-freeze, stderr="{output.stderr}"')
+
+        return output.stdout.decode('utf-8')
+
+    def requirements_lock_diff(self, package_data: dict, python_version_count: int) -> List[str]:
+        """Diff the package data, returning the appropriate requirements.lock data."""
+        requirements_lock = []
+        for package_name, package_version_data in package_data.items():
+            if len(package_version_data) < python_version_count:
+                # if the package is defined for less than the total number of python versions
+                # supported then the package is not required for one or more python versions
+                # and must be pinned with the applicable python version defined.
+                for python_version, package_version in package_version_data.items():
+                    requirements_lock.append(
+                        self.requirements_lock_line(package_name, package_version, python_version)
+                    )
+            elif all(
+                x == list(package_version_data.values())[0] for x in package_version_data.values()
+            ):
+                # if the package version is the same for all python versions then
+                # it only needs to be defined once in the requirements.txt file.
+                for python_version, package_version in package_version_data.items():
+                    requirements_lock.append(
+                        self.requirements_lock_line(package_name, package_version)
+                    )
+
+                    # only add once
+                    break
+            else:
+                # if the package version is different for one or more versions of python then the
+                # python_version must be specified in the requirements.txt file.
+                for python_version, package_version in package_version_data.items():
+                    requirements_lock.append(
+                        self.requirements_lock_line(package_name, package_version, python_version)
+                    )
+        return requirements_lock
+
+    @staticmethod
+    def requirements_lock_line(
+        package_name: str, package_version: str, python_version: Optional[str] = None
+    ) -> str:
+        """Return a string to insert into the requirements.txt file."""
+        if python_version is None:
+            return f'{package_name}=={package_version}'
+        return f'{package_name}=={package_version}; python_version == \'{python_version}\''
+
+    @staticmethod
+    def update_requirements_dev_txt():
+        """Update the requirements_dev.txt file to support lock file."""
+        with open('requirements_dev.txt', mode='r+') as fh:
+            _lines = ''
+            for line in fh.readlines():
+                _lines += line.replace('requirements.txt', 'requirements.lock')
+
+            # write back
+            fh.seek(0)
+            fh.write(_lines)
+            fh.truncate()

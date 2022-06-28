@@ -183,10 +183,6 @@ class SectionsModel(BaseModel):
 class AppSpecYmlModel(InstallJsonCommonModel):
     """Model for the app_spec.yml file."""
 
-    category: str = Field(
-        ...,
-        description='The category of the App. Also playbook.type for playbook Apps.',
-    )
     note_per_action: Optional[List[NotesPerActionModel]] = Field(
         None,
         description='',
