@@ -478,9 +478,13 @@ class BatchSubmit:
         #     f'feature=batch, action=submit-data, batch-size={self._batch_data_count:,}'
         # )
 
+        # if we don't add in this header, request module defaults to application/json
+        # when 'json' is set in the method call. And that causes issue it seems with TC/core.
+        # Even though the request module does convert the content:dict to a
+        # binary string of formatted json.
         headers = {'Content-Type': 'application/octet-stream'}
         try:
-            r = self.session_tc.post(f'/v2/batch/{batch_id}', headers=headers, data=content)
+            r = self.session_tc.post(f'/v2/batch/{batch_id}', headers=headers, json=content)
             if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
                 handle_error(
                     code=10525,
