@@ -22,7 +22,8 @@ class SpecToolReadmeMd(BinABC):
         self.asy = asy
 
         # properties
-        self.i1 = ' ' * 2
+        # self.i1 = ' ' * 2
+        self.i1 = ''
         self.filename = 'README.md'
         self.permutations = Permutation(self.log)
 
@@ -37,6 +38,7 @@ class SpecToolReadmeMd(BinABC):
     def _add_actions_sub_title(self, readme_md: List[str], action: str):
         """Add title for sub action section."""
         readme_md.append(f'## {action}')
+        readme_md.append('')
         npa = self.asy.model.get_note_per_action(action).note
         if npa is not None:
             readme_md.append(self.asy.model.get_note_per_action(action).note)
@@ -48,7 +50,7 @@ class SpecToolReadmeMd(BinABC):
             readme_md.append('# Labels')
             readme_md.append('')
             _labels = ', '.join(sorted(self.asy.model.labels))
-            readme_md.append(f'- {_labels}')
+            readme_md.append(f'-   {_labels}')
 
     def _add_description(self, readme_md: List[str]):
         """Add top level description/note data to readme.md."""
@@ -164,7 +166,7 @@ class SpecToolReadmeMd(BinABC):
                 outputs = self.permutations.outputs_by_action(action)
 
             for output in outputs:
-                readme_md.append(f'{self.i1}- {output.name} *({output.type})*')
+                readme_md.append(f'{self.i1}-   {output.name} _({output.type})_')
 
             readme_md.append('')
 
@@ -191,7 +193,7 @@ class SpecToolReadmeMd(BinABC):
     @staticmethod
     def _add_section_title(readme_md: List[str], section: 'SectionsModel'):
         """Add title for input section."""
-        readme_md.append(f'### *{section.section_name}*')
+        readme_md.append(f'### _{section.section_name}_')
         readme_md.append('')
 
     def _add_params_for_playbook_action_app(self, readme_md: List[str], actions: List[str]):
@@ -223,6 +225,7 @@ class SpecToolReadmeMd(BinABC):
 
             # add horizontal rule
             readme_md.append('---')
+            readme_md.append('')
 
     def _add_params_for_playbook_std_app(self, readme_md: List[str]):
         """Add inputs for playbook standard app."""
@@ -305,7 +308,7 @@ class SpecToolReadmeMd(BinABC):
         if self.asy.model.category:
             readme_md.append('# Category')
             readme_md.append('')
-            readme_md.append(f'- {self.asy.model.category}')
+            readme_md.append(f'-   {self.asy.model.category}')
             readme_md.append('')
 
         # add description
