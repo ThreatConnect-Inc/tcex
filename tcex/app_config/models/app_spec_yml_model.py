@@ -274,14 +274,11 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         """Return lj.inputs."""
         _inputs = []
         for sequence, section in enumerate(self.sections, start=1):
-            # don't include section with no params
-            if not [sp for sp in section.params if sp.disabled is False]:
-                continue
-
             # build params
             parameters = []
             for p in section.params:
-                if p.disabled is True:
+                # exclude disabled and serviceConfig params
+                if any([p.disabled, p.hidden, p.service_config]):
                     continue
 
                 param = {'name': p.name}
@@ -290,14 +287,15 @@ class AppSpecYmlModel(InstallJsonCommonModel):
 
                 parameters.append(param)
 
-            # append section
-            _inputs.append(
-                {
-                    'parameters': parameters,
-                    'sequence': sequence,
-                    'title': section.section_name,
-                }
-            )
+            if parameters:
+                # append section
+                _inputs.append(
+                    {
+                        'parameters': parameters,
+                        'sequence': sequence,
+                        'title': section.section_name,
+                    }
+                )
         return _inputs
 
     def get_note_per_action(self, action: str) -> 'NotesPerActionModel':
