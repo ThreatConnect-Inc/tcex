@@ -394,6 +394,7 @@ class RetryModel(BaseModel):
 class PlaybookModel(BaseModel):
     """Model for install_json.playbook"""
 
+    output_prefix: Optional[str] = Field(None, description='')
     output_variables: Optional[List[OutputVariablesModel]] = Field(
         [],
         description=(
@@ -511,7 +512,7 @@ class InstallJsonCommonModel(BaseModel):
         ),
     )
     category: str = Field(
-        ...,
+        '',
         description='The category of the App. Also playbook.type for playbook Apps.',
     )
     deprecates_apps: Optional[List[str]] = Field(

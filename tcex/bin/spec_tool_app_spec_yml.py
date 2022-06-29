@@ -7,7 +7,7 @@ import os
 from semantic_version import Version
 
 # first-party
-from tcex.app_config import AppSpecYml, InstallJson, JobJson, LayoutJson
+from tcex.app_config import AppSpecYml, InstallJson, JobJson, LayoutJson, TcexJson
 from tcex.app_config.models import AppSpecYmlModel
 from tcex.bin.bin_abc import BinABC
 
@@ -25,6 +25,7 @@ class SpecToolAppSpecYml(BinABC):
         self.ij = InstallJson(logger=self.log)
         self.jj = JobJson(logger=self.log)
         self.lj = LayoutJson(logger=self.log)
+        self.tj = TcexJson(logger=self.log)
 
     def _add_standard_fields(self, app_spec_yml_data: dict):
         """Add field that apply to ALL App types."""
@@ -33,6 +34,7 @@ class SpecToolAppSpecYml(BinABC):
                 'allowOnDemand': self.ij.model.allow_on_demand,
                 'apiUserTokenParam': self.ij.model.api_user_token_param,
                 'appId': str(self.ij.model.app_id),
+                'category': self.ij.model.category,
                 'deprecatesApps': self.ij.model.deprecates_apps,
                 'displayName': self.ij.model.display_name,
                 'features': self.ij.model.features,
@@ -41,6 +43,8 @@ class SpecToolAppSpecYml(BinABC):
                 'listDelimiter': self.ij.model.list_delimiter,
                 'minServerVersion': str(self.ij.model.min_server_version),
                 'note': self.ij.model.note,
+                'outputPrefix': self.ij.model.playbook.output_prefix,
+                'packageName': self.tj.model.package.app_name,
                 'programLanguage': self.ij.model.program_language,
                 'programMain': self.ij.model.program_main,
                 'programVersion': str(self.ij.model.program_version),
@@ -116,7 +120,8 @@ class SpecToolAppSpecYml(BinABC):
             for display, names in _output_data_temp.items():
                 _output_variables = []
                 for name in names:
-                    _output_variables.append(self.ij.model.get_output(name).dict(by_alias=True))
+                    if not self._is_advanced_request_output(name):
+                        _output_variables.append(self.ij.model.get_output(name).dict(by_alias=True))
 
                 _output_data.append({'display': display, 'outputVariables': _output_variables})
 
@@ -145,11 +150,11 @@ class SpecToolAppSpecYml(BinABC):
         for section in self._current_data:
             _section_data = {'sectionName': section.get('title'), 'params': []}
             for p in section.get('parameters', []):
-                param = self.ij.model.get_param(p.get('name')).dict(by_alias=True)
-                param['display'] = p.get('display')
-                _section_data['params'].append(param)
+                if not self._is_advanced_request_input(p.get('name')):
+                    param = self.ij.model.get_param(p.get('name')).dict(by_alias=True)
+                    param['display'] = p.get('display')
+                    _section_data['params'].append(param)
             sections.append(_section_data)
-
         app_spec_yml_data['sections'] = sections
 
     @property
@@ -158,6 +163,16 @@ class SpecToolAppSpecYml(BinABC):
         if self.lj.has_layout:
             # handle layout based Apps
             _current_data = [i.dict(by_alias=True) for i in self.lj.model.inputs]
+
+            # add hidden inputs from install.json (hidden inputs are not in layouts.json)
+            _current_data.append(
+                {
+                    'parameters': [
+                        p.dict(by_alias=True) for p in self.ij.model.params if p.hidden is True
+                    ],
+                    'title': 'Hidden Inputs',
+                }
+            )
         else:
             # handle non-layout based Apps
             _current_data = [
@@ -177,6 +192,33 @@ class SpecToolAppSpecYml(BinABC):
                 if param['type'].lower() == 'editchoice':
                     return True
         return False
+
+    @staticmethod
+    def _is_advanced_request_input(name: str) -> bool:
+        """Return true if input is an Advanced Request input."""
+        return name in [
+            'tc_adv_req_path',
+            'tc_adv_req_http_method',
+            'tc_adv_req_params',
+            'tc_adv_req_exclude_null_params',
+            'tc_adv_req_headers',
+            'tc_adv_req_body',
+            'tc_adv_req_urlencode_body',
+            'tc_adv_req_fail_on_error',
+        ]
+
+    @staticmethod
+    def _is_advanced_request_output(name: str) -> bool:
+        """Return true if input is an Advanced Request input."""
+        return name in [
+            'any_run.request.content',
+            'any_run.request.content.binary',
+            'any_run.request.headers',
+            'any_run.request.ok',
+            'any_run.request.reason',
+            'any_run.request.status_code',
+            'any_run.request.url',
+        ]
 
     def _add_min_tc_version(self, app_spec_yml_data: dict):
         """Add the correct min TC server version."""

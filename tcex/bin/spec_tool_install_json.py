@@ -85,6 +85,7 @@ class SpecToolInstallJson(BinABC):
         ]:
             install_json_data['allowRunAsUser'] = self.asy.model.allow_run_as_user
             install_json_data['playbook'] = {
+                'outputPrefix': self.asy.model.output_prefix,
                 'outputVariables': [
                     ov.dict(by_alias=True) for ov in self.asy.model.output_variables
                 ],

@@ -175,7 +175,7 @@ class SpecToolReadmeMd(BinABC):
         if [
             sp
             for sp in section.params
-            if sp.disabled is False
+            if not any([sp.disabled, sp.hidden, sp.service_config])
             and sp.name != 'tc_action'
             and self._valid_param_for_action(sp, action) is True
         ]:
