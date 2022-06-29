@@ -7,6 +7,8 @@
 -   APP-3498 - [CLI] Fixed CLI file_hash reference error
 -   APP-3532 - [CLI] Update spectool command to manage package name
 -   APP-3533 - [CLI] Multiple fixes and tweaks to spectool
+-   APP-3544 - [CLI] Updated spectool to exclude serviceConfig inputs from layout.json file
+-   APP-3549 - [CLI] Updated spectool to exclude hidden inputs from layout.json file
 
 ### 3.0.2
 
