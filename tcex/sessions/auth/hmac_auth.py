@@ -7,9 +7,12 @@ from hashlib import sha256
 from typing import TYPE_CHECKING
 
 # third-party
-from requests import auth, request
+from requests import auth
 
 if TYPE_CHECKING:  # pragma: no cover
+    # third-party
+    from requests import request
+
     # first-party
     from tcex.input.field_types.sensitive import Sensitive
 
@@ -17,7 +20,7 @@ if TYPE_CHECKING:  # pragma: no cover
 class HmacAuth(auth.AuthBase):
     """ThreatConnect HMAC Authorization"""
 
-    def __init__(self, tc_api_access_id: str, tc_api_secret_key: 'Sensitive') -> None:
+    def __init__(self, tc_api_access_id: str, tc_api_secret_key: 'Sensitive'):
         """Initialize the Class properties."""
         # super().__init__()
         auth.AuthBase.__init__(self)
@@ -37,7 +40,7 @@ class HmacAuth(auth.AuthBase):
         # return the header value with access_id and b64 signature value
         return f'TC {self.tc_api_access_id}:{b64encode(hmac_signature).decode()}'
 
-    def __call__(self, r: 'request') -> request:
+    def __call__(self, r: 'request') -> 'request':
         """Add the authorization headers to the request."""
         timestamp = int(time.time())
 

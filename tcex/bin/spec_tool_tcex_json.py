@@ -3,7 +3,8 @@
 from typing import TYPE_CHECKING
 
 # first-party
-from tcex.app_config.models import LayoutJsonModel
+from tcex.app_config import TcexJson
+from tcex.app_config.models import TcexJsonModel
 from tcex.bin.bin_abc import BinABC
 
 if TYPE_CHECKING:
@@ -11,7 +12,7 @@ if TYPE_CHECKING:
     from tcex.app_config import AppSpecYml
 
 
-class SpecToolLayoutJson(BinABC):
+class SpecToolTcexJson(BinABC):
     """Generate App Config File"""
 
     def __init__(self, asy: 'AppSpecYml'):
@@ -20,18 +21,19 @@ class SpecToolLayoutJson(BinABC):
         self.asy = asy
 
         # properties
-        self.filename = 'layout.json'
+        self.filename = 'tcex.json'
+        self.tj = TcexJson()
 
     def generate(self):
         """Generate the layout.json file data."""
 
-        layout_json_data = {
-            'inputs': self.asy.model.inputs,
-            'outputs': self.asy.model.outputs,
-        }
-        return LayoutJsonModel(**layout_json_data)
+        tcex_json_data = self.tj.model.dict()
+
+        # update package name
+        tcex_json_data['package']['app_name'] = self.asy.model.package_name
+        return TcexJsonModel(**tcex_json_data)
 
     @staticmethod
     def generate_schema():
         """Return the schema for the install.json file."""
-        return LayoutJsonModel.schema_json(indent=2, sort_keys=True)
+        return TcexJsonModel.schema_json(indent=2, sort_keys=True)

@@ -54,7 +54,7 @@ class ObjectCollectionABC(ABC):
         session,
         tql_filters: Optional[list] = None,  # This will be removed!
         params: Optional[dict] = None,
-    ) -> None:
+    ):
         """Initialize class properties."""
         self._params = params or {}
         self._tql_filters = tql_filters or []
@@ -96,7 +96,7 @@ class ObjectCollectionABC(ABC):
         return self.request.json().get('count', len(self.request.json().get('data', [])))
 
     @property
-    def _api_endpoint(self) -> None:  # pragma: no cover
+    def _api_endpoint(self):  # pragma: no cover
         """Return filter method."""
         raise NotImplementedError('Child class must implement this method.')
 
@@ -107,7 +107,7 @@ class ObjectCollectionABC(ABC):
         body: Optional[Union[bytes, str]] = None,
         params: Optional[dict] = None,
         headers: Optional[dict] = None,
-    ) -> None:
+    ):
         """Handle standard request with error checking."""
         try:
             self.request = self._session.request(
@@ -141,11 +141,11 @@ class ObjectCollectionABC(ABC):
         self.log_response_text(self.request)
 
     @property
-    def filter(self) -> None:  # pragma: no cover
+    def filter(self):  # pragma: no cover
         """Return filter method."""
         raise NotImplementedError('Child class must implement this method.')
 
-    def log_response_text(self, response: Response) -> None:
+    def log_response_text(self, response: Response):
         """Log the response text."""
         response_text = 'response text: (text to large to log)'
         if len(response.content) < 5000:  # check size of content for performance
@@ -223,7 +223,7 @@ class ObjectCollectionABC(ABC):
         return self._params
 
     @params.setter
-    def params(self, params: dict) -> None:
+    def params(self, params: dict):
         """Set the parameters of the case management object collection."""
         self._params = params
 
@@ -254,7 +254,7 @@ class ObjectCollectionABC(ABC):
         return self._timeout
 
     @timeout.setter
-    def timeout(self, timeout: int) -> None:
+    def timeout(self, timeout: int):
         """Set the timeout of the case management object collection."""
         self._timeout = timeout
 

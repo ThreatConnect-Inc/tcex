@@ -32,7 +32,7 @@ class AppSpecYml:
         filename: Optional[str] = None,
         path: Optional[str] = None,
         logger: Optional[logging.Logger] = None,
-    ) -> None:
+    ):
         """Initialize class properties."""
         filename = filename or 'app_spec.yml'
         path = path or os.getcwd()
@@ -174,7 +174,7 @@ class AppSpecYml:
             ],
         }
 
-    def _migrate_schema_100_to_110(self, contents: dict) -> None:
+    def _migrate_schema_100_to_110(self, contents: dict):
         """Migrate 1.0.0 schema to 1.1.0 schema."""
         # moved app.* to top level
         self._migrate_schema_100_to_110_app(contents)
@@ -216,7 +216,7 @@ class AppSpecYml:
         self.rewrite_contents(contents)
 
     @staticmethod
-    def _migrate_schema_100_to_110_app(contents: dict) -> None:
+    def _migrate_schema_100_to_110_app(contents: dict):
         """Migrate 1.0.0 schema to 1.1.0 schema."""
         # remove "app" top level
         for k, v in dict(contents).get('app').items():
@@ -230,14 +230,14 @@ class AppSpecYml:
         del contents['app']
 
     @staticmethod
-    def _migrate_schema_100_to_110_organization_feeds(contents: dict) -> None:
+    def _migrate_schema_100_to_110_organization_feeds(contents: dict):
         """Migrate 1.0.0 schema to 1.1.0 schema."""
         if contents.get('feeds') is not None and contents['runtimeLevel'].lower() == 'organization':
             contents.setdefault('organization', {})
             contents['organization']['feeds'] = contents.pop('feeds', [])
 
     @staticmethod
-    def _migrate_schema_100_to_110_organization_repeating_minutes(contents: dict) -> None:
+    def _migrate_schema_100_to_110_organization_repeating_minutes(contents: dict):
         """Migrate 1.0.0 schema to 1.1.0 schema."""
         if (
             contents.get('repeatingMinutes') is not None
@@ -247,7 +247,7 @@ class AppSpecYml:
             contents['organization']['repeatingMinutes'] = contents.pop('repeatingMinutes', [])
 
     @staticmethod
-    def _migrate_schema_100_to_110_organization_publish_out_files(contents: dict) -> None:
+    def _migrate_schema_100_to_110_organization_publish_out_files(contents: dict):
         """Migrate 1.0.0 schema to 1.1.0 schema."""
         if (
             contents.get('publishOutFiles') is not None
@@ -257,7 +257,7 @@ class AppSpecYml:
             contents['organization']['publishOutFiles'] = contents.pop('publishOutFiles', [])
 
     @staticmethod
-    def _migrate_schema_100_to_110_input_groups(contents: dict) -> None:
+    def _migrate_schema_100_to_110_input_groups(contents: dict):
         """Migrate 1.0.0 schema to 1.1.0 schema."""
         contents['sections'] = contents.pop('inputGroups', {})
         for section in contents.get('sections'):
@@ -276,7 +276,7 @@ class AppSpecYml:
                     param['type'] = 'String'
 
     @staticmethod
-    def _migrate_schema_100_to_110_notes_per_action(contents: dict) -> None:
+    def _migrate_schema_100_to_110_notes_per_action(contents: dict):
         """Migrate 1.0.0 schema to 1.1.0 schema."""
         contents['notePerAction'] = contents.pop('notes', {})
         note_per_action = []
@@ -285,14 +285,14 @@ class AppSpecYml:
         contents['notePerAction'] = note_per_action
 
     @staticmethod
-    def _migrate_schema_100_to_110_retry(contents: dict) -> None:
+    def _migrate_schema_100_to_110_retry(contents: dict):
         """Migrate 1.0.0 schema to 1.1.0 schema."""
         if contents['runtimeLevel'].lower() == 'playbook':
             contents.setdefault('playbook', {})
             contents['playbook']['retry'] = contents.pop('retry', {})
 
     @staticmethod
-    def _migrate_schema_100_to_110_output_groups(contents: dict) -> None:
+    def _migrate_schema_100_to_110_output_groups(contents: dict):
         """Migrate 1.0.0 schema to 1.1.0 schema."""
         outputs = []
         contents['outputData'] = contents.pop('outputGroups', {})
@@ -324,7 +324,7 @@ class AppSpecYml:
         contents['outputData'] = outputs
 
     @staticmethod
-    def _migrate_schema_100_to_110_jira_notes(contents: dict) -> None:
+    def _migrate_schema_100_to_110_jira_notes(contents: dict):
         """Migrate 1.0.0 schema to 1.1.0 schema."""
         jira_notes = []
         for k, v in contents.get('jira', {}).items():
@@ -335,7 +335,7 @@ class AppSpecYml:
         contents['internalNotes'] = jira_notes
 
     @staticmethod
-    def _migrate_schema_100_to_110_release_notes(contents: dict) -> None:
+    def _migrate_schema_100_to_110_release_notes(contents: dict):
         """Migrate 1.0.0 schema to 1.1.0 schema."""
         release_notes = []
         for k, v in contents.get('releaseNotes').items():
@@ -379,7 +379,12 @@ class AppSpecYml:
     @staticmethod
     def dict_to_yaml(data: dict) -> str:
         """Convert dict to yaml."""
-        return yaml.dump(data, Dumper=Dumper, default_flow_style=False, sort_keys=False)
+        return yaml.dump(
+            data,
+            Dumper=Dumper,
+            default_flow_style=False,
+            sort_keys=False,
+        )
 
     @property
     def has_spec(self):
@@ -422,6 +427,7 @@ class AppSpecYml:
 
         # "important" fields
         asy_data_ordered['displayName'] = asy_data.get('displayName')
+        asy_data_ordered['packageName'] = asy_data.get('packageName')
         asy_data_ordered['appId'] = asy_data.get('appId')
         asy_data_ordered['category'] = asy_data.get('category', '')
         asy_data_ordered['programVersion'] = asy_data.get('programVersion')
@@ -449,7 +455,7 @@ class AppSpecYml:
 
         # inputs / outputs
         asy_data_ordered['sections'] = asy_data.get('sections')
-        if asy_data.get('outputData'):
+        if asy_data.get('runtimeLevel').lower() not in ('apiservice', 'organization'):
             asy_data_ordered['outputData'] = asy_data.get('outputData')
         if asy_data.get('outputPrefix'):
             asy_data_ordered['outputPrefix'] = asy_data.get('outputPrefix')
@@ -470,12 +476,19 @@ class AppSpecYml:
 
     def rewrite_contents(self, contents: dict):
         """Rewrite app_spec.yml file."""
+        # fix for null appId value
+        if 'appId' in contents and contents.get('appId') is None:
+            del contents['appId']
+
+        # exclude_defaults - if False then all unused fields are added in - not good.
+        # exclude_none - this should be safe to leave as True.
+        # exclude_unset - this should be False to ensure that all fields are included.
         contents = json.loads(
             AppSpecYmlModel(**contents).json(
                 by_alias=True,
                 exclude_defaults=True,
                 exclude_none=True,
-                exclude_unset=True,
+                exclude_unset=False,
                 sort_keys=True,
             )
         )
@@ -485,7 +498,7 @@ class AppSpecYml:
 
         return contents
 
-    def write(self, contents: dict) -> None:
+    def write(self, contents: dict):
         """Write yaml to file."""
         with self.fqfn.open(mode='w', encoding='utf-8') as fh:
             fh.write(self.dict_to_yaml(self.order_data(contents)))

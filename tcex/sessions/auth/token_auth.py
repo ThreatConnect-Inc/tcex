@@ -1,19 +1,23 @@
 """ThreatConnect HMAC Authorization"""
 # standard library
 import time
-from typing import Callable, Union
+from typing import TYPE_CHECKING, Callable, Union
 
 # third-party
-from requests import auth, request
+from requests import auth
 
 # first-party
 from tcex.input.field_types.sensitive import Sensitive
+
+if TYPE_CHECKING:  # pragma: no cover
+    # third-party
+    from requests import request
 
 
 class TokenAuth(auth.AuthBase):
     """ThreatConnect HMAC Authorization"""
 
-    def __init__(self, tc_token: Union[Callable, str, 'Sensitive']) -> None:
+    def __init__(self, tc_token: Union[Callable, str, 'Sensitive']):
         """Initialize the Class properties."""
         # super().__init__()
         auth.AuthBase.__init__(self)
@@ -39,7 +43,7 @@ class TokenAuth(auth.AuthBase):
         # Return formatted token
         return f'TC-Token {_token}'
 
-    def __call__(self, r: request) -> request:
+    def __call__(self, r: 'request') -> 'request':
         """Add the authorization headers to the request."""
         timestamp = int(time.time())
 

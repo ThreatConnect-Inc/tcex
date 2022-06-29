@@ -121,6 +121,7 @@ class ParamsSpecModel(ParamsModel):
         """DataModel Config"""
 
         alias_generator = snake_to_camel
+        fields = {'sequence': {'exclude': True}}
         smart_union = True
         use_enum_values = True
         validate_assignment = True
@@ -182,14 +183,6 @@ class SectionsModel(BaseModel):
 class AppSpecYmlModel(InstallJsonCommonModel):
     """Model for the app_spec.yml file."""
 
-    # app_name: str = Field(
-    #     None,
-    #     description='The package name for the App.',
-    # )
-    category: str = Field(
-        ...,
-        description='The category of the App. Also playbook.type for playbook Apps.',
-    )
     note_per_action: Optional[List[NotesPerActionModel]] = Field(
         None,
         description='',
@@ -208,6 +201,10 @@ class AppSpecYmlModel(InstallJsonCommonModel):
             'The prefix for output variables, used for advanced request outputs. This value '
             'should match what is passed to the advanced request method in the playbook App.'
         ),
+    )
+    package_name: str = Field(
+        None,
+        description='The package name (app_name in tcex.json) for the App.',
     )
     playbook: Optional[PlaybookSpecModel] = Field(
         None,
@@ -277,14 +274,11 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         """Return lj.inputs."""
         _inputs = []
         for sequence, section in enumerate(self.sections, start=1):
-            # don't include section with no params
-            if not [sp for sp in section.params if sp.disabled is False]:
-                continue
-
             # build params
             parameters = []
             for p in section.params:
-                if p.disabled is True:
+                # exclude disabled and serviceConfig params
+                if any([p.disabled, p.hidden, p.service_config]):
                     continue
 
                 param = {'name': p.name}
@@ -293,14 +287,15 @@ class AppSpecYmlModel(InstallJsonCommonModel):
 
                 parameters.append(param)
 
-            # append section
-            _inputs.append(
-                {
-                    'parameters': parameters,
-                    'sequence': sequence,
-                    'title': section.section_name,
-                }
-            )
+            if parameters:
+                # append section
+                _inputs.append(
+                    {
+                        'parameters': parameters,
+                        'sequence': sequence,
+                        'title': section.section_name,
+                    }
+                )
         return _inputs
 
     def get_note_per_action(self, action: str) -> 'NotesPerActionModel':
@@ -315,7 +310,7 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         """Return formatted note_per_action."""
         _note_per_action = ['\n\nThe following actions are included:']
         _note_per_action.extend(
-            [f'- **{npa.action}** - {npa.note}' for npa in self.note_per_action]
+            [f'-   **{npa.action}** - {npa.note}' for npa in self.note_per_action]
         )
         return _note_per_action
 
@@ -385,7 +380,7 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         for release_note in self.release_notes:
             _release_notes.append(f'### {release_note.version}')
             _release_notes.append('')
-            _release_notes.extend([f'* {rn}' for rn in release_note.notes])
+            _release_notes.extend([f'-   {rn}' for rn in release_note.notes])
             _release_notes.append('')
         return _release_notes
 

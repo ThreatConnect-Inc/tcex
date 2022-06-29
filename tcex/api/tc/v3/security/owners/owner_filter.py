@@ -16,7 +16,7 @@ class OwnerFilter(FilterABC):
         """Return the API endpoint."""
         return ApiEndpoints.OWNERS.value
 
-    def id(self, operator: Enum, id: int) -> None:  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int):  # pylint: disable=redefined-builtin
         """Filter ID based on **id** keyword.
 
         Args:
@@ -25,7 +25,7 @@ class OwnerFilter(FilterABC):
         """
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
-    def owner_id(self, operator: Enum, owner_id: int) -> None:
+    def owner_id(self, operator: Enum, owner_id: int):
         """Filter Owner ID based on **ownerId** keyword.
 
         Args:
@@ -34,7 +34,7 @@ class OwnerFilter(FilterABC):
         """
         self._tql.add_filter('ownerId', operator, owner_id, TqlType.INTEGER)
 
-    def owner_name(self, operator: Enum, owner_name: str) -> None:
+    def owner_name(self, operator: Enum, owner_name: str):
         """Filter Owner Name based on **ownerName** keyword.
 
         Args:
@@ -43,7 +43,7 @@ class OwnerFilter(FilterABC):
         """
         self._tql.add_filter('ownerName', operator, owner_name, TqlType.STRING)
 
-    def perm_apps(self, operator: Enum, perm_apps: str) -> None:
+    def perm_apps(self, operator: Enum, perm_apps: str):
         """Filter Apps Permission based on **permApps** keyword.
 
         Args:
@@ -52,7 +52,7 @@ class OwnerFilter(FilterABC):
         """
         self._tql.add_filter('permApps', operator, perm_apps, TqlType.STRING)
 
-    def perm_artifact(self, operator: Enum, perm_artifact: str) -> None:
+    def perm_artifact(self, operator: Enum, perm_artifact: str):
         """Filter Artifact Permission based on **permArtifact** keyword.
 
         Args:
@@ -61,7 +61,7 @@ class OwnerFilter(FilterABC):
         """
         self._tql.add_filter('permArtifact', operator, perm_artifact, TqlType.STRING)
 
-    def perm_attribute(self, operator: Enum, perm_attribute: str) -> None:
+    def perm_attribute(self, operator: Enum, perm_attribute: str):
         """Filter Attribute Permission based on **permAttribute** keyword.
 
         Args:
@@ -70,7 +70,7 @@ class OwnerFilter(FilterABC):
         """
         self._tql.add_filter('permAttribute', operator, perm_attribute, TqlType.STRING)
 
-    def perm_attribute_type(self, operator: Enum, perm_attribute_type: str) -> None:
+    def perm_attribute_type(self, operator: Enum, perm_attribute_type: str):
         """Filter AttributeType Permission based on **permAttributeType** keyword.
 
         Args:
@@ -79,7 +79,7 @@ class OwnerFilter(FilterABC):
         """
         self._tql.add_filter('permAttributeType', operator, perm_attribute_type, TqlType.STRING)
 
-    def perm_case_tag(self, operator: Enum, perm_case_tag: str) -> None:
+    def perm_case_tag(self, operator: Enum, perm_case_tag: str):
         """Filter CaseTag Permission based on **permCaseTag** keyword.
 
         Args:
@@ -88,7 +88,7 @@ class OwnerFilter(FilterABC):
         """
         self._tql.add_filter('permCaseTag', operator, perm_case_tag, TqlType.STRING)
 
-    def perm_comment(self, operator: Enum, perm_comment: str) -> None:
+    def perm_comment(self, operator: Enum, perm_comment: str):
         """Filter Comment Permission based on **permComment** keyword.
 
         Args:
@@ -97,7 +97,7 @@ class OwnerFilter(FilterABC):
         """
         self._tql.add_filter('permComment', operator, perm_comment, TqlType.STRING)
 
-    def perm_copy_data(self, operator: Enum, perm_copy_data: str) -> None:
+    def perm_copy_data(self, operator: Enum, perm_copy_data: str):
         """Filter CopyData Permission based on **permCopyData** keyword.
 
         Args:
@@ -106,7 +106,7 @@ class OwnerFilter(FilterABC):
         """
         self._tql.add_filter('permCopyData', operator, perm_copy_data, TqlType.STRING)
 
-    def perm_group(self, operator: Enum, perm_group: str) -> None:
+    def perm_group(self, operator: Enum, perm_group: str):
         """Filter Group Permission based on **permGroup** keyword.
 
         Args:
@@ -115,7 +115,7 @@ class OwnerFilter(FilterABC):
         """
         self._tql.add_filter('permGroup', operator, perm_group, TqlType.STRING)
 
-    def perm_indicator(self, operator: Enum, perm_indicator: str) -> None:
+    def perm_indicator(self, operator: Enum, perm_indicator: str):
         """Filter Indicator Permission based on **permIndicator** keyword.
 
         Args:
@@ -124,7 +124,7 @@ class OwnerFilter(FilterABC):
         """
         self._tql.add_filter('permIndicator', operator, perm_indicator, TqlType.STRING)
 
-    def perm_invite(self, operator: Enum, perm_invite: str) -> None:
+    def perm_invite(self, operator: Enum, perm_invite: str):
         """Filter Invite Permission based on **permInvite** keyword.
 
         Args:
@@ -133,7 +133,7 @@ class OwnerFilter(FilterABC):
         """
         self._tql.add_filter('permInvite', operator, perm_invite, TqlType.STRING)
 
-    def perm_members(self, operator: Enum, perm_members: str) -> None:
+    def perm_members(self, operator: Enum, perm_members: str):
         """Filter Members Permission based on **permMembers** keyword.
 
         Args:
@@ -142,7 +142,7 @@ class OwnerFilter(FilterABC):
         """
         self._tql.add_filter('permMembers', operator, perm_members, TqlType.STRING)
 
-    def perm_playbooks(self, operator: Enum, perm_playbooks: str) -> None:
+    def perm_playbooks(self, operator: Enum, perm_playbooks: str):
         """Filter Playbooks Permission based on **permPlaybooks** keyword.
 
         Args:
@@ -151,7 +151,7 @@ class OwnerFilter(FilterABC):
         """
         self._tql.add_filter('permPlaybooks', operator, perm_playbooks, TqlType.STRING)
 
-    def perm_playbooks_execute(self, operator: Enum, perm_playbooks_execute: str) -> None:
+    def perm_playbooks_execute(self, operator: Enum, perm_playbooks_execute: str):
         """Filter PlaybooksExecute Permission based on **permPlaybooksExecute** keyword.
 
         Args:
@@ -162,7 +162,7 @@ class OwnerFilter(FilterABC):
             'permPlaybooksExecute', operator, perm_playbooks_execute, TqlType.STRING
         )
 
-    def perm_post(self, operator: Enum, perm_post: str) -> None:
+    def perm_post(self, operator: Enum, perm_post: str):
         """Filter Post Permission based on **permPost** keyword.
 
         Args:
@@ -171,7 +171,7 @@ class OwnerFilter(FilterABC):
         """
         self._tql.add_filter('permPost', operator, perm_post, TqlType.STRING)
 
-    def perm_publish(self, operator: Enum, perm_publish: str) -> None:
+    def perm_publish(self, operator: Enum, perm_publish: str):
         """Filter Publish Permission based on **permPublish** keyword.
 
         Args:
@@ -180,7 +180,7 @@ class OwnerFilter(FilterABC):
         """
         self._tql.add_filter('permPublish', operator, perm_publish, TqlType.STRING)
 
-    def perm_security_label(self, operator: Enum, perm_security_label: str) -> None:
+    def perm_security_label(self, operator: Enum, perm_security_label: str):
         """Filter SecurityLabel Permission based on **permSecurityLabel** keyword.
 
         Args:
@@ -189,7 +189,7 @@ class OwnerFilter(FilterABC):
         """
         self._tql.add_filter('permSecurityLabel', operator, perm_security_label, TqlType.STRING)
 
-    def perm_settings(self, operator: Enum, perm_settings: str) -> None:
+    def perm_settings(self, operator: Enum, perm_settings: str):
         """Filter Settings Permission based on **permSettings** keyword.
 
         Args:
@@ -198,7 +198,7 @@ class OwnerFilter(FilterABC):
         """
         self._tql.add_filter('permSettings', operator, perm_settings, TqlType.STRING)
 
-    def perm_tag(self, operator: Enum, perm_tag: str) -> None:
+    def perm_tag(self, operator: Enum, perm_tag: str):
         """Filter Tag Permission based on **permTag** keyword.
 
         Args:
@@ -207,7 +207,7 @@ class OwnerFilter(FilterABC):
         """
         self._tql.add_filter('permTag', operator, perm_tag, TqlType.STRING)
 
-    def perm_task(self, operator: Enum, perm_task: str) -> None:
+    def perm_task(self, operator: Enum, perm_task: str):
         """Filter Task Permission based on **permTask** keyword.
 
         Args:
@@ -216,7 +216,7 @@ class OwnerFilter(FilterABC):
         """
         self._tql.add_filter('permTask', operator, perm_task, TqlType.STRING)
 
-    def perm_timeline(self, operator: Enum, perm_timeline: str) -> None:
+    def perm_timeline(self, operator: Enum, perm_timeline: str):
         """Filter Timeline Permission based on **permTimeline** keyword.
 
         Args:
@@ -225,7 +225,7 @@ class OwnerFilter(FilterABC):
         """
         self._tql.add_filter('permTimeline', operator, perm_timeline, TqlType.STRING)
 
-    def perm_track(self, operator: Enum, perm_track: str) -> None:
+    def perm_track(self, operator: Enum, perm_track: str):
         """Filter Track Permission based on **permTrack** keyword.
 
         Args:
@@ -234,7 +234,7 @@ class OwnerFilter(FilterABC):
         """
         self._tql.add_filter('permTrack', operator, perm_track, TqlType.STRING)
 
-    def perm_users(self, operator: Enum, perm_users: str) -> None:
+    def perm_users(self, operator: Enum, perm_users: str):
         """Filter Users Permission based on **permUsers** keyword.
 
         Args:
@@ -243,7 +243,7 @@ class OwnerFilter(FilterABC):
         """
         self._tql.add_filter('permUsers', operator, perm_users, TqlType.STRING)
 
-    def perm_victim(self, operator: Enum, perm_victim: str) -> None:
+    def perm_victim(self, operator: Enum, perm_victim: str):
         """Filter Victim Permission based on **permVictim** keyword.
 
         Args:
@@ -252,7 +252,7 @@ class OwnerFilter(FilterABC):
         """
         self._tql.add_filter('permVictim', operator, perm_victim, TqlType.STRING)
 
-    def perm_workflow_template(self, operator: Enum, perm_workflow_template: str) -> None:
+    def perm_workflow_template(self, operator: Enum, perm_workflow_template: str):
         """Filter WorkflowTemplate Permission based on **permWorkflowTemplate** keyword.
 
         Args:
@@ -263,7 +263,7 @@ class OwnerFilter(FilterABC):
             'permWorkflowTemplate', operator, perm_workflow_template, TqlType.STRING
         )
 
-    def user_id(self, operator: Enum, user_id: int) -> None:
+    def user_id(self, operator: Enum, user_id: int):
         """Filter User ID based on **userId** keyword.
 
         Args:

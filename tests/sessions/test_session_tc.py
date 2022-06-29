@@ -13,7 +13,7 @@ class TestUtils:
     """Test the TcEx Session Module."""
 
     @staticmethod
-    def test_session_token_auth(tcex: 'TcEx') -> None:
+    def test_session_token_auth(tcex: 'TcEx'):
         """Test tc.session property
 
         Args:
@@ -24,7 +24,7 @@ class TestUtils:
         assert r.status_code == 200
 
     @staticmethod
-    def test_session_hmac_auth(tcex_hmac: 'TcEx') -> None:
+    def test_session_hmac_auth(tcex_hmac: 'TcEx'):
         """Test tc.session property with hmac auth
 
         Args:
@@ -35,7 +35,7 @@ class TestUtils:
         assert r.status_code == 200
 
     @staticmethod
-    def test_session_proxy(tcex_proxy: 'TcEx') -> None:
+    def test_session_proxy(tcex_proxy: 'TcEx'):
         """Test tc.session property
 
         Args:

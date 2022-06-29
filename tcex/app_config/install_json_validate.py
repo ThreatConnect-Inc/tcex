@@ -10,7 +10,7 @@ if TYPE_CHECKING:  # pragma: no cover
 class InstallJsonValidate:
     """Validate install.json file."""
 
-    def __init__(self, ij: 'InstallJson') -> None:  # pylint: disable=E0601
+    def __init__(self, ij: 'InstallJson'):  # pylint: disable=E0601
         """Initialize class properties."""
         self.ij = ij
 

@@ -18,7 +18,7 @@ class GroupFilter(FilterABC):
         """Return the API endpoint."""
         return ApiEndpoints.GROUPS.value
 
-    def associated_indicator(self, operator: Enum, associated_indicator: int) -> None:
+    def associated_indicator(self, operator: Enum, associated_indicator: int):
         """Filter associatedIndicator based on **associatedIndicator** keyword.
 
         Args:
@@ -27,7 +27,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('associatedIndicator', operator, associated_indicator, TqlType.INTEGER)
 
-    def attribute(self, operator: Enum, attribute: str) -> None:
+    def attribute(self, operator: Enum, attribute: str):
         """Filter attribute based on **attribute** keyword.
 
         Args:
@@ -36,7 +36,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('attribute', operator, attribute, TqlType.STRING)
 
-    def child_group(self, operator: Enum, child_group: int) -> None:
+    def child_group(self, operator: Enum, child_group: int):
         """Filter childGroup based on **childGroup** keyword.
 
         Args:
@@ -45,7 +45,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('childGroup', operator, child_group, TqlType.INTEGER)
 
-    def created_by(self, operator: Enum, created_by: str) -> None:
+    def created_by(self, operator: Enum, created_by: str):
         """Filter Created By based on **createdBy** keyword.
 
         Args:
@@ -54,7 +54,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('createdBy', operator, created_by, TqlType.STRING)
 
-    def date_added(self, operator: Enum, date_added: str) -> None:
+    def date_added(self, operator: Enum, date_added: str):
         """Filter Date Added based on **dateAdded** keyword.
 
         Args:
@@ -64,7 +64,7 @@ class GroupFilter(FilterABC):
         date_added = self.utils.any_to_datetime(date_added).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('dateAdded', operator, date_added, TqlType.STRING)
 
-    def document_date_added(self, operator: Enum, document_date_added: str) -> None:
+    def document_date_added(self, operator: Enum, document_date_added: str):
         """Filter Date Added (Document) based on **documentDateAdded** keyword.
 
         Args:
@@ -76,7 +76,7 @@ class GroupFilter(FilterABC):
         )
         self._tql.add_filter('documentDateAdded', operator, document_date_added, TqlType.STRING)
 
-    def document_filename(self, operator: Enum, document_filename: str) -> None:
+    def document_filename(self, operator: Enum, document_filename: str):
         """Filter Filename (Document) based on **documentFilename** keyword.
 
         Args:
@@ -85,7 +85,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('documentFilename', operator, document_filename, TqlType.STRING)
 
-    def document_filesize(self, operator: Enum, document_filesize: int) -> None:
+    def document_filesize(self, operator: Enum, document_filesize: int):
         """Filter File Size (Document) based on **documentFilesize** keyword.
 
         Args:
@@ -94,7 +94,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('documentFilesize', operator, document_filesize, TqlType.INTEGER)
 
-    def document_status(self, operator: Enum, document_status: str) -> None:
+    def document_status(self, operator: Enum, document_status: str):
         """Filter Status (Document) based on **documentStatus** keyword.
 
         Args:
@@ -103,7 +103,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('documentStatus', operator, document_status, TqlType.STRING)
 
-    def document_type(self, operator: Enum, document_type: str) -> None:
+    def document_type(self, operator: Enum, document_type: str):
         """Filter Type (Document) based on **documentType** keyword.
 
         Args:
@@ -112,7 +112,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('documentType', operator, document_type, TqlType.STRING)
 
-    def downvote_count(self, operator: Enum, downvote_count: int) -> None:
+    def downvote_count(self, operator: Enum, downvote_count: int):
         """Filter Downvote Count based on **downvoteCount** keyword.
 
         Args:
@@ -121,7 +121,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('downvoteCount', operator, downvote_count, TqlType.INTEGER)
 
-    def email_date(self, operator: Enum, email_date: str) -> None:
+    def email_date(self, operator: Enum, email_date: str):
         """Filter Date (Email) based on **emailDate** keyword.
 
         Args:
@@ -131,7 +131,7 @@ class GroupFilter(FilterABC):
         email_date = self.utils.any_to_datetime(email_date).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('emailDate', operator, email_date, TqlType.STRING)
 
-    def email_from(self, operator: Enum, email_from: str) -> None:
+    def email_from(self, operator: Enum, email_from: str):
         """Filter From (Email) based on **emailFrom** keyword.
 
         Args:
@@ -140,7 +140,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('emailFrom', operator, email_from, TqlType.STRING)
 
-    def email_score(self, operator: Enum, email_score: int) -> None:
+    def email_score(self, operator: Enum, email_score: int):
         """Filter Score (Email) based on **emailScore** keyword.
 
         Args:
@@ -149,7 +149,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('emailScore', operator, email_score, TqlType.INTEGER)
 
-    def email_score_includes_body(self, operator: Enum, email_score_includes_body: bool) -> None:
+    def email_score_includes_body(self, operator: Enum, email_score_includes_body: bool):
         """Filter Score Includes Body (Email) based on **emailScoreIncludesBody** keyword.
 
         Args:
@@ -161,7 +161,7 @@ class GroupFilter(FilterABC):
             'emailScoreIncludesBody', operator, email_score_includes_body, TqlType.BOOLEAN
         )
 
-    def email_subject(self, operator: Enum, email_subject: str) -> None:
+    def email_subject(self, operator: Enum, email_subject: str):
         """Filter Subject (Email) based on **emailSubject** keyword.
 
         Args:
@@ -170,7 +170,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('emailSubject', operator, email_subject, TqlType.STRING)
 
-    def event_date(self, operator: Enum, event_date: str) -> None:
+    def event_date(self, operator: Enum, event_date: str):
         """Filter Event Date based on **eventDate** keyword.
 
         Args:
@@ -267,7 +267,7 @@ class GroupFilter(FilterABC):
         self._tql.add_filter('hasVictimAsset', TqlOperator.EQ, victim_assets, TqlType.SUB_QUERY)
         return victim_assets
 
-    def id(self, operator: Enum, id: int) -> None:  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int):  # pylint: disable=redefined-builtin
         """Filter ID based on **id** keyword.
 
         Args:
@@ -276,7 +276,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
-    def is_group(self, operator: Enum, is_group: bool) -> None:
+    def is_group(self, operator: Enum, is_group: bool):
         """Filter isGroup based on **isGroup** keyword.
 
         Args:
@@ -285,7 +285,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('isGroup', operator, is_group, TqlType.BOOLEAN)
 
-    def last_modified(self, operator: Enum, last_modified: str) -> None:
+    def last_modified(self, operator: Enum, last_modified: str):
         """Filter Last Modified based on **lastModified** keyword.
 
         Args:
@@ -295,7 +295,7 @@ class GroupFilter(FilterABC):
         last_modified = self.utils.any_to_datetime(last_modified).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('lastModified', operator, last_modified, TqlType.STRING)
 
-    def owner(self, operator: Enum, owner: int) -> None:
+    def owner(self, operator: Enum, owner: int):
         """Filter Owner ID based on **owner** keyword.
 
         Args:
@@ -304,7 +304,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('owner', operator, owner, TqlType.INTEGER)
 
-    def owner_name(self, operator: Enum, owner_name: str) -> None:
+    def owner_name(self, operator: Enum, owner_name: str):
         """Filter Owner Name based on **ownerName** keyword.
 
         Args:
@@ -313,7 +313,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('ownerName', operator, owner_name, TqlType.STRING)
 
-    def parent_group(self, operator: Enum, parent_group: int) -> None:
+    def parent_group(self, operator: Enum, parent_group: int):
         """Filter parentGroup based on **parentGroup** keyword.
 
         Args:
@@ -322,7 +322,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('parentGroup', operator, parent_group, TqlType.INTEGER)
 
-    def security_label(self, operator: Enum, security_label: str) -> None:
+    def security_label(self, operator: Enum, security_label: str):
         """Filter Security Label based on **securityLabel** keyword.
 
         Args:
@@ -331,7 +331,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('securityLabel', operator, security_label, TqlType.STRING)
 
-    def signature_date_added(self, operator: Enum, signature_date_added: str) -> None:
+    def signature_date_added(self, operator: Enum, signature_date_added: str):
         """Filter Date Added (Signature) based on **signatureDateAdded** keyword.
 
         Args:
@@ -343,7 +343,7 @@ class GroupFilter(FilterABC):
         )
         self._tql.add_filter('signatureDateAdded', operator, signature_date_added, TqlType.STRING)
 
-    def signature_filename(self, operator: Enum, signature_filename: str) -> None:
+    def signature_filename(self, operator: Enum, signature_filename: str):
         """Filter Filename (Signature) based on **signatureFilename** keyword.
 
         Args:
@@ -352,7 +352,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('signatureFilename', operator, signature_filename, TqlType.STRING)
 
-    def signature_type(self, operator: Enum, signature_type: str) -> None:
+    def signature_type(self, operator: Enum, signature_type: str):
         """Filter Type (Signature) based on **signatureType** keyword.
 
         Args:
@@ -361,7 +361,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('signatureType', operator, signature_type, TqlType.STRING)
 
-    def status(self, operator: Enum, status: str) -> None:
+    def status(self, operator: Enum, status: str):
         """Filter Status based on **status** keyword.
 
         Args:
@@ -370,7 +370,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('status', operator, status, TqlType.STRING)
 
-    def summary(self, operator: Enum, summary: str) -> None:
+    def summary(self, operator: Enum, summary: str):
         """Filter Summary based on **summary** keyword.
 
         Args:
@@ -379,7 +379,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('summary', operator, summary, TqlType.STRING)
 
-    def tag(self, operator: Enum, tag: str) -> None:
+    def tag(self, operator: Enum, tag: str):
         """Filter Tag based on **tag** keyword.
 
         Args:
@@ -388,7 +388,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('tag', operator, tag, TqlType.STRING)
 
-    def tag_owner(self, operator: Enum, tag_owner: int) -> None:
+    def tag_owner(self, operator: Enum, tag_owner: int):
         """Filter Tag Owner ID based on **tagOwner** keyword.
 
         Args:
@@ -397,7 +397,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('tagOwner', operator, tag_owner, TqlType.INTEGER)
 
-    def tag_owner_name(self, operator: Enum, tag_owner_name: str) -> None:
+    def tag_owner_name(self, operator: Enum, tag_owner_name: str):
         """Filter Tag Owner Name based on **tagOwnerName** keyword.
 
         Args:
@@ -406,7 +406,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('tagOwnerName', operator, tag_owner_name, TqlType.STRING)
 
-    def task_assignee(self, operator: Enum, task_assignee: str) -> None:
+    def task_assignee(self, operator: Enum, task_assignee: str):
         """Filter Assignee (Task) based on **taskAssignee** keyword.
 
         Args:
@@ -415,7 +415,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('taskAssignee', operator, task_assignee, TqlType.STRING)
 
-    def task_assignee_pseudo(self, operator: Enum, task_assignee_pseudo: str) -> None:
+    def task_assignee_pseudo(self, operator: Enum, task_assignee_pseudo: str):
         """Filter Assignee Pseudonym (Task) based on **taskAssigneePseudo** keyword.
 
         Args:
@@ -424,7 +424,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('taskAssigneePseudo', operator, task_assignee_pseudo, TqlType.STRING)
 
-    def task_date_added(self, operator: Enum, task_date_added: str) -> None:
+    def task_date_added(self, operator: Enum, task_date_added: str):
         """Filter Date Added (Task) based on **taskDateAdded** keyword.
 
         Args:
@@ -434,7 +434,7 @@ class GroupFilter(FilterABC):
         task_date_added = self.utils.any_to_datetime(task_date_added).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('taskDateAdded', operator, task_date_added, TqlType.STRING)
 
-    def task_due_date(self, operator: Enum, task_due_date: str) -> None:
+    def task_due_date(self, operator: Enum, task_due_date: str):
         """Filter Due Date (Task) based on **taskDueDate** keyword.
 
         Args:
@@ -444,7 +444,7 @@ class GroupFilter(FilterABC):
         task_due_date = self.utils.any_to_datetime(task_due_date).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('taskDueDate', operator, task_due_date, TqlType.STRING)
 
-    def task_escalated(self, operator: Enum, task_escalated: bool) -> None:
+    def task_escalated(self, operator: Enum, task_escalated: bool):
         """Filter Escalated (Task) based on **taskEscalated** keyword.
 
         Args:
@@ -453,7 +453,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('taskEscalated', operator, task_escalated, TqlType.BOOLEAN)
 
-    def task_escalation_date(self, operator: Enum, task_escalation_date: str) -> None:
+    def task_escalation_date(self, operator: Enum, task_escalation_date: str):
         """Filter Escalation Date (Task) based on **taskEscalationDate** keyword.
 
         Args:
@@ -465,7 +465,7 @@ class GroupFilter(FilterABC):
         )
         self._tql.add_filter('taskEscalationDate', operator, task_escalation_date, TqlType.STRING)
 
-    def task_last_modified(self, operator: Enum, task_last_modified: str) -> None:
+    def task_last_modified(self, operator: Enum, task_last_modified: str):
         """Filter Last Modified based on **taskLastModified** keyword.
 
         Args:
@@ -477,7 +477,7 @@ class GroupFilter(FilterABC):
         )
         self._tql.add_filter('taskLastModified', operator, task_last_modified, TqlType.STRING)
 
-    def task_overdue(self, operator: Enum, task_overdue: bool) -> None:
+    def task_overdue(self, operator: Enum, task_overdue: bool):
         """Filter Overdue (Task) based on **taskOverdue** keyword.
 
         Args:
@@ -486,7 +486,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('taskOverdue', operator, task_overdue, TqlType.BOOLEAN)
 
-    def task_reminded(self, operator: Enum, task_reminded: bool) -> None:
+    def task_reminded(self, operator: Enum, task_reminded: bool):
         """Filter Reminded (Task) based on **taskReminded** keyword.
 
         Args:
@@ -495,7 +495,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('taskReminded', operator, task_reminded, TqlType.BOOLEAN)
 
-    def task_reminder_date(self, operator: Enum, task_reminder_date: str) -> None:
+    def task_reminder_date(self, operator: Enum, task_reminder_date: str):
         """Filter Reminder Date (Task) based on **taskReminderDate** keyword.
 
         Args:
@@ -507,7 +507,7 @@ class GroupFilter(FilterABC):
         )
         self._tql.add_filter('taskReminderDate', operator, task_reminder_date, TqlType.STRING)
 
-    def task_status(self, operator: Enum, task_status: str) -> None:
+    def task_status(self, operator: Enum, task_status: str):
         """Filter Status (Task) based on **taskStatus** keyword.
 
         Args:
@@ -516,7 +516,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('taskStatus', operator, task_status, TqlType.STRING)
 
-    def type(self, operator: Enum, type: int) -> None:  # pylint: disable=redefined-builtin
+    def type(self, operator: Enum, type: int):  # pylint: disable=redefined-builtin
         """Filter Type based on **type** keyword.
 
         Args:
@@ -525,7 +525,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('type', operator, type, TqlType.INTEGER)
 
-    def type_name(self, operator: Enum, type_name: str) -> None:
+    def type_name(self, operator: Enum, type_name: str):
         """Filter Type Name based on **typeName** keyword.
 
         Args:
@@ -534,7 +534,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('typeName', operator, type_name, TqlType.STRING)
 
-    def upvote_count(self, operator: Enum, upvote_count: int) -> None:
+    def upvote_count(self, operator: Enum, upvote_count: int):
         """Filter Upvote Count based on **upvoteCount** keyword.
 
         Args:
@@ -543,7 +543,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('upvoteCount', operator, upvote_count, TqlType.INTEGER)
 
-    def victim_asset(self, operator: Enum, victim_asset: str) -> None:
+    def victim_asset(self, operator: Enum, victim_asset: str):
         """Filter victimAsset based on **victimAsset** keyword.
 
         Args:

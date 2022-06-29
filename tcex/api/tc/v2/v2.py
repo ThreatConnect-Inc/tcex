@@ -27,7 +27,7 @@ class V2:
         session_tc: An configured instance of request.Session with TC API Auth.
     """
 
-    def __init__(self, inputs: 'Input', session_tc: 'Session') -> None:
+    def __init__(self, inputs: 'Input', session_tc: 'Session'):
         """Initialize Class properties."""
         self.inputs = inputs
         self.session_tc = session_tc

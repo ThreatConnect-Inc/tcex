@@ -29,7 +29,7 @@ class GroupAttributes(ObjectCollectionABC):
         params (dict): Additional query params (see example above).
     """
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs):
         """Initialize class properties."""
         super().__init__(
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
@@ -64,7 +64,7 @@ class GroupAttribute(ObjectABC):
         value (str, kwargs): Attribute value.
     """
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs):
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
 
@@ -85,7 +85,7 @@ class GroupAttribute(ObjectABC):
         return self._model
 
     @model.setter
-    def model(self, data: Union['GroupAttributeModel', dict]) -> None:
+    def model(self, data: Union['GroupAttributeModel', dict]):
         """Create model using the provided data."""
         if isinstance(data, type(self.model)):
             # provided data is already a model, nothing required to change

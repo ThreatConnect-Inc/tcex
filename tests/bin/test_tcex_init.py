@@ -40,7 +40,7 @@ class TestTcexCliInit:
         result = runner.invoke(app, args)
         return result
 
-    def test_tcex_init_organization_basic(self, monkeypatch: 'pytest.MonkeyPatch') -> None:
+    def test_tcex_init_organization_basic(self, monkeypatch: 'pytest.MonkeyPatch'):
         """Test Case"""
         result = self._run_command(
             ['init', '--type', 'organization', '--template', 'basic', '--force'], monkeypatch
@@ -53,7 +53,7 @@ class TestTcexCliInit:
         assert os.path.isfile('job_app.py')
         assert os.path.isfile('tcex.json')
 
-    def test_tcex_init_playbook_basic(self, monkeypatch: 'pytest.Monkeypatch') -> None:
+    def test_tcex_init_playbook_basic(self, monkeypatch: 'pytest.Monkeypatch'):
         """Test Case"""
         result = self._run_command(
             ['init', '--type', 'playbook', '--template', 'basic'], monkeypatch

@@ -1,4 +1,5 @@
 ajfmuyodhscwegea
+apiservice
 astunparse
 autofix
 blpop
@@ -52,6 +53,7 @@ loadscope
 maxkb
 mitmproxy
 mqtt
+multichoice
 nargs
 newstr
 paco
@@ -60,9 +62,11 @@ playbookdb
 popen
 pyaes
 pycache
+pythonhosted
 pytz
 pyyaml
 rargs
+relativedelta
 reqs
 rfile
 rpush
@@ -72,6 +76,7 @@ safeurl
 secho
 setenv
 shelf
+spectool
 splunk
 sqlite
 stdlib

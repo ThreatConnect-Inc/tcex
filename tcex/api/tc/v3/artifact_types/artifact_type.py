@@ -26,7 +26,7 @@ class ArtifactTypes(ObjectCollectionABC):
         params (dict): Additional query params (see example above).
     """
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs):
         """Initialize class properties."""
         super().__init__(
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
@@ -52,7 +52,7 @@ class ArtifactTypes(ObjectCollectionABC):
 class ArtifactType(ObjectABC):
     """ArtifactTypes Object."""
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs):
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
 
@@ -73,7 +73,7 @@ class ArtifactType(ObjectABC):
         return self._model
 
     @model.setter
-    def model(self, data: Union['ArtifactTypeModel', dict]) -> None:
+    def model(self, data: Union['ArtifactTypeModel', dict]):
         """Create model using the provided data."""
         if isinstance(data, type(self.model)):
             # provided data is already a model, nothing required to change

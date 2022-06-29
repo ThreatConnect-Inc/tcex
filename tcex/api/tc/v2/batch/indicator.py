@@ -18,9 +18,7 @@ def custom_indicator_class_factory(indicator_type, base_class, class_dict, value
     """Return internal methods for dynamically building Custom Indicator Class."""
     value_count = len(value_fields)
 
-    def init_1(  # pylint: disable=possibly-unused-variable
-        self, tcex, value1, xid, **kwargs
-    ) -> None:
+    def init_1(self, tcex, value1, xid, **kwargs):  # pylint: disable=possibly-unused-variable
         """Init method for Custom Indicator Types with one value"""
         summary = self.build_summary(value1)  # build the indicator summary
         base_class.__init__(self, tcex, indicator_type, summary, xid, **kwargs)
@@ -29,7 +27,7 @@ def custom_indicator_class_factory(indicator_type, base_class, class_dict, value
 
     def init_2(  # pylint: disable=possibly-unused-variable
         self, tcex, value1, value2, xid, **kwargs
-    ) -> None:
+    ):
         """Init method for Custom Indicator Types with two values."""
         summary = self.build_summary(value1, value2)  # build the indicator summary
         base_class.__init__(self, tcex, indicator_type, summary, xid, **kwargs)
@@ -38,7 +36,7 @@ def custom_indicator_class_factory(indicator_type, base_class, class_dict, value
 
     def init_3(  # pylint: disable=possibly-unused-variable
         self, tcex, value1, value2, value3, xid, **kwargs
-    ) -> None:
+    ):
         """Init method for Custom Indicator Types with three values."""
         summary = self.build_summary(value1, value2, value3)  # build the indicator summary
         base_class.__init__(self, tcex, indicator_type, summary, xid, **kwargs)
@@ -66,7 +64,7 @@ class Indicator:
         'utils',
     ]
 
-    def __init__(self, indicator_type: str, summary: str, **kwargs) -> None:
+    def __init__(self, indicator_type: str, summary: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -113,7 +111,7 @@ class Indicator:
             'whois_active': 'flag2',
         }
 
-    def add_key_value(self, key: str, value: str) -> None:
+    def add_key_value(self, key: str, value: str):
         """Add custom field to Indicator object.
 
         .. note:: The key must be the exact name required by the batch schema.
@@ -145,11 +143,11 @@ class Indicator:
         return self._indicator_data.get('active')
 
     @active.setter
-    def active(self, active: bool) -> None:
+    def active(self, active: bool):
         """Set Indicator active."""
         self._indicator_data['active'] = self.utils.to_bool(active)
 
-    def association(self, group_xid: str) -> None:
+    def association(self, group_xid: str):
         """Add association using xid value.
 
         Args:
@@ -228,7 +226,7 @@ class Indicator:
         return self._indicator_data.get('confidence')
 
     @confidence.setter
-    def confidence(self, confidence: int) -> None:
+    def confidence(self, confidence: int):
         """Set Indicator confidence."""
         self._indicator_data['confidence'] = int(confidence)
 
@@ -271,7 +269,7 @@ class Indicator:
         return self._indicator_data.get('dateAdded')
 
     @date_added.setter
-    def date_added(self, date_added: str) -> None:
+    def date_added(self, date_added: str):
         """Set Indicator dateAdded."""
         self._indicator_data['dateAdded'] = self.utils.any_to_datetime(date_added).strftime(
             '%Y-%m-%dT%H:%M:%SZ'
@@ -283,7 +281,7 @@ class Indicator:
         return self._indicator_data.get('lastModified')
 
     @last_modified.setter
-    def last_modified(self, last_modified: str) -> None:
+    def last_modified(self, last_modified: str):
         """Set Indicator lastModified."""
         self._indicator_data['lastModified'] = self.utils.any_to_datetime(last_modified).strftime(
             '%Y-%m-%dT%H:%M:%SZ'
@@ -319,7 +317,7 @@ class Indicator:
         return self._indicator_data.get('privateFlag')
 
     @private_flag.setter
-    def private_flag(self, private_flag: bool) -> None:
+    def private_flag(self, private_flag: bool):
         """Set Indicator private flag."""
         self._indicator_data['privateFlag'] = self.utils.to_bool(private_flag)
 
@@ -329,7 +327,7 @@ class Indicator:
         return self._indicator_data.get('rating')
 
     @rating.setter
-    def rating(self, rating: float) -> None:
+    def rating(self, rating: float):
         """Set Indicator rating."""
         self._indicator_data['rating'] = float(rating)
 
@@ -363,7 +361,7 @@ class Indicator:
             self._labels.append(label)
         return label
 
-    def tag(self, name: str, formatter: Optional[Callable[[str], str]] = None) -> Tag:
+    def tag(self, name: str, formatter: Optional[Callable[[str], str]] = None) -> 'Tag':
         """Return instance of Tag.
 
         Args:
@@ -402,7 +400,7 @@ class Address(Indicator):
 
     __slots__ = []
 
-    def __init__(self, ip: str, **kwargs) -> None:
+    def __init__(self, ip: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -423,7 +421,7 @@ class ASN(Indicator):
 
     __slots__ = []
 
-    def __init__(self, as_number: str, **kwargs) -> None:
+    def __init__(self, as_number: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -444,7 +442,7 @@ class CIDR(Indicator):
 
     __slots__ = []
 
-    def __init__(self, block: str, **kwargs) -> None:
+    def __init__(self, block: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -465,7 +463,7 @@ class EmailAddress(Indicator):
 
     __slots__ = []
 
-    def __init__(self, address: str, **kwargs) -> None:
+    def __init__(self, address: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -492,7 +490,7 @@ class File(Indicator):
         sha1: Optional[str] = None,
         sha256: Optional[str] = None,
         **kwargs,
-    ) -> None:
+    ):
         """Initialize Class Properties.
 
         Args:
@@ -544,7 +542,7 @@ class File(Indicator):
         return self._indicator_data.get('sha256')
 
     @sha256.setter
-    def sha256(self, sha256: str) -> None:
+    def sha256(self, sha256: str):
         """Set Indicator sha256."""
         self._indicator_data['sha256'] = sha256
 
@@ -554,7 +552,7 @@ class File(Indicator):
         return self._indicator_data.get('intValue1')
 
     @size.setter
-    def size(self, size: int) -> None:
+    def size(self, size: int):
         """Set Indicator size."""
         self._indicator_data['intValue1'] = size
 
@@ -564,7 +562,7 @@ class Host(Indicator):
 
     __slots__ = []
 
-    def __init__(self, hostname: str, **kwargs) -> None:
+    def __init__(self, hostname: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -587,7 +585,7 @@ class Host(Indicator):
         return self._indicator_data.get('flag1')
 
     @dns_active.setter
-    def dns_active(self, dns_active: bool) -> None:
+    def dns_active(self, dns_active: bool):
         """Set Indicator dns active."""
         self._indicator_data['flag1'] = self.utils.to_bool(dns_active)
 
@@ -597,7 +595,7 @@ class Host(Indicator):
         return self._indicator_data.get('flag2')
 
     @whois_active.setter
-    def whois_active(self, whois_active: bool) -> None:
+    def whois_active(self, whois_active: bool):
         """Set Indicator whois active."""
         self._indicator_data['flag2'] = self.utils.to_bool(whois_active)
 
@@ -607,7 +605,7 @@ class Mutex(Indicator):
 
     __slots__ = []
 
-    def __init__(self, mutex: str, **kwargs) -> None:
+    def __init__(self, mutex: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -628,7 +626,7 @@ class RegistryKey(Indicator):
 
     __slots__ = []
 
-    def __init__(self, key_name: str, value_name: str, value_type: str, **kwargs) -> None:
+    def __init__(self, key_name: str, value_name: str, value_type: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -652,7 +650,7 @@ class URL(Indicator):
 
     __slots__ = []
 
-    def __init__(self, text: str, **kwargs) -> None:
+    def __init__(self, text: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -673,7 +671,7 @@ class UserAgent(Indicator):
 
     __slots__ = []
 
-    def __init__(self, text: str, **kwargs) -> None:
+    def __init__(self, text: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -694,7 +692,7 @@ class FileAction:
 
     __slots__ = ['_action_data', '_children', 'xid']
 
-    def __init__(self, parent_xid: str, relationship) -> None:
+    def __init__(self, parent_xid: str, relationship):
         """Initialize Class Properties.
 
         .. warning:: This code is not complete and may require some update to the API.
@@ -719,7 +717,7 @@ class FileAction:
                 self._action_data.setdefault('children', []).append(child.data)
         return self._action_data
 
-    def action(self, relationship) -> None:
+    def action(self, relationship):
         """Add a nested File Action."""
         action_obj = FileAction(self.xid, relationship)
         self._children.append(action_obj)
@@ -739,7 +737,7 @@ class FileOccurrence:
         file_name: Optional[str] = None,
         path: Optional[str] = None,
         date: Optional[str] = None,
-    ) -> None:
+    ):
         """Initialize Class Properties
 
         Args:
@@ -772,7 +770,7 @@ class FileOccurrence:
         return self._occurrence_data.get('date')
 
     @date.setter
-    def date(self, date: str) -> None:
+    def date(self, date: str):
         """Set File Occurrence date."""
         self._occurrence_data['date'] = self.utils.any_to_datetime(date).strftime(
             '%Y-%m-%dT%H:%M:%SZ'
@@ -784,7 +782,7 @@ class FileOccurrence:
         return self._occurrence_data.get('fileName')
 
     @file_name.setter
-    def file_name(self, file_name: str) -> None:
+    def file_name(self, file_name: str):
         """Set File Occurrence file name."""
         self._occurrence_data['fileName'] = file_name
 
@@ -794,7 +792,7 @@ class FileOccurrence:
         return self._occurrence_data.get('path')
 
     @path.setter
-    def path(self, path: str) -> None:
+    def path(self, path: str):
         """Set File Occurrence path."""
         self._occurrence_data['path'] = path
 

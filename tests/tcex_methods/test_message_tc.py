@@ -15,7 +15,7 @@ class TestMessageTc:
         """Configure setup before all tests."""
 
     @staticmethod
-    def test_message_tc(tcex: 'TcEx') -> None:
+    def test_message_tc(tcex: 'TcEx'):
         """Test message tc method.
 
         Args:
@@ -48,7 +48,7 @@ class TestMessageTc:
         assert message == message_tc, 'message.tc did not match message'
 
     @staticmethod
-    def test_message_tc_long_message(tcex: 'TcEx') -> None:
+    def test_message_tc_long_message(tcex: 'TcEx'):
         """Test long provided to message.tc method.
 
         Args:
@@ -86,7 +86,7 @@ class TestMessageTc:
         assert message[-255:] == message_tc, 'message.tc did not match message'
 
     @staticmethod
-    def test_message_tc_multiple_messages(tcex: 'TcEx') -> None:
+    def test_message_tc_multiple_messages(tcex: 'TcEx'):
         """Test long provided to message.tc method.
 
         Args:

@@ -15,7 +15,7 @@ class KeyValueApi(KeyValueABC):
         session: A configured requests session for TC API (tcex.session).
     """
 
-    def __init__(self, session: object) -> None:
+    def __init__(self, session: object):
         """Initialize the Class properties."""
         self._session = session
 

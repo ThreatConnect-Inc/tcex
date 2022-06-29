@@ -18,7 +18,7 @@ class SecurityLabelFilter(FilterABC):
         """Return the API endpoint."""
         return ApiEndpoints.SECURITY_LABELS.value
 
-    def color(self, operator: Enum, color: str) -> None:
+    def color(self, operator: Enum, color: str):
         """Filter Color based on **color** keyword.
 
         Args:
@@ -27,7 +27,7 @@ class SecurityLabelFilter(FilterABC):
         """
         self._tql.add_filter('color', operator, color, TqlType.STRING)
 
-    def date_added(self, operator: Enum, date_added: str) -> None:
+    def date_added(self, operator: Enum, date_added: str):
         """Filter Date Added based on **dateAdded** keyword.
 
         Args:
@@ -37,7 +37,7 @@ class SecurityLabelFilter(FilterABC):
         date_added = self.utils.any_to_datetime(date_added).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('dateAdded', operator, date_added, TqlType.STRING)
 
-    def description(self, operator: Enum, description: str) -> None:
+    def description(self, operator: Enum, description: str):
         """Filter Description based on **description** keyword.
 
         Args:
@@ -56,7 +56,7 @@ class SecurityLabelFilter(FilterABC):
         self._tql.add_filter('hasGroup', TqlOperator.EQ, groups, TqlType.SUB_QUERY)
         return groups
 
-    def has_group_attribute(self, operator: Enum, has_group_attribute: int) -> None:
+    def has_group_attribute(self, operator: Enum, has_group_attribute: int):
         """Filter Associated Group based on **hasGroupAttribute** keyword.
 
         Args:
@@ -75,7 +75,7 @@ class SecurityLabelFilter(FilterABC):
         self._tql.add_filter('hasIndicator', TqlOperator.EQ, indicators, TqlType.SUB_QUERY)
         return indicators
 
-    def has_indicator_attribute(self, operator: Enum, has_indicator_attribute: int) -> None:
+    def has_indicator_attribute(self, operator: Enum, has_indicator_attribute: int):
         """Filter Associated Indicator based on **hasIndicatorAttribute** keyword.
 
         Args:
@@ -96,7 +96,7 @@ class SecurityLabelFilter(FilterABC):
         self._tql.add_filter('hasVictim', TqlOperator.EQ, victims, TqlType.SUB_QUERY)
         return victims
 
-    def has_victim_attribute(self, operator: Enum, has_victim_attribute: int) -> None:
+    def has_victim_attribute(self, operator: Enum, has_victim_attribute: int):
         """Filter Associated Victim based on **hasVictimAttribute** keyword.
 
         Args:
@@ -105,7 +105,7 @@ class SecurityLabelFilter(FilterABC):
         """
         self._tql.add_filter('hasVictimAttribute', operator, has_victim_attribute, TqlType.INTEGER)
 
-    def id(self, operator: Enum, id: int) -> None:  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int):  # pylint: disable=redefined-builtin
         """Filter ID based on **id** keyword.
 
         Args:
@@ -114,7 +114,7 @@ class SecurityLabelFilter(FilterABC):
         """
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
-    def name(self, operator: Enum, name: str) -> None:
+    def name(self, operator: Enum, name: str):
         """Filter Name based on **name** keyword.
 
         Args:
@@ -123,7 +123,7 @@ class SecurityLabelFilter(FilterABC):
         """
         self._tql.add_filter('name', operator, name, TqlType.STRING)
 
-    def owner(self, operator: Enum, owner: int) -> None:
+    def owner(self, operator: Enum, owner: int):
         """Filter Owner ID based on **owner** keyword.
 
         Args:
@@ -132,7 +132,7 @@ class SecurityLabelFilter(FilterABC):
         """
         self._tql.add_filter('owner', operator, owner, TqlType.INTEGER)
 
-    def owner_name(self, operator: Enum, owner_name: str) -> None:
+    def owner_name(self, operator: Enum, owner_name: str):
         """Filter Owner Name based on **ownerName** keyword.
 
         Args:
@@ -141,7 +141,7 @@ class SecurityLabelFilter(FilterABC):
         """
         self._tql.add_filter('ownerName', operator, owner_name, TqlType.STRING)
 
-    def summary(self, operator: Enum, summary: str) -> None:
+    def summary(self, operator: Enum, summary: str):
         """Filter Summary based on **summary** keyword.
 
         Args:
@@ -150,7 +150,7 @@ class SecurityLabelFilter(FilterABC):
         """
         self._tql.add_filter('summary', operator, summary, TqlType.STRING)
 
-    def victim_id(self, operator: Enum, victim_id: int) -> None:
+    def victim_id(self, operator: Enum, victim_id: int):
         """Filter Victim ID based on **victimId** keyword.
 
         Args:

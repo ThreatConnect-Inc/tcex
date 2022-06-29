@@ -394,8 +394,9 @@ class RetryModel(BaseModel):
 class PlaybookModel(BaseModel):
     """Model for install_json.playbook"""
 
+    output_prefix: Optional[str] = Field(None, description='')
     output_variables: Optional[List[OutputVariablesModel]] = Field(
-        None,
+        [],
         description=(
             'Optional outputVariables property that specifies the variables that a '
             'Playbook App will provide for downstream Playbooks.'
@@ -467,7 +468,7 @@ def get_commit_hash() -> Optional[str]:
     return commit_hash
 
 
-def app_id() -> str:
+def gen_app_id() -> str:
     """Return a generate id for the current App."""
     return uuid.uuid5(uuid.NAMESPACE_X500, os.path.basename(os.getcwd()).lower())
 
@@ -499,7 +500,7 @@ class InstallJsonCommonModel(BaseModel):
         ),
     )
     app_id: Union[UUID4, UUID5] = Field(
-        default_factory=app_id,
+        default_factory=gen_app_id,
         description=(
             '[TcEx 1.1.4+] A unique identifier for the App. This field is not currently '
             'used in the core product, but will be used in other tooling to identify the '
@@ -509,6 +510,10 @@ class InstallJsonCommonModel(BaseModel):
             'project directory name as a seed. Once an App has been released the appId '
             'field should not be changed.'
         ),
+    )
+    category: str = Field(
+        '',
+        description='The category of the App. Also playbook.type for playbook Apps.',
     )
     deprecates_apps: Optional[List[str]] = Field(
         None,

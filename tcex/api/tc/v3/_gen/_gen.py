@@ -29,7 +29,7 @@ class GenerateArgs(GenerateArgsABC):
 class GenerateFilter(GenerateFilterABC):
     """Generate Models for TC API Types"""
 
-    def __init__(self, type_: str) -> None:
+    def __init__(self, type_: str):
         """Initialize class properties."""
         super().__init__(type_)
 
@@ -41,7 +41,7 @@ class GenerateFilter(GenerateFilterABC):
 class GenerateModel(GenerateModelABC):
     """Generate Models for TC API Types"""
 
-    def __init__(self, type_: str) -> None:
+    def __init__(self, type_: str):
         """Initialize class properties."""
         super().__init__(type_)
 
@@ -53,7 +53,7 @@ class GenerateModel(GenerateModelABC):
 class GenerateObject(GenerateObjectABC):
     """Generate Models for TC API Types"""
 
-    def __init__(self, type_: str) -> None:
+    def __init__(self, type_: str):
         """Initialize class properties."""
         super().__init__(type_)
 
@@ -86,7 +86,7 @@ def format_code(_code):
     return _code
 
 
-def gen_args(type_: str, indent_blocks: int) -> None:
+def gen_args(type_: str, indent_blocks: int):
     """Generate args code."""
     # get instance of doc generator
     gen = GenerateArgs(type_)
@@ -97,7 +97,7 @@ def gen_args(type_: str, indent_blocks: int) -> None:
     print(gen.gen_args(i1=i1, i2=i2))
 
 
-def gen_filter(type_: str) -> None:
+def gen_filter(type_: str):
     """Generate the filter code."""
     # get instance of filter generator
     gen = GenerateFilter(type_)
@@ -125,7 +125,7 @@ def gen_filter(type_: str) -> None:
     typer.secho(f'Successfully wrote {out_file}.', fg=typer.colors.GREEN)
 
 
-def gen_model(type_: str) -> None:
+def gen_model(type_: str):
     """Generate model code."""
     # get instance of model generator
     gen = GenerateModel(type_)
@@ -170,7 +170,7 @@ def gen_model(type_: str) -> None:
     typer.secho(f'Successfully wrote {out_file}.', fg=typer.colors.GREEN)
 
 
-def gen_object(type_: str) -> None:
+def gen_object(type_: str):
     """Generate object code."""
     # get instance of filter generator
     gen = GenerateObject(type_)

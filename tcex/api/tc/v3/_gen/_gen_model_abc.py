@@ -12,7 +12,7 @@ from tcex.api.tc.v3._gen._gen_abc import GenerateABC
 class GenerateModelABC(GenerateABC, ABC):
     """Generate Models for Case Management Types"""
 
-    def __init__(self, type_: str) -> None:
+    def __init__(self, type_: str):
         """Initialize class properties."""
         super().__init__(type_)
 
@@ -30,7 +30,7 @@ class GenerateModelABC(GenerateABC, ABC):
         }
         self.validators = {}
 
-    def _add_module_class(self, from_: str, module: str, class_: str) -> None:
+    def _add_module_class(self, from_: str, module: str, class_: str):
         """Add pydantic validator only when required."""
         for lib in self.requirements[from_]:
             if isinstance(lib, dict):

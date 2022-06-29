@@ -23,7 +23,7 @@ class WebhookTriggerService(CommonServiceTrigger):
         self.webhook_event_callback = None
         self.webhook_marshall_event_callback = None
 
-    def callback_response_handler(self, callback_response: Any, message: dict) -> None:
+    def callback_response_handler(self, callback_response: Any, message: dict):
         """Handle the different types of callback responses.
 
         # Webhook App (default)
@@ -58,7 +58,7 @@ class WebhookTriggerService(CommonServiceTrigger):
         else:
             self.callback_response_webhook(callback_response, message)
 
-    def callback_response_webhook(self, callback_response: Any, message: dict) -> None:
+    def callback_response_webhook(self, callback_response: Any, message: dict):
         """Handle the different types of callback responses.
 
         * Dict - Playbook will not be launched and provided data
@@ -90,7 +90,7 @@ class WebhookTriggerService(CommonServiceTrigger):
             # capture fired status for testing framework
             self._tcex_testing_fired_events(self.session_id, False)
 
-    def callback_response_marshall(self, callback_response: Any, message: dict) -> None:
+    def callback_response_marshall(self, callback_response: Any, message: dict):
         """Handle the different types of callback responses.
 
         # webhookResponseMarshall Feature App
@@ -111,7 +111,7 @@ class WebhookTriggerService(CommonServiceTrigger):
         # handle response the same a normal response
         self.callback_response_webhook(fire_trigger, message)
 
-    def callback_response_service_endpoint(self, callback_response: Any, message: dict) -> None:
+    def callback_response_service_endpoint(self, callback_response: Any, message: dict):
         """Handle the different types of callback responses.
 
         # webhookServiceEndpoint Feature App
@@ -145,7 +145,7 @@ class WebhookTriggerService(CommonServiceTrigger):
         command_map.update({'webhookmarshallevent': self.process_webhook_marshall_event_command})
         return command_map
 
-    def process_webhook_event_command(self, message: dict) -> None:
+    def process_webhook_event_command(self, message: dict):
         """Process the WebhookEvent command.
 
         .. code-block:: python
@@ -242,7 +242,7 @@ class WebhookTriggerService(CommonServiceTrigger):
         finally:
             self.logger.remove_handler_by_name(self.thread_name)
 
-    def process_webhook_marshall_event_command(self, message: dict) -> None:
+    def process_webhook_marshall_event_command(self, message: dict):
         """Process the WebhookMarshallEvent command.
 
         .. code-block:: python
@@ -334,7 +334,7 @@ class WebhookTriggerService(CommonServiceTrigger):
         # webhook responses are for providers that require a subscription req/resp.
         self.publish_webhook_event_response(message, response)
 
-    def publish_webhook_event_acknowledge(self, message: dict) -> None:
+    def publish_webhook_event_acknowledge(self, message: dict):
         """Publish the WebhookEventResponse message.
 
         Args:
@@ -352,7 +352,7 @@ class WebhookTriggerService(CommonServiceTrigger):
             self.args.tc_svc_client_topic,
         )
 
-    def publish_webhook_marshall_event_acknowledge(self, message: dict) -> None:
+    def publish_webhook_marshall_event_acknowledge(self, message: dict):
         """Publish the WebhookEventResponse message.
 
         .. code-block:: python
@@ -381,7 +381,7 @@ class WebhookTriggerService(CommonServiceTrigger):
             self.args.tc_svc_client_topic,
         )
 
-    def publish_webhook_event_response(self, message: dict, callback_response: dict) -> None:
+    def publish_webhook_event_response(self, message: dict, callback_response: dict):
         """Publish the WebhookEventResponse message.
 
         Args:

@@ -1,5 +1,15 @@
 # Release Notes
 
+### 3.0.3
+
+-   APP-3489 - [CLI] Fixed issue with invalid tuple in help string
+-   APP-3522 - [Session] Fixed issue in TC session method for passing boolean values (verify)
+-   APP-3498 - [CLI] Fixed CLI file_hash reference error
+-   APP-3532 - [CLI] Update spectool command to manage package name
+-   APP-3533 - [CLI] Multiple fixes and tweaks to spectool
+-   APP-3544 - [CLI] Updated spectool to exclude serviceConfig inputs from layout.json file
+-   APP-3549 - [CLI] Updated spectool to exclude hidden inputs from layout.json file
+
 ### 3.0.2
 
 -   APP-3456 - [Batch] Added support for the following group types: Attack Pattern, Course of Action, Malware, Tactic, and Tool

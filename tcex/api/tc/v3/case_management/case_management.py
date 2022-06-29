@@ -14,7 +14,7 @@ class CaseManagement:
         session: An configured instance of request.Session with TC API Auth.
     """
 
-    def __init__(self, session: Session) -> None:
+    def __init__(self, session: Session):
         """Initialize Class properties."""
         self.session = session
 
@@ -99,7 +99,7 @@ class CaseManagement:
         """
         return ArtifactTypes(session=self.session, **kwargs)
 
-    def assignee(self, **kwargs) -> AssigneeModel:
+    def assignee(self, **kwargs) -> 'AssigneeModel':
         """Return a instance of Assignee object.
 
         For User type the user_name or id fields is required and
@@ -358,7 +358,7 @@ class CaseManagement:
         return Tasks(session=self.session, **kwargs)
 
     # @staticmethod
-    # def user(self, **kwargs) -> User:
+    # def user(self, **kwargs) -> 'User':
     #     """Return a instance of User object.
     #
     #     Args:
@@ -372,7 +372,7 @@ class CaseManagement:
     #     return User(session=self.session, **kwargs)
 
     # @staticmethod
-    # def users(users) -> Users:
+    # def users(users) -> 'Users':
     #     """Sub class of the Cases object. Used to map the users to.
 
     #     Args:

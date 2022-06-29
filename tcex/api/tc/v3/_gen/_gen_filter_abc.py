@@ -14,7 +14,7 @@ from tcex.backports import cached_property
 class GenerateFilterABC(GenerateABC, ABC):
     """Generate Models for Case Management Types"""
 
-    def __init__(self, type_: str) -> None:
+    def __init__(self, type_: str):
         """Initialize class properties."""
         super().__init__(type_)
 
@@ -143,7 +143,7 @@ class GenerateFilterABC(GenerateABC, ABC):
             (
                 f'{self.i1}def {keyword.snake_case()}'
                 f'(self, operator: Enum, {keyword.snake_case()}: '
-                f'''{self._filter_type(type_).get('hint_type')}) -> None:{comment}'''
+                f'''{self._filter_type(type_).get('hint_type')}):{comment}'''
             ),
             f'{self.i2}"""Filter {name} based on **{keyword}** keyword.',
             '',

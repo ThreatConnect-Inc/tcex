@@ -51,7 +51,7 @@ class Mappings:
 
     @property
     @lru_cache()
-    def _error_codes(self) -> TcExErrorCodes:  # noqa: F821
+    def _error_codes(self) -> 'TcExErrorCodes':  # noqa: F821
         """Return TcEx error codes."""
         return TcExErrorCodes()
 
@@ -62,7 +62,7 @@ class Mappings:
 
     def _handle_error(
         self, code: int, message_values: Optional[list] = None, raise_error: Optional[bool] = True
-    ) -> None:
+    ):
         """Raise RuntimeError
 
         Args:

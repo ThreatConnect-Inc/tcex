@@ -25,7 +25,7 @@ class KeyValueRedis(KeyValueABC):
         # properties
         self.kv_type = 'redis'
 
-    def create(self, context: str, key: str, value: Any) -> None:
+    def create(self, context: str, key: str, value: Any):
         """Create key/value pair in Redis.
 
         Args:

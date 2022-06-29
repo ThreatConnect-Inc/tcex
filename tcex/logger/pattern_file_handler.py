@@ -48,7 +48,7 @@ class PatternFileHandler(logging.FileHandler):
 
         super().__init__(filename=filename, mode=mode, encoding=encoding, delay=delay)
 
-    def _trim_log_files(self, filename: str, max_log_count: int) -> None:
+    def _trim_log_files(self, filename: str, max_log_count: int):
         """Trim log files removing the oldest files.
 
         Args:
@@ -77,7 +77,7 @@ class PatternFileHandler(logging.FileHandler):
                 # best effort
                 pass
 
-    def emit(self, record: object) -> None:
+    def emit(self, record: object):
         """Emit a record.
 
         Emit logging events only if handler_key matches thread_key.

@@ -96,7 +96,7 @@ def handle_error(
     message_values: Optional[list] = None,
     raise_error: Optional[bool] = True,
     cause: Optional[Exception] = None,
-) -> None:
+):
     """Log a defined error and optionally raises a RuntimeError."""
     try:
         if message_values is None:

@@ -20,7 +20,7 @@ class TestEmbedded:
         print('\n')  # print blank line for readability
 
     @staticmethod
-    def stage_data(tcex: 'TcEx') -> None:
+    def stage_data(tcex: 'TcEx'):
         """Configure setup before all tests."""
         out_variables = []
         tcex.inputs.model.tc_playbook_out_variables = ','.join(out_variables)
@@ -172,7 +172,7 @@ class TestEmbedded:
             ('#App:0001:array.1!StringArray', ['two', 'three']),
         ],
     )
-    def test_embedded_read_string(self, embedded_value: str, expected: Any, tcex: 'TcEx') -> None:
+    def test_embedded_read_string(self, embedded_value: str, expected: Any, tcex: 'TcEx'):
         """Test playbook variables."""
         playbook: 'Playbook' = tcex.playbook
         self.stage_data(tcex)

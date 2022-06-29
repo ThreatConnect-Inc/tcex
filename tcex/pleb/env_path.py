@@ -17,7 +17,7 @@ class EnvPath(Path):
     """EnvPath custom pydantic model type."""
 
     @classmethod
-    def __modify_schema__(cls, field_schema: Dict[str, Any]) -> None:
+    def __modify_schema__(cls, field_schema: Dict[str, Any]):
         """."""
         field_schema.update(format='file-path')
 
@@ -27,7 +27,7 @@ class EnvPath(Path):
         yield cls.validate
 
     @classmethod
-    def validate(cls, value: Union[str, Path]) -> Path:
+    def validate(cls, value: Union[str, 'Path']) -> 'Path':
         """Replace any environment variables in the tcex.json file."""
         if isinstance(value, Path):
             return value

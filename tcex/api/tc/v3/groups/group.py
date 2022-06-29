@@ -47,7 +47,7 @@ class Groups(ObjectCollectionABC):
         params (dict): Additional query params (see example above).
     """
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs):
         """Initialize class properties."""
         super().__init__(
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
@@ -111,7 +111,7 @@ class Group(ObjectABC):
         xid (str, kwargs): The xid of the item.
     """
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs):
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
 
@@ -132,7 +132,7 @@ class Group(ObjectABC):
         return self._model
 
     @model.setter
-    def model(self, data: Union['GroupModel', dict]) -> None:
+    def model(self, data: Union['GroupModel', dict]):
         """Create model using the provided data."""
         if isinstance(data, type(self.model)):
             # provided data is already a model, nothing required to change
@@ -150,7 +150,7 @@ class Group(ObjectABC):
 
         return {'type': type_, 'id': self.model.id, 'value': self.model.name}
 
-    def remove(self, params: Optional[dict] = None) -> None:
+    def remove(self, params: Optional[dict] = None):
         """Remove a nested object."""
         method = 'PUT'
         unique_id = self._calculate_unique_id()
@@ -284,7 +284,7 @@ class Group(ObjectABC):
 
         yield from self._iterate_over_sublist(Tags)
 
-    def stage_associated_case(self, data: Union[dict, 'ObjectABC', 'CaseModel']) -> None:
+    def stage_associated_case(self, data: Union[dict, 'ObjectABC', 'CaseModel']):
         """Stage case on the object."""
         if isinstance(data, ObjectABC):
             data = data.model
@@ -296,7 +296,7 @@ class Group(ObjectABC):
         data._staged = True
         self.model.associated_cases.data.append(data)
 
-    def stage_associated_artifact(self, data: Union[dict, 'ObjectABC', 'ArtifactModel']) -> None:
+    def stage_associated_artifact(self, data: Union[dict, 'ObjectABC', 'ArtifactModel']):
         """Stage artifact on the object."""
         if isinstance(data, ObjectABC):
             data = data.model
@@ -308,7 +308,7 @@ class Group(ObjectABC):
         data._staged = True
         self.model.associated_artifacts.data.append(data)
 
-    def stage_associated_group(self, data: Union[dict, 'ObjectABC', 'GroupModel']) -> None:
+    def stage_associated_group(self, data: Union[dict, 'ObjectABC', 'GroupModel']):
         """Stage group on the object."""
         if isinstance(data, ObjectABC):
             data = data.model
@@ -320,9 +320,7 @@ class Group(ObjectABC):
         data._staged = True
         self.model.associated_groups.data.append(data)
 
-    def stage_associated_victim_asset(
-        self, data: Union[dict, 'ObjectABC', 'VictimAssetModel']
-    ) -> None:
+    def stage_associated_victim_asset(self, data: Union[dict, 'ObjectABC', 'VictimAssetModel']):
         """Stage victim_asset on the object."""
         if isinstance(data, ObjectABC):
             data = data.model
@@ -334,7 +332,7 @@ class Group(ObjectABC):
         data._staged = True
         self.model.assets.data.append(data)
 
-    def stage_associated_indicator(self, data: Union[dict, 'ObjectABC', 'IndicatorModel']) -> None:
+    def stage_associated_indicator(self, data: Union[dict, 'ObjectABC', 'IndicatorModel']):
         """Stage indicator on the object."""
         if isinstance(data, ObjectABC):
             data = data.model
@@ -346,7 +344,7 @@ class Group(ObjectABC):
         data._staged = True
         self.model.associated_indicators.data.append(data)
 
-    def stage_attribute(self, data: Union[dict, 'ObjectABC', 'GroupAttributeModel']) -> None:
+    def stage_attribute(self, data: Union[dict, 'ObjectABC', 'GroupAttributeModel']):
         """Stage attribute on the object."""
         if isinstance(data, ObjectABC):
             data = data.model
@@ -358,7 +356,7 @@ class Group(ObjectABC):
         data._staged = True
         self.model.attributes.data.append(data)
 
-    def stage_security_label(self, data: Union[dict, 'ObjectABC', 'SecurityLabelModel']) -> None:
+    def stage_security_label(self, data: Union[dict, 'ObjectABC', 'SecurityLabelModel']):
         """Stage security_label on the object."""
         if isinstance(data, ObjectABC):
             data = data.model
@@ -370,7 +368,7 @@ class Group(ObjectABC):
         data._staged = True
         self.model.security_labels.data.append(data)
 
-    def stage_tag(self, data: Union[dict, 'ObjectABC', 'TagModel']) -> None:
+    def stage_tag(self, data: Union[dict, 'ObjectABC', 'TagModel']):
         """Stage tag on the object."""
         if isinstance(data, ObjectABC):
             data = data.model

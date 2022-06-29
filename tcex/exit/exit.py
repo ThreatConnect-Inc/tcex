@@ -43,7 +43,7 @@ class ExitService:
         self._exit_code = ExitCode.SUCCESS
 
     @property
-    def exit_code(self) -> ExitCode:
+    def exit_code(self) -> 'ExitCode':
         """Get exit code."""
         return self._exit_code
 
@@ -68,7 +68,7 @@ class ExitService:
             exit_code = ExitCode.SUCCESS
         self._exit_code = exit_code
 
-    def exit(self, code: Optional[Union[ExitCode, int]] = None, msg: Optional[str] = None) -> None:
+    def exit(self, code: Optional[Union[ExitCode, int]] = None, msg: Optional[str] = None):
         """Application exit method with proper exit code
 
         The method will run the Python standard sys.exit() with the exit code
@@ -108,7 +108,7 @@ class ExitService:
     # pylint: disable=unused-argument
     def exit_aot_terminate(
         self, code: Optional[Union[ExitCode, int]] = None, msg: Optional[str] = None
-    ) -> None:
+    ):
         """Application exit method with proper exit code only for AOT.
 
         The method will run the Python standard sys.exit() with the exit code
@@ -129,7 +129,7 @@ class ExitService:
         logger.info(f'exit-code={code}')
         sys.exit(code)
 
-    def exit_playbook_handler(self, msg: str) -> None:
+    def exit_playbook_handler(self, msg: str):
         """Perform special action for PB Apps before exit."""
         # write outputs before exiting
         registry.playbook.output.process()  # pylint: disable=no-member
@@ -143,7 +143,7 @@ class ExitService:
                 self.inputs.model_unresolved.tcex_testing_context, '_exit_message', msg
             )
 
-    def _exit_msg_handler(self, code: ExitCode, msg: str) -> None:
+    def _exit_msg_handler(self, code: ExitCode, msg: str):
         """Handle exit message. Write to both log and message_tc."""
         if msg is not None:
             log_msg = msg.replace('\n', ',')
@@ -153,7 +153,7 @@ class ExitService:
                 logger.error(f'exit-message="{log_msg}"')
             self._message_tc(msg)
 
-    def _aot_rpush(self, exit_code: int) -> None:
+    def _aot_rpush(self, exit_code: int):
         """Push message to AOT action channel."""
         if self.inputs.contents.get('tc_playbook_db_type') == 'Redis':
             try:
@@ -162,7 +162,7 @@ class ExitService:
             except Exception as e:  # pragma: no cover
                 self._exit(ExitCode.FAILURE, f'Exception during AOT exit push ({e}).')
 
-    def _message_tc(self, message: str, max_length: Optional[int] = 255) -> None:
+    def _message_tc(self, message: str, max_length: Optional[int] = 255):
         """Write data to message_tc file in TcEX specified directory.
 
         This method is used to set and exit message in the ThreatConnect Platform.

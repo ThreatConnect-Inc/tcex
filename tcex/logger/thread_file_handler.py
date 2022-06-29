@@ -37,7 +37,7 @@ class ThreadFileHandler(RotatingFileHandler):
             os.makedirs(os.path.dirname(filename), exist_ok=True)
         RotatingFileHandler.__init__(self, filename, mode, maxBytes, backupCount, encoding, delay)
 
-    def emit(self, record: object) -> None:
+    def emit(self, record: object):
         """Emit a record.
 
         Emit logging events only if handler_key matches thread_key.

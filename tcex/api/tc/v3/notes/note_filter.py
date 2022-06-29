@@ -18,7 +18,7 @@ class NoteFilter(FilterABC):
         """Return the API endpoint."""
         return ApiEndpoints.NOTES.value
 
-    def artifact_id(self, operator: Enum, artifact_id: int) -> None:
+    def artifact_id(self, operator: Enum, artifact_id: int):
         """Filter Artifact ID based on **artifactId** keyword.
 
         Args:
@@ -27,7 +27,7 @@ class NoteFilter(FilterABC):
         """
         self._tql.add_filter('artifactId', operator, artifact_id, TqlType.INTEGER)
 
-    def author(self, operator: Enum, author: str) -> None:
+    def author(self, operator: Enum, author: str):
         """Filter Author based on **author** keyword.
 
         Args:
@@ -36,7 +36,7 @@ class NoteFilter(FilterABC):
         """
         self._tql.add_filter('author', operator, author, TqlType.STRING)
 
-    def case_id(self, operator: Enum, case_id: int) -> None:
+    def case_id(self, operator: Enum, case_id: int):
         """Filter Case ID based on **caseId** keyword.
 
         Args:
@@ -45,7 +45,7 @@ class NoteFilter(FilterABC):
         """
         self._tql.add_filter('caseId', operator, case_id, TqlType.INTEGER)
 
-    def date_added(self, operator: Enum, date_added: str) -> None:
+    def date_added(self, operator: Enum, date_added: str):
         """Filter Date Added based on **dateAdded** keyword.
 
         Args:
@@ -85,7 +85,7 @@ class NoteFilter(FilterABC):
         self._tql.add_filter('hasTask', TqlOperator.EQ, tasks, TqlType.SUB_QUERY)
         return tasks
 
-    def id(self, operator: Enum, id: int) -> None:  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int):  # pylint: disable=redefined-builtin
         """Filter ID based on **id** keyword.
 
         Args:
@@ -94,7 +94,7 @@ class NoteFilter(FilterABC):
         """
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
-    def last_modified(self, operator: Enum, last_modified: str) -> None:
+    def last_modified(self, operator: Enum, last_modified: str):
         """Filter Last Modified based on **lastModified** keyword.
 
         Args:
@@ -104,7 +104,7 @@ class NoteFilter(FilterABC):
         last_modified = self.utils.any_to_datetime(last_modified).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('lastModified', operator, last_modified, TqlType.STRING)
 
-    def summary(self, operator: Enum, summary: str) -> None:
+    def summary(self, operator: Enum, summary: str):
         """Filter Summary based on **summary** keyword.
 
         Args:
@@ -113,7 +113,7 @@ class NoteFilter(FilterABC):
         """
         self._tql.add_filter('summary', operator, summary, TqlType.STRING)
 
-    def task_id(self, operator: Enum, task_id: int) -> None:
+    def task_id(self, operator: Enum, task_id: int):
         """Filter Task ID based on **taskId** keyword.
 
         Args:
@@ -122,7 +122,7 @@ class NoteFilter(FilterABC):
         """
         self._tql.add_filter('taskId', operator, task_id, TqlType.INTEGER)
 
-    def workflow_event_id(self, operator: Enum, workflow_event_id: int) -> None:
+    def workflow_event_id(self, operator: Enum, workflow_event_id: int):
         """Filter Workflow Event ID based on **workflowEventId** keyword.
 
         Args:

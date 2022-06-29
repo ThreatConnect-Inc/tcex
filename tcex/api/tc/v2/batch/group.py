@@ -30,7 +30,7 @@ class Group:
         'utils',
     ]
 
-    def __init__(self, group_type: str, name: str, **kwargs) -> None:
+    def __init__(self, group_type: str, name: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -72,9 +72,7 @@ class Group:
             'to_addr': 'to',
         }
 
-    def add_file(
-        self, filename: str, file_content: Union[bytes, Callable[[str], Any], str]
-    ) -> None:
+    def add_file(self, filename: str, file_content: Union[bytes, Callable[[str], Any], str]):
         """Add a file for Document and Report types.
 
         Example::
@@ -89,7 +87,7 @@ class Group:
         self._group_data['fileName'] = filename
         self._file_content = file_content
 
-    def add_key_value(self, key: str, value: str) -> None:
+    def add_key_value(self, key: str, value: str):
         """Add custom field to Group object.
 
         .. note:: The key must be the exact name required by the batch schema.
@@ -115,7 +113,7 @@ class Group:
         else:
             self._group_data[key] = value
 
-    def association(self, group_xid: str) -> None:
+    def association(self, group_xid: str):
         """Add association using xid value.
 
         Args:
@@ -197,7 +195,7 @@ class Group:
         return self._group_data.get('dateAdded')
 
     @date_added.setter
-    def date_added(self, date_added: str) -> None:
+    def date_added(self, date_added: str):
         """Set Indicator dateAdded."""
         self._group_data['dateAdded'] = self.utils.any_to_datetime(date_added).strftime(
             '%Y-%m-%dT%H:%M:%SZ'
@@ -226,7 +224,7 @@ class Group:
         return self._processed
 
     @processed.setter
-    def processed(self, processed: bool) -> None:
+    def processed(self, processed: bool):
         """Set processed."""
         self._processed = processed
 
@@ -255,7 +253,7 @@ class Group:
             self._labels.append(label)
         return label
 
-    def tag(self, name: str, formatter: Optional[Callable[[str], str]] = None) -> Tag:
+    def tag(self, name: str, formatter: Optional[Callable[[str], str]] = None) -> 'Tag':
         """Return instance of Tag.
 
         Args:
@@ -294,7 +292,7 @@ class Adversary(Group):
 
     __slots__ = []
 
-    def __init__(self, name: str, **kwargs) -> None:
+    def __init__(self, name: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -310,7 +308,7 @@ class AttackPattern(Group):
 
     __slots__ = []
 
-    def __init__(self, name: str, **kwargs) -> None:
+    def __init__(self, name: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -326,7 +324,7 @@ class Campaign(Group):
 
     __slots__ = []
 
-    def __init__(self, name: str, **kwargs) -> None:
+    def __init__(self, name: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -343,7 +341,7 @@ class Campaign(Group):
         return self._group_data.get('firstSeen')
 
     @first_seen.setter
-    def first_seen(self, first_seen: str) -> None:
+    def first_seen(self, first_seen: str):
         """Set Document first seen."""
         self._group_data['firstSeen'] = self.utils.any_to_datetime(first_seen).strftime(
             '%Y-%m-%dT%H:%M:%SZ'
@@ -355,7 +353,7 @@ class CourseOfAction(Group):
 
     __slots__ = []
 
-    def __init__(self, name: str, **kwargs) -> None:
+    def __init__(self, name: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -371,7 +369,7 @@ class Document(Group):
 
     __slots__ = ['_file_data']
 
-    def __init__(self, name: str, file_name: str, **kwargs) -> None:
+    def __init__(self, name: str, file_name: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -414,7 +412,7 @@ class Document(Group):
         return self._group_data.get('password', False)
 
     @password.setter
-    def password(self, password: str) -> None:
+    def password(self, password: str):
         """Set Document password."""
         self._group_data['password'] = password
 
@@ -424,7 +422,7 @@ class Email(Group):
 
     __slots__ = []
 
-    def __init__(self, name: str, subject: str, header: str, body: str, **kwargs) -> None:
+    def __init__(self, name: str, subject: str, header: str, body: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -449,7 +447,7 @@ class Email(Group):
         return self._group_data.get('to')
 
     @from_addr.setter
-    def from_addr(self, from_addr: str) -> None:
+    def from_addr(self, from_addr: str):
         """Set Email from."""
         self._group_data['from'] = from_addr
 
@@ -459,7 +457,7 @@ class Email(Group):
         return self._group_data.get('score')
 
     @score.setter
-    def score(self, score: str) -> None:
+    def score(self, score: str):
         """Set Email from."""
         self._group_data['score'] = score
 
@@ -469,7 +467,7 @@ class Email(Group):
         return self._group_data.get('to')
 
     @to_addr.setter
-    def to_addr(self, to_addr: str) -> None:
+    def to_addr(self, to_addr: str):
         """Set Email to."""
         self._group_data['to'] = to_addr
 
@@ -479,7 +477,7 @@ class Event(Group):
 
     __slots__ = []
 
-    def __init__(self, name: str, **kwargs) -> None:
+    def __init__(self, name: str, **kwargs):
         """Initialize Class Properties.
 
         Valid Values:
@@ -503,7 +501,7 @@ class Event(Group):
         return self._group_data.get('firstSeen')
 
     @event_date.setter
-    def event_date(self, event_date: str) -> None:
+    def event_date(self, event_date: str):
         """Set the Events "event date" value."""
         self._group_data['eventDate'] = self.utils.any_to_datetime(event_date).strftime(
             '%Y-%m-%dT%H:%M:%SZ'
@@ -515,7 +513,7 @@ class Event(Group):
         return self._group_data.get('status')
 
     @status.setter
-    def status(self, status: str) -> None:
+    def status(self, status: str):
         """Set the Events status value."""
         self._group_data['status'] = status
 
@@ -525,7 +523,7 @@ class Incident(Group):
 
     __slots__ = []
 
-    def __init__(self, name: str, **kwargs) -> None:
+    def __init__(self, name: str, **kwargs):
         """Initialize Class Properties.
 
         Valid Values:
@@ -554,7 +552,7 @@ class Incident(Group):
         return self._group_data.get('eventDate')
 
     @event_date.setter
-    def event_date(self, event_date: str) -> None:
+    def event_date(self, event_date: str):
         """Set Incident event_date."""
         self._group_data['eventDate'] = self.utils.any_to_datetime(event_date).strftime(
             '%Y-%m-%dT%H:%M:%SZ'
@@ -566,7 +564,7 @@ class Incident(Group):
         return self._group_data.get('status')
 
     @status.setter
-    def status(self, status: str) -> None:
+    def status(self, status: str):
         """Set Incident status.
 
         Valid Values:
@@ -588,7 +586,7 @@ class IntrusionSet(Group):
 
     __slots__ = []
 
-    def __init__(self, name: str, **kwargs) -> None:
+    def __init__(self, name: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -604,7 +602,7 @@ class Malware(Group):
 
     __slots__ = []
 
-    def __init__(self, name: str, **kwargs) -> None:
+    def __init__(self, name: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -620,7 +618,7 @@ class Report(Group):
 
     __slots__ = []
 
-    def __init__(self, name, **kwargs) -> None:
+    def __init__(self, name, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -651,7 +649,7 @@ class Report(Group):
         return self._group_data.get('publishDate')
 
     @publish_date.setter
-    def publish_date(self, publish_date: str) -> None:
+    def publish_date(self, publish_date: str):
         """Set Report publish date"""
         self._group_data['publishDate'] = self.utils.any_to_datetime(publish_date).strftime(
             '%Y-%m-%dT%H:%M:%SZ'
@@ -663,7 +661,7 @@ class Signature(Group):
 
     __slots__ = []
 
-    def __init__(self, name: str, file_name: str, file_type: str, file_text: str, **kwargs) -> None:
+    def __init__(self, name: str, file_name: str, file_type: str, file_text: str, **kwargs):
         """Initialize Class Properties.
 
         Valid file_types:
@@ -696,7 +694,7 @@ class Tactic(Group):
 
     __slots__ = []
 
-    def __init__(self, name: str, **kwargs) -> None:
+    def __init__(self, name: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -712,7 +710,7 @@ class Threat(Group):
 
     __slots__ = []
 
-    def __init__(self, name: str, **kwargs) -> None:
+    def __init__(self, name: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -728,7 +726,7 @@ class Tool(Group):
 
     __slots__ = []
 
-    def __init__(self, name: str, **kwargs) -> None:
+    def __init__(self, name: str, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -744,7 +742,7 @@ class Vulnerability(Group):
 
     __slots__ = []
 
-    def __init__(self, name: str, **kwargs) -> None:
+    def __init__(self, name: str, **kwargs):
         """Initialize Class Properties.
 
         Args:

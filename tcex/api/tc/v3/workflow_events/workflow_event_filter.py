@@ -16,7 +16,7 @@ class WorkflowEventFilter(FilterABC):
         """Return the API endpoint."""
         return ApiEndpoints.WORKFLOW_EVENTS.value
 
-    def case_id(self, operator: Enum, case_id: int) -> None:
+    def case_id(self, operator: Enum, case_id: int):
         """Filter Case ID based on **caseId** keyword.
 
         Args:
@@ -25,7 +25,7 @@ class WorkflowEventFilter(FilterABC):
         """
         self._tql.add_filter('caseId', operator, case_id, TqlType.INTEGER)
 
-    def date_added(self, operator: Enum, date_added: str) -> None:
+    def date_added(self, operator: Enum, date_added: str):
         """Filter Date Added based on **dateAdded** keyword.
 
         Args:
@@ -35,7 +35,7 @@ class WorkflowEventFilter(FilterABC):
         date_added = self.utils.any_to_datetime(date_added).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('dateAdded', operator, date_added, TqlType.STRING)
 
-    def deleted(self, operator: Enum, deleted: bool) -> None:
+    def deleted(self, operator: Enum, deleted: bool):
         """Filter Deleted based on **deleted** keyword.
 
         Args:
@@ -44,7 +44,7 @@ class WorkflowEventFilter(FilterABC):
         """
         self._tql.add_filter('deleted', operator, deleted, TqlType.BOOLEAN)
 
-    def deleted_reason(self, operator: Enum, deleted_reason: str) -> None:
+    def deleted_reason(self, operator: Enum, deleted_reason: str):
         """Filter Deleted Reason based on **deletedReason** keyword.
 
         Args:
@@ -53,7 +53,7 @@ class WorkflowEventFilter(FilterABC):
         """
         self._tql.add_filter('deletedReason', operator, deleted_reason, TqlType.STRING)
 
-    def event_date(self, operator: Enum, event_date: str) -> None:
+    def event_date(self, operator: Enum, event_date: str):
         """Filter Event Date based on **eventDate** keyword.
 
         Args:
@@ -63,7 +63,7 @@ class WorkflowEventFilter(FilterABC):
         event_date = self.utils.any_to_datetime(event_date).strftime('%Y-%m-%dT%H:%M:%S')
         self._tql.add_filter('eventDate', operator, event_date, TqlType.STRING)
 
-    def id(self, operator: Enum, id: int) -> None:  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int):  # pylint: disable=redefined-builtin
         """Filter ID based on **id** keyword.
 
         Args:
@@ -72,7 +72,7 @@ class WorkflowEventFilter(FilterABC):
         """
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
-    def link(self, operator: Enum, link: str) -> None:
+    def link(self, operator: Enum, link: str):
         """Filter Link based on **link** keyword.
 
         Args:
@@ -81,7 +81,7 @@ class WorkflowEventFilter(FilterABC):
         """
         self._tql.add_filter('link', operator, link, TqlType.STRING)
 
-    def summary(self, operator: Enum, summary: str) -> None:
+    def summary(self, operator: Enum, summary: str):
         """Filter Summary based on **summary** keyword.
 
         Args:
@@ -90,7 +90,7 @@ class WorkflowEventFilter(FilterABC):
         """
         self._tql.add_filter('summary', operator, summary, TqlType.STRING)
 
-    def system_generated(self, operator: Enum, system_generated: bool) -> None:
+    def system_generated(self, operator: Enum, system_generated: bool):
         """Filter System Generated based on **systemGenerated** keyword.
 
         Args:
@@ -100,7 +100,7 @@ class WorkflowEventFilter(FilterABC):
         """
         self._tql.add_filter('systemGenerated', operator, system_generated, TqlType.BOOLEAN)
 
-    def user_name(self, operator: Enum, user_name: str) -> None:
+    def user_name(self, operator: Enum, user_name: str):
         """Filter User Name based on **userName** keyword.
 
         Args:

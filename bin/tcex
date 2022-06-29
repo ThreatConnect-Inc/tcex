@@ -24,7 +24,7 @@ def deps(
         'main',
         help=(
             'The git branch of the tcex repository to use. '
-            'This override what is in the requirements.txt file.',
+            'This override what is in the requirements.txt file.'
         ),
     ),
     dev: Optional[bool] = typer.Option(False, help='Install development dependencies.'),
@@ -134,6 +134,7 @@ def spectool(
     readme_md: bool = typer.Option(False, help='Generate README.md.'),
     overwrite: bool = typer.Option(False, help='Force overwrite of config file.'),
     schema: bool = typer.Option(False, help='When set output schema instead of file.'),
+    tcex_json: bool = typer.Option(False, help='Generate tcex.json.'),
 ):
     """Generate App configuration file.
 
@@ -152,6 +153,9 @@ def spectool(
 
             if job_json is True or all_ is True:
                 gc.generate_job_json(schema)
+
+            if tcex_json is True or all_ is True:
+                gc.generate_tcex_json(schema)
 
             if app_input is True or all_ is True:
                 gc.generate_app_input()
@@ -309,7 +313,7 @@ def update(
         False, help="Update files from template even if they haven't changed."
     ),
 ):
-    """Update an project with latest template files.
+    """Update a project with the latest template files.
 
     Templates can be found at: https://github.com/ThreatConnect-Inc/tcex-app-templates
 
@@ -369,8 +373,8 @@ def validate(
     Validations:
     * validate Python files have valid syntax
     * validate all imports are available in lib_ directories
-    * validate the install.json is valid syntax
-    * validate the layout.json is valid syntax
+    * validate install.json has valid syntax
+    * validate layout.json has valid syntax
     * validate the feed files are valid
     """
     try:

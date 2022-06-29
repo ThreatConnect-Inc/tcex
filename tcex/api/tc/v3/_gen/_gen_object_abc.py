@@ -15,7 +15,7 @@ class GenerateArgs(GenerateArgsABC):
 class GenerateObjectABC(GenerateABC, ABC):
     """Generate Models for Case Management Types"""
 
-    def __init__(self, type_: str) -> None:
+    def __init__(self, type_: str):
         """Initialize class properties."""
         super().__init__(type_)
 
@@ -54,7 +54,7 @@ class GenerateObjectABC(GenerateABC, ABC):
     def _gen_code_container_init_method(self) -> str:
         """Return the method code.
 
-        def __init__(self, **kwargs) -> None:
+        def __init__(self, **kwargs):
             '''Initialize Class properties.'''
             super().__init__(
                 kwargs.pop('session', None),
@@ -72,7 +72,7 @@ class GenerateObjectABC(GenerateABC, ABC):
 
         return '\n'.join(
             [
-                f'''{self.i1}def __init__(self, **kwargs) -> None:''',
+                f'''{self.i1}def __init__(self, **kwargs):''',
                 f'''{self.i2}"""Initialize class properties."""''',
                 f'''{self.i2}super().__init__(''',
                 (
@@ -146,7 +146,7 @@ class GenerateObjectABC(GenerateABC, ABC):
                 f'''{self.i2}deleted_since: Optional[Union[datetime, str]],''',
                 f'''{self.i2}type_: Optional[str] = None,''',
                 f'''{self.i2}owner: Optional[str] = None''',
-                f'''{self.i1}) -> None:''',
+                f'''{self.i1}):''',
                 f'''{self.i2}"""Return deleted indicators.''',
                 '',
                 f'''{self.i2}This will not use the default params set on the "Indicators" ''',
@@ -229,7 +229,7 @@ class GenerateObjectABC(GenerateABC, ABC):
     def _gen_code_object_init_method(self) -> str:
         """Return the method code.
 
-        def __init__(self, **kwargs) -> None:
+        def __init__(self, **kwargs):
             '''Initialize Class properties'''
             super().__init__(kwargs.pop('session', None))
             self._model = ArtifactModel(**kwargs)
@@ -249,7 +249,7 @@ class GenerateObjectABC(GenerateABC, ABC):
 
         return '\n'.join(
             [
-                f'''{self.i1}def __init__(self, **kwargs) -> None:''',
+                f'''{self.i1}def __init__(self, **kwargs):''',
                 f'''{self.i2}"""Initialize class properties."""''',
                 f'''{self.i2}super().__init__(kwargs.pop('session', None))''',
                 '',
@@ -275,7 +275,7 @@ class GenerateObjectABC(GenerateABC, ABC):
             return self._model
 
         @model.setter
-        def model(self, data: Union['IndicatorModel', dict]) -> None:
+        def model(self, data: Union['IndicatorModel', dict]):
             '''Create model using the provided data.'''
             if isinstance(data, type(self.model)):
                 # provided data is already a model, nothing required to change
@@ -296,7 +296,7 @@ class GenerateObjectABC(GenerateABC, ABC):
                 f'''{self.i1}@model.setter''',
                 (
                     f'''{self.i1}def model(self, data: Union'''
-                    f'''['{self.type_.singular().pascal_case()}Model', dict]) -> None:'''
+                    f'''['{self.type_.singular().pascal_case()}Model', dict]):'''
                 ),
                 f'''{self.i2}"""Create model using the provided data."""''',
                 f'''{self.i2}if isinstance(data, type(self.model)):''',
@@ -360,7 +360,7 @@ class GenerateObjectABC(GenerateABC, ABC):
     ) -> str:
         """Return the method code.
 
-        def stage_artifact(self, **kwargs) -> None:
+        def stage_artifact(self, **kwargs):
             '''Stage an Artifact on the object.
 
             ...
@@ -393,7 +393,7 @@ class GenerateObjectABC(GenerateABC, ABC):
                 (
                     f'''{self.i1}def stage_{model_type.singular()}(self, '''
                     f'''data: Union[dict, 'ObjectABC', '{model_import_data.get('model_class')}'''
-                    f'''']) -> None:'''
+                    f'''']):'''
                 ),
                 f'''{self.i2}"""Stage {type_.singular()} on the object."""''',
                 f'''{self.i2}if isinstance(data, ObjectABC):''',
@@ -419,7 +419,7 @@ class GenerateObjectABC(GenerateABC, ABC):
         self.requirements['standard library'].append({'module': 'typing', 'imports': ['Optional']})
         return '\n'.join(
             [
-                f'''{self.i1}def remove(self, params: Optional[dict] = None) -> None:''',
+                f'''{self.i1}def remove(self, params: Optional[dict] = None):''',
                 f'''{self.i2}"""Remove a nested object."""''',
                 f'''{self.i2}method = \'PUT\'''',
                 f'''{self.i2}unique_id = self._calculate_unique_id()''',
@@ -463,7 +463,7 @@ class GenerateObjectABC(GenerateABC, ABC):
 
         def stage_assignee(
             self, type: str, data: Union[dict, 'ObjectABC', 'ArtifactModel']
-        ) -> None:
+        ):
             '''Stage artifact on the object.'''
             if isinstance(data, ObjectABC):
                 data = data.model
@@ -491,7 +491,7 @@ class GenerateObjectABC(GenerateABC, ABC):
                 f'''{self.i1}# pylint: disable=redefined-builtin''',
                 (
                     f'''{self.i1}def stage_assignee(self, type: str, data: '''
-                    f'''Union[dict, 'ObjectABC', 'ArtifactModel']) -> None:'''
+                    f'''Union[dict, 'ObjectABC', 'ArtifactModel']):'''
                 ),
                 f'''{self.i2}"""Stage artifact on the object."""''',
                 f'''{self.i2}if isinstance(data, ObjectABC):''',

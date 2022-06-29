@@ -16,7 +16,7 @@ class SystemRoleFilter(FilterABC):
         """Return the API endpoint."""
         return ApiEndpoints.SYSTEM_ROLES.value
 
-    def active(self, operator: Enum, active: bool) -> None:
+    def active(self, operator: Enum, active: bool):
         """Filter Active based on **active** keyword.
 
         Args:
@@ -25,7 +25,7 @@ class SystemRoleFilter(FilterABC):
         """
         self._tql.add_filter('active', operator, active, TqlType.BOOLEAN)
 
-    def assignable(self, operator: Enum, assignable: bool) -> None:
+    def assignable(self, operator: Enum, assignable: bool):
         """Filter Assignable based on **assignable** keyword.
 
         Args:
@@ -34,7 +34,7 @@ class SystemRoleFilter(FilterABC):
         """
         self._tql.add_filter('assignable', operator, assignable, TqlType.BOOLEAN)
 
-    def displayed(self, operator: Enum, displayed: bool) -> None:
+    def displayed(self, operator: Enum, displayed: bool):
         """Filter Displayed based on **displayed** keyword.
 
         Args:
@@ -43,7 +43,7 @@ class SystemRoleFilter(FilterABC):
         """
         self._tql.add_filter('displayed', operator, displayed, TqlType.BOOLEAN)
 
-    def id(self, operator: Enum, id: int) -> None:  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int):  # pylint: disable=redefined-builtin
         """Filter ID based on **id** keyword.
 
         Args:
@@ -52,7 +52,7 @@ class SystemRoleFilter(FilterABC):
         """
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
-    def name(self, operator: Enum, name: str) -> None:
+    def name(self, operator: Enum, name: str):
         """Filter Name based on **name** keyword.
 
         Args:

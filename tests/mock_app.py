@@ -34,7 +34,7 @@ class MockApp:
         ij_data (dict, kwargs): Additional install.json data.
     """
 
-    def __init__(self, runtime_level: str, **kwargs) -> None:
+    def __init__(self, runtime_level: str, **kwargs):
         """Initialize class properties."""
         self.runtime_level = runtime_level
         self.cd: dict = kwargs.get('config_data', {})  # configuration data for tcex instance
@@ -241,7 +241,7 @@ class MockApp:
             },
         }
 
-    def _write_file_params_encrypted_file(self, config: dict) -> None:
+    def _write_file_params_encrypted_file(self, config: dict):
         """Write the App encrypted fileParams file."""
         config_data = json.dumps(config).encode()
         config_key = self.utils.random_string(16)
@@ -259,7 +259,7 @@ class MockApp:
         os.environ['TC_APP_PARAM_KEY'] = config_key
 
     @staticmethod
-    def _write_install_json(data: dict) -> None:
+    def _write_install_json(data: dict):
         """Write the App install.json file."""
         with open('install.json', 'w') as fh:
             json.dump(data, fh, indent=2, sort_keys=True)

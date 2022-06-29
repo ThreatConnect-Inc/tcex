@@ -16,7 +16,7 @@ class ArtifactTypeFilter(FilterABC):
         """Return the API endpoint."""
         return ApiEndpoints.ARTIFACT_TYPES.value
 
-    def active(self, operator: Enum, active: bool) -> None:
+    def active(self, operator: Enum, active: bool):
         """Filter Active based on **active** keyword.
 
         Args:
@@ -25,7 +25,7 @@ class ArtifactTypeFilter(FilterABC):
         """
         self._tql.add_filter('active', operator, active, TqlType.BOOLEAN)
 
-    def data_type(self, operator: Enum, data_type: str) -> None:
+    def data_type(self, operator: Enum, data_type: str):
         """Filter Data Type based on **dataType** keyword.
 
         Args:
@@ -34,7 +34,7 @@ class ArtifactTypeFilter(FilterABC):
         """
         self._tql.add_filter('dataType', operator, data_type, TqlType.STRING)
 
-    def description(self, operator: Enum, description: str) -> None:
+    def description(self, operator: Enum, description: str):
         """Filter Description based on **description** keyword.
 
         Args:
@@ -43,7 +43,7 @@ class ArtifactTypeFilter(FilterABC):
         """
         self._tql.add_filter('description', operator, description, TqlType.STRING)
 
-    def id(self, operator: Enum, id: int) -> None:  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int):  # pylint: disable=redefined-builtin
         """Filter ID based on **id** keyword.
 
         Args:
@@ -52,7 +52,7 @@ class ArtifactTypeFilter(FilterABC):
         """
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
-    def intel_type(self, operator: Enum, intel_type: str) -> None:
+    def intel_type(self, operator: Enum, intel_type: str):
         """Filter Intel Type based on **intelType** keyword.
 
         Args:
@@ -61,7 +61,7 @@ class ArtifactTypeFilter(FilterABC):
         """
         self._tql.add_filter('intelType', operator, intel_type, TqlType.STRING)
 
-    def managed(self, operator: Enum, managed: bool) -> None:
+    def managed(self, operator: Enum, managed: bool):
         """Filter Managed based on **managed** keyword.
 
         Args:
@@ -70,7 +70,7 @@ class ArtifactTypeFilter(FilterABC):
         """
         self._tql.add_filter('managed', operator, managed, TqlType.BOOLEAN)
 
-    def name(self, operator: Enum, name: str) -> None:
+    def name(self, operator: Enum, name: str):
         """Filter Name based on **name** keyword.
 
         Args:

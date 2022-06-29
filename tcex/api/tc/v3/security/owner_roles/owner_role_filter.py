@@ -16,7 +16,7 @@ class OwnerRoleFilter(FilterABC):
         """Return the API endpoint."""
         return ApiEndpoints.OWNER_ROLES.value
 
-    def available(self, operator: Enum, available: bool) -> None:
+    def available(self, operator: Enum, available: bool):
         """Filter Available based on **available** keyword.
 
         Args:
@@ -25,7 +25,7 @@ class OwnerRoleFilter(FilterABC):
         """
         self._tql.add_filter('available', operator, available, TqlType.BOOLEAN)
 
-    def comm_role(self, operator: Enum, comm_role: bool) -> None:
+    def comm_role(self, operator: Enum, comm_role: bool):
         """Filter Community Role based on **commRole** keyword.
 
         Args:
@@ -34,7 +34,7 @@ class OwnerRoleFilter(FilterABC):
         """
         self._tql.add_filter('commRole', operator, comm_role, TqlType.BOOLEAN)
 
-    def description_admin(self, operator: Enum, description_admin: str) -> None:
+    def description_admin(self, operator: Enum, description_admin: str):
         """Filter Admin Description based on **descriptionAdmin** keyword.
 
         Args:
@@ -43,7 +43,7 @@ class OwnerRoleFilter(FilterABC):
         """
         self._tql.add_filter('descriptionAdmin', operator, description_admin, TqlType.STRING)
 
-    def description_comm(self, operator: Enum, description_comm: str) -> None:
+    def description_comm(self, operator: Enum, description_comm: str):
         """Filter Community Description based on **descriptionComm** keyword.
 
         Args:
@@ -52,7 +52,7 @@ class OwnerRoleFilter(FilterABC):
         """
         self._tql.add_filter('descriptionComm', operator, description_comm, TqlType.STRING)
 
-    def description_org(self, operator: Enum, description_org: str) -> None:
+    def description_org(self, operator: Enum, description_org: str):
         """Filter Organization Description based on **descriptionOrg** keyword.
 
         Args:
@@ -61,7 +61,7 @@ class OwnerRoleFilter(FilterABC):
         """
         self._tql.add_filter('descriptionOrg', operator, description_org, TqlType.STRING)
 
-    def id(self, operator: Enum, id: int) -> None:  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int):  # pylint: disable=redefined-builtin
         """Filter ID based on **id** keyword.
 
         Args:
@@ -70,7 +70,7 @@ class OwnerRoleFilter(FilterABC):
         """
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
-    def name(self, operator: Enum, name: str) -> None:
+    def name(self, operator: Enum, name: str):
         """Filter Name based on **name** keyword.
 
         Args:
@@ -79,7 +79,7 @@ class OwnerRoleFilter(FilterABC):
         """
         self._tql.add_filter('name', operator, name, TqlType.STRING)
 
-    def org_role(self, operator: Enum, org_role: bool) -> None:
+    def org_role(self, operator: Enum, org_role: bool):
         """Filter Organization Role based on **orgRole** keyword.
 
         Args:
@@ -88,7 +88,7 @@ class OwnerRoleFilter(FilterABC):
         """
         self._tql.add_filter('orgRole', operator, org_role, TqlType.BOOLEAN)
 
-    def version(self, operator: Enum, version: int) -> None:
+    def version(self, operator: Enum, version: int):
         """Filter Version based on **version** keyword.
 
         Args:

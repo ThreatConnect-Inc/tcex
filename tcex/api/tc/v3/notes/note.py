@@ -26,7 +26,7 @@ class Notes(ObjectCollectionABC):
         params (dict): Additional query params (see example above).
     """
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs):
         """Initialize class properties."""
         super().__init__(
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
@@ -62,7 +62,7 @@ class Note(ObjectABC):
         workflow_event_id (int, kwargs): The ID of the Event on which to apply the Note.
     """
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs):
         """Initialize class properties."""
         super().__init__(kwargs.pop('session', None))
 
@@ -83,7 +83,7 @@ class Note(ObjectABC):
         return self._model
 
     @model.setter
-    def model(self, data: Union['NoteModel', dict]) -> None:
+    def model(self, data: Union['NoteModel', dict]):
         """Create model using the provided data."""
         if isinstance(data, type(self.model)):
             # provided data is already a model, nothing required to change
