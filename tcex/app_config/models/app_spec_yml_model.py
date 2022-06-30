@@ -1,6 +1,7 @@
 """App Spec Model"""
 # pylint: disable=no-self-argument,no-self-use
 # standard library
+import re
 from copy import deepcopy
 from typing import List, Optional
 
@@ -300,7 +301,7 @@ class AppSpecYmlModel(InstallJsonCommonModel):
 
     def get_note_per_action(self, action: str) -> 'NotesPerActionModel':
         """Return the note_per_action for the provided action."""
-        for npa in self.note_per_action or []:
+        for npa in self.note_per_action or []:  # pylint: disable=not-an-iterable
             if npa.action == action:
                 return npa
         return NoneModel()
@@ -310,6 +311,7 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         """Return formatted note_per_action."""
         _note_per_action = ['\n\nThe following actions are included:']
         _note_per_action.extend(
+            # pylint: disable=not-an-iterable
             [f'-   **{npa.action}** - {npa.note}' for npa in self.note_per_action]
         )
         return _note_per_action
@@ -318,8 +320,8 @@ class AppSpecYmlModel(InstallJsonCommonModel):
     def outputs(self) -> List[OutputVariablesModel]:
         """Return lj.outputs."""
         _outputs = []
-        for output_data in self.output_data:
-            for output_variable in output_data.output_variables:
+        for output_data in self.output_data:  # pylint: disable=not-an-iterable
+            for output_variable in output_data.output_variables:  # pylint: disable=not-an-iterable
                 if output_variable.disabled is True:
                     continue
 
@@ -336,8 +338,8 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         """Return ij.playbook.outputVariables."""
         return [
             ov
-            for output in self.output_data or []
-            for ov in output.output_variables or []
+            for output in self.output_data or []  # pylint: disable=not-an-iterable
+            for ov in output.output_variables or []  # pylint: disable=not-an-iterable
             if ov.disabled is False
         ]
 
@@ -377,7 +379,18 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         """Return readme_md.releaseNotes."""
         _release_notes = ['## Release Notes']
         _release_notes.append('')
-        for release_note in self.release_notes:
+
+        # try to sort release notes by version.  If we encounter any issues, just use release_notes
+        try:
+            sorted_releases = sorted(
+                (r for r in self.release_notes),  # pylint: disable=not-an-iterable
+                key=lambda r: Version(re.match(r'^\d+.\d+.\d+', r.version)[0]),
+                reverse=True,
+            )  # pylint: disable=not-an-iterable
+        except Exception:
+            sorted_releases = self.release_notes
+
+        for release_note in sorted_releases:
             _release_notes.append(f'### {release_note.version}')
             _release_notes.append('')
             _release_notes.extend([f'-   {rn}' for rn in release_note.notes])
@@ -387,16 +400,16 @@ class AppSpecYmlModel(InstallJsonCommonModel):
     @property
     def requires_layout(self):
         """Return True if App requires a layout.json file."""
-        if self.runtime_level.lower() == 'organization':
+        if self.runtime_level.lower() == 'organization':  # pylint: disable=no-member
             return False
 
-        for section in self.sections:
-            for param in section.params:
+        for section in self.sections:  # pylint: disable=not-an-iterable
+            for param in section.params:  # pylint: disable=not-an-iterable
                 if param.display:
                     return True
 
-        for output_data in self.output_data:
-            if output_data.display not in [None, '1', '']:
+        for output_data in self.output_data:  # pylint: disable=not-an-iterable
+            if output_data.display not in [None, '1', '']:  # pylint: disable=not-an-iterable
                 return True
 
         return False
@@ -408,7 +421,7 @@ class AppSpecYmlModel(InstallJsonCommonModel):
           * Input type is "String"
           * No "playbookDataType" values are provided
         """
-        if self.runtime_level.lower() == 'playbook':
+        if self.runtime_level.lower() == 'playbook':  # pylint: disable=no-member
             # by rule any input of type String must have String and playbookDataType
             if (
                 param.type in ['EditChoice', 'KeyValueList', 'String']
@@ -429,7 +442,7 @@ class AppSpecYmlModel(InstallJsonCommonModel):
             and not param.valid_values
             and (
                 'String' in param.playbook_data_type
-                or self.runtime_level.lower()
+                or self.runtime_level.lower()  # pylint: disable=no-member
                 in ['organization', 'triggerservice', 'webhooktriggerservice']
             )
         ):
