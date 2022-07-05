@@ -107,9 +107,13 @@ class SpecToolReadmeMd(BinABC):
     def _add_params(
         self, readme_md: List[str], section: 'SectionsModel', action: Optional[str] = None
     ):
+        valid_params_for_action = []
+        for input_ in self.permutations.inputs_by_action_(action):
+            valid_params_for_action.append(input_.name)
+
         # add params
         for param in section.params:
-            if param.disabled is True or param.hidden is True:
+            if any([param.disabled, param.hidden]):
                 continue
 
             # don't add tc_action param since it's the top level action
@@ -118,7 +122,7 @@ class SpecToolReadmeMd(BinABC):
 
             if action is not None:
                 # validate that the input is valid for the current action
-                if self._valid_param_for_action(param, action) is False:
+                if param.name not in valid_params_for_action:
                     continue
 
             # add param data

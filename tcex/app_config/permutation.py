@@ -232,7 +232,6 @@ class Permutation:
     def extract_tc_action_clause(self, display_clause: Optional[str]) -> Optional[str]:
         """Extract the tc_action part of the display clause."""
         if display_clause is not None:
-            # action_clause_extract_pattern = r'(tc_action\sin\s\([^\)]*\))'
             action_clause_extract_pattern = r'''(tc_action\sin\s\(.+?(?<='\)))'''
             _tc_action_clause = re.search(
                 action_clause_extract_pattern, display_clause, re.IGNORECASE
@@ -270,6 +269,14 @@ class Permutation:
 
             # drop database
             self.db_drop_table(self._input_table)
+
+    def inputs_by_action_(self, action: str) -> List[str]:
+        """Return all inputs for the provided action."""
+        for ij_data in self._params_data:
+            display = self.extract_tc_action_clause(self.lj.model.get_param(ij_data.name).display)
+            valid_actions = self.tokenize_display.get_actions(display)
+            if not valid_actions or action in valid_actions:
+                yield ij_data
 
     def inputs_by_action(self, action: str, include_hidden: Optional[bool] = True) -> List[str]:
         """Return all inputs for the provided action."""
@@ -353,10 +360,10 @@ class Permutation:
 
     def outputs_by_action(self, action: str) -> List[str]:
         """Return all inputs for the provided action."""
-        # yield from self.outputs_by_inputs({'tc_action': action})
         for o in self.ij.model.playbook.output_variables:
-            lj_output = self.lj.model.get_output(o.name)
-            if action in self.tokenize_display.get_actions(lj_output.display):
+            display = self.lj.model.get_output(o.name).display
+            valid_actions = self.tokenize_display.get_actions(display)
+            if not valid_actions or action in valid_actions:
                 yield o
 
     def outputs_by_inputs(self, inputs: Dict[str, str]) -> Iterable['OutputVariablesModel']:

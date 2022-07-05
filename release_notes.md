@@ -1,5 +1,11 @@
 # Release Notes
 
+### 3.0.4
+
+-   APP-3582 - [CLI] Updated spectool to automatically sort release notes by version when creating readme.md
+-   APP-3586 - [CLI] Updated spectool to ignore outputPrefix for non-playbook apps
+-   APP-3587 - [CLI] Updated spectool README.md generation for outputs
+
 ### 3.0.3
 
 -   APP-3489 - [CLI] Fixed issue with invalid tuple in help string
