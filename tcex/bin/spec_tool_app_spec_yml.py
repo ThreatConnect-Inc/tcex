@@ -207,18 +207,20 @@ class SpecToolAppSpecYml(BinABC):
             'tc_adv_req_fail_on_error',
         ]
 
-    @staticmethod
-    def _is_advanced_request_output(name: str) -> bool:
+    def _is_advanced_request_output(self, name: str) -> bool:
         """Return true if input is an Advanced Request input."""
-        return name in [
-            'any_run.request.content',
-            'any_run.request.content.binary',
-            'any_run.request.headers',
-            'any_run.request.ok',
-            'any_run.request.reason',
-            'any_run.request.status_code',
-            'any_run.request.url',
-        ]
+        for pattern in [
+            'request.content',
+            'request.content.binary',
+            'request.headers',
+            'request.ok',
+            'request.reason',
+            'request.status_code',
+            'request.url',
+        ]:
+            if f'{self.ij.model.playbook.output_prefix}.{pattern}' == name:
+                return True
+        return False
 
     def _add_min_tc_version(self, app_spec_yml_data: dict):
         """Add the correct min TC server version."""

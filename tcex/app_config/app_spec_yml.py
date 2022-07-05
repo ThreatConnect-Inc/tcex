@@ -18,6 +18,7 @@ except ImportError:
 
 # first-party
 from tcex.app_config.models import AppSpecYmlModel
+from tcex.app_config.tcex_json import TcexJson
 from tcex.backports import cached_property
 
 # get tcex logger
@@ -40,6 +41,7 @@ class AppSpecYml:
 
         # properties
         self.fqfn = Path(os.path.join(path, filename))
+        self.tj = TcexJson(logger=self.log)
 
     @property
     def _feature_data_advanced_request_inputs(self):
@@ -420,14 +422,17 @@ class AppSpecYml:
 
         return AppSpecYmlModel(**self.contents)
 
-    @staticmethod
-    def order_data(asy_data: dict) -> dict:
+    def order_data(self, asy_data: dict) -> dict:
         """Order field with direction given by Business Analysis."""
         asy_data_ordered = {}
 
+        # TODO: [low] rewrite this section to iterate over fields in order
+
         # "important" fields
         asy_data_ordered['displayName'] = asy_data.get('displayName')
-        asy_data_ordered['packageName'] = asy_data.get('packageName')
+        asy_data_ordered['packageName'] = (
+            asy_data.get('packageName') or self.tj.model.package.app_name
+        )
         asy_data_ordered['appId'] = asy_data.get('appId')
         asy_data_ordered['category'] = asy_data.get('category', '')
         asy_data_ordered['programVersion'] = asy_data.get('programVersion')

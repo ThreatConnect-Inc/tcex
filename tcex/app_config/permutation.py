@@ -21,6 +21,7 @@ from tcex.app_config.install_json import InstallJson
 from tcex.app_config.layout_json import LayoutJson
 from tcex.app_config.models.install_json_model import ParamsModel
 from tcex.app_config.models.layout_json_model import OutputsModel, ParametersModel
+from tcex.app_config.tokenize_display import TokenizeDisplay
 from tcex.backports import cached_property
 from tcex.pleb.none_model import NoneModel
 
@@ -48,6 +49,7 @@ class Permutation:
         self.fqfn = Path(os.getcwd(), 'permutations.json')
         self.ij = InstallJson(logger=self.log)
         self.lj = LayoutJson(logger=self.log)
+        self.tokenize_display = TokenizeDisplay()
 
     def _gen_permutations(self, index: Optional[int] = 0, params: Optional[list] = None):
         """Iterate recursively over layout.json parameter names to build permutations.
@@ -351,7 +353,11 @@ class Permutation:
 
     def outputs_by_action(self, action: str) -> List[str]:
         """Return all inputs for the provided action."""
-        yield from self.outputs_by_inputs({'tc_action': action})
+        # yield from self.outputs_by_inputs({'tc_action': action})
+        for o in self.ij.model.playbook.output_variables:
+            lj_output = self.lj.model.get_output(o.name)
+            if action in self.tokenize_display.get_actions(lj_output.display):
+                yield o
 
     def outputs_by_inputs(self, inputs: Dict[str, str]) -> Iterable['OutputVariablesModel']:
         """Return all output based on provided inputs
@@ -369,7 +375,6 @@ class Permutation:
         for name, val in inputs.items():
             self.db_update_record(table, name, val)
 
-        # outputs = []
         # iterate of InstallJsonModel -> PlaybookModel -> OutputVariablesModel
         for o in self.ij.model.playbook.output_variables:
             lj_output = self.lj.model.get_output(o.name)
@@ -382,8 +387,6 @@ class Permutation:
 
         # drop database
         self.db_drop_table(table)
-
-        # return outputs
 
     def permutations(self):
         """Process layout.json names/display to get all permutations of args."""
