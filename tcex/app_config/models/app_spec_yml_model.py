@@ -1,6 +1,7 @@
 """App Spec Model"""
 # pylint: disable=no-self-argument,no-self-use
 # standard library
+import re
 from copy import deepcopy
 from typing import List, Optional
 
@@ -377,7 +378,18 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         """Return readme_md.releaseNotes."""
         _release_notes = ['## Release Notes']
         _release_notes.append('')
-        for release_note in self.release_notes:
+
+        # try to sort release notes by version.  If we encounter any issues, just use release_notes
+        try:
+            sorted_releases = sorted(
+                (r for r in self.release_notes),
+                key=lambda r: Version(re.match(r'^\d+.\d+.\d+', r.version)[0]),
+                reverse=True,
+            )
+        except Exception:
+            sorted_releases = self.release_notes
+
+        for release_note in sorted_releases:
             _release_notes.append(f'### {release_note.version}')
             _release_notes.append('')
             _release_notes.extend([f'-   {rn}' for rn in release_note.notes])
