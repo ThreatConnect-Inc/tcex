@@ -446,6 +446,7 @@ class AppSpecYml:
         asy_data_ordered['labels'] = asy_data.get('labels', [])
         asy_data_ordered['minServerVersion'] = asy_data.get('minServerVersion')
         asy_data_ordered['note'] = asy_data.get('note') or ''
+        asy_data_ordered['serviceDetails'] = asy_data.get('serviceDetails')
         if asy_data.get('notePerAction') is not None:
             asy_data_ordered['notePerAction'] = asy_data.get('notePerAction')
         asy_data_ordered['runtimeLevel'] = asy_data.get('runtimeLevel')

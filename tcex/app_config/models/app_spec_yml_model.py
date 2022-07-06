@@ -210,7 +210,7 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         None,
         description='The playbook section of the install.json.',
     )
-    internalNotes: Optional[List[str]] = Field(
+    internal_notes: Optional[List[str]] = Field(
         None,
         description='Internal notes for the App.',
     )
@@ -225,6 +225,9 @@ class AppSpecYmlModel(InstallJsonCommonModel):
     sections: List[SectionsModel] = Field(
         ...,
         description='Layout sections for an App including params.',
+    )
+    service_details: Optional[str] = Field(
+        None, description='Optional service details for Service Apps.'
     )
 
     @root_validator
