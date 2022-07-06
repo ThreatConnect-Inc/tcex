@@ -43,7 +43,6 @@ class SpecToolAppSpecYml(BinABC):
                 'listDelimiter': self.ij.model.list_delimiter,
                 'minServerVersion': str(self.ij.model.min_server_version),
                 'note': self.ij.model.note,
-                'outputPrefix': self.ij.model.playbook.output_prefix,
                 'packageName': self.tj.model.package.app_name,
                 'programLanguage': self.ij.model.program_language,
                 'programMain': self.ij.model.program_main,
@@ -126,6 +125,14 @@ class SpecToolAppSpecYml(BinABC):
                 _output_data.append({'display': display, 'outputVariables': _output_variables})
 
             app_spec_yml_data['outputData'] = _output_data
+
+    def _add_output_prefix(self, app_spec_yml_data: dict):
+        """Add asy.outputData."""
+        if (
+            self.ij.model.runtime_level.lower() == 'playbook'
+            and self.ij.model.playbook.output_prefix
+        ):
+            app_spec_yml_data['outputPrefix'] = self.ij.model.playbook.output_prefix
 
     def _add_playbook(self, app_spec_yml_data: dict):
         """Add asy.playbook."""
@@ -252,6 +259,9 @@ class SpecToolAppSpecYml(BinABC):
 
         # add playbook (retry)
         self._add_playbook(app_spec_yml_data)
+
+        # add playbook output prefix
+        self._add_output_prefix(app_spec_yml_data)
 
         # add sections
         self._add_sections(app_spec_yml_data)

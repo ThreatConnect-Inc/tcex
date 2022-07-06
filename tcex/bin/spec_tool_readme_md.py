@@ -3,14 +3,15 @@
 from typing import TYPE_CHECKING, List, Optional
 
 # first-party
+from tcex.app_config.layout_json import LayoutJson
 from tcex.app_config.permutation import Permutation
 from tcex.bin.bin_abc import BinABC
 
 if TYPE_CHECKING:
     # first-party
     from tcex.app_config import AppSpecYml
-    from tcex.app_config.install_json import ParamsModel
     from tcex.app_config.models.app_spec_yml_model import SectionsModel
+    from tcex.app_config.models.install_json_model import ParamsModel
 
 
 class SpecToolReadmeMd(BinABC):
@@ -22,9 +23,9 @@ class SpecToolReadmeMd(BinABC):
         self.asy = asy
 
         # properties
-        # self.i1 = ' ' * 2
         self.i1 = ''
         self.filename = 'README.md'
+        self.lj = LayoutJson(logger=self.log)
         self.permutations = Permutation(self.log)
 
     def _add_actions_title(self, readme_md: List[str]):
@@ -62,25 +63,25 @@ class SpecToolReadmeMd(BinABC):
                 readme_md.append('\n\n'.join(self.asy.model.note_per_action_formatted))
                 readme_md.append('')
 
-    @staticmethod
-    def _add_inputs_title(readme_md: List[str], header: int):
+        if self.asy.model.service_details:
+            readme_md.append('')
+            readme_md.append(self.asy.model.service_details)
+
+    def _add_inputs_title(self, readme_md: List[str]):
         """Add title for input section."""
-        header_value = '#' * header
-        readme_md.append(f'{header_value} Inputs')
+        readme_md.append(f'{self._markdown_header_input} Inputs')
         readme_md.append('')
 
-    @staticmethod
-    def _add_service_config_title(readme_md: List[str], header: int):
+    def _add_service_config_title(self, readme_md: List[str]):
         """Add title for service configuration section."""
-        header_value = '#' * header
-        readme_md.append(f'{header_value} Service Configuration')
+        readme_md.append(self._markdown_header1('Service Configuration'))
         readme_md.append('')
 
     def _add_param(self, readme_md: List[str], param: 'ParamsModel'):
         """Add params data to readme.md.
 
-        **API Key** _(String)_
-        _**Duration**_ _(String, Optional)_
+        **API Key** *(String)*
+        _**Duration**_ *(String, Optional)*
         """
         label = self._markdown_bold(param.label)
         type_data = f'{param.type}'
@@ -107,9 +108,13 @@ class SpecToolReadmeMd(BinABC):
     def _add_params(
         self, readme_md: List[str], section: 'SectionsModel', action: Optional[str] = None
     ):
+        valid_params_for_action = []
+        for input_ in self.permutations.inputs_by_action_(action):
+            valid_params_for_action.append(input_.name)
+
         # add params
         for param in section.params:
-            if param.disabled is True or param.hidden is True:
+            if any([param.disabled, param.hidden]):
                 continue
 
             # don't add tc_action param since it's the top level action
@@ -118,7 +123,7 @@ class SpecToolReadmeMd(BinABC):
 
             if action is not None:
                 # validate that the input is valid for the current action
-                if self._valid_param_for_action(param, action) is False:
+                if param.name not in valid_params_for_action:
                     continue
 
             # add param data
@@ -161,7 +166,7 @@ class SpecToolReadmeMd(BinABC):
     def _add_outputs(self, readme_md: List[str], action: str = None):
         """Add output data to readme.md."""
         if self.asy.model.output_variables:
-            readme_md.append(self._markdown_header3('Outputs'))
+            readme_md.append(f'{self._markdown_header_output} Outputs')
             readme_md.append('')
             outputs = self.ij.model.playbook.output_variables
             if action:
@@ -189,7 +194,7 @@ class SpecToolReadmeMd(BinABC):
             self._add_actions_sub_title(readme_md, action)
 
             # add inputs and sections
-            self._add_inputs_title(readme_md, 3)
+            self._add_inputs_title(readme_md)
 
             for section in self.asy.model.sections:
                 # don't show the section if it has no params
@@ -211,7 +216,7 @@ class SpecToolReadmeMd(BinABC):
 
     def _add_params_for_playbook_std_app(self, readme_md: List[str]):
         """Add inputs for playbook standard app."""
-        self._add_inputs_title(readme_md, 3)
+        self._add_inputs_title(readme_md)
 
         for section in self.asy.model.sections:
             # don't show the section if it has no params
@@ -247,7 +252,7 @@ class SpecToolReadmeMd(BinABC):
 
         # Add service configuration params to ReadMe file.
         if service_config:
-            self._add_service_config_title(readme_md, 1)
+            self._add_service_config_title(readme_md)
 
             for param in service_config:
                 # add param data
@@ -260,7 +265,7 @@ class SpecToolReadmeMd(BinABC):
                 self._add_param_valid_values(readme_md, param)
 
         # add inputs and sections
-        self._add_inputs_title(readme_md, 3)
+        self._add_inputs_title(readme_md)
 
         for param in non_service_config:
             # add param data
@@ -296,6 +301,20 @@ class SpecToolReadmeMd(BinABC):
     def _markdown_bullet_list_item(string: str):
         """Return italic string."""
         return f'-   {string}'
+
+    @property
+    def _markdown_header_input(self):
+        """Return the appropriate header level for input section."""
+        if self.lj.has_layout:
+            return '###'
+        return '#'
+
+    @property
+    def _markdown_header_output(self):
+        """Return the appropriate header level for output section."""
+        if self.lj.has_layout:
+            return '###'
+        return '#'
 
     @staticmethod
     def _markdown_header1(string: str):
@@ -336,7 +355,7 @@ class SpecToolReadmeMd(BinABC):
         )
 
     def generate(self) -> List[str]:
-        """Generate the layout.json file data."""
+        """Generate the README.md file data."""
         readme_md = []
 
         # add App Name

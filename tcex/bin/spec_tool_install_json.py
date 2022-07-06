@@ -37,7 +37,6 @@ class SpecToolInstallJson(BinABC):
                 'languageVersion': self.asy.model.language_version,
                 'listDelimiter': self.asy.model.list_delimiter,
                 'minServerVersion': str(self.asy.model.min_server_version),
-                'note': f'{self.asy.model.note}{self._note_per_action}\n',
                 'params': [p.dict(by_alias=True) for p in self.asy.model.params],
                 'programLanguage': self.asy.model.program_language,
                 'programMain': self.asy.model.program_main,
@@ -46,6 +45,16 @@ class SpecToolInstallJson(BinABC):
                 'runtimeLevel': self.asy.model.runtime_level,
             }
         )
+
+    def _add_note(self, install_json_data: dict):
+        """Add top level note to install.json."""
+        _note = f'{self.asy.model.note}{self._note_per_action}\n'
+
+        # some Apps have a serviceDetails section which needs to be appended to the App notes
+        if self.asy.model.service_details is not None:
+            _note += self.asy.model.service_details
+
+        install_json_data['note'] = _note
 
     def _add_type_api_service_fields(self, install_json_data: dict):
         """Add field that apply to ALL App types."""
@@ -112,6 +121,9 @@ class SpecToolInstallJson(BinABC):
 
         # add standard fields
         self._add_standard_fields(install_json_data)
+
+        # add note
+        self._add_note(install_json_data)
 
         # add app type api service fields
         self._add_type_api_service_fields(install_json_data)
