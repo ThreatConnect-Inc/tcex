@@ -17,6 +17,7 @@ except ImportError:
     from yaml import Loader, Dumper
 
 # first-party
+from tcex.app_config.install_json import InstallJson
 from tcex.app_config.models import AppSpecYmlModel
 from tcex.app_config.tcex_json import TcexJson
 from tcex.backports import cached_property
@@ -41,6 +42,7 @@ class AppSpecYml:
 
         # properties
         self.fqfn = Path(os.path.join(path, filename))
+        self.ij = InstallJson(logger=self.log)
         self.tj = TcexJson(logger=self.log)
 
     @property
@@ -290,8 +292,9 @@ class AppSpecYml:
     def _migrate_schema_100_to_110_retry(contents: dict):
         """Migrate 1.0.0 schema to 1.1.0 schema."""
         if contents['runtimeLevel'].lower() == 'playbook':
-            contents.setdefault('playbook', {})
-            contents['playbook']['retry'] = contents.pop('retry', {})
+            if contents.get('playbook', {}).get('retry'):
+                contents.setdefault('playbook', {})
+                contents['playbook']['retry'] = contents.pop('retry', {})
 
     @staticmethod
     def _migrate_schema_100_to_110_output_groups(contents: dict):
@@ -422,7 +425,8 @@ class AppSpecYml:
 
         return AppSpecYmlModel(**self.contents)
 
-    def order_data(self, asy_data: dict) -> dict:
+    @staticmethod
+    def order_data(asy_data: dict) -> dict:
         """Order field with direction given by Business Analysis."""
         asy_data_ordered = {}
 
@@ -430,9 +434,7 @@ class AppSpecYml:
 
         # "important" fields
         asy_data_ordered['displayName'] = asy_data.get('displayName')
-        asy_data_ordered['packageName'] = (
-            asy_data.get('packageName') or self.tj.model.package.app_name
-        )
+        asy_data_ordered['packageName'] = asy_data.get('packageName')
         asy_data_ordered['appId'] = asy_data.get('appId')
         asy_data_ordered['category'] = asy_data.get('category', '')
         asy_data_ordered['programVersion'] = asy_data.get('programVersion')
@@ -446,7 +448,8 @@ class AppSpecYml:
         asy_data_ordered['labels'] = asy_data.get('labels', [])
         asy_data_ordered['minServerVersion'] = asy_data.get('minServerVersion')
         asy_data_ordered['note'] = asy_data.get('note') or ''
-        asy_data_ordered['serviceDetails'] = asy_data.get('serviceDetails')
+        if asy_data_ordered.get('serviceDetails'):
+            asy_data_ordered['serviceDetails'] = asy_data.get('serviceDetails')
         if asy_data.get('notePerAction') is not None:
             asy_data_ordered['notePerAction'] = asy_data.get('notePerAction')
         asy_data_ordered['runtimeLevel'] = asy_data.get('runtimeLevel')
@@ -480,11 +483,25 @@ class AppSpecYml:
 
         return asy_data_ordered
 
-    def rewrite_contents(self, contents: dict):
-        """Rewrite app_spec.yml file."""
+    def fix_contents(self, contents: dict) -> dict:
+        """Fix missing data"""
         # fix for null appId value
         if 'appId' in contents and contents.get('appId') is None:
             del contents['appId']
+
+        # fix missing packageName
+        if contents.get('packageName') is None:
+            contents['packageName'] = self.tj.model.package.app_name
+
+        # fix missing outputPrefix
+        if contents.get('outputPrefix') is None and 'advancedRequest' in contents.get(
+            'features', []
+        ):
+            contents['outputPrefix'] = self.ij.model.playbook.output_prefix
+
+    def rewrite_contents(self, contents: dict):
+        """Rewrite app_spec.yml file."""
+        self.fix_contents(contents)
 
         # exclude_defaults - if False then all unused fields are added in - not good.
         # exclude_none - this should be safe to leave as True.
