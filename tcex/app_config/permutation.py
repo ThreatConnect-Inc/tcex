@@ -273,7 +273,7 @@ class Permutation:
     def inputs_by_action_(self, action: str) -> List[str]:
         """Return all inputs for the provided action."""
         for ij_data in self._params_data:
-            display = self.extract_tc_action_clause(self.lj.model.get_param(ij_data.name).display)
+            display = self.lj.model.get_param(ij_data.name).display
             valid_actions = self.tokenize_display.get_actions(display)
             if not valid_actions or action in valid_actions:
                 yield ij_data

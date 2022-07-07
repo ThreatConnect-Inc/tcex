@@ -5,6 +5,7 @@
 -   APP-3582 - [CLI] Updated spectool to automatically sort release notes by version when creating readme.md
 -   APP-3586 - [CLI] Updated spectool to ignore outputPrefix for non-playbook apps
 -   APP-3587 - [CLI] Updated spectool README.md generation for outputs
+-   APP-3610 - [CLI] Updated spectool for general improvements and fixes
 
 ### 3.0.3
 
