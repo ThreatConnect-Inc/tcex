@@ -292,8 +292,8 @@ class AppSpecYml:
     def _migrate_schema_100_to_110_retry(contents: dict):
         """Migrate 1.0.0 schema to 1.1.0 schema."""
         if contents['runtimeLevel'].lower() == 'playbook':
+            contents.setdefault('playbook', {})
             if contents.get('playbook', {}).get('retry'):
-                contents.setdefault('playbook', {})
                 contents['playbook']['retry'] = contents.pop('retry', {})
 
     @staticmethod
