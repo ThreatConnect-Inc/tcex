@@ -230,14 +230,12 @@ class SpecToolAppInput(BinABC):
                     # AdvancedRequestModel is included in tcex
                     continue
 
-                # for applies_to_all, ij_data in self.permutations.inputs_by_action(tc_action):
-                for input_data in self.permutations.inputs_by_action(tc_action):
-                    applies_to_all = input_data.get('applies_to_all')
-                    ij_data = input_data.get('input')
-                    self._add_input_to_action_class(applies_to_all, ij_data, tc_action)
+                for input_data in self.permutations.get_action_inputs(tc_action):
+                    applies_to_all = self.permutations.get_input_applies_to_all(input_data.name)
+                    self._add_input_to_action_class(applies_to_all, input_data, tc_action)
 
                     self.log.debug(
-                        f'''action=inputs-to-action, input-name={ij_data.name}, '''
+                        f'''action=inputs-to-action, input-name={input_data.name}, '''
                         f'''applies-to-all={applies_to_all}'''
                     )
 
@@ -354,7 +352,7 @@ class SpecToolAppInput(BinABC):
         """Return the type from the current app_input.py file if found."""
         # Try to capture the value from the specific class first. If not
         # found, search the entire app_inputs.py file.
-        type_defintion = self.utils.find_line_in_code(
+        type_definition = self.utils.find_line_in_code(
             needle=rf'\s+{input_name}: ',
             code=self.app_inputs_contents,
             trigger_start=rf'^class {class_name}',
@@ -362,12 +360,12 @@ class SpecToolAppInput(BinABC):
         ) or self.utils.find_line_in_code(needle=f'{input_name}: ', code=self.app_inputs_contents)
         # type_definition -> "string_encrypt: Optional[Sensitive]"
         self.log.debug(
-            f'action=find-definition, input-name={input_name}, type-definition={type_defintion}'
+            f'action=find-definition, input-name={input_name}, type-definition={type_definition}'
         )
 
         # parse out the actual type
-        if type_defintion is not None:
-            current_type = self._extract_type_from_definition(input_name, type_defintion)
+        if type_definition is not None:
+            current_type = self._extract_type_from_definition(input_name, type_definition)
             if current_type is not None:
                 if 'Union' in current_type:
                     # the find method will return Union[(String, Optional[String])] that has
@@ -386,7 +384,8 @@ class SpecToolAppInput(BinABC):
                 return current_type
 
             self.log.warning(
-                f'input found, but not matched: input={input_name}, type_defintion={type_defintion}'
+                f'input found, but not matched: input={input_name}, '
+                f'type_definition={type_definition}'
             )
 
         return None

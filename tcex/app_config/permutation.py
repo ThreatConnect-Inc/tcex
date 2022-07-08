@@ -5,10 +5,9 @@ import json
 import logging
 import os
 import random
-import re
 import sys
 from pathlib import Path
-from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Tuple, Union
+from typing import Any, List, Optional, Tuple, Union
 
 try:
     # standard library
@@ -25,13 +24,18 @@ from tcex.app_config.tokenize_display import TokenizeDisplay
 from tcex.backports import cached_property
 from tcex.pleb.none_model import NoneModel
 
-if TYPE_CHECKING:
-    # first-party
-    from tcex.app_config.models.install_json_model import OutputVariablesModel
-
-
 # get tcex logger
 tcex_logger = logging.getLogger('tcex')
+
+
+class InputModel(ParamsModel):
+    """Input Model"""
+
+    value: Any
+
+    def __hash__(self):
+        """Make model hashable."""
+        return hash(self.name)
 
 
 class Permutation:
@@ -50,6 +54,17 @@ class Permutation:
         self.ij = InstallJson(logger=self.log)
         self.lj = LayoutJson(logger=self.log)
         self.tokenize_display = TokenizeDisplay()
+
+    @staticmethod
+    def _create_input_model(ij_param: ParamsModel, value: any) -> InputModel:
+        """Create an input model from the install.json param model."""
+        _input_model = InputModel(**ij_param.dict())
+        # manually adding List values due to bug where data is not getting loaded into model in init
+        _input_model.intel_type = ij_param.intel_type
+        _input_model.playbook_data_type = ij_param.playbook_data_type
+        _input_model.valid_values = ij_param.valid_values
+        _input_model.value = value
+        return _input_model
 
     def _gen_permutations(self, index: Optional[int] = 0, params: Optional[list] = None):
         """Iterate recursively over layout.json parameter names to build permutations.
@@ -78,7 +93,8 @@ class Permutation:
                 # only process params that match display query or are hidden
                 if ij_param.type.lower() == 'boolean':
                     for val in [True, False]:
-                        params.append({'name': name, 'value': val})
+                        # params.append({'name': name, 'value': val})
+                        params.append(self._create_input_model(ij_param, val))
 
                         # update the data in the sqlite db so for next iteration
                         self.db_update_record(self._input_table, name, val)
@@ -88,9 +104,10 @@ class Permutation:
 
                         # remove the previous arg before next iteration
                         params.pop()
-                elif ij_param.type.lower() == 'choice':
+                elif ij_param.type.lower() in ['choice', 'editchoice']:
                     for val in self.ij.expand_valid_values(ij_param.valid_values):
-                        params.append({'name': name, 'value': val})
+                        # params.append({'name': name, 'value': val})
+                        params.append(self._create_input_model(ij_param, val))
 
                         # update the data in the sqlite db so for next iteration
                         self.db_update_record(self._input_table, name, val)
@@ -101,7 +118,7 @@ class Permutation:
                         # remove the previous arg before next iteration
                         params.pop()
                 else:
-                    params.append({'name': name, 'value': None})
+                    params.append(self._create_input_model(ij_param, None))
 
                     # recursively call method to get all permutations
                     self._gen_permutations(index + 1, list(params))
@@ -139,6 +156,31 @@ class Permutation:
         # hidden fields will not be in layout.json so they need to be include manually
         for input_name, ij_data in self.ij.model.filter_params(hidden=True).items():
             yield ij_data
+
+    @cached_property
+    def action_configurations(self) -> dict:
+        """Return action configuration."""
+        self.init_permutations()
+
+        _action_configurations = {}
+        for index, inputs in enumerate(self._input_permutations):
+            for input_ in inputs:
+                if input_.name == 'tc_action':
+                    action = input_.value
+                    _action_configurations.setdefault(action, {'inputs': [], 'outputs': []})
+                    _action_configurations[action]['inputs'].extend(inputs)
+                    _action_configurations[action]['outputs'].extend(
+                        self._output_permutations[index]
+                    )
+                    break
+
+        for action, data in _action_configurations.items():
+            _action_configurations[action] = {
+                'inputs': sorted(list(set(data['inputs'])), key=lambda x: x.name),
+                'outputs': sorted(list(set(data['outputs'])), key=lambda x: x.name),
+            }
+
+        return _action_configurations
 
     @cached_property
     def db_conn(self) -> 'sqlite3.Connection':
@@ -229,18 +271,6 @@ class Permutation:
             except sqlite3.OperationalError as e:  # pragma: no cover
                 self.handle_error(f'SQL update failed - SQL: "{sql}", Error: "{e}"')
 
-    def extract_tc_action_clause(self, display_clause: Optional[str]) -> Optional[str]:
-        """Extract the tc_action part of the display clause."""
-        if display_clause is not None:
-            action_clause_extract_pattern = r'''(tc_action\sin\s\(.+?(?<='\)))'''
-            _tc_action_clause = re.search(
-                action_clause_extract_pattern, display_clause, re.IGNORECASE
-            )
-            if _tc_action_clause is not None:
-                self.log.debug(f'action=extract-action-clause, display-clause={display_clause}')
-                return _tc_action_clause.group(1)
-        return None
-
     def handle_error(self, err: str, halt: Optional[bool] = True):  # pragma: no cover
         """Print errors message and optionally exit.
 
@@ -252,6 +282,32 @@ class Permutation:
         print(err)
         if halt:
             sys.exit(1)
+
+    def get_action_input_names(self, action: str) -> List[str]:
+        """Return the input names for the provided action."""
+        return [i.name for i in self.get_action_inputs(action)]
+
+    def get_action_inputs(self, action: str) -> List[InputModel]:
+        """Return the inputs for the provided action."""
+        return self.action_configurations.get(action, {}).get('inputs', [])
+
+    def get_action_output_names(self, action: str) -> List[str]:
+        """Return the output names for the provided action."""
+        return [i.name for i in self.get_action_outputs(action)]
+
+    def get_action_outputs(self, action: str) -> List[OutputsModel]:
+        """Return the outputs for the provided action."""
+        return self.action_configurations.get(action, {}).get('outputs', [])
+
+    def get_input_applies_to_all(self, input_name: str) -> bool:
+        """Return the outputs for the provided action."""
+        for data in self.action_configurations.values():
+            for d in data.get('inputs', []):
+                if d.name == input_name:
+                    break
+            else:
+                return False  # not found
+        return True
 
     # TODO: [low] improve this logic
     def init_permutations(self):
@@ -270,39 +326,6 @@ class Permutation:
             # drop database
             self.db_drop_table(self._input_table)
 
-    def inputs_by_action_(self, action: str) -> List[str]:
-        """Return all inputs for the provided action."""
-        for ij_data in self._params_data:
-            display = self.lj.model.get_param(ij_data.name).display
-            valid_actions = self.tokenize_display.get_actions(display)
-            if not valid_actions or action in valid_actions:
-                yield ij_data
-
-    def inputs_by_action(self, action: str, include_hidden: Optional[bool] = True) -> List[str]:
-        """Return all inputs for the provided action."""
-        for ij_data in self._params_data:
-            # get a display clause with just the tc_action condition
-            display = self.extract_tc_action_clause(self.lj.model.get_param(ij_data.name).display)
-            self.log.debug(f'action=input-by-action, input-name={ij_data.name}, display={display}')
-
-            if ij_data.service_config:
-                # inputs that are serviceConfig are not applicable for profiles
-                continue
-
-            if display is None:
-                # when there is no display clause or the input is hidden,
-                # then the input gets added to the AppBaseModel
-                applies_to_all = True
-            elif ij_data.hidden is True and include_hidden is True:
-                applies_to_all = True
-            elif self.validate_input_variable(ij_data.name, {'tc_action': action}, display):
-                # each input will be checked for permutations if the App has layout and not hidden
-                applies_to_all = False
-            else:
-                continue
-
-            yield {'applies_to_all': applies_to_all, 'input': ij_data}
-
     def input_dict(self, permutation_id: int) -> dict:
         """Return all input permutation names for provided permutation id.
 
@@ -317,7 +340,7 @@ class Permutation:
         input_dict = {}
         if self.lj.has_layout:
             for permutation in self.input_permutations[permutation_id]:
-                input_dict.setdefault(permutation.get('name'), permutation.get('value'))
+                input_dict.setdefault(permutation.name, permutation.value)
         return input_dict
 
     @property
@@ -330,7 +353,7 @@ class Permutation:
         if self._input_names is None and self.lj.has_layout:
             self._input_names = []
             for permutation in self.input_permutations:
-                self._input_names.append([p.get('name') for p in permutation])
+                self._input_names.append([p.name for p in permutation])
         return self._input_names
 
     @property
@@ -357,43 +380,6 @@ class Permutation:
         if self._output_permutations is None:
             self.init_permutations()
         return self._output_permutations
-
-    def outputs_by_action(self, action: str) -> List[str]:
-        """Return all inputs for the provided action."""
-        for o in self.ij.model.playbook.output_variables:
-            display = self.lj.model.get_output(o.name).display
-            valid_actions = self.tokenize_display.get_actions(display)
-            if not valid_actions or action in valid_actions:
-                yield o
-
-    def outputs_by_inputs(self, inputs: Dict[str, str]) -> Iterable['OutputVariablesModel']:
-        """Return all output based on provided inputs
-
-        Args:
-            inputs: The args/inputs dict.
-
-        Returns:
-            list: List of Lists of valid outputs objects.
-        """
-        table = f'temp_{random.randint(100,999)}'  # nosec
-        self.db_create_table(table, self.ij.model.param_names)
-        self.db_insert_record(table, self.ij.model.param_names)
-
-        for name, val in inputs.items():
-            self.db_update_record(table, name, val)
-
-        # iterate of InstallJsonModel -> PlaybookModel -> OutputVariablesModel
-        for o in self.ij.model.playbook.output_variables:
-            lj_output = self.lj.model.get_output(o.name)
-            if isinstance(lj_output, NoneModel):  # pragma: no cover
-                # an output not listed in layout.json should always be shown
-                yield o
-            elif self.validate_layout_display(table, lj_output.display):
-                # all other outputs must be validated
-                yield o
-
-        # drop database
-        self.db_drop_table(table)
 
     def permutations(self):
         """Process layout.json names/display to get all permutations of args."""
@@ -493,7 +479,7 @@ class Permutation:
         """Print all valid permutations."""
         permutations = []
         for index, p in enumerate(self.input_permutations):
-            permutations.append({'index': index, 'args': p})
+            permutations.append({'index': index, 'args': {'name': p.name, 'value': p.value}})
 
         with self.fqfn.open(mode='w') as fh:
             json.dump(permutations, fh, indent=2, sort_keys=True)
