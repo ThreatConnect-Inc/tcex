@@ -108,10 +108,6 @@ class SpecToolReadmeMd(BinABC):
     def _add_params(
         self, readme_md: List[str], section: 'SectionsModel', action: Optional[str] = None
     ):
-        valid_params_for_action = []
-        for input_ in self.permutations.inputs_by_action_(action):
-            valid_params_for_action.append(input_.name)
-
         # add params
         for param in section.params:
             if any([param.disabled, param.hidden]):
@@ -122,8 +118,7 @@ class SpecToolReadmeMd(BinABC):
                 continue
 
             if action is not None:
-                # validate that the input is valid for the current action
-                if param.name not in valid_params_for_action:
+                if param.name not in self.permutations.get_action_input_names(action):
                     continue
 
             # add param data
@@ -168,9 +163,11 @@ class SpecToolReadmeMd(BinABC):
         if self.asy.model.output_variables:
             readme_md.append(f'{self._markdown_header_output} Outputs')
             readme_md.append('')
+
             outputs = self.ij.model.playbook.output_variables
+            outputs = sorted(list(set(outputs)), key=lambda x: x.name)
             if action:
-                outputs = self.permutations.outputs_by_action(action)
+                outputs = self.permutations.get_action_outputs(action)
 
             for output in outputs:
                 output_type = self._markdown_italic(f'({output.type})')
@@ -348,11 +345,10 @@ class SpecToolReadmeMd(BinABC):
 
     def _valid_param_for_action(self, param: 'ParamsModel', action: str) -> bool:
         """Return True if param is valid for action."""
-        return self.permutations.validate_input_variable(
-            param.name,
-            {'tc_action': action},
-            self.permutations.extract_tc_action_clause(param.display),
-        )
+        for input_param in self.permutations.get_action_inputs(action):
+            if input_param.name == param.name:
+                return True
+        return False
 
     def generate(self) -> List[str]:
         """Generate the README.md file data."""

@@ -320,7 +320,11 @@ class ParamsModel(BaseModel):
         alias_generator = snake_to_camel
         smart_union = True
         use_enum_values = True
-        validate_assignment = True
+        validate_assignment = False
+
+    def __hash__(self):
+        """Make model hashable."""
+        return hash(self.name)
 
 
 class OutputVariablesModel(BaseModel):
@@ -352,6 +356,9 @@ class OutputVariablesModel(BaseModel):
 
         alias_generator = snake_to_camel
         validate_assignment = True
+
+    def __hash__(self):
+        return hash(f'{self.name}{self.type}')
 
 
 class RetryModel(BaseModel):
