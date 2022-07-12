@@ -402,7 +402,7 @@ class AppSpecYmlModel(InstallJsonCommonModel):
     @property
     def requires_layout(self):
         """Return True if App requires a layout.json file."""
-        if self.runtime_level.lower() == 'organization':
+        if self.runtime_level.lower() in ['apiservice', 'organization']:
             return False
 
         for section in self.sections:

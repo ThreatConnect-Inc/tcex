@@ -5,6 +5,7 @@ import json
 import logging
 import os
 import random
+import re
 import sys
 from pathlib import Path
 from typing import Any, List, Optional, Tuple, Union
@@ -20,7 +21,6 @@ from tcex.app_config.install_json import InstallJson
 from tcex.app_config.layout_json import LayoutJson
 from tcex.app_config.models.install_json_model import ParamsModel
 from tcex.app_config.models.layout_json_model import OutputsModel, ParametersModel
-from tcex.app_config.tokenize_display import TokenizeDisplay
 from tcex.backports import cached_property
 from tcex.pleb.none_model import NoneModel
 
@@ -53,7 +53,6 @@ class Permutation:
         self.fqfn = Path(os.getcwd(), 'permutations.json')
         self.ij = InstallJson(logger=self.log)
         self.lj = LayoutJson(logger=self.log)
-        self.tokenize_display = TokenizeDisplay()
 
     @staticmethod
     def _create_input_model(ij_param: ParamsModel, value: any) -> InputModel:
@@ -65,6 +64,18 @@ class Permutation:
         _input_model.valid_values = ij_param.valid_values
         _input_model.value = value
         return _input_model
+
+    @cached_property
+    def _display_keywords(self) -> List[str]:
+        """Return the display keywords."""
+        _keywords = set()
+        for param in self.lj.model.params.values():
+            for keyword in (param.display or '').split(' '):
+                keyword = re.sub(r'[^a-zA-Z0-9_]', '', keyword)
+                if keyword in self.ij.model.param_names:
+                    _keywords.add(keyword)
+        self.log.debug(f'keywords={_keywords}')
+        return _keywords
 
     def _gen_permutations(self, index: Optional[int] = 0, params: Optional[list] = None):
         """Iterate recursively over layout.json parameter names to build permutations.
@@ -91,9 +102,14 @@ class Permutation:
 
             if self.validate_layout_display(self._input_table, lj_param.display) or ij_param.hidden:
                 # only process params that match display query or are hidden
-                if ij_param.type.lower() == 'boolean':
+                if name != 'tc_action' and name not in self._display_keywords:
+                    params.append(self._create_input_model(ij_param, None))
+
+                    # recursively call method to get all permutations
+                    self._gen_permutations(index + 1, list(params))
+                elif ij_param.type.lower() == 'boolean':
+                    # if ij_param.type.lower() == 'boolean':
                     for val in [True, False]:
-                        # params.append({'name': name, 'value': val})
                         params.append(self._create_input_model(ij_param, val))
 
                         # update the data in the sqlite db so for next iteration
@@ -106,7 +122,6 @@ class Permutation:
                         params.pop()
                 elif ij_param.type.lower() in ['choice', 'editchoice']:
                     for val in self.ij.expand_valid_values(ij_param.valid_values):
-                        # params.append({'name': name, 'value': val})
                         params.append(self._create_input_model(ij_param, val))
 
                         # update the data in the sqlite db so for next iteration
