@@ -343,8 +343,10 @@ class AppSpecYml:
     def _migrate_schema_100_to_110_release_notes(contents: dict):
         """Migrate 1.0.0 schema to 1.1.0 schema."""
         release_notes = []
-        for k, v in contents.get('releaseNotes').items():
-            release_notes.append({'version': k, 'notes': v})
+        # need to see if this exist, older apps it might not
+        if contents.get('releaseNotes'):
+            for k, v in contents.get('releaseNotes').items():
+                release_notes.append({'version': k, 'notes': v})
         contents['releaseNotes'] = release_notes
 
     @cached_property
