@@ -109,8 +109,11 @@ class SpecToolAppSpecYml(BinABC):
             if self.lj.has_layout:
                 # layout based Apps could will have a display clause for each output
                 for o in self.ij.model.playbook_outputs.values():
-                    o = self.lj.model.get_output(o.name)
-                    _output_data_temp.setdefault(o.display or '1', []).append(o.name)
+                    ljo = self.lj.model.get_output(o.name)
+                    if ljo.display is not None and ljo.name is not None:
+                        _output_data_temp.setdefault(o.display or '1', []).append(o.name)
+                    else:
+                        _output_data_temp.setdefault('1', []).append(o.name)
             else:
                 for _, o in self.ij.model.playbook_outputs.items():
                     _output_data_temp.setdefault('1', []).append(o.name)

@@ -108,7 +108,6 @@ class Permutation:
                     # recursively call method to get all permutations
                     self._gen_permutations(index + 1, list(params))
                 elif ij_param.type.lower() == 'boolean':
-                    # if ij_param.type.lower() == 'boolean':
                     for val in [True, False]:
                         params.append(self._create_input_model(ij_param, val))
 

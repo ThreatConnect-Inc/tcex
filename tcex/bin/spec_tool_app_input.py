@@ -213,18 +213,24 @@ class SpecToolAppInput(BinABC):
 
     def _generate_app_inputs_to_action(self):
         """Generate App Input dict from install.json and layout.json."""
-        if self.ij.model.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+        if self.ij.model.is_playbook_trigger_app is True:
+            # Process the following App types:
+            # - playbook trigger service Apps
             for ij_data in self.ij.model.params_dict.values():
                 class_name = 'Trigger Config'
                 if ij_data.service_config is True:
                     class_name = 'Service Config'
                 self._add_input_to_action_class(False, ij_data, class_name)
-        elif not self.lj.has_layout:
-            # process Apps WITHOUT a layout.json file
+        elif self.lj.has_layout is False or not self._tc_actions:
+            # Process the following App types:
+            # - Job Apps
+            # - Playbook App with no layout.json
+            # - Playbook App with layout.json but no tc_actions
             for ij_data in self.ij.model.params_dict.values():
                 self._add_input_to_action_class(True, ij_data)
         else:
-            # process Apps WITH a layout.json file
+            # Process the following App types:
+            # - Playbook App with layout.json and tc_action input
             for tc_action in self._tc_actions:
                 if tc_action == 'Advanced Request':
                     # AdvancedRequestModel is included in tcex

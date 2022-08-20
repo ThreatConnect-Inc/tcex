@@ -136,7 +136,7 @@ class TagFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            name: The name of the tag.
+            name: The name of the tag (case sensitive).
         """
         self._tql.add_filter('name', operator, name, TqlType.STRING)
 
@@ -163,6 +163,6 @@ class TagFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            summary: The name of the tag.
+            summary: The name of the tag (case insensitive).
         """
         self._tql.add_filter('summary', operator, summary, TqlType.STRING)

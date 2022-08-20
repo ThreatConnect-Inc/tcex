@@ -151,6 +151,17 @@ class TaskFilter(FilterABC):
         """
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
+    def missing_artifact_count(self, operator: Enum, missing_artifact_count: int):
+        """Filter Missing Artifact Count based on **missingArtifactCount** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            missing_artifact_count: The number of required artifacts that are missing.
+        """
+        self._tql.add_filter(
+            'missingArtifactCount', operator, missing_artifact_count, TqlType.INTEGER
+        )
+
     def name(self, operator: Enum, name: str):
         """Filter Name based on **name** keyword.
 

@@ -6,7 +6,7 @@ import logging
 import math
 import re
 import time
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
 # third-party
 from requests import Session
@@ -455,7 +455,7 @@ class BatchSubmit:
         return {}
 
     def submit_data(
-        self, batch_id: int, content: dict, halt_on_error: Optional[bool] = True
+        self, batch_id: int, content: Union[dict, str], halt_on_error: Optional[bool] = True
     ) -> dict:
         """Submit Batch request to ThreatConnect API.
 
@@ -472,19 +472,13 @@ class BatchSubmit:
         if self.halt_on_batch_error is not None:
             halt_on_error = self.halt_on_batch_error
 
-        # store the length of the batch data to use for poll interval calculations
-        # self._batch_data_count = len(content.get('group')) + len(content.get('indicator'))
-        # self.log.info(
-        #     f'feature=batch, action=submit-data, batch-size={self._batch_data_count:,}'
-        # )
-
-        # if we don't add in this header, request module defaults to application/json
-        # when 'json' is set in the method call. And that causes issue it seems with TC/core.
-        # Even though the request module does convert the content:dict to a
-        # binary string of formatted json.
+        # TC Core requires the header to be application/octet-stream
         headers = {'Content-Type': 'application/octet-stream'}
         try:
-            r = self.session_tc.post(f'/v2/batch/{batch_id}', headers=headers, json=content)
+            if isinstance(content, dict):
+                content = json.dumps(content)
+
+            r = self.session_tc.post(f'/v2/batch/{batch_id}', headers=headers, data=content)
             if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
                 handle_error(
                     code=10525,
