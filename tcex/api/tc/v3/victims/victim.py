@@ -117,7 +117,7 @@ class Victim(ObjectABC):
         """Return the entity representation of the object."""
         type_ = self.type_
 
-        return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
+        return {'type': type_, 'id': self.model.id, 'value': self.model.name}
 
     @property
     def victim_assets(self) -> Iterator['VictimAsset']:

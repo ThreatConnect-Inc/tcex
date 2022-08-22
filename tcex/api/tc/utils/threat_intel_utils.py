@@ -218,7 +218,9 @@ class ThreatIntelUtils:
                 continue
 
             resolvable_variable_details = self.resolvable_variables[input_]
-            r = self.session_tc.get(resolvable_variable_details.get('url'))
+            r = self.session_tc.get(
+                resolvable_variable_details.get('url'), params={'resultLimit': 10_000}
+            )
 
             if not r.ok:
                 raise RuntimeError(f'Could not retrieve {input_} from ThreatConnect API.')
