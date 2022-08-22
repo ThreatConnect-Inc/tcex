@@ -330,7 +330,7 @@ class Group(ObjectABC):
         if not isinstance(data, VictimAssetModel):
             raise RuntimeError('Invalid type passed in to stage_associated_victim_asset')
         data._staged = True
-        self.model.assets.data.append(data)
+        self.model.associated_victim_assets.data.append(data)
 
     def stage_associated_indicator(self, data: Union[dict, 'ObjectABC', 'IndicatorModel']):
         """Stage indicator on the object."""
