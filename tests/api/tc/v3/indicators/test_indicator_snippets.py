@@ -264,6 +264,21 @@ class TestIndicatorSnippets(TestV3):
         # Add cleanup
         indicator.delete()
 
+    def test_indicator_file_actions(self):
+        """Test snippet"""
+        # indicator = self.v3_helper.create_indicator(type_='Host', value1='example-00.com')
+
+        # Begin Snippet
+        indicator = self.tcex.v3.indicator(id=1020567)
+        indicator.get(params={'fields': ['fileActions', 'fileOccurrences']})
+        # End Snippet
+
+        print(indicator.model.json(exclude_none=True, exclude_unset=True, indent=2))
+        print(indicator.model.file_occurrences.data[0].date)
+
+        # Add cleanup
+        # indicator.delete()
+
     def test_indicator_get_by_summary(self):
         """Test snippet"""
         indicator = self.v3_helper.create_indicator(type_='Host', value1='example-02.com')

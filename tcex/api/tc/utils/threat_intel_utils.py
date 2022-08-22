@@ -221,7 +221,7 @@ class ThreatIntelUtils:
             r = self.session_tc.get(resolvable_variable_details.get('url'))
 
             if not r.ok:
-                raise RuntimeError('Could not retrieve indicator types from ThreatConnect API.')
+                raise RuntimeError(f'Could not retrieve {input_} from ThreatConnect API.')
 
             json_ = r.json()
             # No TQL filter to filter out API users during REST call so have to do it manually here.

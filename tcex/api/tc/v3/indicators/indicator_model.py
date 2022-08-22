@@ -165,6 +165,20 @@ class IndicatorModel(
         read_only=True,
         title='falsePositives',
     )
+    file_actions: Optional['FileActionsModel'] = Field(
+        None,
+        description='The type of file action associated with this indicator.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='fileActions',
+    )
+    file_occurrences: Optional['FileOccurrencesModel'] = Field(
+        None,
+        description='A list of file occurrences associated with this indicator.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='fileOccurrences',
+    )
     host_name: Optional[str] = Field(
         None,
         applies_to=['Host'],
@@ -395,6 +409,18 @@ class IndicatorModel(
             return CasesModel()
         return v
 
+    @validator('file_actions', always=True)
+    def _validate_file_actions(cls, v):
+        if not v:
+            return FileActionsModel()
+        return v
+
+    @validator('file_occurrences', always=True)
+    def _validate_file_occurrences(cls, v):
+        if not v:
+            return FileOccurrencesModel()
+        return v
+
     @validator('associated_groups', always=True)
     def _validate_groups(cls, v):
         if not v:
@@ -431,6 +457,8 @@ from tcex.api.tc.v3.artifacts.artifact_model import ArtifactsModel
 from tcex.api.tc.v3.cases.case_model import CasesModel
 from tcex.api.tc.v3.groups.group_model import GroupsModel
 from tcex.api.tc.v3.indicator_attributes.indicator_attribute_model import IndicatorAttributesModel
+from tcex.api.tc.v3.indicators.file_actions_model import FileActionsModel
+from tcex.api.tc.v3.indicators.file_occurrences_model import FileOccurrencesModel
 from tcex.api.tc.v3.security_labels.security_label_model import SecurityLabelsModel
 from tcex.api.tc.v3.tags.tag_model import TagsModel
 

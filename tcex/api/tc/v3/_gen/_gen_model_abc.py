@@ -216,11 +216,11 @@ class GenerateModelABC(GenerateABC, ABC):
                 'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',
             },
-            'FileAction': {
+            'FileActions': {
                 'requirement': {
                     'from': 'first-party-forward-reference',
                     'import': (
-                        'from tcex.api.tc.v3.indicators.file_action_model import FileActionModel'
+                        'from tcex.api.tc.v3.indicators.file_actions_model import FileActionsModel'
                     ),
                 },
                 'type': f'Optional[\'{type_}Model\']',

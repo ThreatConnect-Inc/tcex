@@ -791,6 +791,35 @@ class InstallJsonModel(InstallJsonCommonModel, InstallJsonOrganizationModel):
         return self.params_dict.get(name) or NoneModel()
 
     @property
+    def is_job_app(self) -> bool:
+        """Return True if the current App is an Organization (job) App."""
+        return self.is_organization_app
+
+    @property
+    def is_organization_app(self) -> bool:
+        """Return True if the current App is an Organization (job) App."""
+        return self.runtime_level.lower() == 'organization'
+
+    @property
+    def is_playbook_app(self) -> bool:
+        """Return True if the current App is a Playbook App."""
+        return self.runtime_level.lower() == 'playbook'
+
+    @property
+    def is_playbook_trigger_app(self) -> bool:
+        """Return True if the current App is trigger Service App."""
+        return self.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']
+
+    @property
+    def is_service_app(self) -> bool:
+        """Return True if the current App is ANY type of Service App."""
+        return self.runtime_level.lower() in [
+            'apiservice',
+            'triggerservice',
+            'webhooktriggerservice',
+        ]
+
+    @property
     def optional_params(self) -> Dict[str, 'ParamsModel']:
         """Return params as name/data model."""
         return {p.name: p for p in self.params if p.required is False}

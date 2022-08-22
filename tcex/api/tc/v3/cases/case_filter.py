@@ -47,6 +47,15 @@ class CaseFilter(FilterABC):
         """
         self._tql.add_filter('attribute', operator, attribute, TqlType.STRING)
 
+    def cal_score(self, operator: Enum, cal_score: int):
+        """Filter CalScore based on **calScore** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            cal_score: Cal score of the case.
+        """
+        self._tql.add_filter('calScore', operator, cal_score, TqlType.INTEGER)
+
     def case_close_time(self, operator: Enum, case_close_time: str):
         """Filter Case Close Time based on **caseCloseTime** keyword.
 
@@ -260,6 +269,17 @@ class CaseFilter(FilterABC):
         """
         self._tql.add_filter('idAsString', operator, id_as_string, TqlType.STRING)
 
+    def missing_artifact_count(self, operator: Enum, missing_artifact_count: int):
+        """Filter Missing Artifact Count For Tasks based on **missingArtifactCount** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            missing_artifact_count: Missing Artifact Count for Case Tasks.
+        """
+        self._tql.add_filter(
+            'missingArtifactCount', operator, missing_artifact_count, TqlType.INTEGER
+        )
+
     def name(self, operator: Enum, name: str):
         """Filter Name based on **name** keyword.
 
@@ -340,6 +360,15 @@ class CaseFilter(FilterABC):
             target_type: The target type for this case (either User or Group).
         """
         self._tql.add_filter('targetType', operator, target_type, TqlType.STRING)
+
+    def threat_assess_score(self, operator: Enum, threat_assess_score: int):
+        """Filter ThreatAssessScore based on **threatAssessScore** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            threat_assess_score: ThreatAssess score of the case.
+        """
+        self._tql.add_filter('threatAssessScore', operator, threat_assess_score, TqlType.INTEGER)
 
     def type_name(self, operator: Enum, type_name: str):
         """Filter Name based on **typeName** keyword.
