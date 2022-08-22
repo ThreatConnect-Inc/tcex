@@ -2,15 +2,16 @@
 
 ### 3.0.4
 
--   APP-3582 - [CLI] Updated spectool to automatically sort release notes by version when creating readme.md
--   APP-3586 - [CLI] Updated spectool to ignore outputPrefix for non-playbook apps
--   APP-3587 - [CLI] Updated spectool README.md generation for outputs
--   APP-3610 - [CLI] Updated spectool for general improvements and fixes
--   APP-3750 - [Batch] Update batch_submit method to accept content as dict or string
--   APP-3751 - [API] Updated API module for new case filters (cal_score, missing_artifact_count, threat_assess_score)
--   APP-3752 - [API] Updated API module for file action and file occurrence support
--   APP-3753 - [API] Updated API module for new task filter (missing_artifact_count)
--   APP-3747 - [API] Added support for Group -> Victim Asset Associations
+- APP-3582 - [CLI] Updated spectool to automatically sort release notes by version when creating readme.md
+- APP-3586 - [CLI] Updated spectool to ignore outputPrefix for non-playbook apps
+- APP-3587 - [CLI] Updated spectool README.md generation for outputs
+- APP-3610 - [CLI] Updated spectool for general improvements and fixes
+- APP-3750 - [Batch] Update batch_submit method to accept content as dict or string
+- APP-3751 - [API] Updated API module for new case filters (cal_score, missing_artifact_count, threat_assess_score)
+- APP-3752 - [API] Updated API module for file action and file occurrence support
+- APP-3753 - [API] Updated API module for new task filter (missing_artifact_count)
+- APP-3748 - [Testing] Add result Limit on resolving magic variables
+- APP-3747 - [API] Added support for Group -> Victim Asset Associations
 
 ### 3.0.3
 
