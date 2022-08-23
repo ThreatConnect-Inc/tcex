@@ -406,7 +406,8 @@ class PlaybookRead:
             # data should be base64 encoded bytes string
 
             # decode the entire response, but not the items in the array?
-            data = data.decode()
+            if isinstance(data, bytes):
+                data = data.decode()
 
             # Array type is serialized before writing to redis, deserialize the data
             data = self._load_data(data)
@@ -458,8 +459,9 @@ class PlaybookRead:
         if data is not None:
             # data should be string
 
-            # decode the entire response, but not the items in the array?
-            data = data.decode()
+            # decode the entire response, but not the items in the array?z
+            if isinstance(data, bytes):
+                data = data.decode()
 
             # Array type is serialized before writing to redis, deserialize the data
             data = self._load_data(data)
@@ -519,7 +521,8 @@ class PlaybookRead:
             # data should be string
 
             # decode the entire response
-            data = data.decode()
+            if isinstance(data, bytes):
+                data = data.decode()
 
             # Array type is serialized before writing to redis, deserialize the data
             data = self._load_data(data)
@@ -578,7 +581,8 @@ class PlaybookRead:
             # data should be string
 
             # decode the entire response
-            data = data.decode()
+            if isinstance(data, bytes):
+                data = data.decode()
 
             # Array type is serialized before writing to redis, deserialize the data
             data = self._load_data(data)
