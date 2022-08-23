@@ -203,7 +203,7 @@ class GroupModel(
         conditional_required=['Document', 'Report', 'Signature'],
         description='The document or signature file name.',
         methods=['POST', 'PUT'],
-        max_length=100,
+        max_length=255,
         min_length=0,
         read_only=False,
         title='fileName',

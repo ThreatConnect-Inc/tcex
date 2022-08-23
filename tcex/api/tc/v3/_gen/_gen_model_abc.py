@@ -626,8 +626,10 @@ class GenerateModelABC(GenerateABC, ABC):
             field_applies_to = field_data.get('appliesTo')
             field_conditional_required = field_data.get('conditionalRequired')
             field_max_length = field_data.get('maxLength')
+            # Hack because the API is returning the wrong value for maxLength
+            if field_name == 'fileName' and self.type_ == 'groups':
+                field_max_length = 255
             field_min_length = field_data.get('minLength')
-            # field_max_size = field_data.get('maxSize')
             field_max_value = field_data.get('maxValue')
             field_min_value = field_data.get('minValue')
             field_methods = []
