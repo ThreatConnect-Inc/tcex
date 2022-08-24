@@ -237,11 +237,17 @@ class TcEx:
         if verify is None:
             verify = self.inputs.model_unresolved.tc_verify
 
-        auth = auth or TcAuth(
-            tc_api_access_id=self.inputs.model_unresolved.tc_api_access_id,
-            tc_api_secret_key=self.inputs.model_unresolved.tc_api_secret_key,
-            tc_token=self.token,
-        )
+        if self.ij.is_external_app is True:
+            auth = auth or TcAuth(
+                tc_api_access_id=self.inputs.model_unresolved.tc_api_access_id,
+                tc_api_secret_key=self.inputs.model_unresolved.tc_api_secret_key,
+            )
+        else:
+            auth = auth or TcAuth(
+                tc_api_access_id=self.inputs.model_unresolved.tc_api_access_id,
+                tc_api_secret_key=self.inputs.model_unresolved.tc_api_secret_key,
+                tc_token=self.token,
+            )
 
         return TcSession(
             auth=auth,
