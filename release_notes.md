@@ -12,6 +12,7 @@
 - APP-3753 - [API] Updated API module for new task filter (missing_artifact_count)
 - APP-3748 - [Inputs] Add result Limit on resolving magic variables
 - APP-3747 - [API] Added support for Group -> Victim Asset Associations
+- APP-3756 - [KeyValue] Add KeyValueMock, an implementation of KeyValueABC only for testing and running apps locally.
 
 ### 3.0.3
 
