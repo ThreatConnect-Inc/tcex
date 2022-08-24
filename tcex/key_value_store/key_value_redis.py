@@ -50,6 +50,14 @@ class KeyValueRedis(KeyValueABC):
         """
         return self.redis_client.hdel(context, key)
 
+    def get_all(self, context: 'Optional[str]') -> 'Any':
+        """Return the contents for a given context.
+
+        Args:
+            context: the context to return
+        """
+        return self.hgetall(context)
+
     def hgetall(self, context: str):
         """Read data from Redis for the current context.
 

@@ -1,12 +1,16 @@
 """TcEx Framework Key Value Mock Module"""
 # standard library
-import json
+from copy import deepcopy
 from threading import Lock
-from typing import Any
+from typing import TYPE_CHECKING
 
 # first-party
 # first party
 from tcex.key_value_store.key_value_abc import KeyValueABC
+
+if TYPE_CHECKING:
+    # standard library
+    from typing import Any, Optional
 
 
 class KeyValueMock(KeyValueABC):
@@ -23,7 +27,7 @@ class KeyValueMock(KeyValueABC):
         # properties
         self.kv_type = 'mock'
 
-    def create(self, context: str, key: str, value: Any) -> Any:
+    def create(self, context: str, key: str, value: 'Any') -> 'Any':
         """Create key/value pair.
 
         Args:
@@ -38,7 +42,7 @@ class KeyValueMock(KeyValueABC):
             self.data.setdefault(context, {})[key] = value
             return 1
 
-    def read(self, context: str, key: str) -> Any:
+    def read(self, context: str, key: str) -> 'Any':
         """Read data for the provided key.
 
         Args:
@@ -51,13 +55,13 @@ class KeyValueMock(KeyValueABC):
         with self.lock:
             return self.data.get(context, {}).get(key)
 
-    def context_to_string(self, context: str) -> str:
-        """Format and return the contents for a given context.
+    def get_all(self, context: 'Optional[str]') -> 'Any':
+        """Return the contents for a given context.
 
         Args:
             context: the context to return
         """
-        return (
-            f'Key-Value Store (context={context}):\n'
-            f'{json.dumps(self.data.get(context, {}), indent=2)}'
-        )
+        if context:
+            return deepcopy(self.data.get(context, []))
+
+        return deepcopy(self.data)
