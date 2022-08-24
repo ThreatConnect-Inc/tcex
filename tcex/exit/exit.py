@@ -91,7 +91,8 @@ class ExitService:
             self._aot_rpush(code.value)
 
         # exit token renewal thread
-        registry.token.shutdown = True
+        if not self.ij.is_external_app:
+            registry.token.shutdown = True
 
         # exit
         self._exit(code, msg)

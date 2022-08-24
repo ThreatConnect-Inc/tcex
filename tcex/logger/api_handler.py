@@ -12,7 +12,7 @@ class ApiHandler(logging.Handler):
         """Initialize Class properties.
 
         Args:
-            session (Request.Session): The preconfigured instance of Session for ThreatConnect API.
+            session (Request.Session): The pre-configured instance of Session for ThreatConnect API.
             flush_limit (int): The limit to flush batch logs to the API.
         """
         super().__init__()
