@@ -21,6 +21,11 @@ class CustomJSONEncoder(JSONEncoder):
 
     def default(self, o: Any) -> str:
         """Format object"""
+        if isinstance(o, BaseModel):
+            raise ValueError(
+                f'Object of type {type(o)} is not JSON serializable. '
+                'Please verify that the object has been converted to a dictionary.'
+            )
         if isinstance(o, (datetime.date, datetime.datetime)):
             return o.isoformat()
         return o
@@ -405,8 +410,9 @@ class V3ModelABC(BaseModel, ABC):
         if mode is not None:
             mode = mode.lower()
 
+        body = self.gen_body(method, mode)
         return json.dumps(
-            self.gen_body(method=method, mode=mode),
+            body,
             cls=CustomJSONEncoder,
             indent=indent,
             sort_keys=sort_keys,

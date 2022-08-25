@@ -217,22 +217,11 @@ class GenerateModelABC(GenerateABC, ABC):
                 'type': f'Optional[\'{type_}Model\']',
             },
             'FileActions': {
-                'requirement': {
-                    'from': 'first-party-forward-reference',
-                    'import': (
-                        'from tcex.api.tc.v3.indicators.file_actions_model import FileActionsModel'
-                    ),
-                },
+                'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',
             },
             'FileOccurrences': {
-                'requirement': {
-                    'from': 'first-party-forward-reference',
-                    'import': (
-                        'from tcex.api.tc.v3.indicators.file_occurrences_model '
-                        'import FileOccurrencesModel'
-                    ),
-                },
+                'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',
             },
             'GroupAttributes': {

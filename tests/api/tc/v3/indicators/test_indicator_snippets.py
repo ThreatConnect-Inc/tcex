@@ -264,20 +264,91 @@ class TestIndicatorSnippets(TestV3):
         # Add cleanup
         indicator.delete()
 
-    def test_indicator_file_actions(self):
+    def test_get_indicator_file_actions(self):
         """Test snippet"""
-        # indicator = self.v3_helper.create_indicator(type_='Host', value1='example-00.com')
+        md5 = '491426B9C10D17708FFAC9ACBE761D26'
+        host_name = 'example-00.com'
+        indicator = self.v3_helper.create_indicator(type_='File', value1=md5)
+        host = self.v3_helper.create_indicator(type_='Host', value1=host_name)
+        relationship_type = 'File DNS Query'
+        indicator.stage_file_action({'relationship': relationship_type, 'indicator': host.model})
+        indicator.update()
 
         # Begin Snippet
-        indicator = self.tcex.v3.indicator(id=1020567)
-        indicator.get(params={'fields': ['fileActions', 'fileOccurrences']})
+        indicator = self.tcex.v3.indicator(id=indicator.model.id)
+        indicator.get(params={'fields': ['fileActions']})
         # End Snippet
-
-        print(indicator.model.json(exclude_none=True, exclude_unset=True, indent=2))
-        print(indicator.model.file_occurrences.data[0].date)
+        assert len(indicator.model.file_actions.data) == 1
+        file_action = indicator.model.file_actions.data[0]
+        assert file_action.relationship == relationship_type
+        assert file_action.indicator.id == host.model.id
 
         # Add cleanup
         # indicator.delete()
+
+    def test_add_indicator_file_actions(self):
+        """Test snippet"""
+        md5 = '491426B9C10D17708FFAC9ACBE761D26'
+        host_name = 'example-00.com'
+        indicator = self.v3_helper.create_indicator(type_='File', value1=md5)
+        host = self.v3_helper.create_indicator(type_='Host', value1=host_name)
+
+        # Begin Snippet
+        relationship_type = 'File DNS Query'
+        indicator.stage_file_action({'relationship': relationship_type, 'indicator': host.model})
+        indicator.update()
+        # End Snippet
+
+        assert len(indicator.model.file_actions.data) == 1
+        file_action = indicator.model.file_actions.data[0]
+        assert file_action.relationship == relationship_type
+        assert file_action.indicator.id == host.model.id
+
+    def test_get_indicator_file_occurrence(self):
+        """Test snippet"""
+        md5 = '491426B9C10D17708FFAC9ACBE761D38'
+        indicator = self.v3_helper.create_indicator(type_='File', value1=md5)
+        indicator.stage_file_occurrence(
+            {
+                'file_name': 'Example.csv',
+                'path': '/temp/path/to/file.csv',
+                'date': '2022-08-25T17:52:39Z',
+            }
+        )
+        indicator.update()
+
+        # Begin Snippet
+        indicator = self.tcex.v3.indicator(id=indicator.model.id)
+        indicator.get(params={'fields': ['fileOccurrences']})
+        # End Snippet
+
+        assert len(indicator.model.file_occurrences.data) == 1
+        file_occurrences = indicator.model.file_occurrences.data[0]
+        assert file_occurrences.path == '/temp/path/to/file.csv'
+        assert file_occurrences.file_name == 'Example.csv'
+
+    def test_add_indicator_file_occurrence(self):
+        """Test snippet"""
+        md5 = '491426B9C10D17708FFAC9ACBE761D27'
+        indicator = self.v3_helper.create_indicator(type_='File', value1=md5)
+
+        # Begin Snippet
+        indicator.stage_file_occurrence(
+            {
+                'file_name': 'Example.csv',
+                'path': '/temp/path/to/file.csv',
+                'date': '2022-08-25T17:52:39Z',
+            }
+        )
+        indicator.update()
+
+        # NOTE:
+
+        # Submitting the Update does not automatically populate the file_occurrences field like it
+        # does for other fields so an additional call is made to get the field populated
+        # if that data is needed.
+
+        # End Snippet
 
     def test_indicator_get_by_summary(self):
         """Test snippet"""
