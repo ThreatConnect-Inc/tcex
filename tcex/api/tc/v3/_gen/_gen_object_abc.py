@@ -939,7 +939,7 @@ class GenerateObjectABC(GenerateABC, ABC):
         if 'cases' in add_properties:
             _code += self._gen_code_object_stage_type_method('cases')
 
-        # generate stage_file_occurrences method
+        # generate stage_file_actions method
         if 'fileActions' in add_properties:
             _code += self._gen_code_object_stage_type_method('file_actions')
 
