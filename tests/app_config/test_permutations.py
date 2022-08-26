@@ -82,8 +82,8 @@ class TestPermutation:
             'tc_action': 'Action 1',
             'username': None,
             'password': None,
-            'boolean_input_required': True,
-            'choice_required': 'Option 1',
+            'boolean_input_required': None,  # this is none because it's not in a display clause
+            'choice_required': None,  # this is none because it's not in a display clause
             'key_value_list_required': None,
             'multi_choice_required': None,
             'string_required': None,

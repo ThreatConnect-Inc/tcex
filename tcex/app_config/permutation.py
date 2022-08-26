@@ -491,10 +491,12 @@ class Permutation:
 
     def write_permutations_file(self):
         """Print all valid permutations."""
-        permutations = []
-        for index, p in enumerate(self.input_permutations):
-            permutations.append({'index': index, 'args': {'name': p.name, 'value': p.value}})
+        _permutations = []
+        for index, permutations in enumerate(self.input_permutations):
+            _permutations.append(
+                {'index': index, 'args': [{'name': p.name, 'value': p.value} for p in permutations]}
+            )
 
         with self.fqfn.open(mode='w') as fh:
-            json.dump(permutations, fh, indent=2, sort_keys=True)
+            json.dump(_permutations, fh, indent=2, sort_keys=True)
         print('All permutations written to the "permutations.json" file.')
