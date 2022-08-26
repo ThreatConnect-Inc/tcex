@@ -216,23 +216,12 @@ class GenerateModelABC(GenerateABC, ABC):
                 'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',
             },
-            'FileAction': {
-                'requirement': {
-                    'from': 'first-party-forward-reference',
-                    'import': (
-                        'from tcex.api.tc.v3.indicators.file_action_model import FileActionModel'
-                    ),
-                },
+            'FileActions': {
+                'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',
             },
             'FileOccurrences': {
-                'requirement': {
-                    'from': 'first-party-forward-reference',
-                    'import': (
-                        'from tcex.api.tc.v3.indicators.file_occurrences_model '
-                        'import FileOccurrencesModel'
-                    ),
-                },
+                'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',
             },
             'GroupAttributes': {
@@ -626,8 +615,10 @@ class GenerateModelABC(GenerateABC, ABC):
             field_applies_to = field_data.get('appliesTo')
             field_conditional_required = field_data.get('conditionalRequired')
             field_max_length = field_data.get('maxLength')
+            # APP-3754 - The API is returning the wrong value for maxLength
+            if field_name == 'fileName' and self.type_ == 'groups':
+                field_max_length = 255
             field_min_length = field_data.get('minLength')
-            # field_max_size = field_data.get('maxSize')
             field_max_value = field_data.get('maxValue')
             field_min_value = field_data.get('minValue')
             field_methods = []

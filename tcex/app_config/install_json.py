@@ -61,7 +61,6 @@ class InstallJson:
     @cached_property
     def contents(self) -> dict:
         """Return install.json file contents."""
-        contents = {'runtimeLevel': 'external'}
         if self.fqfn.is_file():
             try:
                 with self.fqfn.open() as fh:
@@ -71,7 +70,16 @@ class InstallJson:
                     f'feature=install-json, exception=failed-reading-file, filename={self.fqfn}'
                 )
         else:  # pragma: no cover
-            self.log.error(f'feature=install-json, exception=file-not-found, filename={self.fqfn}')
+            contents = {
+                'displayName': 'External App',
+                'features': [],
+                'languageVersion': '3.9',
+                'listDelimiter': '|',
+                'programLanguage': 'python',
+                'programMain': 'run.py',
+                'programVersion': '0.0.0',
+                'runtimeLevel': 'external',
+            }
         return contents
 
     def create_output_variables(self, output_variables: dict, job_id: Optional[int] = 9876) -> list:
@@ -151,6 +159,11 @@ class InstallJson:
     def has_feature(self, feature: str) -> bool:
         """Return True if App has the provided feature."""
         return feature.lower() in [f.lower() for f in self.model.features]
+
+    @cached_property
+    def is_external_app(self) -> bool:
+        """Return True if App does not have a install.json file."""
+        return not self.fqfn.is_file()
 
     # @cached_property
     @property

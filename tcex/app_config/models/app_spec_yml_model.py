@@ -1,6 +1,7 @@
 """App Spec Model"""
 # pylint: disable=no-self-argument,no-self-use
 # standard library
+import re
 from copy import deepcopy
 from typing import List, Optional
 
@@ -210,7 +211,7 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         None,
         description='The playbook section of the install.json.',
     )
-    internalNotes: Optional[List[str]] = Field(
+    internal_notes: Optional[List[str]] = Field(
         None,
         description='Internal notes for the App.',
     )
@@ -225,6 +226,9 @@ class AppSpecYmlModel(InstallJsonCommonModel):
     sections: List[SectionsModel] = Field(
         ...,
         description='Layout sections for an App including params.',
+    )
+    service_details: Optional[str] = Field(
+        None, description='Optional service details for Service Apps.'
     )
 
     @root_validator
@@ -377,7 +381,18 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         """Return readme_md.releaseNotes."""
         _release_notes = ['## Release Notes']
         _release_notes.append('')
-        for release_note in self.release_notes:
+
+        # try to sort release notes by version.  If we encounter any issues, just use release_notes
+        try:
+            sorted_releases = sorted(
+                (r for r in self.release_notes),
+                key=lambda r: Version(re.match(r'^\d+.\d+.\d+', r.version)[0]),
+                reverse=True,
+            )
+        except Exception:
+            sorted_releases = self.release_notes
+
+        for release_note in sorted_releases:
             _release_notes.append(f'### {release_note.version}')
             _release_notes.append('')
             _release_notes.extend([f'-   {rn}' for rn in release_note.notes])
@@ -387,7 +402,7 @@ class AppSpecYmlModel(InstallJsonCommonModel):
     @property
     def requires_layout(self):
         """Return True if App requires a layout.json file."""
-        if self.runtime_level.lower() == 'organization':
+        if self.runtime_level.lower() in ['apiservice', 'organization']:
             return False
 
         for section in self.sections:

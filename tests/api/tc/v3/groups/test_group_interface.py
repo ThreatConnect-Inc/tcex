@@ -175,6 +175,49 @@ class TestGroups(TestV3):
             found_groups += 1
         assert found_groups == 0
 
+    def test_victim_asset_associations(self):
+        """Test snippet"""
+
+        self.v3_helper.tql_clear(
+            ['MyAdversary-01', 'StagedGroup-00', 'StagedGroup-02'], self.v3.groups()
+        )
+        self.v3_helper.tql_clear(['MyVictim-01'], self.v3.victims())
+
+        # [Pre-Requisite] - Create Groups
+        staged_group = self.v3_helper.create_group(name='StagedGroup-00', xid='staged_group_00-xid')
+
+        # [Pre-Requisite] - Create Groups
+        staged_victim = self.v3_helper.create_victim(name='MyVictim-01')
+
+        assert staged_victim.as_entity.get('id') is not None
+
+        # Add attribute
+        asset = self.tcex.v3.victim_asset(
+            type='EmailAddress', address='malware@example.com', address_type='Trojan'
+        )
+        staged_victim.stage_victim_asset(asset)
+
+        staged_victim.update(params={'owner': 'TCI'})
+
+        assert asset.as_entity.get('type') == 'Victim Asset : EmailAddress'
+        assert asset.as_entity.get('value') == 'Trojan : malware@example.com'
+
+        asset = staged_victim.model.assets.data[0]
+
+        staged_group.stage_associated_victim_asset(asset)
+        staged_group.update(params={'owner': 'TCI'})
+
+        found_victim_assets = 0
+        staged_victim_asset_found = False
+        for victim_asset in staged_group.associated_victim_assets:
+            found_victim_assets += 1
+            if victim_asset.model.id == asset.id:
+                staged_victim_asset_found = True
+        assert (
+            found_victim_assets == 1
+        ), f'Invalid amount of Victim Assets ({found_victim_assets}) retrieved'
+        assert staged_victim_asset_found, 'Newly staged victim asset not retrieved'
+
     def test_group_create_and_retrieve_nested_types(self):
         """Test Object Creation
 

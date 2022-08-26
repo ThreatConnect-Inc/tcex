@@ -104,6 +104,38 @@ class VictimAsset(ObjectABC):
             raise RuntimeError(f'Invalid data type: {type(data)} provided.')
 
     @property
+    def as_entity(self) -> dict:
+        """Return the entity representation of the object."""
+        value = []
+
+        if self.model.type.lower() == 'phone':
+            if self.model.phone:
+                value.append(self.model.phone)
+        elif self.model.type.lower() == 'socialnetwork':
+            if self.model.social_network:
+                value.append(self.model.social_network)
+            if self.model.account_name:
+                value.append(self.model.account_name)
+        elif self.model.type.lower() == 'networkaccount':
+            if self.model.network_type:
+                value.append(self.model.network_type)
+            if self.model.account_name:
+                value.append(self.model.account_name)
+        elif self.model.type.lower() == 'emailaddress':
+            if self.model.address_type:
+                value.append(self.model.address_type)
+            if self.model.address:
+                value.append(self.model.address)
+        elif self.model.type.lower() == 'website':
+            if self.model.website:
+                value.append(self.model.website)
+
+        value = ' : '.join(value) if value else ''
+        type_ = f'Victim Asset : {self.model.type}'
+
+        return {'type': type_, 'id': self.model.id, 'value': value}
+
+    @property
     def associated_groups(self) -> Iterator['Group']:
         """Yield Group from Groups."""
         # first-party

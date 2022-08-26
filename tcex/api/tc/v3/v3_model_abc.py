@@ -21,6 +21,11 @@ class CustomJSONEncoder(JSONEncoder):
 
     def default(self, o: Any) -> str:
         """Format object"""
+        if isinstance(o, BaseModel):
+            raise ValueError(
+                f'Object of type {type(o)} is not JSON serializable. '
+                'Please verify that the object has been converted to a dictionary.'
+            )
         if isinstance(o, (datetime.date, datetime.datetime)):
             return o.isoformat()
         return o
@@ -81,8 +86,8 @@ class V3ModelABC(BaseModel, ABC):
             return False
 
         # MODE DELETE RULE: The "id" should be the only field included when delete mode
-        #     is enabled.
-        if mode == 'delete' and nested is True and field not in ['id', 'name']:
+        #     is enabled. "relationship" is required for FileActions upon delete mode as well.
+        if mode == 'delete' and nested is True and field not in ['id', 'name', 'relationship']:
             return False
 
         # ID RULE: The "id" should not be included for ANY HTTP method on parent object,
@@ -405,8 +410,9 @@ class V3ModelABC(BaseModel, ABC):
         if mode is not None:
             mode = mode.lower()
 
+        body = self.gen_body(method, mode)
         return json.dumps(
-            self.gen_body(method=method, mode=mode),
+            body,
             cls=CustomJSONEncoder,
             indent=indent,
             sort_keys=sort_keys,

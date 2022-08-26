@@ -20,6 +20,7 @@ deepdiff
 dendrol
 deps
 deque
+editchoice
 encrypter
 envvar
 escalatees
@@ -47,6 +48,8 @@ iregx
 itertools
 jmespath
 kvstore
+kwargs
+levelname
 loadfile
 loadgroup
 loadscope
@@ -103,6 +106,7 @@ tcvp
 tcvw
 timedelta
 tinydb
+traceback
 typer
 tzlocal
 unconfigure

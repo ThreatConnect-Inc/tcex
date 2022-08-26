@@ -8,6 +8,8 @@ from typing import TYPE_CHECKING, Iterator, Optional, Union
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.artifacts.artifact_model import ArtifactModel
 from tcex.api.tc.v3.cases.case_model import CaseModel
+from tcex.api.tc.v3.file_actions.file_action_model import FileActionModel
+from tcex.api.tc.v3.file_occurrences.file_occurrence_model import FileOccurrenceModel
 from tcex.api.tc.v3.groups.group_model import GroupModel
 from tcex.api.tc.v3.indicator_attributes.indicator_attribute_model import IndicatorAttributeModel
 from tcex.api.tc.v3.indicators.indicator_filter import IndicatorFilter
@@ -107,6 +109,9 @@ class Indicator(ObjectABC):
             Indicator.
         confidence (int, kwargs): The indicator threat confidence.
         dns_active (bool, kwargs): Is dns active for the indicator?
+        file_actions (FileActions, kwargs): The type of file action associated with this indicator.
+        file_occurrences (FileOccurrences, kwargs): A list of file occurrences associated with this
+            indicator.
         host_name (str, kwargs): The host name of the indicator (Host specific summary field).
         ip (str, kwargs): The ip address associated with this indicator (Address specific summary
             field).
@@ -308,6 +313,31 @@ class Indicator(ObjectABC):
             raise RuntimeError('Invalid type passed in to stage_attribute')
         data._staged = True
         self.model.attributes.data.append(data)
+
+    def stage_file_action(self, data: Union[dict, 'ObjectABC', 'FileActionModel']):
+        """Stage file_action on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = FileActionModel(**data)
+
+        if not isinstance(data, FileActionModel):
+            raise RuntimeError('Invalid type passed in to stage_file_action')
+        data._staged = True
+        data.indicator._staged = True
+        self.model.file_actions.data.append(data)
+
+    def stage_file_occurrence(self, data: Union[dict, 'ObjectABC', 'FileOccurrenceModel']):
+        """Stage file_occurrence on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = FileOccurrenceModel(**data)
+
+        if not isinstance(data, FileOccurrenceModel):
+            raise RuntimeError('Invalid type passed in to stage_file_occurrence')
+        data._staged = True
+        self.model.file_occurrences.data.append(data)
 
     def stage_security_label(self, data: Union[dict, 'ObjectABC', 'SecurityLabelModel']):
         """Stage security_label on the object."""

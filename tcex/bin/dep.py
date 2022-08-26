@@ -46,23 +46,17 @@ class Dep(BinABC):
         self.proxy_pass = proxy_pass
 
         # properties
+        self.env = self._env
         self.latest_version = None
         self.lib_directory = (
             f'lib_{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}'
         )
         self.proxy_enabled = False
-        ci_token = os.getenv('CI_JOB_TOKEN')
-        self.proxy_env = {'CI_JOB_TOKEN': ci_token} if ci_token else {}
         self.requirements_fqfn_branch = None
         self.static_lib_dir = 'lib_latest'
 
         # update tcex.json
         self.tj.update.multiple()
-
-    @property
-    def has_requirements_lock(self):
-        """Return True if requirements.lock exists."""
-        return Path('requirements.lock').exists()
 
     def _build_command(self, python_executable: Path, lib_dir: Path) -> List[str]:
         """Build the pip command for installing dependencies.
@@ -116,6 +110,18 @@ class Dep(BinABC):
                 os.rmdir(self.static_lib_dir)
             os.symlink(f'lib_{self.latest_version}', self.static_lib_dir)
 
+    @property
+    def _env(self):
+        """Return the environment variables."""
+        _env = os.environ.copy()
+
+        # add ci env
+        ci_token = os.getenv('CI_JOB_TOKEN')
+        if ci_token:
+            _env.update({'CI_JOB_TOKEN': ci_token})
+
+        return _env
+
     @staticmethod
     def _remove_previous(fqpn: Path):
         """Remove previous lib directory recursively."""
@@ -140,7 +146,7 @@ class Dep(BinABC):
 
             # update proxy properties
             self.proxy_enabled = True
-            self.proxy_env.update(
+            self.env.update(
                 {
                     'HTTP_PROXY': f'http://{proxy_url}',
                     'HTTPS_PROXY': f'http://{proxy_url}',
@@ -187,6 +193,11 @@ class Dep(BinABC):
         # display branch setting
         self.print_setting('Using Branch', self.branch)
 
+    @property
+    def has_requirements_lock(self):
+        """Return True if requirements.lock exists."""
+        return Path('requirements.lock').exists()
+
     def install_deps(self):
         """Install Required Libraries using pip."""
         # check for requirements.txt
@@ -232,7 +243,7 @@ class Dep(BinABC):
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                env=self.proxy_env,
+                env=self.env,
             )
             _, err = p.communicate()  # pylint: disable=unused-variable
 

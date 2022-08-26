@@ -41,6 +41,7 @@ pytest \
   --cov=. --cov-report=term-missing --cov-report=html:tests/reports/cov-report \
   --durations=25 \
   --html=tests/reports/tcex-report.html --self-contained-html \
+  --log-file=pytest.log \
   tests || pytest tests --last-failed --last-failed-no-failures none
 ```
 

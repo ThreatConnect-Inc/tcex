@@ -327,11 +327,19 @@ class GenerateObjectABC(GenerateABC, ABC):
 
             return {'type': 'Artifact', 'id': self.model.id, 'value': self.model.summary}
         """
-        name_entities = ['artifact_types', 'cases', 'tags', 'tasks', 'workflow_templates', 'groups']
+        name_entities = [
+            'artifact_types',
+            'cases',
+            'tags',
+            'tasks',
+            'workflow_templates',
+            'groups',
+            'victims',
+        ]
         # check if groups or indicators and if so use the self.model.type else use self.type_
-        value_type = 'summary'
+        value = 'self.model.summary'
         if self.type_.lower() in name_entities:
-            value_type = 'name'
+            value = 'self.model.name'
 
         as_entity_property_method = [
             f'''{self.i1}@property''',
@@ -340,6 +348,39 @@ class GenerateObjectABC(GenerateABC, ABC):
         ]
         if self.type_.lower() in ['groups', 'indicators']:
             as_entity_property_method.append(f'''{self.i2}type_ = self.model.type''')
+        elif self.type_.lower() in ['victim_assets']:
+            value = 'value'
+            as_entity_property_method.extend(
+                [
+                    f'''{self.i2}value = []''',
+                    '',
+                    f'''{self.i2}if self.model.type.lower() == 'phone':''',
+                    f'''{self.i3}if self.model.phone:''',
+                    f'''{self.i4}value.append(self.model.phone)''',
+                    f'''{self.i2}elif self.model.type.lower() == 'socialnetwork':''',
+                    f'''{self.i3}if self.model.social_network:''',
+                    f'''{self.i4}value.append(self.model.social_network)''',
+                    f'''{self.i3}if self.model.account_name:''',
+                    f'''{self.i4}value.append(self.model.account_name)''',
+                    f'''{self.i2}elif self.model.type.lower() == 'networkaccount':''',
+                    f'''{self.i3}if self.model.network_type:''',
+                    f'''{self.i4}value.append(self.model.network_type)''',
+                    f'''{self.i3}if self.model.account_name:''',
+                    f'''{self.i4}value.append(self.model.account_name)''',
+                    f'''{self.i2}elif self.model.type.lower() == 'emailaddress':''',
+                    f'''{self.i3}if self.model.address_type:''',
+                    f'''{self.i4}value.append(self.model.address_type)''',
+                    f'''{self.i3}if self.model.address:''',
+                    f'''{self.i4}value.append(self.model.address)''',
+                    f'''{self.i2}elif self.model.type.lower() == 'website':''',
+                    f'''{self.i3}if self.model.website:''',
+                    f'''{self.i4}value.append(self.model.website)''',
+                    '',
+                    '',
+                    f'''{self.i2}value = ' : '.join(value) if value else \'\'''',
+                    f'''{self.i2}type_ = f'Victim Asset : {{self.model.type}}\'''',
+                ]
+            )
         else:
             as_entity_property_method.append(f'''{self.i2}type_ = self.type_''')
         as_entity_property_method.extend(
@@ -347,7 +388,7 @@ class GenerateObjectABC(GenerateABC, ABC):
                 '',
                 (
                     f'''{self.i2}return {{'type': type_, 'id': '''
-                    f'''self.model.id, 'value': self.model.{value_type}}}'''
+                    f'''self.model.id, 'value': {value}}}'''
                 ),
                 '',
                 '',
@@ -375,7 +416,7 @@ class GenerateObjectABC(GenerateABC, ABC):
 
         # Unlike all of the other objects, on the victims model, it references 'assets' not the
         # model name 'VictimAssets'
-        if type_.lower() == 'victim_assets':
+        if type_.lower() == 'victim_assets' and self.type_.lower() == 'victims':
             model_reference = self.utils.camel_string('assets')
         elif type_.lower() == 'users':
             model_type = self.utils.camel_string('user_accesses')
@@ -388,30 +429,39 @@ class GenerateObjectABC(GenerateABC, ABC):
             f'''from {model_import_data.get('model_module')} '''
             f'''import {model_import_data.get('model_class')}'''
         )
-        return '\n'.join(
+        stage_method = [
+            (
+                f'''{self.i1}def stage_{model_type.singular()}(self, '''
+                f'''data: Union[dict, 'ObjectABC', '{model_import_data.get('model_class')}'''
+                f'''']):'''
+            ),
+            f'''{self.i2}"""Stage {type_.singular()} on the object."""''',
+            f'''{self.i2}if isinstance(data, ObjectABC):''',
+            f'''{self.i3}data = data.model''',
+            f'''{self.i2}elif isinstance(data, dict):''',
+            f'''{self.i3}data = {model_import_data.get('model_class')}(**data)''',
+            '',
+            f'''{self.i2}if not isinstance(data, {model_import_data.get('model_class')}):''',
+            (
+                f'''{self.i3}raise RuntimeError('Invalid type '''
+                f'''passed in to stage_{model_type.singular()}')'''
+            ),
+            f'''{self.i2}data._staged = True''',
+        ]
+        if type_.lower() == 'file_actions' and self.type_.lower() == 'indicators':
+            # The `indicator` field in the FileActionModel must be staged to be
+            # submitted through the API
+            stage_method.append(f'''{self.i2}data.indicator._staged = True''')
+
+        stage_method.extend(
             [
-                (
-                    f'''{self.i1}def stage_{model_type.singular()}(self, '''
-                    f'''data: Union[dict, 'ObjectABC', '{model_import_data.get('model_class')}'''
-                    f'''']):'''
-                ),
-                f'''{self.i2}"""Stage {type_.singular()} on the object."""''',
-                f'''{self.i2}if isinstance(data, ObjectABC):''',
-                f'''{self.i3}data = data.model''',
-                f'''{self.i2}elif isinstance(data, dict):''',
-                f'''{self.i3}data = {model_import_data.get('model_class')}(**data)''',
-                '',
-                f'''{self.i2}if not isinstance(data, {model_import_data.get('model_class')}):''',
-                (
-                    f'''{self.i3}raise RuntimeError('Invalid type '''
-                    f'''passed in to stage_{model_type.singular()}')'''
-                ),
-                f'''{self.i2}data._staged = True''',
                 f'''{self.i2}self.model.{model_reference}.data.append(data)''',
                 '',
                 '',
             ]
         )
+
+        return '\n'.join(stage_method)
 
     def _gen_code_object_remove_method(self) -> str:
         """Return the method code."""
@@ -750,19 +800,18 @@ class GenerateObjectABC(GenerateABC, ABC):
             'system_roles',
             'user_groups',
             'users',
-            'victim_assets',
         ]:
             # generate as_entity property method
             _code += self._gen_code_object_as_entity_property_method()
 
-        # skip object that don't require as_entity method
+        # skip object that don't require remove method
         if self.type_ in [
             'groups',
             'indicators',
             'security_labels',
             'tags',
         ]:
-            # generate as_entity property method
+            # generate remove property method
             _code += self._gen_code_object_remove_method()
 
         # generate group specific methods
@@ -886,6 +935,14 @@ class GenerateObjectABC(GenerateABC, ABC):
         # generate stage_case method
         if 'cases' in add_properties:
             _code += self._gen_code_object_stage_type_method('cases')
+
+        # generate stage_file_actions method
+        if 'fileActions' in add_properties:
+            _code += self._gen_code_object_stage_type_method('file_actions')
+
+        # generate stage_file_occurrences method
+        if 'fileOccurrences' in add_properties:
+            _code += self._gen_code_object_stage_type_method('file_occurrences')
 
         # generate stage_note method
         if 'notes' in add_properties:
