@@ -153,6 +153,24 @@ class GenerateABC(ABC):
                         'updatable': False,
                     }
 
+                if self.type_ in ['group_attributes', 'indicator_attributes']:
+                    # TODO: workaround for core issue: missing securityLabel
+                    if 'securityLabels' not in _properties:
+                        _properties['securityLabels'] = {
+                            'data': {
+                                'description': (
+                                    'A list of Security Labels corresponding to the Intel item '
+                                    '(NOTE: Setting this parameter will replace any existing '
+                                    'tag(s) with the one(s) specified)'
+                                ),
+                                'maxSize': 1000,
+                                'required': False,
+                                'type': 'SecurityLabel',
+                            }
+                        }
+                    else:
+                        print('Core has updated issue, please remove this code.')
+
         except (ConnectionError, ProxyError) as ex:
             typer.secho(f'Failed getting types properties ({ex}).', fg=typer.colors.RED)
             typer.Exit(1)

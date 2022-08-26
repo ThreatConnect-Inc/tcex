@@ -1,6 +1,6 @@
 """IndicatorAttribute / IndicatorAttributes Object"""
 # standard library
-from typing import Union
+from typing import TYPE_CHECKING, Iterator, Union
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -11,6 +11,11 @@ from tcex.api.tc.v3.indicator_attributes.indicator_attribute_model import (
 )
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
+from tcex.api.tc.v3.security_labels.security_label_model import SecurityLabelModel
+
+if TYPE_CHECKING:  # pragma: no cover
+    # first-party
+    from tcex.api.tc.v3.security_labels.security_label import SecurityLabel
 
 
 class IndicatorAttributes(ObjectCollectionABC):
@@ -59,6 +64,9 @@ class IndicatorAttribute(ObjectABC):
         default (bool, kwargs): A flag indicating that this is the default attribute of its type
             within the object. Only applies to certain attribute and data types.
         indicator_id (int, kwargs): Indicator associated with attribute.
+        security_labels (SecurityLabels, kwargs): A list of Security Labels corresponding to the
+            Intel item (NOTE: Setting this parameter will replace any existing tag(s) with
+            the one(s) specified).
         source (str, kwargs): The attribute source.
         type (str, kwargs): The attribute type.
         value (str, kwargs): Attribute value.
@@ -95,3 +103,23 @@ class IndicatorAttribute(ObjectABC):
             self._model = type(self.model)(**data)
         else:
             raise RuntimeError(f'Invalid data type: {type(data)} provided.')
+
+    @property
+    def security_labels(self) -> Iterator['SecurityLabel']:
+        """Yield Security_Label from Security_Labels."""
+        # first-party
+        from tcex.api.tc.v3.security_labels.security_label import SecurityLabels
+
+        yield from self._iterate_over_sublist(SecurityLabels)
+
+    def stage_security_label(self, data: Union[dict, 'ObjectABC', 'SecurityLabelModel']):
+        """Stage security_label on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model
+        elif isinstance(data, dict):
+            data = SecurityLabelModel(**data)
+
+        if not isinstance(data, SecurityLabelModel):
+            raise RuntimeError('Invalid type passed in to stage_security_label')
+        data._staged = True
+        self.model.security_labels.data.append(data)
