@@ -414,15 +414,10 @@ class GenerateObjectABC(GenerateABC, ABC):
         model_type = self.utils.camel_string(model_type or type_)
         model_reference = model_type
 
-        stage_indicator = False
         # Unlike all of the other objects, on the victims model, it references 'assets' not the
         # model name 'VictimAssets'
         if type_.lower() == 'victim_assets' and self.type_.lower() == 'victims':
             model_reference = self.utils.camel_string('assets')
-        elif type_.lower() == 'file_actions' and self.type_.lower() == 'indicators':
-            # The `indicator` field in the FileActionModel must be staged to be
-            # submitted through the API
-            stage_indicator = True
         elif type_.lower() == 'users':
             model_type = self.utils.camel_string('user_accesses')
             model_reference = 'user_access'
@@ -453,7 +448,9 @@ class GenerateObjectABC(GenerateABC, ABC):
             ),
             f'''{self.i2}data._staged = True''',
         ]
-        if stage_indicator is True:
+        if type_.lower() == 'file_actions' and self.type_.lower() == 'indicators':
+            # The `indicator` field in the FileActionModel must be staged to be
+            # submitted through the API
             stage_method.append(f'''{self.i2}data.indicator._staged = True''')
 
         stage_method.extend(

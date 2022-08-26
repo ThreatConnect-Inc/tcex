@@ -19,13 +19,21 @@ class FileOccurrencesModel(
 ):
     """File Occurrences Data Model"""
 
-    _mode_support = PrivateAttr(False)
+    _mode_support = PrivateAttr(True)
 
     count: Optional[int] = Field(None, description='The number of occurrences.')
+
     data: Optional[List['FileOccurrenceModel']] = Field(
         [],
         methods=['POST', 'PUT'],
         title='data',
+    )
+
+    mode: str = Field(
+        'append',
+        description='The PUT mode for nested objects (append, delete, replace). Default: append',
+        methods=['POST', 'PUT'],
+        title='append',
     )
 
 

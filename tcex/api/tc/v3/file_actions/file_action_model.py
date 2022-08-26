@@ -19,7 +19,7 @@ class FileActionsModel(
 ):
     """File Actions Model"""
 
-    _mode_support = PrivateAttr(False)
+    _mode_support = PrivateAttr(True)
 
     count: Optional[int] = Field(None, description='The number of file actions.')
 
@@ -28,6 +28,13 @@ class FileActionsModel(
         description='The data for the File Actions.',
         methods=['POST', 'PUT'],
         title='data',
+    )
+
+    mode: str = Field(
+        'append',
+        description='The PUT mode for nested objects (append, delete, replace). Default: append',
+        methods=['POST', 'PUT'],
+        title='append',
     )
 
 
@@ -45,9 +52,10 @@ class FileActionModel(
         description='The File Action type.',
         methods=['POST', 'PUT'],
         title='relationship',
+        read_only=False,
     )
-    indicator: Optional['IndicatorModel'] = Field(
-        None,
+    indicator: 'IndicatorModel' = Field(
+        ...,
         description='The **indicator** related to the FileAction.',
         methods=['POST', 'PUT'],
         title='indicator',
