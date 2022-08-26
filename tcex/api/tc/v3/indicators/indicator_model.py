@@ -455,10 +455,10 @@ class IndicatorModel(
 # first-party
 from tcex.api.tc.v3.artifacts.artifact_model import ArtifactsModel
 from tcex.api.tc.v3.cases.case_model import CasesModel
+from tcex.api.tc.v3.file_actions.file_action_model import FileActionsModel
+from tcex.api.tc.v3.file_occurrences.file_occurrence_model import FileOccurrencesModel
 from tcex.api.tc.v3.groups.group_model import GroupsModel
 from tcex.api.tc.v3.indicator_attributes.indicator_attribute_model import IndicatorAttributesModel
-from tcex.api.tc.v3.indicators.file_actions_model import FileActionsModel
-from tcex.api.tc.v3.indicators.file_occurrences_model import FileOccurrencesModel
 from tcex.api.tc.v3.security_labels.security_label_model import SecurityLabelsModel
 from tcex.api.tc.v3.tags.tag_model import TagsModel
 

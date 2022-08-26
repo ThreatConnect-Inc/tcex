@@ -429,30 +429,39 @@ class GenerateObjectABC(GenerateABC, ABC):
             f'''from {model_import_data.get('model_module')} '''
             f'''import {model_import_data.get('model_class')}'''
         )
-        return '\n'.join(
+        stage_method = [
+            (
+                f'''{self.i1}def stage_{model_type.singular()}(self, '''
+                f'''data: Union[dict, 'ObjectABC', '{model_import_data.get('model_class')}'''
+                f'''']):'''
+            ),
+            f'''{self.i2}"""Stage {type_.singular()} on the object."""''',
+            f'''{self.i2}if isinstance(data, ObjectABC):''',
+            f'''{self.i3}data = data.model''',
+            f'''{self.i2}elif isinstance(data, dict):''',
+            f'''{self.i3}data = {model_import_data.get('model_class')}(**data)''',
+            '',
+            f'''{self.i2}if not isinstance(data, {model_import_data.get('model_class')}):''',
+            (
+                f'''{self.i3}raise RuntimeError('Invalid type '''
+                f'''passed in to stage_{model_type.singular()}')'''
+            ),
+            f'''{self.i2}data._staged = True''',
+        ]
+        if type_.lower() == 'file_actions' and self.type_.lower() == 'indicators':
+            # The `indicator` field in the FileActionModel must be staged to be
+            # submitted through the API
+            stage_method.append(f'''{self.i2}data.indicator._staged = True''')
+
+        stage_method.extend(
             [
-                (
-                    f'''{self.i1}def stage_{model_type.singular()}(self, '''
-                    f'''data: Union[dict, 'ObjectABC', '{model_import_data.get('model_class')}'''
-                    f'''']):'''
-                ),
-                f'''{self.i2}"""Stage {type_.singular()} on the object."""''',
-                f'''{self.i2}if isinstance(data, ObjectABC):''',
-                f'''{self.i3}data = data.model''',
-                f'''{self.i2}elif isinstance(data, dict):''',
-                f'''{self.i3}data = {model_import_data.get('model_class')}(**data)''',
-                '',
-                f'''{self.i2}if not isinstance(data, {model_import_data.get('model_class')}):''',
-                (
-                    f'''{self.i3}raise RuntimeError('Invalid type '''
-                    f'''passed in to stage_{model_type.singular()}')'''
-                ),
-                f'''{self.i2}data._staged = True''',
                 f'''{self.i2}self.model.{model_reference}.data.append(data)''',
                 '',
                 '',
             ]
         )
+
+        return '\n'.join(stage_method)
 
     def _gen_code_object_remove_method(self) -> str:
         """Return the method code."""
@@ -926,6 +935,14 @@ class GenerateObjectABC(GenerateABC, ABC):
         # generate stage_case method
         if 'cases' in add_properties:
             _code += self._gen_code_object_stage_type_method('cases')
+
+        # generate stage_file_actions method
+        if 'fileActions' in add_properties:
+            _code += self._gen_code_object_stage_type_method('file_actions')
+
+        # generate stage_file_occurrences method
+        if 'fileOccurrences' in add_properties:
+            _code += self._gen_code_object_stage_type_method('file_occurrences')
 
         # generate stage_note method
         if 'notes' in add_properties:

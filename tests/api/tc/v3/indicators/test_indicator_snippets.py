@@ -264,20 +264,236 @@ class TestIndicatorSnippets(TestV3):
         # Add cleanup
         indicator.delete()
 
-    def test_indicator_file_actions(self):
+    def test_get_indicator_file_actions(self):
         """Test snippet"""
-        # indicator = self.v3_helper.create_indicator(type_='Host', value1='example-00.com')
+        md5 = '491426B9C10D17708FFAC9ACBE761B26'
+        host_name = 'example-00.com'
+        indicator = self.v3_helper.create_indicator(type_='File', value1=md5)
+        host = self.v3_helper.create_indicator(type_='Host', value1=host_name)
+        relationship_type = 'File DNS Query'
+        indicator.stage_file_action({'relationship': relationship_type, 'indicator': host.model})
+        indicator.update()
 
         # Begin Snippet
-        indicator = self.tcex.v3.indicator(id=1020567)
-        indicator.get(params={'fields': ['fileActions', 'fileOccurrences']})
+        indicator = self.tcex.v3.indicator(id=indicator.model.id)
+        indicator.get(params={'fields': ['fileActions']})
         # End Snippet
-
-        print(indicator.model.json(exclude_none=True, exclude_unset=True, indent=2))
-        print(indicator.model.file_occurrences.data[0].date)
+        assert len(indicator.model.file_actions.data) == 1
+        file_action = indicator.model.file_actions.data[0]
+        assert file_action.relationship == relationship_type
+        assert file_action.indicator.id == host.model.id
 
         # Add cleanup
         # indicator.delete()
+
+    def test_add_indicator_file_actions(self):
+        """Test snippet"""
+        md5 = '491426B9C10D17708FFAC9ACBE761C26'
+        host_name = 'example-00.com'
+        indicator = self.v3_helper.create_indicator(type_='File', value1=md5)
+        host = self.v3_helper.create_indicator(type_='Host', value1=host_name)
+
+        # Begin Snippet
+        relationship_type = 'File DNS Query'
+        indicator.stage_file_action({'relationship': relationship_type, 'indicator': host.model})
+        indicator.update()
+        # End Snippet
+
+        assert len(indicator.model.file_actions.data) == 1
+        file_action = indicator.model.file_actions.data[0]
+        assert file_action.relationship == relationship_type
+        assert file_action.indicator.id == host.model.id
+
+    def test_remove_indicator_file_actions(self):
+        """Test snippet"""
+        md5 = '491426B9C10D17708FFAC9BCBE761D26'
+        host_name = 'example-00.com'
+        host_name_1 = 'example-01.com'
+        indicator = self.v3_helper.create_indicator(type_='File', value1=md5)
+        host = self.v3_helper.create_indicator(type_='Host', value1=host_name)
+        host_2 = self.v3_helper.create_indicator(type_='Host', value1=host_name_1)
+        relationship_type = 'File DNS Query'
+        indicator.stage_file_action({'relationship': relationship_type, 'indicator': host.model})
+        indicator.stage_file_action({'relationship': relationship_type, 'indicator': host_2.model})
+        indicator.update()
+
+        # Begin Snippet
+        # Get a fresh instance of the indicator object you wish to remove a file action from.
+        indicator = self.v3.indicator(id=indicator.model.id)
+        # [Stage Testing] - Stage an the file action to be removed
+        indicator.stage_file_action({'relationship': relationship_type, 'indicator': host.model})
+        # [Delete Testing] - Delete the newly staged file action
+        indicator.update(mode='delete')
+        # End Snippet
+
+        assert len(indicator.model.file_actions.data) == 1
+        file_action = indicator.model.file_actions.data[0]
+        assert file_action.relationship == relationship_type
+        assert file_action.indicator.id == host_2.model.id
+
+    def test_replace_indicator_file_actions(self):
+        """Test snippet"""
+        md5 = '491426B9C20D17708FFAC9ACBE761D26'
+        host_name = 'example-00.com'
+        host_name_1 = 'example-01.com'
+        indicator = self.v3_helper.create_indicator(type_='File', value1=md5)
+        host = self.v3_helper.create_indicator(type_='Host', value1=host_name)
+        host_2 = self.v3_helper.create_indicator(type_='Host', value1=host_name_1)
+        relationship_type = 'File DNS Query'
+        indicator.stage_file_action({'relationship': relationship_type, 'indicator': host.model})
+        indicator.update()
+
+        # Begin Snippet
+        # Get a fresh instance of the indicator object you wish to remove a file action from.
+        indicator = self.v3.indicator(id=indicator.model.id)
+        # [Stage Testing] - Stage an the file action. This will replace the existing file actions.
+        indicator.stage_file_action({'relationship': relationship_type, 'indicator': host_2.model})
+        # [Replace Testing] - Replace all the current file actions with the new file actions.
+        indicator.update(mode='replace')
+        # End Snippet
+
+        assert len(indicator.model.file_actions.data) == 1
+        file_action = indicator.model.file_actions.data[0]
+        assert file_action.relationship == relationship_type
+        assert file_action.indicator.id == host_2.model.id
+
+    def test_get_indicator_file_occurrence(self):
+        """Test snippet"""
+        md5 = '491426B9C10D17708FFAC9ACBE761D38'
+        indicator = self.v3_helper.create_indicator(type_='File', value1=md5)
+        indicator.stage_file_occurrence(
+            {
+                'file_name': 'Example.csv',
+                'path': '/temp/path/to/file.csv',
+                'date': '2022-08-25T17:52:39Z',
+            }
+        )
+        indicator.update()
+
+        # Begin Snippet
+        indicator = self.tcex.v3.indicator(id=indicator.model.id)
+        indicator.get(params={'fields': ['fileOccurrences']})
+        # End Snippet
+
+        assert len(indicator.model.file_occurrences.data) == 1
+        file_occurrences = indicator.model.file_occurrences.data[0]
+        assert file_occurrences.path == '/temp/path/to/file.csv'
+        assert file_occurrences.file_name == 'Example.csv'
+
+    def test_add_indicator_file_occurrence(self):
+        """Test snippet"""
+        md5 = '441426B9C10D17708FFAC9ACBE761D27'
+        indicator = self.v3_helper.create_indicator(type_='File', value1=md5)
+
+        # Begin Snippet
+        indicator.stage_file_occurrence(
+            {
+                'file_name': 'Example.csv',
+                'path': '/temp/path/to/file.csv',
+                'date': '2022-08-25T17:52:39Z',
+            }
+        )
+        indicator.update()
+
+        # NOTE:
+
+        # Submitting the Update does not automatically populate the file_occurrences field like it
+        # does for other fields so an additional call is made to get the field populated
+        # if that data is needed.
+
+        # End Snippet
+
+    def test_remove_indicator_file_occurrence(self):
+        """Test snippet"""
+        md5 = '291426B9C10D17708FFAC9ACBE761D38'
+        indicator = self.v3_helper.create_indicator(type_='File', value1=md5)
+        indicator.stage_file_occurrence(
+            {
+                'file_name': 'Example.csv',
+                'path': '/temp/path/to/file.csv',
+                'date': '2022-08-25T17:52:39Z',
+            }
+        )
+        indicator.stage_file_occurrence(
+            {
+                'file_name': 'Example_2.csv',
+                'path': '/temp/path/to/file.csv',
+                'date': '2022-08-25T17:52:39Z',
+            }
+        )
+        indicator.update()
+        indicator = self.tcex.v3.indicator(id=indicator.model.id)
+        indicator.get(params={'fields': ['fileOccurrences']})
+        for file_occurrence in indicator.model.file_occurrences.data:
+            if file_occurrence.file_name == 'Example.csv':
+                file_occurrence_id = file_occurrence.id
+                break
+        else:
+            assert False, 'Example.csv not found in file_occurrences'
+
+        # Begin Snippet
+        # Get a fresh instance of the indicator object you wish to remove a file action from.
+        indicator = self.v3.indicator(id=indicator.model.id)
+        # [Stage Testing] - Stage an the file occurrence to be removed
+        indicator.stage_file_occurrence({'id': file_occurrence_id})
+        # [Delete Testing] - Delete the newly staged file occurrence
+        indicator.update(mode='delete')
+
+        # Submitting the Update does not automatically populate the file_occurrences field like it
+        # does for other fields so an additional call is made to get the field populated
+        # if that data is needed.
+
+        # End Snippet
+
+        indicator = self.tcex.v3.indicator(id=indicator.model.id)
+        indicator.get(params={'fields': ['fileOccurrences']})
+
+        assert len(indicator.model.file_occurrences.data) == 1
+        file_occurrences = indicator.model.file_occurrences.data[0]
+        assert file_occurrences.path == '/temp/path/to/file.csv'
+        assert file_occurrences.file_name == 'Example_2.csv'
+
+    def test_replace_indicator_file_occurrence(self):
+        """Test snippet"""
+        md5 = '391426B9C10D17708FFAC9ACBE761D38'
+        indicator = self.v3_helper.create_indicator(type_='File', value1=md5)
+        indicator.stage_file_occurrence(
+            {
+                'file_name': 'Example_2.csv',
+                'path': '/temp/path/to/file.csv',
+                'date': '2022-08-25T17:52:39Z',
+            }
+        )
+        indicator.update()
+
+        # Begin Snippet
+        # Get a fresh instance of the indicator object you wish to remove a file action from.
+        indicator = self.v3.indicator(id=indicator.model.id)
+        # [Stage Testing] - Stage an the file occurrence to replace the existing file occurrences.
+        indicator.stage_file_occurrence(
+            {
+                'file_name': 'Example.csv',
+                'path': '/temp/path/to/file.csv',
+                'date': '2022-08-25T17:52:39Z',
+            }
+        )
+        # [Replace Testing] - Replace all the current file occurrences with
+        # the new file occurrences.
+        indicator.update(mode='replace')
+
+        # Submitting the Update does not automatically populate the file_occurrences field like it
+        # does for other fields so an additional call is made to get the field populated
+        # if that data is needed.
+
+        # End Snippet
+
+        indicator = self.tcex.v3.indicator(id=indicator.model.id)
+        indicator.get(params={'fields': ['fileOccurrences']})
+
+        assert len(indicator.model.file_occurrences.data) == 1
+        file_occurrences = indicator.model.file_occurrences.data[0]
+        assert file_occurrences.path == '/temp/path/to/file.csv'
+        assert file_occurrences.file_name == 'Example.csv'
 
     def test_indicator_get_by_summary(self):
         """Test snippet"""
