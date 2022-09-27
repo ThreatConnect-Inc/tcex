@@ -121,10 +121,7 @@ class TestVariables:
     )
     def test_variable_expansion_pattern(self, variable: str, expected: dict):
         """Test Module"""
-        print('\n')
-        print(variable)
         for match in re.finditer(variables.variable_expansion_pattern, str(variable)):
-            print(match.groupdict())
             assert match.groupdict() == expected
 
     @pytest.mark.parametrize(
