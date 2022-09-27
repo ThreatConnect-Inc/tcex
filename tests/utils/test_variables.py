@@ -98,6 +98,16 @@ class TestVariables:
                 },
             ),
             (
+                'dummy-data#App:0001:string!Stringdummy-data',
+                {
+                    'origin': '#',
+                    'provider': 'App',
+                    'id': '0001',
+                    'lookup': 'string',
+                    'type': 'String',
+                },
+            ),
+            (
                 r'&{TC:TEXT:4dc9202e-6945-4364-aa40-4b47655046d2}',
                 {
                     'origin': '&',
@@ -111,7 +121,10 @@ class TestVariables:
     )
     def test_variable_expansion_pattern(self, variable: str, expected: dict):
         """Test Module"""
+        print('\n')
+        print(variable)
         for match in re.finditer(variables.variable_expansion_pattern, str(variable)):
+            print(match.groupdict())
             assert match.groupdict() == expected
 
     @pytest.mark.parametrize(

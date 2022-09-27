@@ -3,6 +3,8 @@
 ### 3.0.5
 
 -   APP-3766 - [API] Added support for Security Labels on Attributes
+-   APP-3775 - [Playbooks] Updated variable pattern regex to better handle mix variables types
+-   APP-3776 - [CLI] Updated spectool for general improvements and fixes
 
 ### 3.0.4
 
