@@ -466,7 +466,11 @@ class AppSpecYml:
 
         # inputs / outputs
         asy_data_ordered['sections'] = asy_data.get('sections')
-        if asy_data.get('runtimeLevel').lower() not in ('apiservice', 'organization'):
+        if asy_data.get('runtimeLevel').lower() not in (
+            'apiservice',
+            'feedapiservice',
+            'organization',
+        ):
             asy_data_ordered['outputData'] = asy_data.get('outputData')
         if asy_data.get('outputPrefix'):
             asy_data_ordered['outputPrefix'] = asy_data.get('outputPrefix')

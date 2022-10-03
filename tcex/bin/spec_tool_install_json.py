@@ -58,7 +58,7 @@ class SpecToolInstallJson(BinABC):
 
     def _add_type_api_service_fields(self, install_json_data: dict):
         """Add field that apply to ALL App types."""
-        if self.asy.model.runtime_level.lower() == 'apiservice':
+        if self.asy.model.runtime_level.lower() in ('apiservice', 'feedapiservice'):
             install_json_data['displayPath'] = self.asy.model.display_path
 
     def _add_type_organization_fields(self, install_json_data: dict):

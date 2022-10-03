@@ -22,7 +22,7 @@ home = os.getenv('HOME')
 src_base = f'{home}/WorkBench/010__DEVELOPMENT/'
 dst_base = 'layout_json_samples'
 filename = 'layout.json'
-for project in ['TC', 'TCPB', 'TCVA', 'TCVC', 'TCVW']:
+for project in ['TC', 'TCPB', 'TCVA', 'TCVC', 'TCVF', 'TCVW']:
     os.makedirs(os.path.join(dst_base, project.lower()), exist_ok=True)
     prj_dir = os.path.join(src_base, project)
 
