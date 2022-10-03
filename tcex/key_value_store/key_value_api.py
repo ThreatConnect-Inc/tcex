@@ -42,6 +42,7 @@ class KeyValueApi(KeyValueABC):
         url = f'/internal/playbooks/keyValue/{key}'
         if self.ij.model.runtime_level.lower() in [
             'apiservice',
+            'feedapiservice',
             'triggerservice',
             'webhooktriggerservice',
         ]:

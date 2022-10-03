@@ -81,6 +81,7 @@ class InstallJsonUpdate:
             )
         elif self.ij.model.runtime_level.lower() in [
             'apiservice',
+            'feedapiservice',
             'triggerservice',
             'webhooktriggerservice',
         ]:

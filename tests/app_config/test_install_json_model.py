@@ -105,7 +105,7 @@ class TestInstallJson:
         """Test method"""
         assert self.ij(app_type='tc').app_prefix == 'TC_-_'
         assert self.ij(app_type='tcpb').app_prefix == 'TCPB_-_'
-        assert self.ij(app_type='tcva').app_prefix == 'TCVA_-_'
+        assert self.ij(app_type='tcvf').app_prefix == 'TCVF_-_'
         assert self.ij(app_type='tcvc').app_prefix == 'TCVC_-_'
         assert self.ij(app_type='tcvw').app_prefix == 'TCVW_-_'
 

@@ -815,6 +815,7 @@ class InstallJsonModel(InstallJsonCommonModel, InstallJsonOrganizationModel):
         """Return True if the current App is ANY type of Service App."""
         return self.runtime_level.lower() in [
             'apiservice',
+            'feedapiservice',
             'triggerservice',
             'webhooktriggerservice',
         ]
