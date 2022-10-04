@@ -100,6 +100,25 @@ class Validate(BinABC):
                     {'filename': filename, 'module': m, 'status': m_status}
                 )
 
+    @property
+    def app_categories(self):
+        return [
+            'Collaboration & Messaging',
+            'Data Enrichment',
+            'Email Security',
+            'Endpoint Detection & Response',
+            'Identity & Access Management',
+            'Incident Response & Ticketing',
+            'IT Infrastructure',
+            'Malware Analysis',
+            'Network Security',
+            'SIEM & Analytics',
+            'Threat Intelligence',
+            'ThreatConnect',
+            'Utility',
+            'Vulnerability Management',
+        ]
+
     def check_imports(self):
         """Check the projects top level directory for missing imports.
 
@@ -197,6 +216,14 @@ class Validate(BinABC):
         except ValueError:
             # any JSON decode error will be caught during syntax validation
             return
+
+        if self.ij.model.category not in self.app_categories:
+            self.invalid_json_files.append(self.ij.fqfn.name)
+            status = False
+            self.validation_data['errors'].append(
+                '''Install.json has an invalid category.  '''
+                f'''"{self.ij.model.category}" is not in {self.app_categories}'''
+            )
 
         self.validation_data['schema'].append({'filename': self.ij.fqfn.name, 'status': status})
 
