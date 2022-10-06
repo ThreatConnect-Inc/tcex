@@ -72,10 +72,9 @@ class ApiModel(BaseModel):
         # organization (job) Apps: require credentials
         # playbook Apps: require credentials
         # service Apps: get token on createConfig message or during request
-        if _ij.fqfn.is_file() is False or _ij.model.runtime_level.lower() in [
-            'organization',
-            'playbook',
-        ]:
+        if _ij.fqfn.is_file() is False or (
+            _ij.model.is_playbook_app or _ij.model.is_organization_app
+        ):
             if v is None and not all(
                 [values.get('tc_api_access_id'), values.get('tc_api_secret_key')]
             ):

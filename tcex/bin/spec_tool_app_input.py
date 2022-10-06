@@ -511,10 +511,7 @@ class SpecToolAppInput(BinABC):
     def app_inputs_data(self) -> dict:
         """Return base App inputs data."""
         if self._app_inputs_data is None:
-            if self.ij.model.runtime_level.lower() in [
-                'triggerservice',
-                'webhooktriggerservice',
-            ]:
+            if self.ij.model.is_playbook_trigger_app:
                 self._app_inputs_data = {'ServiceConfigModel': {}, 'TriggerConfigModel': {}}
             else:
                 self._app_inputs_data = {'AppBaseModel': {}}
