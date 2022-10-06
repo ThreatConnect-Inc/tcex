@@ -16,7 +16,7 @@ The ThreatConnect&trade; TcEx App Framework provides functionality for writing T
  * python-dateutil (https://pypi.python.org/pypi/python-dateutil)
  * redis (https://pypi.python.org/pypi/redis)
  * requests (http://docs.python-requests.org/en/latest)
- * sematic_version (https://pypi.org/project/semantic-version/)
+ * semantic_version (https://pypi.org/project/semantic-version/)
  * stdlib-list (https://pypi.org/project/stdlib-list/)
  * tinydb (https://pypi.python.org/pypi/tinydb)
  * typer (https://pypi.python.org/pypi/typer)
