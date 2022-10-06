@@ -82,7 +82,13 @@ class Variables:
             # Type
             # PB-Variable: variable type (e.g., String|StringArray)
             # TC-Variable: N/A
-            r'(?:!(?P<type>[A-Za-z0-9_-]+))?'
+            # r'(?:!(?P<type>[A-Za-z0-9_-]+))?'
+            r'(?:!(?P<type>StringArray|BinaryArray|KeyValueArray'
+            r'|TCEntityArray|TCEnhancedEntityArray'
+            r'|String|Binary|KeyValue|TCEntity|TCEnhancedEntity'
+            r'|(?:(?!String)(?!Binary)(?!KeyValue)'
+            r'(?!TCEntity)(?!TCEnhancedEntity)'
+            r'[A-Za-z0-9_-]+)))?'  # variable type (custom)
         )
 
     @property
