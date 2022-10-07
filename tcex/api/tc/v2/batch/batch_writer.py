@@ -865,6 +865,7 @@ class BatchWriter:
             identifier = str(uuid.uuid4())
         elif isinstance(identifier, list):
             identifier = '-'.join([str(i) for i in identifier])
+            # IMPORTANT: Do not remove this duplicate line or xids will change.
             identifier = hashlib.sha256(identifier.encode('utf-8')).hexdigest()
         return hashlib.sha256(identifier.encode('utf-8')).hexdigest()
 
