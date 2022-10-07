@@ -59,6 +59,7 @@ class Package(BinABC):
             '.coverage',  # coverage file
             '.coveragerc',  # coverage configuration file file
             '.cspell',  # cspell configuration file
+            '.env',  # local environment file
             '.git',  # git directory
             '.gitignore',  # git ignore file
             '.gitlab-ci.yml',  # gitlab ci file

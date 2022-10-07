@@ -215,9 +215,6 @@ class Indicator:
             summary.append(val2)
         if val3 is not None:
             summary.append(val3)
-        if not summary:
-            # Indicator object has no logger to output warning
-            pass
         return ' : '.join(summary)
 
     @property

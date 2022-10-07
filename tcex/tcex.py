@@ -7,12 +7,13 @@ import os
 import platform
 import signal
 import threading
-from typing import TYPE_CHECKING, Dict, Optional, Union
+from typing import TYPE_CHECKING, Dict, List, Optional, Union
 
 # third-party
 from requests import Session
 
 # first-party
+from tcex.api.tc.ti_transform.ti_transform import TiTransform, TiTransforms
 from tcex.api.tc.utils.threat_intel_utils import ThreatIntelUtils
 from tcex.api.tc.v2.v2 import V2
 from tcex.api.tc.v3.v3 import V3
@@ -36,6 +37,7 @@ from tcex.utils.file_operations import FileOperations
 
 if TYPE_CHECKING:
     # first-party
+    from tcex.api.tc.ti_transform.model import GroupTransformModel, IndicatorTransformModel
     from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
     from tcex.services.api_service import ApiService
     from tcex.services.common_service_trigger import CommonServiceTrigger
@@ -166,7 +168,10 @@ class TcEx:
     @cached_property
     def file_operations(self) -> 'FileOperations':  # pylint: disable=no-self-use
         """Include the Utils module."""
-        return FileOperations(temp_path=self.inputs.model_unresolved.tc_temp_path)
+        return FileOperations(
+            out_path=self.inputs.model_unresolved.tc_out_path,
+            temp_path=self.inputs.model_unresolved.tc_temp_path,
+        )
 
     @staticmethod
     def get_exit_service(inputs) -> 'ExitService':
@@ -468,6 +473,26 @@ class TcEx:
         """Return an instance of Requests Session configured for the ThreatConnect API."""
         return self.get_session_external()
 
+    def set_exit_code(self, exit_code: int):
+        """Set the exit code (registry)"""
+        self.exit_code = exit_code
+
+    @staticmethod
+    def ti_transform(
+        ti_dict: dict,
+        transforms: List[Union['GroupTransformModel', 'IndicatorTransformModel']],
+    ) -> 'TiTransform':
+        """Return an instance of TI Transform class."""
+        return TiTransform(ti_dict, transforms)
+
+    @staticmethod
+    def ti_transforms(
+        ti_dict: List[dict],
+        transforms: List[Union['GroupTransformModel', 'IndicatorTransformModel']],
+    ) -> 'TiTransform':
+        """Return an instance of TI Transforms class."""
+        return TiTransforms(ti_dict, transforms)
+
     @registry.factory(Tokens, singleton=True)
     @cached_property
     def token(self) -> 'Tokens':
@@ -492,10 +517,6 @@ class TcEx:
                 expires=self.inputs.model_unresolved.tc_token_expires,
             )
         return _tokens
-
-    def set_exit_code(self, exit_code: int):
-        """Set the exit code (registry)"""
-        self.exit_code = exit_code
 
     @property
     def ti_utils(self) -> 'ThreatIntelUtils':
