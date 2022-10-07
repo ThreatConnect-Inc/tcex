@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING, Dict, List, Optional, Union
 from requests import Session
 
 # first-party
-from tcex.api.tc.ti_transform.ti_transform import TiTransform, TiTransforms
+from tcex.api.tc.ti_transform import TiTransform, TiTransforms
 from tcex.api.tc.utils.threat_intel_utils import ThreatIntelUtils
 from tcex.api.tc.v2.v2 import V2
 from tcex.api.tc.v3.v3 import V3

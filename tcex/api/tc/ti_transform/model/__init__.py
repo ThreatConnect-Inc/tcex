@@ -1,6 +1,7 @@
 """Model Definitions"""
 # flake8: noqa
-from .transform_model import (
+# first-party
+from tcex.api.tc.ti_transform.model.transform_model import (
     AttributeTransformModel,
     DatetimeTransformModel,
     GroupTransformModel,

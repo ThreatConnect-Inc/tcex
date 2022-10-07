@@ -120,27 +120,7 @@ class FileOperations:
         Returns:
             Path: Fully qualified path name for the file.
         """
-        return self._write_file(content, self._fqfn_out(filename), 'wb')
-
-    def write_temp_compressed_file(
-        self,
-        content: List[dict],
-        filename: Optional[str] = None,
-        compress_level: Optional[int] = 9,
-    ) -> Path:
-        """Write content to a file in the defined "temp" directory.
-
-        Args:
-            content: The file content.
-            filename: The filename to use when writing the file.
-            compress_level: The compression level to use when writing the file.
-
-        Returns:
-            Path: Fully qualified path name for the file.
-        """
-        return self._write_file(
-            content, self._fqfn_temp(filename), mode='wt', compress_level=compress_level
-        )
+        return self._write_file(content, self._fqfn_out(filename), mode='wb', encoding=None)
 
     def write_out_file(
         self,
@@ -165,6 +145,7 @@ class FileOperations:
         Returns:
             Path: Fully qualified path name for the file.
         """
+        encoding = encoding if mode != 'wb' else None
         return self._write_file(content, self._fqfn_out(filename), mode, encoding, compress_level)
 
     def write_temp_binary_file(self, content: bytes, filename: Optional[str] = None) -> str:
@@ -177,7 +158,27 @@ class FileOperations:
         Returns:
             Path: Fully qualified path name for the file.
         """
-        return self._write_file(content, self._fqfn_temp(filename), 'wb')
+        return self._write_file(content, self._fqfn_temp(filename), mode='wb', encoding=None)
+
+    def write_temp_compressed_file(
+        self,
+        content: List[dict],
+        filename: Optional[str] = None,
+        compress_level: Optional[int] = 9,
+    ) -> Path:
+        """Write content to a file in the defined "temp" directory.
+
+        Args:
+            content: The file content.
+            filename: The filename to use when writing the file.
+            compress_level: The compression level to use when writing the file.
+
+        Returns:
+            Path: Fully qualified path name for the file.
+        """
+        return self._write_file(
+            content, self._fqfn_temp(filename), mode='wt', compress_level=compress_level
+        )
 
     def write_temp_file(
         self,
@@ -199,4 +200,5 @@ class FileOperations:
         Returns:
             str: Fully qualified path name for the file.
         """
+        encoding = encoding if mode != 'wb' else None
         return self._write_file(content, self._fqfn_temp(filename), mode, encoding, compress_level)

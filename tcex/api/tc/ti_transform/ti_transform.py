@@ -4,8 +4,8 @@ import traceback
 from typing import Optional
 
 # first-party
-from tcex.api.tc.ti_transform import TransformABC, TransformsABC
 from tcex.api.tc.ti_transform.model import GroupTransformModel, IndicatorTransformModel
+from tcex.api.tc.ti_transform.transform_abc import TransformABC, TransformsABC
 
 
 class TiTransforms(TransformsABC):

@@ -181,7 +181,6 @@ class IndicatorTransformModel(TiTransformModel, extra=Extra.forbid):
 
         if not any(
             [
-                values.get('summary'),
                 values.get('value1'),
                 values.get('value2'),
                 values.get('value3'),
