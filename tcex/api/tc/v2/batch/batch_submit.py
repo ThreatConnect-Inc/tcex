@@ -154,6 +154,7 @@ class BatchSubmit:
             '0x2001': 'Indicator Partial Loss Error',
             '0x2002': 'Group Partial Loss Error',
             '0x2003': 'File Hash Merge Error',
+            '0x3001': 'File Hash Merge Error',
         }
 
     def errors(self, batch_id: int, halt_on_error: Optional[bool] = True) -> list:

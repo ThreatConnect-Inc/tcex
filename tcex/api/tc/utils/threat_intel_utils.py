@@ -35,7 +35,7 @@ class ThreatIntelUtils:
     def resolvable_variables(self) -> Dict:
         """Return a dict of all the supported resolvable variables.
 
-        Each entry in the dict has the variables corresponding url and jmspath for their values
+        Each entry in the dict has the variables corresponding url and jmespath for their values
         if available. Some variables do not have this data since no api endpoint is supported.
         """
 

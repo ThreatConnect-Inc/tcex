@@ -335,6 +335,8 @@ class Logger:
         """Log the App data information as a best effort."""
         try:
             self.log.info(f'app-name="{self.ij.model.display_name}"')
+            if self.ij.model.app_id is not None:
+                self.log.info(f'app-id={self.ij.model.app_id}')
             if self.ij.model.features:
                 self.log.info(f'''app-features={','.join(self.ij.model.features)}''')
             self.log.info(f'app-minimum-threatconnect-version={self.ij.model.min_server_version}')
