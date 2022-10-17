@@ -54,6 +54,7 @@ class InstallJson:
             'organization': 'TC_-_',
             'playbook': 'TCPB_-_',
             'apiservice': 'TCVA_-_',
+            'feedapiservice': 'TCVF_-_',
             'triggerservice': 'TCVC_-_',
             'webhooktriggerservice': 'TCVW_-_',
         }

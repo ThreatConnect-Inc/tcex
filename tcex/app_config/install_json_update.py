@@ -67,9 +67,9 @@ class InstallJsonUpdate:
         """Update feature set based on App type."""
         features = ['runtimeVariables']
 
-        if self.ij.model.runtime_level.lower() in ['organization']:
+        if self.ij.model.is_organization_app:
             features.extend(['fileParams', 'secureParams'])
-        elif self.ij.model.runtime_level.lower() in ['playbook']:
+        elif self.ij.model.is_playbook_app:
             features.extend(
                 [
                     'aotExecutionEnabled',
@@ -79,11 +79,7 @@ class InstallJsonUpdate:
                     'secureParams',
                 ]
             )
-        elif self.ij.model.runtime_level.lower() in [
-            'apiservice',
-            'triggerservice',
-            'webhooktriggerservice',
-        ]:
+        elif self.ij.model.is_service_app:
             features.extend(['appBuilderCompliant', 'fileParams'])
 
         # add layoutEnabledApp if layout.json file exists in project

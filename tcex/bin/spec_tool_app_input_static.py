@@ -21,7 +21,7 @@ class SpecToolAppInputStatic:
     def template_app_inputs_class(self) -> list:
         """Return app_inputs.py AppInput class."""
         app_model = 'AppBaseModel'
-        if self.ij.model.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+        if self.ij.model.is_trigger_app:
             app_model = 'ServiceConfigModel'
 
         return [
@@ -137,7 +137,7 @@ class SpecToolAppInputStatic:
         ]
 
         # add import for service trigger Apps
-        if self.ij.model.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+        if self.ij.model.is_trigger_app:
             _imports.append('from tcex.input.models import CreateConfigModel')
 
         # add new lines
