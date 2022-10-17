@@ -451,11 +451,11 @@ class TcEx:
     @cached_property
     def service(self) -> Union['ApiService', 'CommonServiceTrigger', 'WebhookTriggerService']:
         """Include the Service Module."""
-        if self.ij.model.runtime_level.lower() == 'apiservice':
+        if self.ij.model.is_api_service_app:
             from .services import ApiService as Service
-        elif self.ij.model.runtime_level.lower() == 'triggerservice':
+        elif self.ij.model.is_trigger_app and not self.ij.model.is_webhook_trigger_app:
             from .services import CommonServiceTrigger as Service
-        elif self.ij.model.runtime_level.lower() == 'webhooktriggerservice':
+        elif self.ij.model.is_webhook_trigger_app:
             from .services import WebhookTriggerService as Service
         else:
             self.exit(1, 'Could not determine the service type.')

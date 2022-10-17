@@ -7,10 +7,14 @@ import time
 import traceback
 import uuid
 from datetime import datetime
-from typing import Callable, Optional, Union
+from typing import TYPE_CHECKING, Callable, Optional, Union
 
 # first-party
 from tcex.services.mqtt_message_broker import MqttMessageBroker
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.app_config import InstallJson
 
 # get tcex logger
 logger = logging.getLogger('tcex')
@@ -41,7 +45,7 @@ class CommonService:
         self.heartbeat_max_misses = 3
         self.heartbeat_sleep_time = 1
         self.heartbeat_watchdog = 0
-        self.ij = tcex.ij
+        self.ij: 'InstallJson' = tcex.ij
         self.key_value_store = self.tcex.key_value_store
         self.log = logger
         self.logger = tcex.logger
@@ -385,7 +389,7 @@ class CommonService:
             else:  # pylint: disable=useless-else-on-loop
                 self.log.info('feature=service, event=service-ready')
                 ready_command = {'command': 'Ready'}
-                if self.ij.model.runtime_level.lower() in ['apiservice'] and self.ij.model.service:
+                if self.ij.model.is_api_service_app and self.ij.model.service:
                     ready_command['discoveryTypes'] = self.ij.model.service.discovery_types
                 self.message_broker.publish(
                     json.dumps(ready_command), self.args.tc_svc_client_topic

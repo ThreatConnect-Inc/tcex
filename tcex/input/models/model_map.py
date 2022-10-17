@@ -47,6 +47,15 @@ runtime_level_map = {
         ProxyModel,
         ServiceModel,
     ],
+    'feedapiservice': [
+        ApiModel,
+        BatchModel,
+        LoggingModel,
+        PathModel,
+        PlaybookCommonModel,
+        ProxyModel,
+        ServiceModel,
+    ],
     'external': [
         ApiModel,
         BatchModel,
