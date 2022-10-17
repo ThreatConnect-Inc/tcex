@@ -213,7 +213,7 @@ class SpecToolAppInput(BinABC):
 
     def _generate_app_inputs_to_action(self):
         """Generate App Input dict from install.json and layout.json."""
-        if self.ij.model.is_playbook_trigger_app is True:
+        if self.ij.model.is_trigger_app is True:
             # Process the following App types:
             # - playbook trigger service Apps
             for ij_data in self.ij.model.params_dict.values():
@@ -511,7 +511,7 @@ class SpecToolAppInput(BinABC):
     def app_inputs_data(self) -> dict:
         """Return base App inputs data."""
         if self._app_inputs_data is None:
-            if self.ij.model.is_playbook_trigger_app:
+            if self.ij.model.is_trigger_app:
                 self._app_inputs_data = {'ServiceConfigModel': {}, 'TriggerConfigModel': {}}
             else:
                 self._app_inputs_data = {'AppBaseModel': {}}

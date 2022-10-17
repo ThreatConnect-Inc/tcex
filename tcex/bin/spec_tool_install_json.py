@@ -87,7 +87,7 @@ class SpecToolInstallJson(BinABC):
 
     def _add_type_playbook_fields(self, install_json_data: dict):
         """Add field that apply to ALL App types."""
-        if self.asy.model.is_playbook_app or self.asy.model.is_playbook_trigger_app:
+        if self.asy.model.is_playbook_app or self.asy.model.is_trigger_app:
             install_json_data['allowRunAsUser'] = self.asy.model.allow_run_as_user
             install_json_data['playbook'] = {
                 'outputPrefix': self.asy.model.output_prefix,
