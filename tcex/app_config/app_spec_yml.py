@@ -408,7 +408,10 @@ class AppSpecYml:
         _contents = self.contents
         # special case for dynamic handling of advancedRequest feature
         if 'advancedRequest' in _contents.get('features', []):
-            if 'Configure' not in _contents.get('sections', []):
+            # look for a Configure section which required for Advanced Request
+            if 'Configure' not in [
+                section.get('sectionName') for section in _contents.get('sections', [])
+            ]:
                 raise RuntimeError('The advancedRequest feature requires a Configure section.')
 
             # Add "Advanced Request" action to Valid Values
