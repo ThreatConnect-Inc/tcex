@@ -157,7 +157,7 @@ class GenerateObjectABC(GenerateABC, ABC):
                 f'''{self.i3}deleted_since = str(''',
                 (
                     f'''{self.i4}self.utils.any_to_datetime(deleted_since)'''
-                    '''.strftime('%Y-%m-%dT%H:%M:%SZ')'''
+                    '''.strftime('%Y-%m-%d %H:%M:%SZ')'''
                 ),
                 f'''{self.i3})''',
                 '',
