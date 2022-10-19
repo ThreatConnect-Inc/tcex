@@ -1,9 +1,7 @@
 """Python Backports"""
-
-
-# standard library
 # flake8: noqa
-from typing import Callable
+# standard library
+from typing import Callable, Generic, TypeVar
 
 try:
     # standard library
@@ -13,12 +11,20 @@ except ImportError:
     from backports.cached_property import cached_property as functool_cached_property
 
 
-class cached_property(functool_cached_property):
+R = TypeVar('R')
+
+
+class cached_property(functool_cached_property, Generic[R]):
     """Customized cached_property."""
+
+    # pylint: disable=useless-super-delegation
+    def __init__(self, func: Callable[..., R]) -> None:
+        """Initialize Class properties."""
+        super().__init__(func)
 
     instances = []
 
-    def __get__(self, instance, owner=None):
+    def __get__(self, instance, owner=None) -> R:
         """Override method."""
         self.instances.append(instance)
         return super().__get__(instance, owner)
