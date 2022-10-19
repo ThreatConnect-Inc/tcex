@@ -1,4 +1,4 @@
-"""Case Management"""
+"""API -> TC -> V2"""
 # standard library
 from typing import TYPE_CHECKING, Optional
 
@@ -21,9 +21,10 @@ if TYPE_CHECKING:
 
 
 class V2:
-    """Case Management
+    """API -> TC -> V2
 
     Args:
+        inputs: An instance of the Input class.
         session_tc: An configured instance of request.Session with TC API Auth.
     """
 

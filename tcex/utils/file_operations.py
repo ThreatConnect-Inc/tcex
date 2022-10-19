@@ -1,11 +1,11 @@
 """TcEx Utilities File Operations Module"""
 # standard library
 import gzip
-import os
+import json
 import tempfile
 import uuid
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 
 class FileOperations:
@@ -18,15 +18,31 @@ class FileOperations:
 
     def __init__(
         self,
-        out_path: Union[Optional[Path], Optional[str]] = None,
-        temp_path: Union[Optional[Path], Optional[str]] = None,
+        out_path: Optional[Union[Path, str]] = None,
+        temp_path: Optional[Union[Path, str]] = None,
     ):
         """Initialize the Class properties."""
-        self.out_path = out_path or tempfile.gettempdir() or '/tmp'  # nosec
-        self.temp_path = temp_path or tempfile.gettempdir() or '/tmp'  # nosec
+        self.out_path = Path(out_path or tempfile.gettempdir() or '/tmp')  # nosec
+        self.temp_path = Path(temp_path or tempfile.gettempdir() or '/tmp')  # nosec
+
+    def _fqfn_out(self, filename: Optional[Union[Path, str]] = None) -> Path:
+        """Return a unique filename for the defined "out" directory."""
+        # user provided filename or generate a unique one
+        filename = filename if filename is not None else str(uuid.uuid4())
+
+        # define the fully qualified path name
+        return self.out_path / filename
+
+    def _fqfn_temp(self, filename: Optional[Union[Path, str]] = None) -> Path:
+        """Return a unique filename for the defined "temp" directory."""
+        # user provided filename or generate a unique one
+        filename = filename if filename is not None else str(uuid.uuid4())
+
+        # define the fully qualified path name
+        return self.temp_path / filename
 
     @staticmethod
-    def _write_file(
+    def write_file(
         content: Union[bytes, str],
         fqfn: Union[Path, str],
         mode: Optional[str] = 'w',
@@ -48,16 +64,14 @@ class FileOperations:
         Returns:
             Path: Fully qualified path name for the file.
         """
+        content = json.dumps(content) if isinstance(content, (dict, list)) else content
         fqfn = fqfn if isinstance(fqfn, Path) else Path(fqfn)
 
         # ensure output directory exists
-        os.makedirs(os.path.dirname(fqfn), exist_ok=True)
+        fqfn.parent.mkdir(parents=True, exist_ok=True)
 
         # write file, either normal or compressed
-        if compress_level is None:
-            with open(fqfn, mode, encoding=encoding) as fh:
-                fh.write(content)
-        else:
+        if compress_level is not None:
             mode = 'wt'
             with gzip.open(
                 fqfn,
@@ -66,30 +80,33 @@ class FileOperations:
                 encoding=encoding,
             ) as fh:
                 fh.write(content)
+        else:
+            with fqfn.open(mode, encoding=encoding) as fh:
+                fh.write(content)
 
         # return the fully qualified path name
         return fqfn
 
-    def _fqfn_out(self, filename: Optional[str] = None) -> str:
-        """Return a unique filename for the defined "out" directory."""
-        # user provided filename or generate a unique one
-        filename = filename if filename is not None else str(uuid.uuid4())
+    def write_out_binary_file(
+        self,
+        content: bytes,
+        filename: Optional[str] = None,
+    ) -> Path:
+        """Write content to a file in the defined "out" directory.
 
-        # define the fully qualified path name
-        return os.path.join(self.out_path, filename)
+        Args:
+            content: The file content.
+            filename: The filename to use when writing the file.
 
-    def _fqfn_temp(self, filename: Optional[str] = None) -> str:
-        """Return a unique filename for the defined "temp" directory."""
-        # user provided filename or generate a unique one
-        filename = filename if filename is not None else str(uuid.uuid4())
-
-        # define the fully qualified path name
-        return os.path.join(self.temp_path, filename)
+        Returns:
+            Path: Fully qualified path name for the file.
+        """
+        return self.write_file(content, self._fqfn_out(filename), mode='wb', encoding=None)
 
     def write_out_compressed_file(
         self,
-        content: List[dict],
-        filename: Optional[str] = None,
+        content: Union[bytes, dict, str],
+        filename: Optional[Union[Path, str]] = None,
         compress_level: Optional[int] = 9,
     ) -> Path:
         """Write content to a file in the defined "out" directory.
@@ -102,29 +119,13 @@ class FileOperations:
         Returns:
             Path: Fully qualified path name for the file.
         """
-        return self._write_file(
+        return self.write_file(
             content, self._fqfn_out(filename), mode='wt', compress_level=compress_level
         )
 
-    def write_out_binary_file(
-        self,
-        content: List[dict],
-        filename: Optional[str] = None,
-    ) -> Path:
-        """Write content to a file in the defined "out" directory.
-
-        Args:
-            content: The file content.
-            filename: The filename to use when writing the file.
-
-        Returns:
-            Path: Fully qualified path name for the file.
-        """
-        return self._write_file(content, self._fqfn_out(filename), mode='wb', encoding=None)
-
     def write_out_file(
         self,
-        content: Union[bytes, str],
+        content: Union[bytes, dict, str],
         filename: Optional[str] = None,
         mode: Optional[str] = 'w',
         encoding: Optional[str] = 'utf-8',
@@ -146,9 +147,13 @@ class FileOperations:
             Path: Fully qualified path name for the file.
         """
         encoding = encoding if mode != 'wb' else None
-        return self._write_file(content, self._fqfn_out(filename), mode, encoding, compress_level)
+        return self.write_file(content, self._fqfn_out(filename), mode, encoding, compress_level)
 
-    def write_temp_binary_file(self, content: bytes, filename: Optional[str] = None) -> str:
+    def write_temp_binary_file(
+        self,
+        content: bytes,
+        filename: Optional[str] = None,
+    ) -> Path:
         """Write content to a file in the defined "temp" directory.
 
         Args:
@@ -158,11 +163,11 @@ class FileOperations:
         Returns:
             Path: Fully qualified path name for the file.
         """
-        return self._write_file(content, self._fqfn_temp(filename), mode='wb', encoding=None)
+        return self.write_file(content, self._fqfn_temp(filename), mode='wb', encoding=None)
 
     def write_temp_compressed_file(
         self,
-        content: List[dict],
+        content: Union[bytes, dict, str],
         filename: Optional[str] = None,
         compress_level: Optional[int] = 9,
     ) -> Path:
@@ -176,18 +181,18 @@ class FileOperations:
         Returns:
             Path: Fully qualified path name for the file.
         """
-        return self._write_file(
+        return self.write_file(
             content, self._fqfn_temp(filename), mode='wt', compress_level=compress_level
         )
 
     def write_temp_file(
         self,
-        content: Union[bytes, str],
-        filename: Optional[str] = None,
+        content: Union[bytes, dict, str],
+        filename: Optional[Union[Path, str]] = None,
         mode: Optional[str] = 'w',
         encoding: Optional[str] = 'utf-8',
         compress_level: Optional[int] = None,
-    ) -> str:
+    ) -> Path:
         """Write content to a file in the defined "temp" directory.
 
         If passing binary data the mode needs to be set to 'wb'.
@@ -201,4 +206,4 @@ class FileOperations:
             str: Fully qualified path name for the file.
         """
         encoding = encoding if mode != 'wb' else None
-        return self._write_file(content, self._fqfn_temp(filename), mode, encoding, compress_level)
+        return self.write_file(content, self._fqfn_temp(filename), mode, encoding, compress_level)
