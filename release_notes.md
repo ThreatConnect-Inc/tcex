@@ -8,6 +8,8 @@
 -   APP-3805 - [API] Added TI Transforms module used to map a TI object to TC Bach or V3 format
 -   APP-3810 - [Services] Add support for Feed Service Apps
 -   APP-3822 - [TcEx] Improve type-hinting to enable intellisense for more attributes of TcEx
+-   APP-3825 - [API] Update date format on TQL filters used in V3 api
+
 ### 3.0.4
 
 -   APP-3582 - [CLI] Updated spectool to automatically sort release notes by version when creating readme.md
