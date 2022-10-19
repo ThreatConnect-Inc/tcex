@@ -164,7 +164,7 @@ class GenerateFilterABC(GenerateABC, ABC):
             _code.extend(
                 [
                     f'''{self.i2}{keyword.snake_case()} = self.utils.any_to_datetime'''
-                    f'''({keyword.snake_case()}).strftime('%Y-%m-%dT%H:%M:%S')'''
+                    f'''({keyword.snake_case()}).strftime('%Y-%m-%d %H:%M:%S')'''
                 ]
             )
         _code.extend(
