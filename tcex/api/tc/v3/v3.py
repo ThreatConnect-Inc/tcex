@@ -8,7 +8,7 @@ from tcex.api.tc.v3.threat_intelligence.threat_intelligence import ThreatIntelli
 
 
 class V3(CaseManagement, Security, ThreatIntelligence):
-    """Case Management
+    """V3 API Collection
 
     Args:
         session: An configured instance of request.Session with TC API Auth.

@@ -36,7 +36,7 @@ class TransformsABC(ABC):
     ):
         """Initialize class properties."""
         self.ti_dicts = ti_dicts
-        self.transforms = transforms
+        self.transforms = transforms if isinstance(transforms, list) else [transforms]
 
         # properties
         self.log = logger
@@ -66,7 +66,7 @@ class TransformABC(ABC):
     ):
         """Initialize class properties."""
         self.ti_dict = ti_dict
-        self.transforms = transforms
+        self.transforms = transforms if isinstance(transforms, list) else [transforms]
 
         # properties
         self.log = logger
@@ -140,8 +140,6 @@ class TransformABC(ABC):
         """Process Attribute data"""
         for attribute in attributes or []:
             for value in self._transform_values(attribute):
-                if value == 'Target Country':
-                    print('!!!!', value)
                 self.add_attribute(
                     displayed=attribute.displayed,
                     source=self._transform_value(attribute.source),
@@ -297,9 +295,9 @@ class TransformABC(ABC):
         for t in metadata.transform or []:
             # pass value to static_map or callable, but never both
             if t.filter_map is not None:
-                self._transform_value_map(t.filter_map, value, True)
+                value = self._transform_value_map(value, t.filter_map, True)
             elif t.static_map is not None:
-                self._transform_value_map(t.static_map, value)
+                value = self._transform_value_map(value, t.static_map)
             elif callable(t.method):
                 value = self._transform_value_callable(value, t)
 
@@ -370,9 +368,12 @@ class TransformABC(ABC):
                 ]
             elif t.static_map is not None:
                 # when path search returns an array of values, each value is mapped
-                value = [
-                    self._transform_value_map(v, t.static_map) for v in self._always_array(value)
-                ]
+                _values = []
+                for v in self._always_array(value):
+                    v = self._transform_value_map(v, t.static_map)
+                    if v is not None:
+                        _values.append(v)
+                value = _values
             elif callable(t.method):
                 value = self._transform_value_callable(value, t)
 

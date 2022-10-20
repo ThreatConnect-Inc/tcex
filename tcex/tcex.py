@@ -7,13 +7,13 @@ import os
 import platform
 import signal
 import threading
-from typing import TYPE_CHECKING, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Dict, Optional, Union
 
 # third-party
 from requests import Session
 
 # first-party
-from tcex.api.tc.ti_transform import TiTransform, TiTransforms
+from tcex.api import API
 from tcex.api.tc.utils.threat_intel_utils import ThreatIntelUtils
 from tcex.api.tc.v2.v2 import V2
 from tcex.api.tc.v3.v3 import V3
@@ -37,7 +37,6 @@ from tcex.utils.file_operations import FileOperations
 
 if TYPE_CHECKING:
     # first-party
-    from tcex.api.tc.ti_transform.model import GroupTransformModel, IndicatorTransformModel
     from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
     from tcex.services.api_service import ApiService
     from tcex.services.common_service_trigger import CommonServiceTrigger
@@ -124,6 +123,11 @@ class TcEx:
             timeout: The number of second before timing out the request.
         """
         return AdvancedRequest(self.inputs, self.playbook, session, output_prefix, timeout)
+
+    @property
+    def api(self) -> 'API':
+        """Return instance of Threat Intel Utils."""
+        return API(self.inputs, self.session_tc)
 
     def exit(self, code: Optional[ExitCode] = None, msg: Optional[str] = None):
         """Application exit method with proper exit code
@@ -477,22 +481,6 @@ class TcEx:
         """Set the exit code (registry)"""
         self.exit_code = exit_code
 
-    @staticmethod
-    def ti_transform(
-        ti_dict: dict,
-        transforms: List[Union['GroupTransformModel', 'IndicatorTransformModel']],
-    ) -> 'TiTransform':
-        """Return an instance of TI Transform class."""
-        return TiTransform(ti_dict, transforms)
-
-    @staticmethod
-    def ti_transforms(
-        ti_dict: List[dict],
-        transforms: List[Union['GroupTransformModel', 'IndicatorTransformModel']],
-    ) -> 'TiTransform':
-        """Return an instance of TI Transforms class."""
-        return TiTransforms(ti_dict, transforms)
-
     @registry.factory(Tokens, singleton=True)
     @cached_property
     def token(self) -> 'Tokens':
@@ -528,12 +516,12 @@ class TcEx:
         """Include the Utils module."""
         return Utils()
 
-    @property
+    @cached_property
     def v2(self) -> 'V2':
         """Return a case management instance."""
         return V2(self.inputs, self.session_tc)
 
-    @property
+    @cached_property
     def v3(self) -> 'V3':
         """Return a case management instance."""
         return V3(self.session_tc)
