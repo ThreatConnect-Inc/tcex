@@ -3,13 +3,12 @@
 # standard library
 import os
 import threading
-import typing
-from typing import Any, Callable
+from typing import Any, Callable, Generic, TypeVar
 
-T = typing.TypeVar('T')
+T = TypeVar('T')
 
 
-class scoped_property(typing.Generic[T]):
+class scoped_property(Generic[T]):
     """Makes a value unique for each thread and also acts as a @property decorator.
 
     Essentially, a thread-and-process local value.  When used to decorate a function, will
@@ -22,7 +21,7 @@ class scoped_property(typing.Generic[T]):
 
     instances = []
 
-    def __init__(self, wrapped: Callable):
+    def __init__(self, wrapped: Callable[..., T]):
         """Initialize."""
 
         scoped_property.instances.append(self)
@@ -56,7 +55,7 @@ class scoped_property(typing.Generic[T]):
         new_value = self._create_value(self.wrapped, instance)
         return new_value
 
-    def _create_value(self, wrapped, *args, **kwargs):
+    def _create_value(self, wrapped, *args, **kwargs) -> T:
         """Call the wrapped factory function to get a new value."""
         data = wrapped(*args, **kwargs)
         setattr(self.value, 'data', (os.getpid(), data))
