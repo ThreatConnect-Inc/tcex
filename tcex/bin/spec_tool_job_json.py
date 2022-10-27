@@ -25,7 +25,7 @@ class SpecToolJobJson(BinABC):
 
     def generate(self):
         """Generate the layout.json file data."""
-        if self.asy.model.organization and self.asy.model.organization.feeds:
+        if self.asy.model.is_feed_app and self.asy.model.organization.feeds:
             for feed in self.asy.model.organization.feeds:
                 _job_data = feed.job.dict(by_alias=True)
                 app_name = self.tj.model.package.app_name.replace('_', ' ')
