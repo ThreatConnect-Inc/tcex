@@ -169,6 +169,7 @@ class IndicatorTransformModel(TiTransformModel, extra=Extra.forbid):
     value2: Optional[MetadataTransformModel] = Field(None, description='')
     value3: Optional[MetadataTransformModel] = Field(None, description='')
     # file
+    file_occurrences: Optional[List[MetadataTransformModel]] = Field(None, description='')
     size: Optional[MetadataTransformModel] = Field(None, description='')
     # host
     dns_active: Optional[MetadataTransformModel] = Field(None, description='')
