@@ -1,6 +1,7 @@
 """Threat Intelligence Transform Module"""
 # standard library
 import traceback
+from datetime import datetime
 from typing import Optional
 
 # first-party
@@ -85,6 +86,22 @@ class TiTransform(TransformABC):
                 attribute_data['source'] = source
 
             self.transformed_item.setdefault('attribute', []).append(attribute_data)
+
+    def add_file_occurrence(
+        self, file_name: Optional[str], path: Optional[str], date: Optional[datetime]
+    ):
+        """Abstract method"""
+        self.transformed_item.setdefault('fileOccurrence', []).append(
+            {
+                k: v
+                for k, v in {
+                    'fileName': file_name,
+                    'path': path,
+                    'date': date,
+                }
+                if v
+            }
+        )
 
     def add_confidence(self, confidence: Optional[int]):
         """Add a rating to the transformed item."""

@@ -2,6 +2,7 @@
 # standard library
 import logging
 from abc import ABC, abstractmethod
+from datetime import datetime
 from inspect import signature
 from typing import TYPE_CHECKING, List, Optional, Union
 
@@ -52,7 +53,8 @@ class TransformsABC(ABC):
                 if transform.applies is None:
                     raise ValidationError(
                         'If more than one transform is provided, each '
-                        'provided transform must provide an apply field.'
+                        'provided transform must provide an apply field.',
+                        None,
                     )
 
 
@@ -147,6 +149,11 @@ class TransformABC(ABC):
                     value=str(value),
                 )
 
+    def _process_file_occurrences(self, file_occurrences: List['MetadataTransformModel']):
+        for file_occurrence in file_occurrences or []:
+            for value in self._transform_values(file_occurrence):
+                self.add_file_occurrence(**value)
+
     def _process_confidence(self, metadata: 'MetadataTransformModel'):
         """Process standard metadata fields."""
         self.add_confidence(self._transform_value(metadata))
@@ -185,6 +192,7 @@ class TransformABC(ABC):
 
         if self.transformed_item['type'] == 'File':
             self._process_metadata('size', self.transform.size)
+            self._process_file_occurrences(self.transform.file_occurrences or [])
 
         if self.transformed_item['type'] == 'Host':
             self._process_metadata('dnsActive', self.transform.dns_active)
@@ -395,7 +403,8 @@ class TransformABC(ABC):
                 if transform.applies is None:
                     raise ValidationError(
                         'If more than one transform is provided, each '
-                        'provided transform must provide an apply field.'
+                        'provided transform must provide an apply field.',
+                        None,
                     )
 
     @abstractmethod
@@ -409,6 +418,12 @@ class TransformABC(ABC):
         value: str,
         displayed: Optional[bool] = False,
         source: Optional[str] = None,
+    ):
+        """Abstract method"""
+
+    @abstractmethod
+    def add_file_occurrence(
+        self, file_name: Optional[str], path: Optional[str], date: Optional[datetime]
     ):
         """Abstract method"""
 
