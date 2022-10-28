@@ -54,13 +54,13 @@ class SpecToolAppSpecYml(BinABC):
     def _add_category(self, app_spec_yml_data: dict):
         """Add category."""
         _category = ''
-        if self.ij.model.runtime_level.lower() != 'organization':
+        if any([self.ij.model.is_playbook_app, self.ij.model.is_trigger_app]):
             _category = self.ij.model.playbook.type or ''
         app_spec_yml_data['category'] = _category
 
     def _add_feeds(self, app_spec_yml_data: dict):
         """Add organization feeds section."""
-        if self.ij.model.runtime_level.lower() != 'organization':
+        if not self.ij.model.is_feed_app:
             return
 
         feeds = []
@@ -90,7 +90,7 @@ class SpecToolAppSpecYml(BinABC):
 
     def _add_organization(self, app_spec_yml_data: dict):
         """Add asy.organization."""
-        if self.ij.model.runtime_level.lower() == 'organization':
+        if self.ij.model.is_organization_app:
             app_spec_yml_data.setdefault('organization', {})
             if self.ij.model.publish_out_files:
                 app_spec_yml_data['organization'][
@@ -103,7 +103,7 @@ class SpecToolAppSpecYml(BinABC):
 
     def _add_output_data(self, app_spec_yml_data: dict):
         """Add asy.outputData."""
-        if self.ij.model.runtime_level.lower() != 'organization':
+        if any([self.ij.model.is_playbook_app, self.ij.model.is_trigger_app]):
             # build outputs based on display value
             _output_data_temp = {}
             if self.lj.has_layout:
@@ -131,15 +131,12 @@ class SpecToolAppSpecYml(BinABC):
 
     def _add_output_prefix(self, app_spec_yml_data: dict):
         """Add asy.outputData."""
-        if (
-            self.ij.model.runtime_level.lower() == 'playbook'
-            and self.ij.model.playbook.output_prefix
-        ):
+        if self.ij.model.is_playbook_app and self.ij.model.playbook.output_prefix:
             app_spec_yml_data['outputPrefix'] = self.ij.model.playbook.output_prefix
 
     def _add_playbook(self, app_spec_yml_data: dict):
         """Add asy.playbook."""
-        if self.ij.model.runtime_level.lower() != 'organization':
+        if any([self.ij.model.is_playbook_app, self.ij.model.is_trigger_app]):
             app_spec_yml_data.setdefault('playbook', {})
             if self.ij.model.playbook.retry:
                 app_spec_yml_data['playbook']['retry'] = self.ij.model.playbook.retry

@@ -14,6 +14,7 @@ class TiTransforms(TransformsABC):
 
     def process(self):
         """Process the mapping."""
+        self.transformed_collection = []
         for ti_dict in self.ti_dicts:
             self.transformed_collection.append(TiTransform(ti_dict, self.transforms))
 

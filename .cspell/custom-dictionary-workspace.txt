@@ -27,6 +27,7 @@ encrypter
 envvar
 escalatees
 ESUP
+feedapiservice
 fget
 fnmatch
 fpfn
