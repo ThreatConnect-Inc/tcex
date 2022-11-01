@@ -5,7 +5,7 @@ import logging
 from abc import ABC, abstractmethod
 from datetime import datetime
 from inspect import signature
-from typing import TYPE_CHECKING, List, Optional, Union
+from typing import TYPE_CHECKING, Callable, List, Optional, Union
 
 # third-party
 import jmespath
@@ -180,7 +180,7 @@ class TransformABC(ABC):
     def _process_associated_group(self, associations: List['AttributeTransformModel']):
         """Process Attribute data"""
         for association in associations or []:
-            for value in self._transform_values(association):
+            for value in filter(bool, self._process_metadata_transform_model(association.value)):
                 self.add_associated_group(value)
 
     def _process_metadata_transform_model(
@@ -230,9 +230,25 @@ class TransformABC(ABC):
         and not call add_file_occurrence.
         """
         for file_occurrence in file_occurrences or []:
-            file_name = self._process_metadata_transform_model(file_occurrence.file_name)
-            path = self._process_metadata_transform_model(file_occurrence.path, len(file_name))
-            date = self._process_metadata_transform_model(file_occurrence.date, len(file_name))
+            expected_length = max(
+                map(
+                    lambda f: len(self._process_metadata_transform_model(f)),
+                    [
+                        field
+                        for field in (
+                            file_occurrence.file_name,
+                            file_occurrence.path,
+                            file_occurrence.date,
+                        )
+                        if field is not None
+                    ],
+                )
+            )
+            file_name = self._process_metadata_transform_model(
+                file_occurrence.file_name, expected_length
+            )
+            path = self._process_metadata_transform_model(file_occurrence.path, expected_length)
+            date = self._process_metadata_transform_model(file_occurrence.date, expected_length)
 
             param_keys = ['file_name', 'path', 'date']
             params = [dict(zip(param_keys, p)) for p in zip(file_name, path, date)]
@@ -402,7 +418,7 @@ class TransformABC(ABC):
             elif t.static_map is not None:
                 value = self._transform_value_map(value, t.static_map)
             elif callable(t.method):
-                value = self._transform_value_callable(value, t)
+                value = self._transform_value_callable(value, t.method, t.kwargs)
 
         # ensure only a string value or None is returned (set to default if required)
         if value is None:
@@ -413,16 +429,20 @@ class TransformABC(ABC):
         return value
 
     def _transform_value_callable(
-        self, value: Union[dict, list, str], t: 'MetadataTransformModel'
+        self, value: Union[dict, list, str], c: Callable, kwargs=None
     ) -> Union[Optional[str], Optional[List[str]]]:
         """Transform values in the TI data."""
         # find signature of method and call with correct args
-        sig = signature(t.method, follow_wrapped=True)
-        if 'ti_dict' in sig.parameters:
-            t.kwargs.update({'ti_dict': self.ti_dict})
+        kwargs = kwargs or {}
+        try:
+            sig = signature(c, follow_wrapped=True)
+            if 'ti_dict' in sig.parameters:
+                kwargs.update({'ti_dict': self.ti_dict})
+        except ValueError:  # signature doesn't work for many built-in methods/functions
+            pass
 
         # pass value to transform callable/method, which should always return a string
-        return t.method(value, **t.kwargs)
+        return c(value, **kwargs)
 
     def _transform_value_map(self, value: str, map_: dict, passthrough: bool = False) -> str:
         """Transform a value using a static map."""
@@ -478,7 +498,12 @@ class TransformABC(ABC):
                         _values.append(v)
                 value = _values
             elif callable(t.method):
-                value = self._transform_value_callable(value, t)
+                value = self._transform_value_callable(value, t.method, t.kwargs)
+            elif callable(t.for_each):
+                value = [
+                    self._transform_value_callable(v, t.for_each, t.kwargs) if v is not None else v
+                    for v in self._always_array(value)
+                ]
 
         # the output should be an array of strings or empty array
         _value = []
@@ -486,6 +511,8 @@ class TransformABC(ABC):
             if v in [None, '']:
                 if metadata.default is not None:
                     _value.append(metadata.default)
+                else:
+                    _value.append(v)
             else:
                 _value.append(v)
 

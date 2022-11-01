@@ -9,6 +9,8 @@ import deepdiff
 # first-party
 from tcex import TcEx
 
+# pylint: disable=redefined-outer-name
+
 
 def transform(tcex: TcEx):
     """Create transform for indicator regression test."""
@@ -57,17 +59,21 @@ def transform(tcex: TcEx):
             },
             'associated_groups': [
                 {
-                    'path': 'actors[].slug',
-                    'transform': {
-                        'method': lambda a: a,
-                        'kwargs': {'ti_type': 'actor'},
-                    },
+                    'value': {
+                        'path': 'actors[].slug',
+                        'transform': {
+                            'for_each': str,
+                            'kwargs': {'ti_type': 'actor'},
+                        },
+                    }
                 },
                 {
-                    'path': 'reports[].slug',
-                    'transform': {
-                        'method': lambda a: a,
-                        'kwargs': {'ti_type': 'report'},
+                    'value': {
+                        'path': 'reports[].slug',
+                        'transform': {
+                            'for_each': str,
+                            'kwargs': {'ti_type': 'report'},
+                        },
                     },
                 },
             ],
@@ -112,7 +118,7 @@ def transform(tcex: TcEx):
                     'value': {
                         'path': 'labels[]',
                         'transform': {
-                            'method': lambda a: a,
+                            'for_each': str,
                         },
                     },
                     'type': 'Additional Analysis and Context',
@@ -140,7 +146,7 @@ def transform(tcex: TcEx):
                     'value': {
                         'path': 'domain_types[]',
                         'transform': {
-                            'method': lambda values: [f'Domain Type: {v}' for v in values],
+                            'for_each': lambda v: f'Domain Type: {v}',
                         },
                     },
                 },
@@ -149,7 +155,7 @@ def transform(tcex: TcEx):
                         'path': 'ip_address_types[]',
                         'transform': [
                             {
-                                'method': lambda values: [f'Address Type: {v}' for v in values],
+                                'for_each': 'Address Type: {}'.format,
                             }
                         ],
                     },
@@ -159,7 +165,7 @@ def transform(tcex: TcEx):
                         'path': 'labels[]',
                         'transform': [
                             {
-                                'method': lambda a: a,
+                                'for_each': str,
                             }
                         ],
                     },
@@ -174,7 +180,7 @@ def transform(tcex: TcEx):
                         'path': 'targets[]',
                         'transform': [
                             {
-                                'method': lambda values: [f'Target: {v}' for v in values],
+                                'for_each': 'Target: {}'.format,
                             }
                         ],
                     },
@@ -184,7 +190,7 @@ def transform(tcex: TcEx):
                         'path': 'threat_types[]',
                         'transform': [
                             {
-                                'method': lambda values: [f'Threat Type: {v}' for v in values],
+                                'for_each': 'Threat Type: {}'.format,
                             }
                         ],
                     },
@@ -201,17 +207,13 @@ def transform(tcex: TcEx):
             'file_occurrences': [
                 {
                     'file_name': {
-                        'path': "relations[?type == 'filename'].indicator",
+                        'path': "relations[?type == 'filename'] | null_leaf(@, 'indicator')",
                     },
                     'date': {
-                        'path': "relations[?type == 'filename'].created_date",
+                        'path': "relations[?type == 'filename'] | null_leaf(@, 'created_date')",
                         'transform': [
-                            {'method': lambda a: map(tcex.utils.any_to_datetime, a)},
-                            {
-                                'method': lambda d: map(
-                                    lambda a: a.strftime('%Y-%m-%dT%H:%M:%SZ'), d
-                                )
-                            },
+                            {'for_each': tcex.utils.any_to_datetime},
+                            {'for_each': lambda d: d.strftime('%Y-%m-%dT%H:%M:%SZ')},
                         ],
                     },
                 }
@@ -227,4 +229,134 @@ def test_indicators_regression(tcex: TcEx):
         current_path / 'data' / 'transformed_indicators.json'
     ) as output:
         transforms = tcex.api.tc.ti_transforms(json.load(input_), transform(tcex))
+        tcex.log.warning(json.dumps(transforms.batch))
         assert not deepdiff.DeepDiff(transforms.batch, json.load(output))
+
+
+def test_indicators_file_occurrence(tcex: TcEx):
+    """Test file occurrence transforms."""
+    data = [
+        {
+            'summary': '032AA7E4C76F747BE6ABFC8345FDDBB2FFB591AF',
+            'type': 'File',
+            'relations': [
+                {'path': '/foo/bar', 'when': 'Jan 12 2002'},
+                {'name': 'bad.exe'},
+                {'path': '/bash/bang'},
+            ],
+        }
+    ]
+
+    def _transform_date(val):
+        tcex.log.warning(val)
+        return val
+
+    transform = tcex.api.tc.indicator_transform(
+        {
+            'value1': {'path': 'summary'},
+            'type': {'path': 'type'},
+            'file_occurrences': [
+                {
+                    'path': {
+                        'path': 'relations[] | null_leaf(@, \'path\')',
+                    },
+                    'date': {
+                        'path': 'relations[] | null_leaf(@, \'when\')',
+                        'transform': [
+                            {'for_each': tcex.utils.any_to_datetime},
+                            {
+                                'for_each': lambda d: d.strftime('%Y-%m-%dT%H:%M:%SZ'),
+                            },
+                        ],
+                    },
+                    'file_name': {
+                        'path': 'relations[] | null_leaf(@, \'name\')',
+                    },
+                }
+            ],
+        }
+    )
+
+    transforms = tcex.api.tc.ti_transforms(data, transform)
+
+    assert not deepdiff.DeepDiff(
+        transforms.batch,
+        {
+            'group': [],
+            'indicator': [
+                {
+                    'fileOccurrence': [
+                        {'path': '/foo/bar', 'date': '2002-01-12T00:00:00Z'},
+                        {'fileName': 'bad.exe'},
+                        {'path': '/bash/bang'},
+                    ],
+                    'summary': '032AA7E4C76F747BE6ABFC8345FDDBB2FFB591AF',
+                    'type': 'File',
+                }
+            ],
+        },
+    )
+
+
+def test_indicators_attributes(tcex: TcEx):
+    """Test attribute transforms."""
+    data = [
+        {
+            'summary': '032AA7E4C76F747BE6ABFC8345FDDBB2FFB591AF',
+            'type': 'File',
+            'attributes': {
+                'data': [
+                    {
+                        'type': 'Description',
+                        'value': 'Imported from bad list',
+                    },
+                    {
+                        'type': 'Foo',
+                        'value': 'Bar',
+                    },
+                ]
+            },
+        }
+    ]
+
+    def _transform_date(val):
+        tcex.log.warning(val)
+        return val
+
+    transform = tcex.api.tc.indicator_transform(
+        {
+            'value1': {'path': 'summary'},
+            'type': {'path': 'type'},
+            'attributes': [
+                {
+                    'type': {
+                        'path': 'attributes.data[] | null_leaf(@, \'type\')',
+                    },
+                    'value': {
+                        'path': 'attributes.data[] | null_leaf(@, \'type\')',
+                    },
+                }
+            ],
+        }
+    )
+
+    transforms = tcex.api.tc.ti_transforms(data, transform)
+
+    tcex.log.warning(transforms.batch)
+
+    assert not deepdiff.DeepDiff(
+        transforms.batch,
+        {
+            'group': [],
+            'indicator': [
+                {
+                    'attribute': [
+                        {'type': 'Description', 'value': 'Description'},
+                        {'type': 'Foo', 'value': 'Foo'},
+                    ],
+                    'summary': '032AA7E4C76F747BE6ABFC8345FDDBB2FFB591AF',
+                    'type': 'File',
+                }
+            ],
+        },
+    )

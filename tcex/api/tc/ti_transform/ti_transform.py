@@ -58,7 +58,7 @@ class TiTransform(TransformABC):
         """
         # process type specific data
         if isinstance(self.transform, GroupTransformModel):
-            self.transformed_item.setdefault('associatedGroupXid', []).append(group_xid)
+            self.transformed_item.setdefault('associat4edGroupXid', []).append(group_xid)
         elif isinstance(self.transform, IndicatorTransformModel):
             associated_group = {'groupXid': group_xid}
             self.transformed_item.setdefault('associatedGroups', []).append(associated_group)

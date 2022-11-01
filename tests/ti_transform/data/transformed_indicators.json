@@ -13,35 +13,19 @@
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664913032,
-            "last_valid_on": 1664913032,
-            "name": "KillChain/Installation"
-          }
+          "value": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'KillChain/Installation'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664913028,
-            "last_valid_on": 1665008919,
-            "name": "MaliciousConfidence/High"
-          }
+          "value": "{'created_on': 1664913028, 'last_valid_on': 1665008919, 'name': 'MaliciousConfidence/High'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664913032,
-            "last_valid_on": 1664913032,
-            "name": "Malware/PdfCaptchaLure21"
-          }
+          "value": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'Malware/PdfCaptchaLure21'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664913032,
-            "last_valid_on": 1664913032,
-            "name": "ThreatType/Criminal"
-          }
+          "value": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'ThreatType/Criminal'}"
         }
       ],
       "confidence": 95,
@@ -51,32 +35,16 @@
       "summary": "9a3697a9332be777c59c91a6a16f2122",
       "tag": [
         {
-          "name": {
-            "created_on": 1664913032,
-            "last_valid_on": 1664913032,
-            "name": "KillChain/Installation"
-          }
+          "name": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'KillChain/Installation'}"
         },
         {
-          "name": {
-            "created_on": 1664913028,
-            "last_valid_on": 1665008919,
-            "name": "MaliciousConfidence/High"
-          }
+          "name": "{'created_on': 1664913028, 'last_valid_on': 1665008919, 'name': 'MaliciousConfidence/High'}"
         },
         {
-          "name": {
-            "created_on": 1664913032,
-            "last_valid_on": 1664913032,
-            "name": "Malware/PdfCaptchaLure21"
-          }
+          "name": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'Malware/PdfCaptchaLure21'}"
         },
         {
-          "name": {
-            "created_on": 1664913032,
-            "last_valid_on": 1664913032,
-            "name": "ThreatType/Criminal"
-          }
+          "name": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'ThreatType/Criminal'}"
         },
         {
           "name": "PdfCaptchaLure21"
@@ -100,35 +68,19 @@
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664913032,
-            "last_valid_on": 1664913032,
-            "name": "KillChain/Installation"
-          }
+          "value": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'KillChain/Installation'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664913028,
-            "last_valid_on": 1665008919,
-            "name": "MaliciousConfidence/High"
-          }
+          "value": "{'created_on': 1664913028, 'last_valid_on': 1665008919, 'name': 'MaliciousConfidence/High'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664913032,
-            "last_valid_on": 1664913032,
-            "name": "Malware/PdfCaptchaLure21"
-          }
+          "value": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'Malware/PdfCaptchaLure21'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664913032,
-            "last_valid_on": 1664913032,
-            "name": "ThreatType/Criminal"
-          }
+          "value": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'ThreatType/Criminal'}"
         }
       ],
       "confidence": 95,
@@ -138,32 +90,16 @@
       "summary": "b33b01c1e13c64ff7e4c17ae2a7506f7d55b5f45b26b08965b7484cf3275a101",
       "tag": [
         {
-          "name": {
-            "created_on": 1664913032,
-            "last_valid_on": 1664913032,
-            "name": "KillChain/Installation"
-          }
+          "name": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'KillChain/Installation'}"
         },
         {
-          "name": {
-            "created_on": 1664913028,
-            "last_valid_on": 1665008919,
-            "name": "MaliciousConfidence/High"
-          }
+          "name": "{'created_on': 1664913028, 'last_valid_on': 1665008919, 'name': 'MaliciousConfidence/High'}"
         },
         {
-          "name": {
-            "created_on": 1664913032,
-            "last_valid_on": 1664913032,
-            "name": "Malware/PdfCaptchaLure21"
-          }
+          "name": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'Malware/PdfCaptchaLure21'}"
         },
         {
-          "name": {
-            "created_on": 1664913032,
-            "last_valid_on": 1664913032,
-            "name": "ThreatType/Criminal"
-          }
+          "name": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'ThreatType/Criminal'}"
         },
         {
           "name": "PdfCaptchaLure21"
@@ -187,35 +123,19 @@
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664913032,
-            "last_valid_on": 1664913032,
-            "name": "KillChain/Installation"
-          }
+          "value": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'KillChain/Installation'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664913028,
-            "last_valid_on": 1665008919,
-            "name": "MaliciousConfidence/High"
-          }
+          "value": "{'created_on': 1664913028, 'last_valid_on': 1665008919, 'name': 'MaliciousConfidence/High'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664913032,
-            "last_valid_on": 1664913032,
-            "name": "Malware/PdfCaptchaLure21"
-          }
+          "value": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'Malware/PdfCaptchaLure21'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664913032,
-            "last_valid_on": 1664913032,
-            "name": "ThreatType/Criminal"
-          }
+          "value": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'ThreatType/Criminal'}"
         }
       ],
       "confidence": 95,
@@ -225,32 +145,16 @@
       "summary": "215a3de69ccd3b0e073c530a0cbdcf962a515d25",
       "tag": [
         {
-          "name": {
-            "created_on": 1664913032,
-            "last_valid_on": 1664913032,
-            "name": "KillChain/Installation"
-          }
+          "name": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'KillChain/Installation'}"
         },
         {
-          "name": {
-            "created_on": 1664913028,
-            "last_valid_on": 1665008919,
-            "name": "MaliciousConfidence/High"
-          }
+          "name": "{'created_on': 1664913028, 'last_valid_on': 1665008919, 'name': 'MaliciousConfidence/High'}"
         },
         {
-          "name": {
-            "created_on": 1664913032,
-            "last_valid_on": 1664913032,
-            "name": "Malware/PdfCaptchaLure21"
-          }
+          "name": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'Malware/PdfCaptchaLure21'}"
         },
         {
-          "name": {
-            "created_on": 1664913032,
-            "last_valid_on": 1664913032,
-            "name": "ThreatType/Criminal"
-          }
+          "name": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'ThreatType/Criminal'}"
         },
         {
           "name": "PdfCaptchaLure21"
@@ -274,35 +178,19 @@
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664958409,
-            "last_valid_on": 1664958409,
-            "name": "KillChain/Installation"
-          }
+          "value": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'KillChain/Installation'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664958406,
-            "last_valid_on": 1665009038,
-            "name": "MaliciousConfidence/High"
-          }
+          "value": "{'created_on': 1664958406, 'last_valid_on': 1665009038, 'name': 'MaliciousConfidence/High'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664958409,
-            "last_valid_on": 1664958409,
-            "name": "Malware/PdfCaptchaLure21"
-          }
+          "value": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'Malware/PdfCaptchaLure21'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664958409,
-            "last_valid_on": 1664958409,
-            "name": "ThreatType/Criminal"
-          }
+          "value": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'ThreatType/Criminal'}"
         }
       ],
       "confidence": 95,
@@ -312,32 +200,16 @@
       "summary": "3e7cbb2161e7d51788e2336c3671112f1023e9d7e1ebbcb882e1719554a98f5b",
       "tag": [
         {
-          "name": {
-            "created_on": 1664958409,
-            "last_valid_on": 1664958409,
-            "name": "KillChain/Installation"
-          }
+          "name": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'KillChain/Installation'}"
         },
         {
-          "name": {
-            "created_on": 1664958406,
-            "last_valid_on": 1665009038,
-            "name": "MaliciousConfidence/High"
-          }
+          "name": "{'created_on': 1664958406, 'last_valid_on': 1665009038, 'name': 'MaliciousConfidence/High'}"
         },
         {
-          "name": {
-            "created_on": 1664958409,
-            "last_valid_on": 1664958409,
-            "name": "Malware/PdfCaptchaLure21"
-          }
+          "name": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'Malware/PdfCaptchaLure21'}"
         },
         {
-          "name": {
-            "created_on": 1664958409,
-            "last_valid_on": 1664958409,
-            "name": "ThreatType/Criminal"
-          }
+          "name": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'ThreatType/Criminal'}"
         },
         {
           "name": "PdfCaptchaLure21"
@@ -361,35 +233,19 @@
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664958409,
-            "last_valid_on": 1664958409,
-            "name": "KillChain/Installation"
-          }
+          "value": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'KillChain/Installation'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664958406,
-            "last_valid_on": 1665009038,
-            "name": "MaliciousConfidence/High"
-          }
+          "value": "{'created_on': 1664958406, 'last_valid_on': 1665009038, 'name': 'MaliciousConfidence/High'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664958409,
-            "last_valid_on": 1664958409,
-            "name": "Malware/PdfCaptchaLure21"
-          }
+          "value": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'Malware/PdfCaptchaLure21'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664958409,
-            "last_valid_on": 1664958409,
-            "name": "ThreatType/Criminal"
-          }
+          "value": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'ThreatType/Criminal'}"
         }
       ],
       "confidence": 95,
@@ -399,32 +255,16 @@
       "summary": "7a05d047b3e5375efc6a9203a924ebe011a313be",
       "tag": [
         {
-          "name": {
-            "created_on": 1664958409,
-            "last_valid_on": 1664958409,
-            "name": "KillChain/Installation"
-          }
+          "name": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'KillChain/Installation'}"
         },
         {
-          "name": {
-            "created_on": 1664958406,
-            "last_valid_on": 1665009038,
-            "name": "MaliciousConfidence/High"
-          }
+          "name": "{'created_on': 1664958406, 'last_valid_on': 1665009038, 'name': 'MaliciousConfidence/High'}"
         },
         {
-          "name": {
-            "created_on": 1664958409,
-            "last_valid_on": 1664958409,
-            "name": "Malware/PdfCaptchaLure21"
-          }
+          "name": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'Malware/PdfCaptchaLure21'}"
         },
         {
-          "name": {
-            "created_on": 1664958409,
-            "last_valid_on": 1664958409,
-            "name": "ThreatType/Criminal"
-          }
+          "name": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'ThreatType/Criminal'}"
         },
         {
           "name": "PdfCaptchaLure21"
@@ -448,35 +288,19 @@
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664958409,
-            "last_valid_on": 1664958409,
-            "name": "KillChain/Installation"
-          }
+          "value": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'KillChain/Installation'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664958406,
-            "last_valid_on": 1665009038,
-            "name": "MaliciousConfidence/High"
-          }
+          "value": "{'created_on': 1664958406, 'last_valid_on': 1665009038, 'name': 'MaliciousConfidence/High'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664958409,
-            "last_valid_on": 1664958409,
-            "name": "Malware/PdfCaptchaLure21"
-          }
+          "value": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'Malware/PdfCaptchaLure21'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664958409,
-            "last_valid_on": 1664958409,
-            "name": "ThreatType/Criminal"
-          }
+          "value": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'ThreatType/Criminal'}"
         }
       ],
       "confidence": 95,
@@ -486,32 +310,16 @@
       "summary": "73e8f1fce55bfdefc876f332be2884b3",
       "tag": [
         {
-          "name": {
-            "created_on": 1664958409,
-            "last_valid_on": 1664958409,
-            "name": "KillChain/Installation"
-          }
+          "name": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'KillChain/Installation'}"
         },
         {
-          "name": {
-            "created_on": 1664958406,
-            "last_valid_on": 1665009038,
-            "name": "MaliciousConfidence/High"
-          }
+          "name": "{'created_on': 1664958406, 'last_valid_on': 1665009038, 'name': 'MaliciousConfidence/High'}"
         },
         {
-          "name": {
-            "created_on": 1664958409,
-            "last_valid_on": 1664958409,
-            "name": "Malware/PdfCaptchaLure21"
-          }
+          "name": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'Malware/PdfCaptchaLure21'}"
         },
         {
-          "name": {
-            "created_on": 1664958409,
-            "last_valid_on": 1664958409,
-            "name": "ThreatType/Criminal"
-          }
+          "name": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'ThreatType/Criminal'}"
         },
         {
           "name": "PdfCaptchaLure21"
@@ -531,43 +339,23 @@
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664920670,
-            "last_valid_on": 1665009255,
-            "name": "MaliciousConfidence/High"
-          }
+          "value": "{'created_on': 1664920670, 'last_valid_on': 1665009255, 'name': 'MaliciousConfidence/High'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664920673,
-            "last_valid_on": 1664920673,
-            "name": "Malware/Mofksys"
-          }
+          "value": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'Malware/Mofksys'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664920673,
-            "last_valid_on": 1664920673,
-            "name": "ThreatType/Commodity"
-          }
+          "value": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/Commodity'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664920673,
-            "last_valid_on": 1664920673,
-            "name": "ThreatType/CredentialHarvesting"
-          }
+          "value": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/CredentialHarvesting'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664920673,
-            "last_valid_on": 1664920673,
-            "name": "ThreatType/InformationStealer"
-          }
+          "value": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/InformationStealer'}"
         }
       ],
       "confidence": 95,
@@ -577,39 +365,19 @@
       "summary": "c3e0102bebd7c42be41cd44dbfe52f2bf49abdf1",
       "tag": [
         {
-          "name": {
-            "created_on": 1664920670,
-            "last_valid_on": 1665009255,
-            "name": "MaliciousConfidence/High"
-          }
+          "name": "{'created_on': 1664920670, 'last_valid_on': 1665009255, 'name': 'MaliciousConfidence/High'}"
         },
         {
-          "name": {
-            "created_on": 1664920673,
-            "last_valid_on": 1664920673,
-            "name": "Malware/Mofksys"
-          }
+          "name": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'Malware/Mofksys'}"
         },
         {
-          "name": {
-            "created_on": 1664920673,
-            "last_valid_on": 1664920673,
-            "name": "ThreatType/Commodity"
-          }
+          "name": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/Commodity'}"
         },
         {
-          "name": {
-            "created_on": 1664920673,
-            "last_valid_on": 1664920673,
-            "name": "ThreatType/CredentialHarvesting"
-          }
+          "name": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/CredentialHarvesting'}"
         },
         {
-          "name": {
-            "created_on": 1664920673,
-            "last_valid_on": 1664920673,
-            "name": "ThreatType/InformationStealer"
-          }
+          "name": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/InformationStealer'}"
         },
         {
           "name": "Mofksys"
@@ -635,43 +403,23 @@
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664920670,
-            "last_valid_on": 1665009255,
-            "name": "MaliciousConfidence/High"
-          }
+          "value": "{'created_on': 1664920670, 'last_valid_on': 1665009255, 'name': 'MaliciousConfidence/High'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664920673,
-            "last_valid_on": 1664920673,
-            "name": "Malware/Mofksys"
-          }
+          "value": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'Malware/Mofksys'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664920673,
-            "last_valid_on": 1664920673,
-            "name": "ThreatType/Commodity"
-          }
+          "value": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/Commodity'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664920673,
-            "last_valid_on": 1664920673,
-            "name": "ThreatType/CredentialHarvesting"
-          }
+          "value": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/CredentialHarvesting'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664920673,
-            "last_valid_on": 1664920673,
-            "name": "ThreatType/InformationStealer"
-          }
+          "value": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/InformationStealer'}"
         }
       ],
       "confidence": 95,
@@ -681,39 +429,19 @@
       "summary": "b257790e51b27de94c0f07ab36860e257ce48f64d85a6c16d59fa65596d0c790",
       "tag": [
         {
-          "name": {
-            "created_on": 1664920670,
-            "last_valid_on": 1665009255,
-            "name": "MaliciousConfidence/High"
-          }
+          "name": "{'created_on': 1664920670, 'last_valid_on': 1665009255, 'name': 'MaliciousConfidence/High'}"
         },
         {
-          "name": {
-            "created_on": 1664920673,
-            "last_valid_on": 1664920673,
-            "name": "Malware/Mofksys"
-          }
+          "name": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'Malware/Mofksys'}"
         },
         {
-          "name": {
-            "created_on": 1664920673,
-            "last_valid_on": 1664920673,
-            "name": "ThreatType/Commodity"
-          }
+          "name": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/Commodity'}"
         },
         {
-          "name": {
-            "created_on": 1664920673,
-            "last_valid_on": 1664920673,
-            "name": "ThreatType/CredentialHarvesting"
-          }
+          "name": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/CredentialHarvesting'}"
         },
         {
-          "name": {
-            "created_on": 1664920673,
-            "last_valid_on": 1664920673,
-            "name": "ThreatType/InformationStealer"
-          }
+          "name": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/InformationStealer'}"
         },
         {
           "name": "Mofksys"
@@ -739,43 +467,23 @@
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664920670,
-            "last_valid_on": 1665009255,
-            "name": "MaliciousConfidence/High"
-          }
+          "value": "{'created_on': 1664920670, 'last_valid_on': 1665009255, 'name': 'MaliciousConfidence/High'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664920673,
-            "last_valid_on": 1664920673,
-            "name": "Malware/Mofksys"
-          }
+          "value": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'Malware/Mofksys'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664920673,
-            "last_valid_on": 1664920673,
-            "name": "ThreatType/Commodity"
-          }
+          "value": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/Commodity'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664920673,
-            "last_valid_on": 1664920673,
-            "name": "ThreatType/CredentialHarvesting"
-          }
+          "value": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/CredentialHarvesting'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664920673,
-            "last_valid_on": 1664920673,
-            "name": "ThreatType/InformationStealer"
-          }
+          "value": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/InformationStealer'}"
         }
       ],
       "confidence": 95,
@@ -785,39 +493,19 @@
       "summary": "af44107ec6d19ecf7c0d976b572e38f5",
       "tag": [
         {
-          "name": {
-            "created_on": 1664920670,
-            "last_valid_on": 1665009255,
-            "name": "MaliciousConfidence/High"
-          }
+          "name": "{'created_on': 1664920670, 'last_valid_on': 1665009255, 'name': 'MaliciousConfidence/High'}"
         },
         {
-          "name": {
-            "created_on": 1664920673,
-            "last_valid_on": 1664920673,
-            "name": "Malware/Mofksys"
-          }
+          "name": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'Malware/Mofksys'}"
         },
         {
-          "name": {
-            "created_on": 1664920673,
-            "last_valid_on": 1664920673,
-            "name": "ThreatType/Commodity"
-          }
+          "name": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/Commodity'}"
         },
         {
-          "name": {
-            "created_on": 1664920673,
-            "last_valid_on": 1664920673,
-            "name": "ThreatType/CredentialHarvesting"
-          }
+          "name": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/CredentialHarvesting'}"
         },
         {
-          "name": {
-            "created_on": 1664920673,
-            "last_valid_on": 1664920673,
-            "name": "ThreatType/InformationStealer"
-          }
+          "name": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/InformationStealer'}"
         },
         {
           "name": "Mofksys"
@@ -843,85 +531,51 @@
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664920835,
-            "last_valid_on": 1665009290,
-            "name": "MaliciousConfidence/High"
-          }
+          "value": "{'created_on': 1664920835, 'last_valid_on': 1665009290, 'name': 'MaliciousConfidence/High'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664920839,
-            "last_valid_on": 1664920839,
-            "name": "Malware/Mofksys"
-          }
+          "value": "{'created_on': 1664920839, 'last_valid_on': 1664920839, 'name': 'Malware/Mofksys'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664920839,
-            "last_valid_on": 1664920839,
-            "name": "ThreatType/Commodity"
-          }
+          "value": "{'created_on': 1664920839, 'last_valid_on': 1664920839, 'name': 'ThreatType/Commodity'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664920839,
-            "last_valid_on": 1664920839,
-            "name": "ThreatType/CredentialHarvesting"
-          }
+          "value": "{'created_on': 1664920839, 'last_valid_on': 1664920839, 'name': 'ThreatType/CredentialHarvesting'}"
         },
         {
           "type": "Additional Analysis and Context",
-          "value": {
-            "created_on": 1664920839,
-            "last_valid_on": 1664920839,
-            "name": "ThreatType/InformationStealer"
-          }
+          "value": "{'created_on': 1664920839, 'last_valid_on': 1664920839, 'name': 'ThreatType/InformationStealer'}"
         }
       ],
       "confidence": 95,
       "dateAdded": "2022-10-04T22:00:35Z",
+      "fileOccurrence": [
+        {
+          "date": "2022-10-04T22:00:35Z",
+          "fileName": "bad.exe"
+        }
+      ],
       "lastModified": "2022-10-05T22:34:50Z",
       "rating": 5.0,
       "summary": "a21694e82b78bcb3c6f6b1ba52452d5b69b34c444a22d7135171e95954e5bae4",
       "tag": [
         {
-          "name": {
-            "created_on": 1664920835,
-            "last_valid_on": 1665009290,
-            "name": "MaliciousConfidence/High"
-          }
+          "name": "{'created_on': 1664920835, 'last_valid_on': 1665009290, 'name': 'MaliciousConfidence/High'}"
         },
         {
-          "name": {
-            "created_on": 1664920839,
-            "last_valid_on": 1664920839,
-            "name": "Malware/Mofksys"
-          }
+          "name": "{'created_on': 1664920839, 'last_valid_on': 1664920839, 'name': 'Malware/Mofksys'}"
         },
         {
-          "name": {
-            "created_on": 1664920839,
-            "last_valid_on": 1664920839,
-            "name": "ThreatType/Commodity"
-          }
+          "name": "{'created_on': 1664920839, 'last_valid_on': 1664920839, 'name': 'ThreatType/Commodity'}"
         },
         {
-          "name": {
-            "created_on": 1664920839,
-            "last_valid_on": 1664920839,
-            "name": "ThreatType/CredentialHarvesting"
-          }
+          "name": "{'created_on': 1664920839, 'last_valid_on': 1664920839, 'name': 'ThreatType/CredentialHarvesting'}"
         },
         {
-          "name": {
-            "created_on": 1664920839,
-            "last_valid_on": 1664920839,
-            "name": "ThreatType/InformationStealer"
-          }
+          "name": "{'created_on': 1664920839, 'last_valid_on': 1664920839, 'name': 'ThreatType/InformationStealer'}"
         },
         {
           "name": "Mofksys"

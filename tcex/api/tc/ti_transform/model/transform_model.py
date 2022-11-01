@@ -15,13 +15,14 @@ def _always_array(value: Union[list, str]) -> List[str]:
     return value
 
 
-# pylint: disable=no-self-argument,no-self-use
+# pylint: disable=no-self-argument, no-self-use
 class TransformModel(BaseModel, extra=Extra.forbid):
     """Model Definition"""
 
     filter_map: Optional[dict] = Field(None, description='')
     kwargs: Optional[dict] = Field({}, description='')
     method: Optional[Callable] = Field(None, description='')
+    for_each: Optional[Callable] = Field(None, description='')
     static_map: Optional[dict] = Field(None, description='')
 
     @validator('filter_map', 'static_map', pre=True)
@@ -36,10 +37,12 @@ class TransformModel(BaseModel, extra=Extra.forbid):
     def _required_transform(cls, v: dict):
         """Validate either static_map or method is defined."""
 
-        if not any([v.get('filter_map'), v.get('static_map'), v.get('method')]):
+        fields = [v.get('filter_map'), v.get('static_map'), v.get('method'), v.get('for_each')]
+
+        if not any(fields):
             raise ValueError('Either map or method must be defined.')
 
-        if [v.get('filter_map'), v.get('static_map'), v.get('method')].count(None) < 2:
+        if fields.count(None) < 2:
             raise ValueError('Only one transform mechanism can be defined.')
         return v
 
@@ -96,13 +99,8 @@ class DatetimeTransformModel(PathTransformModel, extra=Extra.forbid):
     """."""
 
 
-class AssociatedGroupTransform(PathTransformModel, extra=Extra.forbid):
+class AssociatedGroupTransform(ValueTransformModel, extra=Extra.forbid):
     """."""
-
-    transform: Optional[List[TransformModel]] = Field(None, description='')
-
-    # validators
-    _transform_array = validator('transform', allow_reuse=True, pre=True)(_always_array)
 
 
 class AttributeTransformModel(ValueTransformModel, extra=Extra.forbid):
@@ -135,7 +133,7 @@ class TiTransformModel(BaseModel, extra=Extra.forbid):
     security_labels: Optional[List[SecurityLabelTransformModel]] = Field(None, description='')
     tags: Optional[List[TagTransformModel]] = Field(None, description='')
     type: MetadataTransformModel = Field(..., description='')
-    xid: MetadataTransformModel = Field(..., description='')
+    xid: Optional[MetadataTransformModel] = Field(description='')
 
 
 class GroupTransformModel(TiTransformModel, extra=Extra.forbid):
@@ -163,8 +161,8 @@ class GroupTransformModel(TiTransformModel, extra=Extra.forbid):
 class IndicatorTransformModel(TiTransformModel, extra=Extra.forbid):
     """."""
 
-    confidence: Optional[MetadataTransformModel] = Field(..., description='')
-    rating: Optional[MetadataTransformModel] = Field(..., description='')
+    confidence: Optional[MetadataTransformModel] = Field(None, description='')
+    rating: Optional[MetadataTransformModel] = Field(None, description='')
     # summary: Optional[MetadataTransformModel] = Field(None, description='')
     value1: Optional[MetadataTransformModel] = Field(None, description='')
     value2: Optional[MetadataTransformModel] = Field(None, description='')
