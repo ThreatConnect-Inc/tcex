@@ -78,6 +78,20 @@ class MetadataTransformModel(PathTransformModel, extra=Extra.forbid):
     _transform_array = validator('transform', allow_reuse=True, pre=True)(_always_array)
 
 
+class ValueTransformModel(BaseModel, extra=Extra.forbid):
+    """."""
+
+    value: Union[str, MetadataTransformModel]
+
+
+class FileOccurrenceTransformModel(BaseModel, extra=Extra.forbid):
+    """."""
+
+    file_name: Optional[Union[str, MetadataTransformModel]] = Field(None, description='')
+    path: Optional[Union[str, MetadataTransformModel]] = Field(None, description='')
+    date: Optional[Union[str, MetadataTransformModel]] = Field(None, description='')
+
+
 class DatetimeTransformModel(PathTransformModel, extra=Extra.forbid):
     """."""
 
@@ -91,36 +105,23 @@ class AssociatedGroupTransform(PathTransformModel, extra=Extra.forbid):
     _transform_array = validator('transform', allow_reuse=True, pre=True)(_always_array)
 
 
-class AttributeTransformModel(PathTransformModel, extra=Extra.forbid):
+class AttributeTransformModel(ValueTransformModel, extra=Extra.forbid):
     """."""
 
-    displayed: bool = Field(False, description='')
-    source: Optional[MetadataTransformModel] = Field(None, description='')
-    transform: Optional[List[TransformModel]] = Field(None, description='')
-    type: str = Field(..., description='')
-
-    # validators
-    _transform_array = validator('transform', allow_reuse=True, pre=True)(_always_array)
+    displayed: Union[bool, MetadataTransformModel] = Field(False, description='')
+    source: Optional[Union[str, MetadataTransformModel]] = Field(None, description='')
+    type: Union[str, MetadataTransformModel] = Field(..., description='')
 
 
-class SecurityLabelTransformModel(PathTransformModel, extra=Extra.forbid):
+class SecurityLabelTransformModel(ValueTransformModel, extra=Extra.forbid):
     """."""
 
     color: Optional[MetadataTransformModel] = Field(None, description='')
     description: Optional[MetadataTransformModel] = Field(None, description='')
-    transform: Optional[List[TransformModel]] = Field(None, description='')
-
-    # validators
-    _transform_array = validator('transform', allow_reuse=True, pre=True)(_always_array)
 
 
-class TagTransformModel(PathTransformModel, extra=Extra.forbid):
+class TagTransformModel(ValueTransformModel, extra=Extra.forbid):
     """."""
-
-    transform: Optional[List[TransformModel]] = Field(None, description='')
-
-    # validators
-    _transform_array = validator('transform', allow_reuse=True, pre=True)(_always_array)
 
 
 class TiTransformModel(BaseModel, extra=Extra.forbid):
@@ -169,7 +170,7 @@ class IndicatorTransformModel(TiTransformModel, extra=Extra.forbid):
     value2: Optional[MetadataTransformModel] = Field(None, description='')
     value3: Optional[MetadataTransformModel] = Field(None, description='')
     # file
-    file_occurrences: Optional[List[MetadataTransformModel]] = Field(None, description='')
+    file_occurrences: Optional[List[FileOccurrenceTransformModel]] = Field(None, description='')
     size: Optional[MetadataTransformModel] = Field(None, description='')
     # host
     dns_active: Optional[MetadataTransformModel] = Field(None, description='')

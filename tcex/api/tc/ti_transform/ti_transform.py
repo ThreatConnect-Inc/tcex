@@ -33,7 +33,7 @@ class TiTransforms(TransformsABC):
             except Exception as ex:
                 # LOG WARNING
                 print(f'feature=ti-transforms, event=transform-error, error="{ex}"')
-                print(traceback.format_exc())
+                self.log.error(traceback.format_exc())
                 continue
 
             # now that batch is called we can identify the ti type
@@ -87,7 +87,10 @@ class TiTransform(TransformABC):
             self.transformed_item.setdefault('attribute', []).append(attribute_data)
 
     def add_file_occurrence(
-        self, file_name: Optional[str], path: Optional[str], date: Optional[datetime]
+        self,
+        file_name: Optional[str] = None,
+        path: Optional[str] = None,
+        date: Optional[datetime] = None,
     ):
         """Abstract method"""
         self.transformed_item.setdefault('fileOccurrence', []).append(
@@ -97,7 +100,7 @@ class TiTransform(TransformABC):
                     'fileName': file_name,
                     'path': path,
                     'date': date,
-                }
+                }.items()
                 if v
             }
         )

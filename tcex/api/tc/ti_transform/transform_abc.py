@@ -1,5 +1,6 @@
 """Transform Abstract Base Class"""
 # standard library
+import collections
 import logging
 from abc import ABC, abstractmethod
 from datetime import datetime
@@ -8,23 +9,64 @@ from typing import TYPE_CHECKING, List, Optional, Union
 
 # third-party
 import jmespath
+from jmespath import functions
 from pydantic import ValidationError
 
 # first-party
-from tcex.api.tc.ti_transform.model import GroupTransformModel, IndicatorTransformModel
+from tcex.api.tc.ti_transform.model import (
+    GroupTransformModel,
+    IndicatorTransformModel,
+    MetadataTransformModel,
+)
 from tcex.utils import Utils
 
 if TYPE_CHECKING:
     # first-party
     from tcex.api.tc.ti_transform.model import (
         AttributeTransformModel,
-        MetadataTransformModel,
         SecurityLabelTransformModel,
         TagTransformModel,
     )
 
 # get tcex logger
 logger = logging.getLogger('tcex')
+
+
+class TcFunctions(functions.Functions):
+    """ThreatConnect custom jmespath functions."""
+
+    @functions.signature({'types': ['array']}, {'types': ['string']})
+    def _func_null_leaf(self, arr, search):  # pylint: disable=no-self-use
+        """Return value in array even if they are null.
+
+        Arguments:
+            arr (list) - a list of objects (dict).
+            search (string) - the dict key to retrieve.
+
+        Returns:
+            list - A list of results, including null values.
+
+        """
+        return [a.get(search) for a in arr]
+
+    @functions.signature({'types': ['array']}, {'types': ['string']})
+    def _func_delete(self, arr, search):  # pylint: disable=no-self-use
+        """Return array after popping value at address out.
+
+        Arguments:
+            arr (list) - a list of objects (dict).
+            search (string) - the dict key to delete.
+
+        Returns:
+            list - The provided arr with the keys removed
+
+        """
+        for a in arr:
+            try:
+                a.pop(search)
+            except Exception:
+                print('Skipping delete, field not found.')
+        return arr
 
 
 class TransformsABC(ABC):
@@ -76,6 +118,9 @@ class TransformABC(ABC):
         self.transform = None  # the current active transform
         self.transformed_item = {}
         self.utils = Utils()
+        self.jmespath_options = jmespath.Options(
+            custom_functions=TcFunctions(), dict_cls=collections.OrderedDict
+        )
 
         # validate transforms
         self._validate_transforms()
@@ -100,7 +145,7 @@ class TransformABC(ABC):
         Path can return any type of data from the TI dict.
         """
         if path is not None:
-            return jmespath.search(path, self.ti_dict)
+            return jmespath.search(path, self.ti_dict, options=self.jmespath_options)
         return None
 
     def _process(self):
@@ -138,21 +183,62 @@ class TransformABC(ABC):
             for value in self._transform_values(association):
                 self.add_associated_group(value)
 
+    def _process_metadata_transform_model(
+        self, value, expected_length: Optional[int] = None
+    ) -> List:
+        """Process fields that can be static values or a MetadataTransformModel.
+
+        If value is not a MetadataTransformModel (i.e., it's a static value), and expected_length
+        is given, "spread" the static value into an array of expected_length length.
+
+        """
+        if isinstance(value, MetadataTransformModel):
+            transformed_value = self._transform_values(value)
+            if expected_length and len(transformed_value) != expected_length:
+                raise RuntimeError(
+                    f'Expected transform value of length {expected_length} for {value}, '
+                    f'but length was {len(transformed_value)}'
+                )
+            return transformed_value
+
+        if expected_length:
+            return [value] * expected_length
+
+        return [value]
+
     def _process_attributes(self, attributes: List['AttributeTransformModel']):
         """Process Attribute data"""
         for attribute in attributes or []:
-            for value in self._transform_values(attribute):
-                self.add_attribute(
-                    displayed=attribute.displayed,
-                    source=self._transform_value(attribute.source),
-                    type_=attribute.type,
-                    value=str(value),
-                )
+            values = self._process_metadata_transform_model(attribute.value)
+            types = self._process_metadata_transform_model(attribute.type, len(values))
+            source = self._process_metadata_transform_model(attribute.source, len(values))
+            displayed = self._process_metadata_transform_model(attribute.displayed, len(values))
+
+            param_keys = ['type_', 'value', 'displayed', 'source']
+            params = [dict(zip(param_keys, p)) for p in zip(types, values, displayed, source)]
+
+            for kwargs in params:
+                # strip out None params so that required params are enforced and optional
+                # params with default values are respected.
+                self.add_attribute(**self.utils.remove_none(kwargs))
 
     def _process_file_occurrences(self, file_occurrences: List['MetadataTransformModel']):
+        """Process File Occurrences data.
+
+        File Occurrences are a bit weird, in that none of the fields are required.  Because of this,
+        There may be results where all of the fields are None, in which case we'll skip that result
+        and not call add_file_occurrence.
+        """
         for file_occurrence in file_occurrences or []:
-            for value in self._transform_values(file_occurrence):
-                self.add_file_occurrence(**value)
+            file_name = self._process_metadata_transform_model(file_occurrence.file_name)
+            path = self._process_metadata_transform_model(file_occurrence.path, len(file_name))
+            date = self._process_metadata_transform_model(file_occurrence.date, len(file_name))
+
+            param_keys = ['file_name', 'path', 'date']
+            params = [dict(zip(param_keys, p)) for p in zip(file_name, path, date)]
+
+            for kwargs in filter(bool, params):  # get rid of empty dicts
+                self.add_file_occurrence(**self.utils.remove_none(kwargs))
 
     def _process_confidence(self, metadata: 'MetadataTransformModel'):
         """Process standard metadata fields."""
@@ -244,17 +330,26 @@ class TransformABC(ABC):
     def _process_security_labels(self, labels: List['SecurityLabelTransformModel']):
         """Process Tag data"""
         for label in labels or []:
-            for value in self._transform_values(label):
-                self.add_security_label(
-                    color=self._transform_value(label.color),
-                    description=self._transform_value(label.description),
-                    name=value,
-                )
+            names = self._process_metadata_transform_model(label.value)
+            descriptions = self._process_metadata_transform_model(
+                label.description, expected_length=len(names)
+            )
+            colors = self._process_metadata_transform_model(
+                label.colors, expected_length=len(names)
+            )
+
+            param_keys = ['color', 'description', 'name']
+            params = [dict(zip(param_keys, p)) for p in zip(colors, descriptions, names)]
+
+            for kwargs in params:
+                # strip out None params so that required params are enforced and optional
+                # params with default values are respected.
+                self.add_security_label(**self.utils.remove_none(kwargs))
 
     def _process_tags(self, tags: List['TagTransformModel']):
         """Process Tag data"""
         for tag in tags or []:
-            for value in self._transform_values(tag):
+            for value in filter(bool, self._process_metadata_transform_model(tag.value)):
                 self.add_tag(name=value)
 
     def _process_rating(self, metadata: 'MetadataTransformModel'):
@@ -423,7 +518,10 @@ class TransformABC(ABC):
 
     @abstractmethod
     def add_file_occurrence(
-        self, file_name: Optional[str], path: Optional[str], date: Optional[datetime]
+        self,
+        file_name: Optional[str] = None,
+        path: Optional[str] = None,
+        date: Optional[datetime] = None,
     ):
         """Abstract method"""
 
