@@ -108,7 +108,8 @@ class ObjectABC(ABC):
             self.request = self._session.request(
                 method, url, data=body, headers=headers, params=params
             )
-            self.log.debug(f'feature=api-tc-v3, request-body={self.request.request.body}')
+            if isinstance(self.request.request.body, str) and len(self.request.request.body) < 1000:
+                self.log.debug(f'feature=api-tc-v3, request-body={self.request.request.body}')
         except (ConnectionError, ProxyError, RetryError):  # pragma: no cover
             handle_error(
                 code=951,

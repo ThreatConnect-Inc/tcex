@@ -268,7 +268,7 @@ class Input:
 
             if self.utils.is_tc_variable(value):  # only matches playbook variables
                 value = self.resolve_variable(variable=value)
-            elif self.ij.model.runtime_level.lower() == 'playbook':
+            elif self.ij.model.is_playbook_app:
                 if isinstance(value, list):
                     # list could contain playbook variables, try to resolve the value
                     updated_value_array = []

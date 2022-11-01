@@ -63,7 +63,7 @@ class SpecToolInstallJson(BinABC):
 
     def _add_type_organization_fields(self, install_json_data: dict):
         """Add field that apply to ALL App types."""
-        if self.asy.model.organization:
+        if self.asy.model.is_feed_app:
             # the nested job object is not part of the install.json, it
             # instead gets written to the *.job.json file.
             if self.asy.model.organization.feeds:

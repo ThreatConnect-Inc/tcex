@@ -171,7 +171,7 @@ class SpecTool(BinABC):
         gen = SpecToolLayoutJson(self.asy)
         if schema:
             print(gen.generate_schema())
-        elif self.asy.model.runtime_level.lower() != 'organization':
+        elif any([self.ij.model.is_playbook_app, self.ij.model.is_trigger_app]):
             # check that app_spec.yml exists
             self._check_has_spec()
 
@@ -199,7 +199,7 @@ class SpecTool(BinABC):
         gen = SpecToolJobJson(self.asy)
         if schema:
             print(gen.generate_schema())
-        elif self.asy.model.runtime_level.lower() == 'organization':
+        elif self.asy.model.is_feed_app:
             # check that app_spec.yml exists
             self._check_has_spec()
 

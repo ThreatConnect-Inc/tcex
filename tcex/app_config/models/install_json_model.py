@@ -641,6 +641,14 @@ class InstallJsonCommonModel(BaseModel):
         ]
 
     @property
+    def is_feed_app(self) -> bool:
+        """Return True if the current App is ANY type of API Service App."""
+        return self.runtime_level.lower() in [
+            'feedapiservice',
+            'organization',
+        ]
+
+    @property
     def is_job_app(self) -> bool:
         """Return True if the current App is an Organization (job) App."""
         return self.is_organization_app

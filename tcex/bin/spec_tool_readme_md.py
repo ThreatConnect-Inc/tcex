@@ -372,7 +372,7 @@ class SpecToolReadmeMd(BinABC):
         self._add_description(readme_md)
 
         # add inputs
-        if self.asy.model.runtime_level.lower() == 'playbook':
+        if self.asy.model.is_playbook_app:
             actions = self.ij.model.get_param('tc_action').valid_values or []
             if actions:
                 # add inputs for action based sections
