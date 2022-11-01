@@ -57,10 +57,7 @@ class ExitService:
             exit_code: the new exit code.
         """
         exit_code = ExitCode(exit_code)
-        if (
-            exit_code == ExitCode.PARTIAL_FAILURE
-            and self.ij.model.runtime_level.lower() == 'playbook'
-        ):
+        if exit_code == ExitCode.PARTIAL_FAILURE and self.ij.model.is_playbook_app:
             logger.info(
                 f'Changing exit code from {ExitCode.PARTIAL_FAILURE} '
                 f'to {ExitCode.SUCCESS} for Playbook App.'
@@ -82,7 +79,7 @@ class ExitService:
         code = ExitCode(code) if code is not None else self.exit_code
 
         # playbook exit handler
-        if self.ij.model.runtime_level.lower() == 'playbook':
+        if self.ij.model.is_playbook_app:
             self.exit_playbook_handler(msg)
 
         # aot notify

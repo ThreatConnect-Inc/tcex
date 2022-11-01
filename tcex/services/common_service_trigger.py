@@ -368,7 +368,7 @@ class CommonServiceTrigger(CommonService):
         if callable(self.create_config_callback):
 
             kwargs = {}
-            if self.ij.model.runtime_level.lower() == 'webhooktriggerservice':
+            if self.ij.model.is_webhook_trigger_app:
                 # only webhook triggers get and require the PB url
                 kwargs['url'] = message.get('url')
 
