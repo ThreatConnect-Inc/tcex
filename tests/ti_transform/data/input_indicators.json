@@ -1,0 +1,508 @@
+[
+  {
+    "_marker": "16650089202341068874dc85eb53564e7e4b0ea66a",
+    "actors": [],
+    "deleted": false,
+    "domain_types": [],
+    "id": "hash_md5_9a3697a9332be777c59c91a6a16f2122",
+    "indicator": "9a3697a9332be777c59c91a6a16f2122",
+    "ip_address_types": [],
+    "kill_chains": [
+      "Installation"
+    ],
+    "labels": [
+      {
+        "created_on": 1664913032,
+        "last_valid_on": 1664913032,
+        "name": "KillChain/Installation"
+      },
+      {
+        "created_on": 1664913028,
+        "last_valid_on": 1665008919,
+        "name": "MaliciousConfidence/High"
+      },
+      {
+        "created_on": 1664913032,
+        "last_valid_on": 1664913032,
+        "name": "Malware/PdfCaptchaLure21"
+      },
+      {
+        "created_on": 1664913032,
+        "last_valid_on": 1664913032,
+        "name": "ThreatType/Criminal"
+      }
+    ],
+    "last_updated": 1665008920,
+    "malicious_confidence": "high",
+    "malware_families": [
+      "PdfCaptchaLure21"
+    ],
+    "published_date": 1664913028,
+    "relations": [],
+    "reports": [],
+    "targets": [],
+    "threat_types": [
+      "Criminal"
+    ],
+    "type": "hash_md5",
+    "vulnerabilities": []
+  },
+  {
+    "_marker": "1665008920a61ca59656401a2409b0dc0c181f2133",
+    "actors": [],
+    "deleted": false,
+    "domain_types": [],
+    "id": "hash_sha256_b33b01c1e13c64ff7e4c17ae2a7506f7d55b5f45b26b08965b7484cf3275a101",
+    "indicator": "b33b01c1e13c64ff7e4c17ae2a7506f7d55b5f45b26b08965b7484cf3275a101",
+    "ip_address_types": [],
+    "kill_chains": [
+      "Installation"
+    ],
+    "labels": [
+      {
+        "created_on": 1664913032,
+        "last_valid_on": 1664913032,
+        "name": "KillChain/Installation"
+      },
+      {
+        "created_on": 1664913028,
+        "last_valid_on": 1665008919,
+        "name": "MaliciousConfidence/High"
+      },
+      {
+        "created_on": 1664913032,
+        "last_valid_on": 1664913032,
+        "name": "Malware/PdfCaptchaLure21"
+      },
+      {
+        "created_on": 1664913032,
+        "last_valid_on": 1664913032,
+        "name": "ThreatType/Criminal"
+      }
+    ],
+    "last_updated": 1665008920,
+    "malicious_confidence": "high",
+    "malware_families": [
+      "PdfCaptchaLure21"
+    ],
+    "published_date": 1664913028,
+    "relations": [],
+    "reports": [],
+    "targets": [],
+    "threat_types": [
+      "Criminal"
+    ],
+    "type": "hash_sha256",
+    "vulnerabilities": []
+  },
+  {
+    "_marker": "1665008920b61017704bb0a213cd0cacc0519945ea",
+    "actors": [],
+    "deleted": false,
+    "domain_types": [],
+    "id": "hash_sha1_215a3de69ccd3b0e073c530a0cbdcf962a515d25",
+    "indicator": "215a3de69ccd3b0e073c530a0cbdcf962a515d25",
+    "ip_address_types": [],
+    "kill_chains": [
+      "Installation"
+    ],
+    "labels": [
+      {
+        "created_on": 1664913032,
+        "last_valid_on": 1664913032,
+        "name": "KillChain/Installation"
+      },
+      {
+        "created_on": 1664913028,
+        "last_valid_on": 1665008919,
+        "name": "MaliciousConfidence/High"
+      },
+      {
+        "created_on": 1664913032,
+        "last_valid_on": 1664913032,
+        "name": "Malware/PdfCaptchaLure21"
+      },
+      {
+        "created_on": 1664913032,
+        "last_valid_on": 1664913032,
+        "name": "ThreatType/Criminal"
+      }
+    ],
+    "last_updated": 1665008920,
+    "malicious_confidence": "high",
+    "malware_families": [
+      "PdfCaptchaLure21"
+    ],
+    "published_date": 1664913028,
+    "relations": [],
+    "reports": [],
+    "targets": [],
+    "threat_types": [
+      "Criminal"
+    ],
+    "type": "hash_sha1",
+    "vulnerabilities": []
+  },
+  {
+    "_marker": "16650090386edc46c15ff3ce4b74b0a8479fa060df",
+    "actors": [],
+    "deleted": false,
+    "domain_types": [],
+    "id": "hash_sha256_3e7cbb2161e7d51788e2336c3671112f1023e9d7e1ebbcb882e1719554a98f5b",
+    "indicator": "3e7cbb2161e7d51788e2336c3671112f1023e9d7e1ebbcb882e1719554a98f5b",
+    "ip_address_types": [],
+    "kill_chains": [
+      "Installation"
+    ],
+    "labels": [
+      {
+        "created_on": 1664958409,
+        "last_valid_on": 1664958409,
+        "name": "KillChain/Installation"
+      },
+      {
+        "created_on": 1664958406,
+        "last_valid_on": 1665009038,
+        "name": "MaliciousConfidence/High"
+      },
+      {
+        "created_on": 1664958409,
+        "last_valid_on": 1664958409,
+        "name": "Malware/PdfCaptchaLure21"
+      },
+      {
+        "created_on": 1664958409,
+        "last_valid_on": 1664958409,
+        "name": "ThreatType/Criminal"
+      }
+    ],
+    "last_updated": 1665009038,
+    "malicious_confidence": "high",
+    "malware_families": [
+      "PdfCaptchaLure21"
+    ],
+    "published_date": 1664958406,
+    "relations": [],
+    "reports": [],
+    "targets": [],
+    "threat_types": [
+      "Criminal"
+    ],
+    "type": "hash_sha256",
+    "vulnerabilities": []
+  },
+  {
+    "_marker": "16650090387eaef5df5a7c936127cab609f58a4244",
+    "actors": [],
+    "deleted": false,
+    "domain_types": [],
+    "id": "hash_sha1_7a05d047b3e5375efc6a9203a924ebe011a313be",
+    "indicator": "7a05d047b3e5375efc6a9203a924ebe011a313be",
+    "ip_address_types": [],
+    "kill_chains": [
+      "Installation"
+    ],
+    "labels": [
+      {
+        "created_on": 1664958409,
+        "last_valid_on": 1664958409,
+        "name": "KillChain/Installation"
+      },
+      {
+        "created_on": 1664958406,
+        "last_valid_on": 1665009038,
+        "name": "MaliciousConfidence/High"
+      },
+      {
+        "created_on": 1664958409,
+        "last_valid_on": 1664958409,
+        "name": "Malware/PdfCaptchaLure21"
+      },
+      {
+        "created_on": 1664958409,
+        "last_valid_on": 1664958409,
+        "name": "ThreatType/Criminal"
+      }
+    ],
+    "last_updated": 1665009038,
+    "malicious_confidence": "high",
+    "malware_families": [
+      "PdfCaptchaLure21"
+    ],
+    "published_date": 1664958406,
+    "relations": [],
+    "reports": [],
+    "targets": [],
+    "threat_types": [
+      "Criminal"
+    ],
+    "type": "hash_sha1",
+    "vulnerabilities": []
+  },
+  {
+    "_marker": "1665009038aee35df8f67dfc1201388ecf71145758",
+    "actors": [],
+    "deleted": false,
+    "domain_types": [],
+    "id": "hash_md5_73e8f1fce55bfdefc876f332be2884b3",
+    "indicator": "73e8f1fce55bfdefc876f332be2884b3",
+    "ip_address_types": [],
+    "kill_chains": [
+      "Installation"
+    ],
+    "labels": [
+      {
+        "created_on": 1664958409,
+        "last_valid_on": 1664958409,
+        "name": "KillChain/Installation"
+      },
+      {
+        "created_on": 1664958406,
+        "last_valid_on": 1665009038,
+        "name": "MaliciousConfidence/High"
+      },
+      {
+        "created_on": 1664958409,
+        "last_valid_on": 1664958409,
+        "name": "Malware/PdfCaptchaLure21"
+      },
+      {
+        "created_on": 1664958409,
+        "last_valid_on": 1664958409,
+        "name": "ThreatType/Criminal"
+      }
+    ],
+    "last_updated": 1665009038,
+    "malicious_confidence": "high",
+    "malware_families": [
+      "PdfCaptchaLure21"
+    ],
+    "published_date": 1664958406,
+    "relations": [],
+    "reports": [],
+    "targets": [],
+    "threat_types": [
+      "Criminal"
+    ],
+    "type": "hash_md5",
+    "vulnerabilities": []
+  },
+  {
+    "_marker": "166500925521d7d311408d5c339d0823194c7c2575",
+    "actors": [],
+    "deleted": false,
+    "domain_types": [],
+    "id": "hash_sha1_c3e0102bebd7c42be41cd44dbfe52f2bf49abdf1",
+    "indicator": "c3e0102bebd7c42be41cd44dbfe52f2bf49abdf1",
+    "ip_address_types": [],
+    "kill_chains": [],
+    "labels": [
+      {
+        "created_on": 1664920670,
+        "last_valid_on": 1665009255,
+        "name": "MaliciousConfidence/High"
+      },
+      {
+        "created_on": 1664920673,
+        "last_valid_on": 1664920673,
+        "name": "Malware/Mofksys"
+      },
+      {
+        "created_on": 1664920673,
+        "last_valid_on": 1664920673,
+        "name": "ThreatType/Commodity"
+      },
+      {
+        "created_on": 1664920673,
+        "last_valid_on": 1664920673,
+        "name": "ThreatType/CredentialHarvesting"
+      },
+      {
+        "created_on": 1664920673,
+        "last_valid_on": 1664920673,
+        "name": "ThreatType/InformationStealer"
+      }
+    ],
+    "last_updated": 1665009255,
+    "malicious_confidence": "high",
+    "malware_families": [
+      "Mofksys"
+    ],
+    "published_date": 1664920670,
+    "relations": [],
+    "reports": [],
+    "targets": [],
+    "threat_types": [
+      "Commodity",
+      "CredentialHarvesting",
+      "InformationStealer"
+    ],
+    "type": "hash_sha1",
+    "vulnerabilities": []
+  },
+  {
+    "_marker": "16650092554b3eb0d50dc93f38de0f14d1c6469792",
+    "actors": [],
+    "deleted": false,
+    "domain_types": [],
+    "id": "hash_sha256_b257790e51b27de94c0f07ab36860e257ce48f64d85a6c16d59fa65596d0c790",
+    "indicator": "b257790e51b27de94c0f07ab36860e257ce48f64d85a6c16d59fa65596d0c790",
+    "ip_address_types": [],
+    "kill_chains": [],
+    "labels": [
+      {
+        "created_on": 1664920670,
+        "last_valid_on": 1665009255,
+        "name": "MaliciousConfidence/High"
+      },
+      {
+        "created_on": 1664920673,
+        "last_valid_on": 1664920673,
+        "name": "Malware/Mofksys"
+      },
+      {
+        "created_on": 1664920673,
+        "last_valid_on": 1664920673,
+        "name": "ThreatType/Commodity"
+      },
+      {
+        "created_on": 1664920673,
+        "last_valid_on": 1664920673,
+        "name": "ThreatType/CredentialHarvesting"
+      },
+      {
+        "created_on": 1664920673,
+        "last_valid_on": 1664920673,
+        "name": "ThreatType/InformationStealer"
+      }
+    ],
+    "last_updated": 1665009255,
+    "malicious_confidence": "high",
+    "malware_families": [
+      "Mofksys"
+    ],
+    "published_date": 1664920670,
+    "relations": [],
+    "reports": [],
+    "targets": [],
+    "threat_types": [
+      "Commodity",
+      "CredentialHarvesting",
+      "InformationStealer"
+    ],
+    "type": "hash_sha256",
+    "vulnerabilities": []
+  },
+  {
+    "_marker": "16650092559eb734f1bc393c605a8ad5ba5292c2bf",
+    "actors": [],
+    "deleted": false,
+    "domain_types": [],
+    "id": "hash_md5_af44107ec6d19ecf7c0d976b572e38f5",
+    "indicator": "af44107ec6d19ecf7c0d976b572e38f5",
+    "ip_address_types": [],
+    "kill_chains": [],
+    "labels": [
+      {
+        "created_on": 1664920670,
+        "last_valid_on": 1665009255,
+        "name": "MaliciousConfidence/High"
+      },
+      {
+        "created_on": 1664920673,
+        "last_valid_on": 1664920673,
+        "name": "Malware/Mofksys"
+      },
+      {
+        "created_on": 1664920673,
+        "last_valid_on": 1664920673,
+        "name": "ThreatType/Commodity"
+      },
+      {
+        "created_on": 1664920673,
+        "last_valid_on": 1664920673,
+        "name": "ThreatType/CredentialHarvesting"
+      },
+      {
+        "created_on": 1664920673,
+        "last_valid_on": 1664920673,
+        "name": "ThreatType/InformationStealer"
+      }
+    ],
+    "last_updated": 1665009255,
+    "malicious_confidence": "high",
+    "malware_families": [
+      "Mofksys"
+    ],
+    "published_date": 1664920670,
+    "relations": [],
+    "reports": [],
+    "targets": [],
+    "threat_types": [
+      "Commodity",
+      "CredentialHarvesting",
+      "InformationStealer"
+    ],
+    "type": "hash_md5",
+    "vulnerabilities": []
+  },
+  {
+    "_marker": "166500929063ff931b0ce189a3574991d6f4fcf500",
+    "actors": [],
+    "deleted": false,
+    "domain_types": [],
+    "id": "hash_sha256_a21694e82b78bcb3c6f6b1ba52452d5b69b34c444a22d7135171e95954e5bae4",
+    "indicator": "a21694e82b78bcb3c6f6b1ba52452d5b69b34c444a22d7135171e95954e5bae4",
+    "ip_address_types": [],
+    "kill_chains": [],
+    "labels": [
+      {
+        "created_on": 1664920835,
+        "last_valid_on": 1665009290,
+        "name": "MaliciousConfidence/High"
+      },
+      {
+        "created_on": 1664920839,
+        "last_valid_on": 1664920839,
+        "name": "Malware/Mofksys"
+      },
+      {
+        "created_on": 1664920839,
+        "last_valid_on": 1664920839,
+        "name": "ThreatType/Commodity"
+      },
+      {
+        "created_on": 1664920839,
+        "last_valid_on": 1664920839,
+        "name": "ThreatType/CredentialHarvesting"
+      },
+      {
+        "created_on": 1664920839,
+        "last_valid_on": 1664920839,
+        "name": "ThreatType/InformationStealer"
+      }
+    ],
+    "last_updated": 1665009290,
+    "malicious_confidence": "high",
+    "malware_families": [
+      "Mofksys"
+    ],
+    "published_date": 1664920835,
+    "relations": [
+      {
+        "created_date": 1664920835,
+        "indicator": "bad.exe",
+        "type": "filename"
+      }
+    ],
+    "reports": [],
+    "targets": [],
+    "threat_types": [
+      "Commodity",
+      "CredentialHarvesting",
+      "InformationStealer"
+    ],
+    "type": "hash_sha256",
+    "vulnerabilities": []
+  }
+]
