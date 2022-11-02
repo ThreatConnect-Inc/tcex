@@ -3,7 +3,7 @@
 import ast
 import ipaddress
 import re
-from typing import Any, List, Optional, Pattern, Union
+from typing import Any, Dict, List, Optional, Pattern, Union
 
 # third-party
 import astunparse
@@ -155,6 +155,11 @@ class Utils(AesOperations, DatetimeOperations, StringOperations, Variables):
             if cred is not None and len(cred) >= visible * 2:
                 cred = f'{cred[:visible]}{mask_char * mask_char_count}{cred[-visible:]}'
         return cred
+
+    @staticmethod
+    def remove_none(dict_: Dict[Any, Optional[Any]]) -> Dict[Any, Any]:
+        """Remove any mappings from a dict with a None value."""
+        return {k: v for k, v in dict_.items() if v is not None}
 
     @staticmethod
     def standardize_asn(asn: str) -> str:

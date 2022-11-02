@@ -15,13 +15,14 @@ def _always_array(value: Union[list, str]) -> List[str]:
     return value
 
 
-# pylint: disable=no-self-argument,no-self-use
+# pylint: disable=no-self-argument, no-self-use
 class TransformModel(BaseModel, extra=Extra.forbid):
     """Model Definition"""
 
     filter_map: Optional[dict] = Field(None, description='')
     kwargs: Optional[dict] = Field({}, description='')
     method: Optional[Callable] = Field(None, description='')
+    for_each: Optional[Callable] = Field(None, description='')
     static_map: Optional[dict] = Field(None, description='')
 
     @validator('filter_map', 'static_map', pre=True)
@@ -36,10 +37,12 @@ class TransformModel(BaseModel, extra=Extra.forbid):
     def _required_transform(cls, v: dict):
         """Validate either static_map or method is defined."""
 
-        if not any([v.get('filter_map'), v.get('static_map'), v.get('method')]):
+        fields = [v.get('filter_map'), v.get('static_map'), v.get('method'), v.get('for_each')]
+
+        if not any(fields):
             raise ValueError('Either map or method must be defined.')
 
-        if [v.get('filter_map'), v.get('static_map'), v.get('method')].count(None) < 2:
+        if fields.count(None) < 2:
             raise ValueError('Only one transform mechanism can be defined.')
         return v
 
@@ -78,49 +81,45 @@ class MetadataTransformModel(PathTransformModel, extra=Extra.forbid):
     _transform_array = validator('transform', allow_reuse=True, pre=True)(_always_array)
 
 
+class ValueTransformModel(BaseModel, extra=Extra.forbid):
+    """."""
+
+    value: Union[str, MetadataTransformModel]
+
+
+class FileOccurrenceTransformModel(BaseModel, extra=Extra.forbid):
+    """."""
+
+    file_name: Optional[Union[str, MetadataTransformModel]] = Field(None, description='')
+    path: Optional[Union[str, MetadataTransformModel]] = Field(None, description='')
+    date: Optional[Union[str, MetadataTransformModel]] = Field(None, description='')
+
+
 class DatetimeTransformModel(PathTransformModel, extra=Extra.forbid):
     """."""
 
 
-class AssociatedGroupTransform(PathTransformModel, extra=Extra.forbid):
+class AssociatedGroupTransform(ValueTransformModel, extra=Extra.forbid):
     """."""
 
-    transform: Optional[List[TransformModel]] = Field(None, description='')
 
-    # validators
-    _transform_array = validator('transform', allow_reuse=True, pre=True)(_always_array)
-
-
-class AttributeTransformModel(PathTransformModel, extra=Extra.forbid):
+class AttributeTransformModel(ValueTransformModel, extra=Extra.forbid):
     """."""
 
-    displayed: bool = Field(False, description='')
-    source: Optional[MetadataTransformModel] = Field(None, description='')
-    transform: Optional[List[TransformModel]] = Field(None, description='')
-    type: str = Field(..., description='')
-
-    # validators
-    _transform_array = validator('transform', allow_reuse=True, pre=True)(_always_array)
+    displayed: Union[bool, MetadataTransformModel] = Field(False, description='')
+    source: Optional[Union[str, MetadataTransformModel]] = Field(None, description='')
+    type: Union[str, MetadataTransformModel] = Field(..., description='')
 
 
-class SecurityLabelTransformModel(PathTransformModel, extra=Extra.forbid):
+class SecurityLabelTransformModel(ValueTransformModel, extra=Extra.forbid):
     """."""
 
     color: Optional[MetadataTransformModel] = Field(None, description='')
     description: Optional[MetadataTransformModel] = Field(None, description='')
-    transform: Optional[List[TransformModel]] = Field(None, description='')
-
-    # validators
-    _transform_array = validator('transform', allow_reuse=True, pre=True)(_always_array)
 
 
-class TagTransformModel(PathTransformModel, extra=Extra.forbid):
+class TagTransformModel(ValueTransformModel, extra=Extra.forbid):
     """."""
-
-    transform: Optional[List[TransformModel]] = Field(None, description='')
-
-    # validators
-    _transform_array = validator('transform', allow_reuse=True, pre=True)(_always_array)
 
 
 class TiTransformModel(BaseModel, extra=Extra.forbid):
@@ -134,7 +133,7 @@ class TiTransformModel(BaseModel, extra=Extra.forbid):
     security_labels: Optional[List[SecurityLabelTransformModel]] = Field(None, description='')
     tags: Optional[List[TagTransformModel]] = Field(None, description='')
     type: MetadataTransformModel = Field(..., description='')
-    xid: MetadataTransformModel = Field(..., description='')
+    xid: Optional[MetadataTransformModel] = Field(description='')
 
 
 class GroupTransformModel(TiTransformModel, extra=Extra.forbid):
@@ -162,14 +161,14 @@ class GroupTransformModel(TiTransformModel, extra=Extra.forbid):
 class IndicatorTransformModel(TiTransformModel, extra=Extra.forbid):
     """."""
 
-    confidence: Optional[MetadataTransformModel] = Field(..., description='')
-    rating: Optional[MetadataTransformModel] = Field(..., description='')
+    confidence: Optional[MetadataTransformModel] = Field(None, description='')
+    rating: Optional[MetadataTransformModel] = Field(None, description='')
     # summary: Optional[MetadataTransformModel] = Field(None, description='')
     value1: Optional[MetadataTransformModel] = Field(None, description='')
     value2: Optional[MetadataTransformModel] = Field(None, description='')
     value3: Optional[MetadataTransformModel] = Field(None, description='')
     # file
-    file_occurrences: Optional[List[MetadataTransformModel]] = Field(None, description='')
+    file_occurrences: Optional[List[FileOccurrenceTransformModel]] = Field(None, description='')
     size: Optional[MetadataTransformModel] = Field(None, description='')
     # host
     dns_active: Optional[MetadataTransformModel] = Field(None, description='')

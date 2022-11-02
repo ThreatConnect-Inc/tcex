@@ -1,0 +1,597 @@
+{
+  "group": [],
+  "indicator": [
+    {
+      "attribute": [
+        {
+          "type": "External ID",
+          "value": "hash_md5_9a3697a9332be777c59c91a6a16f2122"
+        },
+        {
+          "type": "Phase of Intrusion",
+          "value": "Installation"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'KillChain/Installation'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664913028, 'last_valid_on': 1665008919, 'name': 'MaliciousConfidence/High'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'Malware/PdfCaptchaLure21'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'ThreatType/Criminal'}"
+        }
+      ],
+      "confidence": 95,
+      "dateAdded": "2022-10-04T19:50:28Z",
+      "lastModified": "2022-10-05T22:28:40Z",
+      "rating": 5.0,
+      "summary": "9a3697a9332be777c59c91a6a16f2122",
+      "tag": [
+        {
+          "name": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'KillChain/Installation'}"
+        },
+        {
+          "name": "{'created_on': 1664913028, 'last_valid_on': 1665008919, 'name': 'MaliciousConfidence/High'}"
+        },
+        {
+          "name": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'Malware/PdfCaptchaLure21'}"
+        },
+        {
+          "name": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'ThreatType/Criminal'}"
+        },
+        {
+          "name": "PdfCaptchaLure21"
+        },
+        {
+          "name": "Threat Type: Criminal"
+        }
+      ],
+      "type": "File",
+      "xid": "hash_md5_9a3697a9332be777c59c91a6a16f2122"
+    },
+    {
+      "attribute": [
+        {
+          "type": "External ID",
+          "value": "hash_sha256_b33b01c1e13c64ff7e4c17ae2a7506f7d55b5f45b26b08965b7484cf3275a101"
+        },
+        {
+          "type": "Phase of Intrusion",
+          "value": "Installation"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'KillChain/Installation'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664913028, 'last_valid_on': 1665008919, 'name': 'MaliciousConfidence/High'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'Malware/PdfCaptchaLure21'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'ThreatType/Criminal'}"
+        }
+      ],
+      "confidence": 95,
+      "dateAdded": "2022-10-04T19:50:28Z",
+      "lastModified": "2022-10-05T22:28:40Z",
+      "rating": 5.0,
+      "summary": "b33b01c1e13c64ff7e4c17ae2a7506f7d55b5f45b26b08965b7484cf3275a101",
+      "tag": [
+        {
+          "name": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'KillChain/Installation'}"
+        },
+        {
+          "name": "{'created_on': 1664913028, 'last_valid_on': 1665008919, 'name': 'MaliciousConfidence/High'}"
+        },
+        {
+          "name": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'Malware/PdfCaptchaLure21'}"
+        },
+        {
+          "name": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'ThreatType/Criminal'}"
+        },
+        {
+          "name": "PdfCaptchaLure21"
+        },
+        {
+          "name": "Threat Type: Criminal"
+        }
+      ],
+      "type": "File",
+      "xid": "hash_sha256_b33b01c1e13c64ff7e4c17ae2a7506f7d55b5f45b26b08965b7484cf3275a101"
+    },
+    {
+      "attribute": [
+        {
+          "type": "External ID",
+          "value": "hash_sha1_215a3de69ccd3b0e073c530a0cbdcf962a515d25"
+        },
+        {
+          "type": "Phase of Intrusion",
+          "value": "Installation"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'KillChain/Installation'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664913028, 'last_valid_on': 1665008919, 'name': 'MaliciousConfidence/High'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'Malware/PdfCaptchaLure21'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'ThreatType/Criminal'}"
+        }
+      ],
+      "confidence": 95,
+      "dateAdded": "2022-10-04T19:50:28Z",
+      "lastModified": "2022-10-05T22:28:40Z",
+      "rating": 5.0,
+      "summary": "215a3de69ccd3b0e073c530a0cbdcf962a515d25",
+      "tag": [
+        {
+          "name": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'KillChain/Installation'}"
+        },
+        {
+          "name": "{'created_on': 1664913028, 'last_valid_on': 1665008919, 'name': 'MaliciousConfidence/High'}"
+        },
+        {
+          "name": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'Malware/PdfCaptchaLure21'}"
+        },
+        {
+          "name": "{'created_on': 1664913032, 'last_valid_on': 1664913032, 'name': 'ThreatType/Criminal'}"
+        },
+        {
+          "name": "PdfCaptchaLure21"
+        },
+        {
+          "name": "Threat Type: Criminal"
+        }
+      ],
+      "type": "File",
+      "xid": "hash_sha1_215a3de69ccd3b0e073c530a0cbdcf962a515d25"
+    },
+    {
+      "attribute": [
+        {
+          "type": "External ID",
+          "value": "hash_sha256_3e7cbb2161e7d51788e2336c3671112f1023e9d7e1ebbcb882e1719554a98f5b"
+        },
+        {
+          "type": "Phase of Intrusion",
+          "value": "Installation"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'KillChain/Installation'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664958406, 'last_valid_on': 1665009038, 'name': 'MaliciousConfidence/High'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'Malware/PdfCaptchaLure21'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'ThreatType/Criminal'}"
+        }
+      ],
+      "confidence": 95,
+      "dateAdded": "2022-10-05T08:26:46Z",
+      "lastModified": "2022-10-05T22:30:38Z",
+      "rating": 5.0,
+      "summary": "3e7cbb2161e7d51788e2336c3671112f1023e9d7e1ebbcb882e1719554a98f5b",
+      "tag": [
+        {
+          "name": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'KillChain/Installation'}"
+        },
+        {
+          "name": "{'created_on': 1664958406, 'last_valid_on': 1665009038, 'name': 'MaliciousConfidence/High'}"
+        },
+        {
+          "name": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'Malware/PdfCaptchaLure21'}"
+        },
+        {
+          "name": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'ThreatType/Criminal'}"
+        },
+        {
+          "name": "PdfCaptchaLure21"
+        },
+        {
+          "name": "Threat Type: Criminal"
+        }
+      ],
+      "type": "File",
+      "xid": "hash_sha256_3e7cbb2161e7d51788e2336c3671112f1023e9d7e1ebbcb882e1719554a98f5b"
+    },
+    {
+      "attribute": [
+        {
+          "type": "External ID",
+          "value": "hash_sha1_7a05d047b3e5375efc6a9203a924ebe011a313be"
+        },
+        {
+          "type": "Phase of Intrusion",
+          "value": "Installation"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'KillChain/Installation'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664958406, 'last_valid_on': 1665009038, 'name': 'MaliciousConfidence/High'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'Malware/PdfCaptchaLure21'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'ThreatType/Criminal'}"
+        }
+      ],
+      "confidence": 95,
+      "dateAdded": "2022-10-05T08:26:46Z",
+      "lastModified": "2022-10-05T22:30:38Z",
+      "rating": 5.0,
+      "summary": "7a05d047b3e5375efc6a9203a924ebe011a313be",
+      "tag": [
+        {
+          "name": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'KillChain/Installation'}"
+        },
+        {
+          "name": "{'created_on': 1664958406, 'last_valid_on': 1665009038, 'name': 'MaliciousConfidence/High'}"
+        },
+        {
+          "name": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'Malware/PdfCaptchaLure21'}"
+        },
+        {
+          "name": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'ThreatType/Criminal'}"
+        },
+        {
+          "name": "PdfCaptchaLure21"
+        },
+        {
+          "name": "Threat Type: Criminal"
+        }
+      ],
+      "type": "File",
+      "xid": "hash_sha1_7a05d047b3e5375efc6a9203a924ebe011a313be"
+    },
+    {
+      "attribute": [
+        {
+          "type": "External ID",
+          "value": "hash_md5_73e8f1fce55bfdefc876f332be2884b3"
+        },
+        {
+          "type": "Phase of Intrusion",
+          "value": "Installation"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'KillChain/Installation'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664958406, 'last_valid_on': 1665009038, 'name': 'MaliciousConfidence/High'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'Malware/PdfCaptchaLure21'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'ThreatType/Criminal'}"
+        }
+      ],
+      "confidence": 95,
+      "dateAdded": "2022-10-05T08:26:46Z",
+      "lastModified": "2022-10-05T22:30:38Z",
+      "rating": 5.0,
+      "summary": "73e8f1fce55bfdefc876f332be2884b3",
+      "tag": [
+        {
+          "name": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'KillChain/Installation'}"
+        },
+        {
+          "name": "{'created_on': 1664958406, 'last_valid_on': 1665009038, 'name': 'MaliciousConfidence/High'}"
+        },
+        {
+          "name": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'Malware/PdfCaptchaLure21'}"
+        },
+        {
+          "name": "{'created_on': 1664958409, 'last_valid_on': 1664958409, 'name': 'ThreatType/Criminal'}"
+        },
+        {
+          "name": "PdfCaptchaLure21"
+        },
+        {
+          "name": "Threat Type: Criminal"
+        }
+      ],
+      "type": "File",
+      "xid": "hash_md5_73e8f1fce55bfdefc876f332be2884b3"
+    },
+    {
+      "attribute": [
+        {
+          "type": "External ID",
+          "value": "hash_sha1_c3e0102bebd7c42be41cd44dbfe52f2bf49abdf1"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664920670, 'last_valid_on': 1665009255, 'name': 'MaliciousConfidence/High'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'Malware/Mofksys'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/Commodity'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/CredentialHarvesting'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/InformationStealer'}"
+        }
+      ],
+      "confidence": 95,
+      "dateAdded": "2022-10-04T21:57:50Z",
+      "lastModified": "2022-10-05T22:34:15Z",
+      "rating": 5.0,
+      "summary": "c3e0102bebd7c42be41cd44dbfe52f2bf49abdf1",
+      "tag": [
+        {
+          "name": "{'created_on': 1664920670, 'last_valid_on': 1665009255, 'name': 'MaliciousConfidence/High'}"
+        },
+        {
+          "name": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'Malware/Mofksys'}"
+        },
+        {
+          "name": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/Commodity'}"
+        },
+        {
+          "name": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/CredentialHarvesting'}"
+        },
+        {
+          "name": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/InformationStealer'}"
+        },
+        {
+          "name": "Mofksys"
+        },
+        {
+          "name": "Threat Type: Commodity"
+        },
+        {
+          "name": "Threat Type: CredentialHarvesting"
+        },
+        {
+          "name": "Threat Type: InformationStealer"
+        }
+      ],
+      "type": "File",
+      "xid": "hash_sha1_c3e0102bebd7c42be41cd44dbfe52f2bf49abdf1"
+    },
+    {
+      "attribute": [
+        {
+          "type": "External ID",
+          "value": "hash_sha256_b257790e51b27de94c0f07ab36860e257ce48f64d85a6c16d59fa65596d0c790"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664920670, 'last_valid_on': 1665009255, 'name': 'MaliciousConfidence/High'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'Malware/Mofksys'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/Commodity'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/CredentialHarvesting'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/InformationStealer'}"
+        }
+      ],
+      "confidence": 95,
+      "dateAdded": "2022-10-04T21:57:50Z",
+      "lastModified": "2022-10-05T22:34:15Z",
+      "rating": 5.0,
+      "summary": "b257790e51b27de94c0f07ab36860e257ce48f64d85a6c16d59fa65596d0c790",
+      "tag": [
+        {
+          "name": "{'created_on': 1664920670, 'last_valid_on': 1665009255, 'name': 'MaliciousConfidence/High'}"
+        },
+        {
+          "name": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'Malware/Mofksys'}"
+        },
+        {
+          "name": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/Commodity'}"
+        },
+        {
+          "name": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/CredentialHarvesting'}"
+        },
+        {
+          "name": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/InformationStealer'}"
+        },
+        {
+          "name": "Mofksys"
+        },
+        {
+          "name": "Threat Type: Commodity"
+        },
+        {
+          "name": "Threat Type: CredentialHarvesting"
+        },
+        {
+          "name": "Threat Type: InformationStealer"
+        }
+      ],
+      "type": "File",
+      "xid": "hash_sha256_b257790e51b27de94c0f07ab36860e257ce48f64d85a6c16d59fa65596d0c790"
+    },
+    {
+      "attribute": [
+        {
+          "type": "External ID",
+          "value": "hash_md5_af44107ec6d19ecf7c0d976b572e38f5"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664920670, 'last_valid_on': 1665009255, 'name': 'MaliciousConfidence/High'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'Malware/Mofksys'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/Commodity'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/CredentialHarvesting'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/InformationStealer'}"
+        }
+      ],
+      "confidence": 95,
+      "dateAdded": "2022-10-04T21:57:50Z",
+      "lastModified": "2022-10-05T22:34:15Z",
+      "rating": 5.0,
+      "summary": "af44107ec6d19ecf7c0d976b572e38f5",
+      "tag": [
+        {
+          "name": "{'created_on': 1664920670, 'last_valid_on': 1665009255, 'name': 'MaliciousConfidence/High'}"
+        },
+        {
+          "name": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'Malware/Mofksys'}"
+        },
+        {
+          "name": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/Commodity'}"
+        },
+        {
+          "name": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/CredentialHarvesting'}"
+        },
+        {
+          "name": "{'created_on': 1664920673, 'last_valid_on': 1664920673, 'name': 'ThreatType/InformationStealer'}"
+        },
+        {
+          "name": "Mofksys"
+        },
+        {
+          "name": "Threat Type: Commodity"
+        },
+        {
+          "name": "Threat Type: CredentialHarvesting"
+        },
+        {
+          "name": "Threat Type: InformationStealer"
+        }
+      ],
+      "type": "File",
+      "xid": "hash_md5_af44107ec6d19ecf7c0d976b572e38f5"
+    },
+    {
+      "attribute": [
+        {
+          "type": "External ID",
+          "value": "hash_sha256_a21694e82b78bcb3c6f6b1ba52452d5b69b34c444a22d7135171e95954e5bae4"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664920835, 'last_valid_on': 1665009290, 'name': 'MaliciousConfidence/High'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664920839, 'last_valid_on': 1664920839, 'name': 'Malware/Mofksys'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664920839, 'last_valid_on': 1664920839, 'name': 'ThreatType/Commodity'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664920839, 'last_valid_on': 1664920839, 'name': 'ThreatType/CredentialHarvesting'}"
+        },
+        {
+          "type": "Additional Analysis and Context",
+          "value": "{'created_on': 1664920839, 'last_valid_on': 1664920839, 'name': 'ThreatType/InformationStealer'}"
+        }
+      ],
+      "confidence": 95,
+      "dateAdded": "2022-10-04T22:00:35Z",
+      "fileOccurrence": [
+        {
+          "date": "2022-10-04T22:00:35Z",
+          "fileName": "bad.exe"
+        }
+      ],
+      "lastModified": "2022-10-05T22:34:50Z",
+      "rating": 5.0,
+      "summary": "a21694e82b78bcb3c6f6b1ba52452d5b69b34c444a22d7135171e95954e5bae4",
+      "tag": [
+        {
+          "name": "{'created_on': 1664920835, 'last_valid_on': 1665009290, 'name': 'MaliciousConfidence/High'}"
+        },
+        {
+          "name": "{'created_on': 1664920839, 'last_valid_on': 1664920839, 'name': 'Malware/Mofksys'}"
+        },
+        {
+          "name": "{'created_on': 1664920839, 'last_valid_on': 1664920839, 'name': 'ThreatType/Commodity'}"
+        },
+        {
+          "name": "{'created_on': 1664920839, 'last_valid_on': 1664920839, 'name': 'ThreatType/CredentialHarvesting'}"
+        },
+        {
+          "name": "{'created_on': 1664920839, 'last_valid_on': 1664920839, 'name': 'ThreatType/InformationStealer'}"
+        },
+        {
+          "name": "Mofksys"
+        },
+        {
+          "name": "Threat Type: Commodity"
+        },
+        {
+          "name": "Threat Type: CredentialHarvesting"
+        },
+        {
+          "name": "Threat Type: InformationStealer"
+        }
+      ],
+      "type": "File",
+      "xid": "hash_sha256_a21694e82b78bcb3c6f6b1ba52452d5b69b34c444a22d7135171e95954e5bae4"
+    }
+  ]
+}
