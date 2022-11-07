@@ -86,7 +86,7 @@ class SecurityLabelModel(
         None,
         description='Description of the security label.',
         methods=['POST', 'PUT'],
-        max_length=255,
+        max_length=400,
         min_length=1,
         read_only=False,
         title='description',
