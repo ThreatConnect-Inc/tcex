@@ -83,7 +83,7 @@ class TransformsABC(ABC):
 
         # properties
         self.log = logger
-        self.transformed_collection = []
+        self.transformed_collection: List['TransformABC'] = []
 
         # validate transforms
         self._validate_transforms()
@@ -113,9 +113,11 @@ class TransformABC(ABC):
         self.transforms = transforms if isinstance(transforms, list) else [transforms]
 
         # properties
+        self.adhoc_groups: List[dict] = []
+        self.adhoc_indicators: List[dict] = []
         self.log = logger
-        # self.ti_type = None
-        self.transform = None  # the current active transform
+        # the current active transform
+        self.transform: Union['GroupTransformModel', 'IndicatorTransformModel'] = None
         self.transformed_item = {}
         self.utils = Utils()
         self.jmespath_options = jmespath.Options(
@@ -145,7 +147,9 @@ class TransformABC(ABC):
         Path can return any type of data from the TI dict.
         """
         if path is not None:
-            return jmespath.search(path, self.ti_dict, options=self.jmespath_options)
+            value = jmespath.search(path, self.ti_dict, options=self.jmespath_options)
+            # self.log.trace(f'feature=transform, action=path-search, path={path}, value={value}')
+            return value
         return None
 
     def _process(self):
@@ -184,7 +188,7 @@ class TransformABC(ABC):
                 self.add_associated_group(value)
 
     def _process_metadata_transform_model(
-        self, value, expected_length: Optional[int] = None
+        self, value: Union['MetadataTransformModel', str], expected_length: Optional[int] = None
     ) -> List:
         """Process fields that can be static values or a MetadataTransformModel.
 
@@ -194,22 +198,38 @@ class TransformABC(ABC):
         """
         if isinstance(value, MetadataTransformModel):
             transformed_value = self._transform_values(value)
-            if expected_length and len(transformed_value) != expected_length:
+
+            if expected_length is not None and len(transformed_value) != expected_length:
                 raise RuntimeError(
                     f'Expected transform value of length {expected_length} for {value}, '
                     f'but length was {len(transformed_value)}'
                 )
+
+            # self.log.trace(
+            #     'feature=transform, action=process-metadata-transform-model, '
+            #     f'value-path={value.path}, transformed-value={transformed_value}'
+            # )
             return transformed_value
 
-        if expected_length:
-            return [value] * expected_length
+        if expected_length is not None:
+            transformed_value = [value] * expected_length
+        else:
+            transformed_value = [value]
 
-        return [value]
+        # self.log.trace(
+        #     'feature=transform, action=process-metadata-transform-data, '
+        #     f'value={value}, transformed-value={transformed_value}'
+        # )
+        return transformed_value
 
     def _process_attributes(self, attributes: List['AttributeTransformModel']):
         """Process Attribute data"""
         for attribute in attributes or []:
             values = self._process_metadata_transform_model(attribute.value)
+            if not values:
+                # self.log.info(f'No values found for attribute transform {attribute.dict()}')
+                continue
+
             types = self._process_metadata_transform_model(attribute.type, len(values))
             source = self._process_metadata_transform_model(attribute.source, len(values))
             displayed = self._process_metadata_transform_model(attribute.displayed, len(values))
@@ -217,10 +237,34 @@ class TransformABC(ABC):
             param_keys = ['type_', 'value', 'displayed', 'source']
             params = [dict(zip(param_keys, p)) for p in zip(types, values, displayed, source)]
 
-            for kwargs in params:
+            # self.log.trace(
+            #     f'feature=transform, action=process-attributes, values={values}, '
+            #     f'types={types}, source={source}, displayed={displayed}, params={params}'
+            # )
+            for param in params:
+                if 'value' not in param:
+                    self.log.warning(
+                        'feature=transform, action=process-attribute, '
+                        f'transform={attribute.dict(exclude_unset=True)}, error=no-value'
+                    )
+                    continue
+
+                if 'type_' not in param:
+                    self.log.warning(
+                        'feature=transform, action=process-attribute, '
+                        f'transform={attribute.dict(exclude_unset=True)}, error=no-type'
+                    )
+                    continue
+
                 # strip out None params so that required params are enforced and optional
                 # params with default values are respected.
-                self.add_attribute(**self.utils.remove_none(kwargs))
+                try:
+                    self.add_attribute(**self.utils.remove_none(param))
+                except Exception:
+                    self.log.exception(
+                        'feature=transform, action=process-attribute, '
+                        f'transform={attribute.dict(exclude_unset=True)}'
+                    )
 
     def _process_file_occurrences(self, file_occurrences: List['MetadataTransformModel']):
         """Process File Occurrences data.
@@ -347,6 +391,10 @@ class TransformABC(ABC):
         """Process Tag data"""
         for label in labels or []:
             names = self._process_metadata_transform_model(label.value)
+            if not names:
+                # self.log.info(f'No values found for security label transform {label.dict()}')
+                continue
+
             descriptions = self._process_metadata_transform_model(
                 label.description, expected_length=len(names)
             )
@@ -358,6 +406,9 @@ class TransformABC(ABC):
             params = [dict(zip(param_keys, p)) for p in zip(colors, descriptions, names)]
 
             for kwargs in params:
+                if 'name' not in kwargs:
+                    self.log.warning(f'Attribute transform {label.dict()} did not yield a name')
+                    continue
                 # strip out None params so that required params are enforced and optional
                 # params with default values are respected.
                 self.add_security_label(**self.utils.remove_none(kwargs))
@@ -438,6 +489,8 @@ class TransformABC(ABC):
             sig = signature(c, follow_wrapped=True)
             if 'ti_dict' in sig.parameters:
                 kwargs.update({'ti_dict': self.ti_dict})
+            if 'transform' in sig.parameters:
+                kwargs.update({'transform': self})
         except ValueError:  # signature doesn't work for many built-in methods/functions
             pass
 
@@ -468,11 +521,16 @@ class TransformABC(ABC):
 
         # not all items have all metadata fields
         if metadata is None:
+            # self.log.trace('feature=transform, action=transform-values, metadata=None')
             return []
 
         # not all metadata fields have a path, but they must have a path or default
         if metadata.path is None:
-            return _default()
+            default = _default()
+            # self.log.trace(
+            #     f'feature=transform, action=transform-values, metadata-path=None, value={default}'
+            # )
+            return default
 
         # path search can return multiple data types and single or multiple values
         value = self._path_search(metadata.path)
@@ -480,7 +538,11 @@ class TransformABC(ABC):
         # return default if value of None is returned from Path
         # IMPORTANT: a None value passed to the transform may cause a failure (lambda x: x.lower())
         if value in [None, []]:
-            return _default()
+            default = _default()
+            # self.log.trace(
+            #     f'feature=transform, action=transform-values, metadata-path=None, value={default}'
+            # )
+            return default
 
         for t in metadata.transform or []:
             if t.filter_map is not None:
@@ -516,6 +578,7 @@ class TransformABC(ABC):
             else:
                 _value.append(v)
 
+        # self.log.trace(f'feature=transform, action=transform-values, value={_value}')
         return _value
 
     def _validate_transforms(self):

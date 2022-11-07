@@ -42,6 +42,10 @@ class TiTransforms(TransformsABC):
                 batch['group'].append(data)
             elif isinstance(t.transform, IndicatorTransformModel):
                 batch['indicator'].append(data)
+
+            # append adhoc groups and indicators
+            batch['group'].extend(t.adhoc_groups)
+            batch['indicator'].extend(t.adhoc_indicators)
         return batch
 
 
@@ -110,6 +114,22 @@ class TiTransform(TransformABC):
         """Add a rating to the transformed item."""
         if confidence is not None:
             self.transformed_item['confidence'] = int(confidence)
+
+    def add_group(self, group_data: dict):
+        """Add a group to the transforms.
+
+        Group data must match the format of the endpoint being used, (e.g., batch format
+        for batch endpoints, v3 format for v3 endpoints).
+        """
+        self.adhoc_groups.append(group_data)
+
+    def add_indicator(self, indicator_data: dict):
+        """Add a indicator to the transforms.
+
+        Indicator data must match the format of the endpoint being used, (e.g., batch format
+        for batch endpoints, v3 format for v3 endpoints).
+        """
+        self.adhoc_indicators.append(indicator_data)
 
     def add_metadata(self, key: str, value: str):
         """Add name to the transformed item."""
