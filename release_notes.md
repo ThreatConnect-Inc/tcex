@@ -2,6 +2,7 @@
 
 ### 3.0.5
 
+-   APP-3827 - [Playbooks] Python 3.6 Error when accessing a playbooks sensitive.value value
 -   APP-3766 - [API] Added support for Security Labels on Attributes
 -   APP-3775 - [Playbooks] Updated variable pattern regex to better handle mix variables types
 -   APP-3776 - [CLI] Updated spectool for general improvements and fixes
