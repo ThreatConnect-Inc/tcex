@@ -27,7 +27,11 @@ class TiTransforms(TransformsABC):
             'group': [],
             'indicator': [],
         }
-        for t in self.transformed_collection:
+        self.log.trace(f'feature=ti-transform-batch, ti-count={len(self.transformed_collection)}')
+        for index, t in enumerate(self.transformed_collection):
+            if index and index % 1_000 == 0:
+                self.log.trace(f'feature=ti-transform-batch, items={index}')
+
             # batch must be called so that the transform type is selected
             try:
                 data = t.batch

@@ -6,9 +6,13 @@
 -   APP-3775 - [Playbooks] Updated variable pattern regex to better handle mix variables types
 -   APP-3776 - [CLI] Updated spectool for general improvements and fixes
 -   APP-3805 - [API] Added TI Transforms module used to map a TI object to TC Bach or V3 format
--   APP-3810 - [Services] Add support for Feed Service Apps
--   APP-3822 - [TcEx] Improve type-hinting to enable intellisense for more attributes of TcEx
--   APP-3825 - [API] Update date format on TQL filters used in V3 api
+-   APP-3810 - [Services] Added Support for Feed Service Apps
+-   APP-3822 - [TcEx] Added type hints to cached_property, scoped_property, and registry to enable intellisense
+-   APP-3825 - [API] Updated date format on TQL filters used in V3 api
+-   APP-3826 - [Utils] Updated file operations module with more helper methods
+-   APP-3827 - [Inputs] Updated sensitive.value property to address issue with latest requests module
+-   APP-3831 - [API] Updated v3 base models to match TC 6.7.x documented structure
+-   APP-3837x - [Decorators] Updated benchmark decorator
 
 ### 3.0.4
 
