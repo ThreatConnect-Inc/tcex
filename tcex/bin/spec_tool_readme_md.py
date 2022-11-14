@@ -372,7 +372,7 @@ class SpecToolReadmeMd(BinABC):
         self._add_description(readme_md)
 
         # add inputs
-        if self.asy.model.runtime_level.lower() == 'playbook':
+        if self.asy.model.is_playbook_app:
             actions = self.ij.model.get_param('tc_action').valid_values or []
             if actions:
                 # add inputs for action based sections
@@ -381,11 +381,7 @@ class SpecToolReadmeMd(BinABC):
                 # add inputs for non action based sections
                 self._add_params_for_playbook_std_app(readme_md)
 
-        elif self.asy.model.runtime_level.lower() in [
-            'triggerservice',
-            'webhooktriggerservice',
-            'organization',
-        ]:
+        elif self.asy.model.is_organization_app or self.asy.model.is_trigger_app:
             self._add_params_for_non_playbook_apps(readme_md)
 
         # add labels

@@ -67,9 +67,9 @@ class InstallJsonUpdate:
         """Update feature set based on App type."""
         features = ['runtimeVariables']
 
-        if self.ij.model.runtime_level.lower() in ['organization']:
+        if self.ij.model.is_organization_app:
             features.extend(['fileParams', 'secureParams'])
-        elif self.ij.model.runtime_level.lower() in ['playbook']:
+        elif self.ij.model.is_playbook_app:
             features.extend(
                 [
                     'aotExecutionEnabled',
@@ -79,11 +79,7 @@ class InstallJsonUpdate:
                     'secureParams',
                 ]
             )
-        elif self.ij.model.runtime_level.lower() in [
-            'apiservice',
-            'triggerservice',
-            'webhooktriggerservice',
-        ]:
+        elif self.ij.model.is_service_app:
             features.extend(['appBuilderCompliant', 'fileParams'])
 
         # add layoutEnabledApp if layout.json file exists in project
@@ -132,10 +128,7 @@ class InstallJsonUpdate:
             if param.encrypt is True:
                 store = 'KEYCHAIN'
 
-            if (
-                self.ij.model.runtime_level.lower() == 'organization'
-                or param.service_config is True
-            ):
+            if self.ij.model.is_organization_app or param.service_config is True:
                 if f'${{USER:{store}}}' not in param.valid_values:
                     param.valid_values.append(f'${{USER:{store}}}')
 
@@ -146,7 +139,7 @@ class InstallJsonUpdate:
                 if f'${{{store}}}' in param.valid_values:
                     param.valid_values.remove(f'${{{store}}}')
 
-            elif self.ij.model.runtime_level.lower() == 'playbook':
+            elif self.ij.model.is_playbook_app:
                 if f'${{{store}}}' not in param.valid_values:
                     param.valid_values.append(f'${{{store}}}')
 
@@ -160,7 +153,7 @@ class InstallJsonUpdate:
 
     def update_playbook_data_types(self):
         """Update program main on App type."""
-        if self.ij.model.runtime_level.lower() != 'playbook':
+        if not self.ij.model.is_playbook_app:
             return
 
         for param in self.ij.model.params:

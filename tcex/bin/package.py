@@ -58,22 +58,34 @@ class Package(BinABC):
             '.c9',  # C9 IDE
             '.coverage',  # coverage file
             '.coveragerc',  # coverage configuration file file
+            '.cspell',  # cspell configuration file
+            '.env',  # local environment file
             '.git',  # git directory
+            '.gitignore',  # git ignore file
             '.gitlab-ci.yml',  # gitlab ci file
             '.gitmodules',  # git modules
             '.history',  # vscode history plugin
             '.idea',  # PyCharm
+            '.pre-commit-config.yaml',  # pre-commit configuration file
+            '.prettierrc.toml',  # prettier configuration file
             '.python-version',  # pyenv
             '.template_manifest.json',  # template manifest file
             '.vscode',  # Visual Studio Code
+            'angular.json',  # angular configuration file
             'app.yaml',  # requirements builder configuration file
             'artifacts',  # pytest in CI/CD
             'assets',  # pytest in BB Pipelines
+            'cspell.json',  # cspell configuration file
             'local-*',  # log directory
             'log',  # log directory
             'JIRA.html',  # documentation file
             'JIRA.md',  # documentation file
+            'karma.conf.js',  # karma configuration file
+            'package-lock.json',  # npm package lock file
+            'package.json',  # npm package file
+            'pyproject.toml',  # project configuration file
             'README.html',  # documentation file
+            'target',  # the target directory for builds
             'test-reports',  # pytest in CI/CD
             'tests',  # pytest test directory
         ]

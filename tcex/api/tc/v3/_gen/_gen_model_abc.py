@@ -260,6 +260,10 @@ class GenerateModelABC(GenerateABC, ABC):
                 'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',
             },
+            'SecurityLabel': {
+                'requirement': self._gen_req_code(type_),
+                'type': f'Optional[\'{type_}Model\']',
+            },
             'SecurityLabels': {
                 'requirement': self._gen_req_code(type_),
                 'type': f'Optional[\'{type_}Model\']',

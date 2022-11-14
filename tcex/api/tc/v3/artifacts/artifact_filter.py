@@ -43,7 +43,7 @@ class ArtifactFilter(FilterABC):
             operator: The operator enum for the filter.
             date_added: The date the artifact was added to the system.
         """
-        date_added = self.utils.any_to_datetime(date_added).strftime('%Y-%m-%dT%H:%M:%S')
+        date_added = self.utils.any_to_datetime(date_added).strftime('%Y-%m-%d %H:%M:%S')
         self._tql.add_filter('dateAdded', operator, date_added, TqlType.STRING)
 
     @property

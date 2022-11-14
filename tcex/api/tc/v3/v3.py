@@ -8,7 +8,7 @@ from tcex.api.tc.v3.threat_intelligence.threat_intelligence import ThreatIntelli
 
 
 class V3(CaseManagement, Security, ThreatIntelligence):
-    """Case Management
+    """V3 API Collection
 
     Args:
         session: An configured instance of request.Session with TC API Auth.
@@ -23,16 +23,16 @@ class V3(CaseManagement, Security, ThreatIntelligence):
         return AttributeTypes(session=self.session, **kwargs)
 
     @property
-    def cm(self):
+    def cm(self) -> 'CaseManagement':
         """Return Case Management API collection."""
         return CaseManagement(self.session)
 
     @property
-    def security(self):
+    def security(self) -> 'Security':
         """Return Security API collection."""
         return Security(self.session)
 
     @property
-    def ti(self):
+    def ti(self) -> 'ThreatIntelligence':
         """Return Threat Intelligence API collection."""
         return ThreatIntelligence(self.session)

@@ -2,7 +2,7 @@
 # standard library
 import functools
 from collections.abc import Container
-from typing import TYPE_CHECKING, Any, Callable, Tuple, Type, Union
+from typing import TYPE_CHECKING, Any, Callable, Tuple, Type, TypeVar, Union
 
 if TYPE_CHECKING:
     # third-party
@@ -16,6 +16,8 @@ if TYPE_CHECKING:
     from tcex.playbook.playbook import Playbook
     from tcex.sessions.tc_session import TcSession
     from tcex.tokens import Tokens
+
+T = TypeVar('T')
 
 
 class Registry(Container):
@@ -133,7 +135,7 @@ class Registry(Container):
         self._values = {}
 
     @staticmethod
-    def factory(type_or_name: Union[str, Type], singleton: bool = False):
+    def factory(type_or_name: Type[T], singleton: bool = False) -> Callable[..., T]:
         """Decorate a function that can be treated as a factory that provides a service.
 
         Note: does NOT work with @property.
@@ -145,7 +147,7 @@ class Registry(Container):
             will be invoked every time the service is requested.
         """
 
-        def _decorator(original):
+        def _decorator(original: Callable[..., T]) -> Callable[..., T]:
             setattr(original, 'factory_provider', (type_or_name, singleton))
             return original
 

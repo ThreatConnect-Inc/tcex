@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING, Dict, Optional, Union
 from requests import Session
 
 # first-party
+from tcex.api import API
 from tcex.api.tc.utils.threat_intel_utils import ThreatIntelUtils
 from tcex.api.tc.v2.v2 import V2
 from tcex.api.tc.v3.v3 import V3
@@ -123,6 +124,11 @@ class TcEx:
         """
         return AdvancedRequest(self.inputs, self.playbook, session, output_prefix, timeout)
 
+    @property
+    def api(self) -> 'API':
+        """Return instance of Threat Intel Utils."""
+        return API(self.inputs, self.session_tc)
+
     def exit(self, code: Optional[ExitCode] = None, msg: Optional[str] = None):
         """Application exit method with proper exit code
 
@@ -166,7 +172,10 @@ class TcEx:
     @cached_property
     def file_operations(self) -> 'FileOperations':  # pylint: disable=no-self-use
         """Include the Utils module."""
-        return FileOperations(temp_path=self.inputs.model_unresolved.tc_temp_path)
+        return FileOperations(
+            out_path=self.inputs.model_unresolved.tc_out_path,
+            temp_path=self.inputs.model_unresolved.tc_temp_path,
+        )
 
     @staticmethod
     def get_exit_service(inputs) -> 'ExitService':
@@ -446,11 +455,11 @@ class TcEx:
     @cached_property
     def service(self) -> Union['ApiService', 'CommonServiceTrigger', 'WebhookTriggerService']:
         """Include the Service Module."""
-        if self.ij.model.runtime_level.lower() == 'apiservice':
+        if self.ij.model.is_api_service_app:
             from .services import ApiService as Service
-        elif self.ij.model.runtime_level.lower() == 'triggerservice':
+        elif self.ij.model.is_trigger_app and not self.ij.model.is_webhook_trigger_app:
             from .services import CommonServiceTrigger as Service
-        elif self.ij.model.runtime_level.lower() == 'webhooktriggerservice':
+        elif self.ij.model.is_webhook_trigger_app:
             from .services import WebhookTriggerService as Service
         else:
             self.exit(1, 'Could not determine the service type.')
@@ -467,6 +476,10 @@ class TcEx:
     def session_external(self) -> 'ExternalSession':
         """Return an instance of Requests Session configured for the ThreatConnect API."""
         return self.get_session_external()
+
+    def set_exit_code(self, exit_code: int):
+        """Set the exit code (registry)"""
+        self.exit_code = exit_code
 
     @registry.factory(Tokens, singleton=True)
     @cached_property
@@ -493,10 +506,6 @@ class TcEx:
             )
         return _tokens
 
-    def set_exit_code(self, exit_code: int):
-        """Set the exit code (registry)"""
-        self.exit_code = exit_code
-
     @property
     def ti_utils(self) -> 'ThreatIntelUtils':
         """Return instance of Threat Intel Utils."""
@@ -507,12 +516,12 @@ class TcEx:
         """Include the Utils module."""
         return Utils()
 
-    @property
+    @cached_property
     def v2(self) -> 'V2':
         """Return a case management instance."""
         return V2(self.inputs, self.session_tc)
 
-    @property
+    @cached_property
     def v3(self) -> 'V3':
         """Return a case management instance."""
         return V3(self.session_tc)

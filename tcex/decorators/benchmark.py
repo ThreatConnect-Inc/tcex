@@ -1,9 +1,14 @@
 """App Decorators Module."""
 # standard library
 import datetime
+import logging
+from typing import Optional
 
 # third-party
 import wrapt
+
+# get tcex logger
+logger = logging.getLogger('tcex')
 
 
 class Benchmark:
@@ -23,6 +28,17 @@ class Benchmark:
             time.sleep(1)
     """
 
+    def __init__(
+        self,
+        microseconds: Optional[int] = 0,
+        milliseconds: Optional[int] = 0,
+        seconds: Optional[int] = 0,
+    ):
+        """Initialize Class properties."""
+        self.microseconds = microseconds
+        self.milliseconds = milliseconds
+        self.seconds = seconds
+
     @wrapt.decorator
     def __call__(self, wrapped, instance, args, kwargs):
         """Implement __call__ function for decorator.
@@ -41,7 +57,7 @@ class Benchmark:
             function: The custom decorator function.
         """
 
-        def benchmark(app, *args, **kwargs):
+        def benchmark(_, *args, **kwargs):
             """Iterate over data, calling the decorated function for each value.
 
             Args:
@@ -51,9 +67,11 @@ class Benchmark:
             before = datetime.datetime.now()
             data = wrapped(*args, **kwargs)
             after = datetime.datetime.now()
-            app.tcex.log.debug(
-                f'function: "{self.__class__.__name__}", benchmark_time: "{after - before}"'
-            )
+            delta = after - before
+            if delta > datetime.timedelta(
+                microseconds=self.microseconds, milliseconds=self.milliseconds, seconds=self.seconds
+            ):
+                logger.debug(f'function: "{wrapped.__name__}", benchmark_time: "{delta}"')
             return data
 
         return benchmark(instance, *args, **kwargs)

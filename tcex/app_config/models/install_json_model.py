@@ -632,6 +632,57 @@ class InstallJsonCommonModel(BaseModel):
         json_encoders = json_encoders
         validate_assignment = True
 
+    @property
+    def is_api_service_app(self) -> bool:
+        """Return True if the current App is ANY type of API Service App."""
+        return self.runtime_level.lower() in [
+            'apiservice',
+            'feedapiservice',
+        ]
+
+    @property
+    def is_feed_app(self) -> bool:
+        """Return True if the current App is ANY type of API Service App."""
+        return self.runtime_level.lower() in [
+            'feedapiservice',
+            'organization',
+        ]
+
+    @property
+    def is_job_app(self) -> bool:
+        """Return True if the current App is an Organization (job) App."""
+        return self.is_organization_app
+
+    @property
+    def is_organization_app(self) -> bool:
+        """Return True if the current App is an Organization (job) App."""
+        return self.runtime_level.lower() == 'organization'
+
+    @property
+    def is_playbook_app(self) -> bool:
+        """Return True if the current App is a Playbook App."""
+        return self.runtime_level.lower() == 'playbook'
+
+    @property
+    def is_trigger_app(self) -> bool:
+        """Return True if the current App is trigger Service App."""
+        return self.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']
+
+    @property
+    def is_webhook_trigger_app(self) -> bool:
+        """Return True if the current App is a webhook Service App."""
+        return self.runtime_level.lower() == 'webhooktriggerservice'
+
+    @property
+    def is_service_app(self) -> bool:
+        """Return True if the current App is ANY type of Service App."""
+        return self.runtime_level.lower() in [
+            'apiservice',
+            'feedapiservice',
+            'triggerservice',
+            'webhooktriggerservice',
+        ]
+
 
 class InstallJsonOrganizationModel(BaseModel):
     """Install JSON Common Model
@@ -726,7 +777,7 @@ class InstallJsonModel(InstallJsonCommonModel, InstallJsonOrganizationModel):
     @property
     def app_output_var_type(self) -> str:
         """Return the appropriate output var type for the current App."""
-        if self.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']:
+        if self.is_trigger_app:
             return 'Trigger'
         return 'App'
 
@@ -789,35 +840,6 @@ class InstallJsonModel(InstallJsonCommonModel, InstallJsonOrganizationModel):
     def get_param(self, name: str) -> Union['NoneModel', 'ParamsModel']:
         """Return param for the matching name."""
         return self.params_dict.get(name) or NoneModel()
-
-    @property
-    def is_job_app(self) -> bool:
-        """Return True if the current App is an Organization (job) App."""
-        return self.is_organization_app
-
-    @property
-    def is_organization_app(self) -> bool:
-        """Return True if the current App is an Organization (job) App."""
-        return self.runtime_level.lower() == 'organization'
-
-    @property
-    def is_playbook_app(self) -> bool:
-        """Return True if the current App is a Playbook App."""
-        return self.runtime_level.lower() == 'playbook'
-
-    @property
-    def is_playbook_trigger_app(self) -> bool:
-        """Return True if the current App is trigger Service App."""
-        return self.runtime_level.lower() in ['triggerservice', 'webhooktriggerservice']
-
-    @property
-    def is_service_app(self) -> bool:
-        """Return True if the current App is ANY type of Service App."""
-        return self.runtime_level.lower() in [
-            'apiservice',
-            'triggerservice',
-            'webhooktriggerservice',
-        ]
 
     @property
     def optional_params(self) -> Dict[str, 'ParamsModel']:

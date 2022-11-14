@@ -1,20 +1,35 @@
 # Release Notes
 
+### 3.0.5
+
+-   APP-3827 - [Playbooks] Python 3.6 Error when accessing a playbooks sensitive.value value
+-   APP-3766 - [API] Added support for Security Labels on Attributes
+-   APP-3775 - [Playbooks] Updated variable pattern regex to better handle mix variables types
+-   APP-3776 - [CLI] Updated spectool for general improvements and fixes
+-   APP-3805 - [API] Added TI Transforms module used to map a TI object to TC Bach or V3 format
+-   APP-3810 - [Services] Added Support for Feed Service Apps
+-   APP-3822 - [TcEx] Added type hints to cached_property, scoped_property, and registry to enable intellisense
+-   APP-3825 - [API] Updated date format on TQL filters used in V3 api
+-   APP-3826 - [Utils] Updated file operations module with more helper methods
+-   APP-3827 - [Inputs] Updated sensitive.value property to address issue with latest requests module
+-   APP-3831 - [API] Updated v3 base models to match TC 6.7.x documented structure
+-   APP-3837 - [Decorators] Updated benchmark decorator
+
 ### 3.0.4
 
 -   APP-3582 - [CLI] Updated spectool to automatically sort release notes by version when creating readme.md
 -   APP-3586 - [CLI] Updated spectool to ignore outputPrefix for non-playbook apps
 -   APP-3587 - [CLI] Updated spectool README.md generation for outputs
 -   APP-3610 - [CLI] Updated spectool for general improvements and fixes
--   APP-3750 - [Batch] Update batch_submit method to accept content as dict or string
+-   APP-3750 - [Batch] Updated batch_submit method to accept content as dict or string
 -   APP-3751 - [API] Updated API module for new case filters (cal_score, missing_artifact_count, threat_assess_score)
 -   APP-3752 - [API] Updated API module for file action and file occurrence support
 -   APP-3753 - [API] Updated API module for new task filter (missing_artifact_count)
--   APP-3748 - [Inputs] Add result Limit on resolving magic variables
+-   APP-3748 - [Inputs] Added result Limit on resolving magic variables
 -   APP-3747 - [API] Added support for Group -> Victim Asset Associations
 -   APP-3753 - [API] Updated API module for new task filter (missing_artifact_count)
--   APP-3754 - [API] Update group_model to address API spec discrepancy
--   APP-3756 - [KeyValue] Add KeyValueMock, an implementation of KeyValueABC only for testing and running apps locally.
+-   APP-3754 - [API] Updated group_model to address API spec discrepancy
+-   APP-3756 - [KeyValue] Added KeyValueMock, an implementation of KeyValueABC only for testing and running apps locally
 -   APP-3757 - [AppConfig] Updated inputs to support external Apps (no install.json)
 -   APP-3758 - [Token] Updated exit module to not invoke token thread for external Apps
 

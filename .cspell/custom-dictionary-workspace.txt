@@ -1,12 +1,14 @@
 ajfmuyodhscwegea
 apiservice
 astunparse
+ATTCK
 autofix
 blpop
 cacert
 caseid
 cblades
 chdir
+compresslevel
 coveragerc
 ctypes
 curlify
@@ -25,6 +27,7 @@ encrypter
 envvar
 escalatees
 ESUP
+feedapiservice
 fget
 fnmatch
 fpfn

@@ -4,16 +4,31 @@
 -   The Description Attribute must include Case and URL (System Settings -> Attribute Types)
 -   A Service App needs to be created "DO NOT DELETE - TcEx Test Service App"
 
-# General Test Command
-
 ## Code Stats
 
 ```bash
-find tcex/api/tc/v3 -type f | xargs wc -l
+> cloc bin tcex tests
+    551 text files.
+    480 unique files.
+    879 files ignored.
+
+github.com/AlDanial/cloc v 1.94  T=0.97 s (494.1 files/s, 89626.4 lines/s)
+-------------------------------------------------------------------------------
+Language                     files          blank        comment           code
+-------------------------------------------------------------------------------
+Python                         440          12308          19516          45368
+JSON                            34              0              0           8905
+YAML                             1              1              9            394
+Markdown                         4            174              0            391
+Text                             1              0              0              1
+-------------------------------------------------------------------------------
+SUM:                           480          12483          19525          55059
+-------------------------------------------------------------------------------
 ```
 
-~66,000 Lines of Python code
-~47,000 Lines of test cases
+## General Test Command
+
+2022-08-26 - 1,721 Test Cases
 
 ## Test a specific module
 
