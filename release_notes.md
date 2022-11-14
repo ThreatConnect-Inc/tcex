@@ -12,7 +12,7 @@
 -   APP-3826 - [Utils] Updated file operations module with more helper methods
 -   APP-3827 - [Inputs] Updated sensitive.value property to address issue with latest requests module
 -   APP-3831 - [API] Updated v3 base models to match TC 6.7.x documented structure
--   APP-3837x - [Decorators] Updated benchmark decorator
+-   APP-3837 - [Decorators] Updated benchmark decorator
 
 ### 3.0.4
 
