@@ -410,7 +410,7 @@ class AppSpecYmlModel(InstallJsonCommonModel):
                 if param.display:
                     return True
 
-        for output_data in self.output_data:
+        for output_data in self.output_data or []:
             if output_data.display not in [None, '1', '']:
                 return True
 
