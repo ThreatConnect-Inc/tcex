@@ -1,12 +1,13 @@
 """TcEx Framework API Service module."""
 # standard library
+import concurrent.futures
 import json
 import sys
 import threading
 import traceback
 from functools import reduce
 from io import BytesIO
-from typing import Any
+from typing import Any, Callable, Optional
 
 # first-party
 from tcex.input.field_types.sensitive import Sensitive
@@ -29,6 +30,9 @@ class ApiService(CommonService):
 
         # config callbacks
         self.api_event_callback = None
+
+        # thread pool to handle HTTP requests
+        self.request_thread_pool = concurrent.futures.ThreadPoolExecutor(max_workers=5)
 
     @property
     def command_map(self) -> dict:
@@ -268,3 +272,45 @@ class ApiService(CommonService):
 
         # unregister config apiToken
         self.token.unregister_token(self.thread_name)
+
+    def process_shutdown_command(self, message: dict):
+        """Handle shutdown command."""
+        super().process_shutdown_command(message)
+        self.request_thread_pool.shutdown()
+
+    def service_thread(
+        self,
+        name: str,
+        target: Callable[[], bool],
+        args: Optional[tuple] = None,
+        kwargs: Optional[dict] = None,
+        session_id: Optional[str] = None,
+        trigger_id: Optional[int] = None,
+    ):
+        """If this is a run-service command, run it with the thread pool.
+
+        For everything else, use parent's implementation.
+
+        Args:
+            name: The name of the thread.
+            target: The method to call for the thread.
+            args: The args to pass to the target method.
+            kwargs: Additional args.
+            session_id: The current session id.
+            trigger_id: The current trigger id.
+        """
+        args = args or ()
+        kwargs = kwargs or {}
+
+        def _thread_wrapper():
+            t = threading.current_thread()
+            t.setName(name)
+            t.session_id = session_id
+            t.trigger_id = trigger_id
+            target(*args, **kwargs)
+
+        if target is self.process_run_service_command:
+            self.log.info(f'feature=service, event=request-thread-creation, name={name}')
+            self.request_thread_pool.submit(_thread_wrapper)
+        else:
+            super().service_thread(name, target, args, kwargs, session_id, trigger_id)

@@ -3,6 +3,7 @@
 ### 3.0.6
 
 -   APP-3857 - [CLI] Updated spectool for general improvements and fixes
+-   APP-3862 - [Services] Handle requests to API services with a threadpool.
 
 ### 3.0.5
 
