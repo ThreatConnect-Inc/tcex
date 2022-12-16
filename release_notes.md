@@ -3,7 +3,8 @@
 ### 3.0.6
 
 -   APP-3857 - [CLI] Updated spectool for general improvements and fixes
--   APP-3862 - [Services] Handle requests to API services with a threadpool.
+-   APP-3863 - [API] Update url() method in object_abc to resolve by id, xid, or summary when needed
+-   APP-3862 - [Services] Handle requests to API services with a threadpool
 
 ### 3.0.5
 
