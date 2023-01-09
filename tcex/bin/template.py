@@ -132,7 +132,7 @@ class Template(BinABC):
             self.log.error(f'Failed inserting config in db ({ex}).')
             self.errors = True
 
-    def db_get_config(self, type_: str, template: str) -> 'TemplateConfigModel':
+    def db_get_config(self, type_: str, template: str) -> Optional['TemplateConfigModel']:
         """Get a config from the DB."""
         Config = Query()
         try:
@@ -148,7 +148,7 @@ class Template(BinABC):
             self.errors = True
             return None
 
-    def db_get_sha(self, sha: str):
+    def db_get_sha(self, sha: str) -> Optional[str]:
         """Get repo SHA from the DB."""
         SHA = Query()
         try:
@@ -198,7 +198,7 @@ class Template(BinABC):
 
     def get_template_config(
         self, type_: str, template: str, branch: str = 'main'
-    ) -> 'TemplateConfigModel':
+    ) -> Optional['TemplateConfigModel']:
         """Return the data from the template.yaml file."""
         self.log.info(
             f'action=get-template-config, type={type_}, '
@@ -255,7 +255,7 @@ class Template(BinABC):
         type_: str,
         app_builder: bool,
         template_name: str = None,  # preserve the template name for recursion
-    ) -> List[dict]:
+    ) -> dict:
         """Get the contents of a template and allow recursion."""
         for item in self.contents(branch, type_, path, app_builder):
             # add template name and type to the item to be
@@ -357,7 +357,7 @@ class Template(BinABC):
                 print('')
 
     @cached_property
-    def project_sha(self) -> str:
+    def project_sha(self) -> Optional[str]:
         """Return the current commit sha for the tcex-app-templates project."""
         params = {'perPage': '1'}
         r: 'Response' = self.session.get(f'{self.base_url}/commits', params=params)
@@ -391,7 +391,7 @@ class Template(BinABC):
         return session
 
     @cached_property
-    def template_manifest(self):
+    def template_manifest(self) -> dict:
         """Write the template manifest file."""
         if self.template_manifest_fqfn.is_file():
             with self.template_manifest_fqfn.open() as fh:
@@ -515,7 +515,7 @@ class Template(BinABC):
             return True
         return False
 
-    def update_item_prompt(self, branch: str, item: dict):
+    def update_item_prompt(self, branch: str, item: dict) -> bool:
         """Update the prompt value for the provided item."""
         template_name = item.get('template_name')
         template_config = self.get_template_config(
