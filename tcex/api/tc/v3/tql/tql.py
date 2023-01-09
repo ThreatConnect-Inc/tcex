@@ -34,7 +34,7 @@ class Tql:
                     value = f'({value})'
                 elif tql_filter.get('type') == TqlType.STRING:
                     value = f'"{value}"'
-                filters.append(f'''{keyword} {tql_filter.get('operator').name} {value}''')
+                filters.append(f'''{keyword} {tql_filter.get('operator').value} {value}''')
 
         return ' and '.join(filters)
 
