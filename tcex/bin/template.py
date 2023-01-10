@@ -132,7 +132,7 @@ class Template(BinABC):
             self.log.error(f'Failed inserting config in db ({ex}).')
             self.errors = True
 
-    def db_get_config(self, type_: str, template: str) -> 'TemplateConfigModel':
+    def db_get_config(self, type_: str, template: str) -> Optional['TemplateConfigModel']:
         """Get a config from the DB."""
         Config = Query()
         try:
@@ -148,7 +148,7 @@ class Template(BinABC):
             self.errors = True
             return None
 
-    def db_get_sha(self, sha: str):
+    def db_get_sha(self, sha: str) -> Optional[str]:
         """Get repo SHA from the DB."""
         SHA = Query()
         try:
@@ -164,12 +164,6 @@ class Template(BinABC):
     def download_template_file(self, item: dict):
         """Download the provided source file to the provided destination."""
         download_url = item.get('download_url')
-        name = item.get('name')
-
-        # where to write the file
-        destination = Path(os.path.join(os.getcwd(), name))
-        self.log.info(f'action=download-template-file, file={name}')
-
         r: 'Response' = self.session.get(
             download_url, allow_redirects=True, headers={'Cache-Control': 'no-cache'}
         )
@@ -180,11 +174,15 @@ class Template(BinABC):
                 f'response={r.text or r.reason}'
             )
 
-        # write destination file
+        # get the relative path to the file and create the parent directory if it does not exist
+        destination = item.get('relative_path')
+        if destination.parent.exists() is False:
+            destination.parent.mkdir(parents=True, exist_ok=True)
         destination.open(mode='wb').write(r.content)
+        self.log.info(f'action=download-template-file, file={destination}')
 
-        # update manifest
-        self.template_manifest[name]['md5'] = self.file_hash(destination)
+        # update manifest, using the path as the key for uniqueness
+        self.template_manifest[item.get('path')]['md5'] = self.file_hash(destination)
 
     @staticmethod
     def file_hash(fqfn: Path) -> str:
@@ -196,12 +194,11 @@ class Template(BinABC):
                 if not chunk:
                     break
                 md5.update(chunk)
-
         return md5.hexdigest()
 
     def get_template_config(
         self, type_: str, template: str, branch: str = 'main'
-    ) -> 'TemplateConfigModel':
+    ) -> Optional['TemplateConfigModel']:
         """Return the data from the template.yaml file."""
         self.log.info(
             f'action=get-template-config, type={type_}, '
@@ -250,18 +247,67 @@ class Template(BinABC):
                 self.errors = True
             return None
 
+    def get_template_contents(
+        self,
+        branch: str,
+        data: dict,
+        path: str,
+        type_: str,
+        app_builder: bool,
+        template_name: str = None,  # preserve the template name for recursion
+    ) -> dict:
+        """Get the contents of a template and allow recursion."""
+        for item in self.contents(branch, type_, path, app_builder):
+            # add template name and type to the item to be
+            # used during the download and write process
+            item['template_name'] = template_name
+            item['template_type'] = type_
+            # add relative path key AFTER template values have been added to the item
+            item['relative_path'] = self.item_relative_path(item)
+
+            # process any files and recurse into any directories
+            if item.get('type') == 'file':
+                # templates are hierarchical, overwrite previous values with new
+                # values using relative path for as the identifier for the file
+                data[str(item.get('relative_path'))] = item
+
+                # update manifest data, this will be used during
+                # updates to determine if the file has changed
+                self.template_manifest.setdefault(item.get('path'), {})
+                self.template_manifest[item.get('path')]['sha'] = item.get('sha')
+            elif item.get('type') == 'dir':
+                nested_dir = f'''{path}/{item.get('name')}'''
+                self.get_template_contents(
+                    branch, data, nested_dir, type_, app_builder, template_name
+                )
+
+        return data
+
     def init(self, branch: str, type_: str, template: str, app_builder: bool) -> List[dict]:
         """Initialize an App with template files."""
-        downloads = {}
+        data = {}
         for tp in self.template_parents(type_, template, branch):
-            for item in self.contents(branch, type_, tp, app_builder):
-                if item.get('type') == 'file':
-                    # overwrite name if found in later parent
-                    downloads[item.get('name')] = item
-                    self.template_manifest.setdefault(item.get('name'), {})
-                    self.template_manifest[item.get('name')]['sha'] = item.get('sha')
+            self.get_template_contents(branch, data, tp, type_, app_builder, tp)
+        return data.values()
 
-        return downloads.values()
+    def item_relative_path(self, item: dict) -> Path:
+        """Return the relative path to the item."""
+        path = item.get('path')
+        template_path = self.item_template_path(item)
+
+        # handle nested files by stripping the type/template values from the path, the
+        # remaining part is the relative path to the file to be used for read/write.
+        _path = item.get('name')
+        if path.startswith(template_path):
+            _path = path.replace(template_path, '')
+        return Path(_path)
+
+    @staticmethod
+    def item_template_path(item: dict) -> str:
+        """Return the template path."""
+        if item.get('template_name') == '_app_common':
+            return f'''{item.get('template_name')}/'''
+        return f'''{item.get('template_type')}/{item.get('template_name')}/'''
 
     def list(self, branch: str, type_: Optional[str] = None):
         """List template types."""
@@ -311,7 +357,7 @@ class Template(BinABC):
                 print('')
 
     @cached_property
-    def project_sha(self) -> str:
+    def project_sha(self) -> Optional[str]:
         """Return the current commit sha for the tcex-app-templates project."""
         params = {'perPage': '1'}
         r: 'Response' = self.session.get(f'{self.base_url}/commits', params=params)
@@ -345,7 +391,7 @@ class Template(BinABC):
         return session
 
     @cached_property
-    def template_manifest(self):
+    def template_manifest(self) -> dict:
         """Write the template manifest file."""
         if self.template_manifest_fqfn.is_file():
             with self.template_manifest_fqfn.open() as fh:
@@ -358,7 +404,7 @@ class Template(BinABC):
             fh.write(json.dumps(self.template_manifest, indent=2, sort_keys=True))
             fh.write('\n')
 
-    def template_parents(self, type_: str, template: str, branch: str = 'main') -> list:
+    def template_parents(self, type_: str, template: str, branch: str = 'main') -> List[str]:
         """Return all parents for the provided template."""
         # get the config for the requested template
         template_config = self.get_template_config(type_, template, branch)
@@ -385,8 +431,8 @@ class Template(BinABC):
             [t for t in template_config.template_parents if t not in app_templates]
         )
 
-        # add this template last
-        app_templates.extend([template])
+        # add this current template last
+        app_templates.append(template)
 
         return app_templates
 
@@ -395,6 +441,7 @@ class Template(BinABC):
         """Return the defined template types."""
         return {
             'api_service': 'tcva',
+            'feed_api_service': 'tcvf',
             'organization': 'tc',
             'playbook': 'tcpb',
             'trigger_service': 'tcvc',
@@ -408,6 +455,7 @@ class Template(BinABC):
         return [
             'api_service',
             'external',
+            'feed_api_service',
             'organization',
             'playbook',
             'trigger_service',
@@ -417,69 +465,67 @@ class Template(BinABC):
 
     def update(self, branch: str, template: str, type_: str, ignore_hash=False) -> List[dict]:
         """Initialize an App with template files."""
+        # update tcex.json model
         if template is not None:
             self.tj.model.template_name = template
         if type_ is not None:
             self.tj.model.template_type = type_
 
-        template = template or self.tj.model.template_name
-        type_ = type_ or self.tj.model.template_type
-
-        # get the final contents after procession all parents
-        contents = {}
+        # retrieve ALL template contents
+        data = {}
         for tp in self.template_parents(
             self.tj.model.template_type, self.tj.model.template_name, branch
         ):
-            template_config = self.get_template_config(self.tj.model.template_type, tp, branch)
-            for item in self.contents(branch, self.tj.model.template_type, tp):
-                if item.get('type') == 'file':
-                    # determine if file requires user prompt
-                    prompt = True
-                    if item.get('name') in template_config.template_files:
-                        prompt = False
-                    item['prompt'] = prompt
-
-                    # overwrite name if found in later parent
-                    contents[item.get('name')] = item
+            self.get_template_contents(branch, data, tp, self.tj.model.template_type, False, tp)
 
         # determine which files should be downloaded
         downloads = []
-        for item in contents.values():
-            fqfn = Path(item.get('name'))
-            name = item.get('name')
+        for item in data.values():
+            # get the relative path to the file
+            relative_path = item.get('relative_path')
 
-            if fqfn.is_file():
-                file_hash = self.file_hash(fqfn)
-            else:
-                continue
-
-            # has the file hash changed since init or last update
-            if not ignore_hash and self.template_manifest.get(name, {}).get('md5') == file_hash:
-                self.log.debug(
-                    f'action=update, template-file={name}, '
-                    'check=hash-check, result=hash-has-not-changed'
-                )
-                continue
-
-            # # has the repo sha changed since init or last update
-            # if self.template_manifest.get(name, {}).get('sha') == item.get('sha'):
-            #     self.log.debug(
-            #         f'action=update, template-file={name}, '
-            #         'check=sha-check, result=sha-has-not-changed'
-            #     )
-            #     continue
+            # skip files if it has not changed
+            if relative_path.is_file() and ignore_hash is False:
+                # skip files if it has not changed
+                if self.update_item_check_hash(relative_path, item) is False:
+                    continue
 
             # is the file a template file and dev says overwrite
-            if item.get('prompt') is True and os.path.isfile(name):
-                response = self.prompt_choice(f'Overwrite: {name}', choices=['y', 'n'], default='n')
+            if self.update_item_prompt(branch, item) and relative_path.is_file() is True:
+                response = self.prompt_choice(
+                    f'Overwrite: {relative_path}', choices=['y', 'n'], default='n'
+                )
                 if response == 'n':
                     continue
 
             downloads.append(item)
-            self.template_manifest.setdefault(item.get('name'), {})
-            self.template_manifest[item.get('name')]['sha'] = item.get('sha')
+            self.template_manifest.setdefault(item.get('path'), {})
+            self.template_manifest[item.get('path')]['sha'] = item.get('sha')
 
         return downloads
+
+    def update_item_check_hash(self, fqfn: Path, item: dict) -> bool:
+        """Check if the file hash has changed since init or last update."""
+        file_hash = self.file_hash(fqfn)
+        if self.template_manifest.get(item.get('path'), {}).get('md5') != file_hash:
+            self.log.debug(
+                f'''action=update-check-hash, template-file={item.get('name')}, '''
+                'check=hash-check, result=hash-has-not-changed'
+            )
+            return True
+        return False
+
+    def update_item_prompt(self, branch: str, item: dict) -> bool:
+        """Update the prompt value for the provided item."""
+        template_name = item.get('template_name')
+        template_config = self.get_template_config(
+            self.tj.model.template_type, template_name, branch
+        )
+
+        # determine if file requires user prompt
+        if str(item.get('relative_path')) in template_config.template_files:
+            return False
+        return True
 
     def update_tcex_json(self):
         """Update the tcex.json file."""
