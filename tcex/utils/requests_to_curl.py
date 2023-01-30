@@ -38,9 +38,9 @@ class RequestsToCurl:
             verify: If False the curl command will include --insecure flag.
             write_file: If True and the body is binary it will be written as a temp file.
         """
-        body_limit: int = kwargs.get('body_limit', 100)
-        proxies: dict = kwargs.get('proxies', {})
-        verify: bool = kwargs.get('verify', True)
+        body_limit = kwargs.get('body_limit', 100)
+        proxies = kwargs.get('proxies', {})
+        verify = kwargs.get('verify', True)
         # write_file: bool = kwargs.get('write_file', False)
 
         # APP-79 - adding the ability to log request as curl commands

@@ -17,6 +17,7 @@ from tcex.api.tc.v3._gen._gen_model_abc import GenerateModelABC
 from tcex.api.tc.v3._gen._gen_object_abc import GenerateObjectABC
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.utils import Utils
+from tcex.utils.string_operations import SnakeString
 
 # initialize Utils module
 utils = Utils()
@@ -29,7 +30,7 @@ class GenerateArgs(GenerateArgsABC):
 class GenerateFilter(GenerateFilterABC):
     """Generate Models for TC API Types"""
 
-    def __init__(self, type_: str):
+    def __init__(self, type_: SnakeString):
         """Initialize class properties."""
         super().__init__(type_)
 
@@ -41,7 +42,7 @@ class GenerateFilter(GenerateFilterABC):
 class GenerateModel(GenerateModelABC):
     """Generate Models for TC API Types"""
 
-    def __init__(self, type_: str):
+    def __init__(self, type_: SnakeString):
         """Initialize class properties."""
         super().__init__(type_)
 
@@ -53,7 +54,7 @@ class GenerateModel(GenerateModelABC):
 class GenerateObject(GenerateObjectABC):
     """Generate Models for TC API Types"""
 
-    def __init__(self, type_: str):
+    def __init__(self, type_: SnakeString):
         """Initialize class properties."""
         super().__init__(type_)
 
@@ -86,7 +87,7 @@ def format_code(_code):
     return _code
 
 
-def gen_args(type_: str, indent_blocks: int):
+def gen_args(type_: SnakeString, indent_blocks: int):
     """Generate args code."""
     # get instance of doc generator
     gen = GenerateArgs(type_)
@@ -97,7 +98,7 @@ def gen_args(type_: str, indent_blocks: int):
     print(gen.gen_args(i1=i1, i2=i2))
 
 
-def gen_filter(type_: str):
+def gen_filter(type_: SnakeString):
     """Generate the filter code."""
     # get instance of filter generator
     gen = GenerateFilter(type_)
@@ -124,8 +125,11 @@ def gen_filter(type_: str):
 
     typer.secho(f'Successfully wrote {out_file}.', fg=typer.colors.GREEN)
 
+    for msg in gen.messages:
+        typer.secho(msg, fg=typer.colors.YELLOW)
 
-def gen_model(type_: str):
+
+def gen_model(type_: SnakeString):
     """Generate model code."""
     # get instance of model generator
     gen = GenerateModel(type_)
@@ -169,8 +173,11 @@ def gen_model(type_: str):
 
     typer.secho(f'Successfully wrote {out_file}.', fg=typer.colors.GREEN)
 
+    for msg in gen.messages:
+        typer.secho(msg, fg=typer.colors.YELLOW)
 
-def gen_object(type_: str):
+
+def gen_object(type_: SnakeString):
     """Generate object code."""
     # get instance of filter generator
     gen = GenerateObject(type_)
@@ -198,6 +205,9 @@ def gen_object(type_: str):
         fh.write(format_code(_code))
 
     typer.secho(f'Successfully wrote {out_file}.', fg=typer.colors.GREEN)
+
+    for msg in gen.messages:
+        typer.secho(msg, fg=typer.colors.YELLOW)
 
 
 #
@@ -275,8 +285,7 @@ def args(
     ),
 ):
     """Generate Args."""
-    type_ = utils.snake_string(type_.value)
-    gen_args(type_, indent_blocks)
+    gen_args(utils.snake_string(type_.value), indent_blocks)
 
 
 @app.command()
@@ -286,10 +295,10 @@ def code(
     ),
 ):
     """Generate Args."""
-    type_ = utils.snake_string(type_.value)
-    gen_filter(type_)
-    gen_model(type_)
-    gen_object(type_)
+    tv = utils.snake_string(type_.value)
+    gen_filter(tv)
+    gen_model(tv)
+    gen_object(tv)
 
 
 @app.command()
@@ -299,8 +308,7 @@ def filter(  # pylint: disable=redefined-builtin
     ),
 ):
     """Generate the filter code."""
-    type_ = utils.snake_string(type_.value)
-    gen_filter(type_)
+    gen_filter(utils.snake_string(type_.value))
 
 
 @app.command()
@@ -310,8 +318,7 @@ def model(
     ),
 ):
     """Generate the model"""
-    type_ = utils.snake_string(type_.value)
-    gen_model(type_)
+    gen_model(utils.snake_string(type_.value))
 
 
 @app.command()
@@ -321,8 +328,7 @@ def object(  # pylint: disable=redefined-builtin
     ),
 ):
     """Generate the filter class"""
-    type_ = utils.snake_string(type_.value)
-    gen_object(type_)
+    gen_object(utils.snake_string(type_.value))
 
 
 if __name__ == '__main__':

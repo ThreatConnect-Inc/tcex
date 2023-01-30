@@ -56,7 +56,7 @@ class WorkflowTemplate(ObjectABC):
     """WorkflowTemplates Object.
 
     Args:
-        config_attribute (object, kwargs): The **config attribute** for the Workflow_Template.
+        config_attribute (None, kwargs): The **config attribute** for the Workflow_Template.
         description (str, kwargs): The **description** for the Workflow_Template.
         name (str, kwargs): The **name** for the Workflow_Template.
         version (int, kwargs): The **version** for the Workflow_Template.

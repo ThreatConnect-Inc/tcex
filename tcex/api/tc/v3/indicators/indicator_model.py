@@ -384,7 +384,7 @@ class IndicatorModel(
     web_link: Optional[str] = Field(
         None,
         allow_mutation=False,
-        description='The object link.',
+        description='A link to the ThreatConnect details page for this entity.',
         read_only=True,
         title='webLink',
     )

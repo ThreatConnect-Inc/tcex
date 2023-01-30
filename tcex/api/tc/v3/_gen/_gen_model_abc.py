@@ -1,18 +1,18 @@
 """Generate Models for ThreatConnect API"""
 # standard library
-import sys
 from abc import ABC
 from textwrap import TextWrapper
-from typing import Dict, List
+from typing import List
 
 # first-party
 from tcex.api.tc.v3._gen._gen_abc import GenerateABC
+from tcex.utils.string_operations import SnakeString
 
 
 class GenerateModelABC(GenerateABC, ABC):
     """Generate Models for Case Management Types"""
 
-    def __init__(self, type_: str):
+    def __init__(self, type_: SnakeString):
         """Initialize class properties."""
         super().__init__(type_)
 
@@ -45,56 +45,6 @@ class GenerateModelABC(GenerateABC, ABC):
         """Add pydantic validator only when required."""
         self._add_module_class('third-party', 'pydantic', 'PrivateAttr')
 
-    def _configure_type(self, type_: str, field: str) -> str:
-        """Return hint type."""
-        _types = self._prop_type_common()
-        _types.update(self._prop_type_custom(type_))
-
-        # Ensure dict is lowercase.
-        _types = {k.lower(): v for k, v in _types.items()}
-
-        # handle types
-        type_ = self._fix_type(type_)  # swap Attribute for specific type (e.g., CaseAttribute)
-        type_data = _types.get(type_.lower(), {})
-        requirement_data = type_data.get('requirement')
-
-        # add additional requirements, if not current model type
-        if requirement_data is not None and not type_ == self.type_.plural().pascal_case():
-            from_ = requirement_data.get('from')
-            import_ = requirement_data.get('import')
-            if import_ not in self.requirements.get(from_):
-                self.requirements[from_].append(import_)
-
-        # add validator
-        for custom_type in self._prop_type_custom(type_):
-            if custom_type.lower() == type_.lower():
-                self.validators.setdefault(type_, []).append(field)
-
-        return type_data.get('type', type_)
-
-    def _fix_type(self, type_: str) -> str:
-        """Fix type for when API returns a "bad" type."""
-        if self.type_ == 'cases' and type_ == 'Attributes':
-            return 'CaseAttributes'
-        if self.type_ == 'groups' and type_ == 'Attributes':
-            return 'GroupAttributes'
-        if self.type_ == 'indicators' and type_ == 'Attributes':
-            return 'IndicatorAttributes'
-        if type_ == 'AttributeDatas':
-            return 'Attributes'
-        return type_
-
-    def _gen_req_code(self, type_: str) -> Dict[str, str]:
-        """Return the requirements code"""
-        type_ = self.utils.camel_string(type_)
-        return {
-            'from': 'first-party-forward-reference',
-            'import': (
-                f'from {self.tap(type_)}.{type_.plural().snake_case()}.'
-                f'{type_.singular().snake_case()}_model import {type_}Model'
-            ),
-        }
-
     def _gen_code_validator_method(self, type_: str, fields: List[str]) -> str:
         """Return the validator code
 
@@ -106,10 +56,10 @@ class GenerateModelABC(GenerateABC, ABC):
         """
         type_ = self.utils.camel_string(type_)
 
-        fields = ', '.join(f'\'{field}\'' for field in fields)
+        fields_string = ', '.join(f'\'{field}\'' for field in fields)
         return '\n'.join(
             [
-                f'''{self.i1}@validator({fields}, always=True)''',
+                f'''{self.i1}@validator({fields_string}, always=True)''',
                 f'''{self.i1}def _validate_{type_.snake_case()}(cls, v):''',
                 f'''{self.i2}if not v:''',
                 f'''{self.i3}return {type_}Model()''',
@@ -117,222 +67,6 @@ class GenerateModelABC(GenerateABC, ABC):
                 '',
             ]
         )
-
-    @staticmethod
-    def _prop_type_common() -> dict:
-        """Return common types."""
-        return {
-            'boolean': {
-                'type': 'bool',
-            },
-            'BigDecimal': {
-                'type': 'Optional[int]',
-            },
-            'Boolean': {
-                'type': 'bool',
-            },
-            'Date': {
-                'requirement': {
-                    'from': 'standard library',
-                    'import': 'from datetime import datetime',
-                },
-                'type': 'Optional[datetime]',
-            },
-            'Double': {
-                'type': 'Optional[float]',
-            },
-            'Integer': {
-                'type': 'Optional[int]',
-            },
-            'JsonNode': {
-                'requirement': {'from': 'standard library', 'import': 'from typing import Union'},
-                'type': 'Union[Optional[dict], Optional[List[dict]]]',
-            },
-            'Links': {
-                'type': 'Optional[dict]',
-            },
-            'Long': {
-                'type': 'Optional[int]',
-            },
-            'Short': {
-                'type': 'Optional[int]',
-            },
-            'String': {
-                'type': 'Optional[str]',
-            },
-        }
-
-    def _prop_type_custom(self, type_: str) -> dict:
-        """Return cm types."""
-        type_ = self._fix_type(self.utils.snake_string(type_))
-        return {
-            'AdversaryAssets': {
-                'requirement': self._gen_req_code(type_),
-                'type': f'Optional[\'{type_}Model\']',
-            },
-            'Artifact': {
-                'requirement': self._gen_req_code(type_),
-                'type': f'Optional[\'{type_}Model\']',
-            },
-            'Artifacts': {
-                'requirement': self._gen_req_code(type_),
-                'type': f'Optional[\'{type_}Model\']',
-            },
-            'ArtifactType': {
-                'requirement': self._gen_req_code(type_),
-                'type': f'Optional[\'{type_}Model\']',
-            },
-            'Assignee': {
-                'requirement': {
-                    'from': 'first-party-forward-reference',
-                    'import': 'from tcex.api.tc.v3.security.assignee_model import AssigneeModel',
-                },
-                'type': 'Optional[\'AssigneeModel\']',
-            },
-            'Attributes': {
-                'requirement': {
-                    'from': 'first-party-forward-reference',
-                    'import': (
-                        'from tcex.api.tc.v3.attributes.attribute_model import AttributesModel'
-                    ),
-                },
-                'type': f'Optional[\'{type_}Model\']',
-            },
-            'Case': {
-                'requirement': self._gen_req_code(type_),
-                'type': f'Optional[\'{type_}Model\']',
-            },
-            'CaseAttributes': {
-                'requirement': {
-                    'from': 'first-party-forward-reference',
-                    'import': (
-                        'from tcex.api.tc.v3.case_attributes.case_attribute_model '
-                        'import CaseAttributesModel'
-                    ),
-                },
-                'type': f'Optional[\'{type_}Model\']',
-            },
-            'Cases': {
-                'requirement': self._gen_req_code(type_),
-                'type': f'Optional[\'{type_}Model\']',
-            },
-            'FileActions': {
-                'requirement': self._gen_req_code(type_),
-                'type': f'Optional[\'{type_}Model\']',
-            },
-            'FileOccurrences': {
-                'requirement': self._gen_req_code(type_),
-                'type': f'Optional[\'{type_}Model\']',
-            },
-            'GroupAttributes': {
-                'requirement': {
-                    'from': 'first-party-forward-reference',
-                    'import': (
-                        'from tcex.api.tc.v3.group_attributes.group_attribute_model '
-                        'import GroupAttributesModel'
-                    ),
-                },
-                'type': f'Optional[\'{type_}Model\']',
-            },
-            'Groups': {
-                'requirement': self._gen_req_code(type_),
-                'type': f'Optional[\'{type_}Model\']',
-            },
-            'IndicatorAttributes': {
-                'requirement': {
-                    'from': 'first-party-forward-reference',
-                    'import': (
-                        'from tcex.api.tc.v3.indicator_attributes.indicator_attribute_model '
-                        'import IndicatorAttributesModel'
-                    ),
-                },
-                'type': f'Optional[\'{type_}Model\']',
-            },
-            'Indicators': {
-                'requirement': self._gen_req_code(type_),
-                'type': f'Optional[\'{type_}Model\']',
-            },
-            'Note': {
-                'requirement': self._gen_req_code(type_),
-                'type': f'Optional[\'{type_}Model\']',
-            },
-            'Notes': {
-                'requirement': self._gen_req_code(type_),
-                'type': f'Optional[\'{type_}Model\']',
-            },
-            'SecurityLabel': {
-                'requirement': self._gen_req_code(type_),
-                'type': f'Optional[\'{type_}Model\']',
-            },
-            'SecurityLabels': {
-                'requirement': self._gen_req_code(type_),
-                'type': f'Optional[\'{type_}Model\']',
-            },
-            'Tag': {
-                'requirement': self._gen_req_code(type_),
-                'type': f'Optional[\'{type_}Model\']',
-            },
-            'Tags': {
-                'requirement': self._gen_req_code(type_),
-                'type': f'Optional[\'{type_}Model\']',
-            },
-            'Task': {
-                'requirement': self._gen_req_code(type_),
-                'type': f'Optional[\'{type_}Model\']',
-            },
-            'TaskAssignees': {
-                'requirement': {
-                    'from': 'first-party-forward-reference',
-                    'import': (
-                        'from tcex.api.tc.v3.security.task_assignee_model '
-                        'import TaskAssigneesModel'
-                    ),
-                },
-                'type': 'Optional[\'TaskAssigneesModel\']',
-            },
-            'Tasks': {
-                'requirement': self._gen_req_code(type_),
-                'type': f'Optional[\'{type_}Model\']',
-            },
-            'User': {
-                'requirement': self._gen_req_code(type_),
-                'type': f'Optional[\'{type_}Model\']',
-            },
-            'Users': {
-                'requirement': self._gen_req_code(type_),
-                'type': f'Optional[\'{type_}Model\']',
-            },
-            'Victims': {
-                'requirement': self._gen_req_code(type_),
-                'type': f'Optional[\'{type_}Model\']',
-            },
-            'VictimAssets': {
-                'requirement': self._gen_req_code(type_),
-                'type': f'Optional[\'{type_}Model\']',
-            },
-            'VictimAttributes': {
-                'requirement': {
-                    'from': 'first-party-forward-reference',
-                    'import': (
-                        'from tcex.api.tc.v3.victim_attributes.victim_attribute_model '
-                        'import VictimAttributesModel'
-                    ),
-                },
-                'type': f'Optional[\'{type_}Model\']',
-            },
-            'WorkflowEvent': {
-                'requirement': self._gen_req_code(type_),
-                'type': f'Optional[\'{type_}Model\']',
-            },
-            'WorkflowEvents': {
-                'requirement': self._gen_req_code(type_),
-                'type': f'Optional[\'{type_}Model\']',
-            },
-            'WorkflowTemplate': {
-                'requirement': self._gen_req_code(type_),
-                'type': f'Optional[\'{type_}Model\']',
-            },
-        }
 
     # TODO: [low] bsummers - research combining this method with parent method
     # pylint: disable=arguments-differ
@@ -569,147 +303,86 @@ class GenerateModelABC(GenerateABC, ABC):
         )
         """
         _model = []
-        for field_name, field_data in sorted(self._type_properties.items()):
-            field_name = self.utils.camel_string(field_name)
-            field_title = field_name  # only required when field matches a python reserved word
-            field_alias = None  # only required when field matches a python reserved word
-            field_type = field_data.get('type')  # the defined field type
+        for prop in self._prop_models:
+            # only add requirements for non-current model type
+            if prop.extra.type != self.type_.plural().pascal_case():
+                if prop.extra.import_data and prop.extra.import_source:
+                    self.requirements[prop.extra.import_source].append(prop.extra.import_data)
 
-            # fix python reserved words
-            if field_name in ['from']:
-                field_alias = 'from'
-                field_name = self.utils.camel_string(f'{field_name}_')
-
-            if field_data.get('data') is not None:
-                try:
-                    if isinstance(field_data.get('data'), list):
-                        field_data = field_data.get('data', [])[0]
-                    elif isinstance(field_data.get('data'), dict):
-                        # for attributes on groups, this should go away after update to
-                        # new attribute format in the future
-                        field_data = field_data.get('data')
-                except IndexError:
-                    print(field_name, field_data)
-                    sys.exit(1)
-
-                try:
-                    field_type = self.utils.inflect.plural(field_data.get('type'))
-                    # field_type = self._fix_type(
-                    #     self.utils.inflect.plural(field_data.get('type'))
-                    # )  # change field type to plural
-                except TypeError:
-                    print(field_name, field_type, field_data)
-                    sys.exit(1)
-
-            # get the hint type and set requirements
-            field_hint_type = self._configure_type(field_type, field_name.snake_case())
-
-            # property to model fields
-            field_description = self._format_description(
-                field_data.get(
-                    'description',
-                    (
-                        f'The **{field_name.space_case().lower()}** '
-                        f'for the {self.type_.singular().title()}.'
-                    ),
-                ).replace('\'', '\\\''),
-                100,
-            )
-
-            field_applies_to = field_data.get('appliesTo')
-            field_conditional_required = field_data.get('conditionalRequired')
-            field_max_length = field_data.get('maxLength')
-            # APP-3754 - The API is returning the wrong value for maxLength
-            if field_name == 'fileName' and self.type_ == 'groups':
-                field_max_length = 255
-            field_min_length = field_data.get('minLength')
-            field_max_value = field_data.get('maxValue')
-            field_min_value = field_data.get('minValue')
-            field_methods = []
-            field_read_only = field_data.get('readOnly', False)
-            field_required_alt_field = field_data.get('requiredAltField')
-            field_updatable = field_data.get('updatable', True)
-
-            # Bandage to fix core issue. Core should be sending us back `updatable false` on these
-            # fields.
-            if field_name in ['owner', 'ownerId'] and self.type_.lower() in [
-                'cases',
-                'tasks',
-                'workflow_templates',
-            ]:
-                field_updatable = False
-                field_read_only = True
-
-            # method rules
-            if field_read_only is False:
-                field_methods.append('POST')
-                if field_updatable not in [False]:
-                    field_methods.append('PUT')
-
-            # special case until core updates OPTIONS output
-            if (
-                self.type_.lower() == 'workflow_events'
-                and field_name.snake_case() == 'deleted_reason'
-            ):
-                field_methods = ['DELETE']
+            # add validator
+            if prop.extra.model is not None:
+                self.validators.setdefault(prop.type, []).append(prop.name.snake_case())
 
             # update model
-            _model.append(f'''{self.i1}{field_name.snake_case()}: {field_hint_type} = Field(''')
+            _model.append(
+                f'''{self.i1}{prop.extra.alias.snake_case()}: {prop.extra.typing_type} = Field('''
+            )
             _model.append(f'''{self.i2}None,''')  # the default value
 
             # allow_mutation / readOnly
-            if field_read_only is True and field_name != 'id':
+            if prop.read_only is True and prop.name != 'id':
                 _model.append(f'''{self.i2}allow_mutation=False,''')  # readOnly/mutation setting
 
             # alias
-            if field_alias is not None:
-                _model.append(f'''{self.i2}alias='{field_alias}',''')
+            if prop.extra.alias is not None and prop.name != prop.extra.alias:
+                _model.append(f'''{self.i2}alias='{prop.name}',''')
 
             # applies_to
-            if field_applies_to is not None:
-                _model.append(f'''{self.i2}applies_to={field_applies_to},''')
+            if prop.applies_to is not None:
+                _model.append(f'''{self.i2}applies_to={prop.applies_to},''')
 
-            # applies_to
-            if field_conditional_required is not None:
-                _model.append(f'''{self.i2}conditional_required={field_conditional_required},''')
+            # conditional_required
+            if prop.conditional_required is not None:
+                _model.append(f'''{self.i2}conditional_required={prop.conditional_required},''')
 
-            # description
+            # description - Use the TC provided description
+            # if available, otherwise use a default format.
+            field_description = self._format_description(
+                (
+                    prop.description
+                    or (
+                        f'The **{prop.name.space_case().lower()}** '
+                        f'for the {self.type_.singular().title()}.'
+                    )
+                ).replace('\'', '\\\''),
+                100,
+            )
             if field_description is not None:
                 _model.append(f'''{self.i2}description={field_description},''')
 
             # methods (HTTP)
-            if field_methods:
-                _model.append(f'''{self.i2}methods={field_methods},''')
+            if prop.extra.methods:
+                _model.append(f'''{self.i2}methods={prop.extra.methods},''')
 
             # max_length
-            if field_max_length is not None:
-                _model.append(f'''{self.i2}max_length={field_max_length},''')
+            if prop.max_length is not None:
+                _model.append(f'''{self.i2}max_length={prop.max_length},''')
 
             # max_size
             # if field_max_size is not None:
             #     _model.append(f'''{self.i2}max_items={field_max_size},''')
 
             # max_value
-            if field_max_value is not None:
-                _model.append(f'''{self.i2}maximum={field_max_value},''')
+            if prop.max_value is not None:
+                _model.append(f'''{self.i2}maximum={prop.max_value},''')
 
             # min_length
-            if field_min_length is not None:
-                _model.append(f'''{self.i2}min_length={field_min_length},''')
+            if prop.min_length is not None:
+                _model.append(f'''{self.i2}min_length={prop.min_length},''')
 
             # min_value
-            if field_min_value is not None:
-                _model.append(f'''{self.i2}minimum={field_min_value},''')
+            if prop.min_value is not None:
+                _model.append(f'''{self.i2}minimum={prop.min_value},''')
 
             # readOnly/allow_mutation setting
-            _model.append(f'''{self.i2}read_only={field_read_only},''')
+            _model.append(f'''{self.i2}read_only={prop.read_only},''')
 
             # required-alt-field
-            if field_required_alt_field is not None:
-                _model.append(f'''{self.i2}required_alt_field='{field_required_alt_field}',''')
+            if prop.required_alt_field is not None:
+                _model.append(f'''{self.i2}required_alt_field='{prop.required_alt_field}',''')
 
             # title
-            _model.append(f'''{self.i2}title='{field_title}',''')
+            _model.append(f'''{self.i2}title='{prop.name}',''')
 
             _model.append(f'''{self.i1})''')
         _model.append('')
