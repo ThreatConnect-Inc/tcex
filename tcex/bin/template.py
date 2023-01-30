@@ -85,21 +85,21 @@ class Template(BinABC):
                 f'response={r.text or r.reason}'
             )
             self.errors = True
+        else:
+            for content in r.json():
+                # exclusion - this file is only needed for building App Builder templates
+                if content.get('name') == '.appbuilderconfig' and app_builder is False:
+                    continue
 
-        for content in r.json():
-            # exclusion - this file is only needed for building App Builder templates
-            if content.get('name') == '.appbuilderconfig' and app_builder is False:
-                continue
+                # exclusions - files that should not be part of the App
+                if content.get('name') in ['.gitignore', 'template.yaml']:
+                    continue
 
-            # exclusions - files that should not be part of the App
-            if content.get('name') in ['.gitignore', 'template.yaml']:
-                continue
+                # rename gitignore to .gitignore
+                if content.get('name') == 'gitignore':
+                    content['name'] = '.gitignore'
 
-            # rename gitignore to .gitignore
-            if content.get('name') == 'gitignore':
-                content['name'] = '.gitignore'
-
-            yield content
+                yield content
 
     @cached_property
     def db(self) -> 'TinyDB':

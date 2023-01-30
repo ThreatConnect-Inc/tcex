@@ -15,7 +15,6 @@ class GenerateArgsABC(GenerateABC, ABC):
     def __init__(self, type_: Any):
         """Initialize class properties."""
         super().__init__(type_)
-        self.type_ = self.utils.snake_string(self._type_map(type_))
 
     @staticmethod
     def _import_model(module, class_name) -> Any:

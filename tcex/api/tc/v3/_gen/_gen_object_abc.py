@@ -1,11 +1,12 @@
 """Generate Object for ThreatConnect API"""
 # standard library
 from abc import ABC
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 # first-party
 from tcex.api.tc.v3._gen._gen_abc import GenerateABC
 from tcex.api.tc.v3._gen._gen_args_abc import GenerateArgsABC
+from tcex.utils.string_operations import SnakeString
 
 
 class GenerateArgs(GenerateArgsABC):
@@ -15,7 +16,7 @@ class GenerateArgs(GenerateArgsABC):
 class GenerateObjectABC(GenerateABC, ABC):
     """Generate Models for Case Management Types"""
 
-    def __init__(self, type_: str):
+    def __init__(self, type_: SnakeString):
         """Initialize class properties."""
         super().__init__(type_)
 
@@ -234,10 +235,6 @@ class GenerateObjectABC(GenerateABC, ABC):
             super().__init__(kwargs.pop('session', None))
             self._model = ArtifactModel(**kwargs)
         """
-        # add method import requirement
-        # classes = [f'{self.type_.singular().pascal_case()}Model']
-        # self.update_requirements(self.type_, 'model', classes)
-
         # set nested type
         nested_field_name = self.utils.snake_string(self.type_).camel_case().plural()
         if self.type_ in ['indicators', 'groups']:
@@ -410,8 +407,8 @@ class GenerateObjectABC(GenerateABC, ABC):
 
             _code += self._gen_code_object_add_type_method('users', 'user_access')
         """
-        type_ = self.utils.camel_string(type_)
-        model_type = self.utils.camel_string(model_type or type_)
+        type_ = self.utils.snake_string(type_)
+        model_type = self.utils.snake_string(model_type or type_)
         model_reference = model_type
 
         # Unlike all of the other objects, on the victims model, it references 'assets' not the
@@ -574,8 +571,8 @@ class GenerateObjectABC(GenerateABC, ABC):
 
             yield from self._iterate_over_sublist(Artifacts)
         """
-        type_ = self.utils.camel_string(type_)
-        model_type = self.utils.camel_string(model_type or type_)
+        type_ = self.utils.snake_string(type_)
+        model_type = self.utils.snake_string(model_type or type_)
 
         # get model from map and update requirements
         model_import_data = self._module_import_data(type_)
@@ -819,20 +816,7 @@ class GenerateObjectABC(GenerateABC, ABC):
             _code += self._gen_code_group_methods()
 
         # get NON read-only properties of endpoint (OPTIONS: /v3/<object>)
-        add_properties = []
-        for field_name, field_data in self._type_properties.items():
-            if isinstance(field_data.get('data'), dict):
-                field_data['data'] = [field_data.get('data')]
-
-            if field_data.get('data') is None:
-                # normalize the data format
-                field_data = {'data': [field_data]}
-
-            if field_data.get('data')[0].get('readOnly', False) is False:
-                add_properties.append(field_name)
-
-        # properties of endpoint
-        # properties = list(self._type_properties.keys())
+        add_properties = [prop.name for prop in self._prop_models if prop.read_only is False]
 
         # generate artifacts property method
         if 'artifacts' in add_properties:
@@ -967,11 +951,14 @@ class GenerateObjectABC(GenerateABC, ABC):
         return _code
 
     def update_requirements(
-        self, type_: str, filename: str, classes: List[str], from_: Optional[str] = 'first-party'
-    ) -> Dict[str, str]:
+        self,
+        type_: SnakeString,
+        filename: str,
+        classes: List[str],
+        from_: Optional[str] = 'first-party',
+    ):
         """Return the requirements code."""
-        type_ = self.utils.camel_string(type_)
-        classes = ', '.join(classes)
-        self.requirements[from_].append(
-            f'from {self.tap(type_)}.{type_.plural().snake_case()}.{filename} import {classes}'
+        class_string = ', '.join(classes)
+        self.requirements[from_].append(  # type: ignore
+            f'from {self.tap(type_)}.{type_.plural()}.{filename} import {class_string}'
         )
