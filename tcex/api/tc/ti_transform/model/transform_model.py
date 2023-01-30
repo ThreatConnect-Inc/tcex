@@ -143,7 +143,6 @@ class GroupTransformModel(TiTransformModel, extra=Extra.forbid):
     # campaign
     first_seen: Optional[MetadataTransformModel] = Field(None, description='')
     # document
-    file_name: Optional[MetadataTransformModel] = Field(None, description='')
     malware: Optional[MetadataTransformModel] = Field(None, description='')
     password: Optional[MetadataTransformModel] = Field(None, description='')
     # email
@@ -155,6 +154,11 @@ class GroupTransformModel(TiTransformModel, extra=Extra.forbid):
     status: Optional[MetadataTransformModel] = Field(None, description='')
     # report
     publish_date: Optional[DatetimeTransformModel] = Field(None, description='')
+    # signature
+    file_type: Optional[MetadataTransformModel] = Field(None, description='')
+    file_text: Optional[MetadataTransformModel] = Field(None, description='')
+    # document, signature
+    file_name: Optional[MetadataTransformModel] = Field(None, description='')
 
 
 # pylint: disable=no-self-argument,no-self-use

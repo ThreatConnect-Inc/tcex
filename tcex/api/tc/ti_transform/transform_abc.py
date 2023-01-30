@@ -328,6 +328,12 @@ class TransformABC(ABC):
             self._process_metadata('fileName', self.transform.file_name)
             self._process_metadata_datetime('publishDate', self.transform.publish_date)
 
+        # Handle sig specific fields here
+        if self.transformed_item['type'] == 'Signature':
+            self._process_metadata('fileName', self.transform.file_name)
+            self._process_metadata('fileType', self.transform.file_type)
+            self._process_metadata('fileText', self.transform.file_text)
+
     def _process_indicator(self):
         """Process Indicator Specific data."""
         # handle the 3 possible indicator fields
