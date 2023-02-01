@@ -242,6 +242,7 @@ class TransformABC(ABC):
             #     f'types={types}, source={source}, displayed={displayed}, params={params}'
             # )
             for param in params:
+                param = self.utils.remove_none(param)
                 if 'value' not in param:
                     self.log.warning(
                         'feature=transform, action=process-attribute, '
@@ -259,7 +260,7 @@ class TransformABC(ABC):
                 # strip out None params so that required params are enforced and optional
                 # params with default values are respected.
                 try:
-                    self.add_attribute(**self.utils.remove_none(param))
+                    self.add_attribute(**param)
                 except Exception:
                     self.log.exception(
                         'feature=transform, action=process-attribute, '
