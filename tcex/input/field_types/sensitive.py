@@ -120,7 +120,9 @@ class Sensitive:
     @property
     def value(self) -> str:
         """Return the actual value."""
-        return str(self._sensitive_value)
+        if not isinstance(self._sensitive_value, bytes):
+            return str(self._sensitive_value)
+        return self._sensitive_value
 
     @classmethod
     def wrap_type(cls, value: Union[str, 'StringVariable']) -> str:
