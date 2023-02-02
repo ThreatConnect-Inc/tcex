@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Any, Callable, Dict, Optional, Union
 # first-party
 from tcex.input.field_types.exception import InvalidEmptyValue, InvalidLengthValue, InvalidType
 from tcex.logger.sensitive_filter import SensitiveFilter  # pylint: disable=no-name-in-module
+from tcex.utils.variables import BinaryVariable
 
 if TYPE_CHECKING:  # pragma: no cover
     # third-party
@@ -120,7 +121,7 @@ class Sensitive:
     @property
     def value(self) -> str:
         """Return the actual value."""
-        if not isinstance(self._sensitive_value, bytes):
+        if not isinstance(self._sensitive_value, (BinaryVariable, bytes)):
             return str(self._sensitive_value)
         return self._sensitive_value
 
