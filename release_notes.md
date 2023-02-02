@@ -7,6 +7,8 @@
 -   APP-3863 - [API] Updated url() method in object_abc to resolve by id, xid, or summary when needed
 -   APP-3866 - [API] Updated TQL as_str to use value for TQLOperators instead of name
 -   APP-3867 - [CLI] Updated template commands to support nested directories
+-   APP-3884 - [TcEx] Removed unused package dependencies
+-   APP-3885 - [Logging] Added logging of specific environment variables
 
 ### 3.0.5
 
