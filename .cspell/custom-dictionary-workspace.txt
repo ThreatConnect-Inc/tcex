@@ -1,8 +1,11 @@
+addressIpval
 ajfmuyodhscwegea
 apiservice
 astunparse
 ATTCK
+AttributeDatas
 autofix
+bigdecimal
 blpop
 cacert
 caseid
@@ -36,6 +39,7 @@ fqpn
 fspath
 functool
 getsizeof
+groupable
 hdel
 hget
 hgetall
@@ -90,6 +94,7 @@ stix
 stmts
 strptime
 suricata
+targetable
 taxii
 tcapp
 tcdata

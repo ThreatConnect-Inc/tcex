@@ -3,26 +3,27 @@
 -   A Group must be create in the TC instance (Org Settings -> Groups)
 -   The Description Attribute must include Case and URL (System Settings -> Attribute Types)
 -   A Service App needs to be created "DO NOT DELETE - TcEx Test Service App"
+-   The v3ApiInelLinkLimit system property needs to be set to 2.
 
 ## Code Stats
 
 ```bash
 > cloc bin tcex tests
-    551 text files.
-    480 unique files.
-    879 files ignored.
+     556 text files.
+     484 unique files.
+    1500 files ignored.
 
-github.com/AlDanial/cloc v 1.94  T=0.97 s (494.1 files/s, 89626.4 lines/s)
+github.com/AlDanial/cloc v 1.94  T=1.09 s (444.3 files/s, 80452.7 lines/s)
 -------------------------------------------------------------------------------
 Language                     files          blank        comment           code
 -------------------------------------------------------------------------------
-Python                         440          12308          19516          45368
-JSON                            34              0              0           8905
+Python                         443          12376          19572          45681
+JSON                            35              0              0           9051
 YAML                             1              1              9            394
 Markdown                         4            174              0            391
 Text                             1              0              0              1
 -------------------------------------------------------------------------------
-SUM:                           480          12483          19525          55059
+SUM:                           484          12551          19581          55518
 -------------------------------------------------------------------------------
 ```
 
@@ -32,7 +33,7 @@ SUM:                           480          12483          19525          55059
 
 ## Test a specific module
 
-pytest tests/batch
+pytest tests/api/tc/v2/batch/
 
 ## Test a specific file
 

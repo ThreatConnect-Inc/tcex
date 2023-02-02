@@ -1,12 +1,21 @@
 # Release Notes
 
+### 3.0.6
+
+-   APP-3857 - [CLI] Updated spectool for general improvements and fixes
+-   APP-3862 - [Services] Updated request handling for Service Apps to process with a threadpool
+-   APP-3863 - [API] Updated url() method in object_abc to resolve by id, xid, or summary when needed
+-   APP-3866 - [API] Updated TQL as_str to use value for TQLOperators instead of name
+-   APP-3867 - [CLI] Updated template commands to support nested directories
+-   APP-3884 - [TcEx] Removed unused package dependencies
+-   APP-3885 - [Logging] Added logging of specific environment variables
+
 ### 3.0.5
 
--   APP-3827 - [Playbooks] Python 3.6 Error when accessing a playbooks sensitive.value value
 -   APP-3766 - [API] Added support for Security Labels on Attributes
 -   APP-3775 - [Playbooks] Updated variable pattern regex to better handle mix variables types
 -   APP-3776 - [CLI] Updated spectool for general improvements and fixes
--   APP-3805 - [API] Added TI Transforms module used to map a TI object to TC Bach or V3 format
+-   APP-3805 - [API] Added TI Transforms module used to map a TI object to TC Batch or V3 format
 -   APP-3810 - [Services] Added Support for Feed Service Apps
 -   APP-3822 - [TcEx] Added type hints to cached_property, scoped_property, and registry to enable intellisense
 -   APP-3825 - [API] Updated date format on TQL filters used in V3 api

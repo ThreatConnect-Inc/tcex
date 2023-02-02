@@ -430,7 +430,7 @@ class GroupModel(
     web_link: Optional[str] = Field(
         None,
         allow_mutation=False,
-        description='The object link.',
+        description='A link to the ThreatConnect details page for this entity.',
         read_only=True,
         title='webLink',
     )
@@ -508,9 +508,7 @@ from tcex.api.tc.v3.artifacts.artifact_model import ArtifactsModel
 from tcex.api.tc.v3.cases.case_model import CasesModel
 from tcex.api.tc.v3.group_attributes.group_attribute_model import GroupAttributesModel
 from tcex.api.tc.v3.indicators.indicator_model import IndicatorsModel
-from tcex.api.tc.v3.security.task_assignee_model import (  # pylint: disable=unused-import
-    TaskAssigneesModel,
-)
+from tcex.api.tc.v3.security.task_assignee_model import TaskAssigneesModel
 from tcex.api.tc.v3.security.users.user_model import UserModel
 from tcex.api.tc.v3.security_labels.security_label_model import SecurityLabelsModel
 from tcex.api.tc.v3.tags.tag_model import TagsModel

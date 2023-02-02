@@ -106,7 +106,7 @@ class GroupAttribute(ObjectABC):
 
     @property
     def security_labels(self) -> Iterator['SecurityLabel']:
-        """Yield Security_Label from Security_Labels."""
+        """Yield SecurityLabel from SecurityLabels."""
         # first-party
         from tcex.api.tc.v3.security_labels.security_label import SecurityLabels
 

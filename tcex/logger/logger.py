@@ -6,6 +6,10 @@ import pathlib
 import platform
 import sys
 from typing import TYPE_CHECKING, Optional
+from urllib.parse import urlsplit
+
+# third-party
+from certifi import where
 
 # first-party
 # pylint: disable=no-name-in-module
@@ -328,6 +332,7 @@ class Logger:
         self._log_app_data()
         self._log_platform()
         self._log_python_version()
+        self._log_environment()
         self._log_tcex_version()
         self._log_tc_proxy(inputs)
 
@@ -347,6 +352,19 @@ class Logger:
             self.log.info(app_version)  # version and commit hash
         except Exception:  # nosec; pragma: no cover
             pass
+
+    def _log_environment(self):
+        """Log the current environment variables."""
+        self.log.info(f'''env-all-proxy={self._sanitize_proxy_url(os.getenv('ALL_PROXY'))}''')
+        self.log.info(f'''env-http-proxy={self._sanitize_proxy_url(os.getenv('HTTP_PROXY'))}''')
+        self.log.info(f'''env-https-proxy={self._sanitize_proxy_url(os.getenv('HTTPS_PROXY'))}''')
+        self.log.info(f'''env-no-proxy={os.getenv('NO_PROXY')}''')
+        self.log.info(f'''env-curl-ca-bundle={os.getenv('CURL_CA_BUNDLE')}''')
+        self.log.info(f'''env-request-ca-bundle={os.getenv('REQUESTS_CA_BUNDLE')}''')
+        self.log.info(f'''env-ssl-cert-file={os.getenv('SSL_CERT_FILE')}''')
+
+        # log certifi where
+        self.log.info(f'''certifi-where={where()}''')
 
     def _log_platform(self):
         """Log the current Platform."""
@@ -376,3 +394,12 @@ class Logger:
         full_path = str(pathlib.Path(__file__).parent.absolute())
         tcex_path = os.path.dirname(full_path.replace(app_path, ''))
         self.log.info(f'tcex-version={__import__(__name__).__version__}, tcex-path="{tcex_path}"')
+
+    @staticmethod
+    def _sanitize_proxy_url(url: Optional[str]) -> Optional[str]:
+        """Sanitize a proxy url, masking username and password."""
+        if url is not None:
+            url_data = urlsplit(url)
+            if all([url_data.username, url_data.password]):
+                url = url.replace(f'{url_data.username}:{url_data.password}', '***:***')
+        return url

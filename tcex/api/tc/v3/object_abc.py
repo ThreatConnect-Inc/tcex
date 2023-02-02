@@ -362,7 +362,7 @@ class ObjectABC(ABC):
 
     def url(self, method: str, unique_id: Optional[str] = None) -> str:
         """Return the proper URL."""
-        unique_id = unique_id or self.model.id
+        unique_id = unique_id or self._calculate_unique_id().get('value')
         if method in ['DELETE', 'GET', 'PUT']:
             return f'{self._api_endpoint}/{unique_id}'
         return self._api_endpoint

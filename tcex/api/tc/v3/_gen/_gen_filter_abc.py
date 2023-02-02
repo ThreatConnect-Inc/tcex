@@ -1,25 +1,29 @@
 """Generate Filters for ThreatConnect API"""
 # standard library
 from abc import ABC
+from typing import Any, Dict, Generator, List
 
 # third-party
 import typer
+from pydantic import ValidationError
 from requests.exceptions import ProxyError
 
 # first-party
 from tcex.api.tc.v3._gen._gen_abc import GenerateABC
+from tcex.api.tc.v3._gen.models import FilterModel
 from tcex.backports import cached_property
+from tcex.utils.string_operations import SnakeString
 
 
 class GenerateFilterABC(GenerateABC, ABC):
     """Generate Models for Case Management Types"""
 
-    def __init__(self, type_: str):
+    def __init__(self, type_: SnakeString):
         """Initialize class properties."""
         super().__init__(type_)
 
         # properties
-        self.api_url = None
+        self.api_url = ''
         self.requirements = {
             'standard library': [
                 'from enum import Enum',
@@ -44,7 +48,7 @@ class GenerateFilterABC(GenerateABC, ABC):
             )
 
     @cached_property
-    def _filter_properties(self) -> dict:
+    def _filter_contents(self) -> List[Dict[str, Any]]:
         """Return defined API properties for the current object.
 
         Response:
@@ -60,118 +64,86 @@ class GenerateFilterABC(GenerateABC, ABC):
         _properties = []
         try:
             r = self.session.options(f'{self.api_url}/tql', params={})
+            # print(r.request.method, r.request.url, r.text)
             if r.ok:
                 _properties = r.json().get('data', [])
-
-                # Provided invalid type "BigInteger" on tql options call and correcting it to String
-                if self.type_ == 'indicators':
-                    for property_ in _properties:
-                        if property_.get('keyword') == 'addressIpval':
-                            property_['type'] = 'String'
-
         except (ConnectionError, ProxyError) as ex:
             typer.secho(f'Failed getting types properties ({ex}).', fg=typer.colors.RED)
             typer.Exit(1)
+
         return _properties
 
-    @staticmethod
-    def _filter_type(filter_type: str):
-        """Return the Python type based on the filter type."""
-        # hint types for the filter method
-        filter_type_map = {
-            'Assignee': 'str',
-            'BigInteger': 'int',
-            'Boolean': 'bool',
-            'Date': 'str',
-            'DateTime': 'str',
-            'Enum': 'str',
-            'EnumToInteger': 'str',
-            'Integer': 'int',
-            'Long': 'int',
-            'String': 'str',
-            'StringCIDR': 'str',
-            'StringLower': 'str',
-            'StringUpper': 'str',
-            'Undefined': 'str',
-            'User': 'str',
-        }
-        hint_type = filter_type_map.get(filter_type)
+    @property
+    def _filter_contents_updated(self) -> List[Dict[str, Any]]:
+        """Update the properties contents, fixing issues in core data."""
+        filters = self._filter_contents
 
-        # tql types for the add_filter method call
-        tql_type_map = {
-            'bool': 'TqlType.BOOLEAN',
-            'int': 'TqlType.INTEGER',
-            'str': 'TqlType.STRING',
-        }
-        tql_type = tql_type_map.get(hint_type)
+        # Provided invalid type "BigInteger" on tql options call and correcting it to String
+        for filter_ in filters:
+            if self.type_ == 'indicators':
+                title = 'Indicator Keyword Type'
+                if filter_['keyword'] == 'addressIpval' and filter_['type'] != 'String':
+                    self.messages.append(f'- [{self.type_}] - ({title}) - fix required.')
+                    filter_['type'] = 'String'
+                else:
+                    self.messages.append(f'- [{self.type_}] - ({title}) - fix NOT required.')
 
-        # fail on any unknown types (core added something new)
-        if hint_type is None:
-            raise RuntimeError(f'Invalid type of {filter_type} (Core team added something new?)')
+            if self.type_ == 'cases' and 'description' in filter_:
+                miss_map = {
+                    'occured': 'occurred',
+                    'Threatassess': 'ThreatAssess',
+                }
+                for c, w in miss_map.items():
+                    if c in filter_['description']:
+                        filter_['description'] = filter_['description'].replace(c, w)
+        return sorted(filters, key=lambda i: i['keyword'])
 
-        return {
-            'hint_type': hint_type,
-            'tql_type': tql_type,
-        }
+    @cached_property
+    def _filter_models(self) -> Generator[FilterModel, None, None]:
+        for field_data in self._filter_contents_updated:
+            try:
+                yield FilterModel(**field_data)
+            except ValidationError as ex:
+                typer.secho(
+                    f'Failed generating property model: data={field_data} ({ex}).',
+                    fg=typer.colors.RED,
+                )
+                raise
 
-    def _gen_code_generic_method(self, filter_data: dict) -> list:
-        """Return code for generic TQL filter methods.
-
-        filter_data:
-        {
-            "keyword": "analyticsScore",
-            "name": "Analytics Score",
-            "type": "Integer",
-            "description": "The intel score of the artifact",
-            "groupable": false,
-            "targetable": true
-        }
-        """
-        keyword = self.utils.camel_string(filter_data.get('keyword'))
-        description = filter_data.get('description', 'No description provided.')
-        name = filter_data.get('name')
-        type_ = filter_data.get('type')
-
-        comment = ''
-        if keyword in ['id', 'type']:
-            comment = '  # pylint: disable=redefined-builtin'
-
+    def _gen_code_generic_method(self, filter_data: FilterModel) -> list:
+        """Return code for generic TQL filter methods."""
         keyword_description = self._format_description(
-            arg=keyword.snake_case(), description=description, length=100, indent=' ' * 12
+            arg=filter_data.keyword.snake_case(),
+            description=filter_data.description,
+            length=100,
+            indent=' ' * 12,
         )
         _code = [
             (
-                f'{self.i1}def {keyword.snake_case()}'
-                f'(self, operator: Enum, {keyword.snake_case()}: '
-                f'''{self._filter_type(type_).get('hint_type')}):{comment}'''
+                f'{self.i1}def {filter_data.keyword.snake_case()}'
+                f'(self, operator: Enum, {filter_data.keyword.snake_case()}: '
+                f'''{filter_data.extra.typing_type}):{filter_data.extra.comment}'''
             ),
-            f'{self.i2}"""Filter {name} based on **{keyword}** keyword.',
+            f'{self.i2}"""Filter {filter_data.name} based on **{filter_data.keyword}** keyword.',
             '',
             f'{self.i2}Args:',
             f'{self.i3}operator: The operator enum for the filter.',
-            # f'{self.i3}{keyword.snake_case()}: {description}.',
             f'{self.i3}{keyword_description}',
             f'{self.i2}"""',
         ]
-        # if type_.lower() in ['date']:
-        #     _code.extend(
-        #         [
-        #             f'''{self.i2}{keyword.snake_case()} = self.utils.any_to_datetime'''
-        #             f'''({keyword.snake_case()}).strftime('%Y-%m-%d')'''
-        #         ]
-        #     )
-        if type_.lower() in ['date', 'datetime']:
+        if filter_data.type.lower() in ['date', 'datetime']:
             _code.extend(
                 [
-                    f'''{self.i2}{keyword.snake_case()} = self.utils.any_to_datetime'''
-                    f'''({keyword.snake_case()}).strftime('%Y-%m-%d %H:%M:%S')'''
+                    f'''{self.i2}{filter_data.keyword.snake_case()} = self.utils.any_to_datetime'''
+                    f'''({filter_data.keyword.snake_case()}).strftime('%Y-%m-%d %H:%M:%S')'''
                 ]
             )
         _code.extend(
             [
                 (
-                    f'''{self.i2}self._tql.add_filter('{keyword}', operator, '''
-                    f'''{keyword.snake_case()}, {self._filter_type(type_).get('tql_type')})'''
+                    f'''{self.i2}self._tql.add_filter('{filter_data.keyword}', operator, '''
+                    f'''{filter_data.keyword.snake_case()}, '''
+                    f'''{filter_data.extra.tql_type})'''
                 ),
                 '',
             ]
@@ -492,33 +464,32 @@ class GenerateFilterABC(GenerateABC, ABC):
         # added _api_endpoint method
         _filter_class.append(self.gen_api_endpoint_method())
 
-        for t in sorted(self._filter_properties, key=lambda i: i['keyword']):
-            keyword = self.utils.camel_string(t.get('keyword'))
+        for f in self._filter_models:
 
-            if keyword.snake_case() == 'has_artifact':
+            if f.keyword.snake_case() == 'has_artifact':
                 _filter_class.extend(self._gen_code_has_artifact_method())
-            elif keyword.snake_case() == 'has_case':
+            elif f.keyword.snake_case() == 'has_case':
                 _filter_class.extend(self._gen_code_has_case_method())
-            elif keyword.snake_case() == 'has_group':
+            elif f.keyword.snake_case() == 'has_group':
                 _filter_class.extend(self._gen_code_has_group_method())
-            elif keyword.snake_case() == 'has_indicator':
+            elif f.keyword.snake_case() == 'has_indicator':
                 _filter_class.extend(self._gen_code_has_indicator_method())
-            elif keyword.snake_case() == 'has_note':
+            elif f.keyword.snake_case() == 'has_note':
                 _filter_class.extend(self._gen_code_has_note_method())
-            elif keyword.snake_case() == 'has_tag':
+            elif f.keyword.snake_case() == 'has_tag':
                 _filter_class.extend(self._gen_code_has_tag_method())
-            elif keyword.snake_case() == 'has_task':
+            elif f.keyword.snake_case() == 'has_task':
                 _filter_class.extend(self._gen_code_has_task_method())
-            elif keyword.snake_case() == 'has_attribute':
+            elif f.keyword.snake_case() == 'has_attribute':
                 _filter_class.extend(self._gen_code_has_attribute_method())
-            elif keyword.snake_case() == 'has_security_label':
+            elif f.keyword.snake_case() == 'has_security_label':
                 _filter_class.extend(self._gen_code_has_security_label_method())
-            elif keyword.snake_case() == 'has_victim':
+            elif f.keyword.snake_case() == 'has_victim':
                 _filter_class.extend(self._gen_code_has_victim_method())
-            elif keyword.snake_case() == 'has_victim_asset':
+            elif f.keyword.snake_case() == 'has_victim_asset':
                 _filter_class.extend(self._gen_code_has_victim_asset_method())
             else:
-                _filter_class.extend(self._gen_code_generic_method(t))
+                _filter_class.extend(self._gen_code_generic_method(f))
 
         return '\n'.join(_filter_class)
 
