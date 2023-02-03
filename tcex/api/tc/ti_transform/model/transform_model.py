@@ -153,7 +153,7 @@ class GroupTransformModel(TiTransformModel, extra=Extra.forbid):
     event_date: Optional[MetadataTransformModel] = Field(None, description='')
     status: Optional[MetadataTransformModel] = Field(None, description='')
     # report
-    publish_date: Optional[DatetimeTransformModel] = Field(None, description='')
+    publish_date: Optional[MetadataTransformModel] = Field(None, description='')
     # signature
     file_type: Optional[MetadataTransformModel] = Field(None, description='')
     file_text: Optional[MetadataTransformModel] = Field(None, description='')
