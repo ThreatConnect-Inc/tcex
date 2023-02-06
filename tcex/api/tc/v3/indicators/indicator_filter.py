@@ -484,3 +484,22 @@ class IndicatorFilter(FilterABC):
             value3: No description provided.
         """
         self._tql.add_filter('value3', operator, value3, TqlType.STRING)
+
+    def vt_last_updated(self, operator: Enum, vt_last_updated: str):
+        """Filter Virus Total Last Updated based on **vtLastUpdated** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            vt_last_updated: The date the indicator has been looked at with Virus Total.
+        """
+        vt_last_updated = self.utils.any_to_datetime(vt_last_updated).strftime('%Y-%m-%d %H:%M:%S')
+        self._tql.add_filter('vtLastUpdated', operator, vt_last_updated, TqlType.STRING)
+
+    def vt_malicious_count(self, operator: Enum, vt_malicious_count: int):
+        """Filter Virus Total Malicious Count based on **vtMaliciousCount** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            vt_malicious_count: The number of malicious reports for an indicator from Virus Total.
+        """
+        self._tql.add_filter('vtMaliciousCount', operator, vt_malicious_count, TqlType.INTEGER)

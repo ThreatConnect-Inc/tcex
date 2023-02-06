@@ -84,6 +84,7 @@ class Group(ObjectABC):
             this group.
         attributes (GroupAttributes, kwargs): A list of Attributes corresponding to the Group.
         body (str, kwargs): The email Body.
+        down_vote_count (int, kwargs): The total number of users who find the intel not helpful.
         due_date (str, kwargs): The date and time that the Task is due.
         escalation_date (str, kwargs): The escalation date and time.
         event_date (str, kwargs): The date and time that the incident or event was first created.
@@ -95,6 +96,10 @@ class Group(ObjectABC):
         header (str, kwargs): The email Header field.
         malware (bool, kwargs): Is the document malware?
         name (str, kwargs): The name of the group.
+        owner_id (int, kwargs): The id of the Organization, Community, or Source that the item
+            belongs to.
+        owner_name (str, kwargs): The name of the Organization, Community, or Source that the item
+            belongs to.
         password (str, kwargs): The password associated with the document (Required if Malware is
             true).
         publish_date (str, kwargs): The date and time that the report was first created.
@@ -108,6 +113,9 @@ class Group(ObjectABC):
         tags (Tags, kwargs): A list of Tags corresponding to the item (NOTE: Setting this parameter
             will replace any existing tag(s) with the one(s) specified).
         type (str, kwargs): The **type** for the Group.
+        up_vote (bool, kwargs): Is the intelligence valid and useful? (0 means downvote, 1 means
+            upvote, and NULL means no vote).
+        up_vote_count (int, kwargs): The total number of users who find the intel useful.
         xid (str, kwargs): The xid of the item.
     """
 

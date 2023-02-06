@@ -64,12 +64,13 @@ class IndicatorAttribute(ObjectABC):
         default (bool, kwargs): A flag indicating that this is the default attribute of its type
             within the object. Only applies to certain attribute and data types.
         indicator_id (int, kwargs): Indicator associated with attribute.
+        pinned (bool, kwargs): A flag indicating that the attribute has been noted for importance.
         security_labels (SecurityLabels, kwargs): A list of Security Labels corresponding to the
             Intel item (NOTE: Setting this parameter will replace any existing tag(s) with
             the one(s) specified).
         source (str, kwargs): The attribute source.
         type (str, kwargs): The attribute type.
-        value (str, kwargs): Attribute value.
+        value (str, kwargs): The attribute value.
     """
 
     def __init__(self, **kwargs):

@@ -76,7 +76,7 @@ class GroupAttributeModel(
     date_added: Optional[datetime] = Field(
         None,
         allow_mutation=False,
-        description='The date and time that the Attribute was first created.',
+        description='The date and time that the item was first created.',
         read_only=True,
         title='dateAdded',
     )
@@ -110,6 +110,13 @@ class GroupAttributeModel(
         read_only=True,
         title='lastModified',
     )
+    pinned: bool = Field(
+        None,
+        description='A flag indicating that the attribute has been noted for importance.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='pinned',
+    )
     security_labels: Optional['SecurityLabelsModel'] = Field(
         None,
         description=(
@@ -136,7 +143,7 @@ class GroupAttributeModel(
     )
     value: Optional[str] = Field(
         None,
-        description='Attribute value.',
+        description='The attribute value.',
         methods=['POST', 'PUT'],
         min_length=1,
         read_only=False,

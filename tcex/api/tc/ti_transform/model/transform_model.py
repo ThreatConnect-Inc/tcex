@@ -141,7 +141,7 @@ class GroupTransformModel(TiTransformModel, extra=Extra.forbid):
 
     name: MetadataTransformModel = Field(..., description='')
     # campaign
-    first_seen: Optional[MetadataTransformModel] = Field(None, description='')
+    first_seen: Optional[DatetimeTransformModel] = Field(None, description='')
     # document
     malware: Optional[MetadataTransformModel] = Field(None, description='')
     password: Optional[MetadataTransformModel] = Field(None, description='')
@@ -150,7 +150,7 @@ class GroupTransformModel(TiTransformModel, extra=Extra.forbid):
     score: Optional[MetadataTransformModel] = Field(None, description='')
     to_addr: Optional[MetadataTransformModel] = Field(None, description='')
     # event, incident
-    event_date: Optional[MetadataTransformModel] = Field(None, description='')
+    event_date: Optional[DatetimeTransformModel] = Field(None, description='')
     status: Optional[MetadataTransformModel] = Field(None, description='')
     # report
     publish_date: Optional[DatetimeTransformModel] = Field(None, description='')

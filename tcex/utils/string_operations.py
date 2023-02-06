@@ -126,7 +126,7 @@ class StringOperations:
         return f'{output.rstrip()}{append_chars}'
 
     @property
-    def _camel_pattern(self) -> re.Pattern:
+    def _camel_pattern(self) -> 're.Pattern':
         """Return compiled re pattern."""
         return re.compile(r'(?<!^)(?=[A-Z])')
 

@@ -76,7 +76,7 @@ class VictimAttributeModel(
     date_added: Optional[datetime] = Field(
         None,
         allow_mutation=False,
-        description='The date and time that the Attribute was first created.',
+        description='The date and time that the item was first created.',
         read_only=True,
         title='dateAdded',
     )
@@ -103,6 +103,23 @@ class VictimAttributeModel(
         read_only=True,
         title='lastModified',
     )
+    pinned: bool = Field(
+        None,
+        description='A flag indicating that the attribute has been noted for importance.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='pinned',
+    )
+    security_labels: Optional['SecurityLabelsModel'] = Field(
+        None,
+        description=(
+            'A list of Security Labels corresponding to the Intel item (NOTE: Setting this '
+            'parameter will replace any existing tag(s) with the one(s) specified).'
+        ),
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='securityLabels',
+    )
     source: Optional[str] = Field(
         None,
         description='The attribute source.',
@@ -119,7 +136,7 @@ class VictimAttributeModel(
     )
     value: Optional[str] = Field(
         None,
-        description='Attribute value.',
+        description='The attribute value.',
         methods=['POST', 'PUT'],
         min_length=1,
         read_only=False,
@@ -133,6 +150,12 @@ class VictimAttributeModel(
         title='victimId',
     )
 
+    @validator('security_labels', always=True)
+    def _validate_security_labels(cls, v):
+        if not v:
+            return SecurityLabelsModel()
+        return v
+
     @validator('created_by', always=True)
     def _validate_user(cls, v):
         if not v:
@@ -142,6 +165,7 @@ class VictimAttributeModel(
 
 # first-party
 from tcex.api.tc.v3.security.users.user_model import UserModel
+from tcex.api.tc.v3.security_labels.security_label_model import SecurityLabelsModel
 
 # add forward references
 VictimAttributeDataModel.update_forward_refs()

@@ -172,6 +172,9 @@ class GenerateABC(ABC):
         # remove unused fields, if any
         self._prop_content_remove_unused(_properties)
 
+        # update "bad" data
+        self._prop_content_update(_properties)
+
         # critical fix for breaking API change
         if self.type_ in [
             'case_attributes',
@@ -315,6 +318,9 @@ class GenerateABC(ABC):
 
     def _prop_content_remove_unused(self, properties: dict):
         """Remove unused fields from properties."""
+        if self.type_ in ['attribute_types']:
+            del properties['owner']
+
         if self.type_ in [
             'attribute_types',
             'case_attributes',
@@ -333,6 +339,48 @@ class GenerateABC(ABC):
             for field in unused_fields:
                 if field in properties:
                     del properties[field]
+
+        if self.type_ in ['users']:
+            unused_fields = [
+                'customTqlTimeout',
+                'disabled',
+                'firstName',
+                'jobFunction',
+                'jobRole',
+                'lastLogin',
+                'lastName',
+                'lastPasswordChange',
+                'locked',
+                'logoutIntervalMinutes',
+                'owner',
+                'ownerRoles',
+                'password',
+                'passwordResetRequired',
+                'pseudonym',
+                'systemRole',
+                'termsAccepted',
+                'termsAcceptedDate',
+                'tqlTimeout',
+                'twoFactorResetRequired',
+                'uiTheme',
+            ]
+            for field in unused_fields:
+                if field in properties:
+                    del properties[field]
+
+        if self.type_ in ['victims']:
+            unused_fields = [
+                'ownerId',  # Core Issue: should not be listed for this type
+            ]
+            for field in unused_fields:
+                if field in properties:
+                    del properties[field]
+
+    def _prop_content_update(self, properties: dict):
+        """Update "bad" data in properties."""
+        if self.type_ in ['victims']:
+            # ownerName is readOnly, but readOnly is not defined in response from OPTIONS endpoint
+            properties['ownerName']['readOnly'] = True
 
     @property
     def _prop_models(self) -> List[PropertyModel]:

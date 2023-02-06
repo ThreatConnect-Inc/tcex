@@ -157,6 +157,13 @@ class GroupModel(
         read_only=True,
         title='documentType',
     )
+    down_vote_count: Optional[int] = Field(
+        None,
+        description='The total number of users who find the intel not helpful.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='downVoteCount',
+    )
     due_date: Optional[datetime] = Field(
         None,
         applies_to=['Task'],
@@ -251,6 +258,13 @@ class GroupModel(
         read_only=False,
         title='from',
     )
+    generated_report: bool = Field(
+        None,
+        allow_mutation=False,
+        description='Is the report auto-generated?',
+        read_only=True,
+        title='generatedReport',
+    )
     header: Optional[str] = Field(
         None,
         applies_to=['Email'],
@@ -273,6 +287,13 @@ class GroupModel(
         description='The date and time that the Entity was last modified.',
         read_only=True,
         title='lastModified',
+    )
+    legacy_link: Optional[str] = Field(
+        None,
+        allow_mutation=False,
+        description='A link to the legacy ThreatConnect details page for this entity.',
+        read_only=True,
+        title='legacyLink',
     )
     malware: bool = Field(
         None,
@@ -299,11 +320,18 @@ class GroupModel(
         read_only=True,
         title='overdue',
     )
+    owner_id: Optional[int] = Field(
+        None,
+        description='The id of the Organization, Community, or Source that the item belongs to.',
+        methods=['POST'],
+        read_only=False,
+        title='ownerId',
+    )
     owner_name: Optional[str] = Field(
         None,
-        allow_mutation=False,
         description='The name of the Organization, Community, or Source that the item belongs to.',
-        read_only=True,
+        methods=['POST'],
+        read_only=False,
         title='ownerName',
     )
     password: Optional[str] = Field(
@@ -426,6 +454,23 @@ class GroupModel(
         min_length=1,
         read_only=False,
         title='type',
+    )
+    up_vote: bool = Field(
+        None,
+        description=(
+            'Is the intelligence valid and useful? (0 means downvote, 1 means upvote, and NULL '
+            'means no vote).'
+        ),
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='upVote',
+    )
+    up_vote_count: Optional[int] = Field(
+        None,
+        description='The total number of users who find the intel useful.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='upVoteCount',
     )
     web_link: Optional[str] = Field(
         None,
