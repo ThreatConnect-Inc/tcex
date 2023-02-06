@@ -142,7 +142,7 @@ class TestArtifacts(TestV3):
         artifact_data = {
             'case_id': case.model.id,
             'intel_type': 'indicator-ASN',
-            'summary': f'asn{randint(100, 999)}',
+            'summary': f'ASN{randint(100, 999)}',
             'type': 'ASN',
         }
 
@@ -292,7 +292,7 @@ class TestArtifacts(TestV3):
         # [Create Testing] define object data
         artifact_data = {
             'intel_type': 'indicator-ASN',
-            'summary': f'asn{randint(100, 999)}',
+            'summary': f'ASN{randint(100, 999)}',
             'task_id': task.model.id,
             'type': 'ASN',
         }
@@ -330,7 +330,7 @@ class TestArtifacts(TestV3):
         artifact_data = {
             'case_xid': case.model.xid,
             'intel_type': 'indicator-ASN',
-            'summary': f'asn{randint(100, 999)}',
+            'summary': f'ASN{randint(100, 999)}',
             'type': 'ASN',
         }
 
