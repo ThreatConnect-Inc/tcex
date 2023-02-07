@@ -65,11 +65,53 @@ class AttributeTypeModel(
     _shared_type = PrivateAttr(False)
     _staged = PrivateAttr(False)
 
+    allow_markdown: bool = Field(
+        None,
+        description='Flag that enables markdown feature in the attribute value field.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='allowMarkdown',
+    )
+    description: Optional[str] = Field(
+        None,
+        description='The description of the attribute type.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='description',
+    )
+    error_message: Optional[str] = Field(
+        None,
+        description='The error message displayed.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='errorMessage',
+    )
     id: Optional[int] = Field(
         None,
         description='The ID of the item.',
         read_only=True,
         title='id',
+    )
+    max_size: Optional[int] = Field(
+        None,
+        description='The maximum size of the attribute value.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='maxSize',
+    )
+    name: Optional[str] = Field(
+        None,
+        description='The name of the attribute type.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='name',
+    )
+    validation_rule: Optional[dict] = Field(
+        None,
+        description='The validation rule that governs the attribute value.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='validationRule',
     )
 
 

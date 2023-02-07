@@ -23,6 +23,12 @@ from tcex.utils.string_operations import SnakeString
 utils = Utils()
 
 
+def log_server():
+    """Log server."""
+    _api_server = os.getenv('TC_API_PATH')
+    typer.secho(f'Using server {_api_server}', fg=typer.colors.BRIGHT_MAGENTA)
+
+
 class GenerateArgs(GenerateArgsABC):
     """Generate Models for TC API Types"""
 
@@ -263,6 +269,7 @@ def all(  # pylint: disable=redefined-builtin
     ),
 ):
     """Generate Args."""
+    log_server()
     gen_type = gen_type.value.lower()
     for type_ in ObjectTypes:
         type_ = utils.snake_string(type_.value)
@@ -285,6 +292,7 @@ def args(
     ),
 ):
     """Generate Args."""
+    log_server()
     gen_args(utils.snake_string(type_.value), indent_blocks)
 
 
@@ -295,6 +303,7 @@ def code(
     ),
 ):
     """Generate Args."""
+    log_server()
     tv = utils.snake_string(type_.value)
     gen_filter(tv)
     gen_model(tv)
@@ -308,6 +317,7 @@ def filter(  # pylint: disable=redefined-builtin
     ),
 ):
     """Generate the filter code."""
+    log_server()
     gen_filter(utils.snake_string(type_.value))
 
 
@@ -318,6 +328,7 @@ def model(
     ),
 ):
     """Generate the model"""
+    log_server()
     gen_model(utils.snake_string(type_.value))
 
 
@@ -328,6 +339,7 @@ def object(  # pylint: disable=redefined-builtin
     ),
 ):
     """Generate the filter class"""
+    log_server()
     gen_object(utils.snake_string(type_.value))
 
 

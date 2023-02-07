@@ -34,6 +34,7 @@ class TestCaseAttributeSnippets(TestV3):
                     'value': 'An example description attribute',
                 }
             ],
+            params={'fields': 'attributes'},
         )
         # get attribute id
         attribute_id = case.model.attributes.data[0].id
@@ -59,6 +60,7 @@ class TestCaseAttributeSnippets(TestV3):
                     'value': 'An example description attribute',
                 }
             ],
+            params={'fields': 'attributes'},
         )
         # get attribute id
         attribute_id = case.model.attributes.data[0].id

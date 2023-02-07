@@ -116,6 +116,11 @@ class Indicator(ObjectABC):
         ip (str, kwargs): The ip address associated with this indicator (Address specific summary
             field).
         md5 (str, kwargs): The md5 associated with this indicator (File specific summary field).
+        mode (str, kwargs): The operation to perform on the file hashes (delete | merge).
+        owner_id (int, kwargs): The id of the Organization, Community, or Source that the item
+            belongs to.
+        owner_name (str, kwargs): The name of the Organization, Community, or Source that the item
+            belongs to.
         private_flag (bool, kwargs): Is this indicator private?
         rating (int, kwargs): The indicator threat rating.
         security_labels (SecurityLabels, kwargs): A list of Security Labels corresponding to the

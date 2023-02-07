@@ -225,6 +225,7 @@ class TestGroups(TestV3):
         """
         groups = self.v3.groups()
         groups.filter.has_indicator.last_modified(TqlOperator.GT, '2021-11-09T00:00:00Z')
+        groups.filter.owner_name(TqlOperator.EQ, 'TCI')
 
         # groups.filter.has_indicator.last_modified(TqlOperator.GT, 'yesterday')
         for group in groups:

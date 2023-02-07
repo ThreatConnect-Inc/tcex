@@ -158,6 +158,29 @@ class IndicatorModel(
         read_only=False,
         title='dnsActive',
     )
+    dns_resolution: Optional[dict] = Field(
+        None,
+        allow_mutation=False,
+        applies_to=['Host', 'Address'],
+        conditional_required=['Host', 'Address'],
+        description='Dns resolution data for the Host or Address indicator.',
+        read_only=True,
+        title='dnsResolution',
+    )
+    enrichment: Optional[dict] = Field(
+        None,
+        allow_mutation=False,
+        description='Enrichment data.',
+        read_only=True,
+        title='enrichment',
+    )
+    false_positive_reported_by_user: bool = Field(
+        None,
+        allow_mutation=False,
+        description='Has a false positive been reported by this user for this indicator today?',
+        read_only=True,
+        title='falsePositiveReportedByUser',
+    )
     false_positives: Optional[int] = Field(
         None,
         allow_mutation=False,
@@ -179,6 +202,15 @@ class IndicatorModel(
         read_only=False,
         title='fileOccurrences',
     )
+    geo_location: Optional[dict] = Field(
+        None,
+        allow_mutation=False,
+        applies_to=['Host', 'Address'],
+        conditional_required=['Host', 'Address'],
+        description='Geographical localization of the Host or Address indicator.',
+        read_only=True,
+        title='geoLocation',
+    )
     host_name: Optional[str] = Field(
         None,
         applies_to=['Host'],
@@ -193,6 +225,15 @@ class IndicatorModel(
         description='The ID of the item.',
         read_only=True,
         title='id',
+    )
+    investigation_links: Optional[dict] = Field(
+        None,
+        allow_mutation=False,
+        description=(
+            'Resource links that provide additional information to assist in investigation.'
+        ),
+        read_only=True,
+        title='investigationLinks',
     )
     ip: Optional[str] = Field(
         None,
@@ -226,13 +267,28 @@ class IndicatorModel(
         read_only=True,
         title='lastObserved',
     )
+    legacy_link: Optional[str] = Field(
+        None,
+        allow_mutation=False,
+        description='A link to the legacy ThreatConnect details page for this entity.',
+        read_only=True,
+        title='legacyLink',
+    )
     md5: Optional[str] = Field(
         None,
         applies_to=['File'],
         description='The md5 associated with this indicator (File specific summary field).',
-        methods=['POST'],
+        methods=['POST', 'PUT'],
         read_only=False,
         title='md5',
+    )
+    mode: Optional[str] = Field(
+        None,
+        applies_to=['File'],
+        description='The operation to perform on the file hashes (delete | merge).',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='mode',
     )
     observations: Optional[int] = Field(
         None,
@@ -241,11 +297,18 @@ class IndicatorModel(
         read_only=True,
         title='observations',
     )
+    owner_id: Optional[int] = Field(
+        None,
+        description='The id of the Organization, Community, or Source that the item belongs to.',
+        methods=['POST'],
+        read_only=False,
+        title='ownerId',
+    )
     owner_name: Optional[str] = Field(
         None,
-        allow_mutation=False,
         description='The name of the Organization, Community, or Source that the item belongs to.',
-        read_only=True,
+        methods=['POST'],
+        read_only=False,
         title='ownerName',
     )
     private_flag: bool = Field(
@@ -278,7 +341,7 @@ class IndicatorModel(
         None,
         applies_to=['File'],
         description='The sha1 associated with this indicator (File specific summary field).',
-        methods=['POST'],
+        methods=['POST', 'PUT'],
         read_only=False,
         title='sha1',
     )
@@ -286,7 +349,7 @@ class IndicatorModel(
         None,
         applies_to=['File'],
         description='The sha256 associated with this indicator (File specific summary field).',
-        methods=['POST'],
+        methods=['POST', 'PUT'],
         read_only=False,
         title='sha256',
     )
@@ -352,6 +415,20 @@ class IndicatorModel(
         read_only=True,
         title='threatAssessScore',
     )
+    threat_assess_score_false_positive: Optional[int] = Field(
+        None,
+        allow_mutation=False,
+        description='The Threat Assess score for false positives related to this indicator.',
+        read_only=True,
+        title='threatAssessScoreFalsePositive',
+    )
+    threat_assess_score_observed: Optional[int] = Field(
+        None,
+        allow_mutation=False,
+        description='The Threat Assess score observed for this indicator.',
+        read_only=True,
+        title='threatAssessScoreObserved',
+    )
     type: Optional[str] = Field(
         None,
         description='The **type** for the Indicator.',
@@ -387,6 +464,15 @@ class IndicatorModel(
         description='A link to the ThreatConnect details page for this entity.',
         read_only=True,
         title='webLink',
+    )
+    whois: Optional[dict] = Field(
+        None,
+        allow_mutation=False,
+        applies_to=['Host'],
+        conditional_required=['Host'],
+        description='The whois data for the indicator.',
+        read_only=True,
+        title='whois',
     )
     whois_active: bool = Field(
         None,

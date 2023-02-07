@@ -62,7 +62,7 @@ class TestTasks(TestV3):
 
         artifact_data = {
             'intel_type': 'indicator-ASN',
-            'summary': f'asn{randint(100, 999)}',
+            'summary': f'ASN{randint(100, 999)}',
             'type': 'ASN',
         }
 
@@ -148,7 +148,7 @@ class TestTasks(TestV3):
         note_data = {'text': f'sample note for {request.node.name} test case.'}
         artifact_data = {
             'intel_type': 'indicator-ASN',
-            'summary': f'asn{randint(100, 999)}',
+            'summary': f'ASN{randint(100, 999)}',
             'type': 'ASN',
         }
 
@@ -357,7 +357,7 @@ class TestTasks(TestV3):
         artifact_data = {'data': []}
         for _ in range(0, artifact_count):
             # [Pre-Requisite] define artifact data
-            summary = f'asn{randint(100, 999)}'
+            summary = f'ASN{randint(100, 999)}'
             artifact_data.get('data').append(
                 {
                     'intel_type': 'indicator-ASN',

@@ -18,6 +18,15 @@ class IndicatorAttributeFilter(FilterABC):
         """Return the API endpoint."""
         return ApiEndpoints.INDICATOR_ATTRIBUTES.value
 
+    def associable(self, operator: Enum, associable: bool):
+        """Filter Associable based on **associable** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            associable: A flag to include an attribute in indicator associations.
+        """
+        self._tql.add_filter('associable', operator, associable, TqlType.BOOLEAN)
+
     def date_added(self, operator: Enum, date_added: str):
         """Filter Date Added based on **dateAdded** keyword.
 
@@ -130,6 +139,15 @@ class IndicatorAttributeFilter(FilterABC):
             owner_name: The owner name of the attribute.
         """
         self._tql.add_filter('ownerName', operator, owner_name, TqlType.STRING)
+
+    def pinned(self, operator: Enum, pinned: bool):
+        """Filter Pinned based on **pinned** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            pinned: Whether or not the attribute is pinned with importance.
+        """
+        self._tql.add_filter('pinned', operator, pinned, TqlType.BOOLEAN)
 
     def source(self, operator: Enum, source: str):
         """Filter Source based on **source** keyword.
