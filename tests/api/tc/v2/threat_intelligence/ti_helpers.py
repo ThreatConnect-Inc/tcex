@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     # first-party
     from tcex import TcEx
     from tcex.api.tc.v2.threat_intelligence import ThreatIntelligence
+    from tcex.api.tc.v2.threat_intelligence.mappings.indicator.indicator import Indicator
 
 
 class TIHelper:
@@ -238,7 +239,7 @@ class TIHelper:
 
         return ti
 
-    def create_indicator(self, indicator_type=None, **kwargs):
+    def create_indicator(self, indicator_type=None, **kwargs) -> 'Indicator':
         """Create an case.
 
         If a case_name is not provide a dynamic case name will be used.
@@ -479,7 +480,7 @@ class TestThreatIntelligence:
     owner = None
     required_fields = {}
     ti = None
-    ti_helper = None
+    ti_helper: TIHelper
 
     def teardown_method(self):
         """Clean up resources"""
@@ -766,7 +767,7 @@ class TestThreatIntelligence:
         ti_data = response_data.get('data', {}).get('attribute')
 
         # assert response
-        assert r.status_code == 201
+        assert r.status_code == 201, f'(status-code={r.status_code}, message={r.text})'
         assert response_data.get('status') == 'Success'
 
         # validate ti data
