@@ -56,6 +56,16 @@ class CaseFilter(FilterABC):
         """
         self._tql.add_filter('calScore', operator, cal_score, TqlType.INTEGER)
 
+    def case_close_date(self, operator: Enum, case_close_date: str):
+        """Filter Cases Closed based on **caseCloseDate** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            case_close_date: The date/time the case was closed.
+        """
+        case_close_date = self.utils.any_to_datetime(case_close_date).strftime('%Y-%m-%d %H:%M:%S')
+        self._tql.add_filter('caseCloseDate', operator, case_close_date, TqlType.STRING)
+
     def case_close_time(self, operator: Enum, case_close_time: str):
         """Filter Case Close Time based on **caseCloseTime** keyword.
 
@@ -116,6 +126,16 @@ class CaseFilter(FilterABC):
             case_occurrence_user: The user who logged the case occurrence time.
         """
         self._tql.add_filter('caseOccurrenceUser', operator, case_occurrence_user, TqlType.STRING)
+
+    def case_open_date(self, operator: Enum, case_open_date: str):
+        """Filter Cases Created based on **caseOpenDate** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            case_open_date: The date/time the case was opened.
+        """
+        case_open_date = self.utils.any_to_datetime(case_open_date).strftime('%Y-%m-%d %H:%M:%S')
+        self._tql.add_filter('caseOpenDate', operator, case_open_date, TqlType.STRING)
 
     def case_open_time(self, operator: Enum, case_open_time: str):
         """Filter Case Open Time based on **caseOpenTime** keyword.

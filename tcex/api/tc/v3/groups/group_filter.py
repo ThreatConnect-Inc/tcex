@@ -180,6 +180,15 @@ class GroupFilter(FilterABC):
         event_date = self.utils.any_to_datetime(event_date).strftime('%Y-%m-%d %H:%M:%S')
         self._tql.add_filter('eventDate', operator, event_date, TqlType.STRING)
 
+    def generated_report(self, operator: Enum, generated_report: bool):
+        """Filter Generated (Report) based on **generatedReport** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            generated_report: Boolean flag indicating if the Report was auto-generated.
+        """
+        self._tql.add_filter('generatedReport', operator, generated_report, TqlType.BOOLEAN)
+
     @property
     def has_artifact(self):
         """Return **ArtifactFilter** for further filtering."""

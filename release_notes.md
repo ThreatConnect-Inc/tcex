@@ -1,5 +1,9 @@
 # Release Notes
 
+### 3.0.7
+
+-   APP-3859 - [API] Enhancements for ThreatConnect 7.x
+
 ### 3.0.6
 
 -   APP-3857 - [CLI] Updated spectool for general improvements and fixes

@@ -30,6 +30,9 @@ class V3Helper:
 
     def __init__(self, v3_object: str):
         """Initialize Class Properties"""
+        self.v3_object = v3_object
+
+        # properties
         self.app = MockApp(runtime_level='Playbook')
         self.tcex = self.app.tcex
         self.v3 = self.tcex.v3
@@ -346,9 +349,11 @@ class V3Helper:
 
         Args:
             assignee (str, kwargs): Optional assignee.
+            attributes (list, kwargs): Optional attributes.
             date_added (str, kwargs): Optional date_added.
             description (str, kwargs): Optional description.
             name (str, kwargs): Optional name.
+            params (dict, kwargs): Optional params to send to create request.
             resolution (str, kwargs): Optional resolution.
             severity (str, kwargs): Optional severity.
             status (str, kwargs): Optional status.
@@ -404,7 +409,7 @@ class V3Helper:
             case.stage_task(self.v3.task(**task))
 
         # create object
-        case.create()
+        case.create(kwargs.get('params', {}))
 
         # store case id for cleanup
         self._v3_objects.append(case)
@@ -684,7 +689,7 @@ class V3Helper:
 class TestV3:
     """Test TcEx V3 Base Class"""
 
-    v3_helper = None
+    v3_helper: V3Helper
     tcex = None
     utils = Utils()
 
@@ -703,29 +708,42 @@ class TestV3:
         we can validate that they match the properties returned from the OPTIONS request.
         """
         for f in self.v3_helper.v3_obj.fields:
-            # fields that are returned in OPT /v3/<obj>/filters endpoint, but not OPT /v3/<obj>
-            if f.get('name') in [
-                # case ignore
-                'analytics',  # per MJ this is a special field that enables returning all analytics
-                # group ignore
-                'victimAssets',
-                # indicator ignore
-                'files',
-                'fileAction',
-                # Returns custom indicator fields as value1/value2/value3
-                # instead of their custom names
-                'genericCustomIndicatorValues',
-                'groups',
-                'indicators',
-                'owner',
-                'threatAssess',
-            ]:
-                continue
+            names = [f.get('name')]
 
-            if f.get('name') not in self.v3_helper.v3_obj.properties:
-                assert (
-                    False
-                ), f'''{f.get('name')} not in {self.v3_helper.v3_obj.properties.keys()}'''
+            if self.v3_helper.v3_object == 'artifacts' and 'analytics' in names:
+                # fix discrepancy between <endpoint>/fields and <endpoint>
+                names = [
+                    'analyticsPriority',
+                    'analyticsPriorityLevel',
+                    'analyticsScore',
+                    'analyticsStatus',
+                    'analyticsType',
+                ]
+
+            if self.v3_helper.v3_object in ['cases', 'groups'] and 'userDetails' in names:
+                # fix discrepancy between <endpoint>/fields and <endpoint>
+                names = ['createdBy']
+
+            if self.v3_helper.v3_object == 'indicators':
+                if 'genericCustomIndicatorValues' in names:
+                    # fix discrepancy between <endpoint>/fields and <endpoint>
+                    names = ['value1', 'value2', 'value3']
+                if 'whoIs' in names:
+                    # fix discrepancy between <endpoint>/fields and <endpoint>
+                    names = ['whois']
+                if 'threatAssess' in names:
+                    # fix discrepancy between <endpoint>/fields and <endpoint>
+                    names = [
+                        'threatAssessConfidence',
+                        'threatAssessRating',
+                        'threatAssessScore',
+                        'threatAssessScoreFalsePositive',
+                        'threatAssessScoreObserved',
+                    ]
+
+            for name in names:
+                if name not in self.v3_helper.v3_obj.properties:
+                    assert False, f'''{name} not in {self.v3_helper.v3_obj.properties.keys()}'''
 
     def obj_filter_keywords(self):
         """Test filter keywords.

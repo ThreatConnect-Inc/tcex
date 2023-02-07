@@ -65,39 +65,11 @@ class UserModel(
     _shared_type = PrivateAttr(False)
     _staged = PrivateAttr(False)
 
-    first_name: Optional[str] = Field(
-        None,
-        allow_mutation=False,
-        description='The **first name** for the User.',
-        read_only=True,
-        title='firstName',
-    )
     id: Optional[int] = Field(
         None,
         description='The ID of the item.',
         read_only=True,
         title='id',
-    )
-    last_name: Optional[str] = Field(
-        None,
-        allow_mutation=False,
-        description='The **last name** for the User.',
-        read_only=True,
-        title='lastName',
-    )
-    pseudonym: Optional[str] = Field(
-        None,
-        allow_mutation=False,
-        description='The **pseudonym** for the User.',
-        read_only=True,
-        title='pseudonym',
-    )
-    role: Optional[str] = Field(
-        None,
-        allow_mutation=False,
-        description='The **role** for the User.',
-        read_only=True,
-        title='role',
     )
     user_name: Optional[str] = Field(
         None,

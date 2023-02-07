@@ -515,7 +515,7 @@ class TestIndicatorSnippets(TestV3):
         indicators = self.tcex.v3.indicators()
         indicators.filter.tql = (
             'typeName in ("Host", "Address", "EmailAddress", "File", "URL") and '
-            '(summary like "%example%" or tag like "%example%")'
+            '(summary like "%example%" or tag like "%example%") and (ownerName EQ "TCI")'
         )
 
         for indicator in indicators:
