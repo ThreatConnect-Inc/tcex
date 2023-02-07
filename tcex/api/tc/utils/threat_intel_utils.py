@@ -205,19 +205,29 @@ class ThreatIntelUtils:
         """
         resolved_inputs = []
         for input_ in inputs:
+            # handle null inputs
             if not input_:
                 resolved_inputs.append(None)
                 continue
-            if input_.strip() not in self.resolvable_variables:
+
+            # clean up input
+            input_ = input_.strip()
+
+            # handle unknown input types
+            if input_ not in self.resolvable_variables:
                 resolved_inputs.append(input_)
                 continue
-            input_ = input_.strip()
+
+            # special handling of group types (no API request required)
             if input_ == '${GROUP_TYPES}':
                 for type_ in self.group_types:
                     resolved_inputs.append(type_)
                 continue
 
+            # get variable settings
             resolvable_variable_details = self.resolvable_variables[input_]
+
+            # make API call to retrieve variable data
             r = self.session_tc.get(
                 resolvable_variable_details.get('url'), params={'resultLimit': 10_000}
             )
@@ -226,16 +236,6 @@ class ThreatIntelUtils:
                 raise RuntimeError(f'Could not retrieve {input_} from ThreatConnect API.')
 
             json_ = r.json()
-            # No TQL filter to filter out API users during REST call so have to do it manually here.
-            if input_ in ['${API_USERS}', '${USERS}']:
-                temp_data = []
-                for item in json_.get('data', []):
-                    if item.get('role') == 'Api User' and input_ == '${API_USERS}':
-                        temp_data.append(item)
-                    elif item.get('role') != 'Api User' and input_ == '${USERS}':
-                        temp_data.append(item)
-                json_['data'] = temp_data
-
             for item in jmespath.search(resolvable_variable_details.get('jmspath'), json_):
                 resolved_inputs.append(str(item))
 
