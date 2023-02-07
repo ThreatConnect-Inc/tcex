@@ -198,8 +198,7 @@ class Group(ObjectABC):
         self._request(
             method='GET',
             url=f'''{self.url('GET')}/download''',
-            # headers={'content-type': 'application/octet-stream'},
-            headers=None,
+            headers={'Accept': 'application/octet-stream'},
             params=params,
         )
         return self.request.content
@@ -210,7 +209,7 @@ class Group(ObjectABC):
             method='GET',
             body=None,
             url=f'''{self.url('GET')}/pdf''',
-            headers=None,
+            headers={'Accept': 'application/octet-stream'},
             params=params,
         )
 
