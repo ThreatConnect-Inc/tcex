@@ -319,7 +319,8 @@ class GenerateABC(ABC):
     def _prop_content_remove_unused(self, properties: dict):
         """Remove unused fields from properties."""
         if self.type_ in ['attribute_types']:
-            del properties['owner']
+            if 'owner' in properties:
+                del properties['owner']
 
         if self.type_ in [
             'attribute_types',
@@ -378,6 +379,11 @@ class GenerateABC(ABC):
 
     def _prop_content_update(self, properties: dict):
         """Update "bad" data in properties."""
+        if self.type_ in ['groups']:
+            # fixed fields that are missing readOnly property
+            properties['downVoteCount']['readOnly'] = True
+            properties['upVoteCount']['readOnly'] = True
+
         if self.type_ in ['victims']:
             # ownerName is readOnly, but readOnly is not defined in response from OPTIONS endpoint
             properties['ownerName']['readOnly'] = True

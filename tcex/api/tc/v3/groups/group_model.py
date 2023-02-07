@@ -159,9 +159,9 @@ class GroupModel(
     )
     down_vote_count: Optional[int] = Field(
         None,
+        allow_mutation=False,
         description='The total number of users who find the intel not helpful.',
-        methods=['POST', 'PUT'],
-        read_only=False,
+        read_only=True,
         title='downVoteCount',
     )
     due_date: Optional[datetime] = Field(
@@ -467,9 +467,9 @@ class GroupModel(
     )
     up_vote_count: Optional[int] = Field(
         None,
+        allow_mutation=False,
         description='The total number of users who find the intel useful.',
-        methods=['POST', 'PUT'],
-        read_only=False,
+        read_only=True,
         title='upVoteCount',
     )
     web_link: Optional[str] = Field(

@@ -84,7 +84,6 @@ class Group(ObjectABC):
             this group.
         attributes (GroupAttributes, kwargs): A list of Attributes corresponding to the Group.
         body (str, kwargs): The email Body.
-        down_vote_count (int, kwargs): The total number of users who find the intel not helpful.
         due_date (str, kwargs): The date and time that the Task is due.
         escalation_date (str, kwargs): The escalation date and time.
         event_date (str, kwargs): The date and time that the incident or event was first created.
@@ -115,7 +114,6 @@ class Group(ObjectABC):
         type (str, kwargs): The **type** for the Group.
         up_vote (bool, kwargs): Is the intelligence valid and useful? (0 means downvote, 1 means
             upvote, and NULL means no vote).
-        up_vote_count (int, kwargs): The total number of users who find the intel useful.
         xid (str, kwargs): The xid of the item.
     """
 
