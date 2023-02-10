@@ -21,10 +21,6 @@ repos:
       - id: double-quote-string-fixer
       - id: end-of-file-fixer
       - id: mixed-line-ending
-      - id: no-commit-to-branch
-        args:
-          - --branch
-          - main
       - id: pretty-format-json
         args:
           - --autofix
