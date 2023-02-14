@@ -4,14 +4,13 @@ import logging
 import ssl
 import time
 import traceback
-from typing import TYPE_CHECKING, List, Optional
+from collections.abc import Callable
 
 # third-party
 import paho.mqtt.client as mqtt
 
-if TYPE_CHECKING:
-    # first-party
-    from tcex.input.field_types.sensitive import Sensitive
+# first-party
+from tcex.input.field_types.sensitive import Sensitive  # TYPE-CHECKING
 
 # get tcex logger
 logger = logging.getLogger('tcex')
@@ -25,8 +24,8 @@ class MqttMessageBroker:
         broker_host: str,
         broker_port: int,
         broker_timeout: int,
-        broker_token: Optional['Sensitive'] = None,
-        broker_cacert: Optional[str] = None,
+        broker_token: Sensitive | None = None,
+        broker_cacert: str | None = None,
     ):
         """Initialize the Class properties.
 
@@ -47,17 +46,17 @@ class MqttMessageBroker:
         # properties
         self._client = None
         self._connected = False
-        self._on_connect_callbacks: List[callable] = []
-        self._on_disconnect_callbacks: List[callable] = []
-        self._on_log_callbacks: List[callable] = []
-        self._on_message_callbacks: List[callable] = []
-        self._on_publish_callbacks: List[callable] = []
-        self._on_subscribe_callbacks: List[callable] = []
-        self._on_unsubscribe_callbacks: List[callable] = []
+        self._on_connect_callbacks: list[Callable] = []
+        self._on_disconnect_callbacks: list[Callable] = []
+        self._on_log_callbacks: list[Callable] = []
+        self._on_message_callbacks: list[Callable] = []
+        self._on_publish_callbacks: list[Callable] = []
+        self._on_subscribe_callbacks: list[Callable] = []
+        self._on_unsubscribe_callbacks: list[Callable] = []
         self.log = logger
         self.shutdown = False  # used in service App for shutdown flag
 
-    def add_on_connect_callback(self, callback: callable, index: Optional[int] = None):
+    def add_on_connect_callback(self, callback: Callable, index: int | None = None):
         """Add a callback for on_connect events.
 
         Args:
@@ -67,7 +66,7 @@ class MqttMessageBroker:
         index = index or len(self._on_connect_callbacks)
         self._on_connect_callbacks.insert(index, callback)
 
-    def add_on_disconnect_callback(self, callback: callable, index: Optional[int] = None):
+    def add_on_disconnect_callback(self, callback: Callable, index: int | None = None):
         """Add a callback for on_disconnect events.
 
         Args:
@@ -77,7 +76,7 @@ class MqttMessageBroker:
         index = index or len(self._on_disconnect_callbacks)
         self._on_disconnect_callbacks.insert(callback)
 
-    def add_on_log_callback(self, callback: callable, index: Optional[int] = None):
+    def add_on_log_callback(self, callback: Callable, index: int | None = None):
         """Add a callback for on_log events.
 
         Args:
@@ -88,7 +87,7 @@ class MqttMessageBroker:
         self._on_log_callbacks.insert(callback)
 
     def add_on_message_callback(
-        self, callback: callable, index: Optional[int] = None, topics: Optional[List[str]] = None
+        self, callback: Callable, index: int | None = None, topics: list[str] | None = None
     ):
         """Add a callback for on_message events.
 
@@ -101,7 +100,7 @@ class MqttMessageBroker:
         index = index or len(self._on_message_callbacks)
         self._on_message_callbacks.insert(index, {'callback': callback, 'topics': topics})
 
-    def add_on_publish_callback(self, callback: callable, index: Optional[int] = None):
+    def add_on_publish_callback(self, callback: Callable, index: int | None = None):
         """Add a callback for on_publish events.
 
         Args:
@@ -111,7 +110,7 @@ class MqttMessageBroker:
         index = index or len(self._on_publish_callbacks)
         self._on_publish_callbacks.insert(index, callback)
 
-    def add_on_subscribe_callback(self, callback: callable, index: Optional[int] = None):
+    def add_on_subscribe_callback(self, callback: Callable, index: int | None = None):
         """Add a callback for on_subscribe events.
 
         Args:
@@ -121,7 +120,7 @@ class MqttMessageBroker:
         index = index or len(self._on_subscribe_callbacks)
         self._on_subscribe_callbacks.insert(index, callback)
 
-    def add_on_unsubscribe_callback(self, callback: callable, index: Optional[int] = None):
+    def add_on_unsubscribe_callback(self, callback: Callable, index: int | None = None):
         """Add a callback for on_unsubscribe events.
 
         Args:

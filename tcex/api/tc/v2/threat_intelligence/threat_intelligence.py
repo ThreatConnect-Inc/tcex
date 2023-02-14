@@ -2,7 +2,9 @@
 # standard library
 import logging
 from functools import lru_cache
-from typing import TYPE_CHECKING, Optional
+
+# third-party
+from requests import Session  # TYPE-CHECKING
 
 # first-party
 from tcex.api.tc.v2.threat_intelligence.mappings.filters import Filters
@@ -48,11 +50,6 @@ from tcex.api.tc.v2.threat_intelligence.mappings.victim import Victim
 from tcex.exit.error_codes import TcExErrorCodes
 from tcex.utils import Utils
 
-if TYPE_CHECKING:
-    # third-party
-    from requests import Session
-
-
 # import local modules for dynamic reference
 module = __import__(__name__)
 
@@ -76,7 +73,7 @@ class ThreatIntelligence:
         self._gen_indicator_class()
 
     @property
-    @lru_cache()
+    @lru_cache
     def _error_codes(self) -> 'TcExErrorCodes':  # noqa: F821
         """Return TcEx error codes."""
         return TcExErrorCodes()
@@ -132,7 +129,7 @@ class ThreatIntelligence:
         }
 
     @property
-    @lru_cache()
+    @lru_cache
     def _indicator_types_data(self) -> dict:
         """Return ThreatConnect indicator types data.
 
@@ -156,7 +153,7 @@ class ThreatIntelligence:
         return _indicator_types_data
 
     def _handle_error(
-        self, code: int, message_values: Optional[list] = None, raise_error: Optional[bool] = True
+        self, code: int, message_values: list | None = None, raise_error: bool = True
     ):
         """Raise RuntimeError
 

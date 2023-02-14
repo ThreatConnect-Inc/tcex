@@ -1,14 +1,14 @@
 """Case Management Filter Abstract Base Class"""
 # standard library
 from abc import ABC
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 
 # first-party
 from tcex.utils.utils import Utils
 
 if TYPE_CHECKING:
     # first-party
-    from tcex.api.tc.v3.tql.tql import Tql
+    from tcex.api.tc.v3.tql.tql import Tql  # CIRCULAR-IMPORT
 
 
 class FilterABC(ABC):
@@ -26,7 +26,7 @@ class FilterABC(ABC):
         raise NotImplementedError('Child class must implement this method.')
 
     @property
-    def implemented_keywords(self) -> List[str]:
+    def implemented_keywords(self) -> list[str]:
         """Return implemented TQL keywords."""
         keywords = []
         for prop in dir(self):

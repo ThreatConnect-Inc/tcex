@@ -1,6 +1,6 @@
 """API -> TC"""
 # standard library
-from typing import TYPE_CHECKING, Dict, List, Union
+from typing import TYPE_CHECKING
 
 # first-party
 from tcex.api.tc.ti_transform import TiTransform, TiTransforms
@@ -31,27 +31,27 @@ class TC:
         self.session_tc = session_tc
 
     @staticmethod
-    def group_transform(transform: Dict) -> 'GroupTransformModel':
+    def group_transform(transform: dict) -> 'GroupTransformModel':
         """Return a group transform model."""
         return GroupTransformModel(**transform)
 
     @staticmethod
-    def indicator_transform(transform: Dict) -> 'IndicatorTransformModel':
+    def indicator_transform(transform: dict) -> 'IndicatorTransformModel':
         """Return a indicator transform model."""
         return IndicatorTransformModel(**transform)
 
     @staticmethod
     def ti_transform(
         ti_dict: dict,
-        transforms: List[Union['GroupTransformModel', 'IndicatorTransformModel']],
+        transforms: list[GroupTransformModel | IndicatorTransformModel],
     ) -> 'TiTransform':
         """Return an instance of TI Transform class."""
         return TiTransform(ti_dict, transforms)
 
     @staticmethod
     def ti_transforms(
-        ti_dict: List[dict],
-        transforms: List[Union['GroupTransformModel', 'IndicatorTransformModel']],
+        ti_dict: list[dict],
+        transforms: list[GroupTransformModel | IndicatorTransformModel],
     ) -> 'TiTransform':
         """Return an instance of TI Transforms class."""
         return TiTransforms(ti_dict, transforms)

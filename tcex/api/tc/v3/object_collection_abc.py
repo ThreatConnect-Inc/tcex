@@ -2,7 +2,7 @@
 # standard library
 import logging
 from abc import ABC
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING
 
 # third-party
 from requests import Response
@@ -15,26 +15,17 @@ from tcex.exit.error_codes import handle_error
 from tcex.utils import Utils
 
 if TYPE_CHECKING:
-    # third-party
-    from pydantic import BaseModel
-
     # first-party
     from tcex.api.tc.v3.artifacts.artifact import Artifact
     from tcex.api.tc.v3.cases.case import Case
     from tcex.api.tc.v3.notes.note import Note
+    from tcex.api.tc.v3.object_abc import ObjectABC  # CIRCULAR-IMPORT
     from tcex.api.tc.v3.tags.tag import Tag
     from tcex.api.tc.v3.tasks.task import Task
     from tcex.api.tc.v3.workflow_events.workflow_event import WorkflowEvent
 
     # Case Management Types
-    CaseManagementType = Union[
-        Artifact,
-        Case,
-        Note,
-        Tag,
-        Task,
-        WorkflowEvent,
-    ]
+    CaseManagementType = Artifact | Case | Note | Tag | Task | WorkflowEvent
 
 # get tcex logger
 logger = logging.getLogger('tcex')
@@ -52,8 +43,8 @@ class ObjectCollectionABC(ABC):
     def __init__(
         self,
         session,
-        tql_filters: Optional[list] = None,  # This will be removed!
-        params: Optional[dict] = None,
+        tql_filters: list | None = None,  # This will be removed!
+        params: dict | None = None,
     ):
         """Initialize class properties."""
         self._params = params or {}
@@ -104,9 +95,9 @@ class ObjectCollectionABC(ABC):
         self,
         method: str,
         url: str,
-        body: Optional[Union[bytes, str]] = None,
-        params: Optional[dict] = None,
-        headers: Optional[dict] = None,
+        body: bytes | str | None = None,
+        params: dict | None = None,
+        headers: dict | None = None,
     ):
         """Handle standard request with error checking."""
         try:
@@ -163,9 +154,9 @@ class ObjectCollectionABC(ABC):
 
     def iterate(
         self,
-        base_class: 'BaseModel',
-        api_endpoint: Optional[str] = None,
-        params: Optional[dict] = None,
+        base_class: 'ObjectABC',
+        api_endpoint: str | None = None,
+        params: dict | None = None,
     ) -> 'CaseManagementType':
         """Iterate over CM/TI objects."""
         url = api_endpoint or self._api_endpoint

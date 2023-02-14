@@ -5,26 +5,22 @@ import os
 import pathlib
 import platform
 import sys
-from typing import TYPE_CHECKING, Optional
 from urllib.parse import urlsplit
 
 # third-party
 from certifi import where
+from requests import Session  # TYPE-CHECKING
 
 # first-party
 # pylint: disable=no-name-in-module
 from tcex.app_config.install_json import InstallJson
+from tcex.input.models.common_model import CommonModel  # TYPE-CHECKING
 from tcex.logger.api_handler import ApiHandler, ApiHandlerFormatter
 from tcex.logger.cache_handler import CacheHandler
 from tcex.logger.pattern_file_handler import PatternFileHandler
 from tcex.logger.rotating_file_handler_custom import RotatingFileHandlerCustom
 from tcex.logger.thread_file_handler import ThreadFileHandler
 from tcex.logger.trace_logger import TraceLogger
-
-if TYPE_CHECKING:
-    # third-party
-    from pydantic import BaseModel
-    from requests import Session
 
 
 class Logger:
@@ -38,15 +34,15 @@ class Logger:
         self.ij = InstallJson()
 
     @property
-    def _logger(self) -> 'logging.Logger':
+    def _logger(self) -> TraceLogger:
         """Return the logger. The inputs.model property is not available in init."""
         logging.setLoggerClass(TraceLogger)
         logger = logging.getLogger(self.logger_name)
-        logger.setLevel(logging.TRACE)
-        return logger
+        logger.setLevel(logging.TRACE)  # type: ignore
+        return logger  # type: ignore
 
     @property
-    def _formatter(self):
+    def _formatter(self) -> logging.Formatter:
         """Return log formatter."""
         tx_format = (
             '%(asctime)s - %(name)s - %(levelname)8s - %(message)s '
@@ -55,7 +51,7 @@ class Logger:
         return logging.Formatter(tx_format)
 
     @property
-    def _formatter_thread_name(self):
+    def _formatter_thread_name(self) -> logging.Formatter:
         """Return log formatter."""
         tx_format = (
             '%(asctime)s - %(name)s - %(levelname)8s - %(message)s '
@@ -78,12 +74,12 @@ class Logger:
         return False
 
     @property
-    def log(self) -> 'logging.Logger':
+    def log(self) -> TraceLogger:
         """Return logger."""
         return self._logger
 
     @staticmethod
-    def log_level(level: str) -> int:
+    def log_level(level: str | None) -> int:
         """Return proper level from string.
 
         Args:
@@ -106,11 +102,11 @@ class Logger:
                 self._logger.removeHandler(h)
                 break
 
-    def replay_cached_events(self, handler_name: Optional[str] = 'cache'):
+    def replay_cached_events(self, handler_name: str = 'cache'):
         """Replay cached log events and remove handler."""
         for h in self._logger.handlers:
             if h.get_name() == handler_name:
-                events = h.events
+                events = h.events  # type: ignore
                 self._logger.removeHandler(h)
                 for event in events:
                     self._logger.handle(event)
@@ -134,19 +130,17 @@ class Logger:
         Args:
             level: The logging level.
         """
-        level = self.log_level(level)
+        level_ = self.log_level(level)
 
         # update all handler logging levels
         for h in self._logger.handlers:
-            h.setLevel(level)
+            h.setLevel(level_)
 
     #
     # handlers
     #
 
-    def add_api_handler(
-        self, session_tc: 'Session', name: Optional[str] = 'api', level: Optional[str] = None
-    ):
+    def add_api_handler(self, session_tc: Session, name: str = 'api', level: str | None = None):
         """Add API logging handler.
 
         Args:
@@ -180,13 +174,13 @@ class Logger:
         self,
         name: str,
         filename: str,
-        level: int,
+        level: str,
         path: str,
         pattern: str,
-        formatter: Optional[str] = None,
-        handler_key: Optional[str] = None,
-        max_log_count: Optional[int] = 100,
-        thread_key: Optional[str] = None,
+        formatter: logging.Formatter | None = None,
+        handler_key: str | None = None,
+        max_log_count: int = 100,
+        thread_key: str | None = None,
     ):
         """Add custom file logging handler.
 
@@ -213,9 +207,9 @@ class Logger:
         fh.set_name(name)
         fh.setFormatter(formatter)
         fh.setLevel(self.log_level(level))
-        # add keys for halder emit method conditional
-        fh.handler_key = handler_key
-        fh.thread_key = thread_key
+        # add *new* keys for handler emit method conditional
+        fh.handler_key = handler_key  # type: ignore
+        fh.thread_key = thread_key  # type: ignore
         self._logger.addHandler(fh)
 
     def add_rotating_file_handler(
@@ -226,8 +220,8 @@ class Logger:
         backup_count: int,
         max_bytes: int,
         level: str,
-        formatter: Optional[str] = None,
-        mode: Optional[str] = 'a',
+        formatter: logging.Formatter | None = None,
+        mode: str = 'a',
     ):
         """Add custom file logging handler.
 
@@ -255,9 +249,9 @@ class Logger:
 
     def add_stream_handler(
         self,
-        name: Optional[str] = 'sh',
-        formatter: Optional[str] = None,
-        level: Optional[int] = None,
+        name: str = 'sh',
+        formatter: logging.Formatter | None = None,
+        level: str | None = None,
     ):
         """Add stream logging handler.
 
@@ -281,12 +275,12 @@ class Logger:
         filename: str,
         level: str,
         path: str,
-        backup_count: Optional[int] = 0,
-        formatter: Optional[str] = None,
-        handler_key: Optional[str] = None,
-        max_bytes: Optional[int] = 0,
-        mode: Optional[str] = 'a',
-        thread_key: Optional[str] = None,
+        backup_count: int = 0,
+        formatter: logging.Formatter | None = None,
+        handler_key: str | None = None,
+        max_bytes: int = 0,
+        mode: str = 'a',
+        thread_key: str | None = None,
     ):
         """Add custom file logging handler.
 
@@ -306,24 +300,24 @@ class Logger:
             thread_key: Additional properties for handler to thread condition.
         """
         self.remove_handler_by_name(name)
-        formatter = formatter or self._formatter_thread_name
+        formatter_ = formatter or self._formatter_thread_name
         # create customized handler
         fh = ThreadFileHandler(
             os.path.join(path, filename), backupCount=backup_count, maxBytes=max_bytes, mode=mode
         )
         fh.set_name(name)
-        fh.setFormatter(formatter)
+        fh.setFormatter(formatter_)
         fh.setLevel(self.log_level(level))
-        # add keys for halder emit method conditional
-        fh.handler_key = handler_key
-        fh.thread_key = thread_key
+        # add keys for handler emit method conditional
+        fh.handler_key = handler_key  # type: ignore
+        fh.thread_key = thread_key  # type: ignore
         self._logger.addHandler(fh)
 
     #
     # App info logging
     #
 
-    def log_info(self, inputs: 'BaseModel'):
+    def log_info(self, inputs: CommonModel):
         """Send System and App data to logs.
 
         Args:
@@ -379,7 +373,7 @@ class Logger:
             f'{sys.version_info.micro}'
         )
 
-    def _log_tc_proxy(self, inputs: 'BaseModel'):
+    def _log_tc_proxy(self, inputs: CommonModel):
         """Log the proxy settings.
 
         Args:
@@ -396,7 +390,7 @@ class Logger:
         self.log.info(f'tcex-version={__import__(__name__).__version__}, tcex-path="{tcex_path}"')
 
     @staticmethod
-    def _sanitize_proxy_url(url: Optional[str]) -> Optional[str]:
+    def _sanitize_proxy_url(url: str | None) -> str | None:
         """Sanitize a proxy url, masking username and password."""
         if url is not None:
             url_data = urlsplit(url)

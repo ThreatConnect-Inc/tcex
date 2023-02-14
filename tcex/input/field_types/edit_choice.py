@@ -1,6 +1,9 @@
 """Valid Values Field Type"""
 # standard library
-from typing import TYPE_CHECKING, Callable, Dict, Optional
+from collections.abc import Generator
+
+# third-party
+from pydantic.fields import ModelField  # TYPE-CHECKING
 
 # first-party
 from tcex.api.tc.utils.threat_intel_utils import ThreatIntelUtils
@@ -8,10 +11,6 @@ from tcex.app_config.install_json import InstallJson
 from tcex.input.field_types.exception import InvalidEmptyValue, InvalidInput, InvalidType
 from tcex.pleb.none_model import NoneModel
 from tcex.pleb.registry import registry
-
-if TYPE_CHECKING:  # pragma: no cover
-    # third-party
-    from pydantic.fields import ModelField
 
 
 class EditChoice(str):
@@ -29,7 +28,7 @@ class EditChoice(str):
     _value_transformations = None
 
     @classmethod
-    def __get_validators__(cls) -> Callable:
+    def __get_validators__(cls) -> Generator:
         """Run validators / modifiers on input."""
         yield cls.validate_type
         yield cls.modifier_strip
@@ -41,7 +40,7 @@ class EditChoice(str):
         return value.strip()
 
     @classmethod
-    def validate_type(cls, value: str, field: 'ModelField') -> str:
+    def validate_type(cls, value: str, field: ModelField) -> str:
         """Raise exception if value is not a String type."""
         if not isinstance(value, str):
             raise InvalidType(
@@ -50,7 +49,7 @@ class EditChoice(str):
         return value
 
     @classmethod
-    def validate_valid_values(cls, value: str, field: 'ModelField') -> str:
+    def validate_valid_values(cls, value: str, field: ModelField) -> str:
         """Raise exception if value is not a String type."""
         if value == '':
             raise InvalidEmptyValue(field.name)
@@ -85,7 +84,7 @@ class EditChoice(str):
 
 
 def edit_choice(
-    allow_additional: bool = False, value_transformations: Optional[Dict[str, str]] = None
+    allow_additional: bool = False, value_transformations: dict[str, str] | None = None
 ) -> type:
     """Return configured instance of String.
 
@@ -99,8 +98,8 @@ def edit_choice(
     If this field were to be initialized with 'my_choice', then the final value found in the input
     model would be 'My Choice'.
     """
-    namespace = dict(
-        _value_transformations=value_transformations,
-        _allow_additional=allow_additional,
-    )
+    namespace = {
+        '_value_transformations': value_transformations,
+        '_allow_additional': allow_additional,
+    }
     return type('CustomEditChoice', (EditChoice,), namespace)

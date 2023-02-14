@@ -1,24 +1,18 @@
 """Testing TcEx Input module field types."""
-# standard library
-from typing import TYPE_CHECKING, Dict, Optional
-
 # third-party
 import pytest
 from pydantic import BaseModel, ValidationError
 
 # first-party
+from tcex import TcEx  # TYPE-CHECKING
 from tcex.backports import cached_property
 from tcex.input.field_types import Choice, choice
 from tcex.pleb.scoped_property import scoped_property
 from tests.input.field_types.utils import InputTest
-
-if TYPE_CHECKING:
-    # first-party
-    from tcex import TcEx
-    from tests.mock_app import MockApp
+from tests.mock_app import MockApp  # TYPE-CHECKING
 
 
-# pylint: disable=no-self-argument, no-self-use
+# pylint: disable=no-self-argument
 class TestInputsFieldTypeChoice(InputTest):
     """Test TcEx Inputs Config."""
 
@@ -56,7 +50,7 @@ class TestInputsFieldTypeChoice(InputTest):
         class PytestModel(BaseModel):
             """Test Model for Inputs"""
 
-            my_choice: Optional[Choice]
+            my_choice: Choice | None
 
         config_data = {'my_choice': None}
         tcex: 'TcEx' = playbook_app(config_data=config_data).tcex
@@ -160,7 +154,7 @@ class TestInputsFieldTypeChoice(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_choice_optional: Optional[Choice]
+                my_choice_optional: Choice | None
 
         self._type_validation(
             PytestModel,
@@ -211,7 +205,7 @@ class TestInputsFieldTypeChoice(InputTest):
         expected: str,
         optional: bool,
         fail_test: bool,
-        transformations: Dict,
+        transformations: dict,
         playbook_app: 'MockApp',
     ):
         """Test Custom Choice field type with string input.
@@ -233,7 +227,7 @@ class TestInputsFieldTypeChoice(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_choice_optional: Optional[choice(value_transformations=transformations)]
+                my_choice_optional: choice(value_transformations=transformations) | None
 
         self._type_validation(
             PytestModel,

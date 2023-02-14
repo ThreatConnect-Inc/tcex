@@ -3,7 +3,6 @@
 import math
 from datetime import timedelta
 from operator import add, sub
-from typing import TYPE_CHECKING, Optional
 
 # third-party
 import arrow
@@ -12,13 +11,10 @@ from dateutil.relativedelta import relativedelta
 from pydantic import BaseModel, ValidationError
 
 # first-party
+from tcex import TcEx  # TYPE-CHECKING
 from tcex.input.field_types import DateTime
 from tests.input.field_types.utils import InputTest
-
-if TYPE_CHECKING:
-    # first-party
-    from tcex import TcEx
-    from tests.mock_app import MockApp
+from tests.mock_app import MockApp  # TYPE-CHECKING
 
 
 class TestInputsFieldTypeArrowDateTime(InputTest):
@@ -369,7 +365,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
         class PytestModel(BaseModel):
             """Test Model for Inputs"""
 
-            my_datetime: Optional[DateTime]
+            my_datetime: DateTime | None
 
         config_data = {'my_datetime': None}
         app = playbook_app(config_data=config_data)

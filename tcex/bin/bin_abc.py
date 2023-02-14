@@ -6,7 +6,6 @@ import os
 import sys
 from abc import ABC
 from pathlib import Path
-from typing import Optional
 
 # third-party
 import typer
@@ -41,14 +40,14 @@ class BinABC(ABC):
         self.utils = Utils()
 
     @cached_property
-    def cli_out_path(self) -> 'Path':  # pylint: disable=no-self-use
+    def cli_out_path(self) -> 'Path':
         """Return the path to the tcex cli command out directory."""
         _out_path = Path(os.path.expanduser('~/.tcex'))
         _out_path.mkdir(exist_ok=True, parents=True)
         return _out_path
 
     @staticmethod
-    def handle_error(err, halt: Optional[bool] = True):
+    def handle_error(err, halt: bool = True):
         """Print errors message and optionally exit.
 
         Args:
@@ -86,7 +85,7 @@ class BinABC(ABC):
 
         # create formatter
         formatter = logging.Formatter(
-            '%(asctime)s - %(name)s - %(levelname)s - %(message)s ' '(%(filename)s:%(lineno)d)'
+            '%(asctime)s - %(name)s - %(levelname)s - %(message)s (%(filename)s:%(lineno)d)'
         )
         if logging_level < 10:
             formatter = logging.Formatter(
@@ -103,7 +102,7 @@ class BinABC(ABC):
         return logger
 
     @staticmethod
-    def print_block(text: str, max_length: Optional[int] = 80, **kwargs):
+    def print_block(text: str, max_length: int | None = 80, **kwargs):
         """Print Divider."""
         bold = kwargs.get('bold', False)
         fg_color = getattr(typer.colors, kwargs.get('fg_color', 'white').upper())
@@ -119,7 +118,7 @@ class BinABC(ABC):
         typer.secho(text_wrapped, fg=fg_color, bold=bold)
 
     @staticmethod
-    def print_divider(char: Optional[str] = '-', count: Optional[int] = 100, **kwargs):
+    def print_divider(char: str | None = '-', count: int | None = 100, **kwargs):
         """Print Divider."""
         bold = kwargs.get('bold', False)
         fg_color = getattr(typer.colors, kwargs.get('fg_color', 'bright_white').upper())
@@ -128,7 +127,7 @@ class BinABC(ABC):
         typer.secho(char * count, fg=fg_color, bold=bold)
 
     @staticmethod
-    def print_failure(message: str, exit_: Optional[bool] = True):
+    def print_failure(message: str, exit_: bool = True):
         """Print Failure."""
         typer.secho(message, fg=typer.colors.RED, bold=True)
         if exit_ is True:
@@ -146,7 +145,7 @@ class BinABC(ABC):
         typer.echo(f'{indent}{label:<20}: {value_display}')
 
     @staticmethod
-    def print_title(title: str, divider: Optional[bool] = True, **kwargs):
+    def print_title(title: str, divider: bool = True, **kwargs):
         """Print Title."""
         bold = kwargs.get('bold', True)
         fg_color = getattr(typer.colors, kwargs.get('fg_color', 'cyan').upper())

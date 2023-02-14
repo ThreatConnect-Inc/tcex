@@ -1,7 +1,4 @@
 """Testing TcEx Input module field types."""
-# standard library
-from typing import TYPE_CHECKING, Dict, Optional
-
 # third-party
 import pytest
 from pydantic import BaseModel, Extra, ValidationError
@@ -11,13 +8,10 @@ from tcex.backports import cached_property
 from tcex.input.field_types import DateTime, String, modify_advanced_settings
 from tcex.pleb.scoped_property import scoped_property
 from tests.input.field_types.utils import InputTest
-
-if TYPE_CHECKING:
-    # first-party
-    from tests.mock_app import MockApp
+from tests.mock_app import MockApp  # TYPE-CHECKING
 
 
-# pylint: disable=no-self-argument, no-self-use
+# pylint: disable=no-self-argument
 class TestInputsFieldTypes(InputTest):
     """Test TcEx String Field Model Tests."""
 
@@ -42,7 +36,7 @@ class TestInputsFieldTypes(InputTest):
             """Test Model for Inputs"""
 
             # advanced settings input is Optional for this app
-            advanced_settings: Optional[AdvancedSettingsModel]
+            advanced_settings: AdvancedSettingsModel | None
             # configure "modify_advanced_settings" validator to act on "advanced_settings" input,
             # which performs the parsing of the pipe-delimited string into a dictionary,
             # which would then be used to initialize AdvancedSettingsModel
@@ -74,7 +68,7 @@ class TestInputsFieldTypes(InputTest):
             """Test Model for Inputs"""
 
             # advanced settings input is Optional for this app
-            advanced_settings: Optional[AdvancedSettingsModel]
+            advanced_settings: AdvancedSettingsModel | None
             # configure "modify_advanced_settings" validator to act on "advanced_settings" input,
             # which performs the parsing of the pipe-delimited string into a dictionary,
             # which would then be used to initialize AdvancedSettingsModel
@@ -346,7 +340,7 @@ class TestInputsFieldTypes(InputTest):
     def test_advanced_settings_scenarios(
         self,
         advanced_settings_string: str,
-        expected_model: Dict,
+        expected_model: dict,
         optional: bool,
         extra_config: str,
         fail_expected: bool,
@@ -376,7 +370,7 @@ class TestInputsFieldTypes(InputTest):
         """
 
         # "my_setting" advanced_setting entry will be required/optional depending on input
-        my_setting_type = Optional[String] if optional else String
+        my_setting_type = String | None if optional else String
 
         # Model that defines entries expected in pipe-delimited advanced settings input string
         class AdvancedSettingsModel(BaseModel):

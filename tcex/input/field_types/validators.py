@@ -1,25 +1,23 @@
 """Model Validator/Modifier"""
 # standard library
 import operator
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Union
+from collections.abc import Generator
+from typing import Any
 
 # third-party
 from pydantic import BaseModel, validator
+from pydantic.fields import ModelField  # TYPE-CHECKING
 
 # first-party
 from tcex.input.field_types.exception import InvalidEmptyValue, InvalidInput, InvalidType
 
-if TYPE_CHECKING:  # pragma: no cover
-    # third-party
-    from pydantic.fields import ModelField
-
 
 def always_array(
-    allow_empty: Optional[bool] = True,
-    include_empty: Optional[bool] = False,
-    include_null: Optional[bool] = False,
-    split_csv: Optional[bool] = False,
-) -> List[Any]:
+    allow_empty: bool = True,
+    include_empty: bool = False,
+    include_null: bool = False,
+    split_csv: bool = False,
+) -> list[Any]:
     """Return customized validator that always returns a list.
 
     Args:
@@ -32,7 +30,7 @@ def always_array(
         further processing is done on result of splitting on comma
     """
 
-    def _always_array(value: Any, field: 'ModelField') -> List[Any]:
+    def _always_array(value: Any, field: 'ModelField') -> list[Any]:
         """Return validator."""
 
         if split_csv and isinstance(value, str) and value:
@@ -57,7 +55,7 @@ def always_array(
     return _always_array
 
 
-def conditional_required(rules: List[Dict[str, str]] = True) -> Any:
+def conditional_required(rules: list[dict[str, str]]) -> Any:
     """Return customized validator that validates conditional required fields.
 
     Example Usage:
@@ -66,7 +64,7 @@ def conditional_required(rules: List[Dict[str, str]] = True) -> Any:
 
     MyModel(BaseModel):
         severity: str  # Low, Medium, High
-        action: Optional[str]
+        action: str | None
 
         _conditional_required = validator('action', allow_reuse=True, always=True, pre=True)(
             conditional_required(
@@ -75,11 +73,11 @@ def conditional_required(rules: List[Dict[str, str]] = True) -> Any:
         )
     """
 
-    def is_in(input_: str, value: List) -> bool:
+    def is_in(input_: str, value: list) -> bool:
         """Return True if input is in value list."""
         return input_ in value
 
-    def not_in(input_: str, value: List) -> bool:
+    def not_in(input_: str, value: list) -> bool:
         """Return True if input is NOT in value list."""
         return input_ not in value
 
@@ -94,7 +92,7 @@ def conditional_required(rules: List[Dict[str, str]] = True) -> Any:
         }
         return operators.get(op, operator.eq)
 
-    def _conditional_required(value: str, field: 'ModelField', values: Dict[str, Any]):
+    def _conditional_required(value: str, field: 'ModelField', values: dict[str, Any]):
         """Return validator."""
         for rule in rules or []:
             # the conditional field must be set above the conditionally required field
@@ -111,10 +109,10 @@ def conditional_required(rules: List[Dict[str, str]] = True) -> Any:
 
 
 def entity_input(
-    allow_empty: Optional[bool] = False,
-    only_field: Optional[str] = None,
-    type_filter: Optional[List[str]] = None,
-) -> Union[str, List[Any]]:
+    allow_empty: bool = False,
+    only_field: str | None = None,
+    type_filter: list[str] | None = None,
+) -> str | list[Any]:
     """Return customized validator.
 
     allow_empty:
@@ -145,31 +143,28 @@ def entity_input(
     Example Usage:
 
     MyModel(BaseModel):
-        ip_address: Union[
-            AddressEntity,
-            ip_address(strip_port=True)
-        ]
+        ip_address: AddressEntity | ip_address(strip_port=True)
 
         _entity_field = validator('ip_address', allow_reuse=True)(entity_field(only_value=True))
     """
 
     def _entity_input(
-        value: Union['BaseModel', List['BaseModel'], str, List[str]], field: 'ModelField'
-    ) -> Union[List[str], str]:
+        value: BaseModel | list[BaseModel] | str | list[str], field: ModelField
+    ) -> list[str] | str:
         """Return value from String or TCEntity."""
 
-        def _get_value(value: Union[str, 'BaseModel']) -> Union['BaseModel', str]:
+        def _get_value(value: str | BaseModel) -> BaseModel | str | None:
             """Return value"""
             if isinstance(value, BaseModel):
-                if isinstance(type_filter, list) and value.type not in type_filter:
+                if isinstance(type_filter, list) and value.type not in type_filter:  # type: ignore
                     return None
 
                 if only_field is None:
                     return value
                 if only_field.lower() == 'value':
-                    return value.value
+                    return value.value  # type: ignore
                 if only_field.lower() == 'id':
-                    return value.id
+                    return value.id  # type: ignore
                 raise InvalidInput(
                     field_name=field.name, error=f'Only Field {only_field} is not allowed.'
                 )
@@ -197,7 +192,7 @@ def entity_input(
     return _entity_input
 
 
-def modify_advanced_settings(input_name) -> Callable:
+def modify_advanced_settings(input_name) -> Generator:
     """Return validator that parses an advanced settings string and returns a dictionary
 
     :param input_name: the name of the input (within the app model) that will receive the
@@ -205,7 +200,7 @@ def modify_advanced_settings(input_name) -> Callable:
     that this validator should act on to parse the pipe-delimited string into a dictionary
     """
 
-    def _modify_advanced_settings(value: Any, field: 'ModelField') -> Dict[str, str]:
+    def _modify_advanced_settings(value: Any, field: 'ModelField') -> dict[str, str]:
         """Return validator."""
         settings = {}
 

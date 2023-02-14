@@ -5,7 +5,6 @@ import shutil
 from importlib.machinery import SourceFileLoader
 from importlib.util import module_from_spec, spec_from_loader
 from pathlib import Path
-from typing import List
 
 # third-party
 import pytest
@@ -23,7 +22,6 @@ app = tcex_cli.app
 runner = CliRunner()
 
 
-# pylint: disable=no-self-use
 @pytest.mark.run(order=2)
 class TestTcexCliDeps:
     """Tcex CLI Testing."""
@@ -39,7 +37,7 @@ class TestTcexCliDeps:
 
     def _run_command(
         self,
-        args: List[str],
+        args: list[str],
         new_app_dir: str,
         monkeypatch: 'pytest.MonkeyPatch',
         request: 'pytest.FixtureRequest',

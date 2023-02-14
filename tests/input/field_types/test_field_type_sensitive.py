@@ -1,24 +1,17 @@
 """Testing TcEx Input module field types."""
-# standard library
-from typing import TYPE_CHECKING, Optional
-
 # third-party
 import pytest
 from pydantic import BaseModel, ValidationError
 
 # first-party
+from tcex import TcEx  # TYPE-CHECKING
 from tcex.input.field_types import Sensitive
 from tcex.input.field_types.sensitive import sensitive
 from tcex.pleb.scoped_property import scoped_property
 from tests.input.field_types.utils import InputTest
-
-if TYPE_CHECKING:
-    # first-party
-    from tcex import TcEx
-    from tests.mock_app import MockApp
+from tests.mock_app import MockApp  # TYPE-CHECKING
 
 
-# pylint: disable=no-self-use
 class TestInputsFieldTypeSensitive(InputTest):
     """Test TcEx Inputs Config."""
 
@@ -73,7 +66,7 @@ class TestInputsFieldTypeSensitive(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Optional[Sensitive]
+                my_data: Sensitive | None
 
         self._type_validation(
             PytestModel,
@@ -86,7 +79,7 @@ class TestInputsFieldTypeSensitive(InputTest):
         )
 
     @pytest.mark.parametrize(
-        ('input_value,expected,input_type,allow_empty,' 'max_length,min_length,optional,fail_test'),
+        ('input_value,expected,input_type,allow_empty,max_length,min_length,optional,fail_test'),
         [
             #
             # Pass Testing
@@ -155,13 +148,13 @@ class TestInputsFieldTypeSensitive(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Optional[
+                my_data: None | (
                     sensitive(
                         allow_empty=allow_empty,
                         max_length=max_length,
                         min_length=min_length,
                     )
-                ]
+                )
 
         self._type_validation(
             PytestModel,
@@ -211,7 +204,7 @@ class TestInputsFieldTypeSensitive(InputTest):
         tcex.inputs.model.my_sensitive = tcex.inputs.model.my_sensitive
 
         # code coverage -> def:__repr__
-        tcex.inputs.model.my_sensitive.__repr__()
+        tcex.inputs.model.my_sensitive.__repr__()  # pylint: disable=unnecessary-dunder-call
 
         # code coverage -> Sensitive.__init__
         Sensitive(tcex.inputs.model.my_sensitive)

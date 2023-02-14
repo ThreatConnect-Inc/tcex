@@ -1,9 +1,8 @@
 """Indicator Entity Field (Model) Type"""
-# standard library
-from typing import TYPE_CHECKING, List
 
 # third-party
 from pydantic import validator
+from pydantic.fields import ModelField  # TYPE-CHECKING
 
 # first-party
 from tcex.api.tc.utils.threat_intel_utils import ThreatIntelUtils
@@ -11,24 +10,20 @@ from tcex.input.field_types.exception import InvalidEmptyValue, InvalidEntityTyp
 from tcex.input.field_types.tc_entity import TCEntity
 from tcex.pleb.registry import registry
 
-if TYPE_CHECKING:  # pragma: no cover
-    # third-party
-    from pydantic.fields import ModelField
 
-
-# pylint: disable=no-self-argument, no-self-use
+# pylint: disable=no-self-argument
 class IndicatorEntity(TCEntity):
     """Indicator Entity Field (Model) Type"""
 
     @validator('type')
-    def is_empty(cls, value: str, field: 'ModelField') -> str:
+    def is_empty(cls, value: str, field: ModelField) -> str:
         """Validate that the value is a non-empty string."""
         if isinstance(value, str) and value.replace(' ', '') == '':
             raise InvalidEmptyValue(field_name=field.name)
         return value
 
     @validator('type')
-    def is_type(cls, value: str, field: 'ModelField') -> str:
+    def is_type(cls, value: str, field: ModelField) -> str:
         """Validate that the entity is of Indicator type."""
         ti_utils = ThreatIntelUtils(session_tc=registry.session_tc)
         if value not in ti_utils.indicator_types:
@@ -36,21 +31,21 @@ class IndicatorEntity(TCEntity):
         return value
 
 
-def indicator_entity(indicator_types: List[str] = None) -> type:
+def indicator_entity(indicator_types: list[str] = None) -> type:
     """Return custom model for Indicator Entity."""
 
     class CustomIndicatorEntity(IndicatorEntity):
         """Indicator Entity Field (Model) Type"""
 
         @validator('type', allow_reuse=True)
-        def is_empty(cls, value: str, field: 'ModelField') -> str:
+        def is_empty(cls, value: str, field: ModelField) -> str:
             """Validate that the value is a non-empty string."""
             if isinstance(value, str) and value.replace(' ', '') == '':
                 raise InvalidEmptyValue(field_name=field.name)
             return value
 
         @validator('type', allow_reuse=True)
-        def is_type(cls, value: str, field: 'ModelField') -> str:
+        def is_type(cls, value: str, field: ModelField) -> str:
             """Validate that the entity is of a specific Indicator type."""
             if value.lower() not in [i.lower() for i in indicator_types]:
                 raise InvalidEntityType(

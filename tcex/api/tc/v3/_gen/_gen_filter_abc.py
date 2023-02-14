@@ -1,7 +1,8 @@
 """Generate Filters for ThreatConnect API"""
 # standard library
 from abc import ABC
-from typing import Any, Dict, Generator, List
+from collections.abc import Generator
+from typing import Any
 
 # third-party
 import typer
@@ -48,7 +49,7 @@ class GenerateFilterABC(GenerateABC, ABC):
             )
 
     @cached_property
-    def _filter_contents(self) -> List[Dict[str, Any]]:
+    def _filter_contents(self) -> list[dict[str, Any]]:
         """Return defined API properties for the current object.
 
         Response:
@@ -69,12 +70,12 @@ class GenerateFilterABC(GenerateABC, ABC):
                 _properties = r.json().get('data', [])
         except (ConnectionError, ProxyError) as ex:
             typer.secho(f'Failed getting types properties ({ex}).', fg=typer.colors.RED)
-            typer.Exit(1)
+            typer.Exit(1)  # pylint: disable=pointless-exception-statement
 
         return _properties
 
     @property
-    def _filter_contents_updated(self) -> List[Dict[str, Any]]:
+    def _filter_contents_updated(self) -> list[dict[str, Any]]:
         """Update the properties contents, fixing issues in core data."""
         filters = self._filter_contents
 
@@ -465,7 +466,6 @@ class GenerateFilterABC(GenerateABC, ABC):
         _filter_class.append(self.gen_api_endpoint_method())
 
         for f in self._filter_models:
-
             if f.keyword.snake_case() == 'has_artifact':
                 _filter_class.extend(self._gen_code_has_artifact_method())
             elif f.keyword.snake_case() == 'has_case':

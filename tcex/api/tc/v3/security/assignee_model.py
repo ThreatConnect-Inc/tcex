@@ -1,7 +1,5 @@
 """ThreatConnect Assignee Module"""
-# pylint: disable=no-member,no-self-argument,no-self-use,wrong-import-position
-# standard library
-from typing import Optional, Union
+# pylint: disable=no-member,no-self-argument,wrong-import-position
 
 # third-party
 from pydantic import Field, validator
@@ -21,7 +19,7 @@ class AssigneeModel(
 ):
     """Assignee Model"""
 
-    type: Optional[str] = Field(
+    type: str | None = Field(
         None,
         description='The **Type** for the Assignee.',
         methods=['POST', 'PUT'],
@@ -29,7 +27,7 @@ class AssigneeModel(
         title='type',
     )
 
-    data: Optional[Union[AssigneeUserModel, AssigneeUserGroupModel]] = Field(
+    data: AssigneeUserModel | AssigneeUserGroupModel | None = Field(
         None,
         description='The **Data** for the Assignee.',
         methods=['POST', 'PUT'],

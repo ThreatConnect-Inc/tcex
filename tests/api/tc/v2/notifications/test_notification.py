@@ -1,7 +1,6 @@
 """Test the TcEx Notification Module."""
 
 
-# pylint: disable=no-self-use
 class TestNotification:
     """Test the TcEx Notification Module."""
 

@@ -1,7 +1,8 @@
 """TcEx Utilities Datetime Operations Module"""
 # standard library
+from collections.abc import Generator
 from datetime import datetime
-from typing import Any, Optional, Tuple, Union
+from typing import Any
 
 # third-party
 import arrow as _arrow
@@ -13,7 +14,7 @@ class DatetimeOperations:
     """TcEx Utilities Datetime Operations Class"""
 
     @classmethod
-    def any_to_datetime(cls, datetime_expression: str, tz: Optional[str] = None) -> '_arrow.Arrow':
+    def any_to_datetime(cls, datetime_expression: str, tz: str | None = None) -> '_arrow.Arrow':
         """Return a arrow object from datetime expression.
 
         Args:
@@ -61,12 +62,12 @@ class DatetimeOperations:
 
     def chunk_date_range(
         self,
-        start_date: Union[int, str, datetime, '_arrow.Arrow'],
-        end_date: Union[int, str, datetime, '_arrow.Arrow'],
+        start_date: int | str | datetime | _arrow.Arrow,
+        end_date: int | str | datetime | _arrow.Arrow,
         chunk_size: int,
-        chunk_unit: Optional[str] = 'months',
-        date_format: Optional[str] = None,
-    ) -> Tuple[Union['_arrow.Arrow', str], Union['_arrow.Arrow', str]]:
+        chunk_unit: str | None = 'months',
+        date_format: str | None = None,
+    ) -> Generator[tuple[_arrow.Arrow | str, _arrow.Arrow | str], None, None]:
         """Chunk a date range based on unit and size
 
         Args:
@@ -79,8 +80,8 @@ class DatetimeOperations:
                 must be a valid strftime format (%s for epoch seconds).
 
         Returns:
-            Tuple[Union[arrow.Arrow, str], Union[arrow.Arrow, str]]: Either a datetime object
-                or a string representation of the date.
+            Generator[tuple[_arrow.Arrow | str, _arrow.Arrow | str], None, None: Either a
+                datetime object or a string representation of the date.
         """
         start_date = self.any_to_datetime(start_date)
         end_date = self.any_to_datetime(end_date)

@@ -1,6 +1,4 @@
 """Gen Code App Input Map"""
-# standard library
-from typing import List
 
 # first-party
 from tcex.app_config.install_json import InstallJson
@@ -94,11 +92,11 @@ class SpecToolAppInputStatic:
             '''class AppInputs:''',
             f'''{self.i1}"""App Inputs"""''',
             '',
-            f'''{self.i1}def __init__(self, inputs: 'BaseModel'):''',
+            f'''{self.i1}def __init__(self, inputs: BaseModel):''',
             f'''{self.i2}"""Initialize class properties."""''',
             f'''{self.i2}self.inputs = inputs''',
             '',
-            f'''{self.i1}def get_model(self, tc_action: Optional[str] = None) -> 'BaseModel':''',
+            f'''{self.i1}def get_model(self, tc_action: str | None = None) -> BaseModel:''',
             f'''{self.i2}"""Return the model based on the current action."""''',
             f'''{self.i2}tc_action = tc_action or self.inputs.model_unresolved.tc_action''',
             f'''{self.i2}action_model_map = {cmm}''',
@@ -117,23 +115,23 @@ class SpecToolAppInputStatic:
 
     def template_app_inputs_prefix(
         self,
-        field_type_modules: List[str],
-        pydantic_modules: List[str],
-        typing_modules: List[str],
+        field_type_modules: list[str],
+        pydantic_modules: list[str],
+        typing_modules: list[str],
     ) -> list:
         """Return app_inputs.py prefix data."""
-        field_types_modules = ', '.join(sorted(list(field_type_modules)))
-        pydantic_modules = ', '.join(sorted(list(pydantic_modules)))
-        typing_modules = ', '.join(sorted(list(typing_modules)))
+        field_types_modules_ = ', '.join(sorted(list(field_type_modules)))
+        pydantic_modules_ = ', '.join(sorted(list(pydantic_modules)))
+        typing_modules_ = ', '.join(sorted(list(typing_modules)))
         _imports = [
             '"""App Inputs"""',
-            '# pylint: disable=no-self-argument, no-self-use',
+            '# pylint: disable=no-self-argument',
             '# standard library',
-            f'from typing import {typing_modules}',
+            f'from typing import {typing_modules_}',
             '',
             '# third-party',
-            f'from pydantic import {pydantic_modules}',
-            f'from tcex.input.field_types import {field_types_modules}',
+            f'from pydantic import {pydantic_modules_}',
+            f'from tcex.input.field_types import {field_types_modules_}',
         ]
 
         # add import for service trigger Apps

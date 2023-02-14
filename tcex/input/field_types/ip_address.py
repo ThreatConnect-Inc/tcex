@@ -1,17 +1,14 @@
 """IP Address Field Type"""
 # standard library
 import ipaddress
-from typing import TYPE_CHECKING, Callable, Union
+from collections.abc import Generator
+
+# third-party
+from pydantic.fields import ModelField  # TYPE-CHECKING
 
 # first-party
 from tcex.input.field_types.exception import InvalidInput, InvalidVariableType
-
-if TYPE_CHECKING:  # pragma: no cover
-    # third-party
-    from pydantic.fields import ModelField
-
-    # first-party
-    from tcex.utils.variables import StringVariable
+from tcex.utils.variables import StringVariable  # TYPE-CHECKING
 
 
 class IpAddress(str):
@@ -20,14 +17,14 @@ class IpAddress(str):
     strip_port: bool = False
 
     @classmethod
-    def __get_validators__(cls) -> Callable:
+    def __get_validators__(cls) -> Generator:
         """Run validators / modifiers on input."""
         yield cls.validate_variable_type
         yield cls.validate_strip_port
         yield cls.validate_ipaddress
 
     @classmethod
-    def validate_strip_port(cls, value: Union[bytes, 'StringVariable'], field: 'ModelField') -> str:
+    def validate_strip_port(cls, value: bytes | StringVariable, field: ModelField) -> str:
         """Modify value when requested."""
         if cls.strip_port is True:
             if ':' in value:
@@ -44,7 +41,7 @@ class IpAddress(str):
         return value
 
     @classmethod
-    def validate_ipaddress(cls, value: Union[str, 'StringVariable'], field: 'ModelField') -> str:
+    def validate_ipaddress(cls, value: str | StringVariable, field: ModelField) -> str:
         """Raise exception if value is not a String type."""
         try:
             ipaddress.ip_address(value)
@@ -54,9 +51,7 @@ class IpAddress(str):
         return value
 
     @classmethod
-    def validate_variable_type(
-        cls, value: Union[str, 'StringVariable'], field: 'ModelField'
-    ) -> str:
+    def validate_variable_type(cls, value: str | StringVariable, field: ModelField) -> str:
         """Raise exception if value is not a String type."""
         if hasattr(value, '_variable_type') and value._variable_type != 'String':
             raise InvalidVariableType(
@@ -70,7 +65,7 @@ def ip_address(
     strip_port: bool = False,
 ) -> type:
     """Return configured instance of String."""
-    namespace = dict(
-        strip_port=strip_port,
-    )
+    namespace = {
+        'strip_port': strip_port,
+    }
     return type('ConstrainedIpAddress', (IpAddress,), namespace)

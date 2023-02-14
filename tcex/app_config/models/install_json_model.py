@@ -1,11 +1,10 @@
 """Install JSON Model"""
-# pylint: disable=no-self-argument,no-self-use; noqa: N805
+# pylint: disable=no-self-argument; noqa: N805
 # standard library
 import os
 import re
 import uuid
 from enum import Enum
-from typing import Dict, List, Optional, Union
 
 # third-party
 from pydantic import BaseModel, Field, validator
@@ -31,15 +30,15 @@ json_encoders = {Version: str}  # pylint: disable=unnecessary-lambda
 class DeprecationModel(BaseModel):
     """Model for install_json.deprecation"""
 
-    indicator_type: Optional[str] = Field(
+    indicator_type: str | None = Field(
         None,
         description='The indicator type for the deprecation rule.',
     )
-    interval_days: Optional[int] = Field(
+    interval_days: int | None = Field(
         None,
         description='The frequency the deprecation rule should run.',
     )
-    confidence_amount: Optional[int] = Field(
+    confidence_amount: int | None = Field(
         None,
         description='The amount the confidence should be reduced by.',
     )
@@ -62,11 +61,11 @@ class DeprecationModel(BaseModel):
 class FirstRunParamsModel(BaseModel):
     """Model for install_json.deprecation"""
 
-    param: Optional[str] = Field(
+    param: str | None = Field(
         None,
         description='The parameter to set to the first run value.',
     )
-    value: Optional[Union[int, str]] = Field(
+    value: int | str | None = Field(
         None,
         description='The value to set the parameter to.',
     )
@@ -81,14 +80,14 @@ class FirstRunParamsModel(BaseModel):
 class FeedsModel(BaseModel):
     """Model for install_json.feeds"""
 
-    attributes_file: Optional[str] = Field(
+    attributes_file: str | None = Field(
         None,
         description=(
             'Optional property that provides the name of the CSV file with any custom '
             'Attributes required for the feed (e.g., attribute.json).'
         ),
     )
-    deprecation: Optional[List[DeprecationModel]] = Field(
+    deprecation: list[DeprecationModel] | None = Field(
         None,
         description='The deprecation rules for the feed.',
     )
@@ -100,7 +99,7 @@ class FeedsModel(BaseModel):
         False,
         description='Optional property that enables or disables the bulk JSON capability.',
     )
-    first_run_params: Optional[List[FirstRunParamsModel]] = Field(
+    first_run_params: list[FirstRunParamsModel] | None = Field(
         None,
         description='Param overrides for the first run of the feed.',
     )
@@ -182,7 +181,7 @@ class ParamsModel(BaseModel):
         False,
         description='',
     )
-    default: Optional[Union[bool, str]] = Field(
+    default: bool | str | None = Field(
         None,
         description='Optional property that is the default value for an App input parameter.',
     )
@@ -196,7 +195,7 @@ class ParamsModel(BaseModel):
             'configuration.'
         ),
     )
-    expose_playbook_key_as: Optional[ExposePlaybookKeyAsEnum] = Field(
+    expose_playbook_key_as: ExposePlaybookKeyAsEnum | None = Field(
         None,
         description='',
     )
@@ -215,7 +214,7 @@ class ParamsModel(BaseModel):
             'of this documentation.'
         ),
     )
-    intel_type: Optional[List[str]] = Field(
+    intel_type: list[str] | None = Field(
         None,
         description='',
     )
@@ -235,7 +234,7 @@ class ParamsModel(BaseModel):
             'argument name passed to the App.'
         ),
     )
-    note: Optional[str] = Field(
+    note: str | None = Field(
         None,
         description=(
             'Optional parameter-description field available in Playbook Apps under the ? '
@@ -243,7 +242,7 @@ class ParamsModel(BaseModel):
             'describe the purpose of the parameter in two to three sentences.'
         ),
     )
-    playbook_data_type: Optional[List[str]] = Field(
+    playbook_data_type: list[str] | None = Field(
         [],
         description=(
             'Optional property restricting the data type of incoming Playbook variables. '
@@ -259,7 +258,7 @@ class ParamsModel(BaseModel):
             'be populated to save the Job or Playbook App.'
         ),
     )
-    sequence: Optional[int] = Field(
+    sequence: int | None = Field(
         None,
         description=(
             'Optional number used to control the ordering of the parameters in the Job '
@@ -284,14 +283,14 @@ class ParamsModel(BaseModel):
             'within the platform.'
         ),
     )
-    valid_values: Optional[List[str]] = Field(
+    valid_values: list[str] | None = Field(
         [],
         description=(
             'Optional property to be used with the Choice, MultiChoice, and String input '
             'types to provide pre-defined inputs for the user selection.'
         ),
     )
-    view_rows: Optional[int] = Field(
+    view_rows: int | None = Field(
         None,
         description=(
             'Optional property for Playbook Apps to control the height of the display in '
@@ -335,7 +334,7 @@ class OutputVariablesModel(BaseModel):
         False,
         description='',
     )
-    intel_type: Optional[List] = Field(
+    intel_type: list | None = Field(
         None,
         description='',
     )
@@ -343,7 +342,7 @@ class OutputVariablesModel(BaseModel):
         ...,
         description='',
     )
-    note: Optional[str] = Field(
+    note: str | None = Field(
         None,
         description='',
     )
@@ -364,7 +363,7 @@ class OutputVariablesModel(BaseModel):
 class RetryModel(BaseModel):
     """Model for install_json.playbook.retry"""
 
-    actions: Optional[List[str]] = Field(
+    actions: list[str] | None = Field(
         None,
         description='A list of tc_actions that support retry.',
     )
@@ -401,15 +400,15 @@ class RetryModel(BaseModel):
 class PlaybookModel(BaseModel):
     """Model for install_json.playbook"""
 
-    output_prefix: Optional[str] = Field(None, description='')
-    output_variables: Optional[List[OutputVariablesModel]] = Field(
+    output_prefix: str | None = Field(None, description='')
+    output_variables: list[OutputVariablesModel] | None = Field(
         [],
         description=(
             'Optional outputVariables property that specifies the variables that a '
             'Playbook App will provide for downstream Playbooks.'
         ),
     )
-    retry: Optional[RetryModel] = Field(
+    retry: RetryModel | None = Field(
         None,
         description=(
             'Optional retry property that can be used to allow a Playbook to retry its '
@@ -431,7 +430,7 @@ class PlaybookModel(BaseModel):
 class ServiceModel(BaseModel):
     """Model for install_json.service"""
 
-    discovery_types: Optional[List[str]] = Field(
+    discovery_types: list[str] | None = Field(
         None,
         description='Service App discovery types (e.g., TaxiiApi).',
     )
@@ -443,7 +442,7 @@ class ServiceModel(BaseModel):
         validate_assignment = True
 
 
-def get_commit_hash() -> Optional[str]:
+def get_commit_hash() -> str | None:
     """Return the current commit hash if available.
 
     This is not a required task so best effort is fine. In other words this is not guaranteed
@@ -495,18 +494,18 @@ class InstallJsonCommonModel(BaseModel):
             'platform. This property only applies to Python and Java Apps.'
         ),
     )
-    allow_run_as_user: Optional[bool] = Field(
+    allow_run_as_user: bool = Field(
         False,
         description='Controls whether a Playbook App supports run-as-users.',
     )
-    api_user_token_param: Optional[bool] = Field(
+    api_user_token_param: bool = Field(
         True,
         description=(
             '[Deprecated] Optional property that specifies whether or not the App should '
             'use an API user token (which allows access to the DataStore).'
         ),
     )
-    app_id: Union[UUID4, UUID5] = Field(
+    app_id: UUID4 | UUID5 = Field(
         default_factory=gen_app_id,
         description=(
             '[TcEx 1.1.4+] A unique identifier for the App. This field is not currently '
@@ -522,7 +521,7 @@ class InstallJsonCommonModel(BaseModel):
         '',
         description='The category of the App. Also playbook.type for playbook Apps.',
     )
-    deprecates_apps: Optional[List[str]] = Field(
+    deprecates_apps: list[str] | None = Field(
         None,
         description=(
             'Optional property that provides a list of Apps that should be '
@@ -536,22 +535,22 @@ class InstallJsonCommonModel(BaseModel):
             'the ThreatConnect platform.'
         ),
     )
-    display_path: Optional[constr(min_length=3, max_length=100)] = Field(
+    display_path: constr(min_length=3, max_length=100) | None = Field(
         None,
         description='The display path for API service Apps.',
     )
-    features: List[str] = Field(
+    features: list[str] = Field(
         ...,
         description=(
             'An array of supported features for the App. These feature enable '
             'additional functionality in the Core Platform and/or for the App.'
         ),
     )
-    labels: Optional[List[str]] = Field(
+    labels: list[str] | None = Field(
         None,
         description='A list of labels for the App.',
     )
-    language_version: Optional[str] = Field(
+    language_version: str | None = Field(
         ...,
         description=(
             'Optional property used solely for tracking purposes. It does not affect '
@@ -573,7 +572,7 @@ class InstallJsonCommonModel(BaseModel):
             '(e.g., 6.5.0).'
         ),
     )
-    note: Optional[str] = Field(
+    note: str | None = Field(
         None,
         description=(
             'Optional property available in Playbook Apps while configuring App inputs '
@@ -608,11 +607,11 @@ class InstallJsonCommonModel(BaseModel):
             '(e.g., 1.0.1).'
         ),
     )
-    runtime_level: Union[List, str] = Field(
+    runtime_level: list | str = Field(
         ...,
         description='The type for the App (e.g., Playbook, Organization, etc).',
     )
-    service: Optional[ServiceModel] = Field(
+    service: ServiceModel | None = Field(
         None,
         description='',
     )
@@ -691,11 +690,11 @@ class InstallJsonOrganizationModel(BaseModel):
     the app_spec.yaml file.
     """
 
-    feeds: Optional[List[FeedsModel]] = Field(
+    feeds: list[FeedsModel] | None = Field(
         None,
         description='A list of features enabled for the App.',
     )
-    publish_out_files: Optional[List[str]] = Field(
+    publish_out_files: list[str] | None = Field(
         None,
         description=(
             'Optional field available for job-style Apps that can be scheduled to serve '
@@ -706,7 +705,7 @@ class InstallJsonOrganizationModel(BaseModel):
             'can include file globs.'
         ),
     )
-    repeating_minutes: Optional[List[int]] = Field(
+    repeating_minutes: list[int] | None = Field(
         None,
         description=(
             'Optional property that provides a list of minute increments to display in '
@@ -727,34 +726,34 @@ class InstallJsonOrganizationModel(BaseModel):
 class InstallJsonModel(InstallJsonCommonModel, InstallJsonOrganizationModel):
     """Install JSON Model"""
 
-    commit_hash: Optional[str] = Field(
+    commit_hash: str | None = Field(
         default_factory=get_commit_hash,
         description='The git commit hash from when the App was built.',
     )
-    docker_image: Optional[str] = Field(
+    docker_image: str | None = Field(
         None,
         description='[unsupported] The docker image to run the App.',
     )
-    params: Optional[List[ParamsModel]] = Field(
+    params: list[ParamsModel] | None = Field(
         None,
         description='',
     )
-    playbook: Optional[PlaybookModel] = Field(
+    playbook: PlaybookModel | None = Field(
         None,
         description='',
     )
-    program_icon: Optional[str] = Field(
+    program_icon: str | None = Field(
         None,
         description=(
             'Optional property providing the icon that will be used to represent Central '
             'Spaces Apps.'
         ),
     )
-    program_name: Optional[str] = Field(
+    program_name: str | None = Field(
         None,
         description='',
     )
-    runtime_context: Optional[List] = Field(
+    runtime_context: list | None = Field(
         None,
         description=(
             'Optional property enabling Spaces Apps to be context aware (i.e., Spaces '
@@ -783,13 +782,13 @@ class InstallJsonModel(InstallJsonCommonModel, InstallJsonOrganizationModel):
 
     def filter_params(
         self,
-        name: Optional[str] = None,
-        hidden: Optional[bool] = None,
-        required: Optional[bool] = None,
-        service_config: Optional[bool] = None,
-        _type: Optional[str] = None,
-        input_permutations: Optional[List] = None,
-    ) -> Dict[str, 'ParamsModel']:
+        name: str | None = None,
+        hidden: bool | None = None,
+        required: bool | None = None,
+        service_config: bool | None = None,
+        _type: str | None = None,
+        input_permutations: list | None = None,
+    ) -> dict[str, 'ParamsModel']:
         """Return params as name/data dict.
 
         Args:
@@ -805,7 +804,6 @@ class InstallJsonModel(InstallJsonCommonModel, InstallJsonOrganizationModel):
         """
         params = {}
         for p in self.params:
-
             if name is not None:
                 if p.name != name:
                     continue
@@ -833,16 +831,16 @@ class InstallJsonModel(InstallJsonCommonModel, InstallJsonOrganizationModel):
             params.setdefault(p.name, p)
         return params
 
-    def get_output(self, name: str) -> Union['NoneModel', 'OutputVariablesModel']:
+    def get_output(self, name: str) -> NoneModel | OutputVariablesModel:
         """Return output for the matching name."""
         return self.playbook_outputs.get(name) or NoneModel()
 
-    def get_param(self, name: str) -> Union['NoneModel', 'ParamsModel']:
+    def get_param(self, name: str) -> NoneModel | ParamsModel:
         """Return param for the matching name."""
         return self.params_dict.get(name) or NoneModel()
 
     @property
-    def optional_params(self) -> Dict[str, 'ParamsModel']:
+    def optional_params(self) -> dict[str, 'ParamsModel']:
         """Return params as name/data model."""
         return {p.name: p for p in self.params if p.required is False}
 
@@ -852,31 +850,31 @@ class InstallJsonModel(InstallJsonCommonModel, InstallJsonOrganizationModel):
         return f'v{self.program_version.major}'
 
     @property
-    def param_names(self) -> List[str]:
+    def param_names(self) -> list[str]:
         """Return the "name" field from all params."""
         return [p.name for p in self.params]
 
     @property
-    def params_dict(self) -> Dict[str, 'ParamsModel']:
+    def params_dict(self) -> dict[str, 'ParamsModel']:
         """Return params as name/data dict."""
         return {p.name: p for p in self.params}
 
     @property
-    def playbook_outputs(self) -> Dict[str, 'OutputVariablesModel']:
+    def playbook_outputs(self) -> dict[str, 'OutputVariablesModel']:
         """Return outputs as name/data model."""
         return {o.name: o for o in self.playbook.output_variables}
 
     @property
-    def required_params(self) -> Dict[str, 'ParamsModel']:
+    def required_params(self) -> dict[str, 'ParamsModel']:
         """Return params as name/data dict."""
         return {p.name: p for p in self.params if p.required is True}
 
     @property
-    def service_config_params(self) -> Dict[str, 'ParamsModel']:
+    def service_config_params(self) -> dict[str, 'ParamsModel']:
         """Return params as name/data dict."""
         return {p.name: p for p in self.params if p.service_config is True}
 
     @property
-    def service_playbook_params(self) -> Dict[str, 'ParamsModel']:
+    def service_playbook_params(self) -> dict[str, 'ParamsModel']:
         """Return params as name/data dict."""
         return {p.name: p for p in self.params if p.service_config is False}

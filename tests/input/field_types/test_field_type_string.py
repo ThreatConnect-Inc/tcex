@@ -1,7 +1,4 @@
 """Testing TcEx Input module field types."""
-# standard library
-from typing import TYPE_CHECKING, Dict, List, Optional, Union
-
 # third-party
 import pytest
 from pydantic import BaseModel, validator
@@ -10,13 +7,10 @@ from pydantic import BaseModel, validator
 from tcex.input.field_types import String, always_array, conditional_required, string
 from tcex.pleb.scoped_property import scoped_property
 from tests.input.field_types.utils import InputTest
-
-if TYPE_CHECKING:
-    # first-party
-    from tests.mock_app import MockApp
+from tests.mock_app import MockApp  # TYPE-CHECKING
 
 
-# pylint: disable=no-self-argument, no-self-use
+# pylint: disable=no-self-argument
 class TestInputsFieldTypes(InputTest):
     """Test TcEx String Field Model Tests."""
 
@@ -71,7 +65,7 @@ class TestInputsFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Optional[String]
+                my_data: String | None
 
         self._type_validation(
             PytestModel,
@@ -170,10 +164,10 @@ class TestInputsFieldTypes(InputTest):
         input_value: str,
         expected: str,
         allow_empty: bool,
-        conditional_required_rules: Optional[List[Dict[str, str]]],
+        conditional_required_rules: list[dict[str, str]] | None,
         max_length: int,
         min_length: int,
-        regex: Optional[str],
+        regex: str | None,
         optional: bool,
         fail_test: bool,
         playbook_app: 'MockApp',
@@ -207,14 +201,14 @@ class TestInputsFieldTypes(InputTest):
                 """Test Model for Inputs"""
 
                 conditional: str = 'required'
-                my_data: Optional[
+                my_data: None | (
                     string(
                         allow_empty=allow_empty,
                         max_length=max_length,
                         min_length=min_length,
                         regex=regex,
                     )
-                ]
+                )
 
                 _conditional_required = validator(
                     'my_data', allow_reuse=True, always=True, pre=True
@@ -270,14 +264,14 @@ class TestInputsFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: List[String]
+                my_data: list[String]
 
         else:
 
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Optional[List[String]]
+                my_data: list[String] | None
 
         self._type_validation(
             PytestModel,
@@ -336,7 +330,7 @@ class TestInputsFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Union[String, List[String]]
+                my_data: String | list[String]
 
                 _always_array = validator('my_data', allow_reuse=True)(always_array())
 
@@ -345,7 +339,7 @@ class TestInputsFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Optional[Union[String, List[String]]]
+                my_data: String | list[String] | None
 
                 _always_array = validator('my_data', allow_reuse=True)(always_array())
 

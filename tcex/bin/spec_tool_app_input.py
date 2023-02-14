@@ -2,19 +2,15 @@
 # standard library
 import os
 import re
-from typing import TYPE_CHECKING, List, Optional, Tuple
 
 # first-party
 import tcex.input.field_types as FieldTypes  # noqa: N812
+from tcex.app_config.models.install_json_model import ParamsModel  # TYPE-CHECKING
 from tcex.app_config.permutation import Permutation
 from tcex.backports import cached_property
 from tcex.bin.bin_abc import BinABC
 from tcex.bin.spec_tool_app_input_static import SpecToolAppInputStatic
 from tcex.pleb.none_model import NoneModel
-
-if TYPE_CHECKING:
-    # first-party
-    from tcex.app_config.models.install_json_model import ParamsModel
 
 
 class SpecToolAppInput(BinABC):
@@ -43,24 +39,13 @@ class SpecToolAppInput(BinABC):
             self._app_inputs_data[class_name] = {}
 
     def _add_input_to_action_class(
-        self, applies_to_all: bool, param_data: 'ParamsModel', tc_action: Optional[str] = None
+        self, applies_to_all: bool, param_data: 'ParamsModel', tc_action: str | None = None
     ):
         """Add input data to Action class."""
         tc_action_class = 'AppBaseModel'
         if applies_to_all is False:
             tc_action_class = self._gen_tc_action_class_name(tc_action)
         self.app_inputs_data[tc_action_class][param_data.name] = param_data
-
-    def _add_typing_import_module(self, type_: str):
-        """Add the appropriate import module for typing."""
-        if 'List[' in type_:
-            self.typing_modules.add('List')
-
-        if 'Optional[' in type_:
-            self.typing_modules.add('Optional')
-
-        if 'Union[' in type_:
-            self.typing_modules.add('Union')
 
     def class_comment(self, model_class: str) -> str:
         """Return the appropriate comment for the provided class."""
@@ -154,8 +139,8 @@ class SpecToolAppInput(BinABC):
     def _extract_type_from_definition(self, input_name: str, type_definition: str) -> str:
         """Extract the type from the type definition.
 
-        string_allow_multiple: Union[String, List[String]] -> Union[String, List[String]]
-        string_intel_type: Optional[String] -> Optional[str]
+        string_allow_multiple: String | list[String] -> String | list[String]
+        string_intel_type: String | None -> str | None
         """
         input_extract_pattern = (
             # match beginning white space on line
@@ -174,9 +159,9 @@ class SpecToolAppInput(BinABC):
         return None
 
     def _extract_type_from_list(self, type_data: str) -> str:
-        """Extract type data from Union[]."""
+        """Extract type data from list[]."""
         # extract the type from List
-        list_extract_pattern = r'^List\[(.*)\]'
+        list_extract_pattern = r'^list\[(.*)\]'
         extract_from_list = re.search(list_extract_pattern, type_data)
         if extract_from_list is not None:
             self.log.debug(f'action=extract-type-from-list, type-data={type_data}')
@@ -191,7 +176,7 @@ class SpecToolAppInput(BinABC):
         return type_data
 
     def _extract_type_from_optional(self, type_data: str) -> str:
-        """Extract type data from Union[]."""
+        """Extract type data from Optional[]."""
         optional_extract_pattern = r'Optional\[?(.*)\]'
         extracted_data = re.search(optional_extract_pattern, type_data)
         if extracted_data is not None:
@@ -325,13 +310,13 @@ class SpecToolAppInput(BinABC):
                     self.field_type_modules.add(field_type)
 
         # add import data
-        self._add_typing_import_module(type_)
+        # self._add_typing_import_module(type_)
 
         return type_
 
     def _gen_type_from_playbook_data_type(
-        self, required_key: str, playbook_data_types: List[str]
-    ) -> Tuple[str, List[str]]:
+        self, required_key: str, playbook_data_types: list[str]
+    ) -> tuple[str, list[str]]:
         """Return type based on playbook data type."""
         # TODO: what to do with Any Playbook Data Type?
         if 'Any' in playbook_data_types:
@@ -455,7 +440,7 @@ class SpecToolAppInput(BinABC):
             return _tc_action.valid_values
         return []
 
-    def _validator_always_array(self, always_array: List[str]) -> str:
+    def _validator_always_array(self, always_array: list[str]) -> str:
         """Return code for always_array_validator."""
         _always_array = ', '.join(always_array)
         return [
@@ -479,7 +464,7 @@ class SpecToolAppInput(BinABC):
 
         return all([array_type, single_type])
 
-    def _validator_entity_input(self, entity_input: List[str]) -> str:
+    def _validator_entity_input(self, entity_input: list[str]) -> str:
         """Return code for always_array_validator."""
         _entity_input = ', '.join(entity_input)
         return [
@@ -500,7 +485,7 @@ class SpecToolAppInput(BinABC):
         return False
 
     @cached_property
-    def app_inputs_contents(self):  # pylint: disable=no-self-use
+    def app_inputs_contents(self):
         """Return app_inputs.py contents."""
         if os.path.isfile('app_inputs.py'):
             with open('app_inputs.py') as f:

@@ -5,9 +5,10 @@ import json
 import sys
 import threading
 import traceback
+from collections.abc import Callable
 from functools import reduce
 from io import BytesIO
-from typing import Any, Callable, Optional
+from typing import Any
 
 # first-party
 from tcex.input.field_types.sensitive import Sensitive
@@ -282,10 +283,10 @@ class ApiService(CommonService):
         self,
         name: str,
         target: Callable[[], bool],
-        args: Optional[tuple] = None,
-        kwargs: Optional[dict] = None,
-        session_id: Optional[str] = None,
-        trigger_id: Optional[int] = None,
+        args: tuple | None = None,
+        kwargs: dict | None = None,
+        session_id: str | None = None,
+        trigger_id: int | None = None,
     ):
         """If this is a run-service command, run it with the thread pool.
 
@@ -304,7 +305,7 @@ class ApiService(CommonService):
 
         def _thread_wrapper():
             t = threading.current_thread()
-            t.setName(name)
+            t.name = name
             t.session_id = session_id
             t.trigger_id = trigger_id
             target(*args, **kwargs)

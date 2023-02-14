@@ -6,7 +6,6 @@ import pytest
 from tcex.decorators.output import Output
 
 
-# pylint: disable=no-self-use
 class TestOutputDecorators:
     """Test the TcEx ReadArg Decorators."""
 

@@ -13,7 +13,6 @@ if TYPE_CHECKING:
     from tests.mock_app import MockApp
 
 
-# pylint: disable=no-self-use
 class TestAdvancedRequest:
     """Test the TcEx App Feature Advance Request Module."""
 

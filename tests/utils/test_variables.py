@@ -11,7 +11,6 @@ from tcex.utils.variables import Variables
 variables = Variables()
 
 
-# pylint: disable=no-self-use
 class TestVariables:
     """Test the TcEx Utils Module."""
 

@@ -6,7 +6,6 @@ import pytest
 from tcex.decorators.debug import Debug
 
 
-# pylint: disable=no-self-use
 class TestIterateOnArgDecorators:
     """Test the TcEx Decorators."""
 

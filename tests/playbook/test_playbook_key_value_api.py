@@ -55,7 +55,6 @@ class MockApi:
         return self.content
 
 
-# pylint: disable=no-self-use
 class TestPlaybookKeyValueApi:
     """Test the TcEx Batch Module."""
 

@@ -1,7 +1,6 @@
 """Playbook delete."""
 # standard library
 import logging
-from typing import Union
 
 # first-party
 from tcex.key_value_store import KeyValueApi, KeyValueRedis
@@ -17,7 +16,7 @@ class PlaybookDelete:
     def __init__(
         self,
         context: str,
-        key_value_store: Union[KeyValueApi, KeyValueRedis],
+        key_value_store: KeyValueApi | KeyValueRedis,
     ):
         """Initialize the class properties."""
         self.context = context

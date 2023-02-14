@@ -42,7 +42,7 @@ class InputTest:
 
     def _type_validation(
         self,
-        model: 'BaseModel',
+        model: BaseModel,
         input_name: str,
         input_value: str,
         input_type: str,

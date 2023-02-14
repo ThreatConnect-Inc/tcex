@@ -1,7 +1,4 @@
 """Testing TcEx Input module field types."""
-# standard library
-from typing import TYPE_CHECKING, List, Optional, Union
-
 # third-party
 import pytest
 from pydantic import BaseModel, validator
@@ -10,13 +7,10 @@ from pydantic import BaseModel, validator
 from tcex.input.field_types import AddressEntity, IpAddress, always_array, entity_input, ip_address
 from tcex.pleb.scoped_property import scoped_property
 from tests.input.field_types.utils import InputTest
-
-if TYPE_CHECKING:
-    # first-party
-    from tests.mock_app import MockApp
+from tests.mock_app import MockApp  # TYPE-CHECKING
 
 
-# pylint: disable=no-self-argument, no-self-use
+# pylint: disable=no-self-argument
 class TestInputsIpAddressFieldTypes(InputTest):
     """Test TcEx String Field Model Tests."""
 
@@ -69,7 +63,7 @@ class TestInputsIpAddressFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Optional[IpAddress]
+                my_data: IpAddress | None
 
         self._type_validation(
             PytestModel,
@@ -123,7 +117,7 @@ class TestInputsIpAddressFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Optional[ip_address(strip_port=strip_port)]
+                my_data: ip_address(strip_port=strip_port) | None
 
         self._type_validation(
             PytestModel,
@@ -175,14 +169,14 @@ class TestInputsIpAddressFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: List[IpAddress]
+                my_data: list[IpAddress]
 
         else:
 
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Optional[List[IpAddress]]
+                my_data: list[IpAddress] | None
 
         self._type_validation(
             PytestModel,
@@ -271,12 +265,7 @@ class TestInputsIpAddressFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Union[
-                    List[IpAddress],
-                    IpAddress,
-                    List[AddressEntity],
-                    AddressEntity,
-                ]
+                my_data: (list[IpAddress] | IpAddress | list[AddressEntity] | AddressEntity)
 
                 _entity_input = validator('my_data', allow_reuse=True)(
                     entity_input(only_field='value')
@@ -290,14 +279,7 @@ class TestInputsIpAddressFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Optional[
-                    Union[
-                        List[IpAddress],
-                        IpAddress,
-                        List[AddressEntity],
-                        AddressEntity,
-                    ]
-                ]
+                my_data: None | (list[IpAddress] | IpAddress | list[AddressEntity] | AddressEntity)
 
                 _entity_input = validator('my_data', allow_reuse=True)(
                     entity_input(only_field='value')

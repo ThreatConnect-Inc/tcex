@@ -1,8 +1,4 @@
 """Model Definition"""
-
-# standard library
-# from typing import Optional
-
 # third-party
 from pydantic import BaseModel, Extra, Field, validator
 
@@ -12,7 +8,7 @@ from tcex.utils import Utils
 from tcex.utils.string_operations import CamelString
 
 
-# pylint: disable=no-self-argument,no-self-use
+# pylint: disable=no-self-argument
 class ExtraModel(
     BaseModel,
     extra=Extra.forbid,
@@ -26,7 +22,7 @@ class ExtraModel(
     typing_type: str = Field(..., description='The Python typing hint type.')
 
 
-# pylint: disable=no-self-argument,no-self-use
+# pylint: disable=no-self-argument
 class FilterModel(
     BaseModel,
     alias_generator=Utils().snake_to_camel,

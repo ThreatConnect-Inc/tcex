@@ -9,7 +9,6 @@ from typing import TYPE_CHECKING
 from tests.mock_app import MockApp
 
 if TYPE_CHECKING:
-    # first party
     # first-party
     from tcex import TcEx
     from tcex.api.tc.v2.threat_intelligence import ThreatIntelligence

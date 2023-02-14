@@ -4,7 +4,6 @@ import random
 import re
 import string
 from functools import reduce
-from typing import List, Optional, Union
 
 # first-party
 from tcex.backports import cached_property
@@ -35,7 +34,7 @@ class StringOperations:
         return self._camel_pattern.sub(' ', camel_string).lower()
 
     @cached_property
-    def inflect(self) -> 'inflect.engine':  # pylint: disable=no-self-use
+    def inflect(self) -> 'inflect.engine':
         """Return instance of inflect."""
         # third-party
         import inflect
@@ -76,7 +75,7 @@ class StringOperations:
         return components[0] + ''.join(x.title() for x in components[1:])
 
     @staticmethod
-    def to_bool(value: Union[bool, int, str]) -> bool:
+    def to_bool(value: bool | int | str) -> bool:
         """Convert value to bool.
 
         Args:
@@ -88,8 +87,8 @@ class StringOperations:
     def truncate_string(
         t_string: str,
         length: int,
-        append_chars: Optional[str] = '',
-        spaces: Optional[bool] = False,
+        append_chars: str | None = '',
+        spaces: bool = False,
     ) -> str:
         """Truncate a string to a given length.
 
@@ -133,7 +132,7 @@ class StringOperations:
     @staticmethod
     def wrap_string(
         line: str,
-        wrap_chars: Optional[List[str]] = None,
+        wrap_chars: list[str] | None = None,
         length: int = 100,
         force_wrap=True,
     ) -> str:

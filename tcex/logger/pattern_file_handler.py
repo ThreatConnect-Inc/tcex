@@ -4,7 +4,6 @@ import logging
 import os
 import re
 import threading
-from typing import Optional
 
 
 class PatternFileHandler(logging.FileHandler):
@@ -19,10 +18,10 @@ class PatternFileHandler(logging.FileHandler):
         self,
         filename: str,
         pattern: str,
-        mode: Optional[str] = 'a',
-        encoding: Optional[str] = None,
-        delay: Optional[bool] = False,
-        max_log_count: Optional[int] = 100,
+        mode: str | None = 'a',
+        encoding: str | None = None,
+        delay: bool = False,
+        max_log_count: int | None = 100,
     ):
         """Add logic to create log directory if it does not exists.
 

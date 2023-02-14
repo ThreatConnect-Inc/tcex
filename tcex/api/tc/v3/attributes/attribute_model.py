@@ -1,45 +1,12 @@
 """Attribute Model"""
 # standard library
 from datetime import datetime
-from typing import List, Optional
 
 # third-party
 from pydantic import BaseModel, Extra, Field
 
 # first-party
 from tcex.utils import Utils
-
-
-class AttributesModel(
-    BaseModel,
-    title='Attributes Model',
-    alias_generator=Utils().snake_to_camel,
-    validate_assignment=True,
-):
-    """Attributes Model"""
-
-    data: Optional[List['AttributeModel']] = Field(
-        [],
-        description='The data for the Attribute.',
-        methods=['POST', 'PUT'],
-        title='data',
-    )
-
-
-class AttributeData(
-    BaseModel,
-    title='Attribute Data',
-    alias_generator=Utils().snake_to_camel,
-    validate_assignment=True,
-):
-    """Attribute Data"""
-
-    data: Optional['AttributeModel'] = Field(
-        None,
-        description='The data for the Attribute.',
-        methods=['POST', 'PUT'],
-        title='data',
-    )
 
 
 class AttributeModel(
@@ -51,7 +18,7 @@ class AttributeModel(
 ):
     """Attribute Model"""
 
-    date_added: Optional[datetime] = Field(
+    date_added: datetime | None = Field(
         None,
         allow_mutation=False,
         description='The date and time that the Attribute was added.',
@@ -65,7 +32,7 @@ class AttributeModel(
         read_only=True,
         title='id',
     )
-    last_modified: Optional[datetime] = Field(
+    last_modified: datetime | None = Field(
         None,
         allow_mutation=False,
         description='The date and time that the Attribute was last modified.',
@@ -81,12 +48,44 @@ class AttributeModel(
         read_only=False,
         title='type',
     )
-    value: Optional[str] = Field(
+    value: str | None = Field(
         None,
         description='The attribute value.',
         methods=['POST', 'PUT'],
         read_only=True,
         title='value',
+    )
+
+
+class AttributeData(
+    BaseModel,
+    title='Attribute Data',
+    alias_generator=Utils().snake_to_camel,
+    validate_assignment=True,
+):
+    """Attribute Data"""
+
+    data: AttributeModel | None = Field(
+        None,
+        description='The data for the Attribute.',
+        methods=['POST', 'PUT'],
+        title='data',
+    )
+
+
+class AttributesModel(
+    BaseModel,
+    title='Attributes Model',
+    alias_generator=Utils().snake_to_camel,
+    validate_assignment=True,
+):
+    """Attributes Model"""
+
+    data: list[AttributeModel] | None = Field(
+        [],
+        description='The data for the Attribute.',
+        methods=['POST', 'PUT'],
+        title='data',
     )
 
 

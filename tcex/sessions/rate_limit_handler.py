@@ -4,7 +4,6 @@ See https://tools.ietf.org/id/draft-polli-ratelimit-headers-00.html for implemen
 """
 # standard library
 import time
-from typing import Optional
 
 # third-party
 from requests import PreparedRequest, Response
@@ -18,9 +17,9 @@ class RateLimitHandler:
 
     def __init__(
         self,
-        limit_remaining_header: Optional[str] = 'X-RateLimit-Remaining',
-        limit_reset_header: Optional[str] = 'X-RateLimit-Reset',
-        remaining_threshold: Optional[int] = 0,
+        limit_remaining_header: str | None = 'X-RateLimit-Remaining',
+        limit_reset_header: str | None = 'X-RateLimit-Reset',
+        remaining_threshold: int | None = 0,
     ):
         """Rate-limiting implementation using X-RateLimit-<X> headers.
 
@@ -42,12 +41,12 @@ class RateLimitHandler:
         self._last_limit_reset_value = None
 
     @property
-    def last_limit_remaining_value(self) -> Optional[int]:
+    def last_limit_remaining_value(self) -> int | None:
         """Get the last value received in the limit_remaining_header."""
         return self._last_limit_remaining_value
 
     @property
-    def last_limit_reset_value(self) -> Optional[int]:
+    def last_limit_reset_value(self) -> int | None:
         """Get the last value received in the limit_reset_header."""
         return self._last_limit_reset_value
 

@@ -1,8 +1,4 @@
 """Model Definition"""
-
-# standard library
-from typing import Dict, List, Optional
-
 # third-party
 from pydantic import BaseModel, Extra, Field, validator
 
@@ -12,7 +8,7 @@ from tcex.utils import Utils
 from tcex.utils.string_operations import CamelString
 
 
-# pylint: disable=no-self-argument,no-self-use
+# pylint: disable=no-self-argument
 class ExtraModel(
     BaseModel,
     extra=Extra.forbid,
@@ -22,12 +18,12 @@ class ExtraModel(
     """Model Definition"""
 
     alias: CamelString = Field(..., description='Field alias.')
-    import_data: Optional[str] = Field(None, description='The import data.')
-    import_source: Optional[str] = Field(
+    import_data: str | None = Field(None, description='The import data.')
+    import_source: str | None = Field(
         None, description='The source of the import: standard library, first-party, etc.'
     )
-    methods: List[str] = Field([], description='Field methods.')
-    model: Optional[str] = Field(None, description='The type model.')
+    methods: list[str] = Field([], description='Field methods.')
+    model: str | None = Field(None, description='The type model.')
     type: CamelString = Field(..., description='The type of the property.')
     typing_type: str = Field(..., description='The Python typing hint type.')
 
@@ -37,7 +33,7 @@ class ExtraModel(
         return CamelString(v)
 
 
-# pylint: disable=no-self-argument,no-self-use
+# pylint: disable=no-self-argument
 class PropertyModel(
     BaseModel,
     alias_generator=Utils().snake_to_camel,
@@ -49,37 +45,31 @@ class PropertyModel(
 ):
     """Model Definition"""
 
-    applies_to: Optional[List[str]] = Field(None, description='Applies to property.')
-    allowable_values: Optional[List[str]] = Field(
+    applies_to: list[str] | None = Field(None, description='Applies to property.')
+    allowable_values: list[str] | None = Field(
         None, description='Allowable values for the property.'
     )
-    conditional_read_only: Optional[List[str]] = Field(
+    conditional_read_only: list[str] | None = Field(
         None, description='Conditionally read-only property.'
     )
-    conditional_required: Optional[List[str]] = Field(
+    conditional_required: list[str] | None = Field(
         None, description='Conditionally required property.'
     )
-    default: Optional[str] = Field(default=None, description='Default value of the property value.')
-    description: Optional[str] = Field(default=None, description='Description of the property.')
-    max_size: Optional[int] = Field(default=None, description='Maximum size of the property value.')
-    max_length: Optional[int] = Field(
+    default: str | None = Field(default=None, description='Default value of the property value.')
+    description: str | None = Field(default=None, description='Description of the property.')
+    max_size: int | None = Field(default=None, description='Maximum size of the property value.')
+    max_length: int | None = Field(
         default=None, description='Maximum length of the property value.'
     )
-    max_value: Optional[int] = Field(
-        default=None, description='Maximum value of the property value.'
-    )
-    min_length: Optional[int] = Field(
+    max_value: int | None = Field(default=None, description='Maximum value of the property value.')
+    min_length: int | None = Field(
         default=None, description='Minimum length of the property value.'
     )
-    min_value: Optional[int] = Field(
-        default=None, description='Minimum value of the property value.'
-    )
+    min_value: int | None = Field(default=None, description='Minimum value of the property value.')
     name: CamelString = Field(default=None, description='Name of the property.')
     read_only: bool = Field(default=False, description='Read only property.')
     required: bool = Field(default=False, description='Required property.')
-    required_alt_field: Optional[str] = Field(
-        None, description='Required alternative field property.'
-    )
+    required_alt_field: str | None = Field(None, description='Required alternative field property.')
     type: CamelString = Field(..., description='The defined property type.')
     updatable: bool = Field(default=True, description='Updatable property.')
 
@@ -105,7 +95,7 @@ class PropertyModel(
         # print(self.name, self.type, extra_data)
         return ExtraModel(**extra_data)  # type: ignore
 
-    def __extra_data(self) -> Dict[str, str]:
+    def __extra_data(self) -> dict[str, str]:
         """Enrich the extra model."""
         # set default value for type
         extra = {
@@ -158,14 +148,14 @@ class PropertyModel(
         return methods
 
     @classmethod
-    def __process_bool_types(cls, pm: 'PropertyModel', extra: Dict[str, str]):
+    def __process_bool_types(cls, pm: 'PropertyModel', extra: dict[str, str]):
         """Process standard type."""
         types = ['boolean']
         if pm.type.lower() in types:
             extra.update({'typing_type': 'bool'})
 
     @classmethod
-    def __process_dict_types(cls, pm: 'PropertyModel', extra: Dict[str, str]):
+    def __process_dict_types(cls, pm: 'PropertyModel', extra: dict[str, str]):
         """Process standard type."""
         types = [
             'AttributeSource',
@@ -182,14 +172,14 @@ class PropertyModel(
             extra.update({'typing_type': cls.__extra_format_type('dict')})
 
     @classmethod
-    def __process_float_types(cls, pm: 'PropertyModel', extra: Dict[str, str]):
+    def __process_float_types(cls, pm: 'PropertyModel', extra: dict[str, str]):
         """Process standard type."""
         types = ['Double']
         if pm.type in types:
             extra.update({'typing_type': cls.__extra_format_type('float')})
 
     @classmethod
-    def __process_int_types(cls, pm: 'PropertyModel', extra: Dict[str, str]):
+    def __process_int_types(cls, pm: 'PropertyModel', extra: dict[str, str]):
         """Process standard type."""
         types = [
             'bigdecimal',  # BigDecimal
@@ -201,7 +191,7 @@ class PropertyModel(
             extra.update({'typing_type': cls.__extra_format_type('int')})
 
     @classmethod
-    def __process_special_types(cls, pm: 'PropertyModel', extra: Dict[str, str]):
+    def __process_special_types(cls, pm: 'PropertyModel', extra: dict[str, str]):
         """Process standard type."""
         bi = 'from tcex.api.tc.v3.'
 
@@ -265,9 +255,8 @@ class PropertyModel(
         elif pm.type == 'JsonNode':
             extra.update(
                 {
-                    'import_data': 'from typing import Union',
                     'import_source': 'standard library',
-                    'typing_type': '''Union[Optional[dict], Optional[List[dict]]]''',
+                    'typing_type': '''dict | list[dict] | None''',
                 }
             )
         elif pm.type == 'TaskAssignees':
@@ -291,7 +280,7 @@ class PropertyModel(
             )
 
     @classmethod
-    def __process_str_types(cls, pm: 'PropertyModel', extra: Dict[str, str]):
+    def __process_str_types(cls, pm: 'PropertyModel', extra: dict[str, str]):
         """Process standard type."""
         types = [
             'From',
@@ -302,7 +291,7 @@ class PropertyModel(
             extra.update({'typing_type': cls.__extra_format_type('str')})
 
     @classmethod
-    def __process_tc_types(cls, pm: 'PropertyModel', extra: Dict[str, str]):
+    def __process_tc_types(cls, pm: 'PropertyModel', extra: dict[str, str]):
         """Process standard type."""
         types = [
             'AdversaryAssets',
@@ -337,7 +326,7 @@ class PropertyModel(
             extra['typing_type'] = cls.__extra_format_type_model(pm.type)
 
     @classmethod
-    def __extra_gen_req_code(cls, type_: CamelString) -> Dict[str, str]:
+    def __extra_gen_req_code(cls, type_: CamelString) -> dict[str, str]:
         """Return the requirements code"""
         type_ = Utils().camel_string(type_)
         return {
@@ -352,18 +341,20 @@ class PropertyModel(
     def __extra_format_type(cls, type_: str, optional: bool = True) -> str:
         """Format type for use in code."""
         if optional:
-            return f'Optional[{type_}]'
+            return f'{type_} | None'
         return type_
 
-    # @classmethod
-    # def __extra_format_type_non_native(cls, type_: str, optional: bool = True) -> str:
-    #     """Format type for use in code."""
-    #     return cls.__extra_format_type(f'\'{type_}\'', optional)
+    @classmethod
+    def __extra_format_type_non_native(cls, type_: str, optional: bool = False) -> str:
+        """Format type for use in code."""
+        if optional:
+            return f'\'{type_} | None\''
+        return f'\'{type_}\''
 
     @classmethod
-    def __extra_format_type_model(cls, type_: str, optional: bool = True) -> str:
+    def __extra_format_type_model(cls, type_: str, optional: bool = False) -> str:
         """Format type for use in code."""
-        return cls.__extra_format_type(f'\'{type_}Model\'', optional)
+        return cls.__extra_format_type_non_native(f'{type_}Model', optional)
 
     @classmethod
     def __extra_tap(cls, type_: CamelString) -> str:

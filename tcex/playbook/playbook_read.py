@@ -5,7 +5,7 @@ import json
 import logging
 import re
 from collections import OrderedDict
-from typing import Any, List, Optional, Union
+from typing import Any
 
 # first-party
 from tcex.key_value_store import KeyValueApi, KeyValueRedis
@@ -31,7 +31,7 @@ class PlaybookRead:
     def __init__(
         self,
         context: str,
-        key_value_store: Union[KeyValueApi, KeyValueRedis],
+        key_value_store: KeyValueApi | KeyValueRedis,
     ):
         """Initialize the class properties."""
         self.context = context
@@ -41,7 +41,7 @@ class PlaybookRead:
         self.log = logger
         self.utils = Utils()
 
-    def _check_variable_type(self, variable: str, type_: str) -> bool:
+    def _check_variable_type(self, variable: str, type_: str):
         """Validate the correct type was passed to the method."""
         if self.utils.get_playbook_variable_type(variable).lower() != type_.lower():
             raise RuntimeError(
@@ -49,7 +49,7 @@ class PlaybookRead:
             )
 
     @staticmethod
-    def _coerce_string_value(value: Union[bool, float, int, str]) -> str:
+    def _coerce_string_value(value: bool | float | int | str) -> str:
         """Return a string value from an bool or int."""
         # coerce bool before int as python says a bool is an int
         if isinstance(value, bool):
@@ -99,7 +99,7 @@ class PlaybookRead:
 
     def _process_binary(
         self, data: str, b64decode: bool, decode: bool, serialized: bool
-    ) -> Optional[Union[str, bytes]]:
+    ) -> str | bytes | None:
         """Process the provided."""
         if data is not None:
             # Single type are serialized, array types are not
@@ -120,7 +120,7 @@ class PlaybookRead:
 
     def _process_key_value(
         self, data: str, resolve_embedded: bool, serialized: bool
-    ) -> Optional[dict]:
+    ) -> dict | None:
         """Read the value from key value store.
 
         KeyValue data should be stored as a JSON string.
@@ -190,7 +190,7 @@ class PlaybookRead:
         string = re.sub(r'\\\\s', r'\\s', string)
         return string
 
-    def _process_string(self, data: str, resolve_embedded: bool, serialized: bool) -> Optional[str]:
+    def _process_string(self, data: str, resolve_embedded: bool, serialized: bool) -> str | None:
         """Process the provided."""
         if data is not None:
             # decode in case data comes back from kvstore as bytes
@@ -211,7 +211,7 @@ class PlaybookRead:
 
         return data
 
-    def _process_tc_batch(self, data: str, serialized: bool) -> Optional[dict]:
+    def _process_tc_batch(self, data: str, serialized: bool) -> dict | None:
         """Process the provided."""
         if data is not None:
             # decode in case data comes back from kvstore as bytes
@@ -224,7 +224,7 @@ class PlaybookRead:
 
         return data
 
-    def _process_tc_entity(self, data: str, serialized: bool) -> Optional[dict]:
+    def _process_tc_entity(self, data: str, serialized: bool) -> dict | None:
         """Process the provided."""
         if data is not None:
             # decode in case data comes back from kvstore as bytes
@@ -319,7 +319,7 @@ class PlaybookRead:
         return StringVariable(value)
 
     @staticmethod
-    def _to_array(value: Optional[Union[List, str]]) -> List:
+    def _to_array(value: list | str | None) -> list:
         """Return the provided array as a list."""
         if value is None:
             # Adding none value to list breaks App logic. It's better to not request
@@ -329,7 +329,7 @@ class PlaybookRead:
             value = [value]
         return value
 
-    def any(self, key: str) -> Optional[Union[bytes, dict, list, str]]:
+    def any(self, key: str) -> bytes | dict | list | str | None:
         """Return the value from the keystore for all types.
 
         This is a quick helper method, for more advanced features
@@ -369,9 +369,9 @@ class PlaybookRead:
     def binary(
         self,
         key: str,
-        b64decode: Optional[bool] = True,
-        decode: Optional[bool] = False,
-    ) -> Optional[Union[str, bytes]]:
+        b64decode: bool = True,
+        decode: bool = False,
+    ) -> str | bytes | None:
         """Read the value from key value store.
 
         Binary data should be stored as base64 encoded string.
@@ -382,15 +382,15 @@ class PlaybookRead:
         # quick check to ensure an invalid key was not provided
         self._check_variable_type(key, 'Binary')
 
-        data: Optional[str] = self._get_data(key)
+        data: str | None = self._get_data(key)
         return self._process_binary(data, b64decode=b64decode, decode=decode, serialized=True)
 
     def binary_array(
         self,
         key: str,
-        b64decode: Optional[bool] = True,
-        decode: Optional[bool] = False,
-    ) -> Optional[List[Union[bytes, str]]]:
+        b64decode: bool = True,
+        decode: bool = False,
+    ) -> list[bytes | str] | None:
         """Read the value from key value store.
 
         BinaryArray data should be stored as base64 encoded serialized string.
@@ -401,7 +401,7 @@ class PlaybookRead:
         # quick check to ensure an invalid key was not provided
         self._check_variable_type(key, 'BinaryArray')
 
-        data: Optional[str] = self._get_data(key)
+        data: str | None = self._get_data(key)
         if data is not None:
             # data should be base64 encoded bytes string
 
@@ -425,8 +425,8 @@ class PlaybookRead:
     def key_value(
         self,
         key: str,
-        resolve_embedded: Optional[bool] = True,
-    ) -> Optional[dict]:
+        resolve_embedded: bool = True,
+    ) -> dict | None:
         """Read the value from key value store.
 
         KeyValue data should be stored as a JSON string.
@@ -437,14 +437,14 @@ class PlaybookRead:
         # quick check to ensure an invalid key was not provided
         self._check_variable_type(key, 'KeyValue')
 
-        data: Optional[str] = self._get_data(key)
+        data: str | None = self._get_data(key)
         return self._process_key_value(data, resolve_embedded=resolve_embedded, serialized=True)
 
     def key_value_array(
         self,
         key: str,
-        resolve_embedded: Optional[bool] = True,
-    ) -> Optional[List[str]]:
+        resolve_embedded: bool = True,
+    ) -> list[str] | None:
         """Read the value from key value store.
 
         KeyValueArray data should be stored as serialized string.
@@ -455,7 +455,7 @@ class PlaybookRead:
         # quick check to ensure an invalid key was not provided
         self._check_variable_type(key, 'KeyValueArray')
 
-        data: Optional[str] = self._get_data(key)
+        data: str | None = self._get_data(key)
         if data is not None:
             # data should be string
 
@@ -476,7 +476,7 @@ class PlaybookRead:
 
         return data
 
-    def raw(self, key: str) -> Optional[any]:
+    def raw(self, key: str) -> Any | None:
         """Read method of CRUD operation for raw data.
 
         Bytes input will be returned a as string as there is no way
@@ -490,8 +490,8 @@ class PlaybookRead:
     def string(
         self,
         key: str,
-        resolve_embedded: Optional[bool] = True,
-    ) -> Optional[str]:
+        resolve_embedded: bool = True,
+    ) -> str | None:
         """Read the value from key value store.
 
         String data should be stored as serialized string.
@@ -502,10 +502,10 @@ class PlaybookRead:
         # quick check to ensure an invalid key was not provided
         self._check_variable_type(key, 'String')
 
-        data: Optional[str] = self._get_data(key)
+        data: str | None = self._get_data(key)
         return self._process_string(data, resolve_embedded=resolve_embedded, serialized=True)
 
-    def string_array(self, key: str) -> Optional[List[str]]:
+    def string_array(self, key: str) -> list[str] | None:
         """Read the value from key value store.
 
         StringArray data should be stored as serialized string.
@@ -516,7 +516,7 @@ class PlaybookRead:
         # quick check to ensure an invalid key was not provided
         self._check_variable_type(key, 'StringArray')
 
-        data: Optional[str] = self._get_data(key)
+        data: str | None = self._get_data(key)
         if data is not None:
             # data should be string
 
@@ -534,7 +534,7 @@ class PlaybookRead:
 
         return data
 
-    def tc_batch(self, key: str) -> Optional[dict]:
+    def tc_batch(self, key: str) -> dict | None:
         """Read the value from key value store.
 
         TCBatch data should be stored as serialized string.
@@ -545,10 +545,10 @@ class PlaybookRead:
         # quick check to ensure an invalid key was not provided
         self._check_variable_type(key, 'TCBatch')
 
-        data: Optional[str] = self._get_data(key)
+        data: str | None = self._get_data(key)
         return self._process_tc_batch(data, serialized=True)
 
-    def tc_entity(self, key: str) -> Optional[dict]:
+    def tc_entity(self, key: str) -> dict | None:
         """Read the value from key value store.
 
         TCEntity data should be stored as serialized string.
@@ -559,13 +559,13 @@ class PlaybookRead:
         # quick check to ensure an invalid key was not provided
         self._check_variable_type(key, 'TCEntity')
 
-        data: Optional[str] = self._get_data(key)
+        data: str | None = self._get_data(key)
         return self._process_tc_entity(data, serialized=True)
 
     def tc_entity_array(
         self,
         key: str,
-    ) -> Optional[List[str]]:
+    ) -> list[str] | None:
         """Read the value from key value store.
 
         TCEntityArray data should be stored as serialized string.
@@ -576,7 +576,7 @@ class PlaybookRead:
         # quick check to ensure an invalid key was not provided
         self._check_variable_type(key, 'TCEntityArray')
 
-        data: Optional[str] = self._get_data(key)
+        data: str | None = self._get_data(key)
         if data is not None:
             # data should be string
 
@@ -595,9 +595,7 @@ class PlaybookRead:
 
         return data
 
-    def variable(
-        self, key: str, array: Optional[bool] = False
-    ) -> Optional[Union[bytes, dict, list, str]]:
+    def variable(self, key: str, array: bool = False) -> bytes | dict | list | str | None:
         """Read method of CRUD operation for working with KeyValue DB.
 
         This method will automatically check to see if a single variable is passed

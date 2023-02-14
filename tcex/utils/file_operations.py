@@ -5,7 +5,6 @@ import json
 import tempfile
 import uuid
 from pathlib import Path
-from typing import Optional, Union
 
 
 class FileOperations:
@@ -18,14 +17,14 @@ class FileOperations:
 
     def __init__(
         self,
-        out_path: Optional[Union[Path, str]] = None,
-        temp_path: Optional[Union[Path, str]] = None,
+        out_path: Path | str | None = None,
+        temp_path: Path | str | None = None,
     ):
         """Initialize the Class properties."""
         self.out_path = Path(out_path or tempfile.gettempdir() or '/tmp')  # nosec
         self.temp_path = Path(temp_path or tempfile.gettempdir() or '/tmp')  # nosec
 
-    def _fqfn_out(self, filename: Optional[Union[Path, str]] = None) -> Path:
+    def _fqfn_out(self, filename: Path | str | None = None) -> Path:
         """Return a unique filename for the defined "out" directory."""
         # user provided filename or generate a unique one
         filename = filename if filename is not None else str(uuid.uuid4())
@@ -33,7 +32,7 @@ class FileOperations:
         # define the fully qualified path name
         return self.out_path / filename
 
-    def _fqfn_temp(self, filename: Optional[Union[Path, str]] = None) -> Path:
+    def _fqfn_temp(self, filename: Path | str | None = None) -> Path:
         """Return a unique filename for the defined "temp" directory."""
         # user provided filename or generate a unique one
         filename = filename if filename is not None else str(uuid.uuid4())
@@ -43,11 +42,11 @@ class FileOperations:
 
     @staticmethod
     def write_file(
-        content: Union[bytes, str],
-        fqfn: Union[Path, str],
-        mode: Optional[str] = 'w',
-        encoding: Optional[str] = 'utf-8',
-        compress_level: Optional[int] = None,
+        content: bytes | str,
+        fqfn: Path | str,
+        mode: str | None = 'w',
+        encoding: str | None = 'utf-8',
+        compress_level: int | None = None,
     ) -> Path:
         """Write file content to a out directory, compressing if compress level provided.
 
@@ -90,7 +89,7 @@ class FileOperations:
     def write_out_binary_file(
         self,
         content: bytes,
-        filename: Optional[str] = None,
+        filename: str | None = None,
     ) -> Path:
         """Write content to a file in the defined "out" directory.
 
@@ -105,9 +104,9 @@ class FileOperations:
 
     def write_out_compressed_file(
         self,
-        content: Union[bytes, dict, str],
-        filename: Optional[Union[Path, str]] = None,
-        compress_level: Optional[int] = 9,
+        content: bytes | dict | str,
+        filename: Path | str | None = None,
+        compress_level: int | None = 9,
     ) -> Path:
         """Write content to a file in the defined "out" directory.
 
@@ -125,11 +124,11 @@ class FileOperations:
 
     def write_out_file(
         self,
-        content: Union[bytes, dict, str],
-        filename: Optional[str] = None,
-        mode: Optional[str] = 'w',
-        encoding: Optional[str] = 'utf-8',
-        compress_level: Optional[int] = None,
+        content: bytes | dict | str,
+        filename: str | None = None,
+        mode: str | None = 'w',
+        encoding: str | None = 'utf-8',
+        compress_level: int | None = None,
     ) -> Path:
         """Write content to a file in the defined "out" directory.
 
@@ -152,7 +151,7 @@ class FileOperations:
     def write_temp_binary_file(
         self,
         content: bytes,
-        filename: Optional[str] = None,
+        filename: str | None = None,
     ) -> Path:
         """Write content to a file in the defined "temp" directory.
 
@@ -167,9 +166,9 @@ class FileOperations:
 
     def write_temp_compressed_file(
         self,
-        content: Union[bytes, dict, str],
-        filename: Optional[str] = None,
-        compress_level: Optional[int] = 9,
+        content: bytes | dict | str,
+        filename: str | None = None,
+        compress_level: int | None = 9,
     ) -> Path:
         """Write content to a file in the defined "temp" directory.
 
@@ -187,11 +186,11 @@ class FileOperations:
 
     def write_temp_file(
         self,
-        content: Union[bytes, dict, str],
-        filename: Optional[Union[Path, str]] = None,
-        mode: Optional[str] = 'w',
-        encoding: Optional[str] = 'utf-8',
-        compress_level: Optional[int] = None,
+        content: bytes | dict | str,
+        filename: Path | str | None = None,
+        mode: str | None = 'w',
+        encoding: str | None = 'utf-8',
+        compress_level: int | None = None,
     ) -> Path:
         """Write content to a file in the defined "temp" directory.
 

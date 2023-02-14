@@ -1,7 +1,4 @@
 """Proxy Model"""
-# standard library
-from typing import Optional
-
 # third-party
 from pydantic import BaseModel, Field
 
@@ -20,32 +17,32 @@ class ProxyModel(BaseModel):
     * TriggerService
     """
 
-    tc_proxy_host: Optional[str] = Field(
+    tc_proxy_host: str | None = Field(
         None,
         description='The proxy hostname.',
         inclusion_reason='runtimeLevel',
     )
-    tc_proxy_port: Optional[int] = Field(
+    tc_proxy_port: int | None = Field(
         None,
         description='The proxy port number.',
         inclusion_reason='runtimeLevel',
     )
-    tc_proxy_username: Optional[str] = Field(
+    tc_proxy_username: str | None = Field(
         None,
         description='The proxy username.',
         inclusion_reason='runtimeLevel',
     )
-    tc_proxy_password: Optional[Sensitive] = Field(
+    tc_proxy_password: Sensitive | None = Field(
         None,
         description='The proxy password',
         inclusion_reason='runtimeLevel',
     )
-    tc_proxy_external: Optional[bool] = Field(
+    tc_proxy_external: bool = Field(
         False,
         description='Flag to enable proxy for external connections.',
         inclusion_reason='runtimeLevel',
     )
-    tc_proxy_tc: Optional[bool] = Field(
+    tc_proxy_tc: bool = Field(
         False,
         description='Flag to enable proxy for ThreatConnect connection.',
         inclusion_reason='runtimeLevel',

@@ -1,7 +1,7 @@
 """ThreatConnect Batch Import Module"""
 # standard library
 import json
-from typing import Callable, Optional
+from collections.abc import Callable
 
 
 class Attribute:
@@ -13,9 +13,9 @@ class Attribute:
         self,
         attr_type: str,
         attr_value: str,
-        displayed: Optional[bool] = False,
-        source: Optional[str] = None,
-        formatter: Optional[Callable[[str], str]] = None,
+        displayed: bool = False,
+        source: str | None = None,
+        formatter: Callable[[str], str] | None = None,
     ):
         """Initialize Class Properties.
 

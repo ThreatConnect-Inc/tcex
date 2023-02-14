@@ -1,7 +1,6 @@
 """Setup for TcEx Module."""
 # standard library
 import os
-import sys
 
 # third-party
 from setuptools import find_packages, setup
@@ -21,27 +20,24 @@ with open('README.md') as f:
     readme = f.read()
 
 dev_packages = [
+    'bandit',
     'black',
     'codespell',
-    'fakeredis==1.7.0',
+    'deepdiff',
+    'fakeredis',
     'flake8',
-    'isort>=5.0.0',
+    'isort',
     'mako',
     'pre-commit',
     'pydocstyle',
-    'pylint>=2.5.0,<2.14.0',
+    'pylint',
     'pytest',
     'pytest-cov',
     'pytest-html',
     'pytest-ordering',
-    'pytest-xdist>=2.5.0',
+    'pytest-xdist',
     'pyupgrade',
 ]
-if sys.version_info <= (3, 7):
-    # these packages dropped support for 3.6
-    dev_packages.extend(['bandit==1.7.1', 'deepdiff==5.7.0'])
-else:
-    dev_packages.extend(['bandit', 'deepdiff'])
 
 
 setup(
@@ -54,10 +50,7 @@ setup(
         'License :: OSI Approved :: Apache Software License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Topic :: Security',
@@ -69,19 +62,18 @@ setup(
     install_requires=[
         'arrow',
         'astunparse',
-        'backports.cached-property; python_version < "3.8.0"',
-        'colorama>=0.3.9',
-        'inflect>=0.2.5',
+        'colorama',
+        'inflect',
         'jmespath',
         'paho-mqtt',
         'pyaes',
         'pydantic',
-        'python-dateutil>=2.6.1',
+        'python-dateutil',
         'pyyaml',
-        'redis>=2.10.6',
+        'redis',
         'requests',
         'semantic_version',
-        'stdlib-list>=0.6.0',
+        'stdlib-list',
         'tinydb',
         'typer',
         'wrapt',
@@ -96,7 +88,7 @@ setup(
         'Documentation': 'https://github.com/ThreatConnect-Inc/tcex',
         'Source': 'https://github.com/ThreatConnect-Inc/tcex',
     },
-    python_requires='>=3.6',
+    python_requires='>=3.11',
     scripts=[
         'bin/tcex',
     ],

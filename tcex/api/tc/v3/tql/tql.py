@@ -1,8 +1,9 @@
 """ThreatConnect TQL"""
 # standard library
-from typing import List, Optional
+from enum import Enum
 
 # first-party
+from tcex.api.tc.v3.filter_abc import FilterABC
 from tcex.api.tc.v3.tql.tql_type import TqlType
 
 
@@ -25,7 +26,7 @@ class Tql:
             try:
                 filters.append(f'''{keyword}({value._tql.as_str})''')
             except Exception:
-                if isinstance(value, List):
+                if isinstance(value, list):
                     if tql_filter.get('type') == TqlType.INTEGER:
                         value = [str(int_) for int_ in value]
                     elif tql_filter.get('type') == TqlType.STRING:
@@ -39,17 +40,21 @@ class Tql:
         return ' and '.join(filters)
 
     @property
-    def filters(self) -> List[dict]:
+    def filters(self) -> list[dict]:
         """Return the filters"""
         return self._filters
 
     @filters.setter
-    def filters(self, filters: List[dict]):
+    def filters(self, filters: list[dict]):
         """Set the filters"""
         self._filters = filters
 
     def add_filter(
-        self, keyword: str, operator: str, value: str, type_: Optional[TqlType] = TqlType.STRING
+        self,
+        keyword: str,
+        operator: Enum | str,
+        value: int | str | FilterABC,
+        type_: TqlType | None = TqlType.STRING,
     ):
         """Add a filter to the current obj
 

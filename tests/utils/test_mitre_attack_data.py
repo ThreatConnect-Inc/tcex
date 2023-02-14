@@ -1,7 +1,6 @@
 """Test the TcEx Utils Module."""
 
 
-# pylint: disable=no-self-use
 class testMitreAttackTechniques:
     """Test the TcEx Utils Module."""
 
@@ -58,7 +57,6 @@ class testMitreAttackTechniques:
         assert tcex.utils.mitre_attack.technique_id_to_tags(technique_id) == []
 
 
-# pylint: disable=no-self-use
 class testMitreAttackFindTacticAbbreviation:
     """Test the TcEx Utils Module."""
 

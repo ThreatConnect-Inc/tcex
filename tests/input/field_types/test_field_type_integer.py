@@ -1,7 +1,4 @@
 """Testing TcEx Input module field types."""
-# standard library
-from typing import TYPE_CHECKING, List, Optional, Union
-
 # third-party
 import pytest
 from pydantic import BaseModel, validator
@@ -10,13 +7,10 @@ from pydantic import BaseModel, validator
 from tcex.input.field_types import Integer, always_array, integer
 from tcex.pleb.scoped_property import scoped_property
 from tests.input.field_types.utils import InputTest
-
-if TYPE_CHECKING:
-    # first-party
-    from tests.mock_app import MockApp
+from tests.mock_app import MockApp  # TYPE-CHECKING
 
 
-# pylint: disable=no-self-argument, no-self-use
+# pylint: disable=no-self-argument
 class TestInputsFieldTypes(InputTest):
     """Test TcEx String Field Model Tests."""
 
@@ -75,7 +69,7 @@ class TestInputsFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Optional[Integer]
+                my_data: Integer | None
 
         self._type_validation(
             PytestModel,
@@ -157,14 +151,14 @@ class TestInputsFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Optional[
+                my_data: None | (
                     integer(
                         ge=ge,
                         gt=gt,
                         le=le,
                         lt=lt,
                     )
-                ]
+                )
 
         self._type_validation(
             PytestModel,
@@ -216,14 +210,14 @@ class TestInputsFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: List[Integer]
+                my_data: list[Integer]
 
         else:
 
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Optional[List[Integer]]
+                my_data: list[Integer] | None
 
         self._type_validation(
             PytestModel,
@@ -286,7 +280,7 @@ class TestInputsFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Union[Integer, List[Integer]]
+                my_data: Integer | list[Integer]
 
                 _always_array = validator('my_data', allow_reuse=True)(always_array())
 
@@ -295,7 +289,7 @@ class TestInputsFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Optional[Union[Integer, List[Integer]]]
+                my_data: Integer | list[Integer] | None
 
                 _always_array = validator('my_data', allow_reuse=True)(always_array())
 

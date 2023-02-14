@@ -6,7 +6,6 @@ import logging
 import math
 import re
 import time
-from typing import Dict, List, Optional, Union
 
 # third-party
 from requests import Session
@@ -27,12 +26,12 @@ class BatchSubmit:
         inputs: Input,
         session_tc: Session,
         owner: str,
-        action: Optional[str] = 'Create',
-        attribute_write_type: Optional[str] = 'Replace',
-        halt_on_error: Optional[bool] = True,
-        playbook_triggers_enabled: Optional[bool] = False,
-        tag_write_type: Optional[str] = 'Replace',
-        security_label_write_type: Optional[str] = 'Replace',
+        action: str | None = 'Create',
+        attribute_write_type: str | None = 'Replace',
+        halt_on_error: bool = True,
+        playbook_triggers_enabled: bool = False,
+        tag_write_type: str | None = 'Replace',
+        security_label_write_type: str | None = 'Replace',
     ):
         """Initialize Class properties.
 
@@ -73,7 +72,7 @@ class BatchSubmit:
         self._poll_timeout = 3600
 
     @property
-    def _critical_failures(self) -> List[str]:  # pragma: no cover
+    def _critical_failures(self) -> list[str]:  # pragma: no cover
         """Return Batch critical failure messages."""
         return [
             'Encountered an unexpected Exception while processing batch job',
@@ -100,7 +99,7 @@ class BatchSubmit:
         """Set batch attribute write type."""
         self._attribute_write_type = write_type
 
-    def create_job(self, halt_on_error: Optional[bool] = True) -> int:
+    def create_job(self, halt_on_error: bool = True) -> int:
         """Submit Batch request to ThreatConnect API.
 
         Args:
@@ -137,7 +136,7 @@ class BatchSubmit:
         return data.get('data', {}).get('batchId')
 
     @property
-    def error_codes(self) -> Dict[str, str]:
+    def error_codes(self) -> dict[str, str]:
         """Return static list of Batch error codes and short description"""
         return {
             '0x1001': 'General Error',
@@ -157,7 +156,7 @@ class BatchSubmit:
             '0x3001': 'File Hash Merge Error',
         }
 
-    def errors(self, batch_id: int, halt_on_error: Optional[bool] = True) -> list:
+    def errors(self, batch_id: int, halt_on_error: bool = True) -> list:
         """Retrieve Batch errors to ThreatConnect API.
 
         .. code-block:: javascript
@@ -252,10 +251,10 @@ class BatchSubmit:
     def poll(
         self,
         batch_id: int,
-        retry_seconds: Optional[int] = None,
-        back_off: Optional[float] = None,
-        timeout: Optional[int] = None,
-        halt_on_error: Optional[bool] = True,
+        retry_seconds: int | None = None,
+        back_off: float | None = None,
+        timeout: int | None = None,
+        halt_on_error: bool = True,
     ) -> dict:
         """Poll Batch status to ThreatConnect API.
 
@@ -395,7 +394,7 @@ class BatchSubmit:
         self._security_label_write_type = write_type
 
     @property
-    def settings(self) -> Dict[str, str]:
+    def settings(self) -> dict[str, str]:
         """Return batch job settings."""
         _settings = {
             'action': self._action,
@@ -413,7 +412,7 @@ class BatchSubmit:
             _settings['fileMergeMode'] = self._file_merge_mode
         return _settings
 
-    def submit(self, batch_filename: str, halt_on_error: Optional[bool] = True) -> dict:
+    def submit(self, batch_filename: str, halt_on_error: bool = True) -> dict:
         """Submit Batch request to ThreatConnect API.
 
         Args:
@@ -455,15 +454,13 @@ class BatchSubmit:
 
         return {}
 
-    def submit_data(
-        self, batch_id: int, content: Union[dict, str], halt_on_error: Optional[bool] = True
-    ) -> dict:
+    def submit_data(self, batch_id: int, content: dict | str, halt_on_error: bool = True) -> dict:
         """Submit Batch request to ThreatConnect API.
 
         Args:
             batch_id: The batch id of the current job.
             content: The dict of groups and indicator data.
-            halt_on_error (Optional[bool] = True): If True the process
+            halt_on_error (bool = True): If True the process
                 should halt if any errors are encountered.
 
         Returns:

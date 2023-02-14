@@ -6,7 +6,6 @@ import pytest
 from tcex.decorators.fail_on_output import FailOnOutput
 
 
-# pylint: disable=no-self-use
 class TestFailOnOutputDecorator:
     """Test the TcEx Decorators."""
 

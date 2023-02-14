@@ -1,14 +1,10 @@
 """TcEx Framework Key Value Redis Module"""
 # standard library
-from typing import TYPE_CHECKING, Any, Optional
+from typing import Any
 
 # first-party
-# first party
 from tcex.key_value_store.key_value_abc import KeyValueABC
-
-if TYPE_CHECKING:
-    # first-party
-    from tcex.key_value_store.redis_client import RedisClient
+from tcex.key_value_store.redis_client import RedisClient  # TYPE-CHECKING
 
 
 class KeyValueRedis(KeyValueABC):
@@ -50,7 +46,7 @@ class KeyValueRedis(KeyValueABC):
         """
         return self.redis_client.hdel(context, key)
 
-    def get_all(self, context: 'Optional[str]') -> 'Any':
+    def get_all(self, context: str | None) -> 'Any':
         """Return the contents for a given context.
 
         Args:
@@ -81,7 +77,7 @@ class KeyValueRedis(KeyValueABC):
         """
         return self.hget(context, key)
 
-    def hget(self, context: str, key: str) -> Optional[bytes]:
+    def hget(self, context: str, key: str) -> bytes | None:
         """Read data from redis for the provided key.
 
         This method will *not* convert the retrieved data (like read() does).
@@ -91,6 +87,6 @@ class KeyValueRedis(KeyValueABC):
             key: The field name (key) for the kv pair in Redis.
 
         Returns:
-            Optional[bytes]: the raw value from redis, if any
+            bytes | None: the raw value from redis, if any
         """
         return self.redis_client.hget(context, key)

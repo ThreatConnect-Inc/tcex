@@ -3,7 +3,6 @@
 from tcex.decorators.benchmark import Benchmark
 
 
-# pylint: disable=no-self-use
 class TestBenchmarkDecorators:
     """Test the TcEx Decorators."""
 

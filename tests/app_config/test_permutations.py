@@ -3,7 +3,6 @@
 # standard library
 import os
 from pathlib import Path
-from typing import List
 
 # first-party
 from tcex.app_config.install_json import InstallJson
@@ -92,17 +91,17 @@ class TestPermutation:
 
     def test_input_names(self):
         """Test method"""
-        input_names: List[list] = self.permutation.input_names
+        input_names: list[list] = self.permutation.input_names
         assert isinstance(input_names, list)
 
     def test_input_permutations(self):
         """Test method"""
-        input_names: List[list] = self.permutation.input_permutations
+        input_names: list[list] = self.permutation.input_permutations
         assert isinstance(input_names, list)
 
     def test_output_permutations(self):
         """Test method"""
-        input_names: List[list] = self.permutation.output_permutations
+        input_names: list[list] = self.permutation.output_permutations
         assert isinstance(input_names, list)
 
     # TODO: [low] updated this to validate the returned data model

@@ -1,8 +1,7 @@
 """Group / Groups Model"""
-# pylint: disable=no-member,no-self-argument,no-self-use,wrong-import-position
+# pylint: disable=no-member,no-self-argument,wrong-import-position
 # standard library
 from datetime import datetime
-from typing import List, Optional
 
 # third-party
 from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
@@ -10,46 +9,6 @@ from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
 from tcex.utils import Utils
-
-
-class GroupsModel(
-    BaseModel,
-    title='Groups Model',
-    alias_generator=Utils().snake_to_camel,
-    validate_assignment=True,
-):
-    """Groups Model"""
-
-    _mode_support = PrivateAttr(True)
-
-    data: Optional[List['GroupModel']] = Field(
-        [],
-        description='The data for the Groups.',
-        methods=['POST', 'PUT'],
-        title='data',
-    )
-    mode: str = Field(
-        'append',
-        description='The PUT mode for nested objects (append, delete, replace). Default: append',
-        methods=['POST', 'PUT'],
-        title='append',
-    )
-
-
-class GroupDataModel(
-    BaseModel,
-    title='Group Data Model',
-    alias_generator=Utils().snake_to_camel,
-    validate_assignment=True,
-):
-    """Groups Data Model"""
-
-    data: Optional[List['GroupModel']] = Field(
-        [],
-        description='The data for the Groups.',
-        methods=['POST', 'PUT'],
-        title='data',
-    )
 
 
 class GroupModel(
@@ -66,7 +25,7 @@ class GroupModel(
     _shared_type = PrivateAttr(False)
     _staged = PrivateAttr(False)
 
-    assignments: Optional['TaskAssigneesModel'] = Field(
+    assignments: 'TaskAssigneesModel' = Field(
         None,
         description=(
             'A list of assignees and escalatees associated with this group (Task specific).'
@@ -75,49 +34,49 @@ class GroupModel(
         read_only=False,
         title='assignments',
     )
-    associated_artifacts: Optional['ArtifactsModel'] = Field(
+    associated_artifacts: 'ArtifactsModel' = Field(
         None,
         description='A list of Artifacts associated with this Group.',
         methods=['POST', 'PUT'],
         read_only=False,
         title='associatedArtifacts',
     )
-    associated_cases: Optional['CasesModel'] = Field(
+    associated_cases: 'CasesModel' = Field(
         None,
         description='A list of Cases associated with this Group.',
         methods=['POST', 'PUT'],
         read_only=False,
         title='associatedCases',
     )
-    associated_groups: Optional['GroupsModel'] = Field(
+    associated_groups: 'GroupsModel' = Field(
         None,
         description='A list of groups associated with this group.',
         methods=['POST', 'PUT'],
         read_only=False,
         title='associatedGroups',
     )
-    associated_indicators: Optional['IndicatorsModel'] = Field(
+    associated_indicators: 'IndicatorsModel' = Field(
         None,
         description='A list of indicators associated with this group.',
         methods=['POST', 'PUT'],
         read_only=False,
         title='associatedIndicators',
     )
-    associated_victim_assets: Optional['VictimAssetsModel'] = Field(
+    associated_victim_assets: 'VictimAssetsModel' = Field(
         None,
         description='A list of victim assets associated with this group.',
         methods=['POST', 'PUT'],
         read_only=False,
         title='associatedVictimAssets',
     )
-    attributes: Optional['GroupAttributesModel'] = Field(
+    attributes: 'GroupAttributesModel' = Field(
         None,
         description='A list of Attributes corresponding to the Group.',
         methods=['POST', 'PUT'],
         read_only=False,
         title='attributes',
     )
-    body: Optional[str] = Field(
+    body: str | None = Field(
         None,
         applies_to=['Email'],
         description='The email Body.',
@@ -127,21 +86,21 @@ class GroupModel(
         read_only=False,
         title='body',
     )
-    created_by: Optional['UserModel'] = Field(
+    created_by: 'UserModel' = Field(
         None,
         allow_mutation=False,
         description='The **created by** for the Group.',
         read_only=True,
         title='createdBy',
     )
-    date_added: Optional[datetime] = Field(
+    date_added: datetime | None = Field(
         None,
         allow_mutation=False,
         description='The date and time that the Entity was first created.',
         read_only=True,
         title='dateAdded',
     )
-    document_date_added: Optional[datetime] = Field(
+    document_date_added: datetime | None = Field(
         None,
         allow_mutation=False,
         applies_to=['Document', 'Report'],
@@ -149,7 +108,7 @@ class GroupModel(
         read_only=True,
         title='documentDateAdded',
     )
-    document_type: Optional[str] = Field(
+    document_type: str | None = Field(
         None,
         allow_mutation=False,
         applies_to=['Document', 'Report'],
@@ -157,14 +116,14 @@ class GroupModel(
         read_only=True,
         title='documentType',
     )
-    down_vote_count: Optional[int] = Field(
+    down_vote_count: int | None = Field(
         None,
         allow_mutation=False,
         description='The total number of users who find the intel not helpful.',
         read_only=True,
         title='downVoteCount',
     )
-    due_date: Optional[datetime] = Field(
+    due_date: datetime | None = Field(
         None,
         applies_to=['Task'],
         description='The date and time that the Task is due.',
@@ -172,7 +131,7 @@ class GroupModel(
         read_only=False,
         title='dueDate',
     )
-    email_date: Optional[datetime] = Field(
+    email_date: datetime | None = Field(
         None,
         allow_mutation=False,
         applies_to=['Email'],
@@ -188,7 +147,7 @@ class GroupModel(
         read_only=True,
         title='escalated',
     )
-    escalation_date: Optional[datetime] = Field(
+    escalation_date: datetime | None = Field(
         None,
         applies_to=['Task'],
         description='The escalation date and time.',
@@ -196,7 +155,7 @@ class GroupModel(
         read_only=False,
         title='escalationDate',
     )
-    event_date: Optional[datetime] = Field(
+    event_date: datetime | None = Field(
         None,
         applies_to=['Incident', 'Event'],
         description='The date and time that the incident or event was first created.',
@@ -204,7 +163,7 @@ class GroupModel(
         read_only=False,
         title='eventDate',
     )
-    file_name: Optional[str] = Field(
+    file_name: str | None = Field(
         None,
         applies_to=['Document', 'Report', 'Signature'],
         conditional_required=['Document', 'Report', 'Signature'],
@@ -215,7 +174,7 @@ class GroupModel(
         read_only=False,
         title='fileName',
     )
-    file_size: Optional[int] = Field(
+    file_size: int | None = Field(
         None,
         allow_mutation=False,
         applies_to=['Document', 'Report'],
@@ -223,7 +182,7 @@ class GroupModel(
         read_only=True,
         title='fileSize',
     )
-    file_text: Optional[str] = Field(
+    file_text: str | None = Field(
         None,
         applies_to=['Signature'],
         description='The signature file text.',
@@ -231,7 +190,7 @@ class GroupModel(
         read_only=False,
         title='fileText',
     )
-    file_type: Optional[str] = Field(
+    file_type: str | None = Field(
         None,
         applies_to=['Signature'],
         description='The signature file type.',
@@ -239,7 +198,7 @@ class GroupModel(
         read_only=False,
         title='fileType',
     )
-    first_seen: Optional[datetime] = Field(
+    first_seen: datetime | None = Field(
         None,
         applies_to=['Campaign'],
         description='The date and time that the campaign was first created.',
@@ -247,7 +206,7 @@ class GroupModel(
         read_only=False,
         title='firstSeen',
     )
-    from_: Optional[str] = Field(
+    from_: str | None = Field(
         None,
         alias='from',
         applies_to=['Email'],
@@ -265,7 +224,7 @@ class GroupModel(
         read_only=True,
         title='generatedReport',
     )
-    header: Optional[str] = Field(
+    header: str | None = Field(
         None,
         applies_to=['Email'],
         description='The email Header field.',
@@ -275,20 +234,20 @@ class GroupModel(
         read_only=False,
         title='header',
     )
-    id: Optional[int] = Field(
+    id: int | None = Field(
         None,
         description='The ID of the item.',
         read_only=True,
         title='id',
     )
-    last_modified: Optional[datetime] = Field(
+    last_modified: datetime | None = Field(
         None,
         allow_mutation=False,
         description='The date and time that the Entity was last modified.',
         read_only=True,
         title='lastModified',
     )
-    legacy_link: Optional[str] = Field(
+    legacy_link: str | None = Field(
         None,
         allow_mutation=False,
         description='A link to the legacy ThreatConnect details page for this entity.',
@@ -303,7 +262,7 @@ class GroupModel(
         read_only=False,
         title='malware',
     )
-    name: Optional[str] = Field(
+    name: str | None = Field(
         None,
         description='The name of the group.',
         methods=['POST', 'PUT'],
@@ -320,21 +279,21 @@ class GroupModel(
         read_only=True,
         title='overdue',
     )
-    owner_id: Optional[int] = Field(
+    owner_id: int | None = Field(
         None,
         description='The id of the Organization, Community, or Source that the item belongs to.',
         methods=['POST'],
         read_only=False,
         title='ownerId',
     )
-    owner_name: Optional[str] = Field(
+    owner_name: str | None = Field(
         None,
         description='The name of the Organization, Community, or Source that the item belongs to.',
         methods=['POST'],
         read_only=False,
         title='ownerName',
     )
-    password: Optional[str] = Field(
+    password: str | None = Field(
         None,
         applies_to=['Document'],
         description='The password associated with the document (Required if Malware is true).',
@@ -342,7 +301,7 @@ class GroupModel(
         read_only=False,
         title='password',
     )
-    publish_date: Optional[datetime] = Field(
+    publish_date: datetime | None = Field(
         None,
         applies_to=['Report'],
         description='The date and time that the report was first created.',
@@ -358,7 +317,7 @@ class GroupModel(
         read_only=True,
         title='reminded',
     )
-    reminder_date: Optional[datetime] = Field(
+    reminder_date: datetime | None = Field(
         None,
         applies_to=['Task'],
         description='The reminder date and time.',
@@ -366,7 +325,7 @@ class GroupModel(
         read_only=False,
         title='reminderDate',
     )
-    score: Optional[int] = Field(
+    score: int | None = Field(
         None,
         allow_mutation=False,
         applies_to=['Email'],
@@ -374,7 +333,7 @@ class GroupModel(
         read_only=True,
         title='score',
     )
-    score_breakdown: Optional[str] = Field(
+    score_breakdown: str | None = Field(
         None,
         allow_mutation=False,
         applies_to=['Email'],
@@ -390,7 +349,7 @@ class GroupModel(
         read_only=True,
         title='scoreIncludesBody',
     )
-    security_labels: Optional['SecurityLabelsModel'] = Field(
+    security_labels: 'SecurityLabelsModel' = Field(
         None,
         description=(
             'A list of Security Labels corresponding to the Intel item (NOTE: Setting this '
@@ -400,7 +359,7 @@ class GroupModel(
         read_only=False,
         title='securityLabels',
     )
-    signature_date_added: Optional[datetime] = Field(
+    signature_date_added: datetime | None = Field(
         None,
         allow_mutation=False,
         applies_to=['Signature'],
@@ -408,7 +367,7 @@ class GroupModel(
         read_only=True,
         title='signatureDateAdded',
     )
-    status: Optional[str] = Field(
+    status: str | None = Field(
         None,
         applies_to=['Document', 'Report', 'Event', 'Task', 'Incident'],
         description=(
@@ -419,7 +378,7 @@ class GroupModel(
         read_only=False,
         title='status',
     )
-    subject: Optional[str] = Field(
+    subject: str | None = Field(
         None,
         applies_to=['Email'],
         description='The email Subject section.',
@@ -429,7 +388,7 @@ class GroupModel(
         read_only=False,
         title='subject',
     )
-    tags: Optional['TagsModel'] = Field(
+    tags: 'TagsModel' = Field(
         None,
         description=(
             'A list of Tags corresponding to the item (NOTE: Setting this parameter will replace '
@@ -439,7 +398,7 @@ class GroupModel(
         read_only=False,
         title='tags',
     )
-    to: Optional[str] = Field(
+    to: str | None = Field(
         None,
         allow_mutation=False,
         applies_to=['Email'],
@@ -447,7 +406,7 @@ class GroupModel(
         read_only=True,
         title='to',
     )
-    type: Optional[str] = Field(
+    type: str | None = Field(
         None,
         description='The **type** for the Group.',
         methods=['POST', 'PUT'],
@@ -465,21 +424,21 @@ class GroupModel(
         read_only=False,
         title='upVote',
     )
-    up_vote_count: Optional[int] = Field(
+    up_vote_count: int | None = Field(
         None,
         allow_mutation=False,
         description='The total number of users who find the intel useful.',
         read_only=True,
         title='upVoteCount',
     )
-    web_link: Optional[str] = Field(
+    web_link: str | None = Field(
         None,
         allow_mutation=False,
         description='A link to the ThreatConnect details page for this entity.',
         read_only=True,
         title='webLink',
     )
-    xid: Optional[str] = Field(
+    xid: str | None = Field(
         None,
         description='The xid of the item.',
         methods=['POST', 'PUT'],
@@ -487,65 +446,105 @@ class GroupModel(
         title='xid',
     )
 
-    @validator('associated_artifacts', always=True)
+    @validator('associated_artifacts', always=True, pre=True)
     def _validate_artifacts(cls, v):
         if not v:
-            return ArtifactsModel()
+            return ArtifactsModel()  # type: ignore
         return v
 
-    @validator('associated_cases', always=True)
+    @validator('associated_cases', always=True, pre=True)
     def _validate_cases(cls, v):
         if not v:
-            return CasesModel()
+            return CasesModel()  # type: ignore
         return v
 
-    @validator('attributes', always=True)
+    @validator('attributes', always=True, pre=True)
     def _validate_group_attributes(cls, v):
         if not v:
-            return GroupAttributesModel()
+            return GroupAttributesModel()  # type: ignore
         return v
 
-    @validator('associated_groups', always=True)
+    @validator('associated_groups', always=True, pre=True)
     def _validate_groups(cls, v):
         if not v:
-            return GroupsModel()
+            return GroupsModel()  # type: ignore
         return v
 
-    @validator('associated_indicators', always=True)
+    @validator('associated_indicators', always=True, pre=True)
     def _validate_indicators(cls, v):
         if not v:
-            return IndicatorsModel()
+            return IndicatorsModel()  # type: ignore
         return v
 
-    @validator('security_labels', always=True)
+    @validator('security_labels', always=True, pre=True)
     def _validate_security_labels(cls, v):
         if not v:
-            return SecurityLabelsModel()
+            return SecurityLabelsModel()  # type: ignore
         return v
 
-    @validator('tags', always=True)
+    @validator('tags', always=True, pre=True)
     def _validate_tags(cls, v):
         if not v:
-            return TagsModel()
+            return TagsModel()  # type: ignore
         return v
 
-    @validator('assignments', always=True)
+    @validator('assignments', always=True, pre=True)
     def _validate_task_assignees(cls, v):
         if not v:
-            return TaskAssigneesModel()
+            return TaskAssigneesModel()  # type: ignore
         return v
 
-    @validator('created_by', always=True)
+    @validator('created_by', always=True, pre=True)
     def _validate_user(cls, v):
         if not v:
-            return UserModel()
+            return UserModel()  # type: ignore
         return v
 
-    @validator('associated_victim_assets', always=True)
+    @validator('associated_victim_assets', always=True, pre=True)
     def _validate_victim_assets(cls, v):
         if not v:
-            return VictimAssetsModel()
+            return VictimAssetsModel()  # type: ignore
         return v
+
+
+class GroupDataModel(
+    BaseModel,
+    title='Group Data Model',
+    alias_generator=Utils().snake_to_camel,
+    validate_assignment=True,
+):
+    """Groups Data Model"""
+
+    data: list[GroupModel] | None = Field(
+        [],
+        description='The data for the Groups.',
+        methods=['POST', 'PUT'],
+        title='data',
+    )
+
+
+class GroupsModel(
+    BaseModel,
+    title='Groups Model',
+    alias_generator=Utils().snake_to_camel,
+    validate_assignment=True,
+):
+    """Groups Model"""
+
+    _mode_support = PrivateAttr(True)
+
+    data: list[GroupModel] | None = Field(
+        [],
+        description='The data for the Groups.',
+        methods=['POST', 'PUT'],
+        title='data',
+    )
+    mode: str = Field(
+        'append',
+        description='The PUT mode for nested objects (append, delete, replace). Default: append',
+        methods=['POST', 'PUT'],
+        title='append',
+    )
 
 
 # first-party

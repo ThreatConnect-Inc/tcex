@@ -1,7 +1,7 @@
 """App Inputs"""
-# pylint: disable=no-self-argument, no-self-use
+# pylint: disable=no-self-argument
 # standard library
-from typing import Any, List, Optional, Union
+from typing import Any
 
 # third-party
 from pydantic import BaseModel, validator
@@ -30,7 +30,7 @@ class AppBaseModel(BaseModel):
     # TCEntityArray, vv: ${KEYCHAIN}|${TEXT}
     string_advanced: sensitive(allow_empty=False) = 'advanced'
     # pbd: String, vv: ${TEXT}
-    string_hidden: Optional[String]
+    string_hidden: String | None
     # vv: Action 1|Action 2|Action 3|Action 4
     tc_action: Choice = 'Action 1'
     # pbd: String, vv: ${TEXT}
@@ -50,21 +50,21 @@ class Action1Model(AppBaseModel):
     # vv: Option 1|Option 2|Option 3
     choice_required: Choice
     # pbd: String, vv: ${TEXT}
-    key_value_list_required: List[KeyValue]
+    key_value_list_required: list[KeyValue]
     # vv: Option 1|Option 2|Option 3
-    multi_choice_required: List[Choice]
+    multi_choice_required: list[Choice]
     # pbd: Binary|BinaryArray|KeyValue|KeyValueArray|String|StringArray|TCEntity|
     # TCEntityArray, vv: ${TEXT}
-    string_required: Union[
-        binary(allow_empty=False),
-        List[binary(allow_empty=False)],
-        KeyValue,
-        List[KeyValue],
-        string(allow_empty=False),
-        List[string(allow_empty=False)],
-        TCEntity,
-        List[TCEntity],
-    ]
+    string_required: (
+        binary(allow_empty=False)
+        | list[binary(allow_empty=False)]
+        | KeyValue
+        | list[KeyValue]
+        | string(allow_empty=False)
+        | list[string(allow_empty=False)]
+        | TCEntity
+        | list[TCEntity]
+    )
 
     # ensure inputs that take single and array types always return an array
     _always_array = validator('string_required', allow_reuse=True)(always_array())
@@ -78,13 +78,13 @@ class Action2Model(AppBaseModel):
 
     boolean_input_optional: bool = False
     # vv: Option 1|Option 2|Option 3
-    choice_optional: Optional[Choice]
+    choice_optional: Choice | None
     # pbd: String, vv: ${TEXT}
-    key_value_list_optional: Optional[List[KeyValue]]
+    key_value_list_optional: list[KeyValue] | None
     # vv: Option 1|Option 2|Option 3
-    multi_choice_optional: Optional[List[Choice]]
+    multi_choice_optional: list[Choice] | None
     # pbd: Any
-    string_optional: Optional[Any]
+    string_optional: Any | None
 
 
 class Action3Model(AppBaseModel):
@@ -92,26 +92,26 @@ class Action3Model(AppBaseModel):
 
     boolean_input_default: bool = False
     # vv: Option 1|Option 2|Option 3
-    choice_default: Optional[Choice] = 'Option 1'
+    choice_default: Choice | None = 'Option 1'
     # pbd: String, vv: ${TEXT}
-    key_value_list_default: Optional[List[KeyValue]]
+    key_value_list_default: list[KeyValue] | None
     # vv: Option 1|Option 2|Option 3
-    multi_choice_default: Optional[List[Choice]]
+    multi_choice_default: list[Choice] | None
     # pbd: Any
-    string_default: Optional[Any] = 'default string'
+    string_default: Any | None = 'default string'
 
 
 class Action4Model(AppBaseModel):
     """Action Model"""
 
     # pbd: String, vv: ${TEXT}
-    key_value_list_expose_playbook_key_as_string: Optional[List[KeyValue]]
+    key_value_list_expose_playbook_key_as_string: list[KeyValue] | None
     # pbd: String|StringArray, vv: ${TEXT}
-    string_allow_multiple: Optional[Union[String, List[String]]]
+    string_allow_multiple: String | list[String] | None
     # pbd: String, vv: ${FILE}|${KEYCHAIN}
-    string_encrypt: Optional[Sensitive]
+    string_encrypt: Sensitive | None
     # pbd: String, vv: ${TEXT}
-    string_intel_type: Optional[String]
+    string_intel_type: String | None
 
     # ensure inputs that take single and array types always return an array
     _always_array = validator('string_allow_multiple', allow_reuse=True)(always_array())
@@ -120,11 +120,11 @@ class Action4Model(AppBaseModel):
 class AppInputs:
     """App Inputs"""
 
-    def __init__(self, inputs: 'BaseModel'):
+    def __init__(self, inputs: BaseModel):
         """Initialize class properties."""
         self.inputs = inputs
 
-    def get_model(self, tc_action: Optional[str] = None) -> 'BaseModel':
+    def get_model(self, tc_action: str | None = None) -> BaseModel:
         """Return the model based on the current action."""
         tc_action = tc_action or self.inputs.model_unresolved.tc_action
         action_model_map = {

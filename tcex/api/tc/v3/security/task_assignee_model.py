@@ -1,9 +1,8 @@
 """ThreatConnect Assignee Module"""
-# pylint: disable=no-member,no-self-argument,no-self-use,wrong-import-position
+# pylint: disable=no-member,no-self-argument,wrong-import-position
 # standard library
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional
 
 # third-party
 from pydantic import BaseModel, Field, PrivateAttr
@@ -19,31 +18,6 @@ class AssigneeTypes(str, Enum):
 
     Escalate = 'Escalate'
     Assigned = 'Assigned'
-
-
-class TaskAssigneesModel(
-    BaseModel,
-    title='User Data Model',
-    alias_generator=Utils().snake_to_camel,
-    validate_assignment=True,
-):
-    """Task Assignees Model"""
-
-    _mode_support = PrivateAttr(True)
-
-    data: Optional[List['TaskAssigneeModel']] = Field(
-        [],
-        description='The data for the Groups.',
-        methods=['POST', 'PUT'],
-        title='data',
-    )
-
-    mode: str = Field(
-        'append',
-        description='The PUT mode for nested objects (append, delete, replace). Default: append',
-        methods=['POST', 'PUT'],
-        title='append',
-    )
 
 
 class TaskAssigneeModel(
@@ -71,32 +45,57 @@ class TaskAssigneeModel(
     ]
     """
 
-    date_added: Optional[datetime] = Field(
+    date_added: datetime | None = Field(
         None,
         allow_mutation=False,
         description='The date and time that the Entity was first created.',
         read_only=True,
         title='dateAdded',
     )
-    id: Optional[int] = Field(
+    id: int | None = Field(
         None,
         description='The ID of the item.',
         read_only=True,
         title='id',
     )
-    type: Optional[AssigneeTypes] = Field(
+    type: AssigneeTypes | None = Field(
         None,
         description='The **Type** for the Assignee.',
         methods=['POST', 'PUT'],
         read_only=False,
         title='type',
     )
-    user: Optional[UserModel] = Field(
+    user: UserModel | None = Field(
         None,
         description='The **User Data** for the Assignee.',
         methods=['POST', 'PUT'],
         read_only=False,
         title='user',
+    )
+
+
+class TaskAssigneesModel(
+    BaseModel,
+    title='User Data Model',
+    alias_generator=Utils().snake_to_camel,
+    validate_assignment=True,
+):
+    """Task Assignees Model"""
+
+    _mode_support = PrivateAttr(True)
+
+    data: list[TaskAssigneeModel] | None = Field(
+        [],
+        description='The data for the Groups.',
+        methods=['POST', 'PUT'],
+        title='data',
+    )
+
+    mode: str = Field(
+        'append',
+        description='The PUT mode for nested objects (append, delete, replace). Default: append',
+        methods=['POST', 'PUT'],
+        title='append',
     )
 
 

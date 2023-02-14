@@ -1,15 +1,13 @@
 """TcEx Utilities Request to Curl Module"""
 # standard library
 import re
-from typing import TYPE_CHECKING, List, Optional, Union
 from urllib.parse import urlsplit
+
+# third-party
+from requests import Request  # TYPE-CHECKING
 
 # first-party
 from tcex.utils.utils import Utils
-
-if TYPE_CHECKING:
-    # third-party
-    from requests import Request
 
 
 class RequestsToCurl:
@@ -21,10 +19,10 @@ class RequestsToCurl:
 
     def convert(
         self,
-        request: 'Request',
-        mask_headers: Optional[bool] = True,
-        mask_patterns: List[str] = None,
-        **kwargs: Union[bool, dict],
+        request: Request,
+        mask_headers: bool = True,
+        mask_patterns: list[str] | None = None,
+        **kwargs: bool | dict,
     ) -> str:
         """Return converted Prepared Request to a curl command.
 
@@ -107,7 +105,7 @@ class RequestsToCurl:
 
         if proxies is not None and proxies.get('https'):
             # parse formatted string {'https': 'bob:pass@https://localhost:4242'}
-            proxy_url: Optional[str] = proxies.get('https')
+            proxy_url: str | None = proxies.get('https')
             proxy_data = urlsplit(proxy_url)
 
             # auth

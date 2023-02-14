@@ -8,7 +8,7 @@ import random
 import re
 import sys
 from pathlib import Path
-from typing import Any, List, Optional, Tuple, Union
+from typing import Any
 
 try:
     # standard library
@@ -41,7 +41,7 @@ class InputModel(ParamsModel):
 class Permutation:
     """Permutations Module"""
 
-    def __init__(self, logger: Optional[logging.Logger] = None):
+    def __init__(self, logger: logging.Logger | None = None):
         """Initialize Class properties"""
         self.log = logger or tcex_logger
 
@@ -66,7 +66,7 @@ class Permutation:
         return _input_model
 
     @cached_property
-    def _display_keywords(self) -> List[str]:
+    def _display_keywords(self) -> list[str]:
         """Return the display keywords."""
         _keywords = set()
         for param in self.lj.model.params.values():
@@ -77,7 +77,7 @@ class Permutation:
         self.log.debug(f'keywords={_keywords}')
         return _keywords
 
-    def _gen_permutations(self, index: Optional[int] = 0, params: Optional[list] = None):
+    def _gen_permutations(self, index: int | None = 0, params: list | None = None):
         """Iterate recursively over layout.json parameter names to build permutations.
 
         .. NOTE:: Permutations are for layout.json based Apps.
@@ -93,10 +93,10 @@ class Permutation:
             name = list(self.lj.model.param_names)[index]
 
             # get layout.json param name and data
-            lj_param: Union[NoneModel, ParametersModel] = self.lj.model.get_param(name)
+            lj_param: NoneModel | ParametersModel = self.lj.model.get_param(name)
 
             # get install.json param to match layout.json param
-            ij_param: Union[NoneModel, ParamsModel] = self.ij.model.get_param(name)
+            ij_param: NoneModel | ParamsModel = self.ij.model.get_param(name)
             if not isinstance(ij_param, ParamsModel):  # pragma: no cover
                 self.handle_error(f'No param found in install.json for "{name}".')
 
@@ -146,9 +146,8 @@ class Permutation:
 
             # iterate of InstallJsonModel -> PlaybookModel -> OutputVariablesModel
             for o in self.ij.model.playbook.output_variables:
-
                 # get layout.json param to match install.json output variable
-                lj_output: Union[NoneModel, OutputsModel] = self.lj.model.get_output(o.name)
+                lj_output: NoneModel | OutputsModel = self.lj.model.get_output(o.name)
                 if isinstance(lj_output, OutputsModel):
                     valid = self.validate_layout_display(self._input_table, lj_output.display)
                     if lj_output.display is None or not valid:
@@ -158,7 +157,7 @@ class Permutation:
             self._output_permutations.append(outputs)
 
     @property
-    def _params_data(self) -> Tuple[str, 'ParamsModel']:
+    def _params_data(self) -> tuple[str, 'ParamsModel']:
         """Return all defined params from layout.json/install.json, including hidden params."""
         # using inputs from layout.json since they are required to be in order
         # (display field can only use inputs previously defined)
@@ -206,7 +205,7 @@ class Permutation:
 
         return None
 
-    def db_create_table(self, table_name: str, columns: List[str]):
+    def db_create_table(self, table_name: str, columns: list[str]):
         """Create a temporary DB table.
 
         Args:
@@ -235,7 +234,7 @@ class Permutation:
         except sqlite3.Error as e:  # pragma: no cover
             self.handle_error(f'SQL drop db failed - SQL: "{sql}", Error: "{e}"')
 
-    def db_insert_record(self, table_name: str, columns: List[str]):
+    def db_insert_record(self, table_name: str, columns: list[str]):
         """Insert records into DB.
 
         A single row will all values as None so that values can be updated one at a
@@ -285,7 +284,7 @@ class Permutation:
             except sqlite3.OperationalError as e:  # pragma: no cover
                 self.handle_error(f'SQL update failed - SQL: "{sql}", Error: "{e}"')
 
-    def handle_error(self, err: str, halt: Optional[bool] = True):  # pragma: no cover
+    def handle_error(self, err: str, halt: bool = True):  # pragma: no cover
         """Print errors message and optionally exit.
 
         Args:
@@ -297,19 +296,19 @@ class Permutation:
         if halt:
             sys.exit(1)
 
-    def get_action_input_names(self, action: str) -> List[str]:
+    def get_action_input_names(self, action: str) -> list[str]:
         """Return the input names for the provided action."""
         return [i.name for i in self.get_action_inputs(action)]
 
-    def get_action_inputs(self, action: str) -> List[InputModel]:
+    def get_action_inputs(self, action: str) -> list[InputModel]:
         """Return the inputs for the provided action."""
         return self.action_configurations.get(action, {}).get('inputs', [])
 
-    def get_action_output_names(self, action: str) -> List[str]:
+    def get_action_output_names(self, action: str) -> list[str]:
         """Return the output names for the provided action."""
         return [i.name for i in self.get_action_outputs(action)]
 
-    def get_action_outputs(self, action: str) -> List[OutputsModel]:
+    def get_action_outputs(self, action: str) -> list[OutputsModel]:
         """Return the outputs for the provided action."""
         return self.action_configurations.get(action, {}).get('outputs', [])
 
@@ -358,7 +357,7 @@ class Permutation:
         return input_dict
 
     @property
-    def input_names(self) -> List[list]:
+    def input_names(self) -> list[list]:
         """Return all input permutation names for current App.
 
         Returns:
@@ -371,7 +370,7 @@ class Permutation:
         return self._input_names
 
     @property
-    def input_permutations(self) -> List[List[dict]]:
+    def input_permutations(self) -> list[list[dict]]:
         """Return all input permutations for current App.
 
         self._input_permutations is an array of permutations arrays.
@@ -385,7 +384,7 @@ class Permutation:
         return self._input_permutations
 
     @property
-    def output_permutations(self) -> List[List[dict]]:
+    def output_permutations(self) -> list[list[dict]]:
         """Return all output permutations for current App.
 
         Returns:
@@ -419,7 +418,7 @@ class Permutation:
         self.write_permutations_file()
 
     def validate_input_variable(
-        self, input_name: str, inputs: dict, display: Optional[str] = None
+        self, input_name: str, inputs: dict, display: str | None = None
     ) -> bool:
         """Return True if the provided variables display where clause returns results.
 

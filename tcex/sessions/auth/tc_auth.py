@@ -1,15 +1,12 @@
 """ThreatConnect Requests Session"""
 # standard library
 import time
-from typing import TYPE_CHECKING, Callable, Optional, Union
+from collections.abc import Callable
 
 # first-party
+from tcex.input.field_types.sensitive import Sensitive  # TYPE-CHECKING
 from tcex.sessions.auth.hmac_auth import HmacAuth
 from tcex.sessions.auth.token_auth import TokenAuth
-
-if TYPE_CHECKING:  # pragma: no cover
-    # first-party
-    from tcex.input.field_types.sensitive import Sensitive
 
 
 class TcAuth(HmacAuth, TokenAuth):
@@ -17,9 +14,9 @@ class TcAuth(HmacAuth, TokenAuth):
 
     def __init__(
         self,
-        tc_api_access_id: Optional[str] = None,
-        tc_api_secret_key: Optional['Sensitive'] = None,
-        tc_token: Optional[Union[Callable, str, 'Sensitive']] = None,
+        tc_api_access_id: str | None = None,
+        tc_api_secret_key: Sensitive | None = None,
+        tc_token: Callable | str | Sensitive | None = None,
     ):
         """Initialize Class Properties."""
         # super(HmacAuth).__init__(tc_api_access_id, tc_api_secret_key)

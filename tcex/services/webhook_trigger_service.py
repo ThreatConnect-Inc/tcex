@@ -3,7 +3,8 @@
 import base64
 import json
 import traceback
-from typing import Any, Callable, Optional, Union
+from collections.abc import Callable
+from typing import Any
 
 from .common_service_trigger import CommonServiceTrigger
 
@@ -196,7 +197,7 @@ class WebhookTriggerService(CommonServiceTrigger):
                 return
 
             # get an instance of playbooks for App
-            outputs: Union[list, str] = config.get('tc_playbook_out_variables') or []
+            outputs: list | str = config.get('tc_playbook_out_variables') or []
             if isinstance(outputs, str):
                 outputs = outputs.split(',')
 
@@ -228,7 +229,7 @@ class WebhookTriggerService(CommonServiceTrigger):
                     }
                 )
 
-            callback_response: Union[bool, Callable[..., Any], dict] = self.webhook_event_callback(
+            callback_response: bool | Callable[..., Any] | dict = self.webhook_event_callback(
                 **callback_data
             )
             self.callback_response_handler(callback_response, message)
@@ -309,10 +310,9 @@ class WebhookTriggerService(CommonServiceTrigger):
 
         if callable(self.webhook_marshall_event_callback):
             try:
-
                 # call callback method
                 # pylint: disable=not-callable
-                callback_response: Optional[dict] = self.webhook_marshall_event_callback(
+                callback_response: dict | None = self.webhook_marshall_event_callback(
                     body=body,
                     headers=message.get('headers'),
                     request_key=request_key,

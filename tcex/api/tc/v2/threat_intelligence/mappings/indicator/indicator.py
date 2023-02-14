@@ -16,6 +16,7 @@ if TYPE_CHECKING:
 module = __import__(__name__)
 
 
+# pylint: disable=unnecessary-dunder-call
 def custom_indicator_class_factory(
     indicator_type, entity_type, branch_type, base_class, value_fields
 ):

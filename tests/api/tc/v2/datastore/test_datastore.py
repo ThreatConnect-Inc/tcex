@@ -67,6 +67,7 @@ class TestDataStore:
             tcex (fixture): An instantiated instance of TcEx.
             monkeypatch (_pytest.monkeypatch.MonkeyPatch, fixture): Pytest monkeypatch
         """
+
         # monkeypatch method
         def mp_post(*args, **kwargs):  # pylint: disable=unused-argument
             return MockPost({}, ok=False)
@@ -228,6 +229,7 @@ class TestDataStore:
             tcex (TcEx, fixture): An instantiated instance of TcEx.
             monkeypatch (_pytest.monkeypatch.MonkeyPatch, fixture): Pytest monkeypatch
         """
+
         # monkeypatch method
         def mp_post(*args, **kwargs):  # pylint: disable=unused-argument
             return MockPost({}, ok=False)
@@ -327,6 +329,7 @@ class TestDataStore:
             tcex (TcEx, fixture): An instantiated instance of TcEx.
             monkeypatch (_pytest.monkeypatch.MonkeyPatch, fixture): Pytest monkeypatch
         """
+
         # monkeypatch method
         def mp_post(*args, **kwargs):  # pylint: disable=unused-argument
             return MockPost({}, ok=False)

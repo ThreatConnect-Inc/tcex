@@ -1,7 +1,4 @@
 """TcEx Utilities AES Operations Module"""
-# standard library
-from typing import Optional, Union
-
 # third-party
 import pyaes
 
@@ -10,9 +7,7 @@ class AesOperations:
     """TcEx Utilities AES Operations Class"""
 
     @staticmethod
-    def decrypt_aes_cbc(
-        key: bytes, ciphertext: Union[bytes, str], iv: Optional[bytes] = None
-    ) -> bytes:
+    def decrypt_aes_cbc(key: bytes, ciphertext: bytes | str, iv: bytes | None = None) -> bytes:
         """Return AES CBC decrypted string.
 
         Args:
@@ -36,9 +31,7 @@ class AesOperations:
         return decrypted
 
     @staticmethod
-    def encrypt_aes_cbc(
-        key: bytes, plaintext: Union[bytes, str], iv: Optional[bytes] = None
-    ) -> bytes:
+    def encrypt_aes_cbc(key: bytes, plaintext: bytes | str, iv: bytes | None = None) -> bytes:
         """Return AES CBC encrypted string.
 
         Args:

@@ -3,7 +3,7 @@
 import os
 import re
 from pathlib import Path
-from typing import Any, Dict, Union
+from typing import Any
 
 
 class _EnvPath(type(Path()), Path):  # pylint: disable=E0241
@@ -17,7 +17,7 @@ class EnvPath(Path):
     """EnvPath custom pydantic model type."""
 
     @classmethod
-    def __modify_schema__(cls, field_schema: Dict[str, Any]):
+    def __modify_schema__(cls, field_schema: dict[str, Any]):
         """."""
         field_schema.update(format='file-path')
 
@@ -27,7 +27,7 @@ class EnvPath(Path):
         yield cls.validate
 
     @classmethod
-    def validate(cls, value: Union[str, 'Path']) -> 'Path':
+    def validate(cls, value: str | Path) -> Path:
         """Replace any environment variables in the tcex.json file."""
         if isinstance(value, Path):
             return value

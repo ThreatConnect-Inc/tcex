@@ -4,15 +4,13 @@
 import os
 import traceback
 from pathlib import Path
-from typing import Optional
 
 # third-party
 import colorama as c
 import typer
 
 # first-party
-from tcex.bin import Dep, Deploy, SpecTool, Package, Template, Validate
-
+from tcex.bin import Dep, Deploy, Package, SpecTool, Template, Validate
 
 # initialize typer
 app = typer.Typer()
@@ -20,28 +18,22 @@ app = typer.Typer()
 
 @app.command()
 def deps(
-    branch: Optional[str] = typer.Option(
+    branch: str
+    | None = typer.Option(
         'main',
         help=(
             'The git branch of the tcex repository to use. '
             'This override what is in the requirements.txt file.'
         ),
     ),
-    dev: Optional[bool] = typer.Option(False, help='Install development dependencies.'),
-    no_cache_dir: Optional[bool] = typer.Option(False, help='Do not use pip cache directory.'),
-    pre: Optional[bool] = typer.Option(False, help='Install pre-release packages.'),
-    proxy_host: Optional[str] = typer.Option(
-        None, help='(Advanced) Hostname for the proxy server.'
-    ),
-    proxy_port: Optional[int] = typer.Option(
-        None, help='(Advanced) Port number for the proxy server.'
-    ),
-    proxy_user: Optional[str] = typer.Option(
-        None, help='(Advanced) Username for the proxy server.'
-    ),
-    proxy_pass: Optional[str] = typer.Option(
-        None, help='(Advanced) Password for the proxy server.'
-    ),
+    dev: bool = typer.Option(False, help='Install development dependencies.'),
+    no_cache_dir: bool = typer.Option(False, help='Do not use pip cache directory.'),
+    pre: bool = typer.Option(False, help='Install pre-release packages.'),
+    proxy_host: str | None = typer.Option(None, help='(Advanced) Hostname for the proxy server.'),
+    proxy_port: int
+    | None = typer.Option(None, help='(Advanced) Port number for the proxy server.'),
+    proxy_user: str | None = typer.Option(None, help='(Advanced) Username for the proxy server.'),
+    proxy_pass: str | None = typer.Option(None, help='(Advanced) Password for the proxy server.'),
 ):
     """Install dependencies defined in the requirements.txt file.
 
@@ -75,22 +67,16 @@ def deploy(
     allow_distribution: bool = typer.Option(
         True, help='If true the App is allowed to be distributed.'
     ),
-    app_file: Optional[str] = typer.Option(
+    app_file: str
+    | None = typer.Option(
         None,
         help='The fully qualified path to App file. Will be auto-detected if not provided.',
     ),
-    proxy_host: Optional[str] = typer.Option(
-        None, help='(Advanced) Hostname for the proxy server.'
-    ),
-    proxy_port: Optional[int] = typer.Option(
-        None, help='(Advanced) Port number for the proxy server.'
-    ),
-    proxy_user: Optional[str] = typer.Option(
-        None, help='(Advanced) Username for the proxy server.'
-    ),
-    proxy_pass: Optional[str] = typer.Option(
-        None, help='(Advanced) Password for the proxy server.'
-    ),
+    proxy_host: str | None = typer.Option(None, help='(Advanced) Hostname for the proxy server.'),
+    proxy_port: str
+    | None = typer.Option(None, help='(Advanced) Port number for the proxy server.'),
+    proxy_user: str | None = typer.Option(None, help='(Advanced) Username for the proxy server.'),
+    proxy_pass: str | None = typer.Option(None, help='(Advanced) Password for the proxy server.'),
 ):
     """Deploy App to ThreatConnect via internal API.
 
@@ -176,10 +162,11 @@ def init(
     type_: str = typer.Option(..., '--type', help='The App type being initialized.', prompt=True),
     template: str = typer.Option(..., help='The App template to be used.', prompt=True),
     force: bool = typer.Option(False, help='Force App init even if files exist in directory.'),
-    branch: Optional[str] = typer.Option(
+    branch: str
+    | None = typer.Option(
         'main', help='The git branch of the tcex-app-template repository to use.'
     ),
-    app_builder: Optional[bool] = typer.Option(
+    app_builder: bool = typer.Option(
         False, help='Include .appbuilderconfig file in template download.'
     ),
 ):
@@ -226,8 +213,9 @@ def init(
 
 @app.command('list')
 def _list(
-    type_: Optional[str] = typer.Option(None, '--type', help='The App type being initialized.'),
-    branch: Optional[str] = typer.Option(
+    type_: str | None = typer.Option(None, '--type', help='The App type being initialized.'),
+    branch: str
+    | None = typer.Option(
         'main', help='The git branch of the tcex-app-template repository to use.'
     ),
 ):
@@ -250,13 +238,14 @@ def _list(
 
 @app.command()
 def package(
-    excludes: Optional[str] = typer.Option(
+    excludes: str
+    | None = typer.Option(
         None, help='File and directories to exclude from build in a comma-seperated list.'
     ),
-    ignore_validation: Optional[bool] = typer.Option(
+    ignore_validation: bool = typer.Option(
         False, help='If true, validation errors will not prevent package.'
     ),
-    json_output: Optional[bool] = typer.Option(
+    json_output: bool = typer.Option(
         False, help='If true, the output of the validation will be returned in JSON format.'
     ),
     output_dir: Path = typer.Option(
@@ -302,11 +291,11 @@ def package(
 
 @app.command()
 def update(
-    template: Optional[str] = typer.Option(
-        None, help='Only provide this value if changing the saved value.'
-    ),
+    template: str
+    | None = typer.Option(None, help='Only provide this value if changing the saved value.'),
     type_: str = typer.Option(None, '--type', help='The App type being initialized.'),
-    branch: Optional[str] = typer.Option(
+    branch: str
+    | None = typer.Option(
         'main', help='The git branch of the tcex-app-template repository to use.'
     ),
     force: bool = typer.Option(
@@ -361,10 +350,10 @@ def update(
 
 @app.command()
 def validate(
-    ignore_validation: Optional[bool] = typer.Option(
+    ignore_validation: bool = typer.Option(
         False, help='If true, validation errors will not cause an exit.'
     ),
-    interactive: Optional[bool] = typer.Option(
+    interactive: bool = typer.Option(
         False, help='(Advanced) If true, this command will not exit until passed an exit string.'
     ),
 ):

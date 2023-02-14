@@ -3,7 +3,6 @@
 from tcex.decorators.on_success import OnSuccess
 
 
-# pylint: disable=no-self-use
 class TestOnSuccessDecorators:
     """Test the TcEx Decorators."""
 

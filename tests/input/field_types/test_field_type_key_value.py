@@ -1,7 +1,4 @@
 """Testing TcEx Input module field types."""
-# standard library
-from typing import TYPE_CHECKING, Optional
-
 # third-party
 import pytest
 from pydantic import BaseModel
@@ -11,13 +8,10 @@ from tcex.backports import cached_property
 from tcex.input.field_types import KeyValue, TCEntity
 from tcex.pleb.scoped_property import scoped_property
 from tests.input.field_types.utils import InputTest
-
-if TYPE_CHECKING:
-    # first-party
-    from tests.mock_app import MockApp
+from tests.mock_app import MockApp  # TYPE-CHECKING
 
 
-# pylint: disable=no-self-argument, no-self-use
+# pylint: disable=no-self-argument
 class TestInputsFieldTypeKeyValue(InputTest):
     """Test TcEx Inputs Config."""
 
@@ -68,7 +62,7 @@ class TestInputsFieldTypeKeyValue(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_key_value: Optional[KeyValue]
+                my_key_value: KeyValue | None
 
         self._type_validation(
             PytestModel,

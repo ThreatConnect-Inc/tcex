@@ -1,6 +1,6 @@
 """Test the TcEx Batch Module."""
 # standard library
-from typing import TYPE_CHECKING, Any, List
+from typing import TYPE_CHECKING, Any
 
 # third-party
 import pytest
@@ -12,7 +12,6 @@ if TYPE_CHECKING:
     from tests.mock_app import MockApp
 
 
-# pylint: disable=no-self-use
 class TestUtils:
     """Test the TcEx Batch Module."""
 
@@ -110,7 +109,7 @@ class TestUtils:
             )
         ],
     )
-    def test_playbook_output_add_all(self, output_data: List[dict], playbook_app: 'MockApp'):
+    def test_playbook_output_add_all(self, output_data: list[dict], playbook_app: 'MockApp'):
         """Test playbook variables."""
         tcex: 'TcEx' = playbook_app(
             config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}

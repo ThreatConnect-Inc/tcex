@@ -1,7 +1,8 @@
 """Python Backports"""
 # flake8: noqa
 # standard library
-from typing import Callable, Generic, TypeVar
+from collections.abc import Callable
+from typing import Generic, TypeVar
 
 try:
     # standard library

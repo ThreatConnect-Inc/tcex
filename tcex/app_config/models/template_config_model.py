@@ -1,8 +1,5 @@
 """Install JSON Model"""
-# pylint: disable=no-self-argument,no-self-use; noqa: N805
-# standard library
-from typing import List, Optional
-
+# pylint: disable=no-self-argument; noqa: N805
 # third-party
 from pydantic import BaseModel, validator
 from semantic_version import Version
@@ -15,8 +12,8 @@ class TemplateConfigModel(BaseModel):
     description: str
     name: str
     summary: str
-    template_files: List[str]
-    template_parents: Optional[List[str]] = []
+    template_files: list[str]
+    template_parents: list[str] | None = []
     type: str
     version: Version
 

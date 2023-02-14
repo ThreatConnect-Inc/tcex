@@ -1,18 +1,13 @@
 """Test the TcEx Batch Module."""
-# standard library
-from typing import TYPE_CHECKING, Union
-
 # third-party
 import pytest
 
-if TYPE_CHECKING:
-    # first-party
-    from tcex import TcEx
-    from tcex.playbook.playbook import Playbook
-    from tests.mock_app import MockApp
+# first-party
+from tcex import TcEx  # TYPE-CHECKING
+from tcex.playbook.playbook import Playbook  # TYPE-CHECKING
+from tests.mock_app import MockApp  # TYPE-CHECKING
 
 
-# pylint: disable=no-self-use
 class TestUtils:
     """Test the TcEx Batch Module."""
 
@@ -72,7 +67,7 @@ class TestUtils:
         ],
     )
     def test_playbook_read_coerce_string_value(
-        self, value: Union[bool, float, int, str], expected: str, playbook: 'Playbook'
+        self, value: bool | float | int | str, expected: str, playbook: 'Playbook'
     ):
         """Test playbook variables."""
         assert playbook.read._coerce_string_value(value) == expected

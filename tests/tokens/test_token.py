@@ -39,7 +39,7 @@ def await_token_renewal_cycle(token_service, timeout=60):
     await_token_barrier_disabled(token_service, timeout)
 
 
-# pylint: disable=no-self-argument, no-self-use
+# pylint: disable=no-self-argument
 @pytest.mark.run(order=3)
 class TestToken:
     """Test the TcEx Batch Module."""

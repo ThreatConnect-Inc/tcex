@@ -1,23 +1,19 @@
 """Tests for TcEx Playbook Create Module."""
 # standard library
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import Any
 
 # third-party
 import pytest
 
 # first-party
+from tcex import TcEx  # TYPE-CHECKING
 from tcex.backports import cached_property
 from tcex.input.field_types import KeyValue
+from tcex.playbook.playbook import Playbook  # TYPE-CHECKING
 from tcex.pleb.scoped_property import scoped_property
-
-if TYPE_CHECKING:
-    # first-party
-    from tcex import TcEx
-    from tcex.playbook.playbook import Playbook
-    from tests.mock_app import MockApp
+from tests.mock_app import MockApp  # TYPE-CHECKING
 
 
-# pylint: disable=no-self-use
 class TestPlaybookCreate:
     """Tests for TcEx Playbook Create Module."""
 
@@ -121,7 +117,7 @@ class TestPlaybookCreate:
         ],
     )
     def test_playbook_create_coerce_string_value(
-        self, value: Union[bool, float, int, str], expected: str, playbook: 'Playbook'
+        self, value: bool | float | int | str, expected: str, playbook: 'Playbook'
     ):
         """Test playbook variables."""
         assert playbook.create._coerce_string_value(value) == expected
@@ -137,7 +133,7 @@ class TestPlaybookCreate:
         ],
     )
     def test_playbook_create_get_variable(
-        self, variable: str, variable_type: Optional[str], expected: str, playbook_app: 'MockApp'
+        self, variable: str, variable_type: str | None, expected: str, playbook_app: 'MockApp'
     ):
         """Test playbook variables."""
         tcex: 'TcEx' = playbook_app(
@@ -173,7 +169,7 @@ class TestPlaybookCreate:
     )
     def test_playbook_create_process_object_types(
         self,
-        value: Union[KeyValue, dict],
+        value: KeyValue | dict,
         validate: bool,
         allow_none: bool,
         expected: str,

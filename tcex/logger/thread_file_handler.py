@@ -3,7 +3,6 @@
 import os
 import threading
 from logging.handlers import RotatingFileHandler
-from typing import Optional
 
 
 class ThreadFileHandler(RotatingFileHandler):
@@ -15,11 +14,11 @@ class ThreadFileHandler(RotatingFileHandler):
     def __init__(
         self,
         filename: str,
-        mode: Optional[str] = 'a',
-        maxBytes: Optional[int] = 0,
-        backupCount: Optional[int] = 0,
-        encoding: Optional[str] = None,
-        delay: Optional[bool] = False,
+        mode: str | None = 'a',
+        maxBytes: int | None = 0,
+        backupCount: int | None = 0,
+        encoding: str | None = None,
+        delay: bool = False,
     ):
         """Add logic to create log directory if it does not exists.
 

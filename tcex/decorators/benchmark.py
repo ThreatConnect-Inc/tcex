@@ -2,7 +2,6 @@
 # standard library
 import datetime
 import logging
-from typing import Optional
 
 # third-party
 import wrapt
@@ -30,9 +29,9 @@ class Benchmark:
 
     def __init__(
         self,
-        microseconds: Optional[int] = 0,
-        milliseconds: Optional[int] = 0,
-        seconds: Optional[int] = 0,
+        microseconds: int | None = 0,
+        milliseconds: int | None = 0,
+        seconds: int | None = 0,
     ):
         """Initialize Class properties."""
         self.microseconds = microseconds

@@ -4,7 +4,8 @@ import base64
 import json
 import logging
 import os
-from typing import Any, Dict, Iterable, List, Optional, Union
+from collections.abc import Iterable
+from typing import Any
 
 # third-party
 from pydantic import BaseModel
@@ -23,7 +24,7 @@ class PlaybookCreate:
     def __init__(
         self,
         context: str,
-        key_value_store: Union[KeyValueApi, KeyValueRedis],
+        key_value_store: KeyValueApi | KeyValueRedis,
         output_variables: list,
     ):
         """Initialize the class properties."""
@@ -86,7 +87,7 @@ class PlaybookCreate:
             )
 
     @staticmethod
-    def _coerce_string_value(value: Union[bool, float, int, str]) -> str:
+    def _coerce_string_value(value: bool | float | int | str) -> str:
         """Return a string value from an bool or int."""
         # coerce bool before int as python says a bool is an int
         if isinstance(value, bool):
@@ -108,7 +109,7 @@ class PlaybookCreate:
             self.log.error(e)
             return None
 
-    def _get_variable(self, key: str, variable_type: Optional[str] = None) -> str:
+    def _get_variable(self, key: str, variable_type: str | None = None) -> str:
         """Return properly formatted variable.
 
         A key can be provided as the variable key (e.g., app.output) or the
@@ -146,10 +147,10 @@ class PlaybookCreate:
 
     @staticmethod
     def _process_object_types(
-        value: Union[BaseModel, dict],
-        validate: Optional[bool] = True,
-        allow_none: Optional[bool] = False,
-    ) -> Dict[str, Any]:
+        value: BaseModel | dict,
+        validate: bool = True,
+        allow_none: bool = False,
+    ) -> dict[str, Any]:
         """Process object types (e.g., KeyValue, TCEntity)."""
         types = (BaseModel, dict)
         if allow_none is True:
@@ -179,9 +180,9 @@ class PlaybookCreate:
         """Return True if provided data has proper structure for TC Batch."""
         if not isinstance(data, dict):
             return False
-        if not isinstance(data.get('indicator', []), List):
+        if not isinstance(data.get('indicator', []), list):
             return False
-        if not isinstance(data.get('group', []), List):
+        if not isinstance(data.get('group', []), list):
             return False
         return True
 
@@ -195,13 +196,18 @@ class PlaybookCreate:
     def any(
         self,
         key: str,
-        value: Union[
-            'BaseModel', bytes, dict, str, List['BaseModel'], List[bytes], List[dict], List[str]
-        ],
-        validate: Optional[bool] = True,
-        variable_type: Optional[str] = None,
-        when_requested: Optional[bool] = True,
-    ) -> Optional[Union[bytes, dict, list, str]]:
+        value: BaseModel
+        | bytes
+        | dict
+        | str
+        | list[BaseModel]
+        | list[bytes]
+        | list[dict]
+        | list[str],
+        validate: bool = True,
+        variable_type: str | None = None,
+        when_requested: bool = True,
+    ) -> bytes | dict | list | str | None:
         """Write the value to the keystore for all types.
 
         This is a quick helper method, for more advanced features
@@ -246,9 +252,9 @@ class PlaybookCreate:
         self,
         key: str,
         value: bytes,
-        validate: Optional[bool] = True,
-        when_requested: Optional[bool] = True,
-    ) -> Optional[int]:
+        validate: bool = True,
+        when_requested: bool = True,
+    ) -> int | None:
         """Create the value in Redis if applicable."""
         if self._check_null(key, value) is True:
             return None
@@ -273,9 +279,9 @@ class PlaybookCreate:
     def binary_array(
         self,
         key: str,
-        value: List[bytes],
-        validate: Optional[bool] = True,
-        when_requested: Optional[bool] = True,
+        value: list[bytes],
+        validate: bool = True,
+        when_requested: bool = True,
     ):
         """Create the value in Redis if applicable."""
         if self._check_null(key, value) is True:
@@ -308,10 +314,10 @@ class PlaybookCreate:
     def key_value(
         self,
         key: str,
-        value: Union[BaseModel, dict],
-        validate: Optional[bool] = True,
-        when_requested: Optional[bool] = True,
-    ) -> Optional[int]:
+        value: BaseModel | dict,
+        validate: bool = True,
+        when_requested: bool = True,
+    ) -> int | None:
         """Create the value in Redis if applicable."""
         if self._check_null(key, value) is True:
             return None
@@ -335,9 +341,9 @@ class PlaybookCreate:
     def key_value_array(
         self,
         key: str,
-        value: List[Union[BaseModel, dict]],
-        validate: Optional[bool] = True,
-        when_requested: Optional[bool] = True,
+        value: list[BaseModel | dict],
+        validate: bool = True,
+        when_requested: bool = True,
     ):
         """Create the value in Redis if applicable."""
         if self._check_null(key, value) is True:
@@ -369,10 +375,10 @@ class PlaybookCreate:
     def string(
         self,
         key: str,
-        value: Union[bool, float, int, str],
-        validate: Optional[bool] = True,
-        when_requested: Optional[bool] = True,
-    ) -> Optional[int]:
+        value: bool | float | int | str,
+        validate: bool = True,
+        when_requested: bool = True,
+    ) -> int | None:
         """Create the value in Redis if applicable."""
         if self._check_null(key, value) is True:
             return None
@@ -398,9 +404,9 @@ class PlaybookCreate:
     def string_array(
         self,
         key: str,
-        value: List[Union[bool, float, int, str]],
-        validate: Optional[bool] = True,
-        when_requested: Optional[bool] = True,
+        value: list[bool | float | int | str],
+        validate: bool = True,
+        when_requested: bool = True,
     ):
         """Create the value in Redis if applicable."""
         if self._check_null(key, value) is True:
@@ -436,9 +442,9 @@ class PlaybookCreate:
     def raw(
         self,
         key: str,
-        value: Union[bytes, str, int],
-        validate: Optional[bool] = True,
-        when_requested: Optional[bool] = True,
+        value: bytes | str | int,
+        validate: bool = True,
+        when_requested: bool = True,
     ) -> str:
         """Create method of CRUD operation for raw data.
 
@@ -453,10 +459,10 @@ class PlaybookCreate:
     def tc_batch(
         self,
         key: str,
-        value: Union[BaseModel, dict],
-        validate: Optional[bool] = True,
-        when_requested: Optional[bool] = True,
-    ) -> Optional[int]:
+        value: BaseModel | dict,
+        validate: bool = True,
+        when_requested: bool = True,
+    ) -> int | None:
         """Create the value in Redis if applicable."""
         if self._check_null(key, value) is True:
             return None
@@ -480,10 +486,10 @@ class PlaybookCreate:
     def tc_entity(
         self,
         key: str,
-        value: Union[BaseModel, dict],
-        validate: Optional[bool] = True,
-        when_requested: Optional[bool] = True,
-    ) -> Optional[int]:
+        value: BaseModel | dict,
+        validate: bool = True,
+        when_requested: bool = True,
+    ) -> int | None:
         """Create the value in Redis if applicable."""
         if self._check_null(key, value) is True:
             return None
@@ -507,9 +513,9 @@ class PlaybookCreate:
     def tc_entity_array(
         self,
         key: str,
-        value: List[Union[BaseModel, dict]],
-        validate: Optional[bool] = True,
-        when_requested: Optional[bool] = True,
+        value: list[BaseModel | dict],
+        validate: bool = True,
+        when_requested: bool = True,
     ):
         """Create the value in Redis if applicable."""
         if self._check_null(key, value) is True:
@@ -541,10 +547,15 @@ class PlaybookCreate:
     def variable(
         self,
         key: str,
-        value: Union[
-            'BaseModel', bytes, dict, str, List['BaseModel'], List[bytes], List[dict], List[str]
-        ],
-        variable_type: Optional[str] = None,
+        value: BaseModel
+        | bytes
+        | dict
+        | str
+        | list[BaseModel]
+        | list[bytes]
+        | list[dict]
+        | list[str],
+        variable_type: str | None = None,
     ) -> str:
         """Alias for any method of CRUD operation for working with KeyValue DB.
 
@@ -562,7 +573,7 @@ class PlaybookCreate:
         if self._check_null(key, value) is True:
             return None
 
-        # short-circuit the process, if there are no dowstream variables requested.
+        # short-circuit the process, if there are no downstream variables requested.
         if not self.output_variables:  # pragma: no cover
             self.log.debug(f'Variable {key} was NOT requested by downstream app.')
             return None

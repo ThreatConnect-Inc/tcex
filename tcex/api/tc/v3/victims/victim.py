@@ -1,6 +1,7 @@
 """Victim / Victims Object"""
 # standard library
-from typing import TYPE_CHECKING, Iterator, Union
+from collections.abc import Generator
+from typing import TYPE_CHECKING
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -15,50 +16,11 @@ from tcex.api.tc.v3.victims.victim_model import VictimModel, VictimsModel
 
 if TYPE_CHECKING:  # pragma: no cover
     # first-party
-    from tcex.api.tc.v3.groups.group import Group
-    from tcex.api.tc.v3.security_labels.security_label import SecurityLabel
-    from tcex.api.tc.v3.tags.tag import Tag
-    from tcex.api.tc.v3.victim_assets.victim_asset import VictimAsset
-    from tcex.api.tc.v3.victim_attributes.victim_attribute import VictimAttribute
-
-
-class Victims(ObjectCollectionABC):
-    """Victims Collection.
-
-    # Example of params input
-    {
-        'result_limit': 100,  # Limit the retrieved results.
-        'result_start': 10,  # Starting count used for pagination.
-        'fields': ['caseId', 'summary']  # Select additional return fields.
-    }
-
-    Args:
-        session (Session): Session object configured with TC API Auth.
-        tql_filters (list): List of TQL filters.
-        params (dict): Additional query params (see example above).
-    """
-
-    def __init__(self, **kwargs):
-        """Initialize class properties."""
-        super().__init__(
-            kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
-        )
-        self._model = VictimsModel(**kwargs)
-        self.type_ = 'victims'
-
-    def __iter__(self) -> 'Victim':
-        """Iterate over CM objects."""
-        return self.iterate(base_class=Victim)
-
-    @property
-    def _api_endpoint(self) -> str:
-        """Return the type specific API endpoint."""
-        return ApiEndpoints.VICTIMS.value
-
-    @property
-    def filter(self) -> 'VictimFilter':
-        """Return the type specific filter object."""
-        return VictimFilter(self.tql)
+    from tcex.api.tc.v3.groups.group import Group  # CIRCULAR-IMPORT
+    from tcex.api.tc.v3.security_labels.security_label import SecurityLabel  # CIRCULAR-IMPORT
+    from tcex.api.tc.v3.tags.tag import Tag  # CIRCULAR-IMPORT
+    from tcex.api.tc.v3.victim_assets.victim_asset import VictimAsset  # CIRCULAR-IMPORT
+    from tcex.api.tc.v3.victim_attributes.victim_attribute import VictimAttribute  # CIRCULAR-IMPORT
 
 
 class Victim(ObjectABC):
@@ -85,7 +47,7 @@ class Victim(ObjectABC):
         super().__init__(kwargs.pop('session', None))
 
         # properties
-        self._model = VictimModel(**kwargs)
+        self._model: VictimModel = VictimModel(**kwargs)
         self._nested_field_name = 'victims'
         self._nested_filter = 'has_victim'
         self.type_ = 'Victim'
@@ -96,12 +58,12 @@ class Victim(ObjectABC):
         return ApiEndpoints.VICTIMS.value
 
     @property
-    def model(self) -> 'VictimModel':
+    def model(self) -> VictimModel:
         """Return the model data."""
         return self._model
 
     @model.setter
-    def model(self, data: Union['VictimModel', dict]):
+    def model(self, data: dict | VictimModel):
         """Create model using the provided data."""
         if isinstance(data, type(self.model)):
             # provided data is already a model, nothing required to change
@@ -120,89 +82,128 @@ class Victim(ObjectABC):
         return {'type': type_, 'id': self.model.id, 'value': self.model.name}
 
     @property
-    def victim_assets(self) -> Iterator['VictimAsset']:
+    def victim_assets(self) -> Generator['VictimAsset', None, None]:
         """Yield VictimAsset from VictimAssets."""
         # first-party
         from tcex.api.tc.v3.victim_assets.victim_asset import VictimAssets
 
-        yield from self._iterate_over_sublist(VictimAssets)
+        yield from self._iterate_over_sublist(VictimAssets)  # type: ignore
 
     @property
-    def associated_groups(self) -> Iterator['Group']:
+    def associated_groups(self) -> Generator['Group', None, None]:
         """Yield Group from Groups."""
         # first-party
         from tcex.api.tc.v3.groups.group import Groups
 
-        yield from self._iterate_over_sublist(Groups)
+        yield from self._iterate_over_sublist(Groups)  # type: ignore
 
     @property
-    def attributes(self) -> Iterator['VictimAttribute']:
+    def attributes(self) -> Generator['VictimAttribute', None, None]:
         """Yield Attribute from Attributes."""
         # first-party
         from tcex.api.tc.v3.victim_attributes.victim_attribute import VictimAttributes
 
-        yield from self._iterate_over_sublist(VictimAttributes)
+        yield from self._iterate_over_sublist(VictimAttributes)  # type: ignore
 
     @property
-    def security_labels(self) -> Iterator['SecurityLabel']:
+    def security_labels(self) -> Generator['SecurityLabel', None, None]:
         """Yield SecurityLabel from SecurityLabels."""
         # first-party
         from tcex.api.tc.v3.security_labels.security_label import SecurityLabels
 
-        yield from self._iterate_over_sublist(SecurityLabels)
+        yield from self._iterate_over_sublist(SecurityLabels)  # type: ignore
 
     @property
-    def tags(self) -> Iterator['Tag']:
+    def tags(self) -> Generator['Tag', None, None]:
         """Yield Tag from Tags."""
         # first-party
         from tcex.api.tc.v3.tags.tag import Tags
 
-        yield from self._iterate_over_sublist(Tags)
+        yield from self._iterate_over_sublist(Tags)  # type: ignore
 
-    def stage_victim_asset(self, data: Union[dict, 'ObjectABC', 'VictimAssetModel']):
+    def stage_victim_asset(self, data: dict | ObjectABC | VictimAssetModel):
         """Stage victim_asset on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = VictimAssetModel(**data)
 
         if not isinstance(data, VictimAssetModel):
             raise RuntimeError('Invalid type passed in to stage_victim_asset')
         data._staged = True
-        self.model.assets.data.append(data)
+        self.model.assets.data.append(data)  # type: ignore
 
-    def stage_attribute(self, data: Union[dict, 'ObjectABC', 'VictimAttributeModel']):
+    def stage_attribute(self, data: dict | ObjectABC | VictimAttributeModel):
         """Stage attribute on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = VictimAttributeModel(**data)
 
         if not isinstance(data, VictimAttributeModel):
             raise RuntimeError('Invalid type passed in to stage_attribute')
         data._staged = True
-        self.model.attributes.data.append(data)
+        self.model.attributes.data.append(data)  # type: ignore
 
-    def stage_security_label(self, data: Union[dict, 'ObjectABC', 'SecurityLabelModel']):
+    def stage_security_label(self, data: dict | ObjectABC | SecurityLabelModel):
         """Stage security_label on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = SecurityLabelModel(**data)
 
         if not isinstance(data, SecurityLabelModel):
             raise RuntimeError('Invalid type passed in to stage_security_label')
         data._staged = True
-        self.model.security_labels.data.append(data)
+        self.model.security_labels.data.append(data)  # type: ignore
 
-    def stage_tag(self, data: Union[dict, 'ObjectABC', 'TagModel']):
+    def stage_tag(self, data: dict | ObjectABC | TagModel):
         """Stage tag on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = TagModel(**data)
 
         if not isinstance(data, TagModel):
             raise RuntimeError('Invalid type passed in to stage_tag')
         data._staged = True
-        self.model.tags.data.append(data)
+        self.model.tags.data.append(data)  # type: ignore
+
+
+class Victims(ObjectCollectionABC):
+    """Victims Collection.
+
+    # Example of params input
+    {
+        'result_limit': 100,  # Limit the retrieved results.
+        'result_start': 10,  # Starting count used for pagination.
+        'fields': ['caseId', 'summary']  # Select additional return fields.
+    }
+
+    Args:
+        session (Session): Session object configured with TC API Auth.
+        tql_filters (list): List of TQL filters.
+        params (dict): Additional query params (see example above).
+    """
+
+    def __init__(self, **kwargs):
+        """Initialize class properties."""
+        super().__init__(
+            kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
+        )
+        self._model = VictimsModel(**kwargs)
+        self.type_ = 'victims'
+
+    def __iter__(self) -> Victim:
+        """Iterate over CM objects."""
+        return self.iterate(base_class=Victim)  # type: ignore
+
+    @property
+    def _api_endpoint(self) -> str:
+        """Return the type specific API endpoint."""
+        return ApiEndpoints.VICTIMS.value
+
+    @property
+    def filter(self) -> 'VictimFilter':
+        """Return the type specific filter object."""
+        return VictimFilter(self.tql)

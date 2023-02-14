@@ -1,6 +1,7 @@
 """VictimAsset / VictimAssets Object"""
 # standard library
-from typing import TYPE_CHECKING, Iterator, Union
+from collections.abc import Generator
+from typing import TYPE_CHECKING
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -12,46 +13,7 @@ from tcex.api.tc.v3.victim_assets.victim_asset_model import VictimAssetModel, Vi
 
 if TYPE_CHECKING:  # pragma: no cover
     # first-party
-    from tcex.api.tc.v3.groups.group import Group
-
-
-class VictimAssets(ObjectCollectionABC):
-    """VictimAssets Collection.
-
-    # Example of params input
-    {
-        'result_limit': 100,  # Limit the retrieved results.
-        'result_start': 10,  # Starting count used for pagination.
-        'fields': ['caseId', 'summary']  # Select additional return fields.
-    }
-
-    Args:
-        session (Session): Session object configured with TC API Auth.
-        tql_filters (list): List of TQL filters.
-        params (dict): Additional query params (see example above).
-    """
-
-    def __init__(self, **kwargs):
-        """Initialize class properties."""
-        super().__init__(
-            kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
-        )
-        self._model = VictimAssetsModel(**kwargs)
-        self.type_ = 'victim_assets'
-
-    def __iter__(self) -> 'VictimAsset':
-        """Iterate over CM objects."""
-        return self.iterate(base_class=VictimAsset)
-
-    @property
-    def _api_endpoint(self) -> str:
-        """Return the type specific API endpoint."""
-        return ApiEndpoints.VICTIM_ASSETS.value
-
-    @property
-    def filter(self) -> 'VictimAssetFilter':
-        """Return the type specific filter object."""
-        return VictimAssetFilter(self.tql)
+    from tcex.api.tc.v3.groups.group import Group  # CIRCULAR-IMPORT
 
 
 class VictimAsset(ObjectABC):
@@ -76,7 +38,7 @@ class VictimAsset(ObjectABC):
         super().__init__(kwargs.pop('session', None))
 
         # properties
-        self._model = VictimAssetModel(**kwargs)
+        self._model: VictimAssetModel = VictimAssetModel(**kwargs)
         self._nested_field_name = 'victimAssets'
         self._nested_filter = 'has_victim_asset'
         self.type_ = 'Victim Asset'
@@ -87,12 +49,12 @@ class VictimAsset(ObjectABC):
         return ApiEndpoints.VICTIM_ASSETS.value
 
     @property
-    def model(self) -> 'VictimAssetModel':
+    def model(self) -> VictimAssetModel:
         """Return the model data."""
         return self._model
 
     @model.setter
-    def model(self, data: Union['VictimAssetModel', dict]):
+    def model(self, data: dict | VictimAssetModel):
         """Create model using the provided data."""
         if isinstance(data, type(self.model)):
             # provided data is already a model, nothing required to change
@@ -136,21 +98,60 @@ class VictimAsset(ObjectABC):
         return {'type': type_, 'id': self.model.id, 'value': value}
 
     @property
-    def associated_groups(self) -> Iterator['Group']:
+    def associated_groups(self) -> Generator['Group', None, None]:
         """Yield Group from Groups."""
         # first-party
         from tcex.api.tc.v3.groups.group import Groups
 
-        yield from self._iterate_over_sublist(Groups)
+        yield from self._iterate_over_sublist(Groups)  # type: ignore
 
-    def stage_associated_group(self, data: Union[dict, 'ObjectABC', 'GroupModel']):
+    def stage_associated_group(self, data: dict | ObjectABC | GroupModel):
         """Stage group on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = GroupModel(**data)
 
         if not isinstance(data, GroupModel):
             raise RuntimeError('Invalid type passed in to stage_associated_group')
         data._staged = True
-        self.model.associated_groups.data.append(data)
+        self.model.associated_groups.data.append(data)  # type: ignore
+
+
+class VictimAssets(ObjectCollectionABC):
+    """VictimAssets Collection.
+
+    # Example of params input
+    {
+        'result_limit': 100,  # Limit the retrieved results.
+        'result_start': 10,  # Starting count used for pagination.
+        'fields': ['caseId', 'summary']  # Select additional return fields.
+    }
+
+    Args:
+        session (Session): Session object configured with TC API Auth.
+        tql_filters (list): List of TQL filters.
+        params (dict): Additional query params (see example above).
+    """
+
+    def __init__(self, **kwargs):
+        """Initialize class properties."""
+        super().__init__(
+            kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
+        )
+        self._model = VictimAssetsModel(**kwargs)
+        self.type_ = 'victim_assets'
+
+    def __iter__(self) -> VictimAsset:
+        """Iterate over CM objects."""
+        return self.iterate(base_class=VictimAsset)  # type: ignore
+
+    @property
+    def _api_endpoint(self) -> str:
+        """Return the type specific API endpoint."""
+        return ApiEndpoints.VICTIM_ASSETS.value
+
+    @property
+    def filter(self) -> 'VictimAssetFilter':
+        """Return the type specific filter object."""
+        return VictimAssetFilter(self.tql)

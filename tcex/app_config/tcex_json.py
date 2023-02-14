@@ -5,7 +5,6 @@ import logging
 import os
 from collections import OrderedDict
 from pathlib import Path
-from typing import Optional
 
 # third-party
 import colorama as c
@@ -25,9 +24,9 @@ class TcexJson:
 
     def __init__(
         self,
-        filename: Optional[str] = None,
-        path: Optional[str] = None,
-        logger: Optional[logging.Logger] = None,
+        filename: str | None = None,
+        path: str | None = None,
+        logger: logging.Logger | None = None,
     ):
         """Initialize class properties."""
         filename = filename or 'tcex.json'

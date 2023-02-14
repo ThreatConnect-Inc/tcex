@@ -3,7 +3,6 @@
 import json
 import logging
 from mimetypes import MimeTypes
-from typing import Optional, Union
 
 # third-party
 import requests
@@ -33,7 +32,7 @@ class AdvancedRequest:
         playbook: Playbook,
         session: requests.Session,
         output_prefix: str,
-        timeout: Optional[int] = 600,
+        timeout: int | None = 600,
     ):
         """Initialize class properties."""
         self.inputs = inputs
@@ -44,7 +43,7 @@ class AdvancedRequest:
 
         # properties
         self.allow_redirects: bool = True
-        self.data: Optional[Union[dict, str]] = None
+        self.data: dict | str | None = None
         self.headers: dict = {}
         self.log = logger
         self.max_mb: int = 500
@@ -53,7 +52,7 @@ class AdvancedRequest:
 
     def configure_body(self):
         """Configure Body"""
-        self.data: Union[bytes, str] = self.inputs.model.tc_adv_req_body
+        self.data: bytes | str = self.inputs.model.tc_adv_req_body
         if self.data is not None:
             # INT-1386
             try:

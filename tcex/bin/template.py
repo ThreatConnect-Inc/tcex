@@ -5,11 +5,11 @@ import hashlib
 import json
 import os
 from pathlib import Path
-from typing import TYPE_CHECKING, Dict, List, Optional
 
 # third-party
 import yaml
 from pydantic import ValidationError
+from requests import Response  # TYPE-CHECKING
 from requests import Session
 from requests.auth import HTTPBasicAuth
 from tinydb import Query, TinyDB
@@ -18,10 +18,6 @@ from tinydb import Query, TinyDB
 from tcex.app_config.models import TemplateConfigModel
 from tcex.backports import cached_property
 from tcex.bin.bin_abc import BinABC
-
-if TYPE_CHECKING:  # pragma: no cover
-    # third-party
-    from requests import Response
 
 
 class Template(BinABC):
@@ -66,8 +62,8 @@ class Template(BinABC):
         self,
         branch: str,
         type_: str,
-        template: Optional[str] = None,
-        app_builder: Optional[bool] = False,
+        template: str | None = None,
+        app_builder: bool = False,
     ) -> dict:
         """Yield template contents."""
         url = f'{self.base_url}/contents/{type_}/{template}'
@@ -132,7 +128,7 @@ class Template(BinABC):
             self.log.error(f'Failed inserting config in db ({ex}).')
             self.errors = True
 
-    def db_get_config(self, type_: str, template: str) -> Optional['TemplateConfigModel']:
+    def db_get_config(self, type_: str, template: str) -> TemplateConfigModel | None:
         """Get a config from the DB."""
         Config = Query()
         try:
@@ -148,7 +144,7 @@ class Template(BinABC):
             self.errors = True
             return None
 
-    def db_get_sha(self, sha: str) -> Optional[str]:
+    def db_get_sha(self, sha: str) -> str | None:
         """Get repo SHA from the DB."""
         SHA = Query()
         try:
@@ -198,7 +194,7 @@ class Template(BinABC):
 
     def get_template_config(
         self, type_: str, template: str, branch: str = 'main'
-    ) -> Optional['TemplateConfigModel']:
+    ) -> TemplateConfigModel | None:
         """Return the data from the template.yaml file."""
         self.log.info(
             f'action=get-template-config, type={type_}, '
@@ -283,7 +279,7 @@ class Template(BinABC):
 
         return data
 
-    def init(self, branch: str, type_: str, template: str, app_builder: bool) -> List[dict]:
+    def init(self, branch: str, type_: str, template: str, app_builder: bool) -> list[dict]:
         """Initialize an App with template files."""
         data = {}
         for tp in self.template_parents(type_, template, branch):
@@ -309,7 +305,7 @@ class Template(BinABC):
             return f'''{item.get('template_name')}/'''
         return f'''{item.get('template_type')}/{item.get('template_name')}/'''
 
-    def list(self, branch: str, type_: Optional[str] = None):
+    def list(self, branch: str, type_: str | None = None):
         """List template types."""
         template_types = self.template_types
         if type_ is not None:
@@ -335,7 +331,7 @@ class Template(BinABC):
                 f'''see logs at {os.path.join(self.cli_out_path, 'tcex.log')}.'''
             )
 
-    def print_list(self, branch: Optional[str] = None):
+    def print_list(self, branch: str | None = None):
         """Print the list output."""
         for type_, templates in self.template_data.items():
             self.print_title(f'''{type_.replace('_', ' ').title()} Templates''')
@@ -357,7 +353,7 @@ class Template(BinABC):
                 print('')
 
     @cached_property
-    def project_sha(self) -> Optional[str]:
+    def project_sha(self) -> str | None:
         """Return the current commit sha for the tcex-app-templates project."""
         params = {'perPage': '1'}
         r: 'Response' = self.session.get(f'{self.base_url}/commits', params=params)
@@ -404,7 +400,7 @@ class Template(BinABC):
             fh.write(json.dumps(self.template_manifest, indent=2, sort_keys=True))
             fh.write('\n')
 
-    def template_parents(self, type_: str, template: str, branch: str = 'main') -> List[str]:
+    def template_parents(self, type_: str, template: str, branch: str = 'main') -> list[str]:
         """Return all parents for the provided template."""
         # get the config for the requested template
         template_config = self.get_template_config(type_, template, branch)
@@ -437,7 +433,7 @@ class Template(BinABC):
         return app_templates
 
     @property
-    def template_to_prefix_map(self) -> Dict[str, str]:
+    def template_to_prefix_map(self) -> dict[str, str]:
         """Return the defined template types."""
         return {
             'api_service': 'tcva',
@@ -450,7 +446,7 @@ class Template(BinABC):
         }
 
     @property
-    def template_types(self) -> List[str]:
+    def template_types(self) -> list[str]:
         """Return the defined template types."""
         return [
             'api_service',
@@ -463,7 +459,7 @@ class Template(BinABC):
             'webhook_trigger_service',
         ]
 
-    def update(self, branch: str, template: str, type_: str, ignore_hash=False) -> List[dict]:
+    def update(self, branch: str, template: str, type_: str, ignore_hash=False) -> list[dict]:
         """Initialize an App with template files."""
         # update tcex.json model
         if template is not None:

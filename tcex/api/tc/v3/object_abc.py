@@ -1,25 +1,21 @@
 """Case Management Abstract Base Class"""
 # standard library
 import logging
-
-# import inspect
-# import re
 from abc import ABC
-from typing import TYPE_CHECKING, Dict, List, Optional, Union
+from collections.abc import Generator
+from typing import Self
 
 # third-party
-from requests import Response
+from requests import Response, Session
 from requests.exceptions import ProxyError, RetryError
 
 # first-party
+from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
+from tcex.api.tc.v3.v3_model_abc import V3ModelABC
 from tcex.backports import cached_property
 from tcex.exit.error_codes import handle_error
 from tcex.utils import Utils
-
-if TYPE_CHECKING:
-    # first-party
-    from tcex.api.tc.v3.v3_types import V3Type
 
 # get tcex logger
 logger = logging.getLogger('tcex')
@@ -34,9 +30,9 @@ class ObjectABC(ABC):
     methods are used.
     """
 
-    def __init__(self, session):
+    def __init__(self, session: Session):
         """Initialize class properties."""
-        self._session = session
+        self._session: Session = session
 
         # properties
         self._parent_data = {}
@@ -48,42 +44,45 @@ class ObjectABC(ABC):
         }
         self.utils = Utils()
         self.log = logger
-        self.request = None
+        self.request: Response
 
         # define/overwritten in child class
-        self._model = None
-        self._nested_field_name = None
-        self._nested_filter = None
-        self.type_ = None
+        self._model: V3ModelABC
+        self._nested_field_name: str | None = None
+        self._nested_filter: str | None = None
+        self.type_: str
 
     @property
-    def _api_endpoint(self) -> dict:  # pragma: no cover
+    def _api_endpoint(self) -> str:  # pragma: no cover
         """Return the type specific API endpoint."""
         raise NotImplementedError('Child class must implement this property.')
 
-    def _calculate_unique_id(self):
+    def _calculate_unique_id(self) -> dict[str, int | str]:
         if self.model.id:
             return {'filter': 'id', 'value': self.model.id}
 
-        if hasattr(self.model, 'xid') and self.model.xid:
-            return {'filter': 'xid', 'value': self.model.xid}
+        if hasattr(self.model, 'xid') and self.model.xid:  # type: ignore
+            return {'filter': 'xid', 'value': self.model.xid}  # type: ignore
 
         if self.type_.lower() in ['indicator']:
-            return {'filter': 'summary', 'value': self.model.summary}
+            return {'filter': 'summary', 'value': self.model.summary}  # type: ignore
 
         return {}
 
-    def _iterate_over_sublist(self, sublist_type: object) -> 'V3Type':
+    def _iterate_over_sublist(
+        self, sublist_type: ObjectCollectionABC
+    ) -> Generator[Self, None, None]:
         """Iterate over any nested collections."""
-        sublist = sublist_type(session=self._session)
+        sublist = sublist_type(session=self._session)  # type: ignore
 
         # determine the filter type and value based on the available object fields.
         unique_id_data = self._calculate_unique_id()
 
         # add the filter (e.g., group.has_indicator.id(TqlOperator.EQ, 123)) for the parent object.
-        getattr(getattr(sublist.filter, self._nested_filter), unique_id_data.get('filter'))(
-            TqlOperator.EQ, unique_id_data.get('value')
-        )
+        getattr(
+            getattr(sublist.filter, self._nested_filter),  # type: ignore
+            unique_id_data.get('filter'),  # type: ignore
+        )(TqlOperator.EQ, unique_id_data.get('value'))
 
         # return the sub object, injecting the parent data
         for obj in sublist:
@@ -99,10 +98,10 @@ class ObjectABC(ABC):
         self,
         method: str,
         url: str,
-        body: Optional[Union[bytes, str]] = None,
-        params: Optional[dict] = None,
-        headers: Optional[dict] = None,
-    ) -> 'Response':
+        body: bytes | str | None = None,
+        params: dict | None = None,
+        headers: dict | None = None,
+    ):
         """Handle standard request with error checking."""
         try:
             self.request = self._session.request(
@@ -127,7 +126,7 @@ class ObjectABC(ABC):
             handle_error(
                 code=952,
                 message_values=[
-                    self.request.request.method.upper(),
+                    (self.request.request.method or '').upper(),
                     self.request.status_code,
                     err,
                     self.request.url,
@@ -139,23 +138,23 @@ class ObjectABC(ABC):
             self.log_response_text(self.request)
 
     @staticmethod
-    def _validate_id(id_: int, url: str):
+    def _validate_id(id_: int | str | None, url: str):
         """Raise exception is id is not provided."""
         if not id_:  # pragma: no cover
             message = '{"message": "No ID provided.", "status": "Error"}'
             handle_error(code=952, message_values=['GET', '404', message, url])
 
     @property
-    def as_entity(self) -> Dict[str, str]:  # pragma: no cover
+    def as_entity(self) -> dict[str, str]:  # pragma: no cover
         """Return the entity representation of the object."""
         raise NotImplementedError('Child class must implement this property.')
 
     @property
-    def available_fields(self) -> List[str]:
+    def available_fields(self) -> list[str]:
         """Return the available query param field names for this object."""
-        return [fd.get('name') for fd in self.fields]
+        return [fd['name'] for fd in self.fields]
 
-    def create(self, params: Optional[dict] = None) -> 'Response':
+    def create(self, params: dict | None = None) -> 'Response':
         """Create or Update the Case Management object.
 
         This is determined based on if the id is already present in the object.
@@ -178,7 +177,7 @@ class ObjectABC(ABC):
 
         return self.request
 
-    def delete(self, params: Optional[dict] = None):
+    def delete(self, params: dict | None = None):
         """Delete the object."""
         method = 'DELETE'
         body = self.model.gen_body_json(method)
@@ -194,15 +193,15 @@ class ObjectABC(ABC):
         return self.request
 
     @cached_property
-    def fields(self) -> Dict[str, str]:
+    def fields(self) -> list[dict[str, str]]:
         """Return the field data for this object."""
-        _fields = {}
+        _fields = []
         r = self._session.options(f'{self._api_endpoint}/fields', params={})
         if r.ok:
-            _fields = r.json().get('data', {})
+            _fields = r.json().get('data', [])
         return _fields
 
-    def gen_params(self, params: List[dict]) -> List[dict]:
+    def gen_params(self, params: dict) -> dict:
         """Return appropriate params values."""
         # convert all keys to camel case
         params = {self.utils.snake_to_camel(k): v for k, v in params.items()}
@@ -220,9 +219,9 @@ class ObjectABC(ABC):
 
     def get(
         self,
-        object_id: Optional[int] = None,
-        params: Optional[dict] = None,
-    ) -> 'V3Type':
+        object_id: int | None = None,
+        params: dict | None = None,
+    ) -> Response:
         """Get the Case Management Object.
 
         .. code-block:: python
@@ -267,12 +266,12 @@ class ObjectABC(ABC):
         self.log.debug(f'feature=api-tc-v3, response-body={response_text}')
 
     @property
-    def model(self) -> 'V3Type':
+    def model(self) -> V3ModelABC:
         """Return the model data."""
         return self._model
 
     @model.setter
-    def model(self, data: Union['V3Type', dict]):
+    def model(self, data: dict | V3ModelABC):
         """Create model using the provided data."""
         if isinstance(data, type(self.model)):
             # provided data is already a model, nothing required to change
@@ -284,12 +283,12 @@ class ObjectABC(ABC):
             raise RuntimeError(f'Invalid data type: {type(data)} provided.')
 
     @cached_property
-    def properties(self) -> dict:
+    def properties(self) -> dict[str, dict | list]:
         """Return defined API properties for the current object.
 
         This property is used in testing API consistency.
         """
-        _properties = []
+        _properties = {}
         try:
             r = self._session.options(
                 self._api_endpoint,
@@ -331,7 +330,7 @@ class ObjectABC(ABC):
             status = False
         return status
 
-    def update(self, mode: Optional[str] = None, params: Optional[dict] = None) -> 'Response':
+    def update(self, mode: str | None = None, params: dict | None = None) -> 'Response':
         """Create or Update the Case Management object.
 
         This is determined based on if the id is already present in the object.
@@ -360,7 +359,7 @@ class ObjectABC(ABC):
 
         return self.request
 
-    def url(self, method: str, unique_id: Optional[str] = None) -> str:
+    def url(self, method: str, unique_id: int | str | None = None) -> str:
         """Return the proper URL."""
         unique_id = unique_id or self._calculate_unique_id().get('value')
         if method in ['DELETE', 'GET', 'PUT']:

@@ -3,7 +3,7 @@
 import json
 import logging
 from functools import lru_cache
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 from urllib.parse import unquote
 
 # first-party
@@ -13,7 +13,10 @@ from tcex.utils import Utils
 
 if TYPE_CHECKING:
     # first-party
-    from tcex.api.tc.v2.threat_intelligence.threat_intelligence import ThreatIntelligence
+    from tcex.api.tc.v2.threat_intelligence.threat_intelligence import (
+        ThreatIntelligence,  # CIRCULAR-IMPORT
+    )
+
 
 # get tcex logger
 logger = logging.getLogger('tcex')
@@ -50,7 +53,7 @@ class Mappings:
         self._utils = Utils()
 
     @property
-    @lru_cache()
+    @lru_cache
     def _error_codes(self) -> 'TcExErrorCodes':  # noqa: F821
         """Return TcEx error codes."""
         return TcExErrorCodes()
@@ -61,7 +64,7 @@ class Mappings:
         return ['tcex', 'kwargs', 'api_endpoint']
 
     def _handle_error(
-        self, code: int, message_values: Optional[list] = None, raise_error: Optional[bool] = True
+        self, code: int, message_values: list | None = None, raise_error: bool = True
     ):
         """Raise RuntimeError
 
@@ -662,7 +665,7 @@ class Mappings:
             self.api_type, self.api_branch, self.unique_id, attribute_id, label, owner=self.owner
         )
 
-    def can_create(self):  # pylint: disable=no-self-use
+    def can_create(self):
         """Determine if the object can be created."""
         return True
 

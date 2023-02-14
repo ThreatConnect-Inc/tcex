@@ -1,10 +1,11 @@
 """TcEx JSON Update"""
 # standard library
 import os
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:  # pragma: no cover
-    from .tcex_json import TcexJson
+if TYPE_CHECKING:
+    # first-party
+    from tcex.app_config.tcex_json import TcexJson  # CIRCULAR-IMPORT
 
 
 class TcexJsonUpdate:
@@ -14,7 +15,7 @@ class TcexJsonUpdate:
         """Initialize class properties."""
         self.tj = tj
 
-    def multiple(self, template: Optional[str] = None):
+    def multiple(self, template: str | None = None):
         """Update the contents of the tcex.json file."""
 
         # update app_name

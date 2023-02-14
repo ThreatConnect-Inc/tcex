@@ -1,7 +1,5 @@
 """API Model"""
-# pylint: disable=no-self-argument,no-self-use
-# standard library
-from typing import Optional
+# pylint: disable=no-self-argument
 
 # third-party
 from pydantic import BaseModel, Field, validator
@@ -22,13 +20,13 @@ class ApiModel(BaseModel):
     * WebhookTriggerService
     """
 
-    api_default_org: Optional[str] = Field(
+    api_default_org: str | None = Field(
         None,
         description='The default ThreatConnect Org for the current API user.',
         inclusion_reason='runtimeLevel',
     )
     # alternate authentication credential when tc_token is not passed
-    tc_api_access_id: Optional[str] = Field(
+    tc_api_access_id: str | None = Field(
         None,
         description='A ThreatConnect API Access Id.',
         inclusion_reason='runtimeLevel',
@@ -40,23 +38,23 @@ class ApiModel(BaseModel):
         inclusion_reason='runtimeLevel',
     )
     # alternate authentication credential when tc_token is not passed
-    tc_api_secret_key: Optional[Sensitive] = Field(
+    tc_api_secret_key: Sensitive | None = Field(
         None,
         description='A ThreatConnect API Secret Key.',
         inclusion_reason='runtimeLevel',
         requires_definition=True,
     )
-    tc_token: Optional[Sensitive] = Field(
+    tc_token: Sensitive | None = Field(
         None,
         description='A ThreatConnect API token.',
         inclusion_reason='runtimeLevel',
     )
-    tc_token_expires: Optional[int] = Field(
+    tc_token_expires: int | None = Field(
         None,
         description='The expiration timestamp in epoch for tc_token.',
         inclusion_reason='runtimeLevel',
     )
-    tc_verify: Optional[bool] = Field(
+    tc_verify: bool = Field(
         True,
         description='Flag to enable SSL validation for API requests.',
         inclusion_reason='runtimeLevel',
@@ -64,7 +62,7 @@ class ApiModel(BaseModel):
     )
 
     @validator('tc_token', always=True, pre=True)
-    def one_set_of_credentials(cls, v, values):  # pylint: disable=E0213,R0201
+    def one_set_of_credentials(cls, v, values):
         """Validate that one set of credentials is provided for the TC API."""
         _ij = InstallJson()
 

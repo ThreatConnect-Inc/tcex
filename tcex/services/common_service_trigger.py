@@ -4,7 +4,8 @@ import json
 import os
 import threading
 import traceback
-from typing import Any, Callable, Optional, Union
+from collections.abc import Callable
+from typing import Any
 
 # first-party
 from tcex.pleb.registry import registry
@@ -168,7 +169,7 @@ class CommonServiceTrigger(CommonService):
             raise RuntimeError('Callback method (callback) is not a callable.')
 
         # get developer passed trigger_ids
-        trigger_ids: Optional[list] = kwargs.pop('trigger_ids', None)
+        trigger_ids: list | None = kwargs.pop('trigger_ids', None)
 
         for trigger_id, config in list(self.configs.items()):
             if trigger_ids is not None and trigger_id not in trigger_ids:
@@ -184,7 +185,7 @@ class CommonServiceTrigger(CommonService):
 
                 # get an instance of PB module with current
                 # session_id and outputs to pass to callback
-                outputs: Union[list, str] = config.tc_playbook_out_variables or []
+                outputs: list | str = config.tc_playbook_out_variables or []
                 if isinstance(outputs, str):
                     outputs = outputs.split(',')
                 playbook: object = self.tcex.get_playbook(
@@ -230,9 +231,7 @@ class CommonServiceTrigger(CommonService):
         self.log.info(f'feature=service, event=update-trigger-value, msg={msg}')
         self.message_broker.publish(json.dumps(msg), self.args.tc_svc_client_topic)
 
-    def fire_event_publish(
-        self, trigger_id: int, session_id: str, request_key: Optional[str] = None
-    ):
+    def fire_event_publish(self, trigger_id: int, session_id: str, request_key: str | None = None):
         """Send FireEvent command.
 
         Args:
@@ -308,9 +307,10 @@ class CommonServiceTrigger(CommonService):
 
         logged_config = config.copy()
 
-        for param in self.ij.model.params:
-            if param.encrypt and config.__contains__(param.name):
-                logged_config[param.get('name')] = '***'
+        for param in self.ij.model.params or []:
+            if param.encrypt and param.name in config:
+                logged_config[param.name] = '***'
+
         self.log.info(
             f'feature=service, event=create-config, trigger_id={trigger_id}, config={logged_config}'
         )
@@ -366,7 +366,6 @@ class CommonServiceTrigger(CommonService):
 
         msg = 'Create Config'
         if callable(self.create_config_callback):
-
             kwargs = {}
             if self.ij.model.is_webhook_trigger_app:
                 # only webhook triggers get and require the PB url
@@ -391,7 +390,7 @@ class CommonServiceTrigger(CommonService):
                 self.configs[trigger_id] = config_input
                 # call callback for create config and handle exceptions to protect thread
                 # pylint: disable=not-callable
-                response: Optional[dict] = self.create_config_callback(config_input, **kwargs)
+                response: dict | None = self.create_config_callback(config_input, **kwargs)
                 if isinstance(response, dict):
                     status = response.get('status', False)
                     msg = response.get('msg')
@@ -439,7 +438,7 @@ class CommonServiceTrigger(CommonService):
             try:
                 # call callback for delete config and handle exceptions to protect thread
                 # pylint: disable=not-callable
-                status: Optional[bool] = self.delete_config_callback(trigger_id)
+                status: bool | None = self.delete_config_callback(trigger_id)
 
                 # if callback does not return a boolean value assume it worked
                 if not isinstance(status, bool):
@@ -463,7 +462,7 @@ class CommonServiceTrigger(CommonService):
         return f'''trigger-id-{self.thread_trigger_id}.log'''
 
     @property
-    def thread_trigger_id(self) -> Optional[str]:
+    def thread_trigger_id(self) -> str | None:
         """Return the current thread trigger id."""
         trigger_id = None
         if hasattr(threading.current_thread(), 'trigger_id'):

@@ -2,7 +2,7 @@
 # standard library
 import logging
 import time
-from typing import Callable, Optional
+from collections.abc import Callable
 
 # third-party
 import urllib3
@@ -59,7 +59,7 @@ class CustomAdapter(adapters.HTTPAdapter):
 
     def __init__(
         self,
-        rate_limit_handler: Optional[RateLimitHandler] = None,
+        rate_limit_handler: RateLimitHandler | None = None,
         pool_connections=DEFAULT_POOLSIZE,
         pool_maxsize=DEFAULT_POOLSIZE,
         max_retries=DEFAULT_RETRIES,
@@ -117,8 +117,8 @@ class ExternalSession(Session):
     """ThreatConnect REST API Requests Session for external requests
 
     Args:
-        base_url (Optional[str] = None): The base URL for all requests.
-        logger (Optional[object] = None): An instance of Logger.
+        base_url: The base URL for all requests.
+        logger: An instance of Logger.
     """
 
     __attrs__ = [
@@ -142,12 +142,12 @@ class ExternalSession(Session):
         'utils',
     ]
 
-    def __init__(self, base_url: Optional[str] = None):
+    def __init__(self, base_url: str | None = None):
         """Initialize the Class properties."""
         super().__init__()
         self._base_url = base_url
 
-        self._custom_adapter: Optional[CustomAdapter] = None
+        self._custom_adapter: CustomAdapter | None = None
         self.utils: object = Utils()
 
         # properties
@@ -214,7 +214,7 @@ class ExternalSession(Session):
         self._mask_patterns = patterns
 
     @property
-    def too_many_requests_handler(self) -> Callable[['Response'], float]:
+    def too_many_requests_handler(self) -> Callable[[Response], float]:
         """Get the too_many_requests_handler.
 
         The too_many_requests_handler is responsible for determining how long to sleep (in seconds)
@@ -332,9 +332,9 @@ class ExternalSession(Session):
 
     def retry(
         self,
-        retries: Optional[int] = 3,
-        backoff_factor: Optional[float] = 0.3,
-        status_forcelist: Optional[list] = None,
+        retries: int | None = 3,
+        backoff_factor: float | None = 0.3,
+        status_forcelist: list | None = None,
         **kwargs,
     ):
         """Add retry to Requests Session
@@ -342,10 +342,10 @@ class ExternalSession(Session):
         https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html#urllib3.util.retry.Retry
 
         Args:
-            retries (Optional[int] = 3): The number of retry attempts.
-            backoff_factor (Optional[float] = 0.3): The backoff factor for retries.
-            status_forcelist (Optional[list] = [500, 502, 504]): A list of status code to retry on.
-            urls (list, kwargs): An optional URL to apply the retry. If not provided the retry
+            retries: The number of retry attempts.
+            backoff_factor: The backoff factor for retries.
+            status_forcelist: A list of status code to retry on.
+            urls: An optional URL to apply the retry. If not provided the retry
                 applies to all request with "https://".
         """
         retry_object: object = Retry(

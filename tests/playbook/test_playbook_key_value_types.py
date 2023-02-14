@@ -1,19 +1,15 @@
 """Test the TcEx Batch Module."""
 # standard library
-from typing import TYPE_CHECKING, Any, Dict, List, Union
+from typing import Any
 
 # third-party
 import pytest
 
 # first-party
 from tcex.input.field_types import KeyValue
-
-if TYPE_CHECKING:
-    # first-party
-    from tcex.playbook.playbook import Playbook
+from tcex.playbook.playbook import Playbook  # TYPE-CHECKING
 
 
-# pylint: disable=no-self-use
 class TestUtils:
     """Test the TcEx Batch Module."""
 
@@ -28,7 +24,7 @@ class TestUtils:
         ],
     )
     def test_playbook_key_value_pass(
-        self, variable: str, value: Union[dict, KeyValue], playbook: 'Playbook'
+        self, variable: str, value: dict | KeyValue, playbook: 'Playbook'
     ):
         """Test playbook variables."""
         playbook.create.key_value(variable, value, when_requested=False)
@@ -79,7 +75,7 @@ class TestUtils:
         ],
     )
     def test_playbook_key_value_array_pass(
-        self, variable: str, value: List[Dict[str, str]], playbook: 'Playbook'
+        self, variable: str, value: list[dict[str, str]], playbook: 'Playbook'
     ):
         """Test playbook variables."""
         playbook.create.key_value_array(variable, value, when_requested=False)

@@ -1,6 +1,7 @@
 """Task / Tasks Object"""
 # standard library
-from typing import TYPE_CHECKING, Iterator, Union
+from collections.abc import Generator
+from typing import TYPE_CHECKING
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -15,47 +16,8 @@ from tcex.api.tc.v3.tasks.task_model import TaskModel, TasksModel
 
 if TYPE_CHECKING:  # pragma: no cover
     # first-party
-    from tcex.api.tc.v3.artifacts.artifact import Artifact
-    from tcex.api.tc.v3.notes.note import Note
-
-
-class Tasks(ObjectCollectionABC):
-    """Tasks Collection.
-
-    # Example of params input
-    {
-        'result_limit': 100,  # Limit the retrieved results.
-        'result_start': 10,  # Starting count used for pagination.
-        'fields': ['caseId', 'summary']  # Select additional return fields.
-    }
-
-    Args:
-        session (Session): Session object configured with TC API Auth.
-        tql_filters (list): List of TQL filters.
-        params (dict): Additional query params (see example above).
-    """
-
-    def __init__(self, **kwargs):
-        """Initialize class properties."""
-        super().__init__(
-            kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
-        )
-        self._model = TasksModel(**kwargs)
-        self.type_ = 'tasks'
-
-    def __iter__(self) -> 'Task':
-        """Iterate over CM objects."""
-        return self.iterate(base_class=Task)
-
-    @property
-    def _api_endpoint(self) -> str:
-        """Return the type specific API endpoint."""
-        return ApiEndpoints.TASKS.value
-
-    @property
-    def filter(self) -> 'TaskFilter':
-        """Return the type specific filter object."""
-        return TaskFilter(self.tql)
+    from tcex.api.tc.v3.artifacts.artifact import Artifact  # CIRCULAR-IMPORT
+    from tcex.api.tc.v3.notes.note import Note  # CIRCULAR-IMPORT
 
 
 class Task(ObjectABC):
@@ -85,7 +47,7 @@ class Task(ObjectABC):
         super().__init__(kwargs.pop('session', None))
 
         # properties
-        self._model = TaskModel(**kwargs)
+        self._model: TaskModel = TaskModel(**kwargs)
         self._nested_field_name = 'tasks'
         self._nested_filter = 'has_task'
         self.type_ = 'Task'
@@ -96,12 +58,12 @@ class Task(ObjectABC):
         return ApiEndpoints.TASKS.value
 
     @property
-    def model(self) -> 'TaskModel':
+    def model(self) -> TaskModel:
         """Return the model data."""
         return self._model
 
     @model.setter
-    def model(self, data: Union['TaskModel', dict]):
+    def model(self, data: dict | TaskModel):
         """Create model using the provided data."""
         if isinstance(data, type(self.model)):
             # provided data is already a model, nothing required to change
@@ -120,38 +82,38 @@ class Task(ObjectABC):
         return {'type': type_, 'id': self.model.id, 'value': self.model.name}
 
     @property
-    def artifacts(self) -> Iterator['Artifact']:
+    def artifacts(self) -> Generator['Artifact', None, None]:
         """Yield Artifact from Artifacts."""
         # first-party
         from tcex.api.tc.v3.artifacts.artifact import Artifacts
 
-        yield from self._iterate_over_sublist(Artifacts)
+        yield from self._iterate_over_sublist(Artifacts)  # type: ignore
 
     @property
-    def notes(self) -> Iterator['Note']:
+    def notes(self) -> Generator['Note', None, None]:
         """Yield Note from Notes."""
         # first-party
         from tcex.api.tc.v3.notes.note import Notes
 
-        yield from self._iterate_over_sublist(Notes)
+        yield from self._iterate_over_sublist(Notes)  # type: ignore
 
-    def stage_artifact(self, data: Union[dict, 'ObjectABC', 'ArtifactModel']):
+    def stage_artifact(self, data: dict | ObjectABC | ArtifactModel):
         """Stage artifact on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = ArtifactModel(**data)
 
         if not isinstance(data, ArtifactModel):
             raise RuntimeError('Invalid type passed in to stage_artifact')
         data._staged = True
-        self.model.artifacts.data.append(data)
+        self.model.artifacts.data.append(data)  # type: ignore
 
     # pylint: disable=redefined-builtin
-    def stage_assignee(self, type: str, data: Union[dict, 'ObjectABC', 'ArtifactModel']):
+    def stage_assignee(self, type: str, data: dict | ObjectABC | UserModel | UserGroupModel):
         """Stage artifact on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif type.lower() == 'user' and isinstance(data, dict):
             data = UserModel(**data)
         elif type.lower() == 'group' and isinstance(data, dict):
@@ -162,16 +124,55 @@ class Task(ObjectABC):
         data._staged = True
         self.model.assignee._staged = True
         self.model.assignee.type = type
-        self.model.assignee.data = data
+        self.model.assignee.data = data  # type: ignore
 
-    def stage_note(self, data: Union[dict, 'ObjectABC', 'NoteModel']):
+    def stage_note(self, data: dict | ObjectABC | NoteModel):
         """Stage note on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = NoteModel(**data)
 
         if not isinstance(data, NoteModel):
             raise RuntimeError('Invalid type passed in to stage_note')
         data._staged = True
-        self.model.notes.data.append(data)
+        self.model.notes.data.append(data)  # type: ignore
+
+
+class Tasks(ObjectCollectionABC):
+    """Tasks Collection.
+
+    # Example of params input
+    {
+        'result_limit': 100,  # Limit the retrieved results.
+        'result_start': 10,  # Starting count used for pagination.
+        'fields': ['caseId', 'summary']  # Select additional return fields.
+    }
+
+    Args:
+        session (Session): Session object configured with TC API Auth.
+        tql_filters (list): List of TQL filters.
+        params (dict): Additional query params (see example above).
+    """
+
+    def __init__(self, **kwargs):
+        """Initialize class properties."""
+        super().__init__(
+            kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
+        )
+        self._model = TasksModel(**kwargs)
+        self.type_ = 'tasks'
+
+    def __iter__(self) -> Task:
+        """Iterate over CM objects."""
+        return self.iterate(base_class=Task)  # type: ignore
+
+    @property
+    def _api_endpoint(self) -> str:
+        """Return the type specific API endpoint."""
+        return ApiEndpoints.TASKS.value
+
+    @property
+    def filter(self) -> 'TaskFilter':
+        """Return the type specific filter object."""
+        return TaskFilter(self.tql)

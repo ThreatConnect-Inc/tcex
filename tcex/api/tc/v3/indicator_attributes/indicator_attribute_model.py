@@ -1,8 +1,7 @@
 """Indicator_Attribute / Indicator_Attributes Model"""
-# pylint: disable=no-member,no-self-argument,no-self-use,wrong-import-position
+# pylint: disable=no-member,no-self-argument,wrong-import-position
 # standard library
 from datetime import datetime
-from typing import List, Optional
 
 # third-party
 from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
@@ -10,46 +9,6 @@ from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
 from tcex.utils import Utils
-
-
-class IndicatorAttributesModel(
-    BaseModel,
-    title='IndicatorAttributes Model',
-    alias_generator=Utils().snake_to_camel,
-    validate_assignment=True,
-):
-    """Indicator_Attributes Model"""
-
-    _mode_support = PrivateAttr(True)
-
-    data: Optional[List['IndicatorAttributeModel']] = Field(
-        [],
-        description='The data for the IndicatorAttributes.',
-        methods=['POST', 'PUT'],
-        title='data',
-    )
-    mode: str = Field(
-        'append',
-        description='The PUT mode for nested objects (append, delete, replace). Default: append',
-        methods=['POST', 'PUT'],
-        title='append',
-    )
-
-
-class IndicatorAttributeDataModel(
-    BaseModel,
-    title='IndicatorAttribute Data Model',
-    alias_generator=Utils().snake_to_camel,
-    validate_assignment=True,
-):
-    """Indicator_Attributes Data Model"""
-
-    data: Optional[List['IndicatorAttributeModel']] = Field(
-        [],
-        description='The data for the IndicatorAttributes.',
-        methods=['POST', 'PUT'],
-        title='data',
-    )
 
 
 class IndicatorAttributeModel(
@@ -66,14 +25,14 @@ class IndicatorAttributeModel(
     _shared_type = PrivateAttr(False)
     _staged = PrivateAttr(False)
 
-    created_by: Optional['UserModel'] = Field(
+    created_by: 'UserModel' = Field(
         None,
         allow_mutation=False,
         description='The **created by** for the Indicator_Attribute.',
         read_only=True,
         title='createdBy',
     )
-    date_added: Optional[datetime] = Field(
+    date_added: datetime | None = Field(
         None,
         allow_mutation=False,
         description='The date and time that the item was first created.',
@@ -90,20 +49,20 @@ class IndicatorAttributeModel(
         read_only=False,
         title='default',
     )
-    id: Optional[int] = Field(
+    id: int | None = Field(
         None,
         description='The ID of the item.',
         read_only=True,
         title='id',
     )
-    indicator_id: Optional[int] = Field(
+    indicator_id: int | None = Field(
         None,
         description='Indicator associated with attribute.',
         methods=['POST'],
         read_only=False,
         title='indicatorId',
     )
-    last_modified: Optional[datetime] = Field(
+    last_modified: datetime | None = Field(
         None,
         allow_mutation=False,
         description='The date and time that the Attribute was last modified.',
@@ -117,7 +76,7 @@ class IndicatorAttributeModel(
         read_only=False,
         title='pinned',
     )
-    security_labels: Optional['SecurityLabelsModel'] = Field(
+    security_labels: 'SecurityLabelsModel' = Field(
         None,
         description=(
             'A list of Security Labels corresponding to the Intel item (NOTE: Setting this '
@@ -127,21 +86,21 @@ class IndicatorAttributeModel(
         read_only=False,
         title='securityLabels',
     )
-    source: Optional[str] = Field(
+    source: str | None = Field(
         None,
         description='The attribute source.',
         methods=['POST', 'PUT'],
         read_only=False,
         title='source',
     )
-    type: Optional[str] = Field(
+    type: str | None = Field(
         None,
         description='The attribute type.',
         methods=['POST'],
         read_only=False,
         title='type',
     )
-    value: Optional[str] = Field(
+    value: str | None = Field(
         None,
         description='The attribute value.',
         methods=['POST', 'PUT'],
@@ -150,17 +109,57 @@ class IndicatorAttributeModel(
         title='value',
     )
 
-    @validator('security_labels', always=True)
+    @validator('security_labels', always=True, pre=True)
     def _validate_security_labels(cls, v):
         if not v:
-            return SecurityLabelsModel()
+            return SecurityLabelsModel()  # type: ignore
         return v
 
-    @validator('created_by', always=True)
+    @validator('created_by', always=True, pre=True)
     def _validate_user(cls, v):
         if not v:
-            return UserModel()
+            return UserModel()  # type: ignore
         return v
+
+
+class IndicatorAttributeDataModel(
+    BaseModel,
+    title='IndicatorAttribute Data Model',
+    alias_generator=Utils().snake_to_camel,
+    validate_assignment=True,
+):
+    """Indicator_Attributes Data Model"""
+
+    data: list[IndicatorAttributeModel] | None = Field(
+        [],
+        description='The data for the IndicatorAttributes.',
+        methods=['POST', 'PUT'],
+        title='data',
+    )
+
+
+class IndicatorAttributesModel(
+    BaseModel,
+    title='IndicatorAttributes Model',
+    alias_generator=Utils().snake_to_camel,
+    validate_assignment=True,
+):
+    """Indicator_Attributes Model"""
+
+    _mode_support = PrivateAttr(True)
+
+    data: list[IndicatorAttributeModel] | None = Field(
+        [],
+        description='The data for the IndicatorAttributes.',
+        methods=['POST', 'PUT'],
+        title='data',
+    )
+    mode: str = Field(
+        'append',
+        description='The PUT mode for nested objects (append, delete, replace). Default: append',
+        methods=['POST', 'PUT'],
+        title='append',
+    )
 
 
 # first-party

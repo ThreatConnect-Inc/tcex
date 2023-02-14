@@ -1,6 +1,7 @@
 """Datetime (Arrow) Field Type"""
 # standard library
-from typing import TYPE_CHECKING, Any, Callable
+from collections.abc import Callable
+from typing import TYPE_CHECKING, Any
 
 # third-party
 import arrow

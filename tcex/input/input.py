@@ -6,9 +6,9 @@ import os
 import re
 from base64 import b64decode
 from pathlib import Path
-from typing import TYPE_CHECKING, Dict, Optional, Union
 
 # third-party
+from pydantic import ValidationError  # TYPE-CHECKING
 from pydantic import BaseModel, Extra
 
 # first-party
@@ -16,14 +16,11 @@ from tcex.app_config.install_json import InstallJson
 from tcex.backports import cached_property
 from tcex.input.field_types import Sensitive
 from tcex.input.models import feature_map, runtime_level_map, tc_action_map
+from tcex.input.models.common_model import CommonModel
 from tcex.key_value_store import RedisClient
 from tcex.pleb.none_model import NoneModel
 from tcex.pleb.registry import registry
 from tcex.utils import Utils
-
-if TYPE_CHECKING:
-    # third-party
-    from pydantic import ValidationError
 
 # get tcex logger
 logger = logging.getLogger('tcex')
@@ -32,7 +29,7 @@ logger = logging.getLogger('tcex')
 json_encoders = {Sensitive: lambda v: str(v)}  # pylint: disable=W0108
 
 
-def input_model(models: list) -> 'BaseModel':
+def input_model(models: list) -> BaseModel:
     """Return Input Model."""
 
     class InputModel(*models):
@@ -44,7 +41,7 @@ def input_model(models: list) -> 'BaseModel':
 
         # the user id of the one executing the App
         # supported runtimeLevel: [Organization, Playbook]
-        tc_user_id: Optional[int]
+        tc_user_id: int | None
 
         class Config:
             """DataModel Config"""
@@ -59,7 +56,7 @@ def input_model(models: list) -> 'BaseModel':
 class Input:
     """Module to handle inputs for all App types."""
 
-    def __init__(self, config: Optional[dict] = None, config_file: Optional[str] = None, **kwargs):
+    def __init__(self, config: dict | None = None, config_file: str | None = None, **kwargs):
         """Initialize class properties.
 
         Keyword Args:
@@ -90,14 +87,13 @@ class Input:
         tc_kvstore_port: int,
         tc_action_channel: str,
         tc_terminate_seconds: int,
-    ) -> Dict[str, any]:
+    ) -> dict[str, any]:
         """Subscribe to AOT action channel."""
         params = {}
         if tc_aot_enabled is not True:
             return params
 
         if tc_kvstore_type == 'Redis':
-
             # get an instance of redis client
             redis_client = self._get_redis_client(
                 host=tc_kvstore_host,
@@ -279,7 +275,7 @@ class Input:
                         updated_value_array.append(v)
                     value = updated_value_array
                 elif self.utils.is_playbook_variable(value):  # only matches playbook variables
-                    # when using Union[Bytes, String] in App input model the value
+                    # when using Bytes | String in App input model the value
                     # can be coerced to the wrong type. the BinaryVariable and
                     # StringVariable custom types allows for the validator in Binary
                     # and String types to raise a value error.
@@ -322,12 +318,12 @@ class Input:
                 inputs[name] = value.lower() == 'true'
 
     @cached_property
-    def model(self) -> 'BaseModel':
+    def model(self) -> CommonModel:
         """Return the Input Model."""
         return input_model(self.models)(**self.contents_resolved)
 
     @cached_property
-    def model_unresolved(self) -> 'BaseModel':
+    def model_unresolved(self) -> CommonModel:
         """Return the Input Model using contents (no resolved values)."""
         return input_model(self.models)(**self.contents)
 
@@ -357,7 +353,7 @@ class Input:
 
         return properties
 
-    def resolve_variable(self, variable: str) -> Union[bytes, str]:
+    def resolve_variable(self, variable: str) -> bytes | str:
         """Resolve FILE/KEYCHAIN/TEXT variables.
 
         Feature: PLAT-2688
@@ -400,7 +396,7 @@ class Input:
         """Format and return validation error message."""
         _exit_message = {}
         for err in ex.errors():
-            # deduplicate error messagese
+            # deduplicate error messages
             err_loc = ','.join([str(e) for e in err.get('loc')])
             err_msg = err.get('msg')
             _exit_message.setdefault(err_loc, [])

@@ -1,19 +1,15 @@
 """Test the TcEx Batch Module."""
 # standard library
-from typing import TYPE_CHECKING, Any, Dict, List, Union
+from typing import Any
 
 # third-party
 import pytest
 
 # first-party
 from tcex.input.field_types import KeyValue
-
-if TYPE_CHECKING:
-    # first-party
-    from tcex.playbook.playbook import Playbook
+from tcex.playbook.playbook import Playbook  # TYPE-CHECKING
 
 
-# pylint: disable=no-self-use
 class TestUtils:
     """Test the TcEx Batch Module."""
 
@@ -27,7 +23,7 @@ class TestUtils:
         ],
     )
     def test_playbook_tc_entity_pass(
-        self, variable: str, value: Union[dict, KeyValue], playbook: 'Playbook'
+        self, variable: str, value: dict | KeyValue, playbook: Playbook
     ):
         """Test playbook variables."""
         playbook.create.tc_entity(variable, value, when_requested=False)
@@ -46,7 +42,7 @@ class TestUtils:
             ('#App:0002:b4!WrongType', 'wrong type'),
         ],
     )
-    def test_playbook_tc_entity_fail(self, variable: str, value: Any, playbook: 'Playbook'):
+    def test_playbook_tc_entity_fail(self, variable: str, value: Any, playbook: Playbook):
         """Test playbook variables."""
         try:
             playbook.create.tc_entity(variable, value, when_requested=False)
@@ -88,7 +84,7 @@ class TestUtils:
         ],
     )
     def test_playbook_tc_entity_array_pass(
-        self, variable: str, value: List[Dict[str, str]], playbook: 'Playbook'
+        self, variable: str, value: list[dict[str, str]], playbook: Playbook
     ):
         """Test playbook variables."""
         playbook.create.tc_entity_array(variable, value, when_requested=False)
@@ -112,7 +108,7 @@ class TestUtils:
             ('#App:0003:tea3!WrongType', 'wrong type'),
         ],
     )
-    def test_playbook_tc_entity_array_fail(self, variable: str, value: Any, playbook: 'Playbook'):
+    def test_playbook_tc_entity_array_fail(self, variable: str, value: Any, playbook: Playbook):
         """Test playbook variables."""
         with pytest.raises(RuntimeError) as ex:
             playbook.create.tc_entity_array(variable, value, when_requested=False)

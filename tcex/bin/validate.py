@@ -9,7 +9,6 @@ import sys
 import traceback
 from collections import deque
 from pathlib import Path
-from typing import Dict, Union
 
 # third-party
 import colorama as c
@@ -61,7 +60,7 @@ class Validate(BinABC):
         self.validation_data = self._validation_data
 
     @property
-    def _validation_data(self) -> Dict[str, list]:
+    def _validation_data(self) -> dict[str, list]:
         """Return structure for validation data."""
         return {
             'errors': [],
@@ -72,7 +71,7 @@ class Validate(BinABC):
             'feeds': [],
         }
 
-    def _check_node_import(self, node: Union[ast.Import, ast.ImportFrom], filename: str):
+    def _check_node_import(self, node: ast.Import | ast.ImportFrom, filename: str):
         """."""
         if isinstance(node, ast.Import):
             for n in node.names:

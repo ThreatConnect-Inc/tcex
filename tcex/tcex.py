@@ -7,7 +7,7 @@ import os
 import platform
 import signal
 import threading
-from typing import TYPE_CHECKING, Dict, Optional, Union
+from typing import TYPE_CHECKING
 
 # third-party
 from requests import Session
@@ -28,7 +28,12 @@ from tcex.playbook import Playbook
 from tcex.pleb.proxies import proxies
 from tcex.pleb.registry import registry
 from tcex.pleb.scoped_property import scoped_property
+from tcex.services.api_service import ApiService
+from tcex.services.common_service_trigger import CommonServiceTrigger
+from tcex.services.webhook_trigger_service import WebhookTriggerService
+from tcex.sessions.auth.hmac_auth import HmacAuth
 from tcex.sessions.auth.tc_auth import TcAuth
+from tcex.sessions.auth.token_auth import TokenAuth
 from tcex.sessions.external_session import ExternalSession
 from tcex.sessions.tc_session import TcSession
 from tcex.tokens import Tokens
@@ -38,11 +43,6 @@ from tcex.utils.file_operations import FileOperations
 if TYPE_CHECKING:
     # first-party
     from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
-    from tcex.services.api_service import ApiService
-    from tcex.services.common_service_trigger import CommonServiceTrigger
-    from tcex.services.webhook_trigger_service import WebhookTriggerService
-    from tcex.sessions.auth.hmac_auth import HmacAuth
-    from tcex.sessions.auth.token_auth import TokenAuth
 
 
 class TcEx:
@@ -113,8 +113,8 @@ class TcEx:
         self,
         session: Session,
         output_prefix: str,
-        timeout: Optional[int] = 600,
-    ) -> 'AdvancedRequest':
+        timeout: int | None = 600,
+    ) -> AdvancedRequest:
         """Return instance of AdvancedRequest.
 
         Args:
@@ -129,7 +129,7 @@ class TcEx:
         """Return instance of Threat Intel Utils."""
         return API(self.inputs, self.session_tc)
 
-    def exit(self, code: Optional[ExitCode] = None, msg: Optional[str] = None):
+    def exit(self, code: ExitCode | int | None = None, msg: str | None = None):
         """Application exit method with proper exit code
 
         The method will run the Python standard sys.exit() with the exit code
@@ -144,12 +144,12 @@ class TcEx:
         self.exit_service.exit(code, msg)  # pylint: disable=no-member
 
     @property
-    def exit_code(self) -> 'ExitCode':
+    def exit_code(self) -> ExitCode:
         """Return the current exit code."""
         return self.exit_service.exit_code  # pylint: disable=no-member
 
     @exit_code.setter
-    def exit_code(self, code: 'ExitCode'):
+    def exit_code(self, code: ExitCode):
         """Set the App exit code.
 
         For TC Exchange Apps there are 3 supported exit codes.
@@ -164,13 +164,13 @@ class TcEx:
 
     @registry.factory(ExitService)
     @scoped_property
-    def exit_service(self) -> 'ExitService':
+    def exit_service(self) -> ExitService:
         """Return an ExitService object."""
         # TODO: [high] @cblades - inputs being required for exit prevents AOT from exiting
         return self.get_exit_service(self.inputs)
 
     @cached_property
-    def file_operations(self) -> 'FileOperations':  # pylint: disable=no-self-use
+    def file_operations(self) -> FileOperations:
         """Include the Utils module."""
         return FileOperations(
             out_path=self.inputs.model_unresolved.tc_out_path,
@@ -178,13 +178,13 @@ class TcEx:
         )
 
     @staticmethod
-    def get_exit_service(inputs) -> 'ExitService':
+    def get_exit_service(inputs) -> ExitService:
         """Create an ExitService object."""
         return ExitService(inputs)
 
     def get_playbook(
-        self, context: Optional[str] = None, output_variables: Optional[list] = None
-    ) -> 'Playbook':
+        self, context: str | None = None, output_variables: list | None = None
+    ) -> Playbook:
         """Return a new instance of playbook module.
 
         Args:
@@ -198,7 +198,7 @@ class TcEx:
     @staticmethod
     def get_redis_client(
         host: str, port: int, db: int = 0, blocking_pool: bool = False, **kwargs
-    ) -> 'RedisClient':
+    ) -> RedisClient:
         """Return a *new* instance of Redis client.
 
         For a full list of kwargs see https://redis-py.readthedocs.io/en/latest/#redis.Connection.
@@ -223,13 +223,13 @@ class TcEx:
 
     def get_session_tc(
         self,
-        auth: Optional[Union['HmacAuth', 'TokenAuth', 'TcAuth']] = None,
-        base_url: Optional[str] = None,
-        log_curl: Optional[bool] = None,
-        proxies: Optional[Dict[str, str]] = None,  # pylint: disable=redefined-outer-name
-        proxies_enabled: Optional[bool] = None,
-        verify: Optional[Union[bool, str]] = None,
-    ) -> 'TcSession':
+        auth: HmacAuth | TokenAuth | TcAuth | None = None,
+        base_url: str | None = None,
+        log_curl: bool | None = None,
+        proxies: dict[str, str] | None = None,  # pylint: disable=redefined-outer-name
+        proxies_enabled: bool | None = None,
+        verify: bool | str | None = None,
+    ) -> TcSession:
         """Return an instance of Requests Session configured for the ThreatConnect API.
 
         No args are required to get a working instance of TC Session instance.
@@ -268,7 +268,7 @@ class TcEx:
             verify=verify,
         )
 
-    def get_session_external(self) -> 'ExternalSession':
+    def get_session_external(self) -> ExternalSession:
         """Return an instance of Requests Session configured for the ThreatConnect API."""
         _session_external = ExternalSession()
 
@@ -288,13 +288,9 @@ class TcEx:
 
         return _session_external
 
-    # def get_ti(self) -> 'ThreatIntelligence':
-    #     """Include the Threat Intel Module."""
-    #     return ThreatIntelligence(session=self.get_session_tc())
-
     @registry.factory('KeyValueStore')
     @scoped_property
-    def key_value_store(self) -> Union['KeyValueApi', 'KeyValueRedis']:
+    def key_value_store(self) -> KeyValueApi | KeyValueRedis:
         """Return the correct KV store for this execution.
 
         The TCKeyValueAPI KV store is limited to two operations (create and read),
@@ -325,13 +321,13 @@ class TcEx:
         return self._log
 
     @log.setter
-    def log(self, log: object):
+    def log(self, log: logging.Logger):
         """Return a valid logger."""
         if isinstance(log, logging.Logger):
             self._log = log
 
     @cached_property
-    def logger(self) -> 'Logger':
+    def logger(self) -> Logger:
         """Return logger."""
         _logger = Logger(logger_name='tcex')
 
@@ -368,10 +364,10 @@ class TcEx:
 
     @registry.factory(Playbook)
     @scoped_property
-    def playbook(self) -> 'Playbook':
+    def playbook(self) -> Playbook:
         """Return an instance of Playbooks module.
 
-        This property defaults context and outputvariables to arg values.
+        This property defaults context and output variables to arg values.
 
         Returns:
             tcex.playbook.Playbooks: An instance of Playbooks
@@ -405,11 +401,12 @@ class TcEx:
 
     @registry.factory(RedisClient)
     @scoped_property
-    def redis_client(self) -> 'RedisClient':
+    def redis_client(self) -> RedisClient:
         """Return redis client instance configure for Playbook/Service Apps."""
+        # TODO: [high] - why can't we use inputs.model_unresolved here?
         return self.get_redis_client(
-            host=self.inputs.contents.get('tc_kvstore_host'),
-            port=self.inputs.contents.get('tc_kvstore_port'),
+            host=self.inputs.contents.get('tc_kvstore_host', 'localhost'),
+            port=self.inputs.contents.get('tc_kvstore_port', 6379),
             db=0,
         )
 
@@ -453,7 +450,7 @@ class TcEx:
             fh.truncate()
 
     @cached_property
-    def service(self) -> Union['ApiService', 'CommonServiceTrigger', 'WebhookTriggerService']:
+    def service(self) -> ApiService | CommonServiceTrigger | WebhookTriggerService:
         """Include the Service Module."""
         if self.ij.model.is_api_service_app:
             from .services import ApiService as Service
@@ -468,22 +465,22 @@ class TcEx:
 
     @registry.factory(TcSession)
     @scoped_property
-    def session_tc(self) -> 'TcSession':
+    def session_tc(self) -> TcSession:
         """Return an instance of Requests Session configured for the ThreatConnect API."""
         return self.get_session_tc()
 
     @scoped_property
-    def session_external(self) -> 'ExternalSession':
+    def session_external(self) -> ExternalSession:
         """Return an instance of Requests Session configured for the ThreatConnect API."""
         return self.get_session_external()
 
-    def set_exit_code(self, exit_code: int):
+    def set_exit_code(self, exit_code: ExitCode):
         """Set the exit code (registry)"""
         self.exit_code = exit_code
 
     @registry.factory(Tokens, singleton=True)
     @cached_property
-    def token(self) -> 'Tokens':
+    def token(self) -> Tokens:
         """Return token object."""
         _proxies = None
         if self.inputs.model_unresolved.tc_proxy_tc is True:
@@ -507,21 +504,21 @@ class TcEx:
         return _tokens
 
     @property
-    def ti_utils(self) -> 'ThreatIntelUtils':
+    def ti_utils(self) -> ThreatIntelUtils:
         """Return instance of Threat Intel Utils."""
         return ThreatIntelUtils(self.session_tc)
 
     @cached_property
-    def utils(self) -> 'Utils':  # pylint: disable=no-self-use
+    def utils(self) -> Utils:
         """Include the Utils module."""
         return Utils()
 
     @cached_property
-    def v2(self) -> 'V2':
+    def v2(self) -> V2:
         """Return a case management instance."""
         return V2(self.inputs, self.session_tc)
 
     @cached_property
-    def v3(self) -> 'V3':
+    def v3(self) -> V3:
         """Return a case management instance."""
         return V3(self.session_tc)

@@ -1,7 +1,4 @@
 """Testing TcEx Input module field types."""
-# standard library
-from typing import TYPE_CHECKING, Dict, List, Optional, Union
-
 # third-party
 import pytest
 from pydantic import BaseModel, validator
@@ -11,13 +8,10 @@ from tcex.backports import cached_property
 from tcex.input.field_types import Binary, always_array, binary, conditional_required
 from tcex.pleb.scoped_property import scoped_property
 from tests.input.field_types.utils import InputTest
-
-if TYPE_CHECKING:
-    # first-party
-    from tests.mock_app import MockApp
+from tests.mock_app import MockApp  # TYPE-CHECKING
 
 
-# pylint: disable=no-self-argument, no-self-use
+# pylint: disable=no-self-argument
 class TestInputsFieldTypes(InputTest):
     """Test TcEx String Field Model Tests."""
 
@@ -73,7 +67,7 @@ class TestInputsFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Optional[Binary]
+                my_data: Binary | None
 
         self._type_validation(
             PytestModel,
@@ -165,7 +159,7 @@ class TestInputsFieldTypes(InputTest):
         input_value: str,
         expected: str,
         allow_empty: bool,
-        conditional_required_rules: Dict[str, str],
+        conditional_required_rules: dict[str, str],
         max_length: int,
         min_length: int,
         optional: bool,
@@ -183,7 +177,7 @@ class TestInputsFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                conditional: Optional[str] = 'required'
+                conditional: str | None = 'required'
                 my_data: binary(
                     allow_empty=allow_empty,
                     max_length=max_length,
@@ -199,14 +193,14 @@ class TestInputsFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                conditional: Optional[str] = 'required'
-                my_data: Optional[
+                conditional: str | None = 'required'
+                my_data: None | (
                     binary(
                         allow_empty=allow_empty,
                         max_length=max_length,
                         min_length=min_length,
                     )
-                ]
+                )
 
                 _conditional_required = validator(
                     'my_data', allow_reuse=True, always=True, pre=True
@@ -262,14 +256,14 @@ class TestInputsFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: List[Binary]
+                my_data: list[Binary]
 
         else:
 
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Optional[List[Binary]]
+                my_data: list[Binary] | None
 
         self._type_validation(
             PytestModel,
@@ -326,7 +320,7 @@ class TestInputsFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Union[Binary, List[Binary]]
+                my_data: Binary | list[Binary]
 
                 _always_array = validator('my_data', allow_reuse=True)(always_array())
 
@@ -335,7 +329,7 @@ class TestInputsFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Union[Optional[Binary], Optional[List[Binary]]]
+                my_data: Binary | None | list[Binary] | None
 
                 _always_array = validator('my_data', allow_reuse=True)(always_array())
 

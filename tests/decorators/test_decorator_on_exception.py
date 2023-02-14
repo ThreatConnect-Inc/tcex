@@ -6,7 +6,6 @@ import logging
 from tcex.decorators.on_exception import OnException
 
 
-# pylint: disable=no-self-use
 class TestOnExceptionDecorators:
     """Test the TcEx Decorators."""
 

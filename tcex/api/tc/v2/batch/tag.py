@@ -1,7 +1,7 @@
 """ThreatConnect Batch Import Module"""
 # standard library
 import json
-from typing import Callable, Optional
+from collections.abc import Callable
 
 
 class Tag:
@@ -9,7 +9,7 @@ class Tag:
 
     __slots__ = ['_tag_data', '_valid']
 
-    def __init__(self, name: str, formatter: Optional[Callable[[str], str]] = None):
+    def __init__(self, name: str, formatter: Callable[[str], str] | None = None):
         """Initialize Class Properties.
 
         Args:

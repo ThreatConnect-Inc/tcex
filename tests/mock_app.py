@@ -3,7 +3,6 @@
 import json
 import os
 import uuid
-from typing import Dict, Optional, Union
 
 # third-party
 from requests import Session
@@ -55,7 +54,7 @@ class MockApp:
         self.ij = InstallJson()
 
     @property
-    def _config_api(self) -> Dict[str, str]:
+    def _config_api(self) -> dict[str, str]:
         return {
             # 'tc_token': self.service_token,
             'tc_token': self.api_token,
@@ -66,7 +65,7 @@ class MockApp:
         }
 
     @property
-    def _config_common(self) -> Dict[str, str]:
+    def _config_common(self) -> dict[str, str]:
         """Return config data for mocked App."""
         return {
             # default
@@ -87,7 +86,7 @@ class MockApp:
         }
 
     @property
-    def _config_playbook(self) -> Dict[str, str]:
+    def _config_playbook(self) -> dict[str, str]:
         """Return config data for mocked App."""
         return {
             'tc_action_channel': 'action-channel',
@@ -97,7 +96,7 @@ class MockApp:
         }
 
     @property
-    def _config_playbook_common(self) -> Dict[str, str]:
+    def _config_playbook_common(self) -> dict[str, str]:
         """Return config data for mocked App."""
         return {
             'tc_playbook_kvstore_context': self.getenv(
@@ -110,7 +109,7 @@ class MockApp:
         }
 
     @property
-    def _config_proxy(self) -> Dict[str, str]:
+    def _config_proxy(self) -> dict[str, str]:
         """Return config data for mocked App."""
         config = {}
         if self.getenv('tc_proxy_host'):
@@ -125,7 +124,7 @@ class MockApp:
         return config
 
     @property
-    def _config_service(self) -> Dict[str, str]:
+    def _config_service(self) -> dict[str, str]:
         """Return config data for mocked App."""
         return {
             'tc_svc_client_topic': self.getenv(
@@ -134,7 +133,7 @@ class MockApp:
         }
 
     @property
-    def _ij_common(self) -> Dict[str, str]:
+    def _ij_common(self) -> dict[str, str]:
         """Return install.json data for mocked App."""
         return {
             'allowOnDemand': True,
@@ -158,7 +157,7 @@ class MockApp:
         }
 
     @property
-    def _ij_playbook_common(self) -> Dict[str, str]:
+    def _ij_playbook_common(self) -> dict[str, str]:
         """Return install.json data for mocked App."""
         return {
             'params': self.ijd.get('params')
@@ -322,9 +321,7 @@ class MockApp:
 
         return _config
 
-    def getenv(
-        self, key: str, default: Optional[str] = None, boolean: Optional[bool] = False
-    ) -> Union[bool, str]:
+    def getenv(self, key: str, default: str | None = None, boolean: bool = False) -> bool | str:
         """Get the appropriate **config value**.
 
         Use config_data value provided to Class,

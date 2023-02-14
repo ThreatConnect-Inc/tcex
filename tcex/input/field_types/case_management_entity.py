@@ -1,17 +1,12 @@
 """Indicator Entity Field (Model) Type"""
-# standard library
-from typing import TYPE_CHECKING, List
 
 # third-party
 from pydantic import validator
+from pydantic.fields import ModelField  # TYPE-CHECKING
 
 # first-party
 from tcex.input.field_types.exception import InvalidEmptyValue, InvalidEntityType
 from tcex.input.field_types.tc_entity import TCEntity
-
-if TYPE_CHECKING:  # pragma: no cover
-    # third-party
-    from pydantic.fields import ModelField
 
 CASE_MANAGEMENT_TYPES = [
     'artifact',
@@ -24,7 +19,7 @@ CASE_MANAGEMENT_TYPES = [
 ]
 
 
-# pylint: disable=no-self-argument, no-self-use
+# pylint: disable=no-self-argument
 class CaseManagementEntity(TCEntity):
     """Case Management Entity Field (Model) Type"""
 
@@ -45,7 +40,7 @@ class CaseManagementEntity(TCEntity):
         return value
 
 
-def case_management_entity(case_management_types: List[str] = None) -> type:
+def case_management_entity(case_management_types: list[str] = None) -> type:
     """Return custom model for Case Management Entity."""
 
     class CustomCaseManagementEntity(CaseManagementEntity):

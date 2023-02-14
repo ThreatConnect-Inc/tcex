@@ -1,54 +1,11 @@
 """Victim_Asset / Victim_Assets Model"""
-# pylint: disable=no-member,no-self-argument,no-self-use,wrong-import-position
-# standard library
-from typing import List, Optional
-
+# pylint: disable=no-member,no-self-argument,wrong-import-position
 # third-party
 from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
 from tcex.utils import Utils
-
-
-class VictimAssetsModel(
-    BaseModel,
-    title='VictimAssets Model',
-    alias_generator=Utils().snake_to_camel,
-    validate_assignment=True,
-):
-    """Victim_Assets Model"""
-
-    _mode_support = PrivateAttr(False)
-
-    data: Optional[List['VictimAssetModel']] = Field(
-        [],
-        description='The data for the VictimAssets.',
-        methods=['POST', 'PUT'],
-        title='data',
-    )
-    mode: str = Field(
-        'append',
-        description='The PUT mode for nested objects (append, delete, replace). Default: append',
-        methods=['POST', 'PUT'],
-        title='append',
-    )
-
-
-class VictimAssetDataModel(
-    BaseModel,
-    title='VictimAsset Data Model',
-    alias_generator=Utils().snake_to_camel,
-    validate_assignment=True,
-):
-    """Victim_Assets Data Model"""
-
-    data: Optional[List['VictimAssetModel']] = Field(
-        [],
-        description='The data for the VictimAssets.',
-        methods=['POST', 'PUT'],
-        title='data',
-    )
 
 
 class VictimAssetModel(
@@ -65,7 +22,7 @@ class VictimAssetModel(
     _shared_type = PrivateAttr(False)
     _staged = PrivateAttr(False)
 
-    account_name: Optional[str] = Field(
+    account_name: str | None = Field(
         None,
         applies_to=['SocialNetwork', 'NetworkAccount'],
         conditional_required=['SocialNetwork', 'NetworkAccount'],
@@ -76,7 +33,7 @@ class VictimAssetModel(
         read_only=False,
         title='accountName',
     )
-    address: Optional[str] = Field(
+    address: str | None = Field(
         None,
         applies_to=['EmailAddress'],
         conditional_required=['EmailAddress'],
@@ -87,7 +44,7 @@ class VictimAssetModel(
         read_only=False,
         title='address',
     )
-    address_type: Optional[str] = Field(
+    address_type: str | None = Field(
         None,
         applies_to=['EmailAddress'],
         description='The type of the E-Mail Address asset.',
@@ -95,20 +52,20 @@ class VictimAssetModel(
         read_only=False,
         title='addressType',
     )
-    associated_groups: Optional['GroupsModel'] = Field(
+    associated_groups: 'GroupsModel' = Field(
         None,
         description='A list of groups that this victim asset is associated with.',
         methods=['POST', 'PUT'],
         read_only=False,
         title='associatedGroups',
     )
-    id: Optional[int] = Field(
+    id: int | None = Field(
         None,
         description='The ID of the item.',
         read_only=True,
         title='id',
     )
-    network_type: Optional[str] = Field(
+    network_type: str | None = Field(
         None,
         applies_to=['NetworkAccount'],
         conditional_required=['NetworkAccount'],
@@ -117,7 +74,7 @@ class VictimAssetModel(
         read_only=False,
         title='networkType',
     )
-    phone: Optional[str] = Field(
+    phone: str | None = Field(
         None,
         applies_to=['Phone'],
         conditional_required=['Phone'],
@@ -128,7 +85,7 @@ class VictimAssetModel(
         read_only=False,
         title='phone',
     )
-    social_network: Optional[str] = Field(
+    social_network: str | None = Field(
         None,
         applies_to=['SocialNetwork'],
         conditional_required=['SocialNetwork'],
@@ -137,7 +94,7 @@ class VictimAssetModel(
         read_only=False,
         title='socialNetwork',
     )
-    type: Optional[str] = Field(
+    type: str | None = Field(
         None,
         description='Type of victim asset.',
         methods=['POST'],
@@ -145,21 +102,21 @@ class VictimAssetModel(
         read_only=False,
         title='type',
     )
-    victim_id: Optional[int] = Field(
+    victim_id: int | None = Field(
         None,
         description='Victim id of victim asset.',
         methods=['POST'],
         read_only=False,
         title='victimId',
     )
-    web_link: Optional[str] = Field(
+    web_link: str | None = Field(
         None,
         allow_mutation=False,
         description='A link to the ThreatConnect details page for this entity.',
         read_only=True,
         title='webLink',
     )
-    website: Optional[str] = Field(
+    website: str | None = Field(
         None,
         applies_to=['WebSite'],
         conditional_required=['WebSite'],
@@ -171,11 +128,51 @@ class VictimAssetModel(
         title='website',
     )
 
-    @validator('associated_groups', always=True)
+    @validator('associated_groups', always=True, pre=True)
     def _validate_groups(cls, v):
         if not v:
-            return GroupsModel()
+            return GroupsModel()  # type: ignore
         return v
+
+
+class VictimAssetDataModel(
+    BaseModel,
+    title='VictimAsset Data Model',
+    alias_generator=Utils().snake_to_camel,
+    validate_assignment=True,
+):
+    """Victim_Assets Data Model"""
+
+    data: list[VictimAssetModel] | None = Field(
+        [],
+        description='The data for the VictimAssets.',
+        methods=['POST', 'PUT'],
+        title='data',
+    )
+
+
+class VictimAssetsModel(
+    BaseModel,
+    title='VictimAssets Model',
+    alias_generator=Utils().snake_to_camel,
+    validate_assignment=True,
+):
+    """Victim_Assets Model"""
+
+    _mode_support = PrivateAttr(False)
+
+    data: list[VictimAssetModel] | None = Field(
+        [],
+        description='The data for the VictimAssets.',
+        methods=['POST', 'PUT'],
+        title='data',
+    )
+    mode: str = Field(
+        'append',
+        description='The PUT mode for nested objects (append, delete, replace). Default: append',
+        methods=['POST', 'PUT'],
+        title='append',
+    )
 
 
 # first-party

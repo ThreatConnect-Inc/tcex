@@ -1,7 +1,6 @@
 """Generate Object for ThreatConnect API"""
 # standard library
 from abc import ABC
-from typing import List, Optional
 
 # first-party
 from tcex.api.tc.v3._gen._gen_abc import GenerateABC
@@ -22,7 +21,7 @@ class GenerateObjectABC(GenerateABC, ABC):
 
         # properties
         self.requirements = {
-            'standard library': ['from typing import Union'],
+            'standard library': [],
             'third-party': [],
             'first-party': [
                 'from tcex.api.tc.v3.api_endpoints import ApiEndpoints',
@@ -71,6 +70,7 @@ class GenerateObjectABC(GenerateABC, ABC):
         ]
         self.update_requirements(self.type_, f'{self.type_.singular()}_model', classes)
 
+        model_name = f'{self.type_.plural().pascal_case()}Model'
         return '\n'.join(
             [
                 f'''{self.i1}def __init__(self, **kwargs):''',
@@ -82,7 +82,7 @@ class GenerateObjectABC(GenerateABC, ABC):
                     f'''kwargs.pop('params', None)'''
                 ),
                 f'''{self.i2})''',
-                f'''{self.i2}self._model = {self.type_.plural().pascal_case()}Model(**kwargs)''',
+                f'''{self.i2}self._model = {model_name}(**kwargs)''',
                 f'''{self.i2}self.type_ = \'{self.type_.plural()}\'''',
                 '',
                 '',
@@ -98,11 +98,12 @@ class GenerateObjectABC(GenerateABC, ABC):
         """
         return '\n'.join(
             [
-                f'''{self.i1}def __iter__(self) -> '{self.type_.singular().pascal_case()}':''',
+                f'''{self.i1}def __iter__(self) -> {self.type_.singular().pascal_case()}:''',
                 f'''{self.i2}"""Iterate over CM objects."""''',
                 (
                     f'''{self.i2}return self.iterate(base_class='''
                     f'''{self.type_.singular().pascal_case()})'''
+                    '''  # type: ignore'''
                 ),
                 '',
                 '',
@@ -139,14 +140,13 @@ class GenerateObjectABC(GenerateABC, ABC):
             return ArtifactFilter(self._session, self.tql)
         """
         self.requirements['first-party'].append({'module': 'datetime', 'imports': ['datetime']})
-        self.requirements['standard library'].append({'module': 'typing', 'imports': ['Optional']})
         return '\n'.join(
             [
                 f'''{self.i1}def deleted(''',
                 f'''{self.i2}self,''',
-                f'''{self.i2}deleted_since: Optional[Union[datetime, str]],''',
-                f'''{self.i2}type_: Optional[str] = None,''',
-                f'''{self.i2}owner: Optional[str] = None''',
+                f'''{self.i2}deleted_since: datetime | str | None,''',
+                f'''{self.i2}type_: str | None = None,''',
+                f'''{self.i2}owner: str | None = None''',
                 f'''{self.i1}):''',
                 f'''{self.i2}"""Return deleted indicators.''',
                 '',
@@ -182,11 +182,12 @@ class GenerateObjectABC(GenerateABC, ABC):
             '''Return the type specific filter object.'''
             return ArtifactFilter(self._session, self.tql)
         """
-        self.requirements['standard library'].append({'module': 'typing', 'imports': ['Optional']})
-        self.requirements['type-checking'].append('''from requests import Response''')
+        # BCS
+        # self.requirements['type-checking'].append('''from requests import Response''')
+        self.requirements['first-party'].append('''from requests import Response''')
         return '\n'.join(
             [
-                f'''{self.i1}def download(self, params: Optional[dict] = None) -> bytes:''',
+                f'''{self.i1}def download(self, params: dict | None = None) -> bytes:''',
                 f'''{self.i2}"""Return the document attachment for Document/Report Types."""''',
                 f'''{self.i2}self._request(''',
                 f'''{self.i3}method='GET',''',
@@ -196,7 +197,7 @@ class GenerateObjectABC(GenerateABC, ABC):
                 f'''{self.i2})''',
                 f'''{self.i2}return self.request.content''',
                 '',
-                f'''{self.i1}def pdf(self, params: Optional[dict] = None) -> bytes:''',
+                f'''{self.i1}def pdf(self, params: dict | None = None) -> bytes:''',
                 f'''{self.i2}"""Return the document attachment for Document/Report Types."""''',
                 f'''{self.i2}self._request(''',
                 f'''{self.i3}method='GET',''',
@@ -209,8 +210,8 @@ class GenerateObjectABC(GenerateABC, ABC):
                 f'''{self.i2}return self.request.content''',
                 '',
                 (
-                    f'''{self.i1}def upload(self, content: Union[bytes, str], '''
-                    '''params: Optional[dict] = None) -> 'Response':'''
+                    f'''{self.i1}def upload(self, content: bytes | str, '''
+                    '''params: dict | None = None) -> Response:'''
                 ),
                 f'''{self.i2}"""Return the document attachment for Document/Report Types."""''',
                 f'''{self.i2}self._request(''',
@@ -243,6 +244,7 @@ class GenerateObjectABC(GenerateABC, ABC):
         elif self.type_ in ['case_attributes', 'group_attributes', 'indicator_attributes']:
             nested_field_name = 'attributes'
 
+        model_name = f'{self.type_.singular().pascal_case()}Model'
         return '\n'.join(
             [
                 f'''{self.i1}def __init__(self, **kwargs):''',
@@ -250,7 +252,7 @@ class GenerateObjectABC(GenerateABC, ABC):
                 f'''{self.i2}super().__init__(kwargs.pop('session', None))''',
                 '',
                 f'''{self.i2}# properties''',
-                f'''{self.i2}self._model = {self.type_.singular().pascal_case()}Model(**kwargs)''',
+                f'''{self.i2}self._model: {model_name} = {model_name}(**kwargs)''',
                 f'''{self.i2}self._nested_field_name = '{nested_field_name}' ''',
                 f'''{self.i2}self._nested_filter = 'has_{self.type_.singular()}' ''',
                 f'''{self.i2}self.type_ = \'{self.type_.singular().space_case()}\'''',
@@ -266,12 +268,12 @@ class GenerateObjectABC(GenerateABC, ABC):
         type can be used and the IDE will provide full model hinting.
 
         @property
-        def model(self) -> 'CaseModel':
+        def model(self) -> CaseModel:
             '''Return the model data.'''
             return self._model
 
         @model.setter
-        def model(self, data: Union['IndicatorModel', dict]):
+        def model(self, data: dict | IndicatorModel):
             '''Create model using the provided data.'''
             if isinstance(data, type(self.model)):
                 # provided data is already a model, nothing required to change
@@ -285,14 +287,14 @@ class GenerateObjectABC(GenerateABC, ABC):
         return '\n'.join(
             [
                 f'''{self.i1}@property''',
-                f'''{self.i1}def model(self) -> '{self.type_.singular().pascal_case()}Model':''',
+                f'''{self.i1}def model(self) -> {self.type_.singular().pascal_case()}Model:''',
                 f'''{self.i2}"""Return the model data."""''',
                 f'''{self.i2}return self._model''',
                 '',
                 f'''{self.i1}@model.setter''',
                 (
-                    f'''{self.i1}def model(self, data: Union'''
-                    f'''['{self.type_.singular().pascal_case()}Model', dict]):'''
+                    f'''{self.i1}def model(self, data: '''
+                    f'''dict | {self.type_.singular().pascal_case()}Model):'''
                 ),
                 f'''{self.i2}"""Create model using the provided data."""''',
                 f'''{self.i2}if isinstance(data, type(self.model)):''',
@@ -392,9 +394,7 @@ class GenerateObjectABC(GenerateABC, ABC):
         )
         return '\n'.join(as_entity_property_method)
 
-    def _gen_code_object_stage_type_method(
-        self, type_: str, model_type: Optional[str] = None
-    ) -> str:
+    def _gen_code_object_stage_type_method(self, type_: str, model_type: str | None = None) -> str:
         """Return the method code.
 
         def stage_artifact(self, **kwargs):
@@ -420,7 +420,6 @@ class GenerateObjectABC(GenerateABC, ABC):
 
         # get model from map and update requirements
         model_import_data = self._module_import_data(type_)
-        # self.requirements['standard library'].append('''from typing import Union''')
         self.requirements['first-party'].append(
             f'''from {model_import_data.get('model_module')} '''
             f'''import {model_import_data.get('model_class')}'''
@@ -428,12 +427,12 @@ class GenerateObjectABC(GenerateABC, ABC):
         stage_method = [
             (
                 f'''{self.i1}def stage_{model_type.singular()}(self, '''
-                f'''data: Union[dict, 'ObjectABC', '{model_import_data.get('model_class')}'''
-                f'''']):'''
+                f'''data: dict | ObjectABC | {model_import_data.get('model_class')}'''
+                f'''):'''
             ),
             f'''{self.i2}"""Stage {type_.singular()} on the object."""''',
             f'''{self.i2}if isinstance(data, ObjectABC):''',
-            f'''{self.i3}data = data.model''',
+            f'''{self.i3}data = data.model  # type: ignore''',
             f'''{self.i2}elif isinstance(data, dict):''',
             f'''{self.i3}data = {model_import_data.get('model_class')}(**data)''',
             '',
@@ -451,7 +450,7 @@ class GenerateObjectABC(GenerateABC, ABC):
 
         stage_method.extend(
             [
-                f'''{self.i2}self.model.{model_reference}.data.append(data)''',
+                f'''{self.i2}self.model.{model_reference}.data.append(data)  # type: ignore''',
                 '',
                 '',
             ]
@@ -462,10 +461,9 @@ class GenerateObjectABC(GenerateABC, ABC):
     def _gen_code_object_remove_method(self) -> str:
         """Return the method code."""
         self.requirements['standard library'].append('import json')
-        self.requirements['standard library'].append({'module': 'typing', 'imports': ['Optional']})
         return '\n'.join(
             [
-                f'''{self.i1}def remove(self, params: Optional[dict] = None):''',
+                f'''{self.i1}def remove(self, params: dict | None = None):''',
                 f'''{self.i2}"""Remove a nested object."""''',
                 f'''{self.i2}method = \'PUT\'''',
                 f'''{self.i2}unique_id = self._calculate_unique_id()''',
@@ -508,7 +506,7 @@ class GenerateObjectABC(GenerateABC, ABC):
         """Return the method code.
 
         def stage_assignee(
-            self, type: str, data: Union[dict, 'ObjectABC', 'ArtifactModel']
+            self, type: str, data: dict | ObjectABC | AssigneeModel]
         ):
             '''Stage artifact on the object.'''
             if isinstance(data, ObjectABC):
@@ -537,11 +535,11 @@ class GenerateObjectABC(GenerateABC, ABC):
                 f'''{self.i1}# pylint: disable=redefined-builtin''',
                 (
                     f'''{self.i1}def stage_assignee(self, type: str, data: '''
-                    f'''Union[dict, 'ObjectABC', 'ArtifactModel']):'''
+                    f'''dict | ObjectABC | UserModel | UserGroupModel):'''
                 ),
                 f'''{self.i2}"""Stage artifact on the object."""''',
                 f'''{self.i2}if isinstance(data, ObjectABC):''',
-                f'''{self.i3}data = data.model''',
+                f'''{self.i3}data = data.model  # type: ignore''',
                 f'''{self.i2}elif type.lower() == 'user' and isinstance(data, dict):''',
                 f'''{self.i3}data = UserModel(**data)''',
                 f'''{self.i2}elif type.lower() == 'group' and isinstance(data, dict):''',
@@ -552,14 +550,15 @@ class GenerateObjectABC(GenerateABC, ABC):
                 f'''{self.i2}data._staged = True''',
                 f'''{self.i2}self.model.assignee._staged = True''',
                 f'''{self.i2}self.model.assignee.type = type''',
-                f'''{self.i2}self.model.assignee.data = data''',
+                # pylance shows a warning on type here, but it in not handling inheritance properly.
+                f'''{self.i2}self.model.assignee.data = data  # type: ignore''',
                 '',
                 '',
             ]
         )
 
     def _gen_code_object_type_property_method(
-        self, type_: str, model_type: Optional[str] = None
+        self, type_: str, model_type: str | None = None
     ) -> str:
         """Return the method code.
 
@@ -576,20 +575,30 @@ class GenerateObjectABC(GenerateABC, ABC):
         # get model from map and update requirements
         model_import_data = self._module_import_data(type_)
 
-        # Add Iterator to imports:
-        self.requirements['standard library'].append({'module': 'typing', 'imports': ['Iterator']})
+        # Add Generator to imports:
+        self.requirements['standard library'].append(
+            {'module': 'collections.abc', 'imports': ['Generator']}
+        )
 
-        # don't add import if class is in same file
-        if self.type_ != type_:
+        if self.type_ == type_:
+            # set return type to new typing "Self" type and add import
+            return_type = 'Self'
+            self.requirements['standard library'].append(
+                {'module': 'typing', 'imports': [return_type]}
+            )
+        else:
+            # set typing to model class and add import
+            return_type = f'''\'{model_import_data.get('object_class')}\''''
             self.requirements['type-checking'].append(
                 f'''from {model_import_data.get('object_module')} '''
                 f'''import {model_import_data.get('object_class')}'''
             )
+
         _code = [
             f'''{self.i1}@property''',
             (
                 f'''{self.i1}def {model_type.plural()}(self) ->'''
-                f''' Iterator['{model_import_data.get('object_class')}']:'''
+                f''' Generator[{return_type}, None, None]:'''
             ),
             (
                 f'''{self.i2}"""Yield {type_.singular().pascal_case()} '''
@@ -620,6 +629,7 @@ class GenerateObjectABC(GenerateABC, ABC):
                     (
                         f'''{self.i2}for {type_.singular()} in self._iterate_over_sublist'''
                         f'''({model_import_data.get('object_collection_class')}):'''
+                        '''  # type: ignore'''
                     ),
                 ]
             )
@@ -638,13 +648,19 @@ class GenerateObjectABC(GenerateABC, ABC):
                         (f'''{self.i3}if {type_.singular()}.model.id == self.model.id:'''),
                     ]
                 )
-            _code.extend([f'''{self.i4}continue''', f'''{self.i3}yield {type_.singular()}'''])
+            _code.extend(
+                [
+                    f'''{self.i4}continue''',
+                    f'''{self.i3}yield {type_.singular()}  # type: ignore''',
+                ]
+            )
         else:
             _code.extend(
                 [
                     (
                         f'''{self.i2}yield from self._iterate_over_sublist'''
                         f'''({model_import_data.get('object_collection_class')})'''
+                        '''  # type: ignore'''
                     ),
                 ]
             )
@@ -953,8 +969,8 @@ class GenerateObjectABC(GenerateABC, ABC):
         self,
         type_: SnakeString,
         filename: str,
-        classes: List[str],
-        from_: Optional[str] = 'first-party',
+        classes: list[str],
+        from_: str | None = 'first-party',
     ):
         """Return the requirements code."""
         class_string = ', '.join(classes)

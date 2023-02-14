@@ -1,14 +1,12 @@
 """TcEx Framework Module for working with DataStore in the ThreatConnect Platform."""
 # standard library
 import logging
-from typing import TYPE_CHECKING, Optional
+
+# third-party
+from requests import Response, Session  # TYPE-CHECKING
 
 # first-party
 from tcex.exit.error_codes import handle_error
-
-if TYPE_CHECKING:
-    # third-party
-    from requests import Response, Session
 
 # get tcex logger
 logger = logging.getLogger('tcex')
@@ -40,7 +38,7 @@ class DataStore:
     """
 
     def __init__(
-        self, session_tc: 'Session', domain: str, data_type: str, mapping: Optional[dict] = None
+        self, session_tc: 'Session', domain: str, data_type: str, mapping: dict | None = None
     ):
         """Initialize class properties."""
         self.domain = domain
@@ -89,7 +87,7 @@ class DataStore:
             return False
         return True
 
-    def add(self, rid: str, data: dict, raise_on_error: Optional[bool] = True) -> dict:
+    def add(self, rid: str, data: dict, raise_on_error: bool = True) -> dict:
         """Write data to the DataStore. Alias for post() method.
 
         Args:
@@ -102,7 +100,7 @@ class DataStore:
         """
         return self.post(rid, data, raise_on_error)
 
-    def delete(self, rid: str, raise_on_error: Optional[bool] = True) -> dict:
+    def delete(self, rid: str, raise_on_error: bool = True) -> dict:
         """Delete a record from the index using provide Id.
 
         **Example Response**
@@ -149,9 +147,9 @@ class DataStore:
 
     def get(
         self,
-        rid: Optional[str] = None,
-        data: Optional[dict] = None,
-        raise_on_error: Optional[bool] = True,
+        rid: str | None = None,
+        data: dict | None = None,
+        raise_on_error: bool = True,
     ) -> dict:
         """Get data from the DataStore.
 
@@ -205,7 +203,7 @@ class DataStore:
             )
         return response_data
 
-    def post(self, rid: str, data: str, raise_on_error: Optional[bool] = True) -> dict:
+    def post(self, rid: str, data: str, raise_on_error: bool = True) -> dict:
         """Write data to the DataStore.
 
         **Example Response**
@@ -256,7 +254,7 @@ class DataStore:
             )
         return response_data
 
-    def put(self, rid: str, data: dict, raise_on_error: Optional[bool] = True) -> dict:
+    def put(self, rid: str, data: dict, raise_on_error: bool = True) -> dict:
         """Update the data for the provided Id.
 
         **Example Response**
@@ -304,7 +302,7 @@ class DataStore:
             )
         return response_data
 
-    def update(self, rid: str, data: dict, raise_on_error: Optional[bool] = True) -> dict:
+    def update(self, rid: str, data: dict, raise_on_error: bool = True) -> dict:
         """Update the for the provided Id. Alias for put() method.
 
         Args:

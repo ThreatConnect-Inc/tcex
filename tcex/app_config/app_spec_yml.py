@@ -4,7 +4,6 @@ import json
 import logging
 import os
 from pathlib import Path
-from typing import Optional
 
 # third-party
 import yaml
@@ -31,9 +30,9 @@ class AppSpecYml:
 
     def __init__(
         self,
-        filename: Optional[str] = None,
-        path: Optional[str] = None,
-        logger: Optional[logging.Logger] = None,
+        filename: str | None = None,
+        path: str | None = None,
+        logger: logging.Logger | None = None,
     ):
         """Initialize class properties."""
         filename = filename or 'app_spec.yml'

@@ -2,15 +2,10 @@
 # standard library
 from copy import deepcopy
 from threading import Lock
-from typing import TYPE_CHECKING
+from typing import Any
 
 # first-party
-# first party
 from tcex.key_value_store.key_value_abc import KeyValueABC
-
-if TYPE_CHECKING:
-    # standard library
-    from typing import Any, Optional
 
 
 class KeyValueMock(KeyValueABC):
@@ -27,7 +22,7 @@ class KeyValueMock(KeyValueABC):
         # properties
         self.kv_type = 'mock'
 
-    def create(self, context: str, key: str, value: 'Any') -> 'Any':
+    def create(self, context: str, key: str, value: Any) -> Any:
         """Create key/value pair.
 
         Args:
@@ -42,7 +37,7 @@ class KeyValueMock(KeyValueABC):
             self.data.setdefault(context, {})[key] = value
             return 1
 
-    def read(self, context: str, key: str) -> 'Any':
+    def read(self, context: str, key: str) -> Any:
         """Read data for the provided key.
 
         Args:
@@ -55,7 +50,7 @@ class KeyValueMock(KeyValueABC):
         with self.lock:
             return self.data.get(context, {}).get(key)
 
-    def get_all(self, context: 'Optional[str]') -> 'Any':
+    def get_all(self, context: str | None) -> Any:
         """Return the contents for a given context.
 
         Args:

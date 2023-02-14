@@ -1,15 +1,13 @@
 """TcEx Framework Module for working with Metrics in the ThreatConnect Platform."""
 # standard library
 import logging
-from typing import TYPE_CHECKING, Optional
+
+# third-party
+from requests import Session  # TYPE-CHECKING
 
 # first-party
 from tcex.exit.error_codes import handle_error
 from tcex.utils import Utils
-
-if TYPE_CHECKING:
-    # third-party
-    from requests import Session
 
 # get tcex logger
 logger = logging.getLogger('tcex')
@@ -34,7 +32,7 @@ class Metrics:
         description: str,
         data_type: str,
         interval: str,
-        keyed: Optional[bool] = False,
+        keyed: bool = False,
     ):
         """Initialize the Class properties."""
         self.session_tc = session_tc

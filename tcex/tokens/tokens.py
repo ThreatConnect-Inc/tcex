@@ -4,7 +4,6 @@ import logging
 import os
 import threading
 import time
-from typing import Optional
 
 # third-party
 from requests import Session, exceptions
@@ -39,13 +38,13 @@ def retry_session(retries=3, backoff_factor=0.8, status_forcelist=(500, 502, 504
 
 
 class Tokens:
-    """Service methods for customer Service (e.g., Triggers)."""
+    """Service methods for custom Service (e.g., Triggers)."""
 
     def __init__(
         self,
-        token_url: Optional[str],
-        verify: Optional[bool] = True,
-        proxies: Optional[dict] = None,
+        token_url: str | None,
+        verify: bool = True,
+        proxies: dict | None = None,
     ):
         """Initialize the Class properties.
 
@@ -185,7 +184,7 @@ class Tokens:
         return threading.current_thread().name
 
     @property
-    def token(self) -> Optional['Sensitive']:
+    def token(self) -> Sensitive | None:
         """Return token for current thread."""
         # wait until renewal barrier is set to True (meaning no renewal is in progress). If already
         # true, then simply proceed.
@@ -224,7 +223,7 @@ class Tokens:
         self.token_map.setdefault(self.key, {})['token'] = Sensitive(token)
 
     @property
-    def token_expires(self) -> Optional[int]:
+    def token_expires(self) -> int | None:
         """Return token_expires for current thread."""
         return self.token_map.get(self.key, {}).get('token_expires')
 
@@ -298,7 +297,7 @@ class Tokens:
                 break
 
     @property
-    def trigger_id(self) -> Optional[int]:
+    def trigger_id(self) -> int | None:
         """Return the current trigger_id."""
         trigger_id = None
         if hasattr(threading.current_thread(), 'trigger_id'):

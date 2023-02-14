@@ -5,16 +5,13 @@ import logging
 import os
 from collections import OrderedDict
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional
 
 # first-party
 from tcex.app_config.models import LayoutJsonModel
+from tcex.app_config.models.install_json_model import OutputVariablesModel  # TYPE-CHECKING
+from tcex.app_config.models.install_json_model import ParamsModel  # TYPE-CHECKING
 from tcex.backports import cached_property
 from tcex.pleb.singleton import Singleton
-
-if TYPE_CHECKING:  # pragma: no cover
-    # first-party
-    from tcex.app_config.models.install_json_model import OutputVariablesModel, ParamsModel
 
 # get tcex logger
 tcex_logger = logging.getLogger('tcex')
@@ -25,9 +22,9 @@ class LayoutJson(metaclass=Singleton):
 
     def __init__(
         self,
-        filename: Optional[str] = None,
-        path: Optional[str] = None,
-        logger: Optional[logging.Logger] = None,
+        filename: str | None = None,
+        path: str | None = None,
+        logger: logging.Logger | None = None,
     ):
         """Initialize class properties."""
         filename = filename or 'layout.json'
@@ -53,7 +50,7 @@ class LayoutJson(metaclass=Singleton):
             self.log.error(f'feature=layout-json, exception=file-not-found, filename={self.fqfn}')
         return contents
 
-    def create(self, inputs: 'ParamsModel', outputs: 'OutputVariablesModel'):
+    def create(self, inputs: ParamsModel, outputs: OutputVariablesModel):
         """Create new layout.json file based on inputs and outputs."""
 
         def input_data(sequence: int, title: str) -> dict:

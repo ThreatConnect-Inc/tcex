@@ -2,10 +2,11 @@
 # pylint: disable=R0401
 # standard library
 import os
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:  # pragma: no cover
-    from .install_json import InstallJson
+if TYPE_CHECKING:
+    # first-party
+    from tcex.app_config.install_json import InstallJson  # CIRCULAR-IMPORT
 
 
 class InstallJsonUpdate:
@@ -17,11 +18,11 @@ class InstallJsonUpdate:
 
     def multiple(
         self,
-        features: Optional[bool] = True,
-        migrate: Optional[bool] = False,
-        sequence: Optional[bool] = True,
-        valid_values: Optional[bool] = True,
-        playbook_data_types: Optional[bool] = True,
+        features: bool = True,
+        migrate: bool = False,
+        sequence: bool = True,
+        valid_values: bool = True,
+        playbook_data_types: bool = True,
     ):
         """Update the profile with all required changes.
 

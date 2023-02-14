@@ -2,7 +2,8 @@
 # standard library
 import json
 import uuid
-from typing import Any, Callable, Optional, Union
+from collections.abc import Callable
+from typing import Any
 
 # first-party
 from tcex.api.tc.v2.batch.attribute import Attribute
@@ -72,7 +73,7 @@ class Group:
             'to_addr': 'to',
         }
 
-    def add_file(self, filename: str, file_content: Union[bytes, Callable[[str], Any], str]):
+    def add_file(self, filename: str, file_content: bytes | Callable[[str], Any] | str):
         """Add a file for Document and Report types.
 
         Example::
@@ -125,10 +126,10 @@ class Group:
         self,
         attr_type: str,
         attr_value: str,
-        displayed: Optional[bool] = False,
-        source: Optional[str] = None,
-        unique: Optional[bool] = True,
-        formatter: Optional[Callable[[str], str]] = None,
+        displayed: bool = False,
+        source: str | None = None,
+        unique: bool = True,
+        formatter: Callable[[str], str] | None = None,
     ) -> Attribute:
         """Return instance of Attribute
 
@@ -229,7 +230,7 @@ class Group:
         self._processed = processed
 
     def security_label(
-        self, name: str, description: Optional[str] = None, color: Optional[str] = None
+        self, name: str, description: str | None = None, color: str | None = None
     ) -> SecurityLabel:
         """Return instance of SecurityLabel.
 
@@ -253,7 +254,7 @@ class Group:
             self._labels.append(label)
         return label
 
-    def tag(self, name: str, formatter: Optional[Callable[[str], str]] = None) -> 'Tag':
+    def tag(self, name: str, formatter: Callable[[str], str] | None = None) -> 'Tag':
         """Return instance of Tag.
 
         Args:

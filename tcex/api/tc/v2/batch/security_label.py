@@ -1,7 +1,6 @@
 """ThreatConnect SecurityLabel Object"""
 # standard library
 import json
-from typing import Optional
 
 
 class SecurityLabel:
@@ -9,7 +8,7 @@ class SecurityLabel:
 
     __slots__ = ['_label_data']
 
-    def __init__(self, name: str, description: Optional[str] = None, color: Optional[str] = None):
+    def __init__(self, name: str, description: str | None = None, color: str | None = None):
         """Initialize Class Properties.
 
         Args:

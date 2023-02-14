@@ -1,7 +1,6 @@
 """App Decorators Module."""
 # standard library
 import traceback
-from typing import Optional
 
 # third-party
 import wrapt
@@ -36,9 +35,9 @@ class OnException:
 
     def __init__(
         self,
-        exit_msg: Optional[str] = None,
-        exit_enabled: Optional[bool] = True,
-        write_output: Optional[bool] = True,
+        exit_msg: str | None = None,
+        exit_enabled: bool = True,
+        write_output: bool = True,
     ):
         """Initialize Class properties"""
         self.exit_enabled = exit_enabled

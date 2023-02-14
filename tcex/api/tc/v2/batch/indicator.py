@@ -2,7 +2,7 @@
 # standard library
 import json
 import uuid
-from typing import Callable, Optional
+from collections.abc import Callable
 
 # first-party
 from tcex.api.tc.v2.batch.attribute import Attribute
@@ -14,6 +14,7 @@ from tcex.utils import Utils
 module = __import__(__name__)
 
 
+# pylint: disable=unnecessary-dunder-call
 def custom_indicator_class_factory(indicator_type, base_class, class_dict, value_fields):
     """Return internal methods for dynamically building Custom Indicator Class."""
     value_count = len(value_fields)
@@ -45,8 +46,7 @@ def custom_indicator_class_factory(indicator_type, base_class, class_dict, value
 
     class_name = indicator_type.replace(' ', '')
     init_method = locals()[f'init_{value_count}']
-    newclass = type(str(class_name), (base_class,), {'__init__': init_method})
-    return newclass
+    return type(str(class_name), (base_class,), {'__init__': init_method})
 
 
 class Indicator:
@@ -160,10 +160,10 @@ class Indicator:
         self,
         attr_type: str,
         attr_value: str,
-        displayed: Optional[bool] = False,
-        source: Optional[str] = None,
-        unique: Optional[bool] = True,
-        formatter: Optional[Callable[[str], str]] = None,
+        displayed: bool = False,
+        source: str | None = None,
+        unique: bool = True,
+        formatter: Callable[[str], str] | None = None,
     ) -> Attribute:
         """Return instance of Attribute
 
@@ -205,7 +205,7 @@ class Indicator:
 
     @staticmethod
     def build_summary(
-        val1: Optional[str] = None, val2: Optional[str] = None, val3: Optional[str] = None
+        val1: str | None = None, val2: str | None = None, val3: str | None = None
     ) -> str:
         """Build the Indicator summary using available values."""
         summary = []
@@ -286,9 +286,9 @@ class Indicator:
 
     def occurrence(
         self,
-        file_name: Optional[str] = None,
-        path: Optional[str] = None,
-        date: Optional[str] = None,
+        file_name: str | None = None,
+        path: str | None = None,
+        date: str | None = None,
     ) -> 'FileOccurrence':
         """Add a file Occurrence.
 
@@ -334,7 +334,7 @@ class Indicator:
         return self._indicator_data.get('summary')
 
     def security_label(
-        self, name: str, description: Optional[str] = None, color: Optional[str] = None
+        self, name: str, description: str | None = None, color: str | None = None
     ) -> SecurityLabel:
         """Return instance of SecurityLabel.
 
@@ -358,7 +358,7 @@ class Indicator:
             self._labels.append(label)
         return label
 
-    def tag(self, name: str, formatter: Optional[Callable[[str], str]] = None) -> 'Tag':
+    def tag(self, name: str, formatter: Callable[[str], str] | None = None) -> 'Tag':
         """Return instance of Tag.
 
         Args:
@@ -483,9 +483,9 @@ class File(Indicator):
 
     def __init__(
         self,
-        md5: Optional[str] = None,
-        sha1: Optional[str] = None,
-        sha256: Optional[str] = None,
+        md5: str | None = None,
+        sha1: str | None = None,
+        sha256: str | None = None,
         **kwargs,
     ):
         """Initialize Class Properties.
@@ -731,9 +731,9 @@ class FileOccurrence:
 
     def __init__(
         self,
-        file_name: Optional[str] = None,
-        path: Optional[str] = None,
-        date: Optional[str] = None,
+        file_name: str | None = None,
+        path: str | None = None,
+        date: str | None = None,
     ):
         """Initialize Class Properties
 

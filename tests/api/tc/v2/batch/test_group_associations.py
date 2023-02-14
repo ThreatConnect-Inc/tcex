@@ -7,7 +7,6 @@ if TYPE_CHECKING:
     from tcex import TcEx
 
 
-# pylint: disable=no-self-use
 class TestGroup1:
     """Test the TcEx Batch Module."""
 

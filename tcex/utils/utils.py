@@ -3,7 +3,8 @@
 import ast
 import ipaddress
 import re
-from typing import Any, Dict, List, Optional, Pattern, Union
+from re import Pattern
+from typing import Any
 
 # third-party
 import astunparse
@@ -23,8 +24,8 @@ class Utils(AesOperations, DatetimeOperations, StringOperations, Variables):
     def find_line_in_code(
         needle: str,
         code: str,
-        trigger_start: Optional[Pattern] = None,
-        trigger_stop: Optional[Pattern] = None,
+        trigger_start: Pattern | None = None,
+        trigger_stop: Pattern | None = None,
     ) -> str:
         """Return matching line of code in a class definition.
 
@@ -53,7 +54,7 @@ class Utils(AesOperations, DatetimeOperations, StringOperations, Variables):
         return None
 
     @staticmethod
-    def flatten_list(lst: List[Any]) -> List[Any]:
+    def flatten_list(lst: list[Any]) -> list[Any]:
         """Flatten a list
 
         Will work for lists of lists to arbitrary depth
@@ -82,10 +83,8 @@ class Utils(AesOperations, DatetimeOperations, StringOperations, Variables):
                 ipaddress.ip_interface(possible_cidr_range)
             except Exception:
                 return False
-            else:
-                return True
-        else:
-            return False
+            return True
+        return False
 
     @staticmethod
     def is_ip(possible_ip: str) -> bool:
@@ -98,10 +97,9 @@ class Utils(AesOperations, DatetimeOperations, StringOperations, Variables):
             ipaddress.ip_address(possible_ip)
         except ValueError:
             return False
-        else:
-            return True
+        return True
 
-    def mapper(self, data: Union[list, dict], mapping: dict):
+    def mapper(self, data: list | dict, mapping: dict):
         """Yield something ..."""
         # TODO [high] - @bpurdy - update docstring with description of what this is?
         if isinstance(data, dict):
@@ -138,9 +136,9 @@ class Utils(AesOperations, DatetimeOperations, StringOperations, Variables):
     @staticmethod
     def printable_cred(
         cred: str,
-        visible: Optional[int] = 1,
-        mask_char: Optional[str] = '*',
-        mask_char_count: Optional[int] = 4,
+        visible: int | None = 1,
+        mask_char: str | None = '*',
+        mask_char_count: int | None = 4,
     ) -> str:
         """Return a printable (masked) version of the provided credential.
 
@@ -157,7 +155,7 @@ class Utils(AesOperations, DatetimeOperations, StringOperations, Variables):
         return cred
 
     @staticmethod
-    def remove_none(dict_: Dict[Any, Optional[Any]]) -> Dict[Any, Any]:
+    def remove_none(dict_: dict[Any, Any | None]) -> dict[Any, Any]:
         """Remove any mappings from a dict with a None value."""
         return {k: v for k, v in dict_.items() if v is not None}
 

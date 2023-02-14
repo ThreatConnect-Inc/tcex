@@ -6,15 +6,12 @@ import threading
 import time
 import traceback
 import uuid
+from collections.abc import Callable
 from datetime import datetime
-from typing import TYPE_CHECKING, Callable, Optional, Union
 
 # first-party
+from tcex.app_config import InstallJson  # TYPE-CHECKING
 from tcex.services.mqtt_message_broker import MqttMessageBroker
-
-if TYPE_CHECKING:
-    # first-party
-    from tcex.app_config import InstallJson
 
 # get tcex logger
 logger = logging.getLogger('tcex')
@@ -45,7 +42,7 @@ class CommonService:
         self.heartbeat_max_misses = 3
         self.heartbeat_sleep_time = 1
         self.heartbeat_watchdog = 0
-        self.ij: 'InstallJson' = tcex.ij
+        self.ij: InstallJson = tcex.ij
         self.key_value_store = self.tcex.key_value_store
         self.log = logger
         self.logger = tcex.logger
@@ -88,7 +85,7 @@ class CommonService:
         """
         self.log.info(f'feature=service, event=acknowledge, message={message}')
 
-    def add_metric(self, label: str, value: Union[int, str]):
+    def add_metric(self, label: str, value: int | str):
         """Add a metric.
 
         Metrics are reported in heartbeat message.
@@ -156,7 +153,7 @@ class CommonService:
             time.sleep(self.heartbeat_sleep_time)
             self.heartbeat_watchdog += 1
 
-    def increment_metric(self, label: str, value: Optional[int] = 1):
+    def increment_metric(self, label: str, value: int | None = 1):
         """Increment a metric if already exists.
 
         Args:
@@ -177,7 +174,7 @@ class CommonService:
         # start listener thread
         self.service_thread(name='broker-listener', target=self.message_broker.connect)
 
-    def loop_forever(self, sleep: Optional[int] = 1) -> bool:
+    def loop_forever(self, sleep: int | None = 1) -> bool:
         """Block and wait for shutdown.
 
         Args:
@@ -231,7 +228,7 @@ class CommonService:
 
         # use the command to call the appropriate method defined in command_map
         command: str = m.get('command', 'invalid').lower()
-        trigger_id: Optional[int] = m.get('triggerId')
+        trigger_id: int | None = m.get('triggerId')
         if trigger_id is not None:
             # coerce trigger_id to int in case a string was provided (testing framework)
             trigger_id = int(trigger_id)
@@ -400,10 +397,10 @@ class CommonService:
         self,
         name: str,
         target: Callable[[], bool],
-        args: Optional[tuple] = None,
-        kwargs: Optional[dict] = None,
-        session_id: Optional[str] = None,
-        trigger_id: Optional[int] = None,
+        args: tuple | None = None,
+        kwargs: dict | None = None,
+        session_id: str | None = None,
+        trigger_id: int | None = None,
     ):
         """Start a message thread.
 
@@ -428,7 +425,7 @@ class CommonService:
             self.log.trace(traceback.format_exc())
 
     @property
-    def session_id(self) -> Optional[str]:
+    def session_id(self) -> str | None:
         """Return the current session_id."""
         if not hasattr(threading.current_thread(), 'session_id'):
             threading.current_thread().session_id = self.create_session_id()
@@ -440,7 +437,7 @@ class CommonService:
         return threading.current_thread().name
 
     @property
-    def trigger_id(self) -> Optional[int]:
+    def trigger_id(self) -> int | None:
         """Return the current trigger_id."""
         trigger_id = None
         if hasattr(threading.current_thread(), 'trigger_id'):
@@ -449,7 +446,7 @@ class CommonService:
                 trigger_id = int(trigger_id)
         return trigger_id
 
-    def update_metric(self, label: str, value: Union[int, str]):
+    def update_metric(self, label: str, value: int | str):
         """Update a metric if already exists.
 
         Args:

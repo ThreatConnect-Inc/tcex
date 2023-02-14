@@ -1,9 +1,4 @@
 """Test the TcEx Inputs Config Module."""
-# standard library
-# import json
-# from random import randint
-# standard library
-from typing import List
 
 # third-party
 from pydantic import BaseModel
@@ -16,7 +11,7 @@ class InputModel(BaseModel):
     """."""
 
     my_bool: bool
-    my_multi: List[String]
+    my_multi: list[String]
 
 
 class TestPlaybookAot:

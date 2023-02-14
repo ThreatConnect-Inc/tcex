@@ -6,7 +6,6 @@ import pytest
 from tcex.utils import Utils
 
 
-# pylint: disable=no-self-use
 class TestStringModifiers:
     """Test the TcEx Utils Module."""
 

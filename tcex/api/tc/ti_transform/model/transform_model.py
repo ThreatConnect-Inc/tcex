@@ -1,6 +1,6 @@
 """Model Definition"""
 # standard library
-from typing import Callable, List, Optional, Union
+from collections.abc import Callable
 
 # third-party
 from jmespath import compile as jmespath_compile
@@ -8,22 +8,22 @@ from pydantic import BaseModel, Extra, Field, root_validator, validator
 
 
 # reusable validator
-def _always_array(value: Union[list, str]) -> List[str]:
+def _always_array(value: list | str) -> list[str]:
     """Return value as a list."""
     if not isinstance(value, list):
         value = [value]
     return value
 
 
-# pylint: disable=no-self-argument, no-self-use
+# pylint: disable=no-self-argument
 class TransformModel(BaseModel, extra=Extra.forbid):
     """Model Definition"""
 
-    filter_map: Optional[dict] = Field(None, description='')
-    kwargs: Optional[dict] = Field({}, description='')
-    method: Optional[Callable] = Field(None, description='')
-    for_each: Optional[Callable] = Field(None, description='')
-    static_map: Optional[dict] = Field(None, description='')
+    filter_map: dict | None = Field(None, description='')
+    kwargs: dict | None = Field({}, description='')
+    method: Callable | None = Field(None, description='')
+    for_each: Callable | None = Field(None, description='')
+    static_map: dict | None = Field(None, description='')
 
     @validator('filter_map', 'static_map', pre=True)
     def _lower_map_keys(cls, v):
@@ -50,8 +50,8 @@ class TransformModel(BaseModel, extra=Extra.forbid):
 class PathTransformModel(BaseModel, extra=Extra.forbid):
     """."""
 
-    default: Optional[str] = Field(None, description='')
-    path: Optional[str] = Field(None, description='')
+    default: str | None = Field(None, description='')
+    path: str | None = Field(None, description='')
 
     @validator('path')
     def _validate_path(cls, v):
@@ -75,7 +75,7 @@ class PathTransformModel(BaseModel, extra=Extra.forbid):
 class MetadataTransformModel(PathTransformModel, extra=Extra.forbid):
     """."""
 
-    transform: Optional[List[TransformModel]] = Field(None, description='')
+    transform: list[TransformModel] | None = Field(None, description='')
 
     # validators
     _transform_array = validator('transform', allow_reuse=True, pre=True)(_always_array)
@@ -84,15 +84,15 @@ class MetadataTransformModel(PathTransformModel, extra=Extra.forbid):
 class ValueTransformModel(BaseModel, extra=Extra.forbid):
     """."""
 
-    value: Union[str, MetadataTransformModel]
+    value: str | MetadataTransformModel
 
 
 class FileOccurrenceTransformModel(BaseModel, extra=Extra.forbid):
     """."""
 
-    file_name: Optional[Union[str, MetadataTransformModel]] = Field(None, description='')
-    path: Optional[Union[str, MetadataTransformModel]] = Field(None, description='')
-    date: Optional[Union[str, MetadataTransformModel]] = Field(None, description='')
+    file_name: str | MetadataTransformModel | None = Field(None, description='')
+    path: str | MetadataTransformModel | None = Field(None, description='')
+    date: str | MetadataTransformModel | None = Field(None, description='')
 
 
 class DatetimeTransformModel(PathTransformModel, extra=Extra.forbid):
@@ -106,16 +106,16 @@ class AssociatedGroupTransform(ValueTransformModel, extra=Extra.forbid):
 class AttributeTransformModel(ValueTransformModel, extra=Extra.forbid):
     """."""
 
-    displayed: Union[bool, MetadataTransformModel] = Field(False, description='')
-    source: Optional[Union[str, MetadataTransformModel]] = Field(None, description='')
-    type: Union[str, MetadataTransformModel] = Field(..., description='')
+    displayed: bool | MetadataTransformModel = Field(False, description='')
+    source: str | MetadataTransformModel | None = Field(None, description='')
+    type: str | MetadataTransformModel = Field(..., description='')
 
 
 class SecurityLabelTransformModel(ValueTransformModel, extra=Extra.forbid):
     """."""
 
-    color: Optional[MetadataTransformModel] = Field(None, description='')
-    description: Optional[MetadataTransformModel] = Field(None, description='')
+    color: MetadataTransformModel | None = Field(None, description='')
+    description: MetadataTransformModel | None = Field(None, description='')
 
 
 class TagTransformModel(ValueTransformModel, extra=Extra.forbid):
@@ -125,15 +125,15 @@ class TagTransformModel(ValueTransformModel, extra=Extra.forbid):
 class TiTransformModel(BaseModel, extra=Extra.forbid):
     """."""
 
-    applies: Optional[Callable] = Field(None, description='')
-    associated_groups: Optional[List[AssociatedGroupTransform]] = Field(None, description='')
-    attributes: Optional[List[AttributeTransformModel]] = Field(None, description='')
-    date_added: Optional[DatetimeTransformModel] = Field(None, description='')
-    last_modified: Optional[DatetimeTransformModel] = Field(None, description='')
-    security_labels: Optional[List[SecurityLabelTransformModel]] = Field(None, description='')
-    tags: Optional[List[TagTransformModel]] = Field(None, description='')
+    applies: Callable | None = Field(None, description='')
+    associated_groups: list[AssociatedGroupTransform] | None = Field(None, description='')
+    attributes: list[AttributeTransformModel] | None = Field(None, description='')
+    date_added: DatetimeTransformModel | None = Field(None, description='')
+    last_modified: DatetimeTransformModel | None = Field(None, description='')
+    security_labels: list[SecurityLabelTransformModel] | None = Field(None, description='')
+    tags: list[TagTransformModel] | None = Field(None, description='')
     type: MetadataTransformModel = Field(..., description='')
-    xid: Optional[MetadataTransformModel] = Field(description='')
+    xid: MetadataTransformModel | None = Field(description='')
 
 
 class GroupTransformModel(TiTransformModel, extra=Extra.forbid):
@@ -141,42 +141,42 @@ class GroupTransformModel(TiTransformModel, extra=Extra.forbid):
 
     name: MetadataTransformModel = Field(..., description='')
     # campaign
-    first_seen: Optional[DatetimeTransformModel] = Field(None, description='')
+    first_seen: DatetimeTransformModel | None = Field(None, description='')
     # document
-    malware: Optional[MetadataTransformModel] = Field(None, description='')
-    password: Optional[MetadataTransformModel] = Field(None, description='')
+    malware: MetadataTransformModel | None = Field(None, description='')
+    password: MetadataTransformModel | None = Field(None, description='')
     # email
-    from_addr: Optional[MetadataTransformModel] = Field(None, description='')
-    score: Optional[MetadataTransformModel] = Field(None, description='')
-    to_addr: Optional[MetadataTransformModel] = Field(None, description='')
+    from_addr: MetadataTransformModel | None = Field(None, description='')
+    score: MetadataTransformModel | None = Field(None, description='')
+    to_addr: MetadataTransformModel | None = Field(None, description='')
     # event, incident
-    event_date: Optional[DatetimeTransformModel] = Field(None, description='')
-    status: Optional[MetadataTransformModel] = Field(None, description='')
+    event_date: DatetimeTransformModel | None = Field(None, description='')
+    status: MetadataTransformModel | None = Field(None, description='')
     # report
-    publish_date: Optional[DatetimeTransformModel] = Field(None, description='')
+    publish_date: DatetimeTransformModel | None = Field(None, description='')
     # signature
-    file_type: Optional[MetadataTransformModel] = Field(None, description='')
-    file_text: Optional[MetadataTransformModel] = Field(None, description='')
+    file_type: MetadataTransformModel | None = Field(None, description='')
+    file_text: MetadataTransformModel | None = Field(None, description='')
     # document, signature
-    file_name: Optional[MetadataTransformModel] = Field(None, description='')
+    file_name: MetadataTransformModel | None = Field(None, description='')
 
 
-# pylint: disable=no-self-argument,no-self-use
+# pylint: disable=no-self-argument
 class IndicatorTransformModel(TiTransformModel, extra=Extra.forbid):
     """."""
 
-    confidence: Optional[MetadataTransformModel] = Field(None, description='')
-    rating: Optional[MetadataTransformModel] = Field(None, description='')
-    # summary: Optional[MetadataTransformModel] = Field(None, description='')
-    value1: Optional[MetadataTransformModel] = Field(None, description='')
-    value2: Optional[MetadataTransformModel] = Field(None, description='')
-    value3: Optional[MetadataTransformModel] = Field(None, description='')
+    confidence: MetadataTransformModel | None = Field(None, description='')
+    rating: MetadataTransformModel | None = Field(None, description='')
+    # summary: MetadataTransformModel | None = Field(None, description='')
+    value1: MetadataTransformModel | None = Field(None, description='')
+    value2: MetadataTransformModel | None = Field(None, description='')
+    value3: MetadataTransformModel | None = Field(None, description='')
     # file
-    file_occurrences: Optional[List[FileOccurrenceTransformModel]] = Field(None, description='')
-    size: Optional[MetadataTransformModel] = Field(None, description='')
+    file_occurrences: list[FileOccurrenceTransformModel] | None = Field(None, description='')
+    size: MetadataTransformModel | None = Field(None, description='')
     # host
-    dns_active: Optional[MetadataTransformModel] = Field(None, description='')
-    whois_active: Optional[MetadataTransformModel] = Field(None, description='')
+    dns_active: MetadataTransformModel | None = Field(None, description='')
+    whois_active: MetadataTransformModel | None = Field(None, description='')
 
     # root validator that ensure at least one indicator value/summary is set
     @root_validator()

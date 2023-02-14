@@ -1,7 +1,7 @@
 """TcEx Utilities Variables Operations Module"""
 # standard library
 import re
-from typing import Any, List
+from typing import Any
 
 # first-party
 from tcex.utils.models import PlaybookVariableModel
@@ -174,7 +174,7 @@ class Variables:
         return re.compile(self.variable_tc_pattern)
 
     @property
-    def variable_playbook_array_types(self) -> List[str]:
+    def variable_playbook_array_types(self) -> list[str]:
         """Return list of standard playbook array variable types."""
         return [
             'BinaryArray',
@@ -185,7 +185,7 @@ class Variables:
         ]
 
     @property
-    def variable_playbook_single_types(self) -> List[str]:
+    def variable_playbook_single_types(self) -> list[str]:
         """Return list of standard playbook single variable types."""
         return [
             'Binary',
@@ -196,6 +196,6 @@ class Variables:
         ]
 
     @property
-    def variable_playbook_types(self) -> List[str]:
+    def variable_playbook_types(self) -> list[str]:
         """Return list of standard playbook variable types."""
         return self.variable_playbook_single_types + self.variable_playbook_array_types

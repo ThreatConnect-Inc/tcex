@@ -1,7 +1,6 @@
 """TcEx Framework Playbook module"""
 # standard library
 import logging
-from typing import Optional, Union
 
 # first-party
 from tcex.backports import cached_property
@@ -29,9 +28,9 @@ class Playbook:
 
     def __init__(
         self,
-        key_value_store: Union[KeyValueApi, KeyValueRedis],
-        context: Optional[str] = None,
-        output_variables: Optional[list] = None,
+        key_value_store: KeyValueApi | KeyValueRedis,
+        context: str | None = None,
+        output_variables: list | None = None,
     ):
         """Initialize the class properties."""
         self.context = context

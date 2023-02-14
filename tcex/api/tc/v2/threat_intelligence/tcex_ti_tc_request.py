@@ -3,7 +3,6 @@
 import hashlib
 import logging
 from functools import lru_cache
-from typing import Optional
 from urllib.parse import quote
 
 # third-party
@@ -50,7 +49,7 @@ class TiTcRequest:
         return r
 
     @property
-    @lru_cache()
+    @lru_cache
     def _error_codes(self) -> 'TcExErrorCodes':  # noqa: F821
         """Return TcEx error codes."""
         return TcExErrorCodes()
@@ -76,7 +75,7 @@ class TiTcRequest:
         return r
 
     def _handle_error(
-        self, code: int, message_values: Optional[list] = None, raise_error: Optional[bool] = True
+        self, code: int, message_values: list | None = None, raise_error: bool = True
     ):
         """Raise RuntimeError
 

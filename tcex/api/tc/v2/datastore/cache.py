@@ -1,8 +1,8 @@
 """Cache"""
 # standard library
 import logging
+from collections.abc import Callable
 from datetime import datetime, timedelta
-from typing import Callable, Optional
 
 # third-party
 import arrow
@@ -32,22 +32,22 @@ class Cache:
         session: Session,
         domain: str,
         data_type: str,
-        ttl_seconds: Optional[int] = None,
-        mapping: Optional[dict] = None,
+        ttl_seconds: int | None = None,
+        mapping: dict | None = None,
     ):
         """Initialize class properties."""
 
         # properties
         self.ds = DataStore(session, domain, data_type, mapping)
         self.log = logger
-        self.ttl_seconds: Optional[int] = ttl_seconds
+        self.ttl_seconds: int | None = ttl_seconds
         self.utils = Utils()
 
         # Warranty void if any of these are changed.  Don't touch.
         self._cache_data_key: str = 'cache-data'
         self._cache_date_key: str = 'cache-date'
 
-    def add(self, rid: str, data: dict, raise_on_error: Optional[bool] = True) -> dict:
+    def add(self, rid: str, data: dict, raise_on_error: bool = True) -> dict:
         """Write cache data to the data store.
 
         **Example Response**
@@ -83,7 +83,7 @@ class Cache:
         }
         return self.ds.post(rid, data, raise_on_error)
 
-    def delete(self, rid: str, raise_on_error: Optional[bool] = True) -> dict:
+    def delete(self, rid: str, raise_on_error: bool = True) -> dict:
         """Write cache data to the data store.
 
         **Example Response**
@@ -117,8 +117,8 @@ class Cache:
     def get(
         self,
         rid: str,
-        data_callback: Optional[Callable[[str], dict]] = None,
-        raise_on_error: Optional[bool] = True,
+        data_callback: Callable[[str], dict] | None = None,
+        raise_on_error: bool = True,
     ) -> dict:
         """Get cached data from the data store.
 
@@ -162,7 +162,7 @@ class Cache:
                 # when cache is expired or does not exist use callback to get data if possible
                 if callable(data_callback):
                     # cache_data = self._encode_data(data_callback(rid))
-                    cache_data: Optional[dict] = data_callback(rid)
+                    cache_data: dict | None = data_callback(rid)
                     self.log.debug(f'Using callback data for ({rid}).')
                     if cache_data:
                         cache_data = self.update(
@@ -173,7 +173,7 @@ class Cache:
 
         return cache_data
 
-    def update(self, rid: str, data: dict, raise_on_error: Optional[bool] = True) -> dict:
+    def update(self, rid: str, data: dict, raise_on_error: bool = True) -> dict:
         """Write updated cache data to the DataStore.
 
         **Example Response**

@@ -1,9 +1,8 @@
 """Group Entity Field (Model) Type"""
-# standard library
-from typing import TYPE_CHECKING, Dict, List
 
 # third-party
 from pydantic import validator
+from pydantic.fields import ModelField  # TYPE-CHECKING
 
 # first-party
 from tcex.api.tc.utils.threat_intel_utils import ThreatIntelUtils
@@ -11,12 +10,8 @@ from tcex.input.field_types.exception import InvalidEmptyValue, InvalidEntityTyp
 from tcex.input.field_types.tc_entity import TCEntity
 from tcex.pleb.registry import registry
 
-if TYPE_CHECKING:  # pragma: no cover
-    # third-party
-    from pydantic.fields import ModelField
 
-
-# pylint: disable=no-self-argument, no-self-use
+# pylint: disable=no-self-argument
 class GroupEntity(TCEntity):
     """Group Entity Field (Model) Type"""
 
@@ -35,21 +30,21 @@ class GroupEntity(TCEntity):
         return value
 
 
-def group_entity(group_types: List[str] = None) -> type:
+def group_entity(group_types: list[str] = None) -> type:
     """Return custom model for Group Entity."""
 
     class CustomGroupEntity(GroupEntity):
         """Group Entity Field (Model) Type"""
 
         @validator('type', allow_reuse=True)
-        def is_empty(cls, value: str, field: 'ModelField') -> Dict[str, str]:
+        def is_empty(cls, value: str, field: 'ModelField') -> dict[str, str]:
             """Validate that the value is a non-empty string."""
             if isinstance(value, str) and value.replace(' ', '') == '':
                 raise InvalidEmptyValue(field_name=field.name)
             return value
 
         @validator('type', allow_reuse=True)
-        def is_type(cls, value: str, field: 'ModelField') -> Dict[str, str]:
+        def is_type(cls, value: str, field: 'ModelField') -> dict[str, str]:
             """Validate that the entity is of a specific Group type."""
             if value.lower() not in [i.lower() for i in group_types]:
                 raise InvalidEntityType(

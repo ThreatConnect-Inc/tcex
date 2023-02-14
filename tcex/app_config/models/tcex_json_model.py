@@ -1,9 +1,8 @@
 """TcEx JSON Model"""
-# pylint: disable=no-self-argument,no-self-use; noqa: N805
+# pylint: disable=no-self-argument; noqa: N805
 # standard library
 from enum import Enum
 from pathlib import PosixPath
-from typing import List, Optional
 
 # third-party
 from pydantic import BaseModel, validator
@@ -30,7 +29,7 @@ class PackageModel(BaseModel):
     """Model for tcex_json.package"""
 
     app_name: str
-    app_version: Optional[str]
+    app_version: str | None
     excludes: list
     output_dir: str = 'target'
 
@@ -62,11 +61,11 @@ class TemplateTypes(str, Enum):
 class TcexJsonModel(BaseModel):
     """TcEx JSON Model"""
 
-    lib_versions: Optional[List[LibVersionModel]]
+    lib_versions: list[LibVersionModel] | None
     package: PackageModel
-    template_name: Optional[str] = None
-    template_repo_hash: Optional[str] = None
-    template_type: Optional[TemplateTypes] = None
+    template_name: str | None = None
+    template_repo_hash: str | None = None
+    template_type: TemplateTypes | None = None
 
     class Config:
         """DataModel Config"""

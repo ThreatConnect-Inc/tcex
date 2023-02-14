@@ -1,16 +1,14 @@
 """Test the TcEx Batch Module."""
 # standard library
-from typing import TYPE_CHECKING, Any, List
+from typing import Any
 
 # third-party
 import pytest
 
-if TYPE_CHECKING:
-    # first-party
-    from tcex.playbook.playbook import Playbook
+# first-party
+from tcex.playbook.playbook import Playbook
 
 
-# pylint: disable=no-self-use
 class TestUtils:
     """Test the TcEx Batch Module."""
 
@@ -59,7 +57,7 @@ class TestUtils:
         ],
     )
     def test_playbook_binary_array_pass(
-        self, variable: str, value: List[bytes], playbook: 'Playbook'
+        self, variable: str, value: list[bytes], playbook: 'Playbook'
     ):
         """Test playbook variables."""
         playbook.create.binary_array(variable, value, when_requested=False)
@@ -136,7 +134,7 @@ class TestUtils:
         ],
     )
     def test_playbook_binary_array_decode(
-        self, variable: str, value: List[bytes], playbook: 'Playbook'
+        self, variable: str, value: list[bytes], playbook: 'Playbook'
     ):
         """Test playbook variables."""
         playbook.create.binary_array(variable, value, when_requested=False)
@@ -174,7 +172,7 @@ class TestUtils:
         ],
     )
     def test_playbook_binary_array_no_b64decode(
-        self, variable: str, value: List[bytes], expected: List[str], playbook: 'Playbook'
+        self, variable: str, value: list[bytes], expected: list[str], playbook: 'Playbook'
     ):
         """Test playbook variables."""
         playbook.create.binary_array(variable, value, when_requested=False)

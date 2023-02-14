@@ -1,8 +1,7 @@
 """Tag / Tags Model"""
-# pylint: disable=no-member,no-self-argument,no-self-use,wrong-import-position
+# pylint: disable=no-member,no-self-argument,wrong-import-position
 # standard library
 from datetime import datetime
-from typing import List, Optional
 
 # third-party
 from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
@@ -10,46 +9,6 @@ from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
 from tcex.utils import Utils
-
-
-class TagsModel(
-    BaseModel,
-    title='Tags Model',
-    alias_generator=Utils().snake_to_camel,
-    validate_assignment=True,
-):
-    """Tags Model"""
-
-    _mode_support = PrivateAttr(True)
-
-    data: Optional[List['TagModel']] = Field(
-        [],
-        description='The data for the Tags.',
-        methods=['POST', 'PUT'],
-        title='data',
-    )
-    mode: str = Field(
-        'append',
-        description='The PUT mode for nested objects (append, delete, replace). Default: append',
-        methods=['POST', 'PUT'],
-        title='append',
-    )
-
-
-class TagDataModel(
-    BaseModel,
-    title='Tag Data Model',
-    alias_generator=Utils().snake_to_camel,
-    validate_assignment=True,
-):
-    """Tags Data Model"""
-
-    data: Optional[List['TagModel']] = Field(
-        [],
-        description='The data for the Tags.',
-        methods=['POST', 'PUT'],
-        title='data',
-    )
 
 
 class TagModel(
@@ -66,14 +25,14 @@ class TagModel(
     _shared_type = PrivateAttr(True)
     _staged = PrivateAttr(False)
 
-    cases: Optional['CasesModel'] = Field(
+    cases: 'CasesModel' = Field(
         None,
         allow_mutation=False,
         description='The **cases** for the Tag.',
         read_only=True,
         title='cases',
     )
-    description: Optional[str] = Field(
+    description: str | None = Field(
         None,
         description='A brief description of the Tag.',
         methods=['POST', 'PUT'],
@@ -82,34 +41,34 @@ class TagModel(
         read_only=False,
         title='description',
     )
-    groups: Optional['GroupsModel'] = Field(
+    groups: 'GroupsModel' = Field(
         None,
         allow_mutation=False,
         description='The **groups** for the Tag.',
         read_only=True,
         title='groups',
     )
-    id: Optional[int] = Field(
+    id: int | None = Field(
         None,
         description='The ID of the item.',
         read_only=True,
         title='id',
     )
-    indicators: Optional['IndicatorsModel'] = Field(
+    indicators: 'IndicatorsModel' = Field(
         None,
         allow_mutation=False,
         description='The **indicators** for the Tag.',
         read_only=True,
         title='indicators',
     )
-    last_used: Optional[datetime] = Field(
+    last_used: datetime | None = Field(
         None,
         allow_mutation=False,
         description='The date and time that the Tag was last used.',
         read_only=True,
         title='lastUsed',
     )
-    name: Optional[str] = Field(
+    name: str | None = Field(
         None,
         description='The **name** for the Tag.',
         methods=['POST', 'PUT'],
@@ -118,14 +77,14 @@ class TagModel(
         read_only=False,
         title='name',
     )
-    owner: Optional[str] = Field(
+    owner: str | None = Field(
         None,
         description='The name of the Owner of the Tag.',
         methods=['POST'],
         read_only=False,
         title='owner',
     )
-    victims: Optional['VictimsModel'] = Field(
+    victims: 'VictimsModel' = Field(
         None,
         allow_mutation=False,
         description='The **victims** for the Tag.',
@@ -133,29 +92,69 @@ class TagModel(
         title='victims',
     )
 
-    @validator('cases', always=True)
+    @validator('cases', always=True, pre=True)
     def _validate_cases(cls, v):
         if not v:
-            return CasesModel()
+            return CasesModel()  # type: ignore
         return v
 
-    @validator('groups', always=True)
+    @validator('groups', always=True, pre=True)
     def _validate_groups(cls, v):
         if not v:
-            return GroupsModel()
+            return GroupsModel()  # type: ignore
         return v
 
-    @validator('indicators', always=True)
+    @validator('indicators', always=True, pre=True)
     def _validate_indicators(cls, v):
         if not v:
-            return IndicatorsModel()
+            return IndicatorsModel()  # type: ignore
         return v
 
-    @validator('victims', always=True)
+    @validator('victims', always=True, pre=True)
     def _validate_victims(cls, v):
         if not v:
-            return VictimsModel()
+            return VictimsModel()  # type: ignore
         return v
+
+
+class TagDataModel(
+    BaseModel,
+    title='Tag Data Model',
+    alias_generator=Utils().snake_to_camel,
+    validate_assignment=True,
+):
+    """Tags Data Model"""
+
+    data: list[TagModel] | None = Field(
+        [],
+        description='The data for the Tags.',
+        methods=['POST', 'PUT'],
+        title='data',
+    )
+
+
+class TagsModel(
+    BaseModel,
+    title='Tags Model',
+    alias_generator=Utils().snake_to_camel,
+    validate_assignment=True,
+):
+    """Tags Model"""
+
+    _mode_support = PrivateAttr(True)
+
+    data: list[TagModel] | None = Field(
+        [],
+        description='The data for the Tags.',
+        methods=['POST', 'PUT'],
+        title='data',
+    )
+    mode: str = Field(
+        'append',
+        description='The PUT mode for nested objects (append, delete, replace). Default: append',
+        methods=['POST', 'PUT'],
+        title='append',
+    )
 
 
 # first-party

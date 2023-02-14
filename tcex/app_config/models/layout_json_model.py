@@ -1,8 +1,7 @@
 """Layout JSON Model"""
-# pylint: disable=no-self-argument,no-self-use; noqa: N805
+# pylint: disable=no-self-argument; noqa: N805
 # standard library
 from collections import OrderedDict
-from typing import Dict, List, Optional, Union
 
 # third-party
 from pydantic import BaseModel
@@ -23,7 +22,7 @@ def snake_to_camel(snake_string: str) -> str:
 class ParametersModel(BaseModel):
     """Model for layout_json.inputs.{}"""
 
-    display: Optional[str]
+    display: str | None
     name: str
 
     class Config:
@@ -36,7 +35,7 @@ class ParametersModel(BaseModel):
 class InputsModel(BaseModel):
     """Model for layout_json.inputs"""
 
-    parameters: List[ParametersModel]
+    parameters: list[ParametersModel]
     sequence: int
     title: constr(min_length=3, max_length=100)
 
@@ -50,7 +49,7 @@ class InputsModel(BaseModel):
 class OutputsModel(BaseModel):
     """Model for layout_json.outputs"""
 
-    display: Optional[str]
+    display: str | None
     name: str
 
     class Config:
@@ -63,8 +62,8 @@ class OutputsModel(BaseModel):
 class LayoutJsonModel(BaseModel):
     """Layout JSON Model"""
 
-    inputs: List[InputsModel]
-    outputs: Optional[List[OutputsModel]]
+    inputs: list[InputsModel]
+    outputs: list[OutputsModel] | None
 
     class Config:
         """DataModel Config"""
@@ -72,16 +71,16 @@ class LayoutJsonModel(BaseModel):
         alias_generator = snake_to_camel
         validate_assignment = True
 
-    def get_param(self, name: str) -> Union['NoneModel', 'ParametersModel']:
+    def get_param(self, name: str) -> NoneModel | ParametersModel:
         """Return the param or a None Model."""
         return self.params.get(name) or NoneModel()
 
-    def get_output(self, name: str) -> Union['NoneModel', 'OutputsModel']:
+    def get_output(self, name: str) -> NoneModel | OutputsModel:
         """Return layout.json outputs in a flattened dict with name param as key."""
         return self.outputs_.get(name) or NoneModel()
 
     @property
-    def outputs_(self) -> Dict[str, 'OutputsModel']:
+    def outputs_(self) -> dict[str, OutputsModel]:
         """Return layout.json outputs in a flattened dict with name param as key."""
         return {o.name: o for o in self.outputs}
 
@@ -91,7 +90,7 @@ class LayoutJsonModel(BaseModel):
         return list(self.params.keys())
 
     @property
-    def params(self) -> Dict[str, 'ParametersModel']:
+    def params(self) -> dict[str, 'ParametersModel']:
         """Return layout.json params in a flattened dict with name param as key."""
         # return {p.name: p for i in self.inputs for p in i.parameters}
 

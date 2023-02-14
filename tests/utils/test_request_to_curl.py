@@ -13,13 +13,12 @@ from tcex.utils.requests_to_curl import RequestsToCurl
 requests_to_curl = RequestsToCurl()
 
 
-# pylint: disable=no-self-use
 class TestRequestToCurl:
     """Test the TcEx Utils Module."""
 
     def test_curl_get(self):
         """Test Case"""
-        r = requests.get('https://www.google.com')
+        r = requests.get('https://www.google.com', timeout=60)
         r_curl = requests_to_curl.convert(r.request)
         r_curl_expected = re.compile(
             r'''curl -X GET -H 'Accept: \*/\*' -H 'Accept-Encoding: deflate' '''
@@ -30,7 +29,7 @@ class TestRequestToCurl:
 
     def test_curl_get_insecure(self):
         """Test Case"""
-        r = requests.get('https://www.google.com')
+        r = requests.get('https://www.google.com', timeout=60)
         r_curl = requests_to_curl.convert(r.request, verify=False)
         r_curl_expected = re.compile(
             r'''curl -X GET -H 'Accept: \*/\*' -H 'Accept-Encoding: deflate' '''
@@ -46,7 +45,7 @@ class TestRequestToCurl:
             'authorization': 'sensitive information that should not be readable',
             'pytest': 'mask',
         }
-        r = requests.get('https://www.google.com', headers=headers)
+        r = requests.get('https://www.google.com', headers=headers, timeout=60)
         r_curl = requests_to_curl.convert(
             r.request, mask_headers=True, mask_patterns=['pytest'], verify=False
         )
@@ -61,7 +60,7 @@ class TestRequestToCurl:
     def test_curl_get_proxies(self):
         """Test Case"""
         headers = {'authorization': 'sensitive information that should not be readable'}
-        r = requests.get('https://www.google.com', headers=headers)
+        r = requests.get('https://www.google.com', headers=headers, timeout=60)
         r_curl = requests_to_curl.convert(
             r.request, proxies={'https': 'https://www.google.com'}, verify=False
         )
@@ -76,7 +75,7 @@ class TestRequestToCurl:
     def test_curl_get_proxies_with_auth(self):
         """Test Case"""
         headers = {'authorization': 'sensitive information that should not be readable'}
-        r = requests.get('https://www.google.com', headers=headers)
+        r = requests.get('https://www.google.com', headers=headers, timeout=60)
         r_curl = requests_to_curl.convert(
             r.request, proxies={'https': 'https://user:pass@www.google.com'}, verify=False
         )
@@ -91,7 +90,7 @@ class TestRequestToCurl:
 
     def test_curl_post(self):
         """Test Case"""
-        r = requests.post('https://www.google.com', data='test')
+        r = requests.post('https://www.google.com', data='test', timeout=60)
         r_curl = requests_to_curl.convert(r.request)
         r_curl_expected = re.compile(
             r'''curl -X POST -H 'Accept: \*/\*' -H 'Accept-Encoding: deflate' '''
@@ -103,7 +102,7 @@ class TestRequestToCurl:
 
     def test_curl_mask_body(self):
         """Test Case"""
-        r = requests.post('https://www.google.com', data='test')
+        r = requests.post('https://www.google.com', data='test', timeout=60)
         r_curl = requests_to_curl.convert(r.request, mask_body=True)
         r_curl_expected = re.compile(
             r'''curl -X POST -H 'Accept: \*/\*' -H 'Accept-Encoding: deflate' '''
@@ -115,7 +114,7 @@ class TestRequestToCurl:
 
     def test_curl_post_bytes(self):
         """Test Case"""
-        r = requests.post('https://www.google.com', data=b'test')
+        r = requests.post('https://www.google.com', data=b'test', timeout=60)
         r_curl = requests_to_curl.convert(r.request)
         r_curl_expected = re.compile(
             r'''curl -X POST -H 'Accept: \*/\*' -H 'Accept-Encoding: deflate' '''
@@ -132,7 +131,7 @@ class TestRequestToCurl:
             'lBLAQIeAwoAAAAAACSE+FBT/FFnAgAAAAIAAAAEABgAAAAAAAEAAAC0gQAAAABibGFoVVQFAAOTUxtfdXgLAA'
             'EE9gEAAAQUAAAAUEsFBgAAAAABAAEASgAAAEAAAAAAAA=='
         )
-        r = requests.post('https://www.google.com', data=data)
+        r = requests.post('https://www.google.com', data=data, timeout=60)
         r_curl = requests_to_curl.convert(r.request)
         filename = re.search(r'(@\/tmp\/[a-z0-9].+)\s(?:http)', r_curl)[1]
         r_curl_expected = re.compile(

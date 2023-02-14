@@ -3,7 +3,6 @@
 from tcex.utils import Utils
 
 
-# pylint: disable=no-self-use
 class TestStandardizeAsn:
     """Test the TcEx Utils Module."""
 

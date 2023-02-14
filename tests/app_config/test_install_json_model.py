@@ -16,7 +16,7 @@ from tcex.app_config.install_json import InstallJson
 class TestInstallJson:
     """App Config InstallJson testing."""
 
-    def setup_method(self):  # pylint: disable=no-self-use
+    def setup_method(self):
         """Configure setup before all tests."""
         print('')
 

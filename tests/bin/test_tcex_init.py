@@ -4,7 +4,6 @@ import os
 from importlib.machinery import SourceFileLoader
 from importlib.util import module_from_spec, spec_from_loader
 from pathlib import Path
-from typing import List
 
 # third-party
 import pytest
@@ -27,7 +26,7 @@ class TestTcexCliInit:
     """Test Module"""
 
     @staticmethod
-    def _run_command(args: List[str], monkeypatch: 'pytest.MonkeyPatch') -> str:
+    def _run_command(args: list[str], monkeypatch: 'pytest.MonkeyPatch') -> str:
         """Helper Method"""
         working_dir = Path(os.path.join(os.getcwd(), 'app_init'))
 

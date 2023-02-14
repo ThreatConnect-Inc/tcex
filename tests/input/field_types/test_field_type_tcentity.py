@@ -1,7 +1,4 @@
 """Testing TcEx Input module field types."""
-# standard library
-from typing import TYPE_CHECKING, List, Optional, Union
-
 # third-party
 import pytest
 from pydantic import BaseModel, validator
@@ -16,13 +13,10 @@ from tcex.input.field_types import (
 )
 from tcex.pleb.scoped_property import scoped_property
 from tests.input.field_types.utils import InputTest
-
-if TYPE_CHECKING:
-    # first-party
-    from tests.mock_app import MockApp
+from tests.mock_app import MockApp  # TYPE-CHECKING
 
 
-# pylint: disable=no-self-argument, no-self-use
+# pylint: disable=no-self-argument
 class TestInputsFieldTypes(InputTest):
     """Test TcEx String Field Model Tests."""
 
@@ -117,7 +111,7 @@ class TestInputsFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Optional[TCEntity]
+                my_data: TCEntity | None
 
         self._type_validation(
             PytestModel,
@@ -208,14 +202,14 @@ class TestInputsFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: List[TCEntity]
+                my_data: list[TCEntity]
 
         else:
 
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Optional[List[TCEntity]]
+                my_data: list[TCEntity] | None
 
         self._type_validation(
             PytestModel,
@@ -394,7 +388,7 @@ class TestInputsFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Union[TCEntity, List[TCEntity]]
+                my_data: TCEntity | list[TCEntity]
 
                 _always_array = validator('my_data', allow_reuse=True)(always_array())
 
@@ -403,7 +397,7 @@ class TestInputsFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Optional[Union[TCEntity, List[TCEntity]]]
+                my_data: TCEntity | list[TCEntity] | None
 
                 _always_array = validator('my_data', allow_reuse=True)(always_array())
 
@@ -517,7 +511,7 @@ class TestInputsFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Optional[IndicatorEntity]
+                my_data: IndicatorEntity | None
 
         self._type_validation(
             PytestModel,
@@ -582,7 +576,7 @@ class TestInputsFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Optional[indicator_entity(indicator_types=indicator_types)]
+                my_data: indicator_entity(indicator_types=indicator_types) | None
 
         self._type_validation(
             PytestModel,
@@ -694,7 +688,7 @@ class TestInputsFieldTypes(InputTest):
             class PytestModel(BaseModel):
                 """Test Model for Inputs"""
 
-                my_data: Optional[GroupEntity]
+                my_data: GroupEntity | None
 
         self._type_validation(
             PytestModel,

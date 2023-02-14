@@ -1,7 +1,6 @@
 """TcExErrorCodes class and handle_error function."""
 # standard library
 import logging
-from typing import Optional
 
 # first-party
 from tcex.pleb.singleton import Singleton
@@ -93,9 +92,9 @@ class TcExErrorCodes(metaclass=Singleton):
 
 def handle_error(
     code: int,
-    message_values: Optional[list] = None,
-    raise_error: Optional[bool] = True,
-    cause: Optional[Exception] = None,
+    message_values: list | None = None,
+    raise_error: bool = True,
+    cause: Exception | None = None,
 ):
     """Log a defined error and optionally raises a RuntimeError."""
     try:

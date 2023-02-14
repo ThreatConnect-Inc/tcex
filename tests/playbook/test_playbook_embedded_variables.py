@@ -11,7 +11,6 @@ if TYPE_CHECKING:
     from tcex.playbook import Playbook
 
 
-# pylint: disable=no-self-use
 class TestEmbedded:
     """Test the TcEx Batch Module."""
 

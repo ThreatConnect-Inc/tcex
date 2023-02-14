@@ -11,7 +11,7 @@ import sys
 import time
 import uuid
 from collections import deque
-from typing import TYPE_CHECKING, Optional, Tuple, Union
+from typing import TYPE_CHECKING
 
 # first-party
 from tcex.api.tc.utils.threat_intel_utils import ThreatIntelUtils
@@ -64,40 +64,40 @@ module = __import__(__name__)
 logger = logging.getLogger('tcex')
 
 # define GroupType
-GroupType = Union[
-    Adversary,
-    AttackPattern,
-    Campaign,
-    CourseOfAction,
-    Document,
-    Email,
-    Event,
-    Group,
-    Incident,
-    IntrusionSet,
-    Malware,
-    Report,
-    Signature,
-    Tactic,
-    Threat,
-    Tool,
-    Vulnerability,
-]
+GroupType = (
+    Adversary
+    | AttackPattern
+    | Campaign
+    | CourseOfAction
+    | Document
+    | Email
+    | Event
+    | Group
+    | Incident
+    | IntrusionSet
+    | Malware
+    | Report
+    | Signature
+    | Tactic
+    | Threat
+    | Tool
+    | Vulnerability
+)
 
 # define IndicatorType
-IndicatorType = Union[
-    ASN,
-    CIDR,
-    URL,
-    Address,
-    EmailAddress,
-    File,
-    Host,
-    Indicator,
-    Mutex,
-    RegistryKey,
-    UserAgent,
-]
+IndicatorType = (
+    ASN
+    | CIDR
+    | URL
+    | Address
+    | EmailAddress
+    | File
+    | Host
+    | Indicator
+    | Mutex
+    | RegistryKey
+    | UserAgent
+)
 
 
 class BatchWriter:
@@ -205,9 +205,7 @@ class BatchWriter:
         method = locals()[f'method_{value_count}']
         setattr(self, method_name, method)
 
-    def _group(
-        self, group_data: Union[dict, 'GroupType'], store: Optional[bool] = True
-    ) -> Union[dict, 'GroupType']:
+    def _group(self, group_data: dict | GroupType, store: bool = True) -> dict | GroupType:
         """Return previously stored group or new group.
 
         Args:
@@ -246,8 +244,8 @@ class BatchWriter:
         return group_data
 
     def _indicator(
-        self, indicator_data: Union[dict, 'IndicatorType'], store: Optional[bool] = True
-    ) -> Union[dict, 'IndicatorType']:
+        self, indicator_data: dict | IndicatorType, store: bool = True
+    ) -> dict | IndicatorType:
         """Return previously stored indicator or new indicator.
 
         Args:
@@ -318,7 +316,7 @@ class BatchWriter:
 
         return indicator_list
 
-    def add_group(self, group_data: dict, **kwargs) -> Union[dict, 'GroupType']:
+    def add_group(self, group_data: dict, **kwargs) -> dict | GroupType:
         """Add a group to Batch Job.
 
         .. code-block:: javascript
@@ -351,7 +349,7 @@ class BatchWriter:
         """
         return self._group(group_data, kwargs.get('store', True))
 
-    def add_indicator(self, indicator_data: dict, **kwargs) -> Union[dict, 'IndicatorType']:
+    def add_indicator(self, indicator_data: dict, **kwargs) -> dict | IndicatorType:
         """Add an indicator to Batch Job.
 
         .. code-block:: javascript
@@ -631,7 +629,7 @@ class BatchWriter:
                 xids.extend(group_data.get('associatedGroupXid', []))
 
     @staticmethod
-    def data_group_type(group_data: Union[dict, 'GroupType']) -> Tuple[dict, dict]:
+    def data_group_type(group_data: dict | GroupType) -> tuple[dict, dict]:
         """Return dict representation of group data and file data.
 
         Args:
@@ -819,9 +817,9 @@ class BatchWriter:
 
     def file(
         self,
-        md5: Optional[str] = None,
-        sha1: Optional[str] = None,
-        sha256: Optional[str] = None,
+        md5: str | None = None,
+        sha1: str | None = None,
+        sha256: str | None = None,
         **kwargs,
     ) -> 'File':
         """Add File data to Batch.
@@ -849,7 +847,7 @@ class BatchWriter:
         return self._indicator(indicator_obj, kwargs.get('store', True))
 
     @staticmethod
-    def generate_xid(identifier: Optional[Union[list, str]] = None) -> str:
+    def generate_xid(identifier: list | str | None = None) -> str:
         """Generate xid from provided identifiers.
 
         .. Important::  If no identifier is provided a unique xid will be returned, but it will
@@ -857,8 +855,7 @@ class BatchWriter:
                         in the same order to generate a reproducible xid.
 
         Args:
-            identifier:  Optional *string* value(s) to be
-               used to make a unique and reproducible xid.
+            identifier:  Value(s) to be used to make a unique and reproducible xid.
 
         """
         if identifier is None:
@@ -869,7 +866,7 @@ class BatchWriter:
             identifier = hashlib.sha256(identifier.encode('utf-8')).hexdigest()
         return hashlib.sha256(identifier.encode('utf-8')).hexdigest()
 
-    def group(self, group_type: str, name: str, **kwargs) -> 'GroupType':
+    def group(self, group_type: str, name: str, **kwargs) -> GroupType:
         """Add Group data to Batch.
 
         Args:
@@ -1099,7 +1096,7 @@ class BatchWriter:
         group_obj = Report(name, **kwargs)
         return self._group(group_obj, kwargs.get('store', True))
 
-    def save(self, resource: Union[dict, 'GroupType', 'IndicatorType']):
+    def save(self, resource: dict | GroupType | IndicatorType):
         """Save group|indicator dict, GroupType, or IndicatorTypes to shelve.
 
         Best effort to save group/indicator data to disk.  If for any reason the save fails
