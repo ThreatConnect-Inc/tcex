@@ -9,7 +9,7 @@ import sys
 from distutils.version import StrictVersion  # pylint: disable=no-name-in-module
 from pathlib import Path
 from typing import List, Optional
-from urllib.parse import quote
+from urllib.parse import quote, urlsplit
 
 # third-party
 import typer
@@ -18,6 +18,7 @@ import typer
 from tcex.app_config.models.tcex_json_model import LibVersionModel
 from tcex.backports import cached_property
 from tcex.bin.bin_abc import BinABC
+from tcex.input.field_types import Sensitive
 
 
 class Dep(BinABC):
@@ -32,7 +33,7 @@ class Dep(BinABC):
         proxy_host: str,
         proxy_port: int,
         proxy_user: str,
-        proxy_pass: str,
+        proxy_pass: Sensitive,
     ):
         """Initialize Class properties."""
         super().__init__()
@@ -43,7 +44,14 @@ class Dep(BinABC):
         self.proxy_host = proxy_host
         self.proxy_port = proxy_port
         self.proxy_user = proxy_user
-        self.proxy_pass = proxy_pass
+        self.proxy_pass = proxy_pass.value if proxy_pass else None
+
+        if not self.proxy_host and os.environ.get('https_proxy'):
+            parsed_proxy_url = urlsplit(os.environ.get('https_proxy'))
+            self.proxy_host = parsed_proxy_url.hostname
+            self.proxy_port = parsed_proxy_url.port
+            self.proxy_user = parsed_proxy_url.username
+            self.proxy_pass = parsed_proxy_url.password
 
         # properties
         self.env = self._env
