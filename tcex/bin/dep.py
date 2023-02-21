@@ -18,7 +18,6 @@ import typer
 from tcex.app_config.models.tcex_json_model import LibVersionModel
 from tcex.backports import cached_property
 from tcex.bin.bin_abc import BinABC
-from tcex.input.field_types import Sensitive
 
 
 class Dep(BinABC):
@@ -33,7 +32,7 @@ class Dep(BinABC):
         proxy_host: str,
         proxy_port: int,
         proxy_user: str,
-        proxy_pass: Sensitive,
+        proxy_pass: str,
     ):
         """Initialize Class properties."""
         super().__init__()
@@ -44,7 +43,7 @@ class Dep(BinABC):
         self.proxy_host = proxy_host
         self.proxy_port = proxy_port
         self.proxy_user = proxy_user
-        self.proxy_pass = proxy_pass.value if proxy_pass else None
+        self.proxy_pass = proxy_pass
 
         if not self.proxy_host and os.environ.get('https_proxy'):
             parsed_proxy_url = urlsplit(os.environ.get('https_proxy'))
