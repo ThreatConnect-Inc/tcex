@@ -2,12 +2,10 @@
 
 # standard library
 import inspect
-import logging
 import os
 import platform
 import signal
 import threading
-from typing import TYPE_CHECKING
 
 # third-party
 from requests import Session
@@ -24,6 +22,7 @@ from tcex.exit.exit import ExitCode, ExitService
 from tcex.input.input import Input
 from tcex.key_value_store import KeyValueApi, KeyValueMock, KeyValueRedis, RedisClient
 from tcex.logger.logger import Logger  # pylint: disable=no-name-in-module
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 from tcex.playbook import Playbook
 from tcex.pleb.proxies import proxies
 from tcex.pleb.registry import registry
@@ -39,10 +38,6 @@ from tcex.sessions.tc_session import TcSession
 from tcex.tokens import Tokens
 from tcex.utils import Utils
 from tcex.utils.file_operations import FileOperations
-
-if TYPE_CHECKING:
-    # first-party
-    from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 
 
 class TcEx:
@@ -65,7 +60,7 @@ class TcEx:
 
         # Property defaults
         self._config: dict = kwargs.get('config') or {}
-        self._log = None
+        self._log: 'TraceLogger'
         self._jobs = None
         self._redis_client = None
         self._service = None
@@ -125,7 +120,7 @@ class TcEx:
         return AdvancedRequest(self.inputs, self.playbook, session, output_prefix, timeout)
 
     @property
-    def api(self) -> 'API':
+    def api(self) -> API:
         """Return instance of Threat Intel Utils."""
         return API(self.inputs, self.session_tc)
 
@@ -314,16 +309,16 @@ class TcEx:
         )
 
     @property
-    def log(self) -> 'TraceLogger':
+    def log(self) -> TraceLogger:
         """Return a valid logger."""
         if self._log is None:
             self._log = self.logger.log
         return self._log
 
     @log.setter
-    def log(self, log: logging.Logger):
+    def log(self, log: TraceLogger):
         """Return a valid logger."""
-        if isinstance(log, logging.Logger):
+        if isinstance(log, TraceLogger):
             self._log = log
 
     @cached_property

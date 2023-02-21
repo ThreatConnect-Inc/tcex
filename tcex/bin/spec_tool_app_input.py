@@ -39,7 +39,7 @@ class SpecToolAppInput(BinABC):
             self._app_inputs_data[class_name] = {}
 
     def _add_input_to_action_class(
-        self, applies_to_all: bool, param_data: 'ParamsModel', tc_action: str | None = None
+        self, applies_to_all: bool, param_data: ParamsModel, tc_action: str | None = None
     ):
         """Add input data to Action class."""
         tc_action_class = 'AppBaseModel'
@@ -118,7 +118,7 @@ class SpecToolAppInput(BinABC):
         _code.append('')
         return _code
 
-    def _code_app_inputs_data_comments(self, input_data: 'ParamsModel') -> str:
+    def _code_app_inputs_data_comments(self, input_data: ParamsModel) -> str:
         """Return comments for a single input."""
         # append comment for playbookDataTypes
         comments = []
@@ -244,7 +244,7 @@ class SpecToolAppInput(BinABC):
             tc_action = re.sub(r'[^a-zA-Z0-9]', '', tc_action)
         return tc_action
 
-    def _gen_type(self, class_name: str, input_data: 'ParamsModel') -> str:
+    def _gen_type(self, class_name: str, input_data: ParamsModel) -> str:
         """Determine the type value for the current input."""
         field_types = []
 
@@ -339,7 +339,7 @@ class SpecToolAppInput(BinABC):
 
         return _types, _field_types
 
-    def _get_current_type(self, class_name: str, input_name: str) -> str:
+    def _get_current_type(self, class_name: str, input_name: str) -> str | None:
         """Return the type from the current app_input.py file if found."""
         # Try to capture the value from the specific class first. If not
         # found, search the entire app_inputs.py file.
@@ -381,7 +381,7 @@ class SpecToolAppInput(BinABC):
 
         return None
 
-    def _get_current_field_types(self, current_type_data: str) -> str:
+    def _get_current_field_types(self, current_type_data: str) -> list[str]:
         """Return the current type from the type data (e.g., integer(gt=2) -> integer)."""
         types_data = current_type_data
 
@@ -452,7 +452,7 @@ class SpecToolAppInput(BinABC):
             ),
         ]
 
-    def _validator_always_array_check(self, input_data: 'ParamsModel') -> bool:
+    def _validator_always_array_check(self, input_data: ParamsModel) -> bool:
         """Return True if Single and Multiple types used."""
         array_type = False
         single_type = False
@@ -477,7 +477,7 @@ class SpecToolAppInput(BinABC):
         ]
 
     @staticmethod
-    def _validator_entity_input_check(input_data: 'ParamsModel') -> bool:
+    def _validator_entity_input_check(input_data: ParamsModel) -> bool:
         """Return True if Single and Multiple types used."""
         for _type in input_data.playbook_data_type:
             if _type in ['TCEntity', 'TCEntityArray']:

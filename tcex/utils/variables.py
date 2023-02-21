@@ -22,7 +22,7 @@ class StringVariable(str):
 class Variables:
     """TcEx Utilities Variables Class"""
 
-    def get_playbook_variable_model(self, variable: str) -> 'PlaybookVariableModel':
+    def get_playbook_variable_model(self, variable: str) -> PlaybookVariableModel:
         """Return data model of playbook variable (e.g., #App:1234:output!String)."""
         data = None
         if variable is not None:

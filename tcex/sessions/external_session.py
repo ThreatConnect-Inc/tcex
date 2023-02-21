@@ -22,7 +22,7 @@ logger = logging.getLogger('tcex')
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-def default_too_many_requests_handler(response: 'Response') -> float:
+def default_too_many_requests_handler(response: Response) -> float:
     """Implement 429 response handling that uses the Retry-After header.
 
     Will return the value in Retry-After.  See: https://tools.ietf.org/html/rfc6585#page-3.
@@ -103,12 +103,12 @@ class CustomAdapter(adapters.HTTPAdapter):
         return response
 
     @property
-    def rate_limit_handler(self) -> 'RateLimitHandler':
+    def rate_limit_handler(self) -> RateLimitHandler:
         """Get the RateLimitHandler."""
         return self._rate_limit_handler
 
     @rate_limit_handler.setter
-    def rate_limit_handler(self, rate_limit_handler: 'RateLimitHandler'):
+    def rate_limit_handler(self, rate_limit_handler: RateLimitHandler):
         """Set the RateLimitHandler."""
         self._rate_limit_handler = rate_limit_handler
 
@@ -238,7 +238,7 @@ class ExternalSession(Session):
         self._too_many_requests_handler = too_many_requests_handler
 
     @property
-    def rate_limit_handler(self) -> 'RateLimitHandler':
+    def rate_limit_handler(self) -> RateLimitHandler:
         """Return the RateLimitHandler.
 
         The RateLimitHandler is responsible for throttling request frequency.  The default

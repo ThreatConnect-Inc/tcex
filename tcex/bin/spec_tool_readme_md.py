@@ -11,7 +11,7 @@ from tcex.bin.bin_abc import BinABC
 class SpecToolReadmeMd(BinABC):
     """Generate App Config File"""
 
-    def __init__(self, asy: 'AppSpecYml'):
+    def __init__(self, asy: AppSpecYml):
         """Initialize class properties."""
         super().__init__()
         self.asy = asy
@@ -71,7 +71,7 @@ class SpecToolReadmeMd(BinABC):
         readme_md.append(self._markdown_header1('Service Configuration'))
         readme_md.append('')
 
-    def _add_param(self, readme_md: list[str], param: 'ParamsModel'):
+    def _add_param(self, readme_md: list[str], param: ParamsModel):
         """Add params data to readme.md.
 
         **API Key** *(String)*
@@ -99,9 +99,7 @@ class SpecToolReadmeMd(BinABC):
         readme_md.append(f'{self.i1}{label} {type_data_formatted}')
         readme_md.append('')
 
-    def _add_params(
-        self, readme_md: list[str], section: 'SectionsModel', action: str | None = None
-    ):
+    def _add_params(self, readme_md: list[str], section: SectionsModel, action: str | None = None):
         # add params
         for param in section.params:
             if any([param.disabled, param.hidden]):
@@ -127,13 +125,13 @@ class SpecToolReadmeMd(BinABC):
             # add param valid_values data
             self._add_param_valid_values(readme_md, param)
 
-    def _add_param_note(self, readme_md: list[str], param: 'ParamsModel'):
+    def _add_param_note(self, readme_md: list[str], param: ParamsModel):
         """Add note data to readme.md."""
         if param.note:
             readme_md.append(f'{self.i1}{param.note}')
             readme_md.append('')
 
-    def _add_param_pb_data_type(self, readme_md: list[str], param: 'ParamsModel'):
+    def _add_param_pb_data_type(self, readme_md: list[str], param: ParamsModel):
         """Add playbook data types values data to readme.md."""
         # matching current format where single 'String' is not displayed
         if param.playbook_data_type and param.playbook_data_type != ['String']:
@@ -141,7 +139,7 @@ class SpecToolReadmeMd(BinABC):
             readme_md.append(f'''{self.i1}> {self._markdown_bold('Allows:')} {_pdt}''')
             readme_md.append('')
 
-    def _add_param_valid_values(self, readme_md: list[str], param: 'ParamsModel'):
+    def _add_param_valid_values(self, readme_md: list[str], param: ParamsModel):
         """Add valid values data to readme.md."""
         # matching current format where TEXT and KEYCHAIN were excluded.
         valid_values = [p for p in param.valid_values if not p.startswith('${')]
@@ -169,7 +167,7 @@ class SpecToolReadmeMd(BinABC):
 
             readme_md.append('')
 
-    def _add_section_title(self, readme_md: list[str], section: 'SectionsModel'):
+    def _add_section_title(self, readme_md: list[str], section: SectionsModel):
         """Add title for input section."""
         readme_md.append(self._markdown_header3(self._markdown_italic(section.section_name)))
         readme_md.append('')
@@ -270,7 +268,7 @@ class SpecToolReadmeMd(BinABC):
         # add output data
         self._add_outputs(readme_md)
 
-    def _has_section_params(self, section: 'SectionsModel', action: str) -> bool:
+    def _has_section_params(self, section: SectionsModel, action: str) -> bool:
         """Return True if the provided section has params."""
         if [
             sp
@@ -336,7 +334,7 @@ class SpecToolReadmeMd(BinABC):
         """Return italic string."""
         return f'_{string}_'
 
-    def _valid_param_for_action(self, param: 'ParamsModel', action: str) -> bool:
+    def _valid_param_for_action(self, param: ParamsModel, action: str) -> bool:
         """Return True if param is valid for action."""
         for input_param in self.permutations.get_action_inputs(action):
             if input_param.name == param.name:

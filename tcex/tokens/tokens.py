@@ -218,7 +218,7 @@ class Tokens:
         raise exc
 
     @token.setter
-    def token(self, token: 'Sensitive'):
+    def token(self, token: Sensitive):
         """Set token for current thread."""
         self.token_map.setdefault(self.key, {})['token'] = Sensitive(token)
 

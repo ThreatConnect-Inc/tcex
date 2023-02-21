@@ -122,6 +122,6 @@ class IndicatorAttributes(ObjectCollectionABC):
         return ApiEndpoints.INDICATOR_ATTRIBUTES.value
 
     @property
-    def filter(self) -> 'IndicatorAttributeFilter':
+    def filter(self) -> IndicatorAttributeFilter:
         """Return the type specific filter object."""
         return IndicatorAttributeFilter(self.tql)

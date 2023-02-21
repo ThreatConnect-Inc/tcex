@@ -126,6 +126,6 @@ class WorkflowEvents(ObjectCollectionABC):
         return ApiEndpoints.WORKFLOW_EVENTS.value
 
     @property
-    def filter(self) -> 'WorkflowEventFilter':
+    def filter(self) -> WorkflowEventFilter:
         """Return the type specific filter object."""
         return WorkflowEventFilter(self.tql)

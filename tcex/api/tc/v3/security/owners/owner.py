@@ -77,6 +77,6 @@ class Owners(ObjectCollectionABC):
         return ApiEndpoints.OWNERS.value
 
     @property
-    def filter(self) -> 'OwnerFilter':
+    def filter(self) -> OwnerFilter:
         """Return the type specific filter object."""
         return OwnerFilter(self.tql)

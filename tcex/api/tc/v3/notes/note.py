@@ -94,6 +94,6 @@ class Notes(ObjectCollectionABC):
         return ApiEndpoints.NOTES.value
 
     @property
-    def filter(self) -> 'NoteFilter':
+    def filter(self) -> NoteFilter:
         """Return the type specific filter object."""
         return NoteFilter(self.tql)

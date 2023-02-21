@@ -3,12 +3,16 @@
 import json
 import uuid
 from collections.abc import Callable
+from typing import ForwardRef
 
 # first-party
 from tcex.api.tc.v2.batch.attribute import Attribute
 from tcex.api.tc.v2.batch.security_label import SecurityLabel
 from tcex.api.tc.v2.batch.tag import Tag
 from tcex.utils import Utils
+
+FileAction = ForwardRef('FileAction')
+FileOccurrences = ForwardRef('FileOccurrences')
 
 # import local modules for dynamic reference
 module = __import__(__name__)
@@ -507,7 +511,7 @@ class File(Indicator):
         super().__init__('File', summary, **kwargs)
         # self._file_action = []
 
-    def action(self, relationship: str) -> 'FileAction':
+    def action(self, relationship: str) -> FileAction:
         """Add a File Action."""
         action_obj = FileAction(self._indicator_data.get('xid'), relationship)
         self._file_actions.append(action_obj)

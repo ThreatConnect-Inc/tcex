@@ -14,7 +14,7 @@ class KeyValueRedis(KeyValueABC):
         redis_client (redis.Client): An instance of redis client.
     """
 
-    def __init__(self, redis_client: 'RedisClient'):
+    def __init__(self, redis_client: RedisClient):
         """Initialize the Class properties."""
         self.redis_client = redis_client
 
@@ -46,7 +46,7 @@ class KeyValueRedis(KeyValueABC):
         """
         return self.redis_client.hdel(context, key)
 
-    def get_all(self, context: str | None) -> 'Any':
+    def get_all(self, context: str | None) -> Any:
         """Return the contents for a given context.
 
         Args:

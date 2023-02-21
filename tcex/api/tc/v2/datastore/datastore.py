@@ -38,7 +38,7 @@ class DataStore:
     """
 
     def __init__(
-        self, session_tc: 'Session', domain: str, data_type: str, mapping: dict | None = None
+        self, session_tc: Session, domain: str, data_type: str, mapping: dict | None = None
     ):
         """Initialize class properties."""
         self.domain = domain

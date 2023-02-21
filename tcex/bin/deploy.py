@@ -24,11 +24,11 @@ class Deploy(BinABC):
         server: str,
         allow_all_orgs: bool,
         allow_distribution: bool,
-        app_file: str,
-        proxy_host: str,
-        proxy_port: int,
-        proxy_user: str,
-        proxy_pass: str,
+        app_file: str | None,
+        proxy_host: str | None,
+        proxy_port: int | None,
+        proxy_user: str | None,
+        proxy_pass: str | None,
     ):
         """Initialize Class properties."""
         super().__init__()
@@ -38,8 +38,12 @@ class Deploy(BinABC):
         self.proxy_host = proxy_host
         self.proxy_port = proxy_port
         self.proxy_user = proxy_user
-        self.proxy_pass = proxy_pass
+        self.proxy_pass = self._process_proxy_pass(proxy_pass)
         self.server = server
+
+    def _process_proxy_pass(self, proxy_pass: str | None) -> Sensitive | None:
+        """Process proxy password."""
+        return None if proxy_pass is None else Sensitive(proxy_pass)
 
     @staticmethod
     def _handle_missing_environment(variable: str):
@@ -53,7 +57,7 @@ class Deploy(BinABC):
 
     def _check_file(self):
         """Return True if file exists."""
-        if not os.path.isfile(self._app_file):
+        if self._app_file and not os.path.isfile(self._app_file):
             self.print_failure(f'Could not find file: {self._app_file}.')
             sys.exit(1)
 

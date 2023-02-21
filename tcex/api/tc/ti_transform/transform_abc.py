@@ -6,28 +6,22 @@ from abc import ABC, abstractmethod
 from collections.abc import Callable
 from datetime import datetime
 from inspect import signature
-from typing import TYPE_CHECKING
+from typing import Any
 
 # third-party
 import jmespath
 from jmespath import functions
-from pydantic import ValidationError
 
 # first-party
+from tcex.api.tc.ti_transform.model import AttributeTransformModel  # TYPE-CHECKING
+from tcex.api.tc.ti_transform.model import SecurityLabelTransformModel  # TYPE-CHECKING
+from tcex.api.tc.ti_transform.model import TagTransformModel  # TYPE-CHECKING
 from tcex.api.tc.ti_transform.model import (
     GroupTransformModel,
     IndicatorTransformModel,
     MetadataTransformModel,
 )
 from tcex.utils import Utils
-
-if TYPE_CHECKING:
-    # first-party
-    from tcex.api.tc.ti_transform.model import (
-        AttributeTransformModel,
-        SecurityLabelTransformModel,
-        TagTransformModel,
-    )
 
 # get tcex logger
 logger = logging.getLogger('tcex')
@@ -84,7 +78,7 @@ class TransformsABC(ABC):
 
         # properties
         self.log = logger
-        self.transformed_collection: list['TransformABC'] = []
+        self.transformed_collection: list[TransformABC] = []
 
         # validate transforms
         self._validate_transforms()
@@ -94,10 +88,9 @@ class TransformsABC(ABC):
         if len(self.transforms) > 1:
             for transform in self.transforms:
                 if transform.applies is None:
-                    raise ValidationError(
+                    raise ValueError(
                         'If more than one transform is provided, each '
                         'provided transform must provide an apply field.',
-                        None,
                     )
 
 
@@ -142,7 +135,7 @@ class TransformABC(ABC):
         """Build the Indicator summary using available values."""
         return ' : '.join([value for value in [val1, val2, val3] if value is not None])
 
-    def _path_search(self, path: str) -> any:
+    def _path_search(self, path: str) -> Any:
         """Return the value of the provided path.
 
         Path can return any type of data from the TI dict.
@@ -182,7 +175,7 @@ class TransformABC(ABC):
         # xid
         self._process_metadata('xid', self.transform.xid)
 
-    def _process_associated_group(self, associations: list['AttributeTransformModel']):
+    def _process_associated_group(self, associations: list[AttributeTransformModel]):
         """Process Attribute data"""
         for association in associations or []:
             for value in filter(bool, self._process_metadata_transform_model(association.value)):
@@ -223,7 +216,7 @@ class TransformABC(ABC):
         # )
         return transformed_value
 
-    def _process_attributes(self, attributes: list['AttributeTransformModel']):
+    def _process_attributes(self, attributes: list[AttributeTransformModel]):
         """Process Attribute data"""
         for attribute in attributes or []:
             values = self._process_metadata_transform_model(attribute.value)
@@ -268,7 +261,7 @@ class TransformABC(ABC):
                         f'transform={attribute.dict(exclude_unset=True)}'
                     )
 
-    def _process_file_occurrences(self, file_occurrences: list['MetadataTransformModel']):
+    def _process_file_occurrences(self, file_occurrences: list[MetadataTransformModel]):
         """Process File Occurrences data.
 
         File Occurrences are a bit weird, in that none of the fields are required.  Because of this,
@@ -302,7 +295,7 @@ class TransformABC(ABC):
             for kwargs in filter(bool, params):  # get rid of empty dicts
                 self.add_file_occurrence(**self.utils.remove_none(kwargs))
 
-    def _process_confidence(self, metadata: 'MetadataTransformModel'):
+    def _process_confidence(self, metadata: MetadataTransformModel):
         """Process standard metadata fields."""
         self.add_confidence(self._transform_value(metadata))
 
@@ -380,13 +373,13 @@ class TransformABC(ABC):
 
         self.add_name(name)
 
-    def _process_metadata(self, key, metadata: 'MetadataTransformModel'):
+    def _process_metadata(self, key, metadata: MetadataTransformModel):
         """Process standard metadata fields."""
         value = self._transform_value(metadata)
         if value is not None:
             self.add_metadata(key, value)
 
-    def _process_metadata_datetime(self, key, metadata: list['MetadataTransformModel']):
+    def _process_metadata_datetime(self, key, metadata: list[MetadataTransformModel]):
         """Process metadata fields that should be a TC datetime."""
         if metadata is not None:
             value = self._path_search(metadata.path)
@@ -395,7 +388,7 @@ class TransformABC(ABC):
                     key, self.utils.any_to_datetime(value).strftime('%Y-%m-%dT%H:%M:%SZ')
                 )
 
-    def _process_security_labels(self, labels: list['SecurityLabelTransformModel']):
+    def _process_security_labels(self, labels: list[SecurityLabelTransformModel]):
         """Process Tag data"""
         for label in labels or []:
             names = self._process_metadata_transform_model(label.value)
@@ -421,13 +414,13 @@ class TransformABC(ABC):
                 # params with default values are respected.
                 self.add_security_label(**self.utils.remove_none(kwargs))
 
-    def _process_tags(self, tags: list['TagTransformModel']):
+    def _process_tags(self, tags: list[TagTransformModel]):
         """Process Tag data"""
         for tag in tags or []:
             for value in filter(bool, self._process_metadata_transform_model(tag.value)):
                 self.add_tag(name=value)
 
-    def _process_rating(self, metadata: 'MetadataTransformModel'):
+    def _process_rating(self, metadata: MetadataTransformModel):
         """Process standard metadata fields."""
         self.add_rating(self._transform_value(metadata))
 
@@ -594,10 +587,9 @@ class TransformABC(ABC):
         if len(self.transforms) > 1:
             for transform in self.transforms:
                 if transform.applies is None:
-                    raise ValidationError(
+                    raise ValueError(
                         'If more than one transform is provided, each '
                         'provided transform must provide an apply field.',
-                        None,
                     )
 
     @abstractmethod

@@ -1,7 +1,7 @@
 """TcEx JSON Model"""
 # pylint: disable=no-self-argument; noqa: N805
 # standard library
-from enum import Enum
+# from enum import Enum
 from pathlib import PosixPath
 
 # third-party
@@ -46,16 +46,16 @@ class PackageModel(BaseModel):
         validate_assignment = True
 
 
-class TemplateTypes(str, Enum):
-    """Enum for tcex.template_type"""
-
-    api_service = 'api_service'
-    external = 'external'
-    organization = 'organization'
-    playbook = 'playbook'
-    trigger_service = 'trigger_service'
-    web_api_service = 'web_api_service'
-    webhook_trigger_service = 'webhook_trigger_service'
+# class TemplateTypes(str, Enum):
+#     """Enum for tcex.template_type"""
+#
+#     api_service = 'api_service'
+#     external = 'external'
+#     organization = 'organization'
+#     playbook = 'playbook'
+#     trigger_service = 'trigger_service'
+#     web_api_service = 'web_api_service'
+#     webhook_trigger_service = 'webhook_trigger_service'
 
 
 class TcexJsonModel(BaseModel):
@@ -63,9 +63,10 @@ class TcexJsonModel(BaseModel):
 
     lib_versions: list[LibVersionModel] | None
     package: PackageModel
-    template_name: str | None = None
+    template_name: str
     template_repo_hash: str | None = None
-    template_type: TemplateTypes | None = None
+    # template_type: TemplateTypes
+    template_type: str
 
     class Config:
         """DataModel Config"""

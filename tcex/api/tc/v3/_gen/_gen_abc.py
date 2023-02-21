@@ -452,7 +452,7 @@ class GenerateABC(ABC):
         return '\n'.join(_libs)  # type: ignore
 
     @property
-    def session(self) -> 'Session':
+    def session(self) -> Session:
         """Return Session configured for TC API."""
         _session = Session()
         _session.auth = HmacAuth(

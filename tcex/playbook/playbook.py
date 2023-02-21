@@ -75,12 +75,12 @@ class Playbook:
         return self.utils.get_playbook_variable_type(variable)
 
     @cached_property
-    def create(self) -> 'PlaybookCreate':
+    def create(self) -> PlaybookCreate:
         """Return instance of PlaybookCreate"""
         return PlaybookCreate(self.context, self.key_value_store, self.output_variables)
 
     @cached_property
-    def delete(self) -> 'PlaybookDelete':
+    def delete(self) -> PlaybookDelete:
         """Return instance of PlaybookDelete"""
         return PlaybookDelete(self.context, self.key_value_store)
 
@@ -89,11 +89,11 @@ class Playbook:
         return self.utils.is_playbook_variable(key)
 
     @cached_property
-    def output(self) -> 'PlaybookOutput':
+    def output(self) -> PlaybookOutput:
         """Return instance of PlaybookOutput"""
         return PlaybookOutput(self)
 
     @cached_property
-    def read(self) -> 'PlaybookRead':
+    def read(self) -> PlaybookRead:
         """Return instance of PlaybookRead"""
         return PlaybookRead(self.context, self.key_value_store)

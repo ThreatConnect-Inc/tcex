@@ -65,7 +65,7 @@ class ThreatIntelligence:
 
         return data
 
-    def group(self, **kwargs) -> 'Group':
+    def group(self, **kwargs) -> Group:
         """Return a instance of Group object.
 
         Args:
@@ -114,7 +114,7 @@ class ThreatIntelligence:
         """
         return Group(session=self.session, **kwargs)
 
-    def group_attribute(self, **kwargs) -> 'GroupAttribute':
+    def group_attribute(self, **kwargs) -> GroupAttribute:
         """Return a instance of Group Attributes object.
 
         Args:
@@ -127,7 +127,7 @@ class ThreatIntelligence:
         """
         return GroupAttribute(session=self.session, **kwargs)
 
-    def group_attributes(self, **kwargs) -> 'GroupAttributes':
+    def group_attributes(self, **kwargs) -> GroupAttributes:
         """Return a instance of Group Attributes object.
 
         .. code-block:: python
@@ -148,7 +148,7 @@ class ThreatIntelligence:
         """
         return GroupAttributes(session=self.session, **kwargs)
 
-    def groups(self, **kwargs) -> 'Groups':
+    def groups(self, **kwargs) -> Groups:
         """Return a instance of Groups object.
 
         .. code-block:: python
@@ -169,7 +169,7 @@ class ThreatIntelligence:
         """
         return Groups(session=self.session, **kwargs)
 
-    def indicator(self, **kwargs) -> 'Indicator':
+    def indicator(self, **kwargs) -> Indicator:
         """Return a instance of Group object.
 
         Args:
@@ -211,7 +211,7 @@ class ThreatIntelligence:
         """
         return Indicator(session=self.session, **kwargs)
 
-    def indicator_attribute(self, **kwargs) -> 'IndicatorAttribute':
+    def indicator_attribute(self, **kwargs) -> IndicatorAttribute:
         """Return a instance of Case Attributes object.
 
         Args:
@@ -224,7 +224,7 @@ class ThreatIntelligence:
         """
         return IndicatorAttribute(session=self.session, **kwargs)
 
-    def indicator_attributes(self, **kwargs) -> 'IndicatorAttributes':
+    def indicator_attributes(self, **kwargs) -> IndicatorAttributes:
         """Return a instance of Indicator Attributes object.
 
         .. code-block:: python
@@ -245,7 +245,7 @@ class ThreatIntelligence:
         """
         return IndicatorAttributes(session=self.session, **kwargs)
 
-    def indicators(self, **kwargs) -> 'Indicators':
+    def indicators(self, **kwargs) -> Indicators:
         """Return a instance of Indicators object.
 
         .. code-block:: python
@@ -266,7 +266,7 @@ class ThreatIntelligence:
         """
         return Indicators(session=self.session, **kwargs)
 
-    def security_label(self, **kwargs) -> 'SecurityLabel':
+    def security_label(self, **kwargs) -> SecurityLabel:
         """Return a instance of Case Attributes object.
 
         Args:
@@ -277,7 +277,7 @@ class ThreatIntelligence:
         """
         return SecurityLabel(session=self.session, **kwargs)
 
-    def victim(self, **kwargs) -> 'Victim':
+    def victim(self, **kwargs) -> Victim:
         """Return a instance of Victim object.
 
         Args:
@@ -305,7 +305,7 @@ class ThreatIntelligence:
 
         return Victim(session=self.session, **kwargs)
 
-    def victims(self, **kwargs) -> 'Victims':
+    def victims(self, **kwargs) -> Victims:
         """Return a instance of Victims object.
 
         .. code-block:: python
@@ -326,12 +326,12 @@ class ThreatIntelligence:
         """
         return Victims(session=self.session, **kwargs)
 
-    def victim_asset(self, **kwargs) -> 'VictimAsset':
+    def victim_asset(self, **kwargs) -> VictimAsset:
         """Return a instance of VictimAsset object."""
 
         return VictimAsset(session=self.session, **kwargs)
 
-    def victim_assets(self, **kwargs) -> 'VictimAssets':
+    def victim_assets(self, **kwargs) -> VictimAssets:
         """Return a instance of Victims object.
 
         .. code-block:: python
@@ -352,12 +352,12 @@ class ThreatIntelligence:
         """
         return VictimAssets(session=self.session, **kwargs)
 
-    def victim_attribute(self, **kwargs) -> 'VictimAttribute':
+    def victim_attribute(self, **kwargs) -> VictimAttribute:
         """Return a instance of VictimAttribute object."""
 
         return VictimAttribute(session=self.session, **kwargs)
 
-    def victim_attributes(self, **kwargs) -> 'VictimAttributes':
+    def victim_attributes(self, **kwargs) -> VictimAttributes:
         """Return a instance of Victims object.
 
         .. code-block:: python

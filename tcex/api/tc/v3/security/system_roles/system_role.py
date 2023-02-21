@@ -77,6 +77,6 @@ class SystemRoles(ObjectCollectionABC):
         return ApiEndpoints.SYSTEM_ROLES.value
 
     @property
-    def filter(self) -> 'SystemRoleFilter':
+    def filter(self) -> SystemRoleFilter:
         """Return the type specific filter object."""
         return SystemRoleFilter(self.tql)

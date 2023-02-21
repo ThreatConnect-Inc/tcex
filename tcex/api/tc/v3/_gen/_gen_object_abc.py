@@ -92,7 +92,7 @@ class GenerateObjectABC(GenerateABC, ABC):
     def _gen_code_container_iter_method(self) -> str:
         """Return the method code.
 
-        def __iter__(self) -> 'Artifact':
+        def __iter__(self) -> Artifact:
             '''Iterate over CM objects.'''
             return self.iterate(base_class=Artifact)
         """
@@ -114,7 +114,7 @@ class GenerateObjectABC(GenerateABC, ABC):
         """Return the method code.
 
         @property
-        def filter(self) -> 'ArtifactFilter':
+        def filter(self) -> ArtifactFilter:
             '''Return the type specific filter object.'''
             return ArtifactFilter(self._session, self.tql)
         """
@@ -123,7 +123,7 @@ class GenerateObjectABC(GenerateABC, ABC):
         return '\n'.join(
             [
                 f'''{self.i1}@property''',
-                f'''{self.i1}def filter(self) -> '{filter_class}':''',
+                f'''{self.i1}def filter(self) -> {filter_class}:''',
                 f'''{self.i2}"""Return the type specific filter object."""''',
                 f'''{self.i2}return {filter_class}(self.tql)''',
                 '',
@@ -135,7 +135,7 @@ class GenerateObjectABC(GenerateABC, ABC):
         """Return the method code.
 
         @property
-        def filter(self) -> 'ArtifactFilter':
+        def filter(self) -> ArtifactFilter:
             '''Return the type specific filter object.'''
             return ArtifactFilter(self._session, self.tql)
         """
@@ -178,7 +178,7 @@ class GenerateObjectABC(GenerateABC, ABC):
         """Return the method code.
 
         @property
-        def filter(self) -> 'ArtifactFilter':
+        def filter(self) -> ArtifactFilter:
             '''Return the type specific filter object.'''
             return ArtifactFilter(self._session, self.tql)
         """

@@ -51,7 +51,7 @@ class JobJson(metaclass=Singleton):
         return _contents
 
     @cached_property
-    def model(self) -> 'JobJsonModel':
+    def model(self) -> JobJsonModel:
         """Return the Install JSON model."""
         return JobJsonModel(**self.contents)
 

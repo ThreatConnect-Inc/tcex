@@ -15,8 +15,8 @@ from pydantic import BaseModel, Extra
 from tcex.app_config.install_json import InstallJson
 from tcex.backports import cached_property
 from tcex.input.field_types import Sensitive
-from tcex.input.models import feature_map, runtime_level_map, tc_action_map
 from tcex.input.models.common_model import CommonModel
+from tcex.input.models.model_map import feature_map, runtime_level_map, tc_action_map
 from tcex.key_value_store import RedisClient
 from tcex.pleb.none_model import NoneModel
 from tcex.pleb.registry import registry
@@ -392,7 +392,7 @@ class Input:
         return data
 
     @staticmethod
-    def validation_exit_message(ex: 'ValidationError'):
+    def validation_exit_message(ex: ValidationError):
         """Format and return validation error message."""
         _exit_message = {}
         for err in ex.errors():

@@ -27,7 +27,7 @@ class Metrics:
 
     def __init__(
         self,
-        session_tc: 'Session',
+        session_tc: Session,
         name: str,
         description: str,
         data_type: str,

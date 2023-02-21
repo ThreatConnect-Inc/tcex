@@ -24,14 +24,14 @@ class CaseManagementEntity(TCEntity):
     """Case Management Entity Field (Model) Type"""
 
     @validator('type')
-    def is_empty(cls, value: str, field: 'ModelField') -> str:
+    def is_empty(cls, value: str, field: ModelField) -> str:
         """Validate that the value is a non-empty string."""
         if isinstance(value, str) and value.replace(' ', '') == '':
             raise InvalidEmptyValue(field_name=field.name)
         return value
 
     @validator('type')
-    def is_type(cls, value: str, field: 'ModelField') -> str:
+    def is_type(cls, value: str, field: ModelField) -> str:
         """Validate that the entity is of Indicator type."""
         if value.lower() not in CASE_MANAGEMENT_TYPES:
             raise InvalidEntityType(

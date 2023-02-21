@@ -2,9 +2,9 @@
 # standard library
 import logging
 import os
-import pathlib
 import platform
 import sys
+from pathlib import Path
 from urllib.parse import urlsplit
 
 # third-party
@@ -175,7 +175,7 @@ class Logger:
         name: str,
         filename: str,
         level: str,
-        path: str,
+        path: Path,
         pattern: str,
         formatter: logging.Formatter | None = None,
         handler_key: str | None = None,
@@ -216,7 +216,7 @@ class Logger:
         self,
         name: str,
         filename: str,
-        path: str,
+        path: Path | str,
         backup_count: int,
         max_bytes: int,
         level: str,
@@ -274,7 +274,7 @@ class Logger:
         name: str,
         filename: str,
         level: str,
-        path: str,
+        path: Path | str,
         backup_count: int = 0,
         formatter: logging.Formatter | None = None,
         handler_key: str | None = None,
@@ -384,8 +384,8 @@ class Logger:
 
     def _log_tcex_version(self):
         """Log the current TcEx version number."""
-        app_path = str(pathlib.Path().parent.absolute())
-        full_path = str(pathlib.Path(__file__).parent.absolute())
+        app_path = str(Path().parent.absolute())
+        full_path = str(Path(__file__).parent.absolute())
         tcex_path = os.path.dirname(full_path.replace(app_path, ''))
         self.log.info(f'tcex-version={__import__(__name__).__version__}, tcex-path="{tcex_path}"')
 

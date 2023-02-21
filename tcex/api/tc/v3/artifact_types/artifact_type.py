@@ -84,6 +84,6 @@ class ArtifactTypes(ObjectCollectionABC):
         return ApiEndpoints.ARTIFACT_TYPES.value
 
     @property
-    def filter(self) -> 'ArtifactTypeFilter':
+    def filter(self) -> ArtifactTypeFilter:
         """Return the type specific filter object."""
         return ArtifactTypeFilter(self.tql)

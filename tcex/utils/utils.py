@@ -26,7 +26,7 @@ class Utils(AesOperations, DatetimeOperations, StringOperations, Variables):
         code: str,
         trigger_start: Pattern | None = None,
         trigger_stop: Pattern | None = None,
-    ) -> str:
+    ) -> str | None:
         """Return matching line of code in a class definition.
 
         Args:

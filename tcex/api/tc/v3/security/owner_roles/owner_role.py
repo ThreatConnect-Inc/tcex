@@ -77,6 +77,6 @@ class OwnerRoles(ObjectCollectionABC):
         return ApiEndpoints.OWNER_ROLES.value
 
     @property
-    def filter(self) -> 'OwnerRoleFilter':
+    def filter(self) -> OwnerRoleFilter:
         """Return the type specific filter object."""
         return OwnerRoleFilter(self.tql)

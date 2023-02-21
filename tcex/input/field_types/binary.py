@@ -66,7 +66,7 @@ class Binary(bytes):
         return value
 
     @classmethod
-    def validate_type(cls, value: bytes | BinaryVariable, field: 'ModelField') -> bytes:
+    def validate_type(cls, value: bytes | BinaryVariable, field: ModelField) -> bytes:
         """Raise exception if value is not a Binary type."""
         if not isinstance(value, bytes):
             raise InvalidType(
@@ -75,7 +75,7 @@ class Binary(bytes):
         return value
 
     @classmethod
-    def validate_variable_type(cls, value: bytes | BinaryVariable, field: 'ModelField') -> bytes:
+    def validate_variable_type(cls, value: bytes | BinaryVariable, field: ModelField) -> bytes:
         """Raise exception if value is not a Binary type."""
         if hasattr(value, '_variable_type') and value._variable_type != 'Binary':
             raise InvalidVariableType(

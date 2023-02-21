@@ -77,6 +77,6 @@ class UserGroups(ObjectCollectionABC):
         return ApiEndpoints.USER_GROUPS.value
 
     @property
-    def filter(self) -> 'UserGroupFilter':
+    def filter(self) -> UserGroupFilter:
         """Return the type specific filter object."""
         return UserGroupFilter(self.tql)

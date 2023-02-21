@@ -122,6 +122,6 @@ class CaseAttributes(ObjectCollectionABC):
         return ApiEndpoints.CASE_ATTRIBUTES.value
 
     @property
-    def filter(self) -> 'CaseAttributeFilter':
+    def filter(self) -> CaseAttributeFilter:
         """Return the type specific filter object."""
         return CaseAttributeFilter(self.tql)

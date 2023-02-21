@@ -50,7 +50,7 @@ class TiTcRequest:
 
     @property
     @lru_cache
-    def _error_codes(self) -> 'TcExErrorCodes':  # noqa: F821
+    def _error_codes(self) -> TcExErrorCodes:
         """Return TcEx error codes."""
         return TcExErrorCodes()
 

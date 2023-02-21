@@ -398,7 +398,7 @@ class AppSpecYml:
         return self.fqfn.is_file()
 
     @cached_property
-    def model(self) -> 'AppSpecYmlModel':
+    def model(self) -> AppSpecYmlModel:
         """Return the Install JSON model.
 
         If writing app_spec.yml file after the method then the model will include

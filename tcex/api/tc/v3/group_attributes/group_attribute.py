@@ -122,6 +122,6 @@ class GroupAttributes(ObjectCollectionABC):
         return ApiEndpoints.GROUP_ATTRIBUTES.value
 
     @property
-    def filter(self) -> 'GroupAttributeFilter':
+    def filter(self) -> GroupAttributeFilter:
         """Return the type specific filter object."""
         return GroupAttributeFilter(self.tql)

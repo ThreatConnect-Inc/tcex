@@ -204,6 +204,6 @@ class Victims(ObjectCollectionABC):
         return ApiEndpoints.VICTIMS.value
 
     @property
-    def filter(self) -> 'VictimFilter':
+    def filter(self) -> VictimFilter:
         """Return the type specific filter object."""
         return VictimFilter(self.tql)

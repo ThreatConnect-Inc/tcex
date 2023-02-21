@@ -94,6 +94,6 @@ class WorkflowTemplates(ObjectCollectionABC):
         return ApiEndpoints.WORKFLOW_TEMPLATES.value
 
     @property
-    def filter(self) -> 'WorkflowTemplateFilter':
+    def filter(self) -> WorkflowTemplateFilter:
         """Return the type specific filter object."""
         return WorkflowTemplateFilter(self.tql)

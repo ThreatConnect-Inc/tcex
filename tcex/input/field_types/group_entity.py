@@ -16,7 +16,7 @@ class GroupEntity(TCEntity):
     """Group Entity Field (Model) Type"""
 
     @validator('type')
-    def is_type(cls, value: str, field: 'ModelField') -> str:
+    def is_type(cls, value: str, field: ModelField) -> str:
         """Validate that the value is a non-empty string.
 
         Without the always and pre args, None values will validated before this validator is called.
@@ -37,7 +37,7 @@ def group_entity(group_types: list[str] = None) -> type:
         """Group Entity Field (Model) Type"""
 
         @validator('type', allow_reuse=True)
-        def is_empty(cls, value: str, field: 'ModelField') -> dict[str, str]:
+        def is_empty(cls, value: str, field: ModelField) -> dict[str, str]:
             """Validate that the value is a non-empty string."""
             if isinstance(value, str) and value.replace(' ', '') == '':
                 raise InvalidEmptyValue(field_name=field.name)

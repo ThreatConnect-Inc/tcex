@@ -7,6 +7,7 @@ import os
 import random
 import re
 import sys
+from collections.abc import Generator
 from pathlib import Path
 from typing import Any
 
@@ -20,7 +21,7 @@ except ImportError:  # pragma: no cover
 from tcex.app_config.install_json import InstallJson
 from tcex.app_config.layout_json import LayoutJson
 from tcex.app_config.models.install_json_model import ParamsModel
-from tcex.app_config.models.layout_json_model import OutputsModel, ParametersModel
+from tcex.app_config.models.layout_json_model import OutputsModel
 from tcex.backports import cached_property
 from tcex.pleb.none_model import NoneModel
 
@@ -46,16 +47,15 @@ class Permutation:
         self.log = logger or tcex_logger
 
         # properties
-        self._input_names = None
         self._input_table = 'inputs'
-        self._input_permutations = None
-        self._output_permutations = None
+        self._input_permutations: list[list[InputModel]] = []
+        self._output_permutations = []
         self.fqfn = Path(os.getcwd(), 'permutations.json')
         self.ij = InstallJson(logger=self.log)
         self.lj = LayoutJson(logger=self.log)
 
     @staticmethod
-    def _create_input_model(ij_param: ParamsModel, value: any) -> InputModel:
+    def _create_input_model(ij_param: ParamsModel, value: Any) -> InputModel:
         """Create an input model from the install.json param model."""
         _input_model = InputModel(**ij_param.dict())
         # manually adding List values due to bug where data is not getting loaded into model in init
@@ -66,7 +66,7 @@ class Permutation:
         return _input_model
 
     @cached_property
-    def _display_keywords(self) -> list[str]:
+    def _display_keywords(self) -> set[str]:
         """Return the display keywords."""
         _keywords = set()
         for param in self.lj.model.params.values():
@@ -77,7 +77,7 @@ class Permutation:
         self.log.debug(f'keywords={_keywords}')
         return _keywords
 
-    def _gen_permutations(self, index: int | None = 0, params: list | None = None):
+    def _gen_permutations(self, index: int = 0, params: list | None = None):
         """Iterate recursively over layout.json parameter names to build permutations.
 
         .. NOTE:: Permutations are for layout.json based Apps.
@@ -93,12 +93,13 @@ class Permutation:
             name = list(self.lj.model.param_names)[index]
 
             # get layout.json param name and data
-            lj_param: NoneModel | ParametersModel = self.lj.model.get_param(name)
+            lj_param = self.lj.model.get_param(name)
 
             # get install.json param to match layout.json param
-            ij_param: NoneModel | ParamsModel = self.ij.model.get_param(name)
+            ij_param = self.ij.model.get_param(name)
             if not isinstance(ij_param, ParamsModel):  # pragma: no cover
-                self.handle_error(f'No param found in install.json for "{name}".')
+                self.log.error(f'No param found in install.json for "{name}".')
+                sys.exit(1)
 
             if self.validate_layout_display(self._input_table, lj_param.display) or ij_param.hidden:
                 # only process params that match display query or are hidden
@@ -145,19 +146,20 @@ class Permutation:
             outputs = []
 
             # iterate of InstallJsonModel -> PlaybookModel -> OutputVariablesModel
-            for o in self.ij.model.playbook.output_variables:
-                # get layout.json param to match install.json output variable
-                lj_output: NoneModel | OutputsModel = self.lj.model.get_output(o.name)
-                if isinstance(lj_output, OutputsModel):
-                    valid = self.validate_layout_display(self._input_table, lj_output.display)
-                    if lj_output.display is None or not valid:
-                        continue
-                # output meet permutation check
-                outputs.append(o)
-            self._output_permutations.append(outputs)
+            if self.ij.model.playbook is not None:
+                for o in self.ij.model.playbook.output_variables:
+                    # get layout.json param to match install.json output variable
+                    lj_output: NoneModel | OutputsModel = self.lj.model.get_output(o.name)
+                    if isinstance(lj_output, OutputsModel):
+                        valid = self.validate_layout_display(self._input_table, lj_output.display)
+                        if lj_output.display is None or not valid:
+                            continue
+                    # output meet permutation check
+                    outputs.append(o)
+                self._output_permutations.append(outputs)
 
     @property
-    def _params_data(self) -> tuple[str, 'ParamsModel']:
+    def _params_data(self) -> Generator[NoneModel | ParamsModel, ParamsModel, None]:
         """Return all defined params from layout.json/install.json, including hidden params."""
         # using inputs from layout.json since they are required to be in order
         # (display field can only use inputs previously defined)
@@ -196,14 +198,13 @@ class Permutation:
         return _action_configurations
 
     @cached_property
-    def db_conn(self) -> 'sqlite3.Connection':
+    def db_conn(self) -> sqlite3.Connection:  # type: ignore
         """Create a temporary in memory DB and return the connection."""
         try:
             return sqlite3.connect(':memory:')
-        except sqlite3.Error as e:  # pragma: no cover
-            self.handle_error(e)
-
-        return None
+        except sqlite3.Error as ex:  # pragma: no cover
+            self.log.error(ex)
+            sys.exit(1)
 
     def db_create_table(self, table_name: str, columns: list[str]):
         """Create a temporary DB table.
@@ -212,9 +213,9 @@ class Permutation:
             table_name: The DB table name.
             columns: The DB column names.
         """
-        columns = ', '.join([f'''"{c.strip('"').strip("'")}" text''' for c in set(columns)])
-        self.log.debug(f'action=db-create-table, table-name={table_name}, columns={columns}')
-        sql = f'CREATE TABLE IF NOT EXISTS {table_name} ({columns});'
+        columns_ = ', '.join([f'''"{c.strip('"').strip("'")}" text''' for c in set(columns)])
+        self.log.debug(f'action=db-create-table, table-name={table_name}, columns={columns_}')
+        sql = f'CREATE TABLE IF NOT EXISTS {table_name} ({columns_});'
         try:
             cr = self.db_conn.cursor()
             cr.execute(sql)
@@ -249,14 +250,15 @@ class Permutation:
         bindings = ', '.join(['?'] * len(columns))
         columns_string = ', '.join([f'''"{c.strip('"').strip("'")}"''' for c in columns])
         values = [None] * len(columns)
+        sql = f'INSERT INTO {table_name} ({columns_string}) VALUES ({bindings})'
         try:
-            sql = f'''INSERT INTO {table_name} ({columns_string}) VALUES ({bindings})'''
             cur = self.db_conn.cursor()
             cur.execute(sql, values)
-        except sqlite3.OperationalError as ex:  # pragma: no cover
-            self.handle_error(f'SQL insert failed - SQL: "{sql}", Error: "{ex}"')
+        except sqlite3.OperationalError as ex:  # type: ignore
+            self.log.error(f'SQL insert failed - SQL: "{sql}", Error: "{ex}"')
+            sys.exit(1)
 
-    def db_update_record(self, table_name: str, column: str, value: str):
+    def db_update_record(self, table_name: str, column: str, value: bool | str | None):
         """Update a single column in the row-column create in db_insert_record.
 
         Args:
@@ -276,13 +278,14 @@ class Permutation:
 
         # only column defined in install.json can be updated
         if column in self.ij.model.param_names:
+            # value should be wrapped in single quotes to be properly parsed
+            sql = f'UPDATE {table_name} SET {column} = \'{value}\''
             try:
-                # value should be wrapped in single quotes to be properly parsed
-                sql = f'''UPDATE {table_name} SET {column} = '{value}\''''
                 cur = self.db_conn.cursor()
                 cur.execute(sql)
-            except sqlite3.OperationalError as e:  # pragma: no cover
-                self.handle_error(f'SQL update failed - SQL: "{sql}", Error: "{e}"')
+            except sqlite3.OperationalError as ex:  # pragma: no cover
+                self.log.error(f'SQL update failed - SQL: "{sql}", Error: "{ex}"')
+                sys.exit(1)
 
     def handle_error(self, err: str, halt: bool = True):  # pragma: no cover
         """Print errors message and optionally exit.
@@ -325,7 +328,7 @@ class Permutation:
     # TODO: [low] improve this logic
     def init_permutations(self):
         """Process layout.json names/display to get all permutations of args."""
-        if self._input_permutations is None and self._output_permutations is None:
+        if not all([self._input_permutations, self._output_permutations]):
             self._input_permutations = []
             self._output_permutations = []
 
@@ -356,21 +359,21 @@ class Permutation:
                 input_dict.setdefault(permutation.name, permutation.value)
         return input_dict
 
-    @property
-    def input_names(self) -> list[list]:
+    @cached_property
+    def input_names(self) -> list[list[str]]:
         """Return all input permutation names for current App.
 
         Returns:
             list: List of Lists of input names.
         """
-        if self._input_names is None and self.lj.has_layout:
-            self._input_names = []
+        input_names = []
+        if self.lj.has_layout:
             for permutation in self.input_permutations:
-                self._input_names.append([p.name for p in permutation])
-        return self._input_names
+                input_names.append([p.name for p in permutation])
+        return input_names
 
     @property
-    def input_permutations(self) -> list[list[dict]]:
+    def input_permutations(self) -> list[list[InputModel]]:
         """Return all input permutations for current App.
 
         self._input_permutations is an array of permutations arrays.
@@ -379,7 +382,7 @@ class Permutation:
         Returns:
             list: List of Lists of valid input permutations.
         """
-        if self._input_permutations is None and self.lj.has_layout:
+        if not self._input_permutations and self.lj.has_layout:
             self.init_permutations()
         return self._input_permutations
 
@@ -409,7 +412,7 @@ class Permutation:
         self.db_insert_record(self._input_table, self.ij.model.param_names)
 
         # only gen permutations if none have been generated previously
-        if not self._input_permutations and not self._output_permutations:
+        if not all([self._input_permutations, self._output_permutations]):
             self._input_permutations = self._input_permutations or []
             self._output_permutations = self._output_permutations or []
             self._gen_permutations()
@@ -462,7 +465,7 @@ class Permutation:
 
         return valid
 
-    def validate_layout_display(self, table: str, display_condition: str) -> bool:
+    def validate_layout_display(self, table: str, display_condition: str | None) -> bool:
         """Check to see if the display condition passes.
 
         Args:

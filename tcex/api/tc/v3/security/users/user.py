@@ -77,6 +77,6 @@ class Users(ObjectCollectionABC):
         return ApiEndpoints.USERS.value
 
     @property
-    def filter(self) -> 'UserFilter':
+    def filter(self) -> UserFilter:
         """Return the type specific filter object."""
         return UserFilter(self.tql)

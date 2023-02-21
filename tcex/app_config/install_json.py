@@ -165,12 +165,12 @@ class InstallJson:
 
     # @cached_property
     @property
-    def model(self) -> 'InstallJsonModel':
+    def model(self) -> InstallJsonModel:
         """Return the Install JSON model."""
         return InstallJsonModel(**self.contents)
 
     @property
-    def params_dict(self) -> list['ParamsModel']:
+    def params_dict(self) -> list[ParamsModel]:
         """Return params as name/model.
 
         Used in tcex_testing for dynamic generation of output variables.
@@ -248,12 +248,12 @@ class InstallJson:
         return ','.join(self.tc_playbook_out_variables)
 
     @property
-    def update(self) -> 'InstallJsonUpdate':
+    def update(self) -> InstallJsonUpdate:
         """Return InstallJsonUpdate instance."""
         return InstallJsonUpdate(ij=self)
 
     @property
-    def validate(self) -> 'InstallJsonValidate':
+    def validate(self) -> InstallJsonValidate:
         """Validate install.json."""
         return InstallJsonValidate(ij=self)
 

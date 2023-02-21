@@ -27,10 +27,10 @@ def proxies(
         proxy_auth = ''
         if proxy_user is not None and proxy_pass is not None:
             proxy_user = quote(proxy_user, safe='~')
-            proxy_pass = quote(proxy_pass.value, safe='~')
+            proxy_pass_ = quote(proxy_pass.value, safe='~')
 
             # proxy url with auth
-            proxy_auth = f'{proxy_user}:{proxy_pass}@'
+            proxy_auth = f'{proxy_user}:{proxy_pass_}@'
 
         proxy_url = f'{proxy_auth}{proxy_host}:{proxy_port}'
         _proxies = {'http': f'http://{proxy_url}', 'https': f'http://{proxy_url}'}

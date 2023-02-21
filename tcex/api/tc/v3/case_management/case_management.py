@@ -123,7 +123,7 @@ class CaseManagement:
         """
         return Case(session=self.session, **kwargs)
 
-    def case_attribute(self, **kwargs) -> 'CaseAttribute':
+    def case_attribute(self, **kwargs) -> CaseAttribute:
         """Return a instance of Case Attributes object.
 
         Args:
@@ -136,7 +136,7 @@ class CaseManagement:
         """
         return CaseAttribute(session=self.session, **kwargs)
 
-    def case_attributes(self, **kwargs) -> 'CaseAttributes':
+    def case_attributes(self, **kwargs) -> CaseAttributes:
         """Return a instance of Case Attributes object.
 
         .. code-block:: python

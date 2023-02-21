@@ -2,6 +2,7 @@
 # standard library
 import os
 import re
+from collections.abc import Generator
 from pathlib import Path
 from typing import Any
 
@@ -22,7 +23,7 @@ class EnvPath(Path):
         field_schema.update(format='file-path')
 
     @classmethod
-    def __get_validators__(cls) -> 'CallableGenerator':  # noqa: F821
+    def __get_validators__(cls) -> Generator:
         """."""
         yield cls.validate
 

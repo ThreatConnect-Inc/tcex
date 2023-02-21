@@ -87,8 +87,8 @@ class FeedsModel(BaseModel):
             'Attributes required for the feed (e.g., attribute.json).'
         ),
     )
-    deprecation: list[DeprecationModel] | None = Field(
-        None,
+    deprecation: list[DeprecationModel] = Field(
+        [],
         description='The deprecation rules for the feed.',
     )
     document_storage_limit_mb: int = Field(
@@ -99,8 +99,8 @@ class FeedsModel(BaseModel):
         False,
         description='Optional property that enables or disables the bulk JSON capability.',
     )
-    first_run_params: list[FirstRunParamsModel] | None = Field(
-        None,
+    first_run_params: list[FirstRunParamsModel] = Field(
+        [],
         description='Param overrides for the first run of the feed.',
     )
     indicator_limit: int = Field(
@@ -214,8 +214,8 @@ class ParamsModel(BaseModel):
             'of this documentation.'
         ),
     )
-    intel_type: list[str] | None = Field(
-        None,
+    intel_type: list[str] = Field(
+        [],
         description='',
     )
     label: str = Field(
@@ -242,7 +242,7 @@ class ParamsModel(BaseModel):
             'describe the purpose of the parameter in two to three sentences.'
         ),
     )
-    playbook_data_type: list[str] | None = Field(
+    playbook_data_type: list[str] = Field(
         [],
         description=(
             'Optional property restricting the data type of incoming Playbook variables. '
@@ -283,7 +283,7 @@ class ParamsModel(BaseModel):
             'within the platform.'
         ),
     )
-    valid_values: list[str] | None = Field(
+    valid_values: list[str] = Field(
         [],
         description=(
             'Optional property to be used with the Choice, MultiChoice, and String input '
@@ -363,8 +363,8 @@ class OutputVariablesModel(BaseModel):
 class RetryModel(BaseModel):
     """Model for install_json.playbook.retry"""
 
-    actions: list[str] | None = Field(
-        None,
+    actions: list[str] = Field(
+        [],
         description='A list of tc_actions that support retry.',
     )
     allowed: bool = Field(
@@ -401,7 +401,7 @@ class PlaybookModel(BaseModel):
     """Model for install_json.playbook"""
 
     output_prefix: str | None = Field(None, description='')
-    output_variables: list[OutputVariablesModel] | None = Field(
+    output_variables: list[OutputVariablesModel] = Field(
         [],
         description=(
             'Optional outputVariables property that specifies the variables that a '
@@ -430,8 +430,8 @@ class PlaybookModel(BaseModel):
 class ServiceModel(BaseModel):
     """Model for install_json.service"""
 
-    discovery_types: list[str] | None = Field(
-        None,
+    discovery_types: list[str] = Field(
+        [],
         description='Service App discovery types (e.g., TaxiiApi).',
     )
 
@@ -474,7 +474,7 @@ def get_commit_hash() -> str | None:
     return commit_hash
 
 
-def gen_app_id() -> str:
+def gen_app_id() -> UUID5:
     """Return a generate id for the current App."""
     return uuid.uuid5(uuid.NAMESPACE_X500, os.path.basename(os.getcwd()).lower())
 
@@ -521,21 +521,21 @@ class InstallJsonCommonModel(BaseModel):
         '',
         description='The category of the App. Also playbook.type for playbook Apps.',
     )
-    deprecates_apps: list[str] | None = Field(
-        None,
+    deprecates_apps: list[str] = Field(
+        [],
         description=(
             'Optional property that provides a list of Apps that should be '
             'deprecated by this App.'
         ),
     )
-    display_name: constr(min_length=3, max_length=100) = Field(
+    display_name: constr(min_length=3, max_length=100) = Field(  # type: ignore
         ...,
         description=(
             'Required property providing the name of the App as it will be displayed in '
             'the ThreatConnect platform.'
         ),
     )
-    display_path: constr(min_length=3, max_length=100) | None = Field(
+    display_path: constr(min_length=3, max_length=100) | None = Field(  # type: ignore
         None,
         description='The display path for API service Apps.',
     )
@@ -546,8 +546,8 @@ class InstallJsonCommonModel(BaseModel):
             'additional functionality in the Core Platform and/or for the App.'
         ),
     )
-    labels: list[str] | None = Field(
-        None,
+    labels: list[str] = Field(
+        [],
         description='A list of labels for the App.',
     )
     language_version: str | None = Field(
@@ -564,7 +564,7 @@ class InstallJsonCommonModel(BaseModel):
             'an input that support the allowMultiple param option.'
         ),
     )
-    min_server_version: str = Field(
+    min_server_version: Version = Field(
         '6.2.0',
         description=(
             'Optional string property restricting the ThreatConnect instance from '
@@ -598,7 +598,7 @@ class InstallJsonCommonModel(BaseModel):
             'should use when calling the App using the Java Runtime Environment.'
         ),
     )
-    program_version: str = Field(
+    program_version: Version = Field(
         ...,
         description=(
             'Required property providing the version number for the App that will be '
@@ -607,7 +607,7 @@ class InstallJsonCommonModel(BaseModel):
             '(e.g., 1.0.1).'
         ),
     )
-    runtime_level: list | str = Field(
+    runtime_level: str = Field(
         ...,
         description='The type for the App (e.g., Playbook, Organization, etc).',
     )
@@ -616,7 +616,7 @@ class InstallJsonCommonModel(BaseModel):
         description='',
     )
 
-    @validator('min_server_version', 'program_version')
+    @validator('min_server_version', 'program_version', pre=True)
     def version(cls, v):
         """Return a version object for "version" fields."""
         if v is not None:
@@ -690,12 +690,12 @@ class InstallJsonOrganizationModel(BaseModel):
     the app_spec.yaml file.
     """
 
-    feeds: list[FeedsModel] | None = Field(
-        None,
+    feeds: list[FeedsModel] = Field(
+        [],
         description='A list of features enabled for the App.',
     )
-    publish_out_files: list[str] | None = Field(
-        None,
+    publish_out_files: list[str] = Field(
+        [],
         description=(
             'Optional field available for job-style Apps that can be scheduled to serve '
             'files. If this array is populated, the App is responsible for writing the '
@@ -705,8 +705,8 @@ class InstallJsonOrganizationModel(BaseModel):
             'can include file globs.'
         ),
     )
-    repeating_minutes: list[int] | None = Field(
-        None,
+    repeating_minutes: list[int] = Field(
+        [],
         description=(
             'Optional property that provides a list of minute increments to display in '
             'the Repeat Every… section in the Schedule panel of the Job Wizard. This '
@@ -734,8 +734,8 @@ class InstallJsonModel(InstallJsonCommonModel, InstallJsonOrganizationModel):
         None,
         description='[unsupported] The docker image to run the App.',
     )
-    params: list[ParamsModel] | None = Field(
-        None,
+    params: list[ParamsModel] = Field(
+        [],
         description='',
     )
     playbook: PlaybookModel | None = Field(
@@ -753,8 +753,8 @@ class InstallJsonModel(InstallJsonCommonModel, InstallJsonOrganizationModel):
         None,
         description='',
     )
-    runtime_context: list | None = Field(
-        None,
+    runtime_context: list = Field(
+        [],
         description=(
             'Optional property enabling Spaces Apps to be context aware (i.e., Spaces '
             'Apps that can be added to the Details screen of an object in the '
@@ -788,7 +788,7 @@ class InstallJsonModel(InstallJsonCommonModel, InstallJsonOrganizationModel):
         service_config: bool | None = None,
         _type: str | None = None,
         input_permutations: list | None = None,
-    ) -> dict[str, 'ParamsModel']:
+    ) -> dict[str, ParamsModel]:
         """Return params as name/data dict.
 
         Args:
@@ -840,7 +840,7 @@ class InstallJsonModel(InstallJsonCommonModel, InstallJsonOrganizationModel):
         return self.params_dict.get(name) or NoneModel()
 
     @property
-    def optional_params(self) -> dict[str, 'ParamsModel']:
+    def optional_params(self) -> dict[str, ParamsModel]:
         """Return params as name/data model."""
         return {p.name: p for p in self.params if p.required is False}
 
@@ -855,26 +855,26 @@ class InstallJsonModel(InstallJsonCommonModel, InstallJsonOrganizationModel):
         return [p.name for p in self.params]
 
     @property
-    def params_dict(self) -> dict[str, 'ParamsModel']:
+    def params_dict(self) -> dict[str, ParamsModel]:
         """Return params as name/data dict."""
         return {p.name: p for p in self.params}
 
     @property
-    def playbook_outputs(self) -> dict[str, 'OutputVariablesModel']:
+    def playbook_outputs(self) -> dict[str, OutputVariablesModel]:
         """Return outputs as name/data model."""
-        return {o.name: o for o in self.playbook.output_variables}
+        return {} if self.playbook is None else {o.name: o for o in self.playbook.output_variables}
 
     @property
-    def required_params(self) -> dict[str, 'ParamsModel']:
+    def required_params(self) -> dict[str, ParamsModel]:
         """Return params as name/data dict."""
         return {p.name: p for p in self.params if p.required is True}
 
     @property
-    def service_config_params(self) -> dict[str, 'ParamsModel']:
+    def service_config_params(self) -> dict[str, ParamsModel]:
         """Return params as name/data dict."""
         return {p.name: p for p in self.params if p.service_config is True}
 
     @property
-    def service_playbook_params(self) -> dict[str, 'ParamsModel']:
+    def service_playbook_params(self) -> dict[str, ParamsModel]:
         """Return params as name/data dict."""
         return {p.name: p for p in self.params if p.service_config is False}

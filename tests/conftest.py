@@ -179,7 +179,7 @@ def tcex_proxy() -> Generator[TcEx, None, None]:
 #
 
 
-def pytest_configure(_config):  # pylint: disable=unused-argument
+def pytest_configure(config):  # pylint: disable=unused-argument
     """Execute configure logic.
 
     Allows plugins and conftest files to perform initial configuration. This hook is called for
@@ -196,10 +196,10 @@ def pytest_configure(_config):  # pylint: disable=unused-argument
     # Replace Redis with FakeRedis for testing
     client_prop = cached_property(lambda *args: fakeredis.FakeRedis())
     client_prop.__set_name__(RedisClient, 'client')
-    RedisClient.client = client_prop
+    RedisClient.client = client_prop  # type: ignore
 
 
-def pytest_sessionstart(_session):  # pylint: disable=unused-argument
+def pytest_sessionstart(session):  # pylint: disable=unused-argument
     """Execute session start logic.
 
     Runs after the Session object has been created and before performing collection and entering
@@ -207,14 +207,14 @@ def pytest_sessionstart(_session):  # pylint: disable=unused-argument
     """
 
 
-def pytest_sessionfinish(_session, _exitstatus):  # pylint: disable=unused-argument
+def pytest_sessionfinish(session, exitstatus):  # pylint: disable=unused-argument
     """Execute session finish logic.
 
     Runs after whole test run completes, before returning the exit status.
     """
 
 
-def pytest_unconfigure(_config):  # pylint: disable=unused-argument
+def pytest_unconfigure(config):  # pylint: disable=unused-argument
     """Execute unconfigure logic before test process is exited."""
     try:
         # remove temp app_config.json file

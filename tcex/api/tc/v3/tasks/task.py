@@ -173,6 +173,6 @@ class Tasks(ObjectCollectionABC):
         return ApiEndpoints.TASKS.value
 
     @property
-    def filter(self) -> 'TaskFilter':
+    def filter(self) -> TaskFilter:
         """Return the type specific filter object."""
         return TaskFilter(self.tql)

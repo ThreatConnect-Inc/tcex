@@ -60,7 +60,7 @@ logger = logging.getLogger('tcex')
 class ThreatIntelligence:
     """ThreatConnect Threat Intelligence Module"""
 
-    def __init__(self, session_tc: 'Session'):
+    def __init__(self, session_tc: Session):
         """Initialize Class properties."""
         self.session_tc = session_tc
 
@@ -74,7 +74,7 @@ class ThreatIntelligence:
 
     @property
     @lru_cache
-    def _error_codes(self) -> 'TcExErrorCodes':  # noqa: F821
+    def _error_codes(self) -> TcExErrorCodes:
         """Return TcEx error codes."""
         return TcExErrorCodes()
 

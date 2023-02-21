@@ -56,7 +56,7 @@ class TcexJson:
         return _contents
 
     @cached_property
-    def model(self) -> 'TcexJsonModel':
+    def model(self) -> TcexJsonModel:
         """Return the Install JSON model."""
         return TcexJsonModel(**self.contents)
 
@@ -78,7 +78,7 @@ class TcexJson:
             )
 
     @property
-    def update(self) -> 'TcexJsonUpdate':
+    def update(self) -> TcexJsonUpdate:
         """Return InstallJsonUpdate instance."""
         return TcexJsonUpdate(tj=self)
 

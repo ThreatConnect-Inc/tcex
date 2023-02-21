@@ -382,6 +382,6 @@ class Groups(ObjectCollectionABC):
         return ApiEndpoints.GROUPS.value
 
     @property
-    def filter(self) -> 'GroupFilter':
+    def filter(self) -> GroupFilter:
         """Return the type specific filter object."""
         return GroupFilter(self.tql)

@@ -22,7 +22,7 @@ class V2:
         session_tc: An configured instance of request.Session with TC API Auth.
     """
 
-    def __init__(self, inputs: 'Input', session_tc: 'Session'):
+    def __init__(self, inputs: Input, session_tc: Session):
         """Initialize Class properties."""
         self.inputs = inputs
         self.session_tc = session_tc
@@ -36,7 +36,7 @@ class V2:
         playbook_triggers_enabled: bool = False,
         tag_write_type: str | None = 'Replace',
         security_label_write_type: str | None = 'Replace',
-    ) -> 'Batch':
+    ) -> Batch:
         """Return instance of Batch
 
         Args:
@@ -69,7 +69,7 @@ class V2:
         playbook_triggers_enabled: bool = False,
         tag_write_type: str | None = 'Replace',
         security_label_write_type: str | None = 'Replace',
-    ) -> 'BatchSubmit':
+    ) -> BatchSubmit:
         """Return instance of Batch
 
         Args:
@@ -93,7 +93,7 @@ class V2:
             security_label_write_type,
         )
 
-    def batch_writer(self, output_dir: str, **kwargs) -> 'BatchWriter':
+    def batch_writer(self, output_dir: str, **kwargs) -> BatchWriter:
         """Return instance of Batch
 
         Args:
@@ -126,7 +126,7 @@ class V2:
         """
         return Cache(self.session_tc, domain, data_type, ttl_seconds, mapping)
 
-    def datastore(self, domain: str, data_type: str, mapping: dict | None = None) -> 'DataStore':
+    def datastore(self, domain: str, data_type: str, mapping: dict | None = None) -> DataStore:
         """Return Datastore Module.
 
         Args:
@@ -148,7 +148,7 @@ class V2:
         data_type: str,
         interval: str,
         keyed: bool = False,
-    ) -> 'Metrics':
+    ) -> Metrics:
         """Get instance of the Metrics module.
 
         Args:
@@ -168,11 +168,11 @@ class V2:
         )
 
     @property
-    def notification(self) -> 'Notifications':
+    def notification(self) -> Notifications:
         """Get instance of the Notification module."""
         return Notifications(self.session_tc)
 
     @property
-    def ti(self) -> 'ThreatIntelligence':
+    def ti(self) -> ThreatIntelligence:
         """Get instance of the Notification module."""
         return ThreatIntelligence(self.session_tc)

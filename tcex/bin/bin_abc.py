@@ -29,7 +29,7 @@ class BinABC(ABC):
     def __init__(self):
         """Initialize Class properties."""
         # properties
-        self.app_path = os.getcwd()
+        self.app_path = Path.cwd()
         self.exit_code = 0
         self.i1 = ' ' * 4  # indent level 1
         self.i2 = ' ' * 8  # indent level 2
@@ -40,7 +40,7 @@ class BinABC(ABC):
         self.utils = Utils()
 
     @cached_property
-    def cli_out_path(self) -> 'Path':
+    def cli_out_path(self) -> Path:
         """Return the path to the tcex cli command out directory."""
         _out_path = Path(os.path.expanduser('~/.tcex'))
         _out_path.mkdir(exist_ok=True, parents=True)
@@ -68,7 +68,7 @@ class BinABC(ABC):
         logger = logging.getLogger('tcex-cli')
 
         # set logger level
-        logger.setLevel(logging.TRACE)  # pylint: disable=no-member
+        logger.setLevel(logging.TRACE)  # type: ignore
 
         # create rotation filehandler
         lfh = RotatingFileHandlerCustom(
@@ -102,7 +102,7 @@ class BinABC(ABC):
         return logger
 
     @staticmethod
-    def print_block(text: str, max_length: int | None = 80, **kwargs):
+    def print_block(text: str, max_length: int = 80, **kwargs):
         """Print Divider."""
         bold = kwargs.get('bold', False)
         fg_color = getattr(typer.colors, kwargs.get('fg_color', 'white').upper())
@@ -118,7 +118,7 @@ class BinABC(ABC):
         typer.secho(text_wrapped, fg=fg_color, bold=bold)
 
     @staticmethod
-    def print_divider(char: str | None = '-', count: int | None = 100, **kwargs):
+    def print_divider(char: str = '-', count: int = 100, **kwargs):
         """Print Divider."""
         bold = kwargs.get('bold', False)
         fg_color = getattr(typer.colors, kwargs.get('fg_color', 'bright_white').upper())
@@ -133,12 +133,16 @@ class BinABC(ABC):
         if exit_ is True:
             sys.exit(1)
 
-    @staticmethod
-    def print_setting(label: str, value: str, **kwargs):
+    def print_setting(
+        self,
+        label: str,
+        value: int | str | None,
+        bold: bool = True,
+        fg_color: str = 'magenta',
+        indent: int = 0,
+    ):
         """Print Setting."""
-        bold = kwargs.get('bold', True)
-        fg_color = getattr(typer.colors, kwargs.get('fg_color', 'magenta').upper())
-        indent = ' ' * kwargs.get('indent', 0)
+        fg_color = getattr(typer.colors, fg_color.upper())
 
         # print setting
         value_display = typer.style(f'{value}', fg=fg_color, bold=bold)

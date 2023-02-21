@@ -90,6 +90,6 @@ class AttributeTypes(ObjectCollectionABC):
         return ApiEndpoints.ATTRIBUTE_TYPES.value
 
     @property
-    def filter(self) -> 'AttributeTypeFilter':
+    def filter(self) -> AttributeTypeFilter:
         """Return the type specific filter object."""
         return AttributeTypeFilter(self.tql)

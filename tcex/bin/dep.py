@@ -17,6 +17,7 @@ from semantic_version import Version
 from tcex.app_config.models.tcex_json_model import LibVersionModel
 from tcex.backports import cached_property
 from tcex.bin.bin_abc import BinABC
+from tcex.pleb.env_path import EnvPath
 
 
 class Dep(BinABC):
@@ -28,10 +29,10 @@ class Dep(BinABC):
         dev: bool,
         no_cache_dir: bool,
         pre: bool,
-        proxy_host: str,
-        proxy_port: int,
-        proxy_user: str,
-        proxy_pass: str,
+        proxy_host: str | None,
+        proxy_port: int | None,
+        proxy_user: str | None,
+        proxy_pass: str | None,
     ):
         """Initialize Class properties."""
         super().__init__()
@@ -289,7 +290,12 @@ class Dep(BinABC):
 
         # return the current python version
         return [
-            LibVersionModel(**{'python_executable': sys.executable, 'lib_dir': self.lib_directory})
+            LibVersionModel(
+                **{
+                    'python_executable': sys.executable,  # type: ignore
+                    'lib_dir': self.lib_directory,  # type: ignore
+                }
+            )
         ]
 
     @cached_property
@@ -313,7 +319,7 @@ class Dep(BinABC):
         # if we only have one current Python version building the requirements.txt file
         # is straight forward, just include all packages pinned to the current version.
         if len(lib_directories) == 1:
-            _requirements = self.requirements_lock_data(lib_directories[0])
+            _requirements = self.requirements_lock_data(lib_directories[0])  # type: ignore
             # sort packages alphabetically
             return '\n'.join(sorted(_requirements.splitlines()))
 
@@ -348,7 +354,7 @@ class Dep(BinABC):
         _requirements.extend(source_requirements)
         return '\n'.join(sorted(_requirements))
 
-    def requirements_lock_data(self, lib_dir: str) -> str:
+    def requirements_lock_data(self, lib_dir: EnvPath) -> str:
         """Return the Python packages for the provided directory."""
         lib_dir_path = os.path.join(self.app_path, lib_dir)
         cmd = f'pip freeze --path "{lib_dir_path}"'

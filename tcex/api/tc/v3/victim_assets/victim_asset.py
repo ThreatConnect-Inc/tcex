@@ -152,6 +152,6 @@ class VictimAssets(ObjectCollectionABC):
         return ApiEndpoints.VICTIM_ASSETS.value
 
     @property
-    def filter(self) -> 'VictimAssetFilter':
+    def filter(self) -> VictimAssetFilter:
         """Return the type specific filter object."""
         return VictimAssetFilter(self.tql)

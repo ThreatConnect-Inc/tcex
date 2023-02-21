@@ -1,6 +1,6 @@
 """API -> TC"""
-# standard library
-from typing import TYPE_CHECKING
+# third-party
+from requests import Session  # TYPE-CHECKING
 
 # first-party
 from tcex.api.tc.ti_transform import TiTransform, TiTransforms
@@ -8,13 +8,7 @@ from tcex.api.tc.ti_transform.model import GroupTransformModel, IndicatorTransfo
 from tcex.api.tc.v2.v2 import V2
 from tcex.api.tc.v3.v3 import V3
 from tcex.backports import cached_property
-
-if TYPE_CHECKING:
-    # third-party
-    from requests import Session
-
-    # first-party
-    from tcex.input.input import Input
+from tcex.input.input import Input  # TYPE-CHECKING
 
 
 class TC:
@@ -25,18 +19,18 @@ class TC:
         session_tc: An configured instance of request.Session with TC API Auth.
     """
 
-    def __init__(self, inputs: 'Input', session_tc: 'Session'):
+    def __init__(self, inputs: Input, session_tc: Session):
         """Initialize Class properties."""
         self.inputs = inputs
         self.session_tc = session_tc
 
     @staticmethod
-    def group_transform(transform: dict) -> 'GroupTransformModel':
+    def group_transform(transform: dict) -> GroupTransformModel:
         """Return a group transform model."""
         return GroupTransformModel(**transform)
 
     @staticmethod
-    def indicator_transform(transform: dict) -> 'IndicatorTransformModel':
+    def indicator_transform(transform: dict) -> IndicatorTransformModel:
         """Return a indicator transform model."""
         return IndicatorTransformModel(**transform)
 
@@ -44,7 +38,7 @@ class TC:
     def ti_transform(
         ti_dict: dict,
         transforms: list[GroupTransformModel | IndicatorTransformModel],
-    ) -> 'TiTransform':
+    ) -> TiTransform:
         """Return an instance of TI Transform class."""
         return TiTransform(ti_dict, transforms)
 
@@ -52,16 +46,16 @@ class TC:
     def ti_transforms(
         ti_dict: list[dict],
         transforms: list[GroupTransformModel | IndicatorTransformModel],
-    ) -> 'TiTransform':
+    ) -> TiTransforms:
         """Return an instance of TI Transforms class."""
         return TiTransforms(ti_dict, transforms)
 
     @cached_property
-    def v2(self) -> 'V2':
+    def v2(self) -> V2:
         """Return a case management instance."""
         return V2(self.inputs, self.session_tc)
 
     @cached_property
-    def v3(self) -> 'V3':
+    def v3(self) -> V3:
         """Return a case management instance."""
         return V3(self.session_tc)

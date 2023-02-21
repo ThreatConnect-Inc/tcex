@@ -154,7 +154,7 @@ class ObjectABC(ABC):
         """Return the available query param field names for this object."""
         return [fd['name'] for fd in self.fields]
 
-    def create(self, params: dict | None = None) -> 'Response':
+    def create(self, params: dict | None = None) -> Response:
         """Create or Update the Case Management object.
 
         This is determined based on if the id is already present in the object.
@@ -330,7 +330,7 @@ class ObjectABC(ABC):
             status = False
         return status
 
-    def update(self, mode: str | None = None, params: dict | None = None) -> 'Response':
+    def update(self, mode: str | None = None, params: dict | None = None) -> Response:
         """Create or Update the Case Management object.
 
         This is determined based on if the id is already present in the object.

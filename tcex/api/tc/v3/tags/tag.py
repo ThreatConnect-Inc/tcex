@@ -121,6 +121,6 @@ class Tags(ObjectCollectionABC):
         return ApiEndpoints.TAGS.value
 
     @property
-    def filter(self) -> 'TagFilter':
+    def filter(self) -> TagFilter:
         """Return the type specific filter object."""
         return TagFilter(self.tql)

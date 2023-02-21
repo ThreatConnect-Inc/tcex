@@ -177,6 +177,6 @@ class Artifacts(ObjectCollectionABC):
         return ApiEndpoints.ARTIFACTS.value
 
     @property
-    def filter(self) -> 'ArtifactFilter':
+    def filter(self) -> ArtifactFilter:
         """Return the type specific filter object."""
         return ArtifactFilter(self.tql)

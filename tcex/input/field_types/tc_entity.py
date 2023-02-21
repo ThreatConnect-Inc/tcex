@@ -22,7 +22,7 @@ class TCEntity(BaseModel):
     rating: int | None
 
     @validator('id', 'type', 'value')
-    def non_empty_string(cls, v: dict[str, str], field: 'ModelField') -> dict[str, str]:
+    def non_empty_string(cls, v: dict[str, str], field: ModelField) -> dict[str, str]:
         """Validate that the value is a non-empty string."""
         if isinstance(v, str) and v.replace(' ', '') == '':  # None value are automatically covered
             raise InvalidEmptyValue(field_name=field.name)

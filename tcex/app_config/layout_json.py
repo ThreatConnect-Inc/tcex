@@ -94,7 +94,7 @@ class LayoutJson(metaclass=Singleton):
         return self.fqfn.is_file()
 
     @cached_property
-    def model(self) -> 'LayoutJsonModel':
+    def model(self) -> LayoutJsonModel:
         """Return the Install JSON model."""
         return LayoutJsonModel(**self.contents)
 

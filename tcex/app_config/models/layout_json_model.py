@@ -4,7 +4,7 @@
 from collections import OrderedDict
 
 # third-party
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from pydantic.types import constr
 
 # first-party
@@ -37,7 +37,7 @@ class InputsModel(BaseModel):
 
     parameters: list[ParametersModel]
     sequence: int
-    title: constr(min_length=3, max_length=100)
+    title: constr(min_length=3, max_length=100)  # type: ignore
 
     class Config:
         """DataModel Config"""
@@ -63,7 +63,7 @@ class LayoutJsonModel(BaseModel):
     """Layout JSON Model"""
 
     inputs: list[InputsModel]
-    outputs: list[OutputsModel] | None
+    outputs: list[OutputsModel] = Field([], description='Layout output variable definitions.')
 
     class Config:
         """DataModel Config"""
@@ -100,3 +100,6 @@ class LayoutJsonModel(BaseModel):
             for p in i.parameters:
                 parameters.setdefault(p.name, p)
         return parameters
+
+
+OutputsModel.update_forward_refs()

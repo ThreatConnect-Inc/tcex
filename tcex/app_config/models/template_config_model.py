@@ -13,7 +13,7 @@ class TemplateConfigModel(BaseModel):
     name: str
     summary: str
     template_files: list[str]
-    template_parents: list[str] | None = []
+    template_parents: list[str] = []
     type: str
     version: Version
 

@@ -188,7 +188,7 @@ class Registry(Container):
         return self.Playbook
 
     @property
-    def redis_client(self) -> 'Redis':
+    def redis_client(self) -> Redis:
         """Return a Redis client object (redis.Redis)."""
         return self.RedisClient
 

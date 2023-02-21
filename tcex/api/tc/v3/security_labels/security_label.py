@@ -125,6 +125,6 @@ class SecurityLabels(ObjectCollectionABC):
         return ApiEndpoints.SECURITY_LABELS.value
 
     @property
-    def filter(self) -> 'SecurityLabelFilter':
+    def filter(self) -> SecurityLabelFilter:
         """Return the type specific filter object."""
         return SecurityLabelFilter(self.tql)
