@@ -9,7 +9,7 @@ import sys
 from distutils.version import StrictVersion  # pylint: disable=no-name-in-module
 from pathlib import Path
 from typing import List, Optional
-from urllib.parse import quote
+from urllib.parse import quote, urlsplit
 
 # third-party
 import typer
@@ -44,6 +44,13 @@ class Dep(BinABC):
         self.proxy_port = proxy_port
         self.proxy_user = proxy_user
         self.proxy_pass = proxy_pass
+
+        if not self.proxy_host and os.environ.get('https_proxy'):
+            parsed_proxy_url = urlsplit(os.environ.get('https_proxy'))
+            self.proxy_host = parsed_proxy_url.hostname
+            self.proxy_port = parsed_proxy_url.port
+            self.proxy_user = parsed_proxy_url.username
+            self.proxy_pass = parsed_proxy_url.password
 
         # properties
         self.env = self._env
