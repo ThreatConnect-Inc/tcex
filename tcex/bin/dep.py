@@ -207,6 +207,8 @@ class Dep(BinABC):
 
     def install_deps(self):
         """Install Required Libraries using pip."""
+        error = False  # track if any errors have occurred and if so, don't create lock file.
+
         # check for requirements.txt
         if not self.requirements_fqfn.is_file():
             self.handle_error(
@@ -225,7 +227,7 @@ class Dep(BinABC):
                 not lib_version.python_executable.is_file()
                 and not lib_version.python_executable.is_symlink()
             ):
-
+                error = True
                 # display error
                 typer.secho(
                     f'The Python executable ({lib_version.python_executable}) could not be found. '
@@ -286,7 +288,13 @@ class Dep(BinABC):
         self._create_lib_latest()
 
         if self.has_requirements_lock is False:
-            self.create_requirements_lock()
+            if error:
+                typer.secho(
+                    'Not creating requirements.lock file due to errors.',
+                    fg=typer.colors.YELLOW,
+                )
+            else:
+                self.create_requirements_lock()
 
     @property
     def lib_versions(self) -> List[LibVersionModel]:
