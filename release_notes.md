@@ -4,6 +4,8 @@
 
 -   APP-3899 [CLI] Updated error handling on CLI when downloading template files
 -   APP-3900 [CLI] Updated proxy support for CLI
+-   APP-3906 [CLI] Don't create requirements.lock file if any errors occurred during tcex deps.
+
 
 ### 3.0.7
 
