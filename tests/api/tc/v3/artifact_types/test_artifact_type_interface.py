@@ -10,14 +10,7 @@ from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 class TestArtifactTypes(TestV3):
     """Test TcEx API Interface."""
 
-    v3 = None
-
-    def setup_method(self):
-        """Configure setup before all tests."""
-        print('')  # ensure any following print statements will be on new line
-        self.v3_helper = V3Helper('artifact_types')
-        self.v3 = self.v3_helper.v3
-        self.tcex = self.v3_helper.tcex
+    v3_helper = V3Helper('artifact_types')
 
     def test_artifact_type_api_options(self):
         """Test filter keywords."""
@@ -45,6 +38,7 @@ class TestArtifactTypes(TestV3):
             if artifact_type.model.name == 'Protocol Number':
                 assert artifact_type._api_endpoint == '/v3/artifactTypes'
                 assert artifact_type.model.data_type == 'String'
+                assert artifact_type.model.description is not None, 'description can not be none'
                 assert artifact_type.model.description.startswith('In the Internet Protocol')
                 break
         else:
@@ -65,7 +59,9 @@ class TestArtifactTypes(TestV3):
         # [Retrieve Testing] run assertions on returned data
         assert artifact_type.model.id == 1
         assert artifact_type.model.name == 'Email Address'
-        assert artifact_type.model.description.startswith('A name that identifies')
+        assert artifact_type.model.description and artifact_type.model.description.startswith(
+            'A name that identifies'
+        )
         assert artifact_type.model.data_type == 'String'
         assert artifact_type.model.intel_type == 'indicator-EmailAddress'
 
@@ -125,6 +121,7 @@ class TestArtifactTypes(TestV3):
         for artifact_type in artifact_types:
             assert artifact_type.model.id == 1
             assert artifact_type.model.name == 'Email Address'
+            assert artifact_type.model.description is not None, 'description can not be none'
             assert artifact_type.model.description.startswith('A name that identifies')
             assert artifact_type.model.data_type == 'String'
             assert artifact_type.model.intel_type == 'indicator-EmailAddress'

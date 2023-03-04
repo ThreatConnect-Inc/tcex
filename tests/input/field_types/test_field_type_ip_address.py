@@ -1,4 +1,7 @@
 """Testing TcEx Input module field types."""
+# standard library
+from collections.abc import Callable
+
 # third-party
 import pytest
 from pydantic import BaseModel, validator
@@ -43,7 +46,7 @@ class TestInputsIpAddressFieldTypes(InputTest):
         expected: str,
         optional: bool,
         fail_test: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test Binary field type.
 
@@ -51,22 +54,22 @@ class TestInputsIpAddressFieldTypes(InputTest):
         Validation: Not null
         """
 
+        class PytestModelRequired(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: IpAddress
+
+        class PytestModelOptional(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: IpAddress | None
+
+        pytest_model = PytestModelOptional
         if optional is False:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: IpAddress
-
-        else:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: IpAddress | None
+            pytest_model = PytestModelRequired
 
         self._type_validation(
-            PytestModel,
+            pytest_model,
             input_name='my_data',
             input_value=input_value,
             input_type='String',
@@ -101,26 +104,26 @@ class TestInputsIpAddressFieldTypes(InputTest):
         strip_port: bool,
         optional: bool,
         fail_test: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test IP Address field type."""
 
+        class PytestModelRequired(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: ip_address(strip_port=strip_port)  # type: ignore
+
+        class PytestModelOptional(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: ip_address(strip_port=strip_port) | None  # type: ignore
+
+        pytest_model = PytestModelOptional
         if optional is False:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: ip_address(strip_port=strip_port)
-
-        else:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: ip_address(strip_port=strip_port) | None
+            pytest_model = PytestModelRequired
 
         self._type_validation(
-            PytestModel,
+            pytest_model,
             input_name='my_data',
             input_value=input_value,
             input_type='String',
@@ -156,7 +159,7 @@ class TestInputsIpAddressFieldTypes(InputTest):
         expected: str,
         optional: bool,
         fail_test: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test Binary field type.
 
@@ -164,22 +167,22 @@ class TestInputsIpAddressFieldTypes(InputTest):
         Validation: Not null
         """
 
+        class PytestModelRequired(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: list[IpAddress]
+
+        class PytestModelOptional(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: list[IpAddress] | None
+
+        pytest_model = PytestModelOptional
         if optional is False:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: list[IpAddress]
-
-        else:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: list[IpAddress] | None
+            pytest_model = PytestModelRequired
 
         self._type_validation(
-            PytestModel,
+            pytest_model,
             input_name='my_data',
             input_value=input_value,
             input_type='StringArray',
@@ -252,7 +255,7 @@ class TestInputsIpAddressFieldTypes(InputTest):
         input_type: str,
         optional: bool,
         fail_test: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test Binary field type.
 
@@ -260,36 +263,42 @@ class TestInputsIpAddressFieldTypes(InputTest):
         Validation: Not null
         """
 
+        class PytestModelRequired(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: (
+                list[IpAddress] | IpAddress | list[AddressEntity] | AddressEntity  # type: ignore
+            )
+
+            _entity_input = validator('my_data', allow_reuse=True)(
+                entity_input(only_field='value')  # type: ignore
+            )
+            _always_array = validator('my_data', allow_reuse=True)(always_array(allow_empty=False))
+
+        class PytestModelOptional(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: (
+                None
+                | (
+                    list[IpAddress]
+                    | IpAddress
+                    | list[AddressEntity]  # type: ignore
+                    | AddressEntity  # type: ignore
+                )
+            )
+
+            _entity_input = validator('my_data', allow_reuse=True)(
+                entity_input(only_field='value')  # type: ignore
+            )
+            _always_array = validator('my_data', allow_reuse=True)(always_array(allow_empty=False))
+
+        pytest_model = PytestModelOptional
         if optional is False:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: (list[IpAddress] | IpAddress | list[AddressEntity] | AddressEntity)
-
-                _entity_input = validator('my_data', allow_reuse=True)(
-                    entity_input(only_field='value')
-                )
-                _always_array = validator('my_data', allow_reuse=True)(
-                    always_array(allow_empty=False)
-                )
-
-        else:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: None | (list[IpAddress] | IpAddress | list[AddressEntity] | AddressEntity)
-
-                _entity_input = validator('my_data', allow_reuse=True)(
-                    entity_input(only_field='value')
-                )
-                _always_array = validator('my_data', allow_reuse=True)(
-                    always_array(allow_empty=False)
-                )
+            pytest_model = PytestModelRequired
 
         self._type_validation(
-            PytestModel,
+            pytest_model,
             input_name='my_data',
             input_value=input_value,
             input_type=input_type,

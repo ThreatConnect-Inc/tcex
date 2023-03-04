@@ -7,8 +7,7 @@ from collections.abc import Generator
 from pydantic.fields import ModelField  # TYPE-CHECKING
 
 # first-party
-from tcex.input.field_types.exception import InvalidInput, InvalidVariableType
-from tcex.utils.variables import StringVariable  # TYPE-CHECKING
+from tcex.input.field_types.exception import InvalidInput
 
 
 class IpAddress(str):
@@ -19,12 +18,11 @@ class IpAddress(str):
     @classmethod
     def __get_validators__(cls) -> Generator:
         """Run validators / modifiers on input."""
-        yield cls.validate_variable_type
         yield cls.validate_strip_port
         yield cls.validate_ipaddress
 
     @classmethod
-    def validate_strip_port(cls, value: bytes | StringVariable, field: ModelField) -> str:
+    def validate_strip_port(cls, value: str, field: ModelField) -> str:
         """Modify value when requested."""
         if cls.strip_port is True:
             if ':' in value:
@@ -41,22 +39,12 @@ class IpAddress(str):
         return value
 
     @classmethod
-    def validate_ipaddress(cls, value: str | StringVariable, field: ModelField) -> str:
+    def validate_ipaddress(cls, value: str, field: ModelField) -> str:
         """Raise exception if value is not a String type."""
         try:
             ipaddress.ip_address(value)
         except ValueError as ex:
             raise InvalidInput(field.name, f'Invalid IP Address provided ({value}).') from ex
-
-        return value
-
-    @classmethod
-    def validate_variable_type(cls, value: str | StringVariable, field: ModelField) -> str:
-        """Raise exception if value is not a String type."""
-        if hasattr(value, '_variable_type') and value._variable_type != 'String':
-            raise InvalidVariableType(
-                field_name=field.name, expected_type='String', provided_type=value._variable_type
-            )
 
         return value
 

@@ -1,9 +1,11 @@
 """Test the TcEx API Module."""
 # standard library
+from collections.abc import Callable
 from random import randint, sample
 
 # third-party
 import pytest
+from _pytest.fixtures import FixtureRequest
 
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
@@ -13,14 +15,11 @@ from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 class TestIndicators(TestV3):
     """Test TcEx API Interface."""
 
-    v3 = None
+    v3_helper = V3Helper('indicators')
 
-    def setup_method(self, method: callable):
+    def setup_method(self, method: Callable):  # pylint: disable=arguments-differ
         """Configure setup before all tests."""
-        print('')  # ensure any following print statements will be on new line
-        self.v3_helper = V3Helper('indicators')
-        self.v3 = self.v3_helper.v3
-        self.tcex = self.v3_helper.tcex
+        super().setup_method()
 
         # remove an previous groups with the next test case name as a tag
         groups = self.tcex.v3.groups()
@@ -52,7 +51,7 @@ class TestIndicators(TestV3):
         """Test properties."""
         super().obj_properties_extra()
 
-    # def test_return_indicators(self, request: 'pytest.FixtureRequest'):
+    # def test_return_indicators(self, request: FixtureRequest):
     #     """Test Object Creation
 
     #     A single test case to hit all sub-type creation (e.g., Notes).
@@ -121,12 +120,15 @@ class TestIndicators(TestV3):
         assert indicator.model.ip == indicator_data.get('ip')
 
         # [Retrieve Testing] run assertions on returned nested data
+        assert indicator.model.attributes.data is not None, 'attributes should not be None'
         assert indicator.model.attributes.data[0].value == attribute_data.get('value')
 
         # [Retrieve Testing] run assertions on returned nested data
+        assert indicator.model.security_labels.data is not None, 'labels should not be None'
         assert indicator.model.security_labels.data[0].name == security_label_data.get('name')
 
         # [Retrieve Testing] run assertions on returned nested data
+        assert indicator.model.tags.data is not None, 'tags should not be None'
         assert indicator.model.tags.data[0].name == tag_data.get('name')
 
         # print('status_code', indicator.request.status_code)
@@ -141,6 +143,8 @@ class TestIndicators(TestV3):
 
         # [Pre-Requisite] - clean up past runs.
         cases = self.v3.cases()
+        # TODO: [high] @bpurdy - we should probably update the filters to support a list of values
+        #    and add a check for isinstance of list and TqlOperator.IN
         cases.filter.name(TqlOperator.IN, ['MyCase-20', 'MyCase-21', 'MyCase-22'])
 
         for case in cases:
@@ -151,7 +155,7 @@ class TestIndicators(TestV3):
         case_3 = self.v3_helper.create_case(name='MyCase-21')
 
         # [Create Testing] define object data
-        indicator = self.v3.indicator(
+        indicator = self.v3.indicator(  # type: ignore[__next__]
             **{
                 'ip': '43.24.65.49',
                 'type': 'Address',
@@ -212,7 +216,7 @@ class TestIndicators(TestV3):
 
         indicator.delete()
 
-    def test_indicator_get_many(self, request: 'pytest.FixtureRequest'):
+    def test_indicator_get_many(self, request: FixtureRequest):
         """Test Indicators Get Many"""
         # [Pre-Requisite] - create case
         indicator_count = 10
@@ -248,7 +252,7 @@ class TestIndicators(TestV3):
         assert indicators_counts == indicator_count
         assert not indicator_ids, 'Not all indicators were returned.'
 
-    def test_indicator_in_operator(self, request: 'pytest.FixtureRequest'):
+    def test_indicator_in_operator(self, request: FixtureRequest):
         """Test Indicators Get Many"""
         # [Pre-Requisite] - create case
         indicator_count = 10
@@ -299,7 +303,7 @@ class TestIndicators(TestV3):
 
         assert not chosen_indicator_ids, 'Not all indicators ids were returned'
 
-    def test_indicator_address(self, request: 'pytest.FixtureRequest'):
+    def test_indicator_address(self, request: FixtureRequest):
         """Test Artifact get single attached to task by id"""
         associated_indicator = self.v3_helper.create_indicator()
         associated_group = self.v3_helper.create_group(
@@ -358,9 +362,7 @@ class TestIndicators(TestV3):
         assert indicator.model.web_link is not None
 
         # [Retrieve Testing] test as_entity
-        assert indicator.as_entity.get('value') == indicator_data.get(
-            'value1'
-        ), 'as_entity test failed'
+        assert indicator.as_entity['value'] == indicator_data.get('value1'), 'as_entity test failed'
 
         # [Retrieve Testing] test associated_groups
         for ag in indicator.associated_groups:
@@ -372,4 +374,4 @@ class TestIndicators(TestV3):
                 # found the associated indicator
                 break
         else:
-            assert False, f'Associated indicator {ai.model.summary} not found.'
+            assert False, 'Associated indicator not found.'

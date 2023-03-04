@@ -21,10 +21,16 @@ from tcex.api.tc.ti_transform.model import (
     IndicatorTransformModel,
     MetadataTransformModel,
 )
+from tcex.api.tc.ti_transform.model.transform_model import (
+    AssociatedGroupTransform,
+    DatetimeTransformModel,
+    FileOccurrenceTransformModel,
+)
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 from tcex.utils import Utils
 
 # get tcex logger
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 
 class TcFunctions(functions.Functions):
@@ -122,9 +128,11 @@ class TransformABC(ABC):
         self._validate_transforms()
 
     @staticmethod
-    def _always_array(value: str | list) -> list:
+    def _always_array(value: str | list | None) -> list:
         """Ensure value is always an array."""
-        if not isinstance(value, list):
+        if value is None:
+            value = []
+        elif not isinstance(value, list):
             value = [value]
         return value
 
@@ -175,14 +183,14 @@ class TransformABC(ABC):
         # xid
         self._process_metadata('xid', self.transform.xid)
 
-    def _process_associated_group(self, associations: list[AttributeTransformModel]):
+    def _process_associated_group(self, associations: list[AssociatedGroupTransform]):
         """Process Attribute data"""
         for association in associations or []:
             for value in filter(bool, self._process_metadata_transform_model(association.value)):
                 self.add_associated_group(value)
 
     def _process_metadata_transform_model(
-        self, value: MetadataTransformModel | str, expected_length: int | None = None
+        self, value: bool | MetadataTransformModel | str | None, expected_length: int | None = None
     ) -> list:
         """Process fields that can be static values or a MetadataTransformModel.
 
@@ -190,6 +198,11 @@ class TransformABC(ABC):
         is given, "spread" the static value into an array of expected_length length.
 
         """
+        if value is None:
+            if expected_length:
+                return [value] * expected_length
+            return []
+
         if isinstance(value, MetadataTransformModel):
             transformed_value = self._transform_values(value)
 
@@ -199,10 +212,6 @@ class TransformABC(ABC):
                     f'but length was {len(transformed_value)}'
                 )
 
-            # self.log.trace(
-            #     'feature=transform, action=process-metadata-transform-model, '
-            #     f'value-path={value.path}, transformed-value={transformed_value}'
-            # )
             return transformed_value
 
         if expected_length is not None:
@@ -210,10 +219,6 @@ class TransformABC(ABC):
         else:
             transformed_value = [value]
 
-        # self.log.trace(
-        #     'feature=transform, action=process-metadata-transform-data, '
-        #     f'value={value}, transformed-value={transformed_value}'
-        # )
         return transformed_value
 
     def _process_attributes(self, attributes: list[AttributeTransformModel]):
@@ -261,7 +266,7 @@ class TransformABC(ABC):
                         f'transform={attribute.dict(exclude_unset=True)}'
                     )
 
-    def _process_file_occurrences(self, file_occurrences: list[MetadataTransformModel]):
+    def _process_file_occurrences(self, file_occurrences: list[FileOccurrenceTransformModel]):
         """Process File Occurrences data.
 
         File Occurrences are a bit weird, in that none of the fields are required.  Because of this,
@@ -295,28 +300,31 @@ class TransformABC(ABC):
             for kwargs in filter(bool, params):  # get rid of empty dicts
                 self.add_file_occurrence(**self.utils.remove_none(kwargs))
 
-    def _process_confidence(self, metadata: MetadataTransformModel):
+    def _process_confidence(self, metadata: MetadataTransformModel | None):
         """Process standard metadata fields."""
         self.add_confidence(self._transform_value(metadata))
 
     def _process_group(self):
         """Process Group Specific data."""
+        if not isinstance(self.transform, GroupTransformModel):
+            return
+
         self._process_name()
 
         if self.transformed_item['type'] == 'Campaign':
-            self._process_metadata('firstSeen', self.transform.first_seen)
+            self._process_metadata_datetime('firstSeen', self.transform.first_seen)
 
         if self.transformed_item['type'] == 'Document':
             self._process_metadata('fileName', self.transform.file_name)
             self._process_metadata('malware', self.transform.malware)
-            self._process_metadata('password', self.transform.confidence)
+            self._process_metadata('password', self.transform.password)
 
         if self.transformed_item['type'] == 'Email':
             self._process_metadata('from', self.transform.from_addr)
             self._process_metadata('to', self.transform.to_addr)
 
         if self.transformed_item['type'] in ('Event', 'Incident'):
-            self._process_metadata('eventDate', self.transform.event_date)
+            self._process_metadata_datetime('eventDate', self.transform.event_date)
             self._process_metadata('status', self.transform.status)
 
         if self.transformed_item['type'] == 'Report':
@@ -331,6 +339,9 @@ class TransformABC(ABC):
 
     def _process_indicator(self):
         """Process Indicator Specific data."""
+        if not isinstance(self.transform, IndicatorTransformModel):
+            return
+
         # handle the 3 possible indicator fields
         self._process_indicator_values()
 
@@ -346,6 +357,10 @@ class TransformABC(ABC):
             self._process_metadata('whoisActive', self.transform.whois_active)
 
     def _process_indicator_values(self):
+        """Process Indicator value."""
+        if not isinstance(self.transform, IndicatorTransformModel):
+            return
+
         value1 = self._transform_value(self.transform.value1)
         value2 = self._transform_value(self.transform.value2)
         value3 = self._transform_value(self.transform.value3)
@@ -353,15 +368,17 @@ class TransformABC(ABC):
         if not any([value1, value2, value3]):
             self.log.error(
                 'feature=ti-transform, event=process-indicators, message=no-indicator-value-found, '
-                f'path-value1={self.transform.value1.path}'
-                f'path-value2={self.transform.value2.path}'
-                f'path-value3={self.transform.value3.path}'
+                f'path-value1={value1}, path-value2={value2}, path-value3={value3}'
             )
             raise RuntimeError('At least one indicator value must be provided.')
 
         self.add_summary(self._build_summary(value1, value2, value3))
 
     def _process_name(self):
+        """Process Group Name data."""
+        if not isinstance(self.transform, GroupTransformModel):
+            return
+
         name = self._transform_value(self.transform.name)
 
         if name is None:
@@ -373,15 +390,15 @@ class TransformABC(ABC):
 
         self.add_name(name)
 
-    def _process_metadata(self, key, metadata: MetadataTransformModel):
+    def _process_metadata(self, key: str, metadata: MetadataTransformModel | None):
         """Process standard metadata fields."""
         value = self._transform_value(metadata)
         if value is not None:
             self.add_metadata(key, value)
 
-    def _process_metadata_datetime(self, key, metadata: list[MetadataTransformModel]):
+    def _process_metadata_datetime(self, key: str, metadata: DatetimeTransformModel | None):
         """Process metadata fields that should be a TC datetime."""
-        if metadata is not None:
+        if metadata is not None and metadata.path is not None:
             value = self._path_search(metadata.path)
             if value is not None:
                 self.add_metadata(
@@ -399,9 +416,7 @@ class TransformABC(ABC):
             descriptions = self._process_metadata_transform_model(
                 label.description, expected_length=len(names)
             )
-            colors = self._process_metadata_transform_model(
-                label.colors, expected_length=len(names)
-            )
+            colors = self._process_metadata_transform_model(label.color, expected_length=len(names))
 
             param_keys = ['color', 'description', 'name']
             params = [dict(zip(param_keys, p)) for p in zip(colors, descriptions, names)]
@@ -420,7 +435,7 @@ class TransformABC(ABC):
             for value in filter(bool, self._process_metadata_transform_model(tag.value)):
                 self.add_tag(name=value)
 
-    def _process_rating(self, metadata: MetadataTransformModel):
+    def _process_rating(self, metadata: MetadataTransformModel | None):
         """Process standard metadata fields."""
         self.add_rating(self._transform_value(metadata))
 
@@ -464,13 +479,14 @@ class TransformABC(ABC):
             return metadata.default
 
         for t in metadata.transform or []:
-            # pass value to static_map or callable, but never both
-            if t.filter_map is not None:
-                value = self._transform_value_map(value, t.filter_map, True)
-            elif t.static_map is not None:
-                value = self._transform_value_map(value, t.static_map)
-            elif callable(t.method):
-                value = self._transform_value_callable(value, t.method, t.kwargs)
+            if isinstance(value, str):
+                # pass value to static_map or callable, but never both
+                if t.filter_map is not None:
+                    value = self._transform_value_map(value, t.filter_map, True)
+                elif t.static_map is not None:
+                    value = self._transform_value_map(value, t.static_map)
+                elif callable(t.method):
+                    value = self._transform_value_callable(value, t.method, t.kwargs)
 
         # ensure only a string value or None is returned (set to default if required)
         if value is None:
@@ -514,10 +530,11 @@ class TransformABC(ABC):
     def _transform_values(self, metadata: MetadataTransformModel | None) -> list[str]:
         """Pass value to series transforms."""
 
-        def _default() -> str:
+        def _default() -> list:
             """Return default value (as list) if exists, else empty list."""
-            if metadata.default is None:
+            if metadata is None or metadata.default is None:
                 return []
+
             return self._always_array(metadata.default)
 
         # not all items have all metadata fields
@@ -560,7 +577,8 @@ class TransformABC(ABC):
                     if v is not None:
                         _values.append(v)
                 value = _values
-            elif callable(t.method):
+            # PYRIGHT-MISS - None check for value already performed above
+            elif callable(t.method) and value is not None:
                 value = self._transform_value_callable(value, t.method, t.kwargs)
             elif callable(t.for_each):
                 value = [
@@ -616,7 +634,7 @@ class TransformABC(ABC):
         """Abstract method"""
 
     @abstractmethod
-    def add_confidence(self, confidence: int | None):
+    def add_confidence(self, confidence: int | str | None):
         """Abstract method"""
 
     @abstractmethod
@@ -628,7 +646,7 @@ class TransformABC(ABC):
         """Abstract method"""
 
     @abstractmethod
-    def add_rating(self, rating: int | None):
+    def add_rating(self, rating: float | int | str | None):
         """Abstract method"""
 
     @abstractmethod

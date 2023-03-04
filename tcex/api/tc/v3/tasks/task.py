@@ -1,6 +1,6 @@
 """Task / Tasks Object"""
 # standard library
-from collections.abc import Generator
+from collections.abc import Generator, Iterator
 from typing import TYPE_CHECKING
 
 # first-party
@@ -163,8 +163,8 @@ class Tasks(ObjectCollectionABC):
         self._model = TasksModel(**kwargs)
         self.type_ = 'tasks'
 
-    def __iter__(self) -> Task:
-        """Iterate over CM objects."""
+    def __iter__(self) -> Iterator[Task]:
+        """Return CM objects."""
         return self.iterate(base_class=Task)  # type: ignore
 
     @property

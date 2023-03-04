@@ -7,14 +7,7 @@ from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 class TestAttributeTypeSnippets(TestV3):
     """Test TcEx API Interface."""
 
-    v3 = None
-
-    def setup_method(self):
-        """Configure setup before all tests."""
-        print('')  # ensure any following print statements will be on new line
-        self.v3_helper = V3Helper('attribute_types')
-        self.v3 = self.v3_helper.v3
-        self.tcex = self.v3_helper.tcex
+    v3_helper = V3Helper('attribute_types')
 
     def test_attribute_types_get_all(self):
         """Test snippet"""

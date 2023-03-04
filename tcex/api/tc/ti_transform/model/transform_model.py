@@ -126,14 +126,14 @@ class TiTransformModel(BaseModel, extra=Extra.forbid):
     """."""
 
     applies: Callable | None = Field(None, description='')
-    associated_groups: list[AssociatedGroupTransform] | None = Field(None, description='')
-    attributes: list[AttributeTransformModel] | None = Field(None, description='')
+    associated_groups: list[AssociatedGroupTransform] = Field([], description='')
+    attributes: list[AttributeTransformModel] = Field([], description='')
     date_added: DatetimeTransformModel | None = Field(None, description='')
     last_modified: DatetimeTransformModel | None = Field(None, description='')
-    security_labels: list[SecurityLabelTransformModel] | None = Field(None, description='')
-    tags: list[TagTransformModel] | None = Field(None, description='')
+    security_labels: list[SecurityLabelTransformModel] = Field([], description='')
+    tags: list[TagTransformModel] = Field([], description='')
     type: MetadataTransformModel = Field(..., description='')
-    xid: MetadataTransformModel | None = Field(description='')
+    xid: MetadataTransformModel | None = Field(None, description='')
 
 
 class GroupTransformModel(TiTransformModel, extra=Extra.forbid):

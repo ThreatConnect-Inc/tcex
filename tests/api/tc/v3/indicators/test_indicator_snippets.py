@@ -1,23 +1,22 @@
 """Test the TcEx API Snippets."""
-# third-party
-# import pytest
+# standard library
+from collections.abc import Callable
 
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 
+# import pytest
+
 
 class TestIndicatorSnippets(TestV3):
     """Test TcEx API Interface."""
 
-    v3 = None
+    v3_helper = V3Helper('indicators')
 
-    def setup_method(self, method: callable):
+    def setup_method(self, method: Callable):  # pylint: disable=arguments-differ
         """Configure setup before all tests."""
-        print('')  # ensure any following print statements will be on new line
-        self.v3_helper = V3Helper('indicators')
-        self.v3 = self.v3_helper.v3
-        self.tcex = self.v3_helper.tcex
+        super().setup_method()
 
         # remove an previous indicators with the next test case name as a tag
         indicators = self.v3.indicators()
@@ -278,6 +277,7 @@ class TestIndicatorSnippets(TestV3):
         indicator = self.tcex.v3.indicator(id=indicator.model.id)
         indicator.get(params={'fields': ['fileActions']})
         # End Snippet
+        assert indicator.model.file_actions.data is not None, 'fileActions should not be None.'
         assert len(indicator.model.file_actions.data) == 1
         file_action = indicator.model.file_actions.data[0]
         assert file_action.relationship == relationship_type
@@ -299,6 +299,7 @@ class TestIndicatorSnippets(TestV3):
         indicator.update()
         # End Snippet
 
+        assert indicator.model.file_actions.data is not None, 'fileActions should not be None.'
         assert len(indicator.model.file_actions.data) == 1
         file_action = indicator.model.file_actions.data[0]
         assert file_action.relationship == relationship_type
@@ -326,6 +327,7 @@ class TestIndicatorSnippets(TestV3):
         indicator.update(mode='delete')
         # End Snippet
 
+        assert indicator.model.file_actions.data is not None, 'fileActions should not be None.'
         assert len(indicator.model.file_actions.data) == 1
         file_action = indicator.model.file_actions.data[0]
         assert file_action.relationship == relationship_type
@@ -352,6 +354,7 @@ class TestIndicatorSnippets(TestV3):
         indicator.update(mode='replace')
         # End Snippet
 
+        assert indicator.model.file_actions.data is not None, 'fileActions should not be None.'
         assert len(indicator.model.file_actions.data) == 1
         file_action = indicator.model.file_actions.data[0]
         assert file_action.relationship == relationship_type
@@ -375,6 +378,7 @@ class TestIndicatorSnippets(TestV3):
         indicator.get(params={'fields': ['fileOccurrences']})
         # End Snippet
 
+        assert indicator.model.file_occurrences.data is not None, 'occurrences should not be None.'
         assert len(indicator.model.file_occurrences.data) == 1
         file_occurrences = indicator.model.file_occurrences.data[0]
         assert file_occurrences.path == '/temp/path/to/file.csv'
@@ -424,6 +428,7 @@ class TestIndicatorSnippets(TestV3):
         indicator.update()
         indicator = self.tcex.v3.indicator(id=indicator.model.id)
         indicator.get(params={'fields': ['fileOccurrences']})
+        assert indicator.model.file_occurrences.data is not None, 'occurrences should not be None.'
         for file_occurrence in indicator.model.file_occurrences.data:
             if file_occurrence.file_name == 'Example.csv':
                 file_occurrence_id = file_occurrence.id
@@ -448,6 +453,7 @@ class TestIndicatorSnippets(TestV3):
         indicator = self.tcex.v3.indicator(id=indicator.model.id)
         indicator.get(params={'fields': ['fileOccurrences']})
 
+        assert indicator.model.file_occurrences.data is not None, 'occurrences should not be None.'
         assert len(indicator.model.file_occurrences.data) == 1
         file_occurrences = indicator.model.file_occurrences.data[0]
         assert file_occurrences.path == '/temp/path/to/file.csv'
@@ -490,6 +496,7 @@ class TestIndicatorSnippets(TestV3):
         indicator = self.tcex.v3.indicator(id=indicator.model.id)
         indicator.get(params={'fields': ['fileOccurrences']})
 
+        assert indicator.model.file_occurrences.data is not None, 'occurrences should not be None.'
         assert len(indicator.model.file_occurrences.data) == 1
         file_occurrences = indicator.model.file_occurrences.data[0]
         assert file_occurrences.path == '/temp/path/to/file.csv'

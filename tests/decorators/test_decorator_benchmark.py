@@ -8,7 +8,7 @@ class TestBenchmarkDecorators:
 
     tcex = None
 
-    @Benchmark()
+    @Benchmark()  # type: ignore
     def benchmark(self):
         """Test fail on input decorator with no arg value (use first arg input)."""
 

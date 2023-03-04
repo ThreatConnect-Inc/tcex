@@ -1,4 +1,7 @@
 """OwnerRole / OwnerRoles Object"""
+# standard library
+from collections.abc import Iterator
+
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.object_abc import ObjectABC
@@ -67,8 +70,8 @@ class OwnerRoles(ObjectCollectionABC):
         self._model = OwnerRolesModel(**kwargs)
         self.type_ = 'owner_roles'
 
-    def __iter__(self) -> OwnerRole:
-        """Iterate over CM objects."""
+    def __iter__(self) -> Iterator[OwnerRole]:
+        """Return CM objects."""
         return self.iterate(base_class=OwnerRole)  # type: ignore
 
     @property

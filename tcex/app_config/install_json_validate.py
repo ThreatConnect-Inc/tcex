@@ -4,7 +4,8 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma: no cover
-    from .install_json import InstallJson
+    # first-party
+    from tcex.app_config.install_json import InstallJson
 
 
 class InstallJsonValidate:
@@ -28,6 +29,9 @@ class InstallJsonValidate:
         """Check for duplicate input names."""
         duplicates = []
         tracker = []
+        if self.ij.model.playbook is None:
+            return duplicates
+
         for output in self.ij.model.playbook.output_variables or []:
             name_type = f'{output.name}-{output.type}'
             if name_type in tracker:

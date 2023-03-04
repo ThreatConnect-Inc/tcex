@@ -1,6 +1,10 @@
 """Indicator TQL Filter"""
 # standard library
+from datetime import datetime
 from enum import Enum
+
+# third-party
+from arrow import Arrow
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -27,58 +31,94 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('activeLocked', operator, active_locked, TqlType.BOOLEAN)
 
-    def address_asn(self, operator: Enum, address_asn: int):
+    def address_asn(self, operator: Enum, address_asn: int | list):
         """Filter ASN (Address) based on **addressAsn** keyword.
 
         Args:
             operator: The operator enum for the filter.
             address_asn: The Autonomous System Number (ASN) of an address.
         """
+        if isinstance(address_asn, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('addressAsn', operator, address_asn, TqlType.INTEGER)
 
-    def address_cidr(self, operator: Enum, address_cidr: str):
+    def address_cidr(self, operator: Enum, address_cidr: list | str):
         """Filter CIDR (Address) based on **addressCidr** keyword.
 
         Args:
             operator: The operator enum for the filter.
             address_cidr: A CIDR block used to search for a range of addresses.
         """
+        if isinstance(address_cidr, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('addressCidr', operator, address_cidr, TqlType.STRING)
 
-    def address_city(self, operator: Enum, address_city: str):
+    def address_city(self, operator: Enum, address_city: list | str):
         """Filter City (Address) based on **addressCity** keyword.
 
         Args:
             operator: The operator enum for the filter.
             address_city: The name of the city an address is registered to.
         """
+        if isinstance(address_city, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('addressCity', operator, address_city, TqlType.STRING)
 
-    def address_country_code(self, operator: Enum, address_country_code: str):
+    def address_country_code(self, operator: Enum, address_country_code: list | str):
         """Filter Country Code (Address) based on **addressCountryCode** keyword.
 
         Args:
             operator: The operator enum for the filter.
             address_country_code: The registered country code for an address.
         """
+        if isinstance(address_country_code, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('addressCountryCode', operator, address_country_code, TqlType.STRING)
 
-    def address_country_name(self, operator: Enum, address_country_name: str):
+    def address_country_name(self, operator: Enum, address_country_name: list | str):
         """Filter Country Name (Address) based on **addressCountryName** keyword.
 
         Args:
             operator: The operator enum for the filter.
             address_country_name: The name of the country an address is registered to.
         """
+        if isinstance(address_country_name, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('addressCountryName', operator, address_country_name, TqlType.STRING)
 
-    def address_ip_val(self, operator: Enum, address_ip_val: int):
+    def address_ip_val(self, operator: Enum, address_ip_val: int | list):
         """Filter Value (Address) based on **addressIpVal** keyword.
 
         Args:
             operator: The operator enum for the filter.
             address_ip_val: The numeric value of an address.
         """
+        if isinstance(address_ip_val, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('addressIpVal', operator, address_ip_val, TqlType.INTEGER)
 
     def address_is_ipv6(self, operator: Enum, address_is_ipv6: bool):
@@ -90,63 +130,99 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('addressIsIpv6', operator, address_is_ipv6, TqlType.BOOLEAN)
 
-    def address_registering_org(self, operator: Enum, address_registering_org: str):
+    def address_registering_org(self, operator: Enum, address_registering_org: list | str):
         """Filter Registering Org (Address) based on **addressRegisteringOrg** keyword.
 
         Args:
             operator: The operator enum for the filter.
             address_registering_org: The registering organization for an address.
         """
+        if isinstance(address_registering_org, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter(
             'addressRegisteringOrg', operator, address_registering_org, TqlType.STRING
         )
 
-    def address_state(self, operator: Enum, address_state: str):
+    def address_state(self, operator: Enum, address_state: list | str):
         """Filter State (Address) based on **addressState** keyword.
 
         Args:
             operator: The operator enum for the filter.
             address_state: The name of the state an address is registered to.
         """
+        if isinstance(address_state, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('addressState', operator, address_state, TqlType.STRING)
 
-    def address_timezone(self, operator: Enum, address_timezone: str):
+    def address_timezone(self, operator: Enum, address_timezone: list | str):
         """Filter Time Zone (Address) based on **addressTimezone** keyword.
 
         Args:
             operator: The operator enum for the filter.
             address_timezone: The time zone an address resides within.
         """
+        if isinstance(address_timezone, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('addressTimezone', operator, address_timezone, TqlType.STRING)
 
-    def associated_group(self, operator: Enum, associated_group: int):
+    def associated_group(self, operator: Enum, associated_group: int | list):
         """Filter associatedGroup based on **associatedGroup** keyword.
 
         Args:
             operator: The operator enum for the filter.
             associated_group: No description provided.
         """
+        if isinstance(associated_group, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('associatedGroup', operator, associated_group, TqlType.INTEGER)
 
-    def attribute(self, operator: Enum, attribute: str):
+    def attribute(self, operator: Enum, attribute: list | str):
         """Filter attribute based on **attribute** keyword.
 
         Args:
             operator: The operator enum for the filter.
             attribute: No description provided.
         """
+        if isinstance(attribute, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('attribute', operator, attribute, TqlType.STRING)
 
-    def confidence(self, operator: Enum, confidence: int):
+    def confidence(self, operator: Enum, confidence: int | list):
         """Filter Confidence Rating based on **confidence** keyword.
 
         Args:
             operator: The operator enum for the filter.
             confidence: The confidence in the indicator's rating.
         """
+        if isinstance(confidence, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('confidence', operator, confidence, TqlType.INTEGER)
 
-    def date_added(self, operator: Enum, date_added: str):
+    def date_added(self, operator: Enum, date_added: Arrow | datetime | int | str):
         """Filter Date Added based on **dateAdded** keyword.
 
         Args:
@@ -156,16 +232,22 @@ class IndicatorFilter(FilterABC):
         date_added = self.utils.any_to_datetime(date_added).strftime('%Y-%m-%d %H:%M:%S')
         self._tql.add_filter('dateAdded', operator, date_added, TqlType.STRING)
 
-    def description(self, operator: Enum, description: str):
+    def description(self, operator: Enum, description: list | str):
         """Filter Description based on **description** keyword.
 
         Args:
             operator: The operator enum for the filter.
             description: The default description of the indicator.
         """
+        if isinstance(description, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('description', operator, description, TqlType.STRING)
 
-    def false_positive_count(self, operator: Enum, false_positive_count: int):
+    def false_positive_count(self, operator: Enum, false_positive_count: int | list):
         """Filter False Positive Count based on **falsePositiveCount** keyword.
 
         Args:
@@ -173,15 +255,27 @@ class IndicatorFilter(FilterABC):
             false_positive_count: The number of times the indicator has been flagged as a false
                 positive.
         """
+        if isinstance(false_positive_count, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('falsePositiveCount', operator, false_positive_count, TqlType.INTEGER)
 
-    def file_size(self, operator: Enum, file_size: int):
+    def file_size(self, operator: Enum, file_size: int | list):
         """Filter Size (File) based on **fileSize** keyword.
 
         Args:
             operator: The operator enum for the filter.
             file_size: The size of a file.
         """
+        if isinstance(file_size, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('fileSize', operator, file_size, TqlType.INTEGER)
 
     @property
@@ -291,13 +385,19 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('hostWhoisActive', operator, host_whois_active, TqlType.BOOLEAN)
 
-    def id(self, operator: Enum, id: int):  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int | list):  # pylint: disable=redefined-builtin
         """Filter ID based on **id** keyword.
 
         Args:
             operator: The operator enum for the filter.
             id: The ID of the indicator.
         """
+        if isinstance(id, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
     def indicator_active(self, operator: Enum, indicator_active: bool):
@@ -309,7 +409,9 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('indicatorActive', operator, indicator_active, TqlType.BOOLEAN)
 
-    def last_false_positive(self, operator: Enum, last_false_positive: str):
+    def last_false_positive(
+        self, operator: Enum, last_false_positive: Arrow | datetime | int | str
+    ):
         """Filter False Positive Last Observed based on **lastFalsePositive** keyword.
 
         Args:
@@ -321,7 +423,7 @@ class IndicatorFilter(FilterABC):
         )
         self._tql.add_filter('lastFalsePositive', operator, last_false_positive, TqlType.STRING)
 
-    def last_modified(self, operator: Enum, last_modified: str):
+    def last_modified(self, operator: Enum, last_modified: Arrow | datetime | int | str):
         """Filter Last Modified based on **lastModified** keyword.
 
         Args:
@@ -331,7 +433,7 @@ class IndicatorFilter(FilterABC):
         last_modified = self.utils.any_to_datetime(last_modified).strftime('%Y-%m-%d %H:%M:%S')
         self._tql.add_filter('lastModified', operator, last_modified, TqlType.STRING)
 
-    def last_observed(self, operator: Enum, last_observed: str):
+    def last_observed(self, operator: Enum, last_observed: Arrow | datetime | int | str):
         """Filter Last Observed based on **lastObserved** keyword.
 
         Args:
@@ -341,151 +443,247 @@ class IndicatorFilter(FilterABC):
         last_observed = self.utils.any_to_datetime(last_observed).strftime('%Y-%m-%d %H:%M:%S')
         self._tql.add_filter('lastObserved', operator, last_observed, TqlType.STRING)
 
-    def observation_count(self, operator: Enum, observation_count: int):
+    def observation_count(self, operator: Enum, observation_count: int | list):
         """Filter Observation Count based on **observationCount** keyword.
 
         Args:
             operator: The operator enum for the filter.
             observation_count: The number of times the indicator has been observed.
         """
+        if isinstance(observation_count, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('observationCount', operator, observation_count, TqlType.INTEGER)
 
-    def owner(self, operator: Enum, owner: int):
+    def owner(self, operator: Enum, owner: int | list):
         """Filter Owner ID based on **owner** keyword.
 
         Args:
             operator: The operator enum for the filter.
             owner: The Owner ID for the indicator.
         """
+        if isinstance(owner, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('owner', operator, owner, TqlType.INTEGER)
 
-    def owner_name(self, operator: Enum, owner_name: str):
+    def owner_name(self, operator: Enum, owner_name: list | str):
         """Filter Owner Name based on **ownerName** keyword.
 
         Args:
             operator: The operator enum for the filter.
             owner_name: The owner name of the indicator.
         """
+        if isinstance(owner_name, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('ownerName', operator, owner_name, TqlType.STRING)
 
-    def rating(self, operator: Enum, rating: int):
+    def rating(self, operator: Enum, rating: int | list):
         """Filter Threat Rating based on **rating** keyword.
 
         Args:
             operator: The operator enum for the filter.
             rating: The rating of the indicator.
         """
+        if isinstance(rating, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('rating', operator, rating, TqlType.INTEGER)
 
-    def security_label(self, operator: Enum, security_label: str):
+    def security_label(self, operator: Enum, security_label: list | str):
         """Filter Security Label based on **securityLabel** keyword.
 
         Args:
             operator: The operator enum for the filter.
             security_label: The name of a security label applied to the indicator.
         """
+        if isinstance(security_label, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('securityLabel', operator, security_label, TqlType.STRING)
 
-    def source(self, operator: Enum, source: str):
+    def source(self, operator: Enum, source: list | str):
         """Filter Source based on **source** keyword.
 
         Args:
             operator: The operator enum for the filter.
             source: The default source of the indicator.
         """
+        if isinstance(source, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('source', operator, source, TqlType.STRING)
 
-    def summary(self, operator: Enum, summary: str):
+    def summary(self, operator: Enum, summary: list | str):
         """Filter Summary based on **summary** keyword.
 
         Args:
             operator: The operator enum for the filter.
             summary: The summary of the indicator.
         """
+        if isinstance(summary, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('summary', operator, summary, TqlType.STRING)
 
-    def tag(self, operator: Enum, tag: str):
+    def tag(self, operator: Enum, tag: list | str):
         """Filter Tag based on **tag** keyword.
 
         Args:
             operator: The operator enum for the filter.
             tag: The name of a tag applied to the indicator.
         """
+        if isinstance(tag, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('tag', operator, tag, TqlType.STRING)
 
-    def tag_owner(self, operator: Enum, tag_owner: int):
+    def tag_owner(self, operator: Enum, tag_owner: int | list):
         """Filter Tag Owner ID based on **tagOwner** keyword.
 
         Args:
             operator: The operator enum for the filter.
             tag_owner: The ID of the owner of a tag.
         """
+        if isinstance(tag_owner, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('tagOwner', operator, tag_owner, TqlType.INTEGER)
 
-    def tag_owner_name(self, operator: Enum, tag_owner_name: str):
+    def tag_owner_name(self, operator: Enum, tag_owner_name: list | str):
         """Filter Tag Owner Name based on **tagOwnerName** keyword.
 
         Args:
             operator: The operator enum for the filter.
             tag_owner_name: The name of the owner of a tag.
         """
+        if isinstance(tag_owner_name, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('tagOwnerName', operator, tag_owner_name, TqlType.STRING)
 
-    def threat_assess_score(self, operator: Enum, threat_assess_score: int):
+    def threat_assess_score(self, operator: Enum, threat_assess_score: int | list):
         """Filter ThreatAssess Score based on **threatAssessScore** keyword.
 
         Args:
             operator: The operator enum for the filter.
             threat_assess_score: The threat-assessed score of the indicator.
         """
+        if isinstance(threat_assess_score, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('threatAssessScore', operator, threat_assess_score, TqlType.INTEGER)
 
-    def type(self, operator: Enum, type: int):  # pylint: disable=redefined-builtin
+    def type(self, operator: Enum, type: int | list):  # pylint: disable=redefined-builtin
         """Filter Type ID based on **type** keyword.
 
         Args:
             operator: The operator enum for the filter.
             type: The ID of the indicator type.
         """
+        if isinstance(type, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('type', operator, type, TqlType.INTEGER)
 
-    def type_name(self, operator: Enum, type_name: str):
+    def type_name(self, operator: Enum, type_name: list | str):
         """Filter Type Name based on **typeName** keyword.
 
         Args:
             operator: The operator enum for the filter.
             type_name: The name of the indicator type.
         """
+        if isinstance(type_name, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('typeName', operator, type_name, TqlType.STRING)
 
-    def value1(self, operator: Enum, value1: str):
+    def value1(self, operator: Enum, value1: list | str):
         """Filter value1 based on **value1** keyword.
 
         Args:
             operator: The operator enum for the filter.
             value1: No description provided.
         """
+        if isinstance(value1, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('value1', operator, value1, TqlType.STRING)
 
-    def value2(self, operator: Enum, value2: str):
+    def value2(self, operator: Enum, value2: list | str):
         """Filter value2 based on **value2** keyword.
 
         Args:
             operator: The operator enum for the filter.
             value2: No description provided.
         """
+        if isinstance(value2, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('value2', operator, value2, TqlType.STRING)
 
-    def value3(self, operator: Enum, value3: str):
+    def value3(self, operator: Enum, value3: list | str):
         """Filter value3 based on **value3** keyword.
 
         Args:
             operator: The operator enum for the filter.
             value3: No description provided.
         """
+        if isinstance(value3, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('value3', operator, value3, TqlType.STRING)
 
-    def vt_last_updated(self, operator: Enum, vt_last_updated: str):
+    def vt_last_updated(self, operator: Enum, vt_last_updated: Arrow | datetime | int | str):
         """Filter Virus Total Last Updated based on **vtLastUpdated** keyword.
 
         Args:
@@ -495,11 +693,17 @@ class IndicatorFilter(FilterABC):
         vt_last_updated = self.utils.any_to_datetime(vt_last_updated).strftime('%Y-%m-%d %H:%M:%S')
         self._tql.add_filter('vtLastUpdated', operator, vt_last_updated, TqlType.STRING)
 
-    def vt_malicious_count(self, operator: Enum, vt_malicious_count: int):
+    def vt_malicious_count(self, operator: Enum, vt_malicious_count: int | list):
         """Filter Virus Total Malicious Count based on **vtMaliciousCount** keyword.
 
         Args:
             operator: The operator enum for the filter.
             vt_malicious_count: The number of malicious reports for an indicator from Virus Total.
         """
+        if isinstance(vt_malicious_count, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('vtMaliciousCount', operator, vt_malicious_count, TqlType.INTEGER)

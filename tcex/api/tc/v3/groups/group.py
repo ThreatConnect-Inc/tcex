@@ -1,7 +1,7 @@
 """Group / Groups Object"""
 # standard library
 import json
-from collections.abc import Generator
+from collections.abc import Generator, Iterator
 from typing import TYPE_CHECKING, Self
 
 # third-party
@@ -372,8 +372,8 @@ class Groups(ObjectCollectionABC):
         self._model = GroupsModel(**kwargs)
         self.type_ = 'groups'
 
-    def __iter__(self) -> Group:
-        """Iterate over CM objects."""
+    def __iter__(self) -> Iterator[Group]:
+        """Return CM objects."""
         return self.iterate(base_class=Group)  # type: ignore
 
     @property

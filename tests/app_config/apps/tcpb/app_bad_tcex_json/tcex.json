@@ -21,6 +21,6 @@
       "tcex.json"
     ]
   },
-  "template_name": "basic",
+  "template_name": "service_api",
   "template_type": "playbook"
 }

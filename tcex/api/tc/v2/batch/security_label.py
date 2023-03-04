@@ -24,7 +24,7 @@ class SecurityLabel:
             self._label_data['color'] = color
 
     @property
-    def color(self) -> str:
+    def color(self) -> str | None:
         """Return Security Label color."""
         return self._label_data.get('color')
 
@@ -39,7 +39,7 @@ class SecurityLabel:
         return self._label_data
 
     @property
-    def description(self) -> str:
+    def description(self) -> str | None:
         """Return Security Label description."""
         return self._label_data.get('description')
 
@@ -51,8 +51,8 @@ class SecurityLabel:
     @property
     def name(self) -> str:
         """Return Security Label name."""
-        return self._label_data.get('name')
+        return self._label_data['name']
 
     def __str__(self) -> str:
-        """Return string represtentation of object."""
+        """Return string representation of object."""
         return json.dumps(self.data, indent=4)

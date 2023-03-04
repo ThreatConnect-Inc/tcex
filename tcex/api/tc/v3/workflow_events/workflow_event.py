@@ -1,6 +1,6 @@
 """WorkflowEvent / WorkflowEvents Object"""
 # standard library
-from collections.abc import Generator
+from collections.abc import Generator, Iterator
 from typing import TYPE_CHECKING
 
 # first-party
@@ -116,8 +116,8 @@ class WorkflowEvents(ObjectCollectionABC):
         self._model = WorkflowEventsModel(**kwargs)
         self.type_ = 'workflow_events'
 
-    def __iter__(self) -> WorkflowEvent:
-        """Iterate over CM objects."""
+    def __iter__(self) -> Iterator[WorkflowEvent]:
+        """Return CM objects."""
         return self.iterate(base_class=WorkflowEvent)  # type: ignore
 
     @property

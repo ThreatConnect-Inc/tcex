@@ -20,6 +20,14 @@ class TestInstallJson:
         """Configure setup before all tests."""
         print('')
 
+    @property
+    def tcex_test_dir(self) -> Path:
+        """Return tcex test directory."""
+        tcex_test_dir = os.getenv('TCEX_TEST_DIR')
+        if tcex_test_dir is None:
+            assert False, 'TCEX_TEST_DIR environment variable not set.'
+        return Path(tcex_test_dir)
+
     # @staticmethod
     # def test_dev_testing():
     #     """."""
@@ -39,46 +47,36 @@ class TestInstallJson:
     #     print('ij.model.features', ij.model.features)
     #     print('ij.model.display_name', ij.model.display_name)
 
-    @staticmethod
-    def ij(app_name: str = 'app_1', app_type: str = 'tcpb'):
+    def ij(self, app_name: str = 'app_1', app_type: str = 'tcpb'):
         """Return install.json instance."""
         # reset singleton
         # InstallJson._instances = {}
-        tcex_test_dir = os.getenv('TCEX_TEST_DIR')
 
-        ij_fqfn = os.path.join(
-            tcex_test_dir, 'app_config', 'apps', app_type, app_name, 'install.json'
-        )
-        fqfn = Path(ij_fqfn)
+        fqfn = self.tcex_test_dir / 'app_config' / 'apps' / app_type / app_name / 'install.json'
         try:
             _ij = InstallJson(filename=fqfn.name, path=fqfn.parent)
             return _ij
         except Exception as ex:
             assert False, f'Failed parsing file {fqfn.name} ({ex})'
 
-    @staticmethod
-    def ij_bad(app_name: str = 'app_bad_install_json', app_type: str = 'tcpb'):
+    def ij_bad(self, app_name: str = 'app_bad_install_json', app_type: str = 'tcpb'):
         """Return install.json instance with "bad" file."""
         # reset singleton
         # InstallJson._instances = {}
-        tcex_test_dir = os.getenv('TCEX_TEST_DIR')
 
-        base_fqpn = os.path.join(tcex_test_dir, 'app_config', 'apps', app_type, app_name)
-        shutil.copy2(
-            os.path.join(base_fqpn, 'install-template.json'),
-            os.path.join(base_fqpn, 'install.json'),
-        )
-        fqfn = Path(os.path.join(base_fqpn, 'install.json'))
+        base_fqpn = self.tcex_test_dir / 'app_config' / 'apps' / app_type / app_name
+        src = base_fqpn / 'install-template.json'
+        dst = base_fqpn / 'install.json'
+        shutil.copy2(src, dst)
+        fqfn = base_fqpn / 'install.json'
         try:
             return InstallJson(filename=fqfn.name, path=fqfn.parent)
         except Exception as ex:
             assert False, f'Failed parsing file {fqfn.name} ({ex})'
 
-    @staticmethod
-    def model_validate(path: str):
+    def model_validate(self, path: str):
         """Validate input model in and out."""
-        tcex_test_dir = os.getenv('TCEX_TEST_DIR')
-        ij_path = Path(os.path.join(tcex_test_dir, path))
+        ij_path = Path(os.path.join(self.tcex_test_dir, path))
         for fqfn in sorted(ij_path.glob('**/*install.json')):
             # reset singleton
             # InstallJson._instances = {}
@@ -113,7 +111,7 @@ class TestInstallJson:
     def test_create_output_variables(self):
         """Test method"""
         output_variables = self.ij(app_type='tcpb').create_output_variables(
-            self.ij(app_type='tcpb').model.playbook.output_variables
+            self.ij(app_type='tcpb').model.playbook.output_variables  # type: ignore
         )
         assert '#App:9876:action_1.binary.output1!Binary' in output_variables
 
@@ -377,8 +375,8 @@ class TestInstallJson:
 
     def test_model_app_output_var_typ(self):
         """Test method"""
+        ij = self.ij_bad(app_type='tcpb')
         try:
-            ij = self.ij_bad(app_type='tcpb')
             assert ij.model.app_output_var_type == 'App'
 
             # cleanup temp file

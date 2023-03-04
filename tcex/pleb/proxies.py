@@ -20,7 +20,10 @@ def proxies(
     **Example Response**
     ::
 
-        {"http": "http://user:pass@10.10.1.10:3128/"}
+        {
+            "http": "http://user:pass@10.10.1.10:3128/",
+            "https": "http://user:pass@10.10.1.10:3128/"
+        }
     """
     _proxies = {}
     if proxy_host is not None and proxy_port is not None:

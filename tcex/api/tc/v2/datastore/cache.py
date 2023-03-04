@@ -10,10 +10,11 @@ from requests import Session
 
 # first-party
 from tcex.api.tc.v2.datastore.datastore import DataStore
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 from tcex.utils import Utils
 
 # get tcex logger
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 
 class Cache:
@@ -40,14 +41,14 @@ class Cache:
         # properties
         self.ds = DataStore(session, domain, data_type, mapping)
         self.log = logger
-        self.ttl_seconds: int | None = ttl_seconds
+        self.ttl_seconds = ttl_seconds
         self.utils = Utils()
 
         # Warranty void if any of these are changed.  Don't touch.
         self._cache_data_key: str = 'cache-data'
         self._cache_date_key: str = 'cache-date'
 
-    def add(self, rid: str, data: dict, raise_on_error: bool = True) -> dict:
+    def add(self, rid: str, data: dict, raise_on_error: bool = True) -> dict | None:
         """Write cache data to the data store.
 
         **Example Response**
@@ -77,13 +78,13 @@ class Cache:
         Returns:
             dict : The response dict
         """
-        data: dict = {
+        data = {
             self._cache_date_key: datetime.utcnow().isoformat(),
             self._cache_data_key: data,
         }
         return self.ds.post(rid, data, raise_on_error)
 
-    def delete(self, rid: str, raise_on_error: bool = True) -> dict:
+    def delete(self, rid: str, raise_on_error: bool = True) -> dict | None:
         """Write cache data to the data store.
 
         **Example Response**
@@ -119,7 +120,7 @@ class Cache:
         rid: str,
         data_callback: Callable[[str], dict] | None = None,
         raise_on_error: bool = True,
-    ) -> dict:
+    ) -> dict | None:
         """Get cached data from the data store.
 
         **Example Response**
@@ -141,8 +142,8 @@ class Cache:
         Returns:
             dict: The cached data.
         """
-        cache_data = None
-        ds_data: dict = self.ds.get(rid, raise_on_error=False)
+        cache_data: dict | None = None
+        ds_data: dict[str, bool | dict | str] | None = self.ds.get(rid, raise_on_error=False)
 
         if ds_data is None:
             # default the response when TC API doesn't return a value
@@ -151,8 +152,8 @@ class Cache:
         if ds_data is not None:
             expired = False
             if ds_data.get('found') is True:
-                cache_data: dict = ds_data.get('_source', {})
-                cache_date: str = cache_data.get(self._cache_date_key)
+                cache_data = ds_data.get('_source') or {}  # type: ignore
+                cache_date = cache_data[self._cache_date_key]  # type: ignore
                 if self._is_cache_expired(cache_date):
                     cache_data = None
                     expired = True

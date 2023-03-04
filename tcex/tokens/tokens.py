@@ -12,11 +12,12 @@ from urllib3.util.retry import Retry
 
 # first-party
 from tcex.input.field_types.sensitive import Sensitive
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 from tcex.pleb.threading import ExceptionThread
 from tcex.utils import Utils
 
 # get tcex logger
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 
 def retry_session(retries=3, backoff_factor=0.8, status_forcelist=(500, 502, 504)):
@@ -75,10 +76,11 @@ class Tokens:
         self._monitor_sleep_interval = threading.Event()
 
         self.log = logger
-        self.monitor_thread = None
+        self.monitor_thread: ExceptionThread
         # session with retry for token renewal
         self.session: Session = retry_session()
-        self.session.proxies = proxies  # add proxies to session
+        if proxies is not None:
+            self.session.proxies = proxies  # add proxies to session
         self.sleep_interval = int(os.getenv('TC_TOKEN_SLEEP_INTERVAL', '150'))
         self._shutdown = False  # shutdown boolean
         # token map for storing keys -> tokens -> threads
@@ -98,12 +100,12 @@ class Tokens:
         key = 'MainThread'  # default Python parent thread name
         if self.thread_name in self.token_map:
             # for Job, Playbook, and ApiService Apps the key is the thread name.
-            key: str = self.thread_name
-        elif self.trigger_id in self.token_map:
-            key: str = self.trigger_id
+            key = self.thread_name
+        elif self.trigger_id is not None and self.trigger_id in self.token_map:
+            key = str(self.trigger_id)
         return key
 
-    def register_token(self, key: str, token: Sensitive, expires: int):
+    def register_token(self, key: str, token: Sensitive | None, expires: int | None):
         """Register a token.
 
         Args:
@@ -132,7 +134,8 @@ class Tokens:
             token: The ThreatConnect API token.
         """
         api_token_data = {}
-        self.log.in_token_renewal = True  # pause API logging
+        # pause API logging
+        self.log.in_token_renewal = True  # type: ignore
 
         # log token information
         try:
@@ -157,7 +160,7 @@ class Tokens:
         except (AttributeError, ValueError) as e:  # pragma: no cover
             raise RuntimeError(f'Token renewal failed ({e}).')
         finally:
-            self.log.in_token_renewal = False
+            self.log.in_token_renewal = False  # type: ignore
 
         return api_token_data
 
@@ -301,7 +304,7 @@ class Tokens:
         """Return the current trigger_id."""
         trigger_id = None
         if hasattr(threading.current_thread(), 'trigger_id'):
-            trigger_id = threading.current_thread().trigger_id
+            trigger_id = threading.current_thread().trigger_id  # type: ignore
         if trigger_id is not None:
             trigger_id = int(trigger_id)
         return trigger_id

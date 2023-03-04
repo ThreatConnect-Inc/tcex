@@ -2,8 +2,12 @@
 # standard library
 import os
 import random
+from typing import cast
 
-from .ti_helpers import TestThreatIntelligence, TIHelper
+# first-party
+from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.adversary import Adversary
+from tcex.tcex import TcEx
+from tests.api.tc.v2.threat_intelligence.ti_helpers import TestThreatIntelligence, TIHelper
 
 
 class TestAdversaryAssets(TestThreatIntelligence):
@@ -11,9 +15,7 @@ class TestAdversaryAssets(TestThreatIntelligence):
 
     group_type = 'Adversary'
     owner = os.getenv('TC_OWNER')
-    ti = None
-    ti_helper = None
-    tcex = None
+    tcex: TcEx
 
     def setup_method(self):
         """Configure setup before all tests."""
@@ -23,7 +25,7 @@ class TestAdversaryAssets(TestThreatIntelligence):
 
     def tests_ti_groups_to_indicators(self):
         """Test the TI module."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Adversary, self.ti_helper.create_group())
         rand_ip = self.ti_helper.rand_ip()
         indicator_kwargs = {
             'ip': rand_ip,
@@ -41,7 +43,7 @@ class TestAdversaryAssets(TestThreatIntelligence):
 
     def tests_ti_adversary_add_asset_handle(self):
         """Add an asset to and Adversary."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Adversary, self.ti_helper.create_group())
 
         # add asset
         r = helper_ti.add_handle_asset(self.ti_helper.rand_email_address())
@@ -51,7 +53,7 @@ class TestAdversaryAssets(TestThreatIntelligence):
 
     def tests_ti_adversary_add_asset_phone(self):
         """Add an asset to and Adversary."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Adversary, self.ti_helper.create_group())
 
         # add asset
         r = helper_ti.add_phone_asset(self.ti_helper.rand_phone_number())
@@ -61,7 +63,7 @@ class TestAdversaryAssets(TestThreatIntelligence):
 
     def tests_ti_adversary_add_asset_url(self):
         """Add an asset to and Adversary."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Adversary, self.ti_helper.create_group())
 
         # add asset
         r = helper_ti.add_url_asset(self.ti_helper.rand_url())
@@ -71,7 +73,7 @@ class TestAdversaryAssets(TestThreatIntelligence):
 
     def tests_ti_adversary_add_asset_invalid_type(self):
         """Test passing a bad asset type."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Adversary, self.ti_helper.create_group())
 
         # add asset
         try:
@@ -94,7 +96,7 @@ class TestAdversaryAssets(TestThreatIntelligence):
 
     def tests_ti_adversary_asset(self):
         """Add an asset to and Adversary."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Adversary, self.ti_helper.create_group())
 
         # add asset
         r = helper_ti.add_phone_asset(self.ti_helper.rand_phone_number())
@@ -110,7 +112,7 @@ class TestAdversaryAssets(TestThreatIntelligence):
 
     def tests_ti_adversary_delete_asset_handle(self):
         """Add an asset to and Adversary."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Adversary, self.ti_helper.create_group())
 
         # add asset
         r = helper_ti.add_handle_asset(self.ti_helper.rand_email_address())
@@ -125,7 +127,7 @@ class TestAdversaryAssets(TestThreatIntelligence):
 
     def tests_ti_adversary_delete_asset_phone(self):
         """Add an asset to and Adversary."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Adversary, self.ti_helper.create_group())
 
         # add asset
         r = helper_ti.add_phone_asset(self.ti_helper.rand_phone_number())
@@ -140,7 +142,7 @@ class TestAdversaryAssets(TestThreatIntelligence):
 
     def tests_ti_adversary_delete_asset_url(self):
         """Add an asset to and Adversary."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Adversary, self.ti_helper.create_group())
 
         # add asset
         r = helper_ti.add_url_asset(self.ti_helper.rand_url())
@@ -155,7 +157,7 @@ class TestAdversaryAssets(TestThreatIntelligence):
 
     def tests_ti_adversary_get_asset_no_update(self):
         """Add an asset to and Adversary."""
-        ti = self.ti.adversary(name='new')
+        ti = cast(Adversary, self.ti.adversary(name='new'))
 
         # add asset
         try:
@@ -166,7 +168,7 @@ class TestAdversaryAssets(TestThreatIntelligence):
 
     def tests_ti_adversary_get_asset_invalid_type(self):
         """Add an asset to and Adversary."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Adversary, self.ti_helper.create_group())
 
         # add asset
         try:
@@ -178,7 +180,7 @@ class TestAdversaryAssets(TestThreatIntelligence):
 
     def tests_ti_adversary_get_asset_handle(self):
         """Add an asset to and Adversary."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Adversary, self.ti_helper.create_group())
 
         # add asset
         r = helper_ti.add_handle_asset(self.ti_helper.rand_email_address())
@@ -193,7 +195,7 @@ class TestAdversaryAssets(TestThreatIntelligence):
 
     def tests_ti_adversary_get_asset_phone(self):
         """Get an asset from an Adversary."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Adversary, self.ti_helper.create_group())
 
         # add asset
         r = helper_ti.add_phone_asset(self.ti_helper.rand_phone_number())
@@ -208,7 +210,7 @@ class TestAdversaryAssets(TestThreatIntelligence):
 
     def tests_ti_adversary_get_asset_url(self):
         """Get an asset from an Adversary."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Adversary, self.ti_helper.create_group())
 
         # add asset
         r = helper_ti.add_url_asset(self.ti_helper.rand_url())
@@ -223,7 +225,7 @@ class TestAdversaryAssets(TestThreatIntelligence):
 
     def tests_ti_adversary_get_asset_handles(self):
         """Get an asset from an Adversary."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Adversary, self.ti_helper.create_group())
 
         # add asset
         asset = self.ti_helper.rand_email_address()
@@ -238,7 +240,7 @@ class TestAdversaryAssets(TestThreatIntelligence):
 
     def tests_ti_adversary_get_asset_phones(self):
         """Get an asset from an Adversary."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Adversary, self.ti_helper.create_group())
 
         # add asset
         asset = self.ti_helper.rand_phone_number()
@@ -253,7 +255,7 @@ class TestAdversaryAssets(TestThreatIntelligence):
 
     def tests_ti_adversary_get_asset_urls(self):
         """Get an asset from an Adversary."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Adversary, self.ti_helper.create_group())
 
         # add asset
         asset = self.ti_helper.rand_url()
@@ -268,7 +270,7 @@ class TestAdversaryAssets(TestThreatIntelligence):
 
     def tests_ti_adversary_get_assets(self):
         """Get an asset from an Adversary."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Adversary, self.ti_helper.create_group())
 
         # add asset
         asset = self.ti_helper.rand_url()
@@ -284,7 +286,7 @@ class TestAdversaryAssets(TestThreatIntelligence):
 
     def tests_ti_adversary_get_assets_invalid_type(self):
         """Get an asset from an Adversary."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Adversary, self.ti_helper.create_group())
 
         # add asset
         asset = self.ti_helper.rand_url()

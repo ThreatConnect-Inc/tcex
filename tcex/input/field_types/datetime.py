@@ -1,30 +1,27 @@
 """Datetime (Arrow) Field Type"""
 # standard library
-from collections.abc import Callable
-from typing import TYPE_CHECKING, Any
+from collections.abc import Generator
+from typing import Any
 
 # third-party
 import arrow
+from pydantic.fields import ModelField
 
 # first-party
 from tcex.input.field_types.exception import InvalidInput
 from tcex.utils import Utils
-
-if TYPE_CHECKING:  # pragma: no cover
-    # third-party
-    from pydantic.fields import ModelField
 
 
 class DateTime(arrow.Arrow):
     """Datetime (Arrow) Field Type"""
 
     @classmethod
-    def __get_validators__(cls) -> Callable:
+    def __get_validators__(cls) -> Generator:
         """Define one or more validators for Pydantic custom type."""
         yield cls._validate
 
     @classmethod
-    def _validate(cls, value: Any, field: 'ModelField') -> 'arrow.Arrow':
+    def _validate(cls, value: Any, field: ModelField) -> arrow.Arrow:
         """Pydantic validate method."""
         try:
             return Utils.any_to_datetime(value)

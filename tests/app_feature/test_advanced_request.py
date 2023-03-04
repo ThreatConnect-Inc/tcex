@@ -1,16 +1,13 @@
 """Test the TcEx App Feature Advance Request Module."""
 # standard library
 import json
-from typing import TYPE_CHECKING
+from collections.abc import Callable
 
 # first-party
+from tcex import TcEx
 from tcex.backports import cached_property
 from tcex.pleb.scoped_property import scoped_property
-
-if TYPE_CHECKING:
-    # first-party
-    from tcex import TcEx
-    from tests.mock_app import MockApp
+from tests.mock_app import MockApp
 
 
 class TestAdvancedRequest:
@@ -25,7 +22,7 @@ class TestAdvancedRequest:
         cached_property._reset()
 
     @staticmethod
-    def _load_data(tcex: 'TcEx', context: str):
+    def _load_data(tcex: TcEx, context: str):
         """Load data from Redis into a dict.
 
         Args:
@@ -53,13 +50,13 @@ class TestAdvancedRequest:
         ]
 
     @staticmethod
-    def test_advanced_request_get_standard(playbook_app: 'MockApp'):
+    def test_advanced_request_get_standard(playbook_app: Callable[..., MockApp]):
         """Test advanced request feature
 
         Args:
-            playbook_app ('MockApp', fixture): The playbook_app fixture.
+            playbook_app (MockApp, fixture): The playbook_app fixture.
         """
-        tcex: 'TcEx' = playbook_app(
+        tcex: TcEx = playbook_app(
             config_data={
                 'tc_adv_req_exclude_null_params': False,
                 'tc_adv_req_fail_on_error': False,
@@ -79,6 +76,8 @@ class TestAdvancedRequest:
         ar = tcex.advanced_request(session=se, output_prefix='pytest', timeout=60)
 
         r = ar.request()
+        if r is None:
+            assert False, 'Request should not be None.'
         data = r.json()
 
         assert r.request.url == data.get('url')
@@ -90,13 +89,13 @@ class TestAdvancedRequest:
         assert data.get('args', {}).get('one') == '1'
         assert data.get('args', {}).get('two') == ''
 
-    def test_advanced_request_get_500(self, playbook_app: 'MockApp'):
+    def test_advanced_request_get_500(self, playbook_app: Callable[..., MockApp]):
         """Test advanced request feature
 
         Args:
-            playbook_app ('MockApp', fixture): The playbook_app fixture.
+            playbook_app (MockApp, fixture): The playbook_app fixture.
         """
-        tcex: 'TcEx' = playbook_app(
+        tcex: TcEx = playbook_app(
             config_data={
                 'tc_playbook_out_variables': self.tc_playbook_out_variables,
                 'tc_adv_req_exclude_null_params': False,
@@ -132,7 +131,7 @@ class TestAdvancedRequest:
 
         assert data.get('#App:0001:pytest.request.reason!String') == 'INTERNAL SERVER ERROR'
         assert data.get('#App:0001:pytest.request.content!String') == ''
-        assert data.get('#App:0001:pytest.request.headers!String').get('Server') == 'nginx'
+        assert data.get('#App:0001:pytest.request.headers!String', {}).get('Server') == 'nginx'
         assert data.get('#App:0001:pytest.request.status_code!String') == '500'
         assert data.get('#App:0001:pytest.request.content.binary!Binary') == ''
         assert data.get('#App:0001:pytest.request.ok!String') == 'false'
@@ -142,13 +141,13 @@ class TestAdvancedRequest:
         )
 
     @staticmethod
-    def test_advanced_request_get_exclude_null_params(playbook_app: 'MockApp'):
+    def test_advanced_request_get_exclude_null_params(playbook_app: Callable[..., MockApp]):
         """Test advanced request feature
 
         Args:
-            playbook_app ('MockApp', fixture): The playbook_app fixture.
+            playbook_app (MockApp, fixture): The playbook_app fixture.
         """
-        tcex: 'TcEx' = playbook_app(
+        tcex: TcEx = playbook_app(
             config_data={
                 'tc_adv_req_exclude_null_params': True,
                 'tc_adv_req_fail_on_error': False,
@@ -168,6 +167,8 @@ class TestAdvancedRequest:
         ar = tcex.advanced_request(session=se, output_prefix='pytest', timeout=60)
 
         r = ar.request()
+        if r is None:
+            assert False, 'Request should not be None.'
         data = r.json()
 
         assert r.request.url == data.get('url')
@@ -180,13 +181,13 @@ class TestAdvancedRequest:
         assert data.get('args', {}).get('two') is None
 
     @staticmethod
-    def test_advanced_request_post_str(playbook_app: 'MockApp'):
+    def test_advanced_request_post_str(playbook_app: Callable[..., MockApp]):
         """Test advanced request feature
 
         Args:
-            playbook_app ('MockApp', fixture): The playbook_app fixture.
+            playbook_app (MockApp, fixture): The playbook_app fixture.
         """
-        tcex: 'TcEx' = playbook_app(
+        tcex: TcEx = playbook_app(
             config_data={
                 'tc_adv_req_exclude_null_params': False,
                 'tc_adv_req_fail_on_error': False,
@@ -206,12 +207,14 @@ class TestAdvancedRequest:
         ar = tcex.advanced_request(session=se, output_prefix='pytest', timeout=60)
 
         r = ar.request()
+        if r is None:
+            assert False, 'Request should not be None.'
         data = r.json()
 
         assert r.request.url == data.get('url')
         assert r.status_code == 200
         # assert data
-        assert data.get('data') == tcex.inputs.model.tc_adv_req_body
+        assert data.get('data') == tcex.inputs.model.tc_adv_req_body  # type: ignore
         # assert headers
         assert data.get('headers', {}).get('Pytest') == 'pytest'
         assert 'TcEx/4' in data.get('headers', {}).get('User-Agent')
@@ -219,13 +222,13 @@ class TestAdvancedRequest:
         assert data.get('args', {}).get('one') == '1'
 
     @staticmethod
-    def test_advanced_request_post_bytes(playbook_app: 'MockApp'):
+    def test_advanced_request_post_bytes(playbook_app: Callable[..., MockApp]):
         """Test advanced request feature
 
         Args:
-            playbook_app ('MockApp', fixture): The playbook_app fixture.
+            playbook_app (MockApp, fixture): The playbook_app fixture.
         """
-        tcex: 'TcEx' = playbook_app(
+        tcex: TcEx = playbook_app(
             config_data={
                 'tc_adv_req_exclude_null_params': False,
                 'tc_adv_req_fail_on_error': False,
@@ -245,12 +248,14 @@ class TestAdvancedRequest:
         ar = tcex.advanced_request(session=se, output_prefix='pytest', timeout=60)
 
         r = ar.request()
+        if r is None:
+            assert False, 'Request should not be None.'
         data = r.json()
 
         assert r.request.url == data.get('url')
         assert r.status_code == 200
         # assert data
-        assert data.get('data') == tcex.inputs.model.tc_adv_req_body
+        assert data.get('data') == tcex.inputs.model.tc_adv_req_body  # type: ignore
         # assert headers
         assert data.get('headers', {}).get('Pytest') == 'pytest'
         assert 'TcEx/4' in data.get('headers', {}).get('User-Agent')
@@ -258,13 +263,13 @@ class TestAdvancedRequest:
         assert data.get('args', {}).get('one') == '1'
 
     @staticmethod
-    def test_advanced_request_post_urlencode(playbook_app: 'MockApp'):
+    def test_advanced_request_post_urlencode(playbook_app: Callable[..., MockApp]):
         """Test advanced request feature
 
         Args:
-            playbook_app ('MockApp', fixture): The playbook_app fixture.
+            playbook_app (MockApp, fixture): The playbook_app fixture.
         """
-        tcex: 'TcEx' = playbook_app(
+        tcex: TcEx = playbook_app(
             config_data={
                 'tc_adv_req_exclude_null_params': False,
                 'tc_adv_req_fail_on_error': False,
@@ -284,6 +289,8 @@ class TestAdvancedRequest:
         ar = tcex.advanced_request(session=se, output_prefix='pytest', timeout=60)
 
         r = ar.request()
+        if r is None:
+            assert False, 'Request should not be None.'
         data = r.json()
 
         assert r.request.url == data.get('url')

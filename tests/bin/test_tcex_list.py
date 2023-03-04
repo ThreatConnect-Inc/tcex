@@ -5,12 +5,13 @@ from importlib.util import module_from_spec, spec_from_loader
 
 # third-party
 import pytest
+from click.testing import Result
 from typer.testing import CliRunner
 
 # dynamically load bin/tcex file
 spec = spec_from_loader('app', SourceFileLoader('app', 'bin/tcex'))
-tcex_cli = module_from_spec(spec)
-spec.loader.exec_module(tcex_cli)
+tcex_cli = module_from_spec(spec)  # type: ignore
+spec.loader.exec_module(tcex_cli)  # type: ignore
 
 # get app from bin/tcex CLI script
 app = tcex_cli.app
@@ -30,7 +31,7 @@ class TestTcexCliList:
         """Configure teardown before all tests."""
 
     @staticmethod
-    def _run_command(args: list[str]) -> str:
+    def _run_command(args: list[str]) -> Result:
         """Test Case"""
         result = runner.invoke(app, args)
         return result

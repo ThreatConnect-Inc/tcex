@@ -1,6 +1,6 @@
 """GroupAttribute / GroupAttributes Object"""
 # standard library
-from collections.abc import Generator
+from collections.abc import Generator, Iterator
 from typing import TYPE_CHECKING
 
 # first-party
@@ -112,8 +112,8 @@ class GroupAttributes(ObjectCollectionABC):
         self._model = GroupAttributesModel(**kwargs)
         self.type_ = 'group_attributes'
 
-    def __iter__(self) -> GroupAttribute:
-        """Iterate over CM objects."""
+    def __iter__(self) -> Iterator[GroupAttribute]:
+        """Return CM objects."""
         return self.iterate(base_class=GroupAttribute)  # type: ignore
 
     @property

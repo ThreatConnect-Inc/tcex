@@ -45,7 +45,7 @@ def custom_indicator_class_factory(
         res = {v: k for k, v in self._metadata_map().items()}
         values = []
         for field in value_fields:
-            value = kwargs.pop(res.get(field), kwargs.pop(field, ''))
+            value = kwargs.pop(res.get(field), kwargs.pop(field, ''))  # type: ignore
             value = quote(self.fully_decode_uri(value), safe='')
             values.append(value)
 
@@ -120,7 +120,7 @@ class Indicator(Mappings):
         """Return the entity representation of the Indicator."""
         return {
             'type': self.api_sub_type,
-            'value': unquote(self.unique_id),
+            'value': unquote(self.unique_id),  # type: ignore
             'id': self._data.get('id'),
         }
 

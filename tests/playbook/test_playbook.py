@@ -1,15 +1,13 @@
 """Test the TcEx Batch Module."""
 # standard library
-from typing import TYPE_CHECKING, Any
+from collections.abc import Callable
+from typing import Any
 
 # third-party
 import pytest
 
-if TYPE_CHECKING:
-    # first-party
-    from tcex import TcEx
-    from tcex.playbook.playbook import Playbook
-    from tests.mock_app import MockApp
+# first-party
+from tests.mock_app import MockApp
 
 
 class TestUtils:
@@ -59,20 +57,20 @@ class TestUtils:
             '#App:0001:dup.name!StringArray',
         ]
 
-    def test_playbook_check_key_requested(self, playbook_app: 'MockApp'):
+    def test_playbook_check_key_requested(self, playbook_app: Callable[..., MockApp]):
         """Test playbook variables."""
-        tcex: 'TcEx' = playbook_app(
+        tcex = playbook_app(
             config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
         ).tcex
-        playbook: 'Playbook' = tcex.playbook
+        playbook = tcex.playbook
         assert playbook.check_key_requested('b1') is True
 
-    def test_playbook_check_variable_requested(self, playbook_app: 'MockApp'):
+    def test_playbook_check_variable_requested(self, playbook_app: Callable[..., MockApp]):
         """Test playbook variables."""
-        tcex: 'TcEx' = playbook_app(
+        tcex = playbook_app(
             config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
         ).tcex
-        playbook: 'Playbook' = tcex.playbook
+        playbook = tcex.playbook
         assert playbook.check_variable_requested('#App:0001:b1!Binary') is True
 
     @pytest.mark.parametrize(
@@ -109,12 +107,14 @@ class TestUtils:
             )
         ],
     )
-    def test_playbook_output_add_all(self, output_data: list[dict], playbook_app: 'MockApp'):
+    def test_playbook_output_add_all(
+        self, output_data: list[dict], playbook_app: Callable[..., MockApp]
+    ):
         """Test playbook variables."""
-        tcex: 'TcEx' = playbook_app(
+        tcex = playbook_app(
             config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
         ).tcex
-        playbook: 'Playbook' = tcex.playbook
+        playbook = tcex.playbook
 
         # add all output
         expected_data = {}
@@ -123,6 +123,8 @@ class TestUtils:
             value = od.get('value')
 
             variable_model = tcex.utils.get_playbook_variable_model(variable)
+            if variable_model is None:
+                assert False, f'variable ({variable}) is not valid'
             playbook.output[variable_model.key] = value
 
             if variable in expected_data:
@@ -173,15 +175,19 @@ class TestUtils:
             ('#App:0001:dup.name!StringArray', ['dup name']),
         ],
     )
-    def test_playbook_create_variable(self, variable: str, value: Any, playbook_app: 'MockApp'):
+    def test_playbook_create_variable(
+        self, variable: str, value: Any, playbook_app: Callable[..., MockApp]
+    ):
         """Test playbook variables."""
-        tcex: 'TcEx' = playbook_app(
+        tcex = playbook_app(
             config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
         ).tcex
-        playbook: 'Playbook' = tcex.playbook
+        playbook = tcex.playbook
 
         # parse variable and send to output.variable() method
         variable_model = tcex.utils.get_playbook_variable_model(variable)
+        if variable_model is None:
+            assert False, f'variable ({variable}) is not valid'
         playbook.create.variable(variable_model.key, value, variable_model.type)
         result = playbook.read.variable(variable)
         assert result == value, f'result of ({result}) does not match ({value})'
@@ -216,16 +222,18 @@ class TestUtils:
         ],
     )
     def test_playbook_output_variable_without_type(
-        self, variable: str, value: Any, playbook_app: 'MockApp'
+        self, variable: str, value: Any, playbook_app: Callable[..., MockApp]
     ):
         """Test playbook variables."""
-        tcex: 'TcEx' = playbook_app(
+        tcex = playbook_app(
             config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
         ).tcex
-        playbook: 'Playbook' = tcex.playbook
+        playbook = tcex.playbook
 
         # parse variable and send to output.variable() method
         variable_model = tcex.utils.get_playbook_variable_model(variable)
+        if variable_model is None:
+            assert False, f'variable ({variable}) is not valid'
 
         playbook.create.variable(variable_model.key, value)
         result = playbook.read.variable(variable)
@@ -244,16 +252,19 @@ class TestUtils:
         ],
     )
     def test_playbook_output_variable_not_written(
-        self, variable: str, value: Any, playbook_app: 'MockApp'
+        self, variable: str, value: Any, playbook_app: Callable[..., MockApp]
     ):
         """Test playbook variables."""
-        tcex: 'TcEx' = playbook_app(
+        tcex = playbook_app(
             config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
         ).tcex
-        playbook: 'Playbook' = tcex.playbook
+        playbook = tcex.playbook
 
         # parse variable and send to output.variable() method
         variable_model = tcex.utils.get_playbook_variable_model(variable)
+        if variable_model is None:
+            assert False, f'variable ({variable}) is not valid'
+
         playbook.create.variable(variable_model.key, value, variable_model.type)
 
         result = playbook.read.variable(variable)
@@ -267,7 +278,9 @@ class TestUtils:
             (None, None),  # coverage
         ],
     )
-    def test_playbook_output_variable_not_written_without_type(self, variable, value, playbook_app):
+    def test_playbook_output_variable_not_written_without_type(
+        self, variable, value, playbook_app: Callable[..., MockApp]
+    ):
         """Test the create output method of Playbook module.
 
         Args:
@@ -275,16 +288,17 @@ class TestUtils:
             value (str): The value to store in Key Value Store.
             playbook_app (callable, fixture): The playbook_app fixture.
         """
-        tcex: 'TcEx' = playbook_app(
+        tcex = playbook_app(
             config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
         ).tcex
-        playbook: 'Playbook' = tcex.playbook
+        playbook = tcex.playbook
 
         # parse variable and send to output.variable() method
         variable_model = tcex.utils.get_playbook_variable_model(variable)
+        if variable_model is None:
+            assert variable_model is not None, f'variable ({variable}) should not be None'
         variable_key = None  # coverage
-        if variable is not None:
-            variable_key = variable_model.key
+        variable_key = variable_model.key
         playbook.create.variable(variable_key, value)
 
         result = playbook.read.variable(variable)
@@ -294,7 +308,7 @@ class TestUtils:
     #     'variable,value',
     #     [('#App:0001:s1!String', '1')],
     # )
-    # def test_playbook_read_array(self, variable, value, playbook_app):
+    # def test_playbook_read_array(self, variable, value, playbook_app: Callable[..., MockApp]):
     #     """Test the create output method of Playbook module.
 
     #     Args:
@@ -302,10 +316,10 @@ class TestUtils:
     #         value (str): The value to store in Key Value Store.
     #         playbook_app (callable, fixture): The playbook_app fixture.
     #     """
-    #     tcex: 'TcEx' = playbook_app(
+    #     tcex = playbook_app(
     #         config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
     #     ).tcex
-    #     playbook: 'Playbook' = tcex.playbook
+    #     playbook = tcex.playbook
 
     #     # parse variable and send to output.variable() method
     #     variable_model = tcex.utils.get_playbook_variable_model(variable)
@@ -320,7 +334,7 @@ class TestUtils:
         'variable,value',
         [('#App:0001:s1!String', '1')],
     )
-    def test_playbook_read(self, variable, value, playbook_app):
+    def test_playbook_read(self, variable, value, playbook_app: Callable[..., MockApp]):
         """Test the create output method of Playbook module.
 
         Args:
@@ -328,13 +342,15 @@ class TestUtils:
             value (str): The value to store in Key Value Store.
             playbook_app (callable, fixture): The playbook_app fixture.
         """
-        tcex: 'TcEx' = playbook_app(
+        tcex = playbook_app(
             config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
         ).tcex
-        playbook: 'Playbook' = tcex.playbook
+        playbook = tcex.playbook
 
         # parse variable and send to output.variable() method
         variable_model = tcex.utils.get_playbook_variable_model(variable)
+        if variable_model is None:
+            assert False, f'variable ({variable}) is not valid'
         playbook.create.variable(variable_model.key, value, variable_model.type)
         result = playbook.read.variable(variable, True)
         assert result == [value], f'result of ({result}) does not match ({value})'
@@ -342,16 +358,16 @@ class TestUtils:
         playbook.delete.variable(variable)
         assert playbook.read.variable(variable) is None
 
-    def test_playbook_read_none_array(self, playbook_app):
+    def test_playbook_read_none_array(self, playbook_app: Callable[..., MockApp]):
         """Test the create output method of Playbook module.
 
         Args:
-            playbook_app (callable, fixture): The playbook_app fixture.
+            playbook_app (fixture): The playbook_app fixture.
         """
-        tcex: 'TcEx' = playbook_app(
+        tcex = playbook_app(
             config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
         ).tcex
-        playbook: 'Playbook' = tcex.playbook
+        playbook = tcex.playbook
 
         # parse variable and send to output.variable() method
         result = playbook.read.variable('#App:0001:none!String', True)
@@ -368,7 +384,13 @@ class TestUtils:
     #     ],
     # )
     # def test_playbook_read_choice(
-    #     self, variable, value, alt_variable, alt_value, expected, playbook_app
+    #     self,
+    #     variable,
+    #     value,
+    #     alt_variable,
+    #     alt_value,
+    #     expected,
+    #     playbook_app: Callable[..., MockApp],
     # ):
     #     """Test the create output method of Playbook module.
 
@@ -377,10 +399,10 @@ class TestUtils:
     #         value (str): The value to store in Key Value Store.
     #         playbook_app (callable, fixture): The playbook_app fixture.
     #     """
-    #     tcex: 'TcEx' = playbook_app(
+    #     tcex = playbook_app(
     #         config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
     #     ).tcex
-    #     playbook: 'Playbook' = tcex.playbook
+    #     playbook = tcex.playbook
 
     #     # parse variable and send to output.variable() method
     #     if value is not None:

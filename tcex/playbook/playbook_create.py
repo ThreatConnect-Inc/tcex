@@ -4,18 +4,20 @@ import base64
 import json
 import logging
 import os
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from typing import Any
 
 # third-party
 from pydantic import BaseModel
 
 # first-party
-from tcex.key_value_store import KeyValueApi, KeyValueRedis
+from tcex.key_value_store import KeyValueRedis
+from tcex.key_value_store.key_value_abc import KeyValueABC
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 from tcex.utils.utils import Utils
 
 # get tcex logger
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 
 class PlaybookCreate:
@@ -24,7 +26,7 @@ class PlaybookCreate:
     def __init__(
         self,
         context: str,
-        key_value_store: KeyValueApi | KeyValueRedis,
+        key_value_store: KeyValueABC,
         output_variables: list,
     ):
         """Initialize the class properties."""
@@ -37,7 +39,7 @@ class PlaybookCreate:
         self.utils = Utils()
 
     @staticmethod
-    def _check_iterable(value: str, validate: bool):
+    def _check_iterable(value: dict | Iterable | str, validate: bool):
         """Raise an exception if value is not an Iterable.
 
         Validation:
@@ -60,9 +62,8 @@ class PlaybookCreate:
             invalid = True
 
             # specifically to allow the tcex-test framework to validate outputs
-            if (
-                os.getenv('TC_PLAYBOOK_WRITE_NULL') is not None
-                and self.key_value_store.kv_type == 'redis'
+            if os.getenv('TC_PLAYBOOK_WRITE_NULL') is not None and isinstance(
+                self.key_value_store, KeyValueRedis
             ):
                 variable = self._get_variable(key)
                 self.log.trace(f'event=writing-null-to-kvstore, variable={variable}')
@@ -72,14 +73,14 @@ class PlaybookCreate:
 
         return invalid
 
-    def _check_requested(self, variable: str, when_requested: bool):
+    def _check_requested(self, variable: str, when_requested: bool) -> bool:
         """Return True if output variable was requested by downstream app."""
         if when_requested is True and not self.is_requested(variable):
             self.log.debug(f'Variable {variable} was NOT requested by downstream app.')
             return False
         return True
 
-    def _check_variable_type(self, variable: str, type_: str) -> bool:
+    def _check_variable_type(self, variable: str, type_: str):
         """Validate the correct type was passed to the method."""
         if self.utils.get_playbook_variable_type(variable).lower() != type_.lower():
             raise RuntimeError(
@@ -100,7 +101,7 @@ class PlaybookCreate:
 
         return value
 
-    def _create_data(self, key: str, value: Any):
+    def _create_data(self, key: str, value: bytes | str) -> int | None:
         """Write data to key value store."""
         self.log.debug(f'writing variable {key.strip()}')
         try:
@@ -109,7 +110,7 @@ class PlaybookCreate:
             self.log.error(e)
             return None
 
-    def _get_variable(self, key: str, variable_type: str | None = None) -> str:
+    def _get_variable(self, key: str, variable_type: str | None = None) -> str | None:
         """Return properly formatted variable.
 
         A key can be provided as the variable key (e.g., app.output) or the
@@ -117,8 +118,8 @@ class PlaybookCreate:
         to create the record in the KV Store.
 
         If a variable_type is provided an exact match will be found, however if no
-        variable type is known the first key match will be returned. Uniqueness of
-        keys is not guaranteed, but in more recent Apps it is the standard.
+        variable type is known the first key to match will be returned. Uniqueness
+        of keys is not guaranteed, but in more recent Apps it is the standard.
 
         If no variable is found it means that the variable was not requested by the
         any downstream Apps or could possible be formatted incorrectly.
@@ -127,18 +128,22 @@ class PlaybookCreate:
             # try to lookup the variable in the requested output variables.
             for output_variable in self.output_variables:
                 variable_model = self.utils.get_playbook_variable_model(output_variable)
-                if variable_model.key == key and (
-                    variable_type is None or variable_model.type == variable_type
+                if (
+                    variable_model
+                    and variable_model.key == key
+                    and (variable_type is None or variable_model.type == variable_type)
                 ):
                     # either an exact match, or first match
                     return output_variable
+
             # not requested by downstream App or misconfigured
             return None
+
         # key was already a properly formatted variable
         return key
 
     @staticmethod
-    def _serialize_data(value: str) -> str:
+    def _serialize_data(value: dict | list | str) -> str:
         """Get the value from Redis if applicable."""
         try:
             return json.dumps(value)
@@ -207,7 +212,7 @@ class PlaybookCreate:
         validate: bool = True,
         variable_type: str | None = None,
         when_requested: bool = True,
-    ) -> bytes | dict | list | str | None:
+    ) -> int | None:
         """Write the value to the keystore for all types.
 
         This is a quick helper method, for more advanced features
@@ -226,14 +231,19 @@ class PlaybookCreate:
 
         # convert key to variable if required
         variable = self._get_variable(key, variable_type)
+        if variable is None:
+            # variable is invalid or not requested by downstream App
+            return None
+
         if self._check_requested(variable, when_requested) is False:
+            # variable is not requested by downstream App
             return None
 
         # get the type from the variable
         variable_type = self.utils.get_playbook_variable_type(variable).lower()
 
         # map type to create method
-        variable_type_map = {
+        variable_type_map: dict[str, Callable] = {
             'binary': self.binary,
             'binaryarray': self.binary_array,
             'keyvalue': self.key_value,
@@ -245,7 +255,7 @@ class PlaybookCreate:
             'tcbatch': self.tc_batch,
         }
         return variable_type_map.get(variable_type, self.raw)(
-            variable, value, validate, when_requested
+            variable, value, validate, when_requested  # type: ignore
         )
 
     def binary(
@@ -261,7 +271,12 @@ class PlaybookCreate:
 
         # convert key to variable if required
         variable = self._get_variable(key, 'Binary')
+        if variable is None:
+            # variable is invalid or not requested by downstream App
+            return None
+
         if self._check_requested(variable, when_requested) is False:
+            # variable is not requested by downstream App
             return None
 
         # quick check to ensure an invalid type was not provided
@@ -272,9 +287,9 @@ class PlaybookCreate:
             raise RuntimeError('Invalid data provided for Binary.')
 
         # prepare value - playbook Binary fields are base64 encoded
-        value = base64.b64encode(value).decode('utf-8')
-        value = self._serialize_data(value)
-        return self._create_data(variable, value)
+        value_ = base64.b64encode(value).decode('utf-8')
+        value_ = self._serialize_data(value_)
+        return self._create_data(variable, value_)
 
     def binary_array(
         self,
@@ -282,7 +297,7 @@ class PlaybookCreate:
         value: list[bytes],
         validate: bool = True,
         when_requested: bool = True,
-    ):
+    ) -> int | None:
         """Create the value in Redis if applicable."""
         if self._check_null(key, value) is True:
             return None
@@ -292,6 +307,9 @@ class PlaybookCreate:
 
         # convert key to variable if required
         variable = self._get_variable(key, 'BinaryArray')
+        if variable is None:
+            return None
+
         if self._check_requested(variable, when_requested) is False:
             return None
 
@@ -306,10 +324,7 @@ class PlaybookCreate:
                     raise RuntimeError('Invalid data provided for Binary.')
                 v = base64.b64encode(v).decode('utf-8')
             value_encoded.append(v)
-        value = value_encoded
-
-        value = self._serialize_data(value)
-        return self._create_data(variable, value)
+        return self._create_data(variable, self._serialize_data(value_encoded))
 
     def key_value(
         self,
@@ -324,6 +339,9 @@ class PlaybookCreate:
 
         # convert key to variable if required
         variable = self._get_variable(key, 'KeyValue')
+        if variable is None:
+            return None
+
         if self._check_requested(variable, when_requested) is False:
             return None
 
@@ -335,8 +353,7 @@ class PlaybookCreate:
         if validate and not self.is_key_value(value):
             raise RuntimeError('Invalid data provided for KeyValueArray.')
 
-        value = self._serialize_data(value)
-        return self._create_data(variable, value)
+        return self._create_data(variable, self._serialize_data(value))
 
     def key_value_array(
         self,
@@ -354,6 +371,9 @@ class PlaybookCreate:
 
         # convert key to variable if required
         variable = self._get_variable(key, 'KeyValueArray')
+        if variable is None:
+            return None
+
         if self._check_requested(variable, when_requested) is False:
             return None
 
@@ -369,8 +389,7 @@ class PlaybookCreate:
             _value.append(v)
         value = _value
 
-        value = self._serialize_data(value)
-        return self._create_data(variable, value)
+        return self._create_data(variable, self._serialize_data(value))
 
     def string(
         self,
@@ -385,6 +404,9 @@ class PlaybookCreate:
 
         # convert key to variable if required
         variable = self._get_variable(key, 'String')
+        if variable is None:
+            return None
+
         if self._check_requested(variable, when_requested) is False:
             return None
 
@@ -398,8 +420,7 @@ class PlaybookCreate:
         if validate and not isinstance(value, str):
             raise RuntimeError('Invalid data provided for String.')
 
-        value = self._serialize_data(value)
-        return self._create_data(variable, value)
+        return self._create_data(variable, self._serialize_data(value))
 
     def string_array(
         self,
@@ -417,6 +438,9 @@ class PlaybookCreate:
 
         # convert key to variable if required
         variable = self._get_variable(key, 'StringArray')
+        if variable is None:
+            return None
+
         if self._check_requested(variable, when_requested) is False:
             return None
 
@@ -435,17 +459,16 @@ class PlaybookCreate:
             value_coerced.append(v)
         value = value_coerced
 
-        value = self._serialize_data(value)
-        return self._create_data(variable, value)
+        return self._create_data(variable, self._serialize_data(value))
 
     # pylint: disable=unused-argument
     def raw(
         self,
         key: str,
-        value: bytes | str | int,
-        validate: bool = True,
-        when_requested: bool = True,
-    ) -> str:
+        value: bytes | str,
+        _validate: bool = True,
+        _when_requested: bool = True,
+    ) -> int | None:
         """Create method of CRUD operation for raw data.
 
         Raw data can only be a byte, str or int. Other data
@@ -469,6 +492,9 @@ class PlaybookCreate:
 
         # convert key to variable if required
         variable = self._get_variable(key, 'TCBatch')
+        if variable is None:
+            return None
+
         if self._check_requested(variable, when_requested) is False:
             return None
 
@@ -480,8 +506,7 @@ class PlaybookCreate:
         if validate and not self.is_tc_batch(value):
             raise RuntimeError('Invalid data provided for TcBatch.')
 
-        value = self._serialize_data(value)
-        return self._create_data(variable, value)
+        return self._create_data(variable, self._serialize_data(value))
 
     def tc_entity(
         self,
@@ -496,6 +521,9 @@ class PlaybookCreate:
 
         # convert key to variable if required
         variable = self._get_variable(key, 'TCEntity')
+        if variable is None:
+            return None
+
         if self._check_requested(variable, when_requested) is False:
             return None
 
@@ -507,8 +535,7 @@ class PlaybookCreate:
         if validate and not self.is_tc_entity(value):
             raise RuntimeError('Invalid data provided for TcEntityArray.')
 
-        value = self._serialize_data(value)
-        return self._create_data(variable, value)
+        return self._create_data(variable, self._serialize_data(value))
 
     def tc_entity_array(
         self,
@@ -526,6 +553,9 @@ class PlaybookCreate:
 
         # convert key to variable if required
         variable = self._get_variable(key, 'TCEntityArray')
+        if variable is None:
+            return None
+
         if self._check_requested(variable, when_requested) is False:
             return None
 
@@ -541,8 +571,7 @@ class PlaybookCreate:
             _value.append(v)
         value = _value
 
-        value = self._serialize_data(value)
-        return self._create_data(variable, value)
+        return self._create_data(variable, self._serialize_data(value))
 
     def variable(
         self,
@@ -556,7 +585,7 @@ class PlaybookCreate:
         | list[dict]
         | list[str],
         variable_type: str | None = None,
-    ) -> str:
+    ) -> int | None:
         """Alias for any method of CRUD operation for working with KeyValue DB.
 
         This method will automatically check to see if provided variable was requested by
@@ -582,6 +611,9 @@ class PlaybookCreate:
         # the entire (e.g., #App:1234:app.output!String). we need the
         # full variable to proceed.
         variable = self._get_variable(key, variable_type)
+        if variable is None:
+            return None
+
         if variable is None or variable not in self.output_variables:
             self.log.debug(f'Variable {key} was NOT requested by downstream app.')
             return None

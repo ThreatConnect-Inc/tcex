@@ -7,10 +7,11 @@ from enum import Enum
 
 # first-party
 from tcex.app_config import InstallJson
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 from tcex.pleb.registry import registry
 
 # get tcex logger
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 
 class ExitCode(int, Enum):
@@ -76,6 +77,7 @@ class ExitService:
             msg: A message to log and add to message tc output.
         """
         code = ExitCode(code) if code is not None else self.exit_code
+        msg = msg if msg is not None else ''
 
         # playbook exit handler
         if self.ij.model.is_playbook_app:
@@ -93,8 +95,10 @@ class ExitService:
         # exit
         self._exit(code, msg)
 
-    def _exit(self, code: int, msg: str):
+    def _exit(self, code: ExitCode | int, msg: str):
         """Exit the App"""
+        code = ExitCode(code) if code is not None else self.exit_code
+
         # handle exit msg logging
         self._exit_msg_handler(code, msg)
 
@@ -115,6 +119,7 @@ class ExitService:
             msg: A message to log and add to message tc output.
         """
         code = ExitCode(code) if code is not None else self.exit_code
+        msg = msg if msg is not None else ''
 
         # aot notify
         if 'tc_aot_enabled' in self.inputs.contents and self.inputs.contents.get('tc_aot_enabled'):
@@ -157,7 +162,7 @@ class ExitService:
             except Exception as e:  # pragma: no cover
                 self._exit(ExitCode.FAILURE, f'Exception during AOT exit push ({e}).')
 
-    def _message_tc(self, message: str, max_length: int | None = 255):
+    def _message_tc(self, message: str, max_length: int = 255):
         """Write data to message_tc file in TcEX specified directory.
 
         This method is used to set and exit message in the ThreatConnect Platform.

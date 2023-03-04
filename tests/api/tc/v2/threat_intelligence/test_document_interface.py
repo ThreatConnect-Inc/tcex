@@ -3,8 +3,12 @@
 import os
 import time
 from random import randint
+from typing import cast
 
-from .ti_helpers import TestThreatIntelligence, TIHelper
+# first-party
+from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.document import Document
+from tcex.tcex import TcEx
+from tests.api.tc.v2.threat_intelligence.ti_helpers import TestThreatIntelligence, TIHelper
 
 
 class TestDocumentGroups(TestThreatIntelligence):
@@ -13,9 +17,7 @@ class TestDocumentGroups(TestThreatIntelligence):
     group_type = 'Document'
     owner = os.getenv('TC_OWNER')
     required_fields = {'file_name': 'pytest.pdf'}
-    ti = None
-    ti_helper = None
-    tcex = None
+    tcex: TcEx
 
     def setup_method(self):
         """Configure setup before all tests."""
@@ -104,7 +106,7 @@ class TestDocumentGroups(TestThreatIntelligence):
 
     def tests_ti_document_download(self):
         """Create a group using specific interface."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Document, self.ti_helper.create_group())
 
         # update file content
         file_content = b'pytest content'
@@ -136,7 +138,7 @@ class TestDocumentGroups(TestThreatIntelligence):
 
     def tests_ti_document_file_content(self):
         """Update file content value."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Document, self.ti_helper.create_group())
 
         # update file content
         file_content = b'pytest content'
@@ -160,7 +162,7 @@ class TestDocumentGroups(TestThreatIntelligence):
 
     def tests_ti_document_file_name(self, request):
         """Update file name value."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Document, self.ti_helper.create_group())
 
         # update file name
         file_name = request.node.name
@@ -184,7 +186,7 @@ class TestDocumentGroups(TestThreatIntelligence):
 
     def tests_ti_document_file_size(self):
         """Update file size value."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Document, self.ti_helper.create_group())
 
         # update file size
         file_size = str(randint(10, 20))
@@ -208,7 +210,7 @@ class TestDocumentGroups(TestThreatIntelligence):
 
     def tests_ti_document_malware(self, request):
         """Update file size value."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Document, self.ti_helper.create_group())
 
         file_data = {
             'file_name': request.node.name,

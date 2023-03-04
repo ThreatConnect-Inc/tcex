@@ -24,8 +24,8 @@ class Utils(AesOperations, DatetimeOperations, StringOperations, Variables):
     def find_line_in_code(
         needle: str,
         code: str,
-        trigger_start: Pattern | None = None,
-        trigger_stop: Pattern | None = None,
+        trigger_start: str | Pattern | None = None,
+        trigger_stop: str | Pattern | None = None,
     ) -> str | None:
         """Return matching line of code in a class definition.
 
@@ -136,9 +136,9 @@ class Utils(AesOperations, DatetimeOperations, StringOperations, Variables):
     @staticmethod
     def printable_cred(
         cred: str,
-        visible: int | None = 1,
-        mask_char: str | None = '*',
-        mask_char_count: int | None = 4,
+        visible: int = 1,
+        mask_char: str = '*',
+        mask_char_count: int = 4,
     ) -> str:
         """Return a printable (masked) version of the provided credential.
 

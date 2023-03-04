@@ -19,7 +19,7 @@ class TestOutputDecorators:
         self.output_data = None
         self.output_data_list = []
 
-    @Output(attribute='output_data', overwrite=False)
+    @Output(attribute='output_data', overwrite=False)  # type: ignore
     def output(self, data):
         """Test output decorator."""
         return data
@@ -51,7 +51,7 @@ class TestOutputDecorators:
         self.output(value2)
         assert self.output_data == expected
 
-    @Output(attribute='output_data', overwrite=True)
+    @Output(attribute='output_data', overwrite=True)  # type: ignore
     def output_overwrite_true(self, data):
         """Test output decorator."""
         return data
@@ -73,7 +73,7 @@ class TestOutputDecorators:
         self.output_overwrite_true(value2)
         assert self.output_data == value2
 
-    @Output(attribute='output_data_list', overwrite=False)
+    @Output(attribute='output_data_list', overwrite=False)  # type: ignore
     def output_list(self, data):
         """Test output decorator."""
         return data

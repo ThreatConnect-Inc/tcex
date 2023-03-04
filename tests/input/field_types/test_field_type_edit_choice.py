@@ -1,4 +1,7 @@
 """Testing TcEx Input module field types."""
+# standard library
+from collections.abc import Callable
+
 # third-party
 import pytest
 from pydantic import BaseModel
@@ -49,7 +52,7 @@ class TestInputsFieldTypes(InputTest):
         expected: str,
         optional: bool,
         fail_test: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test EditChoice field type.
 
@@ -57,22 +60,22 @@ class TestInputsFieldTypes(InputTest):
         Validation: Not null
         """
 
+        class PytestModelRequired(BaseModel):
+            """Test Model for Inputs"""
+
+            my_choice: EditChoice
+
+        class PytestModelOptional(BaseModel):
+            """Test Model for Inputs"""
+
+            my_choice: EditChoice | None
+
+        pytest_model = PytestModelOptional
         if optional is False:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_choice: EditChoice
-
-        else:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_choice: EditChoice | None
+            pytest_model = PytestModelRequired
 
         self._type_validation(
-            PytestModel,
+            pytest_model,
             input_name='my_choice',
             input_value=input_value,
             input_type='String',
@@ -140,7 +143,7 @@ class TestInputsFieldTypes(InputTest):
         optional: bool,
         fail_test: bool,
         allow_additional: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
         transformations: dict,
     ):
         """Test Custom EditChoice field type.
@@ -149,28 +152,28 @@ class TestInputsFieldTypes(InputTest):
         Validation: Not null
         """
 
-        if optional is False:
+        class PytestModelRequired(BaseModel):
+            """Test Model for Inputs"""
 
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
+            my_choice: edit_choice(
+                value_transformations=transformations, allow_additional=allow_additional
+            )  # type: ignore
 
-                my_choice: edit_choice(
+        class PytestModelOptional(BaseModel):
+            """Test Model for Inputs"""
+
+            my_choice: None | (
+                edit_choice(
                     value_transformations=transformations, allow_additional=allow_additional
                 )
+            )  # type: ignore
 
-        else:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_choice: None | (
-                    edit_choice(
-                        value_transformations=transformations, allow_additional=allow_additional
-                    )
-                )
+        pytest_model = PytestModelOptional
+        if optional is False:
+            pytest_model = PytestModelRequired
 
         self._type_validation(
-            PytestModel,
+            pytest_model,
             input_name='my_choice',
             input_value=input_value,
             input_type='String',

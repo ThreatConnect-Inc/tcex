@@ -1,4 +1,7 @@
 """ArtifactType / ArtifactTypes Object"""
+# standard library
+from collections.abc import Iterator
+
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.artifact_types.artifact_type_filter import ArtifactTypeFilter
@@ -74,8 +77,8 @@ class ArtifactTypes(ObjectCollectionABC):
         self._model = ArtifactTypesModel(**kwargs)
         self.type_ = 'artifact_types'
 
-    def __iter__(self) -> ArtifactType:
-        """Iterate over CM objects."""
+    def __iter__(self) -> Iterator[ArtifactType]:
+        """Return CM objects."""
         return self.iterate(base_class=ArtifactType)  # type: ignore
 
     @property

@@ -3,10 +3,11 @@
 import logging
 
 # first-party
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 from tcex.pleb.singleton import Singleton
 
 # get tcex logger
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 
 class TcExErrorCodes(metaclass=Singleton):
@@ -78,7 +79,7 @@ class TcExErrorCodes(metaclass=Singleton):
             10525: 'Failed submitting batch data. API status code: {}, API message: {}.',
         }
 
-    def message(self, code):
+    def message(self, code: int) -> str:
         """Return the error message.
 
         Args:
@@ -87,7 +88,10 @@ class TcExErrorCodes(metaclass=Singleton):
         Returns:
             (string): The error message.
         """
-        return self.errors.get(code)
+        try:
+            return self.errors[code]
+        except KeyError:
+            raise RuntimeError(100, 'Generic Failure, invalid error code provided.')
 
 
 def handle_error(
@@ -97,16 +101,13 @@ def handle_error(
     cause: Exception | None = None,
 ):
     """Log a defined error and optionally raises a RuntimeError."""
-    try:
-        if message_values is None:
-            message_values = []
-        message = TcExErrorCodes().message(code).format(*message_values)
-        logger.error(f'Error code: {code}, {message}')
-        if raise_error:
-            raise RuntimeError(code, message) from cause
-    except AttributeError:
+    message_values = message_values or []
+    message = TcExErrorCodes().message(code)
+    if message is None:
         logger.error(f'Incorrect error code provided ({code}).')
         raise RuntimeError(100, 'Generic Failure, see logs for more details.') from cause
-    except IndexError:
-        logger.error(f'Incorrect message values provided for error code {code} ({message_values}).')
-        raise RuntimeError(100, 'Generic Failure, see logs for more details.') from cause
+
+    message = message.format(*message_values)
+    logger.error(f'Error code: {code}, {message}')
+    if raise_error:
+        raise RuntimeError(code, message) from cause

@@ -8,8 +8,7 @@ from pydantic.fields import ModelField  # TYPE-CHECKING
 from pydantic.types import OptionalInt
 
 # first-party
-from tcex.input.field_types.exception import InvalidIntegerValue, InvalidType, InvalidVariableType
-from tcex.utils.variables import StringVariable  # TYPE-CHECKING
+from tcex.input.field_types.exception import InvalidIntegerValue, InvalidType
 
 
 class Integer(int):
@@ -38,12 +37,11 @@ class Integer(int):
     @classmethod
     def __get_validators__(cls) -> Generator:
         """Run validators / modifiers on input."""
-        yield cls.validate_variable_type
         yield cls.validate_type
         yield cls.validate_value
 
     @classmethod
-    def validate_type(cls, value: int | str | StringVariable, field: ModelField) -> int:
+    def validate_type(cls, value: int | str, field: ModelField) -> int | str:
         """Raise exception if value is not a String type."""
         if not isinstance(value, (int, str)):
             raise InvalidType(
@@ -52,7 +50,7 @@ class Integer(int):
         return value
 
     @classmethod
-    def validate_value(cls, value: int | str | StringVariable, field: ModelField) -> int:
+    def validate_value(cls, value: int | str, field: ModelField) -> int:
         """Raise exception if value does not meet criteria."""
         if isinstance(value, str):
             value = int(value)
@@ -73,15 +71,6 @@ class Integer(int):
         if cls.lt is not None and not value < cls.lt:
             raise InvalidIntegerValue(
                 field_name=field.name, operation='less than', constraint=cls.lt
-            )
-        return value
-
-    @classmethod
-    def validate_variable_type(cls, value: int | str | StringVariable, field: ModelField) -> int:
-        """Raise exception if value is not a String type."""
-        if hasattr(value, '_variable_type') and value._variable_type != 'String':
-            raise InvalidVariableType(
-                field_name=field.name, expected_type='String', provided_type=value._variable_type
             )
         return value
 

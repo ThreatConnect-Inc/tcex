@@ -12,7 +12,7 @@ class TestIterateOnArgDecorators:
     args = None
     tcex = None
 
-    @Debug()
+    @Debug()  # type: ignore
     def debug(self, color, **kwargs):
         """Test fail on input decorator with no arg value (use first arg input)."""
         return color, kwargs.get('colors')

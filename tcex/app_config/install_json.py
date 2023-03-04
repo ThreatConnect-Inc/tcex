@@ -2,7 +2,6 @@
 # standard library
 import json
 import logging
-import os
 from collections import OrderedDict
 from pathlib import Path
 from typing import Any
@@ -28,16 +27,16 @@ class InstallJson:
     def __init__(
         self,
         filename: str | None = None,
-        path: str | None = None,
+        path: Path | str | None = None,
         logger: logging.Logger | None = None,
     ):
         """Initialize class properties."""
         filename = filename or 'install.json'
-        path = path or os.getcwd()
+        path = Path(path or Path.cwd())
         self.log = logger or tcex_logger
 
         # properties
-        self.fqfn = Path(os.path.join(path, filename))
+        self.fqfn = path / filename
 
     @property
     def app_prefix(self) -> str:
@@ -45,7 +44,7 @@ class InstallJson:
         return self.app_prefixes.get(self.model.runtime_level.lower(), '')
 
     @property
-    def app_prefixes(self) -> str:
+    def app_prefixes(self) -> dict[str, str]:
         """Return all the current App prefixes."""
         return {
             'organization': 'TC_-_',
@@ -62,25 +61,24 @@ class InstallJson:
         if self.fqfn.is_file():
             try:
                 with self.fqfn.open() as fh:
-                    contents = json.load(fh, object_pairs_hook=OrderedDict)
+                    return json.load(fh, object_pairs_hook=OrderedDict)
             except (OSError, ValueError):  # pragma: no cover
                 self.log.error(
                     f'feature=install-json, exception=failed-reading-file, filename={self.fqfn}'
                 )
-        else:  # pragma: no cover
-            contents = {
-                'displayName': 'External App',
-                'features': [],
-                'languageVersion': '3.9',
-                'listDelimiter': '|',
-                'programLanguage': 'python',
-                'programMain': 'run.py',
-                'programVersion': '0.0.0',
-                'runtimeLevel': 'external',
-            }
-        return contents
 
-    def create_output_variables(self, output_variables: dict, job_id: int | None = 9876) -> list:
+        return {
+            'displayName': 'External App',
+            'features': [],
+            'languageVersion': '3.9',
+            'listDelimiter': '|',
+            'programLanguage': 'python',
+            'programMain': 'run.py',
+            'programVersion': '0.0.0',
+            'runtimeLevel': 'external',
+        }
+
+    def create_output_variables(self, output_variables: list, job_id: int = 9876) -> list:
         """Create output variables.
 
         # "#App:9876:app.data.count!String"
@@ -95,7 +93,7 @@ class InstallJson:
             variables.append(self.create_variable(p.name, p.type, job_id))
         return variables
 
-    def create_variable(self, var_name: str, var_type: str, job_id: int | None = 1234) -> str:
+    def create_variable(self, var_name: str, var_type: str, job_id: int = 1234) -> str:
         """Create output variables.
 
         # "#App:9876:app.data.count!String"
@@ -170,7 +168,7 @@ class InstallJson:
         return InstallJsonModel(**self.contents)
 
     @property
-    def params_dict(self) -> list[ParamsModel]:
+    def params_dict(self) -> dict[str, ParamsModel]:
         """Return params as name/model.
 
         Used in tcex_testing for dynamic generation of output variables.
@@ -187,7 +185,7 @@ class InstallJson:
         required: bool | None = None,
         service_config: bool | None = None,
         _type: str | None = None,
-        input_permutations: list | None = None,
+        input_permutations: dict | None = None,
     ) -> dict[str, Any]:
         """Return params as cli args.
 
@@ -240,6 +238,8 @@ class InstallJson:
     @property
     def tc_playbook_out_variables(self) -> list:
         """Return playbook output variable name array"""
+        if self.model.playbook is None:
+            return []
         return self.create_output_variables(self.model.playbook.output_variables)
 
     @property

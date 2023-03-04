@@ -11,9 +11,12 @@ from typing import Any, Self
 # third-party
 from pydantic import BaseModel, PrivateAttr
 
+# first-party
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
+
 # get tcex logger
 
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 
 class CustomJSONEncoder(JSONEncoder):

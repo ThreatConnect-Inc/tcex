@@ -1,6 +1,7 @@
 """SecurityLabel / SecurityLabels Object"""
 # standard library
 import json
+from collections.abc import Iterator
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -115,8 +116,8 @@ class SecurityLabels(ObjectCollectionABC):
         self._model = SecurityLabelsModel(**kwargs)
         self.type_ = 'security_labels'
 
-    def __iter__(self) -> SecurityLabel:
-        """Iterate over CM objects."""
+    def __iter__(self) -> Iterator[SecurityLabel]:
+        """Return CM objects."""
         return self.iterate(base_class=SecurityLabel)  # type: ignore
 
     @property

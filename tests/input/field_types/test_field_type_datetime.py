@@ -1,6 +1,7 @@
 """Testing TcEx Input module field types."""
 # standard library
 import math
+from collections.abc import Callable
 from datetime import timedelta
 from operator import add, sub
 
@@ -49,7 +50,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             '2020-01-01T00:00:00',
         ],
     )
-    def test_field_type_datetime_simple(playbook_app: 'MockApp', to_parse):
+    def test_field_type_datetime_simple(playbook_app: Callable[..., MockApp], to_parse):
         """Test parsing of date strings and timestamps
 
         All test inputs are expected to parse to '2020-01-01T00:00:00+00:00'
@@ -65,10 +66,12 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
 
         config_data = {'my_datetime': to_parse}
         app = playbook_app(config_data=config_data)
-        tcex: 'TcEx' = app.tcex
+        tcex: TcEx = app.tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.model.my_datetime.isoformat() == '2020-01-01T00:00:00+00:00'
+        assert (
+            tcex.inputs.model.my_datetime.isoformat() == '2020-01-01T00:00:00+00:00'  # type: ignore
+        )
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -85,7 +88,9 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             '2020-05-27 10:30:35+00:00',
         ],
     )
-    def test_field_type_datetime_non_default_formats(playbook_app: 'MockApp', to_parse):
+    def test_field_type_datetime_non_default_formats(
+        playbook_app: Callable[..., MockApp], to_parse
+    ):
         """Testing inputs directly from built-in (non-default) formats section of docs.
 
         All inputs expected to parse to '2020-05-27T10:30:35+00:00'
@@ -128,10 +133,12 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
 
         config_data = {'my_datetime': to_parse}
         app = playbook_app(config_data=config_data)
-        tcex: 'TcEx' = app.tcex
+        tcex: TcEx = app.tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.model.my_datetime.isoformat() == '2020-05-27T10:30:35+00:00'
+        assert (
+            tcex.inputs.model.my_datetime.isoformat() == '2020-05-27T10:30:35+00:00'  # type: ignore
+        )
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -142,7 +149,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             '1636415957728793',
         ],
     )
-    def test_field_type_datetime_microseconds(playbook_app: 'MockApp', to_parse):
+    def test_field_type_datetime_microseconds(playbook_app: Callable[..., MockApp], to_parse):
         """Testing timestamp inputs
 
         All inputs expected to parse to '2021-11-08T23:59:17.728793+00:00'
@@ -155,10 +162,13 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
 
         config_data = {'my_datetime': to_parse}
         app = playbook_app(config_data=config_data)
-        tcex: 'TcEx' = app.tcex
+        tcex: TcEx = app.tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.model.my_datetime.isoformat() == '2021-11-08T23:59:17.728793+00:00'
+        assert (
+            tcex.inputs.model.my_datetime.isoformat()  # type: ignore
+            == '2021-11-08T23:59:17.728793+00:00'
+        )
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -168,7 +178,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             '1636415957728',
         ],
     )
-    def test_field_type_datetime_milliseconds(playbook_app: 'MockApp', to_parse):
+    def test_field_type_datetime_milliseconds(playbook_app: Callable[..., MockApp], to_parse):
         """Testing timestamp inputs
 
         All inputs expected to parse to '2021-11-08T23:59:17.728000+00:00'
@@ -181,13 +191,16 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
 
         config_data = {'my_datetime': to_parse}
         app = playbook_app(config_data=config_data)
-        tcex: 'TcEx' = app.tcex
+        tcex: TcEx = app.tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.model.my_datetime.isoformat() == '2021-11-08T23:59:17.728000+00:00'
+        assert (
+            tcex.inputs.model.my_datetime.isoformat()  # type: ignore
+            == '2021-11-08T23:59:17.728000+00:00'
+        )
 
     @staticmethod
-    def test_field_type_datetime_seconds(playbook_app: 'MockApp'):
+    def test_field_type_datetime_seconds(playbook_app: Callable[..., MockApp]):
         """Testing timestamp inputs. Parse seconds epoch"""
 
         class PytestModel(BaseModel):
@@ -197,13 +210,15 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
 
         config_data = {'my_datetime': '1636415957'}
         app = playbook_app(config_data=config_data)
-        tcex: 'TcEx' = app.tcex
+        tcex: TcEx = app.tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.model.my_datetime.isoformat() == '2021-11-08T23:59:17+00:00'
+        assert (
+            tcex.inputs.model.my_datetime.isoformat() == '2021-11-08T23:59:17+00:00'  # type: ignore
+        )
 
     @staticmethod
-    def test_field_type_datetime_timezone_aware_input(playbook_app: 'MockApp'):
+    def test_field_type_datetime_timezone_aware_input(playbook_app: Callable[..., MockApp]):
         """Testing timestamp inputs. Parse timezone-aware string"""
 
         class PytestModel(BaseModel):
@@ -213,10 +228,13 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
 
         config_data = {'my_datetime': '2021-11-15T02:13:57.021291-08:00'}
         app = playbook_app(config_data=config_data)
-        tcex: 'TcEx' = app.tcex
+        tcex: TcEx = app.tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.model.my_datetime.isoformat() == '2021-11-15T02:13:57.021291-08:00'
+        assert (
+            tcex.inputs.model.my_datetime.isoformat()  # type: ignore
+            == '2021-11-15T02:13:57.021291-08:00'
+        )
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -257,7 +275,9 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             ('120 Days Ago', sub, timedelta(days=120)),
         ],
     )
-    def test_field_type_datetime_human_input(playbook_app: 'MockApp', to_parse, operator, delta):
+    def test_field_type_datetime_human_input(
+        playbook_app: Callable[..., MockApp], to_parse, operator, delta
+    ):
         """Testing timestamp inputs
 
         Inputs are parsed relative to 'now' in UTC. The parsed input will be compared to a
@@ -281,11 +301,11 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
 
         config_data = {'my_datetime': to_parse}
         app = playbook_app(config_data=config_data)
-        tcex: 'TcEx' = app.tcex
+        tcex: TcEx = app.tcex
         tcex.inputs.add_model(PytestModel)
 
         expected_parse_result = operator(now, delta)
-        result = tcex.inputs.model.my_datetime
+        result = tcex.inputs.model.my_datetime  # type: ignore
 
         assert expected_parse_result.year == result.year
         assert expected_parse_result.month == result.month
@@ -316,7 +336,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
             {},
         ],
     )
-    def test_field_type_datetime_bad_input(playbook_app: 'MockApp', to_parse):
+    def test_field_type_datetime_bad_input(playbook_app: Callable[..., MockApp], to_parse):
         """Test parsing of bad input
 
         Args:
@@ -331,7 +351,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
 
         config_data = {'my_datetime': to_parse}
         app = playbook_app(config_data=config_data)
-        tcex: 'TcEx' = app.tcex
+        tcex: TcEx = app.tcex
         with pytest.raises(ValidationError) as exc_info:
             tcex.inputs.add_model(PytestModel)
             print('')
@@ -342,7 +362,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
         assert 'could not be parsed as a date time object' in err_msg
 
     @staticmethod
-    def test_field_type_datetime_none_not_allowed(playbook_app: 'MockApp'):
+    def test_field_type_datetime_none_not_allowed(playbook_app: Callable[..., MockApp]):
         """Testing timestamp inputs. None not allowed"""
 
         class PytestModel(BaseModel):
@@ -352,14 +372,14 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
 
         config_data = {'my_datetime': None}
         app = playbook_app(config_data=config_data)
-        tcex: 'TcEx' = app.tcex
+        tcex: TcEx = app.tcex
         with pytest.raises(ValidationError) as exc_info:
             tcex.inputs.add_model(PytestModel)
 
         assert 'none is not an allowed value' in str(exc_info.value)
 
     @staticmethod
-    def test_field_type_datetime_none_allowed(playbook_app: 'MockApp'):
+    def test_field_type_datetime_none_allowed(playbook_app: Callable[..., MockApp]):
         """Testing timestamp inputs. None allowed"""
 
         class PytestModel(BaseModel):
@@ -369,7 +389,7 @@ class TestInputsFieldTypeArrowDateTime(InputTest):
 
         config_data = {'my_datetime': None}
         app = playbook_app(config_data=config_data)
-        tcex: 'TcEx' = app.tcex
+        tcex: TcEx = app.tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.model.my_datetime is None
+        assert tcex.inputs.model.my_datetime is None  # type: ignore

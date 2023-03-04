@@ -50,7 +50,7 @@ class Adversary(Group):
                 925, ['asset_type', 'assets', 'asset_type', 'asset_type', asset_type]
             )
 
-        return asset_methods.get(asset_type.lower())(self.unique_id, asset_value)
+        return asset_methods[asset_type.lower()](self.unique_id, asset_value)
 
     def add_handle_asset(self, value):
         """Add a Handle asset to the adversary.
@@ -111,7 +111,7 @@ class Adversary(Group):
                 925, ['asset_type', 'assets', 'asset_type', 'asset_type', asset_type]
             )
 
-        return asset_methods.get(asset_type.lower())(self.unique_id, asset_id, action=action)
+        return asset_methods[asset_type.lower()](self.unique_id, asset_id, action=action)
 
     def assets(self, asset_type=None):
         """Retrieve all of the assets of a given asset_type
@@ -140,7 +140,7 @@ class Adversary(Group):
                 925, ['asset_type', 'assets', 'asset_type', 'asset_type', asset_type]
             )
 
-        return asset_methods.get(asset_type.lower())(self.unique_id)
+        return asset_methods[asset_type.lower()](self.unique_id)
 
     def delete_asset(self, asset_id, asset_type):
         """Delete the asset with the provided asset_id.

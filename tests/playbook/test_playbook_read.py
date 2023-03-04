@@ -1,9 +1,11 @@
 """Test the TcEx Batch Module."""
+# standard library
+from collections.abc import Callable
+
 # third-party
 import pytest
 
 # first-party
-from tcex import TcEx  # TYPE-CHECKING
 from tcex.playbook.playbook import Playbook  # TYPE-CHECKING
 from tests.mock_app import MockApp  # TYPE-CHECKING
 
@@ -40,13 +42,13 @@ class TestUtils:
         ],
     )
     def test_playbook_read_check_variable_type(
-        self, variable: str, type_: bool, should_fail: bool, playbook_app: 'MockApp'
+        self, variable: str, type_: str, should_fail: bool, playbook_app: Callable[..., MockApp]
     ):
         """Test playbook variables."""
-        tcex: 'TcEx' = playbook_app(
+        tcex = playbook_app(
             config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
         ).tcex
-        playbook: 'Playbook' = tcex.playbook
+        playbook = tcex.playbook
 
         if should_fail is False:
             assert True
@@ -67,7 +69,7 @@ class TestUtils:
         ],
     )
     def test_playbook_read_coerce_string_value(
-        self, value: bool | float | int | str, expected: str, playbook: 'Playbook'
+        self, value: bool | float | int | str, expected: str, playbook: Playbook
     ):
         """Test playbook variables."""
         assert playbook.read._coerce_string_value(value) == expected
@@ -78,6 +80,6 @@ class TestUtils:
             (b'123', '123'),
         ],
     )
-    def test_playbook_read_decode_binary(self, data: bytes, expected: str, playbook: 'Playbook'):
+    def test_playbook_read_decode_binary(self, data: bytes, expected: str, playbook: Playbook):
         """Test playbook variables."""
         assert playbook.read._decode_binary(data) == expected

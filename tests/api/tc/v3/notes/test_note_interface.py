@@ -16,14 +16,7 @@ from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 class TestNotes(TestV3):
     """Test TcEx API Interface."""
 
-    v3 = None
-
-    def setup_method(self):
-        """Configure setup before all tests."""
-        print('')  # ensure any following print statements will be on new line
-        self.v3_helper = V3Helper('notes')
-        self.v3 = self.v3_helper.v3
-        self.tcex = self.v3_helper.tcex
+    v3_helper = V3Helper('notes')
 
     def test_note_api_options(self):
         """Test filter keywords."""
@@ -157,13 +150,16 @@ class TestNotes(TestV3):
         """Test Artifact Get Many"""
         # [Pre-Requisite] - create case
         case = self.v3_helper.create_case()
+        if case.model.id is None:
+            pytest.fail('Case ID is None')
+
         note_count = 10
         note_ids = []
         for _ in range(0, note_count):
             # [Create Testing] define object data
             note_data = {
                 'case_id': case.model.id,
-                'text': f'sample note randomint - {randint(100, 999)}',
+                'text': f'sample note randint - {randint(100, 999)}',
             }
 
             # [Create Testing] create the object
@@ -228,6 +224,8 @@ class TestNotes(TestV3):
         # [Pre-Requisite] - create case
         note_data = {'text': f'sample note for {request.node.name} test.'}
         case = self.v3_helper.create_case()
+        if case.model.id is None:
+            pytest.fail('Case ID is None')
 
         # [Pre-Requisite] - create workflow_event
         workflow_event_data = {
@@ -237,6 +235,8 @@ class TestNotes(TestV3):
 
         workflow_event = self.v3.workflow_event(**workflow_event_data)
         workflow_event.create()
+        if workflow_event.model.id is None:
+            pytest.fail('Task ID is None')
 
         # [Pre-Requisite] - create task
         task_data = {
@@ -250,6 +250,8 @@ class TestNotes(TestV3):
 
         task = self.v3.task(**task_data)
         task.create()
+        if task.model.id is None:
+            pytest.fail('Task ID is None')
 
         # [Pre-Requisite] - create artifact
         artifact_data = {
@@ -261,8 +263,12 @@ class TestNotes(TestV3):
 
         artifact = self.v3.artifact(**artifact_data)
         artifact.create()
+        if artifact.model.id is None:
+            pytest.fail('Artifact ID is None')
 
         note = self._stage_note(case, note_data, specify_type=True)
+        if note.model.id is None:
+            pytest.fail('Case ID is None')
 
         notes = self.v3.notes()
 

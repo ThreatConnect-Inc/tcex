@@ -1,6 +1,6 @@
 """Artifact / Artifacts Object"""
 # standard library
-from collections.abc import Generator
+from collections.abc import Generator, Iterator
 from typing import TYPE_CHECKING
 
 # first-party
@@ -167,8 +167,8 @@ class Artifacts(ObjectCollectionABC):
         self._model = ArtifactsModel(**kwargs)
         self.type_ = 'artifacts'
 
-    def __iter__(self) -> Artifact:
-        """Iterate over CM objects."""
+    def __iter__(self) -> Iterator[Artifact]:
+        """Return CM objects."""
         return self.iterate(base_class=Artifact)  # type: ignore
 
     @property

@@ -38,9 +38,7 @@ class CreateConfigModel(BaseModel):
         """
         for field, value in values.items():
             param = ij.model.get_param(field)
-            if param.type is not None and (
-                param.type.lower() == 'multichoice' or param.allow_multiple
-            ):
+            if param is not None and (param.type.lower() == 'multichoice' or param.allow_multiple):
                 if value is not None and not isinstance(value, list):
                     values[field] = value.split(ij.model.list_delimiter or '|')
 

@@ -30,6 +30,8 @@ class TestVariables:
     def test_variable_to_method(self, variable: str, expected: dict):
         """Test Module"""
         results = variables.get_playbook_variable_model(variable)
+        if results is None:
+            assert False, 'get playbook variable model returned None'
         assert results.dict() == expected
 
     @pytest.mark.parametrize(

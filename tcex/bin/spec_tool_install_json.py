@@ -64,8 +64,11 @@ class SpecToolInstallJson(BinABC):
     def _add_type_organization_fields(self, install_json_data: dict):
         """Add field that apply to ALL App types."""
         if self.asy.model.is_feed_app:
-            # the nested job object is not part of the install.json, it
-            # instead gets written to the *.job.json file.
+            if self.asy.model.organization is None:
+                return
+
+            # the nested job object is not part of the install.json,
+            # it instead gets written to the *.job.json file.
             if self.asy.model.organization.feeds:
                 _feeds = []
                 for feed in self.asy.model.organization.feeds:
@@ -96,7 +99,11 @@ class SpecToolInstallJson(BinABC):
                 ],
                 'type': self.asy.model.category,
             }
-            if self.asy.model.playbook and self.asy.model.playbook.retry.allowed is True:
+            if (
+                self.asy.model.playbook
+                and self.asy.model.playbook.retry
+                and self.asy.model.playbook.retry.allowed is True
+            ):
                 install_json_data['playbook']['retry'] = self.asy.model.playbook.retry.dict(
                     by_alias=True
                 )
@@ -131,7 +138,7 @@ class SpecToolInstallJson(BinABC):
         self._add_type_playbook_fields(install_json_data)
 
         # update sequence numbers
-        for sequence, param in enumerate(install_json_data.get('params'), start=1):
+        for sequence, param in enumerate(install_json_data.get('params', {}), start=1):
             param['sequence'] = sequence
 
         return InstallJsonModel(**install_json_data)

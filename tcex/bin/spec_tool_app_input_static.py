@@ -115,9 +115,9 @@ class SpecToolAppInputStatic:
 
     def template_app_inputs_prefix(
         self,
-        field_type_modules: list[str],
-        pydantic_modules: list[str],
-        typing_modules: list[str],
+        field_type_modules: set[str],
+        pydantic_modules: set[str],
+        typing_modules: set[str],
     ) -> list:
         """Return app_inputs.py prefix data."""
         field_types_modules_ = ', '.join(sorted(list(field_type_modules)))

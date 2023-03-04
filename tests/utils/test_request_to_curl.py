@@ -83,7 +83,7 @@ class TestRequestToCurl:
             r'''curl -X GET -H 'Accept: \*/\*' -H 'Accept-Encoding: deflate' '''
             r'''-H 'Connection: keep-alive' -H 'User-Agent: '''
             r'''python-requests/[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,3}' -H 'authorization: s\*\*\*\*e' '''
-            r'''--proxy-user user:xxxxx --proxy www\.google\.com --insecure '''
+            r'''--proxy www\.google\.com --proxy-user user:xxxxx --insecure '''
             r'''https://www\.google\.com/'''
         )
         assert r_curl_expected.match(r_curl)
@@ -119,7 +119,7 @@ class TestRequestToCurl:
         r_curl_expected = re.compile(
             r'''curl -X POST -H 'Accept: \*/\*' -H 'Accept-Encoding: deflate' '''
             r'''-H 'Connection: keep-alive' -H 'Content-Length: 4' -H 'User-Agent: '''
-            r'''python-requests/[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,3}' -d \"test\" '''
+            r'''python-requests/[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,3}' --data-binary @/tmp/body-file '''
             r'''https://www\.google\.com/'''
         )
         assert r_curl_expected.match(r_curl)
@@ -133,7 +133,10 @@ class TestRequestToCurl:
         )
         r = requests.post('https://www.google.com', data=data, timeout=60)
         r_curl = requests_to_curl.convert(r.request)
-        filename = re.search(r'(@\/tmp\/[a-z0-9].+)\s(?:http)', r_curl)[1]
+        filename = re.search(r'(@\/tmp\/[a-z0-9].+)\s(?:http)', r_curl)
+        if filename is None:
+            assert False, 'Could not find filename in curl command'
+        filename = filename[1]
         r_curl_expected = re.compile(
             r'''curl -X POST -H 'Accept: \*/\*' -H 'Accept-Encoding: deflate' '''
             r'''-H 'Connection: keep-alive' -H 'Content-Length: 160' -H 'User-Agent: '''

@@ -21,8 +21,8 @@ class Tql:
         filters = []
         for tql_filter in self.filters:
             # keywords are all one work (e.g. task_id should be taskid)
-            keyword = tql_filter.get('keyword').replace('_', '')
-            value = tql_filter.get('value')
+            keyword = tql_filter['keyword'].replace('_', '')
+            value = tql_filter['value']
             try:
                 filters.append(f'''{keyword}({value._tql.as_str})''')
             except Exception:
@@ -35,7 +35,7 @@ class Tql:
                     value = f'({value})'
                 elif tql_filter.get('type') == TqlType.STRING:
                     value = f'"{value}"'
-                filters.append(f'''{keyword} {tql_filter.get('operator').value} {value}''')
+                filters.append(f'''{keyword} {tql_filter['operator'].value} {value}''')
 
         return ' and '.join(filters)
 
@@ -53,7 +53,7 @@ class Tql:
         self,
         keyword: str,
         operator: Enum | str,
-        value: int | str | FilterABC,
+        value: int | list | str | FilterABC,
         type_: TqlType | None = TqlType.STRING,
     ):
         """Add a filter to the current obj

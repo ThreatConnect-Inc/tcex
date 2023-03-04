@@ -3,11 +3,14 @@
 import json
 from collections.abc import Callable
 
+# first-party
+from tcex.utils import Utils
+
 
 class Attribute:
     """ThreatConnect Batch Attribute Object"""
 
-    __slots__ = ['_attribute_data', '_valid']
+    __slots__ = ['_attribute_data', '_valid', 'utils']
 
     def __init__(
         self,
@@ -27,7 +30,7 @@ class Attribute:
             formatter: A callable that take a single attribute
                 value and return a single formatted value.
         """
-        self._attribute_data = {'type': attr_type}
+        self._attribute_data: dict[str, bool | str] = {'type': attr_type}
         if displayed:
             self._attribute_data['displayed'] = displayed
 
@@ -47,6 +50,9 @@ class Attribute:
         if attr_value in [None, '']:
             self._valid = False
 
+        # properties
+        self.utils = Utils()
+
     @property
     def data(self) -> dict:
         """Return Attribute data."""
@@ -55,7 +61,7 @@ class Attribute:
     @property
     def displayed(self) -> bool:
         """Return Attribute displayed."""
-        return self._attribute_data.get('displayed')
+        return self.utils.to_bool(self._attribute_data.get('displayed') or False)
 
     @displayed.setter
     def displayed(self, displayed: bool):
@@ -63,9 +69,9 @@ class Attribute:
         self._attribute_data['displayed'] = displayed
 
     @property
-    def source(self) -> str:
+    def source(self) -> str | None:
         """Return Attribute source."""
-        return self._attribute_data.get('source')
+        return str(self._attribute_data.get('source'))
 
     @source.setter
     def source(self, source: str):
@@ -75,7 +81,7 @@ class Attribute:
     @property
     def type(self) -> str:
         """Return attribute value."""
-        return self._attribute_data.get('type')
+        return str(self._attribute_data['type'])
 
     @property
     def valid(self) -> bool:
@@ -83,9 +89,9 @@ class Attribute:
         return self._valid
 
     @property
-    def value(self) -> str:
+    def value(self) -> bool | str | None:
         """Return attribute value."""
-        return self._attribute_data.get('value')
+        return self._attribute_data['value']
 
     def __str__(self) -> str:
         """Return string representation of object."""

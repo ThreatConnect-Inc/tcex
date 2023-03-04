@@ -32,7 +32,7 @@ class TcexJsonUpdate:
 
         # update template
         if template is not None:
-            self.tj.template = template
+            self.tj.model.template_name = template
 
         # write updated profile
         self.tj.write()
@@ -60,12 +60,6 @@ class TcexJsonUpdate:
             # update App name
             self.tj.model.package.app_name = _app_name
 
-    # def update_deprecated_fields(self):
-    #     """Update deprecated fields in the tcex.json file."""
-    #     deprecated_fields = ['profile_include_dirs']
-    #     for d in deprecated_fields:
-    #         setattr(self.tj.model, d, None)
-
     def update_package_excludes(self):
         """Update the excludes values in the tcex.json file."""
         for i in [
@@ -84,7 +78,7 @@ class TcexJsonUpdate:
         """Update the lib_versions array in the tcex.json file."""
         if os.getenv('TCEX_LIB_VERSIONS') and not self.tj.model.lib_versions:
             _lib_versions = []
-            for version in os.getenv('TCEX_LIB_VERSIONS').split(','):
+            for version in os.getenv('TCEX_LIB_VERSIONS', '').split(','):
                 _lib_versions.append(
                     {
                         'lib_dir': f'lib_${{env:{version}}}',

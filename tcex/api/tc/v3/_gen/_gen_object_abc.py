@@ -92,14 +92,18 @@ class GenerateObjectABC(GenerateABC, ABC):
     def _gen_code_container_iter_method(self) -> str:
         """Return the method code.
 
-        def __iter__(self) -> Artifact:
-            '''Iterate over CM objects.'''
+        def __iter__(self) -> Iterator[Artifact]:
+            '''Return CM objects.'''
             return self.iterate(base_class=Artifact)
         """
+        self.requirements['standard library'].append('from collections.abc import Iterator')
         return '\n'.join(
             [
-                f'''{self.i1}def __iter__(self) -> {self.type_.singular().pascal_case()}:''',
-                f'''{self.i2}"""Iterate over CM objects."""''',
+                (
+                    f'''{self.i1}def __iter__(self) -> '''
+                    f'''Iterator[{self.type_.singular().pascal_case()}]:'''
+                ),
+                f'''{self.i2}"""Return CM objects."""''',
                 (
                     f'''{self.i2}return self.iterate(base_class='''
                     f'''{self.type_.singular().pascal_case()})'''
@@ -109,6 +113,47 @@ class GenerateObjectABC(GenerateABC, ABC):
                 '',
             ]
         )
+
+    # def _gen_code_container_iter_method(self) -> str:
+    #     """Return the method code.
+
+    #     def __iter__(self) -> Self:
+    #         '''Return CM objects.'''
+    #         return self
+    #     """
+    #     self.requirements['standard library'].append({'module': 'typing', 'imports': ['Self']})
+    #     return '\n'.join(
+    #         [
+    #             f'''{self.i1}def __iter__(self) -> Self:''',
+    #             f'''{self.i2}"""Return CM objects."""''',
+    #             f'''{self.i2}return self''',
+    #             '',
+    #             '',
+    #         ]
+    #     )
+
+    # def _gen_code_container_next_method(self) -> str:
+    #     """Return the method code.
+
+    #     def __next__(self) -> Artifact:
+    #         '''Iterate over CM objects.'''
+    #         return self.iterate(base_class=Artifact)
+    #     """
+    #     return '\n'.join(
+    #         [
+    #             f'''{self.i1}def __next__(self) -> {self.type_.singular().pascal_case()}:''',
+    #             f'''{self.i2}"""Return next CM objects."""''',
+    #             (
+    #                 f'''{self.i2}for i in self.iterate(base_class='''
+    #                 f'''{self.type_.singular().pascal_case()}):'''
+    #             ),
+    #             f'''{self.i3}return i''',
+    #             '',
+    #             f'''{self.i2}raise StopIteration''',
+    #             '',
+    #             '',
+    #         ]
+    #     )
 
     def _gen_code_container_filter_property(self) -> str:
         """Return the method code.
@@ -352,27 +397,28 @@ class GenerateObjectABC(GenerateABC, ABC):
                 [
                     f'''{self.i2}value = []''',
                     '',
-                    f'''{self.i2}if self.model.type.lower() == 'phone':''',
-                    f'''{self.i3}if self.model.phone:''',
-                    f'''{self.i4}value.append(self.model.phone)''',
-                    f'''{self.i2}elif self.model.type.lower() == 'socialnetwork':''',
-                    f'''{self.i3}if self.model.social_network:''',
-                    f'''{self.i4}value.append(self.model.social_network)''',
-                    f'''{self.i3}if self.model.account_name:''',
-                    f'''{self.i4}value.append(self.model.account_name)''',
-                    f'''{self.i2}elif self.model.type.lower() == 'networkaccount':''',
-                    f'''{self.i3}if self.model.network_type:''',
-                    f'''{self.i4}value.append(self.model.network_type)''',
-                    f'''{self.i3}if self.model.account_name:''',
-                    f'''{self.i4}value.append(self.model.account_name)''',
-                    f'''{self.i2}elif self.model.type.lower() == 'emailaddress':''',
-                    f'''{self.i3}if self.model.address_type:''',
-                    f'''{self.i4}value.append(self.model.address_type)''',
-                    f'''{self.i3}if self.model.address:''',
-                    f'''{self.i4}value.append(self.model.address)''',
-                    f'''{self.i2}elif self.model.type.lower() == 'website':''',
-                    f'''{self.i3}if self.model.website:''',
-                    f'''{self.i4}value.append(self.model.website)''',
+                    f'''{self.i2}if self.model.type is not None:''',
+                    f'''{self.i3}if self.model.type.lower() == 'phone':''',
+                    f'''{self.i4}if self.model.phone:''',
+                    f'''{self.i5}value.append(self.model.phone)''',
+                    f'''{self.i3}elif self.model.type.lower() == 'socialnetwork':''',
+                    f'''{self.i4}if self.model.social_network:''',
+                    f'''{self.i5}value.append(self.model.social_network)''',
+                    f'''{self.i4}if self.model.account_name:''',
+                    f'''{self.i5}value.append(self.model.account_name)''',
+                    f'''{self.i3}elif self.model.type.lower() == 'networkaccount':''',
+                    f'''{self.i4}if self.model.network_type:''',
+                    f'''{self.i5}value.append(self.model.network_type)''',
+                    f'''{self.i4}if self.model.account_name:''',
+                    f'''{self.i5}value.append(self.model.account_name)''',
+                    f'''{self.i3}elif self.model.type.lower() == 'emailaddress':''',
+                    f'''{self.i4}if self.model.address_type:''',
+                    f'''{self.i5}value.append(self.model.address_type)''',
+                    f'''{self.i4}if self.model.address:''',
+                    f'''{self.i5}value.append(self.model.address)''',
+                    f'''{self.i3}elif self.model.type.lower() == 'website':''',
+                    f'''{self.i4}if self.model.website:''',
+                    f'''{self.i5}value.append(self.model.website)''',
                     '',
                     '',
                     f'''{self.i2}value = ' : '.join(value) if value else \'\'''',
@@ -731,6 +777,9 @@ class GenerateObjectABC(GenerateABC, ABC):
         # generate __iter__ method
         _code += self._gen_code_container_iter_method()
 
+        # generate __next__ method
+        # _code += self._gen_code_container_next_method()
+
         # generate api_endpoint property method
         _code += self._gen_code_api_endpoint_property()
 
@@ -970,7 +1019,7 @@ class GenerateObjectABC(GenerateABC, ABC):
         type_: SnakeString,
         filename: str,
         classes: list[str],
-        from_: str | None = 'first-party',
+        from_: str = 'first-party',
     ):
         """Return the requirements code."""
         class_string = ', '.join(classes)

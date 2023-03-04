@@ -1,4 +1,7 @@
 """AttributeType / AttributeTypes Object"""
+# standard library
+from collections.abc import Iterator
+
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.attribute_types.attribute_type_filter import AttributeTypeFilter
@@ -80,8 +83,8 @@ class AttributeTypes(ObjectCollectionABC):
         self._model = AttributeTypesModel(**kwargs)
         self.type_ = 'attribute_types'
 
-    def __iter__(self) -> AttributeType:
-        """Iterate over CM objects."""
+    def __iter__(self) -> Iterator[AttributeType]:
+        """Return CM objects."""
         return self.iterate(base_class=AttributeType)  # type: ignore
 
     @property

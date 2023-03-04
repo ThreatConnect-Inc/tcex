@@ -3,6 +3,7 @@
 import os
 import shutil
 import subprocess  # nosec
+import sys
 
 # third-party
 import black
@@ -85,12 +86,13 @@ class SpecTool(BinABC):
         """Return formatted code."""
 
         # run isort on code
-        settings_file = None
+        isort_args = {}
         if os.path.isfile('setup.cfg'):
-            settings_file = 'setup.cfg'
+            isort_args = {'settings_file': 'setup.cfg'}
+
         try:
-            isort_config = isort.Config(settings_file=settings_file)
-            _code = isort.code(_code, config=isort_config)
+            isort_config = isort.Config(**isort_args)
+            _code = isort.code(code=_code, config=isort_config)
         except Exception as ex:
             self.print_failure(f'Formatting of code failed {ex}.')
 
@@ -136,6 +138,7 @@ class SpecTool(BinABC):
                 config = gen.generate()
             except ValidationError as ex:
                 self.print_failure(f'Failed Generating app_spec.yml:\n{ex}')
+                sys.exit(1)
 
             self.write_app_file(gen.filename, f'{config}\n')
 
@@ -152,6 +155,7 @@ class SpecTool(BinABC):
                 ij = gen.generate()
             except ValidationError as ex:
                 self.print_failure(f'Failed Generating install.json:\n{ex}')
+                sys.exit(1)
 
             # exclude_defaults - if False then all unused fields are added in - not good.
             # exclude_none - this should be safe to leave as True.
@@ -180,6 +184,7 @@ class SpecTool(BinABC):
                     lj = gen.generate()
                 except ValidationError as ex:
                     self.print_failure(f'Failed Generating layout.json:\n{ex}')
+                    sys.exit(1)
 
                 # exclude_defaults - if False then all unused fields are added in - not good.
                 # exclude_none - this should be safe to leave as True.
@@ -240,6 +245,7 @@ class SpecTool(BinABC):
                 tj = gen.generate()
             except ValidationError as ex:
                 self.print_failure(f'Failed Generating tcex.json:\n{ex}')
+                sys.exit(1)
 
             # exclude_defaults - if False then all unused fields are added in - not good.
             # exclude_none - this should be safe to leave as True.

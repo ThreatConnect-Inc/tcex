@@ -1,6 +1,6 @@
 """Case / Cases Object"""
 # standard library
-from collections.abc import Generator
+from collections.abc import Generator, Iterator
 from typing import TYPE_CHECKING, Self
 
 # first-party
@@ -317,8 +317,8 @@ class Cases(ObjectCollectionABC):
         self._model = CasesModel(**kwargs)
         self.type_ = 'cases'
 
-    def __iter__(self) -> Case:
-        """Iterate over CM objects."""
+    def __iter__(self) -> Iterator[Case]:
+        """Return CM objects."""
         return self.iterate(base_class=Case)  # type: ignore
 
     @property

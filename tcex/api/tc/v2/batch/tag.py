@@ -32,7 +32,7 @@ class Tag:
     @property
     def name(self) -> str:
         """Return Tag name."""
-        return self._tag_data.get('name')
+        return self._tag_data.get('name')  # type: ignore
 
     @property
     def valid(self) -> bool:
@@ -40,5 +40,5 @@ class Tag:
         return self._valid
 
     def __str__(self) -> str:
-        """Return string represtentation of object."""
+        """Return string representation of object."""
         return json.dumps(self.data, indent=4)

@@ -1,4 +1,7 @@
 """UserGroup / UserGroups Object"""
+# standard library
+from collections.abc import Iterator
+
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.object_abc import ObjectABC
@@ -67,8 +70,8 @@ class UserGroups(ObjectCollectionABC):
         self._model = UserGroupsModel(**kwargs)
         self.type_ = 'user_groups'
 
-    def __iter__(self) -> UserGroup:
-        """Iterate over CM objects."""
+    def __iter__(self) -> Iterator[UserGroup]:
+        """Return CM objects."""
         return self.iterate(base_class=UserGroup)  # type: ignore
 
     @property

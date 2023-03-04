@@ -7,6 +7,7 @@ from collections.abc import Callable
 from tcex.input.field_types.sensitive import Sensitive  # TYPE-CHECKING
 from tcex.sessions.auth.hmac_auth import HmacAuth
 from tcex.sessions.auth.token_auth import TokenAuth
+from tcex.tokens import Tokens
 
 
 class TcAuth(HmacAuth, TokenAuth):
@@ -16,24 +17,26 @@ class TcAuth(HmacAuth, TokenAuth):
         self,
         tc_api_access_id: str | None = None,
         tc_api_secret_key: Sensitive | None = None,
-        tc_token: Callable | str | Sensitive | None = None,
+        tc_token: Callable | str | Sensitive | Tokens | None = None,
     ):
         """Initialize Class Properties."""
-        # super(HmacAuth).__init__(tc_api_access_id, tc_api_secret_key)
-        # super(TokenAuth, self).__init__(tc_token)
-        HmacAuth.__init__(self, tc_api_access_id, tc_api_secret_key)
-        TokenAuth.__init__(self, tc_token)
+        if tc_api_access_id is not None and tc_api_secret_key is not None:
+            HmacAuth.__init__(self, tc_api_access_id, tc_api_secret_key)
+            self.auth_type = 'hmac'
+        elif tc_token is not None:
+            TokenAuth.__init__(self, tc_token)
+            self.auth_type = 'token'
+        else:  # pragma: no cover
+            raise RuntimeError('No valid ThreatConnect API credentials provided.')
 
     def __call__(self, r):
         """Add the authorization headers to the request."""
         timestamp = int(time.time())
-        if self.tc_api_access_id is not None and self.tc_api_secret_key is not None:
+        if self.auth_type == 'hmac':
             r.headers['Authorization'] = self._hmac_header(r, timestamp)
-        elif self.tc_token is not None:
+        elif self.auth_type == 'token':
             r.headers['Authorization'] = self._token_header()
-        else:  # pragma: no cover
-            raise RuntimeError('No valid ThreatConnect API credentials provided.')
 
         # Add required headers to auth.
-        r.headers['Timestamp'] = timestamp
+        r.headers['Timestamp'] = str(timestamp)
         return r

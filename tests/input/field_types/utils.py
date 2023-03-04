@@ -1,6 +1,7 @@
 """Class that contains shared logic that may be used by Input test suites"""
 # standard library
-from typing import TYPE_CHECKING
+from collections.abc import Callable
+from typing import Any
 
 # third-party
 import pytest
@@ -9,17 +10,15 @@ from pydantic import BaseModel, ValidationError
 # first-party
 from tcex.input.field_types.sensitive import Sensitive
 from tcex.pleb.registry import registry
-
-if TYPE_CHECKING:
-    # first-party
-    from tests.mock_app import MockApp
+from tcex.tcex import TcEx
+from tests.mock_app import MockApp
 
 
 class InputTest:
     """Class that contains shared logic used by Input test suites"""
 
     @staticmethod
-    def _stage_key_value(config_key, variable_name, value, tcex):
+    def _stage_key_value(config_key: str, variable_name: str, value: Any, tcex: TcEx):
         """Write values to key value store. Expects dictionary of variable_name: value"""
         registry.Playbook.create.any(variable_name, value, validate=False, when_requested=False)
 
@@ -42,13 +41,13 @@ class InputTest:
 
     def _type_validation(
         self,
-        model: BaseModel,
+        model: type[BaseModel],
         input_name: str,
         input_value: str,
         input_type: str,
         expected: str,
         fail_test: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test type validation."""
         config_data = {input_name: f'#App:1234:{input_name}!{input_type}'}

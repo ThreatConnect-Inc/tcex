@@ -17,6 +17,14 @@ from tcex.app_config.tcex_json import TcexJson
 class TestTcexJson:
     """App Config TcexJson testing."""
 
+    @property
+    def tcex_test_dir(self) -> Path:
+        """Return tcex test directory."""
+        tcex_test_dir = os.getenv('TCEX_TEST_DIR')
+        if tcex_test_dir is None:
+            assert False, 'TCEX_TEST_DIR environment variable not set.'
+        return Path(tcex_test_dir)
+
     # @staticmethod
     # def test_dev_testing():
     #     """."""
@@ -31,62 +39,50 @@ class TestTcexJson:
     #     print('tj.model.package', tj.model.package)
     #     print('tj.model.template', tj.model.template)
 
-    @staticmethod
-    def ij(app_name: str = 'app_1', app_type: str = 'tcpb'):
+    def ij(self, app_name: str = 'app_1', app_type: str = 'tcpb'):
         """Return install.json instance."""
         # reset singleton
         # InstallJson._instances = {}
-        tcex_test_dir = os.getenv('TCEX_TEST_DIR')
 
-        ij_fqfn = os.path.join(
-            tcex_test_dir, 'app_config', 'apps', app_type, app_name, 'install.json'
-        )
-        fqfn = Path(ij_fqfn)
+        fqfn = self.tcex_test_dir / 'app_config' / 'apps' / app_type / app_name / 'install.json'
         try:
             return InstallJson(filename=fqfn.name, path=fqfn.parent)
         except Exception as ex:
             assert False, f'Failed parsing file {fqfn.name} ({ex})'
 
-    @staticmethod
-    def tj(app_name: str = 'app_1', app_type: str = 'tcpb'):
+    def tj(self, app_name: str = 'app_1', app_type: str = 'tcpb'):
         """Return tcex.json instance."""
         # reset singleton
-        TcexJson._instances = {}
-        tcex_test_dir = os.getenv('TCEX_TEST_DIR')
+        TcexJson._instances = {}  # type: ignore
 
-        tj_fqfn = os.path.join(tcex_test_dir, 'app_config', 'apps', app_type, app_name, 'tcex.json')
-        fqfn = Path(tj_fqfn)
+        fqfn = self.tcex_test_dir / 'app_config' / 'apps' / app_type / app_name / 'tcex.json'
         try:
             return TcexJson(filename=fqfn.name, path=fqfn.parent)
         except Exception as ex:
             assert False, f'Failed parsing file {fqfn.name} ({ex})'
 
-    @staticmethod
-    def tj_bad(app_name: str = 'app_bad_tcex_json', app_type: str = 'tcpb'):
+    def tj_bad(self, app_name: str = 'app_bad_tcex_json', app_type: str = 'tcpb'):
         """Return tcex.json instance with "bad" file."""
         # reset singleton
-        TcexJson._instances = {}
-        tcex_test_dir = os.getenv('TCEX_TEST_DIR')
+        TcexJson._instances = {}  # type: ignore
 
-        base_fqpn = os.path.join(tcex_test_dir, 'app_config', 'apps', app_type, app_name)
+        base_fqpn = self.tcex_test_dir / 'app_config' / 'apps' / app_type / app_name
         shutil.copy2(
             f'{base_fqpn}/tcex-template.json',
             f'{base_fqpn}/tcex.json',
         )
-        fqfn = Path(os.path.join(base_fqpn, 'tcex.json'))
+        fqfn = base_fqpn / 'tcex.json'
         try:
             return TcexJson(filename=fqfn.name, path=fqfn.parent)
         except Exception as ex:
             assert False, f'Failed parsing file {fqfn.name} ({ex})'
 
-    @staticmethod
-    def model_validate(path: str):
+    def model_validate(self, path: str):
         """Validate input model in and out."""
-        tcex_test_dir = os.getenv('TCEX_TEST_DIR')
-        tj_path = Path(os.path.join(tcex_test_dir, path))
+        tj_path = self.tcex_test_dir / path
         for fqfn in tj_path.glob('**/*tcex.json'):
             # reset singleton
-            TcexJson._instances = {}
+            TcexJson._instances = {}  # type: ignore
 
             fqfn = Path(fqfn)
             with fqfn.open() as fh:

@@ -1,15 +1,18 @@
 """Test the TcEx Notification Module."""
 
+# first-party
+from tcex.tcex import TcEx
+
 
 class TestNotification:
     """Test the TcEx Notification Module."""
 
     @staticmethod
-    def test_notification_organization(tcex):
+    def test_notification_organization(tcex: TcEx):
         """Test Org notifications
 
         Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+            tcex (fixture): An instantiated instance of TcEx object.
         """
         notification = tcex.v2.notification
         notification.org(notification_type='PyTest notification', priority='Low')
@@ -17,11 +20,11 @@ class TestNotification:
         assert status.get('status') == 'Success'
 
     @staticmethod
-    def test_notification_recipients(tcex):
+    def test_notification_recipients(tcex: TcEx):
         """Test recipient notifications
 
         Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+            tcex (fixture): An instantiated instance of TcEx object.
         """
         notification = tcex.v2.notification
         notification.recipients(
@@ -33,11 +36,11 @@ class TestNotification:
         assert status.get('status') == 'Success'
 
     @staticmethod
-    def test_notification_invalid_recipients(tcex):
+    def test_notification_invalid_recipients(tcex: TcEx):
         """Test invalid recipient notifications
 
         Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+            tcex (fixture): An instantiated instance of TcEx object.
         """
         notification = tcex.v2.notification
         notification.recipients(

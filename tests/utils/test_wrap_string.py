@@ -9,32 +9,39 @@ class TestWrapString:
     @staticmethod
     def test_happy_path():
         """Test long string with single separator."""
-        # flake8: noqa: E501; pylint: disable=line-too-long
-        s = '# vv: Build|Difference|Duplicates|Fill|Intersection|Is In|Is Subset|Is Superset|Length|Pop|Reverse|Reverse Sort|Slice|Sort|Sort Lowercase|Symmetric Difference|Unique|Union'
+        s = (
+            '# vv: Build|Difference|Duplicates|Fill|Intersection|Is In|Is Subset|Is Superset'
+            '|Length|Pop|Reverse|Reverse Sort|Slice|Sort|Sort Lowercase|Symmetric Difference'
+            '|Unique|Union'
+        )
 
         correct = [
             (
-                '# vv: Build|Difference|Duplicates|Fill|Intersection|Is In|Is Subset|Is '
-                'Superset|Length|Pop|Reverse|'
+                '# vv: Build|Difference|Duplicates|Fill|Intersection|Is In|Is Subset|Is Superset'
+                '|Length|Pop|Reverse|'
             ),
             'Reverse Sort|Slice|Sort|Sort Lowercase|Symmetric Difference|Unique|Union',
         ]
 
-        answer = Utils.wrap_string(s, (' ', '|'))
+        answer = Utils.wrap_string(s, [' ', '|'])
 
         assert answer == '\n'.join(correct)
 
     @staticmethod
-    def test_wraping():
+    def test_wrapping():
         """Test long string that can't be wrapped."""
         # flake8: noqa: E501; pylint: disable=line-too-long
 
-        s = '# vv: Build|Difference|Duplicates|Fill|Intersection|Is In|Is Subset|Is Superset|Length|Pop|Reverse|Reverse Sort|Slice|Sort|Sort Lowercase|Symmetric Difference|Unique|Union'
+        s = (
+            '# vv: Build|Difference|Duplicates|Fill|Intersection|Is In|Is Subset|Is Superset|'
+            'Length|Pop|Reverse|Reverse Sort|Slice|Sort|Sort Lowercase|Symmetric Difference|Unique'
+            '|Union'
+        )
 
-        answer = Utils.wrap_string(s, (','), force_wrap=False)
+        answer = Utils.wrap_string(s, [','], force_wrap=False)
         assert answer == s
 
-        answer = Utils.wrap_string(s, (','), force_wrap=True)
+        answer = Utils.wrap_string(s, [','], force_wrap=True)
         expected = [str(s[:100]), str(s[100:])]
         assert answer == '\n'.join(expected)
 

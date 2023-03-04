@@ -7,11 +7,12 @@ from pathlib import Path
 from typing import Any
 
 
-class _EnvPath(type(Path()), Path):  # pylint: disable=E0241
+# pylint: disable=duplicate-bases
+class _EnvPath(type(Path()), Path):  # type: ignore
     """A stub of Path with additional attribute."""
 
     # store for the original value passed to EnvPath
-    original_value = None
+    original_value: str | None = None
 
 
 class EnvPath(Path):
@@ -28,7 +29,7 @@ class EnvPath(Path):
         yield cls.validate
 
     @classmethod
-    def validate(cls, value: str | Path) -> Path:
+    def validate(cls, value: Path | str) -> Path | str:
         """Replace any environment variables in the tcex.json file."""
         if isinstance(value, Path):
             return value

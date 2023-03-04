@@ -3,16 +3,12 @@
 import os
 import uuid
 from random import randint
-from typing import TYPE_CHECKING
 
 # first-party
+from tcex.api.tc.v2.threat_intelligence import ThreatIntelligence
+from tcex.api.tc.v2.threat_intelligence.mappings.group.group import Group
+from tcex.api.tc.v2.threat_intelligence.mappings.indicator.indicator import Indicator
 from tests.mock_app import MockApp
-
-if TYPE_CHECKING:
-    # first-party
-    from tcex import TcEx
-    from tcex.api.tc.v2.threat_intelligence import ThreatIntelligence
-    from tcex.api.tc.v2.threat_intelligence.mappings.indicator.indicator import Indicator
 
 
 class TIHelper:
@@ -32,8 +28,8 @@ class TIHelper:
 
         # properties
         self.app = MockApp(runtime_level='Playbook')
-        self.tcex: 'TcEx' = self.app.tcex
-        self.ti: 'ThreatIntelligence' = self.tcex.v2.ti
+        self.tcex = self.app.tcex
+        self.ti: ThreatIntelligence = self.tcex.v2.ti
 
         # indicator_type_value_map
         self.im = {
@@ -61,28 +57,28 @@ class TIHelper:
             group_data[k] = v
 
     @property
-    def indicator_value(self):
+    def indicator_value(self) -> str:
         """Return a proper indicator value for the current indicator type."""
-        return self.im.get(self.ti_type)()
+        return self.im[self.ti_type]()
 
     @staticmethod
-    def rand_asn():
+    def rand_asn() -> str:
         """Return a random ASN."""
         return f'ASN{randint(1000, 9999)}'
 
     @staticmethod
-    def rand_cidr():
+    def rand_cidr() -> str:
         """Return a random CIDR block."""
         return f'{randint(0,255)}.{randint(0,255)}.{randint(0,255)}.0/{randint(16,24)}'
 
-    def rand_email_address(self):
+    def rand_email_address(self) -> str:
         """Return a random email subject."""
         return (
             f'{self.tcex.utils.random_string(randint(5,15))}@'
             f'{self.tcex.utils.random_string(randint(5,15))}.com'
         ).lower()
 
-    def rand_email_subject(self):
+    def rand_email_subject(self) -> str:
         """Return a random email subject."""
         return (
             f'{self.tcex.utils.random_string(randint(5,15))} '
@@ -90,49 +86,49 @@ class TIHelper:
             f'{self.tcex.utils.random_string(randint(5,15))}'
         )
 
-    def rand_filename(self):
+    def rand_filename(self) -> str:
         """Return a random hashtag."""
         return f'{self.tcex.utils.random_string(randint(5,15))}.pdf'.lower()
 
-    def rand_hashtag(self):
+    def rand_hashtag(self) -> str:
         """Return a random hashtag."""
         return f'#{self.tcex.utils.random_string(randint(5,15))}'.lower()
 
-    def rand_host(self):
+    def rand_host(self) -> str:
         """Return a random hashtag."""
         return f'{self.tcex.utils.random_string(randint(5,15))}.com'.lower()
 
     @staticmethod
-    def rand_ip():
+    def rand_ip() -> str:
         """Return a random IP address."""
         return f'222.{randint(0,255)}.{randint(0,255)}.{randint(0,255)}'
 
     @staticmethod
-    def rand_md5():
+    def rand_md5() -> str:
         """Return a random md5."""
         return f'{uuid.uuid4().hex.upper()}'
 
-    def rand_mutex(self):
+    def rand_mutex(self) -> str:
         """Return a random Mutex."""
         return f'Global\\{self.tcex.utils.random_string(randint(5,10))}'
 
-    def rand_name(self):
+    def rand_name(self) -> str:
         """Return a random name."""
         return f'{self.tcex.utils.random_string(randint(10,100))}'
 
     @staticmethod
-    def rand_phone_number():
+    def rand_phone_number() -> str:
         """Return a random email subject."""
         return f'{randint(100,999)}-{randint(100,999)}-{randint(1000,9999)}'
 
     @staticmethod
-    def rand_report_status():
+    def rand_report_status() -> str:
         """Return a random report status."""
         report_statuses = ['Success', 'Awaiting Upload', 'In Progress', 'Failed']
         return report_statuses[randint(0, len(report_statuses) - 1)]
 
     @staticmethod
-    def rand_signature_type():
+    def rand_signature_type() -> str:
         """Return a random signature type."""
         signature_types = [
             'Snort',
@@ -147,7 +143,7 @@ class TIHelper:
         ]
         return signature_types[randint(0, len(signature_types) - 1)]
 
-    def rand_url(self):
+    def rand_url(self) -> str:
         """Return a random hashtag."""
         return (
             f'https://{self.tcex.utils.random_string(randint(5,15))}.com/'
@@ -155,14 +151,14 @@ class TIHelper:
         ).lower()
 
     @staticmethod
-    def rand_user_agent():
+    def rand_user_agent() -> str:
         """Return a random Mutex."""
         return (
             f'Mozilla/{randint(1,5)}.0 (Macintosh; Intel Mac OS X 10.8; rv:36.0) '
             f'Gecko/20100101 Firefox/{randint(1,36)}.0'
         )
 
-    def create_group(self, **kwargs):
+    def create_group(self, **kwargs) -> Group:
         """Create an case.
 
         If a case_name is not provide a dynamic case name will be used.
@@ -224,7 +220,7 @@ class TIHelper:
             labels = [labels]
         for label in labels:
             rl = ti.add_label(**label)
-            if not rl.ok:
+            if rl and not rl.ok:
                 raise RuntimeError(f'Failed to add label ({label}). Error: ({rl.text})')
 
         # handle tag inputs
@@ -233,12 +229,12 @@ class TIHelper:
         tags.append({'name': 'PyTest'})
         for tag in tags:
             rt = ti.add_tag(**tag)
-            if not rt.ok:
+            if rt and not rt.ok:
                 raise RuntimeError(f'Failed to add tag ({tag}). Error: ({rt.text})')
 
         return ti
 
-    def create_indicator(self, indicator_type=None, **kwargs) -> 'Indicator':
+    def create_indicator(self, indicator_type=None, **kwargs) -> Indicator:
         """Create an case.
 
         If a case_name is not provide a dynamic case name will be used.
@@ -272,7 +268,7 @@ class TIHelper:
             'owner': kwargs.get('owner') or os.getenv('TC_OWNER'),
             'rating': kwargs.get('rating') or randint(0, 5),
         }
-        ti = self.ti.indicator(**indicator_data)
+        ti = self.ti.indicator(**indicator_data)  # type: ignore
 
         # add the indicator data to the ti object to be accessed in test case
         setattr(ti, 'confidence', indicator_data.get('confidence'))
@@ -376,7 +372,7 @@ class TIHelper:
             labels = [labels]
         for label in labels:
             rl = ti.add_label(**label)
-            if not rl.ok:
+            if rl and not rl.ok:
                 raise RuntimeError(f'Failed to add label ({label}). Error: ({rl.text})')
 
         # handle tag inputs
@@ -385,7 +381,7 @@ class TIHelper:
         tags.append({'name': 'PyTest'})
         for tag in tags:
             rt = ti.add_tag(**tag)
-            if not rt.ok:
+            if rt and not rt.ok:
                 raise RuntimeError(f'Failed to add tag ({tag}). Error: ({rt.text})')
 
         return ti
@@ -448,7 +444,7 @@ class TIHelper:
             labels = [labels]
         for label in labels:
             rl = ti.add_label(**label)
-            if not rl.ok:
+            if rl and not rl.ok:
                 raise RuntimeError(f'Failed to add label ({label}). Error: ({rl.text})')
 
         # handle tag inputs
@@ -457,7 +453,7 @@ class TIHelper:
         tags.append({'name': 'PyTest'})
         for tag in tags:
             rt = ti.add_tag(**tag)
-            if not rt.ok:
+            if rt and not rt.ok:
                 raise RuntimeError(f'Failed to add tag ({tag}). Error: ({rt.text})')
 
         return ti
@@ -478,7 +474,7 @@ class TestThreatIntelligence:
     optional_fields = {}
     owner = None
     required_fields = {}
-    ti = None
+    ti: ThreatIntelligence
     ti_helper: TIHelper
 
     def teardown_method(self):
@@ -524,6 +520,8 @@ class TestThreatIntelligence:
         helper_ti = self.ti_helper.create_group()
 
         r = helper_ti.add_label(label='TLP:GREEN')
+        if r is None:
+            assert False, 'Failed to add label.'
         response_data = r.json()
 
         # assert response
@@ -535,6 +533,8 @@ class TestThreatIntelligence:
         helper_ti = self.ti_helper.create_group()
 
         r = helper_ti.add_tag(request.node.name)
+        if r is None:
+            assert False, 'Failed to add tag.'
         response_data = r.json()
 
         # assert response
@@ -552,8 +552,10 @@ class TestThreatIntelligence:
             'owner': helper_ti.owner,
             'unique_id': helper_ti.unique_id,
         }
-        ti = self.ti.group(**group_data)
+        ti = self.ti.group(**group_data)  # type: ignore
         r = ti.delete()
+        if r is None:
+            assert False, 'Failed to delete group.'
         response_data = r.json()
 
         # validate response data
@@ -779,6 +781,8 @@ class TestThreatIntelligence:
         helper_ti = self.ti_helper.create_indicator()
 
         r = helper_ti.add_label(label='TLP:GREEN')
+        if r is None:
+            assert False, 'Failed to add label'
         response_data = r.json()
 
         # assert response
@@ -790,6 +794,8 @@ class TestThreatIntelligence:
         helper_ti = self.ti_helper.create_indicator()
 
         r = helper_ti.add_tag(request.node.name)
+        if r is None:
+            assert False, 'Failed to add tag'
         response_data = r.json()
 
         # assert response
@@ -802,11 +808,11 @@ class TestThreatIntelligence:
 
         # indicator for delete
         indicator_data = {
-            self.indicator_field_arg: helper_ti.indicator,
+            self.indicator_field_arg: helper_ti.indicator,  # type: ignore
             'indicator_type': self.indicator_type,
             'owner': helper_ti.owner,
         }
-        ti = self.ti.indicator(**indicator_data)
+        ti = self.ti.indicator(**indicator_data)  # type: ignore
         r = ti.delete()
         response_data = r.json()
 
@@ -820,11 +826,11 @@ class TestThreatIntelligence:
 
         # retrieve the indicator
         indicator_data = {
-            self.indicator_field_arg: helper_ti.indicator,
+            self.indicator_field_arg: helper_ti.indicator,  # type: ignore
             'indicator_type': self.indicator_type,
             'owner': helper_ti.owner,
         }
-        ti = self.ti.indicator(**indicator_data)
+        ti = self.ti.indicator(**indicator_data)  # type: ignore
         r = ti.single()
         response_data = r.json()
         ti_data = response_data.get('data', {}).get(ti.api_entity)
@@ -838,9 +844,9 @@ class TestThreatIntelligence:
             f"confidence value ({ti_data.get('confidence')}) doe not match"
             f'expected value of ({helper_ti.confidence})'
         )
-        assert ti_data.get(self.indicator_field) == helper_ti.indicator, (
+        assert ti_data.get(self.indicator_field) == helper_ti.indicator, (  # type: ignore
             f'indicator value ({ti_data.get(self.indicator_field)}) doe not match'
-            f'expected value of ({helper_ti.indicator})'
+            f'expected value of ({helper_ti.indicator})'  # type: ignore
         )
         assert ti_data.get('rating') == helper_ti.rating, (
             f"rating value ({ti_data.get('rating')}) doe not match"
@@ -861,11 +867,11 @@ class TestThreatIntelligence:
 
         # retrieve the indicator
         indicator_data = {
-            self.indicator_field_arg: helper_ti.indicator,
+            self.indicator_field_arg: helper_ti.indicator,  # type: ignore
             'indicator_type': self.indicator_type,
             'owner': helper_ti.owner,
         }
-        ti = self.ti.indicator(**indicator_data)
+        ti = self.ti.indicator(**indicator_data)  # type: ignore
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
         r = ti.single(params=parameters)
         response_data = r.json()
@@ -880,9 +886,9 @@ class TestThreatIntelligence:
             f"confidence value ({ti_data.get('confidence')}) doe not match"
             f'expected value of ({helper_ti.confidence})'
         )
-        assert ti_data.get(self.indicator_field) == helper_ti.indicator, (
+        assert ti_data.get(self.indicator_field) == helper_ti.indicator, (  # type: ignore
             f'indicator value ({ti_data.get(self.indicator_field)}) doe not match'
-            f'expected value of ({helper_ti.indicator})'
+            f'expected value of ({helper_ti.indicator})'  # type: ignore
         )
         assert ti_data.get('rating') == helper_ti.rating, (
             f"rating value ({ti_data.get('rating')}) doe not match"
@@ -914,11 +920,11 @@ class TestThreatIntelligence:
 
         # retrieve the indicator
         indicator_data = {
-            self.indicator_field_arg: helper_ti.indicator,
+            self.indicator_field_arg: helper_ti.indicator,  # type: ignore
             'indicator_type': self.indicator_type,
             'owner': helper_ti.owner,
         }
-        ti = self.ti.indicator(**indicator_data)
+        ti = self.ti.indicator(**indicator_data)  # type: ignore
         for attribute in ti.attributes():
             if attribute.get('value') == request.node.name:
                 break
@@ -932,11 +938,11 @@ class TestThreatIntelligence:
 
         # retrieve the indicator
         indicator_data = {
-            self.indicator_field_arg: helper_ti.indicator,
+            self.indicator_field_arg: helper_ti.indicator,  # type: ignore
             'indicator_type': self.indicator_type,
             'owner': helper_ti.owner,
         }
-        ti = self.ti.indicator(**indicator_data)
+        ti = self.ti.indicator(**indicator_data)  # type: ignore
         for label in ti.labels():
             if label.get('name') == label_data.get('label'):
                 break
@@ -950,11 +956,11 @@ class TestThreatIntelligence:
 
         # retrieve the indicator
         indicator_data = {
-            self.indicator_field_arg: helper_ti.indicator,
+            self.indicator_field_arg: helper_ti.indicator,  # type: ignore
             'indicator_type': self.indicator_type,
             'owner': helper_ti.owner,
         }
-        ti = self.ti.indicator(**indicator_data)
+        ti = self.ti.indicator(**indicator_data)  # type: ignore
         for tag in ti.tags():
             if tag.get('name') == request.node.name:
                 break
@@ -967,13 +973,13 @@ class TestThreatIntelligence:
 
         # update indicator
         indicator_data = {
-            self.indicator_field_arg: helper_ti.indicator,
+            self.indicator_field_arg: helper_ti.indicator,  # type: ignore
             'confidence': 100,
             'indicator_type': self.indicator_type,
             'owner': self.owner,
             'rating': 5,
         }
-        ti = self.ti.indicator(**indicator_data)
+        ti = self.ti.indicator(**indicator_data)  # type: ignore
         r = ti.update()
         response_data = r.json()
         ti_data = response_data.get('data', {}).get(ti.api_entity)
@@ -995,9 +1001,9 @@ class TestThreatIntelligence:
             f"confidence value ({ti_data.get('confidence')}) doe not match"
             f"expected value of ({indicator_data.get('confidence')})"
         )
-        assert ti_data.get(self.indicator_field) == helper_ti.indicator, (
+        assert ti_data.get(self.indicator_field) == helper_ti.indicator, (  # type: ignore
             f'indicator value ({ti_data.get(self.indicator_field)}) doe not match'
-            f'expected value of ({helper_ti.indicator})'
+            f'expected value of ({helper_ti.indicator})'  # type: ignore
         )
         assert ti_data.get('rating') == indicator_data.get('rating'), (
             f"rating value ({ti_data.get('rating')}) doe not match"

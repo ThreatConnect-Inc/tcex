@@ -11,9 +11,10 @@ from requests import Session
 # first-party
 from tcex.backports import cached_property
 from tcex.exit.error_codes import handle_error
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 
 # get tcex logger
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 
 class ThreatIntelUtils:
@@ -103,7 +104,7 @@ class ThreatIntelUtils:
         Returns:
             A list of ThreatConnect Group types.
         """
-        return self.group_types_data.keys()
+        return list(self.group_types_data.keys())
 
     @property
     def group_types_data(self) -> dict[str, dict]:
@@ -297,9 +298,7 @@ class ThreatIntelUtils:
         return resource_type
 
     @staticmethod
-    def safe_group_name(
-        group_name: str, group_max_length: int | None = 100, ellipsis: bool = True
-    ) -> str:
+    def safe_group_name(group_name: str, group_max_length: int = 100, ellipsis: bool = True) -> str:
         """Truncate group name to match limit breaking on space and optionally add an ellipsis.
 
         .. note:: Currently the ThreatConnect group name limit is 100 characters.
@@ -354,7 +353,7 @@ class ThreatIntelUtils:
             (str): The urlencoded string.
         """
         if url is not None:
-            url: str = quote(url, safe='~')
+            url = quote(url, safe='~')
         return url
 
     @property

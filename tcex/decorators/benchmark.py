@@ -2,12 +2,17 @@
 # standard library
 import datetime
 import logging
+from collections.abc import Callable
+from typing import Any
 
 # third-party
 import wrapt
 
+# first-party
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
+
 # get tcex logger
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 
 class Benchmark:
@@ -29,9 +34,9 @@ class Benchmark:
 
     def __init__(
         self,
-        microseconds: int | None = 0,
-        milliseconds: int | None = 0,
-        seconds: int | None = 0,
+        microseconds: int = 0,
+        milliseconds: int = 0,
+        seconds: int = 0,
     ):
         """Initialize Class properties."""
         self.microseconds = microseconds
@@ -39,7 +44,7 @@ class Benchmark:
         self.seconds = seconds
 
     @wrapt.decorator
-    def __call__(self, wrapped, instance, args, kwargs):
+    def __call__(self, wrapped: Callable, instance: Callable, args: list, kwargs: dict) -> Any:
         """Implement __call__ function for decorator.
 
         Args:
@@ -56,7 +61,7 @@ class Benchmark:
             function: The custom decorator function.
         """
 
-        def benchmark(_, *args, **kwargs):
+        def benchmark(_, *args: list, **kwargs: dict) -> Any:
             """Iterate over data, calling the decorated function for each value.
 
             Args:

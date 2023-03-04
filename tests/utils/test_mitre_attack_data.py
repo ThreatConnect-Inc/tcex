@@ -8,7 +8,7 @@ class testMitreAttackTechniques:
         """Test the mapping between MITRE ATT&CK technique ID and TC tags.
 
         Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+            tcex (fixture): An instantiated instance of TcEx object.
         """
         technique_id = 'T1001'
         assert tcex.utils.mitre_attack.technique_id_to_tags(technique_id) == [
@@ -48,7 +48,7 @@ class testMitreAttackTechniques:
         """Test a string that is not an IP address
 
         Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+            tcex (fixture): An instantiated instance of TcEx object.
         """
         technique_id = 'T5555'
         assert tcex.utils.mitre_attack.technique_id_to_tags(technique_id) == []
@@ -64,7 +64,7 @@ class testMitreAttackFindTacticAbbreviation:
         """Test the mapping between mitre attack tactic names and their abbreviations
 
         Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+            tcex (fixture): An instantiated instance of TcEx object.
         """
         assert (
             tcex.utils.mitre_attack.tactic_name_abbreviation('Establish&MaintainInfrastructure')

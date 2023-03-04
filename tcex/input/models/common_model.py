@@ -1,4 +1,5 @@
 """Model Definition"""
+
 # first-party
 from tcex.input.models.api_model import ApiModel
 from tcex.input.models.batch_model import BatchModel
@@ -8,4 +9,4 @@ from tcex.input.models.proxy_model import ProxyModel
 
 
 class CommonModel(ApiModel, BatchModel, LoggingModel, PathModel, ProxyModel):
-    """Common Model"""
+    """Model Definition"""

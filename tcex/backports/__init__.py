@@ -2,15 +2,8 @@
 # flake8: noqa
 # standard library
 from collections.abc import Callable
+from functools import cached_property as functool_cached_property
 from typing import Generic, TypeVar
-
-try:
-    # standard library
-    from functools import cached_property as functool_cached_property
-except ImportError:
-    # third-party
-    from backports.cached_property import cached_property as functool_cached_property
-
 
 R = TypeVar('R')
 
@@ -28,7 +21,7 @@ class cached_property(functool_cached_property, Generic[R]):
     def __get__(self, instance, owner=None) -> R:
         """Override method."""
         self.instances.append(instance)
-        return super().__get__(instance, owner)
+        return super().__get__(instance, owner)  # type: ignore
 
     @staticmethod
     def _reset():

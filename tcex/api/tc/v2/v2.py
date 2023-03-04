@@ -30,12 +30,12 @@ class V2:
     def batch(
         self,
         owner: str,
-        action: str | None = 'Create',
-        attribute_write_type: str | None = 'Replace',
+        action: str = 'Create',
+        attribute_write_type: str = 'Replace',
         halt_on_error: bool = False,
         playbook_triggers_enabled: bool = False,
-        tag_write_type: str | None = 'Replace',
-        security_label_write_type: str | None = 'Replace',
+        tag_write_type: str = 'Replace',
+        security_label_write_type: str = 'Replace',
     ) -> Batch:
         """Return instance of Batch
 
@@ -63,12 +63,12 @@ class V2:
     def batch_submit(
         self,
         owner: str,
-        action: str | None = 'Create',
-        attribute_write_type: str | None = 'Replace',
+        action: str = 'Create',
+        attribute_write_type: str = 'Replace',
         halt_on_error: bool = False,
         playbook_triggers_enabled: bool = False,
-        tag_write_type: str | None = 'Replace',
-        security_label_write_type: str | None = 'Replace',
+        tag_write_type: str = 'Replace',
+        security_label_write_type: str = 'Replace',
     ) -> BatchSubmit:
         """Return instance of Batch
 

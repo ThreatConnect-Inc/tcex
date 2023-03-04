@@ -222,7 +222,7 @@ class AppSpecYml:
     def _migrate_schema_100_to_110_app(contents: dict):
         """Migrate 1.0.0 schema to 1.1.0 schema."""
         # remove "app" top level
-        for k, v in dict(contents).get('app').items():
+        for k, v in dict(contents).get('app', {}).items():
             contents[k] = v
 
         # assure minServerVersion exists
@@ -263,7 +263,7 @@ class AppSpecYml:
     def _migrate_schema_100_to_110_input_groups(contents: dict):
         """Migrate 1.0.0 schema to 1.1.0 schema."""
         contents['sections'] = contents.pop('inputGroups', {})
-        for section in contents.get('sections'):
+        for section in contents.get('sections') or []:
             section['sectionName'] = section.pop('group')
             section['params'] = section.pop('inputs')
 
@@ -300,7 +300,7 @@ class AppSpecYml:
         """Migrate 1.0.0 schema to 1.1.0 schema."""
         outputs = []
         contents['outputData'] = contents.pop('outputGroups', {})
-        for display, group in contents.get('outputData').items():
+        for display, group in contents.get('outputData', {}).items():
             output_data = {'display': display, 'outputVariables': []}
 
             # fix schema when output type is assumed
@@ -344,7 +344,7 @@ class AppSpecYml:
         release_notes = []
         # need to see if this exist, older apps it might not
         if contents.get('releaseNotes'):
-            for k, v in contents.get('releaseNotes').items():
+            for k, v in contents.get('releaseNotes', {}).items():
                 release_notes.append({'version': k, 'notes': v})
         contents['releaseNotes'] = release_notes
 
@@ -470,7 +470,7 @@ class AppSpecYml:
 
         # inputs / outputs
         asy_data_ordered['sections'] = asy_data.get('sections')
-        if asy_data.get('runtimeLevel').lower() not in (
+        if asy_data['runtimeLevel'].lower() not in (
             'apiservice',
             'feedapiservice',
             'organization',
@@ -493,7 +493,7 @@ class AppSpecYml:
 
         return asy_data_ordered
 
-    def fix_contents(self, contents: dict) -> dict:
+    def fix_contents(self, contents: dict):
         """Fix missing data"""
         # fix for null appId value
         if 'appId' in contents and contents.get('appId') is None:
@@ -507,7 +507,8 @@ class AppSpecYml:
         if contents.get('outputPrefix') is None and 'advancedRequest' in contents.get(
             'features', []
         ):
-            contents['outputPrefix'] = self.ij.model.playbook.output_prefix
+            if self.ij.model.playbook is not None:
+                contents['outputPrefix'] = self.ij.model.playbook.output_prefix
 
     def rewrite_contents(self, contents: dict):
         """Rewrite app_spec.yml file."""

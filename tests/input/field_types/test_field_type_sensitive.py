@@ -1,4 +1,7 @@
 """Testing TcEx Input module field types."""
+# standard library
+from collections.abc import Callable
+
 # third-party
 import pytest
 from pydantic import BaseModel, ValidationError
@@ -50,26 +53,26 @@ class TestInputsFieldTypeSensitive(InputTest):
         input_type: str,
         optional: bool,
         fail_test: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test field type."""
 
+        class PytestModelRequired(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: Sensitive
+
+        class PytestModelOptional(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: Sensitive | None
+
+        pytest_model = PytestModelOptional
         if optional is False:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: Sensitive
-
-        else:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: Sensitive | None
+            pytest_model = PytestModelRequired
 
         self._type_validation(
-            PytestModel,
+            pytest_model,
             input_name='my_data',
             input_value=input_value,
             input_type=input_type,
@@ -129,35 +132,36 @@ class TestInputsFieldTypeSensitive(InputTest):
         min_length: int,
         optional: bool,
         fail_test: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test field type."""
-        if optional is False:
 
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
+        class PytestModelRequired(BaseModel):
+            """Test Model for Inputs"""
 
-                my_data: sensitive(
+            my_data: sensitive(
+                allow_empty=allow_empty,
+                max_length=max_length,
+                min_length=min_length,
+            )  # type: ignore
+
+        class PytestModelOptional(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: None | (
+                sensitive(
                     allow_empty=allow_empty,
                     max_length=max_length,
                     min_length=min_length,
                 )
+            )  # type: ignore
 
-        else:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: None | (
-                    sensitive(
-                        allow_empty=allow_empty,
-                        max_length=max_length,
-                        min_length=min_length,
-                    )
-                )
+        pytest_model = PytestModelOptional
+        if optional is False:
+            pytest_model = PytestModelRequired
 
         self._type_validation(
-            PytestModel,
+            pytest_model,
             input_name='my_data',
             input_value=input_value,
             input_type=input_type,
@@ -179,7 +183,7 @@ class TestInputsFieldTypeSensitive(InputTest):
         ],
     )
     def test_field_type_sensitive_coverage(
-        self, input_value: str, expected: str, playbook_app: 'MockApp'
+        self, input_value: str, expected: str, playbook_app: Callable[..., MockApp]
     ):
         """Test field type."""
 
@@ -189,25 +193,26 @@ class TestInputsFieldTypeSensitive(InputTest):
             my_sensitive: Sensitive
 
         config_data = {'my_sensitive': input_value}
-        tcex: 'TcEx' = playbook_app(config_data=config_data).tcex
+        tcex: TcEx = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
 
-        assert '****' in str(tcex.inputs.model.my_sensitive)
-        assert tcex.inputs.model.my_sensitive.value == expected
-        assert len(tcex.inputs.model.my_sensitive) == len(expected)
-        assert isinstance(tcex.inputs.model.my_sensitive, Sensitive)
+        assert '****' in str(tcex.inputs.model.my_sensitive)  # type: ignore
+        assert tcex.inputs.model.my_sensitive.value == expected  # type: ignore
+        assert len(tcex.inputs.model.my_sensitive) == len(expected)  # type: ignore
+        assert isinstance(tcex.inputs.model.my_sensitive, Sensitive)  # type: ignore
 
         # code coverage -> def:__modify_schema__
         tcex.inputs.model.schema()
 
         # code coverage -> def:validate->return value
-        tcex.inputs.model.my_sensitive = tcex.inputs.model.my_sensitive
+        tcex.inputs.model.my_sensitive = tcex.inputs.model.my_sensitive  # type: ignore
 
         # code coverage -> def:__repr__
-        tcex.inputs.model.my_sensitive.__repr__()  # pylint: disable=unnecessary-dunder-call
+        # pylint: disable=unnecessary-dunder-call
+        tcex.inputs.model.my_sensitive.__repr__()  # type: ignore
 
         # code coverage -> Sensitive.__init__
-        Sensitive(tcex.inputs.model.my_sensitive)
+        Sensitive(tcex.inputs.model.my_sensitive)  # type: ignore
 
     @pytest.mark.parametrize(
         'input_value',
@@ -219,7 +224,9 @@ class TestInputsFieldTypeSensitive(InputTest):
             ({}),
         ],
     )
-    def test_field_type_sensitive_fail_coverage(self, input_value: str, playbook_app: 'MockApp'):
+    def test_field_type_sensitive_fail_coverage(
+        self, input_value: str, playbook_app: Callable[..., MockApp]
+    ):
         """Test field type."""
 
         class PytestModel(BaseModel):
@@ -228,7 +235,7 @@ class TestInputsFieldTypeSensitive(InputTest):
             my_sensitive: Sensitive
 
         config_data = {'my_sensitive': input_value}
-        tcex: 'TcEx' = playbook_app(config_data=config_data).tcex
+        tcex: TcEx = playbook_app(config_data=config_data).tcex
 
         with pytest.raises(ValidationError) as exc_info:
             tcex.inputs.add_model(PytestModel)

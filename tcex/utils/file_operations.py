@@ -42,10 +42,10 @@ class FileOperations:
 
     @staticmethod
     def write_file(
-        content: bytes | str,
+        content: bytes | dict | list | str,
         fqfn: Path | str,
-        mode: str | None = 'w',
-        encoding: str | None = 'utf-8',
+        mode: str = 'w',
+        encoding: str | None = None,
         compress_level: int | None = None,
     ) -> Path:
         """Write file content to a out directory, compressing if compress level provided.
@@ -56,13 +56,18 @@ class FileOperations:
         Args:
             content: The file content.
             fqfn: A fully qualified file name.
-            mode: The write mode ('w' or 'wb').
+            mode: The write mode ('w', 'wb', 'wt').
             encoding: The encoding to use when writing the file.
             compress_level: The compression level to use when writing the file.
 
         Returns:
             Path: Fully qualified path name for the file.
         """
+        # encoding is not supported when writing binary data
+        encoding = encoding or 'utf-8'
+        if mode == 'wb':
+            encoding = None
+
         content = json.dumps(content) if isinstance(content, (dict, list)) else content
         fqfn = fqfn if isinstance(fqfn, Path) else Path(fqfn)
 
@@ -71,14 +76,15 @@ class FileOperations:
 
         # write file, either normal or compressed
         if compress_level is not None:
-            mode = 'wt'
+            # overwrite mode if compressing
+            mode = 'wb' if isinstance(content, bytes) else 'wt'
             with gzip.open(
                 fqfn,
                 mode,
                 compresslevel=compress_level,
                 encoding=encoding,
             ) as fh:
-                fh.write(content)
+                fh.write(content)  # type: ignore
         else:
             with fqfn.open(mode, encoding=encoding) as fh:
                 fh.write(content)
@@ -100,13 +106,13 @@ class FileOperations:
         Returns:
             Path: Fully qualified path name for the file.
         """
-        return self.write_file(content, self._fqfn_out(filename), mode='wb', encoding=None)
+        return self.write_file(content, self._fqfn_out(filename), mode='wb')
 
     def write_out_compressed_file(
         self,
         content: bytes | dict | str,
         filename: Path | str | None = None,
-        compress_level: int | None = 9,
+        compress_level: int = 9,
     ) -> Path:
         """Write content to a file in the defined "out" directory.
 
@@ -126,8 +132,8 @@ class FileOperations:
         self,
         content: bytes | dict | str,
         filename: str | None = None,
-        mode: str | None = 'w',
-        encoding: str | None = 'utf-8',
+        mode: str = 'w',
+        encoding: str = 'utf-8',
         compress_level: int | None = None,
     ) -> Path:
         """Write content to a file in the defined "out" directory.
@@ -145,7 +151,8 @@ class FileOperations:
         Returns:
             Path: Fully qualified path name for the file.
         """
-        encoding = encoding if mode != 'wb' else None
+        # TODO: [high] fix this type ignore
+        encoding = encoding if mode != 'wb' else None  # type: ignore
         return self.write_file(content, self._fqfn_out(filename), mode, encoding, compress_level)
 
     def write_temp_binary_file(
@@ -168,7 +175,7 @@ class FileOperations:
         self,
         content: bytes | dict | str,
         filename: str | None = None,
-        compress_level: int | None = 9,
+        compress_level: int = 9,
     ) -> Path:
         """Write content to a file in the defined "temp" directory.
 
@@ -188,8 +195,8 @@ class FileOperations:
         self,
         content: bytes | dict | str,
         filename: Path | str | None = None,
-        mode: str | None = 'w',
-        encoding: str | None = 'utf-8',
+        mode: str = 'w',
+        encoding: str = 'utf-8',
         compress_level: int | None = None,
     ) -> Path:
         """Write content to a file in the defined "temp" directory.
@@ -204,5 +211,6 @@ class FileOperations:
         Returns:
             str: Fully qualified path name for the file.
         """
-        encoding = encoding if mode != 'wb' else None
+        # TODO: [high] fix this type ignore
+        encoding = encoding if mode != 'wb' else None  # type: ignore
         return self.write_file(content, self._fqfn_temp(filename), mode, encoding, compress_level)

@@ -1,4 +1,8 @@
 """App Decorators Module."""
+# standard library
+from collections.abc import Callable
+from typing import Any
+
 # third-party
 import wrapt
 
@@ -23,35 +27,35 @@ class Output:
             return data.lowercase()
 
     Args:
-        attribute (str): The name of the App attribute to write data.
-        overwrite (bool): When True and the method is called more than once the previous value
+        attribute: The name of the App attribute to write data.
+        overwrite: When True and the method is called more than once the previous value
             will be overwritten.
     """
 
-    def __init__(self, attribute, overwrite=False):
+    def __init__(self, attribute: str, overwrite: bool = False):
         """Initialize Class properties"""
         self.attribute = attribute
         self.overwrite = overwrite
 
     @wrapt.decorator
-    def __call__(self, wrapped, instance, args, kwargs):
+    def __call__(self, wrapped: Callable, instance: Callable, args: list, kwargs: dict) -> Any:
         """Implement __call__ function for decorator.
 
         Args:
-            wrapped (callable): The wrapped function which in turns
+            wrapped: The wrapped function which in turns
                 needs to be called by your wrapper function.
-            instance (App): The object to which the wrapped
+            instance): The object to which the wrapped
                 function was bound when it was called.
-            args (list): The list of positional arguments supplied
+            args: The list of positional arguments supplied
                 when the decorated function was called.
-            kwargs (dict): The dictionary of keyword arguments
+            kwargs: The dictionary of keyword arguments
                 supplied when the decorated function was called.
 
         Returns:
-            function: The custom decorator function.
+            callable: The custom decorator function.
         """
 
-        def output(app, *args, **kwargs):
+        def output(app, *args: list, **kwargs: dict) -> Any:
             """Call the function and store or append return value.
 
             Args:

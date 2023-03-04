@@ -1,6 +1,6 @@
 """Test the TcEx API Module."""
-# third-party
-# import pytest
+# standard library
+from collections.abc import Callable
 
 # third-party
 import pytest
@@ -13,14 +13,11 @@ from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 class TestGroups(TestV3):
     """Test TcEx API Interface."""
 
-    v3 = None
+    v3_helper = V3Helper('groups')
 
-    def setup_method(self, method: callable):
+    def setup_method(self, method: Callable):  # pylint: disable=arguments-differ
         """Configure setup before all tests."""
-        print('')  # ensure any following print statements will be on new line
-        self.v3_helper = V3Helper('groups')
-        self.v3 = self.v3_helper.v3
-        self.tcex = self.v3_helper.tcex
+        super().setup_method()
 
         # remove an previous groups with the next test case name as a tag
         groups = self.tcex.v3.groups()
@@ -201,7 +198,7 @@ class TestGroups(TestV3):
 
         assert asset.as_entity.get('type') == 'Victim Asset : EmailAddress'
         assert asset.as_entity.get('value') == 'Trojan : malware@example.com'
-
+        assert staged_victim.model.assets.data is not None, 'No assets found'
         asset = staged_victim.model.assets.data[0]
 
         staged_group.stage_associated_victim_asset(asset)

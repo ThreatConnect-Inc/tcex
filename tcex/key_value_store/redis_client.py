@@ -26,9 +26,9 @@ class RedisClient:
 
     def __init__(
         self,
-        host: str | None = 'localhost',
-        port: int | None = 6379,
-        db: int | None = 0,
+        host: str = 'localhost',
+        port: int = 6379,
+        db: int = 0,
         blocking_pool: bool = False,
         **kwargs
     ):

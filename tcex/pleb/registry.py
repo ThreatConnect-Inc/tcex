@@ -99,7 +99,7 @@ class Registry(Container):
             except KeyError:
                 pass
 
-    def _add(self, type_or_name: str | type, value: type | tuple[bool, Callable]):
+    def _add(self, type_or_name: str | type, value: Callable | type | tuple[bool, Callable]):
         key = type_or_name if isinstance(type_or_name, str) else type_or_name.__name__
         if key in self._values:
             raise RuntimeError(f'A service has already been provided for {key}.')
@@ -140,10 +140,8 @@ class Registry(Container):
         self._values = {}
 
     @staticmethod
-    def factory(type_or_name: type[T], singleton: bool = False) -> Callable[..., T]:
+    def factory(type_or_name: str | type, singleton: bool = False) -> Callable[[T], T]:
         """Decorate a function that can be treated as a factory that provides a service.
-
-        Note: does NOT work with @property.
 
         Args:
             type_or_name: the concrete type of the provided service, or a name (MyClass or
@@ -152,7 +150,7 @@ class Registry(Container):
             will be invoked every time the service is requested.
         """
 
-        def _decorator(original: Callable[..., T]) -> Callable[..., T]:
+        def _decorator(original: T) -> T:
             setattr(original, 'factory_provider', (type_or_name, singleton))
             return original
 

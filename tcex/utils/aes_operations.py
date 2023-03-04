@@ -7,7 +7,9 @@ class AesOperations:
     """TcEx Utilities AES Operations Class"""
 
     @staticmethod
-    def decrypt_aes_cbc(key: bytes, ciphertext: bytes | str, iv: bytes | None = None) -> bytes:
+    def decrypt_aes_cbc(
+        key: bytes | str, ciphertext: bytes | str, iv: bytes | None = None
+    ) -> bytes:
         """Return AES CBC decrypted string.
 
         Args:
@@ -28,10 +30,10 @@ class AesOperations:
         aes_cbc_decrypt = pyaes.Decrypter(pyaes.AESModeOfOperationCBC(key, iv=iv))
         decrypted = aes_cbc_decrypt.feed(ciphertext)
         decrypted += aes_cbc_decrypt.feed()
-        return decrypted
+        return decrypted  # type: ignore
 
     @staticmethod
-    def encrypt_aes_cbc(key: bytes, plaintext: bytes | str, iv: bytes | None = None) -> bytes:
+    def encrypt_aes_cbc(key: bytes | str, plaintext: bytes | str, iv: bytes | None = None) -> bytes:
         """Return AES CBC encrypted string.
 
         Args:
@@ -56,4 +58,4 @@ class AesOperations:
         aes_cbc_encrypt = pyaes.Encrypter(pyaes.AESModeOfOperationCBC(key, iv=iv))
         encrypted = aes_cbc_encrypt.feed(plaintext)
         encrypted += aes_cbc_encrypt.feed()
-        return encrypted
+        return encrypted  # type: ignore

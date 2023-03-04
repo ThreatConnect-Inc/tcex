@@ -55,7 +55,9 @@ class SpecToolAppSpecYml(BinABC):
         """Add category."""
         _category = ''
         if any([self.ij.model.is_playbook_app, self.ij.model.is_trigger_app]):
-            _category = self.ij.model.playbook.type or ''
+            _category = ''
+            if self.ij.model.playbook and self.ij.model.playbook.type:
+                _category = self.ij.model.playbook.type
         app_spec_yml_data['category'] = _category
 
     def _add_feeds(self, app_spec_yml_data: dict):
@@ -82,7 +84,7 @@ class SpecToolAppSpecYml(BinABC):
         """Add note per action."""
         _notes_per_action = []
         param = self.ij.model.get_param('tc_action')
-        if param.valid_values:
+        if param and param.valid_values:
             for action in param.valid_values:
                 _notes_per_action.append({'action': action, 'note': ''})
 
@@ -111,7 +113,7 @@ class SpecToolAppSpecYml(BinABC):
                 for o in self.ij.model.playbook_outputs.values():
                     ljo = self.lj.model.get_output(o.name)
                     if ljo.display is not None and ljo.name is not None:
-                        _output_data_temp.setdefault(o.display or '1', []).append(o.name)
+                        _output_data_temp.setdefault(ljo.display or '1', []).append(o.name)
                     else:
                         _output_data_temp.setdefault('1', []).append(o.name)
             else:
@@ -123,7 +125,9 @@ class SpecToolAppSpecYml(BinABC):
                 _output_variables = []
                 for name in names:
                     if not self._is_advanced_request_output(name):
-                        _output_variables.append(self.ij.model.get_output(name).dict(by_alias=True))
+                        output_variable_model = self.ij.model.get_output(name)
+                        if output_variable_model is not None:
+                            _output_variables.append(output_variable_model.dict(by_alias=True))
 
                 _output_data.append({'display': display, 'outputVariables': _output_variables})
 
@@ -131,14 +135,18 @@ class SpecToolAppSpecYml(BinABC):
 
     def _add_output_prefix(self, app_spec_yml_data: dict):
         """Add asy.outputData."""
-        if self.ij.model.is_playbook_app and self.ij.model.playbook.output_prefix:
+        if (
+            self.ij.model.is_playbook_app
+            and self.ij.model.playbook
+            and self.ij.model.playbook.output_prefix
+        ):
             app_spec_yml_data['outputPrefix'] = self.ij.model.playbook.output_prefix
 
     def _add_playbook(self, app_spec_yml_data: dict):
         """Add asy.playbook."""
         if any([self.ij.model.is_playbook_app, self.ij.model.is_trigger_app]):
             app_spec_yml_data.setdefault('playbook', {})
-            if self.ij.model.playbook.retry:
+            if self.ij.model.playbook and self.ij.model.playbook.retry:
                 app_spec_yml_data['playbook']['retry'] = self.ij.model.playbook.retry
 
     @staticmethod
@@ -156,11 +164,13 @@ class SpecToolAppSpecYml(BinABC):
         sections = []
         for section in self._current_data:
             _section_data = {'sectionName': section.get('title'), 'params': []}
-            for p in section.get('parameters', []):
-                if not self._is_advanced_request_input(p.get('name')):
-                    param = self.ij.model.get_param(p.get('name')).dict(by_alias=True)
-                    param['display'] = p.get('display')
-                    _section_data['params'].append(param)
+            for p in section.get('parameters') or []:
+                if not self._is_advanced_request_input(p['name']):
+                    param = self.ij.model.get_param(p['name'])
+                    if param is not None:
+                        param = param.dict(by_alias=True)
+                        param['display'] = p.get('display')
+                        _section_data['params'].append(param)
             sections.append(_section_data)
         app_spec_yml_data['sections'] = sections
 
@@ -195,9 +205,10 @@ class SpecToolAppSpecYml(BinABC):
 
         for section in self._current_data:
             for p in section.get('parameters', []):
-                param = self.ij.model.get_param(p.get('name')).dict(by_alias=True)
-                if param['type'].lower() == 'editchoice':
-                    return True
+                param = self.ij.model.get_param(p['name'])
+                if param is not None:
+                    if param.type.lower() == 'editchoice':
+                        return True
         return False
 
     @staticmethod
@@ -225,8 +236,9 @@ class SpecToolAppSpecYml(BinABC):
             'request.status_code',
             'request.url',
         ]:
-            if f'{self.ij.model.playbook.output_prefix}.{pattern}' == name:
-                return True
+            if self.ij.model.playbook is not None:
+                if f'{self.ij.model.playbook.output_prefix}.{pattern}' == name:
+                    return True
         return False
 
     def _add_min_tc_version(self, app_spec_yml_data: dict):

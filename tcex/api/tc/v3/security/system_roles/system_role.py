@@ -1,4 +1,7 @@
 """SystemRole / SystemRoles Object"""
+# standard library
+from collections.abc import Iterator
+
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.object_abc import ObjectABC
@@ -67,8 +70,8 @@ class SystemRoles(ObjectCollectionABC):
         self._model = SystemRolesModel(**kwargs)
         self.type_ = 'system_roles'
 
-    def __iter__(self) -> SystemRole:
-        """Iterate over CM objects."""
+    def __iter__(self) -> Iterator[SystemRole]:
+        """Return CM objects."""
         return self.iterate(base_class=SystemRole)  # type: ignore
 
     @property

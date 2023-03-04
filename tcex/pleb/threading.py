@@ -3,7 +3,10 @@
 import logging
 import threading
 
-logger = logging.getLogger('tcex')
+# first-party
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
+
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 
 class ExceptionThread(threading.Thread):

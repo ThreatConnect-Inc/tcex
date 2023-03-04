@@ -4,6 +4,7 @@ from abc import ABC
 from typing import TYPE_CHECKING
 
 # first-party
+from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tcex.utils.utils import Utils
 
 if TYPE_CHECKING:
@@ -35,6 +36,16 @@ class FilterABC(ABC):
             keywords.append(prop)
 
         return keywords
+
+    @property
+    def list_types(self) -> list[TqlOperator]:
+        """Return list of implemented TQL keywords that are list types."""
+        return [
+            TqlOperator.IN,
+            TqlOperator.NOT_IN,
+            TqlOperator.CONTAINS,
+            TqlOperator.NOT_CONTAINS,
+        ]
 
     @property
     def tql(self) -> 'Tql':

@@ -1,6 +1,6 @@
 """IndicatorAttribute / IndicatorAttributes Object"""
 # standard library
-from collections.abc import Generator
+from collections.abc import Generator, Iterator
 from typing import TYPE_CHECKING
 
 # first-party
@@ -112,8 +112,8 @@ class IndicatorAttributes(ObjectCollectionABC):
         self._model = IndicatorAttributesModel(**kwargs)
         self.type_ = 'indicator_attributes'
 
-    def __iter__(self) -> IndicatorAttribute:
-        """Iterate over CM objects."""
+    def __iter__(self) -> Iterator[IndicatorAttribute]:
+        """Return CM objects."""
         return self.iterate(base_class=IndicatorAttribute)  # type: ignore
 
     @property

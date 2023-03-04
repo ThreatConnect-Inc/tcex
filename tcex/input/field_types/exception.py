@@ -2,8 +2,11 @@
 # standard library
 import logging
 
+# first-party
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
+
 # get tcex logger
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 
 class BaseValueError(ValueError):

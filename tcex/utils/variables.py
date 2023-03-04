@@ -22,13 +22,16 @@ class StringVariable(str):
 class Variables:
     """TcEx Utilities Variables Class"""
 
-    def get_playbook_variable_model(self, variable: str) -> PlaybookVariableModel:
+    def get_playbook_variable_model(self, variable: str | None) -> PlaybookVariableModel | None:
         """Return data model of playbook variable (e.g., #App:1234:output!String)."""
+        if variable is None:
+            return None
+
         data = None
-        if variable is not None:
-            variable = variable.strip()
-            if re.match(self.variable_playbook_match, variable):
-                var = re.search(self.variable_playbook_parse, variable)
+        variable = variable.strip()
+        if re.match(self.variable_playbook_match, variable):
+            var = re.search(self.variable_playbook_parse, variable)
+            if var is not None:
                 data = PlaybookVariableModel(**var.groupdict())
         return data
 
@@ -96,7 +99,7 @@ class Variables:
         """Return compiled re pattern."""
         return re.compile(fr'^{self.variable_playbook_pattern}$')
 
-    def variable_playbook_method_name(self, variable: str) -> str:
+    def variable_playbook_method_name(self, variable: str) -> str | None:
         """Convert variable name to a valid method name.
 
         #App:9876:string.operation!String -> string_operation_string
@@ -109,9 +112,10 @@ class Variables:
             variable = variable.strip()
             if re.match(self.variable_playbook_match, variable):
                 var = re.search(self.variable_playbook_parse, variable)
-                variable_name = var.group(3).replace('.', '_').lower()
-                variable_type = var.group(4).lower()
-                method_name = f'{variable_name}_{variable_type}'
+                if var is not None:
+                    variable_name = var.group(3).replace('.', '_').lower()
+                    variable_type = var.group(4).lower()
+                    method_name = f'{variable_name}_{variable_type}'
         return method_name
 
     @property

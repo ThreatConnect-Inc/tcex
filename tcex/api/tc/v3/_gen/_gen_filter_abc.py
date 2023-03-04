@@ -90,6 +90,7 @@ class GenerateFilterABC(GenerateABC, ABC):
                     self.messages.append(f'- [{self.type_}] - ({title}) - fix NOT required.')
 
             if self.type_ == 'cases' and 'description' in filter_:
+                # fix misspelling in core data
                 miss_map = {
                     'occured': 'occurred',
                     'Threatassess': 'ThreatAssess',
@@ -133,10 +134,31 @@ class GenerateFilterABC(GenerateABC, ABC):
             f'{self.i2}"""',
         ]
         if filter_data.type.lower() in ['date', 'datetime']:
+            self.requirements['first-party'].extend(
+                [
+                    'from arrow import Arrow',
+                    'from datetime import datetime',
+                ]
+            )
             _code.extend(
                 [
                     f'''{self.i2}{filter_data.keyword.snake_case()} = self.utils.any_to_datetime'''
                     f'''({filter_data.keyword.snake_case()}).strftime('%Y-%m-%d %H:%M:%S')'''
+                ]
+            )
+
+        if 'list' in filter_data.extra.typing_type:
+            _code.extend(
+                [
+                    (
+                        f'''{self.i2}if isinstance({filter_data.keyword.snake_case()}, list) '''
+                        '''and operator not in self.list_types:'''
+                    ),
+                    f'''{self.i3}raise RuntimeError('''
+                    f'''{self.i5}'Operator must be CONTAINS, NOT_CONTAINS, IN\''''
+                    f'''{self.i5}'or NOT_IN when filtering on a list of values.\''''
+                    f'''{self.i4})''',
+                    '',
                 ]
             )
         _code.extend(

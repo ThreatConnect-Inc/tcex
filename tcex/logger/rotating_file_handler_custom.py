@@ -12,9 +12,9 @@ class RotatingFileHandlerCustom(RotatingFileHandler):
     def __init__(
         self,
         filename: str,
-        mode: str | None = 'a',
-        maxBytes: int | None = 0,
-        backupCount: int | None = 0,
+        mode: str = 'a',
+        maxBytes: int = 0,
+        backupCount: int = 0,
         encoding: str | None = None,
         delay: bool = False,
     ):

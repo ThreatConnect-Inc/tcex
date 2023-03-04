@@ -1,6 +1,8 @@
 """App Decorators Module."""
 # standard library
 import traceback
+from collections.abc import Callable
+from typing import Any
 
 # third-party
 import wrapt
@@ -36,7 +38,7 @@ class OnException:
     def __init__(
         self,
         exit_msg: str | None = None,
-        exit_enabled: bool = True,
+        exit_enabled: bool | str = True,
         write_output: bool = True,
     ):
         """Initialize Class properties"""
@@ -45,24 +47,26 @@ class OnException:
         self.write_output = write_output
 
     @wrapt.decorator
-    def __call__(self, wrapped, instance, args, kwargs):
+    def __call__(self, wrapped: Callable, instance: Callable, args: list, kwargs: dict):
         """Implement __call__ function for decorator.
 
         Args:
-            wrapped (callable): The wrapped function which in turns
+            wrapped: The wrapped function which in turns
                 needs to be called by your wrapper function.
-            instance (App): The object to which the wrapped
+            instance: The object to which the wrapped
                 function was bound when it was called.
-            args (list): The list of positional arguments supplied
+            args: The list of positional arguments supplied
                 when the decorated function was called.
-            kwargs (dict): The dictionary of keyword arguments
+            kwargs: The dictionary of keyword arguments
                 supplied when the decorated function was called.
 
         Returns:
             function: The custom decorator function.
         """
 
-        def exception(app, *args, **kwargs):  # pylint: disable=inconsistent-return-statements
+        def exception(
+            app, *args: list, **kwargs: dict
+        ) -> Any:  # pylint: disable=inconsistent-return-statements
             """Call the function and handle any exception.
 
             Args:
@@ -89,5 +93,6 @@ class OnException:
                         if hasattr(app, 'write_output'):
                             app.write_output()
                     app.tcex.exit(ExitCode.FAILURE, self.exit_msg)
+            return None
 
         return exception(instance, *args, **kwargs)

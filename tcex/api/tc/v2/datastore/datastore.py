@@ -7,9 +7,10 @@ from requests import Response, Session  # TYPE-CHECKING
 
 # first-party
 from tcex.exit.error_codes import handle_error
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 
 # get tcex logger
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 
 class DataStore:
@@ -87,7 +88,7 @@ class DataStore:
             return False
         return True
 
-    def add(self, rid: str, data: dict, raise_on_error: bool = True) -> dict:
+    def add(self, rid: str, data: dict, raise_on_error: bool = True) -> dict | None:
         """Write data to the DataStore. Alias for post() method.
 
         Args:
@@ -100,7 +101,7 @@ class DataStore:
         """
         return self.post(rid, data, raise_on_error)
 
-    def delete(self, rid: str, raise_on_error: bool = True) -> dict:
+    def delete(self, rid: str, raise_on_error: bool = True) -> dict | None:
         """Delete a record from the index using provide Id.
 
         **Example Response**
@@ -129,13 +130,13 @@ class DataStore:
         Returns:
             dict : The response data.
         """
-        response_data = None
+        response_data: dict | None = None
         headers = {'Content-Type': 'application/json', 'DB-Method': 'DELETE'}
         url = f'/v2/exchange/db/{self.domain}/{self.data_type}/{rid}'
         r: 'Response' = self.session_tc.post(url, headers=headers)
         self.log.debug(f'datastore delete status code: {r.status_code}')
         if r.ok and 'application/json' in r.headers.get('content-type', ''):
-            response_data: dict = r.json()
+            response_data = r.json()
         else:
             error: str = r.text or r.reason
             handle_error(
@@ -150,7 +151,7 @@ class DataStore:
         rid: str | None = None,
         data: dict | None = None,
         raise_on_error: bool = True,
-    ) -> dict:
+    ) -> dict | None:
         """Get data from the DataStore.
 
         **Example Response**
@@ -176,18 +177,18 @@ class DataStore:
         Returns:
             dict : Python request response.
         """
-        response_data = None
+        response_data: dict | None = None
         headers = {'Content-Type': 'application/json', 'DB-Method': 'GET'}
-        if rid is None:
-            url = f'/v2/exchange/db/{self.domain}/{self.data_type}/'
-        else:
+        url = f'/v2/exchange/db/{self.domain}/{self.data_type}/'
+        if rid is not None:
             url = f'/v2/exchange/db/{self.domain}/{self.data_type}/{rid}'
-        r: 'Response' = self.session_tc.post(url, json=data, headers=headers)
+
+        r: Response = self.session_tc.post(url, json=data, headers=headers)
         self.log.debug(f'datastore get status code: {r.status_code}')
         if 'application/json' in r.headers.get('content-type', ''):
             # as long as the content is JSON set the value
             try:
-                response_data: dict = r.json()
+                response_data = r.json()
             except Exception as e:  # pragma: no cover
                 # This issue should be addressed by core in a future release.
                 self.log.warning(
@@ -203,7 +204,7 @@ class DataStore:
             )
         return response_data
 
-    def post(self, rid: str, data: str, raise_on_error: bool = True) -> dict:
+    def post(self, rid: str, data: dict, raise_on_error: bool = True) -> dict | None:
         """Write data to the DataStore.
 
         **Example Response**
@@ -234,19 +235,19 @@ class DataStore:
         Returns:
             dict : The response data.
         """
-        response_data = None
+        response_data: dict | None = None
         headers = {'Content-Type': 'application/json', 'DB-Method': 'POST'}
         url = f'/v2/exchange/db/{self.domain}/{self.data_type}/'
         if rid is not None:
             url = f'{url}{rid}'
 
-        r: 'Response' = self.session_tc.post(url, json=data, headers=headers)
+        r: Response = self.session_tc.post(url, json=data, headers=headers)
         self.log.debug(f'datastore post status code: {r.status_code}')
 
         if r.ok and 'application/json' in r.headers.get('content-type', ''):
-            response_data: dict = r.json()
+            response_data = r.json()
         else:
-            error: str = r.text or r.reason
+            error = r.text or r.reason
             handle_error(
                 code=805,
                 message_values=['post', r.status_code, error],
@@ -254,7 +255,7 @@ class DataStore:
             )
         return response_data
 
-    def put(self, rid: str, data: dict, raise_on_error: bool = True) -> dict:
+    def put(self, rid: str, data: dict, raise_on_error: bool = True) -> dict | None:
         """Update the data for the provided Id.
 
         **Example Response**
@@ -284,7 +285,7 @@ class DataStore:
         Returns:
             dict : The response dict.
         """
-        response_data = None
+        response_data: dict | None = None
         headers = {'Content-Type': 'application/json', 'DB-Method': 'PUT'}
         url = f'/v2/exchange/db/{self.domain}/{self.data_type}/{rid}'
 
@@ -292,7 +293,7 @@ class DataStore:
         self.log.debug(f'datastore put status code: {r.status_code}')
 
         if r.ok and 'application/json' in r.headers.get('content-type', ''):
-            response_data: dict = r.json()
+            response_data = r.json()
         else:
             error: str = r.text or r.reason
             handle_error(
@@ -302,7 +303,7 @@ class DataStore:
             )
         return response_data
 
-    def update(self, rid: str, data: dict, raise_on_error: bool = True) -> dict:
+    def update(self, rid: str, data: dict, raise_on_error: bool = True) -> dict | None:
         """Update the for the provided Id. Alias for put() method.
 
         Args:

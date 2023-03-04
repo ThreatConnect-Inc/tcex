@@ -1,4 +1,7 @@
 """WorkflowTemplate / WorkflowTemplates Object"""
+# standard library
+from collections.abc import Iterator
+
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.object_abc import ObjectABC
@@ -84,8 +87,8 @@ class WorkflowTemplates(ObjectCollectionABC):
         self._model = WorkflowTemplatesModel(**kwargs)
         self.type_ = 'workflow_templates'
 
-    def __iter__(self) -> WorkflowTemplate:
-        """Iterate over CM objects."""
+    def __iter__(self) -> Iterator[WorkflowTemplate]:
+        """Return CM objects."""
         return self.iterate(base_class=WorkflowTemplate)  # type: ignore
 
     @property

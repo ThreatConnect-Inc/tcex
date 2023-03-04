@@ -1,4 +1,7 @@
 """Testing TcEx Input module field types."""
+# standard library
+from collections.abc import Callable
+
 # third-party
 import pytest
 from pydantic import BaseModel, ValidationError
@@ -22,7 +25,7 @@ class TestInputsFieldTypeChoice(InputTest):
         cached_property._reset()
 
     @staticmethod
-    def test_field_type_choice(playbook_app: 'MockApp'):
+    def test_field_type_choice(playbook_app: Callable[..., MockApp]):
         """Test Choice field type with string input.
 
         Args:
@@ -35,12 +38,12 @@ class TestInputsFieldTypeChoice(InputTest):
             my_choice: Choice
 
         config_data = {'my_choice': 'choice_1'}
-        tcex: 'TcEx' = playbook_app(config_data=config_data).tcex
+        tcex: TcEx = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
-        assert tcex.inputs.model.my_choice == 'choice_1'
+        assert tcex.inputs.model.my_choice == 'choice_1'  # type: ignore
 
     @staticmethod
-    def test_field_type_choice_wrapped_with_optional(playbook_app: 'MockApp'):
+    def test_field_type_choice_wrapped_with_optional(playbook_app: Callable[..., MockApp]):
         """Test Choice field type with string input.
 
         Args:
@@ -53,12 +56,12 @@ class TestInputsFieldTypeChoice(InputTest):
             my_choice: Choice | None
 
         config_data = {'my_choice': None}
-        tcex: 'TcEx' = playbook_app(config_data=config_data).tcex
+        tcex: TcEx = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
-        assert tcex.inputs.model.my_choice is None
+        assert tcex.inputs.model.my_choice is None  # type: ignore
 
     @staticmethod
-    def test_field_type_choice_error_on_none(playbook_app: 'MockApp'):
+    def test_field_type_choice_error_on_none(playbook_app: Callable[..., MockApp]):
         """Test Choice field type with string input.
 
         Args:
@@ -71,14 +74,14 @@ class TestInputsFieldTypeChoice(InputTest):
             my_choice: Choice
 
         config_data = {'my_choice': None}
-        tcex: 'TcEx' = playbook_app(config_data=config_data).tcex
+        tcex: TcEx = playbook_app(config_data=config_data).tcex
         with pytest.raises(ValidationError) as exc_info:
             tcex.inputs.add_model(PytestModel)
 
         assert 'none is not an allowed value' in str(exc_info.value)
 
     @staticmethod
-    def test_field_type_choice_assignment_test(playbook_app: 'MockApp'):
+    def test_field_type_choice_assignment_test(playbook_app: Callable[..., MockApp]):
         """Test Choice field type with string input.
 
         Args:
@@ -91,15 +94,15 @@ class TestInputsFieldTypeChoice(InputTest):
             my_choice: Choice
 
         config_data = {'my_choice': 'choice_1'}
-        tcex: 'TcEx' = playbook_app(config_data=config_data).tcex
+        tcex: TcEx = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
-        assert tcex.inputs.model.my_choice == 'choice_1'
+        assert tcex.inputs.model.my_choice == 'choice_1'  # type: ignore
 
         tcex.inputs.model.my_choice = 'choice_2'
-        assert tcex.inputs.model.my_choice == 'choice_2'
+        assert tcex.inputs.model.my_choice == 'choice_2'  # type: ignore
 
         tcex.inputs.model.my_choice = 'choice_3'
-        assert tcex.inputs.model.my_choice == 'choice_3'
+        assert tcex.inputs.model.my_choice == 'choice_3'  # type: ignore
 
         with pytest.raises(ValidationError) as exc_info:
             tcex.inputs.model.my_choice = None
@@ -133,7 +136,7 @@ class TestInputsFieldTypeChoice(InputTest):
         expected: str,
         optional: bool,
         fail_test: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test Choice field type with string input.
 
@@ -142,22 +145,23 @@ class TestInputsFieldTypeChoice(InputTest):
         Args:
             playbook_app (fixture): An instance of MockApp.
         """
+
+        class PytestModelRequired(BaseModel):
+            """Test Model for Inputs"""
+
+            my_choice: Choice
+
+        class PytestModelOptional(BaseModel):
+            """Test Model for Inputs"""
+
+            my_choice_optional: Choice | None
+
+        pytest_model = PytestModelOptional
         if optional is False:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_choice: Choice
-
-        else:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_choice_optional: Choice | None
+            pytest_model = PytestModelRequired
 
         self._type_validation(
-            PytestModel,
+            pytest_model,
             input_name='my_choice_optional' if optional else 'my_choice',
             input_value=input_value,
             input_type='String',
@@ -206,7 +210,7 @@ class TestInputsFieldTypeChoice(InputTest):
         optional: bool,
         fail_test: bool,
         transformations: dict,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test Custom Choice field type with string input.
 
@@ -215,22 +219,23 @@ class TestInputsFieldTypeChoice(InputTest):
         Args:
             playbook_app (fixture): An instance of MockApp.
         """
+
+        class PytestModelRequired(BaseModel):
+            """Test Model for Inputs"""
+
+            my_choice: choice(value_transformations=transformations)  # type: ignore
+
+        class PytestModelOptional(BaseModel):
+            """Test Model for Inputs"""
+
+            my_choice_optional: choice(value_transformations=transformations) | None  # type: ignore
+
+        pytest_model = PytestModelOptional
         if optional is False:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_choice: choice(value_transformations=transformations)
-
-        else:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_choice_optional: choice(value_transformations=transformations) | None
+            pytest_model = PytestModelRequired
 
         self._type_validation(
-            PytestModel,
+            pytest_model,
             input_name='my_choice_optional' if optional else 'my_choice',
             input_value=input_value,
             input_type='String',

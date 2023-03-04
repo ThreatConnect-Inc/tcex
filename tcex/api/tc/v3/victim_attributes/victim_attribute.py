@@ -1,6 +1,6 @@
 """VictimAttribute / VictimAttributes Object"""
 # standard library
-from collections.abc import Generator
+from collections.abc import Generator, Iterator
 from typing import TYPE_CHECKING
 
 # first-party
@@ -112,8 +112,8 @@ class VictimAttributes(ObjectCollectionABC):
         self._model = VictimAttributesModel(**kwargs)
         self.type_ = 'victim_attributes'
 
-    def __iter__(self) -> VictimAttribute:
-        """Iterate over CM objects."""
+    def __iter__(self) -> Iterator[VictimAttribute]:
+        """Return CM objects."""
         return self.iterate(base_class=VictimAttribute)  # type: ignore
 
     @property

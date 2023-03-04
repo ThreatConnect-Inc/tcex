@@ -1,13 +1,14 @@
 """KeyValueABC class."""
 # standard library
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import Any
 
 
 class KeyValueABC(ABC):
     """Abstract base class for all KeyValue clients."""
 
-    def create(self, context: str, key: str, value: Any) -> str:
+    @abstractmethod
+    def create(self, context: str, key: str, value: Any) -> int:
         """Create key/value pair in remote KV store.
 
         Args:
@@ -19,6 +20,7 @@ class KeyValueABC(ABC):
             (string): The response from the KV store provider.
         """
 
+    @abstractmethod
     def read(self, context: str, key: str) -> Any:
         """Read data from KV store for the provided key.
 

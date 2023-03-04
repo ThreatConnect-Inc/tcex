@@ -10,12 +10,12 @@ from pydantic.fields import ModelField  # TYPE-CHECKING
 # first-party
 from tcex.input.field_types.exception import InvalidEmptyValue, InvalidLengthValue, InvalidType
 from tcex.logger.sensitive_filter import SensitiveFilter  # pylint: disable=no-name-in-module
-from tcex.utils.variables import StringVariable  # TYPE-CHECKING
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 from tcex.utils.variables import BinaryVariable
 
 # get tcex logger
 filter_sensitive = SensitiveFilter(name='sensitive_filter')
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 logger.addFilter(filter_sensitive)
 
 
@@ -80,16 +80,23 @@ class Sensitive:
         return '**********'
 
     @classmethod
-    def validate_allow_empty(cls, value: str | StringVariable, field: ModelField) -> str:
+    def validate_allow_empty(
+        cls, value: bytes | str | Self, field: ModelField
+    ) -> bytes | str | Self:
         """Raise exception if value is empty and allow_empty is False."""
         if cls.allow_empty is False:
             if isinstance(value, str) and value.replace(' ', '') == '':
                 raise InvalidEmptyValue(field_name=field.name)
-
+            if isinstance(value, bytes) and value == b'':
+                raise InvalidEmptyValue(field_name=field.name)
+            if isinstance(value, Sensitive) and value.value.replace(' ', '') == '':
+                raise InvalidEmptyValue(field_name=field.name)
         return value
 
     @classmethod
-    def validate_max_length(cls, value: str | StringVariable, field: ModelField) -> str:
+    def validate_max_length(
+        cls, value: bytes | str | Self, field: ModelField
+    ) -> bytes | str | Self:
         """Raise exception if value does not match pattern."""
         if cls.max_length is not None and len(value) > cls.max_length:
             raise InvalidLengthValue(
@@ -98,7 +105,9 @@ class Sensitive:
         return value
 
     @classmethod
-    def validate_min_length(cls, value: str | StringVariable, field: ModelField) -> str:
+    def validate_min_length(
+        cls, value: bytes | str | Self, field: ModelField
+    ) -> bytes | str | Self:
         """Raise exception if value does not match pattern."""
         if cls.min_length is not None and len(value) < cls.min_length:
             raise InvalidLengthValue(
@@ -107,7 +116,7 @@ class Sensitive:
         return value
 
     @classmethod
-    def validate_type(cls, value: str | StringVariable, field: ModelField) -> str:
+    def validate_type(cls, value: bytes | str | Self, field: ModelField) -> bytes | str | Self:
         """Raise exception if value is not a String type."""
         if not isinstance(value, (bytes, str, Sensitive)):
             raise InvalidType(
@@ -119,11 +128,14 @@ class Sensitive:
     def value(self) -> str:
         """Return the actual value."""
         if not isinstance(self._sensitive_value, (BinaryVariable, bytes)):
+            # file variables can be used for client certs, json credential,
+            # etc and the data is provided as a BinaryVariable object. This
+            # is a special case where we need to return the value as a string.
             return str(self._sensitive_value)
         return self._sensitive_value
 
     @classmethod
-    def wrap_type(cls, value: str | StringVariable) -> Self:
+    def wrap_type(cls, value: str) -> Self:
         """Raise exception if value is not a String type."""
         return cls(value)
 

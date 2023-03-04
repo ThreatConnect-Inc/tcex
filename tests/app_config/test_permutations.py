@@ -14,6 +14,14 @@ from tcex.backports import cached_property
 class TestPermutation:
     """App Config Permutations testing."""
 
+    @property
+    def tcex_test_dir(self) -> Path:
+        """Return tcex test directory."""
+        tcex_test_dir = os.getenv('TCEX_TEST_DIR')
+        if tcex_test_dir is None:
+            assert False, 'TCEX_TEST_DIR environment variable not set.'
+        return Path(tcex_test_dir)
+
     def test_dev_testing(self):
         """."""
         try:
@@ -29,33 +37,23 @@ class TestPermutation:
         # print('tj.model.template', tj.model.template)
         # permutation.permutations()
 
-    @staticmethod
-    def ij(app_type: str, app_name: str) -> InstallJson:
+    def ij(self, app_type: str, app_name: str) -> InstallJson:
         """Return install.json instance."""
         # reset singleton
         # InstallJson._instances = {}
-        tcex_test_dir = os.getenv('TCEX_TEST_DIR')
 
-        ij_fqfn = os.path.join(
-            tcex_test_dir, 'app_config', 'apps', app_type, app_name, 'install.json'
-        )
-        fqfn = Path(ij_fqfn)
+        fqfn = self.tcex_test_dir / 'app_config' / 'apps' / app_type / app_name / 'install.json'
         try:
             return InstallJson(filename=fqfn.name, path=fqfn.parent)
         except Exception as ex:
             assert False, f'Failed parsing file {fqfn.name} ({ex})'
 
-    @staticmethod
-    def lj(app_type: str, app_name: str):
+    def lj(self, app_type: str, app_name: str):
         """Return layout.json instance."""
         # reset singleton
         LayoutJson._instances = {}
-        tcex_test_dir = os.getenv('TCEX_TEST_DIR')
 
-        lj_fqfn = os.path.join(
-            tcex_test_dir, 'app_config', 'apps', app_type, app_name, 'layout.json'
-        )
-        fqfn = Path(lj_fqfn)
+        fqfn = self.tcex_test_dir / 'app_config' / 'apps' / app_type / app_name / 'layout.json'
         try:
             return LayoutJson(filename=fqfn.name, path=fqfn.parent)
         except Exception as ex:

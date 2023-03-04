@@ -11,15 +11,16 @@ from requests.adapters import DEFAULT_POOLBLOCK, DEFAULT_POOLSIZE, DEFAULT_RETRI
 from urllib3.util.retry import Retry
 
 # first-party
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 from tcex.sessions.rate_limit_handler import RateLimitHandler
 from tcex.utils.requests_to_curl import RequestsToCurl
 from tcex.utils.utils import Utils
 
 # get tcex logger
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 # disable ssl warning message
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)  # type: ignore
 
 
 def default_too_many_requests_handler(response: Response) -> float:
@@ -48,7 +49,7 @@ def default_too_many_requests_handler(response: Response) -> float:
         seconds = retry_after
 
     # handle negative values
-    if seconds < 0:
+    if isinstance(seconds, (float, int)) and seconds < 0:
         seconds = retry_after
 
     return float(seconds)
@@ -60,10 +61,10 @@ class CustomAdapter(adapters.HTTPAdapter):
     def __init__(
         self,
         rate_limit_handler: RateLimitHandler | None = None,
-        pool_connections=DEFAULT_POOLSIZE,
-        pool_maxsize=DEFAULT_POOLSIZE,
-        max_retries=DEFAULT_RETRIES,
-        pool_block=DEFAULT_POOLBLOCK,
+        pool_connections: int = DEFAULT_POOLSIZE,
+        pool_maxsize: int = DEFAULT_POOLSIZE,
+        max_retries: int = DEFAULT_RETRIES,
+        pool_block: bool = DEFAULT_POOLBLOCK,
     ):
         """Initialize CustomAdapter.
 
@@ -103,7 +104,7 @@ class CustomAdapter(adapters.HTTPAdapter):
         return response
 
     @property
-    def rate_limit_handler(self) -> RateLimitHandler:
+    def rate_limit_handler(self) -> RateLimitHandler | None:
         """Get the RateLimitHandler."""
         return self._rate_limit_handler
 
@@ -164,7 +165,7 @@ class ExternalSession(Session):
         self.retry()
 
     @property
-    def base_url(self) -> str:
+    def base_url(self) -> str | None:
         """Return the base url."""
         return self._base_url
 
@@ -204,7 +205,7 @@ class ExternalSession(Session):
         self._mask_headers = mask_bool
 
     @property
-    def mask_patterns(self) -> list:
+    def mask_patterns(self) -> list[str] | None:
         """Return property"""
         return self._mask_patterns
 
@@ -332,8 +333,8 @@ class ExternalSession(Session):
 
     def retry(
         self,
-        retries: int | None = 3,
-        backoff_factor: float | None = 0.3,
+        retries: int = 3,
+        backoff_factor: float = 0.3,
         status_forcelist: list | None = None,
         **kwargs,
     ):
@@ -360,8 +361,9 @@ class ExternalSession(Session):
         if self._custom_adapter:
             self._custom_adapter.max_retries = retry_object
         else:
+            # TODO: @cblades - max_retries is types as int and Retry is being passed
             self._custom_adapter = CustomAdapter(
-                rate_limit_handler=self.rate_limit_handler, max_retries=retry_object
+                rate_limit_handler=self.rate_limit_handler, max_retries=retry_object  # type: ignore
             )
 
         # mount the custom adapter

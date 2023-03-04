@@ -84,10 +84,10 @@ class TestUtils:
         ],
     )
     def test_playbook_tc_entity_array_pass(
-        self, variable: str, value: list[dict[str, str]], playbook: Playbook
+        self, variable: str, value: list[dict], playbook: Playbook
     ):
         """Test playbook variables."""
-        playbook.create.tc_entity_array(variable, value, when_requested=False)
+        playbook.create.tc_entity_array(variable, value, when_requested=False)  # type: ignore
         result = playbook.read.tc_entity_array(variable)
         assert result == value, f'result of ({result}) does not match ({value})'
 

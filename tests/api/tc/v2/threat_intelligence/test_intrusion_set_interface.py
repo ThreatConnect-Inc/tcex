@@ -2,17 +2,17 @@
 # standard library
 import os
 
-from .ti_helpers import TestThreatIntelligence, TIHelper
+# first-party
+from tcex.tcex import TcEx
+from tests.api.tc.v2.threat_intelligence.ti_helpers import TestThreatIntelligence, TIHelper
 
 
-class TestIntrustionSetGroups(TestThreatIntelligence):
-    """Test TcEx Instrusion Set Groups."""
+class TestIntrusionSetGroups(TestThreatIntelligence):
+    """Test TcEx Intrusion Set Groups."""
 
     group_type = 'Intrusion Set'
     owner = os.getenv('TC_OWNER')
-    ti = None
-    ti_helper = None
-    tcex = None
+    tcex: TcEx
 
     def setup_method(self):
         """Configure setup before all tests."""

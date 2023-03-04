@@ -1,7 +1,7 @@
 """Model Validator/Modifier"""
 # standard library
 import operator
-from collections.abc import Generator
+from collections.abc import Callable
 from typing import Any
 
 # third-party
@@ -17,7 +17,7 @@ def always_array(
     include_empty: bool = False,
     include_null: bool = False,
     split_csv: bool = False,
-) -> list[Any]:
+) -> Callable[[Any, ModelField], list[Any]]:
     """Return customized validator that always returns a list.
 
     Args:
@@ -30,7 +30,7 @@ def always_array(
         further processing is done on result of splitting on comma
     """
 
-    def _always_array(value: Any, field: 'ModelField') -> list[Any]:
+    def _always_array(value: Any, field: ModelField) -> list[Any]:
         """Return validator."""
 
         if split_csv and isinstance(value, str) and value:
@@ -92,13 +92,13 @@ def conditional_required(rules: list[dict[str, str]]) -> Any:
         }
         return operators.get(op, operator.eq)
 
-    def _conditional_required(value: str, field: 'ModelField', values: dict[str, Any]):
+    def _conditional_required(value: str, field: ModelField, values: dict[str, Any]):
         """Return validator."""
         for rule in rules or []:
             # the conditional field must be set above the conditionally required field
-            conditional_field = values.get(rule.get('field'))
+            conditional_field = values.get(rule['field'])
             conditional_operator = get_operator(rule.get('op', 'eq'))
-            conditional_value = rule.get('value')
+            conditional_value = rule['value']
 
             if conditional_operator(conditional_field, conditional_value) is True and not value:
                 raise InvalidInput(field_name=field.name, error='input is conditionally required.')
@@ -179,7 +179,8 @@ def entity_input(
                     _values.append(_value)
             value = _values
         else:
-            value = _get_value(value)
+            # TODO: [high] fix this type ignore
+            value = _get_value(value)  # type: ignore
 
         if field.allow_none is False and value is None:
             raise InvalidInput(field_name=field.name, error='None value is not allowed.')
@@ -187,12 +188,14 @@ def entity_input(
         if allow_empty is False and value in ['', []]:
             raise InvalidInput(field_name=field.name, error='Empty value is not allowed.')
 
-        return value
+        # TODO: [high] fix this type ignore
+        return value  # type: ignore
 
-    return _entity_input
+    # TODO: [high] fix this type ignore
+    return _entity_input  # type: ignore
 
 
-def modify_advanced_settings(input_name) -> Generator:
+def modify_advanced_settings(input_name) -> Any:
     """Return validator that parses an advanced settings string and returns a dictionary
 
     :param input_name: the name of the input (within the app model) that will receive the
@@ -200,7 +203,7 @@ def modify_advanced_settings(input_name) -> Generator:
     that this validator should act on to parse the pipe-delimited string into a dictionary
     """
 
-    def _modify_advanced_settings(value: Any, field: 'ModelField') -> dict[str, str]:
+    def _modify_advanced_settings(value: Any, field: ModelField) -> dict[str, str]:
         """Return validator."""
         settings = {}
 

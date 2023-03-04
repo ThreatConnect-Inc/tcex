@@ -59,7 +59,7 @@ class Report(Group):
         request = {'fileSize': file_size, 'fileName': self._data['fileName']}
         return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)
 
-    def get_file_hash(self, hash_type: str | None = 'sha256'):
+    def get_file_hash(self, hash_type: str = 'sha256'):
         """Get the hash value of attached document"""
         if not self.can_update():
             self._handle_error(910, [self.type])

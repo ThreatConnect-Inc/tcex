@@ -2,7 +2,6 @@
 # standard library
 import json
 import logging
-import os
 from collections import OrderedDict
 from pathlib import Path
 
@@ -21,16 +20,16 @@ class JobJson(metaclass=Singleton):
     def __init__(
         self,
         filename: str | None = None,
-        path: str | None = None,
+        path: Path | str | None = None,
         logger: logging.Logger | None = None,
     ):
         """Initialize class properties."""
         filename = filename or 'tcex.json'
-        path = path or os.getcwd()
+        path = Path(path or Path.cwd())
         self.log = logger or tcex_logger
 
         # properties
-        self.fqfn = Path(os.path.join(path, filename))
+        self.fqfn = path / filename
 
     @cached_property
     def contents(self) -> dict:

@@ -60,7 +60,7 @@ class TestUtils:
     )
     def test_playbook_string_array_pass(self, variable: str, value: list[str], playbook: Playbook):
         """Test playbook variables."""
-        playbook.create.string_array(variable, value, when_requested=False)
+        playbook.create.string_array(variable, value, when_requested=False)  # type: ignore
         result = playbook.read.string_array(variable)
         assert result == value, f'result of ({result}) does not match ({value})'
 
@@ -107,7 +107,7 @@ class TestUtils:
         self, variable: str, value: Iterable, playbook: Playbook
     ):
         """Test playbook variables."""
-        playbook.create.string_array(variable, value, when_requested=False)
+        playbook.create.string_array(variable, value, when_requested=False)  # type: ignore
         result = playbook.read.string_array(variable)
         assert result == ['6', '6'], f'result of ({result}) does not match ({list(value)})'
 
@@ -124,7 +124,7 @@ class TestUtils:
     )
     def test_playbook_string_none(self, variable: str, value: str | None, playbook: Playbook):
         """Test playbook variables."""
-        playbook.create.string(variable, value, when_requested=False)
+        playbook.create.string(variable, value, when_requested=False)  # type: ignore
         playbook.read.string(variable)
         assert playbook.read.variable(variable) is None
 
@@ -136,10 +136,10 @@ class TestUtils:
         self, variable: str, value: list | None, playbook: Playbook
     ):
         """Test playbook variables."""
-        playbook.create.string_array(variable, value, when_requested=False)
+        playbook.create.string_array(variable, value, when_requested=False)  # type: ignore
         playbook.read.string_array(variable)
         assert playbook.read.variable(variable) is None
 
     def test_playbook_string_read_none(self, playbook: Playbook):
         """Test playbook variables."""
-        assert playbook.read.string(None) is None
+        assert playbook.read.string(None) is None  # type: ignore

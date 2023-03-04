@@ -2,6 +2,7 @@
 # standard library
 import os
 import re
+import sys
 
 # first-party
 import tcex.input.field_types as FieldTypes  # noqa: N812
@@ -10,7 +11,6 @@ from tcex.app_config.permutation import Permutation
 from tcex.backports import cached_property
 from tcex.bin.bin_abc import BinABC
 from tcex.bin.spec_tool_app_input_static import SpecToolAppInputStatic
-from tcex.pleb.none_model import NoneModel
 
 
 class SpecToolAppInput(BinABC):
@@ -21,7 +21,7 @@ class SpecToolAppInput(BinABC):
         super().__init__()
 
         # properties
-        self._app_inputs_data = None
+        self._app_inputs_data: dict | None = None
         self.class_model_map = {}
         self.field_type_modules = set()
         self.filename = 'app_inputs.py'
@@ -36,7 +36,8 @@ class SpecToolAppInput(BinABC):
         for action in self._tc_actions:
             class_name = self._gen_tc_action_class_name(action)
             self.class_model_map[action] = class_name
-            self._app_inputs_data[class_name] = {}
+            if isinstance(self._app_inputs_data, dict):
+                self._app_inputs_data[class_name] = {}
 
     def _add_input_to_action_class(
         self, applies_to_all: bool, param_data: ParamsModel, tc_action: str | None = None
@@ -118,7 +119,7 @@ class SpecToolAppInput(BinABC):
         _code.append('')
         return _code
 
-    def _code_app_inputs_data_comments(self, input_data: ParamsModel) -> str:
+    def _code_app_inputs_data_comments(self, input_data: ParamsModel) -> str | None:
         """Return comments for a single input."""
         # append comment for playbookDataTypes
         comments = []
@@ -136,7 +137,7 @@ class SpecToolAppInput(BinABC):
             return '\n'.join([f'{self.i1}# {c}' for c in comment_wrapped])
         return None
 
-    def _extract_type_from_definition(self, input_name: str, type_definition: str) -> str:
+    def _extract_type_from_definition(self, input_name: str, type_definition: str) -> str | None:
         """Extract the type from the type definition.
 
         string_allow_multiple: String | list[String] -> String | list[String]
@@ -231,7 +232,7 @@ class SpecToolAppInput(BinABC):
                     )
 
     @staticmethod
-    def _gen_tc_action_class_name(tc_action: str) -> str:
+    def _gen_tc_action_class_name(tc_action: str | None) -> str | None:
         """Format the action to a proper class name."""
         if tc_action is not None:
             # split to make pascal case
@@ -259,7 +260,7 @@ class SpecToolAppInput(BinABC):
 
         # get the type value and field type
         if standard_name_type is not None:
-            type_ = standard_name_type.get('type')
+            type_ = standard_name_type['type']
             field_types.append(standard_name_type.get('field_type'))
         elif input_data.type == 'Boolean':
             type_ = 'bool'
@@ -277,6 +278,7 @@ class SpecToolAppInput(BinABC):
                 field_types = [self.input_static.type_map[lookup_key][required_key]['field_type']]
             except (AttributeError, KeyError) as ex:
                 self.print_failure(f'Failed looking up type data for {input_data.type} ({ex}).')
+                sys.exit(1)
 
         # wrap type data in Optional for non-required inputs
         if input_data.required is False and input_data.type not in ('Boolean'):
@@ -406,7 +408,7 @@ class SpecToolAppInput(BinABC):
         return types
 
     @staticmethod
-    def _standard_field_to_type_map(input_name: str) -> str:
+    def _standard_field_to_type_map(input_name: str) -> dict | None:
         """Return the type for "standard" input fields."""
         _field_name_to_type_map = {
             'confidence_rating': {
@@ -436,11 +438,11 @@ class SpecToolAppInput(BinABC):
     def _tc_actions(self):
         """Return tc_action input valid values."""
         _tc_action = self.ij.model.get_param('tc_action')
-        if not isinstance(_tc_action, NoneModel):
-            return _tc_action.valid_values
-        return []
+        if _tc_action is None:
+            return []
+        return _tc_action.valid_values
 
-    def _validator_always_array(self, always_array: list[str]) -> str:
+    def _validator_always_array(self, always_array: list[str]) -> list[str]:
         """Return code for always_array_validator."""
         _always_array = ', '.join(always_array)
         return [
@@ -464,7 +466,7 @@ class SpecToolAppInput(BinABC):
 
         return all([array_type, single_type])
 
-    def _validator_entity_input(self, entity_input: list[str]) -> str:
+    def _validator_entity_input(self, entity_input: list[str]) -> list[str]:
         """Return code for always_array_validator."""
         _entity_input = ', '.join(entity_input)
         return [
@@ -520,10 +522,10 @@ class SpecToolAppInput(BinABC):
             self.field_type_modules, self.pydantic_modules, self.typing_modules
         )
         code.extend(_code_inputs)
-        if not isinstance(self.ij.model.get_param('tc_action'), NoneModel):
+        if self.ij.model.get_param('tc_action') is None:
+            code.extend(self.input_static.template_app_inputs_class)
+        else:
             # the App support tc_action and should use the tc_action input class
             self.typing_modules.add('Optional')
             code.extend(self.input_static.template_app_inputs_class_tc_action(self.class_model_map))
-        else:
-            code.extend(self.input_static.template_app_inputs_class)
         return code

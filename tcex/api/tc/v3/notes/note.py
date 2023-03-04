@@ -1,4 +1,7 @@
 """Note / Notes Object"""
+# standard library
+from collections.abc import Iterator
+
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.notes.note_filter import NoteFilter
@@ -84,8 +87,8 @@ class Notes(ObjectCollectionABC):
         self._model = NotesModel(**kwargs)
         self.type_ = 'notes'
 
-    def __iter__(self) -> Note:
-        """Iterate over CM objects."""
+    def __iter__(self) -> Iterator[Note]:
+        """Return CM objects."""
         return self.iterate(base_class=Note)  # type: ignore
 
     @property

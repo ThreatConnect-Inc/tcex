@@ -19,28 +19,31 @@ from tcex.input.field_types import (
     sensitive,
     string,
 )
+from tcex.input.input import Input
 
 
 class AppBaseModel(BaseModel):
     """Base model for the App containing any common inputs."""
 
     # pbd: String, vv: ${FILE}|${KEYCHAIN}
-    password: sensitive(allow_empty=False)
+    password: sensitive(allow_empty=False)  # type: ignore
     # pbd: Binary|BinaryArray|KeyValue|KeyValueArray|String|StringArray|TCEntity|
     # TCEntityArray, vv: ${KEYCHAIN}|${TEXT}
-    string_advanced: sensitive(allow_empty=False) = 'advanced'
+    string_advanced: sensitive(allow_empty=False) = 'advanced'  # type: ignore
     # pbd: String, vv: ${TEXT}
     string_hidden: String | None
     # vv: Action 1|Action 2|Action 3|Action 4
-    tc_action: Choice = 'Action 1'
+    tc_action = 'Action 1'
     # pbd: String, vv: ${TEXT}
-    username: string(allow_empty=False)
+    username: string(allow_empty=False)  # type: ignore
 
     # ensure inputs that take single and array types always return an array
     _always_array = validator('string_advanced', allow_reuse=True)(always_array())
 
     # add entity_input validator for supported types
-    _entity_input = validator('string_advanced', allow_reuse=True)(entity_input(only_field='value'))
+    _entity_input = validator('string_advanced', allow_reuse=True)(
+        entity_input(only_field='value')  # type: ignore
+    )
 
 
 class Action1Model(AppBaseModel):
@@ -56,12 +59,12 @@ class Action1Model(AppBaseModel):
     # pbd: Binary|BinaryArray|KeyValue|KeyValueArray|String|StringArray|TCEntity|
     # TCEntityArray, vv: ${TEXT}
     string_required: (
-        binary(allow_empty=False)
-        | list[binary(allow_empty=False)]
+        binary(allow_empty=False)  # type: ignore
+        | list[binary(allow_empty=False)]  # type: ignore
         | KeyValue
         | list[KeyValue]
-        | string(allow_empty=False)
-        | list[string(allow_empty=False)]
+        | string(allow_empty=False)  # type: ignore
+        | list[string(allow_empty=False)]  # type: ignore
         | TCEntity
         | list[TCEntity]
     )
@@ -70,7 +73,9 @@ class Action1Model(AppBaseModel):
     _always_array = validator('string_required', allow_reuse=True)(always_array())
 
     # add entity_input validator for supported types
-    _entity_input = validator('string_required', allow_reuse=True)(entity_input(only_field='value'))
+    _entity_input = validator('string_required', allow_reuse=True)(
+        entity_input(only_field='value')  # type: ignore
+    )
 
 
 class Action2Model(AppBaseModel):
@@ -92,7 +97,7 @@ class Action3Model(AppBaseModel):
 
     boolean_input_default: bool = False
     # vv: Option 1|Option 2|Option 3
-    choice_default: Choice | None = 'Option 1'
+    choice_default: Choice | None = 'Option 1'  # type: ignore
     # pbd: String, vv: ${TEXT}
     key_value_list_default: list[KeyValue] | None
     # vv: Option 1|Option 2|Option 3
@@ -120,20 +125,20 @@ class Action4Model(AppBaseModel):
 class AppInputs:
     """App Inputs"""
 
-    def __init__(self, inputs: BaseModel):
+    def __init__(self, inputs: Input):
         """Initialize class properties."""
         self.inputs = inputs
 
     def get_model(self, tc_action: str | None = None) -> BaseModel:
         """Return the model based on the current action."""
-        tc_action = tc_action or self.inputs.model_unresolved.tc_action
+        tc_action = tc_action or self.inputs.model_unresolved.tc_action  # type: ignore
         action_model_map = {
             'Action 1': Action1Model,
             'Action 2': Action2Model,
             'Action 3': Action3Model,
             'Action 4': Action4Model,
         }
-        return action_model_map.get(tc_action)
+        return action_model_map[tc_action]
 
     def update_inputs(self):
         """Add custom App models to inputs.
@@ -141,4 +146,4 @@ class AppInputs:
         Input will be validate when the model is added an any exceptions will
         cause the App to exit with a status code of 1.
         """
-        self.inputs.add_model(self.get_model())
+        self.inputs.add_model(self.get_model())  # type: ignore

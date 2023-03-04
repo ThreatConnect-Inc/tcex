@@ -33,9 +33,9 @@ class SpecToolReadmeMd(BinABC):
         """Add title for sub action section."""
         readme_md.append(self._markdown_header2(action))
         readme_md.append('')
-        npa = self.asy.model.get_note_per_action(action).note
+        npa = self.asy.model.get_note_per_action(action)
         if npa is not None:
-            readme_md.append(self.asy.model.get_note_per_action(action).note)
+            readme_md.append(npa.note)
             readme_md.append('')
 
     def _add_labels(self, readme_md: list[str]):
@@ -150,20 +150,21 @@ class SpecToolReadmeMd(BinABC):
             )
             readme_md.append('')
 
-    def _add_outputs(self, readme_md: list[str], action: str = None):
+    def _add_outputs(self, readme_md: list[str], action: str | None = None):
         """Add output data to readme.md."""
         if self.asy.model.output_variables:
             readme_md.append(f'{self._markdown_header_output} Outputs')
             readme_md.append('')
 
-            outputs = self.ij.model.playbook.output_variables
-            outputs = sorted(list(set(outputs)), key=lambda x: x.name)
-            if action:
-                outputs = self.permutations.get_action_outputs(action)
+            if self.ij.model.playbook:
+                outputs = self.ij.model.playbook.output_variables
+                outputs = sorted(list(set(outputs)), key=lambda x: x.name)
+                if action:
+                    outputs = self.permutations.get_action_outputs(action)
 
-            for output in outputs:
-                output_type = self._markdown_italic(f'({output.type})')
-                readme_md.append(f'{self.i1}-   {output.name} {output_type}')
+                for output in outputs:
+                    output_type = self._markdown_italic(f'({output.type})')
+                    readme_md.append(f'{self.i1}-   {output.name} {output_type}')
 
             readme_md.append('')
 
@@ -364,7 +365,11 @@ class SpecToolReadmeMd(BinABC):
 
         # add inputs
         if self.asy.model.is_playbook_app:
-            actions = self.ij.model.get_param('tc_action').valid_values or []
+            actions = []
+            param = self.ij.model.get_param('tc_action')
+            if param is not None:
+                actions = param.valid_values
+
             if actions:
                 # add inputs for action based sections
                 self._add_params_for_playbook_action_app(readme_md, actions)

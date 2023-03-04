@@ -5,11 +5,23 @@ import os
 import threading
 import traceback
 from collections.abc import Callable
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+# third-party
+from pydantic import BaseModel
 
 # first-party
+from tcex.playbook import Playbook
 from tcex.pleb.registry import registry
 from tcex.services.common_service import CommonService
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex import TcEx
+
+
+class PlaceHolderModel(BaseModel):
+    """Place Holder Model."""
 
 
 class CommonServiceTrigger(CommonService):
@@ -20,7 +32,7 @@ class CommonServiceTrigger(CommonService):
     * Webhook Trigger Service
     """
 
-    def __init__(self, tcex: object):
+    def __init__(self, tcex: 'TcEx'):
         """Initialize the Class properties.
 
         Args:
@@ -36,7 +48,7 @@ class CommonServiceTrigger(CommonService):
         # config callbacks
         self.create_config_callback = None
         self.delete_config_callback = None
-        self.trigger_input_model = None
+        self.trigger_input_model = PlaceHolderModel  # real model set in App run.py
 
     def _tcex_testing(self, session_id: str, trigger_id: int):
         """Write data required for testing framework to Redis.
@@ -45,14 +57,13 @@ class CommonServiceTrigger(CommonService):
             session_id: The context/session id value for the current operation.
             trigger_id: The trigger ID for the current playbook.
         """
-        if self.args.tcex_testing_context is not None:
-            _context_tracker: str = (
-                self.redis_client.hget(self.args.tcex_testing_context, '_context_tracker') or '[]'
+        if self.models.tcex_testing_context is not None:
+            _context_tracker: list[str] = json.loads(
+                self.redis_client.hget(self.models.tcex_testing_context, '_context_tracker') or '[]'
             )
-            _context_tracker = json.loads(_context_tracker)
             _context_tracker.append(session_id)
             self.redis_client.hset(
-                self.args.tcex_testing_context,
+                self.models.tcex_testing_context,
                 '_context_tracker',
                 json.dumps(_context_tracker),
             )
@@ -71,7 +82,7 @@ class CommonServiceTrigger(CommonService):
             session_id: The context/session id value for the current operation.
             fired: The value to increment the count by.
         """
-        if self.args.tcex_testing_context is not None:
+        if self.models.tcex_testing_context is not None:
             self.redis_client.hset(
                 session_id, '#Trigger:9876:_fired!String', json.dumps(str(fired).lower())
             )
@@ -117,7 +128,7 @@ class CommonServiceTrigger(CommonService):
                         'triggerId': trigger_id,
                     }
                 ),
-                self.args.tc_svc_client_topic,
+                self.models.tc_svc_client_topic,
             )
         except Exception as e:
             self.log.error(
@@ -126,7 +137,7 @@ class CommonServiceTrigger(CommonService):
             )
             self.log.trace(traceback.format_exc())
 
-    def delete_config(self, trigger_id: int, message: str, status: str):
+    def delete_config(self, trigger_id: int, message: str, status: bool | str):
         """Delete config item from config object.
 
         Args:
@@ -149,7 +160,7 @@ class CommonServiceTrigger(CommonService):
                         'triggerId': trigger_id,
                     }
                 ),
-                self.args.tc_svc_client_topic,
+                self.models.tc_svc_client_topic,
             )
         except Exception as e:
             self.log.error(
@@ -158,7 +169,7 @@ class CommonServiceTrigger(CommonService):
             )
             # self.log.trace(traceback.format_exc())
 
-    def fire_event(self, callback: Callable[[], bool], **kwargs):
+    def fire_event(self, callback: Callable[..., bool], **kwargs):
         """Trigger a FireEvent command.
 
         Args:
@@ -229,7 +240,7 @@ class CommonServiceTrigger(CommonService):
         }
 
         self.log.info(f'feature=service, event=update-trigger-value, msg={msg}')
-        self.message_broker.publish(json.dumps(msg), self.args.tc_svc_client_topic)
+        self.message_broker.publish(json.dumps(msg), self.models.tc_svc_client_topic)
 
     def fire_event_publish(self, trigger_id: int, session_id: str, request_key: str | None = None):
         """Send FireEvent command.
@@ -249,12 +260,12 @@ class CommonServiceTrigger(CommonService):
         self.log.info(f'feature=service, event=fire-event, msg={msg}')
 
         # publish FireEvent command to client topic
-        self.message_broker.publish(json.dumps(msg), self.args.tc_svc_client_topic)
+        self.message_broker.publish(json.dumps(msg), self.models.tc_svc_client_topic)
 
     def fire_event_trigger(
         self,
-        callback: Callable[[], bool],
-        playbook: object,
+        callback: Callable[..., bool],
+        playbook: Playbook,
         session_id: str,
         trigger_id: int,
         config: dict,
@@ -297,7 +308,7 @@ class CommonServiceTrigger(CommonService):
         finally:
             self.logger.remove_handler_by_name(self.thread_name)
 
-    def log_config(self, trigger_id: str, config: dict):
+    def log_config(self, trigger_id: int, config: dict):
         """Log the config while hiding encrypted values.
 
         Args:
@@ -339,19 +350,19 @@ class CommonServiceTrigger(CommonService):
         Args:
             message: The message payload from the server topic.
         """
-        config: dict = message.get('config')
+        config: dict = message['config']
         status = True
-        trigger_id = int(message.get('triggerId'))
+        trigger_id = int(message['triggerId'])
 
         # create trigger id logging filehandler
         self.logger.add_thread_file_handler(
             backup_count=1,  # required for logs to be rotated
             name=self.thread_name,
             filename=self.trigger_logfile,
-            level=self.args.tc_log_level,
+            level=self.models.tc_log_level,
             max_bytes=1048576,  # 1Mb
-            path=self.args.tc_log_path,
-            handler_key=trigger_id,
+            path=self.models.tc_log_path,
+            handler_key=str(trigger_id),
             thread_key='trigger_id',
         )
 
@@ -359,7 +370,9 @@ class CommonServiceTrigger(CommonService):
         self.log_config(trigger_id, config)
 
         # register config apiToken
-        self.token.register_token(trigger_id, message.get('apiToken'), message.get('expireSeconds'))
+        self.token.register_token(
+            str(trigger_id), message.get('apiToken'), message.get('expireSeconds')
+        )
 
         # temporarily add config, will be removed if callback fails
         self.configs[trigger_id] = config
@@ -393,7 +406,7 @@ class CommonServiceTrigger(CommonService):
                 response: dict | None = self.create_config_callback(config_input, **kwargs)
                 if isinstance(response, dict):
                     status = response.get('status', False)
-                    msg = response.get('msg')
+                    msg = response.get('msg') or msg
 
                 # if callback does not return a boolean value assume it worked
                 if not isinstance(status, bool):
@@ -427,11 +440,11 @@ class CommonServiceTrigger(CommonService):
             message: The message payload from the server topic.
         """
         status = True
-        trigger_id = int(message.get('triggerId'))
+        trigger_id = int(message['triggerId'])
         self.log.info(f'feature=service, event=delete-config, trigger_id={trigger_id}')
 
         # unregister config apiToken
-        self.token.unregister_token(trigger_id)
+        self.token.unregister_token(str(trigger_id))
 
         msg = 'Delete Config'
         if callable(self.delete_config_callback):
@@ -466,5 +479,5 @@ class CommonServiceTrigger(CommonService):
         """Return the current thread trigger id."""
         trigger_id = None
         if hasattr(threading.current_thread(), 'trigger_id'):
-            trigger_id = threading.current_thread().trigger_id
+            trigger_id = threading.current_thread().trigger_id  # type: ignore
         return trigger_id

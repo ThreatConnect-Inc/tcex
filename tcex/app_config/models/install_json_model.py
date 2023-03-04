@@ -11,9 +11,6 @@ from pydantic import BaseModel, Field, validator
 from pydantic.types import UUID4, UUID5, constr
 from semantic_version import Version
 
-# first-party
-from tcex.pleb.none_model import NoneModel
-
 __all__ = ['InstallJsonModel']
 
 
@@ -787,7 +784,7 @@ class InstallJsonModel(InstallJsonCommonModel, InstallJsonOrganizationModel):
         required: bool | None = None,
         service_config: bool | None = None,
         _type: str | None = None,
-        input_permutations: list | None = None,
+        input_permutations: dict | None = None,
     ) -> dict[str, ParamsModel]:
         """Return params as name/data dict.
 
@@ -831,13 +828,13 @@ class InstallJsonModel(InstallJsonCommonModel, InstallJsonOrganizationModel):
             params.setdefault(p.name, p)
         return params
 
-    def get_output(self, name: str) -> NoneModel | OutputVariablesModel:
+    def get_output(self, name: str) -> OutputVariablesModel | None:
         """Return output for the matching name."""
-        return self.playbook_outputs.get(name) or NoneModel()
+        return self.playbook_outputs.get(name)
 
-    def get_param(self, name: str) -> NoneModel | ParamsModel:
+    def get_param(self, name: str) -> ParamsModel | None:
         """Return param for the matching name."""
-        return self.params_dict.get(name) or NoneModel()
+        return self.params_dict.get(name)
 
     @property
     def optional_params(self) -> dict[str, ParamsModel]:

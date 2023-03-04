@@ -2,7 +2,6 @@
 # standard library
 import json
 import logging
-import os
 from collections import OrderedDict
 from pathlib import Path
 
@@ -23,16 +22,16 @@ class LayoutJson(metaclass=Singleton):
     def __init__(
         self,
         filename: str | None = None,
-        path: str | None = None,
+        path: Path | str | None = None,
         logger: logging.Logger | None = None,
     ):
         """Initialize class properties."""
         filename = filename or 'layout.json'
-        path = path or os.getcwd()
+        path = Path(path or Path.cwd())
         self.log = logger or tcex_logger
 
         # properties
-        self.fqfn = Path(os.path.join(path, filename))
+        self.fqfn = path / filename
 
     @cached_property
     def contents(self) -> dict:
@@ -50,7 +49,7 @@ class LayoutJson(metaclass=Singleton):
             self.log.error(f'feature=layout-json, exception=file-not-found, filename={self.fqfn}')
         return contents
 
-    def create(self, inputs: ParamsModel, outputs: OutputVariablesModel):
+    def create(self, inputs: list[ParamsModel], outputs: list[OutputVariablesModel]):
         """Create new layout.json file based on inputs and outputs."""
 
         def input_data(sequence: int, title: str) -> dict:
@@ -74,13 +73,17 @@ class LayoutJson(metaclass=Singleton):
 
         for input_ in inputs:
             if input_.name == 'tc_action':
-                lj.inputs[0].parameters.append({'name': 'tc_action'})
+                lj.inputs[0].parameters.append({'name': 'tc_action'})  # type: ignore
             elif input_.hidden is True:
                 lj.inputs[2].parameters.append(
-                    {'display': "'hidden' != 'hidden'", 'hidden': 'true', 'name': input_.name}
+                    {
+                        'display': "'hidden' != 'hidden'",
+                        'hidden': 'true',
+                        'name': input_.name,
+                    }  # type: ignore
                 )
             else:
-                lj.inputs[2].parameters.append({'display': '', 'name': input_.name})
+                lj.inputs[2].parameters.append({'display': '', 'name': input_.name})  # type: ignore
 
         # write layout file to disk
         data = lj.json(
@@ -134,5 +137,5 @@ class LayoutJsonUpdate:
         """Sort output field by name."""
         # APP-86 - sort output data by name
         self.lj.model.outputs = sorted(
-            self.lj.model.dict().get('outputs', []), key=lambda i: i['name']
+            self.lj.model.dict().get('outputs', []), key=lambda i: i['name']  # type: ignore
         )

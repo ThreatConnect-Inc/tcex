@@ -14,7 +14,11 @@ class DatetimeOperations:
     """TcEx Utilities Datetime Operations Class"""
 
     @classmethod
-    def any_to_datetime(cls, datetime_expression: str, tz: str | None = None) -> '_arrow.Arrow':
+    def any_to_datetime(
+        cls,
+        datetime_expression: int | str | datetime | _arrow.Arrow,
+        tz: str | None = None,
+    ) -> _arrow.Arrow:
         """Return a arrow object from datetime expression.
 
         Args:
@@ -65,7 +69,7 @@ class DatetimeOperations:
         start_date: int | str | datetime | _arrow.Arrow,
         end_date: int | str | datetime | _arrow.Arrow,
         chunk_size: int,
-        chunk_unit: str | None = 'months',
+        chunk_unit: str = 'months',
         date_format: str | None = None,
     ) -> Generator[tuple[_arrow.Arrow | str, _arrow.Arrow | str], None, None]:
         """Chunk a date range based on unit and size
@@ -116,11 +120,11 @@ class DatetimeOperations:
         Returns:
             (dict): Dict with delta values.
         """
-        time_input1: datetime = self.any_to_datetime(time_input1).datetime
-        time_input2: datetime = self.any_to_datetime(time_input2).datetime
+        time_input1_ = self.any_to_datetime(time_input1).datetime
+        time_input2_ = self.any_to_datetime(time_input2).datetime
 
-        diff = time_input1 - time_input2  # timedelta
-        delta: object = relativedelta(time_input1, time_input2)  # relativedelta
+        diff = time_input1_ - time_input2_  # timedelta
+        delta: object = relativedelta(time_input1_, time_input2_)  # relativedelta
 
         # totals
         total_months = (delta.years * 12) + delta.months
@@ -131,8 +135,8 @@ class DatetimeOperations:
         total_seconds = (total_minutes * 60) + delta.seconds
         total_microseconds = (total_seconds * 1000) + delta.microseconds
         return {
-            'datetime_1': time_input1.isoformat(),
-            'datetime_2': time_input2.isoformat(),
+            'datetime_1': time_input1_.isoformat(),
+            'datetime_2': time_input2_.isoformat(),
             'years': delta.years,
             'months': delta.months,
             'weeks': delta.weeks,
@@ -166,7 +170,7 @@ class DatetimeOperations:
             ) from ex
 
     @staticmethod
-    def _parse_default_arrow_formats(value: Any) -> '_arrow.Arrow':
+    def _parse_default_arrow_formats(value: Any) -> _arrow.Arrow:
         """Attempt to parse value using default Arrow formats.
 
         The value is simply passed into Arrow's "get" method. The following are the default
@@ -196,7 +200,7 @@ class DatetimeOperations:
         return _arrow.get(value)
 
     @staticmethod
-    def _parse_humanized_input(value: Any) -> '_arrow.Arrow':
+    def _parse_humanized_input(value: Any) -> _arrow.Arrow:
         """Attempt to dehumanize time inputs. Example: 'Two hours ago'."""
         now = _arrow.utcnow()
         plurals = {
@@ -220,7 +224,7 @@ class DatetimeOperations:
         return now.dehumanize(value)
 
     @staticmethod
-    def _parse_non_default_arrow_formats(value: Any) -> '_arrow.Arrow':
+    def _parse_non_default_arrow_formats(value: Any) -> _arrow.Arrow:
         """Attempt to parse value using non-default Arrow formats
 
         These are formats that Arrow provides constants for but are not used in the "get"
@@ -245,7 +249,7 @@ class DatetimeOperations:
         )
 
     @staticmethod
-    def _parse_timestamp(value: Any) -> '_arrow.Arrow':
+    def _parse_timestamp(value: Any) -> _arrow.Arrow:
         """Attempt to parse epoch timestamp in seconds, milliseconds, or microseconds.
 
         Note: passing formats to test against overrides the default formats. Defaults are not used.
@@ -260,8 +264,8 @@ class DatetimeOperations:
             return _arrow.get(float(value))
 
     @staticmethod
-    def _parse_date_utils(value: Any) -> '_arrow.Arrow':
-        """Attempt to supplement arrows parsing ability with dateutils.
+    def _parse_date_utils(value: Any) -> _arrow.Arrow:
+        """Attempt to supplement arrows parsing ability with date utils.
 
         Arrow doesn't support RFC_5322 used in HTTP 409 headers
         """

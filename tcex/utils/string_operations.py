@@ -5,6 +5,9 @@ import re
 import string
 from functools import reduce
 
+# third-party
+import inflect
+
 # first-party
 from tcex.backports import cached_property
 
@@ -34,11 +37,8 @@ class StringOperations:
         return self._camel_pattern.sub(' ', camel_string).lower()
 
     @cached_property
-    def inflect(self) -> 'inflect.engine':
+    def inflect(self) -> inflect.engine:
         """Return instance of inflect."""
-        # third-party
-        import inflect
-
         return inflect.engine()
 
     @staticmethod

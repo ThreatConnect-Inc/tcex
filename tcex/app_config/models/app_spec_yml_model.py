@@ -20,7 +20,6 @@ from tcex.app_config.models.install_json_model import (
     snake_to_camel,
 )
 from tcex.app_config.models.job_json_model import JobJsonCommonModel
-from tcex.pleb.none_model import NoneModel
 
 __all__ = ['AppSpecYmlModel']
 
@@ -28,7 +27,7 @@ __all__ = ['AppSpecYmlModel']
 class FeedsSpecModel(FeedsModel):
     """Model for app_spec.organization.feeds."""
 
-    job: JobJsonCommonModel | None = Field(None, description='')
+    job: JobJsonCommonModel = Field(..., description='')
 
 
 class NotesPerActionModel(BaseModel):
@@ -47,7 +46,7 @@ class NotesPerActionModel(BaseModel):
 class OrganizationModel(InstallJsonOrganizationModel):
     """Model for app_spec.organization."""
 
-    feeds: list[FeedsSpecModel] | None = Field(None, description='')
+    feeds: list[FeedsSpecModel] = Field([], description='')
 
     class Config:
         """DataModel Config"""
@@ -108,7 +107,7 @@ class ParamsSpecModel(ParamsModel):
         None,
         description='The display clause from the layout.json file.',
     )
-    disabled: bool = Field(
+    disabled: bool | None = Field(
         False,
         description='If True, the parameter will not be included in ij/lj files.',
     )
@@ -254,7 +253,7 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         return v  # pragma: no cover
 
     @validator('output_prefix', always=True, pre=True)
-    def _output_prefix(cls, v: str, values: dict):
+    def _output_prefix(cls, v: str | None, values: dict):
         """Validate output_prefix is set when required."""
         if 'advancedRequest' in values.get('features', []):
             if v is None:
@@ -301,19 +300,19 @@ class AppSpecYmlModel(InstallJsonCommonModel):
                 )
         return _inputs
 
-    def get_note_per_action(self, action: str) -> 'NotesPerActionModel':
+    def get_note_per_action(self, action: str) -> NotesPerActionModel | None:
         """Return the note_per_action for the provided action."""
         for npa in self.note_per_action or []:
             if npa.action == action:
                 return npa
-        return NoneModel()
+        return None
 
     @property
     def note_per_action_formatted(self) -> list[str]:
         """Return formatted note_per_action."""
         _note_per_action = ['\n\nThe following actions are included:']
         _note_per_action.extend(
-            [f'-   **{npa.action}** - {npa.note}' for npa in self.note_per_action]
+            [f'-   **{npa.action}** - {npa.note}' for npa in self.note_per_action or []]
         )
         return _note_per_action
 
@@ -321,7 +320,7 @@ class AppSpecYmlModel(InstallJsonCommonModel):
     def outputs(self) -> list[OutputVariablesModel]:
         """Return lj.outputs."""
         _outputs = []
-        for output_data in self.output_data:
+        for output_data in self.output_data or []:
             for output_variable in output_data.output_variables:
                 if output_variable.disabled is True:
                     continue
@@ -345,7 +344,7 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         ]
 
     @property
-    def params(self) -> list[ParamsModel]:
+    def params(self) -> list[ParamsSpecModel]:
         """Return ij.params."""
         _params = []
         sequence = 1
@@ -385,7 +384,7 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         try:
             sorted_releases = sorted(
                 (r for r in self.release_notes),
-                key=lambda r: Version(re.match(r'^\d+.\d+.\d+', r.version)[0]),
+                key=lambda r: Version(re.match(r'^\d+.\d+.\d+', r.version)[0]),  # type: ignore
                 reverse=True,
             )
         except Exception:
@@ -415,7 +414,7 @@ class AppSpecYmlModel(InstallJsonCommonModel):
 
         return False
 
-    def _set_default_playbook_data_type(self, param: 'ParamsSpecModel'):
+    def _set_default_playbook_data_type(self, param: ParamsSpecModel):
         """Set default playbookDataType for String type params.
 
         Playbook Data Types rule:
@@ -430,7 +429,7 @@ class AppSpecYmlModel(InstallJsonCommonModel):
             ):
                 param.playbook_data_type = ['String']
 
-    def _set_default_valid_values(self, param: 'ParamsSpecModel'):
+    def _set_default_valid_values(self, param: ParamsSpecModel):
         """Set default playbookDataType for String type params.
 
         Valid Values rule:

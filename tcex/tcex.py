@@ -8,6 +8,7 @@ import signal
 import threading
 
 # third-party
+from redis import Redis
 from requests import Session
 
 # first-party
@@ -108,7 +109,7 @@ class TcEx:
         self,
         session: Session,
         output_prefix: str,
-        timeout: int | None = 600,
+        timeout: int = 600,
     ) -> AdvancedRequest:
         """Return instance of AdvancedRequest.
 
@@ -193,7 +194,7 @@ class TcEx:
     @staticmethod
     def get_redis_client(
         host: str, port: int, db: int = 0, blocking_pool: bool = False, **kwargs
-    ) -> RedisClient:
+    ) -> Redis:
         """Return a *new* instance of Redis client.
 
         For a full list of kwargs see https://redis-py.readthedocs.io/en/latest/#redis.Connection.
@@ -285,7 +286,7 @@ class TcEx:
 
     @registry.factory('KeyValueStore')
     @scoped_property
-    def key_value_store(self) -> KeyValueApi | KeyValueRedis:
+    def key_value_store(self) -> KeyValueApi | KeyValueMock | KeyValueRedis:
         """Return the correct KV store for this execution.
 
         The TCKeyValueAPI KV store is limited to two operations (create and read),
@@ -299,7 +300,7 @@ class TcEx:
 
         if self.inputs.model_unresolved.tc_kvstore_type == 'Mock':
             self.log.warning(
-                'Using mock key-value store.  '
+                'Using mock key-value store. '
                 'This should *never* happen when running in-platform.'
             )
             return KeyValueMock()
@@ -394,9 +395,9 @@ class TcEx:
             proxy_pass=self.inputs.model_unresolved.tc_proxy_password,
         )
 
-    @registry.factory(RedisClient)
+    @registry.factory(Redis)
     @scoped_property
-    def redis_client(self) -> RedisClient:
+    def redis_client(self) -> Redis:
         """Return redis client instance configure for Playbook/Service Apps."""
         # TODO: [high] - why can't we use inputs.model_unresolved here?
         return self.get_redis_client(

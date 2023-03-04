@@ -9,6 +9,7 @@ from requests import Session, adapters
 from urllib3.util.retry import Retry
 
 # first-party
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 from tcex.sessions.auth.hmac_auth import HmacAuth  # TYPE-CHECKING
 from tcex.sessions.auth.tc_auth import TcAuth  # TYPE-CHECKING
 from tcex.sessions.auth.token_auth import TokenAuth  # TYPE-CHECKING
@@ -16,10 +17,10 @@ from tcex.utils.requests_to_curl import RequestsToCurl
 from tcex.utils.utils import Utils
 
 # get tcex logger
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 # disable ssl warning message
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)  # type: ignore
 
 
 class TcSession(Session):
@@ -28,7 +29,7 @@ class TcSession(Session):
     def __init__(
         self,
         auth: HmacAuth | TokenAuth | TcAuth,
-        base_url: str = None,
+        base_url: str | None = None,
         log_curl: bool = False,
         proxies: dict[str, str] | None = None,
         proxies_enabled: bool = False,
@@ -37,7 +38,7 @@ class TcSession(Session):
     ):
         """Initialize the Class properties."""
         super().__init__()
-        self.base_url = base_url.strip('/')
+        self.base_url = base_url.strip('/') if base_url is not None else base_url
         self.log = logger
         self.log_curl = log_curl
 
@@ -66,7 +67,7 @@ class TcSession(Session):
         """Log the curl equivalent command."""
 
         # don't show curl message for logging commands
-        if '/v2/logs/app' not in response.request.url:
+        if response.request.url is not None and '/v2/logs/app' not in response.request.url:
             # APP-79 - adding logging of request as curl commands
             if not response.ok or self.log_curl:
                 try:

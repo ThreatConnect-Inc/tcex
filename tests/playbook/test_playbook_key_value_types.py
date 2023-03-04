@@ -20,11 +20,11 @@ class TestUtils:
             ('#App:0002:kv2!KeyValue', {'key': 'two', 'value': '2'}),
             ('#App:0002:kv3!KeyValue', {'key': 'three', 'value': '3'}),
             ('#App:0002:kv4!KeyValue', {'key': 'four', 'value': '4'}),
-            ('#App:0002:kv5!KeyValue', KeyValue(**{'key': 'five', 'value': '5'})),
+            ('#App:0002:kv5!KeyValue', KeyValue(**{'key': 'five', 'value': '5'})),  # type: ignore
         ],
     )
     def test_playbook_key_value_pass(
-        self, variable: str, value: dict | KeyValue, playbook: 'Playbook'
+        self, variable: str, value: dict | KeyValue, playbook: Playbook
     ):
         """Test playbook variables."""
         playbook.create.key_value(variable, value, when_requested=False)
@@ -45,7 +45,7 @@ class TestUtils:
             ('#App:0002:b4!WrongType', 'wrong type'),
         ],
     )
-    def test_playbook_key_value_fail(self, variable: str, value: Any, playbook: 'Playbook'):
+    def test_playbook_key_value_fail(self, variable: str, value: Any, playbook: Playbook):
         """Test playbook variables."""
         try:
             playbook.create.key_value(variable, value, when_requested=False)
@@ -75,10 +75,10 @@ class TestUtils:
         ],
     )
     def test_playbook_key_value_array_pass(
-        self, variable: str, value: list[dict[str, str]], playbook: 'Playbook'
+        self, variable: str, value: list[dict[str, str]], playbook: Playbook
     ):
         """Test playbook variables."""
-        playbook.create.key_value_array(variable, value, when_requested=False)
+        playbook.create.key_value_array(variable, value, when_requested=False)  # type: ignore
         result = playbook.read.key_value_array(variable)
         assert result == value, f'result of ({result}) does not match ({value})'
 
@@ -96,7 +96,7 @@ class TestUtils:
             ('#App:0002:b3!WrongType', 'wrong type'),
         ],
     )
-    def test_playbook_key_value_array_fail(self, variable: str, value: Any, playbook: 'Playbook'):
+    def test_playbook_key_value_array_fail(self, variable: str, value: Any, playbook: Playbook):
         """Test playbook variables."""
         try:
             playbook.create.key_value_array(variable, value, when_requested=False)

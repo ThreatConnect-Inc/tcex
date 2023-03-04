@@ -36,9 +36,9 @@ class ThreatIntelligence:
             self._ti_utils = ThreatIntelUtils(session_tc=self.session)
         return self._ti_utils
 
-    def create_entity(self, entity: dict, owner: str) -> dict:
+    def create_entity(self, entity: dict, owner: str) -> dict | None:
         """Create a CM object provided a dict and owner."""
-        entity_type = entity.get('type').lower()
+        entity_type = entity['type'].lower()
         entity_type = entity_type.replace(' ', '_')
         try:
             if entity_type in (type_.lower() for type_ in self.ti_utils.group_types):
@@ -56,7 +56,7 @@ class ThreatIntelligence:
             return None
 
         r = obj.create()
-        data = {'status_code': r.status_code}
+        data: dict[str, int | str] = {'status_code': r.status_code}
         if r.ok:
             data.update(r.json().get('data', {}))
             data['main_type'] = main_type

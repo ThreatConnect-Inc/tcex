@@ -2,33 +2,22 @@
 # standard library
 import logging
 from abc import ABC
-from typing import TYPE_CHECKING
+from collections.abc import Generator
+from typing import Any
 
 # third-party
-from requests import Response
+from requests import Response, Session
 from requests.exceptions import ProxyError, RetryError
 
 # first-party
 from tcex.api.tc.v3.tql.tql import Tql
 from tcex.backports import cached_property
 from tcex.exit.error_codes import handle_error
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 from tcex.utils import Utils
 
-if TYPE_CHECKING:
-    # first-party
-    from tcex.api.tc.v3.artifacts.artifact import Artifact
-    from tcex.api.tc.v3.cases.case import Case
-    from tcex.api.tc.v3.notes.note import Note
-    from tcex.api.tc.v3.object_abc import ObjectABC  # CIRCULAR-IMPORT
-    from tcex.api.tc.v3.tags.tag import Tag
-    from tcex.api.tc.v3.tasks.task import Task
-    from tcex.api.tc.v3.workflow_events.workflow_event import WorkflowEvent
-
-    # Case Management Types
-    CaseManagementType = Artifact | Case | Note | Tag | Task | WorkflowEvent
-
 # get tcex logger
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 
 class ObjectCollectionABC(ABC):
@@ -42,7 +31,7 @@ class ObjectCollectionABC(ABC):
 
     def __init__(
         self,
-        session,
+        session: Session,
         tql_filters: list | None = None,  # This will be removed!
         params: dict | None = None,
     ):
@@ -53,7 +42,7 @@ class ObjectCollectionABC(ABC):
         # properties
         self._session = session
         self.log = logger
-        self.request = None
+        self.request: Response
         self.tql = Tql()
         self._model = None
         self.type_ = None  # defined in child class
@@ -121,7 +110,7 @@ class ObjectCollectionABC(ABC):
             handle_error(
                 code=950,
                 message_values=[
-                    self.request.request.method.upper(),
+                    self.request.request.method,
                     self.request.status_code,
                     err,
                     self.request.url,
@@ -154,10 +143,10 @@ class ObjectCollectionABC(ABC):
 
     def iterate(
         self,
-        base_class: 'ObjectABC',
+        base_class: Any,
         api_endpoint: str | None = None,
         params: dict | None = None,
-    ) -> 'CaseManagementType':
+    ) -> Generator:
         """Iterate over CM/TI objects."""
         url = api_endpoint or self._api_endpoint
         params = params or self.params
@@ -194,19 +183,11 @@ class ObjectCollectionABC(ABC):
             url = response.pop('next', None)
 
             for result in data:
-                yield base_class(session=self._session, **result)
+                yield base_class(session=self._session, **result)  # type: ignore
 
             # break out of pagination if no next url present in results
             if not url:
                 break
-
-    # @staticmethod
-    # def list_as_dict(added_items: 'CaseManagementType') -> dict:
-    #     """Return the dict representation of the case management collection object."""
-    #     as_dict = {'data': []}
-    #     for item in added_items:
-    #         as_dict['data'].append(item.as_dict)
-    #     return as_dict
 
     @property
     def params(self) -> dict:

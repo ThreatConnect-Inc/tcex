@@ -3,16 +3,20 @@
 import json
 import logging
 from mimetypes import MimeTypes
+from typing import cast
 
 # third-party
-import requests
+from requests import Response, Session
+from requests.exceptions import RequestException
 
 # first-party
 from tcex.input.input import Input
+from tcex.input.models.advanced_request_model import _AdvancedRequestModel
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 from tcex.playbook import Playbook
 
 # get tcex logger
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 
 class AdvancedRequest:
@@ -30,16 +34,16 @@ class AdvancedRequest:
         self,
         inputs: Input,
         playbook: Playbook,
-        session: requests.Session,
+        session: Session,
         output_prefix: str,
-        timeout: int | None = 600,
+        timeout: int = 600,
     ):
         """Initialize class properties."""
         self.inputs = inputs
-        self.output_prefix: str = output_prefix
         self.playbook = playbook
+        self.output_prefix = output_prefix
         self.session = session
-        self.timeout: int = timeout or 600
+        self.timeout = timeout or 600
 
         # properties
         self.allow_redirects: bool = True
@@ -47,22 +51,26 @@ class AdvancedRequest:
         self.headers: dict = {}
         self.log = logger
         self.max_mb: int = 500
-        self.mt: callable = MimeTypes()
+        self.inputs_model = cast(_AdvancedRequestModel, self.inputs.model)
+        self.mt = MimeTypes()
         self.params: dict = {}
 
     def configure_body(self):
         """Configure Body"""
-        self.data: bytes | str = self.inputs.model.tc_adv_req_body
+        self.data = self.inputs_model.tc_adv_req_body
         if self.data is not None:
             # INT-1386
             try:
-                self.data: str = self.data.encode('utf-8')
+                self.data = self.data.encode('utf-8')
             except AttributeError:
                 pass  # Binary Data
 
-        if self.inputs.model.tc_adv_req_urlencode_body:
+        if self.inputs_model.tc_adv_req_urlencode_body:
+            # the user has selected to urlencode the body, which indicates that
+            # the body is a JSON string and should be converted to a dict
+            self.data = cast(str, self.data)
             try:
-                self.data: dict = json.loads(self.data)
+                self.data = json.loads(self.data)
             except ValueError:  # pragma: no cover
                 self.log.error('Failed loading body as JSON data.')
 
@@ -74,8 +82,8 @@ class AdvancedRequest:
             "value": "TcEx MyApp: 1.0.0",
         }]
         """
-        for header_data in self.inputs.model.tc_adv_req_headers:
-            value: str = self.playbook.read.variable(header_data.get('value'))
+        for header_data in self.inputs_model.tc_adv_req_headers or []:
+            value = self.playbook.read.variable(header_data['value'])
             self.headers[str(header_data.get('key'))] = str(value)
 
     def configure_params(self):
@@ -86,13 +94,13 @@ class AdvancedRequest:
             "page": "1",
         }]
         """
-        for param_data in self.inputs.model.tc_adv_req_params:
-            param: str = str(param_data.get('key'))
-            values: str = self.playbook.read.variable(param_data.get('value'))
+        for param_data in self.inputs_model.tc_adv_req_params or []:
+            param = param_data.get('key')
+            values = self.playbook.read.variable(param_data['value'])
             if not isinstance(values, list):
-                values: list = [values]
+                values = [values]
             for value in values:
-                if not value and self.inputs.model.tc_adv_req_exclude_null_params:
+                if not value and self.inputs_model.tc_adv_req_exclude_null_params:
                     self.log.warning(
                         f'Query parameter {param} has a null/empty value '
                         'and will not be added to the request.'
@@ -100,8 +108,11 @@ class AdvancedRequest:
                 else:
                     self.params.setdefault(param, []).append(str(value))
 
-    def request(self):
+    def request(self) -> Response | None:
         """Make the HTTP request."""
+        if self.inputs_model.tc_adv_req_path is None:
+            return None
+
         # configure body
         self.configure_body()
 
@@ -113,18 +124,17 @@ class AdvancedRequest:
 
         # make http request
         try:
-            response: object = self.session.request(
+            response = self.session.request(
                 allow_redirects=self.allow_redirects,
                 data=self.data,
                 headers=self.headers,
-                method=self.inputs.model.tc_adv_req_http_method,
+                method=self.inputs_model.tc_adv_req_http_method,
                 params=self.params,
                 timeout=self.timeout,
-                url=self.inputs.model.tc_adv_req_path,
+                url=self.inputs_model.tc_adv_req_path,
             )
-        except requests.exceptions.RequestException as e:  # pragma: no cover
-            response = None
-            raise RuntimeError(f'Exception during request ({e}).')
+        except RequestException as ex:  # pragma: no cover
+            raise RuntimeError(f'Exception during request ({ex}).')
 
         # write outputs as soon as they are available
         self.playbook.create.variable(
@@ -137,10 +147,12 @@ class AdvancedRequest:
             f'{self.output_prefix}.request.reason', response.reason, 'String'
         )
         self.playbook.create.variable(
-            f'{self.output_prefix}.request.status_code', response.status_code, 'String'
+            f'{self.output_prefix}.request.status_code', str(response.status_code), 'String'
         )
         self.playbook.create.variable(
-            f'{self.output_prefix}.request.url', response.request.url, 'String'
+            f'{self.output_prefix}.request.url',
+            response.request.url or self.inputs_model.tc_adv_req_path,
+            'String',
         )
 
         # get response size
@@ -159,7 +171,7 @@ class AdvancedRequest:
         )
 
         # fail if fail_on_error is selected and not ok
-        if self.inputs.model.tc_adv_req_fail_on_error and not response.ok:
+        if self.inputs_model.tc_adv_req_fail_on_error and not response.ok:
             raise RuntimeError(f'Failed for status ({response.status_code})')
 
         return response

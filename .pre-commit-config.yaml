@@ -65,7 +65,6 @@ repos:
           - --ignore=D104,D202,D203,D213,D300,D301,D400,D402,D406,D407,D413,D415
         exclude: |
           (?x)(
-              ^docs/|
               ^tcex/threat_intelligence/|
               ^tests/
           )
@@ -80,6 +79,13 @@ repos:
     hooks:
       - id: xenon
         args: ['--max-average=B', '-e=tests*']
+  - repo: local
+    hooks:
+      - id: pyright
+        entry: pyright
+        language: system
+        name: pyright
+        types: [python]
   - repo: local
     hooks:
       - id: pylint

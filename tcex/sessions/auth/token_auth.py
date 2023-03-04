@@ -9,12 +9,13 @@ from requests import auth
 
 # first-party
 from tcex.input.field_types.sensitive import Sensitive
+from tcex.tokens import Tokens
 
 
 class TokenAuth(auth.AuthBase):
     """ThreatConnect HMAC Authorization"""
 
-    def __init__(self, tc_token: Callable | str | Sensitive):
+    def __init__(self, tc_token: Callable | str | Sensitive | Tokens):
         """Initialize the Class properties."""
         # super().__init__()
         auth.AuthBase.__init__(self)
@@ -25,7 +26,8 @@ class TokenAuth(auth.AuthBase):
         _token = None
         if hasattr(self.tc_token, 'token'):
             # Token Module - The token module is provided that will handle authentication.
-            _token = self.tc_token.token.value
+            # Token is a SecureString type.
+            _token = self.tc_token.token.value  # type: ignore
         elif callable(self.tc_token):
             # Callable - A callable method is provided that will return the token as a plain
             #     string. The callable will have to handle token renewal.

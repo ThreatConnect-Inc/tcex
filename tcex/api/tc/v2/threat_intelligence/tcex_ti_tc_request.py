@@ -10,12 +10,13 @@ from requests import Session
 
 # first-party
 from tcex.exit.error_codes import TcExErrorCodes
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 
 # import local modules for dynamic reference
 module = __import__(__name__)
 
 # get tcex logger
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 
 class TiTcRequest:
@@ -36,7 +37,7 @@ class TiTcRequest:
 
         r = self.session.delete(url, params=params)
         self.log.debug(
-            f'Method: ({r.request.method.upper()}), '
+            f'Method: ({r.request.method}), '
             f'Params: ({params}), '
             f'Status Code: {r.status_code}, '
             f'URL: ({r.url})'
@@ -62,7 +63,7 @@ class TiTcRequest:
         r = self.session.get(url, params=params)
 
         self.log.debug(
-            f'Method: ({r.request.method.upper()}), '
+            f'Method: ({r.request.method}), '
             f'Params: ({params}), '
             f'Status Code: {r.status_code}, '
             f'URL: ({r.url})'
@@ -138,7 +139,7 @@ class TiTcRequest:
 
         r = self.session.post(url, data=data, params=params)
         self.log.debug(
-            f'Method: ({r.request.method.upper()}), '
+            f'Method: ({r.request.method}), '
             f'Params: ({params}), '
             f'Status Code: {r.status_code}, '
             f'URL: ({r.url})'
@@ -159,7 +160,7 @@ class TiTcRequest:
 
         r = self.session.post(url, json=json_data, params=params)
         self.log.debug(
-            f'Method: ({r.request.method.upper()}), '
+            f'Method: ({r.request.method}), '
             f'Params: ({params}), '
             f'Status Code: {r.status_code}, '
             f'URL: ({r.url})'
@@ -179,7 +180,7 @@ class TiTcRequest:
 
         r = self.session.put(url, json=json_data, params=params)
         self.log.debug(
-            f'Method: ({r.request.method.upper()}), '
+            f'Method: ({r.request.method}), '
             f'Params: ({params}), '
             f'Status Code: {r.status_code}, '
             f'URL: ({r.url})'
@@ -405,7 +406,7 @@ class TiTcRequest:
         return self._delete(url, params)
 
     def delete_adversary_handle_asset(self, unique_id, asset_id):
-        """Delete Adversary handle assest
+        """Delete Adversary handle asset
 
         Args:
             unique_id (str): The unique ID of the Adversary.
@@ -417,7 +418,7 @@ class TiTcRequest:
         return self.adversary_handle_asset(unique_id, asset_id, action='DELETE')
 
     def delete_adversary_phone_asset(self, unique_id, asset_id):
-        """Delete Adversary phone assest
+        """Delete Adversary phone asset
 
         Args:
             unique_id (str): The unique ID of the Adversary.
@@ -429,7 +430,7 @@ class TiTcRequest:
         return self.adversary_phone_asset(unique_id, asset_id, action='DELETE')
 
     def delete_adversary_url_asset(self, unique_id, asset_id):
-        """Delete Adversary URL assest
+        """Delete Adversary URL asset
 
         Args:
             unique_id (str): The unique ID of the Adversary.
@@ -457,7 +458,7 @@ class TiTcRequest:
         return self._get(url)
 
     def get_adversary_handle_asset(self, unique_id, asset_id, params=None):
-        """Get Adversary handle assest
+        """Get Adversary handle asset
 
         Args:
             unique_id (str): The unique ID of the Adversary.
@@ -469,7 +470,7 @@ class TiTcRequest:
         return self.adversary_handle_asset(unique_id, asset_id, params=params)
 
     def get_adversary_phone_asset(self, unique_id, asset_id, params=None):
-        """Get Adversary phone assest
+        """Get Adversary phone asset
 
         Args:
             unique_id (str): The unique ID of the Adversary.
@@ -481,7 +482,7 @@ class TiTcRequest:
         return self.adversary_phone_asset(unique_id, asset_id, params=params)
 
     def get_adversary_url_asset(self, unique_id, asset_id, params=None):
-        """Get Adversary URL assest
+        """Get Adversary URL asset
 
         Args:
             unique_id (str): The unique ID of the Adversary.
@@ -693,7 +694,7 @@ class TiTcRequest:
         else:
             url = f'/v2/{main_type}/{sub_type}/{unique_id}/victimAssets'
         entity_type = 'victimAsset'
-        asset_type = self.victim_asset_type_mapping.get(asset_type)
+        asset_type = self.victim_asset_type_mapping.get(asset_type)  # type: ignore
         if asset_type:
             url += f'/{asset_type}'
         return self._iterate(url, params, entity_type)

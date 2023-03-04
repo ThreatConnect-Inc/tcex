@@ -17,9 +17,9 @@ class RateLimitHandler:
 
     def __init__(
         self,
-        limit_remaining_header: str | None = 'X-RateLimit-Remaining',
-        limit_reset_header: str | None = 'X-RateLimit-Reset',
-        remaining_threshold: int | None = 0,
+        limit_remaining_header: str = 'X-RateLimit-Remaining',
+        limit_reset_header: str = 'X-RateLimit-Reset',
+        remaining_threshold: int = 0,
     ):
         """Rate-limiting implementation using X-RateLimit-<X> headers.
 
@@ -37,8 +37,9 @@ class RateLimitHandler:
         self._limit_reset_header = limit_reset_header
         self._remaining_threshold = remaining_threshold
 
-        self._last_limit_remaining_value = None
-        self._last_limit_reset_value = None
+        # properties
+        self._last_limit_remaining_value: int | None = None
+        self._last_limit_reset_value: int | None = None
 
     @property
     def last_limit_remaining_value(self) -> int | None:
@@ -56,7 +57,7 @@ class RateLimitHandler:
         return self._limit_remaining_header
 
     @limit_remaining_header.setter
-    def limit_remaining_header(self, limit_remaining_header):
+    def limit_remaining_header(self, limit_remaining_header: str):
         """Set the name of the header that contains the remaining requests."""
         self._limit_remaining_header = limit_remaining_header
 
@@ -66,7 +67,7 @@ class RateLimitHandler:
         return self._limit_reset_header
 
     @limit_reset_header.setter
-    def limit_reset_header(self, limit_reset_header):
+    def limit_reset_header(self, limit_reset_header: str):
         self._limit_reset_header = limit_reset_header
 
     @property
@@ -93,7 +94,10 @@ class RateLimitHandler:
             self._last_limit_remaining_value = int(
                 response.headers.get(self.limit_remaining_header, 0)
             )
-            self._last_limit_reset_value = response.headers.get(self.limit_reset_header)
+            # TODO: [high] - @cblades - what should this be?
+            self._last_limit_reset_value = response.headers.get(
+                self.limit_reset_header
+            )  # type: ignore
 
     def pre_send(self, request: PreparedRequest):
         """Call before request is sent and provides an opportunity to pause for rate limiting.
@@ -111,7 +115,7 @@ class RateLimitHandler:
         ):
             self.sleep(request)
 
-    def sleep(self, request: PreparedRequest):  # pylint: disable=unused-argument
+    def sleep(self, _: PreparedRequest):  # pylint: disable=unused-argument
         """Sleeps to rate-limit.
 
         Sleeps until the time specified in X-RateLimit-Reset.
@@ -120,10 +124,11 @@ class RateLimitHandler:
             request:  The request that will be sent.
         """
         utils = Utils()
-        wait_until = self.last_limit_reset_value
-        try:
-            seconds = utils.any_to_datetime(wait_until).timestamp() - time.time()
-        except RuntimeError:
-            seconds = wait_until
+        seconds = self.last_limit_reset_value
+        if seconds is not None:
+            try:
+                seconds = utils.any_to_datetime(seconds).timestamp() - time.time()
+            except RuntimeError:
+                pass
 
-        time.sleep(float(seconds))
+            time.sleep(float(seconds))

@@ -1,4 +1,8 @@
 """App Decorators Module."""
+# standard library
+from collections.abc import Callable
+from typing import Any
+
 # third-party
 import wrapt
 
@@ -21,29 +25,29 @@ class OnSuccess:
         exit_msg (str): The message to send to exit method.
     """
 
-    def __init__(self, exit_msg=None):
+    def __init__(self, exit_msg: str | None = None):
         """Initialize Class properties"""
         self.exit_msg = exit_msg or 'App finished successfully.'
 
     @wrapt.decorator
-    def __call__(self, wrapped, instance, args, kwargs):
+    def __call__(self, wrapped: Callable, instance: Callable, args: list, kwargs: dict) -> Any:
         """Implement __call__ function for decorator.
 
         Args:
-            wrapped (callable): The wrapped function which in turns
+            wrapped: The wrapped function which in turns
                 needs to be called by your wrapper function.
-            instance (App): The object to which the wrapped
+            instance: The object to which the wrapped
                 function was bound when it was called.
-            args (list): The list of positional arguments supplied
+            args: The list of positional arguments supplied
                 when the decorated function was called.
-            kwargs (dict): The dictionary of keyword arguments
+            kwargs: The dictionary of keyword arguments
                 supplied when the decorated function was called.
 
         Returns:
             function: The custom decorator function.
         """
 
-        def completion(app, *args, **kwargs):
+        def completion(app, *args: list, **kwargs: dict) -> Any:
             """Call the function and handle any exception.
 
             Args:

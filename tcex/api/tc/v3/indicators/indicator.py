@@ -1,7 +1,7 @@
 """Indicator / Indicators Object"""
 # standard library
 import json
-from collections.abc import Generator
+from collections.abc import Generator, Iterator
 from datetime import datetime
 from typing import TYPE_CHECKING, Self
 
@@ -334,8 +334,8 @@ class Indicators(ObjectCollectionABC):
         self._model = IndicatorsModel(**kwargs)
         self.type_ = 'indicators'
 
-    def __iter__(self) -> Indicator:
-        """Iterate over CM objects."""
+    def __iter__(self) -> Iterator[Indicator]:
+        """Return CM objects."""
         return self.iterate(base_class=Indicator)  # type: ignore
 
     @property

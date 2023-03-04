@@ -1,4 +1,7 @@
 """User / Users Object"""
+# standard library
+from collections.abc import Iterator
+
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.object_abc import ObjectABC
@@ -67,8 +70,8 @@ class Users(ObjectCollectionABC):
         self._model = UsersModel(**kwargs)
         self.type_ = 'users'
 
-    def __iter__(self) -> User:
-        """Iterate over CM objects."""
+    def __iter__(self) -> Iterator[User]:
+        """Return CM objects."""
         return self.iterate(base_class=User)  # type: ignore
 
     @property

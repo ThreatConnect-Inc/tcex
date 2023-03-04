@@ -15,10 +15,11 @@ from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
 from tcex.backports import cached_property
 from tcex.exit.error_codes import handle_error
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 from tcex.utils import Utils
 
 # get tcex logger
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 
 class ObjectABC(ABC):

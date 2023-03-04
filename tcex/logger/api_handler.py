@@ -4,11 +4,14 @@ import logging
 import threading
 import time
 
+# third-party
+from requests import Session
+
 
 class ApiHandler(logging.Handler):
     """Logger handler for ThreatConnect Exchange API logging."""
 
-    def __init__(self, session, flush_limit=100):
+    def __init__(self, session: Session, flush_limit=100):
         """Initialize Class properties.
 
         Args:
@@ -26,7 +29,7 @@ class ApiHandler(logging.Handler):
         """Close the logger and flush entries."""
         self.log_to_api(self.entries)  # pragma: no cover
 
-    def emit(self, record):
+    def emit(self, record: logging.LogRecord):
         """Emit a record.
 
         Args:
@@ -46,7 +49,7 @@ class ApiHandler(logging.Handler):
         ) and not self.in_token_renewal:
             self.log_to_api(self.entries)
 
-    def handle(self, record):
+    def handle(self, record: logging.LogRecord):
         """Override base handle method to add logic that prevents threading deadlocks"""
         # append log entries from child threads to _entries to avoid deadlocks within handle method.
         # Otherwise, token monitor thread would try to acquire I/O lock within super().handle
@@ -69,7 +72,7 @@ class ApiHandler(logging.Handler):
             self._entries = []
             return entries
 
-    def log_to_api(self, entries):
+    def log_to_api(self, entries: list[logging.LogRecord]):
         """Send log events to the ThreatConnect API"""
         if entries:
             try:
@@ -86,7 +89,7 @@ class ApiHandlerFormatter(logging.Formatter):
         """Initialize Class properties."""
         super().__init__()
 
-    def format(self, record):
+    def format(self, record: logging.LogRecord):
         """Format log record for ThreatConnect API.
 
         Example log event::

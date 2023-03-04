@@ -6,27 +6,20 @@ from collections.abc import Generator
 from pydantic.fields import ModelField  # TYPE-CHECKING
 
 # first-party
-from tcex.input.field_types.exception import (
-    InvalidEmptyValue,
-    InvalidLengthValue,
-    InvalidType,
-    InvalidVariableType,
-)
-from tcex.utils.variables import BinaryVariable  # TYPE-CHECKING
+from tcex.input.field_types.exception import InvalidEmptyValue, InvalidLengthValue, InvalidType
 
 
 class Binary(bytes):
     """Binary Field Type"""
 
     allow_empty: bool = True
-    max_length: int = None
-    min_length: int = None
+    max_length: int | None = None
+    min_length: int | None = None
     strip: bool = False
 
     @classmethod
     def __get_validators__(cls) -> Generator:
         """Run validators / modifiers on input."""
-        yield cls.validate_variable_type
         yield cls.validate_type
         yield cls.validate_strip
         yield cls.validate_allow_empty
@@ -34,14 +27,14 @@ class Binary(bytes):
         yield cls.validate_min_length
 
     @classmethod
-    def validate_allow_empty(cls, value: bytes | BinaryVariable, field: ModelField) -> 'bytes':
+    def validate_allow_empty(cls, value: bytes, field: ModelField) -> bytes:
         """Raise exception if value is empty and allow_empty is False."""
         if cls.allow_empty is False and value == b'':
             raise InvalidEmptyValue(field_name=field.name)
         return value
 
     @classmethod
-    def validate_max_length(cls, value: str | BinaryVariable, field: ModelField) -> str:
+    def validate_max_length(cls, value: bytes, field: ModelField) -> bytes:
         """Raise exception if value does not match pattern."""
         if cls.max_length is not None and len(value) > cls.max_length:
             raise InvalidLengthValue(
@@ -50,7 +43,7 @@ class Binary(bytes):
         return value
 
     @classmethod
-    def validate_min_length(cls, value: str | BinaryVariable, field: ModelField) -> str:
+    def validate_min_length(cls, value: bytes, field: ModelField) -> bytes:
         """Raise exception if value does not match pattern."""
         if cls.min_length is not None and len(value) < cls.min_length:
             raise InvalidLengthValue(
@@ -59,27 +52,18 @@ class Binary(bytes):
         return value
 
     @classmethod
-    def validate_strip(cls, value: bytes | BinaryVariable) -> bytes:
+    def validate_strip(cls, value: bytes) -> bytes:
         """Raise exception if value is not a Binary type."""
         if value is not None and cls.strip is True:
             value = value.strip()
         return value
 
     @classmethod
-    def validate_type(cls, value: bytes | BinaryVariable, field: ModelField) -> bytes:
+    def validate_type(cls, value: bytes, field: ModelField) -> bytes:
         """Raise exception if value is not a Binary type."""
         if not isinstance(value, bytes):
             raise InvalidType(
-                field_name=field.name, expected_types='(str)', provided_type=type(value)
-            )
-        return value
-
-    @classmethod
-    def validate_variable_type(cls, value: bytes | BinaryVariable, field: ModelField) -> bytes:
-        """Raise exception if value is not a Binary type."""
-        if hasattr(value, '_variable_type') and value._variable_type != 'Binary':
-            raise InvalidVariableType(
-                field_name=field.name, expected_type='Binary', provided_type=value._variable_type
+                field_name=field.name, expected_types='(bytes)', provided_type=type(value)
             )
         return value
 
@@ -89,7 +73,7 @@ def binary(
     min_length: int | None = None,
     max_length: int | None = None,
     strip: bool = False,
-) -> type:
+) -> Binary:
     """Return customized Binary type."""
     namespace = {
         'allow_empty': allow_empty,
@@ -97,4 +81,4 @@ def binary(
         'min_length': min_length,
         'strip': strip,
     }
-    return type('CustomizedBinary', (Binary,), namespace)
+    return type('CustomizedBinary', (Binary,), namespace)  # type: ignore

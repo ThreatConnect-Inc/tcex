@@ -1,6 +1,7 @@
 """Test the TcEx Batch Module."""
 # standard library
-from typing import TYPE_CHECKING, Any
+from collections.abc import Callable
+from typing import Any
 
 # third-party
 import pytest
@@ -8,11 +9,7 @@ import pytest
 # first-party
 from tcex.backports import cached_property
 from tcex.pleb.scoped_property import scoped_property
-
-if TYPE_CHECKING:
-    # first-party
-    from tcex import TcEx
-    from tests.mock_app import MockApp
+from tests.mock_app import MockApp
 
 
 class MockApi:
@@ -134,7 +131,11 @@ class TestPlaybookKeyValueApi:
         ],
     )
     def test_playbook_key_value_api(
-        self, variable: str, value: Any, playbook_app: 'MockApp', monkeypatch: 'pytest.MonkeyPatch'
+        self,
+        variable: str,
+        value: Any,
+        playbook_app: Callable[..., MockApp],
+        monkeypatch: pytest.MonkeyPatch,
     ):
         """Test the create output method of Playbook module.
 
@@ -144,7 +145,7 @@ class TestPlaybookKeyValueApi:
             playbook_app (fixture): The playbook_app fixture.
             monkeypatch (monkeypatch): Pytest monkeypatch.
         """
-        tcex: 'TcEx' = playbook_app(
+        tcex = playbook_app(
             config_data={
                 'tc_playbook_out_variables': self.tc_playbook_out_variables,
                 'tc_playbook_db_type': 'TCKeyValueAPI',
@@ -153,6 +154,8 @@ class TestPlaybookKeyValueApi:
 
         # parse variable and send to create_output() method
         variable_model = tcex.utils.get_playbook_variable_model(variable)
+        if variable_model is None:
+            raise RuntimeError(f'Invalid variable ({variable})')
 
         # setup mock key value api service
         mock_api = MockApi()

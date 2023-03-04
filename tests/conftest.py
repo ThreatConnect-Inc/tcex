@@ -5,7 +5,7 @@ import logging
 import os
 import re
 import shutil
-from collections.abc import Callable, Generator
+from collections.abc import Callable, Generator, Iterable
 
 # third-party
 import fakeredis
@@ -16,12 +16,13 @@ import redis
 from tcex import TcEx
 from tcex.backports import cached_property
 from tcex.key_value_store import RedisClient
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 from tcex.playbook.playbook import Playbook
 from tcex.pleb.registry import registry
 from tcex.pleb.scoped_property import scoped_property
 from tests.mock_app import MockApp
 
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 #
 # fixtures
@@ -81,7 +82,7 @@ def owner_id() -> Generator[Callable, None, None]:
 
 
 @pytest.fixture()
-def playbook() -> Generator[Playbook, None, None]:
+def playbook() -> Iterable[Playbook]:
     """Return an instance of tcex.playbook."""
     _reset_modules()
     app = MockApp(runtime_level='Playbook')
@@ -90,7 +91,7 @@ def playbook() -> Generator[Playbook, None, None]:
 
 
 @pytest.fixture()
-def playbook_app() -> Generator[Callable, None, None]:
+def playbook_app() -> Generator[Callable[..., MockApp], None, None]:
     """Mock a playbook App."""
     _reset_modules()
     app_refs = []

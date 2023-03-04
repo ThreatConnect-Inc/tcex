@@ -1,4 +1,7 @@
 """Testing TcEx Input module field types."""
+# standard library
+from collections.abc import Callable
+
 # third-party
 import pytest
 from pydantic import BaseModel, validator
@@ -91,7 +94,7 @@ class TestInputsFieldTypes(InputTest):
         expected: str,
         optional: bool,
         fail_test: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test Binary field type.
 
@@ -99,22 +102,22 @@ class TestInputsFieldTypes(InputTest):
         Validation: Not null
         """
 
+        class PytestModelRequired(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: TCEntity
+
+        class PytestModelOptional(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: TCEntity | None
+
+        pytest_model = PytestModelOptional
         if optional is False:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: TCEntity
-
-        else:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: TCEntity | None
+            pytest_model = PytestModelRequired
 
         self._type_validation(
-            PytestModel,
+            pytest_model,
             input_name='my_data',
             input_value=input_value,
             input_type='TCEntity',
@@ -189,7 +192,7 @@ class TestInputsFieldTypes(InputTest):
         expected: str,
         optional: bool,
         fail_test: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test Binary field type.
 
@@ -197,22 +200,22 @@ class TestInputsFieldTypes(InputTest):
         Validation: Not null
         """
 
+        class PytestModelRequired(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: list[TCEntity]
+
+        class PytestModelOptional(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: list[TCEntity] | None
+
+        pytest_model = PytestModelOptional
         if optional is False:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: list[TCEntity]
-
-        else:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: list[TCEntity] | None
+            pytest_model = PytestModelRequired
 
         self._type_validation(
-            PytestModel,
+            pytest_model,
             input_name='my_data',
             input_value=input_value,
             input_type='TCEntityArray',
@@ -375,7 +378,7 @@ class TestInputsFieldTypes(InputTest):
         input_type: str,
         optional: bool,
         fail_test: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test Binary field type.
 
@@ -383,26 +386,26 @@ class TestInputsFieldTypes(InputTest):
         Validation: Not null
         """
 
+        class PytestModelRequired(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: TCEntity | list[TCEntity]
+
+            _always_array = validator('my_data', allow_reuse=True)(always_array())
+
+        class PytestModelOptional(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: TCEntity | list[TCEntity] | None
+
+            _always_array = validator('my_data', allow_reuse=True)(always_array())
+
+        pytest_model = PytestModelOptional
         if optional is False:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: TCEntity | list[TCEntity]
-
-                _always_array = validator('my_data', allow_reuse=True)(always_array())
-
-        else:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: TCEntity | list[TCEntity] | None
-
-                _always_array = validator('my_data', allow_reuse=True)(always_array())
+            pytest_model = PytestModelRequired
 
         self._type_validation(
-            PytestModel,
+            pytest_model,
             input_name='my_data',
             input_value=input_value,
             input_type=input_type,
@@ -491,7 +494,7 @@ class TestInputsFieldTypes(InputTest):
         expected: str,
         optional: bool,
         fail_test: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test Binary field type.
 
@@ -499,22 +502,22 @@ class TestInputsFieldTypes(InputTest):
         Validation: Not null
         """
 
+        class PytestModelRequired(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: IndicatorEntity
+
+        class PytestModelOptional(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: IndicatorEntity | None
+
+        pytest_model = PytestModelOptional
         if optional is False:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: IndicatorEntity
-
-        else:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: IndicatorEntity | None
+            pytest_model = PytestModelRequired
 
         self._type_validation(
-            PytestModel,
+            pytest_model,
             input_name='my_data',
             input_value=input_value,
             input_type='TCEntity',
@@ -553,10 +556,10 @@ class TestInputsFieldTypes(InputTest):
         self,
         input_value: str,
         expected: str,
-        indicator_types: list,
+        indicator_types: list[str],
         optional: bool,
         fail_test: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test Binary field type.
 
@@ -564,22 +567,22 @@ class TestInputsFieldTypes(InputTest):
         Validation: Not null
         """
 
+        class PytestModelRequired(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: indicator_entity(indicator_types=indicator_types)  # type: ignore
+
+        class PytestModelOptional(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: indicator_entity(indicator_types=indicator_types) | None  # type: ignore
+
+        pytest_model = PytestModelOptional
         if optional is False:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: indicator_entity(indicator_types=indicator_types)
-
-        else:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: indicator_entity(indicator_types=indicator_types) | None
+            pytest_model = PytestModelRequired
 
         self._type_validation(
-            PytestModel,
+            pytest_model,
             input_name='my_data',
             input_value=input_value,
             input_type='TCEntity',
@@ -668,7 +671,7 @@ class TestInputsFieldTypes(InputTest):
         expected: str,
         optional: bool,
         fail_test: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test Binary field type.
 
@@ -676,22 +679,22 @@ class TestInputsFieldTypes(InputTest):
         Validation: Not null
         """
 
+        class PytestModelRequired(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: GroupEntity
+
+        class PytestModelOptional(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: GroupEntity | None
+
+        pytest_model = PytestModelOptional
         if optional is False:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: GroupEntity
-
-        else:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: GroupEntity | None
+            pytest_model = PytestModelRequired
 
         self._type_validation(
-            PytestModel,
+            pytest_model,
             input_name='my_data',
             input_value=input_value,
             input_type='TCEntity',

@@ -13,7 +13,7 @@ class TiTransforms(TransformsABC):
 
     def process(self):
         """Process the mapping."""
-        self.transformed_collection = []
+        self.transformed_collection: list[TiTransform] = []
         for ti_dict in self.ti_dicts:
             self.transformed_collection.append(TiTransform(ti_dict, self.transforms))
 
@@ -79,7 +79,7 @@ class TiTransform(TransformABC):
     ):
         """Add an attribute to the transformed item."""
         if type_ is not None and value is not None:
-            attribute_data = {
+            attribute_data: dict[str, bool | str] = {
                 'type': type_,
                 'value': value,
             }
@@ -113,7 +113,7 @@ class TiTransform(TransformABC):
             }
         )
 
-    def add_confidence(self, confidence: int | None):
+    def add_confidence(self, confidence: int | str | None):
         """Add a rating to the transformed item."""
         if confidence is not None:
             self.transformed_item['confidence'] = int(confidence)
@@ -144,7 +144,7 @@ class TiTransform(TransformABC):
         if name is not None:
             self.transformed_item['name'] = name
 
-    def add_rating(self, rating: int | None):
+    def add_rating(self, rating: float | int | str | None):
         """Add a rating to the transformed item."""
         if rating is not None:
             self.transformed_item['rating'] = float(rating)

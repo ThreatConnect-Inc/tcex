@@ -8,11 +8,12 @@ import deepdiff
 
 # first-party
 from tcex import TcEx
+from tcex.api.tc.ti_transform.model.transform_model import IndicatorTransformModel
 
 # pylint: disable=redefined-outer-name
 
 
-def transform(tcex: TcEx):
+def transform(tcex: TcEx) -> IndicatorTransformModel:
     """Create transform for indicator regression test."""
     return tcex.api.tc.indicator_transform(
         {
@@ -228,7 +229,7 @@ def test_indicators_regression(tcex: TcEx):
     with open(current_path / 'data' / 'input_indicators.json') as input_, open(
         current_path / 'data' / 'transformed_indicators.json'
     ) as output:
-        transforms = tcex.api.tc.ti_transforms(json.load(input_), transform(tcex))
+        transforms = tcex.api.tc.ti_transforms(json.load(input_), [transform(tcex)])
         tcex.log.warning(json.dumps(transforms.batch))
         assert not deepdiff.DeepDiff(transforms.batch, json.load(output))
 
@@ -248,6 +249,7 @@ def test_indicators_file_occurrence(tcex: TcEx):
     ]
 
     def _transform_date(val):
+        """."""
         tcex.log.warning(val)
         return val
 
@@ -277,7 +279,7 @@ def test_indicators_file_occurrence(tcex: TcEx):
         }
     )
 
-    transforms = tcex.api.tc.ti_transforms(data, transform)
+    transforms = tcex.api.tc.ti_transforms(data, [transform])
 
     assert not deepdiff.DeepDiff(
         transforms.batch,
@@ -340,7 +342,7 @@ def test_indicators_attributes(tcex: TcEx):
         }
     )
 
-    transforms = tcex.api.tc.ti_transforms(data, transform)
+    transforms = tcex.api.tc.ti_transforms(data, [transform])
 
     tcex.log.warning(transforms.batch)
 

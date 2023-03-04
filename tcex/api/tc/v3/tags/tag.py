@@ -1,6 +1,7 @@
 """Tag / Tags Object"""
 # standard library
 import json
+from collections.abc import Iterator
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -111,8 +112,8 @@ class Tags(ObjectCollectionABC):
         self._model = TagsModel(**kwargs)
         self.type_ = 'tags'
 
-    def __iter__(self) -> Tag:
-        """Iterate over CM objects."""
+    def __iter__(self) -> Iterator[Tag]:
+        """Return CM objects."""
         return self.iterate(base_class=Tag)  # type: ignore
 
     @property

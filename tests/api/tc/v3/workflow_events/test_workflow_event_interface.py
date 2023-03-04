@@ -16,14 +16,7 @@ from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 class TestWorkflowEvents(TestV3):
     """Test TcEx API Interface."""
 
-    v3 = None
-
-    def setup_method(self):
-        """Configure setup before all tests."""
-        print('')  # ensure any following print statements will be on new line
-        self.v3_helper = V3Helper('workflow_events')
-        self.v3 = self.v3_helper.v3
-        self.tcex = self.v3_helper.tcex
+    v3_helper = V3Helper('workflow_events')
 
     def test_workflow_event_api_options(self):
         """Test filter keywords."""
@@ -74,6 +67,8 @@ class TestWorkflowEvents(TestV3):
         """Test TQL Filters for workflow_event on a Case"""
         # [Pre-Requisite] - create case
         case = self.v3_helper.create_case()
+        if case.model.id is None:
+            pytest.fail('Failed to create case.')
 
         # [Pre-Requisite] - create datetime in the past
         past = datetime.now() - timedelta(days=10)
@@ -90,6 +85,8 @@ class TestWorkflowEvents(TestV3):
 
         # [Create Testing] create the object to the TC API
         workflow_event.create()
+        if workflow_event.model.id is None:
+            pytest.fail('Failed to create workflow_event.')
 
         # [Retrieving Testing] Retrieving the workflow event to ensure the user object is populated
 
@@ -98,6 +95,11 @@ class TestWorkflowEvents(TestV3):
         # [Filter Testing] create the object collection
         workflow_events = self.v3.workflow_events()
 
+        # get user name
+        user_name = os.getenv('TC_API_ACCESS_ID')
+        if user_name is None:
+            pytest.fail('Failed to retrieve user name from env var TC_API_ACCESS_ID.')
+
         workflow_events.filter.case_id(TqlOperator.EQ, case.model.id)
         workflow_events.filter.date_added(TqlOperator.GT, past)
         workflow_events.filter.deleted(TqlOperator.EQ, False)
@@ -105,9 +107,9 @@ class TestWorkflowEvents(TestV3):
         workflow_events.filter.id(TqlOperator.EQ, workflow_event.model.id)
         # TODO: [PLAT-????] No link is generated/returned if workflow event is created via the api.
         # workflow_events.filter.link(TqlOperator.EQ, workflow_event.model.link)
-        workflow_events.filter.summary(TqlOperator.EQ, workflow_event_data.get('summary'))
+        workflow_events.filter.summary(TqlOperator.EQ, workflow_event_data['summary'])
         workflow_events.filter.system_generated(TqlOperator.EQ, False)
-        workflow_events.filter.user_name(TqlOperator.EQ, os.getenv('TC_API_ACCESS_ID'))
+        workflow_events.filter.user_name(TqlOperator.EQ, user_name)
         # This filter does not work appropriately.
         # workflow_events.filter.deleted_reason(TqlOperator.NE, 'This event has been deleted')
         for workflow_event in workflow_events:
@@ -182,7 +184,7 @@ class TestWorkflowEvents(TestV3):
     #     # using object id from the object created above
     #     workflow_event = self.v3.workflow_event(id=workflow_event.model.id)
 
-    #     workflow_event.model.deleted_reason = 'Pytesting'
+    #     workflow_event.model.deleted_reason = 'pytest testing'
 
     #     # [Delete Testing] remove the object
     #     workflow_event.delete()
@@ -190,12 +192,15 @@ class TestWorkflowEvents(TestV3):
     #     workflow_event.get()
 
     #     assert workflow_event.model.deleted
-    #     assert workflow_event.model.deleted_reason == 'Pytesting'
+    #     assert workflow_event.model.deleted_reason == 'pytest testing'
 
     def test_workflow_event_get_many(self):
         """Test WorkflowEvent Get Many"""
         # [Pre-Requisite] - create case
         case = self.v3_helper.create_case()
+        if case.model.id is None:
+            pytest.fail('Failed to create case.')
+
         workflow_event_count = 10
         workflow_event_ids = []
         for _ in range(0, workflow_event_count):
@@ -264,13 +269,15 @@ class TestWorkflowEvents(TestV3):
 
         # [Retrieve Testing] get the object from the API
         workflow_event.get(params={'fields': ['_all_']})
+        if workflow_event.model.id is None or workflow_event.model.event_date is None:
+            pytest.fail('Failed to retrieve workflow_event.')
 
         # [Retrieve Testing] run assertions on returned data
         assert workflow_event.model.case_id == workflow_event_data.get('case_id')
         assert workflow_event.model.summary == workflow_event_data.get('summary')
-        assert workflow_event.model.event_date.strftime(
+        assert workflow_event.model.event_date.strftime('%Y-%m-%dT%H%M%S') == past.strftime(
             '%Y-%m-%dT%H%M%S'
-        ) == workflow_event_data.get('event_date').strftime('%Y-%m-%dT%H%M%S')
+        )
 
     def test_workflow_event_update_properties(self, request: FixtureRequest):
         """Test updating artifacts properties"""
@@ -305,9 +312,11 @@ class TestWorkflowEvents(TestV3):
 
         # [Retrieve Testing] get the object from the API
         workflow_event.get(params={'fields': ['_all_']})
+        if workflow_event.model.id is None or workflow_event.model.event_date is None:
+            pytest.fail('Failed to retrieve workflow_event.')
 
         # [Retrieve Testing] run assertions on returned data
-        assert workflow_event.model.event_date.strftime(
+        assert workflow_event.model.event_date.strftime('%Y-%m-%dT%H%M%S') == past.strftime(
             '%Y-%m-%dT%H%M%S'
-        ) == workflow_event_data.get('event_date').strftime('%Y-%m-%dT%H%M%S')
+        )
         assert workflow_event.model.summary == workflow_event_data.get('summary')

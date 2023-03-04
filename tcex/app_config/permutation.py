@@ -9,7 +9,7 @@ import re
 import sys
 from collections.abc import Generator
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 try:
     # standard library
@@ -20,7 +20,7 @@ except ImportError:  # pragma: no cover
 # first-party
 from tcex.app_config.install_json import InstallJson
 from tcex.app_config.layout_json import LayoutJson
-from tcex.app_config.models.install_json_model import ParamsModel
+from tcex.app_config.models.install_json_model import OutputVariablesModel, ParamsModel
 from tcex.app_config.models.layout_json_model import OutputsModel
 from tcex.backports import cached_property
 from tcex.pleb.none_model import NoneModel
@@ -49,7 +49,7 @@ class Permutation:
         # properties
         self._input_table = 'inputs'
         self._input_permutations: list[list[InputModel]] = []
-        self._output_permutations = []
+        self._output_permutations: list[list[OutputVariablesModel]] = []
         self.fqfn = Path(os.getcwd(), 'permutations.json')
         self.ij = InstallJson(logger=self.log)
         self.lj = LayoutJson(logger=self.log)
@@ -97,7 +97,7 @@ class Permutation:
 
             # get install.json param to match layout.json param
             ij_param = self.ij.model.get_param(name)
-            if not isinstance(ij_param, ParamsModel):  # pragma: no cover
+            if ij_param is None:  # pragma: no cover
                 self.log.error(f'No param found in install.json for "{name}".')
                 sys.exit(1)
 
@@ -143,7 +143,7 @@ class Permutation:
         except IndexError:
             # when IndexError is reached all params has been processed
             self._input_permutations.append(params)
-            outputs = []
+            outputs: list[OutputVariablesModel] = []
 
             # iterate of InstallJsonModel -> PlaybookModel -> OutputVariablesModel
             if self.ij.model.playbook is not None:
@@ -159,14 +159,13 @@ class Permutation:
                 self._output_permutations.append(outputs)
 
     @property
-    def _params_data(self) -> Generator[NoneModel | ParamsModel, ParamsModel, None]:
+    def _params_data(self) -> Generator[ParamsModel | None, ParamsModel, None]:
         """Return all defined params from layout.json/install.json, including hidden params."""
         # using inputs from layout.json since they are required to be in order
         # (display field can only use inputs previously defined)
         for input_name in self.lj.model.params:
             # get data from install.json based on name
-            ij_data = self.ij.model.get_param(input_name)
-            yield ij_data
+            yield self.ij.model.get_param(input_name)
 
         # hidden fields will not be in layout.json so they need to be include manually
         for input_name, ij_data in self.ij.model.filter_params(hidden=True).items():
@@ -181,7 +180,8 @@ class Permutation:
         for index, inputs in enumerate(self._input_permutations):
             for input_ in inputs:
                 if input_.name == 'tc_action':
-                    action = input_.value
+                    # the value should always be a string
+                    action = cast(str, input_.value)
                     _action_configurations.setdefault(action, {'inputs': [], 'outputs': []})
                     _action_configurations[action]['inputs'].extend(inputs)
                     _action_configurations[action]['outputs'].extend(
@@ -311,7 +311,7 @@ class Permutation:
         """Return the output names for the provided action."""
         return [i.name for i in self.get_action_outputs(action)]
 
-    def get_action_outputs(self, action: str) -> list[OutputsModel]:
+    def get_action_outputs(self, action: str) -> list[OutputVariablesModel]:
         """Return the outputs for the provided action."""
         return self.action_configurations.get(action, {}).get('outputs', [])
 
@@ -387,7 +387,7 @@ class Permutation:
         return self._input_permutations
 
     @property
-    def output_permutations(self) -> list[list[dict]]:
+    def output_permutations(self) -> list[list[OutputVariablesModel]]:
         """Return all output permutations for current App.
 
         Returns:

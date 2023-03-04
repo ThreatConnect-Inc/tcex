@@ -1,4 +1,7 @@
 """Testing TcEx Input module field types."""
+# standard library
+from collections.abc import Callable
+
 # third-party
 import pytest
 from pydantic import BaseModel, validator
@@ -47,7 +50,7 @@ class TestInputsFieldTypes(InputTest):
         expected: str,
         optional: bool,
         fail_test: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test Binary field type.
 
@@ -55,22 +58,22 @@ class TestInputsFieldTypes(InputTest):
         Validation: Not null
         """
 
+        class PytestModelRequired(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: Binary
+
+        class PytestModelOptional(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: Binary | None
+
+        pytest_model = PytestModelOptional
         if optional is False:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: Binary
-
-        else:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: Binary | None
+            pytest_model = PytestModelRequired
 
         self._type_validation(
-            PytestModel,
+            pytest_model,
             input_name='my_data',
             input_value=input_value,
             input_type='Binary',
@@ -164,7 +167,7 @@ class TestInputsFieldTypes(InputTest):
         min_length: int,
         optional: bool,
         fail_test: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test Binary field type.
 
@@ -172,42 +175,42 @@ class TestInputsFieldTypes(InputTest):
         Validation: Not null
         """
 
-        if optional is False:
+        class PytestModelRequired(BaseModel):
+            """Test Model for Inputs"""
 
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
+            conditional: str | None = 'required'
+            my_data: binary(
+                allow_empty=allow_empty,
+                max_length=max_length,
+                min_length=min_length,
+            )  # type: ignore
 
-                conditional: str | None = 'required'
-                my_data: binary(
+            _conditional_required = validator('my_data', allow_reuse=True, always=True, pre=True)(
+                conditional_required(rules=conditional_required_rules)  # type: ignore
+            )
+
+        class PytestModelOptional(BaseModel):
+            """Test Model for Inputs"""
+
+            conditional: str | None = 'required'
+            my_data: None | (
+                binary(
                     allow_empty=allow_empty,
                     max_length=max_length,
                     min_length=min_length,
                 )
+            )  # type: ignore
 
-                _conditional_required = validator(
-                    'my_data', allow_reuse=True, always=True, pre=True
-                )(conditional_required(rules=conditional_required_rules))
+            _conditional_required = validator('my_data', allow_reuse=True, always=True, pre=True)(
+                conditional_required(rules=conditional_required_rules)  # type: ignore
+            )
 
-        else:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                conditional: str | None = 'required'
-                my_data: None | (
-                    binary(
-                        allow_empty=allow_empty,
-                        max_length=max_length,
-                        min_length=min_length,
-                    )
-                )
-
-                _conditional_required = validator(
-                    'my_data', allow_reuse=True, always=True, pre=True
-                )(conditional_required(rules=conditional_required_rules))
+        pytest_model = PytestModelOptional
+        if optional is False:
+            pytest_model = PytestModelRequired
 
         self._type_validation(
-            PytestModel,
+            pytest_model,
             input_name='my_data',
             input_value=input_value,
             input_type='Binary',
@@ -243,7 +246,7 @@ class TestInputsFieldTypes(InputTest):
         expected: str,
         optional: bool,
         fail_test: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test Binary field type.
 
@@ -251,22 +254,22 @@ class TestInputsFieldTypes(InputTest):
         Validation: Not null
         """
 
+        class PytestModelRequired(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: list[Binary]
+
+        class PytestModelOptional(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: list[Binary] | None
+
+        pytest_model = PytestModelOptional
         if optional is False:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: list[Binary]
-
-        else:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: list[Binary] | None
+            pytest_model = PytestModelRequired
 
         self._type_validation(
-            PytestModel,
+            pytest_model,
             input_name='my_data',
             input_value=input_value,
             input_type='BinaryArray',
@@ -307,7 +310,7 @@ class TestInputsFieldTypes(InputTest):
         input_type: str,
         optional: bool,
         fail_test: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test Binary field type.
 
@@ -315,26 +318,26 @@ class TestInputsFieldTypes(InputTest):
         Validation: Not null
         """
 
+        class PytestModelRequired(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: Binary | list[Binary]
+
+            _always_array = validator('my_data', allow_reuse=True)(always_array())
+
+        class PytestModelOptional(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: Binary | None | list[Binary] | None
+
+            _always_array = validator('my_data', allow_reuse=True)(always_array())
+
+        pytest_model = PytestModelOptional
         if optional is False:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: Binary | list[Binary]
-
-                _always_array = validator('my_data', allow_reuse=True)(always_array())
-
-        else:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: Binary | None | list[Binary] | None
-
-                _always_array = validator('my_data', allow_reuse=True)(always_array())
+            pytest_model = PytestModelRequired
 
         self._type_validation(
-            PytestModel,
+            pytest_model,
             input_name='my_data',
             input_value=input_value,
             input_type=input_type,

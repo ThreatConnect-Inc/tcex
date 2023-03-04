@@ -4,10 +4,27 @@ import re
 from urllib.parse import urlsplit
 
 # third-party
-from requests import Request  # TYPE-CHECKING
+from pydantic import BaseModel, Field
+from requests import PreparedRequest  # TYPE-CHECKING
 
 # first-party
 from tcex.utils.utils import Utils
+
+
+class CurlModel(BaseModel):
+    """Model Definition"""
+
+    body_limit: int = Field(100, description='The size limit for the body value.')
+    mask_body: bool = Field(False, description='If True the body will be masked.')
+    proxies: dict[str, str] | None = Field(
+        None, description='A dict containing the proxy configuration.'
+    )
+    verify: bool | str = Field(
+        True, description='If False the curl command will include --insecure flag.'
+    )
+    write_file: bool = Field(
+        False, description='If True and the body is binary it will be written as a temp file.'
+    )
 
 
 class RequestsToCurl:
@@ -17,35 +34,31 @@ class RequestsToCurl:
         """Initialize the Class properties."""
         self.utils = Utils()
 
-    def convert(
-        self,
-        request: Request,
-        mask_headers: bool = True,
-        mask_patterns: list[str] | None = None,
-        **kwargs: bool | dict,
-    ) -> str:
-        """Return converted Prepared Request to a curl command.
+    def _process_body(self, body: bytes | str | None, curl_model: CurlModel) -> list[str]:
+        """Process body and return a list of curl commands."""
+        _body = []
+        if body is None:
+            return _body
 
-        Args:
-            request: The response.request object.
-            mask_headers: If True then values for certain header key will be masked.
-            mask_patterns: A list of patterns if found in headers the value will be masked.
-            body_limit: The size limit for the body value.
-            mask_body: If True the body will be masked.
-            proxies: A dict containing the proxy configuration.
-            verify: If False the curl command will include --insecure flag.
-            write_file: If True and the body is binary it will be written as a temp file.
-        """
-        body_limit = kwargs.get('body_limit', 100)
-        proxies = kwargs.get('proxies', {})
-        verify = kwargs.get('verify', True)
-        # write_file: bool = kwargs.get('write_file', False)
+        # add body to the curl command
+        if isinstance(body, str):
+            if curl_model.mask_body is True:
+                body = self.utils.printable_cred(body)  # mask the body
+            else:
+                body = self.utils.truncate_string(
+                    t_string=body, length=curl_model.body_limit, append_chars='...'
+                )
+            _body.append(f'-d "{body}"')
+        elif isinstance(body, bytes):
+            _body.append('--data-binary @/tmp/body-file')
+        return _body
 
-        # APP-79 - adding the ability to log request as curl commands
-        cmd = ['curl', '-X', request.method]
-
-        # add headers to curl command
-        for k, v in sorted(list(dict(request.headers).items())):
+    def _process_headers(
+        self, headers: dict, mask_headers: bool, mask_patterns: list[str] | None
+    ) -> list[str]:
+        """Process headers and return a list of curl commands."""
+        _headers = []
+        for k, v in sorted(list(dict(headers).items())):
             if mask_headers is True:
                 patterns = [
                     'authorization',
@@ -73,52 +86,63 @@ class RequestsToCurl:
                             encodings.remove(encoding)
                     v: str = ', '.join(encodings)
 
-            cmd.append(f"-H '{k}: {v}'")
+            _headers.append(f"-H '{k}: {v}'")
+        return _headers
 
-        if request.body:
-            # add body to the curl command
-            body = request.body
-            try:
-                if isinstance(body, bytes):
-                    body = body.decode('utf-8')
+    def _process_proxies(self, proxies: dict[str, str] | None) -> list[str]:
+        """Process proxies and return a list of curl commands."""
+        _proxies = []
+        if proxies is None or proxies.get('https') is None:
+            return _proxies
 
-                if kwargs.get('mask_body', False):
-                    # mask_body
-                    body = self.utils.printable_cred(body)
-                else:
-                    # truncate body
-                    body = self.utils.truncate_string(
-                        t_string=body, length=body_limit, append_chars='...'
-                    )
-                body_data = f'-d "{body}"'
-            except Exception:
-                # set static filename so that when running a large job App thousands of files do
-                # no get created.
-                body_data = '--data-binary @/tmp/body-file'
-                # TODO: [super-low] - this is only useful for local testing.
-                # if write_file is True:
-                #     temp_file: str = self.utils.write_temp_binary_file(
-                #         content=body, filename='curl-body'
-                #     )
-                #     body_data = f'--data-binary @{temp_file}'
-            cmd.append(body_data)
+        # parse formatted string {'https': 'bob:pass@https://localhost:4242'}
+        proxy_url = proxies.get('https')
+        proxy_data = urlsplit(proxy_url)
 
-        if proxies is not None and proxies.get('https'):
-            # parse formatted string {'https': 'bob:pass@https://localhost:4242'}
-            proxy_url: str | None = proxies.get('https')
-            proxy_data = urlsplit(proxy_url)
-
-            # auth
-            if proxy_data.username:
-                cmd.extend(['--proxy-user', f'{proxy_data.username}:xxxxx'])
-
-            # server
-            proxy_server = proxy_data.hostname
+        # server
+        proxy_server = proxy_data.hostname
+        # do not process if server is None or bytes
+        if isinstance(proxy_server, str):
             if proxy_data.port:
                 proxy_server = f'{proxy_data.hostname}:{proxy_data.port}'
-            cmd.extend(['--proxy', proxy_server])
+            _proxies.extend(['--proxy', proxy_server])
 
-        if not verify:
+            # only append auth if server name is str
+            if proxy_data.username:
+                _proxies.extend(['--proxy-user', f'{proxy_data.username}:xxxxx'])
+
+        return _proxies
+
+    def convert(
+        self,
+        request: PreparedRequest,
+        mask_headers: bool = True,
+        mask_patterns: list[str] | None = None,
+        **kwargs,
+    ) -> str:
+        """Return converted Prepared Request to a curl command.
+
+        Args:
+            request: The response.request object.
+            mask_headers: If True then values for certain header key will be masked.
+            mask_patterns: A list of patterns if found in headers the value will be masked.
+        """
+        # build curl model from kwargs
+        curl_model = CurlModel(**kwargs)
+
+        # APP-79 - adding the ability to log request as curl commands
+        cmd = ['curl', '-X', request.method]
+
+        # add headers to curl command
+        cmd.extend(self._process_headers(dict(request.headers), mask_headers, mask_patterns))
+
+        # add body to the curl command
+        cmd.extend(self._process_body(request.body, curl_model))
+
+        # add proxies to curl command
+        cmd.extend(self._process_proxies(curl_model.proxies))
+
+        if curl_model.verify is not True:
             # add insecure flag to curl command
             cmd.append('--insecure')
 
