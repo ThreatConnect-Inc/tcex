@@ -178,12 +178,29 @@ def init(
     app_builder: bool = typer.Option(
         False, help='Include .appbuilderconfig file in template download.'
     ),
+    proxy_host: Optional[str] = typer.Option(
+        None, help='(Advanced) Hostname for the proxy server.'
+    ),
+    proxy_port: Optional[int] = typer.Option(
+        None, help='(Advanced) Port number for the proxy server.'
+    ),
+    proxy_user: Optional[str] = typer.Option(
+        None, help='(Advanced) Username for the proxy server.'
+    ),
+    proxy_pass: Optional[str] = typer.Option(
+        None, help='(Advanced) Password for the proxy server.'
+    ),
 ):
     """Initialize a new App from a template.
 
     Templates can be found at: https://github.com/ThreatConnect-Inc/tcex-app-templates
     """
-    tt = Template()
+    tt = Template(
+        proxy_host,
+        proxy_port,
+        proxy_user,
+        proxy_pass,
+    )
     if os.listdir(os.getcwd()) and force is False:
         tt.print_block(
             'The current directory does not appear to be empty. Apps should '
@@ -226,6 +243,18 @@ def list_(
     branch: str = typer.Option(
         'main', help='The git branch of the tcex-app-template repository to use.'
     ),
+    proxy_host: Optional[str] = typer.Option(
+        None, help='(Advanced) Hostname for the proxy server.'
+    ),
+    proxy_port: Optional[int] = typer.Option(
+        None, help='(Advanced) Port number for the proxy server.'
+    ),
+    proxy_user: Optional[str] = typer.Option(
+        None, help='(Advanced) Username for the proxy server.'
+    ),
+    proxy_pass: Optional[str] = typer.Option(
+        None, help='(Advanced) Password for the proxy server.'
+    ),
 ):
     """List templates
 
@@ -233,7 +262,12 @@ def list_(
     is provided it will be used instead of the value in the tcex.json file. The tcex.json
     file will also be updated with new values.
     """
-    tt = Template()
+    tt = Template(
+        proxy_host,
+        proxy_port,
+        proxy_user,
+        proxy_pass,
+    )
     try:
         tt.list_(branch, template_type)
         tt.print_list(branch)
@@ -306,6 +340,18 @@ def update(
     force: bool = typer.Option(
         False, help="Update files from template even if they haven't changed."
     ),
+    proxy_host: Optional[str] = typer.Option(
+        None, help='(Advanced) Hostname for the proxy server.'
+    ),
+    proxy_port: Optional[int] = typer.Option(
+        None, help='(Advanced) Port number for the proxy server.'
+    ),
+    proxy_user: Optional[str] = typer.Option(
+        None, help='(Advanced) Username for the proxy server.'
+    ),
+    proxy_pass: Optional[str] = typer.Option(
+        None, help='(Advanced) Password for the proxy server.'
+    ),
 ):
     """Update a project with the latest template files.
 
@@ -323,7 +369,12 @@ def update(
         )
         raise typer.Exit(code=1)
 
-    tt = Template()
+    tt = Template(
+        proxy_host,
+        proxy_port,
+        proxy_user,
+        proxy_pass,
+    )
     try:
         downloads = tt.update(branch, template_name, template_type, force)
         tt.print_title('Updating template files ...', divider=False, fg_color='white')

@@ -21,6 +21,8 @@ from tinydb import Query, TinyDB
 from tcex.app_config.models import TemplateConfigModel
 from tcex.backports import cached_property
 from tcex.bin.bin_abc import BinABC
+from tcex.input.field_types import Sensitive
+from tcex.pleb.proxies import proxies
 
 
 class FileMetadataModel(BaseModel, extra=Extra.allow):
@@ -47,7 +49,13 @@ class FileMetadataModel(BaseModel, extra=Extra.allow):
 class Template(BinABC):
     """Install dependencies for App."""
 
-    def __init__(self):
+    def __init__(
+        self,
+        proxy_host,
+        proxy_port,
+        proxy_user,
+        proxy_pass,
+    ):
         """Initialize class properties."""
         super().__init__()
 
@@ -63,6 +71,10 @@ class Template(BinABC):
         self.template_data = {}
         self.template_manifest_fqfn = Path('.template_manifest.json')
         self.username = os.getenv('GITHUB_USER')
+        self.proxy_host = proxy_host
+        self.proxy_port = proxy_port
+        self.proxy_user = proxy_user
+        self.proxy_pass = proxy_pass
 
     def _log_validation_error(self, ex: ValidationError):
         """Log model validation errors."""
@@ -166,6 +178,10 @@ class Template(BinABC):
                 f'action=download-template-file, url={r.request.url}, '
                 f'status_code={r.status_code}, headers={r.headers}, '
                 f'response={r.text or r.reason}'
+            )
+            raise RuntimeError(
+                f'action=get-template-config, url={r.request.url}, status_code='
+                f'{r.status_code}, reason={r.reason}'
             )
 
         # get the relative path to the file and create the parent directory if it does not exist
@@ -320,7 +336,10 @@ class Template(BinABC):
                 f'response={r.text or r.reason}'
             )
             self.errors = True
-            return None
+            raise RuntimeError(
+                f'action=get-template-config, url={r.request.url}, status_code='
+                f'{r.status_code}, reason={r.reason}'
+            )
 
         return r
 
@@ -449,7 +468,10 @@ class Template(BinABC):
                 f'response={r.text or r.reason}'
             )
             self.errors = True
-            return None
+            raise RuntimeError(
+                f'action=get-template-config, url={r.request.url}, status_code='
+                f'{r.status_code}, reason={r.reason}'
+            )
 
         try:
             commits_data = r.json()
@@ -464,6 +486,12 @@ class Template(BinABC):
         """Return session object"""
         session = Session()
         session.headers.update({'Cache-Control': 'no-cache'})
+        session.proxies = proxies(
+            proxy_host=self.proxy_host,
+            proxy_port=self.proxy_port,
+            proxy_user=self.proxy_user,
+            proxy_pass=Sensitive(self.proxy_pass),
+        )
 
         # add auth if set (typically not require since default site is public)
         if self.username is not None and self.password is not None:
