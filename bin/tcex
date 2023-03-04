@@ -11,14 +11,8 @@ import colorama as c
 import typer
 
 # first-party
-from tcex.bin import (  # pylint: disable=no-name-in-module
-    Dep,
-    Deploy,
-    Package,
-    SpecTool,
-    Template,
-    Validate,
-)
+# pylint: disable=import-error,no-name-in-module
+from tcex.bin import Dep, Deploy, Package, SpecTool, Template, Validate
 
 # initialize typer
 app = typer.Typer()

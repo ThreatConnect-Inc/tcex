@@ -1,5 +1,8 @@
 # Release Notes
 
+### 4.0.0
+
+
 ### 3.0.8
 
 -   APP-3899 [CLI] Updated error handling on CLI when downloading template files
