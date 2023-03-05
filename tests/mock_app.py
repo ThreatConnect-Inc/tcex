@@ -272,7 +272,8 @@ class MockApp:
                 f'This feature requires ThreatConnect 6.0 or higher. response={r.text}, '
                 f'url={r.request.url}, status_code={r.status_code}'
             )
-        return r.json().get('data')
+        # cannot return Sensitive here because it is used in a dict
+        return r.json()['data']
 
     @property
     def config_data(self) -> dict:
@@ -380,7 +381,8 @@ class MockApp:
         r = self.session.post(f'{self.tc_api_path}{self.tc_token_url}svc', json=data, verify=False)
         if r.status_code != 200:
             raise RuntimeError(f'This feature requires ThreatConnect 6.0 or higher ({r.text})')
-        return r.json().get('data')
+        # cannot return Sensitive here because it is used in a dict
+        return r.json()['data']
 
     @property
     def session(self) -> Session:

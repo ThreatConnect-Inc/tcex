@@ -3,7 +3,7 @@
 -   A Group must be create in the TC instance (Org Settings -> Groups)
 -   The Description Attribute must include Case and URL (System Settings -> Attribute Types)
 -   A Service App needs to be created "DO NOT DELETE - TcEx Test Service App"
--   The v3ApiInelLinkLimit system property needs to be set to 2.
+-   The v3ApiIntelLinkLimit system property needs to be set to 2.
 
 ## Code Stats
 
@@ -471,7 +471,7 @@ pytest -n 8 --cov=tcex/tokens/ --cov-report=term-missing tests/tokens/
 ```
 Name                                    Stmts   Miss  Cover
 -----------------------------------------------------------
-TOTAL                                     132      5    96%
+TOTAL                                     139      5    96%
 ```
 
 ## utils
