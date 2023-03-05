@@ -31,6 +31,7 @@ dev_packages = [
     'pre-commit',
     'pydocstyle',
     'pylint',
+    'pyright',
     'pytest',
     'pytest-cov',
     'pytest-html',

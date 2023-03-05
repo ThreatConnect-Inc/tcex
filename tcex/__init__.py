@@ -7,22 +7,29 @@ import logging
 from tcex.logger.cache_handler import CacheHandler  # pylint: disable=no-name-in-module
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 
-# init logger before instantiating tcex
-logging.setLoggerClass(TraceLogger)
-logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
-logger.setLevel(logging.TRACE)  # type: ignore
 
-# add TEMP cache handler, which will be removed in tcex.py (we don't know log path here)
-cache = CacheHandler()
-cache.set_name('cache')
-cache.setLevel(logging.TRACE)  # type: ignore
-cache.setFormatter(
-    logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)8s - %(message)s '
-        '(%(filename)s:%(funcName)s:%(lineno)d)'
+def initialize_logger():
+    """Initialize logger TraceLogger."""
+    # init logger before instantiating tcex
+    logging.setLoggerClass(TraceLogger)
+    logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
+    logger.setLevel(logging.TRACE)  # type: ignore
+
+    # add TEMP cache handler, which will be removed in tcex.py (we don't know log path here)
+    cache = CacheHandler()
+    cache.set_name('cache')
+    cache.setLevel(logging.TRACE)  # type: ignore
+    cache.setFormatter(
+        logging.Formatter(
+            '%(asctime)s - %(name)s - %(levelname)8s - %(message)s '
+            '(%(filename)s:%(funcName)s:%(lineno)d)'
+        )
     )
-)
-logger.addHandler(cache)
+    logger.addHandler(cache)
+
+
+# init logger before instantiating tcex
+initialize_logger()
 
 # pylint: disable=wrong-import-position
 from .__metadata__ import (
@@ -40,5 +47,5 @@ try:
     from tcex.tcex import TcEx
 except ImportError as e:
     print(f'Error: {e}')
-    print('Try running tclib')
+    print('Try running tcex deps')
     raise

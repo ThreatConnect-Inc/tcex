@@ -487,5 +487,5 @@ pytest -n auto --cov=tcex/utils/ --cov-report=term-missing tests/utils/
 ```
 Name                                    Stmts   Miss  Cover
 -----------------------------------------------------------
-TOTAL                                     411    122    70%
+TOTAL                                     473      0   100%
 ```

@@ -364,7 +364,7 @@ class Indicator:
             self._labels.append(label)
         return label
 
-    def tag(self, name: str, formatter: Callable[[str], str] | None = None) -> 'Tag':
+    def tag(self, name: str, formatter: Callable[[str], str] | None = None) -> Tag:
         """Return instance of Tag.
 
         Args:

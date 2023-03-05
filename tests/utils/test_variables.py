@@ -1,4 +1,4 @@
-"""Test the TcEx Utils Module."""
+"""Test Suite"""
 # standard library
 import re
 
@@ -12,7 +12,7 @@ variables = Variables()
 
 
 class TestVariables:
-    """Test the TcEx Utils Module."""
+    """Test Suite"""
 
     @pytest.mark.parametrize(
         'variable,expected',
@@ -25,14 +25,29 @@ class TestVariables:
                 '#App:0001:binary_array!BinaryArray',
                 {'app_type': 'App', 'job_id': '0001', 'key': 'binary_array', 'type': 'BinaryArray'},
             ),
+            (None, None),
         ],
     )
-    def test_variable_to_method(self, variable: str, expected: dict):
-        """Test Module"""
+    def test_get_playbook_variable_model(self, variable: str, expected: dict):
+        """Test Case"""
         results = variables.get_playbook_variable_model(variable)
-        if results is None:
-            assert False, 'get playbook variable model returned None'
-        assert results.dict() == expected
+        if results is not None:
+            results = results.dict()
+        assert results == expected
+
+    @pytest.mark.parametrize(
+        'variable,expected',
+        [
+            ('#App:0001:binary!Binary', 'Binary'),
+            ('#App:0001:binary_array!BinaryArray', 'BinaryArray'),
+            ('#App:0001:string_array!String', 'String'),
+            ('#App:0001:string_array!StringArray', 'StringArray'),
+        ],
+    )
+    def test_get_playbook_variable_type(self, variable: str, expected: dict):
+        """Test Case"""
+        result = variables.get_playbook_variable_type(variable)
+        assert result == expected
 
     @pytest.mark.parametrize(
         'variable,expected',
@@ -56,7 +71,7 @@ class TestVariables:
         ],
     )
     def test_is_playbook_variable(self, variable: str, expected: dict):
-        """Test Module"""
+        """Test Case"""
         assert variables.is_playbook_variable(variable) is expected
 
     @pytest.mark.parametrize(
@@ -72,7 +87,7 @@ class TestVariables:
         ],
     )
     def test_is_tc_variable(self, variable: str, expected: dict):
-        """Test Module"""
+        """Test Case"""
         assert variables.is_tc_variable(variable) is expected
 
     @pytest.mark.parametrize(
@@ -80,50 +95,76 @@ class TestVariables:
         [
             (
                 '#App:0001:binary!Binary',
-                {
-                    'origin': '#',
-                    'provider': 'App',
-                    'id': '0001',
-                    'lookup': 'binary',
-                    'type': 'Binary',
-                },
+                [
+                    {
+                        'origin': '#',
+                        'provider': 'App',
+                        'id': '0001',
+                        'lookup': 'binary',
+                        'type': 'Binary',
+                    }
+                ],
             ),
             (
                 '#App:0001:binary_array!BinaryArray',
-                {
-                    'origin': '#',
-                    'provider': 'App',
-                    'id': '0001',
-                    'lookup': 'binary_array',
-                    'type': 'BinaryArray',
-                },
+                [
+                    {
+                        'origin': '#',
+                        'provider': 'App',
+                        'id': '0001',
+                        'lookup': 'binary_array',
+                        'type': 'BinaryArray',
+                    }
+                ],
             ),
             (
                 'dummy-data#App:0001:string!Stringdummy-data',
-                {
-                    'origin': '#',
-                    'provider': 'App',
-                    'id': '0001',
-                    'lookup': 'string',
-                    'type': 'String',
-                },
+                [
+                    {
+                        'origin': '#',
+                        'provider': 'App',
+                        'id': '0001',
+                        'lookup': 'string',
+                        'type': 'String',
+                    }
+                ],
             ),
             (
-                r'&{TC:TEXT:4dc9202e-6945-4364-aa40-4b47655046d2}',
-                {
-                    'origin': '&',
-                    'provider': 'TC',
-                    'id': 'TEXT',
-                    'lookup': '4dc9202e-6945-4364-aa40-4b47655046d2',
-                    'type': None,
-                },
+                (
+                    r'mixed variable types #App:0001:binary!Binary '
+                    r'&{TC:TEXT:4dc9202e-6945-4364-aa40-4b47655046d2}'
+                ),
+                [
+                    {
+                        'origin': '#',
+                        'provider': 'App',
+                        'id': '0001',
+                        'lookup': 'binary',
+                        'type': 'Binary',
+                    },
+                    {
+                        'origin': '&',
+                        'provider': 'TC',
+                        'id': 'TEXT',
+                        'lookup': '4dc9202e-6945-4364-aa40-4b47655046d2',
+                        'type': None,
+                    },
+                ],
             ),
         ],
     )
-    def test_variable_expansion_pattern(self, variable: str, expected: dict):
-        """Test Module"""
-        for match in re.finditer(variables.variable_expansion_pattern, str(variable)):
-            assert match.groupdict() == expected
+    def test_variable_expansion_pattern(self, variable: str, expected: list[dict]):
+        """Test Case"""
+        for index, match in enumerate(
+            re.finditer(variables.variable_expansion_pattern, str(variable))
+        ):
+            assert match.groupdict() == expected[index]
+
+    def test_variable_playbook_array_types(self):
+        """Test Case"""
+        assert len(variables.variable_playbook_array_types) == 5
+
+    # variable_playbook_match -> tested with is_playbook_variable
 
     @pytest.mark.parametrize(
         'variable,expected',
@@ -136,8 +177,21 @@ class TestVariables:
         ],
     )
     def test_variable_playbook_method_name(self, variable: str, expected: dict):
-        """Test Module"""
+        """Test Case"""
         assert variables.variable_playbook_method_name(variable) == expected
+
+    # variable_playbook_parse -> get_playbook_variable_model
+    # variable_playbook_pattern -> get_playbook_variable_model (via variable_playbook_parse)
+
+    def test_variable_playbook_single_types(self):
+        """Test Case"""
+        assert len(variables.variable_playbook_single_types) == 5
+
+    def test_variable_playbook_types(self):
+        """Test Case"""
+        assert len(variables.variable_playbook_types) == 10
+
+    # variable_tc_match -> tested with is_tc_variable
 
     @pytest.mark.parametrize(
         'variable,expected',
@@ -153,18 +207,8 @@ class TestVariables:
         ],
     )
     def test_variable_tc_parse(self, variable: str, expected: dict):
-        """Test Module"""
+        """Test Case"""
         for match in re.finditer(variables.variable_tc_parse, str(variable)):
             assert match.groupdict() == expected
 
-    def test_variable_playbook_array_types(self):
-        """Test Module"""
-        assert len(variables.variable_playbook_array_types) == 5
-
-    def test_variable_playbook_single_types(self):
-        """Test Module"""
-        assert len(variables.variable_playbook_single_types) == 5
-
-    def test_variable_playbook_types(self):
-        """Test Module"""
-        assert len(variables.variable_playbook_types) == 10
+    # variable_tc_pattern -> tested with is_tc_variable (via variable_tc_match)

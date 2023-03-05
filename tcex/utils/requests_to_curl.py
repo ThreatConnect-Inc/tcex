@@ -46,7 +46,7 @@ class RequestsToCurl:
                 body = self.utils.printable_cred(body)  # mask the body
             else:
                 body = self.utils.truncate_string(
-                    t_string=body, length=curl_model.body_limit, append_chars='...'
+                    string=body, length=curl_model.body_limit, append_chars='...'
                 )
             _body.append(f'-d "{body}"')
         elif isinstance(body, bytes):

@@ -42,7 +42,7 @@ from tcex.utils.file_operations import FileOperations
 
 
 class TcEx:
-    """Provides basic functionality for all types of TxEx Apps.
+    """Provides functionality for all types of TxEx Apps.
 
     Args:
         config (dict, kwargs): A dictionary containing configuration items typically used by
@@ -59,17 +59,11 @@ class TcEx:
             signal.signal(signal.SIGHUP, self._signal_handler)
         signal.signal(signal.SIGTERM, self._signal_handler)
 
-        # Property defaults
-        self._config: dict = kwargs.get('config') or {}
-        self._log: 'TraceLogger'
-        self._jobs = None
-        self._redis_client = None
-        self._service = None
-        self.ij = InstallJson()
-        self.main_os_pid = os.getpid()
+        # properties
+        self._log: TraceLogger  # allow logger to be overridden
 
-        # init inputs
-        self.inputs = Input(self._config, kwargs.get('config_file'))
+        # initialize TcEx/App inputs
+        self.inputs = Input(kwargs.get('config') or {}, kwargs.get('config_file'))
 
         # add methods to registry
         registry.add_method(self.inputs.resolve_variable)
@@ -83,9 +77,9 @@ class TcEx:
 
     def _signal_handler(self, signal_interrupt: int, _):
         """Handle signal interrupt."""
-        call_file: str = os.path.basename(inspect.stack()[1][0].f_code.co_filename)
-        call_module: str = inspect.stack()[1][0].f_globals['__name__'].lstrip('Functions.')
-        call_line: int = inspect.stack()[1][0].f_lineno
+        call_file = os.path.basename(inspect.stack()[1][0].f_code.co_filename)
+        call_module = inspect.stack()[1][0].f_globals['__name__'].lstrip('Functions.')
+        call_line = inspect.stack()[1][0].f_lineno
         self.log.error(
             f'App interrupted - file: {call_file}, method: {call_module}, line: {call_line}.'
         )
@@ -95,13 +89,13 @@ class TcEx:
 
         self.exit(exit_code, 'The App received an interrupt signal and will now exit.')
 
-    @property
+    @cached_property
     def _user_agent(self):
         """Return a User-Agent string."""
         return {
             'User-Agent': (
                 f'TcEx/{__import__(__name__).__version__}, '
-                f'{self.ij.model.display_name}/{self.ij.model.program_version}'
+                f'{self.install_json.model.display_name}/{self.install_json.model.program_version}'
             )
         }
 
@@ -145,16 +139,17 @@ class TcEx:
         return self.exit_service.exit_code  # pylint: disable=no-member
 
     @exit_code.setter
-    def exit_code(self, code: ExitCode):
+    def exit_code(self, code: ExitCode | int):
         """Set the App exit code.
 
         For TC Exchange Apps there are 3 supported exit codes.
-        * 0 indicates a normal exit
-        * 1 indicates a failure during execution
-        * 3 indicates a partial failure
+        * SUCCESS = 0
+        * FAILURE = 1
+        * PARTIAL_FAILURE = 3
+        * HARD_FAILURE = 4
 
         Args:
-            code (int): The exit code value for the app.
+            code: The exit code value for the app.
         """
         self.exit_service.exit_code = code
 
@@ -209,9 +204,6 @@ class TcEx:
             password (str, kwargs): The REDIS password.
             socket_timeout (int, kwargs): The REDIS socket timeout.
             timeout (int, kwargs): The REDIS Blocking Connection Pool timeout value.
-
-        Returns:
-            Redis.client: An instance of redis client.
         """
         return RedisClient(
             host=host, port=port, db=db, blocking_pool=blocking_pool, **kwargs
@@ -242,7 +234,7 @@ class TcEx:
         if verify is None:
             verify = self.inputs.model_unresolved.tc_verify
 
-        if self.ij.is_external_app is True:
+        if self.install_json.is_external_app is True:
             auth = auth or TcAuth(
                 tc_api_access_id=self.inputs.model_unresolved.tc_api_access_id,
                 tc_api_secret_key=self.inputs.model_unresolved.tc_api_secret_key,
@@ -264,7 +256,7 @@ class TcEx:
             verify=verify,
         )
 
-    def get_session_external(self) -> ExternalSession:
+    def get_session_external(self, log_curl: bool = True) -> ExternalSession:
         """Return an instance of Requests Session configured for the ThreatConnect API."""
         _session_external = ExternalSession()
 
@@ -280,9 +272,19 @@ class TcEx:
             )
 
         if self.inputs.model_unresolved.tc_log_curl:
-            _session_external.log_curl = True
+            _session_external.log_curl = log_curl
 
         return _session_external
+
+    @cached_property
+    def ij(self) -> InstallJson:
+        """Return the install.json file as a dict."""
+        return self.install_json
+
+    @cached_property
+    def install_json(self) -> InstallJson:
+        """Return the install.json file as a dict."""
+        return InstallJson()
 
     @registry.factory('KeyValueStore')
     @scoped_property
@@ -364,9 +366,6 @@ class TcEx:
         """Return an instance of Playbooks module.
 
         This property defaults context and output variables to arg values.
-
-        Returns:
-            tcex.playbook.Playbooks: An instance of Playbooks
         """
         return self.get_playbook(
             context=self.inputs.model_unresolved.tc_playbook_kvstore_context,
@@ -384,9 +383,6 @@ class TcEx:
         ::
 
             {"http": "http://user:pass@10.10.1.10:3128/"}
-
-        Returns:
-           (dict): Dictionary of proxy settings
         """
         return proxies(
             proxy_host=self.inputs.model_unresolved.tc_proxy_host,
@@ -401,8 +397,10 @@ class TcEx:
         """Return redis client instance configure for Playbook/Service Apps."""
         # TODO: [high] - why can't we use inputs.model_unresolved here?
         return self.get_redis_client(
-            host=self.inputs.contents.get('tc_kvstore_host', 'localhost'),
-            port=self.inputs.contents.get('tc_kvstore_port', 6379),
+            # host=self.inputs.contents.get('tc_kvstore_host', 'localhost'),
+            host=self.inputs.model_unresolved.tc_kvstore_host,
+            # port=self.inputs.contents.get('tc_kvstore_port', 6379),
+            port=self.inputs.model_unresolved.tc_kvstore_port,
             db=0,
         )
 
@@ -448,11 +446,14 @@ class TcEx:
     @cached_property
     def service(self) -> ApiService | CommonServiceTrigger | WebhookTriggerService:
         """Include the Service Module."""
-        if self.ij.model.is_api_service_app:
+        if self.install_json.model.is_api_service_app:
             from .services import ApiService as Service
-        elif self.ij.model.is_trigger_app and not self.ij.model.is_webhook_trigger_app:
+        elif (
+            self.install_json.model.is_trigger_app
+            and not self.install_json.model.is_webhook_trigger_app
+        ):
             from .services import CommonServiceTrigger as Service
-        elif self.ij.model.is_webhook_trigger_app:
+        elif self.install_json.model.is_webhook_trigger_app:
             from .services import WebhookTriggerService as Service
         else:
             self.exit(1, 'Could not determine the service type.')
@@ -470,9 +471,10 @@ class TcEx:
         """Return an instance of Requests Session configured for the ThreatConnect API."""
         return self.get_session_external()
 
-    def set_exit_code(self, exit_code: ExitCode):
-        """Set the exit code (registry)"""
-        self.exit_code = exit_code
+    # TODO: [high] @cblades - why is there are setter for exit_code and set_exit_code method?
+    # def set_exit_code(self, exit_code: ExitCode):
+    #     """Set the exit code (registry)"""
+    #     self.exit_code = exit_code
 
     @registry.factory(Tokens, singleton=True)
     @cached_property
@@ -499,6 +501,7 @@ class TcEx:
             )
         return _tokens
 
+    # TODO: [low] - is tc_utils required since you can simply do api.tc.utils?
     @property
     def ti_utils(self) -> ThreatIntelUtils:
         """Return instance of Threat Intel Utils."""
@@ -509,11 +512,13 @@ class TcEx:
         """Include the Utils module."""
         return Utils()
 
+    # TODO: [low] - are v2 and v3 required since you can simply do api.tc.v2 or api.tc.v3?
     @cached_property
     def v2(self) -> V2:
         """Return a case management instance."""
         return V2(self.inputs, self.session_tc)
 
+    # TODO: [low] - are v2 and v3 required since you can simply do api.tc.v2 or api.tc.v3?
     @cached_property
     def v3(self) -> V3:
         """Return a case management instance."""
