@@ -17,7 +17,7 @@ from tcex.bin import Dep, Deploy, Package, SpecTool, Template, Validate
 # initialize typer
 app = typer.Typer()
 
-# typer does not yet support PEP 604, but pyupgrade will enforce enforce
+# typer does not yet support PEP 604, but pyupgrade will enforce
 # PEP 604. this is a temporary workaround until support is added.
 IntOrNone = Optional[int]
 StrOrNone = Optional[str]
