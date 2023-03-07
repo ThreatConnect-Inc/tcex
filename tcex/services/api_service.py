@@ -5,19 +5,24 @@ import json
 import sys
 import threading
 import traceback
+from collections.abc import Callable
 from functools import reduce
 from io import BytesIO
-from typing import Any, Callable, Optional
+from typing import TYPE_CHECKING, Any
 
 # first-party
 from tcex.input.field_types.sensitive import Sensitive
 from tcex.services.common_service import CommonService
 
+if TYPE_CHECKING:
+    # first-party
+    from tcex import TcEx  # CIRCULAR-IMPORT
+
 
 class ApiService(CommonService):
     """TcEx Framework API Service module."""
 
-    def __init__(self, tcex: object):
+    def __init__(self, tcex: 'TcEx'):
         """Initialize the Class properties.
 
         Args:
@@ -85,7 +90,7 @@ class ApiService(CommonService):
             self.log.trace(traceback.format_exc())
         return headers_
 
-    def format_response_headers(self, headers: dict) -> dict:
+    def format_response_headers(self, headers: dict) -> list[dict]:
         """Convert name/value array to a query string.
 
         Args:
@@ -112,7 +117,7 @@ class ApiService(CommonService):
         ('200 OK', [('content-type', 'application/json'), ('content-length', '103')])
         """
         self.log.info('feature=api-service, event=response-received, status=waiting-for-body')
-        kwargs.get('event').wait(30)  # wait for thread event - (set on body write)
+        kwargs['event'].wait(30)  # wait for thread event - (set on body write)
         self.log.trace(f'feature=api-service, event=response, args={args}')
         try:
             status_code, status = args[0].split(' ', 1)
@@ -126,7 +131,7 @@ class ApiService(CommonService):
                 'type': 'RunService',
             }
             self.log.info('feature=api-service, event=response-sent')
-            self.message_broker.publish(json.dumps(response), self.args.tc_svc_client_topic)
+            self.message_broker.publish(json.dumps(response), self.models.tc_svc_client_topic)
             self.increment_metric('Responses')
         except Exception as e:
             self.log.error(
@@ -161,7 +166,7 @@ class ApiService(CommonService):
         """
         # register config apiToken (before any logging)
         self.token.register_token(
-            self.thread_name, Sensitive(message.get('apiToken')), message.get('expireSeconds')
+            self.thread_name, Sensitive(message['apiToken']), message.get('expireSeconds')
         )
         self.log.info(f'feature=api-service, event=runservice-command, message="{message}"')
 
@@ -169,7 +174,7 @@ class ApiService(CommonService):
         event = threading.Event()
 
         # process message
-        request_key: str = message.get('requestKey')
+        request_key: str = message['requestKey']
         body = None
         try:
             # read body from redis
@@ -281,11 +286,11 @@ class ApiService(CommonService):
     def service_thread(
         self,
         name: str,
-        target: Callable[[], bool],
-        args: Optional[tuple] = None,
-        kwargs: Optional[dict] = None,
-        session_id: Optional[str] = None,
-        trigger_id: Optional[int] = None,
+        target: Callable[..., bool | None],
+        args: tuple | None = None,
+        kwargs: dict | None = None,
+        session_id: str | None = None,
+        trigger_id: int | None = None,
     ):
         """If this is a run-service command, run it with the thread pool.
 
@@ -304,9 +309,9 @@ class ApiService(CommonService):
 
         def _thread_wrapper():
             t = threading.current_thread()
-            t.setName(name)
-            t.session_id = session_id
-            t.trigger_id = trigger_id
+            t.name = name
+            t.session_id = session_id  # type: ignore
+            t.trigger_id = trigger_id  # type: ignore
             target(*args, **kwargs)
 
         if target is self.process_run_service_command:

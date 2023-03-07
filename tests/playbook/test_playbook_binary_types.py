@@ -1,16 +1,14 @@
 """Test the TcEx Batch Module."""
 # standard library
-from typing import TYPE_CHECKING, Any, List
+from typing import Any
 
 # third-party
 import pytest
 
-if TYPE_CHECKING:
-    # first-party
-    from tcex.playbook.playbook import Playbook
+# first-party
+from tcex.playbook.playbook import Playbook
 
 
-# pylint: disable=no-self-use
 class TestUtils:
     """Test the TcEx Batch Module."""
 
@@ -23,7 +21,7 @@ class TestUtils:
             ('#App:0002:b4!Binary', b'bytes 4'),
         ],
     )
-    def test_playbook_binary_pass(self, variable: str, value: bytes, playbook: 'Playbook'):
+    def test_playbook_binary_pass(self, variable: str, value: bytes, playbook: Playbook):
         """Test playbook variables."""
         playbook.create.binary(variable, value, when_requested=False)
         result = playbook.read.binary(variable)
@@ -41,7 +39,7 @@ class TestUtils:
             ('#App:0002:b3!WrongType', 'wrong type'),
         ],
     )
-    def test_playbook_binary_fail(self, variable: str, value: Any, playbook: 'Playbook'):
+    def test_playbook_binary_fail(self, variable: str, value: Any, playbook: Playbook):
         """Test playbook variables."""
         try:
             playbook.create.binary(variable, value, when_requested=False)
@@ -59,7 +57,7 @@ class TestUtils:
         ],
     )
     def test_playbook_binary_array_pass(
-        self, variable: str, value: List[bytes], playbook: 'Playbook'
+        self, variable: str, value: list[bytes], playbook: Playbook
     ):
         """Test playbook variables."""
         playbook.create.binary_array(variable, value, when_requested=False)
@@ -76,7 +74,7 @@ class TestUtils:
             ('#App:0002:b3!WrongType', 'wrong type'),
         ],
     )
-    def test_playbook_binary_array_fail(self, variable: str, value: Any, playbook: 'Playbook'):
+    def test_playbook_binary_array_fail(self, variable: str, value: Any, playbook: Playbook):
         """Test playbook variables."""
         try:
             playbook.create.binary_array(variable, value, when_requested=False)
@@ -97,7 +95,7 @@ class TestUtils:
             ('#App:0002:b4!Binary', b'bytes 4'),
         ],
     )
-    def test_playbook_binary_decode(self, variable: str, value: bytes, playbook: 'Playbook'):
+    def test_playbook_binary_decode(self, variable: str, value: bytes, playbook: Playbook):
         """Test playbook variables."""
         playbook.create.binary(variable, value, when_requested=False)
         result = playbook.read.binary(variable, decode=True)
@@ -116,7 +114,7 @@ class TestUtils:
         ],
     )
     def test_playbook_binary_no_b64decode(
-        self, variable: str, value: bytes, expected: str, playbook: 'Playbook'
+        self, variable: str, value: bytes, expected: str, playbook: Playbook
     ):
         """Test playbook variables."""
         playbook.create.binary(variable, value, when_requested=False)
@@ -136,7 +134,7 @@ class TestUtils:
         ],
     )
     def test_playbook_binary_array_decode(
-        self, variable: str, value: List[bytes], playbook: 'Playbook'
+        self, variable: str, value: list[bytes], playbook: Playbook
     ):
         """Test playbook variables."""
         playbook.create.binary_array(variable, value, when_requested=False)
@@ -174,7 +172,7 @@ class TestUtils:
         ],
     )
     def test_playbook_binary_array_no_b64decode(
-        self, variable: str, value: List[bytes], expected: List[str], playbook: 'Playbook'
+        self, variable: str, value: list[bytes], expected: list[str], playbook: Playbook
     ):
         """Test playbook variables."""
         playbook.create.binary_array(variable, value, when_requested=False)

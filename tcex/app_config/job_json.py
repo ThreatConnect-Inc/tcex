@@ -2,10 +2,8 @@
 # standard library
 import json
 import logging
-import os
 from collections import OrderedDict
 from pathlib import Path
-from typing import Optional
 
 # first-party
 from tcex.app_config.models import JobJsonModel
@@ -21,17 +19,17 @@ class JobJson(metaclass=Singleton):
 
     def __init__(
         self,
-        filename: Optional[str] = None,
-        path: Optional[str] = None,
-        logger: Optional[logging.Logger] = None,
+        filename: str | None = None,
+        path: Path | str | None = None,
+        logger: logging.Logger | None = None,
     ):
         """Initialize class properties."""
         filename = filename or 'tcex.json'
-        path = path or os.getcwd()
+        path = Path(path or Path.cwd())
         self.log = logger or tcex_logger
 
         # properties
-        self.fqfn = Path(os.path.join(path, filename))
+        self.fqfn = path / filename
 
     @cached_property
     def contents(self) -> dict:
@@ -52,7 +50,7 @@ class JobJson(metaclass=Singleton):
         return _contents
 
     @cached_property
-    def model(self) -> 'JobJsonModel':
+    def model(self) -> JobJsonModel:
         """Return the Install JSON model."""
         return JobJsonModel(**self.contents)
 

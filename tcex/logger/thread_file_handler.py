@@ -1,25 +1,25 @@
 """Thread File Handler Class"""
 # standard library
+import logging
 import os
 import threading
 from logging.handlers import RotatingFileHandler
-from typing import Optional
 
 
 class ThreadFileHandler(RotatingFileHandler):
     """Logger handler for ThreatConnect Exchange File logging."""
 
-    handler_key = None
-    thread_key = None
+    handler_key: str
+    thread_key: str
 
     def __init__(
         self,
         filename: str,
-        mode: Optional[str] = 'a',
-        maxBytes: Optional[int] = 0,
-        backupCount: Optional[int] = 0,
-        encoding: Optional[str] = None,
-        delay: Optional[bool] = False,
+        mode: str = 'a',
+        maxBytes: int = 0,
+        backupCount: int = 0,
+        encoding: str | None = None,
+        delay: bool = False,
     ):
         """Add logic to create log directory if it does not exists.
 
@@ -37,7 +37,7 @@ class ThreadFileHandler(RotatingFileHandler):
             os.makedirs(os.path.dirname(filename), exist_ok=True)
         RotatingFileHandler.__init__(self, filename, mode, maxBytes, backupCount, encoding, delay)
 
-    def emit(self, record: object):
+    def emit(self, record: logging.LogRecord):
         """Emit a record.
 
         Emit logging events only if handler_key matches thread_key.

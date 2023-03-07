@@ -2,8 +2,11 @@
 # standard library
 import logging
 
+# first-party
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
+
 # get tcex logger
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 
 class BaseValueError(ValueError):
@@ -11,7 +14,7 @@ class BaseValueError(ValueError):
 
     def __init__(self, field_name: str, message: str):
         """Customize the exception message."""
-        # when using Union this logs for each type that's doesn't match
+        # when a union of types are provided, this logs for each type that's doesn't match
         logger.trace(f'Checking value for field {field_name}: {message}')
         super().__init__(message)
 
@@ -21,7 +24,7 @@ class BaseTypeError(TypeError):
 
     def __init__(self, field_name: str, message: str):
         """Customize the exception message."""
-        # when using Union this logs for each type that's doesn't match
+        # when a union of types are provided, this logs for each type that's doesn't match
         logger.trace(f'Checking type for field {field_name}: {message}')
         super().__init__(message)
 

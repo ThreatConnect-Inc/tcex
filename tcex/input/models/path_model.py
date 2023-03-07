@@ -23,22 +23,22 @@ class PathModel(BaseModel):
     #
 
     tc_in_path: Path = Field(
-        Path(tempfile.gettempdir() or '/tmp'),  # nosec
+        Path(tempfile.gettempdir()),
         description='The path to the Apps "in" directory.',
         inclusion_reason='runtimeLevel',
     )
     tc_log_path: Path = Field(
-        Path(tempfile.gettempdir() or '/tmp'),  # nosec
+        Path(tempfile.gettempdir()),
         description='The path to the Apps "log" directory.',
         inclusion_reason='runtimeLevel',
     )
     tc_out_path: Path = Field(
-        Path(tempfile.gettempdir() or '/tmp'),  # nosec
+        Path(tempfile.gettempdir()),
         description='The path to the Apps "out" directory.',
         inclusion_reason='runtimeLevel',
     )
     tc_temp_path: Path = Field(
-        Path(tempfile.gettempdir() or '/tmp'),  # nosec
+        Path(tempfile.gettempdir()),
         description='The path to the Apps "tmp" directory.',
         inclusion_reason='runtimeLevel',
     )

@@ -2,32 +2,34 @@
 # standard library
 import os
 import re
+from collections.abc import Generator
 from pathlib import Path
-from typing import Any, Dict, Union
+from typing import Any
 
 
-class _EnvPath(type(Path()), Path):  # pylint: disable=E0241
+# pylint: disable=duplicate-bases
+class _EnvPath(type(Path()), Path):  # type: ignore
     """A stub of Path with additional attribute."""
 
     # store for the original value passed to EnvPath
-    original_value = None
+    original_value: str | None = None
 
 
 class EnvPath(Path):
     """EnvPath custom pydantic model type."""
 
     @classmethod
-    def __modify_schema__(cls, field_schema: Dict[str, Any]):
+    def __modify_schema__(cls, field_schema: dict[str, Any]):
         """."""
         field_schema.update(format='file-path')
 
     @classmethod
-    def __get_validators__(cls) -> 'CallableGenerator':  # noqa: F821
+    def __get_validators__(cls) -> Generator:
         """."""
         yield cls.validate
 
     @classmethod
-    def validate(cls, value: Union[str, 'Path']) -> 'Path':
+    def validate(cls, value: Path | str) -> Path | str:
         """Replace any environment variables in the tcex.json file."""
         if isinstance(value, Path):
             return value

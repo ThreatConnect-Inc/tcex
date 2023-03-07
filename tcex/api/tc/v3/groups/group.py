@@ -1,7 +1,11 @@
 """Group / Groups Object"""
 # standard library
 import json
-from typing import TYPE_CHECKING, Iterator, Optional, Union
+from collections.abc import Generator, Iterator
+from typing import TYPE_CHECKING, Self
+
+# third-party
+from requests import Response
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -18,56 +22,14 @@ from tcex.api.tc.v3.tags.tag_model import TagModel
 from tcex.api.tc.v3.victim_assets.victim_asset_model import VictimAssetModel
 
 if TYPE_CHECKING:  # pragma: no cover
-    # third-party
-    from requests import Response
-
     # first-party
-    from tcex.api.tc.v3.artifacts.artifact import Artifact
-    from tcex.api.tc.v3.cases.case import Case
-    from tcex.api.tc.v3.group_attributes.group_attribute import GroupAttribute
-    from tcex.api.tc.v3.indicators.indicator import Indicator
-    from tcex.api.tc.v3.security_labels.security_label import SecurityLabel
-    from tcex.api.tc.v3.tags.tag import Tag
-    from tcex.api.tc.v3.victim_assets.victim_asset import VictimAsset
-
-
-class Groups(ObjectCollectionABC):
-    """Groups Collection.
-
-    # Example of params input
-    {
-        'result_limit': 100,  # Limit the retrieved results.
-        'result_start': 10,  # Starting count used for pagination.
-        'fields': ['caseId', 'summary']  # Select additional return fields.
-    }
-
-    Args:
-        session (Session): Session object configured with TC API Auth.
-        tql_filters (list): List of TQL filters.
-        params (dict): Additional query params (see example above).
-    """
-
-    def __init__(self, **kwargs):
-        """Initialize class properties."""
-        super().__init__(
-            kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
-        )
-        self._model = GroupsModel(**kwargs)
-        self.type_ = 'groups'
-
-    def __iter__(self) -> 'Group':
-        """Iterate over CM objects."""
-        return self.iterate(base_class=Group)
-
-    @property
-    def _api_endpoint(self) -> str:
-        """Return the type specific API endpoint."""
-        return ApiEndpoints.GROUPS.value
-
-    @property
-    def filter(self) -> 'GroupFilter':
-        """Return the type specific filter object."""
-        return GroupFilter(self.tql)
+    from tcex.api.tc.v3.artifacts.artifact import Artifact  # CIRCULAR-IMPORT
+    from tcex.api.tc.v3.cases.case import Case  # CIRCULAR-IMPORT
+    from tcex.api.tc.v3.group_attributes.group_attribute import GroupAttribute  # CIRCULAR-IMPORT
+    from tcex.api.tc.v3.indicators.indicator import Indicator  # CIRCULAR-IMPORT
+    from tcex.api.tc.v3.security_labels.security_label import SecurityLabel  # CIRCULAR-IMPORT
+    from tcex.api.tc.v3.tags.tag import Tag  # CIRCULAR-IMPORT
+    from tcex.api.tc.v3.victim_assets.victim_asset import VictimAsset  # CIRCULAR-IMPORT
 
 
 class Group(ObjectABC):
@@ -122,7 +84,7 @@ class Group(ObjectABC):
         super().__init__(kwargs.pop('session', None))
 
         # properties
-        self._model = GroupModel(**kwargs)
+        self._model: GroupModel = GroupModel(**kwargs)
         self._nested_field_name = 'associatedGroups'
         self._nested_filter = 'has_group'
         self.type_ = 'Group'
@@ -133,12 +95,12 @@ class Group(ObjectABC):
         return ApiEndpoints.GROUPS.value
 
     @property
-    def model(self) -> 'GroupModel':
+    def model(self) -> GroupModel:
         """Return the model data."""
         return self._model
 
     @model.setter
-    def model(self, data: Union['GroupModel', dict]):
+    def model(self, data: dict | GroupModel):
         """Create model using the provided data."""
         if isinstance(data, type(self.model)):
             # provided data is already a model, nothing required to change
@@ -156,7 +118,7 @@ class Group(ObjectABC):
 
         return {'type': type_, 'id': self.model.id, 'value': self.model.name}
 
-    def remove(self, params: Optional[dict] = None):
+    def remove(self, params: dict | None = None):
         """Remove a nested object."""
         method = 'PUT'
         unique_id = self._calculate_unique_id()
@@ -191,7 +153,7 @@ class Group(ObjectABC):
 
         return self.request
 
-    def download(self, params: Optional[dict] = None) -> bytes:
+    def download(self, params: dict | None = None) -> bytes:
         """Return the document attachment for Document/Report Types."""
         self._request(
             method='GET',
@@ -201,7 +163,7 @@ class Group(ObjectABC):
         )
         return self.request.content
 
-    def pdf(self, params: Optional[dict] = None) -> bytes:
+    def pdf(self, params: dict | None = None) -> bytes:
         """Return the document attachment for Document/Report Types."""
         self._request(
             method='GET',
@@ -213,7 +175,7 @@ class Group(ObjectABC):
 
         return self.request.content
 
-    def upload(self, content: Union[bytes, str], params: Optional[dict] = None) -> 'Response':
+    def upload(self, content: bytes | str, params: dict | None = None) -> Response:
         """Return the document attachment for Document/Report Types."""
         self._request(
             method='POST',
@@ -225,162 +187,201 @@ class Group(ObjectABC):
         return self.request
 
     @property
-    def associated_artifacts(self) -> Iterator['Artifact']:
+    def associated_artifacts(self) -> Generator['Artifact', None, None]:
         """Yield Artifact from Artifacts."""
         # first-party
         from tcex.api.tc.v3.artifacts.artifact import Artifacts
 
-        yield from self._iterate_over_sublist(Artifacts)
+        yield from self._iterate_over_sublist(Artifacts)  # type: ignore
 
     @property
-    def associated_cases(self) -> Iterator['Case']:
+    def associated_cases(self) -> Generator['Case', None, None]:
         """Yield Case from Cases."""
         # first-party
         from tcex.api.tc.v3.cases.case import Cases
 
-        yield from self._iterate_over_sublist(Cases)
+        yield from self._iterate_over_sublist(Cases)  # type: ignore
 
     @property
-    def associated_groups(self) -> Iterator['Group']:
+    def associated_groups(self) -> Generator[Self, None, None]:
         """Yield Group from Groups."""
         # Ensure the current item is not returned as a association
-        for group in self._iterate_over_sublist(Groups):
+        for group in self._iterate_over_sublist(Groups):  # type: ignore
             if group.model.id == self.model.id:
                 continue
-            yield group
+            yield group  # type: ignore
 
     @property
-    def associated_indicators(self) -> Iterator['Indicator']:
+    def associated_indicators(self) -> Generator['Indicator', None, None]:
         """Yield Indicator from Indicators."""
         # first-party
         from tcex.api.tc.v3.indicators.indicator import Indicators
 
-        yield from self._iterate_over_sublist(Indicators)
+        yield from self._iterate_over_sublist(Indicators)  # type: ignore
 
     @property
-    def associated_victim_assets(self) -> Iterator['VictimAsset']:
+    def associated_victim_assets(self) -> Generator['VictimAsset', None, None]:
         """Yield VictimAsset from VictimAssets."""
         # first-party
         from tcex.api.tc.v3.victim_assets.victim_asset import VictimAssets
 
-        yield from self._iterate_over_sublist(VictimAssets)
+        yield from self._iterate_over_sublist(VictimAssets)  # type: ignore
 
     @property
-    def attributes(self) -> Iterator['GroupAttribute']:
+    def attributes(self) -> Generator['GroupAttribute', None, None]:
         """Yield Attribute from Attributes."""
         # first-party
         from tcex.api.tc.v3.group_attributes.group_attribute import GroupAttributes
 
-        yield from self._iterate_over_sublist(GroupAttributes)
+        yield from self._iterate_over_sublist(GroupAttributes)  # type: ignore
 
     @property
-    def security_labels(self) -> Iterator['SecurityLabel']:
+    def security_labels(self) -> Generator['SecurityLabel', None, None]:
         """Yield SecurityLabel from SecurityLabels."""
         # first-party
         from tcex.api.tc.v3.security_labels.security_label import SecurityLabels
 
-        yield from self._iterate_over_sublist(SecurityLabels)
+        yield from self._iterate_over_sublist(SecurityLabels)  # type: ignore
 
     @property
-    def tags(self) -> Iterator['Tag']:
+    def tags(self) -> Generator['Tag', None, None]:
         """Yield Tag from Tags."""
         # first-party
         from tcex.api.tc.v3.tags.tag import Tags
 
-        yield from self._iterate_over_sublist(Tags)
+        yield from self._iterate_over_sublist(Tags)  # type: ignore
 
-    def stage_associated_case(self, data: Union[dict, 'ObjectABC', 'CaseModel']):
+    def stage_associated_case(self, data: dict | ObjectABC | CaseModel):
         """Stage case on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = CaseModel(**data)
 
         if not isinstance(data, CaseModel):
             raise RuntimeError('Invalid type passed in to stage_associated_case')
         data._staged = True
-        self.model.associated_cases.data.append(data)
+        self.model.associated_cases.data.append(data)  # type: ignore
 
-    def stage_associated_artifact(self, data: Union[dict, 'ObjectABC', 'ArtifactModel']):
+    def stage_associated_artifact(self, data: dict | ObjectABC | ArtifactModel):
         """Stage artifact on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = ArtifactModel(**data)
 
         if not isinstance(data, ArtifactModel):
             raise RuntimeError('Invalid type passed in to stage_associated_artifact')
         data._staged = True
-        self.model.associated_artifacts.data.append(data)
+        self.model.associated_artifacts.data.append(data)  # type: ignore
 
-    def stage_associated_group(self, data: Union[dict, 'ObjectABC', 'GroupModel']):
+    def stage_associated_group(self, data: dict | ObjectABC | GroupModel):
         """Stage group on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = GroupModel(**data)
 
         if not isinstance(data, GroupModel):
             raise RuntimeError('Invalid type passed in to stage_associated_group')
         data._staged = True
-        self.model.associated_groups.data.append(data)
+        self.model.associated_groups.data.append(data)  # type: ignore
 
-    def stage_associated_victim_asset(self, data: Union[dict, 'ObjectABC', 'VictimAssetModel']):
+    def stage_associated_victim_asset(self, data: dict | ObjectABC | VictimAssetModel):
         """Stage victim_asset on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = VictimAssetModel(**data)
 
         if not isinstance(data, VictimAssetModel):
             raise RuntimeError('Invalid type passed in to stage_associated_victim_asset')
         data._staged = True
-        self.model.associated_victim_assets.data.append(data)
+        self.model.associated_victim_assets.data.append(data)  # type: ignore
 
-    def stage_associated_indicator(self, data: Union[dict, 'ObjectABC', 'IndicatorModel']):
+    def stage_associated_indicator(self, data: dict | ObjectABC | IndicatorModel):
         """Stage indicator on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = IndicatorModel(**data)
 
         if not isinstance(data, IndicatorModel):
             raise RuntimeError('Invalid type passed in to stage_associated_indicator')
         data._staged = True
-        self.model.associated_indicators.data.append(data)
+        self.model.associated_indicators.data.append(data)  # type: ignore
 
-    def stage_attribute(self, data: Union[dict, 'ObjectABC', 'GroupAttributeModel']):
+    def stage_attribute(self, data: dict | ObjectABC | GroupAttributeModel):
         """Stage attribute on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = GroupAttributeModel(**data)
 
         if not isinstance(data, GroupAttributeModel):
             raise RuntimeError('Invalid type passed in to stage_attribute')
         data._staged = True
-        self.model.attributes.data.append(data)
+        self.model.attributes.data.append(data)  # type: ignore
 
-    def stage_security_label(self, data: Union[dict, 'ObjectABC', 'SecurityLabelModel']):
+    def stage_security_label(self, data: dict | ObjectABC | SecurityLabelModel):
         """Stage security_label on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = SecurityLabelModel(**data)
 
         if not isinstance(data, SecurityLabelModel):
             raise RuntimeError('Invalid type passed in to stage_security_label')
         data._staged = True
-        self.model.security_labels.data.append(data)
+        self.model.security_labels.data.append(data)  # type: ignore
 
-    def stage_tag(self, data: Union[dict, 'ObjectABC', 'TagModel']):
+    def stage_tag(self, data: dict | ObjectABC | TagModel):
         """Stage tag on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = TagModel(**data)
 
         if not isinstance(data, TagModel):
             raise RuntimeError('Invalid type passed in to stage_tag')
         data._staged = True
-        self.model.tags.data.append(data)
+        self.model.tags.data.append(data)  # type: ignore
+
+
+class Groups(ObjectCollectionABC):
+    """Groups Collection.
+
+    # Example of params input
+    {
+        'result_limit': 100,  # Limit the retrieved results.
+        'result_start': 10,  # Starting count used for pagination.
+        'fields': ['caseId', 'summary']  # Select additional return fields.
+    }
+
+    Args:
+        session (Session): Session object configured with TC API Auth.
+        tql_filters (list): List of TQL filters.
+        params (dict): Additional query params (see example above).
+    """
+
+    def __init__(self, **kwargs):
+        """Initialize class properties."""
+        super().__init__(
+            kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
+        )
+        self._model = GroupsModel(**kwargs)
+        self.type_ = 'groups'
+
+    def __iter__(self) -> Iterator[Group]:
+        """Return CM objects."""
+        return self.iterate(base_class=Group)  # type: ignore
+
+    @property
+    def _api_endpoint(self) -> str:
+        """Return the type specific API endpoint."""
+        return ApiEndpoints.GROUPS.value
+
+    @property
+    def filter(self) -> GroupFilter:
+        """Return the type specific filter object."""
+        return GroupFilter(self.tql)

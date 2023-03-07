@@ -3,7 +3,9 @@
 import os
 from random import randint
 
-from .ti_helpers import TestThreatIntelligence, TIHelper
+# first-party
+from tcex.tcex import TcEx
+from tests.api.tc.v2.threat_intelligence.ti_helpers import TestThreatIntelligence, TIHelper
 
 
 class TestMutexIndicators(TestThreatIntelligence):
@@ -13,9 +15,7 @@ class TestMutexIndicators(TestThreatIntelligence):
     indicator_field_arg = indicator_field.replace(' ', '_').lower()
     indicator_type = 'Mutex'
     owner = os.getenv('TC_OWNER')
-    ti = None
-    ti_helper = None
-    tcex = None
+    tcex: TcEx
 
     def setup_method(self):
         """Configure setup before all tests."""
@@ -23,6 +23,7 @@ class TestMutexIndicators(TestThreatIntelligence):
         self.ti = self.ti_helper.ti
         self.tcex = self.ti_helper.tcex
 
+    # pylint: disable=no-member
     def tests_ti_mutex_create(self):
         """Create an indicator using specific interface."""
         indicator_data = {
@@ -32,14 +33,14 @@ class TestMutexIndicators(TestThreatIntelligence):
             'rating': randint(0, 5),
         }
         # mutex method is dynamically generated
-        ti = self.ti.mutex(**indicator_data)  # pylint: disable=no-member
+        ti = self.ti.mutex(**indicator_data)  # type: ignore
         r = ti.create()
 
         # assert response
         assert r.status_code == 201
 
         # retrieve indicator for asserts (mutex method is dynamically generated)
-        ti = self.ti.mutex(**indicator_data)  # pylint: disable=no-member
+        ti = self.ti.mutex(**indicator_data)  # type: ignore
         r = ti.single()
         response_data = r.json()
         ti_data = response_data.get('data', {}).get(ti.api_entity)

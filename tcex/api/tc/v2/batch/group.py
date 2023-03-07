@@ -2,7 +2,8 @@
 # standard library
 import json
 import uuid
-from typing import Any, Callable, Optional, Union
+from collections.abc import Callable
+from typing import Any
 
 # first-party
 from tcex.api.tc.v2.batch.attribute import Attribute
@@ -39,7 +40,7 @@ class Group:
             xid (str, kwargs): The external id for this Group.
         """
         self._name = name
-        self._group_data = {'name': name, 'type': group_type}
+        self._group_data: dict[str, bool | int | list | str] = {'name': name, 'type': group_type}
         self._type = group_type
 
         # properties
@@ -72,7 +73,7 @@ class Group:
             'to_addr': 'to',
         }
 
-    def add_file(self, filename: str, file_content: Union[bytes, Callable[[str], Any], str]):
+    def add_file(self, filename: str, file_content: bytes | Callable[[str], Any] | str):
         """Add a file for Document and Report types.
 
         Example::
@@ -119,16 +120,16 @@ class Group:
         Args:
             group_xid: The external id of the Group to associate.
         """
-        self._group_data.setdefault('associatedGroupXid', []).append(group_xid)
+        self._group_data.setdefault('associatedGroupXid', []).append(group_xid)  # type: ignore
 
     def attribute(
         self,
         attr_type: str,
         attr_value: str,
-        displayed: Optional[bool] = False,
-        source: Optional[str] = None,
-        unique: Optional[bool] = True,
-        formatter: Optional[Callable[[str], str]] = None,
+        displayed: bool = False,
+        source: str | None = None,
+        unique: bool = True,
+        formatter: Callable[[str], str] | None = None,
     ) -> Attribute:
         """Return instance of Attribute
 
@@ -190,9 +191,9 @@ class Group:
         return self._group_data
 
     @property
-    def date_added(self) -> str:
+    def date_added(self) -> str | None:
         """Return Group dateAdded."""
-        return self._group_data.get('dateAdded')
+        return self._group_data.get('dateAdded')  # type: ignore
 
     @date_added.setter
     def date_added(self, date_added: str):
@@ -213,7 +214,7 @@ class Group:
     @property
     def name(self) -> str:
         """Return Group name."""
-        return self._group_data.get('name')
+        return self._group_data.get('name')  # type: ignore
 
     @property
     def processed(self) -> bool:
@@ -229,7 +230,7 @@ class Group:
         self._processed = processed
 
     def security_label(
-        self, name: str, description: Optional[str] = None, color: Optional[str] = None
+        self, name: str, description: str | None = None, color: str | None = None
     ) -> SecurityLabel:
         """Return instance of SecurityLabel.
 
@@ -253,7 +254,7 @@ class Group:
             self._labels.append(label)
         return label
 
-    def tag(self, name: str, formatter: Optional[Callable[[str], str]] = None) -> 'Tag':
+    def tag(self, name: str, formatter: Callable[[str], str] | None = None) -> Tag:
         """Return instance of Tag.
 
         Args:
@@ -275,12 +276,12 @@ class Group:
     @property
     def type(self) -> str:
         """Return Group type."""
-        return self._group_data.get('type')
+        return self._group_data.get('type')  # type: ignore
 
     @property
     def xid(self) -> str:
         """Return Group xid."""
-        return self._group_data.get('xid')
+        return self._group_data.get('xid')  # type: ignore
 
     def __str__(self) -> str:
         """Return string representation of object."""
@@ -338,7 +339,7 @@ class Campaign(Group):
     @property
     def first_seen(self) -> str:
         """Return Document first seen."""
-        return self._group_data.get('firstSeen')
+        return self._group_data.get('firstSeen')  # type: ignore
 
     @first_seen.setter
     def first_seen(self, first_seen: str):
@@ -399,17 +400,17 @@ class Document(Group):
     @property
     def malware(self) -> bool:
         """Return Document malware."""
-        return self._group_data.get('malware', False)
+        return self._group_data.get('malware', False)  # type: ignore
 
     @malware.setter
     def malware(self, malware: bool):
         """Set Document malware."""
-        self._group_data['malware'] = malware
+        self._group_data['malware'] = malware  # type: ignore
 
     @property
     def password(self) -> str:
         """Return Document password."""
-        return self._group_data.get('password', False)
+        return self._group_data.get('password', False)  # type: ignore
 
     @password.setter
     def password(self, password: str):
@@ -444,7 +445,7 @@ class Email(Group):
     @property
     def from_addr(self) -> str:
         """Return Email to."""
-        return self._group_data.get('to')
+        return self._group_data.get('to')  # type: ignore
 
     @from_addr.setter
     def from_addr(self, from_addr: str):
@@ -454,7 +455,7 @@ class Email(Group):
     @property
     def score(self) -> str:
         """Return Email to."""
-        return self._group_data.get('score')
+        return self._group_data.get('score')  # type: ignore
 
     @score.setter
     def score(self, score: str):
@@ -464,7 +465,7 @@ class Email(Group):
     @property
     def to_addr(self) -> str:
         """Return Email to."""
-        return self._group_data.get('to')
+        return self._group_data.get('to')  # type: ignore
 
     @to_addr.setter
     def to_addr(self, to_addr: str):
@@ -498,7 +499,7 @@ class Event(Group):
     @property
     def event_date(self) -> str:
         """Return the Events "event date" value."""
-        return self._group_data.get('firstSeen')
+        return self._group_data.get('firstSeen')  # type: ignore
 
     @event_date.setter
     def event_date(self, event_date: str):
@@ -510,7 +511,7 @@ class Event(Group):
     @property
     def status(self) -> str:
         """Return the Events status value."""
-        return self._group_data.get('status')
+        return self._group_data.get('status')  # type: ignore
 
     @status.setter
     def status(self, status: str):
@@ -549,7 +550,7 @@ class Incident(Group):
     @property
     def event_date(self) -> str:
         """Return Incident event date."""
-        return self._group_data.get('eventDate')
+        return self._group_data.get('eventDate')  # type: ignore
 
     @event_date.setter
     def event_date(self, event_date: str):
@@ -561,7 +562,7 @@ class Incident(Group):
     @property
     def status(self) -> str:
         """Return Incident status."""
-        return self._group_data.get('status')
+        return self._group_data.get('status')  # type: ignore
 
     @status.setter
     def status(self, status: str):
@@ -646,7 +647,7 @@ class Report(Group):
     @property
     def publish_date(self) -> str:
         """Return Report publish date."""
-        return self._group_data.get('publishDate')
+        return self._group_data.get('publishDate')  # type: ignore
 
     @publish_date.setter
     def publish_date(self, publish_date: str):

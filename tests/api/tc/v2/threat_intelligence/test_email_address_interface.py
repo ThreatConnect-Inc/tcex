@@ -3,7 +3,9 @@
 import os
 from random import randint
 
-from .ti_helpers import TestThreatIntelligence, TIHelper
+# first-party
+from tcex.tcex import TcEx
+from tests.api.tc.v2.threat_intelligence.ti_helpers import TestThreatIntelligence, TIHelper
 
 
 class TestEmailAddressIndicators(TestThreatIntelligence):
@@ -14,9 +16,7 @@ class TestEmailAddressIndicators(TestThreatIntelligence):
     indicator_field_custom = 'address'
     indicator_type = 'EmailAddress'
     owner = os.getenv('TC_OWNER')
-    ti = None
-    ti_helper = None
-    tcex = None
+    tcex: TcEx
 
     def setup_method(self):
         """Configure setup before all tests."""

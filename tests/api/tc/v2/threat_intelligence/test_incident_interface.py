@@ -2,8 +2,12 @@
 # standard library
 import os
 from datetime import datetime, timedelta
+from typing import cast
 
-from .ti_helpers import TestThreatIntelligence, TIHelper
+# first-party
+from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.incident import Incident
+from tcex.tcex import TcEx
+from tests.api.tc.v2.threat_intelligence.ti_helpers import TestThreatIntelligence, TIHelper
 
 
 class TestIncidentGroups(TestThreatIntelligence):
@@ -11,9 +15,7 @@ class TestIncidentGroups(TestThreatIntelligence):
 
     group_type = 'Incident'
     owner = os.getenv('TC_OWNER')
-    ti = None
-    ti_helper = None
-    tcex = None
+    tcex: TcEx
 
     def setup_method(self):
         """Configure setup before all tests."""
@@ -101,7 +103,7 @@ class TestIncidentGroups(TestThreatIntelligence):
 
     def tests_ti_incident_event_date(self):
         """Update event date value."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Incident, self.ti_helper.create_group())
 
         # update first seen (coverage)
         event_date = (datetime.now() - timedelta(days=2)).isoformat()
@@ -126,7 +128,7 @@ class TestIncidentGroups(TestThreatIntelligence):
 
     def tests_ti_incident_status(self):
         """Update incident data value."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Incident, self.ti_helper.create_group())
 
         status = 'Closed'
         r = helper_ti.status(status)

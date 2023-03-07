@@ -1,8 +1,4 @@
 """Model Definition"""
-
-# standard library
-# from typing import Optional
-
 # third-party
 from pydantic import BaseModel, Extra, Field, validator
 
@@ -12,7 +8,7 @@ from tcex.utils import Utils
 from tcex.utils.string_operations import CamelString
 
 
-# pylint: disable=no-self-argument,no-self-use
+# pylint: disable=no-self-argument
 class ExtraModel(
     BaseModel,
     extra=Extra.forbid,
@@ -26,7 +22,7 @@ class ExtraModel(
     typing_type: str = Field(..., description='The Python typing hint type.')
 
 
-# pylint: disable=no-self-argument,no-self-use
+# pylint: disable=no-self-argument
 class FilterModel(
     BaseModel,
     alias_generator=Utils().snake_to_camel,
@@ -67,8 +63,9 @@ class FilterModel(
 
     def __extra_data(self) -> dict:
         """Return the extra data."""
-        typing_type = self.__calculate_typing_type(self.type)
-        tql_type = self.__calculate_tql_type(typing_type)
+        typing_type_data = self.__calculate_typing_type(self.type)
+        typing_type = typing_type_data['typing_type']
+        tql_type = self.__calculate_tql_type(typing_type_data['base_type'])
         return {
             'comment': self.__calculate_comment(self.keyword),
             'typing_type': typing_type,
@@ -83,25 +80,25 @@ class FilterModel(
         return ''
 
     @classmethod
-    def __calculate_typing_type(cls, type_: str) -> str:
+    def __calculate_typing_type(cls, type_: str) -> dict[str, str]:
         """Return the calculated filter type."""
         # hint types for the filter method
         filter_type_map = {
-            'Assignee': 'str',
-            'BigInteger': 'int',
-            'Boolean': 'bool',
-            'Date': 'str',
-            'DateTime': 'str',
-            'Enum': 'str',
-            'EnumToInteger': 'str',
-            'Integer': 'int',
-            'Long': 'int',
-            'String': 'str',
-            'StringCIDR': 'str',
-            'StringLower': 'str',
-            'StringUpper': 'str',
-            'Undefined': 'str',
-            'User': 'str',
+            'Assignee': {'base_type': 'str', 'typing_type': 'list | str'},
+            'BigInteger': {'base_type': 'int', 'typing_type': 'int | list'},
+            'Boolean': {'base_type': 'bool', 'typing_type': 'bool'},
+            'Date': {'base_type': 'str', 'typing_type': 'Arrow | datetime | int | str'},
+            'DateTime': {'base_type': 'str', 'typing_type': 'Arrow | datetime | int | str'},
+            'Enum': {'base_type': 'str', 'typing_type': 'list | str'},
+            'EnumToInteger': {'base_type': 'str', 'typing_type': 'list | str'},
+            'Integer': {'base_type': 'int', 'typing_type': 'int | list'},
+            'Long': {'base_type': 'int', 'typing_type': 'int | list'},
+            'String': {'base_type': 'str', 'typing_type': 'list | str'},
+            'StringCIDR': {'base_type': 'str', 'typing_type': 'list | str'},
+            'StringLower': {'base_type': 'str', 'typing_type': 'list | str'},
+            'StringUpper': {'base_type': 'str', 'typing_type': 'list | str'},
+            'Undefined': {'base_type': 'str', 'typing_type': 'list | str'},
+            'User': {'base_type': 'str', 'typing_type': 'list | str'},
         }
         hint_type = filter_type_map.get(type_)
 

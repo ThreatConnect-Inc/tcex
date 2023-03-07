@@ -2,8 +2,12 @@
 # standard library
 import os
 from datetime import datetime, timedelta
+from typing import cast
 
-from .ti_helpers import TestThreatIntelligence, TIHelper
+# first-party
+from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.campaign import Campaign
+from tcex.tcex import TcEx
+from tests.api.tc.v2.threat_intelligence.ti_helpers import TestThreatIntelligence, TIHelper
 
 
 class TestCampaignGroups(TestThreatIntelligence):
@@ -11,9 +15,7 @@ class TestCampaignGroups(TestThreatIntelligence):
 
     group_type = 'Campaign'
     owner = os.getenv('TC_OWNER')
-    ti = None
-    ti_helper = None
-    tcex = None
+    tcex: TcEx
 
     def setup_method(self):
         """Configure setup before all tests."""
@@ -102,7 +104,7 @@ class TestCampaignGroups(TestThreatIntelligence):
 
     def tests_ti_campaign_first_seen(self):
         """Update first seen value."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Campaign, self.ti_helper.create_group())
 
         # update first seen (coverage)
         first_seen = (datetime.now() - timedelta(days=2)).isoformat()

@@ -2,7 +2,6 @@
 # standard library
 from abc import ABC
 from textwrap import TextWrapper
-from typing import List
 
 # first-party
 from tcex.api.tc.v3._gen._gen_abc import GenerateABC
@@ -18,7 +17,7 @@ class GenerateModelABC(GenerateABC, ABC):
 
         # properties
         self.requirements = {
-            'standard library': [{'module': 'typing', 'imports': ['List', 'Optional']}],
+            'standard library': [],
             'third-party': [
                 {'module': 'pydantic', 'imports': ['BaseModel', 'Extra', 'Field']},
             ],
@@ -45,10 +44,10 @@ class GenerateModelABC(GenerateABC, ABC):
         """Add pydantic validator only when required."""
         self._add_module_class('third-party', 'pydantic', 'PrivateAttr')
 
-    def _gen_code_validator_method(self, type_: str, fields: List[str]) -> str:
+    def _gen_code_validator_method(self, type_: str, fields: list[str]) -> str:
         """Return the validator code
 
-        @validator('artifact_type', always=True)
+        @validator('artifact_type', always=True, pre=True)
         def _validate_artifact_type(cls, v):
             if not v:
                 return ArtifactTypeModel()
@@ -59,10 +58,10 @@ class GenerateModelABC(GenerateABC, ABC):
         fields_string = ', '.join(f'\'{field}\'' for field in fields)
         return '\n'.join(
             [
-                f'''{self.i1}@validator({fields_string}, always=True)''',
+                f'''{self.i1}@validator({fields_string}, always=True, pre=True)''',
                 f'''{self.i1}def _validate_{type_.snake_case()}(cls, v):''',
                 f'''{self.i2}if not v:''',
-                f'''{self.i3}return {type_}Model()''',
+                f'''{self.i3}return {type_}Model()  # type: ignore''',
                 f'''{self.i2}return v''',
                 '',
             ]
@@ -107,7 +106,7 @@ class GenerateModelABC(GenerateABC, ABC):
         """Generate doc string."""
         return (
             f'"""{self.type_.singular().title()} / {self.type_.plural().title()} Model"""\n'
-            '# pylint: disable=no-member,no-self-argument,no-self-use,wrong-import-position\n'
+            '# pylint: disable=no-member,no-self-argument,wrong-import-position\n'
         )
 
     def gen_container_class(self) -> str:
@@ -138,7 +137,7 @@ class GenerateModelABC(GenerateABC, ABC):
     def gen_container_fields(self) -> str:
         """Generate the Container Model fields
 
-        data: Optional[List['ArtifactModel']] = Field(
+        data: list[ArtifactModel] | None = Field(
             [],
             description='The data of the Cases.',
             methods=['POST', 'PUT'],
@@ -149,7 +148,7 @@ class GenerateModelABC(GenerateABC, ABC):
             [
                 (
                     f'''{self.i1}data: '''
-                    f'''Optional[List['{self.type_.singular().pascal_case()}Model']] '''
+                    f'''list[{self.type_.singular().pascal_case()}Model] | None '''
                     '''= Field('''
                 ),
                 f'''{self.i2}[],''',
@@ -232,7 +231,7 @@ class GenerateModelABC(GenerateABC, ABC):
     def gen_data_fields(self) -> str:
         """Generate the Data Model fields
 
-        data: 'Optional[ArtifactModel]' = Field(
+        data: 'ArtifactModel | None' = Field(
             None,
             description='The data of the Artifact.',
             title='data',
@@ -242,7 +241,7 @@ class GenerateModelABC(GenerateABC, ABC):
             [
                 (
                     f'''{self.i1}data: '''
-                    f'''Optional[List['{self.type_.singular().pascal_case()}Model']] '''
+                    f'''list[{self.type_.singular().pascal_case()}Model] | None '''
                     '''= Field('''
                 ),
                 f'''{self.i2}[],''',
@@ -294,7 +293,7 @@ class GenerateModelABC(GenerateABC, ABC):
         }
 
         Example Field:
-        analytics_priority: Optional[str] = Field(
+        analytics_priority: str | None = Field(
             None,
             allow_mutation=False,
             description='The **analytics priority** for the Artifact.',

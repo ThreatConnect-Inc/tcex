@@ -4,8 +4,12 @@ import os
 import uuid
 from datetime import datetime, timedelta
 from random import randint
+from typing import cast
 
-from .ti_helpers import TestThreatIntelligence, TIHelper
+# first-party
+from tcex.api.tc.v2.threat_intelligence.mappings.indicator.indicator_types.file import File
+from tcex.tcex import TcEx
+from tests.api.tc.v2.threat_intelligence.ti_helpers import TestThreatIntelligence, TIHelper
 
 
 class TestFileIndicators(TestThreatIntelligence):
@@ -16,9 +20,7 @@ class TestFileIndicators(TestThreatIntelligence):
     indicator_field_custom = 'md5'
     indicator_type = 'File'
     owner = os.getenv('TC_OWNER')
-    ti = None
-    ti_helper = None
-    tcex = None
+    tcex: TcEx
 
     def setup_method(self):
         """Configure setup before all tests."""
@@ -124,7 +126,7 @@ class TestFileIndicators(TestThreatIntelligence):
 
     def tests_ti_file_add_observation(self):
         """Test adding observation."""
-        file = self.ti_helper.create_indicator()
+        file = cast(File, self.ti_helper.create_indicator())
         now = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
         response = file.add_observers(2, now)
         assert response.ok
@@ -135,7 +137,7 @@ class TestFileIndicators(TestThreatIntelligence):
 
     def tests_ti_file_add_occurrence(self):
         """Test updating indicator metadata."""
-        file = self.ti_helper.create_indicator()
+        file = cast(File, self.ti_helper.create_indicator())
         response = file.add_occurrence(
             'pytest_occurrence', (datetime.now() - timedelta(days=2)).isoformat(), '.'
         )
@@ -145,13 +147,15 @@ class TestFileIndicators(TestThreatIntelligence):
 
     def tests_ti_file_get_occurrence(self):
         """Test retrieving file occurrence."""
-        file = self.ti_helper.create_indicator()
+        file = cast(File, self.ti_helper.create_indicator())
         response = file.add_occurrence(
             'pytest_occurrence', (datetime.now() - timedelta(days=2)).isoformat(), '.'
         )
         assert response.ok
         occurrence_id = response.json().get('data').get('fileOccurrence').get('id')
         response = file.occurrence(occurrence_id)
+        if response is None:
+            assert False, 'Occurrence not found'
         assert response.ok
         data = response.json().get('data').get('fileOccurrence')
         assert data.get('fileName') == 'pytest_occurrence'
@@ -159,7 +163,7 @@ class TestFileIndicators(TestThreatIntelligence):
 
     def tests_ti_file_get_occurrences(self):
         """Test retrieving multiple file occurrences."""
-        file = self.ti_helper.create_indicator()
+        file = cast(File, self.ti_helper.create_indicator())
         occurrence_names = ['pytest_occurrence_1', 'pytest_occurrence_2']
         file.add_occurrence(
             occurrence_names[0], (datetime.now() - timedelta(days=2)).isoformat(), '.'
@@ -176,17 +180,19 @@ class TestFileIndicators(TestThreatIntelligence):
 
     def tests_ti_file_delete_occurrence(self):
         """Test deleting file occurrence."""
-        file = self.ti_helper.create_indicator()
+        file = cast(File, self.ti_helper.create_indicator())
         response = file.add_occurrence(
             'pytest_occurrence', (datetime.now() - timedelta(days=2)).isoformat(), '.'
         )
         occurrence_id = response.json().get('data').get('fileOccurrence').get('id')
         response = file.occurrence(occurrence_id)
+        if response is None:
+            assert False, 'Occurrence not found'
         assert response.ok
 
     def tests_ti_file_add_action(self):
         """Test adding file action."""
-        file = self.ti_helper.create_indicator()
+        file = cast(File, self.ti_helper.create_indicator())
         indicator_data = {
             'confidence': randint(0, 100),
             'ip': self.ti_helper.rand_ip(),
@@ -201,7 +207,7 @@ class TestFileIndicators(TestThreatIntelligence):
 
     def tests_ti_file_get_actions(self):
         """Test retrieving file actions."""
-        file = self.ti_helper.create_indicator()
+        file = cast(File, self.ti_helper.create_indicator())
         action_targets = []
         ips = [self.ti_helper.rand_ip(), self.ti_helper.rand_ip()]
         indicator_data = {
@@ -234,7 +240,7 @@ class TestFileIndicators(TestThreatIntelligence):
 
     def tests_ti_file_delete_action(self):
         """Test deleting file action."""
-        file = self.ti_helper.create_indicator()
+        file = cast(File, self.ti_helper.create_indicator())
         action = 'traffic'
         indicator_data = {
             'confidence': randint(0, 100),

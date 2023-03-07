@@ -4,8 +4,8 @@ import logging
 from inspect import getframeinfo, stack
 
 # Create trace logging level
-logging.TRACE = logging.DEBUG - 5
-logging.addLevelName(logging.TRACE, 'TRACE')
+logging.TRACE = logging.DEBUG - 5  # type: ignore
+logging.addLevelName(logging.TRACE, 'TRACE')  # type: ignore
 
 
 class TraceLogger(logging.Logger):
@@ -40,4 +40,4 @@ class TraceLogger(logging.Logger):
         Args:
             msg (str): The message to be logged.
         """
-        self.log(logging.TRACE, msg, *args, **kwargs)
+        self.log(logging.TRACE, msg, *args, **kwargs)  # type: ignore

@@ -4,12 +4,15 @@
 import hashlib
 import json
 import os
+import sys
+from collections.abc import Generator
 from pathlib import Path
-from typing import TYPE_CHECKING, Dict, List, Optional
 
 # third-party
+import typer
 import yaml
-from pydantic import ValidationError
+from pydantic import BaseModel, Extra, Field, ValidationError
+from requests import Response  # TYPE-CHECKING
 from requests import Session
 from requests.auth import HTTPBasicAuth
 from tinydb import Query, TinyDB
@@ -21,9 +24,26 @@ from tcex.bin.bin_abc import BinABC
 from tcex.input.field_types import Sensitive
 from tcex.pleb.proxies import proxies
 
-if TYPE_CHECKING:  # pragma: no cover
-    # third-party
-    from requests import Response
+
+class FileMetadataModel(BaseModel, extra=Extra.allow):
+    """Model Definition"""
+
+    download_url: str | None = Field(
+        None, description='The download url for the file. Directories will not have a download url.'
+    )
+    name: str = Field(..., description='The name of the file.')
+    path: str = Field(..., description='The path of the file.')
+    sha: str = Field(..., description='The sha of the file.')
+    url: str = Field(..., description='The url of the file.')
+    type: str = Field(..., description='The type (dir or file).')
+
+    # local metadata
+    relative_path: Path = Field(
+        'tmp',
+        description='The relative path of the file. This is the path from the root of the repo.',
+    )
+    template_name: str
+    template_type: str
 
 
 class Template(BinABC):
@@ -56,71 +76,41 @@ class Template(BinABC):
         self.proxy_user = proxy_user
         self.proxy_pass = proxy_pass
 
+    def _log_validation_error(self, ex: ValidationError):
+        """Log model validation errors."""
+        for error in json.loads(ex.json()):
+            location = [str(location) for location in error.get('loc')]
+            self.log.error(
+                '''Schema validation failed for template.yaml. '''
+                f'''({error.get('msg')}: {' -> '.join(location)})'''
+            )
+            self.errors = True
+
     @cached_property
     def cache_valid(self) -> bool:
-        """Return the current commit sha for the tcex-app-templates project."""
+        """Return true if cache is valid."""
         if self.project_sha is None:
             return False
 
-        # get the store sha
+        # retrieve stored sha
         stored_sha = self.db_get_sha(self.project_sha)
 
-        # if sha values don't match upsert and return False
+        # upsert sha if values don't match and then return False
         if stored_sha != self.project_sha:
-            # upsert current sha
             self.db_add_sha(self.project_sha)
             return False
 
-        # cache is valid
         return True
 
-    def contents(
-        self,
-        branch: str,
-        type_: str,
-        template: Optional[str] = None,
-        app_builder: Optional[bool] = False,
-    ) -> dict:
-        """Yield template contents."""
-        url = f'{self.base_url}/contents/{type_}/{template}'
-        if template is None:
-            url = f'{self.base_url}/contents/{type_}'
-        elif template == '_app_common':
-            url = f'{self.base_url}/contents/{template}'
-
-        params = {'ref': branch}
-        r: 'Response' = self.session.get(url, params=params)
-        if not r.ok:
-            self.log.error(
-                f'action=get-contents, url={r.request.url}, '
-                f'status_code={r.status_code}, headers={r.headers}, '
-                f'response={r.text or r.reason}'
-            )
-            self.errors = True
-            yield from []
-        else:
-            for content in r.json():
-                # exclusion - this file is only needed for building App Builder templates
-                if content.get('name') == '.appbuilderconfig' and app_builder is False:
-                    continue
-
-                # exclusions - files that should not be part of the App
-                if content.get('name') in ['.gitignore', 'template.yaml']:
-                    continue
-
-                # rename gitignore to .gitignore
-                if content.get('name') == 'gitignore':
-                    content['name'] = '.gitignore'
-
-                yield content
-
     @cached_property
-    def db(self) -> 'TinyDB':
+    def db(self) -> TinyDB:
         """Return db instance."""
+        db_file = os.path.join(self.cli_out_path, 'tcex.json')
         try:
-            return TinyDB(os.path.join(self.cli_out_path, 'tcex.json'))
+            return TinyDB(db_file)
         except Exception:
-            return None
+            self.log.exception(f'action=get-db, file={db_file}')
+            raise typer.Exit(code=1)
 
     def db_add_config(self, config: TemplateConfigModel):
         """Add a config to the DB."""
@@ -145,13 +135,13 @@ class Template(BinABC):
             self.log.error(f'Failed inserting config in db ({ex}).')
             self.errors = True
 
-    def db_get_config(self, type_: str, template: str) -> Optional['TemplateConfigModel']:
+    def db_get_config(self, template_type: str, template: str) -> TemplateConfigModel | None:
         """Get a config from the DB."""
         Config = Query()
         try:
             if template == '_app_common':
-                type_ = '_app_common'
-            config = self.db.search((Config.type == type_) & (Config.name == template))
+                template_type = '_app_common'
+            config = self.db.search((Config.type == template_type) & (Config.name == template))
 
             if config:
                 return TemplateConfigModel(**config[0])
@@ -161,24 +151,27 @@ class Template(BinABC):
             self.errors = True
             return None
 
-    def db_get_sha(self, sha: str) -> Optional[str]:
+    def db_get_sha(self, sha: str) -> str | None:
         """Get repo SHA from the DB."""
         SHA = Query()
         try:
-            sha = self.db.search(SHA.sha == sha)
-            if sha:
-                return sha[0].get('sha')
+            data = self.db.search(SHA.sha == sha)
+            if data:
+                return data[0].get('sha')
             return None
-        except Exception as ex:
-            self.log.error(f'Failed inserting config in db ({ex}).')
+        except Exception:
+            self.log.exception(f'action=db-get-sha, sha={sha}')
             self.errors = True
             return None
 
-    def download_template_file(self, item: dict):
+    def download_template_file(self, item: FileMetadataModel):
         """Download the provided source file to the provided destination."""
-        download_url = item.get('download_url')
-        r: 'Response' = self.session.get(
-            download_url, allow_redirects=True, headers={'Cache-Control': 'no-cache'}
+        # directories do not have a download_url, skip when value is null
+        if item.download_url is None:
+            return
+
+        r: Response = self.session.get(
+            item.download_url, allow_redirects=True, headers={'Cache-Control': 'no-cache'}
         )
         if not r.ok:
             self.log.error(
@@ -192,14 +185,14 @@ class Template(BinABC):
             )
 
         # get the relative path to the file and create the parent directory if it does not exist
-        destination = item.get('relative_path')
+        destination = item.relative_path
         if destination.parent.exists() is False:
             destination.parent.mkdir(parents=True, exist_ok=True)
         destination.open(mode='wb').write(r.content)
         self.log.info(f'action=download-template-file, file={destination}')
 
         # update manifest, using the path as the key for uniqueness
-        self.template_manifest[item.get('path')]['md5'] = self.file_hash(destination)
+        self.template_manifest[item.path]['md5'] = self.file_hash(destination)
 
     @staticmethod
     def file_hash(fqfn: Path) -> str:
@@ -213,29 +206,129 @@ class Template(BinABC):
                 md5.update(chunk)
         return md5.hexdigest()
 
+    def file_metadata_contents(
+        self,
+        branch: str,
+        template_type: str,
+        template_path: str | None = None,
+        app_builder: bool = False,
+    ) -> Generator[dict, None, None]:
+        """Yield template contents."""
+        url = self.file_metadata_url(template_type, template_path)
+        params = {'ref': branch}
+        r: Response = self.session.get(url, params=params)
+        if not r.ok:
+            self.log.error(
+                f'action=get-contents, url={r.request.url}, '
+                f'status_code={r.status_code}, headers={r.headers}, '
+                f'response={r.text or r.reason}'
+            )
+            self.errors = True
+        else:
+            for content in r.json():
+                # exclusion - this file is only needed for building App Builder templates
+                if content.get('name') == '.appbuilderconfig' and app_builder is False:
+                    continue
+
+                # exclusions - files that should not be part of the App
+                if content.get('name') in ['.gitignore', 'template.yaml']:
+                    continue
+
+                # rename gitignore to .gitignore
+                if content.get('name') == 'gitignore':
+                    content['name'] = '.gitignore'
+
+                yield content
+
+    def file_metadata_model(
+        self,
+        branch: str,
+        template_name: str,
+        template_path: str,
+        template_type: str,
+        app_builder: bool = False,
+    ) -> Generator[FileMetadataModel, None, None]:
+        """Yield template contents."""
+        for content in self.file_metadata_contents(
+            branch, template_type, template_path, app_builder
+        ):
+            # add additional local metadata
+            content['template_name'] = template_name or template_path
+            content['template_type'] = template_type
+
+            fmm = FileMetadataModel(**content)
+
+            # set relative path, after all metadata has been added
+            fmm.relative_path = self.item_relative_path(fmm)
+
+            yield fmm
+
+    def file_metadata_url(self, template_type: str, template_path: str | None = None) -> str:
+        """Return the content url."""
+        match template_path:
+            case None:
+                return f'{self.base_url}/contents/{template_type}'
+
+            case '_app_common':
+                return f'{self.base_url}/contents/{template_path}'
+
+            case _:
+                return f'{self.base_url}/contents/{template_type}/{template_path}'
+
     def get_template_config(
-        self, type_: str, template: str, branch: str = 'main'
-    ) -> Optional['TemplateConfigModel']:
-        """Return the data from the template.yaml file."""
+        self, template_name: str, template_type: str, branch: str = 'main'
+    ) -> TemplateConfigModel | None:
+        """Return the data from the template.yaml file.
+
+        This method will first check the cache for the template.yaml data. If the data is not in the
+        cache, the template.yaml file will be downloaded from GitHub and the data will be cached.
+
+        Failure to download the template.yaml file will result in a None return value to allow
+        continued execution.
+        """
+        # special case for _app_common
+        template_type = '_app_common' if template_name == '_app_common' else template_type
+
         self.log.info(
-            f'action=get-template-config, type={type_}, '
-            f'template={template}, cache-valid={self.cache_valid}, branch={branch}'
+            f'action=get-template-config, type={template_type}, '
+            f'template={template_name}, cache-valid={self.cache_valid}, branch={branch}'
         )
+
+        # check cache
         if self.cache_valid is True:
-            config = self.db_get_config(type_, template)
+            config = self.db_get_config(template_type, template_name)
             if config is not None:
                 return config
 
-        url = f'{self.base_raw_url}/{branch}/{type_}/{template}/template.yaml'
-        if template == '_app_common':
-            type_ = '_app_common'
-            url = f'{self.base_raw_url}/{branch}/_app_common/template.yaml'
+        # download template.yaml contents
+        url = self.get_template_config_url(branch, template_name, template_type)
+        r = self.get_template_config_contents(branch, url)
+        if r is None:
+            return None
 
+        # process template.yaml contents
+        try:
+            template_config_data = yaml.safe_load(r.text)
+            template_config_data.update({'name': template_name, 'type': template_type})
+            config = TemplateConfigModel(**template_config_data)
+
+            # upsert db
+            self.db_add_config(config)
+            self.log.debug(f'action=get-template-config, config={config}')
+            return config
+        except ValidationError as ex:
+            self._log_validation_error(ex)
+            return None
+
+    def get_template_config_contents(self, branch: str, url: str) -> Response | None:
+        """Return the contents of the template."""
         params = {}
         if branch:
             params['ref'] = branch
-        r: 'Response' = self.session.get(url)
+
+        r = self.session.get(url)
         self.log.debug(f'action=get-template-config, url={url}, status-code={r.status_code}')
+
         if not r.ok:
             self.log.error(
                 f'action=get-template-config, url={r.request.url}, '
@@ -248,101 +341,90 @@ class Template(BinABC):
                 f'{r.status_code}, reason={r.reason}'
             )
 
-        try:
-            template_config_data = yaml.safe_load(r.text)
-            template_config_data.update({'name': template, 'type': type_})
-            config = TemplateConfigModel(**template_config_data)
+        return r
 
-            # upsert db
-            self.db_add_config(config)
-            self.log.debug(f'action=get-template-config, config={config}')
-            return config
-        except ValidationError as ex:
-            for error in json.loads(ex.json()):
-                location = [str(location) for location in error.get('loc')]
-                self.log.error(
-                    '''Schema validation failed for template.yaml. '''
-                    f'''({error.get('msg')}: {' -> '.join(location)})'''
-                )
-                self.errors = True
-            return None
+    def get_template_config_url(self, branch: str, template_name: str, template_type: str) -> str:
+        """Return the URL for the template.yml file."""
+        match template_name:
+            case '_app_common':
+                return f'{self.base_raw_url}/{branch}/_app_common/template.yaml'
+
+            case _:
+                return f'{self.base_raw_url}/{branch}/{template_type}/{template_name}/template.yaml'
 
     def get_template_contents(
         self,
         branch: str,
-        data: dict,
-        path: str,
-        type_: str,
+        data: dict[str, FileMetadataModel],  # recursively update data dict
+        template_name: str,  # preserve the template name for recursion
+        template_path: str,
+        template_type: str,
         app_builder: bool,
-        template_name: str = None,  # preserve the template name for recursion
-    ) -> dict:
+    ) -> dict[str, FileMetadataModel]:
         """Get the contents of a template and allow recursion."""
-        for item in self.contents(branch, type_, path, app_builder):
-            # add template name and type to the item to be
-            # used during the download and write process
-            item['template_name'] = template_name
-            item['template_type'] = type_
-            # add relative path key AFTER template values have been added to the item
-            item['relative_path'] = self.item_relative_path(item)
-
+        for item in self.file_metadata_model(
+            branch, template_name, template_path, template_type, app_builder
+        ):
             # process any files and recurse into any directories
-            if item.get('type') == 'file':
+            if item.type == 'file':
                 # templates are hierarchical, overwrite previous values with new
                 # values using relative path for as the identifier for the file
-                data[str(item.get('relative_path'))] = item
+                data[str(item.relative_path)] = item
 
                 # update manifest data, this will be used during
                 # updates to determine if the file has changed
-                self.template_manifest.setdefault(item.get('path'), {})
-                self.template_manifest[item.get('path')]['sha'] = item.get('sha')
-            elif item.get('type') == 'dir':
-                nested_dir = f'''{path}/{item.get('name')}'''
+                self.template_manifest.setdefault(item.path, {})
+                self.template_manifest[item.path]['sha'] = item.sha
+            elif item.type == 'dir':
+                nested_path = f'''{template_path}/{item.name}'''
                 self.get_template_contents(
-                    branch, data, nested_dir, type_, app_builder, template_name
+                    branch, data, template_name, nested_path, template_type, app_builder
                 )
 
         return data
 
-    def init(self, branch: str, type_: str, template: str, app_builder: bool) -> List[dict]:
+    def init(
+        self, branch: str, template_name: str, template_type: str, app_builder: bool
+    ) -> list[FileMetadataModel]:
         """Initialize an App with template files."""
         data = {}
-        for tp in self.template_parents(type_, template, branch):
-            self.get_template_contents(branch, data, tp, type_, app_builder, tp)
-        return data.values()
+        for template_parent_name in self.template_parents(template_name, template_type, branch):
+            # template_parent_name is both the name and the path
+            self.get_template_contents(
+                branch, data, template_parent_name, template_parent_name, template_type, app_builder
+            )
+        return list(data.values())
 
-    def item_relative_path(self, item: dict) -> Path:
+    def item_relative_path(self, item: FileMetadataModel) -> Path:
         """Return the relative path to the item."""
-        path = item.get('path')
         template_path = self.item_template_path(item)
 
         # handle nested files by stripping the type/template values from the path, the
         # remaining part is the relative path to the file to be used for read/write.
-        _path = item.get('name')
-        if path.startswith(template_path):
-            _path = path.replace(template_path, '')
+        _path = item.name
+        if item.path.startswith(template_path):
+            _path = item.path.replace(template_path, '')
         return Path(_path)
 
     @staticmethod
-    def item_template_path(item: dict) -> str:
+    def item_template_path(item: FileMetadataModel) -> str:
         """Return the template path."""
-        if item.get('template_name') == '_app_common':
-            return f'''{item.get('template_name')}/'''
-        return f'''{item.get('template_type')}/{item.get('template_name')}/'''
+        if item.template_name == '_app_common':
+            return f'{item.template_name}/'
+        return f'{item.template_type}/{item.template_name}/'
 
-    def list(self, branch: str, type_: Optional[str] = None):
+    def list_(self, branch: str, template_type: str | None = None):
         """List template types."""
         template_types = self.template_types
-        if type_ is not None:
-            if type_ not in self.template_types:
-                raise ValueError(f'Invalid Types: {type_}')
-            template_types = [type_]
+        if template_type is not None:
+            if template_type not in self.template_types:
+                raise ValueError(f'Invalid Types: {template_type}')
+            template_types = [template_type]
 
         for selected_type in template_types:
-            for td in self.contents(branch, selected_type):
-                if td.get('type') == 'dir':
-                    template_config = self.get_template_config(
-                        selected_type, td.get('name'), branch
-                    )
+            for meta in self.file_metadata_contents(branch, selected_type):
+                if meta['type'] == 'dir':
+                    template_config = self.get_template_config(meta['name'], selected_type, branch)
                     if template_config is not None:
                         self.template_data.setdefault(selected_type, [])
                         self.template_data[selected_type].append(template_config)
@@ -355,15 +437,15 @@ class Template(BinABC):
                 f'''see logs at {os.path.join(self.cli_out_path, 'tcex.log')}.'''
             )
 
-    def print_list(self, branch: Optional[str] = None):
+    def print_list(self, branch: str | None = None):
         """Print the list output."""
-        for type_, templates in self.template_data.items():
-            self.print_title(f'''{type_.replace('_', ' ').title()} Templates''')
+        for template_type, templates in self.template_data.items():
+            self.print_title(f'''{template_type.replace('_', ' ').title()} Templates''')
             for config in templates:
                 self.print_setting('Template', config.name, fg_color='green', bold=False)
                 self.print_setting('Contributor', config.contributor, fg_color='green', bold=False)
                 self.print_setting('Summary', config.summary, fg_color='green', bold=False)
-                install_cmd = f'tcex init --type {type_} --template {config.name}'
+                install_cmd = f'tcex init --type {template_type} --template {config.name}'
                 if branch != 'main':
                     install_cmd += f' --branch {branch}'
                 self.print_setting(
@@ -372,15 +454,13 @@ class Template(BinABC):
                     fg_color='white',
                     bold=False,
                 )
-                # looks cleaner just to have a blank line
-                # self.print_divider()
                 print('')
 
     @cached_property
-    def project_sha(self) -> Optional[str]:
+    def project_sha(self) -> str | None:
         """Return the current commit sha for the tcex-app-templates project."""
         params = {'perPage': '1'}
-        r: 'Response' = self.session.get(f'{self.base_url}/commits', params=params)
+        r: Response = self.session.get(f'{self.base_url}/commits', params=params)
         if not r.ok:
             self.log.error(
                 f'action=get-project-sha, url={r.request.url}, '
@@ -402,7 +482,7 @@ class Template(BinABC):
         return commits_data[0].get('sha')
 
     @cached_property
-    def session(self) -> 'Session':
+    def session(self) -> Session:
         """Return session object"""
         session = Session()
         session.headers.update({'Cache-Control': 'no-cache'})
@@ -433,40 +513,46 @@ class Template(BinABC):
             fh.write(json.dumps(self.template_manifest, indent=2, sort_keys=True))
             fh.write('\n')
 
-    def template_parents(self, type_: str, template: str, branch: str = 'main') -> List[str]:
+    def template_parents(
+        self, template_name: str, template_type: str, branch: str = 'main'
+    ) -> list[str]:
         """Return all parents for the provided template."""
         # get the config for the requested template
-        template_config = self.get_template_config(type_, template, branch)
+        template_config = self.get_template_config(template_name, template_type, branch)
 
         # fail if template config can't be found
         if template_config is None:
             self.print_failure(
-                f'Failed retrieving template.yaml: type={type_}, template={template}.\n'
+                'Failed retrieving template.yaml: '
+                f'template-type={template_type}, template-name={template_name}.\n '
                 'Try running "tcex list" to get valid template types and names.'
             )
+            sys.exit(1)
 
-        # iterate over each parent template
         app_templates = []
-        for parent in template_config.template_parents:
-            parent_config = self.get_template_config(type_, parent, branch)
+        # iterate over each parent template
+        for parent in template_config.template_parents or []:
+            parent_config = self.get_template_config(parent, template_type, branch)
+            if parent_config is None:
+                continue
 
             # update templates
             app_templates.extend(
                 [t for t in parent_config.template_parents if t not in app_templates]
             )
 
-        # add parent after parent->parents have been added
-        app_templates.extend(
-            [t for t in template_config.template_parents if t not in app_templates]
-        )
+            # add parent after parent->parents have been added
+            app_templates.extend(
+                [t for t in template_config.template_parents if t not in app_templates]
+            )
 
         # add this current template last
-        app_templates.append(template)
+        app_templates.append(template_name)
 
         return app_templates
 
     @property
-    def template_to_prefix_map(self) -> Dict[str, str]:
+    def template_to_prefix_map(self) -> dict[str, str]:
         """Return the defined template types."""
         return {
             'api_service': 'tcva',
@@ -479,7 +565,7 @@ class Template(BinABC):
         }
 
     @property
-    def template_types(self) -> List[str]:
+    def template_types(self) -> list[str]:
         """Return the defined template types."""
         return [
             'api_service',
@@ -492,67 +578,81 @@ class Template(BinABC):
             'webhook_trigger_service',
         ]
 
-    def update(self, branch: str, template: str, type_: str, ignore_hash=False) -> List[dict]:
+    def update(
+        self,
+        branch: str,
+        template_name: str | None = None,
+        template_type: str | None = None,
+        ignore_hash=False,
+    ) -> list[FileMetadataModel]:
         """Initialize an App with template files."""
         # update tcex.json model
-        if template is not None:
-            self.tj.model.template_name = template
-        if type_ is not None:
-            self.tj.model.template_type = type_
+        if template_name is not None:
+            self.tj.model.template_name = template_name
+        if template_type is not None:
+            self.tj.model.template_type = template_type
 
         # retrieve ALL template contents
-        data = {}
-        for tp in self.template_parents(
-            self.tj.model.template_type, self.tj.model.template_name, branch
+        data: dict[str, FileMetadataModel] = {}
+        for template_parent_name in self.template_parents(
+            self.tj.model.template_name, self.tj.model.template_type, branch
         ):
-            self.get_template_contents(branch, data, tp, self.tj.model.template_type, False, tp)
+            # template_parent_name is both the name and the path
+            self.get_template_contents(
+                branch,
+                data,
+                template_parent_name,
+                template_parent_name,
+                self.tj.model.template_type,
+                False,
+            )
 
         # determine which files should be downloaded
         downloads = []
         for item in data.values():
-            # get the relative path to the file
-            relative_path = item.get('relative_path')
-
             # skip files if it has not changed
-            if relative_path.is_file() and ignore_hash is False:
+            if item.relative_path.is_file() and ignore_hash is False:
                 # skip files if it has not changed
-                if self.update_item_check_hash(relative_path, item) is False:
+                if self.update_item_check_hash(item.relative_path, item) is False:
                     continue
 
             # is the file a template file and dev says overwrite
-            if self.update_item_prompt(branch, item) and relative_path.is_file() is True:
+            if self.update_item_prompt(branch, item) and item.relative_path.is_file() is True:
                 response = self.prompt_choice(
-                    f'Overwrite: {relative_path}', choices=['y', 'n'], default='n'
+                    f'Overwrite: {item.relative_path}', choices=['y', 'n'], default='n'
                 )
                 if response == 'n':
                     continue
 
             downloads.append(item)
-            self.template_manifest.setdefault(item.get('path'), {})
-            self.template_manifest[item.get('path')]['sha'] = item.get('sha')
+            self.template_manifest.setdefault(item.path, {})
+            self.template_manifest[item.path]['sha'] = item.sha
 
         return downloads
 
-    def update_item_check_hash(self, fqfn: Path, item: dict) -> bool:
+    def update_item_check_hash(self, fqfn: Path, item: FileMetadataModel) -> bool:
         """Check if the file hash has changed since init or last update."""
         file_hash = self.file_hash(fqfn)
-        if self.template_manifest.get(item.get('path'), {}).get('md5') != file_hash:
+        if self.template_manifest.get(item.path, {}).get('md5') != file_hash:
             self.log.debug(
-                f'''action=update-check-hash, template-file={item.get('name')}, '''
+                f'''action=update-check-hash, template-file={item.name}, '''
                 'check=hash-check, result=hash-has-not-changed'
             )
             return True
         return False
 
-    def update_item_prompt(self, branch: str, item: dict) -> bool:
+    def update_item_prompt(self, branch: str, item: FileMetadataModel) -> bool:
         """Update the prompt value for the provided item."""
-        template_name = item.get('template_name')
         template_config = self.get_template_config(
-            self.tj.model.template_type, template_name, branch
+            item.template_name, self.tj.model.template_type, branch
         )
 
+        # enforce prompt if template config can't be found
+        if template_config is None:
+            return True
+
         # determine if file requires user prompt
-        if str(item.get('relative_path')) in template_config.template_files:
+        if str(item.relative_path) in template_config.template_files:
             return False
         return True
 

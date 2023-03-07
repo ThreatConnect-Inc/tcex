@@ -3,13 +3,12 @@
 from tcex.decorators.benchmark import Benchmark
 
 
-# pylint: disable=no-self-use
 class TestBenchmarkDecorators:
     """Test the TcEx Decorators."""
 
     tcex = None
 
-    @Benchmark()
+    @Benchmark()  # type: ignore
     def benchmark(self):
         """Test fail on input decorator with no arg value (use first arg input)."""
 

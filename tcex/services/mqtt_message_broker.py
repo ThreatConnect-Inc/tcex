@@ -4,17 +4,18 @@ import logging
 import ssl
 import time
 import traceback
-from typing import TYPE_CHECKING, List, Optional
+from collections.abc import Callable
 
 # third-party
 import paho.mqtt.client as mqtt
 
-if TYPE_CHECKING:
-    # first-party
-    from tcex.input.field_types.sensitive import Sensitive
+# first-party
+from tcex.backports import cached_property
+from tcex.input.field_types.sensitive import Sensitive
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 
 # get tcex logger
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 
 class MqttMessageBroker:
@@ -25,8 +26,8 @@ class MqttMessageBroker:
         broker_host: str,
         broker_port: int,
         broker_timeout: int,
-        broker_token: Optional['Sensitive'] = None,
-        broker_cacert: Optional[str] = None,
+        broker_token: Sensitive | None = None,
+        broker_cacert: str | None = None,
     ):
         """Initialize the Class properties.
 
@@ -45,19 +46,18 @@ class MqttMessageBroker:
         self.broker_cacert = broker_cacert
 
         # properties
-        self._client = None
         self._connected = False
-        self._on_connect_callbacks: List[callable] = []
-        self._on_disconnect_callbacks: List[callable] = []
-        self._on_log_callbacks: List[callable] = []
-        self._on_message_callbacks: List[callable] = []
-        self._on_publish_callbacks: List[callable] = []
-        self._on_subscribe_callbacks: List[callable] = []
-        self._on_unsubscribe_callbacks: List[callable] = []
+        self._on_connect_callbacks: list[Callable] = []
+        self._on_disconnect_callbacks: list[Callable] = []
+        self._on_log_callbacks: list[Callable] = []
+        self._on_message_callbacks: list[dict[str, Callable | list[str]]] = []
+        self._on_publish_callbacks: list[Callable] = []
+        self._on_subscribe_callbacks: list[Callable] = []
+        self._on_unsubscribe_callbacks: list[Callable] = []
         self.log = logger
         self.shutdown = False  # used in service App for shutdown flag
 
-    def add_on_connect_callback(self, callback: callable, index: Optional[int] = None):
+    def add_on_connect_callback(self, callback: Callable, index: int | None = None):
         """Add a callback for on_connect events.
 
         Args:
@@ -67,7 +67,7 @@ class MqttMessageBroker:
         index = index or len(self._on_connect_callbacks)
         self._on_connect_callbacks.insert(index, callback)
 
-    def add_on_disconnect_callback(self, callback: callable, index: Optional[int] = None):
+    def add_on_disconnect_callback(self, callback: Callable, index: int | None = None):
         """Add a callback for on_disconnect events.
 
         Args:
@@ -75,9 +75,9 @@ class MqttMessageBroker:
             index: The index value to insert the callback into the list.
         """
         index = index or len(self._on_disconnect_callbacks)
-        self._on_disconnect_callbacks.insert(callback)
+        self._on_disconnect_callbacks.insert(index, callback)
 
-    def add_on_log_callback(self, callback: callable, index: Optional[int] = None):
+    def add_on_log_callback(self, callback: Callable, index: int | None = None):
         """Add a callback for on_log events.
 
         Args:
@@ -85,10 +85,10 @@ class MqttMessageBroker:
             index: The index value to insert the callback into the list.
         """
         index = index or len(self._on_log_callbacks)
-        self._on_log_callbacks.insert(callback)
+        self._on_log_callbacks.insert(index, callback)
 
     def add_on_message_callback(
-        self, callback: callable, index: Optional[int] = None, topics: Optional[List[str]] = None
+        self, callback: Callable, index: int | None = None, topics: list[str] | None = None
     ):
         """Add a callback for on_message events.
 
@@ -99,9 +99,10 @@ class MqttMessageBroker:
                 will always be called.
         """
         index = index or len(self._on_message_callbacks)
+        topics = topics or []
         self._on_message_callbacks.insert(index, {'callback': callback, 'topics': topics})
 
-    def add_on_publish_callback(self, callback: callable, index: Optional[int] = None):
+    def add_on_publish_callback(self, callback: Callable, index: int | None = None):
         """Add a callback for on_publish events.
 
         Args:
@@ -111,7 +112,7 @@ class MqttMessageBroker:
         index = index or len(self._on_publish_callbacks)
         self._on_publish_callbacks.insert(index, callback)
 
-    def add_on_subscribe_callback(self, callback: callable, index: Optional[int] = None):
+    def add_on_subscribe_callback(self, callback: Callable, index: int | None = None):
         """Add a callback for on_subscribe events.
 
         Args:
@@ -121,7 +122,7 @@ class MqttMessageBroker:
         index = index or len(self._on_subscribe_callbacks)
         self._on_subscribe_callbacks.insert(index, callback)
 
-    def add_on_unsubscribe_callback(self, callback: callable, index: Optional[int] = None):
+    def add_on_unsubscribe_callback(self, callback: Callable, index: int | None = None):
         """Add a callback for on_unsubscribe events.
 
         Args:
@@ -131,33 +132,33 @@ class MqttMessageBroker:
         index = index or len(self._on_unsubscribe_callbacks)
         self._on_unsubscribe_callbacks.insert(index, callback)
 
-    @property
-    def client(self) -> object:
+    @cached_property
+    def client(self) -> mqtt.Client:
         """Return MQTT client."""
-        if self._client is None:
-            try:
-                self._client = mqtt.Client(client_id='', clean_session=True)
-                self._client.reconnect_delay_set(min_delay=1, max_delay=5)
-                self._client.connect(self.broker_host, self.broker_port, self.broker_timeout)
-                if self.broker_cacert is not None:
-                    self._client.tls_set(
-                        ca_certs=self.broker_cacert,
-                        cert_reqs=ssl.CERT_REQUIRED,
-                        tls_version=ssl.PROTOCOL_TLSv1_2,
-                    )
-                    self._client.tls_insecure_set(False)
-                # add logger when logging in TRACE
-                if self.log.getEffectiveLevel() == 5:
-                    self._client.enable_logger(logger=self.log)
-                # username must be a empty string
-                if self.broker_token is not None:
-                    self._client.username_pw_set('', password=self.broker_token.value)
-            except Exception as e:
-                self.log.error(f'feature=message-broker, event=failed-connection, error="""{e}"""')
-                self.log.trace(traceback.format_exc())
-                self.shutdown = True
+        _client = mqtt.Client(client_id='', clean_session=True)
+        try:
+            _client.reconnect_delay_set(min_delay=1, max_delay=5)
+            _client.connect(self.broker_host, self.broker_port, self.broker_timeout)
+            if self.broker_cacert is not None:
+                _client.tls_set(
+                    ca_certs=self.broker_cacert,
+                    cert_reqs=ssl.CERT_REQUIRED,
+                    tls_version=ssl.PROTOCOL_TLSv1_2,
+                )
+                _client.tls_insecure_set(False)
+            # add logger when logging in TRACE
+            if self.log.getEffectiveLevel() == 5:
+                _client.enable_logger(logger=self.log)
+            # username must be a empty string
+            if self.broker_token is not None:
+                _client.username_pw_set('', password=self.broker_token.value)
 
-        return self._client
+        except Exception as e:
+            self.log.error(f'feature=message-broker, event=failed-connection, error="""{e}"""')
+            self.log.trace(traceback.format_exc())
+            self.shutdown = True
+
+        return _client
 
     def connect(self):
         """Listen for message coming from broker."""
@@ -208,7 +209,8 @@ class MqttMessageBroker:
         for cd in self._on_message_callbacks:
             topics = cd.get('topics')
             if topics is None or message.topic in topics:
-                cd.get('callback')(client, userdata, message)
+                if callable(cd['callback']):
+                    cd['callback'](client, userdata, message)
 
     def on_publish(self, client, userdata, result):
         """Handle MQTT on_publish events."""

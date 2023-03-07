@@ -2,7 +2,6 @@
 # standard library
 import traceback
 from datetime import datetime
-from typing import Optional
 
 # first-party
 from tcex.api.tc.ti_transform.model import GroupTransformModel, IndicatorTransformModel
@@ -14,7 +13,7 @@ class TiTransforms(TransformsABC):
 
     def process(self):
         """Process the mapping."""
-        self.transformed_collection = []
+        self.transformed_collection: list[TiTransform] = []
         for ti_dict in self.ti_dicts:
             self.transformed_collection.append(TiTransform(ti_dict, self.transforms))
 
@@ -75,12 +74,12 @@ class TiTransform(TransformABC):
         self,
         type_: str,
         value: str,
-        displayed: Optional[bool] = False,
-        source: Optional[str] = None,
+        displayed: bool = False,
+        source: str | None = None,
     ):
         """Add an attribute to the transformed item."""
         if type_ is not None and value is not None:
-            attribute_data = {
+            attribute_data: dict[str, bool | str] = {
                 'type': type_,
                 'value': value,
             }
@@ -97,9 +96,9 @@ class TiTransform(TransformABC):
 
     def add_file_occurrence(
         self,
-        file_name: Optional[str] = None,
-        path: Optional[str] = None,
-        date: Optional[datetime] = None,
+        file_name: str | None = None,
+        path: str | None = None,
+        date: datetime | None = None,
     ):
         """Abstract method"""
         self.transformed_item.setdefault('fileOccurrence', []).append(
@@ -114,7 +113,7 @@ class TiTransform(TransformABC):
             }
         )
 
-    def add_confidence(self, confidence: Optional[int]):
+    def add_confidence(self, confidence: int | str | None):
         """Add a rating to the transformed item."""
         if confidence is not None:
             self.transformed_item['confidence'] = int(confidence)
@@ -140,18 +139,18 @@ class TiTransform(TransformABC):
         if all([key, value]):
             self.transformed_item[key] = value
 
-    def add_name(self, name: Optional[str]):
+    def add_name(self, name: str | None):
         """Add name to the transformed item."""
         if name is not None:
             self.transformed_item['name'] = name
 
-    def add_rating(self, rating: Optional[int]):
+    def add_rating(self, rating: float | int | str | None):
         """Add a rating to the transformed item."""
         if rating is not None:
             self.transformed_item['rating'] = float(rating)
 
     def add_security_label(
-        self, name: str, color: Optional[str] = None, description: Optional[str] = None
+        self, name: str, color: str | None = None, description: str | None = None
     ):
         """Add a tag to the transformed item."""
         if name is not None:
@@ -165,7 +164,7 @@ class TiTransform(TransformABC):
 
             self.transformed_item.setdefault('securityLabel', []).append(label_data)
 
-    def add_summary(self, value: Optional[str]):
+    def add_summary(self, value: str | None):
         """Add value1 to the transformed item."""
         if value is not None:
             self.transformed_item['summary'] = value

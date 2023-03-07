@@ -6,7 +6,6 @@ import logging
 import math
 import re
 import time
-from typing import Dict, List, Optional, Union
 
 # third-party
 from requests import Session
@@ -14,9 +13,10 @@ from requests import Session
 # first-party
 from tcex.exit.error_codes import handle_error
 from tcex.input.input import Input
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 
 # get tcex logger
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 
 class BatchSubmit:
@@ -27,12 +27,12 @@ class BatchSubmit:
         inputs: Input,
         session_tc: Session,
         owner: str,
-        action: Optional[str] = 'Create',
-        attribute_write_type: Optional[str] = 'Replace',
-        halt_on_error: Optional[bool] = True,
-        playbook_triggers_enabled: Optional[bool] = False,
-        tag_write_type: Optional[str] = 'Replace',
-        security_label_write_type: Optional[str] = 'Replace',
+        action: str = 'Create',
+        attribute_write_type: str = 'Replace',
+        halt_on_error: bool = True,
+        playbook_triggers_enabled: bool = False,
+        tag_write_type: str = 'Replace',
+        security_label_write_type: str = 'Replace',
     ):
         """Initialize Class properties.
 
@@ -73,7 +73,7 @@ class BatchSubmit:
         self._poll_timeout = 3600
 
     @property
-    def _critical_failures(self) -> List[str]:  # pragma: no cover
+    def _critical_failures(self) -> list[str]:  # pragma: no cover
         """Return Batch critical failure messages."""
         return [
             'Encountered an unexpected Exception while processing batch job',
@@ -100,7 +100,7 @@ class BatchSubmit:
         """Set batch attribute write type."""
         self._attribute_write_type = write_type
 
-    def create_job(self, halt_on_error: Optional[bool] = True) -> int:
+    def create_job(self, halt_on_error: bool = True) -> int | None:
         """Submit Batch request to ThreatConnect API.
 
         Args:
@@ -117,6 +117,7 @@ class BatchSubmit:
             r = self.session_tc.post('/v2/batch', json=self.settings)
         except Exception as e:
             handle_error(code=10505, message_values=[e], raise_error=halt_on_error)
+            return None
 
         if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
             handle_error(
@@ -137,7 +138,7 @@ class BatchSubmit:
         return data.get('data', {}).get('batchId')
 
     @property
-    def error_codes(self) -> Dict[str, str]:
+    def error_codes(self) -> dict[str, str]:
         """Return static list of Batch error codes and short description"""
         return {
             '0x1001': 'General Error',
@@ -157,7 +158,7 @@ class BatchSubmit:
             '0x3001': 'File Hash Merge Error',
         }
 
-    def errors(self, batch_id: int, halt_on_error: Optional[bool] = True) -> list:
+    def errors(self, batch_id: int, halt_on_error: bool = True) -> list:
         """Retrieve Batch errors to ThreatConnect API.
 
         .. code-block:: javascript
@@ -221,7 +222,7 @@ class BatchSubmit:
     @property
     def halt_on_batch_error(self) -> bool:
         """Return halt on batch error value."""
-        return self._halt_on_batch_error
+        return self._halt_on_batch_error or False
 
     @halt_on_batch_error.setter
     def halt_on_batch_error(self, value: bool):
@@ -232,7 +233,7 @@ class BatchSubmit:
     @property
     def halt_on_poll_error(self) -> bool:
         """Return halt on poll error value."""
-        return self._halt_on_poll_error
+        return self._halt_on_poll_error or False
 
     @halt_on_poll_error.setter
     def halt_on_poll_error(self, value: bool):
@@ -240,7 +241,7 @@ class BatchSubmit:
         if isinstance(value, bool):
             self._halt_on_poll_error = value
 
-    def hash_collision_mode(self, value: str) -> str:
+    def hash_collision_mode(self, value: str):
         """Set the file hash collision mode for the entire batch job.
 
         Args:
@@ -252,10 +253,10 @@ class BatchSubmit:
     def poll(
         self,
         batch_id: int,
-        retry_seconds: Optional[int] = None,
-        back_off: Optional[float] = None,
-        timeout: Optional[int] = None,
-        halt_on_error: Optional[bool] = True,
+        retry_seconds: int | None = None,
+        back_off: float | None = None,
+        timeout: int | None = None,
+        halt_on_error: bool = True,
     ) -> dict:
         """Poll Batch status to ThreatConnect API.
 
@@ -344,7 +345,7 @@ class BatchSubmit:
                 modifier = poll_time_total * 0.7
                 self._poll_interval_times = self._poll_interval_times[-4:] + [modifier]
 
-                weights = [1]
+                weights: list[float | int] = [1]
                 poll_interval_time_weighted_sum = 0
                 for poll_interval_time in self._poll_interval_times:
                     poll_interval_time_weighted_sum += poll_interval_time * weights[-1]
@@ -395,7 +396,7 @@ class BatchSubmit:
         self._security_label_write_type = write_type
 
     @property
-    def settings(self) -> Dict[str, str]:
+    def settings(self) -> dict[str, str]:
         """Return batch job settings."""
         _settings = {
             'action': self._action,
@@ -413,7 +414,7 @@ class BatchSubmit:
             _settings['fileMergeMode'] = self._file_merge_mode
         return _settings
 
-    def submit(self, batch_filename: str, halt_on_error: Optional[bool] = True) -> dict:
+    def submit(self, batch_filename: str, halt_on_error: bool = True) -> dict:
         """Submit Batch request to ThreatConnect API.
 
         Args:
@@ -429,17 +430,7 @@ class BatchSubmit:
         if self.halt_on_batch_error is not None:
             halt_on_error = self.halt_on_batch_error
 
-        # store the length of the batch data to use for poll interval calculations
-        self.log.info(
-            '''feature=batch, event=submit-create-and-upload, type=group, '''
-            f'''count={len(content.get('group')):,}'''
-        )
-        self.log.info(
-            '''feature=batch, event=submit-create-and-upload, type=indicator, '''
-            f'''count={len(content.get('indicator')):,}'''
-        )
-
-        files = (('config', json.dumps(self.settings)), ('content', json.dumps(content)))
+        files = (('config', json.dumps(self.settings)), ('content', content))
         params = {'includeAdditional': 'true'}
         try:
             r = self.session_tc.post('/v2/batch/createAndUpload', files=files, params=params)
@@ -456,14 +447,14 @@ class BatchSubmit:
         return {}
 
     def submit_data(
-        self, batch_id: int, content: Union[dict, str], halt_on_error: Optional[bool] = True
-    ) -> dict:
+        self, batch_id: int, content: dict | str, halt_on_error: bool = True
+    ) -> dict | None:
         """Submit Batch request to ThreatConnect API.
 
         Args:
             batch_id: The batch id of the current job.
             content: The dict of groups and indicator data.
-            halt_on_error (Optional[bool] = True): If True the process
+            halt_on_error (bool = True): If True the process
                 should halt if any errors are encountered.
 
         Returns:

@@ -1,8 +1,7 @@
 """Security_Label / Security_Labels Model"""
-# pylint: disable=no-member,no-self-argument,no-self-use,wrong-import-position
+# pylint: disable=no-member,no-self-argument,wrong-import-position
 # standard library
 from datetime import datetime
-from typing import List, Optional
 
 # third-party
 from pydantic import BaseModel, Extra, Field, PrivateAttr
@@ -10,46 +9,6 @@ from pydantic import BaseModel, Extra, Field, PrivateAttr
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
 from tcex.utils import Utils
-
-
-class SecurityLabelsModel(
-    BaseModel,
-    title='SecurityLabels Model',
-    alias_generator=Utils().snake_to_camel,
-    validate_assignment=True,
-):
-    """Security_Labels Model"""
-
-    _mode_support = PrivateAttr(True)
-
-    data: Optional[List['SecurityLabelModel']] = Field(
-        [],
-        description='The data for the SecurityLabels.',
-        methods=['POST', 'PUT'],
-        title='data',
-    )
-    mode: str = Field(
-        'append',
-        description='The PUT mode for nested objects (append, delete, replace). Default: append',
-        methods=['POST', 'PUT'],
-        title='append',
-    )
-
-
-class SecurityLabelDataModel(
-    BaseModel,
-    title='SecurityLabel Data Model',
-    alias_generator=Utils().snake_to_camel,
-    validate_assignment=True,
-):
-    """Security_Labels Data Model"""
-
-    data: Optional[List['SecurityLabelModel']] = Field(
-        [],
-        description='The data for the SecurityLabels.',
-        methods=['POST', 'PUT'],
-        title='data',
-    )
 
 
 class SecurityLabelModel(
@@ -66,7 +25,7 @@ class SecurityLabelModel(
     _shared_type = PrivateAttr(True)
     _staged = PrivateAttr(False)
 
-    color: Optional[str] = Field(
+    color: str | None = Field(
         None,
         description='Color of the security label.',
         methods=['POST', 'PUT'],
@@ -75,14 +34,14 @@ class SecurityLabelModel(
         read_only=False,
         title='color',
     )
-    date_added: Optional[datetime] = Field(
+    date_added: datetime | None = Field(
         None,
         allow_mutation=False,
         description='The date and time that the label was added.',
         read_only=True,
         title='dateAdded',
     )
-    description: Optional[str] = Field(
+    description: str | None = Field(
         None,
         description='Description of the security label.',
         methods=['POST', 'PUT'],
@@ -91,13 +50,13 @@ class SecurityLabelModel(
         read_only=False,
         title='description',
     )
-    id: Optional[int] = Field(
+    id: int | None = Field(
         None,
         description='The ID of the item.',
         read_only=True,
         title='id',
     )
-    name: Optional[str] = Field(
+    name: str | None = Field(
         None,
         description='Name of the security label.',
         methods=['POST', 'PUT'],
@@ -106,12 +65,52 @@ class SecurityLabelModel(
         read_only=False,
         title='name',
     )
-    owner: Optional[str] = Field(
+    owner: str | None = Field(
         None,
         description='The name of the Owner of the Label.',
         methods=['POST'],
         read_only=False,
         title='owner',
+    )
+
+
+class SecurityLabelDataModel(
+    BaseModel,
+    title='SecurityLabel Data Model',
+    alias_generator=Utils().snake_to_camel,
+    validate_assignment=True,
+):
+    """Security_Labels Data Model"""
+
+    data: list[SecurityLabelModel] | None = Field(
+        [],
+        description='The data for the SecurityLabels.',
+        methods=['POST', 'PUT'],
+        title='data',
+    )
+
+
+class SecurityLabelsModel(
+    BaseModel,
+    title='SecurityLabels Model',
+    alias_generator=Utils().snake_to_camel,
+    validate_assignment=True,
+):
+    """Security_Labels Model"""
+
+    _mode_support = PrivateAttr(True)
+
+    data: list[SecurityLabelModel] | None = Field(
+        [],
+        description='The data for the SecurityLabels.',
+        methods=['POST', 'PUT'],
+        title='data',
+    )
+    mode: str = Field(
+        'append',
+        description='The PUT mode for nested objects (append, delete, replace). Default: append',
+        methods=['POST', 'PUT'],
+        title='append',
     )
 
 

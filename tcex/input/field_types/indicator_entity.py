@@ -1,9 +1,11 @@
 """Indicator Entity Field (Model) Type"""
+
 # standard library
-from typing import TYPE_CHECKING, List
+from typing import ClassVar
 
 # third-party
-from pydantic import validator
+from pydantic import create_model, validator
+from pydantic.fields import ModelField  # TYPE-CHECKING
 
 # first-party
 from tcex.api.tc.utils.threat_intel_utils import ThreatIntelUtils
@@ -11,58 +13,45 @@ from tcex.input.field_types.exception import InvalidEmptyValue, InvalidEntityTyp
 from tcex.input.field_types.tc_entity import TCEntity
 from tcex.pleb.registry import registry
 
-if TYPE_CHECKING:  # pragma: no cover
-    # third-party
-    from pydantic.fields import ModelField
 
-
-# pylint: disable=no-self-argument, no-self-use
+# pylint: disable=no-self-argument
 class IndicatorEntity(TCEntity):
     """Indicator Entity Field (Model) Type"""
 
-    @validator('type')
-    def is_empty(cls, value: str, field: 'ModelField') -> str:
+    indicator_types: ClassVar[list[str]] = []
+
+    @validator('type', allow_reuse=True)
+    def is_empty(cls, value: str, field: ModelField) -> str:
         """Validate that the value is a non-empty string."""
         if isinstance(value, str) and value.replace(' ', '') == '':
             raise InvalidEmptyValue(field_name=field.name)
         return value
 
-    @validator('type')
-    def is_type(cls, value: str, field: 'ModelField') -> str:
-        """Validate that the entity is of Indicator type."""
+    @validator('type', allow_reuse=True)
+    def is_type(cls, value: str, field: ModelField) -> str:
+        """Validate that the entity is of a specific Indicator type."""
         ti_utils = ThreatIntelUtils(session_tc=registry.session_tc)
-        if value not in ti_utils.indicator_types:
-            raise InvalidEntityType(field_name=field.name, entity_type='Indicator', value=value)
+        indicator_types = cls.indicator_types or ti_utils.indicator_types
+        if value.lower() not in [i.lower() for i in indicator_types]:
+            raise InvalidEntityType(
+                field_name=field.name, entity_type=str(indicator_types), value=value
+            )
         return value
 
 
-def indicator_entity(indicator_types: List[str] = None) -> type:
-    """Return custom model for Indicator Entity."""
-
-    class CustomIndicatorEntity(IndicatorEntity):
-        """Indicator Entity Field (Model) Type"""
-
-        @validator('type', allow_reuse=True)
-        def is_empty(cls, value: str, field: 'ModelField') -> str:
-            """Validate that the value is a non-empty string."""
-            if isinstance(value, str) and value.replace(' ', '') == '':
-                raise InvalidEmptyValue(field_name=field.name)
-            return value
-
-        @validator('type', allow_reuse=True)
-        def is_type(cls, value: str, field: 'ModelField') -> str:
-            """Validate that the entity is of a specific Indicator type."""
-            if value.lower() not in [i.lower() for i in indicator_types]:
-                raise InvalidEntityType(
-                    field_name=field.name, entity_type=str(indicator_types), value=value
-                )
-            return value
-
-    return CustomIndicatorEntity
+def indicator_entity(
+    indicator_types: list[str], model_name: str = 'CustomIndicatorEntity'
+) -> IndicatorEntity:
+    """Dynamically create a Case Management Entity model."""
+    return create_model(
+        model_name,
+        indicator_types=(ClassVar[list[str]], indicator_types),
+        __base__=IndicatorEntity,
+    )  # type: ignore
 
 
-AddressEntity: IndicatorEntity = indicator_entity(indicator_types=['Address'])
-EmailAddressEntity: IndicatorEntity = indicator_entity(indicator_types=['EmailAddress'])
-HostEntity: IndicatorEntity = indicator_entity(indicator_types=['Host'])
-FileEntity: IndicatorEntity = indicator_entity(indicator_types=['File'])
-UrlEntity: IndicatorEntity = indicator_entity(indicator_types=['URL'])
+AddressEntity = indicator_entity(indicator_types=['Address'])
+EmailAddressEntity = indicator_entity(indicator_types=['EmailAddress'])
+HostEntity = indicator_entity(indicator_types=['Host'])
+FileEntity = indicator_entity(indicator_types=['File'])
+UrlEntity = indicator_entity(indicator_types=['URL'])

@@ -6,7 +6,6 @@ import logging
 from tcex.decorators.on_exception import OnException
 
 
-# pylint: disable=no-self-use
 class TestOnExceptionDecorators:
     """Test the TcEx Decorators."""
 
@@ -16,7 +15,10 @@ class TestOnExceptionDecorators:
     playbook = None
     tcex = None
 
-    @OnException(exit_msg='on_exception method failed', exit_enabled='fail_on_error')
+    @OnException(
+        exit_msg='on_exception method failed',
+        exit_enabled='fail_on_error',
+    )  # type: ignore
     def on_exception(self):
         """Test fail on input decorator with no arg value (use first arg input)."""
         raise AttributeError()
@@ -39,7 +41,10 @@ class TestOnExceptionDecorators:
             assert self.exit_message == 'on_exception method failed'
             assert e.code == 1
 
-    @OnException(exit_msg='on_exception method no exit', exit_enabled='fail_on_error')
+    @OnException(
+        exit_msg='on_exception method no exit',
+        exit_enabled='fail_on_error',
+    )  # type: ignore
     def on_exception_exit_enabled_false(self):
         """Test fail on input decorator with no arg value (use first arg input)."""
         raise AttributeError()

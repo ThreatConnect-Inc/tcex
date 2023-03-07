@@ -1,4 +1,7 @@
 """Test the TcEx API Snippets."""
+# standard library
+from collections.abc import Callable
+
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
@@ -7,14 +10,11 @@ from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 class TestCaseSnippets(TestV3):
     """Test TcEx API Interface."""
 
-    v3 = None
+    v3_helper = V3Helper('cases')
 
-    def setup_method(self, method: callable):
+    def setup_method(self, method: Callable):  # pylint: disable=arguments-differ
         """Configure setup before all tests."""
-        print('')  # ensure any following print statements will be on new line
-        self.v3_helper = V3Helper('cases')
-        self.v3 = self.v3_helper.v3
-        self.tcex = self.v3_helper.tcex
+        super().setup_method()
 
         # remove an previous cases with the next test case name as a tag
         cases = self.v3.cases()

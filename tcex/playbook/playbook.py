@@ -1,19 +1,20 @@
 """TcEx Framework Playbook module"""
 # standard library
 import logging
-from typing import Optional, Union
 
 # first-party
 from tcex.backports import cached_property
-from tcex.key_value_store import KeyValueApi, KeyValueRedis
+from tcex.key_value_store.key_value_abc import KeyValueABC
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 from tcex.playbook.playbook_create import PlaybookCreate
 from tcex.playbook.playbook_delete import PlaybookDelete
 from tcex.playbook.playbook_output import PlaybookOutput
 from tcex.playbook.playbook_read import PlaybookRead
+from tcex.utils.models import PlaybookVariableModel
 from tcex.utils.utils import Utils
 
 # get tcex logger
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 
 class Playbook:
@@ -29,9 +30,9 @@ class Playbook:
 
     def __init__(
         self,
-        key_value_store: Union[KeyValueApi, KeyValueRedis],
-        context: Optional[str] = None,
-        output_variables: Optional[list] = None,
+        key_value_store: KeyValueABC,
+        context: str | None = None,
+        output_variables: list | None = None,
     ):
         """Initialize the class properties."""
         self.context = context
@@ -47,10 +48,13 @@ class Playbook:
 
         Provide key should be in format "app.output".
         """
-        return key in [
-            self.utils.get_playbook_variable_model(variable).key
-            for variable in self.output_variables
-        ]
+        variables = []
+        for variable in self.output_variables:
+            var = self.utils.get_playbook_variable_model(variable)
+            if isinstance(var, PlaybookVariableModel):
+                variables.append(var.key)
+
+        return key in variables
 
     def check_variable_requested(self, variable: str) -> bool:
         """Return True if output variable was requested by downstream app.
@@ -76,13 +80,19 @@ class Playbook:
         return self.utils.get_playbook_variable_type(variable)
 
     @cached_property
-    def create(self) -> 'PlaybookCreate':
+    def create(self) -> PlaybookCreate:
         """Return instance of PlaybookCreate"""
+        if self.context is None:
+            raise RuntimeError('Playbook context is required for PlaybookCreate.')
+
         return PlaybookCreate(self.context, self.key_value_store, self.output_variables)
 
     @cached_property
-    def delete(self) -> 'PlaybookDelete':
+    def delete(self) -> PlaybookDelete:
         """Return instance of PlaybookDelete"""
+        if self.context is None:
+            raise RuntimeError('Playbook context is required for PlaybookDelete.')
+
         return PlaybookDelete(self.context, self.key_value_store)
 
     def is_variable(self, key: str) -> bool:
@@ -90,11 +100,14 @@ class Playbook:
         return self.utils.is_playbook_variable(key)
 
     @cached_property
-    def output(self) -> 'PlaybookOutput':
+    def output(self) -> PlaybookOutput:
         """Return instance of PlaybookOutput"""
         return PlaybookOutput(self)
 
     @cached_property
-    def read(self) -> 'PlaybookRead':
+    def read(self) -> PlaybookRead:
         """Return instance of PlaybookRead"""
+        if self.context is None:
+            raise RuntimeError('Playbook context is required for PlaybookRead.')
+
         return PlaybookRead(self.context, self.key_value_store)

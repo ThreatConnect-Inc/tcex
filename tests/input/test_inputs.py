@@ -2,31 +2,29 @@
 # standard library
 import json
 import os
+from collections.abc import Callable
 from pathlib import Path
 from random import randint
-from typing import TYPE_CHECKING
+from uuid import uuid4
 
 # third-party
+import redis
 from pydantic import BaseModel, Extra
 
 # first-party
 from tcex import TcEx
 from tcex.input.input import Input
 from tcex.pleb.registry import registry
-
-if TYPE_CHECKING:
-    # third-party
-    import redis
-
-    # first-party
-    from tests.mock_app import MockApp
+from tests.mock_app import MockApp
 
 
 class TestInputsConfig:
     """Test TcEx Inputs Config."""
 
     @staticmethod
-    def test_aot_inputs(playbook_app: 'MockApp', redis_client: 'redis.Redis', monkeypatch):
+    def test_aot_inputs(
+        playbook_app: Callable[..., MockApp], redis_client: redis.Redis, monkeypatch
+    ):
         """Test AOT input method of TcEx
 
         Args:
@@ -60,16 +58,16 @@ class TestInputsConfig:
         aot_config_data = {'my_bool': 'true', 'my_multi': 'one|two'}
         aot_config_data.update(app.config_data)
         aot_msg = {'type': 'execute', 'params': aot_config_data}
-        redis_client.rpush(config_data.get('tc_action_channel'), json.dumps(aot_msg))
+        redis_client.rpush(config_data['tc_action_channel'], json.dumps(aot_msg))
 
         # get a configured instance of tcex, missing AOT values
         # tcex will block, check for the AOT method, parse new config, and then run
         tcex = app.tcex
-        tcex.inputs.add_model(PytestModel)
+        tcex.inputs.add_model(PytestModel)  # type: ignore
 
         # print(tcex.inputs.model.json(indent=2))
-        assert tcex.inputs.model.my_bool is True
-        assert tcex.inputs.model.my_multi == ['one', 'two']
+        assert tcex.inputs.model.my_bool is True  # type: ignore
+        assert tcex.inputs.model.my_multi == ['one', 'two']  # type: ignore
 
     @staticmethod
     def test_config_kwarg():
@@ -91,10 +89,12 @@ class TestInputsConfig:
         tcex = TcEx(config=config_data)
 
         # print(tcex.inputs.model.json(indent=2))
-        assert tcex.inputs.model.external_config_item == config_data.get('external_config_item')
+        assert tcex.inputs.model.external_config_item == config_data.get(  # type: ignore
+            'external_config_item'
+        )
 
     @staticmethod
-    def test_config_file_kwarg(playbook_app: 'MockApp'):
+    def test_config_file_kwarg(playbook_app: Callable[..., MockApp]):
         """Test config file input method of TcEx"""
         # have mockApp create an install.json file
         _ = playbook_app()
@@ -106,6 +106,7 @@ class TestInputsConfig:
         # external App config file data
         config_data = {
             'api_default_org': 'TCI',
+            'tc_playbook_kvstore_context': str(uuid4()),
             'tc_api_access_id': os.getenv('TC_API_ACCESS_ID'),
             'tc_api_path': os.getenv('TC_API_PATH'),
             'tc_api_secret_key': os.getenv('TC_API_SECRET_KEY'),
@@ -124,7 +125,9 @@ class TestInputsConfig:
         tcex = TcEx(config_file=config_file)
 
         # print(tcex.inputs.model.json(indent=2))
-        assert tcex.inputs.model.external_config_item == config_data.get('external_config_item')
+        assert tcex.inputs.model.external_config_item == config_data.get(  # type: ignore
+            'external_config_item'
+        )
 
         # cleanup config
         config_file.unlink()
@@ -134,7 +137,7 @@ class TestInputsConfig:
         """Test default values (e.g., token) are in args.
 
         Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx.
+            tcex (fixture): An instantiated instance of TcEx.
         """
         # print(tcex.inputs.model.tc_token.get_secret_value())
         # print(tcex.inputs.model.tc_token_expires)
@@ -158,7 +161,7 @@ class TestInputsConfig:
 #         """Test secure params failure.
 #
 #         Args:
-#             tcex (TcEx, fixture): An instantiated instance of TcEx.
+#             tcex (fixture): An instantiated instance of TcEx.
 #             monkeypatch (_pytest.monkeypatch.MonkeyPatch, fixture): Pytest monkeypatch
 #         """
 #         # add custom config data

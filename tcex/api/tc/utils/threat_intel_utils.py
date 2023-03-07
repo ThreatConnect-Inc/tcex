@@ -2,7 +2,6 @@
 # standard library
 import logging
 import re
-from typing import Dict, List, Optional
 from urllib.parse import quote
 
 # third-party
@@ -12,9 +11,10 @@ from requests import Session
 # first-party
 from tcex.backports import cached_property
 from tcex.exit.error_codes import handle_error
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 
 # get tcex logger
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 
 class ThreatIntelUtils:
@@ -32,7 +32,7 @@ class ThreatIntelUtils:
         self._ti = None
 
     @property
-    def resolvable_variables(self) -> Dict:
+    def resolvable_variables(self) -> dict:
         """Return a dict of all the supported resolvable variables.
 
         Each entry in the dict has the variables corresponding url and jmespath for their values
@@ -61,7 +61,7 @@ class ThreatIntelUtils:
         """Retrieve Custom Indicator Associations types from the ThreatConnect API."""
 
     @staticmethod
-    def expand_indicators(indicator: str) -> List[str]:
+    def expand_indicators(indicator: str) -> list[str]:
         """Process indicators expanding file hashes/custom indicators into multiple entries.
 
         Args:
@@ -98,16 +98,16 @@ class ThreatIntelUtils:
         return indicator_list
 
     @property
-    def group_types(self) -> List[str]:
+    def group_types(self) -> list[str]:
         """Return all defined ThreatConnect Group types.
 
         Returns:
             A list of ThreatConnect Group types.
         """
-        return self.group_types_data.keys()
+        return list(self.group_types_data.keys())
 
     @property
-    def group_types_data(self) -> Dict[str, dict]:
+    def group_types_data(self) -> dict[str, dict]:
         """Return supported ThreatConnect Group types."""
         return {
             'Adversary': {'apiBranch': 'adversaries', 'apiEntity': 'adversary'},
@@ -129,7 +129,7 @@ class ThreatIntelUtils:
             'Vulnerability': {'apiBranch': 'vulnerabilities', 'apiEntity': 'vulnerability'},
         }
 
-    def get_type_from_api_entity(self, api_entity: dict) -> Optional[str]:
+    def get_type_from_api_entity(self, api_entity: dict) -> str | None:
         """Return the object type as a string given a api entity.
 
         Args:
@@ -147,7 +147,7 @@ class ThreatIntelUtils:
         return None
 
     @cached_property
-    def indicator_associations_types_data(self) -> Dict[str, dict]:
+    def indicator_associations_types_data(self) -> dict[str, dict]:
         """Return ThreatConnect associations type data.
 
         Retrieve the data from the API if it hasn't already been retrieved.
@@ -186,7 +186,7 @@ class ThreatIntelUtils:
         return _association_types
 
     @cached_property
-    def indicator_types(self) -> List[str]:
+    def indicator_types(self) -> list[str]:
         """Return ThreatConnect Indicator types.
 
         Retrieve the data from the API if it hasn't already been retrieved.
@@ -196,7 +196,7 @@ class ThreatIntelUtils:
         """
         return list(self.indicator_types_data.keys())
 
-    def resolve_variables(self, inputs: List[str]) -> List[str]:
+    def resolve_variables(self, inputs: list[str]) -> list[str]:
         """Resolve all of the provided inputs if appropriate.
 
         Args:
@@ -242,7 +242,7 @@ class ThreatIntelUtils:
         return resolved_inputs
 
     @cached_property
-    def indicator_types_data(self) -> Dict[str, dict]:
+    def indicator_types_data(self) -> dict[str, dict]:
         """Return ThreatConnect indicator types data.
 
         Retrieve the data from the API if it hasn't already been retrieved.
@@ -277,7 +277,7 @@ class ThreatIntelUtils:
         return indicator
 
     @staticmethod
-    def safe_rt(resource_type: str, lower: Optional[bool] = False) -> str:
+    def safe_rt(resource_type: str, lower: bool = False) -> str:
         """Format the Resource Type.
 
         Takes Custom Indicator types with a space character and return a *safe* string.
@@ -298,9 +298,7 @@ class ThreatIntelUtils:
         return resource_type
 
     @staticmethod
-    def safe_group_name(
-        group_name: str, group_max_length: Optional[int] = 100, ellipsis: Optional[bool] = True
-    ) -> str:
+    def safe_group_name(group_name: str, group_max_length: int = 100, ellipsis: bool = True) -> str:
         """Truncate group name to match limit breaking on space and optionally add an ellipsis.
 
         .. note:: Currently the ThreatConnect group name limit is 100 characters.
@@ -355,7 +353,7 @@ class ThreatIntelUtils:
             (str): The urlencoded string.
         """
         if url is not None:
-            url: str = quote(url, safe='~')
+            url = quote(url, safe='~')
         return url
 
     @property
@@ -373,7 +371,7 @@ class ThreatIntelUtils:
             'Phone',
         ]
 
-    def validate_intel_types(self, types_list: List[str], restrict_to: Optional[str] = None):
+    def validate_intel_types(self, types_list: list[str], restrict_to: str | None = None):
         """Validate that Types contained in types_list are valid Intel Types.
 
         :param types_list: list of types to validate. An exception is raised if a member of this

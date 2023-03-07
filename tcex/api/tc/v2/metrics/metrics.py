@@ -1,18 +1,17 @@
 """TcEx Framework Module for working with Metrics in the ThreatConnect Platform."""
 # standard library
 import logging
-from typing import TYPE_CHECKING, Optional
+
+# third-party
+from requests import Session  # TYPE-CHECKING
 
 # first-party
 from tcex.exit.error_codes import handle_error
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 from tcex.utils import Utils
 
-if TYPE_CHECKING:
-    # third-party
-    from requests import Session
-
 # get tcex logger
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 
 class Metrics:
@@ -29,12 +28,12 @@ class Metrics:
 
     def __init__(
         self,
-        session_tc: 'Session',
+        session_tc: Session,
         name: str,
         description: str,
         data_type: str,
         interval: str,
-        keyed: Optional[bool] = False,
+        keyed: bool = False,
     ):
         """Initialize the Class properties."""
         self.session_tc = session_tc
@@ -110,9 +109,9 @@ class Metrics:
                 }
             }
         """
-        params = {'resultLimit': 50, 'resultStart': 0}
+        params: dict[str, int] = {'resultLimit': 50, 'resultStart': 0}
         while True:
-            if params.get('resultStart') >= params.get('resultLimit'):
+            if params['resultStart'] >= params['resultLimit']:
                 break
             r = self.session_tc.get('/v2/customMetrics', params=params)
             if not r.ok:  # pragma: no cover
@@ -126,7 +125,7 @@ class Metrics:
                         f'and Id {self._metric_id}.'
                     )
                     return True
-            params['resultStart'] += params.get('resultLimit')
+            params['resultStart'] += params['resultLimit']
         return False
 
     def add(self, value, date=None, return_value=False, key=None, weight=None):

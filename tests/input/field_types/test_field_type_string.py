@@ -1,6 +1,6 @@
 """Testing TcEx Input module field types."""
 # standard library
-from typing import TYPE_CHECKING, Dict, List, Optional, Union
+from collections.abc import Callable
 
 # third-party
 import pytest
@@ -10,13 +10,10 @@ from pydantic import BaseModel, validator
 from tcex.input.field_types import String, always_array, conditional_required, string
 from tcex.pleb.scoped_property import scoped_property
 from tests.input.field_types.utils import InputTest
-
-if TYPE_CHECKING:
-    # first-party
-    from tests.mock_app import MockApp
+from tests.mock_app import MockApp  # TYPE-CHECKING
 
 
-# pylint: disable=no-self-argument, no-self-use
+# pylint: disable=no-self-argument
 class TestInputsFieldTypes(InputTest):
     """Test TcEx String Field Model Tests."""
 
@@ -51,7 +48,7 @@ class TestInputsFieldTypes(InputTest):
         expected: str,
         optional: bool,
         fail_test: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test Binary field type.
 
@@ -59,22 +56,22 @@ class TestInputsFieldTypes(InputTest):
         Validation: Not null
         """
 
+        class PytestModelRequired(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: String
+
+        class PytestModelOptional(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: String | None
+
+        pytest_model = PytestModelOptional
         if optional is False:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: String
-
-        else:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: Optional[String]
+            pytest_model = PytestModelRequired
 
         self._type_validation(
-            PytestModel,
+            pytest_model,
             input_name='my_data',
             input_value=input_value,
             input_type='String',
@@ -170,13 +167,13 @@ class TestInputsFieldTypes(InputTest):
         input_value: str,
         expected: str,
         allow_empty: bool,
-        conditional_required_rules: Optional[List[Dict[str, str]]],
+        conditional_required_rules: list[dict[str, str]] | None,
         max_length: int,
         min_length: int,
-        regex: Optional[str],
+        regex: str | None,
         optional: bool,
         fail_test: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test Binary field type.
 
@@ -184,44 +181,44 @@ class TestInputsFieldTypes(InputTest):
         Validation: Not null
         """
 
-        if optional is False:
+        class PytestModelRequired(BaseModel):
+            """Test Model for Inputs"""
 
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
+            conditional: str = 'required'
+            my_data: string(
+                allow_empty=allow_empty,
+                max_length=max_length,
+                min_length=min_length,
+                regex=regex,
+            )  # type: ignore
 
-                conditional: str = 'required'
-                my_data: string(
+            _conditional_required = validator('my_data', allow_reuse=True, always=True, pre=True)(
+                conditional_required(rules=conditional_required_rules)  # type: ignore
+            )
+
+        class PytestModelOptional(BaseModel):
+            """Test Model for Inputs"""
+
+            conditional: str = 'required'
+            my_data: None | (
+                string(
                     allow_empty=allow_empty,
                     max_length=max_length,
                     min_length=min_length,
                     regex=regex,
                 )
+            )  # type: ignore
 
-                _conditional_required = validator(
-                    'my_data', allow_reuse=True, always=True, pre=True
-                )(conditional_required(rules=conditional_required_rules))
+            _conditional_required = validator('my_data', allow_reuse=True, always=True, pre=True)(
+                conditional_required(rules=conditional_required_rules)  # type: ignore
+            )
 
-        else:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                conditional: str = 'required'
-                my_data: Optional[
-                    string(
-                        allow_empty=allow_empty,
-                        max_length=max_length,
-                        min_length=min_length,
-                        regex=regex,
-                    )
-                ]
-
-                _conditional_required = validator(
-                    'my_data', allow_reuse=True, always=True, pre=True
-                )(conditional_required(rules=conditional_required_rules))
+        pytest_model = PytestModelOptional
+        if optional is False:
+            pytest_model = PytestModelRequired
 
         self._type_validation(
-            PytestModel,
+            pytest_model,
             input_name='my_data',
             input_value=input_value,
             input_type='String',
@@ -257,7 +254,7 @@ class TestInputsFieldTypes(InputTest):
         expected: str,
         optional: bool,
         fail_test: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test Binary field type.
 
@@ -265,22 +262,22 @@ class TestInputsFieldTypes(InputTest):
         Validation: Not null
         """
 
+        class PytestModelRequired(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: list[String]
+
+        class PytestModelOptional(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: list[String] | None
+
+        pytest_model = PytestModelOptional
         if optional is False:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: List[String]
-
-        else:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: Optional[List[String]]
+            pytest_model = PytestModelRequired
 
         self._type_validation(
-            PytestModel,
+            pytest_model,
             input_name='my_data',
             input_value=input_value,
             input_type='StringArray',
@@ -323,7 +320,7 @@ class TestInputsFieldTypes(InputTest):
         input_type: str,
         optional: bool,
         fail_test: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test Binary field type.
 
@@ -331,26 +328,26 @@ class TestInputsFieldTypes(InputTest):
         Validation: Not null
         """
 
+        class PytestModelRequired(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: String | list[String]
+
+            _always_array = validator('my_data', allow_reuse=True)(always_array())
+
+        class PytestModelOptional(BaseModel):
+            """Test Model for Inputs"""
+
+            my_data: String | list[String] | None
+
+            _always_array = validator('my_data', allow_reuse=True)(always_array())
+
+        pytest_model = PytestModelOptional
         if optional is False:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: Union[String, List[String]]
-
-                _always_array = validator('my_data', allow_reuse=True)(always_array())
-
-        else:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_data: Optional[Union[String, List[String]]]
-
-                _always_array = validator('my_data', allow_reuse=True)(always_array())
+            pytest_model = PytestModelRequired
 
         self._type_validation(
-            PytestModel,
+            pytest_model,
             input_name='my_data',
             input_value=input_value,
             input_type=input_type,
@@ -424,7 +421,7 @@ class TestInputsFieldTypes(InputTest):
         nested_value,
         value,
         expected_value,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test String field type with nested reference.
 
@@ -454,4 +451,4 @@ class TestInputsFieldTypes(InputTest):
         )
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.model.my_data == expected_value
+        assert tcex.inputs.model.my_data == expected_value  # type: ignore

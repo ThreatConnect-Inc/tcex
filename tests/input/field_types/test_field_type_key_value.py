@@ -1,6 +1,6 @@
 """Testing TcEx Input module field types."""
 # standard library
-from typing import TYPE_CHECKING, Optional
+from collections.abc import Callable
 
 # third-party
 import pytest
@@ -11,13 +11,10 @@ from tcex.backports import cached_property
 from tcex.input.field_types import KeyValue, TCEntity
 from tcex.pleb.scoped_property import scoped_property
 from tests.input.field_types.utils import InputTest
-
-if TYPE_CHECKING:
-    # first-party
-    from tests.mock_app import MockApp
+from tests.mock_app import MockApp  # TYPE-CHECKING
 
 
-# pylint: disable=no-self-argument, no-self-use
+# pylint: disable=no-self-argument
 class TestInputsFieldTypeKeyValue(InputTest):
     """Test TcEx Inputs Config."""
 
@@ -49,29 +46,30 @@ class TestInputsFieldTypeKeyValue(InputTest):
         expected: str,
         optional: bool,
         fail_test: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test KeyValue field type with string input.
 
         Args:
             playbook_app (fixture): An instance of MockApp.
         """
+
+        class PytestModelRequired(BaseModel):
+            """Test Model for Inputs"""
+
+            my_key_value: KeyValue
+
+        class PytestModelOptional(BaseModel):
+            """Test Model for Inputs"""
+
+            my_key_value: KeyValue | None
+
+        pytest_model = PytestModelOptional
         if optional is False:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_key_value: KeyValue
-
-        else:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_key_value: Optional[KeyValue]
+            pytest_model = PytestModelRequired
 
         self._type_validation(
-            PytestModel,
+            pytest_model,
             input_name='my_key_value',
             input_value=input_value,
             input_type='KeyValue',
@@ -118,13 +116,13 @@ class TestInputsFieldTypeKeyValue(InputTest):
                 '#App:1234:my_ref!TCEntity',
                 {'id': '1', 'value': '1.1.1.1', 'type': 'Address'},
                 '#App:1234:my_ref!TCEntity',
-                TCEntity(**{'id': '1', 'value': '1.1.1.1', 'type': 'Address'}),
+                TCEntity(**{'id': '1', 'value': '1.1.1.1', 'type': 'Address'}),  # type: ignore
             ),
             (
                 '#App:1234:my_ref!TCEntityArray',
                 [{'id': '1', 'value': '1.1.1.1', 'type': 'Address'}],
                 '#App:1234:my_ref!TCEntityArray',
-                [TCEntity(**{'id': '1', 'value': '1.1.1.1', 'type': 'Address'})],
+                [TCEntity(**{'id': '1', 'value': '1.1.1.1', 'type': 'Address'})],  # type: ignore
             ),
             # value is string with String variable reference
             (
@@ -192,7 +190,7 @@ class TestInputsFieldTypeKeyValue(InputTest):
         nested_value,
         value,
         expected_value,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test KeyValue field type with nested reference.
 
@@ -221,7 +219,7 @@ class TestInputsFieldTypeKeyValue(InputTest):
         )
         tcex.inputs.add_model(PytestModel)
 
-        assert tcex.inputs.model.my_key_value == {
+        assert tcex.inputs.model.my_key_value == {  # type: ignore
             'key': 'my_key',
             'value': expected_value,
             'type': 'any',

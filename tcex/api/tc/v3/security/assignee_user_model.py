@@ -1,7 +1,5 @@
 """ThreatConnect Assignee Module"""
-# pylint: disable=no-member,no-self-argument,no-self-use,wrong-import-position
-# standard library
-from typing import Optional
+# pylint: disable=no-member,no-self-argument,wrong-import-position
 
 # third-party
 from pydantic import Field
@@ -19,7 +17,7 @@ class AssigneeUserModel(
 ):
     """Assignee Model"""
 
-    user_name: Optional[str] = Field(
+    user_name: str | None = Field(
         None,
         allow_mutation=False,
         description='The **user name** for the User.',

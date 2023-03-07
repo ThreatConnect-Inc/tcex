@@ -3,25 +3,23 @@
 import gzip
 import json
 import os
+import shelve  # nosec
 import sys
 import threading
 import time
 import traceback
 from collections import deque
-from typing import TYPE_CHECKING, Any, Callable, Optional, Tuple, Union
+from collections.abc import Callable
+from typing import Any
 
 # third-party
 from requests import Response, Session
 
 # first-party
 from tcex.api.tc.v2.batch.batch_submit import BatchSubmit
-from tcex.api.tc.v2.batch.batch_writer import BatchWriter
+from tcex.api.tc.v2.batch.batch_writer import BatchWriter, GroupType, IndicatorType
 from tcex.exit.error_codes import handle_error
-
-if TYPE_CHECKING:
-    # first-party
-    from tcex.api.tc.v2.batch.batch_writer import GroupType, IndicatorType
-    from tcex.input import Input
+from tcex.input.input import Input
 
 
 class Batch(BatchWriter, BatchSubmit):
@@ -41,15 +39,15 @@ class Batch(BatchWriter, BatchSubmit):
 
     def __init__(
         self,
-        inputs: 'Input',
+        inputs: Input,
         session_tc: Session,
         owner: str,
-        action: Optional[str] = 'Create',
-        attribute_write_type: Optional[str] = 'Replace',
-        halt_on_error: Optional[bool] = True,
-        playbook_triggers_enabled: Optional[bool] = False,
-        tag_write_type: Optional[str] = 'Replace',
-        security_label_write_type: Optional[str] = 'Replace',
+        action: str = 'Create',
+        attribute_write_type: str = 'Replace',
+        halt_on_error: bool = True,
+        playbook_triggers_enabled: bool = False,
+        tag_write_type: str = 'Replace',
+        security_label_write_type: str = 'Replace',
     ):
         """Initialize Class properties."""
         BatchWriter.__init__(self, inputs=inputs, session_tc=session_tc, output_dir='')
@@ -108,9 +106,7 @@ class Batch(BatchWriter, BatchSubmit):
         self.debug_path_files = os.path.join(self.debug_path, 'batch_files')
         self.debug_path_xids = os.path.join(self.debug_path, 'xids-saved')
 
-    def _group(
-        self, group_data: Union[dict, 'GroupType'], store: Optional[bool] = True
-    ) -> Union[dict, 'GroupType']:
+    def _group(self, group_data: dict | GroupType, store: bool = True) -> dict | GroupType:
         """Return previously stored group or new group.
 
         Args:
@@ -125,25 +121,25 @@ class Batch(BatchWriter, BatchSubmit):
 
         if isinstance(group_data, dict):
             # get xid from dict
-            xid = group_data.get('xid')
+            xid = group_data['xid']
         else:
             # get xid from GroupType
             xid = group_data.xid
 
         if self.groups.get(xid) is not None:
             # return existing group from memory
-            group_data = self.groups.get(xid)
+            group_data = self.groups[xid]
         elif self.groups_shelf.get(xid) is not None:
             # return existing group from shelf
-            group_data = self.groups_shelf.get(xid)
+            group_data = self.groups_shelf[xid]
         else:
             # store new group
             self.groups[xid] = group_data
         return group_data
 
     def _indicator(
-        self, indicator_data: Union[dict, 'IndicatorType'], store: Optional[bool] = True
-    ) -> Union[dict, 'IndicatorType']:
+        self, indicator_data: dict | IndicatorType, store: bool = True
+    ) -> dict | IndicatorType:
         """Return previously stored indicator or new indicator.
 
         Args:
@@ -155,17 +151,17 @@ class Batch(BatchWriter, BatchSubmit):
 
         if isinstance(indicator_data, dict):
             # get xid from dict
-            xid = indicator_data.get('xid')
+            xid = indicator_data['xid']
         else:
             # get xid from IndicatorType
             xid = indicator_data.xid
 
         if self.indicators.get(xid) is not None:
             # return existing indicator from memory
-            indicator_data = self.indicators.get(xid)
+            indicator_data = self.indicators[xid]
         elif self.indicators_shelf.get(xid) is not None:
             # return existing indicator from shelf
-            indicator_data = self.indicators_shelf.get(xid)
+            indicator_data = self.indicators_shelf[xid]
         else:
             # store new indicators
             self.indicators[xid] = indicator_data
@@ -174,7 +170,7 @@ class Batch(BatchWriter, BatchSubmit):
     def close(self):
         """Cleanup batch job."""
         # allow pol thread to complete before wrapping up
-        if hasattr(self._submit_thread, 'is_alive'):
+        if self._submit_thread and hasattr(self._submit_thread, 'is_alive'):
             self._submit_thread.join()
 
         # allow file threads to complete before wrapping up job
@@ -266,7 +262,7 @@ class Batch(BatchWriter, BatchSubmit):
                 xids.extend(group_data.get('associatedGroupXid', []))
 
     @staticmethod
-    def data_group_type(group_data: Union[dict, 'GroupType']) -> Tuple[dict, dict]:
+    def data_group_type(group_data: dict | GroupType) -> tuple[dict, dict]:
         """Return dict representation of group data and file data.
 
         Args:
@@ -293,7 +289,7 @@ class Batch(BatchWriter, BatchSubmit):
 
         return file_data, group_data
 
-    def data_groups(self, data: dict, groups: list, tracker: dict) -> bool:
+    def data_groups(self, data: dict, groups: dict | shelve.Shelf[Any], tracker: dict) -> bool:
         """Process Group data.
 
         Args:
@@ -313,7 +309,7 @@ class Batch(BatchWriter, BatchSubmit):
             # get association from group data
             self.data_group_association(data, tracker, xid)
 
-            if tracker.get('count') % 2_500 == 0:
+            if tracker['count'] % 2_500 == 0:
                 # log count/size at a sane level
                 self.log.info(
                     '''feature=batch, action=data-groups, '''
@@ -321,8 +317,8 @@ class Batch(BatchWriter, BatchSubmit):
                 )
 
             if (
-                tracker.get('count') >= self._batch_max_chunk
-                or tracker.get('bytes') >= self._batch_max_size
+                tracker['count'] >= self._batch_max_chunk
+                or tracker['bytes'] >= self._batch_max_size
             ):
                 # stop processing xid once max limit are reached
                 self.log.info(
@@ -332,7 +328,9 @@ class Batch(BatchWriter, BatchSubmit):
                 return True
         return False
 
-    def data_indicators(self, data: dict, indicators: list, tracker: dict) -> bool:
+    def data_indicators(
+        self, data: dict, indicators: dict | shelve.Shelf[Any], tracker: dict
+    ) -> bool:
         """Process Indicator data.
 
         Args:
@@ -355,7 +353,7 @@ class Batch(BatchWriter, BatchSubmit):
             tracker['count'] += 1
             tracker['bytes'] += sys.getsizeof(json.dumps(indicator_data))
 
-            if tracker.get('count') % 2_500 == 0:
+            if tracker['count'] % 2_500 == 0:
                 # log count/size at a sane level
                 self.log.info(
                     '''feature=batch, action=data-indicators, '''
@@ -363,8 +361,8 @@ class Batch(BatchWriter, BatchSubmit):
                 )
 
             if (
-                tracker.get('count') >= self._batch_max_chunk
-                or tracker.get('bytes') >= self._batch_max_size
+                tracker['count'] >= self._batch_max_chunk
+                or tracker['bytes'] >= self._batch_max_size
             ):
                 # stop processing xid once max limit are reached
                 self.log.info(
@@ -399,7 +397,7 @@ class Batch(BatchWriter, BatchSubmit):
     @property
     def halt_on_file_error(self) -> bool:
         """Return halt on file post error value."""
-        return self._halt_on_file_error
+        return self._halt_on_file_error or False
 
     @halt_on_file_error.setter
     def halt_on_file_error(self, value: bool):
@@ -407,7 +405,7 @@ class Batch(BatchWriter, BatchSubmit):
         if isinstance(value, bool):
             self._halt_on_file_error = value
 
-    def process_all(self, process_files: Optional[bool] = True):
+    def process_all(self, process_files: bool = True):
         """Process Batch request to ThreatConnect API.
 
         Args:
@@ -425,11 +423,11 @@ class Batch(BatchWriter, BatchSubmit):
             # store the length of the batch data to use for poll interval calculations
             self.log.info(
                 '''feature=batch, event=process-all, type=group, '''
-                f'''count={len(content.get('group')):,}'''
+                f'''count={len(content['group']):,}'''
             )
             self.log.info(
                 '''feature=batch, event=process-all, type=indicator, '''
-                f'''count={len(content.get('indicator')):,}'''
+                f'''count={len(content['indicator']):,}'''
             )
 
         if process_files:
@@ -530,10 +528,10 @@ class Batch(BatchWriter, BatchSubmit):
 
     def submit(  # pylint: disable=arguments-differ, arguments-renamed
         self,
-        poll: Optional[bool] = True,
-        errors: Optional[bool] = True,
-        process_files: Optional[bool] = True,
-        halt_on_error: Optional[bool] = True,
+        poll: bool = True,
+        errors: bool = True,
+        process_files: bool = True,
+        halt_on_error: bool = True,
     ) -> dict:
         """Submit Batch request to ThreatConnect API.
 
@@ -577,7 +575,7 @@ class Batch(BatchWriter, BatchSubmit):
                 batch_data = (
                     self.poll(batch_id=batch_id, halt_on_error=halt_on_error)
                     .get('data', {})
-                    .get('batchStatus')
+                    .get('batchStatus', {})
                 )
                 if errors:
                     # retrieve errors
@@ -605,11 +603,11 @@ class Batch(BatchWriter, BatchSubmit):
 
     def submit_all(
         self,
-        poll: Optional[bool] = True,
-        errors: Optional[bool] = True,
-        process_files: Optional[bool] = True,
-        halt_on_error: Optional[bool] = True,
-    ) -> dict:
+        poll: bool = True,
+        errors: bool = True,
+        process_files: bool = True,
+        halt_on_error: bool = True,
+    ) -> list[dict]:
         """Submit Batch request to ThreatConnect API.
 
         By default this method will submit the job request and data and if the size of the data
@@ -636,8 +634,8 @@ class Batch(BatchWriter, BatchSubmit):
         batch_data_array = []
         file_data = {}
         while True:
-            batch_data = {}
-            batch_id = None
+            batch_data: dict[str, int | list | str] | None = {}
+            batch_id: int | None = None
 
             # get file, group, and indicator data
             content = self.data
@@ -668,7 +666,7 @@ class Batch(BatchWriter, BatchSubmit):
                     .get('data', {})
                     .get('batchStatus', {})
                 )
-                batch_id = batch_data.get('id')
+                batch_id = batch_data.get('id')  # type: ignore
 
             if batch_id is not None:
                 self.log.info(f'feature=batch, event=status, batch-id={batch_id}')
@@ -678,15 +676,20 @@ class Batch(BatchWriter, BatchSubmit):
                     batch_data = (
                         self.poll(batch_id, halt_on_error=halt_on_error)
                         .get('data', {})
-                        .get('batchStatus')
+                        .get('batchStatus', {})
                     )
                     if errors:
                         # retrieve errors
                         error_count = batch_data.get('errorCount', 0)
                         error_groups = batch_data.get('errorGroupCount', 0)
                         error_indicators = batch_data.get('errorIndicatorCount', 0)
-                        if error_count > 0 or error_groups > 0 or error_indicators > 0:
-                            batch_data['errors'] = self.errors(batch_id)
+                        if (
+                            isinstance(error_count, int)
+                            and isinstance(error_groups, int)
+                            and isinstance(error_indicators, int)
+                        ):
+                            if error_count > 0 or error_groups > 0 or error_indicators > 0:
+                                batch_data['errors'] = self.errors(batch_id)
                 else:
                     # can't process files if status is unknown (polling must be enabled)
                     process_files = False
@@ -706,15 +709,18 @@ class Batch(BatchWriter, BatchSubmit):
             batch_data_array.append(batch_data)
 
             # write errors for debugging
-            self.write_error_json(batch_data.get('errors'))
+            if isinstance(batch_data, dict):
+                batch_errors = batch_data.get('errors', [])
+                if isinstance(batch_errors, list) and len(batch_errors) > 0:
+                    self.write_error_json(batch_errors)
 
         return batch_data_array
 
     def submit_callback(
         self,
         callback: Callable[..., Any],
-        content: Optional[dict] = None,
-        halt_on_error: Optional[bool] = True,
+        content: dict | None = None,
+        halt_on_error: bool = True,
     ) -> bool:
         """Submit batch data to ThreatConnect and poll in a separate thread.
 
@@ -727,7 +733,7 @@ class Batch(BatchWriter, BatchSubmit):
         Args:
             callback: The callback method that will handle
                 the batch status when polling is complete.
-            content: The dict of groups and indicator data (e.g., {"group": [], "indiciator": []}).
+            content: The dict of groups and indicator data (e.g., {"group": [], "indicator": []}).
             halt_on_error: If True the process should halt if any errors are encountered.
 
         Raises:
@@ -749,7 +755,7 @@ class Batch(BatchWriter, BatchSubmit):
             return False
 
         # block here is there is already a batch submission being processed
-        if hasattr(self._submit_thread, 'is_alive'):
+        if self._submit_thread and hasattr(self._submit_thread, 'is_alive'):
             self.log.info(
                 'feature=batch, event=progress, status=blocked, '
                 f'is-alive={self._submit_thread.is_alive()}'
@@ -779,10 +785,10 @@ class Batch(BatchWriter, BatchSubmit):
 
     def submit_callback_thread(
         self,
-        batch_data: int,
+        batch_data: dict,
         callback: Callable[..., Any],
         file_data: dict,
-        halt_on_error: Optional[bool] = True,
+        halt_on_error: bool = True,
     ):
         """Submit data in a thread."""
         batch_id = batch_data.get('id')
@@ -797,11 +803,12 @@ class Batch(BatchWriter, BatchSubmit):
             )
 
             # retrieve errors
-            error_count = batch_status.get('errorCount', 0)
-            error_groups = batch_status.get('errorGroupCount', 0)
-            error_indicators = batch_status.get('errorIndicatorCount', 0)
-            if error_count > 0 or error_groups > 0 or error_indicators > 0:
-                batch_status['errors'] = self.errors(batch_id)
+            if batch_status is not None:
+                error_count = batch_status.get('errorCount', 0)
+                error_groups = batch_status.get('errorGroupCount', 0)
+                error_indicators = batch_status.get('errorIndicatorCount', 0)
+                if error_count > 0 or error_groups > 0 or error_indicators > 0:
+                    batch_status['errors'] = self.errors(batch_id)
         else:
             batch_status = batch_data
 
@@ -828,7 +835,7 @@ class Batch(BatchWriter, BatchSubmit):
             except Exception as e:
                 self.log.warning(f'feature=batch, event=callback-error, err="""{e}"""')
 
-    def submit_create_and_upload(self, content: dict, halt_on_error: Optional[bool] = True) -> dict:
+    def submit_create_and_upload(self, content: dict, halt_on_error: bool = True) -> dict:
         """Submit Batch request to ThreatConnect API.
 
         Args:
@@ -848,11 +855,11 @@ class Batch(BatchWriter, BatchSubmit):
         # store the length of the batch data to use for poll interval calculations
         self.log.info(
             '''feature=batch, event=submit-create-and-upload, type=group, '''
-            f'''count={len(content.get('group')):,}'''
+            f'''count={len(content['group']):,}'''
         )
         self.log.info(
             '''feature=batch, event=submit-create-and-upload, type=indicator, '''
-            f'''count={len(content.get('indicator')):,}'''
+            f'''count={len(content['indicator']):,}'''
         )
 
         try:
@@ -871,7 +878,7 @@ class Batch(BatchWriter, BatchSubmit):
 
         return {}
 
-    def submit_files(self, file_data: dict, halt_on_error: Optional[bool] = True) -> dict:
+    def submit_files(self, file_data: dict, halt_on_error: bool = True) -> list[dict] | None:
         """Submit Files for Documents and Reports to ThreatConnect API.
 
         Critical Errors
@@ -940,10 +947,16 @@ class Batch(BatchWriter, BatchSubmit):
             headers = {'Content-Type': 'application/octet-stream'}
             params = {'owner': self._owner, 'updateIfExists': 'true'}
             r = self.submit_file_content('POST', url, content, headers, params, halt_on_error)
+            if r is None:
+                return None
+
             if r.status_code == 401:
                 # use PUT method if file already exists
                 self.log.info('feature=batch, event=401-from-post, action=switch-to-put')
                 r = self.submit_file_content('PUT', url, content, headers, params, halt_on_error)
+                if r is None:
+                    return None
+
             if not r.ok:
                 status = False
                 handle_error(
@@ -967,11 +980,11 @@ class Batch(BatchWriter, BatchSubmit):
         self,
         method: str,
         url: str,
-        data: Union[bytes, str],
+        data: bytes | str,
         headers: dict,
         params: dict,
-        halt_on_error: Optional[bool] = True,
-    ) -> Response:
+        halt_on_error: bool = True,
+    ) -> Response | None:
         """Submit File Content for Documents and Reports to ThreatConnect API.
 
         Args:
@@ -992,7 +1005,7 @@ class Batch(BatchWriter, BatchSubmit):
             handle_error(code=580, message_values=[e], raise_error=halt_on_error)
         return r
 
-    def submit_job(self, halt_on_error: Optional[bool] = True) -> int:
+    def submit_job(self, halt_on_error: bool = True) -> int | None:
         """Submit Batch request to ThreatConnect API.
 
         Args:
@@ -1009,6 +1022,7 @@ class Batch(BatchWriter, BatchSubmit):
             r = self.session_tc.post('/v2/batch', json=self.settings)
         except Exception as e:
             handle_error(code=10505, message_values=[e], raise_error=halt_on_error)
+            return None
 
         if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
             handle_error(
@@ -1029,9 +1043,9 @@ class Batch(BatchWriter, BatchSubmit):
     def submit_thread(
         self,
         name: str,
-        target: Callable[[], bool],
-        args: Optional[tuple] = None,
-        kwargs: Optional[dict] = None,
+        target: Callable,
+        args: tuple | None = None,
+        kwargs: dict | None = None,
     ):
         """Start a submit thread.
 
@@ -1090,7 +1104,7 @@ class Batch(BatchWriter, BatchSubmit):
         return self.group_len + self.indicator_len
 
     def __str__(self) -> str:  # pragma: no cover
-        """Return string represtentation of batch."""
+        """Return string representation of batch."""
         groups = []
         for group_data in self.groups.values():
             if isinstance(group_data, dict):

@@ -1,7 +1,7 @@
 """Advanced Settings Model"""
-# pylint: disable=no-self-argument,no-self-use,wrong-import-position
+# pylint: disable=no-self-argument,wrong-import-position
 # standard library
-from typing import Any, List, Optional
+from typing import Any
 
 # third-party
 from pydantic import BaseModel, Field, validator
@@ -22,7 +22,7 @@ class _AdvancedRequestModel(BaseModel):
     * Playbook
     """
 
-    tc_adv_req_body: Optional[Any] = Field(
+    tc_adv_req_body: Any | None = Field(
         None,
         description='The HTTP body for the request.',
         inclusion_reason='feature (advancedRequest)',
@@ -40,7 +40,7 @@ class _AdvancedRequestModel(BaseModel):
         inclusion_reason='feature (advancedRequest)',
         requires_definition=True,
     )
-    tc_adv_req_headers: Optional[List[dict]] = Field(
+    tc_adv_req_headers: list[dict] | None = Field(
         None,
         description='The HTTP headers for the request.',
         inclusion_reason='feature (advancedRequest)',
@@ -52,13 +52,13 @@ class _AdvancedRequestModel(BaseModel):
         inclusion_reason='feature (advancedRequest)',
         requires_definition=True,
     )
-    tc_adv_req_params: Optional[List[dict]] = Field(
+    tc_adv_req_params: list[dict] | None = Field(
         None,
         description='The HTTP query params for the request.',
         inclusion_reason='feature (advancedRequest)',
         requires_definition=True,
     )
-    tc_adv_req_path: Optional[str] = Field(
+    tc_adv_req_path: str | None = Field(
         None,
         description='The API path for the request.',
         inclusion_reason='feature (advancedRequest)',
@@ -72,8 +72,12 @@ class _AdvancedRequestModel(BaseModel):
     )
 
     @validator('tc_adv_req_headers', 'tc_adv_req_params', always=True, pre=True)
-    def _always_array(cls, value: Optional[str]) -> list:
+    def _always_array(cls, value: list | str | None) -> list:
         """Return array value for headers and params."""
-        if not value:
-            value = []
-        return value
+        match value:
+            case list():
+                return value
+            case None:
+                return []
+            case _:
+                return [value]

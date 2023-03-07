@@ -1,7 +1,7 @@
 """Create Config Model"""
-# pylint: disable=no-self-argument,no-self-use
+# pylint: disable=no-self-argument
 # standard library
-from typing import Any, Dict, List
+from typing import Any
 
 # third-party
 from pydantic import BaseModel, root_validator, validator
@@ -16,7 +16,7 @@ ij = InstallJson()
 class CreateConfigModel(BaseModel):
     """Create Config Model"""
 
-    tc_playbook_out_variables: List[str]
+    tc_playbook_out_variables: list[str]
     trigger_id: int
 
     @validator('tc_playbook_out_variables', pre=True)
@@ -29,7 +29,7 @@ class CreateConfigModel(BaseModel):
 
     # TODO: [low] workaround for PLAT-4393
     @root_validator(pre=True)
-    def _update_inputs(cls, values: Dict[str, Any]):
+    def _update_inputs(cls, values: dict[str, Any]):
         """Convert empty strings to None.
 
         Workarounds for core issues:
@@ -38,9 +38,7 @@ class CreateConfigModel(BaseModel):
         """
         for field, value in values.items():
             param = ij.model.get_param(field)
-            if param.type is not None and (
-                param.type.lower() == 'multichoice' or param.allow_multiple
-            ):
+            if param is not None and (param.type.lower() == 'multichoice' or param.allow_multiple):
                 if value is not None and not isinstance(value, list):
                     values[field] = value.split(ij.model.list_delimiter or '|')
 

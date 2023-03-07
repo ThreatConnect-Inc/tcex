@@ -6,19 +6,18 @@ import os
 import time
 from datetime import datetime
 from random import randint
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import Any
 
 # third-party
+from _pytest.fixtures import FixtureRequest
 from pydantic import BaseModel
 
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
+from tcex.api.tc.v3.v3 import V3
+from tcex.tcex import TcEx
 from tcex.utils.utils import Utils
 from tests.mock_app import MockApp
-
-if TYPE_CHECKING:
-    # third-party
-    import pytest
 
 
 class V3Helper:
@@ -40,7 +39,7 @@ class V3Helper:
 
         # get v3 obj and obj collection (could append s for collection, but dict is cleaner)
         module_data = self._module_map(v3_object)
-        self.v3_obj = self._import_model(module_data.get('module'), module_data.get('class_name'))
+        self.v3_obj = self._import_model(module_data['module'], module_data.get('class_name'))
         self.v3_obj_collection = self._import_model(
             module_data.get('module'), module_data.get('collection_class_name')
         )
@@ -73,7 +72,7 @@ class V3Helper:
             obj.delete()
 
     def _associations(self, root, association_1, association_2, association_data):
-        """Helper method to test associations."""
+        """Process associations."""
 
         obj_type = root.__class__.__name__.lower()
         association_type = association_1.__class__.__name__
@@ -132,7 +131,7 @@ class V3Helper:
         assert found_associations == 0
 
     @staticmethod
-    def _module_map(module: str) -> Dict:
+    def _module_map(module: str) -> dict:
         """Return the module map data."""
         _modules = {
             'adversary_assets': {
@@ -256,10 +255,10 @@ class V3Helper:
                 'collection_class_name': 'WorkflowTemplates',
             },
         }
-        return _modules.get(module)
+        return _modules.get(module, {})
 
     @staticmethod
-    def assert_generator(model: 'BaseModel', object_name: str):
+    def assert_generator(model: BaseModel, object_name: str):
         """Print assert statements for the provided model.
 
         self.v3_helper.assert_generator(owner.model, 'owners')
@@ -273,7 +272,7 @@ class V3Helper:
                 value = f'\'{value}\''
             print(f'''{' ' * 8}assert {object_name}.model.{key} == {value}''')
 
-    def tql_generator(self, model: 'BaseModel', object_name: str):
+    def tql_generator(self, model: BaseModel, object_name: str):
         """Print TQL filter.
 
         group.get(params={'fields': ['_all_']})
@@ -324,7 +323,7 @@ class V3Helper:
             keyword = self.utils.camel_to_snake(keyword)
             if keyword.startswith('has'):
                 continue
-            operator, value = get_value(keyword, model_data.get(get_model_keyword(keyword)))
+            operator, value = get_value(keyword, model_data[get_model_keyword(keyword)])
 
             # print TQL filters
             tql_filter = f'''{object_name}.filter.{keyword}(TqlOperator.{operator}, {value})'''
@@ -416,7 +415,7 @@ class V3Helper:
 
         return case
 
-    def create_group(self, type_: Optional[str] = 'Adversary', **kwargs):
+    def create_group(self, type_: str | None = 'Adversary', **kwargs):
         """Create a group.
 
         Args:
@@ -489,7 +488,7 @@ class V3Helper:
 
         return group
 
-    def create_indicator(self, type_: Optional[str] = 'Address', **kwargs):
+    def create_indicator(self, type_: str = 'Address', **kwargs):
         """Create a indicator.
 
         Args:
@@ -524,7 +523,7 @@ class V3Helper:
                 'Host': 'hostName',
                 'URL': 'text',
             }
-            return value_1_mapping.get(type_, 'value1')
+            return value_1_mapping.get(type_, type_)
 
         def value_2_map():
             """Return the appropriate indicator field name."""
@@ -689,9 +688,16 @@ class V3Helper:
 class TestV3:
     """Test TcEx V3 Base Class"""
 
+    v3: V3
     v3_helper: V3Helper
-    tcex = None
+    tcex: TcEx
     utils = Utils()
+
+    def setup_method(self):
+        """Configure setup before all tests."""
+        print('')  # ensure any following print statements will be on new line
+        self.tcex = self.v3_helper.tcex
+        self.v3 = self.v3_helper.v3
 
     def teardown_method(self):
         """Clean up resources"""
@@ -779,6 +785,6 @@ class TestV3:
             assert prop in self.v3_helper.v3_obj.properties, f'Extra {prop} property.'
 
     @staticmethod
-    def xid(request: 'pytest.FixtureRequest') -> str:
+    def xid(request: FixtureRequest) -> str:
         """Return a valid for a test case."""
         return f'{request.node.name}-{time.time()}'

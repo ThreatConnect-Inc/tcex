@@ -4,7 +4,6 @@ from requests import Session
 
 # first-party
 from tcex.api.tc.v3.case_attributes.case_attribute import CaseAttribute, CaseAttributes
-from tcex.api.tc.v3.security.assignee_model import AssigneeModel
 
 
 class CaseManagement:
@@ -99,24 +98,6 @@ class CaseManagement:
         """
         return ArtifactTypes(session=self.session, **kwargs)
 
-    def assignee(self, **kwargs) -> 'AssigneeModel':
-        """Return a instance of Assignee object.
-
-        For User type the user_name or id fields is required and
-        for the Group type the name or id is required.
-
-        Args:
-            first_name (str, kwargs): The first name of the User.
-            id (id, kwargs): The id of the User.
-            name (str, kwargs): The name of the Group.
-            last_name (str, kwargs): The last name of the user.
-            pseudonym (str, kwargs): The pseudonym of the User.
-            role (str, kwargs): The role of the User.
-            user_name (str, kwargs): The user name of the User.
-            type (str, kwargs): The assignee type. Default to User.
-        """
-        return AssigneeModel(session=self.session, **kwargs)
-
     def case(self, **kwargs) -> 'Case':
         """Return a instance of Case object.
 
@@ -142,7 +123,7 @@ class CaseManagement:
         """
         return Case(session=self.session, **kwargs)
 
-    def case_attribute(self, **kwargs) -> 'CaseAttribute':
+    def case_attribute(self, **kwargs) -> CaseAttribute:
         """Return a instance of Case Attributes object.
 
         Args:
@@ -155,7 +136,7 @@ class CaseManagement:
         """
         return CaseAttribute(session=self.session, **kwargs)
 
-    def case_attributes(self, **kwargs) -> 'CaseAttributes':
+    def case_attributes(self, **kwargs) -> CaseAttributes:
         """Return a instance of Case Attributes object.
 
         .. code-block:: python
@@ -200,7 +181,7 @@ class CaseManagement:
         """
         return Cases(session=self.session, **kwargs)
 
-    def create_entity(self, entity: dict, owner: str) -> dict:
+    def create_entity(self, entity: dict, owner: str) -> dict | None:
         """Create a CM object provided a dict and owner."""
         entity_type = entity.pop('type').lower()
         entity_type = entity_type.replace(' ', '_')
@@ -357,29 +338,6 @@ class CaseManagement:
         """
         return Tasks(session=self.session, **kwargs)
 
-    # @staticmethod
-    # def user(self, **kwargs) -> 'User':
-    #     """Return a instance of User object.
-    #
-    #     Args:
-    #         first_name (str, kwargs): The first name of the user.
-    #         id (id, kwargs): The id of the user.
-    #         last_name (str, kwargs): The last name of the user.
-    #         pseudonym (str, kwargs): The pseudonym of the user.
-    #         role (str, kwargs): The role of the user.
-    #         user_name (str, kwargs): The user name of the user.
-    #     """
-    #     return User(session=self.session, **kwargs)
-
-    # @staticmethod
-    # def users(users) -> 'Users':
-    #     """Sub class of the Cases object. Used to map the users to.
-
-    #     Args:
-    #         users (list): A array of user data
-    #     """
-    #     return Users(users)
-
     def workflow_event(self, **kwargs) -> 'WorkflowEvent':
         """Return a instance of Workflow Event object.
 
@@ -474,7 +432,6 @@ class CaseManagement:
 
 
 # first-party
-# TODO: [low] @bsummers - can these be moved to the top?
 # pylint: disable=wrong-import-position
 from tcex.api.tc.v3.artifact_types.artifact_type import ArtifactType, ArtifactTypes
 from tcex.api.tc.v3.artifacts.artifact import Artifact, Artifacts

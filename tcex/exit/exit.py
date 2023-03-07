@@ -4,14 +4,14 @@ import logging
 import os
 import sys
 from enum import Enum
-from typing import Optional, Union
 
 # first-party
 from tcex.app_config import InstallJson
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 from tcex.pleb.registry import registry
 
 # get tcex logger
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 
 class ExitCode(int, Enum):
@@ -48,7 +48,7 @@ class ExitService:
         return self._exit_code
 
     @exit_code.setter
-    def exit_code(self, exit_code: Union[ExitCode, int]):
+    def exit_code(self, exit_code: ExitCode | int):
         """Set exit code.
 
         Will automatically change partial failure to success if app is a playbook app.
@@ -65,7 +65,7 @@ class ExitService:
             exit_code = ExitCode.SUCCESS
         self._exit_code = exit_code
 
-    def exit(self, code: Optional[Union[ExitCode, int]] = None, msg: Optional[str] = None):
+    def exit(self, code: ExitCode | int | None = None, msg: str | None = None):
         """Application exit method with proper exit code
 
         The method will run the Python standard sys.exit() with the exit code
@@ -77,6 +77,7 @@ class ExitService:
             msg: A message to log and add to message tc output.
         """
         code = ExitCode(code) if code is not None else self.exit_code
+        msg = msg if msg is not None else ''
 
         # playbook exit handler
         if self.ij.model.is_playbook_app:
@@ -94,8 +95,10 @@ class ExitService:
         # exit
         self._exit(code, msg)
 
-    def _exit(self, code: int, msg: str):
+    def _exit(self, code: ExitCode | int, msg: str):
         """Exit the App"""
+        code = ExitCode(code) if code is not None else self.exit_code
+
         # handle exit msg logging
         self._exit_msg_handler(code, msg)
 
@@ -104,9 +107,7 @@ class ExitService:
 
     # TODO: [med] @cblades - is msg required?
     # pylint: disable=unused-argument
-    def exit_aot_terminate(
-        self, code: Optional[Union[ExitCode, int]] = None, msg: Optional[str] = None
-    ):
+    def exit_aot_terminate(self, code: ExitCode | int | None = None, msg: str | None = None):
         """Application exit method with proper exit code only for AOT.
 
         The method will run the Python standard sys.exit() with the exit code
@@ -118,6 +119,7 @@ class ExitService:
             msg: A message to log and add to message tc output.
         """
         code = ExitCode(code) if code is not None else self.exit_code
+        msg = msg if msg is not None else ''
 
         # aot notify
         if 'tc_aot_enabled' in self.inputs.contents and self.inputs.contents.get('tc_aot_enabled'):
@@ -160,7 +162,7 @@ class ExitService:
             except Exception as e:  # pragma: no cover
                 self._exit(ExitCode.FAILURE, f'Exception during AOT exit push ({e}).')
 
-    def _message_tc(self, message: str, max_length: Optional[int] = 255):
+    def _message_tc(self, message: str, max_length: int = 255):
         """Write data to message_tc file in TcEX specified directory.
 
         This method is used to set and exit message in the ThreatConnect Platform.

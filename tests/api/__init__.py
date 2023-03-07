@@ -1,2 +1,2 @@
-"""ThreatConnect API Module Testing."""
+"""Testing Suite"""
 # flake8: noqa

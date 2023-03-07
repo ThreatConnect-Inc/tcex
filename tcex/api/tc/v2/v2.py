@@ -1,6 +1,6 @@
 """API -> TC -> V2"""
-# standard library
-from typing import TYPE_CHECKING, Optional
+# third-party
+from requests import Session  # TYPE-CHECKING
 
 # first-party
 from tcex.api.tc.v2.batch.batch import Batch
@@ -11,13 +11,7 @@ from tcex.api.tc.v2.datastore.datastore import DataStore
 from tcex.api.tc.v2.metrics.metrics import Metrics
 from tcex.api.tc.v2.notifications.notifications import Notifications
 from tcex.api.tc.v2.threat_intelligence.threat_intelligence import ThreatIntelligence
-
-if TYPE_CHECKING:
-    # third-party
-    from requests import Session
-
-    # first-party
-    from tcex.input.input import Input
+from tcex.input.input import Input  # TYPE-CHECKING
 
 
 class V2:
@@ -28,7 +22,7 @@ class V2:
         session_tc: An configured instance of request.Session with TC API Auth.
     """
 
-    def __init__(self, inputs: 'Input', session_tc: 'Session'):
+    def __init__(self, inputs: Input, session_tc: Session):
         """Initialize Class properties."""
         self.inputs = inputs
         self.session_tc = session_tc
@@ -36,13 +30,13 @@ class V2:
     def batch(
         self,
         owner: str,
-        action: Optional[str] = 'Create',
-        attribute_write_type: Optional[str] = 'Replace',
-        halt_on_error: Optional[bool] = False,
-        playbook_triggers_enabled: Optional[bool] = False,
-        tag_write_type: Optional[str] = 'Replace',
-        security_label_write_type: Optional[str] = 'Replace',
-    ) -> 'Batch':
+        action: str = 'Create',
+        attribute_write_type: str = 'Replace',
+        halt_on_error: bool = False,
+        playbook_triggers_enabled: bool = False,
+        tag_write_type: str = 'Replace',
+        security_label_write_type: str = 'Replace',
+    ) -> Batch:
         """Return instance of Batch
 
         Args:
@@ -69,13 +63,13 @@ class V2:
     def batch_submit(
         self,
         owner: str,
-        action: Optional[str] = 'Create',
-        attribute_write_type: Optional[str] = 'Replace',
-        halt_on_error: Optional[bool] = False,
-        playbook_triggers_enabled: Optional[bool] = False,
-        tag_write_type: Optional[str] = 'Replace',
-        security_label_write_type: Optional[str] = 'Replace',
-    ) -> 'BatchSubmit':
+        action: str = 'Create',
+        attribute_write_type: str = 'Replace',
+        halt_on_error: bool = False,
+        playbook_triggers_enabled: bool = False,
+        tag_write_type: str = 'Replace',
+        security_label_write_type: str = 'Replace',
+    ) -> BatchSubmit:
         """Return instance of Batch
 
         Args:
@@ -99,7 +93,7 @@ class V2:
             security_label_write_type,
         )
 
-    def batch_writer(self, output_dir: str, **kwargs) -> 'BatchWriter':
+    def batch_writer(self, output_dir: str, **kwargs) -> BatchWriter:
         """Return instance of Batch
 
         Args:
@@ -116,8 +110,8 @@ class V2:
         self,
         domain: str,
         data_type: str,
-        ttl_seconds: Optional[int] = None,
-        mapping: Optional[dict] = None,
+        ttl_seconds: int | None = None,
+        mapping: dict | None = None,
     ) -> Cache:
         """Get instance of the Cache module.
 
@@ -132,7 +126,7 @@ class V2:
         """
         return Cache(self.session_tc, domain, data_type, ttl_seconds, mapping)
 
-    def datastore(self, domain: str, data_type: str, mapping: Optional[dict] = None) -> 'DataStore':
+    def datastore(self, domain: str, data_type: str, mapping: dict | None = None) -> DataStore:
         """Return Datastore Module.
 
         Args:
@@ -153,8 +147,8 @@ class V2:
         description: str,
         data_type: str,
         interval: str,
-        keyed: Optional[bool] = False,
-    ) -> 'Metrics':
+        keyed: bool = False,
+    ) -> Metrics:
         """Get instance of the Metrics module.
 
         Args:
@@ -174,11 +168,11 @@ class V2:
         )
 
     @property
-    def notification(self) -> 'Notifications':
+    def notification(self) -> Notifications:
         """Get instance of the Notification module."""
         return Notifications(self.session_tc)
 
     @property
-    def ti(self) -> 'ThreatIntelligence':
+    def ti(self) -> ThreatIntelligence:
         """Get instance of the Notification module."""
         return ThreatIntelligence(self.session_tc)

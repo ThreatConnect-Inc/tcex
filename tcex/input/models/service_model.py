@@ -1,7 +1,4 @@
 """Service Model"""
-# standard library
-from typing import Optional
-
 # third-party
 from pydantic import BaseModel, Field
 
@@ -39,12 +36,12 @@ class ServiceModel(BaseModel):
         description='The Broker service hostname.',
         inclusion_reason='runtimeLevel',
     )
-    tc_svc_broker_jks_file: Optional[str] = Field(
+    tc_svc_broker_jks_file: str | None = Field(
         'Unused',
         description='Input for Java Apps.',
         inclusion_reason='runtimeLevel',
     )
-    tc_svc_broker_jks_pwd: Optional[str] = Field(
+    tc_svc_broker_jks_pwd: str | None = Field(
         'Unused',
         description='Input for Java Apps.',
         inclusion_reason='runtimeLevel',
@@ -86,7 +83,7 @@ class ServiceModel(BaseModel):
         description='The Broker server topic (Core -> App).',
         inclusion_reason='runtimeLevel',
     )
-    tcex_testing_context: Optional[str] = Field(
+    tcex_testing_context: str | None = Field(
         None,
         description='[Testing] The testing framework context.',
         inclusion_reason='runtimeLevel',

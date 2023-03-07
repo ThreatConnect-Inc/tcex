@@ -77,6 +77,7 @@ def format_code(_code):
     try:
         _code = black.format_file_contents(_code, fast=False, mode=mode)
     except black.InvalidInput as ex:
+        # print(_code)
         print(f'Formatting of code failed {ex}.')
         sys.exit(1)
     except black.NothingChanged:
@@ -115,7 +116,7 @@ def gen_filter(type_: SnakeString):
 
     if not out_file.is_file():
         typer.secho(f'\nCould not find file {out_file}.', fg=typer.colors.RED)
-        typer.Exit(code=1)
+        typer.Exit(code=1)  # pylint: disable=pointless-exception-statement
 
     # generate class methods first so requirements can be updated
     class_methods = gen.gen_class_methods()
@@ -146,7 +147,7 @@ def gen_model(type_: SnakeString):
 
     if not out_file.is_file():
         typer.secho(f'\nCould not find file {out_file}.', fg=typer.colors.RED)
-        typer.Exit(code=1)
+        typer.Exit(code=1)  # pylint: disable=pointless-exception-statement
 
     # generate model fields code first so that requirements can be determined
     container_private_attrs = gen.gen_container_private_attrs()
@@ -156,19 +157,19 @@ def gen_model(type_: SnakeString):
 
     _code = gen.gen_doc_string()
     _code += gen.gen_requirements()
-    # add container model
-    _code += gen.gen_container_class()
-    _code += container_private_attrs
-    _code += gen.gen_container_fields()
-    # add data model
-    _code += gen.gen_data_class()
-    _code += gen.gen_data_fields()
-    # add data model
+    # add generated model class (ArtifactModel, CaseModel, etc.)
     _code += gen.gen_model_class()
     _code += model_private_attrs
     _code += model_fields
-    # add validators
+    # add validators to model class
     _code += validator_methods
+    # add generated "data" model class (ArtifactDataModel, CaseDataModel, etc.)
+    _code += gen.gen_data_class()
+    _code += gen.gen_data_fields()
+    # add generated container model class (ArtifactsModel, CasesModel, etc.)
+    _code += gen.gen_container_class()
+    _code += container_private_attrs
+    _code += gen.gen_container_fields()
     # add forward reference requirements
     _code += gen.gen_requirements_first_party_forward_reference()
     # add forward references
@@ -194,7 +195,7 @@ def gen_object(type_: SnakeString):
 
     if not out_file.is_file():
         typer.secho(f'\nCould not find file {out_file}.', fg=typer.colors.RED)
-        typer.Exit(code=1)
+        typer.Exit(code=1)  # pylint: disable=pointless-exception-statement
 
     # generate class method code first so that requirements can be determined
     container_methods = gen.gen_container_methods()
@@ -202,10 +203,12 @@ def gen_object(type_: SnakeString):
 
     _code = gen.gen_doc_string()
     _code += gen.gen_requirements()
-    _code += gen.gen_container_class()
-    _code += container_methods
+    # add generated class (Artifact, Case, etc.)
     _code += gen.gen_object_class()
     _code += object_methods
+    # add generated container class (Artifacts, Cases, etc.)
+    _code += gen.gen_container_class()
+    _code += container_methods
 
     with out_file.open(mode='w') as fh:
         fh.write(format_code(_code))

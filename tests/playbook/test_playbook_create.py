@@ -1,6 +1,7 @@
 """Tests for TcEx Playbook Create Module."""
 # standard library
-from typing import TYPE_CHECKING, Any, Optional, Union
+from collections.abc import Callable
+from typing import Any
 
 # third-party
 import pytest
@@ -9,15 +10,9 @@ import pytest
 from tcex.backports import cached_property
 from tcex.input.field_types import KeyValue
 from tcex.pleb.scoped_property import scoped_property
-
-if TYPE_CHECKING:
-    # first-party
-    from tcex import TcEx
-    from tcex.playbook.playbook import Playbook
-    from tests.mock_app import MockApp
+from tests.mock_app import MockApp  # TYPE-CHECKING
 
 
-# pylint: disable=no-self-use
 class TestPlaybookCreate:
     """Tests for TcEx Playbook Create Module."""
 
@@ -52,9 +47,7 @@ class TestPlaybookCreate:
             ('#App:0002:b3!Binary', None, True),
         ],
     )
-    def test_playbook_create_check_null(
-        self, key: str, value: bytes, expected: bool, playbook: 'Playbook'
-    ):
+    def test_playbook_create_check_null(self, key: str, value: bytes, expected: bool, playbook):
         """Test playbook variables."""
         assert playbook.create._check_null(key, value) is expected
 
@@ -73,13 +66,17 @@ class TestPlaybookCreate:
         ],
     )
     def test_playbook_create_check_requested(
-        self, variable: str, expected: bool, when_requested: bool, playbook_app: 'MockApp'
+        self,
+        variable: str,
+        expected: bool,
+        when_requested: bool,
+        playbook_app: Callable[..., MockApp],
     ):
         """Test playbook variables."""
-        tcex: 'TcEx' = playbook_app(
+        tcex = playbook_app(
             config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
         ).tcex
-        playbook: 'Playbook' = tcex.playbook
+        playbook = tcex.playbook
         assert playbook.create._check_requested(variable, when_requested) is expected
 
     @pytest.mark.parametrize(
@@ -94,13 +91,13 @@ class TestPlaybookCreate:
         ],
     )
     def test_playbook_create_check_variable_type(
-        self, variable: str, type_: bool, should_fail: bool, playbook_app: 'MockApp'
+        self, variable: str, type_: str, should_fail: bool, playbook_app: Callable[..., MockApp]
     ):
         """Test playbook variables."""
-        tcex: 'TcEx' = playbook_app(
+        tcex = playbook_app(
             config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
         ).tcex
-        playbook: 'Playbook' = tcex.playbook
+        playbook = tcex.playbook
 
         if should_fail is False:
             assert True
@@ -121,7 +118,7 @@ class TestPlaybookCreate:
         ],
     )
     def test_playbook_create_coerce_string_value(
-        self, value: Union[bool, float, int, str], expected: str, playbook: 'Playbook'
+        self, value: bool | float | int | str, expected: str, playbook
     ):
         """Test playbook variables."""
         assert playbook.create._coerce_string_value(value) == expected
@@ -137,13 +134,17 @@ class TestPlaybookCreate:
         ],
     )
     def test_playbook_create_get_variable(
-        self, variable: str, variable_type: Optional[str], expected: str, playbook_app: 'MockApp'
+        self,
+        variable: str,
+        variable_type: str | None,
+        expected: str,
+        playbook_app: Callable[..., MockApp],
     ):
         """Test playbook variables."""
-        tcex: 'TcEx' = playbook_app(
+        tcex = playbook_app(
             config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
         ).tcex
-        playbook: 'Playbook' = tcex.playbook
+        playbook = tcex.playbook
 
         assert playbook.create._get_variable(variable, variable_type) == expected
 
@@ -161,7 +162,7 @@ class TestPlaybookCreate:
                 False,
             ),
             (
-                KeyValue(**{'key': 'key', 'value': 'value'}),
+                KeyValue(**{'key': 'key', 'value': 'value'}),  # type: ignore
                 True,
                 False,
                 {'key': 'key', 'value': 'value'},
@@ -173,12 +174,12 @@ class TestPlaybookCreate:
     )
     def test_playbook_create_process_object_types(
         self,
-        value: Union[KeyValue, dict],
+        value: KeyValue | dict,
         validate: bool,
         allow_none: bool,
         expected: str,
         should_fail: str,
-        playbook: 'Playbook',
+        playbook,
     ):
         """Test playbook variables."""
         if should_fail is False:
@@ -211,7 +212,7 @@ class TestPlaybookCreate:
         self,
         data: dict,
         expected: bool,
-        playbook: 'Playbook',
+        playbook,
     ):
         """Test playbook variables."""
         assert playbook.create.is_key_value(data) == expected
@@ -227,13 +228,13 @@ class TestPlaybookCreate:
         ],
     )
     def test_playbook_create_is_requested(
-        self, variable: str, expected: bool, playbook_app: 'MockApp'
+        self, variable: str, expected: bool, playbook_app: Callable[..., MockApp]
     ):
         """Test playbook variables."""
-        tcex: 'TcEx' = playbook_app(
+        tcex = playbook_app(
             config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
         ).tcex
-        playbook: 'Playbook' = tcex.playbook
+        playbook = tcex.playbook
 
         assert playbook.create.is_requested(variable) is expected
 
@@ -259,7 +260,7 @@ class TestPlaybookCreate:
         self,
         data: dict,
         expected: bool,
-        playbook: 'Playbook',
+        playbook,
     ):
         """Test playbook variables."""
         assert playbook.create.is_tc_entity(data) == expected
@@ -288,17 +289,18 @@ class TestPlaybookCreate:
         validate: bool,
         variable_type: str,
         when_requested: bool,
-        expected: bool,
-        playbook_app: 'MockApp',
+        expected: Any,
+        playbook_app: Callable[..., MockApp],
     ):
         """Test playbook variables."""
-        tcex: 'TcEx' = playbook_app(
+        tcex = playbook_app(
             config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
         ).tcex
-        playbook: 'Playbook' = tcex.playbook
+        playbook = tcex.playbook
 
         playbook.create.any(key, value, validate, variable_type, when_requested)
-        assert playbook.read.variable(playbook.create._get_variable(key, variable_type)) == expected
+        variable = playbook.create._get_variable(key, variable_type)
+        assert playbook.read.variable(variable) == expected
 
     @pytest.mark.parametrize(
         'key,value,validate,when_requested,expected,should_fail',
@@ -329,13 +331,13 @@ class TestPlaybookCreate:
         when_requested: bool,
         expected: bool,
         should_fail: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test playbook variables."""
-        tcex: 'TcEx' = playbook_app(
+        tcex = playbook_app(
             config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
         ).tcex
-        playbook: 'Playbook' = tcex.playbook
+        playbook = tcex.playbook
         # get full variable name if required
         variable = playbook.create._get_variable(key, 'Binary')
 
@@ -381,13 +383,13 @@ class TestPlaybookCreate:
         when_requested: bool,
         expected: bool,
         should_fail: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test playbook variables."""
-        tcex: 'TcEx' = playbook_app(
+        tcex = playbook_app(
             config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
         ).tcex
-        playbook: 'Playbook' = tcex.playbook
+        playbook = tcex.playbook
         # get full variable name if required
         variable = playbook.create._get_variable(key, 'BinaryArray')
 
@@ -461,13 +463,13 @@ class TestPlaybookCreate:
         when_requested: bool,
         expected: bool,
         should_fail: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test playbook variables."""
-        tcex: 'TcEx' = playbook_app(
+        tcex = playbook_app(
             config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
         ).tcex
-        playbook: 'Playbook' = tcex.playbook
+        playbook = tcex.playbook
         # get full variable name if required
         variable = playbook.create._get_variable(key, 'KeyValue')
 
@@ -541,13 +543,13 @@ class TestPlaybookCreate:
         when_requested: bool,
         expected: bool,
         should_fail: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test playbook variables."""
-        tcex: 'TcEx' = playbook_app(
+        tcex = playbook_app(
             config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
         ).tcex
-        playbook: 'Playbook' = tcex.playbook
+        playbook = tcex.playbook
         # get full variable name if required
         variable = playbook.create._get_variable(key, 'KeyValueArray')
 
@@ -593,13 +595,13 @@ class TestPlaybookCreate:
         when_requested: bool,
         expected: bool,
         should_fail: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test playbook variables."""
-        tcex: 'TcEx' = playbook_app(
+        tcex = playbook_app(
             config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
         ).tcex
-        playbook: 'Playbook' = tcex.playbook
+        playbook = tcex.playbook
         # get full variable name if required
         variable = playbook.create._get_variable(key, 'String')
 
@@ -645,13 +647,13 @@ class TestPlaybookCreate:
         when_requested: bool,
         expected: bool,
         should_fail: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test playbook variables."""
-        tcex: 'TcEx' = playbook_app(
+        tcex = playbook_app(
             config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
         ).tcex
-        playbook: 'Playbook' = tcex.playbook
+        playbook = tcex.playbook
         # get full variable name if required
         variable = playbook.create._get_variable(key, 'StringArray')
 
@@ -725,13 +727,13 @@ class TestPlaybookCreate:
         when_requested: bool,
         expected: bool,
         should_fail: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test playbook variables."""
-        tcex: 'TcEx' = playbook_app(
+        tcex = playbook_app(
             config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
         ).tcex
-        playbook: 'Playbook' = tcex.playbook
+        playbook = tcex.playbook
         # get full variable name if required
         variable = playbook.create._get_variable(key, 'TCEntity')
 
@@ -805,13 +807,13 @@ class TestPlaybookCreate:
         when_requested: bool,
         expected: bool,
         should_fail: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test playbook variables."""
-        tcex: 'TcEx' = playbook_app(
+        tcex = playbook_app(
             config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
         ).tcex
-        playbook: 'Playbook' = tcex.playbook
+        playbook = tcex.playbook
         # get full variable name if required
         variable = playbook.create._get_variable(key, 'TCEntityArray')
 

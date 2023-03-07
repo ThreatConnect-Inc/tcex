@@ -2,23 +2,22 @@
 # standard library
 import json
 import logging
-from typing import TYPE_CHECKING
+
+# third-party
+from requests import Session
 
 # first-party
 from tcex.exit.error_codes import handle_error
-
-if TYPE_CHECKING:
-    # third-party
-    from requests import Session
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 
 # get tcex logger
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 
 class Notifications:
     """TcEx Notification Class"""
 
-    def __init__(self, session_tc: 'Session'):
+    def __init__(self, session_tc: Session):
         """Initialize the Class properties.
 
         Args:
@@ -33,7 +32,7 @@ class Notifications:
         self._priority = 'Low'
         self.log = logger
 
-    def recipients(self, notification_type, recipients, priority='Low'):
+    def recipients(self, notification_type: str, recipients: str, priority='Low'):
         """Set vars for the passed in data. Used for one or more recipient notification.
 
         .. code-block:: javascript
@@ -46,16 +45,16 @@ class Notifications:
             }
 
         Args:
-            notification_type (str): The type of notification being sent.
-            recipients (str): A comma delimited string of recipients.
-            priority (str): The priority: Low, Medium, High.
+            notification_type: The type of notification being sent.
+            recipients: A comma delimited string of recipients.
+            priority: The priority: Low, Medium, High.
         """
         self._notification_type = notification_type
         self._recipients = recipients
         self._priority = priority
         self._is_organization = False
 
-    def org(self, notification_type, priority='Low'):
+    def org(self, notification_type: str, priority: str = 'Low'):
         """Set vars for the passed in data. Used for org notification.
 
         .. code-block:: javascript
@@ -67,19 +66,19 @@ class Notifications:
             }
 
         Args:
-            notification_type (str): The notification type.
-            priority (str): The priority: Low, Medium, High.
+            notification_type: The notification type.
+            priority: The priority: Low, Medium, High.
         """
         self._notification_type = notification_type
         self._recipients = None
         self._priority = priority
         self._is_organization = True
 
-    def send(self, message):
+    def send(self, message: str):
         """Send our message
 
         Args:
-            message (str): The message to be sent.
+            message: The message to be sent.
 
         Returns:
             requests.models.Response: The response from the request.

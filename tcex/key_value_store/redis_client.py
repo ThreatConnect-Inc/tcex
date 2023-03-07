@@ -1,7 +1,4 @@
 """TcEx Framework Redis Module"""
-# standard library
-from typing import Optional
-
 # third-party
 import redis
 
@@ -29,10 +26,10 @@ class RedisClient:
 
     def __init__(
         self,
-        host: Optional[str] = 'localhost',
-        port: Optional[int] = 6379,
-        db: Optional[int] = 0,
-        blocking_pool: Optional[bool] = False,
+        host: str = 'localhost',
+        port: int = 6379,
+        db: int = 0,
+        blocking_pool: bool = False,
         **kwargs
     ):
         """Initialize class properties"""
@@ -43,6 +40,6 @@ class RedisClient:
         self.pool = pool(host=host, port=port, db=db, **kwargs)
 
     @cached_property
-    def client(self) -> 'redis.Redis':
+    def client(self) -> redis.Redis:
         """Return an instance of redis.client.Redis."""
         return redis.Redis(connection_pool=self.pool)

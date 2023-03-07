@@ -1,7 +1,7 @@
 """SecurityLabel / SecurityLabels Object"""
 # standard library
 import json
-from typing import Optional, Union
+from collections.abc import Iterator
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -12,45 +12,6 @@ from tcex.api.tc.v3.security_labels.security_label_model import (
     SecurityLabelModel,
     SecurityLabelsModel,
 )
-
-
-class SecurityLabels(ObjectCollectionABC):
-    """SecurityLabels Collection.
-
-    # Example of params input
-    {
-        'result_limit': 100,  # Limit the retrieved results.
-        'result_start': 10,  # Starting count used for pagination.
-        'fields': ['caseId', 'summary']  # Select additional return fields.
-    }
-
-    Args:
-        session (Session): Session object configured with TC API Auth.
-        tql_filters (list): List of TQL filters.
-        params (dict): Additional query params (see example above).
-    """
-
-    def __init__(self, **kwargs):
-        """Initialize class properties."""
-        super().__init__(
-            kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
-        )
-        self._model = SecurityLabelsModel(**kwargs)
-        self.type_ = 'security_labels'
-
-    def __iter__(self) -> 'SecurityLabel':
-        """Iterate over CM objects."""
-        return self.iterate(base_class=SecurityLabel)
-
-    @property
-    def _api_endpoint(self) -> str:
-        """Return the type specific API endpoint."""
-        return ApiEndpoints.SECURITY_LABELS.value
-
-    @property
-    def filter(self) -> 'SecurityLabelFilter':
-        """Return the type specific filter object."""
-        return SecurityLabelFilter(self.tql)
 
 
 class SecurityLabel(ObjectABC):
@@ -68,7 +29,7 @@ class SecurityLabel(ObjectABC):
         super().__init__(kwargs.pop('session', None))
 
         # properties
-        self._model = SecurityLabelModel(**kwargs)
+        self._model: SecurityLabelModel = SecurityLabelModel(**kwargs)
         self._nested_field_name = 'securityLabels'
         self._nested_filter = 'has_security_label'
         self.type_ = 'Security Label'
@@ -79,12 +40,12 @@ class SecurityLabel(ObjectABC):
         return ApiEndpoints.SECURITY_LABELS.value
 
     @property
-    def model(self) -> 'SecurityLabelModel':
+    def model(self) -> SecurityLabelModel:
         """Return the model data."""
         return self._model
 
     @model.setter
-    def model(self, data: Union['SecurityLabelModel', dict]):
+    def model(self, data: dict | SecurityLabelModel):
         """Create model using the provided data."""
         if isinstance(data, type(self.model)):
             # provided data is already a model, nothing required to change
@@ -95,7 +56,7 @@ class SecurityLabel(ObjectABC):
         else:
             raise RuntimeError(f'Invalid data type: {type(data)} provided.')
 
-    def remove(self, params: Optional[dict] = None):
+    def remove(self, params: dict | None = None):
         """Remove a nested object."""
         method = 'PUT'
         unique_id = self._calculate_unique_id()
@@ -129,3 +90,42 @@ class SecurityLabel(ObjectABC):
         )
 
         return self.request
+
+
+class SecurityLabels(ObjectCollectionABC):
+    """SecurityLabels Collection.
+
+    # Example of params input
+    {
+        'result_limit': 100,  # Limit the retrieved results.
+        'result_start': 10,  # Starting count used for pagination.
+        'fields': ['caseId', 'summary']  # Select additional return fields.
+    }
+
+    Args:
+        session (Session): Session object configured with TC API Auth.
+        tql_filters (list): List of TQL filters.
+        params (dict): Additional query params (see example above).
+    """
+
+    def __init__(self, **kwargs):
+        """Initialize class properties."""
+        super().__init__(
+            kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
+        )
+        self._model = SecurityLabelsModel(**kwargs)
+        self.type_ = 'security_labels'
+
+    def __iter__(self) -> Iterator[SecurityLabel]:
+        """Return CM objects."""
+        return self.iterate(base_class=SecurityLabel)  # type: ignore
+
+    @property
+    def _api_endpoint(self) -> str:
+        """Return the type specific API endpoint."""
+        return ApiEndpoints.SECURITY_LABELS.value
+
+    @property
+    def filter(self) -> SecurityLabelFilter:
+        """Return the type specific filter object."""
+        return SecurityLabelFilter(self.tql)

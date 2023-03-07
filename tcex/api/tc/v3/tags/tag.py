@@ -1,7 +1,7 @@
 """Tag / Tags Object"""
 # standard library
 import json
-from typing import Optional, Union
+from collections.abc import Iterator
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -9,45 +9,6 @@ from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 from tcex.api.tc.v3.tags.tag_filter import TagFilter
 from tcex.api.tc.v3.tags.tag_model import TagModel, TagsModel
-
-
-class Tags(ObjectCollectionABC):
-    """Tags Collection.
-
-    # Example of params input
-    {
-        'result_limit': 100,  # Limit the retrieved results.
-        'result_start': 10,  # Starting count used for pagination.
-        'fields': ['caseId', 'summary']  # Select additional return fields.
-    }
-
-    Args:
-        session (Session): Session object configured with TC API Auth.
-        tql_filters (list): List of TQL filters.
-        params (dict): Additional query params (see example above).
-    """
-
-    def __init__(self, **kwargs):
-        """Initialize class properties."""
-        super().__init__(
-            kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
-        )
-        self._model = TagsModel(**kwargs)
-        self.type_ = 'tags'
-
-    def __iter__(self) -> 'Tag':
-        """Iterate over CM objects."""
-        return self.iterate(base_class=Tag)
-
-    @property
-    def _api_endpoint(self) -> str:
-        """Return the type specific API endpoint."""
-        return ApiEndpoints.TAGS.value
-
-    @property
-    def filter(self) -> 'TagFilter':
-        """Return the type specific filter object."""
-        return TagFilter(self.tql)
 
 
 class Tag(ObjectABC):
@@ -64,7 +25,7 @@ class Tag(ObjectABC):
         super().__init__(kwargs.pop('session', None))
 
         # properties
-        self._model = TagModel(**kwargs)
+        self._model: TagModel = TagModel(**kwargs)
         self._nested_field_name = 'tags'
         self._nested_filter = 'has_tag'
         self.type_ = 'Tag'
@@ -75,12 +36,12 @@ class Tag(ObjectABC):
         return ApiEndpoints.TAGS.value
 
     @property
-    def model(self) -> 'TagModel':
+    def model(self) -> TagModel:
         """Return the model data."""
         return self._model
 
     @model.setter
-    def model(self, data: Union['TagModel', dict]):
+    def model(self, data: dict | TagModel):
         """Create model using the provided data."""
         if isinstance(data, type(self.model)):
             # provided data is already a model, nothing required to change
@@ -91,7 +52,7 @@ class Tag(ObjectABC):
         else:
             raise RuntimeError(f'Invalid data type: {type(data)} provided.')
 
-    def remove(self, params: Optional[dict] = None):
+    def remove(self, params: dict | None = None):
         """Remove a nested object."""
         method = 'PUT'
         unique_id = self._calculate_unique_id()
@@ -125,3 +86,42 @@ class Tag(ObjectABC):
         )
 
         return self.request
+
+
+class Tags(ObjectCollectionABC):
+    """Tags Collection.
+
+    # Example of params input
+    {
+        'result_limit': 100,  # Limit the retrieved results.
+        'result_start': 10,  # Starting count used for pagination.
+        'fields': ['caseId', 'summary']  # Select additional return fields.
+    }
+
+    Args:
+        session (Session): Session object configured with TC API Auth.
+        tql_filters (list): List of TQL filters.
+        params (dict): Additional query params (see example above).
+    """
+
+    def __init__(self, **kwargs):
+        """Initialize class properties."""
+        super().__init__(
+            kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
+        )
+        self._model = TagsModel(**kwargs)
+        self.type_ = 'tags'
+
+    def __iter__(self) -> Iterator[Tag]:
+        """Return CM objects."""
+        return self.iterate(base_class=Tag)  # type: ignore
+
+    @property
+    def _api_endpoint(self) -> str:
+        """Return the type specific API endpoint."""
+        return ApiEndpoints.TAGS.value
+
+    @property
+    def filter(self) -> TagFilter:
+        """Return the type specific filter object."""
+        return TagFilter(self.tql)

@@ -1,6 +1,6 @@
 """Test the TcEx Session Module."""
 # standard library
-from typing import TYPE_CHECKING
+from typing import cast
 from unittest.mock import patch
 
 # third-party
@@ -8,37 +8,34 @@ from requests import PreparedRequest, Response, Session
 from urllib3.util.retry import Retry
 
 # first-party
-from tcex.sessions.external_session import default_too_many_requests_handler
+from tcex import TcEx
+from tcex.sessions.external_session import CustomAdapter, default_too_many_requests_handler
 from tcex.sessions.rate_limit_handler import RateLimitHandler
 
-if TYPE_CHECKING:
-    # first-party
-    from tcex import TcEx
-
 # set max backoff seconds
-Retry.BACKOFF_MAX = 30
+Retry.BACKOFF_MAX = 30  # type: ignore
 
 
 class TestUtils:
     """Test the TcEx Session Module."""
 
     @staticmethod
-    def test_session_external(tcex: 'TcEx'):
+    def test_session_external(tcex: TcEx):
         """Test tc.session_external property.
 
         Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+            tcex (fixture): An instantiated instance of TcEx object.
         """
         r = tcex.session_external.get('https://www.google.com')
         assert tcex.session_external.proxies == {}
         assert r.status_code == 200
 
     @staticmethod
-    def test_session_external_base_url(tcex: 'TcEx'):
+    def test_session_external_base_url(tcex: TcEx):
         """Test tc.session_external property.
 
         Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+            tcex (fixture): An instantiated instance of TcEx object.
         """
         session = tcex.session_external
         session.base_url = 'https://www.google.com'
@@ -48,11 +45,11 @@ class TestUtils:
         assert r.status_code == 200
 
     @staticmethod
-    def test_session_external_mask_headers(tcex: 'TcEx'):
+    def test_session_external_mask_headers(tcex: TcEx):
         """Test tc.session_external property.
 
         Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+            tcex (fixture): An instantiated instance of TcEx object.
         """
         session = tcex.session_external
         session.base_url = 'https://www.google.com'
@@ -63,7 +60,7 @@ class TestUtils:
         assert r.status_code == 200
 
     @staticmethod
-    def test_session_external_proxy(tcex_proxy: 'TcEx'):
+    def test_session_external_proxy(tcex_proxy: TcEx):
         """Test tc.session_external property with proxy.
 
         Args:
@@ -76,25 +73,25 @@ class TestUtils:
     @staticmethod
     def test_default_too_many_requests_handler():
         """Test the default too many requests handler in isolation"""
-        response: Response = Response()
-        response.headers = {'Retry-After': '100.5'}
+        response = Response()
+        response.headers = {'Retry-After': '100.5'}  # type: ignore
 
         assert default_too_many_requests_handler(response) == 100.5
 
-        response.headers = {'Retry-After': '100'}
+        response.headers = {'Retry-After': '100'}  # type: ignore
 
         assert default_too_many_requests_handler(response) == 100
 
-        response.headers = {}
+        response.headers = {}  # type: ignore
 
         assert default_too_many_requests_handler(response) == 0
 
     @staticmethod
-    def test_too_many_request_handler_properties(tcex: 'TcEx'):
+    def test_too_many_request_handler_properties(tcex: TcEx):
         """Test the too_many_requests properties
 
         Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+            tcex (fixture): An instantiated instance of TcEx object.
         """
         s = tcex.session_external
         # pylint: disable=comparison-with-callable
@@ -103,17 +100,17 @@ class TestUtils:
         def test_handler():
             pass
 
-        s.too_many_requests_handler = test_handler
+        s.too_many_requests_handler = test_handler  # type: ignore
 
         # pylint: disable=comparison-with-callable
         assert s.too_many_requests_handler == test_handler
 
     @staticmethod
-    def test_rate_limit_handler(tcex: 'TcEx'):
+    def test_rate_limit_handler(tcex: TcEx):
         """Test the rate limit handler properties
 
         Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+            tcex (fixture): An instantiated instance of TcEx object.
         """
         s = tcex.session_external
         assert isinstance(s.rate_limit_handler, RateLimitHandler)
@@ -132,36 +129,37 @@ class TestUtils:
         assert isinstance(s.rate_limit_handler, MyRateLimitHandler)
 
     @staticmethod
-    def test_retry(tcex: 'TcEx'):
-        """Test the retry method to validate that it only creates one instance of CustomAdpater.
+    def test_retry(tcex: TcEx):
+        """Test the retry method to validate that it only creates one instance of CustomAdapter.
 
         Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+            tcex (fixture): An instantiated instance of TcEx object.
         """
         s = tcex.session_external
 
-        ca = s._custom_adapter
+        ca = cast(CustomAdapter, s._custom_adapter)
 
         s.retry(13, 0.5, status_forcelist=[202])
 
         assert s._custom_adapter == ca  # verify custom adapter isn't re-instantiated
 
-        assert s._custom_adapter.max_retries.total == 13
-        assert s._custom_adapter.max_retries.backoff_factor == 0.5
-        assert s._custom_adapter.max_retries.status_forcelist[0] == 202
+        assert ca.max_retries.total == 13
+        assert ca.max_retries.backoff_factor == 0.5
+        # TODO: [low] @cblades type doesn't match
+        assert ca.max_retries.status_forcelist[0] == 202  # type: ignore
 
     @staticmethod
-    def test_429(tcex: 'TcEx'):
+    def test_429(tcex: TcEx):
         """Test  429 handling.
 
         Args:
-            tcex (TcEx, fixture): An instantiated instance of TcEx object.
+            tcex (fixture): An instantiated instance of TcEx object.
         """
         s = tcex.session_external
 
         with patch.object(Response, 'ok', False):
-            response: Response = Response()
-            response.headers = {'Retry-After': 10}
+            response = Response()
+            response.headers = {'Retry-After': 10}  # type: ignore
             response.status_code = 429
             request = PreparedRequest()
             request.url = 'https://www.google.com'

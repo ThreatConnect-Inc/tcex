@@ -1,16 +1,15 @@
 """Test the TcEx Batch Module."""
 # standard library
-from typing import TYPE_CHECKING, Any, Iterable, List, Optional, Union
+from collections.abc import Iterable
+from typing import Any
 
 # third-party
 import pytest
 
-if TYPE_CHECKING:
-    # first-party
-    from tcex.playbook.playbook import Playbook
+# first-party
+from tcex.playbook.playbook import Playbook  # TYPE-CHECKING
 
 
-# pylint: disable=no-self-use
 class TestUtils:
     """Test the TcEx Batch Module."""
 
@@ -23,9 +22,7 @@ class TestUtils:
             ('#App:0002:s4!String', True),
         ],
     )
-    def test_playbook_string_pass(
-        self, variable: str, value: Union[bool, int, str], playbook: 'Playbook'
-    ):
+    def test_playbook_string_pass(self, variable: str, value: bool | int | str, playbook: Playbook):
         """Test playbook variables."""
         playbook.create.string(variable, value, when_requested=False)
         result = playbook.read.string(variable)
@@ -44,7 +41,7 @@ class TestUtils:
             ('#App:0002:b3!WrongType', 'wrong type'),
         ],
     )
-    def test_playbook_string_fail(self, variable: str, value: Any, playbook: 'Playbook'):
+    def test_playbook_string_fail(self, variable: str, value: Any, playbook: Playbook):
         """Test playbook variables."""
         try:
             playbook.create.string(variable, value, when_requested=False)
@@ -61,11 +58,9 @@ class TestUtils:
             ('#App:0003:sa4!StringArray', ['4', '4']),
         ],
     )
-    def test_playbook_string_array_pass(
-        self, variable: str, value: List[str], playbook: 'Playbook'
-    ):
+    def test_playbook_string_array_pass(self, variable: str, value: list[str], playbook: Playbook):
         """Test playbook variables."""
-        playbook.create.string_array(variable, value, when_requested=False)
+        playbook.create.string_array(variable, value, when_requested=False)  # type: ignore
         result = playbook.read.string_array(variable)
         assert result == value, f'result of ({result}) does not match ({value})'
 
@@ -76,7 +71,7 @@ class TestUtils:
     #     'variable,value',
     #     [('#App:0003:sa5!StringArray', 'foobar')],
     # )
-    # def test_playbook_string_array_string(self, variable: str, value: Str, playbook: 'Playbook'):
+    # def test_playbook_string_array_string(self, variable: str, value: Str, playbook: Playbook):
     #     """Test playbook variables."""
     #     with pytest.raises(RuntimeError) as exc_info:
     #         playbook.create.string_array(variable, value, when_requested=False)
@@ -93,7 +88,7 @@ class TestUtils:
             ('#App:0002:b3!WrongType', 'wrong type'),
         ],
     )
-    def test_playbook_string_array_fail(self, variable: str, value: Any, playbook: 'Playbook'):
+    def test_playbook_string_array_fail(self, variable: str, value: Any, playbook: Playbook):
         """Test playbook variables."""
         with pytest.raises(RuntimeError) as ex:
             playbook.create.string_array(variable, value, when_requested=False)
@@ -109,10 +104,10 @@ class TestUtils:
         ],
     )
     def test_playbook_string_array_iterables(
-        self, variable: str, value: Iterable, playbook: 'Playbook'
+        self, variable: str, value: Iterable, playbook: Playbook
     ):
         """Test playbook variables."""
-        playbook.create.string_array(variable, value, when_requested=False)
+        playbook.create.string_array(variable, value, when_requested=False)  # type: ignore
         result = playbook.read.string_array(variable)
         assert result == ['6', '6'], f'result of ({result}) does not match ({list(value)})'
 
@@ -127,9 +122,9 @@ class TestUtils:
         'variable,value',
         [('#App:0002:s1!String', None)],
     )
-    def test_playbook_string_none(self, variable: str, value: Optional[str], playbook: 'Playbook'):
+    def test_playbook_string_none(self, variable: str, value: str | None, playbook: Playbook):
         """Test playbook variables."""
-        playbook.create.string(variable, value, when_requested=False)
+        playbook.create.string(variable, value, when_requested=False)  # type: ignore
         playbook.read.string(variable)
         assert playbook.read.variable(variable) is None
 
@@ -138,13 +133,13 @@ class TestUtils:
         [('#App:0003:sa1!StringArray', None)],
     )
     def test_playbook_string_array_none(
-        self, variable: str, value: Optional[list], playbook: 'Playbook'
+        self, variable: str, value: list | None, playbook: Playbook
     ):
         """Test playbook variables."""
-        playbook.create.string_array(variable, value, when_requested=False)
+        playbook.create.string_array(variable, value, when_requested=False)  # type: ignore
         playbook.read.string_array(variable)
         assert playbook.read.variable(variable) is None
 
-    def test_playbook_string_read_none(self, playbook: 'Playbook'):
+    def test_playbook_string_read_none(self, playbook: Playbook):
         """Test playbook variables."""
-        assert playbook.read.string(None) is None
+        assert playbook.read.string(None) is None  # type: ignore

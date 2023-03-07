@@ -1,7 +1,5 @@
 """TcEx JSON Model"""
-# pylint: disable=no-self-argument,no-self-use; noqa: N805
-# standard library
-from typing import List, Optional, Union
+# pylint: disable=no-self-argument; noqa: N805
 
 # third-party
 from pydantic import BaseModel, Field, validator
@@ -19,8 +17,8 @@ def snake_to_camel(snake_string: str) -> str:
 class ParamsModel(BaseModel):
     """Model for jj.params"""
 
-    default: Optional[Union[bool, str]]
-    encrypt: Optional[bool] = False
+    default: bool | str | None
+    encrypt: bool = False
     name: str
     prevent_updates: bool = False
 
@@ -66,7 +64,7 @@ class JobJsonCommonModel(BaseModel):
             'If true, a notification will be sent when the job completes with partial success.'
         ),
     )
-    params: List[ParamsModel]
+    params: list[ParamsModel]
     publish_auth: bool = Field(
         ...,
         description='If true, the job will publish the authentication token.',

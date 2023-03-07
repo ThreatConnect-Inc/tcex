@@ -1,4 +1,7 @@
 """Test the TcEx API Snippets."""
+# third-party
+import pytest
+
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
@@ -7,14 +10,7 @@ from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 class TestCaseAttributeSnippets(TestV3):
     """Test TcEx API Interface."""
 
-    v3 = None
-
-    def setup_method(self):
-        """Configure setup before all tests."""
-        print('')  # ensure any following print statements will be on new line
-        self.v3_helper = V3Helper('case_attributes')
-        self.v3 = self.v3_helper.v3
-        self.tcex = self.v3_helper.tcex
+    v3_helper = V3Helper('case_attributes')
 
     # TODO [PLAT-4144] - next url is invalid
     # def test_case_attributes_get_all(self):
@@ -36,8 +32,13 @@ class TestCaseAttributeSnippets(TestV3):
             ],
             params={'fields': 'attributes'},
         )
+        if not case.model.id or not case.model.attributes.data:
+            pytest.fail('Case attribute not created.')
+
         # get attribute id
         attribute_id = case.model.attributes.data[0].id
+        if attribute_id is None:
+            pytest.fail('Case attribute id not found.')
 
         # Begin Snippet
         case_attributes = self.tcex.v3.case_attributes()
@@ -62,6 +63,9 @@ class TestCaseAttributeSnippets(TestV3):
             ],
             params={'fields': 'attributes'},
         )
+        if not case.model.id or not case.model.attributes.data:
+            pytest.fail('Case attribute not created.')
+
         # get attribute id
         attribute_id = case.model.attributes.data[0].id
 

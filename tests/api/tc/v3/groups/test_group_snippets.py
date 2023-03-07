@@ -2,6 +2,7 @@
 # standard library
 import base64
 import time
+from collections.abc import Callable
 
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
@@ -11,17 +12,14 @@ from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 class TestGroupSnippets(TestV3):
     """Test TcEx API Interface."""
 
-    example_pdf = None
-    v3 = None
+    example_pdf: str
+    v3_helper = V3Helper('groups')
 
-    def setup_method(self, method: callable):
+    def setup_method(self, method: Callable):  # pylint: disable=arguments-differ
         """Configure setup before all tests."""
-        print('')  # ensure any following print statements will be on new line
-        self.v3_helper = V3Helper('groups')
-        self.v3 = self.v3_helper.v3
-        self.tcex = self.v3_helper.tcex
+        super().setup_method()
 
-        self.example_pdf = (
+        self.example_pdf = str(
             r'JVBERi0xLjIgCjkgMCBvYmoKPDwKPj4Kc3RyZWFtCkJULyAzMiBUZiggIFRjRXggVGVzdGluZyAg'
             r'ICknIEVUCmVuZHN0cmVhbQplbmRvYmoKNCAwIG9iago8PAovVHlwZSAvUGFnZQovUGFyZW50IDUg'
             r'MCBSCi9Db250ZW50cyA5IDAgUgo+PgplbmRvYmoKNSAwIG9iago8PAovS2lkcyBbNCAwIFIgXQov'
@@ -311,11 +309,13 @@ class TestGroupSnippets(TestV3):
             type='Adversary',
         )
         group.create(params={'owner': 'TCI'})
+        assert group.model.id is not None, 'Failed to create group.'
+        group_id = group.model.id
 
         # Begin Snippet
         groups = self.tcex.v3.groups()
         groups.filter.date_added(TqlOperator.GT, '1 day ago')
-        groups.filter.id(TqlOperator.EQ, group.model.id)
+        groups.filter.id(TqlOperator.EQ, group_id)
         groups.filter.owner_name(TqlOperator.EQ, 'TCI')
         groups.filter.type_name(TqlOperator.EQ, 'Adversary')
         for group in groups:
@@ -335,8 +335,7 @@ class TestGroupSnippets(TestV3):
 
         # Begin Snippet
         group = self.tcex.v3.group(id=group.model.id)
-        # This will update the confidence to "50"
-        group.model.name = 50
+        group.model.name = 'MyAdversary2'
         group.update(params={'owner': 'TCI'})
         # End Snippet
 

@@ -1,16 +1,12 @@
 """Test the TcEx Batch Module."""
-# standard library
-from typing import TYPE_CHECKING
 
 # third-party
 import pytest
 
-if TYPE_CHECKING:
-    # first-party
-    from tcex import TcEx
+# first-party
+from tcex import TcEx
 
 
-# pylint: disable=no-self-use
 class TestTags1:
     """Test the TcEx Batch Module."""
 
@@ -18,7 +14,7 @@ class TestTags1:
         """Configure setup before all tests."""
 
     @pytest.mark.parametrize('name,label', [('pytest-adversary-i1-001', 'PYTEST1')])
-    def test_security_labels(self, name, label, tcex: 'TcEx'):
+    def test_security_labels(self, name, label, tcex: TcEx):
         """Test adversary creation"""
         batch = tcex.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'adversary', name])

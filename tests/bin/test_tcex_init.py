@@ -4,16 +4,16 @@ import os
 from importlib.machinery import SourceFileLoader
 from importlib.util import module_from_spec, spec_from_loader
 from pathlib import Path
-from typing import List
 
 # third-party
 import pytest
+from click.testing import Result
 from typer.testing import CliRunner
 
 # dynamically load bin/tcex file
 spec = spec_from_loader('app', SourceFileLoader('app', 'bin/tcex'))
-tcex_cli = module_from_spec(spec)
-spec.loader.exec_module(tcex_cli)
+tcex_cli = module_from_spec(spec)  # type: ignore
+spec.loader.exec_module(tcex_cli)  # type: ignore
 
 # get app from bin/tcex CLI script
 app = tcex_cli.app
@@ -27,7 +27,7 @@ class TestTcexCliInit:
     """Test Module"""
 
     @staticmethod
-    def _run_command(args: List[str], monkeypatch: 'pytest.MonkeyPatch') -> str:
+    def _run_command(args: list[str], monkeypatch: pytest.MonkeyPatch) -> Result:
         """Helper Method"""
         working_dir = Path(os.path.join(os.getcwd(), 'app_init'))
 
@@ -40,7 +40,7 @@ class TestTcexCliInit:
         result = runner.invoke(app, args)
         return result
 
-    def test_tcex_init_organization_basic(self, monkeypatch: 'pytest.MonkeyPatch'):
+    def test_tcex_init_organization_basic(self, monkeypatch: pytest.MonkeyPatch):
         """Test Case"""
         result = self._run_command(
             ['init', '--type', 'organization', '--template', 'basic', '--force'], monkeypatch
@@ -53,7 +53,7 @@ class TestTcexCliInit:
         assert os.path.isfile('job_app.py')
         assert os.path.isfile('tcex.json')
 
-    def test_tcex_init_playbook_basic(self, monkeypatch: 'pytest.Monkeypatch'):
+    def test_tcex_init_playbook_basic(self, monkeypatch: pytest.MonkeyPatch):
         """Test Case"""
         result = self._run_command(
             ['init', '--type', 'playbook', '--template', 'basic'], monkeypatch

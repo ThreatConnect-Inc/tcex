@@ -6,18 +6,19 @@ import platform
 import shutil
 import subprocess  # nosec
 import sys
-from distutils.version import StrictVersion  # pylint: disable=no-name-in-module
 from pathlib import Path
-from typing import List, Optional
 from urllib.parse import quote, urlsplit
+
 
 # third-party
 import typer
+from semantic_version import Version
 
 # first-party
 from tcex.app_config.models.tcex_json_model import LibVersionModel
 from tcex.backports import cached_property
 from tcex.bin.bin_abc import BinABC
+from tcex.pleb.env_path import EnvPath
 
 
 class Dep(BinABC):
@@ -29,10 +30,10 @@ class Dep(BinABC):
         dev: bool,
         no_cache_dir: bool,
         pre: bool,
-        proxy_host: str,
-        proxy_port: int,
-        proxy_user: str,
-        proxy_pass: str,
+        proxy_host: str | None,
+        proxy_port: int | None,
+        proxy_user: str | None,
+        proxy_pass: str | None,
     ):
         """Initialize Class properties."""
         super().__init__()
@@ -65,7 +66,7 @@ class Dep(BinABC):
         # update tcex.json
         self.tj.update.multiple()
 
-    def _build_command(self, python_executable: Path, lib_dir: Path) -> List[str]:
+    def _build_command(self, python_executable: Path, lib_dir: Path) -> list[str]:
         """Build the pip command for installing dependencies.
 
         Args:
@@ -227,7 +228,6 @@ class Dep(BinABC):
                 not lib_version.python_executable.is_file()
                 and not lib_version.python_executable.is_symlink()
             ):
-                error = True
                 # display error
                 typer.secho(
                     f'The Python executable ({lib_version.python_executable}) could not be found. '
@@ -273,9 +273,8 @@ class Dep(BinABC):
                 python_version = None
                 self.handle_error('Could not determine version from lib string.')
 
-            # TODO: [low] investigate using sematic_version package
             # track the latest Python version
-            if self.latest_version is None or StrictVersion(python_version) > StrictVersion(
+            if self.latest_version is None or Version(python_version) > Version(
                 self.latest_version
             ):
                 self.latest_version = python_version
@@ -297,7 +296,7 @@ class Dep(BinABC):
                 self.create_requirements_lock()
 
     @property
-    def lib_versions(self) -> List[LibVersionModel]:
+    def lib_versions(self) -> list[LibVersionModel]:
         """Return the lib_version data required to build lib directories."""
         if self.tj.model.lib_versions:
             self.print_setting('Python Version', 'using version(s) defined in tcex.json')
@@ -307,7 +306,12 @@ class Dep(BinABC):
 
         # return the current python version
         return [
-            LibVersionModel(**{'python_executable': sys.executable, 'lib_dir': self.lib_directory})
+            LibVersionModel(
+                **{
+                    'python_executable': sys.executable,  # type: ignore
+                    'lib_dir': self.lib_directory,  # type: ignore
+                }
+            )
         ]
 
     @cached_property
@@ -331,7 +335,7 @@ class Dep(BinABC):
         # if we only have one current Python version building the requirements.txt file
         # is straight forward, just include all packages pinned to the current version.
         if len(lib_directories) == 1:
-            _requirements = self.requirements_lock_data(lib_directories[0])
+            _requirements = self.requirements_lock_data(lib_directories[0])  # type: ignore
             # sort packages alphabetically
             return '\n'.join(sorted(_requirements.splitlines()))
 
@@ -366,14 +370,14 @@ class Dep(BinABC):
         _requirements.extend(source_requirements)
         return '\n'.join(sorted(_requirements))
 
-    def requirements_lock_data(self, lib_dir: str) -> str:
+    def requirements_lock_data(self, lib_dir: EnvPath) -> str:
         """Return the Python packages for the provided directory."""
         lib_dir_path = os.path.join(self.app_path, lib_dir)
         cmd = f'pip freeze --path "{lib_dir_path}"'
         self.log.debug(f'event=get-requirements-lock-data, cmd={cmd}')
         try:
             output = subprocess.run(  # pylint: disable=subprocess-run-check
-                cmd, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE  # nosec
+                cmd, shell=True, capture_output=True  # nosec
             )
         except Exception as ex:
             self.log.error(f'event=pip-freeze, error="{ex}"')
@@ -385,7 +389,7 @@ class Dep(BinABC):
 
         return output.stdout.decode('utf-8')
 
-    def requirements_lock_diff(self, package_data: dict, python_version_count: int) -> List[str]:
+    def requirements_lock_diff(self, package_data: dict, python_version_count: int) -> list[str]:
         """Diff the package data, returning the appropriate requirements.lock data."""
         requirements_lock = []
         for package_name, package_version_data in package_data.items():
@@ -420,7 +424,7 @@ class Dep(BinABC):
 
     @staticmethod
     def requirements_lock_line(
-        package_name: str, package_version: str, python_version: Optional[str] = None
+        package_name: str, package_version: str, python_version: str | None = None
     ) -> str:
         """Return a string to insert into the requirements.txt file."""
         if python_version is None:

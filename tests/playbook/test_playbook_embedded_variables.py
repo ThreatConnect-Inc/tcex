@@ -1,17 +1,15 @@
 """Test the TcEx Batch Module."""
 # standard library
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 # third-party
 import pytest
 
-if TYPE_CHECKING:
-    # first-party
-    from tcex import TcEx
-    from tcex.playbook import Playbook
+# first-party
+from tcex import TcEx
+from tcex.playbook import Playbook
 
 
-# pylint: disable=no-self-use
 class TestEmbedded:
     """Test the TcEx Batch Module."""
 
@@ -20,11 +18,11 @@ class TestEmbedded:
         print('\n')  # print blank line for readability
 
     @staticmethod
-    def stage_data(tcex: 'TcEx'):
+    def stage_data(tcex: TcEx):
         """Configure setup before all tests."""
         out_variables = []
-        tcex.inputs.model.tc_playbook_out_variables = ','.join(out_variables)
-        playbook: 'Playbook' = tcex.playbook
+        tcex.inputs.model.tc_playbook_out_variables = ','.join(out_variables)  # type: ignore
+        playbook = tcex.playbook
 
         # add String inputs
         string_inputs = [
@@ -41,7 +39,7 @@ class TestEmbedded:
             },
         ]
         for i in string_inputs:
-            playbook.create.string(i.get('variable'), i.get('data'), when_requested=False)
+            playbook.create.string(i['variable'], i['data'], when_requested=False)
 
         # add StringArray inputs
         string_array_inputs = [
@@ -49,7 +47,7 @@ class TestEmbedded:
             {'variable': '#App:0001:array.2!StringArray', 'data': ['three', 'four']},
         ]
         for i in string_array_inputs:
-            playbook.create.string_array(i.get('variable'), i.get('data'), when_requested=False)
+            playbook.create.string_array(i['variable'], i['data'], when_requested=False)
 
         # add KeyValue inputs
         keyvalue_inputs = [
@@ -67,7 +65,7 @@ class TestEmbedded:
             },
         ]
         for i in keyvalue_inputs:
-            playbook.create.key_value(i.get('variable'), i.get('data'), when_requested=False)
+            playbook.create.key_value(i['variable'], i['data'], when_requested=False)
 
         # add KeyValueArray inputs
         keyvalue_array_inputs = [
@@ -80,7 +78,7 @@ class TestEmbedded:
             }
         ]
         for i in keyvalue_array_inputs:
-            playbook.create.key_value_array(i.get('variable'), i.get('data'), when_requested=False)
+            playbook.create.key_value_array(i['variable'], i['data'], when_requested=False)
 
     @pytest.mark.parametrize(
         'embedded_value,expected',
@@ -172,9 +170,9 @@ class TestEmbedded:
             ('#App:0001:array.1!StringArray', ['two', 'three']),
         ],
     )
-    def test_embedded_read_string(self, embedded_value: str, expected: Any, tcex: 'TcEx'):
+    def test_embedded_read_string(self, embedded_value: str, expected: Any, tcex: TcEx):
         """Test playbook variables."""
-        playbook: 'Playbook' = tcex.playbook
+        playbook: Playbook = tcex.playbook
         self.stage_data(tcex)
         result = playbook.read.variable(embedded_value)
         # print('result', result)

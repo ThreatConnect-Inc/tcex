@@ -1,7 +1,6 @@
-"""TcEx Utilities Variables Operations Module"""
+"""TcEx Utilities Variables Module"""
 # standard library
 import re
-from typing import Any, List
 
 # first-party
 from tcex.utils.models import PlaybookVariableModel
@@ -22,13 +21,16 @@ class StringVariable(str):
 class Variables:
     """TcEx Utilities Variables Class"""
 
-    def get_playbook_variable_model(self, variable: str) -> 'PlaybookVariableModel':
+    def get_playbook_variable_model(self, variable: str | None) -> PlaybookVariableModel | None:
         """Return data model of playbook variable (e.g., #App:1234:output!String)."""
+        if variable is None:
+            return None
+
         data = None
-        if variable is not None:
-            variable = variable.strip()
-            if re.match(self.variable_playbook_match, variable):
-                var = re.search(self.variable_playbook_parse, variable)
+        variable = variable.strip()
+        if re.match(self.variable_playbook_match, variable):
+            var = re.search(self.variable_playbook_parse, variable)
+            if var is not None:
                 data = PlaybookVariableModel(**var.groupdict())
         return data
 
@@ -54,11 +56,11 @@ class Variables:
         return False
 
     @property
-    def variable_expansion_pattern(self):
-        """Regex pattern to match and parse a playbook variable.
+    def variable_expansion_pattern(self) -> re.Pattern:
+        """Regex pattern to match and parse a playbook or ThreatConnect variable.
 
-        Playbook Variable: #App:334:example.service_input!String
-        TC Variable: &{TC:TEXT:4dc9202e-6945-4364-aa40-4b47655046d2}
+        Playbook Variable : #App:334:example.service_input!String
+        TC Variable       : &{TC:TEXT:4dc9202e-6945-4364-aa40-4b47655046d2}
         """
         return re.compile(
             # Origin:
@@ -92,31 +94,57 @@ class Variables:
         )
 
     @property
-    def variable_playbook_match(self) -> Any:
-        """Return compiled re pattern."""
+    def variable_playbook_array_types(self) -> list[str]:
+        """Return list of standard playbook array variable types."""
+        return [
+            'BinaryArray',
+            'KeyValueArray',
+            'StringArray',
+            'TCEntityArray',
+            'TCEnhancedEntityArray',
+        ]
+
+    # TODO: could not find any usage or test cases for this method
+    # @property
+    # def variable_playbook_keyvalue_embedded(self) -> re.Pattern:
+    #     """Return compiled re pattern.
+    #
+    #     Parse this string -> {'name': '#App:334:example.name!String'}
+    #     """
+    #     return re.compile(fr'(?:\"\:\s?)[^\"]?{self.variable_playbook_pattern}')
+
+    @property
+    def variable_playbook_match(self) -> re.Pattern:
+        """Return compiled re pattern for exact match of variable."""
         return re.compile(fr'^{self.variable_playbook_pattern}$')
 
-    def variable_playbook_method_name(self, variable: str) -> str:
+    def variable_playbook_method_name(self, variable: str) -> str | None:
         """Convert variable name to a valid method name.
 
         #App:9876:string.operation!String -> string_operation_string
-
-        Args:
-            variable: The variable name to convert.
         """
         method_name = None
         if variable is not None:
             variable = variable.strip()
             if re.match(self.variable_playbook_match, variable):
                 var = re.search(self.variable_playbook_parse, variable)
-                variable_name = var.group(3).replace('.', '_').lower()
-                variable_type = var.group(4).lower()
-                method_name = f'{variable_name}_{variable_type}'
+                if var is not None:
+                    variable_name = var.group(3).replace('.', '_').lower()
+                    variable_type = var.group(4).lower()
+                    method_name = f'{variable_name}_{variable_type}'
         return method_name
 
     @property
+    def variable_playbook_parse(self) -> re.Pattern:
+        """Return compiled re pattern."""
+        return re.compile(self.variable_playbook_pattern)
+
+    @property
     def variable_playbook_pattern(self) -> str:
-        """Regex pattern to match and parse a playbook variable."""
+        """Regex pattern to match and parse a playbook variable.
+
+        Parse this string -> #App:334:example.service_input!String
+        """
         return (
             # App Type: one of the following types (APP|Trigger)
             r'#(?P<app_type>[A-Za-z]+)'
@@ -138,23 +166,37 @@ class Variables:
         )
 
     @property
-    def variable_playbook_parse(self) -> Any:
-        """Return compiled re pattern."""
-        return re.compile(self.variable_playbook_pattern)
+    def variable_playbook_single_types(self) -> list[str]:
+        """Return list of standard playbook single variable types."""
+        return [
+            'Binary',
+            'KeyValue',
+            'String',
+            'TCEntity',
+            'TCEnhancedEntity',
+        ]
 
     @property
-    def variable_playbook_keyvalue_embedded(self) -> Any:
-        """Return compiled re pattern."""
-        return re.compile(fr'(?:\"\:\s?)[^\"]?{self.variable_playbook_pattern}')
+    def variable_playbook_types(self) -> list[str]:
+        """Return list of standard playbook variable types."""
+        return self.variable_playbook_single_types + self.variable_playbook_array_types
 
     @property
-    def variable_tc_match(self):
-        """Return regex pattern for tc variable match."""
+    def variable_tc_match(self) -> re.Pattern:
+        """Return regex pattern for tc variable EXACT match."""
         return re.compile(fr'^{self.variable_tc_pattern}$')
 
     @property
-    def variable_tc_pattern(self):
-        """Return regex pattern for tc variable."""
+    def variable_tc_parse(self) -> re.Pattern:
+        """Return regex pattern for tc variable search."""
+        return re.compile(self.variable_tc_pattern)
+
+    @property
+    def variable_tc_pattern(self) -> str:
+        """Return regex pattern for tc variable.
+
+        Parse this string -> &{TC:TEXT:4dc9202e-6945-4364-aa40-4b47655046d2}
+        """
         return (
             # Origin "&"
             r'(?:&)'
@@ -167,35 +209,3 @@ class Variables:
             r'(?P<key>[A-Za-z0-9_\.\-\[\]]+)'
             r'(?:\})'
         )
-
-    @property
-    def variable_tc_parse(self):
-        """Return regex pattern for tc variable search."""
-        return re.compile(self.variable_tc_pattern)
-
-    @property
-    def variable_playbook_array_types(self) -> List[str]:
-        """Return list of standard playbook array variable types."""
-        return [
-            'BinaryArray',
-            'KeyValueArray',
-            'StringArray',
-            'TCEntityArray',
-            'TCEnhancedEntityArray',
-        ]
-
-    @property
-    def variable_playbook_single_types(self) -> List[str]:
-        """Return list of standard playbook single variable types."""
-        return [
-            'Binary',
-            'KeyValue',
-            'String',
-            'TCEntity',
-            'TCEnhancedEntity',
-        ]
-
-    @property
-    def variable_playbook_types(self) -> List[str]:
-        """Return list of standard playbook variable types."""
-        return self.variable_playbook_single_types + self.variable_playbook_array_types

@@ -3,15 +3,21 @@
 import base64
 import json
 import traceback
-from typing import Any, Callable, Optional, Union
+from collections.abc import Callable
+from typing import TYPE_CHECKING, Any
 
-from .common_service_trigger import CommonServiceTrigger
+# first-party
+from tcex.services.common_service_trigger import CommonServiceTrigger
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex import TcEx
 
 
 class WebhookTriggerService(CommonServiceTrigger):
     """TcEx Framework Webhook Service Trigger module."""
 
-    def __init__(self, tcex: object):
+    def __init__(self, tcex: 'TcEx'):
         """Initialize the Class properties.
 
         Args:
@@ -20,7 +26,7 @@ class WebhookTriggerService(CommonServiceTrigger):
         super().__init__(tcex)
 
         # config callbacks
-        self.webhook_event_callback = None
+        self.webhook_event_callback: Callable  # set in run.py of the App
         self.webhook_marshall_event_callback = None
 
     def callback_response_handler(self, callback_response: Any, message: dict):
@@ -76,11 +82,11 @@ class WebhookTriggerService(CommonServiceTrigger):
         elif callback_response is True:
             self.increment_metric('Hits')
             self.fire_event_publish(
-                message.get('triggerId'), self.session_id, message.get('requestKey')
+                message['triggerId'], self.session_id, message.get('requestKey')
             )
 
             # only required for testing in tcex framework
-            self._tcex_testing(self.session_id, message.get('triggerId'))
+            self._tcex_testing(self.session_id, message['triggerId'])
 
             # capture fired status for testing framework
             self._tcex_testing_fired_events(self.session_id, True)
@@ -184,10 +190,10 @@ class WebhookTriggerService(CommonServiceTrigger):
         self.publish_webhook_event_acknowledge(message)
 
         # get config using triggerId passed in WebhookEvent data
-        config = None
-        outputs = {}
+        config: dict | None = None
+        outputs: list | str = []
         if not self.ij.has_feature('webhookserviceendpoint'):
-            config: dict = self.configs.get(message.get('triggerId'))
+            config = self.configs.get(message.get('triggerId'))
             if config is None:
                 self.log.error(
                     '''feature=webhook-trigger-service, event=missing-config, '''
@@ -196,14 +202,14 @@ class WebhookTriggerService(CommonServiceTrigger):
                 return
 
             # get an instance of playbooks for App
-            outputs: Union[list, str] = config.get('tc_playbook_out_variables') or []
+            outputs = config.get('tc_playbook_out_variables') or []
             if isinstance(outputs, str):
                 outputs = outputs.split(',')
 
         # get a context aware pb instance for the App callback method
-        playbook: object = self.tcex.pb(context=self.session_id, output_variables=outputs)
+        playbook = self.tcex.get_playbook(context=self.session_id, output_variables=outputs)
         try:
-            body: Any = self.key_value_store.read(message.get('requestKey'), 'request.body')
+            body: Any = self.key_value_store.read(message['requestKey'], 'request.body')
             if body is not None:
                 body = base64.b64decode(body).decode()
             # pylint: disable=not-callable
@@ -228,7 +234,7 @@ class WebhookTriggerService(CommonServiceTrigger):
                     }
                 )
 
-            callback_response: Union[bool, Callable[..., Any], dict] = self.webhook_event_callback(
+            callback_response: bool | Callable[..., Any] | dict = self.webhook_event_callback(
                 **callback_data
             )
             self.callback_response_handler(callback_response, message)
@@ -277,7 +283,7 @@ class WebhookTriggerService(CommonServiceTrigger):
         self.publish_webhook_marshall_event_acknowledge(message)
 
         # get config using triggerId passed in WebhookMarshallEvent data
-        config: dict = self.configs.get(message.get('triggerId'))
+        config: dict | None = self.configs.get(message['triggerId'])
         if config is None:
             self.log.error(
                 '''feature=webhook-trigger-service, event=missing-config, '''
@@ -286,10 +292,11 @@ class WebhookTriggerService(CommonServiceTrigger):
             return
 
         body = None
-        request_key: str = message.get('requestKey')
+        request_key = message.get('requestKey')
 
         try:
-            body: Any = self.key_value_store.read(request_key, 'request.body')
+            # TODO: @cblades - update typing on registry factory
+            body: Any = self.key_value_store.read(request_key, 'request.body')  # type: ignore
             if body is not None:
                 body = base64.b64decode(body).decode()
         except Exception as e:
@@ -309,10 +316,9 @@ class WebhookTriggerService(CommonServiceTrigger):
 
         if callable(self.webhook_marshall_event_callback):
             try:
-
                 # call callback method
                 # pylint: disable=not-callable
-                callback_response: Optional[dict] = self.webhook_marshall_event_callback(
+                callback_response: dict | None = self.webhook_marshall_event_callback(
                     body=body,
                     headers=message.get('headers'),
                     request_key=request_key,
@@ -349,7 +355,7 @@ class WebhookTriggerService(CommonServiceTrigger):
                     'type': 'WebhookEvent',
                 }
             ),
-            self.args.tc_svc_client_topic,
+            self.models.tc_svc_client_topic,
         )
 
     def publish_webhook_marshall_event_acknowledge(self, message: dict):
@@ -378,7 +384,7 @@ class WebhookTriggerService(CommonServiceTrigger):
                     'type': 'WebhookMarshallEvent',
                 }
             ),
-            self.args.tc_svc_client_topic,
+            self.models.tc_svc_client_topic,
         )
 
     def publish_webhook_event_response(self, message: dict, callback_response: dict):
@@ -389,13 +395,13 @@ class WebhookTriggerService(CommonServiceTrigger):
             callback_response: The data from the callback method.
             playbook: Configure instance of Playbook used to write body.
         """
-        playbook: object = self.tcex.pb(context=self.session_id, output_variables=[])
+        playbook = self.tcex.get_playbook(context=self.session_id, output_variables=[])
 
         # write response body to redis
         if callback_response.get('body') is not None:
-            playbook.create_string(
+            playbook.create.string(
                 'response.body',
-                base64.b64encode(callback_response.get('body').encode('utf-8')).decode('utf-8'),
+                base64.b64encode(callback_response['body'].encode('utf-8')).decode('utf-8'),
             )
 
         # publish response
@@ -411,5 +417,5 @@ class WebhookTriggerService(CommonServiceTrigger):
                     'statusCode': callback_response.get('status_code', 200),
                 }
             ),
-            self.args.tc_svc_client_topic,
+            self.models.tc_svc_client_topic,
         )

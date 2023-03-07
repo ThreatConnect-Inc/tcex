@@ -1,16 +1,11 @@
 """Test the TcEx Batch Module."""
-# standard library
-from typing import TYPE_CHECKING
-
 # third-party
 import pytest
 
-if TYPE_CHECKING:
-    # first-party
-    from tcex import TcEx
+# first-party
+from tcex import TcEx
 
 
-# pylint: disable=no-self-use
 class TestGroup1:
     """Test the TcEx Batch Module."""
 
@@ -26,7 +21,7 @@ class TestGroup1:
             ('pytest-adversary-i1-004', 'Example #4', 'PYTEST4', 'PyTest4'),
         ],
     )
-    def test_adversary(self, name, description, label, tag, tcex: 'TcEx'):
+    def test_adversary(self, name, description, label, tag, tcex: TcEx):
         """Test adversary creation"""
         batch = tcex.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'adversary', name])
@@ -49,7 +44,7 @@ class TestGroup1:
             ('pytest-campaign-i1-004', 'Example #4', 'PYTEST:4', 'PyTest4'),
         ],
     )
-    def test_campaign(self, name, description, label, tag, tcex: 'TcEx'):
+    def test_campaign(self, name, description, label, tag, tcex: TcEx):
         """Test campaign creation"""
         batch = tcex.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'campaign', name])
@@ -72,7 +67,7 @@ class TestGroup1:
             ('pytest-document-i1-004', 'Example #4', 'PYTEST:4', 'PyTest4'),
         ],
     )
-    def test_document(self, name, description, label, tag, tcex: 'TcEx'):
+    def test_document(self, name, description, label, tag, tcex: TcEx):
         """Test document creation"""
         batch = tcex.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'document', name])
@@ -96,7 +91,7 @@ class TestGroup1:
             ('pytest-document-malware-i1-004', 'Example #4', 'PYTEST:4', 'PyTest4'),
         ],
     )
-    def test_document_malware(self, name, description, label, tag, tcex: 'TcEx'):
+    def test_document_malware(self, name, description, label, tag, tcex: TcEx):
         """Test document creation"""
         batch = tcex.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'document', name])
@@ -121,7 +116,7 @@ class TestGroup1:
             ('pytest-email-i1-004', 'Example #4', 'PYTEST:4', 'PyTest4'),
         ],
     )
-    def test_email(self, name, description, label, tag, tcex: 'TcEx'):
+    def test_email(self, name, description, label, tag, tcex: TcEx):
         """Test email creation"""
         batch = tcex.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'email', name])
@@ -146,7 +141,7 @@ class TestGroup1:
             ('pytest-event-i1-004', 'Example #4', 'PYTEST:4', 'PyTest4'),
         ],
     )
-    def test_event(self, name, description, label, tag, tcex: 'TcEx'):
+    def test_event(self, name, description, label, tag, tcex: TcEx):
         """Test event creation"""
         batch = tcex.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'event', name])
@@ -170,7 +165,7 @@ class TestGroup1:
             ('pytest-incident-i1-004', 'Example #4', 'PYTEST:4', 'PyTest4'),
         ],
     )
-    def test_incident(self, name, description, label, tag, tcex: 'TcEx'):
+    def test_incident(self, name, description, label, tag, tcex: TcEx):
         """Test incident creation"""
         batch = tcex.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'incident', name])
@@ -193,7 +188,7 @@ class TestGroup1:
             ('pytest-intrusion_set-i1-004', 'Example #4', 'PYTEST:4', 'PyTest4'),
         ],
     )
-    def test_intrusion_set(self, name, description, label, tag, tcex: 'TcEx'):
+    def test_intrusion_set(self, name, description, label, tag, tcex: TcEx):
         """Test intrusion_set creation"""
         batch = tcex.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'intrusion_set', name])
@@ -216,7 +211,7 @@ class TestGroup1:
             ('pytest-report-i1-004', 'Example #4', 'PYTEST:4', 'PyTest4'),
         ],
     )
-    def test_report(self, name, description, label, tag, tcex: 'TcEx'):
+    def test_report(self, name, description, label, tag, tcex: TcEx):
         """Test report creation"""
         batch = tcex.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'report', name])
@@ -240,7 +235,7 @@ class TestGroup1:
             ('pytest-signature-i1-004', 'Example #4', 'PYTEST:4', 'PyTest4'),
         ],
     )
-    def test_signature(self, name, description, label, tag, tcex: 'TcEx'):
+    def test_signature(self, name, description, label, tag, tcex: TcEx):
         """Test signature creation"""
         batch = tcex.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'signature', name])
@@ -265,7 +260,7 @@ class TestGroup1:
             ('pytest-threat-i1-004', 'Example #4', 'PYTEST:4', 'PyTest4'),
         ],
     )
-    def test_threat(self, name, description, label, tag, tcex: 'TcEx'):
+    def test_threat(self, name, description, label, tag, tcex: TcEx):
         """Test threat creation"""
         batch = tcex.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'threat', name])

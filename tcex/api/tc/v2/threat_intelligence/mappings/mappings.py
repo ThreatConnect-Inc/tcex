@@ -3,20 +3,27 @@
 import json
 import logging
 from functools import lru_cache
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 from urllib.parse import unquote
+
+# third-party
+from requests import Response
 
 # first-party
 from tcex.api.tc.v2.threat_intelligence.tcex_ti_tc_request import TiTcRequest
 from tcex.exit.error_codes import TcExErrorCodes
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 from tcex.utils import Utils
 
 if TYPE_CHECKING:
     # first-party
-    from tcex.api.tc.v2.threat_intelligence.threat_intelligence import ThreatIntelligence
+    from tcex.api.tc.v2.threat_intelligence.threat_intelligence import (
+        ThreatIntelligence,  # CIRCULAR-IMPORT
+    )
+
 
 # get tcex logger
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 
 class Mappings:
@@ -50,8 +57,8 @@ class Mappings:
         self._utils = Utils()
 
     @property
-    @lru_cache()
-    def _error_codes(self) -> 'TcExErrorCodes':  # noqa: F821
+    @lru_cache
+    def _error_codes(self) -> TcExErrorCodes:
         """Return TcEx error codes."""
         return TcExErrorCodes()
 
@@ -61,7 +68,7 @@ class Mappings:
         return ['tcex', 'kwargs', 'api_endpoint']
 
     def _handle_error(
-        self, code: int, message_values: Optional[list] = None, raise_error: Optional[bool] = True
+        self, code: int, message_values: list | None = None, raise_error: bool = True
     ):
         """Raise RuntimeError
 
@@ -204,7 +211,7 @@ class Mappings:
         """Provide a generic way to update the attributes of a TC data object."""
         for arg, value in kwargs.items():
             if hasattr(self, 'add_key_value'):
-                self.add_key_value(arg, value)  # pylint: disable=no-member
+                self.add_key_value(arg, value)  # type: ignore
             else:
                 self._data[arg] = value
 
@@ -337,7 +344,7 @@ class Mappings:
             params=params,
         )
 
-    def label(self, label, action='ADD', params=None):
+    def label(self, label, action='ADD', params=None) -> Response | None:
         """Add a Security Label to a Indicator/Group or Victim."""
 
         if params is None:
@@ -662,7 +669,7 @@ class Mappings:
             self.api_type, self.api_branch, self.unique_id, attribute_id, label, owner=self.owner
         )
 
-    def can_create(self):  # pylint: disable=no-self-use
+    def can_create(self):
         """Determine if the object can be created."""
         return True
 

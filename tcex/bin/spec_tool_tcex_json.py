@@ -1,21 +1,15 @@
 """TcEx Generate Configurations CLI Command"""
-# standard library
-from typing import TYPE_CHECKING
 
 # first-party
-from tcex.app_config import TcexJson
+from tcex.app_config import AppSpecYml, TcexJson
 from tcex.app_config.models import TcexJsonModel
 from tcex.bin.bin_abc import BinABC
-
-if TYPE_CHECKING:
-    # first-party
-    from tcex.app_config import AppSpecYml
 
 
 class SpecToolTcexJson(BinABC):
     """Generate App Config File"""
 
-    def __init__(self, asy: 'AppSpecYml'):
+    def __init__(self, asy: AppSpecYml):
         """Initialize class properties."""
         super().__init__()
         self.asy = asy

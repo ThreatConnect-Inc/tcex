@@ -1,6 +1,6 @@
 """OwnerRole / OwnerRoles Object"""
 # standard library
-from typing import Union
+from collections.abc import Iterator
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -8,6 +8,42 @@ from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 from tcex.api.tc.v3.security.owner_roles.owner_role_filter import OwnerRoleFilter
 from tcex.api.tc.v3.security.owner_roles.owner_role_model import OwnerRoleModel, OwnerRolesModel
+
+
+class OwnerRole(ObjectABC):
+    """OwnerRoles Object."""
+
+    def __init__(self, **kwargs):
+        """Initialize class properties."""
+        super().__init__(kwargs.pop('session', None))
+
+        # properties
+        self._model: OwnerRoleModel = OwnerRoleModel(**kwargs)
+        self._nested_field_name = 'ownerRoles'
+        self._nested_filter = 'has_owner_role'
+        self.type_ = 'Owner Role'
+
+    @property
+    def _api_endpoint(self) -> str:
+        """Return the type specific API endpoint."""
+        return ApiEndpoints.OWNER_ROLES.value
+
+    @property
+    def model(self) -> OwnerRoleModel:
+        """Return the model data."""
+        return self._model
+
+    @model.setter
+    def model(self, data: dict | OwnerRoleModel):
+        """Create model using the provided data."""
+        if isinstance(data, type(self.model)):
+            # provided data is already a model, nothing required to change
+            self._model = data
+        elif isinstance(data, dict):
+            # provided data is raw response, load the model
+            self._model = type(self.model)(**data)
+        else:
+            raise RuntimeError(f'Invalid data type: {type(data)} provided.')
 
 
 class OwnerRoles(ObjectCollectionABC):
@@ -34,9 +70,9 @@ class OwnerRoles(ObjectCollectionABC):
         self._model = OwnerRolesModel(**kwargs)
         self.type_ = 'owner_roles'
 
-    def __iter__(self) -> 'OwnerRole':
-        """Iterate over CM objects."""
-        return self.iterate(base_class=OwnerRole)
+    def __iter__(self) -> Iterator[OwnerRole]:
+        """Return CM objects."""
+        return self.iterate(base_class=OwnerRole)  # type: ignore
 
     @property
     def _api_endpoint(self) -> str:
@@ -44,42 +80,6 @@ class OwnerRoles(ObjectCollectionABC):
         return ApiEndpoints.OWNER_ROLES.value
 
     @property
-    def filter(self) -> 'OwnerRoleFilter':
+    def filter(self) -> OwnerRoleFilter:
         """Return the type specific filter object."""
         return OwnerRoleFilter(self.tql)
-
-
-class OwnerRole(ObjectABC):
-    """OwnerRoles Object."""
-
-    def __init__(self, **kwargs):
-        """Initialize class properties."""
-        super().__init__(kwargs.pop('session', None))
-
-        # properties
-        self._model = OwnerRoleModel(**kwargs)
-        self._nested_field_name = 'ownerRoles'
-        self._nested_filter = 'has_owner_role'
-        self.type_ = 'Owner Role'
-
-    @property
-    def _api_endpoint(self) -> str:
-        """Return the type specific API endpoint."""
-        return ApiEndpoints.OWNER_ROLES.value
-
-    @property
-    def model(self) -> 'OwnerRoleModel':
-        """Return the model data."""
-        return self._model
-
-    @model.setter
-    def model(self, data: Union['OwnerRoleModel', dict]):
-        """Create model using the provided data."""
-        if isinstance(data, type(self.model)):
-            # provided data is already a model, nothing required to change
-            self._model = data
-        elif isinstance(data, dict):
-            # provided data is raw response, load the model
-            self._model = type(self.model)(**data)
-        else:
-            raise RuntimeError(f'Invalid data type: {type(data)} provided.')

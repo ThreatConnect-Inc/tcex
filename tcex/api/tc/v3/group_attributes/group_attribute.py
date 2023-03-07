@@ -1,6 +1,7 @@
 """GroupAttribute / GroupAttributes Object"""
 # standard library
-from typing import TYPE_CHECKING, Iterator, Union
+from collections.abc import Generator, Iterator
+from typing import TYPE_CHECKING
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -15,7 +16,76 @@ from tcex.api.tc.v3.security_labels.security_label_model import SecurityLabelMod
 
 if TYPE_CHECKING:  # pragma: no cover
     # first-party
-    from tcex.api.tc.v3.security_labels.security_label import SecurityLabel
+    from tcex.api.tc.v3.security_labels.security_label import SecurityLabel  # CIRCULAR-IMPORT
+
+
+class GroupAttribute(ObjectABC):
+    """GroupAttributes Object.
+
+    Args:
+        default (bool, kwargs): A flag indicating that this is the default attribute of its type
+            within the object. Only applies to certain attribute and data types.
+        group_id (int, kwargs): Group associated with attribute.
+        pinned (bool, kwargs): A flag indicating that the attribute has been noted for importance.
+        security_labels (SecurityLabels, kwargs): A list of Security Labels corresponding to the
+            Intel item (NOTE: Setting this parameter will replace any existing tag(s) with
+            the one(s) specified).
+        source (str, kwargs): The attribute source.
+        type (str, kwargs): The attribute type.
+        value (str, kwargs): The attribute value.
+    """
+
+    def __init__(self, **kwargs):
+        """Initialize class properties."""
+        super().__init__(kwargs.pop('session', None))
+
+        # properties
+        self._model: GroupAttributeModel = GroupAttributeModel(**kwargs)
+        self._nested_field_name = 'attributes'
+        self._nested_filter = 'has_group_attribute'
+        self.type_ = 'Group Attribute'
+
+    @property
+    def _api_endpoint(self) -> str:
+        """Return the type specific API endpoint."""
+        return ApiEndpoints.GROUP_ATTRIBUTES.value
+
+    @property
+    def model(self) -> GroupAttributeModel:
+        """Return the model data."""
+        return self._model
+
+    @model.setter
+    def model(self, data: dict | GroupAttributeModel):
+        """Create model using the provided data."""
+        if isinstance(data, type(self.model)):
+            # provided data is already a model, nothing required to change
+            self._model = data
+        elif isinstance(data, dict):
+            # provided data is raw response, load the model
+            self._model = type(self.model)(**data)
+        else:
+            raise RuntimeError(f'Invalid data type: {type(data)} provided.')
+
+    @property
+    def security_labels(self) -> Generator['SecurityLabel', None, None]:
+        """Yield SecurityLabel from SecurityLabels."""
+        # first-party
+        from tcex.api.tc.v3.security_labels.security_label import SecurityLabels
+
+        yield from self._iterate_over_sublist(SecurityLabels)  # type: ignore
+
+    def stage_security_label(self, data: dict | ObjectABC | SecurityLabelModel):
+        """Stage security_label on the object."""
+        if isinstance(data, ObjectABC):
+            data = data.model  # type: ignore
+        elif isinstance(data, dict):
+            data = SecurityLabelModel(**data)
+
+        if not isinstance(data, SecurityLabelModel):
+            raise RuntimeError('Invalid type passed in to stage_security_label')
+        data._staged = True
+        self.model.security_labels.data.append(data)  # type: ignore
 
 
 class GroupAttributes(ObjectCollectionABC):
@@ -42,9 +112,9 @@ class GroupAttributes(ObjectCollectionABC):
         self._model = GroupAttributesModel(**kwargs)
         self.type_ = 'group_attributes'
 
-    def __iter__(self) -> 'GroupAttribute':
-        """Iterate over CM objects."""
-        return self.iterate(base_class=GroupAttribute)
+    def __iter__(self) -> Iterator[GroupAttribute]:
+        """Return CM objects."""
+        return self.iterate(base_class=GroupAttribute)  # type: ignore
 
     @property
     def _api_endpoint(self) -> str:
@@ -52,75 +122,6 @@ class GroupAttributes(ObjectCollectionABC):
         return ApiEndpoints.GROUP_ATTRIBUTES.value
 
     @property
-    def filter(self) -> 'GroupAttributeFilter':
+    def filter(self) -> GroupAttributeFilter:
         """Return the type specific filter object."""
         return GroupAttributeFilter(self.tql)
-
-
-class GroupAttribute(ObjectABC):
-    """GroupAttributes Object.
-
-    Args:
-        default (bool, kwargs): A flag indicating that this is the default attribute of its type
-            within the object. Only applies to certain attribute and data types.
-        group_id (int, kwargs): Group associated with attribute.
-        pinned (bool, kwargs): A flag indicating that the attribute has been noted for importance.
-        security_labels (SecurityLabels, kwargs): A list of Security Labels corresponding to the
-            Intel item (NOTE: Setting this parameter will replace any existing tag(s) with
-            the one(s) specified).
-        source (str, kwargs): The attribute source.
-        type (str, kwargs): The attribute type.
-        value (str, kwargs): The attribute value.
-    """
-
-    def __init__(self, **kwargs):
-        """Initialize class properties."""
-        super().__init__(kwargs.pop('session', None))
-
-        # properties
-        self._model = GroupAttributeModel(**kwargs)
-        self._nested_field_name = 'attributes'
-        self._nested_filter = 'has_group_attribute'
-        self.type_ = 'Group Attribute'
-
-    @property
-    def _api_endpoint(self) -> str:
-        """Return the type specific API endpoint."""
-        return ApiEndpoints.GROUP_ATTRIBUTES.value
-
-    @property
-    def model(self) -> 'GroupAttributeModel':
-        """Return the model data."""
-        return self._model
-
-    @model.setter
-    def model(self, data: Union['GroupAttributeModel', dict]):
-        """Create model using the provided data."""
-        if isinstance(data, type(self.model)):
-            # provided data is already a model, nothing required to change
-            self._model = data
-        elif isinstance(data, dict):
-            # provided data is raw response, load the model
-            self._model = type(self.model)(**data)
-        else:
-            raise RuntimeError(f'Invalid data type: {type(data)} provided.')
-
-    @property
-    def security_labels(self) -> Iterator['SecurityLabel']:
-        """Yield SecurityLabel from SecurityLabels."""
-        # first-party
-        from tcex.api.tc.v3.security_labels.security_label import SecurityLabels
-
-        yield from self._iterate_over_sublist(SecurityLabels)
-
-    def stage_security_label(self, data: Union[dict, 'ObjectABC', 'SecurityLabelModel']):
-        """Stage security_label on the object."""
-        if isinstance(data, ObjectABC):
-            data = data.model
-        elif isinstance(data, dict):
-            data = SecurityLabelModel(**data)
-
-        if not isinstance(data, SecurityLabelModel):
-            raise RuntimeError('Invalid type passed in to stage_security_label')
-        data._staged = True
-        self.model.security_labels.data.append(data)

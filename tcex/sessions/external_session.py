@@ -2,7 +2,7 @@
 # standard library
 import logging
 import time
-from typing import Callable, Optional
+from collections.abc import Callable
 
 # third-party
 import urllib3
@@ -11,18 +11,19 @@ from requests.adapters import DEFAULT_POOLBLOCK, DEFAULT_POOLSIZE, DEFAULT_RETRI
 from urllib3.util.retry import Retry
 
 # first-party
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 from tcex.sessions.rate_limit_handler import RateLimitHandler
 from tcex.utils.requests_to_curl import RequestsToCurl
 from tcex.utils.utils import Utils
 
 # get tcex logger
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 # disable ssl warning message
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)  # type: ignore
 
 
-def default_too_many_requests_handler(response: 'Response') -> float:
+def default_too_many_requests_handler(response: Response) -> float:
     """Implement 429 response handling that uses the Retry-After header.
 
     Will return the value in Retry-After.  See: https://tools.ietf.org/html/rfc6585#page-3.
@@ -48,7 +49,7 @@ def default_too_many_requests_handler(response: 'Response') -> float:
         seconds = retry_after
 
     # handle negative values
-    if seconds < 0:
+    if isinstance(seconds, (float, int)) and seconds < 0:
         seconds = retry_after
 
     return float(seconds)
@@ -59,11 +60,11 @@ class CustomAdapter(adapters.HTTPAdapter):
 
     def __init__(
         self,
-        rate_limit_handler: Optional[RateLimitHandler] = None,
-        pool_connections=DEFAULT_POOLSIZE,
-        pool_maxsize=DEFAULT_POOLSIZE,
-        max_retries=DEFAULT_RETRIES,
-        pool_block=DEFAULT_POOLBLOCK,
+        rate_limit_handler: RateLimitHandler | None = None,
+        pool_connections: int = DEFAULT_POOLSIZE,
+        pool_maxsize: int = DEFAULT_POOLSIZE,
+        max_retries: int = DEFAULT_RETRIES,
+        pool_block: bool = DEFAULT_POOLBLOCK,
     ):
         """Initialize CustomAdapter.
 
@@ -103,12 +104,12 @@ class CustomAdapter(adapters.HTTPAdapter):
         return response
 
     @property
-    def rate_limit_handler(self) -> 'RateLimitHandler':
+    def rate_limit_handler(self) -> RateLimitHandler | None:
         """Get the RateLimitHandler."""
         return self._rate_limit_handler
 
     @rate_limit_handler.setter
-    def rate_limit_handler(self, rate_limit_handler: 'RateLimitHandler'):
+    def rate_limit_handler(self, rate_limit_handler: RateLimitHandler):
         """Set the RateLimitHandler."""
         self._rate_limit_handler = rate_limit_handler
 
@@ -117,8 +118,8 @@ class ExternalSession(Session):
     """ThreatConnect REST API Requests Session for external requests
 
     Args:
-        base_url (Optional[str] = None): The base URL for all requests.
-        logger (Optional[object] = None): An instance of Logger.
+        base_url: The base URL for all requests.
+        logger: An instance of Logger.
     """
 
     __attrs__ = [
@@ -142,12 +143,12 @@ class ExternalSession(Session):
         'utils',
     ]
 
-    def __init__(self, base_url: Optional[str] = None):
+    def __init__(self, base_url: str | None = None):
         """Initialize the Class properties."""
         super().__init__()
         self._base_url = base_url
 
-        self._custom_adapter: Optional[CustomAdapter] = None
+        self._custom_adapter: CustomAdapter | None = None
         self.utils: object = Utils()
 
         # properties
@@ -164,7 +165,7 @@ class ExternalSession(Session):
         self.retry()
 
     @property
-    def base_url(self) -> str:
+    def base_url(self) -> str | None:
         """Return the base url."""
         return self._base_url
 
@@ -204,7 +205,7 @@ class ExternalSession(Session):
         self._mask_headers = mask_bool
 
     @property
-    def mask_patterns(self) -> list:
+    def mask_patterns(self) -> list[str] | None:
         """Return property"""
         return self._mask_patterns
 
@@ -214,7 +215,7 @@ class ExternalSession(Session):
         self._mask_patterns = patterns
 
     @property
-    def too_many_requests_handler(self) -> Callable[['Response'], float]:
+    def too_many_requests_handler(self) -> Callable[[Response], float]:
         """Get the too_many_requests_handler.
 
         The too_many_requests_handler is responsible for determining how long to sleep (in seconds)
@@ -238,7 +239,7 @@ class ExternalSession(Session):
         self._too_many_requests_handler = too_many_requests_handler
 
     @property
-    def rate_limit_handler(self) -> 'RateLimitHandler':
+    def rate_limit_handler(self) -> RateLimitHandler:
         """Return the RateLimitHandler.
 
         The RateLimitHandler is responsible for throttling request frequency.  The default
@@ -332,9 +333,9 @@ class ExternalSession(Session):
 
     def retry(
         self,
-        retries: Optional[int] = 3,
-        backoff_factor: Optional[float] = 0.3,
-        status_forcelist: Optional[list] = None,
+        retries: int = 3,
+        backoff_factor: float = 0.3,
+        status_forcelist: list | None = None,
         **kwargs,
     ):
         """Add retry to Requests Session
@@ -342,10 +343,10 @@ class ExternalSession(Session):
         https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html#urllib3.util.retry.Retry
 
         Args:
-            retries (Optional[int] = 3): The number of retry attempts.
-            backoff_factor (Optional[float] = 0.3): The backoff factor for retries.
-            status_forcelist (Optional[list] = [500, 502, 504]): A list of status code to retry on.
-            urls (list, kwargs): An optional URL to apply the retry. If not provided the retry
+            retries: The number of retry attempts.
+            backoff_factor: The backoff factor for retries.
+            status_forcelist: A list of status code to retry on.
+            urls: An optional URL to apply the retry. If not provided the retry
                 applies to all request with "https://".
         """
         retry_object: object = Retry(
@@ -360,8 +361,9 @@ class ExternalSession(Session):
         if self._custom_adapter:
             self._custom_adapter.max_retries = retry_object
         else:
+            # TODO: @cblades - max_retries is types as int and Retry is being passed
             self._custom_adapter = CustomAdapter(
-                rate_limit_handler=self.rate_limit_handler, max_retries=retry_object
+                rate_limit_handler=self.rate_limit_handler, max_retries=retry_object  # type: ignore
             )
 
         # mount the custom adapter

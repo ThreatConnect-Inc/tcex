@@ -1,17 +1,15 @@
 """Valid Values Field Type"""
 # standard library
-from typing import TYPE_CHECKING, Callable, Dict, Optional
+from collections.abc import Generator
+
+# third-party
+from pydantic.fields import ModelField  # TYPE-CHECKING
 
 # first-party
 from tcex.api.tc.utils.threat_intel_utils import ThreatIntelUtils
 from tcex.app_config.install_json import InstallJson
 from tcex.input.field_types.exception import InvalidEmptyValue, InvalidInput, InvalidType
-from tcex.pleb.none_model import NoneModel
 from tcex.pleb.registry import registry
-
-if TYPE_CHECKING:  # pragma: no cover
-    # third-party
-    from pydantic.fields import ModelField
 
 
 class EditChoice(str):
@@ -29,7 +27,7 @@ class EditChoice(str):
     _value_transformations = None
 
     @classmethod
-    def __get_validators__(cls) -> Callable:
+    def __get_validators__(cls) -> Generator:
         """Run validators / modifiers on input."""
         yield cls.validate_type
         yield cls.modifier_strip
@@ -41,7 +39,7 @@ class EditChoice(str):
         return value.strip()
 
     @classmethod
-    def validate_type(cls, value: str, field: 'ModelField') -> str:
+    def validate_type(cls, value: str, field: ModelField) -> str:
         """Raise exception if value is not a String type."""
         if not isinstance(value, str):
             raise InvalidType(
@@ -50,7 +48,7 @@ class EditChoice(str):
         return value
 
     @classmethod
-    def validate_valid_values(cls, value: str, field: 'ModelField') -> str:
+    def validate_valid_values(cls, value: str, field: ModelField) -> str:
         """Raise exception if value is not a String type."""
         if value == '':
             raise InvalidEmptyValue(field.name)
@@ -59,14 +57,15 @@ class EditChoice(str):
         param = ij.model.get_param(field.name)
 
         # TODO: [high] figure out a better way ...
-        if isinstance(param, NoneModel):
+        if param is None:
             # for a multichoice input field, pydantic prefixes the name with an underscore,
             # this breaks the lookup based on the "name" field in the install.json. Strip
             # the underscore to get the correct param name.
             param = ij.model.get_param(field.name.lstrip('_'))
 
         ti_utils = ThreatIntelUtils(registry.session_tc)
-        _valid_values = ti_utils.resolve_variables(param.valid_values or [])
+        valid_values = [] if param is None else param.valid_values
+        _valid_values = ti_utils.resolve_variables(valid_values)
         for vv in _valid_values:
             if vv.lower() == value.lower():
                 value = vv
@@ -85,7 +84,7 @@ class EditChoice(str):
 
 
 def edit_choice(
-    allow_additional: bool = False, value_transformations: Optional[Dict[str, str]] = None
+    allow_additional: bool = False, value_transformations: dict[str, str] | None = None
 ) -> type:
     """Return configured instance of String.
 
@@ -99,8 +98,8 @@ def edit_choice(
     If this field were to be initialized with 'my_choice', then the final value found in the input
     model would be 'My Choice'.
     """
-    namespace = dict(
-        _value_transformations=value_transformations,
-        _allow_additional=allow_additional,
-    )
+    namespace = {
+        '_value_transformations': value_transformations,
+        '_allow_additional': allow_additional,
+    }
     return type('CustomEditChoice', (EditChoice,), namespace)

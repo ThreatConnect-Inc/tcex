@@ -1,21 +1,22 @@
 """TcEx Registry"""
 # standard library
 import functools
-from collections.abc import Container
-from typing import TYPE_CHECKING, Any, Callable, Tuple, Type, TypeVar, Union
+from collections.abc import Callable, Container
+from typing import TYPE_CHECKING, Any, TypeVar
+
+# third-party
+from redis import Redis  # TYPE-CHECKING
+
+# first-party
+from tcex.key_value_store import KeyValueApi, KeyValueRedis  # TYPE-CHECKING
 
 if TYPE_CHECKING:
-    # third-party
-    from redis import Redis
-
     # first-party
-    from tcex.exit.exit import ExitService
-    from tcex.input.input import Input
-    from tcex.key_value_store.key_value_api import KeyValueApi
-    from tcex.key_value_store.key_value_redis import KeyValueRedis
-    from tcex.playbook.playbook import Playbook
-    from tcex.sessions.tc_session import TcSession
-    from tcex.tokens import Tokens
+    from tcex.exit.exit import ExitService  # CIRCULAR-IMPORT
+    from tcex.input.input import Input  # CIRCULAR-IMPORT
+    from tcex.playbook.playbook import Playbook  # CIRCULAR-IMPORT
+    from tcex.sessions.tc_session import TcSession  # CIRCULAR-IMPORT
+    from tcex.tokens import Tokens  # CIRCULAR-IMPORT
 
 T = TypeVar('T')
 
@@ -35,7 +36,7 @@ class Registry(Container):
         """Initialize class properties."""
         self._values = {}
 
-    def add_service(self, type_or_name: Union[str, Type], value: Any):
+    def add_service(self, type_or_name: str | type, value: Any):
         """Add an instance of a type to this registry.
 
         A service is a single instance of the given type.
@@ -55,7 +56,7 @@ class Registry(Container):
         """
         self._add(method.__name__, method)
 
-    def add_factory(self, type_or_name: Union[str, Type], factory: Callable, singleton=False):
+    def add_factory(self, type_or_name: str | type, factory: Callable, singleton=False):
         """Add a factory for a service.
 
         A factory is any callable that can be invoked to provide the given type of service.
@@ -98,7 +99,7 @@ class Registry(Container):
             except KeyError:
                 pass
 
-    def _add(self, type_or_name: Union[str, Type], value: Union[Type, Tuple[bool, Callable]]):
+    def _add(self, type_or_name: str | type, value: Callable | type | tuple[bool, Callable]):
         key = type_or_name if isinstance(type_or_name, str) else type_or_name.__name__
         if key in self._values:
             raise RuntimeError(f'A service has already been provided for {key}.')
@@ -107,6 +108,18 @@ class Registry(Container):
 
     def __getattr__(self, type_or_name):
         """Enable property-access style access to registered services, i.e., registry.MyClass."""
+        return self._retrieve_registered_value(type_or_name)
+
+    def __contains__(self, item: object) -> bool:
+        """Enable the syntax MyClass in registry."""
+        try:
+            self.__getattr__(item)
+            return True
+        except RuntimeError:
+            return False
+
+    def _retrieve_registered_value(self, type_or_name):
+        """Retrieve or create a value, if already registered."""
         key = type_or_name if isinstance(type_or_name, str) else type_or_name.__name__
         if key in self._values:
             value = self._values[key]
@@ -122,23 +135,13 @@ class Registry(Container):
 
         raise RuntimeError(f'No provider for type: {key}')
 
-    def __contains__(self, item: object) -> bool:
-        """Enable the syntax MyClass in registry."""
-        try:
-            self.__getattr__(item)
-            return True
-        except RuntimeError:
-            return False
-
     def _reset(self):
         """Only used during testing to reset registry."""
         self._values = {}
 
     @staticmethod
-    def factory(type_or_name: Type[T], singleton: bool = False) -> Callable[..., T]:
+    def factory(type_or_name: str | type, singleton: bool = False) -> Callable[[T], T]:
         """Decorate a function that can be treated as a factory that provides a service.
-
-        Note: does NOT work with @property.
 
         Args:
             type_or_name: the concrete type of the provided service, or a name (MyClass or
@@ -147,7 +150,7 @@ class Registry(Container):
             will be invoked every time the service is requested.
         """
 
-        def _decorator(original: Callable[..., T]) -> Callable[..., T]:
+        def _decorator(original: T) -> T:
             setattr(original, 'factory_provider', (type_or_name, singleton))
             return original
 
@@ -160,12 +163,12 @@ class Registry(Container):
     @property
     def exit(self) -> 'ExitService':
         """@cblades"""
-        return self.__getattr__('ExitService')
+        return self.ExitService
 
     @property
-    def handle_error(self) -> 'Callable':
+    def handle_error(self) -> Callable:
         """Return a handle_error function."""
-        return self.__getattr__('handle_error')
+        return self._retrieve_registered_value('handle_error')
 
     @property
     def inputs(self) -> 'Input':
@@ -173,7 +176,7 @@ class Registry(Container):
         return self.Input
 
     @property
-    def key_value_store(self) -> Union['KeyValueRedis', 'KeyValueApi']:
+    def key_value_store(self) -> KeyValueRedis | KeyValueApi:
         """Return a KeyValue object, either an API version or a Redis one."""
         return self.KeyValueStore
 
@@ -183,7 +186,7 @@ class Registry(Container):
         return self.Playbook
 
     @property
-    def redis_client(self) -> 'Redis':
+    def redis_client(self) -> Redis:
         """Return a Redis client object (redis.Redis)."""
         return self.RedisClient
 

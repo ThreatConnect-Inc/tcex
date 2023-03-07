@@ -1,6 +1,6 @@
 """Testing TcEx Input module field types."""
 # standard library
-from typing import TYPE_CHECKING, Dict, Optional
+from collections.abc import Callable
 
 # third-party
 import pytest
@@ -11,13 +11,10 @@ from tcex.backports import cached_property
 from tcex.input.field_types import EditChoice, edit_choice
 from tcex.pleb.scoped_property import scoped_property
 from tests.input.field_types.utils import InputTest
-
-if TYPE_CHECKING:
-    # first-party
-    from tests.mock_app import MockApp
+from tests.mock_app import MockApp  # TYPE-CHECKING
 
 
-# pylint: disable=no-self-argument, no-self-use
+# pylint: disable=no-self-argument
 class TestInputsFieldTypes(InputTest):
     """Test TcEx String Field Model Tests."""
 
@@ -55,7 +52,7 @@ class TestInputsFieldTypes(InputTest):
         expected: str,
         optional: bool,
         fail_test: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test EditChoice field type.
 
@@ -63,22 +60,22 @@ class TestInputsFieldTypes(InputTest):
         Validation: Not null
         """
 
+        class PytestModelRequired(BaseModel):
+            """Test Model for Inputs"""
+
+            my_choice: EditChoice
+
+        class PytestModelOptional(BaseModel):
+            """Test Model for Inputs"""
+
+            my_choice: EditChoice | None
+
+        pytest_model = PytestModelOptional
         if optional is False:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_choice: EditChoice
-
-        else:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_choice: Optional[EditChoice]
+            pytest_model = PytestModelRequired
 
         self._type_validation(
-            PytestModel,
+            pytest_model,
             input_name='my_choice',
             input_value=input_value,
             input_type='String',
@@ -146,8 +143,8 @@ class TestInputsFieldTypes(InputTest):
         optional: bool,
         fail_test: bool,
         allow_additional: bool,
-        playbook_app: 'MockApp',
-        transformations: Dict,
+        playbook_app: Callable[..., MockApp],
+        transformations: dict,
     ):
         """Test Custom EditChoice field type.
 
@@ -155,28 +152,28 @@ class TestInputsFieldTypes(InputTest):
         Validation: Not null
         """
 
-        if optional is False:
+        class PytestModelRequired(BaseModel):
+            """Test Model for Inputs"""
 
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
+            my_choice: edit_choice(
+                value_transformations=transformations, allow_additional=allow_additional
+            )  # type: ignore
 
-                my_choice: edit_choice(
+        class PytestModelOptional(BaseModel):
+            """Test Model for Inputs"""
+
+            my_choice: None | (
+                edit_choice(
                     value_transformations=transformations, allow_additional=allow_additional
                 )
+            )  # type: ignore
 
-        else:
-
-            class PytestModel(BaseModel):
-                """Test Model for Inputs"""
-
-                my_choice: Optional[
-                    edit_choice(
-                        value_transformations=transformations, allow_additional=allow_additional
-                    )
-                ]
+        pytest_model = PytestModelOptional
+        if optional is False:
+            pytest_model = PytestModelRequired
 
         self._type_validation(
-            PytestModel,
+            pytest_model,
             input_name='my_choice',
             input_value=input_value,
             input_type='String',

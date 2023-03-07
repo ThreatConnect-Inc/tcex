@@ -1,6 +1,6 @@
 """TcEx Utilities AES Operations Module"""
 # standard library
-from typing import Optional, Union
+from typing import cast
 
 # third-party
 import pyaes
@@ -11,7 +11,7 @@ class AesOperations:
 
     @staticmethod
     def decrypt_aes_cbc(
-        key: bytes, ciphertext: Union[bytes, str], iv: Optional[bytes] = None
+        key: bytes | str, ciphertext: bytes | str, iv: bytes | str | None = None
     ) -> bytes:
         """Return AES CBC decrypted string.
 
@@ -33,11 +33,11 @@ class AesOperations:
         aes_cbc_decrypt = pyaes.Decrypter(pyaes.AESModeOfOperationCBC(key, iv=iv))
         decrypted = aes_cbc_decrypt.feed(ciphertext)
         decrypted += aes_cbc_decrypt.feed()
-        return decrypted
+        return cast(bytes, decrypted)
 
     @staticmethod
     def encrypt_aes_cbc(
-        key: bytes, plaintext: Union[bytes, str], iv: Optional[bytes] = None
+        key: bytes | str, plaintext: bytes | str, iv: bytes | str | None = None
     ) -> bytes:
         """Return AES CBC encrypted string.
 
@@ -63,4 +63,4 @@ class AesOperations:
         aes_cbc_encrypt = pyaes.Encrypter(pyaes.AESModeOfOperationCBC(key, iv=iv))
         encrypted = aes_cbc_encrypt.feed(plaintext)
         encrypted += aes_cbc_encrypt.feed()
-        return encrypted
+        return cast(bytes, encrypted)

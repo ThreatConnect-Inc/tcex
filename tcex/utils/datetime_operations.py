@@ -1,10 +1,11 @@
 """TcEx Utilities Datetime Operations Module"""
 # standard library
+from collections.abc import Generator
 from datetime import datetime
-from typing import Any, Optional, Tuple, Union
 
 # third-party
 import arrow as _arrow
+from arrow import Arrow
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
 
@@ -13,19 +14,23 @@ class DatetimeOperations:
     """TcEx Utilities Datetime Operations Class"""
 
     @classmethod
-    def any_to_datetime(cls, datetime_expression: str, tz: Optional[str] = None) -> '_arrow.Arrow':
+    def any_to_datetime(
+        cls,
+        datetime_expression: int | str | datetime | Arrow,
+        tz: str | None = None,
+    ) -> Arrow:
         """Return a arrow object from datetime expression.
 
         Args:
-            datetime_expression: the datetime expression to parse into an Arrow datetime object.
+            datetime_expression: The datetime expression to parse into an Arrow datetime object.
+            tz: If provided, the parsed Arrow datetime object will be converted to the timezone
+                resulting from this timezone expression. Accepts values like 'US/Pacific', '-07:00',
+                'UTC'.
 
-            tz: if provided, the parsed Arrow datetime object will be converted to the timezone
-            resulting from this timezone expression. Accepts values like 'US/Pacific', '-07:00',
-            'UTC'.
-            When this parameter is None, the returned Arrow datetime object will retain
-            its timezone information if datetime_expression is timezone-aware. If
-            datetime_expression is not timezone-aware, then the returned Arrow datetime object
-            will have UTC timezone info.
+                When this parameter is None, the returned Arrow datetime object will retain
+                its timezone information if datetime_expression is timezone-aware. If
+                datetime_expression is not timezone-aware, then the returned Arrow datetime object
+                will have UTC timezone info.
         """
         value = str(datetime_expression)
 
@@ -49,7 +54,7 @@ class DatetimeOperations:
                 # convert timezone if tz arg provided, else return parsed object
                 return cls._convert_timezone(parsed, tz) if tz is not None else parsed
 
-        raise RuntimeError(
+        raise RuntimeError(  # pragma: no cover
             f'Value "{value}" of type "{type(datetime_expression)}" '
             'could not be parsed as a date time object.'
         )
@@ -61,12 +66,12 @@ class DatetimeOperations:
 
     def chunk_date_range(
         self,
-        start_date: Union[int, str, datetime, '_arrow.Arrow'],
-        end_date: Union[int, str, datetime, '_arrow.Arrow'],
-        chunk_size: int,
-        chunk_unit: Optional[str] = 'months',
-        date_format: Optional[str] = None,
-    ) -> Tuple[Union['_arrow.Arrow', str], Union['_arrow.Arrow', str]]:
+        start_date: int | str | datetime | Arrow,
+        end_date: int | str | datetime | Arrow,
+        chunk_size: int = 1,
+        chunk_unit: str = 'months',
+        date_format: str | None = None,
+    ) -> Generator[tuple[Arrow | str, Arrow | str], None, None]:
         """Chunk a date range based on unit and size
 
         Args:
@@ -77,10 +82,6 @@ class DatetimeOperations:
             versions of valid values also acceptable)
             date_format: If None datetime object will be returned. Any other value
                 must be a valid strftime format (%s for epoch seconds).
-
-        Returns:
-            Tuple[Union[arrow.Arrow, str], Union[arrow.Arrow, str]]: Either a datetime object
-                or a string representation of the date.
         """
         start_date = self.any_to_datetime(start_date)
         end_date = self.any_to_datetime(end_date)
@@ -94,32 +95,32 @@ class DatetimeOperations:
         }
 
         try:
-            for range_tuple in _arrow.Arrow.interval(**interval_args):
+            for range_tuple in Arrow.interval(**interval_args):
                 if date_format is not None:
-                    yield range_tuple[0].strftime(date_format), range_tuple[1].strftime(date_format)
-                else:
-                    yield range_tuple
-        except Exception as ex:
+                    range_tuple = range_tuple[0].strftime(date_format), range_tuple[1].strftime(
+                        date_format
+                    )
+                yield range_tuple
+        except Exception as ex:  # pragma: no cover
             raise RuntimeError(
                 'Could not generate date range. Please verify that chunk_size, chunk_unit, '
                 'and date_format values are valid.'
             ) from ex
 
-    def timedelta(self, time_input1: str, time_input2: str) -> dict:
+    def timedelta(
+        self, time_input1: int | str | datetime | Arrow, time_input2: int | str | datetime | Arrow
+    ) -> dict:
         """Calculate the time delta between two time expressions.
 
         Args:
-            time_input1: The time input string (see formats above).
-            time_input2: The time input string (see formats above).
-
-        Returns:
-            (dict): Dict with delta values.
+            time_input1: The end time expression (larger time value).
+            time_input2: The start time input string (smaller time value).
         """
-        time_input1: datetime = self.any_to_datetime(time_input1).datetime
-        time_input2: datetime = self.any_to_datetime(time_input2).datetime
+        time_input1_ = self.any_to_datetime(time_input1).datetime
+        time_input2_ = self.any_to_datetime(time_input2).datetime
 
-        diff = time_input1 - time_input2  # timedelta
-        delta: object = relativedelta(time_input1, time_input2)  # relativedelta
+        diff = time_input1_ - time_input2_  # timedelta
+        delta: object = relativedelta(time_input1_, time_input2_)  # relativedelta
 
         # totals
         total_months = (delta.years * 12) + delta.months
@@ -130,8 +131,8 @@ class DatetimeOperations:
         total_seconds = (total_minutes * 60) + delta.seconds
         total_microseconds = (total_seconds * 1000) + delta.microseconds
         return {
-            'datetime_1': time_input1.isoformat(),
-            'datetime_2': time_input2.isoformat(),
+            'datetime_1': time_input1_.isoformat(),
+            'datetime_2': time_input2_.isoformat(),
             'years': delta.years,
             'months': delta.months,
             'weeks': delta.weeks,
@@ -150,7 +151,7 @@ class DatetimeOperations:
         }
 
     @classmethod
-    def _convert_timezone(cls, arrow_dt: '_arrow.Arrow', tz: str):
+    def _convert_timezone(cls, arrow_dt: Arrow, tz: str):
         """Convert Arrow datetime's timezone
 
         Args:
@@ -159,13 +160,13 @@ class DatetimeOperations:
         """
         try:
             return arrow_dt.to(tz)
-        except Exception as ex:
+        except Exception as ex:  # pragma: no cover
             raise RuntimeError(
                 f'Could not convert datetime to timezone "{tz}". Please verify timezone input.'
             ) from ex
 
     @staticmethod
-    def _parse_default_arrow_formats(value: Any) -> '_arrow.Arrow':
+    def _parse_default_arrow_formats(value: str) -> Arrow:
         """Attempt to parse value using default Arrow formats.
 
         The value is simply passed into Arrow's "get" method. The following are the default
@@ -195,7 +196,7 @@ class DatetimeOperations:
         return _arrow.get(value)
 
     @staticmethod
-    def _parse_humanized_input(value: Any) -> '_arrow.Arrow':
+    def _parse_humanized_input(value: str) -> Arrow:
         """Attempt to dehumanize time inputs. Example: 'Two hours ago'."""
         now = _arrow.utcnow()
         plurals = {
@@ -219,7 +220,7 @@ class DatetimeOperations:
         return now.dehumanize(value)
 
     @staticmethod
-    def _parse_non_default_arrow_formats(value: Any) -> '_arrow.Arrow':
+    def _parse_non_default_arrow_formats(value: str) -> Arrow:
         """Attempt to parse value using non-default Arrow formats
 
         These are formats that Arrow provides constants for but are not used in the "get"
@@ -244,7 +245,7 @@ class DatetimeOperations:
         )
 
     @staticmethod
-    def _parse_timestamp(value: Any) -> '_arrow.Arrow':
+    def _parse_timestamp(value: str) -> Arrow:
         """Attempt to parse epoch timestamp in seconds, milliseconds, or microseconds.
 
         Note: passing formats to test against overrides the default formats. Defaults are not used.
@@ -259,8 +260,8 @@ class DatetimeOperations:
             return _arrow.get(float(value))
 
     @staticmethod
-    def _parse_date_utils(value: Any) -> '_arrow.Arrow':
-        """Attempt to supplement arrows parsing ability with dateutils.
+    def _parse_date_utils(value: str) -> Arrow:
+        """Attempt to supplement arrows parsing ability with date utils.
 
         Arrow doesn't support RFC_5322 used in HTTP 409 headers
         """

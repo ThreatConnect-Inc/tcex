@@ -1,4 +1,8 @@
 """App Decorators Module."""
+# standard library
+from collections.abc import Callable
+from typing import Any
+
 # third-party
 import wrapt
 
@@ -23,45 +27,51 @@ class FailOnOutput:
             return data.lowercase()
 
     Args:
-        fail_enabled (boolean|str, kwargs): Accepts a boolean or string value.  If a boolean value
+        fail_enabled: Accepts a boolean or string value.  If a boolean value
             is provided that value will control enabling/disabling this feature. A string
             value should reference an item in the args namespace which resolves to a boolean.
             The value of this boolean will control enabling/disabling this feature.
-        fail_msg (str, kwargs): The message to log when raising RuntimeError.
-        fail_msg_property (str, kwargs): The App property containing the dynamic exit message.
-        fail_on (list, kwargs):
-            Fail if return value from App method is in the list.
-        write_output (bool, kwargs): Defaults to True.
-            If true, will call App.write_outputs() before failing on matched fail_on value.
+        fail_msg: The message to log when raising RuntimeError.
+        fail_msg_property: The App property containing the dynamic exit message.
+        fail_on: Fail if return value from App method is in the list.
+        write_output: Defaults to True. If true, will call App.write_outputs() before failing
+            on matched fail_on value.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(
+        self,
+        fail_enabled: bool | str = True,
+        fail_msg: str = 'Method returned invalid output.',
+        fail_on: list | None = None,
+        fail_msg_property: str | None = None,
+        write_output: bool = True,
+    ):
         """Initialize Class properties."""
-        self.fail_enabled = kwargs.get('fail_enabled', True)
-        self.fail_msg = kwargs.get('fail_msg', 'Method returned invalid output.')
-        self.fail_on = kwargs.get('fail_on', [])
-        self.fail_msg_property = kwargs.get('fail_msg_property')
-        self.write_output = kwargs.get('write_output', True)
+        self.fail_enabled = fail_enabled
+        self.fail_msg = fail_msg
+        self.fail_on = fail_on or []
+        self.fail_msg_property = fail_msg_property
+        self.write_output = write_output
 
     @wrapt.decorator
-    def __call__(self, wrapped, instance, args, kwargs):
+    def __call__(self, wrapped: Callable, instance: Callable, args: list, kwargs: dict) -> Any:
         """Implement __call__ function for decorator.
 
         Args:
-            wrapped (callable): The wrapped function which in turns
+            wrapped: The wrapped function which in turns
                 needs to be called by your wrapper function.
-            instance (App): The object to which the wrapped
+            instance: The object to which the wrapped
                 function was bound when it was called.
-            args (list): The list of positional arguments supplied
+            args: The list of positional arguments supplied
                 when the decorated function was called.
-            kwargs (dict): The dictionary of keyword arguments
+            kwargs: The dictionary of keyword arguments
                 supplied when the decorated function was called.
 
         Returns:
             function: The custom decorator function.
         """
 
-        def fail(app, *args, **kwargs):
+        def fail(app, *args: list, **kwargs: dict) -> Any:
             """Call the function and store or append return value.
 
             Args:
@@ -72,7 +82,7 @@ class FailOnOutput:
 
             # self.enable (e.g., True or 'fail_on_false') enables/disables this feature
             enabled = self.fail_enabled
-            if not isinstance(enabled, bool):
+            if isinstance(enabled, str):
                 # get enabled value from App inputs
                 enabled = getattr(app.tcex.inputs.model, enabled)
                 if not isinstance(enabled, bool):  # pragma: no cover
@@ -104,9 +114,10 @@ class FailOnOutput:
 
         return fail(instance, *args, **kwargs)
 
-    def get_fail_msg(self, app):
+    def get_fail_msg(self, app) -> str:
         """Return the appropriate fail message."""
         fail_msg = self.fail_msg
-        if self.fail_msg_property and hasattr(app, self.fail_msg_property):
-            fail_msg = getattr(app, self.fail_msg_property)
+        if isinstance(self.fail_msg_property, str):
+            if self.fail_msg_property and hasattr(app, self.fail_msg_property):
+                fail_msg = getattr(app, self.fail_msg_property)
         return fail_msg

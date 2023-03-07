@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.1.0
+    rev: v4.4.0
     hooks:
       - id: check-added-large-files
       - id: check-ast
@@ -21,17 +21,13 @@ repos:
       - id: double-quote-string-fixer
       - id: end-of-file-fixer
       - id: mixed-line-ending
-      - id: no-commit-to-branch
-        args:
-          - --branch
-          - main
       - id: pretty-format-json
         args:
           - --autofix
       - id: requirements-txt-fixer
       - id: trailing-whitespace
   - repo: https://github.com/pycqa/bandit
-    rev: 1.7.1
+    rev: 1.7.4
     hooks:
       - id: bandit
         exclude: |
@@ -42,15 +38,15 @@ repos:
               ^tests/
           )
   - repo: https://github.com/psf/black
-    rev: 22.3.0
+    rev: 23.1.0
     hooks:
       - id: black
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.1.0
+    rev: v2.2.2
     hooks:
       - id: codespell
   - repo: https://github.com/pycqa/flake8
-    rev: 3.9.2
+    rev: 6.0.0
     hooks:
       - id: flake8
   - repo: https://github.com/pre-commit/mirrors-isort
@@ -62,29 +58,34 @@ repos:
               ^app_init/
           )
   - repo: https://github.com/pycqa/pydocstyle
-    rev: 6.1.1
+    rev: 6.3.0
     hooks:
       - id: pydocstyle
         args:
           - --ignore=D104,D202,D203,D213,D300,D301,D400,D402,D406,D407,D413,D415
         exclude: |
           (?x)(
-              ^docs/|
               ^tcex/threat_intelligence/|
               ^tests/
           )
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.31.0
+    rev: v3.3.1
     hooks:
       - id: pyupgrade
         args:
-          - --py3-plus
-          - --py36-plus
+          - --py311-plus
   - repo: https://github.com/yunojuno/pre-commit-xenon
     rev: v0.1
     hooks:
       - id: xenon
         args: ['--max-average=B', '-e=tests*']
+  - repo: local
+    hooks:
+      - id: pyright
+        entry: pyright
+        language: system
+        name: pyright
+        types: [python]
   - repo: local
     hooks:
       - id: pylint

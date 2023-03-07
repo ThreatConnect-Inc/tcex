@@ -1,6 +1,10 @@
 """Group TQL Filter"""
 # standard library
+from datetime import datetime
 from enum import Enum
+
+# third-party
+from arrow import Arrow
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -18,43 +22,67 @@ class GroupFilter(FilterABC):
         """Return the API endpoint."""
         return ApiEndpoints.GROUPS.value
 
-    def associated_indicator(self, operator: Enum, associated_indicator: int):
+    def associated_indicator(self, operator: Enum, associated_indicator: int | list):
         """Filter associatedIndicator based on **associatedIndicator** keyword.
 
         Args:
             operator: The operator enum for the filter.
             associated_indicator: No description provided.
         """
+        if isinstance(associated_indicator, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('associatedIndicator', operator, associated_indicator, TqlType.INTEGER)
 
-    def attribute(self, operator: Enum, attribute: str):
+    def attribute(self, operator: Enum, attribute: list | str):
         """Filter attribute based on **attribute** keyword.
 
         Args:
             operator: The operator enum for the filter.
             attribute: No description provided.
         """
+        if isinstance(attribute, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('attribute', operator, attribute, TqlType.STRING)
 
-    def child_group(self, operator: Enum, child_group: int):
+    def child_group(self, operator: Enum, child_group: int | list):
         """Filter childGroup based on **childGroup** keyword.
 
         Args:
             operator: The operator enum for the filter.
             child_group: No description provided.
         """
+        if isinstance(child_group, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('childGroup', operator, child_group, TqlType.INTEGER)
 
-    def created_by(self, operator: Enum, created_by: str):
+    def created_by(self, operator: Enum, created_by: list | str):
         """Filter Created By based on **createdBy** keyword.
 
         Args:
             operator: The operator enum for the filter.
             created_by: The user who created the group.
         """
+        if isinstance(created_by, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('createdBy', operator, created_by, TqlType.STRING)
 
-    def date_added(self, operator: Enum, date_added: str):
+    def date_added(self, operator: Enum, date_added: Arrow | datetime | int | str):
         """Filter Date Added based on **dateAdded** keyword.
 
         Args:
@@ -64,7 +92,9 @@ class GroupFilter(FilterABC):
         date_added = self.utils.any_to_datetime(date_added).strftime('%Y-%m-%d %H:%M:%S')
         self._tql.add_filter('dateAdded', operator, date_added, TqlType.STRING)
 
-    def document_date_added(self, operator: Enum, document_date_added: str):
+    def document_date_added(
+        self, operator: Enum, document_date_added: Arrow | datetime | int | str
+    ):
         """Filter Date Added (Document) based on **documentDateAdded** keyword.
 
         Args:
@@ -76,52 +106,82 @@ class GroupFilter(FilterABC):
         )
         self._tql.add_filter('documentDateAdded', operator, document_date_added, TqlType.STRING)
 
-    def document_filename(self, operator: Enum, document_filename: str):
+    def document_filename(self, operator: Enum, document_filename: list | str):
         """Filter Filename (Document) based on **documentFilename** keyword.
 
         Args:
             operator: The operator enum for the filter.
             document_filename: The file name of the document.
         """
+        if isinstance(document_filename, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('documentFilename', operator, document_filename, TqlType.STRING)
 
-    def document_filesize(self, operator: Enum, document_filesize: int):
+    def document_filesize(self, operator: Enum, document_filesize: int | list):
         """Filter File Size (Document) based on **documentFilesize** keyword.
 
         Args:
             operator: The operator enum for the filter.
             document_filesize: The filesize of the document.
         """
+        if isinstance(document_filesize, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('documentFilesize', operator, document_filesize, TqlType.INTEGER)
 
-    def document_status(self, operator: Enum, document_status: str):
+    def document_status(self, operator: Enum, document_status: list | str):
         """Filter Status (Document) based on **documentStatus** keyword.
 
         Args:
             operator: The operator enum for the filter.
             document_status: The status of the document.
         """
+        if isinstance(document_status, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('documentStatus', operator, document_status, TqlType.STRING)
 
-    def document_type(self, operator: Enum, document_type: str):
+    def document_type(self, operator: Enum, document_type: list | str):
         """Filter Type (Document) based on **documentType** keyword.
 
         Args:
             operator: The operator enum for the filter.
             document_type: The type of document.
         """
+        if isinstance(document_type, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('documentType', operator, document_type, TqlType.STRING)
 
-    def downvote_count(self, operator: Enum, downvote_count: int):
+    def downvote_count(self, operator: Enum, downvote_count: int | list):
         """Filter Downvote Count based on **downvoteCount** keyword.
 
         Args:
             operator: The operator enum for the filter.
             downvote_count: The number of downvotes the group has received.
         """
+        if isinstance(downvote_count, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('downvoteCount', operator, downvote_count, TqlType.INTEGER)
 
-    def email_date(self, operator: Enum, email_date: str):
+    def email_date(self, operator: Enum, email_date: Arrow | datetime | int | str):
         """Filter Date (Email) based on **emailDate** keyword.
 
         Args:
@@ -131,22 +191,34 @@ class GroupFilter(FilterABC):
         email_date = self.utils.any_to_datetime(email_date).strftime('%Y-%m-%d %H:%M:%S')
         self._tql.add_filter('emailDate', operator, email_date, TqlType.STRING)
 
-    def email_from(self, operator: Enum, email_from: str):
+    def email_from(self, operator: Enum, email_from: list | str):
         """Filter From (Email) based on **emailFrom** keyword.
 
         Args:
             operator: The operator enum for the filter.
             email_from: The 'from' field of the email.
         """
+        if isinstance(email_from, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('emailFrom', operator, email_from, TqlType.STRING)
 
-    def email_score(self, operator: Enum, email_score: int):
+    def email_score(self, operator: Enum, email_score: int | list):
         """Filter Score (Email) based on **emailScore** keyword.
 
         Args:
             operator: The operator enum for the filter.
             email_score: The score of the email.
         """
+        if isinstance(email_score, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('emailScore', operator, email_score, TqlType.INTEGER)
 
     def email_score_includes_body(self, operator: Enum, email_score_includes_body: bool):
@@ -161,16 +233,22 @@ class GroupFilter(FilterABC):
             'emailScoreIncludesBody', operator, email_score_includes_body, TqlType.BOOLEAN
         )
 
-    def email_subject(self, operator: Enum, email_subject: str):
+    def email_subject(self, operator: Enum, email_subject: list | str):
         """Filter Subject (Email) based on **emailSubject** keyword.
 
         Args:
             operator: The operator enum for the filter.
             email_subject: The subject of the email.
         """
+        if isinstance(email_subject, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('emailSubject', operator, email_subject, TqlType.STRING)
 
-    def event_date(self, operator: Enum, event_date: str):
+    def event_date(self, operator: Enum, event_date: Arrow | datetime | int | str):
         """Filter Event Date based on **eventDate** keyword.
 
         Args:
@@ -276,13 +354,19 @@ class GroupFilter(FilterABC):
         self._tql.add_filter('hasVictimAsset', TqlOperator.EQ, victim_assets, TqlType.SUB_QUERY)
         return victim_assets
 
-    def id(self, operator: Enum, id: int):  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int | list):  # pylint: disable=redefined-builtin
         """Filter ID based on **id** keyword.
 
         Args:
             operator: The operator enum for the filter.
             id: The ID of the group.
         """
+        if isinstance(id, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
     def is_group(self, operator: Enum, is_group: bool):
@@ -294,7 +378,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('isGroup', operator, is_group, TqlType.BOOLEAN)
 
-    def last_modified(self, operator: Enum, last_modified: str):
+    def last_modified(self, operator: Enum, last_modified: Arrow | datetime | int | str):
         """Filter Last Modified based on **lastModified** keyword.
 
         Args:
@@ -304,43 +388,69 @@ class GroupFilter(FilterABC):
         last_modified = self.utils.any_to_datetime(last_modified).strftime('%Y-%m-%d %H:%M:%S')
         self._tql.add_filter('lastModified', operator, last_modified, TqlType.STRING)
 
-    def owner(self, operator: Enum, owner: int):
+    def owner(self, operator: Enum, owner: int | list):
         """Filter Owner ID based on **owner** keyword.
 
         Args:
             operator: The operator enum for the filter.
             owner: The Owner ID for the group.
         """
+        if isinstance(owner, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('owner', operator, owner, TqlType.INTEGER)
 
-    def owner_name(self, operator: Enum, owner_name: str):
+    def owner_name(self, operator: Enum, owner_name: list | str):
         """Filter Owner Name based on **ownerName** keyword.
 
         Args:
             operator: The operator enum for the filter.
             owner_name: The owner name for the group.
         """
+        if isinstance(owner_name, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('ownerName', operator, owner_name, TqlType.STRING)
 
-    def parent_group(self, operator: Enum, parent_group: int):
+    def parent_group(self, operator: Enum, parent_group: int | list):
         """Filter parentGroup based on **parentGroup** keyword.
 
         Args:
             operator: The operator enum for the filter.
             parent_group: No description provided.
         """
+        if isinstance(parent_group, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('parentGroup', operator, parent_group, TqlType.INTEGER)
 
-    def security_label(self, operator: Enum, security_label: str):
+    def security_label(self, operator: Enum, security_label: list | str):
         """Filter Security Label based on **securityLabel** keyword.
 
         Args:
             operator: The operator enum for the filter.
             security_label: The name of a security label applied to the group.
         """
+        if isinstance(security_label, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('securityLabel', operator, security_label, TqlType.STRING)
 
-    def signature_date_added(self, operator: Enum, signature_date_added: str):
+    def signature_date_added(
+        self, operator: Enum, signature_date_added: Arrow | datetime | int | str
+    ):
         """Filter Date Added (Signature) based on **signatureDateAdded** keyword.
 
         Args:
@@ -352,88 +462,142 @@ class GroupFilter(FilterABC):
         )
         self._tql.add_filter('signatureDateAdded', operator, signature_date_added, TqlType.STRING)
 
-    def signature_filename(self, operator: Enum, signature_filename: str):
+    def signature_filename(self, operator: Enum, signature_filename: list | str):
         """Filter Filename (Signature) based on **signatureFilename** keyword.
 
         Args:
             operator: The operator enum for the filter.
             signature_filename: The file name of the signature.
         """
+        if isinstance(signature_filename, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('signatureFilename', operator, signature_filename, TqlType.STRING)
 
-    def signature_type(self, operator: Enum, signature_type: str):
+    def signature_type(self, operator: Enum, signature_type: list | str):
         """Filter Type (Signature) based on **signatureType** keyword.
 
         Args:
             operator: The operator enum for the filter.
             signature_type: The type of signature.
         """
+        if isinstance(signature_type, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('signatureType', operator, signature_type, TqlType.STRING)
 
-    def status(self, operator: Enum, status: str):
+    def status(self, operator: Enum, status: list | str):
         """Filter Status based on **status** keyword.
 
         Args:
             operator: The operator enum for the filter.
             status: Status of the group.
         """
+        if isinstance(status, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('status', operator, status, TqlType.STRING)
 
-    def summary(self, operator: Enum, summary: str):
+    def summary(self, operator: Enum, summary: list | str):
         """Filter Summary based on **summary** keyword.
 
         Args:
             operator: The operator enum for the filter.
             summary: The summary (name) of the group.
         """
+        if isinstance(summary, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('summary', operator, summary, TqlType.STRING)
 
-    def tag(self, operator: Enum, tag: str):
+    def tag(self, operator: Enum, tag: list | str):
         """Filter Tag based on **tag** keyword.
 
         Args:
             operator: The operator enum for the filter.
             tag: The name of a tag applied to the group.
         """
+        if isinstance(tag, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('tag', operator, tag, TqlType.STRING)
 
-    def tag_owner(self, operator: Enum, tag_owner: int):
+    def tag_owner(self, operator: Enum, tag_owner: int | list):
         """Filter Tag Owner ID based on **tagOwner** keyword.
 
         Args:
             operator: The operator enum for the filter.
             tag_owner: The ID of the owner of a tag.
         """
+        if isinstance(tag_owner, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('tagOwner', operator, tag_owner, TqlType.INTEGER)
 
-    def tag_owner_name(self, operator: Enum, tag_owner_name: str):
+    def tag_owner_name(self, operator: Enum, tag_owner_name: list | str):
         """Filter Tag Owner Name based on **tagOwnerName** keyword.
 
         Args:
             operator: The operator enum for the filter.
             tag_owner_name: The name of the owner of a tag.
         """
+        if isinstance(tag_owner_name, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('tagOwnerName', operator, tag_owner_name, TqlType.STRING)
 
-    def task_assignee(self, operator: Enum, task_assignee: str):
+    def task_assignee(self, operator: Enum, task_assignee: list | str):
         """Filter Assignee (Task) based on **taskAssignee** keyword.
 
         Args:
             operator: The operator enum for the filter.
             task_assignee: The assignee of the task.
         """
+        if isinstance(task_assignee, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('taskAssignee', operator, task_assignee, TqlType.STRING)
 
-    def task_assignee_pseudo(self, operator: Enum, task_assignee_pseudo: str):
+    def task_assignee_pseudo(self, operator: Enum, task_assignee_pseudo: list | str):
         """Filter Assignee Pseudonym (Task) based on **taskAssigneePseudo** keyword.
 
         Args:
             operator: The operator enum for the filter.
             task_assignee_pseudo: The pseudonym of the assignee of the task.
         """
+        if isinstance(task_assignee_pseudo, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('taskAssigneePseudo', operator, task_assignee_pseudo, TqlType.STRING)
 
-    def task_date_added(self, operator: Enum, task_date_added: str):
+    def task_date_added(self, operator: Enum, task_date_added: Arrow | datetime | int | str):
         """Filter Date Added (Task) based on **taskDateAdded** keyword.
 
         Args:
@@ -443,7 +607,7 @@ class GroupFilter(FilterABC):
         task_date_added = self.utils.any_to_datetime(task_date_added).strftime('%Y-%m-%d %H:%M:%S')
         self._tql.add_filter('taskDateAdded', operator, task_date_added, TqlType.STRING)
 
-    def task_due_date(self, operator: Enum, task_due_date: str):
+    def task_due_date(self, operator: Enum, task_due_date: Arrow | datetime | int | str):
         """Filter Due Date (Task) based on **taskDueDate** keyword.
 
         Args:
@@ -462,7 +626,9 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('taskEscalated', operator, task_escalated, TqlType.BOOLEAN)
 
-    def task_escalation_date(self, operator: Enum, task_escalation_date: str):
+    def task_escalation_date(
+        self, operator: Enum, task_escalation_date: Arrow | datetime | int | str
+    ):
         """Filter Escalation Date (Task) based on **taskEscalationDate** keyword.
 
         Args:
@@ -474,7 +640,7 @@ class GroupFilter(FilterABC):
         )
         self._tql.add_filter('taskEscalationDate', operator, task_escalation_date, TqlType.STRING)
 
-    def task_last_modified(self, operator: Enum, task_last_modified: str):
+    def task_last_modified(self, operator: Enum, task_last_modified: Arrow | datetime | int | str):
         """Filter Last Modified based on **taskLastModified** keyword.
 
         Args:
@@ -504,7 +670,7 @@ class GroupFilter(FilterABC):
         """
         self._tql.add_filter('taskReminded', operator, task_reminded, TqlType.BOOLEAN)
 
-    def task_reminder_date(self, operator: Enum, task_reminder_date: str):
+    def task_reminder_date(self, operator: Enum, task_reminder_date: Arrow | datetime | int | str):
         """Filter Reminder Date (Task) based on **taskReminderDate** keyword.
 
         Args:
@@ -516,47 +682,77 @@ class GroupFilter(FilterABC):
         )
         self._tql.add_filter('taskReminderDate', operator, task_reminder_date, TqlType.STRING)
 
-    def task_status(self, operator: Enum, task_status: str):
+    def task_status(self, operator: Enum, task_status: list | str):
         """Filter Status (Task) based on **taskStatus** keyword.
 
         Args:
             operator: The operator enum for the filter.
             task_status: The status of the task.
         """
+        if isinstance(task_status, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('taskStatus', operator, task_status, TqlType.STRING)
 
-    def type(self, operator: Enum, type: int):  # pylint: disable=redefined-builtin
+    def type(self, operator: Enum, type: int | list):  # pylint: disable=redefined-builtin
         """Filter Type based on **type** keyword.
 
         Args:
             operator: The operator enum for the filter.
             type: The ID of the group type.
         """
+        if isinstance(type, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('type', operator, type, TqlType.INTEGER)
 
-    def type_name(self, operator: Enum, type_name: str):
+    def type_name(self, operator: Enum, type_name: list | str):
         """Filter Type Name based on **typeName** keyword.
 
         Args:
             operator: The operator enum for the filter.
             type_name: The name of the group type.
         """
+        if isinstance(type_name, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('typeName', operator, type_name, TqlType.STRING)
 
-    def upvote_count(self, operator: Enum, upvote_count: int):
+    def upvote_count(self, operator: Enum, upvote_count: int | list):
         """Filter Upvote Count based on **upvoteCount** keyword.
 
         Args:
             operator: The operator enum for the filter.
             upvote_count: The number of upvotes the group has received.
         """
+        if isinstance(upvote_count, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('upvoteCount', operator, upvote_count, TqlType.INTEGER)
 
-    def victim_asset(self, operator: Enum, victim_asset: str):
+    def victim_asset(self, operator: Enum, victim_asset: list | str):
         """Filter victimAsset based on **victimAsset** keyword.
 
         Args:
             operator: The operator enum for the filter.
             victim_asset: No description provided.
         """
+        if isinstance(victim_asset, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('victimAsset', operator, victim_asset, TqlType.STRING)

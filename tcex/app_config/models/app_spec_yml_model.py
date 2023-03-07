@@ -1,9 +1,8 @@
 """App Spec Model"""
-# pylint: disable=no-self-argument,no-self-use
+# pylint: disable=no-self-argument
 # standard library
 import re
 from copy import deepcopy
-from typing import List, Optional
 
 # third-party
 from pydantic import BaseModel, Field, root_validator, validator
@@ -21,7 +20,6 @@ from tcex.app_config.models.install_json_model import (
     snake_to_camel,
 )
 from tcex.app_config.models.job_json_model import JobJsonCommonModel
-from tcex.pleb.none_model import NoneModel
 
 __all__ = ['AppSpecYmlModel']
 
@@ -29,7 +27,7 @@ __all__ = ['AppSpecYmlModel']
 class FeedsSpecModel(FeedsModel):
     """Model for app_spec.organization.feeds."""
 
-    job: Optional[JobJsonCommonModel] = Field(None, description='')
+    job: JobJsonCommonModel = Field(..., description='')
 
 
 class NotesPerActionModel(BaseModel):
@@ -48,7 +46,7 @@ class NotesPerActionModel(BaseModel):
 class OrganizationModel(InstallJsonOrganizationModel):
     """Model for app_spec.organization."""
 
-    feeds: Optional[List[FeedsSpecModel]] = Field(None, description='')
+    feeds: list[FeedsSpecModel] = Field([], description='')
 
     class Config:
         """DataModel Config"""
@@ -60,7 +58,7 @@ class OrganizationModel(InstallJsonOrganizationModel):
 class OutputVariablesSpecModel(OutputVariablesModel):
     """Model for app_spec.outputs.output_variables."""
 
-    disabled: Optional[bool] = Field(
+    disabled: bool = Field(
         False,
         description='If True, the output will not be included in ij/lj files.',
     )
@@ -79,11 +77,11 @@ class OutputVariablesSpecModel(OutputVariablesModel):
 class OutputDataModel(BaseModel):
     """Model for app_spec.output_data."""
 
-    display: Optional[str] = Field(
+    display: str | None = Field(
         None,
         description='The display clause that controls visibility of the output.',
     )
-    output_variables: List[OutputVariablesSpecModel] = Field(
+    output_variables: list[OutputVariablesSpecModel] = Field(
         ...,
         description='An array of output variables.',
     )
@@ -105,11 +103,11 @@ class OutputDataModel(BaseModel):
 class ParamsSpecModel(ParamsModel):
     """Model for app_spec.params."""
 
-    display: Optional[str] = Field(
+    display: str | None = Field(
         None,
         description='The display clause from the layout.json file.',
     )
-    disabled: Optional[bool] = Field(
+    disabled: bool | None = Field(
         False,
         description='If True, the parameter will not be included in ij/lj files.',
     )
@@ -131,7 +129,7 @@ class ParamsSpecModel(ParamsModel):
 class PlaybookSpecModel(BaseModel):
     """Model for app_spec.playbook."""
 
-    retry: Optional[RetryModel] = Field(
+    retry: RetryModel | None = Field(
         None,
         description='',
     )
@@ -146,7 +144,7 @@ class PlaybookSpecModel(BaseModel):
 class ReleaseNoteModel(BaseModel):
     """Model for app_spec.releaseNotes."""
 
-    notes: List[str] = Field(
+    notes: list[str] = Field(
         ...,
         description='One or more notes for the release.',
     )
@@ -169,7 +167,7 @@ class SectionsModel(BaseModel):
         ...,
         description='The name of the section.',
     )
-    params: List[ParamsSpecModel] = Field(
+    params: list[ParamsSpecModel] = Field(
         ...,
         description='A list of input parameter data.',
     )
@@ -184,19 +182,19 @@ class SectionsModel(BaseModel):
 class AppSpecYmlModel(InstallJsonCommonModel):
     """Model for the app_spec.yml file."""
 
-    note_per_action: Optional[List[NotesPerActionModel]] = Field(
+    note_per_action: list[NotesPerActionModel] | None = Field(
         None,
         description='',
     )
-    organization: Optional[OrganizationModel] = Field(
+    organization: OrganizationModel | None = Field(
         None,
         description='A section for settings related to the organization (job) Apps.',
     )
-    output_data: Optional[List[OutputDataModel]] = Field(
+    output_data: list[OutputDataModel] | None = Field(
         None,
         description='The outputs data for Playbook and Service Apps.',
     )
-    output_prefix: Optional[str] = Field(
+    output_prefix: str | None = Field(
         None,
         description=(
             'The prefix for output variables, used for advanced request outputs. This value '
@@ -207,15 +205,15 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         None,
         description='The package name (app_name in tcex.json) for the App.',
     )
-    playbook: Optional[PlaybookSpecModel] = Field(
+    playbook: PlaybookSpecModel | None = Field(
         None,
         description='The playbook section of the install.json.',
     )
-    internal_notes: Optional[List[str]] = Field(
+    internal_notes: list[str] | None = Field(
         None,
         description='Internal notes for the App.',
     )
-    release_notes: List[ReleaseNoteModel] = Field(
+    release_notes: list[ReleaseNoteModel] = Field(
         ...,
         description='The release notes for the App.',
     )
@@ -223,11 +221,11 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         '1.0.0',
         description='The version of the App Spec schema.',
     )
-    sections: List[SectionsModel] = Field(
+    sections: list[SectionsModel] = Field(
         ...,
         description='Layout sections for an App including params.',
     )
-    service_details: Optional[str] = Field(
+    service_details: str | None = Field(
         None, description='Optional service details for Service Apps.'
     )
 
@@ -255,7 +253,7 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         return v  # pragma: no cover
 
     @validator('output_prefix', always=True, pre=True)
-    def _output_prefix(cls, v: str, values: dict):
+    def _output_prefix(cls, v: str | None, values: dict):
         """Validate output_prefix is set when required."""
         if 'advancedRequest' in values.get('features', []):
             if v is None:
@@ -302,27 +300,27 @@ class AppSpecYmlModel(InstallJsonCommonModel):
                 )
         return _inputs
 
-    def get_note_per_action(self, action: str) -> 'NotesPerActionModel':
+    def get_note_per_action(self, action: str) -> NotesPerActionModel | None:
         """Return the note_per_action for the provided action."""
         for npa in self.note_per_action or []:
             if npa.action == action:
                 return npa
-        return NoneModel()
+        return None
 
     @property
-    def note_per_action_formatted(self) -> List[str]:
+    def note_per_action_formatted(self) -> list[str]:
         """Return formatted note_per_action."""
         _note_per_action = ['\n\nThe following actions are included:']
         _note_per_action.extend(
-            [f'-   **{npa.action}** - {npa.note}' for npa in self.note_per_action]
+            [f'-   **{npa.action}** - {npa.note}' for npa in self.note_per_action or []]
         )
         return _note_per_action
 
     @property
-    def outputs(self) -> List[OutputVariablesModel]:
+    def outputs(self) -> list[OutputVariablesModel]:
         """Return lj.outputs."""
         _outputs = []
-        for output_data in self.output_data:
+        for output_data in self.output_data or []:
             for output_variable in output_data.output_variables:
                 if output_variable.disabled is True:
                     continue
@@ -336,7 +334,7 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         return _outputs
 
     @property
-    def output_variables(self) -> List[OutputVariablesModel]:
+    def output_variables(self) -> list[OutputVariablesModel]:
         """Return ij.playbook.outputVariables."""
         return [
             ov
@@ -346,7 +344,7 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         ]
 
     @property
-    def params(self) -> List[ParamsModel]:
+    def params(self) -> list[ParamsSpecModel]:
         """Return ij.params."""
         _params = []
         sequence = 1
@@ -377,7 +375,7 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         return _params
 
     @property
-    def release_notes_formatted(self) -> List[str]:
+    def release_notes_formatted(self) -> list[str]:
         """Return readme_md.releaseNotes."""
         _release_notes = ['## Release Notes']
         _release_notes.append('')
@@ -386,7 +384,7 @@ class AppSpecYmlModel(InstallJsonCommonModel):
         try:
             sorted_releases = sorted(
                 (r for r in self.release_notes),
-                key=lambda r: Version(re.match(r'^\d+.\d+.\d+', r.version)[0]),
+                key=lambda r: Version(re.match(r'^\d+.\d+.\d+', r.version)[0]),  # type: ignore
                 reverse=True,
             )
         except Exception:
@@ -416,7 +414,7 @@ class AppSpecYmlModel(InstallJsonCommonModel):
 
         return False
 
-    def _set_default_playbook_data_type(self, param: 'ParamsSpecModel'):
+    def _set_default_playbook_data_type(self, param: ParamsSpecModel):
         """Set default playbookDataType for String type params.
 
         Playbook Data Types rule:
@@ -431,7 +429,7 @@ class AppSpecYmlModel(InstallJsonCommonModel):
             ):
                 param.playbook_data_type = ['String']
 
-    def _set_default_valid_values(self, param: 'ParamsSpecModel'):
+    def _set_default_valid_values(self, param: ParamsSpecModel):
         """Set default playbookDataType for String type params.
 
         Valid Values rule:

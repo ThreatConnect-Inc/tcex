@@ -1,21 +1,23 @@
 """ThreatConnect TI Report"""
 # standard library
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 # first-party
 from tcex.api.tc.v2.threat_intelligence.mappings.group.group import Group
 
 if TYPE_CHECKING:
     # first-party
-    from tcex.api.tc.v2.threat_intelligence.threat_intelligence import ThreatIntelligence
+    from tcex.api.tc.v2.threat_intelligence.threat_intelligence import (
+        ThreatIntelligence,  # CIRCULAR-IMPORT
+    )
 
 
 class Report(Group):
     """Unique API calls for Report API Endpoints
 
     Args:
-        ti (ThreatIntelligence): An instance of the ThreatIntelligence Class.
-        name (str): The name for this Group.
+        ti: An instance of the ThreatIntelligence Class.
+        name (str, kwargs): The name for this Group.
         file_name (str, kwargs): The name for the attached file for this Group.
         publish_date (str, kwargs): The publish datetime expression for this Group.
     """
@@ -25,7 +27,7 @@ class Report(Group):
 
         super().__init__(ti, sub_type='Report', api_entity='report', api_branch='reports', **kwargs)
 
-    def file_content(self, file_content: str, update_if_exists: Optional[bool] = True):
+    def file_content(self, file_content: str, update_if_exists: bool = True):
         """Update the file content."""
         if not self.can_update():
             self._handle_error(910, [self.type])
@@ -57,7 +59,7 @@ class Report(Group):
         request = {'fileSize': file_size, 'fileName': self._data['fileName']}
         return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)
 
-    def get_file_hash(self, hash_type: Optional[str] = 'sha256'):
+    def get_file_hash(self, hash_type: str = 'sha256'):
         """Get the hash value of attached document"""
         if not self.can_update():
             self._handle_error(910, [self.type])

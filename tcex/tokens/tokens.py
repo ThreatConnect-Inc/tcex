@@ -1,10 +1,9 @@
-"""TcEx Framework Service module"""
+"""TcEx Module"""
 # standard library
 import logging
 import os
 import threading
 import time
-from typing import Optional
 
 # third-party
 from requests import Session, exceptions
@@ -12,12 +11,13 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 # first-party
+from tcex.backports import cached_property
 from tcex.input.field_types.sensitive import Sensitive
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 from tcex.pleb.threading import ExceptionThread
-from tcex.utils import Utils
 
 # get tcex logger
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 
 def retry_session(retries=3, backoff_factor=0.8, status_forcelist=(500, 502, 504)):
@@ -39,13 +39,13 @@ def retry_session(retries=3, backoff_factor=0.8, status_forcelist=(500, 502, 504
 
 
 class Tokens:
-    """Service methods for customer Service (e.g., Triggers)."""
+    """TcEx Module"""
 
     def __init__(
         self,
-        token_url: Optional[str],
-        verify: Optional[bool] = True,
-        proxies: Optional[dict] = None,
+        token_url: str,
+        verify: bool = True,
+        proxies: dict | None = None,
     ):
         """Initialize the Class properties.
 
@@ -54,15 +54,17 @@ class Tokens:
             verify: A boolean to enable/disable SSL verification.
             proxies: A dictionary of proxy settings.
         """
+        self.proxies = proxies
         self.token_url = token_url
         self.verify = verify
 
         # validation for singleton
-        if not token_url:
+        if not token_url:  # pragma: no cover
             raise ValueError('A value for token_url is required.')
 
         # properties
-        #
+        self._shutdown = False
+
         # Threading event that is used as a barrier that determines whether a token can be retrieved
         # from this module or not (via the token property). The barrier only blocks access to the
         # token property whenever token renewal is taking place in order to keep from returning
@@ -71,24 +73,18 @@ class Tokens:
         # Setting barrier event to True disables barrier, which makes the token property
         # accessible (default behavior)
         self._barrier.set()
-
         # threading event that denotes whether renewal monitor should sleep after a renewal cycle
         self._monitor_sleep_interval = threading.Event()
-
         self.log = logger
-        self.monitor_thread = None
+        self.monitor_thread: ExceptionThread
         # session with retry for token renewal
-        self.session: Session = retry_session()
-        self.session.proxies = proxies  # add proxies to session
         self.sleep_interval = int(os.getenv('TC_TOKEN_SLEEP_INTERVAL', '150'))
-        self._shutdown = False  # shutdown boolean
         # token map for storing keys -> tokens -> threads
         self.token_map = {}
         # amount of time to wait before starting renewal process (after enabling barrier)
         # buffer allows any other threads using a token to possibly finish their work
         self.token_renewal_buffer_time = 5
         self.token_window = 600  # seconds to pad before token renewal
-        self.utils = Utils
 
         # start token renewal process
         self.token_renewal()
@@ -99,12 +95,12 @@ class Tokens:
         key = 'MainThread'  # default Python parent thread name
         if self.thread_name in self.token_map:
             # for Job, Playbook, and ApiService Apps the key is the thread name.
-            key: str = self.thread_name
-        elif self.trigger_id in self.token_map:
-            key: str = self.trigger_id
+            key = self.thread_name
+        elif self.trigger_id is not None and self.trigger_id in self.token_map:
+            key = str(self.trigger_id)
         return key
 
-    def register_token(self, key: str, token: Sensitive, expires: int):
+    def register_token(self, key: str, token: Sensitive | str | None, expires: int | None):
         """Register a token.
 
         Args:
@@ -133,7 +129,8 @@ class Tokens:
             token: The ThreatConnect API token.
         """
         api_token_data = {}
-        self.log.in_token_renewal = True  # pause API logging
+        # pause API logging
+        self.log.in_token_renewal = True  # type: ignore
 
         # log token information
         try:
@@ -158,9 +155,17 @@ class Tokens:
         except (AttributeError, ValueError) as e:  # pragma: no cover
             raise RuntimeError(f'Token renewal failed ({e}).')
         finally:
-            self.log.in_token_renewal = False
+            self.log.in_token_renewal = False  # type: ignore
 
         return api_token_data
+
+    @cached_property
+    def session(self) -> Session:
+        """Return the session."""
+        session = retry_session()
+        if self.proxies:
+            session.proxies = self.proxies
+        return session
 
     @property
     def shutdown(self) -> bool:
@@ -185,13 +190,13 @@ class Tokens:
         return threading.current_thread().name
 
     @property
-    def token(self) -> Optional['Sensitive']:
+    def token(self) -> Sensitive | None:
         """Return token for current thread."""
-        # wait until renewal barrier is set to True (meaning no renewal is in progress). If already
-        # true, then simply proceed.
+        # wait until renewal barrier is set to True (meaning no renewal
+        # is in progress). If already true, then simply proceed.
 
-        # perform three attempts - safety net in case of heavily overloaded monitor. If we cannot
-        # retrieve a token after three attempts, there must be an issue
+        # perform three attempts - safety net in case of heavily overloaded monitor. If
+        # we cannot retrieve a token after three attempts, there must be an issue
         for i in range(3):
             if self._barrier.wait(timeout=self.token_renewal_buffer_time + 10):
                 return self.token_map.get(self.key, {}).get('token')
@@ -216,15 +221,15 @@ class Tokens:
         if self.monitor_thread.exception is not None:
             raise exc from self.monitor_thread.exception
 
-        raise exc
+        raise exc  # pragma: no cover
 
     @token.setter
-    def token(self, token: 'Sensitive'):
+    def token(self, token: Sensitive | str):
         """Set token for current thread."""
         self.token_map.setdefault(self.key, {})['token'] = Sensitive(token)
 
     @property
-    def token_expires(self) -> Optional[int]:
+    def token_expires(self) -> int | None:
         """Return token_expires for current thread."""
         return self.token_map.get(self.key, {}).get('token_expires')
 
@@ -246,8 +251,8 @@ class Tokens:
         self._barrier.set()
         self._monitor_sleep_interval.wait(self.sleep_interval)
         while True:
-            # Clear renewal barrier (setting it to False), which blocks access to token via
-            # the token property.
+            # Clear renewal barrier (setting it to False), which
+            # blocks access to token via # the token property.
             self._barrier.clear()
             self.log.debug('Token renewal barrier enabled.')
             self._monitor_sleep_interval.wait(self.token_renewal_buffer_time)
@@ -284,25 +289,26 @@ class Tokens:
                         self.log.error(f'feature=token, event=token-removal-failure, key={key}')
                     except KeyError:  # pragma: no cover
                         pass
+
             # renewal loop is finished, grant access to token via token property once again
             self._barrier.set()
             self.log.debug('Token renewal barrier disabled.')
 
             # if monitor has not been shutdown, renewal monitor will sleep for sleep_interval
             # seconds. If monitor has been shutdown, monitor does not sleep and proceeds to
-            # the shutdown logic within the if statement below. If the monitor is already sleeping,
-            # the monitor wakes up and proceeds to the shutdown logic.
+            # the shutdown logic within the if statement below. If the monitor is already
+            # sleeping, the monitor wakes up and proceeds to the shutdown logic.
             self._monitor_sleep_interval.wait(self.sleep_interval)
-            if self.shutdown is True:
+            if self.shutdown is True:  # pragma: no cover
                 self.log.debug('Token renewal monitor shutdown signal received')
                 break
 
     @property
-    def trigger_id(self) -> Optional[int]:
+    def trigger_id(self) -> int | None:
         """Return the current trigger_id."""
         trigger_id = None
         if hasattr(threading.current_thread(), 'trigger_id'):
-            trigger_id = threading.current_thread().trigger_id
+            trigger_id = threading.current_thread().trigger_id  # type: ignore
         if trigger_id is not None:
             trigger_id = int(trigger_id)
         return trigger_id

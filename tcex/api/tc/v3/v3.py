@@ -14,25 +14,25 @@ class V3(CaseManagement, Security, ThreatIntelligence):
         session: An configured instance of request.Session with TC API Auth.
     """
 
-    def attribute_type(self, **kwargs) -> 'AttributeType':
+    def attribute_type(self, **kwargs) -> AttributeType:
         """Return a instance of Attribute Types object."""
         return AttributeType(session=self.session, **kwargs)
 
-    def attribute_types(self, **kwargs) -> 'AttributeTypes':
+    def attribute_types(self, **kwargs) -> AttributeTypes:
         """Return a instance of Attribute Types object."""
         return AttributeTypes(session=self.session, **kwargs)
 
     @property
-    def cm(self) -> 'CaseManagement':
+    def cm(self) -> CaseManagement:
         """Return Case Management API collection."""
         return CaseManagement(self.session)
 
     @property
-    def security(self) -> 'Security':
+    def security(self) -> Security:
         """Return Security API collection."""
         return Security(self.session)
 
     @property
-    def ti(self) -> 'ThreatIntelligence':
+    def ti(self) -> ThreatIntelligence:
         """Return Threat Intelligence API collection."""
         return ThreatIntelligence(self.session)

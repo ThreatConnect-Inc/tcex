@@ -4,6 +4,7 @@ import os
 from random import randint
 
 # first-party
+from tcex.tcex import TcEx
 from tests.api.tc.v2.threat_intelligence.ti_helpers import TestThreatIntelligence, TIHelper
 
 
@@ -14,9 +15,7 @@ class TestCidrIndicators(TestThreatIntelligence):
     indicator_field_arg = indicator_field.replace(' ', '_').lower()
     indicator_type = 'CIDR'
     owner = os.getenv('TC_OWNER')
-    ti = None
-    ti_helper = None
-    tcex = None
+    tcex: TcEx
 
     def setup_method(self):
         """Configure setup before all tests."""
@@ -24,6 +23,7 @@ class TestCidrIndicators(TestThreatIntelligence):
         self.ti = self.ti_helper.ti
         self.tcex = self.ti_helper.tcex
 
+    # pylint: disable=no-member
     def tests_ti_cidr_create(self):
         """Create an indicator using specific interface."""
         indicator_data = {
@@ -33,14 +33,14 @@ class TestCidrIndicators(TestThreatIntelligence):
             'rating': randint(0, 5),
         }
         # cidr method is dynamically generated
-        ti = self.ti.cidr(**indicator_data)  # pylint: disable=no-member
+        ti = self.ti.cidr(**indicator_data)  # type: ignore
         r = ti.create()
 
         # assert response
         assert r.status_code == 201
 
         # retrieve indicator for asserts (cidr method is dynamically generated)
-        ti = self.ti.cidr(**indicator_data)  # pylint: disable=no-member
+        ti = self.ti.cidr(**indicator_data)  # type: ignore
         r = ti.single()
         response_data = r.json()
         ti_data = response_data.get('data', {}).get(ti.api_entity)

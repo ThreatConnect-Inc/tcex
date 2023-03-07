@@ -1,4 +1,10 @@
 """Test the TcEx API Snippets."""
+# standard library
+from collections.abc import Callable
+
+# third-party
+import pytest
+
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
@@ -7,14 +13,11 @@ from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 class TestVictimAttributeSnippets(TestV3):
     """Test TcEx API Interface."""
 
-    v3 = None
+    v3_helper = V3Helper('victim_attributes')
 
-    def setup_method(self, method: callable):
+    def setup_method(self, method: Callable):  # pylint: disable=arguments-differ
         """Configure setup before all tests."""
-        print('')  # ensure any following print statements will be on new line
-        self.v3_helper = V3Helper('victim_attributes')
-        self.v3 = self.v3_helper.v3
-        self.tcex = self.v3_helper.tcex
+        super().setup_method()
 
         # remove an previous indicators with the next test case name as a tag
         victims = self.v3.victims()
@@ -41,8 +44,13 @@ class TestVictimAttributeSnippets(TestV3):
                 }
             ],
         )
+        if victim.model.id is None or victim.model.attributes.data is None:
+            pytest.fail('Victim was not created successfully.')
+
         # get attribute id
         attribute_id = victim.model.attributes.data[0].id
+        if attribute_id is None:
+            pytest.fail('Victim attribute was not found.')
 
         # Begin Snippet
         victim_attributes = self.tcex.v3.victim_attributes()
@@ -67,6 +75,9 @@ class TestVictimAttributeSnippets(TestV3):
                 }
             ],
         )
+        if victim.model.id is None or victim.model.attributes.data is None:
+            pytest.fail('Victim was not created successfully.')
+
         # get attribute id
         attribute_id = victim.model.attributes.data[0].id
 

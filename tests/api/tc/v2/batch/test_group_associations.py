@@ -1,13 +1,12 @@
 """Test the TcEx Batch Module."""
 # standard library
-from typing import TYPE_CHECKING
+from typing import cast
 
-if TYPE_CHECKING:
-    # first-party
-    from tcex import TcEx
+# first-party
+from tcex import TcEx
+from tcex.api.tc.v2.batch.group import Group
 
 
-# pylint: disable=no-self-use
 class TestGroup1:
     """Test the TcEx Batch Module."""
 
@@ -16,7 +15,7 @@ class TestGroup1:
     def setup_class(self):
         """Configure setup before all tests."""
 
-    def test_group_associations(self, tcex: 'TcEx'):
+    def test_group_associations(self, tcex: TcEx):
         """Test adversary creation"""
         batch = tcex.v2.batch(owner='TCI', halt_on_error=False)
 
@@ -105,16 +104,16 @@ class TestGroup1:
         }
 
         for name, group_data in groups.items():
-            additional_data = group_data.get('additional_data')
-            description = group_data.get('description')
-            label = group_data.get('label')
-            tag = group_data.get('tag')
-            type_ = group_data.get('type')
+            additional_data = group_data.get('additional_data', {})
+            description = group_data['description']
+            label = group_data['label']
+            tag = group_data['tag']
+            type_ = group_data['type']
 
             # generate a unique xid
             xid = batch.generate_xid(['pytest', type_.lower(), name])
 
-            ti = batch.group(group_type=type_, name=name, xid=xid, **additional_data)
+            ti = cast(Group, batch.group(group_type=type_, name=name, xid=xid, **additional_data))
             for p_xid in self.previous_xids:
                 ti.association(p_xid)
 

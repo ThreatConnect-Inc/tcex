@@ -2,7 +2,8 @@
 # standard library
 import json
 import uuid
-from typing import Callable, Optional
+from collections.abc import Callable
+from typing import ForwardRef
 
 # first-party
 from tcex.api.tc.v2.batch.attribute import Attribute
@@ -10,10 +11,13 @@ from tcex.api.tc.v2.batch.security_label import SecurityLabel
 from tcex.api.tc.v2.batch.tag import Tag
 from tcex.utils import Utils
 
+FileOccurrences = ForwardRef('FileOccurrences')
+
 # import local modules for dynamic reference
 module = __import__(__name__)
 
 
+# pylint: disable=unnecessary-dunder-call
 def custom_indicator_class_factory(indicator_type, base_class, class_dict, value_fields):
     """Return internal methods for dynamically building Custom Indicator Class."""
     value_count = len(value_fields)
@@ -45,8 +49,7 @@ def custom_indicator_class_factory(indicator_type, base_class, class_dict, value
 
     class_name = indicator_type.replace(' ', '')
     init_method = locals()[f'init_{value_count}']
-    newclass = type(str(class_name), (base_class,), {'__init__': init_method})
-    return newclass
+    return type(str(class_name), (base_class,), {'__init__': init_method})
 
 
 class Indicator:
@@ -80,7 +83,10 @@ class Indicator:
         """
         self._summary = summary
         self._type = indicator_type
-        self._indicator_data = {'summary': summary, 'type': indicator_type}
+        self._indicator_data: dict[str, bool | dict | float | int | list | str] = {
+            'summary': summary,
+            'type': indicator_type,
+        }
 
         # properties
         self._attributes = []
@@ -140,7 +146,7 @@ class Indicator:
     @property
     def active(self) -> bool:
         """Return Indicator active."""
-        return self._indicator_data.get('active')
+        return self._indicator_data.get('active')  # type: ignore
 
     @active.setter
     def active(self, active: bool):
@@ -154,16 +160,16 @@ class Indicator:
             group_xid (str): The external id of the Group to associate.
         """
         association = {'groupXid': group_xid}
-        self._indicator_data.setdefault('associatedGroups', []).append(association)
+        self._indicator_data.setdefault('associatedGroups', []).append(association)  # type: ignore
 
     def attribute(
         self,
         attr_type: str,
         attr_value: str,
-        displayed: Optional[bool] = False,
-        source: Optional[str] = None,
-        unique: Optional[bool] = True,
-        formatter: Optional[Callable[[str], str]] = None,
+        displayed: bool = False,
+        source: str | None = None,
+        unique: bool = True,
+        formatter: Callable[[str], str] | None = None,
     ) -> Attribute:
         """Return instance of Attribute
 
@@ -205,7 +211,7 @@ class Indicator:
 
     @staticmethod
     def build_summary(
-        val1: Optional[str] = None, val2: Optional[str] = None, val3: Optional[str] = None
+        val1: str | None = None, val2: str | None = None, val3: str | None = None
     ) -> str:
         """Build the Indicator summary using available values."""
         summary = []
@@ -220,7 +226,7 @@ class Indicator:
     @property
     def confidence(self) -> int:
         """Return Indicator confidence."""
-        return self._indicator_data.get('confidence')
+        return self._indicator_data.get('confidence')  # type: ignore
 
     @confidence.setter
     def confidence(self, confidence: int):
@@ -239,14 +245,14 @@ class Indicator:
         # add file actions
         if self._file_actions:
             self._indicator_data.setdefault('fileAction', {})
-            self._indicator_data['fileAction'].setdefault('children', [])
+            self._indicator_data['fileAction'].setdefault('children', [])  # type: ignore
             for action in self._file_actions:
-                self._indicator_data['fileAction']['children'].append(action.data)
+                self._indicator_data['fileAction']['children'].append(action.data)  # type: ignore
         # add file occurrences
         if self._occurrences:
             self._indicator_data.setdefault('fileOccurrence', [])
             for occurrence in self._occurrences:
-                self._indicator_data['fileOccurrence'].append(occurrence.data)
+                self._indicator_data['fileOccurrence'].append(occurrence.data)  # type: ignore
         # add security labels
         if self._labels:
             self._indicator_data['securityLabel'] = []
@@ -263,7 +269,7 @@ class Indicator:
     @property
     def date_added(self) -> str:
         """Return Indicator dateAdded."""
-        return self._indicator_data.get('dateAdded')
+        return self._indicator_data.get('dateAdded')  # type: ignore
 
     @date_added.setter
     def date_added(self, date_added: str):
@@ -275,7 +281,7 @@ class Indicator:
     @property
     def last_modified(self) -> str:
         """Return Indicator lastModified."""
-        return self._indicator_data.get('lastModified')
+        return self._indicator_data.get('lastModified')  # type: ignore
 
     @last_modified.setter
     def last_modified(self, last_modified: str):
@@ -286,10 +292,10 @@ class Indicator:
 
     def occurrence(
         self,
-        file_name: Optional[str] = None,
-        path: Optional[str] = None,
-        date: Optional[str] = None,
-    ) -> 'FileOccurrence':
+        file_name: str | None = None,
+        path: str | None = None,
+        date: str | None = None,
+    ) -> 'FileOccurrence | None':
         """Add a file Occurrence.
 
         Args:
@@ -311,7 +317,7 @@ class Indicator:
     @property
     def private_flag(self) -> bool:
         """Return Indicator private flag."""
-        return self._indicator_data.get('privateFlag')
+        return self._indicator_data.get('privateFlag')  # type: ignore
 
     @private_flag.setter
     def private_flag(self, private_flag: bool):
@@ -321,7 +327,7 @@ class Indicator:
     @property
     def rating(self) -> float:
         """Return Indicator rating."""
-        return self._indicator_data.get('rating')
+        return self._indicator_data.get('rating')  # type: ignore
 
     @rating.setter
     def rating(self, rating: float):
@@ -331,10 +337,10 @@ class Indicator:
     @property
     def summary(self) -> str:
         """Return Indicator summary."""
-        return self._indicator_data.get('summary')
+        return self._indicator_data.get('summary')  # type: ignore
 
     def security_label(
-        self, name: str, description: Optional[str] = None, color: Optional[str] = None
+        self, name: str, description: str | None = None, color: str | None = None
     ) -> SecurityLabel:
         """Return instance of SecurityLabel.
 
@@ -358,7 +364,7 @@ class Indicator:
             self._labels.append(label)
         return label
 
-    def tag(self, name: str, formatter: Optional[Callable[[str], str]] = None) -> 'Tag':
+    def tag(self, name: str, formatter: Callable[[str], str] | None = None) -> Tag:
         """Return instance of Tag.
 
         Args:
@@ -380,15 +386,15 @@ class Indicator:
     @property
     def type(self) -> str:
         """Return Group type."""
-        return self._indicator_data.get('type')
+        return self._indicator_data.get('type')  # type: ignore
 
     @property
     def xid(self) -> str:
         """Return Group xid."""
-        return self._indicator_data.get('xid')
+        return self._indicator_data.get('xid')  # type: ignore
 
     def __str__(self) -> str:
-        """Return string represtentation of object"""
+        """Return string representation of object"""
         return json.dumps(self.data, indent=4)
 
 
@@ -483,9 +489,9 @@ class File(Indicator):
 
     def __init__(
         self,
-        md5: Optional[str] = None,
-        sha1: Optional[str] = None,
-        sha256: Optional[str] = None,
+        md5: str | None = None,
+        sha1: str | None = None,
+        sha256: str | None = None,
         **kwargs,
     ):
         """Initialize Class Properties.
@@ -509,14 +515,14 @@ class File(Indicator):
 
     def action(self, relationship: str) -> 'FileAction':
         """Add a File Action."""
-        action_obj = FileAction(self._indicator_data.get('xid'), relationship)
+        action_obj = FileAction(self._indicator_data['xid'], relationship)  # type: ignore
         self._file_actions.append(action_obj)
         return action_obj
 
     @property
     def md5(self) -> str:
         """Return Indicator md5."""
-        return self._indicator_data.get('md5')
+        return self._indicator_data.get('md5')  # type: ignore
 
     @md5.setter
     def md5(self, md5: str):
@@ -526,7 +532,7 @@ class File(Indicator):
     @property
     def sha1(self) -> str:
         """Return Indicator sha1."""
-        return self._indicator_data.get('sha1')
+        return self._indicator_data.get('sha1')  # type: ignore
 
     @sha1.setter
     def sha1(self, sha1: str):
@@ -536,7 +542,7 @@ class File(Indicator):
     @property
     def sha256(self) -> str:
         """Return Indicator sha256."""
-        return self._indicator_data.get('sha256')
+        return self._indicator_data.get('sha256')  # type: ignore
 
     @sha256.setter
     def sha256(self, sha256: str):
@@ -546,7 +552,7 @@ class File(Indicator):
     @property
     def size(self) -> int:
         """Return Indicator size."""
-        return self._indicator_data.get('intValue1')
+        return self._indicator_data.get('intValue1')  # type: ignore
 
     @size.setter
     def size(self, size: int):
@@ -579,7 +585,7 @@ class Host(Indicator):
     @property
     def dns_active(self) -> bool:
         """Return Indicator dns active."""
-        return self._indicator_data.get('flag1')
+        return self._indicator_data.get('flag1')  # type: ignore
 
     @dns_active.setter
     def dns_active(self, dns_active: bool):
@@ -589,7 +595,7 @@ class Host(Indicator):
     @property
     def whois_active(self) -> bool:
         """Return Indicator whois active."""
-        return self._indicator_data.get('flag2')
+        return self._indicator_data.get('flag2')  # type: ignore
 
     @whois_active.setter
     def whois_active(self, whois_active: bool):
@@ -720,7 +726,7 @@ class FileAction:
         self._children.append(action_obj)
 
     def __str__(self) -> str:
-        """Return string represtentation of object."""
+        """Return string representation of object."""
         return json.dumps(self.data, indent=4)
 
 
@@ -731,9 +737,9 @@ class FileOccurrence:
 
     def __init__(
         self,
-        file_name: Optional[str] = None,
-        path: Optional[str] = None,
-        date: Optional[str] = None,
+        file_name: str | None = None,
+        path: str | None = None,
+        date: str | None = None,
     ):
         """Initialize Class Properties
 
@@ -764,7 +770,7 @@ class FileOccurrence:
     @property
     def date(self) -> str:
         """Return File Occurrence date."""
-        return self._occurrence_data.get('date')
+        return self._occurrence_data.get('date')  # type: ignore
 
     @date.setter
     def date(self, date: str):
@@ -776,7 +782,7 @@ class FileOccurrence:
     @property
     def file_name(self) -> str:
         """Return File Occurrence file name."""
-        return self._occurrence_data.get('fileName')
+        return self._occurrence_data.get('fileName')  # type: ignore
 
     @file_name.setter
     def file_name(self, file_name: str):
@@ -786,7 +792,7 @@ class FileOccurrence:
     @property
     def path(self) -> str:
         """Return File Occurrence path."""
-        return self._occurrence_data.get('path')
+        return self._occurrence_data.get('path')  # type: ignore
 
     @path.setter
     def path(self, path: str):
@@ -794,5 +800,5 @@ class FileOccurrence:
         self._occurrence_data['path'] = path
 
     def __str__(self) -> str:
-        """Return string represtentation of object."""
+        """Return string representation of object."""
         return json.dumps(self.data, indent=4)

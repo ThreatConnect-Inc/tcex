@@ -1,18 +1,15 @@
 """Test the TcEx Batch Module."""
 # standard library
-from typing import TYPE_CHECKING, Union
+from collections.abc import Callable
 
 # third-party
 import pytest
 
-if TYPE_CHECKING:
-    # first-party
-    from tcex import TcEx
-    from tcex.playbook.playbook import Playbook
-    from tests.mock_app import MockApp
+# first-party
+from tcex.playbook.playbook import Playbook  # TYPE-CHECKING
+from tests.mock_app import MockApp  # TYPE-CHECKING
 
 
-# pylint: disable=no-self-use
 class TestUtils:
     """Test the TcEx Batch Module."""
 
@@ -45,13 +42,13 @@ class TestUtils:
         ],
     )
     def test_playbook_read_check_variable_type(
-        self, variable: str, type_: bool, should_fail: bool, playbook_app: 'MockApp'
+        self, variable: str, type_: str, should_fail: bool, playbook_app: Callable[..., MockApp]
     ):
         """Test playbook variables."""
-        tcex: 'TcEx' = playbook_app(
+        tcex = playbook_app(
             config_data={'tc_playbook_out_variables': self.tc_playbook_out_variables}
         ).tcex
-        playbook: 'Playbook' = tcex.playbook
+        playbook = tcex.playbook
 
         if should_fail is False:
             assert True
@@ -72,7 +69,7 @@ class TestUtils:
         ],
     )
     def test_playbook_read_coerce_string_value(
-        self, value: Union[bool, float, int, str], expected: str, playbook: 'Playbook'
+        self, value: bool | float | int | str, expected: str, playbook: Playbook
     ):
         """Test playbook variables."""
         assert playbook.read._coerce_string_value(value) == expected
@@ -83,6 +80,6 @@ class TestUtils:
             (b'123', '123'),
         ],
     )
-    def test_playbook_read_decode_binary(self, data: bytes, expected: str, playbook: 'Playbook'):
+    def test_playbook_read_decode_binary(self, data: bytes, expected: str, playbook: Playbook):
         """Test playbook variables."""
         assert playbook.read._decode_binary(data) == expected

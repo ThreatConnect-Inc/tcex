@@ -2,7 +2,10 @@
 # standard library
 import logging
 from functools import lru_cache
-from typing import TYPE_CHECKING, Optional
+from typing import cast
+
+# third-party
+from requests import Response, Session  # TYPE-CHECKING
 
 # first-party
 from tcex.api.tc.v2.threat_intelligence.mappings.filters import Filters
@@ -46,24 +49,20 @@ from tcex.api.tc.v2.threat_intelligence.mappings.tags import Tags
 from tcex.api.tc.v2.threat_intelligence.mappings.task import Task
 from tcex.api.tc.v2.threat_intelligence.mappings.victim import Victim
 from tcex.exit.error_codes import TcExErrorCodes
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 from tcex.utils import Utils
-
-if TYPE_CHECKING:
-    # third-party
-    from requests import Session
-
 
 # import local modules for dynamic reference
 module = __import__(__name__)
 
 # get tcex logger
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 
 class ThreatIntelligence:
     """ThreatConnect Threat Intelligence Module"""
 
-    def __init__(self, session_tc: 'Session'):
+    def __init__(self, session_tc: Session):
         """Initialize Class properties."""
         self.session_tc = session_tc
 
@@ -76,8 +75,8 @@ class ThreatIntelligence:
         self._gen_indicator_class()
 
     @property
-    @lru_cache()
-    def _error_codes(self) -> 'TcExErrorCodes':  # noqa: F821
+    @lru_cache
+    def _error_codes(self) -> TcExErrorCodes:
         """Return TcEx error codes."""
         return TcExErrorCodes()
 
@@ -132,7 +131,7 @@ class ThreatIntelligence:
         }
 
     @property
-    @lru_cache()
+    @lru_cache
     def _indicator_types_data(self) -> dict:
         """Return ThreatConnect indicator types data.
 
@@ -156,7 +155,7 @@ class ThreatIntelligence:
         return _indicator_types_data
 
     def _handle_error(
-        self, code: int, message_values: Optional[list] = None, raise_error: Optional[bool] = True
+        self, code: int, message_values: list | None = None, raise_error: bool = True
     ):
         """Raise RuntimeError
 
@@ -297,7 +296,7 @@ class ThreatIntelligence:
         kwargs['owner'] = owner
 
         # return correct indicator object
-        indicator_object = indicator_type_map.get(indicator_type)
+        indicator_object = indicator_type_map[indicator_type]
         return indicator_object(self, **kwargs)
 
     def group(self, group_type=None, owner=None, **kwargs):
@@ -341,7 +340,7 @@ class ThreatIntelligence:
         kwargs['owner'] = owner
 
         # return correct group object
-        group_object = group_type_map.get(group_type)
+        group_object = group_type_map[group_type]
         return group_object(self, **kwargs)
 
     def attack_pattern(self, **kwargs):
@@ -501,7 +500,7 @@ class ThreatIntelligence:
         return Incident(self, **kwargs)
 
     def intrusion_set(self, **kwargs):
-        """Create the Intrustion Set TI object.
+        """Create the Intrusion Set TI object.
 
         Args:
             name (str, kwargs): [Required for Create] The name for this Group.
@@ -589,7 +588,6 @@ class ThreatIntelligence:
 
     def create_entity(self, entity, owner):
         """Given a Entity and a Owner, creates a indicator/group in ThreatConnect"""
-
         attributes = entity.pop('attribute', [])
         associations = entity.pop('associations', [])
         security_labels = entity.pop('securityLabel', [])
@@ -599,7 +597,7 @@ class ThreatIntelligence:
         if entity_type in ['document', 'report']:
             file_content = entity.pop('file_content', None) or entity.pop('fileContent', None)
         try:
-            ti = self.indicator(entity_type, owner, **entity)
+            ti = cast(Indicator, self.indicator(entity_type, owner, **entity))
             if entity.get('falsePositive'):
                 ti.add_false_positive()
         except Exception:
@@ -611,11 +609,12 @@ class ThreatIntelligence:
                     ti = self.task(owner=owner, **entity)
                 else:
                     ti = self.group(entity_type, owner, **entity)
-        r = ti.create()
-        if entity_type in ['document', 'report']:
+        r = cast(Response, ti.create())
+        if file_content and entity_type in ['document', 'report']:
+            ti = cast(Document | Report, ti)
             ti.file_content(file_content)
 
-        data = {'status_code': r.status_code}
+        data: dict[str, int | list | str] = {'status_code': r.status_code}
         if r.ok:
             data.update(r.json().get('data', {}))
             data['main_type'] = ti.type
@@ -628,6 +627,8 @@ class ThreatIntelligence:
             data['tags'] = []
             data['security_labels'] = []
             data['associations'] = []
+        else:
+            return None
 
         for attribute in attributes:
             r = ti.add_attribute(attribute.get('type'), attribute.get('value'))
@@ -636,11 +637,11 @@ class ThreatIntelligence:
                 attribute_data.update(r.json().get('attribute', {}))
             data['attributes'].append(attribute_data)
         for tag in tags:
-            r = ti.add_tag(tag)
+            r = cast(Response, ti.add_tag(tag))
             tag_response = {'status_code': r.status_code}
             data['tags'].append(tag_response)
         for label in security_labels:
-            r = ti.add_label(label)
+            r = cast(Response, ti.add_label(label))
             label_response = {'status_code': r.status_code}
             data['security_labels'].append(label_response)
         for association in associations:
@@ -651,7 +652,7 @@ class ThreatIntelligence:
                 association_target = self.group(
                     association.pop('type', None), association.pop('owner', None), **association
                 )
-            r = ti.add_association(association_target)
+            r = cast(Response, ti.add_association(association_target))
             association_response = {'status_code': r.status_code}
             if r.ok:
                 association_response.update(r.json().get('association', {}))
@@ -769,10 +770,12 @@ class ThreatIntelligence:
                 value = d.get('name')
             else:
                 self._handle_error(925, ['type', 'entities', 'type', 'type', resource_type])
+                continue
 
             if 'summary' in d:
                 values.append(d.get('summary'))
             else:
+                r = cast(Indicator, r)
                 if resource_type.lower() in ['file']:
                     value = r.build_summary(d.get('md5'), d.get('sha1'), d.get('sha256'))
                 values.append(r.fully_decode_uri(value))
@@ -840,7 +843,7 @@ class ThreatIntelligence:
                     entity['publishDate'] = d.get('publishDate')
                 if r.api_sub_type.lower() in ['signature', 'document', 'report']:
                     r.unique_id = d.get('id')
-                    content_response = r.download()
+                    content_response = r.download()  # type: ignore
                     if content_response.ok:
                         entity['fileContent'] = content_response.text
             # get the entity type

@@ -2,8 +2,12 @@
 # standard library
 import os
 import random
+from typing import cast
 
-from .ti_helpers import TestThreatIntelligence, TIHelper
+# first-party
+from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.signature import Signature
+from tcex.tcex import TcEx
+from tests.api.tc.v2.threat_intelligence.ti_helpers import TestThreatIntelligence, TIHelper
 
 
 class TestSignatureGroups(TestThreatIntelligence):
@@ -17,9 +21,7 @@ class TestSignatureGroups(TestThreatIntelligence):
         'file_type': random.choice(file_types),
         'file_text': 'pytest signature text',
     }
-    ti = None
-    ti_helper = None
-    tcex = None
+    tcex: TcEx
 
     def setup_method(self):
         """Configure setup before all tests."""
@@ -111,7 +113,7 @@ class TestSignatureGroups(TestThreatIntelligence):
 
     def tests_ti_signature_download(self):
         """Test downloading group signature."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Signature, self.ti_helper.create_group())
         r = helper_ti.download()
 
         assert r.status_code == 200

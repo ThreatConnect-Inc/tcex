@@ -3,7 +3,6 @@
 from tcex.decorators.on_success import OnSuccess
 
 
-# pylint: disable=no-self-use
 class TestOnSuccessDecorators:
     """Test the TcEx Decorators."""
 
@@ -11,7 +10,7 @@ class TestOnSuccessDecorators:
     exit_message = None
     tcex = None
 
-    @OnSuccess(exit_msg='on_success method passed')
+    @OnSuccess(exit_msg='on_success method passed')  # type: ignore
     def on_success(self):
         """Test on success decorator."""
 

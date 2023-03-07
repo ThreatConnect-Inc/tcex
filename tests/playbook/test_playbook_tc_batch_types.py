@@ -2,17 +2,16 @@
 # standard library
 import json
 import os
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 # third-party
 import pytest
+from _pytest.fixtures import FixtureRequest
 
-if TYPE_CHECKING:
-    # first-party
-    from tcex.playbook.playbook import Playbook
+# first-party
+from tcex.playbook.playbook import Playbook
 
 
-# pylint: disable=no-self-use
 class TestUtils:
     """Test the TcEx Batch Module."""
 
@@ -26,10 +25,16 @@ class TestUtils:
         ],
     )
     def test_playbook_tc_batch_pass(
-        self, variable: str, filename: str, playbook: 'Playbook', request: 'pytest.FixtureRequest'
+        self,
+        variable: str,
+        filename: str,
+        playbook: Playbook,
+        request: FixtureRequest,
     ):
         """Test playbook variables."""
-        abspath = os.path.join(request.fspath.dirname, 'batch_test_input', f'{filename}.json')
+        abspath = os.path.join(
+            request.fspath.dirname, 'batch_test_input', f'{filename}.json'  # type: ignore
+        )
 
         with open(abspath) as file:
             data = json.load(file)
@@ -52,7 +57,7 @@ class TestUtils:
             ('#App:0002:b7!WrongType', 'wrong type'),
         ],
     )
-    def test_playbook_tc_batch_fail(self, variable: str, value: Any, playbook: 'Playbook'):
+    def test_playbook_tc_batch_fail(self, variable: str, value: Any, playbook: Playbook):
         """Test playbook variables."""
         try:
             playbook.create.tc_batch(variable, value, when_requested=False)

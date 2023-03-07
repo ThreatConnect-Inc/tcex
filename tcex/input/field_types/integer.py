@@ -1,19 +1,14 @@
 """Integer Field Type"""
 # standard library
-from typing import TYPE_CHECKING, Any, Callable, Dict, Union
+from collections.abc import Generator
+from typing import Any
 
 # third-party
+from pydantic.fields import ModelField  # TYPE-CHECKING
 from pydantic.types import OptionalInt
 
 # first-party
-from tcex.input.field_types.exception import InvalidIntegerValue, InvalidType, InvalidVariableType
-
-if TYPE_CHECKING:  # pragma: no cover
-    # third-party
-    from pydantic.fields import ModelField
-
-    # first-party
-    from tcex.utils.variables import StringVariable
+from tcex.input.field_types.exception import InvalidIntegerValue, InvalidType
 
 
 class Integer(int):
@@ -25,10 +20,10 @@ class Integer(int):
     lt: OptionalInt = None
 
     @classmethod
-    def __modify_schema__(cls, field_schema: Dict[str, Any]):
+    def __modify_schema__(cls, field_schema: dict[str, Any]):
         """Modify the field schema."""
 
-        def update_not_none(mapping: Dict[Any, Any], **update: Any):
+        def update_not_none(mapping: dict[Any, Any], **update: Any):
             mapping.update({k: v for k, v in update.items() if v is not None})
 
         update_not_none(
@@ -40,14 +35,13 @@ class Integer(int):
         )
 
     @classmethod
-    def __get_validators__(cls) -> Callable:
+    def __get_validators__(cls) -> Generator:
         """Run validators / modifiers on input."""
-        yield cls.validate_variable_type
         yield cls.validate_type
         yield cls.validate_value
 
     @classmethod
-    def validate_type(cls, value: Union[int, str, 'StringVariable'], field: 'ModelField') -> int:
+    def validate_type(cls, value: int | str, field: ModelField) -> int | str:
         """Raise exception if value is not a String type."""
         if not isinstance(value, (int, str)):
             raise InvalidType(
@@ -56,7 +50,7 @@ class Integer(int):
         return value
 
     @classmethod
-    def validate_value(cls, value: Union[int, str, 'StringVariable'], field: 'ModelField') -> int:
+    def validate_value(cls, value: int | str, field: ModelField) -> int:
         """Raise exception if value does not meet criteria."""
         if isinstance(value, str):
             value = int(value)
@@ -80,17 +74,6 @@ class Integer(int):
             )
         return value
 
-    @classmethod
-    def validate_variable_type(
-        cls, value: Union[int, str, 'StringVariable'], field: 'ModelField'
-    ) -> int:
-        """Raise exception if value is not a String type."""
-        if hasattr(value, '_variable_type') and value._variable_type != 'String':
-            raise InvalidVariableType(
-                field_name=field.name, expected_type='String', provided_type=value._variable_type
-            )
-        return value
-
 
 def integer(
     gt: OptionalInt = None,
@@ -99,10 +82,10 @@ def integer(
     le: OptionalInt = None,
 ) -> type:
     """Return configured instance of String."""
-    namespace = dict(
-        gt=gt,
-        ge=ge,
-        lt=lt,
-        le=le,
-    )
+    namespace = {
+        'gt': gt,
+        'ge': ge,
+        'lt': lt,
+        'le': le,
+    }
     return type('ConstrainedInteger', (Integer,), namespace)

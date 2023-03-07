@@ -1,7 +1,4 @@
 """Organization Model"""
-# standard library
-from typing import Optional
-
 # third-party
 from pydantic import BaseModel, Field
 
@@ -13,7 +10,7 @@ class OrganizationModel(BaseModel):
     * Organization
     """
 
-    tc_job_id: Optional[int] = Field(
+    tc_job_id: int | None = Field(
         None,
         description='The Job Id for the current App execution.',
         inclusion_reason='runtimeLevel',

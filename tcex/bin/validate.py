@@ -9,7 +9,6 @@ import sys
 import traceback
 from collections import deque
 from pathlib import Path
-from typing import Dict, Union
 
 # third-party
 import colorama as c
@@ -61,7 +60,7 @@ class Validate(BinABC):
         self.validation_data = self._validation_data
 
     @property
-    def _validation_data(self) -> Dict[str, list]:
+    def _validation_data(self) -> dict[str, list]:
         """Return structure for validation data."""
         return {
             'errors': [],
@@ -72,7 +71,7 @@ class Validate(BinABC):
             'feeds': [],
         }
 
-    def _check_node_import(self, node: Union[ast.Import, ast.ImportFrom], filename: str):
+    def _check_node_import(self, node: ast.AST | ast.ImportFrom, filename: str):
         """."""
         if isinstance(node, ast.Import):
             for n in node.names:
@@ -88,17 +87,18 @@ class Validate(BinABC):
                         {'filename': filename, 'module': m, 'status': m_status}
                     )
         elif isinstance(node, ast.ImportFrom):
-            m = node.module.split('.')[0]
-            if not self.check_import_stdlib(m):
-                m_status = self.check_imported(m)
-                if not m_status:
-                    self.validation_data['errors'].append(
-                        f'Module validation failed for {filename} '
-                        f'module "{m}" could not be imported).'
+            if node.module is not None:
+                m = node.module.split('.')[0]
+                if not self.check_import_stdlib(m):
+                    m_status = self.check_imported(m)
+                    if not m_status:
+                        self.validation_data['errors'].append(
+                            f'Module validation failed for {filename} '
+                            f'module "{m}" could not be imported).'
+                        )
+                    self.validation_data['moduleImports'].append(
+                        {'filename': filename, 'module': m, 'status': m_status}
                     )
-                self.validation_data['moduleImports'].append(
-                    {'filename': filename, 'module': m, 'status': m_status}
-                )
 
     def check_imports(self):
         """Check the projects top level directory for missing imports.
@@ -160,7 +160,7 @@ class Validate(BinABC):
             pass
 
         # https://docs.python.org/3/library/importlib.html#checking-if-a-module-can-be-imported
-        find_spec = importlib.util.find_spec(module)
+        find_spec = importlib.util.find_spec(module)  # type: ignore
         found = find_spec is not None
         if found is True:
             # if dist-packages|site-packages in module_path the import doesn't count
@@ -293,8 +293,10 @@ class Validate(BinABC):
         """
         # do not track hidden or serviceConfig inputs as they should not be in layouts.json
         ij_input_names = list(self.ij.model.filter_params(service_config=False, hidden=False))
-        # pylint: disable=no-member
-        ij_output_names = [o.name for o in self.ij.model.playbook.output_variables]
+
+        ij_output_names = []
+        if self.ij.model.playbook:
+            ij_output_names = [o.name for o in self.ij.model.playbook.output_variables or []]
 
         # Check for duplicate inputs
         for name in self.ij.validate.validate_duplicate_input():
@@ -466,7 +468,7 @@ class Validate(BinABC):
         if self.validation_data.get('fileSyntax'):
             print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Validated File Syntax:')
             print(f'''{c.Style.BRIGHT}{'File:'!s:<60}{'Status:'!s:<25}''')
-            for f in self.validation_data.get('fileSyntax'):
+            for f in self.validation_data.get('fileSyntax') or []:
                 status_color = self.status_color(f.get('status'))
                 status_value = self.status_value(f.get('status'))
                 print(f"{f.get('filename')!s:<60}{status_color}{status_value!s:<25}")
@@ -476,7 +478,7 @@ class Validate(BinABC):
         if self.validation_data.get('moduleImports'):
             print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Validated Imports:')
             print(f'''{c.Style.BRIGHT}{'File:'!s:<30}{'Module:'!s:<30}{'Status:'!s:<25}''')
-            for f in self.validation_data.get('moduleImports'):
+            for f in self.validation_data.get('moduleImports') or []:
                 status_color = self.status_color(f.get('status'))
                 status_value = self.status_value(f.get('status'))
                 print(
@@ -489,7 +491,7 @@ class Validate(BinABC):
         if self.validation_data.get('schema'):
             print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Validated Schema:')
             print(f'''{c.Style.BRIGHT}{'File:'!s:<60}{'Status:'!s:<25}''')
-            for f in self.validation_data.get('schema'):
+            for f in self.validation_data.get('schema') or []:
                 status_color = self.status_color(f.get('status'))
                 status_value = self.status_value(f.get('status'))
                 print(f'''{f.get('filename')!s:<60}{status_color}{status_value!s:<25}''')
@@ -499,7 +501,7 @@ class Validate(BinABC):
         if self.validation_data.get('layouts'):
             print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Validated Layouts:')
             print(f'''{c.Style.BRIGHT}{'Params:'!s:<60}{'Status:'!s:<25}''')
-            for f in self.validation_data.get('layouts'):
+            for f in self.validation_data.get('layouts') or []:
                 status_color = self.status_color(f.get('status'))
                 status_value = self.status_value(f.get('status'))
                 print(f"{f.get('params')!s:<60}{status_color}{status_value!s:<25}")
@@ -509,7 +511,7 @@ class Validate(BinABC):
         if self.validation_data.get('feeds'):
             print(f'\n{c.Style.BRIGHT}{c.Fore.BLUE}Validated Feed Jobs:')
             print(f'''{c.Style.BRIGHT}{'Feeds:'!s:<60}{'Status:'!s:<25}''')
-            for f in self.validation_data.get('feeds'):
+            for f in self.validation_data.get('feeds') or []:
                 status_color = self.status_color(f.get('status'))
                 status_value = self.status_value(f.get('status'))
                 print(f"{f.get('name')!s:<60}{status_color}{status_value!s:<25}")
@@ -518,7 +520,7 @@ class Validate(BinABC):
         """Print errors results."""
         if self.validation_data.get('errors'):
             print('\n')  # separate errors from normal output
-        for error in self.validation_data.get('errors'):
+        for error in self.validation_data.get('errors') or []:
             # print all errors
             print(f'* {c.Fore.RED}{error}')
 

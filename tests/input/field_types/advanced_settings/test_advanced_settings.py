@@ -1,6 +1,6 @@
 """Testing TcEx Input module field types."""
 # standard library
-from typing import TYPE_CHECKING, Dict, Optional
+from collections.abc import Callable
 
 # third-party
 import pytest
@@ -11,13 +11,10 @@ from tcex.backports import cached_property
 from tcex.input.field_types import DateTime, String, modify_advanced_settings
 from tcex.pleb.scoped_property import scoped_property
 from tests.input.field_types.utils import InputTest
-
-if TYPE_CHECKING:
-    # first-party
-    from tests.mock_app import MockApp
+from tests.mock_app import MockApp  # TYPE-CHECKING
 
 
-# pylint: disable=no-self-argument, no-self-use
+# pylint: disable=no-self-argument
 class TestInputsFieldTypes(InputTest):
     """Test TcEx String Field Model Tests."""
 
@@ -27,7 +24,7 @@ class TestInputsFieldTypes(InputTest):
         cached_property._reset()
 
     def test_advanced_settings_is_optional_input_initialized_with_none(
-        self, playbook_app: 'MockApp'
+        self, playbook_app: Callable[..., MockApp]
     ):
         """Test scenario where advanced_settings input is optional and initialized with None"""
 
@@ -42,7 +39,7 @@ class TestInputsFieldTypes(InputTest):
             """Test Model for Inputs"""
 
             # advanced settings input is Optional for this app
-            advanced_settings: Optional[AdvancedSettingsModel]
+            advanced_settings: AdvancedSettingsModel | None
             # configure "modify_advanced_settings" validator to act on "advanced_settings" input,
             # which performs the parsing of the pipe-delimited string into a dictionary,
             # which would then be used to initialize AdvancedSettingsModel
@@ -53,10 +50,10 @@ class TestInputsFieldTypes(InputTest):
         app = playbook_app(config_data=config_data)
         tcex = app.tcex
         tcex.inputs.add_model(PytestModel)
-        assert tcex.inputs.model.advanced_settings is None
+        assert tcex.inputs.model.advanced_settings is None  # type: ignore
 
     def test_advanced_settings_is_optional_input_and_is_not_initialized(
-        self, playbook_app: 'MockApp'
+        self, playbook_app: Callable[..., MockApp]
     ):
         """Test scenario where advanced_settings input is optional and is not initialized
 
@@ -74,7 +71,7 @@ class TestInputsFieldTypes(InputTest):
             """Test Model for Inputs"""
 
             # advanced settings input is Optional for this app
-            advanced_settings: Optional[AdvancedSettingsModel]
+            advanced_settings: AdvancedSettingsModel | None
             # configure "modify_advanced_settings" validator to act on "advanced_settings" input,
             # which performs the parsing of the pipe-delimited string into a dictionary,
             # which would then be used to initialize AdvancedSettingsModel
@@ -85,10 +82,10 @@ class TestInputsFieldTypes(InputTest):
         app = playbook_app(config_data=config_data)
         tcex = app.tcex
         tcex.inputs.add_model(PytestModel)
-        assert tcex.inputs.model.advanced_settings is None
+        assert tcex.inputs.model.advanced_settings is None  # type: ignore
 
     def test_advanced_settings_is_required_input_initialized_with_none(
-        self, playbook_app: 'MockApp'
+        self, playbook_app: Callable[..., MockApp]
     ):
         """Test scenario where advanced_settings input is required and initialized with None"""
 
@@ -119,7 +116,7 @@ class TestInputsFieldTypes(InputTest):
             tcex.inputs.add_model(PytestModel)
 
     def test_advanced_settings_is_required_input_and_is_not_initialized(
-        self, playbook_app: 'MockApp'
+        self, playbook_app: Callable[..., MockApp]
     ):
         """Test scenario where advanced_settings input is required and is not initialized
 
@@ -153,7 +150,7 @@ class TestInputsFieldTypes(InputTest):
             tcex.inputs.add_model(PytestModel)
 
     def test_advanced_settings_value_is_properly_transformed_per_advanced_settings_model(
-        self, playbook_app: 'MockApp'
+        self, playbook_app: Callable[..., MockApp]
     ):
         """Test that AdvancedSettingsModel properly transforms entry.
 
@@ -188,13 +185,13 @@ class TestInputsFieldTypes(InputTest):
         app = playbook_app(config_data=config_data)
         tcex = app.tcex
         tcex.inputs.add_model(PytestModel)
-        run_until_setting = tcex.inputs.model.advanced_settings.run_until
+        run_until_setting = tcex.inputs.model.advanced_settings.run_until  # type: ignore
 
         # run_until has been parsed into a DateTime as expected, and we can call isoformat on it
         assert run_until_setting.isoformat() == '2020-05-27T10:30:35+00:00'
 
     def test_validation_performed_on_parsed_advanced_settings_raises_proper_error(
-        self, playbook_app: 'MockApp'
+        self, playbook_app: Callable[..., MockApp]
     ):
         """Test that AdvancedSettingsModel errors found within AdvancedSettingsModel are raised
 
@@ -346,11 +343,11 @@ class TestInputsFieldTypes(InputTest):
     def test_advanced_settings_scenarios(
         self,
         advanced_settings_string: str,
-        expected_model: Dict,
+        expected_model: dict,
         optional: bool,
         extra_config: str,
         fail_expected: bool,
-        playbook_app: 'MockApp',
+        playbook_app: Callable[..., MockApp],
     ):
         """Test Advanced Settings logic relying on modify_advanced_settings validator for parsing
 
@@ -366,7 +363,7 @@ class TestInputsFieldTypes(InputTest):
         The act of parsing the pipe-delimited string to a dictionary is handled by the
         modify_advanced_settings validator.
 
-        :param advanced_settings_string: the string as passed via advaced_settings input
+        :param advanced_settings_string: the string as passed via advanced_settings input
         :param expected_model: Dictionary that is expected to be the equivalent of calling
         tcex.inputs.model.advanced_settings.__dict__
         :param optional: whether or not 'my_setting' is optional as described above.
@@ -376,7 +373,7 @@ class TestInputsFieldTypes(InputTest):
         """
 
         # "my_setting" advanced_setting entry will be required/optional depending on input
-        my_setting_type = Optional[String] if optional else String
+        my_setting_type = String | None if optional else String
 
         # Model that defines entries expected in pipe-delimited advanced settings input string
         class AdvancedSettingsModel(BaseModel):
@@ -384,12 +381,12 @@ class TestInputsFieldTypes(InputTest):
 
             # define "my_setting" advanced setting entry. Will be either required or optional
             # depending on value of "optional" test method input parameter.
-            my_setting: my_setting_type
+            my_setting: my_setting_type  # type: ignore
 
             # configuration class of AdvancedSettingsModel. This is not required, but allows us
             # to further define model behavior.
             class Config:
-                """Datamodel config"""
+                """DataModel config"""
 
                 # "extra" config setting allows us to control whether we want to keep any passed-in
                 # advanced settings that are not explicitly defined in our AdvancedSettingsModel.
@@ -416,7 +413,7 @@ class TestInputsFieldTypes(InputTest):
 
         if not fail_expected:
             tcex.inputs.add_model(PytestModel)
-            assert tcex.inputs.model.advanced_settings.__dict__ == expected_model
+            assert tcex.inputs.model.advanced_settings.__dict__ == expected_model  # type: ignore
         else:
             with pytest.raises(ValidationError):
                 tcex.inputs.add_model(PytestModel)

@@ -2,8 +2,8 @@
 # standard library
 import os
 from abc import ABC
+from collections.abc import Generator
 from textwrap import TextWrapper
-from typing import Dict, Iterable, List, Union
 
 # third-party
 import typer
@@ -69,7 +69,7 @@ class GenerateABC(ABC):
             type_ = 'victim_attributes'
         return self.utils.snake_string(type_)
 
-    def _module_import_data(self, type_: SnakeString) -> Dict:
+    def _module_import_data(self, type_: SnakeString) -> dict[str, str]:
         """Return the model module map data.
 
         This method provides the logic to build the import module and class dynamically. Using
@@ -105,11 +105,11 @@ class GenerateABC(ABC):
                 _properties = r.json()
         except (ConnectionError, ProxyError) as ex:
             typer.secho(f'Failed getting types properties ({ex}).', fg=typer.colors.RED)
-            typer.Exit(1)
+            typer.Exit(1)  # pylint: disable=pointless-exception-statement
 
         return _properties
 
-    def _prop_contents_data(self, properties: dict) -> Iterable[dict]:
+    def _prop_contents_data(self, properties: dict) -> Generator:
         """Yield the appropriate data object.
 
         artifacts": {
@@ -381,15 +381,17 @@ class GenerateABC(ABC):
         """Update "bad" data in properties."""
         if self.type_ in ['groups']:
             # fixed fields that are missing readOnly property
-            properties['downVoteCount']['readOnly'] = True
-            properties['upVoteCount']['readOnly'] = True
+            if 'downVoteCount' in properties:
+                properties['downVoteCount']['readOnly'] = True
+            if 'upVoteCount' in properties:
+                properties['upVoteCount']['readOnly'] = True
 
         if self.type_ in ['victims']:
             # ownerName is readOnly, but readOnly is not defined in response from OPTIONS endpoint
             properties['ownerName']['readOnly'] = True
 
     @property
-    def _prop_models(self) -> List[PropertyModel]:
+    def _prop_models(self) -> list[PropertyModel]:
         """Return a list of PropertyModel objects."""
         properties_models = []
         for field_data in self._prop_contents_data(self._prop_contents_updated):
@@ -411,7 +413,7 @@ class GenerateABC(ABC):
             self.requirements['standard library'].append('from typing import TYPE_CHECKING')
 
         indent = ''
-        _libs: List[Union[dict, str]] = []
+        _libs: list[dict | str] = []
         for from_, libs in self.requirements.items():
             if not libs:
                 # continue if there are no libraries to import
@@ -421,11 +423,13 @@ class GenerateABC(ABC):
                 # skip forward references
                 continue
 
+            comment = ''
             if from_ == 'type-checking':
                 _libs.append('if TYPE_CHECKING:  # pragma: no cover')
                 indent = self.i1
                 # this should be fine?
                 from_ = 'first-party'
+                comment = '  # CIRCULAR-IMPORT'
 
             _libs.append(f'{indent}# {from_}')
 
@@ -434,9 +438,11 @@ class GenerateABC(ABC):
             for lib in libs:
                 if isinstance(lib, dict):
                     imports = ', '.join(sorted(lib.get('imports')))  # type: ignore
-                    _imports.append(f'''{indent}from {lib.get('module')} import {imports}''')
+                    _imports.append(
+                        f'''{indent}from {lib.get('module')} import {imports}{comment}'''
+                    )
                 elif isinstance(lib, str):
-                    _imports.append(f'{indent}{lib}')
+                    _imports.append(f'{indent}{lib}{comment}')
             _libs.extend(sorted(_imports))  # add imports sorted
 
             _libs.append('')  # add newline
@@ -446,7 +452,7 @@ class GenerateABC(ABC):
         return '\n'.join(_libs)  # type: ignore
 
     @property
-    def session(self) -> 'Session':
+    def session(self) -> Session:
         """Return Session configured for TC API."""
         _session = Session()
         _session.auth = HmacAuth(

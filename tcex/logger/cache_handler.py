@@ -6,7 +6,7 @@ import logging
 class CacheHandler(logging.Handler):
     """Logger handler for caching event until all handlers are available."""
 
-    def __init__(self, max_cache=100):
+    def __init__(self, max_cache: int = 100):
         """Initialize Class properties.
 
         Args:
@@ -16,7 +16,7 @@ class CacheHandler(logging.Handler):
         self.max_cache = max_cache
         self._events = []
 
-    def emit(self, record):
+    def emit(self, record: logging.LogRecord):
         """Emit a record.
 
         Args:

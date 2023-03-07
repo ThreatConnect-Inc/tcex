@@ -2,20 +2,16 @@
 # standard library
 import json
 import logging
-import os
 from collections import OrderedDict
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import Any
 
 # first-party
 from tcex.app_config.install_json_update import InstallJsonUpdate
 from tcex.app_config.install_json_validate import InstallJsonValidate
 from tcex.app_config.models import InstallJsonModel
+from tcex.app_config.models.install_json_model import ParamsModel  # TYPE-CHECKING
 from tcex.backports import cached_property
-
-if TYPE_CHECKING:
-    # first-party
-    from tcex.app_config.models.install_json_model import ParamsModel
 
 # get tcex logger
 tcex_logger = logging.getLogger('tcex')
@@ -30,17 +26,17 @@ class InstallJson:
 
     def __init__(
         self,
-        filename: Optional[str] = None,
-        path: Optional[str] = None,
-        logger: Optional[logging.Logger] = None,
+        filename: str | None = None,
+        path: Path | str | None = None,
+        logger: logging.Logger | None = None,
     ):
         """Initialize class properties."""
         filename = filename or 'install.json'
-        path = path or os.getcwd()
+        path = Path(path or Path.cwd())
         self.log = logger or tcex_logger
 
         # properties
-        self.fqfn = Path(os.path.join(path, filename))
+        self.fqfn = path / filename
 
     @property
     def app_prefix(self) -> str:
@@ -48,7 +44,7 @@ class InstallJson:
         return self.app_prefixes.get(self.model.runtime_level.lower(), '')
 
     @property
-    def app_prefixes(self) -> str:
+    def app_prefixes(self) -> dict[str, str]:
         """Return all the current App prefixes."""
         return {
             'organization': 'TC_-_',
@@ -65,25 +61,24 @@ class InstallJson:
         if self.fqfn.is_file():
             try:
                 with self.fqfn.open() as fh:
-                    contents = json.load(fh, object_pairs_hook=OrderedDict)
+                    return json.load(fh, object_pairs_hook=OrderedDict)
             except (OSError, ValueError):  # pragma: no cover
                 self.log.error(
                     f'feature=install-json, exception=failed-reading-file, filename={self.fqfn}'
                 )
-        else:  # pragma: no cover
-            contents = {
-                'displayName': 'External App',
-                'features': [],
-                'languageVersion': '3.9',
-                'listDelimiter': '|',
-                'programLanguage': 'python',
-                'programMain': 'run.py',
-                'programVersion': '0.0.0',
-                'runtimeLevel': 'external',
-            }
-        return contents
 
-    def create_output_variables(self, output_variables: dict, job_id: Optional[int] = 9876) -> list:
+        return {
+            'displayName': 'External App',
+            'features': [],
+            'languageVersion': '3.9',
+            'listDelimiter': '|',
+            'programLanguage': 'python',
+            'programMain': 'run.py',
+            'programVersion': '0.0.0',
+            'runtimeLevel': 'external',
+        }
+
+    def create_output_variables(self, output_variables: list, job_id: int = 9876) -> list:
         """Create output variables.
 
         # "#App:9876:app.data.count!String"
@@ -98,7 +93,7 @@ class InstallJson:
             variables.append(self.create_variable(p.name, p.type, job_id))
         return variables
 
-    def create_variable(self, var_name: str, var_type: str, job_id: Optional[int] = 1234) -> str:
+    def create_variable(self, var_name: str, var_type: str, job_id: int = 1234) -> str:
         """Create output variables.
 
         # "#App:9876:app.data.count!String"
@@ -112,7 +107,7 @@ class InstallJson:
         return f'#{self.model.app_output_var_type}:{job_id}:{var_name}!{var_type}'
 
     @staticmethod
-    def expand_valid_values(valid_values: list) -> List[str]:
+    def expand_valid_values(valid_values: list) -> list[str]:
         """Expand supported playbook variables to their full list.
 
         Args:
@@ -168,12 +163,12 @@ class InstallJson:
 
     # @cached_property
     @property
-    def model(self) -> 'InstallJsonModel':
+    def model(self) -> InstallJsonModel:
         """Return the Install JSON model."""
         return InstallJsonModel(**self.contents)
 
     @property
-    def params_dict(self) -> List['ParamsModel']:
+    def params_dict(self) -> dict[str, ParamsModel]:
         """Return params as name/model.
 
         Used in tcex_testing for dynamic generation of output variables.
@@ -185,13 +180,13 @@ class InstallJson:
 
     def params_to_args(
         self,
-        name: Optional[str] = None,
-        hidden: Optional[bool] = None,
-        required: Optional[bool] = None,
-        service_config: Optional[bool] = None,
-        _type: Optional[str] = None,
-        input_permutations: Optional[list] = None,
-    ) -> Dict[str, Any]:
+        name: str | None = None,
+        hidden: bool | None = None,
+        required: bool | None = None,
+        service_config: bool | None = None,
+        _type: str | None = None,
+        input_permutations: dict | None = None,
+    ) -> dict[str, Any]:
         """Return params as cli args.
 
         Used by tcex_testing project.
@@ -243,6 +238,8 @@ class InstallJson:
     @property
     def tc_playbook_out_variables(self) -> list:
         """Return playbook output variable name array"""
+        if self.model.playbook is None:
+            return []
         return self.create_output_variables(self.model.playbook.output_variables)
 
     @property
@@ -251,12 +248,12 @@ class InstallJson:
         return ','.join(self.tc_playbook_out_variables)
 
     @property
-    def update(self) -> 'InstallJsonUpdate':
+    def update(self) -> InstallJsonUpdate:
         """Return InstallJsonUpdate instance."""
         return InstallJsonUpdate(ij=self)
 
     @property
-    def validate(self) -> 'InstallJsonValidate':
+    def validate(self) -> InstallJsonValidate:
         """Validate install.json."""
         return InstallJsonValidate(ij=self)
 

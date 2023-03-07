@@ -4,7 +4,6 @@ import gzip
 import os
 import shutil
 from logging.handlers import RotatingFileHandler
-from typing import Optional
 
 
 class RotatingFileHandlerCustom(RotatingFileHandler):
@@ -13,11 +12,11 @@ class RotatingFileHandlerCustom(RotatingFileHandler):
     def __init__(
         self,
         filename: str,
-        mode: Optional[str] = 'a',
-        maxBytes: Optional[int] = 0,
-        backupCount: Optional[int] = 0,
-        encoding: Optional[str] = None,
-        delay: Optional[bool] = False,
+        mode: str = 'a',
+        maxBytes: int = 0,
+        backupCount: int = 0,
+        encoding: str | None = None,
+        delay: bool = False,
     ):
         """Customize RotatingFileHandler to create full log path.
 

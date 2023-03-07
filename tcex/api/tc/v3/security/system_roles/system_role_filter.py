@@ -43,20 +43,32 @@ class SystemRoleFilter(FilterABC):
         """
         self._tql.add_filter('displayed', operator, displayed, TqlType.BOOLEAN)
 
-    def id(self, operator: Enum, id: int):  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int | list):  # pylint: disable=redefined-builtin
         """Filter ID based on **id** keyword.
 
         Args:
             operator: The operator enum for the filter.
             id: The ID of the role.
         """
+        if isinstance(id, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
-    def name(self, operator: Enum, name: str):
+    def name(self, operator: Enum, name: list | str):
         """Filter Name based on **name** keyword.
 
         Args:
             operator: The operator enum for the filter.
             name: The name of the role.
         """
+        if isinstance(name, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
         self._tql.add_filter('name', operator, name, TqlType.STRING)

@@ -3,8 +3,10 @@
 from typing import Any
 from urllib.parse import quote
 
+# third-party
+from requests import Session
+
 # first-party
-from tcex.app_config.install_json import InstallJson
 from tcex.key_value_store.key_value_abc import KeyValueABC
 
 
@@ -15,15 +17,14 @@ class KeyValueApi(KeyValueABC):
         session: A configured requests session for TC API (tcex.session).
     """
 
-    def __init__(self, session: object):
+    def __init__(self, session: Session):
         """Initialize the Class properties."""
         self._session = session
 
         # properties
-        self.ij = InstallJson()
         self.kv_type = 'api'
 
-    def create(self, context: str, key: str, value: Any) -> str:
+    def create(self, context: str, key: str, value: Any) -> int:
         """Create key/value pair in remote KV store.
 
         Args:
@@ -34,19 +35,17 @@ class KeyValueApi(KeyValueABC):
         Returns:
             (string): The response from the API call.
         """
-        key: str = quote(key, safe='~')
+        key = quote(key, safe='~')
         headers = {'content-type': 'application/octet-stream'}
-
-        # this conditional is only required while there are TC instances < 6.0.7 in the wild.
-        # once all TC instance are > 6.0.7 the context endpoint should work for PB Apps.
-        url = f'/internal/playbooks/keyValue/{key}'
-        if self.ij.model.is_service_app:
-            url = f'/internal/playbooks/keyValue/{context}/{key}'
+        url = f'/internal/playbooks/keyValue/{context}/{key}'
 
         r = self._session.put(url, data=value, headers=headers)
-        return r.content
+        if r.ok:
+            # the redis client returns the count of items added, in this case there is only one
+            return 1
+        return 0  # no entries created
 
-    def read(self, context: str, key: str) -> Any:
+    def read(self, context: str, key: str) -> bytes | str | None:
         """Read data from remote KV store for the provided key.
 
         Args:
@@ -58,11 +57,7 @@ class KeyValueApi(KeyValueABC):
         """
         key = quote(key, safe='~')
 
-        # this conditional is only required while there are TC instances < 6.0.7 in the wild.
-        # once all TC instance are > 6.0.7 the context endpoint should work for PB Apps.
-        url = f'/internal/playbooks/keyValue/{key}'
-        if self.ij.model.is_service_app:
-            url = f'/internal/playbooks/keyValue/{context}/{key}'
+        url = f'/internal/playbooks/keyValue/{context}/{key}'
         r = self._session.get(url)
         data = r.content
 

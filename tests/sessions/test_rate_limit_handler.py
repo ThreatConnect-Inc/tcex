@@ -19,10 +19,10 @@ class TestRateLimitHandler:
     def test_pre_send_std():
         """Test the pre_send method."""
         rate_limit_handler = RateLimitHandler()
-        response: Response = Response()
+        response = Response()
 
         with patch.object(Response, 'ok', True):
-            response.headers = {'X-RateLimit-Remaining': 0, 'X-RateLimit-Reset': 10}
+            response.headers = {'X-RateLimit-Remaining': 0, 'X-RateLimit-Reset': 10}  # type: ignore
 
             rate_limit_handler.post_send(response)
 
@@ -39,7 +39,10 @@ class TestRateLimitHandler:
         rate_limit_handler = RateLimitHandler()
         response: Response = Response()
         with patch.object(Response, 'ok', True):
-            response.headers = {'X-RateLimit-Remaining': 0, 'X-RateLimit-Reset': 1600284000}
+            response.headers = {  # type: ignore
+                'X-RateLimit-Remaining': 0,
+                'X-RateLimit-Reset': 1600284000,
+            }
 
             rate_limit_handler.post_send(response)
             request: PreparedRequest = PreparedRequest()
@@ -55,7 +58,7 @@ class TestRateLimitHandler:
         rate_limit_handler = RateLimitHandler()
         response: Response = Response()
         with patch.object(Response, 'ok', True):
-            response.headers = {
+            response.headers = {  # type: ignore
                 'X-RateLimit-Remaining': 0,
                 'X-RateLimit-Reset': 'Wed, 16 Sep 2020 19:04:00 GMT',
             }
@@ -75,7 +78,7 @@ class TestRateLimitHandler:
 
         with patch.object(Response, 'ok', True):
             response: Response = Response()
-            response.headers = {
+            response.headers = {  # type: ignore
                 'X-RateLimit-Remaining': 10,
                 'X-RateLimit-Reset': 10,
                 'remaining': 50,

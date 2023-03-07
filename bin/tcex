@@ -11,37 +11,34 @@ import colorama as c
 import typer
 
 # first-party
-from tcex.bin import Dep, Deploy, SpecTool, Package, Template, Validate
-
+# pylint: disable=import-error,no-name-in-module
+from tcex.bin import Dep, Deploy, Package, SpecTool, Template, Validate
 
 # initialize typer
 app = typer.Typer()
 
+# typer does not yet support PEP 604, but pyupgrade will enforce
+# PEP 604. this is a temporary workaround until support is added.
+IntOrNone = Optional[int]
+StrOrNone = Optional[str]
+
 
 @app.command()
 def deps(
-    branch: Optional[str] = typer.Option(
+    branch: str = typer.Option(
         'main',
         help=(
             'The git branch of the tcex repository to use. '
             'This override what is in the requirements.txt file.'
         ),
     ),
-    dev: Optional[bool] = typer.Option(False, help='Install development dependencies.'),
-    no_cache_dir: Optional[bool] = typer.Option(False, help='Do not use pip cache directory.'),
-    pre: Optional[bool] = typer.Option(False, help='Install pre-release packages.'),
-    proxy_host: Optional[str] = typer.Option(
-        None, help='(Advanced) Hostname for the proxy server.'
-    ),
-    proxy_port: Optional[int] = typer.Option(
-        None, help='(Advanced) Port number for the proxy server.'
-    ),
-    proxy_user: Optional[str] = typer.Option(
-        None, help='(Advanced) Username for the proxy server.'
-    ),
-    proxy_pass: Optional[str] = typer.Option(
-        None, help='(Advanced) Password for the proxy server.'
-    ),
+    dev: bool = typer.Option(False, help='Install development dependencies.'),
+    no_cache_dir: bool = typer.Option(False, help='Do not use pip cache directory.'),
+    pre: bool = typer.Option(False, help='Install pre-release packages.'),
+    proxy_host: StrOrNone = typer.Option(None, help='(Advanced) Hostname for the proxy server.'),
+    proxy_port: IntOrNone = typer.Option(None, help='(Advanced) Port number for the proxy server.'),
+    proxy_user: StrOrNone = typer.Option(None, help='(Advanced) Username for the proxy server.'),
+    proxy_pass: StrOrNone = typer.Option(None, help='(Advanced) Password for the proxy server.'),
 ):
     """Install dependencies defined in the requirements.txt file.
 
@@ -50,9 +47,8 @@ def deps(
     command will be used to create the lib_X.X.X directory. If multiple versions of Python
     are defined in the tcex.json file, then there will be multiple lib_X.X.X directories created.
     """
+    tcd = Dep(branch, dev, no_cache_dir, pre, proxy_host, proxy_port, proxy_user, proxy_pass)
     try:
-        tcd = Dep(branch, dev, no_cache_dir, pre, proxy_host, proxy_port, proxy_user, proxy_pass)
-
         # configure proxy settings
         tcd.configure_proxy()
 
@@ -75,22 +71,14 @@ def deploy(
     allow_distribution: bool = typer.Option(
         True, help='If true the App is allowed to be distributed.'
     ),
-    app_file: Optional[str] = typer.Option(
+    app_file: StrOrNone = typer.Option(
         None,
         help='The fully qualified path to App file. Will be auto-detected if not provided.',
     ),
-    proxy_host: Optional[str] = typer.Option(
-        None, help='(Advanced) Hostname for the proxy server.'
-    ),
-    proxy_port: Optional[int] = typer.Option(
-        None, help='(Advanced) Port number for the proxy server.'
-    ),
-    proxy_user: Optional[str] = typer.Option(
-        None, help='(Advanced) Username for the proxy server.'
-    ),
-    proxy_pass: Optional[str] = typer.Option(
-        None, help='(Advanced) Password for the proxy server.'
-    ),
+    proxy_host: StrOrNone = typer.Option(None, help='(Advanced) Hostname for the proxy server.'),
+    proxy_port: IntOrNone = typer.Option(None, help='(Advanced) Port number for the proxy server.'),
+    proxy_user: StrOrNone = typer.Option(None, help='(Advanced) Username for the proxy server.'),
+    proxy_pass: StrOrNone = typer.Option(None, help='(Advanced) Password for the proxy server.'),
 ):
     """Deploy App to ThreatConnect via internal API.
 
@@ -103,19 +91,17 @@ def deploy(
     * TC_API_ACCESS_ID
     * TC_API_SECRET_KEY
     """
+    tcd = Deploy(
+        server,
+        allow_all_orgs,
+        allow_distribution,
+        app_file,
+        proxy_host,
+        proxy_port,
+        proxy_user,
+        proxy_pass,
+    )
     try:
-        tcd = Deploy(
-            server,
-            allow_all_orgs,
-            allow_distribution,
-            app_file,
-            proxy_host,
-            proxy_port,
-            proxy_user,
-            proxy_pass,
-        )
-
-        # deploy the App
         tcd.deploy_app()
     except Exception as ex:
         tcd.log.error(traceback.format_exc())
@@ -173,13 +159,17 @@ def spectool(
 
 @app.command()
 def init(
-    type_: str = typer.Option(..., '--type', help='The App type being initialized.', prompt=True),
-    template: str = typer.Option(..., help='The App template to be used.', prompt=True),
+    template_name: str = typer.Option(
+        ..., '--template', help='The App template to be used.', prompt=True
+    ),
+    template_type: str = typer.Option(
+        ..., '--type', help='The App type being initialized.', prompt=True
+    ),
     force: bool = typer.Option(False, help='Force App init even if files exist in directory.'),
-    branch: Optional[str] = typer.Option(
+    branch: str = typer.Option(
         'main', help='The git branch of the tcex-app-template repository to use.'
     ),
-    app_builder: Optional[bool] = typer.Option(
+    app_builder: bool = typer.Option(
         False, help='Include .appbuilderconfig file in template download.'
     ),
     proxy_host: Optional[str] = typer.Option(
@@ -216,14 +206,14 @@ def init(
 
     try:
         tt.print_title('Installing template files ...', divider=False, fg_color='white')
-        downloads = tt.init(branch, type_, template, app_builder)
+        downloads = tt.init(branch, template_name, template_type, app_builder)
         typer.echo('')  # add additional space before progress bar
         with typer.progressbar(downloads, label='Downloading', width=80) as progress:
             for item in progress:
                 tt.download_template_file(item)
 
         # update tcex.json file with template data, external App do not support tcex.json
-        if type_ != 'external':
+        if template_type != 'external':
             tt.update_tcex_json()
 
             # update manifest
@@ -231,8 +221,8 @@ def init(
 
         typer.echo('\n')
         tt.print_title('Installation Summary')
-        tt.print_setting('Template Type', type_)
-        tt.print_setting('Template Name', template)
+        tt.print_setting('Template Name', template_name)
+        tt.print_setting('Template Type', template_type)
         tt.print_setting('Files Downloaded', len(downloads))
         tt.print_setting('Branch', branch)
     except Exception as ex:
@@ -242,9 +232,9 @@ def init(
 
 
 @app.command('list')
-def _list(
-    type_: Optional[str] = typer.Option(None, '--type', help='The App type being initialized.'),
-    branch: Optional[str] = typer.Option(
+def list_(
+    template_type: StrOrNone = typer.Option(None, '--type', help='The App type being initialized.'),
+    branch: str = typer.Option(
         'main', help='The git branch of the tcex-app-template repository to use.'
     ),
     proxy_host: Optional[str] = typer.Option(
@@ -273,7 +263,7 @@ def _list(
         proxy_pass,
     )
     try:
-        tt.list(branch, type_)
+        tt.list_(branch, template_type)
         tt.print_list(branch)
         tt.print_error_message()
     except Exception as ex:
@@ -284,13 +274,13 @@ def _list(
 
 @app.command()
 def package(
-    excludes: Optional[str] = typer.Option(
-        None, help='File and directories to exclude from build in a comma-seperated list.'
+    excludes: str = typer.Option(
+        '', help='File and directories to exclude from build in a comma-separated list.'
     ),
-    ignore_validation: Optional[bool] = typer.Option(
+    ignore_validation: bool = typer.Option(
         False, help='If true, validation errors will not prevent package.'
     ),
-    json_output: Optional[bool] = typer.Option(
+    json_output: bool = typer.Option(
         False, help='If true, the output of the validation will be returned in JSON format.'
     ),
     output_dir: Path = typer.Option(
@@ -302,12 +292,10 @@ def package(
     This command will write an <app name>.tcx file to the output_dir (default: target). This
     App package can be directly installed into ThreatConnect.
     """
-    if excludes:
-        excludes = [e.strip() for e in excludes.split(',')]
+    excludes_ = [e.strip() for e in excludes.split(',') if e]
 
+    tcv = Validate(ignore_validation)
     try:
-        # validate App
-        tcv = Validate(ignore_validation)
         tcv.update_system_path()
         tcv.check_syntax()
         tcv.check_imports()
@@ -320,7 +308,7 @@ def package(
             raise typer.Exit(code=tcv.exit_code)
 
         # package App
-        tcp = Package(excludes, ignore_validation, output_dir)
+        tcp = Package(excludes_, ignore_validation, output_dir)
         tcp.validation_data = tcv.validation_data
         tcp.package()
         if json_output:
@@ -336,11 +324,11 @@ def package(
 
 @app.command()
 def update(
-    template: Optional[str] = typer.Option(
-        None, help='Only provide this value if changing the saved value.'
+    template_name: StrOrNone = typer.Option(
+        None, '--template', help='Only provide this value if changing the saved value.'
     ),
-    type_: str = typer.Option(None, '--type', help='The App type being initialized.'),
-    branch: Optional[str] = typer.Option(
+    template_type: StrOrNone = typer.Option(None, '--type', help='The App type being initialized.'),
+    branch: str = typer.Option(
         'main', help='The git branch of the tcex-app-template repository to use.'
     ),
     force: bool = typer.Option(
@@ -382,7 +370,7 @@ def update(
         proxy_pass,
     )
     try:
-        downloads = tt.update(branch, template, type_, force)
+        downloads = tt.update(branch, template_name, template_type, force)
         tt.print_title('Updating template files ...', divider=False, fg_color='white')
         if not downloads:
             typer.secho('\nNo files to update.', fg=typer.colors.GREEN)
@@ -412,10 +400,10 @@ def update(
 
 @app.command()
 def validate(
-    ignore_validation: Optional[bool] = typer.Option(
+    ignore_validation: bool = typer.Option(
         False, help='If true, validation errors will not cause an exit.'
     ),
-    interactive: Optional[bool] = typer.Option(
+    interactive: bool = typer.Option(
         False, help='(Advanced) If true, this command will not exit until passed an exit string.'
     ),
 ):
@@ -428,8 +416,8 @@ def validate(
     * validate layout.json has valid syntax
     * validate the feed files are valid
     """
+    tcv = Validate(ignore_validation)
     try:
-        tcv = Validate(ignore_validation)
         tcv.update_system_path()
         # run in interactive
         if interactive:

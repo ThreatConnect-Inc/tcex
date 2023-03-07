@@ -1,23 +1,21 @@
 """ThreatConnect HMAC Authorization"""
 # standard library
 import time
-from typing import TYPE_CHECKING, Callable, Union
+from collections.abc import Callable
 
 # third-party
+from requests import Request  # TYPE-CHECKING
 from requests import auth
 
 # first-party
 from tcex.input.field_types.sensitive import Sensitive
-
-if TYPE_CHECKING:  # pragma: no cover
-    # third-party
-    from requests import request
+from tcex.tokens import Tokens
 
 
 class TokenAuth(auth.AuthBase):
     """ThreatConnect HMAC Authorization"""
 
-    def __init__(self, tc_token: Union[Callable, str, 'Sensitive']):
+    def __init__(self, tc_token: Callable | str | Sensitive | Tokens):
         """Initialize the Class properties."""
         # super().__init__()
         auth.AuthBase.__init__(self)
@@ -28,9 +26,10 @@ class TokenAuth(auth.AuthBase):
         _token = None
         if hasattr(self.tc_token, 'token'):
             # Token Module - The token module is provided that will handle authentication.
-            _token = self.tc_token.token.value
+            # Token is a SecureString type.
+            _token = self.tc_token.token.value  # type: ignore
         elif callable(self.tc_token):
-            # Callabe - A callable method is provided that will return the token as a plain
+            # Callable - A callable method is provided that will return the token as a plain
             #     string. The callable will have to handle token renewal.
             _token = self.tc_token()
         elif isinstance(self.tc_token, Sensitive):
@@ -43,7 +42,7 @@ class TokenAuth(auth.AuthBase):
         # Return formatted token
         return f'TC-Token {_token}'
 
-    def __call__(self, r: 'request') -> 'request':
+    def __call__(self, r: Request) -> Request:
         """Add the authorization headers to the request."""
         timestamp = int(time.time())
 

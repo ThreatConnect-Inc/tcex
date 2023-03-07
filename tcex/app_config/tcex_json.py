@@ -2,10 +2,8 @@
 # standard library
 import json
 import logging
-import os
 from collections import OrderedDict
 from pathlib import Path
-from typing import Optional
 
 # third-party
 import colorama as c
@@ -25,17 +23,17 @@ class TcexJson:
 
     def __init__(
         self,
-        filename: Optional[str] = None,
-        path: Optional[str] = None,
-        logger: Optional[logging.Logger] = None,
+        filename: str | None = None,
+        path: Path | str | None = None,
+        logger: logging.Logger | None = None,
     ):
         """Initialize class properties."""
         filename = filename or 'tcex.json'
-        path = path or os.getcwd()
+        path = Path(path or Path.cwd())
         self.log = logger or tcex_logger
 
         # properties
-        self.fqfn = Path(os.path.join(path, filename))
+        self.fqfn = path / filename
         self.ij = InstallJson(logger=self.log)
 
     @cached_property
@@ -57,7 +55,7 @@ class TcexJson:
         return _contents
 
     @cached_property
-    def model(self) -> 'TcexJsonModel':
+    def model(self) -> TcexJsonModel:
         """Return the Install JSON model."""
         return TcexJsonModel(**self.contents)
 
@@ -79,7 +77,7 @@ class TcexJson:
             )
 
     @property
-    def update(self) -> 'TcexJsonUpdate':
+    def update(self) -> TcexJsonUpdate:
         """Return InstallJsonUpdate instance."""
         return TcexJsonUpdate(tj=self)
 

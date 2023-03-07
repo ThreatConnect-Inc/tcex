@@ -6,7 +6,6 @@ import pytest
 from tcex.decorators.fail_on_output import FailOnOutput
 
 
-# pylint: disable=no-self-use
 class TestFailOnOutputDecorator:
     """Test the TcEx Decorators."""
 
@@ -20,7 +19,7 @@ class TestFailOnOutputDecorator:
         fail_msg='Failed due to invalid output',
         fail_msg_property='fail_msg',
         fail_on=[None, ''],
-    )
+    )  # type: ignore
     def fail_on_output(self, **kwargs):
         """Test fail on input decorator with no arg value (use first arg input)."""
         return kwargs.get('value')

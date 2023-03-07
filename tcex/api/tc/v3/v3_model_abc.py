@@ -6,14 +6,17 @@ import json
 import logging
 from abc import ABC
 from json import JSONEncoder
-from typing import Any, Optional
+from typing import Any, Self
 
 # third-party
 from pydantic import BaseModel, PrivateAttr
 
+# first-party
+from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
+
 # get tcex logger
 
-logger = logging.getLogger('tcex')
+logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 
 class CustomJSONEncoder(JSONEncoder):
@@ -40,7 +43,7 @@ class V3ModelABC(BaseModel, ABC):
     _log = logger
     _shared_type = PrivateAttr(False)
     _staged = PrivateAttr(False)
-    id: int = None
+    id: int | None = None
 
     def __init__(self, **kwargs):
         """Initialize class properties."""
@@ -56,8 +59,8 @@ class V3ModelABC(BaseModel, ABC):
         self._dict_hash = self.gen_model_hash(self.json(sort_keys=True))
 
     def _calculate_field_inclusion(
-        self, field: str, method: str, mode: str, nested: bool, property_: dict, value: Any
-    ) -> str:
+        self, field: str, method: str, mode: str | None, nested: bool, property_: dict, value: Any
+    ) -> bool:
         """Return True if the field is calculated to be included."""
 
         # INDICATOR ID RULE: If an indicator has a ID set, then the indicator fields
@@ -117,7 +120,7 @@ class V3ModelABC(BaseModel, ABC):
         return False
 
     # pylint: disable=too-many-return-statements
-    def _calculate_nested_inclusion(self, method: str, mode: str, model: 'BaseModel') -> str:
+    def _calculate_nested_inclusion(self, method: str, mode: str | None, model: Self) -> bool:
         """Return True if the field is calculated to be included.
 
         Case Management Nested Logic:
@@ -157,7 +160,7 @@ class V3ModelABC(BaseModel, ABC):
         # * The method is PUT
         # * The nested object was NOT added via the stage_xxx method
         # * The nested object contains a ID or Name Field
-        # * The nested object could either have been set during initing the object or fetched.
+        # * The nested object could either have been set during initializing the object or fetched.
 
         # CM and TI endpoint behaves differently. Start with rules based on the parent type,
         # then add more specific rules.
@@ -198,7 +201,7 @@ class V3ModelABC(BaseModel, ABC):
             #     is APPEND and has been UPDATED, then the attributes should be INCLUDED.
             #     For new nested objects added with the stage_xxx() method, the STAGED
             #     RULE would trigger first.
-            # A secondary PATTERN concideration is that attributes can be immediately
+            # A secondary PATTERN consideration is that attributes can be immediately
             #     updated using the attribute.updated() method. While this isn't as
             #     efficient as updating them all in one request, it's is a simpler
             #     development design pattern.
@@ -214,7 +217,7 @@ class V3ModelABC(BaseModel, ABC):
             #     is DELETE the attribute should NOT be INCLUDED. Any attribute that was
             #     added by the developer using the stage_xxx() method would have hit the
             #     STAGED RULE above and would be INCLUDED.
-            # A secondary PATTERN concideration is that attributes can be immediately
+            # A secondary PATTERN consideration is that attributes can be immediately
             #     deleted using the attribute.delete() method. While this isn't as
             #     efficient as deleting them all in one request, it's is a simpler
             #     development design pattern.
@@ -254,7 +257,7 @@ class V3ModelABC(BaseModel, ABC):
         if (
             mode == 'delete'
             and (model._shared_type is True or self._associated_type is True)
-            and (model.id is not None or model.name is not None)
+            and (model.id is not None or model.name is not None)  # type: ignore
         ):
             # RULE: Nested Shared Object w/ DELETE mode (TAGS, SECURITY LABELS)
             # Nested shared object on a parent TI type use the mode feature. When the mode
@@ -263,7 +266,7 @@ class V3ModelABC(BaseModel, ABC):
             #     be INCLUDED.
             return True
 
-        # * asssoc -> delete (support id only)
+        # * associated -> delete (support id only)
         # * attribute -> delete (support id only)
         # RULE: Nested Object w/ DELETE mode
         # Nested object on a parent TI type use the mode feature. When the mode
@@ -274,7 +277,7 @@ class V3ModelABC(BaseModel, ABC):
         # All non-matching nested object that did not match a rule above will NOT be INCLUDED.
         return False
 
-    def _process_nested_data_array(self, method: str, mode: str, nested_object: 'BaseModel'):
+    def _process_nested_data_array(self, method: str, mode: str | None, nested_object: Self):
         """Process the nested data object (e.g., GroupsModel.data).
 
         Nested Object Inclusion Rules:
@@ -286,7 +289,7 @@ class V3ModelABC(BaseModel, ABC):
               are create using **kwargs they are not updated.
         """
         _data = []
-        for model in nested_object.data:
+        for model in nested_object.data:  # type: ignore
             if self._calculate_nested_inclusion(method, mode, model):
                 data = model.gen_body(method, mode, nested=True)
                 if data:
@@ -294,7 +297,7 @@ class V3ModelABC(BaseModel, ABC):
 
         return _data
 
-    def _process_nested_data_object(self, method: str, mode: str, nested_object: 'BaseModel'):
+    def _process_nested_data_object(self, method: str, mode: str | None, nested_object: Self):
         """Process the nested data object (e.g., GroupsModel.data).
 
         Nested Object Inclusion Rules:
@@ -305,18 +308,18 @@ class V3ModelABC(BaseModel, ABC):
           * Object was modified after it was created. Since object pulled from the API
               are create using **kwargs they are not updated.
         """
-        if self._calculate_nested_inclusion(method, mode, nested_object.data):
-            data = nested_object.data.gen_body(method, mode, nested=True)
+        if self._calculate_nested_inclusion(method, mode, nested_object.data):  # type: ignore
+            data = nested_object.data.gen_body(method, mode, nested=True)  # type: ignore
             if data:
                 return data
         return None
 
-    def _properties(self):
+    def _properties(self) -> dict[str, dict[str, str]]:
         """Return properties of the current model."""
         schema = self.schema(by_alias=False)
         if schema.get('properties') is not None:
-            return schema.get('properties')
-        return schema.get('definitions').get(self.__class__.__name__).get('properties')
+            return schema.get('properties', {})
+        return schema.get('definitions', {}).get(self.__class__.__name__, {}).get('properties', {})
 
     @staticmethod
     def gen_model_hash(json_: str) -> str:
@@ -330,9 +333,9 @@ class V3ModelABC(BaseModel, ABC):
     def gen_body(
         self,
         method: str,
-        mode: Optional[str] = None,
-        exclude_none: Optional[bool] = True,
-        nested: Optional[bool] = False,
+        mode: str | None = None,
+        exclude_none: bool = True,
+        nested: bool = False,
     ) -> dict:
         """Return the generated body.
 
@@ -347,8 +350,7 @@ class V3ModelABC(BaseModel, ABC):
                 continue
 
             # get the current field from the schema to us in validating method membership.
-            property_ = schema_properties.get(name)
-            if property_ is None:
+            if schema_properties.get(name) is None:
                 # a field not being available does not indicate a failure, it could simple
                 # be the incorrect field was passed to the object, which will be dropped.
                 self._log.warning(
@@ -357,20 +359,23 @@ class V3ModelABC(BaseModel, ABC):
                 )
                 continue
 
-            key = property_.get('title')
+            property_ = schema_properties.get(name, {})
+            key = property_['title']
             if isinstance(value, BaseModel) and property_.get('read_only') is False:
+                value: Self = value
                 # Handle nested models that should be included in the body (non-read-only).
 
-                if hasattr(value, 'data') and isinstance(value.data, list):
+                if hasattr(value, 'data') and isinstance(value.data, list):  # type: ignore
                     # Handle nested object types where the "data" field contains an array of models.
                     _data = self._process_nested_data_array(method, mode, value)
                     if _data:
                         _body.setdefault(key, {})['data'] = _data
 
-                        if value._mode_support:
+                        # value as a model can be ArtifactTypeModel, ArtifactModel, etc.
+                        if value._mode_support:  # type: ignore
                             # Use the default mode defined in the model ("append") or the
                             # mode passed into this method as an override.
-                            _body.setdefault(key, {})['mode'] = mode or value.mode
+                            _body.setdefault(key, {})['mode'] = mode or value.mode  # type: ignore
 
                 elif hasattr(value, 'data'):
                     # Handle "non-standard" condition for Assignee where the nested "data"
@@ -381,7 +386,7 @@ class V3ModelABC(BaseModel, ABC):
 
                         # Handle the extra "type" field that is only on Assignee objects.
                         if hasattr(value, 'type'):
-                            _body.setdefault(key, {})['type'] = value.type
+                            _body.setdefault(key, {})['type'] = value.type  # type: ignore
 
                 else:
                     # Handle nested object types where field contains an object.
@@ -401,9 +406,9 @@ class V3ModelABC(BaseModel, ABC):
     def gen_body_json(
         self,
         method: str,
-        mode: Optional[str] = None,
-        indent: Optional[int] = None,
-        sort_keys: Optional[bool] = False,
+        mode: str | None = None,
+        indent: int | None = None,
+        sort_keys: bool = False,
     ) -> str:
         """Wrap gen_body method returning JSON instead of dict."""
         # ensure mode is set to lower case if provided on gen_body entry point
