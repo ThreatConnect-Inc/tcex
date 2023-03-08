@@ -53,7 +53,7 @@ from tcex.api.tc.v2.batch.indicator import (
 )
 from tcex.input.input import Input  # TYPE-CHECKING
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
-from tcex.utils import Utils
+from tcex.util import Util
 
 # import local modules for dynamic reference
 module = __import__(__name__)
@@ -123,7 +123,7 @@ class BatchWriter:
         self._batch_max_size = 75_000_000  # max size in bytes
         self.log = logger
         self.tic = ThreatIntelUtils(self.session_tc)
-        self.utils = Utils()
+        self.util = Util()
 
         # shelf settings
         self._group_shelf_fqfn = None
@@ -144,7 +144,7 @@ class BatchWriter:
             name = entry['name']
             class_name = name.replace(' ', '')
             # temp fix for API issue where boolean are returned as strings
-            entry['custom'] = self.utils.to_bool(entry.get('custom') or False)
+            entry['custom'] = self.util.to_bool(entry.get('custom') or False)
 
             if class_name in globals():
                 # skip Indicator Type if a class already exists

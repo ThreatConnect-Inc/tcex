@@ -14,10 +14,10 @@ import redis
 
 # first-party
 from tcex import TcEx
-from tcex.backports import cached_property
-from tcex.key_value_store import RedisClient
+from tcex.app.key_value_store import RedisClient
+from tcex.app.playbook.playbook import Playbook
+from tcex.backport import cached_property
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
-from tcex.playbook.playbook import Playbook
 from tcex.pleb.registry import registry
 from tcex.pleb.scoped_property import scoped_property
 from tests.mock_app import MockApp
@@ -66,7 +66,7 @@ def owner_id() -> Generator[Callable, None, None]:
         """Return owner Id give the name."""
         id_ = None
         for o in (
-            _tcex.session_tc.get('/v2/owners')  # pylint: disable=no-member
+            _tcex.session.tc.get('/v2/owners')  # pylint: disable=no-member
             .json()
             .get('data', [])
             .get('owner', [])
@@ -78,23 +78,23 @@ def owner_id() -> Generator[Callable, None, None]:
 
     yield get_owner_id
 
-    _tcex.token.shutdown = True
+    _tcex.app.token.shutdown = True
 
 
 @pytest.fixture()
 def playbook() -> Iterable[Playbook]:
-    """Return an instance of tcex.playbook."""
+    """Return an instance of tcex.app.playbook."""
     _reset_modules()
     app = MockApp(runtime_level='Playbook')
-    yield app.tcex.playbook
-    app.tcex.token.shutdown = True
+    yield app.tcex.app.playbook
+    app.tcex.app.token.shutdown = True
 
 
 @pytest.fixture()
 def playbook_app() -> Generator[Callable[..., MockApp], None, None]:
     """Mock a playbook App."""
     _reset_modules()
-    app_refs = []
+    app_refs: list[MockApp] = []
 
     def app(**kwargs) -> MockApp:
         nonlocal app_refs
@@ -107,7 +107,7 @@ def playbook_app() -> Generator[Callable[..., MockApp], None, None]:
     yield app
 
     for _app in app_refs:
-        _app.tcex.token.shutdown = True
+        _app.tcex.app.token.shutdown = True
 
 
 @pytest.fixture()
@@ -120,7 +120,7 @@ def redis_client() -> redis.Redis:
 def service_app() -> Generator[Callable, None, None]:
     """Mock a service App."""
     _reset_modules()
-    app_refs = []
+    app_refs: list[MockApp] = []
 
     def app(**kwargs) -> MockApp:
         nonlocal app_refs
@@ -133,7 +133,7 @@ def service_app() -> Generator[Callable, None, None]:
     yield app
 
     for _app in app_refs:
-        _app.tcex.token.shutdown = True
+        _app.tcex.app.token.shutdown = True
 
 
 @pytest.fixture()
@@ -142,7 +142,7 @@ def tcex() -> Generator[TcEx, None, None]:
     _reset_modules()
     _tcex = MockApp(runtime_level='Playbook').tcex
     yield _tcex
-    _tcex.token.shutdown = True
+    _tcex.app.token.shutdown = True
 
 
 @pytest.fixture()
@@ -155,7 +155,7 @@ def tcex_hmac() -> Generator[TcEx, None, None]:
     }
     app = MockApp(runtime_level='Playbook', config_data=config_data_)
     yield app.tcex
-    app.tcex.token.shutdown = True
+    app.tcex.app.token.shutdown = True
 
 
 # @pytest.fixture(scope='module')
@@ -172,7 +172,7 @@ def tcex_proxy() -> Generator[TcEx, None, None]:
     }
     app = MockApp(runtime_level='Playbook', config_data=config_data_)
     yield app.tcex
-    app.tcex.token.shutdown = True
+    app.tcex.app.token.shutdown = True
 
 
 #

@@ -6,9 +6,9 @@ import sys
 
 # first-party
 import tcex.input.field_types as FieldTypes  # noqa: N812
-from tcex.app_config.models.install_json_model import ParamsModel  # TYPE-CHECKING
-from tcex.app_config.permutation import Permutation
-from tcex.backports import cached_property
+from tcex.app.config.models.install_json_model import ParamsModel  # TYPE-CHECKING
+from tcex.app.config.permutation import Permutation
+from tcex.backport import cached_property
 from tcex.bin.bin_abc import BinABC
 from tcex.bin.spec_tool_app_input_static import SpecToolAppInputStatic
 
@@ -133,7 +133,7 @@ class SpecToolAppInput(BinABC):
 
         if comments:
             comment = ', '.join(comments)
-            comment_wrapped = self.utils.wrap_string(comment, [' ', '|'], 80).split('\n')
+            comment_wrapped = self.util.wrap_string(comment, [' ', '|'], 80).split('\n')
             return '\n'.join([f'{self.i1}# {c}' for c in comment_wrapped])
         return None
 
@@ -345,12 +345,12 @@ class SpecToolAppInput(BinABC):
         """Return the type from the current app_input.py file if found."""
         # Try to capture the value from the specific class first. If not
         # found, search the entire app_inputs.py file.
-        type_definition = self.utils.find_line_in_code(
+        type_definition = self.util.find_line_in_code(
             needle=rf'\s+{input_name}: ',
             code=self.app_inputs_contents,
             trigger_start=rf'^class {class_name}',
             trigger_stop=r'^class ',
-        ) or self.utils.find_line_in_code(needle=f'{input_name}: ', code=self.app_inputs_contents)
+        ) or self.util.find_line_in_code(needle=f'{input_name}: ', code=self.app_inputs_contents)
         # type_definition -> "string_encrypt: Optional[Sensitive]"
         self.log.debug(
             f'action=find-definition, input-name={input_name}, type-definition={type_definition}'
@@ -459,9 +459,9 @@ class SpecToolAppInput(BinABC):
         array_type = False
         single_type = False
         for _type in input_data.playbook_data_type:
-            if _type in self.utils.variable_playbook_array_types:
+            if _type in self.util.variable_playbook_array_types:
                 array_type = True
-            elif _type in self.utils.variable_playbook_single_types:
+            elif _type in self.util.variable_playbook_single_types:
                 single_type = True
 
         return all([array_type, single_type])

@@ -20,7 +20,7 @@ class InputTest:
     @staticmethod
     def _stage_key_value(config_key: str, variable_name: str, value: Any, tcex: TcEx):
         """Write values to key value store. Expects dictionary of variable_name: value"""
-        registry.Playbook.create.any(variable_name, value, validate=False, when_requested=False)
+        registry.playbook.create.any(variable_name, value, validate=False, when_requested=False)
 
         # force inputs to resolve newly inserted key-values from key value store
         if 'contents_resolved' in tcex.inputs.__dict__:

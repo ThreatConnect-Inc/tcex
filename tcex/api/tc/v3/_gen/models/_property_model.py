@@ -3,9 +3,9 @@
 from pydantic import BaseModel, Extra, Field, validator
 
 # first-party
-from tcex.backports import cached_property
-from tcex.utils import Utils
-from tcex.utils.string_operations import CamelString
+from tcex.backport import cached_property
+from tcex.util import Util
+from tcex.util.string_operation import CamelString
 
 
 # pylint: disable=no-self-argument
@@ -36,7 +36,7 @@ class ExtraModel(
 # pylint: disable=no-self-argument
 class PropertyModel(
     BaseModel,
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     arbitrary_types_allowed=True,
     extra=Extra.forbid,
     keep_untouched=(cached_property,),
@@ -328,7 +328,7 @@ class PropertyModel(
     @classmethod
     def __extra_gen_req_code(cls, type_: CamelString) -> dict[str, str]:
         """Return the requirements code"""
-        type_ = Utils().camel_string(type_)
+        type_ = Util().camel_string(type_)
         return {
             'import_data': (
                 f'from {cls.__extra_tap(type_)}.{type_.plural().snake_case()}.'

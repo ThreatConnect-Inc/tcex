@@ -11,7 +11,7 @@ from pydantic.fields import ModelField  # TYPE-CHECKING
 from tcex.input.field_types.exception import InvalidEmptyValue, InvalidLengthValue, InvalidType
 from tcex.logger.sensitive_filter import SensitiveFilter  # pylint: disable=no-name-in-module
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
-from tcex.utils.variables import BinaryVariable
+from tcex.util.variable import BinaryVariable
 
 # get tcex logger
 filter_sensitive = SensitiveFilter(name='sensitive_filter')

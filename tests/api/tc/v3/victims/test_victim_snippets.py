@@ -12,7 +12,7 @@ class TestVictimSnippets(TestV3):
     def test_victim_create(self):
         """Test snippet"""
         # Begin Snippet
-        victim = self.tcex.v3.victim(
+        victim = self.tcex.api.tc.v3.victim(
             name='MyVictim-01',
             description='Example Victim Description',
             nationality='American',
@@ -30,7 +30,7 @@ class TestVictimSnippets(TestV3):
     def test_victim_stage_attribute(self):
         """Test snippet"""
         # Begin Snippet
-        victim = self.tcex.v3.victim(
+        victim = self.tcex.api.tc.v3.victim(
             name='MyVictim-02',
             description='Example Victim Description',
             nationality='American',
@@ -40,7 +40,7 @@ class TestVictimSnippets(TestV3):
         )
 
         # stage attribute
-        attribute = self.tcex.v3.victim_attribute(
+        attribute = self.tcex.api.tc.v3.victim_attribute(
             value='An example description attribute.',
             type='Description',
         )
@@ -55,7 +55,7 @@ class TestVictimSnippets(TestV3):
     def test_victim_stage_security_label(self):
         """Test snippet"""
         # Begin Snippet
-        victim = self.tcex.v3.victim(
+        victim = self.tcex.api.tc.v3.victim(
             name='MyVictim-03',
             description='Example Victim Description',
             nationality='American',
@@ -65,7 +65,7 @@ class TestVictimSnippets(TestV3):
         )
 
         # stage security label
-        security_label = self.tcex.v3.security_label(name='TLP:WHITE')
+        security_label = self.tcex.api.tc.v3.security_label(name='TLP:WHITE')
         victim.stage_security_label(security_label)
 
         victim.create(params={'owner': 'TCI'})
@@ -77,7 +77,7 @@ class TestVictimSnippets(TestV3):
     def test_victim_stage_tag(self):
         """Test snippet"""
         # Begin Snippet
-        victim = self.tcex.v3.victim(
+        victim = self.tcex.api.tc.v3.victim(
             name='MyVictim-04',
             description='Example Victim Description',
             nationality='American',
@@ -87,7 +87,7 @@ class TestVictimSnippets(TestV3):
         )
 
         # stage tag
-        tag = self.tcex.v3.tag(name='Example-Tag')
+        tag = self.tcex.api.tc.v3.tag(name='Example-Tag')
         victim.stage_tag(tag)
 
         victim.create(params={'owner': 'TCI'})
@@ -105,20 +105,20 @@ class TestVictimSnippets(TestV3):
         victim = self.v3_helper.create_victim()
 
         # Begin Snippet
-        victim = self.tcex.v3.victim(id=victim.model.id)
+        victim = self.tcex.api.tc.v3.victim(id=victim.model.id)
         victim.delete(params={'owner': 'TCI'})
         # End Snippet
 
     def test_victim_delete_by_name(self):
         """Test snippet"""
         victim = self.v3_helper.create_victim(name='MyVictim-05')
-        # victim = self.tcex.v3.victim(
+        # victim = self.tcex.api.tc.v3.victim(
         #     name='MyVictim',
         # )
         # victim.create(params={'owner': 'TCI'})
 
         # Begin Snippet
-        victims = self.tcex.v3.victims()
+        victims = self.tcex.api.tc.v3.victims()
         victims.filter.name(TqlOperator.EQ, 'MyVictim-05')
         for victim in victims:
             # IMPORTANT: this will delete all victims with the name "MyVictim-05"
@@ -140,7 +140,7 @@ class TestVictimSnippets(TestV3):
             ],
         )
         # Begin Snippet
-        victim = self.tcex.v3.victim(id=victim.model.id)
+        victim = self.tcex.api.tc.v3.victim(id=victim.model.id)
         for attribute in victim.attributes:
             if attribute.model.value == 'An example description attribute':
                 attribute.delete()
@@ -156,7 +156,7 @@ class TestVictimSnippets(TestV3):
         )
 
         # Begin Snippet
-        victim = self.tcex.v3.victim(id=victim.model.id)
+        victim = self.tcex.api.tc.v3.victim(id=victim.model.id)
 
         for security_label in victim.security_labels:
             if security_label.model.name == 'TLP:WHITE':
@@ -172,7 +172,7 @@ class TestVictimSnippets(TestV3):
         )
 
         # Begin Snippet
-        victim = self.tcex.v3.victim(id=victim.model.id)
+        victim = self.tcex.api.tc.v3.victim(id=victim.model.id)
 
         for tag in victim.tags:
             if tag.model.name == 'Example-Tag':
@@ -191,7 +191,7 @@ class TestVictimSnippets(TestV3):
         )
 
         # Begin Snippet
-        victim = self.tcex.v3.victim(id=victim.model.id)
+        victim = self.tcex.api.tc.v3.victim(id=victim.model.id)
         # IMPORTANT retrieve the groups tags from the system not using group.model.tags
         for tag in victim.tags:
             if tag.model.name in ['Example-Tag', 'Example-Tag-2']:
@@ -208,7 +208,7 @@ class TestVictimSnippets(TestV3):
         victim = self.v3_helper.create_victim()
 
         # Begin Snippet
-        victim = self.tcex.v3.victim(id=victim.model.id, params={'fields': ['_all_']})
+        victim = self.tcex.api.tc.v3.victim(id=victim.model.id, params={'fields': ['_all_']})
         victim.get()
         # End Snippet
 
@@ -217,7 +217,7 @@ class TestVictimSnippets(TestV3):
         self.v3_helper.create_victim(name='MyVictim-06')
 
         # Begin Snippet
-        victims = self.tcex.v3.victims()
+        victims = self.tcex.api.tc.v3.victims()
         victims.filter.name(TqlOperator.EQ, 'MyVictim-06')
         for victim in victims:
             print(victim.model.dict(exclude_none=True))
@@ -232,7 +232,7 @@ class TestVictimSnippets(TestV3):
         victim = self.v3_helper.create_victim(name='Name to be Updated')
 
         # Begin Snippet
-        victim = self.tcex.v3.victim(id=victim.model.id)
+        victim = self.tcex.api.tc.v3.victim(id=victim.model.id)
         # This will update the name to "MyVictim"
         victim.model.name = 'MyVictim-07'
         victim.update(params={'owner': 'TCI'})

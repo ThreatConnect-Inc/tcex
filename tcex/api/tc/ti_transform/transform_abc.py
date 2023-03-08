@@ -27,7 +27,7 @@ from tcex.api.tc.ti_transform.model.transform_model import (
     FileOccurrenceTransformModel,
 )
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
-from tcex.utils import Utils
+from tcex.util import Util
 
 # get tcex logger
 logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
@@ -119,7 +119,7 @@ class TransformABC(ABC):
         # the current active transform
         self.transform: GroupTransformModel | IndicatorTransformModel
         self.transformed_item = {}
-        self.utils = Utils()
+        self.util = Util()
         self.jmespath_options = jmespath.Options(
             custom_functions=TcFunctions(), dict_cls=collections.OrderedDict
         )
@@ -241,7 +241,7 @@ class TransformABC(ABC):
             #     f'types={types}, source={source}, displayed={displayed}, params={params}'
             # )
             for param in params:
-                param = self.utils.remove_none(param)
+                param = self.util.remove_none(param)
                 if 'value' not in param:
                     self.log.warning(
                         'feature=transform, action=process-attribute, '
@@ -298,7 +298,7 @@ class TransformABC(ABC):
             params = [dict(zip(param_keys, p)) for p in zip(file_name, path, date)]
 
             for kwargs in filter(bool, params):  # get rid of empty dicts
-                self.add_file_occurrence(**self.utils.remove_none(kwargs))
+                self.add_file_occurrence(**self.util.remove_none(kwargs))
 
     def _process_confidence(self, metadata: MetadataTransformModel | None):
         """Process standard metadata fields."""
@@ -402,7 +402,7 @@ class TransformABC(ABC):
             value = self._path_search(metadata.path)
             if value is not None:
                 self.add_metadata(
-                    key, self.utils.any_to_datetime(value).strftime('%Y-%m-%dT%H:%M:%SZ')
+                    key, self.util.any_to_datetime(value).strftime('%Y-%m-%dT%H:%M:%SZ')
                 )
 
     def _process_security_labels(self, labels: list[SecurityLabelTransformModel]):
@@ -427,7 +427,7 @@ class TransformABC(ABC):
                     continue
                 # strip out None params so that required params are enforced and optional
                 # params with default values are respected.
-                self.add_security_label(**self.utils.remove_none(kwargs))
+                self.add_security_label(**self.util.remove_none(kwargs))
 
     def _process_tags(self, tags: list[TagTransformModel]):
         """Process Tag data"""

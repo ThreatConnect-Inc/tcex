@@ -5,7 +5,7 @@ from textwrap import TextWrapper
 
 # first-party
 from tcex.api.tc.v3._gen._gen_abc import GenerateABC
-from tcex.utils.string_operations import SnakeString
+from tcex.util.string_operation import SnakeString
 
 
 class GenerateModelABC(GenerateABC, ABC):
@@ -22,7 +22,7 @@ class GenerateModelABC(GenerateABC, ABC):
                 {'module': 'pydantic', 'imports': ['BaseModel', 'Extra', 'Field']},
             ],
             'first-party': [
-                {'module': 'tcex.utils', 'imports': ['Utils']},
+                {'module': 'tcex.util', 'imports': ['Util']},
                 {'module': 'tcex.api.tc.v3.v3_model_abc', 'imports': ['V3ModelABC']},
             ],
             'first-party-forward-reference': [],
@@ -53,7 +53,7 @@ class GenerateModelABC(GenerateABC, ABC):
                 return ArtifactTypeModel()
             return v
         """
-        type_ = self.utils.camel_string(type_)
+        type_ = self.util.camel_string(type_)
 
         fields_string = ', '.join(f'\'{field}\'' for field in fields)
         return '\n'.join(
@@ -115,7 +115,7 @@ class GenerateModelABC(GenerateABC, ABC):
         class ArtifactsModel(
             BaseModel,
             title='Artifacts Model',
-            alias_generator=Utils().snake_to_camel,
+            alias_generator=Util().snake_to_camel,
             validate_assignment=True,
         ):
         """
@@ -125,7 +125,7 @@ class GenerateModelABC(GenerateABC, ABC):
                 f'''class {self.type_.plural().pascal_case()}Model(''',
                 f'''{self.i1}BaseModel,''',
                 f'''{self.i1}title='{self.type_.plural().pascal_case()} Model',''',
-                f'''{self.i1}alias_generator=Utils().snake_to_camel,''',
+                f'''{self.i1}alias_generator=Util().snake_to_camel,''',
                 f'''{self.i1}validate_assignment=True,''',
                 '''):''',
                 f'''{self.i1}"""{self.type_.plural().title()} Model"""''',
@@ -209,7 +209,7 @@ class GenerateModelABC(GenerateABC, ABC):
         class ArtifactDataModel(
             BaseModel,
             title='Artifact Data',
-            alias_generator=Utils().snake_to_camel,
+            alias_generator=Util().snake_to_camel,
             validate_assignment=True,
         ):
         """
@@ -219,7 +219,7 @@ class GenerateModelABC(GenerateABC, ABC):
                 f'''class {self.type_.singular().pascal_case()}DataModel(''',
                 f'''{self.i1}BaseModel,''',
                 f'''{self.i1}title='{self.type_.singular().pascal_case()} Data Model',''',
-                f'''{self.i1}alias_generator=Utils().snake_to_camel,''',
+                f'''{self.i1}alias_generator=Util().snake_to_camel,''',
                 f'''{self.i1}validate_assignment=True,''',
                 '''):''',
                 f'''{self.i1}"""{self.type_.plural().title()} Data Model"""''',
@@ -263,7 +263,7 @@ class GenerateModelABC(GenerateABC, ABC):
         class ArtifactModel(
             BaseModel,
             title='Artifact Model',
-            alias_generator=Utils().snake_to_camel,
+            alias_generator=Util().snake_to_camel,
             validate_assignment=True,
         ):
         """
@@ -272,7 +272,7 @@ class GenerateModelABC(GenerateABC, ABC):
                 '',
                 f'''class {self.type_.singular().pascal_case()}Model(''',
                 f'''{self.i1}V3ModelABC,''',
-                f'''{self.i1}alias_generator=Utils().snake_to_camel,''',
+                f'''{self.i1}alias_generator=Util().snake_to_camel,''',
                 f'''{self.i1}extra=Extra.allow,''',
                 f'''{self.i1}title='{self.type_.singular().pascal_case()} Model',''',
                 f'''{self.i1}validate_assignment=True,''',

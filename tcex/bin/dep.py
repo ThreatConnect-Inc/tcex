@@ -9,14 +9,13 @@ import sys
 from pathlib import Path
 from urllib.parse import quote, urlsplit
 
-
 # third-party
 import typer
 from semantic_version import Version
 
 # first-party
-from tcex.app_config.models.tcex_json_model import LibVersionModel
-from tcex.backports import cached_property
+from tcex.app.config.models.tcex_json_model import LibVersionModel
+from tcex.backport import cached_property
 from tcex.bin.bin_abc import BinABC
 from tcex.pleb.env_path import EnvPath
 

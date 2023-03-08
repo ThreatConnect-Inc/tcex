@@ -67,7 +67,7 @@ class Group(Mappings):
         """Convert the value and adds it as a data field."""
         key = self._metadata_map.get(key, key)
         if key in ['dateAdded', 'eventDate', 'firstSeen', 'publishDate']:
-            self._data[key] = self._utils.any_to_datetime(value).strftime('%Y-%m-%dT%H:%M:%SZ')
+            self._data[key] = self.util.any_to_datetime(value).strftime('%Y-%m-%dT%H:%M:%SZ')
         elif key == 'file_content':
             # file content arg is not part of Group JSON
             pass

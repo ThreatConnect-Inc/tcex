@@ -130,7 +130,7 @@ class TaskFilter(FilterABC):
             operator: The operator enum for the filter.
             completed_date: The completion date for the task.
         """
-        completed_date = self.utils.any_to_datetime(completed_date).strftime('%Y-%m-%d %H:%M:%S')
+        completed_date = self.util.any_to_datetime(completed_date).strftime('%Y-%m-%d %H:%M:%S')
         self._tql.add_filter('completedDate', operator, completed_date, TqlType.STRING)
 
     def description(self, operator: Enum, description: list | str):
@@ -155,7 +155,7 @@ class TaskFilter(FilterABC):
             operator: The operator enum for the filter.
             due_date: The due date for the task.
         """
-        due_date = self.utils.any_to_datetime(due_date).strftime('%Y-%m-%d %H:%M:%S')
+        due_date = self.util.any_to_datetime(due_date).strftime('%Y-%m-%d %H:%M:%S')
         self._tql.add_filter('dueDate', operator, due_date, TqlType.STRING)
 
     @property

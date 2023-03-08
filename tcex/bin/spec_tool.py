@@ -12,7 +12,7 @@ import typer
 from pydantic import ValidationError
 
 # first-party
-from tcex.app_config import AppSpecYml
+from tcex.app.config import AppSpecYml
 from tcex.bin.bin_abc import BinABC
 from tcex.bin.spec_tool_app_input import SpecToolAppInput
 from tcex.bin.spec_tool_app_spec_yml import SpecToolAppSpecYml

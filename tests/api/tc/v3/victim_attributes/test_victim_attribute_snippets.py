@@ -29,7 +29,7 @@ class TestVictimAttributeSnippets(TestV3):
     # def test_victim_attributes_get_all(self):
     #     """Test snippet"""
     #     # Begin Snippet
-    #     for victim_attribute in self.tcex.v3.victim_attributes():
+    #     for victim_attribute in self.tcex.api.tc.v3.victim_attributes():
     #         print(victim_attribute.model.dict(exclude_none=True))
     #     # End Snippet
 
@@ -53,7 +53,7 @@ class TestVictimAttributeSnippets(TestV3):
             pytest.fail('Victim attribute was not found.')
 
         # Begin Snippet
-        victim_attributes = self.tcex.v3.victim_attributes()
+        victim_attributes = self.tcex.api.tc.v3.victim_attributes()
         victim_attributes.filter.date_added(TqlOperator.GT, '1 day ago')
         victim_attributes.filter.displayed(TqlOperator.EQ, True)
         victim_attributes.filter.id(TqlOperator.EQ, attribute_id)
@@ -82,7 +82,7 @@ class TestVictimAttributeSnippets(TestV3):
         attribute_id = victim.model.attributes.data[0].id
 
         # Begin Snippet
-        victim_attribute = self.tcex.v3.victim_attribute(id=attribute_id)
+        victim_attribute = self.tcex.api.tc.v3.victim_attribute(id=attribute_id)
         victim_attribute.get()
         print(victim_attribute.model.dict(exclude_none=True))
         # End Snippet

@@ -89,7 +89,7 @@ def transform(tcex: TcEx) -> IndicatorTransformModel:
                     'value': {
                         'path': 'last_update',
                         'transform': {
-                            'method': tcex.utils.any_to_datetime,
+                            'method': tcex.util.any_to_datetime,
                         },
                     },
                     'type': 'External Date Last Modified',
@@ -128,7 +128,7 @@ def transform(tcex: TcEx) -> IndicatorTransformModel:
                     'value': {
                         'path': 'created_date',
                         'transform': {
-                            'method': tcex.utils.any_to_datetime,
+                            'method': tcex.util.any_to_datetime,
                         },
                     },
                     'type': 'External Date Created',
@@ -213,7 +213,7 @@ def transform(tcex: TcEx) -> IndicatorTransformModel:
                     'date': {
                         'path': "relations[?type == 'filename'] | null_leaf(@, 'created_date')",
                         'transform': [
-                            {'for_each': tcex.utils.any_to_datetime},
+                            {'for_each': tcex.util.any_to_datetime},
                             {'for_each': lambda d: d.strftime('%Y-%m-%dT%H:%M:%SZ')},
                         ],
                     },
@@ -265,7 +265,7 @@ def test_indicators_file_occurrence(tcex: TcEx):
                     'date': {
                         'path': 'relations[] | null_leaf(@, \'when\')',
                         'transform': [
-                            {'for_each': tcex.utils.any_to_datetime},
+                            {'for_each': tcex.util.any_to_datetime},
                             {
                                 'for_each': lambda d: d.strftime('%Y-%m-%dT%H:%M:%SZ'),
                             },

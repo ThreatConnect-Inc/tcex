@@ -22,7 +22,7 @@ class TestIndicators(TestV3):
         super().setup_method()
 
         # remove an previous groups with the next test case name as a tag
-        groups = self.tcex.v3.groups()
+        groups = self.tcex.api.tc.v3.groups()
         groups.filter.tag(TqlOperator.EQ, method.__name__)
         for group in groups:
             group.delete()

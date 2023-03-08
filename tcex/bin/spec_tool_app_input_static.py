@@ -1,7 +1,7 @@
 """Gen Code App Input Map"""
 
 # first-party
-from tcex.app_config.install_json import InstallJson
+from tcex.app.config.install_json import InstallJson
 
 
 class SpecToolAppInputStatic:

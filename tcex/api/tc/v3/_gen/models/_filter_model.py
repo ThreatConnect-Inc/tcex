@@ -3,9 +3,9 @@
 from pydantic import BaseModel, Extra, Field, validator
 
 # first-party
-from tcex.backports import cached_property
-from tcex.utils import Utils
-from tcex.utils.string_operations import CamelString
+from tcex.backport import cached_property
+from tcex.util import Util
+from tcex.util.string_operation import CamelString
 
 
 # pylint: disable=no-self-argument
@@ -25,7 +25,7 @@ class ExtraModel(
 # pylint: disable=no-self-argument
 class FilterModel(
     BaseModel,
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     arbitrary_types_allowed=True,
     extra=Extra.forbid,
     keep_untouched=(cached_property,),

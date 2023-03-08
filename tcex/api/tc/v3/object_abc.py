@@ -13,10 +13,10 @@ from requests.exceptions import ProxyError, RetryError
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
-from tcex.backports import cached_property
+from tcex.backport import cached_property
 from tcex.exit.error_codes import handle_error
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
-from tcex.utils import Utils
+from tcex.util import Util
 
 # get tcex logger
 logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
@@ -43,7 +43,7 @@ class ObjectABC(ABC):
             'securityLabels': [],
             'tags': [],
         }
-        self.utils = Utils()
+        self.util = Util()
         self.log = logger
         self.request: Response
 
@@ -205,7 +205,7 @@ class ObjectABC(ABC):
     def gen_params(self, params: dict) -> dict:
         """Return appropriate params values."""
         # convert all keys to camel case
-        params = {self.utils.snake_to_camel(k): v for k, v in params.items()}
+        params = {self.util.snake_to_camel(k): v for k, v in params.items()}
 
         # special parameter for indicators to enable the return the the indicator fields
         # (value1, value2, value3) on std-custom/custom-custom indicator types.

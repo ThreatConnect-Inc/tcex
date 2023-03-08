@@ -8,7 +8,7 @@ from pydantic import BaseModel, ValidationError
 
 # first-party
 from tcex import TcEx  # TYPE-CHECKING
-from tcex.backports import cached_property
+from tcex.backport import cached_property
 from tcex.input.field_types import Choice, choice
 from tcex.pleb.scoped_property import scoped_property
 from tests.input.field_types.utils import InputTest

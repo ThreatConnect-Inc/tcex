@@ -12,15 +12,15 @@ import typer
 from click import Choice
 
 # first-party
-from tcex.app_config.install_json import InstallJson
-from tcex.app_config.layout_json import LayoutJson
-from tcex.app_config.tcex_json import TcexJson
-from tcex.backports import cached_property
+from tcex.app.config.install_json import InstallJson
+from tcex.app.config.layout_json import LayoutJson
+from tcex.app.config.tcex_json import TcexJson
+from tcex.backport import cached_property
 from tcex.logger.rotating_file_handler_custom import (  # pylint: disable=no-name-in-module
     RotatingFileHandlerCustom,
 )
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
-from tcex.utils.utils import Utils
+from tcex.util.util import Util
 
 
 class BinABC(ABC):
@@ -37,7 +37,7 @@ class BinABC(ABC):
         self.ij = InstallJson()
         self.lj = LayoutJson()
         self.tj = TcexJson()
-        self.utils = Utils()
+        self.util = Util()
 
     @cached_property
     def cli_out_path(self) -> Path:

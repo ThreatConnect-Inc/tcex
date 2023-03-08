@@ -7,7 +7,7 @@ import pytest
 from pydantic import BaseModel
 
 # first-party
-from tcex.backports import cached_property
+from tcex.backport import cached_property
 from tcex.input.field_types import KeyValue, TCEntity
 from tcex.pleb.scoped_property import scoped_property
 from tests.input.field_types.utils import InputTest

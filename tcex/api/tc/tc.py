@@ -8,7 +8,7 @@ from tcex.api.tc.ti_transform.model import GroupTransformModel, IndicatorTransfo
 from tcex.api.tc.utils.threat_intel_utils import ThreatIntelUtils
 from tcex.api.tc.v2.v2 import V2
 from tcex.api.tc.v3.v3 import V3
-from tcex.backports import cached_property
+from tcex.backport import cached_property
 from tcex.input.input import Input  # TYPE-CHECKING
 
 

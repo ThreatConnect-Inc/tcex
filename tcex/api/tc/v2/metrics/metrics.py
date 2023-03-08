@@ -8,7 +8,7 @@ from requests import Session  # TYPE-CHECKING
 # first-party
 from tcex.exit.error_codes import handle_error
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
-from tcex.utils import Utils
+from tcex.util import Util
 
 # get tcex logger
 logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
@@ -46,7 +46,7 @@ class Metrics:
         # properties
         self._metric_id = None
         self.log = logger
-        self.utils = Utils
+        self.util = Util
 
         if not self.metric_find():
             self.metric_create()
@@ -148,7 +148,7 @@ class Metrics:
 
         body = {'value': value}
         if date is not None:
-            body['date'] = self.utils.any_to_datetime(date).strftime('%Y-%m-%dT%H:%M:%SZ')
+            body['date'] = self.util.any_to_datetime(date).strftime('%Y-%m-%dT%H:%M:%SZ')
 
         if key is not None:
             body['name'] = key

@@ -5,7 +5,7 @@
 from pydantic import BaseModel, Field, validator
 
 # first-party
-from tcex.app_config.install_json import InstallJson
+from tcex.app.config.install_json import InstallJson
 from tcex.input.field_types.sensitive import Sensitive
 
 

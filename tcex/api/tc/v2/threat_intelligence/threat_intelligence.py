@@ -50,7 +50,7 @@ from tcex.api.tc.v2.threat_intelligence.mappings.task import Task
 from tcex.api.tc.v2.threat_intelligence.mappings.victim import Victim
 from tcex.exit.error_codes import TcExErrorCodes
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
-from tcex.utils import Utils
+from tcex.util import Util
 
 # import local modules for dynamic reference
 module = __import__(__name__)
@@ -69,7 +69,7 @@ class ThreatIntelligence:
         # properties
         self._custom_indicator_classes = {}
         self.log = logger
-        self.utils = Utils()
+        self.util = Util()
 
         # generate custom ioc classes
         self._gen_indicator_class()
@@ -756,12 +756,12 @@ class ThreatIntelligence:
             keys = d.keys()
             if resource_type.lower() in map(str.lower, self._group_types):
                 # @bpurdy - is this okay?
-                # r = self.tcex.v2.ti.group(group_type=resource_type, name=d.get('name'))
+                # r = self.tcex.api.tc.v2.ti.group(group_type=resource_type, name=d.get('name'))
                 r = self.group(group_type=resource_type, name=d.get('name'))
                 value = d.get('name')
             elif resource_type.lower() in map(str.lower, self._indicator_types_data):
                 # @bpurdy - is this okay?
-                # r = self.tcex.v2.ti.indicator(indicator_type=resource_type)
+                # r = self.tcex.api.tc.v2.ti.indicator(indicator_type=resource_type)
                 r = self.indicator(indicator_type=resource_type)
                 r._set_unique_id(d)
                 value = r.unique_id
@@ -861,7 +861,7 @@ class ThreatIntelligence:
             name = entry.get('name')
             class_name = name.replace(' ', '')
             # temp fix for API issue where boolean are returned as strings
-            entry['custom'] = self.utils.to_bool(entry.get('custom'))
+            entry['custom'] = self.util.to_bool(entry.get('custom'))
 
             if class_name in globals():
                 # skip Indicator Type if a class already exists

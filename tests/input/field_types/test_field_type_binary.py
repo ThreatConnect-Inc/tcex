@@ -7,7 +7,7 @@ import pytest
 from pydantic import BaseModel, validator
 
 # first-party
-from tcex.backports import cached_property
+from tcex.backport import cached_property
 from tcex.input.field_types import Binary, always_array, binary, conditional_required
 from tcex.pleb.scoped_property import scoped_property
 from tests.input.field_types.utils import InputTest

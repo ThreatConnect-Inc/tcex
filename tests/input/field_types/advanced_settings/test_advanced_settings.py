@@ -7,7 +7,7 @@ import pytest
 from pydantic import BaseModel, Extra, ValidationError
 
 # first-party
-from tcex.backports import cached_property
+from tcex.backport import cached_property
 from tcex.input.field_types import DateTime, String, modify_advanced_settings
 from tcex.pleb.scoped_property import scoped_property
 from tests.input.field_types.utils import InputTest

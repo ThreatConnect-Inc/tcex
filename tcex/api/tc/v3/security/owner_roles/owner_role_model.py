@@ -5,12 +5,12 @@ from pydantic import BaseModel, Extra, Field, PrivateAttr
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
-from tcex.utils import Utils
+from tcex.util import Util
 
 
 class OwnerRoleModel(
     V3ModelABC,
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     extra=Extra.allow,
     title='OwnerRole Model',
     validate_assignment=True,
@@ -89,7 +89,7 @@ class OwnerRoleModel(
 class OwnerRoleDataModel(
     BaseModel,
     title='OwnerRole Data Model',
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     validate_assignment=True,
 ):
     """Owner_Roles Data Model"""
@@ -105,7 +105,7 @@ class OwnerRoleDataModel(
 class OwnerRolesModel(
     BaseModel,
     title='OwnerRoles Model',
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     validate_assignment=True,
 ):
     """Owner_Roles Model"""

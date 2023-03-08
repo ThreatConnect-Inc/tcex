@@ -109,10 +109,10 @@ class TestAddressIndicators(TestThreatIntelligence):
         indicator.create()
         today = datetime.strftime(datetime.utcnow(), '%Y-%m-%d')
         tomorrow = datetime.strftime(datetime.utcnow() + timedelta(1), '%Y-%m-%d')
-        filters = self.tcex.v2.ti.filters()
+        filters = self.tcex.api.tc.v2.ti.filters()
         filters.add_filter('dateAdded', '>', today)
         filters.add_filter('dateAdded', '<', tomorrow)
-        indicators = self.tcex.v2.ti.indicator()
+        indicators = self.tcex.api.tc.v2.ti.indicator()
         found = False
         for indicator in indicators.many(filters=filters):
             if indicator.get('summary') == rand_ip:
@@ -140,7 +140,7 @@ class TestAddressIndicators(TestThreatIntelligence):
         filters.add_filter('active', '=', 'true')
         filters.add_filter('active', '=', 'false')
         parameters = {'orParams': 'true'}
-        indicators = self.tcex.v2.ti.indicator()
+        indicators = self.tcex.api.tc.v2.ti.indicator()
         active_found = False
         inactive_found = False
         for indicator in indicators.many(filters=filters, params=parameters):
@@ -167,7 +167,7 @@ class TestAddressIndicators(TestThreatIntelligence):
         indicator.create()
         filters = self.ti.filters()
         filters.add_filter('active', '=', 'false')
-        indicators = self.tcex.v2.ti.indicator()
+        indicators = self.tcex.api.tc.v2.ti.indicator()
         active_found = False
         for indicator in indicators.many(filters=filters):
             if indicator.get('summary') == rand_ip:

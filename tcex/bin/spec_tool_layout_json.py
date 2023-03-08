@@ -1,8 +1,8 @@
 """TcEx Generate Configurations CLI Command"""
 
 # first-party
-from tcex.app_config import AppSpecYml
-from tcex.app_config.models import LayoutJsonModel
+from tcex.app.config import AppSpecYml
+from tcex.app.config.models import LayoutJsonModel
 from tcex.bin.bin_abc import BinABC
 
 

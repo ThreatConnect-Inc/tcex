@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 # first-party
 from tcex.api.tc.v2.threat_intelligence.tcex_ti_tc_request import TiTcRequest
-from tcex.utils import Utils
 
 if TYPE_CHECKING:
     # first-party
@@ -23,7 +22,6 @@ class Tags:
         self._api_type = None
         self._tc_requests = TiTcRequest(ti.session_tc)
         self._type = 'tags'
-        self._utils = Utils()
         self.ti = ti
 
     def many(self, filters=None, owners=None, params=None):

@@ -14,7 +14,7 @@ class TestNotification:
         Args:
             tcex (fixture): An instantiated instance of TcEx object.
         """
-        notification = tcex.v2.notification
+        notification = tcex.api.tc.v2.notification
         notification.org(notification_type='PyTest notification', priority='Low')
         status = notification.send(message='High alert send to organization.')
         assert status.get('status') == 'Success'
@@ -26,7 +26,7 @@ class TestNotification:
         Args:
             tcex (fixture): An instantiated instance of TcEx object.
         """
-        notification = tcex.v2.notification
+        notification = tcex.api.tc.v2.notification
         notification.recipients(
             notification_type='PyTest recipients notification',
             recipients='rsparkles',
@@ -42,7 +42,7 @@ class TestNotification:
         Args:
             tcex (fixture): An instantiated instance of TcEx object.
         """
-        notification = tcex.v2.notification
+        notification = tcex.api.tc.v2.notification
         notification.recipients(
             notification_type='PyTest recipients notification',
             recipients='bob@tci.ninja',

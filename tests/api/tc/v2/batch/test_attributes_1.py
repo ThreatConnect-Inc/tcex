@@ -2,6 +2,9 @@
 # third-party
 import pytest
 
+# first-party
+from tcex.tcex import TcEx
+
 
 class TestAttributes:
     """Test the TcEx Batch Module."""
@@ -20,10 +23,10 @@ class TestAttributes:
         ],
     )
     def test_attributes(  # pylint: disable=unused-argument
-        self, name, description, attr_type, attr_value, displayed, source, tcex
+        self, name, description, attr_type, attr_value, displayed, source, tcex: TcEx
     ):
         """Test batch attributes creation"""
-        batch = tcex.v2.batch(owner='TCI')
+        batch = tcex.api.tc.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'adversary', name])
         ti = batch.adversary(name=name, xid=xid)
 
@@ -37,7 +40,7 @@ class TestAttributes:
         )
 
         # security label testing - option 2
-        attr = ti.attribute(attr_type=attr_type, attr_value=None)
+        attr = ti.attribute(attr_type=attr_type, attr_value=None)  # type: ignore
         attr.displayed = displayed
         attr.source = source
 

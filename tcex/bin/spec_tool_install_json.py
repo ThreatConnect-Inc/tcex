@@ -3,12 +3,12 @@
 from typing import TYPE_CHECKING
 
 # first-party
-from tcex.app_config.models import InstallJsonModel
+from tcex.app.config.models import InstallJsonModel
 from tcex.bin.bin_abc import BinABC
 
 if TYPE_CHECKING:
     # first-party
-    from tcex.app_config import AppSpecYml
+    from tcex.app.config import AppSpecYml
 
 
 class SpecToolInstallJson(BinABC):

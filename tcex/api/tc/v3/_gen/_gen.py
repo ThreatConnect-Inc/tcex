@@ -16,11 +16,11 @@ from tcex.api.tc.v3._gen._gen_filter_abc import GenerateFilterABC
 from tcex.api.tc.v3._gen._gen_model_abc import GenerateModelABC
 from tcex.api.tc.v3._gen._gen_object_abc import GenerateObjectABC
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
-from tcex.utils import Utils
-from tcex.utils.string_operations import SnakeString
+from tcex.util import Util
+from tcex.util.string_operation import SnakeString
 
-# initialize Utils module
-utils = Utils()
+# initialize Util module
+util = Util()
 
 
 def log_server():
@@ -275,7 +275,7 @@ def all(  # pylint: disable=redefined-builtin
     log_server()
     gen_type = gen_type.value.lower()
     for type_ in ObjectTypes:
-        type_ = utils.snake_string(type_.value)
+        type_ = util.snake_string(type_.value)
 
         if gen_type in ['all', 'filter']:
             gen_filter(type_)
@@ -296,7 +296,7 @@ def args(
 ):
     """Generate Args."""
     log_server()
-    gen_args(utils.snake_string(type_.value), indent_blocks)
+    gen_args(util.snake_string(type_.value), indent_blocks)
 
 
 @app.command()
@@ -307,7 +307,7 @@ def code(
 ):
     """Generate Args."""
     log_server()
-    tv = utils.snake_string(type_.value)
+    tv = util.snake_string(type_.value)
     gen_filter(tv)
     gen_model(tv)
     gen_object(tv)
@@ -321,7 +321,7 @@ def filter(  # pylint: disable=redefined-builtin
 ):
     """Generate the filter code."""
     log_server()
-    gen_filter(utils.snake_string(type_.value))
+    gen_filter(util.snake_string(type_.value))
 
 
 @app.command()
@@ -332,7 +332,7 @@ def model(
 ):
     """Generate the model"""
     log_server()
-    gen_model(utils.snake_string(type_.value))
+    gen_model(util.snake_string(type_.value))
 
 
 @app.command()
@@ -343,7 +343,7 @@ def object(  # pylint: disable=redefined-builtin
 ):
     """Generate the filter class"""
     log_server()
-    gen_object(utils.snake_string(type_.value))
+    gen_object(util.snake_string(type_.value))
 
 
 if __name__ == '__main__':

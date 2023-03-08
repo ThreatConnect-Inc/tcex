@@ -13,7 +13,7 @@ from requests import Response
 from tcex.api.tc.v2.threat_intelligence.tcex_ti_tc_request import TiTcRequest
 from tcex.exit.error_codes import TcExErrorCodes
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
-from tcex.utils import Utils
+from tcex.util import Util
 
 if TYPE_CHECKING:
     # first-party
@@ -52,9 +52,9 @@ class Mappings:
         # properties
         self._data = {}
         self.log = logger
+        self.util = Util()
         self._tc_requests = TiTcRequest(ti.session_tc)
         self._unique_id = None
-        self._utils = Utils()
 
     @property
     @lru_cache

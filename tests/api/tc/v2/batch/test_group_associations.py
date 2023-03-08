@@ -17,7 +17,7 @@ class TestGroup1:
 
     def test_group_associations(self, tcex: TcEx):
         """Test adversary creation"""
-        batch = tcex.v2.batch(owner='TCI', halt_on_error=False)
+        batch = tcex.api.tc.v2.batch(owner='TCI', halt_on_error=False)
 
         # reduce max chunk size to ensure associations are correct
         batch._batch_max_chunk = 2

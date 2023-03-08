@@ -91,7 +91,7 @@ class CaseFilter(FilterABC):
             operator: The operator enum for the filter.
             case_close_date: The date/time the case was closed.
         """
-        case_close_date = self.utils.any_to_datetime(case_close_date).strftime('%Y-%m-%d %H:%M:%S')
+        case_close_date = self.util.any_to_datetime(case_close_date).strftime('%Y-%m-%d %H:%M:%S')
         self._tql.add_filter('caseCloseDate', operator, case_close_date, TqlType.STRING)
 
     def case_close_time(self, operator: Enum, case_close_time: Arrow | datetime | int | str):
@@ -101,7 +101,7 @@ class CaseFilter(FilterABC):
             operator: The operator enum for the filter.
             case_close_time: The date/time the case was closed.
         """
-        case_close_time = self.utils.any_to_datetime(case_close_time).strftime('%Y-%m-%d %H:%M:%S')
+        case_close_time = self.util.any_to_datetime(case_close_time).strftime('%Y-%m-%d %H:%M:%S')
         self._tql.add_filter('caseCloseTime', operator, case_close_time, TqlType.STRING)
 
     def case_close_user(self, operator: Enum, case_close_user: list | str):
@@ -128,7 +128,7 @@ class CaseFilter(FilterABC):
             operator: The operator enum for the filter.
             case_detection_time: The date/time the case was detected.
         """
-        case_detection_time = self.utils.any_to_datetime(case_detection_time).strftime(
+        case_detection_time = self.util.any_to_datetime(case_detection_time).strftime(
             '%Y-%m-%d %H:%M:%S'
         )
         self._tql.add_filter('caseDetectionTime', operator, case_detection_time, TqlType.STRING)
@@ -157,7 +157,7 @@ class CaseFilter(FilterABC):
             operator: The operator enum for the filter.
             case_occurrence_time: The date/time the case occurred.
         """
-        case_occurrence_time = self.utils.any_to_datetime(case_occurrence_time).strftime(
+        case_occurrence_time = self.util.any_to_datetime(case_occurrence_time).strftime(
             '%Y-%m-%d %H:%M:%S'
         )
         self._tql.add_filter('caseOccurrenceTime', operator, case_occurrence_time, TqlType.STRING)
@@ -184,7 +184,7 @@ class CaseFilter(FilterABC):
             operator: The operator enum for the filter.
             case_open_date: The date/time the case was opened.
         """
-        case_open_date = self.utils.any_to_datetime(case_open_date).strftime('%Y-%m-%d %H:%M:%S')
+        case_open_date = self.util.any_to_datetime(case_open_date).strftime('%Y-%m-%d %H:%M:%S')
         self._tql.add_filter('caseOpenDate', operator, case_open_date, TqlType.STRING)
 
     def case_open_time(self, operator: Enum, case_open_time: Arrow | datetime | int | str):
@@ -194,7 +194,7 @@ class CaseFilter(FilterABC):
             operator: The operator enum for the filter.
             case_open_time: The date/time the case was opened.
         """
-        case_open_time = self.utils.any_to_datetime(case_open_time).strftime('%Y-%m-%d %H:%M:%S')
+        case_open_time = self.util.any_to_datetime(case_open_time).strftime('%Y-%m-%d %H:%M:%S')
         self._tql.add_filter('caseOpenTime', operator, case_open_time, TqlType.STRING)
 
     def case_open_user(self, operator: Enum, case_open_user: list | str):
@@ -249,7 +249,7 @@ class CaseFilter(FilterABC):
             operator: The operator enum for the filter.
             date_added: The date the case was added to the system.
         """
-        date_added = self.utils.any_to_datetime(date_added).strftime('%Y-%m-%d %H:%M:%S')
+        date_added = self.util.any_to_datetime(date_added).strftime('%Y-%m-%d %H:%M:%S')
         self._tql.add_filter('dateAdded', operator, date_added, TqlType.STRING)
 
     def description(self, operator: Enum, description: list | str):

@@ -46,7 +46,7 @@ class Incident(Group):
         if not self.can_update():
             self._handle_error(910, [self.type])
 
-        event_date = self._utils.any_to_datetime(event_date).strftime('%Y-%m-%dT%H:%M:%SZ')
+        event_date = self.util.any_to_datetime(event_date).strftime('%Y-%m-%dT%H:%M:%SZ')
         self._data['eventDate'] = event_date
         request = {'eventDate': event_date}
         return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)

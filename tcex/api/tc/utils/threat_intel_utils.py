@@ -9,7 +9,7 @@ import jmespath
 from requests import Session
 
 # first-party
-from tcex.backports import cached_property
+from tcex.backport import cached_property
 from tcex.exit.error_codes import handle_error
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 

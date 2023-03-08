@@ -11,7 +11,7 @@ from requests import Session
 # first-party
 from tcex.api.tc.v2.datastore.datastore import DataStore
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
-from tcex.utils import Utils
+from tcex.util import Util
 
 # get tcex logger
 logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
@@ -42,7 +42,7 @@ class Cache:
         self.ds = DataStore(session, domain, data_type, mapping)
         self.log = logger
         self.ttl_seconds = ttl_seconds
-        self.utils = Utils()
+        self.util = Util()
 
         # Warranty void if any of these are changed.  Don't touch.
         self._cache_data_key: str = 'cache-data'
@@ -217,7 +217,7 @@ class Cache:
 
         # convert the stored time expression to a datetime
         # object (support for different tcex version)
-        cached_datetime = self.utils.any_to_datetime(cached_date).datetime
+        cached_datetime = self.util.any_to_datetime(cached_date).datetime
 
         # calculate the cache expiration time by adding the ttl seconds to the cached time
         cache_expires = cached_datetime + timedelta(seconds=self.ttl_seconds)

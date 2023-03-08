@@ -1,5 +1,7 @@
 """TcEx Framework"""
 
+# * update input model
+
 # standard library
 import inspect
 import os
@@ -7,38 +9,19 @@ import platform
 import signal
 import threading
 
-# third-party
-from redis import Redis
-from requests import Session
-
 # first-party
-from tcex.api import API
-from tcex.api.tc.utils.threat_intel_utils import ThreatIntelUtils
-from tcex.api.tc.v2.v2 import V2
-from tcex.api.tc.v3.v3 import V3
-from tcex.app_config.install_json import InstallJson
-from tcex.app_feature import AdvancedRequest
-from tcex.backports import cached_property
-from tcex.exit.exit import ExitCode, ExitService
+from tcex.api.api import API
+from tcex.app.app import App
+from tcex.backport import cached_property
+from tcex.exit.exit import Exit, ExitCode
 from tcex.input.input import Input
-from tcex.key_value_store import KeyValueApi, KeyValueMock, KeyValueRedis, RedisClient
 from tcex.logger.logger import Logger  # pylint: disable=no-name-in-module
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
-from tcex.playbook import Playbook
 from tcex.pleb.proxies import proxies
 from tcex.pleb.registry import registry
 from tcex.pleb.scoped_property import scoped_property
-from tcex.services.api_service import ApiService
-from tcex.services.common_service_trigger import CommonServiceTrigger
-from tcex.services.webhook_trigger_service import WebhookTriggerService
-from tcex.sessions.auth.hmac_auth import HmacAuth
-from tcex.sessions.auth.tc_auth import TcAuth
-from tcex.sessions.auth.token_auth import TokenAuth
-from tcex.sessions.external_session import ExternalSession
-from tcex.sessions.tc_session import TcSession
-from tcex.tokens import Tokens
-from tcex.utils import Utils
-from tcex.utils.file_operations import FileOperations
+from tcex.requests_session.requests_session import RequestsSession
+from tcex.util import Util
 
 
 class TcEx:
@@ -66,11 +49,10 @@ class TcEx:
         self.inputs = Input(kwargs.get('config') or {}, kwargs.get('config_file'))
 
         # add methods to registry
-        registry.add_method(self.inputs.resolve_variable)
-
-        # add methods to registry
         registry.register(self)
         registry.add_service(Input, self.inputs)
+        registry.add_service(App, self.app)
+        registry.add_service(RequestsSession, self.session)
 
         # log standard App info early so it shows at the top of the logfile
         self.logger.log_info(self.inputs.model_unresolved)
@@ -87,229 +69,25 @@ class TcEx:
         if threading.current_thread().name == 'MainThread' and signal_interrupt in (2, 15):
             exit_code = ExitCode.FAILURE
 
-        self.exit(exit_code, 'The App received an interrupt signal and will now exit.')
-
-    @cached_property
-    def _user_agent(self):
-        """Return a User-Agent string."""
-        return {
-            'User-Agent': (
-                f'TcEx/{__import__(__name__).__version__}, '
-                f'{self.install_json.model.display_name}/{self.install_json.model.program_version}'
-            )
-        }
-
-    def advanced_request(
-        self,
-        session: Session,
-        output_prefix: str,
-        timeout: int = 600,
-    ) -> AdvancedRequest:
-        """Return instance of AdvancedRequest.
-
-        Args:
-            session: An instance of requests.Session.
-            output_prefix: A value to prepend to outputs.
-            timeout: The number of second before timing out the request.
-        """
-        return AdvancedRequest(self.inputs, self.playbook, session, output_prefix, timeout)
+        # pylint: disable=no-member
+        self.exit.exit(exit_code, 'The App received an interrupt signal and will now exit.')
 
     @property
     def api(self) -> API:
         """Return instance of Threat Intel Utils."""
-        return API(self.inputs, self.session_tc)
+        # pylint: disable=no-member
+        return API(self.inputs, self.session.tc)
 
-    def exit(self, code: ExitCode | int | None = None, msg: str | None = None):
-        """Application exit method with proper exit code
+    @cached_property
+    def app(self) -> App:
+        """Return instance of Threat Intel Utils."""
+        return App(self.inputs, self.proxies, self)
 
-        The method will run the Python standard sys.exit() with the exit code
-        previously defined via :py:meth:`~tcex.tcex.TcEx.exit_code` or provided
-        during the call of this method.
-
-        Args:
-            code: The exit code value for the app.
-            msg: A message to log and add to message tc output.
-        """
-        # get correct code
-        self.exit_service.exit(code, msg)  # pylint: disable=no-member
-
-    @property
-    def exit_code(self) -> ExitCode:
-        """Return the current exit code."""
-        return self.exit_service.exit_code  # pylint: disable=no-member
-
-    @exit_code.setter
-    def exit_code(self, code: ExitCode | int):
-        """Set the App exit code.
-
-        For TC Exchange Apps there are 3 supported exit codes.
-        * SUCCESS = 0
-        * FAILURE = 1
-        * PARTIAL_FAILURE = 3
-        * HARD_FAILURE = 4
-
-        Args:
-            code: The exit code value for the app.
-        """
-        self.exit_service.exit_code = code
-
-    @registry.factory(ExitService)
+    @registry.factory(Exit)
     @scoped_property
-    def exit_service(self) -> ExitService:
+    def exit(self) -> Exit:
         """Return an ExitService object."""
-        # TODO: [high] @cblades - inputs being required for exit prevents AOT from exiting
-        return self.get_exit_service(self.inputs)
-
-    @cached_property
-    def file_operations(self) -> FileOperations:
-        """Include the Utils module."""
-        return FileOperations(
-            out_path=self.inputs.model_unresolved.tc_out_path,
-            temp_path=self.inputs.model_unresolved.tc_temp_path,
-        )
-
-    @staticmethod
-    def get_exit_service(inputs) -> ExitService:
-        """Create an ExitService object."""
-        return ExitService(inputs)
-
-    def get_playbook(
-        self, context: str | None = None, output_variables: list | None = None
-    ) -> Playbook:
-        """Return a new instance of playbook module.
-
-        Args:
-            context: The KV Store context/session_id. For PB Apps the context is provided on
-                startup, but for service Apps each request gets a different context.
-            output_variables: The requested output variables. For PB Apps outputs are provided on
-                startup, but for service Apps each request gets different outputs.
-        """
-        return Playbook(self.key_value_store, context, output_variables)
-
-    @staticmethod
-    def get_redis_client(
-        host: str, port: int, db: int = 0, blocking_pool: bool = False, **kwargs
-    ) -> Redis:
-        """Return a *new* instance of Redis client.
-
-        For a full list of kwargs see https://redis-py.readthedocs.io/en/latest/#redis.Connection.
-
-        Args:
-            host: The REDIS host. Defaults to localhost.
-            port: The REDIS port. Defaults to 6379.
-            db: The REDIS db. Defaults to 0.
-            blocking_pool: Use BlockingConnectionPool instead of ConnectionPool.
-            errors (str, kwargs): The REDIS errors policy (e.g. strict).
-            max_connections (int, kwargs): The maximum number of connections to REDIS.
-            password (str, kwargs): The REDIS password.
-            socket_timeout (int, kwargs): The REDIS socket timeout.
-            timeout (int, kwargs): The REDIS Blocking Connection Pool timeout value.
-        """
-        return RedisClient(
-            host=host, port=port, db=db, blocking_pool=blocking_pool, **kwargs
-        ).client
-
-    def get_session_tc(
-        self,
-        auth: HmacAuth | TokenAuth | TcAuth | None = None,
-        base_url: str | None = None,
-        log_curl: bool | None = None,
-        proxies: dict[str, str] | None = None,  # pylint: disable=redefined-outer-name
-        proxies_enabled: bool | None = None,
-        verify: bool | str | None = None,
-    ) -> TcSession:
-        """Return an instance of Requests Session configured for the ThreatConnect API.
-
-        No args are required to get a working instance of TC Session instance.
-
-        This method allows for getting a new instance of TC Session instance. This can be
-        very useful when connecting between multiple TC instances (e.g., migrating data).
-        """
-        if log_curl is None:
-            log_curl = self.inputs.model_unresolved.tc_log_curl
-
-        if proxies_enabled is None:
-            proxies_enabled = self.inputs.model_unresolved.tc_proxy_tc
-
-        if verify is None:
-            verify = self.inputs.model_unresolved.tc_verify
-
-        if self.install_json.is_external_app is True:
-            auth = auth or TcAuth(
-                tc_api_access_id=self.inputs.model_unresolved.tc_api_access_id,
-                tc_api_secret_key=self.inputs.model_unresolved.tc_api_secret_key,
-            )
-        else:
-            auth = auth or TcAuth(
-                tc_api_access_id=self.inputs.model_unresolved.tc_api_access_id,
-                tc_api_secret_key=self.inputs.model_unresolved.tc_api_secret_key,
-                tc_token=self.token,
-            )
-
-        return TcSession(
-            auth=auth,
-            base_url=base_url or self.inputs.model_unresolved.tc_api_path,
-            log_curl=log_curl,
-            proxies=proxies or self.proxies,
-            proxies_enabled=proxies_enabled,
-            user_agent=self._user_agent,
-            verify=verify,
-        )
-
-    def get_session_external(self, log_curl: bool = True) -> ExternalSession:
-        """Return an instance of Requests Session configured for the ThreatConnect API."""
-        _session_external = ExternalSession()
-
-        # add User-Agent to headers
-        _session_external.headers.update(self._user_agent)
-
-        # add proxy support if requested
-        if self.inputs.model_unresolved.tc_proxy_external:
-            _session_external.proxies = self.proxies
-            self.log.info(
-                f'Using proxy host {self.inputs.model_unresolved.tc_proxy_host}:'
-                f'{self.inputs.model_unresolved.tc_proxy_port} for external session.'
-            )
-
-        if self.inputs.model_unresolved.tc_log_curl:
-            _session_external.log_curl = log_curl
-
-        return _session_external
-
-    @cached_property
-    def ij(self) -> InstallJson:
-        """Return the install.json file as a dict."""
-        return self.install_json
-
-    @cached_property
-    def install_json(self) -> InstallJson:
-        """Return the install.json file as a dict."""
-        return InstallJson()
-
-    @registry.factory('KeyValueStore')
-    @scoped_property
-    def key_value_store(self) -> KeyValueApi | KeyValueMock | KeyValueRedis:
-        """Return the correct KV store for this execution.
-
-        The TCKeyValueAPI KV store is limited to two operations (create and read),
-        while the Redis kvstore wraps a few other Redis methods.
-        """
-        if self.inputs.model_unresolved.tc_kvstore_type == 'Redis':
-            return KeyValueRedis(self.redis_client)
-
-        if self.inputs.model_unresolved.tc_kvstore_type == 'TCKeyValueAPI':
-            return KeyValueApi(self.session_tc)
-
-        if self.inputs.model_unresolved.tc_kvstore_type == 'Mock':
-            self.log.warning(
-                'Using mock key-value store. '
-                'This should *never* happen when running in-platform.'
-            )
-            return KeyValueMock()
-
-        raise RuntimeError(
-            f'Invalid KV Store Type: ({self.inputs.model_unresolved.tc_kvstore_type})'
-        )
+        return Exit(self.inputs)
 
     @property
     def log(self) -> TraceLogger:
@@ -338,7 +116,8 @@ class TcEx:
             and self.inputs.contents.get('tc_log_to_api') is True
         ):
             _logger.add_api_handler(
-                session_tc=self.get_session_tc(), level=self.inputs.model_unresolved.tc_log_level
+                session_tc=self.session.get_session_tc(),  # pylint: disable=no-member
+                level=self.inputs.model_unresolved.tc_log_level,
             )
 
         # add rotating log handler
@@ -360,18 +139,6 @@ class TcEx:
 
         return _logger
 
-    @registry.factory(Playbook)
-    @scoped_property
-    def playbook(self) -> Playbook:
-        """Return an instance of Playbooks module.
-
-        This property defaults context and output variables to arg values.
-        """
-        return self.get_playbook(
-            context=self.inputs.model_unresolved.tc_playbook_kvstore_context,
-            output_variables=self.inputs.model_unresolved.tc_playbook_out_variables,
-        )
-
     @cached_property
     def proxies(self) -> dict:
         """Format the proxy configuration for Python Requests module.
@@ -391,135 +158,12 @@ class TcEx:
             proxy_pass=self.inputs.model_unresolved.tc_proxy_password,
         )
 
-    @registry.factory(Redis)
-    @scoped_property
-    def redis_client(self) -> Redis:
-        """Return redis client instance configure for Playbook/Service Apps."""
-        # TODO: [high] - why can't we use inputs.model_unresolved here?
-        return self.get_redis_client(
-            # host=self.inputs.contents.get('tc_kvstore_host', 'localhost'),
-            host=self.inputs.model_unresolved.tc_kvstore_host,
-            # port=self.inputs.contents.get('tc_kvstore_port', 6379),
-            port=self.inputs.model_unresolved.tc_kvstore_port,
-            db=0,
-        )
-
-    def results_tc(self, key: str, value: str):
-        """Write data to results_tc file in TcEX specified directory.
-
-        The TcEx platform support persistent values between executions of the App.  This
-        method will store the values for TC to read and put into the Database.
-
-        Args:
-            key: The data key to be stored.
-            value: The data value to be stored.
-        """
-        if os.access(self.inputs.model_unresolved.tc_out_path, os.W_OK):
-            results_file = f'{self.inputs.model_unresolved.tc_out_path}/results.tc'
-        else:
-            results_file = 'results.tc'
-
-        new = True
-        # ensure file exists
-        open(results_file, 'a').close()  # pylint: disable=consider-using-with
-        with open(results_file, 'r+') as fh:
-            results = ''
-            for line in fh.read().strip().split('\n'):
-                if not line:
-                    continue
-                try:
-                    k, v = line.split(' = ')
-                except ValueError:
-                    # handle null/empty value (e.g., "name =")
-                    k, v = line.split(' =')
-                if k == key:
-                    v = value
-                    new = False
-                if v is not None:
-                    results += f'{k} = {v}\n'
-            if new and value is not None:  # indicates the key/value pair didn't already exist
-                results += f'{key} = {value}\n'
-            fh.seek(0)
-            fh.write(results)
-            fh.truncate()
-
     @cached_property
-    def service(self) -> ApiService | CommonServiceTrigger | WebhookTriggerService:
-        """Include the Service Module."""
-        if self.install_json.model.is_api_service_app:
-            from .services import ApiService as Service
-        elif (
-            self.install_json.model.is_trigger_app
-            and not self.install_json.model.is_webhook_trigger_app
-        ):
-            from .services import CommonServiceTrigger as Service
-        elif self.install_json.model.is_webhook_trigger_app:
-            from .services import WebhookTriggerService as Service
-        else:
-            self.exit(1, 'Could not determine the service type.')
-
-        return Service(self)
-
-    @registry.factory(TcSession)
-    @scoped_property
-    def session_tc(self) -> TcSession:
-        """Return an instance of Requests Session configured for the ThreatConnect API."""
-        return self.get_session_tc()
-
-    @scoped_property
-    def session_external(self) -> ExternalSession:
-        """Return an instance of Requests Session configured for the ThreatConnect API."""
-        return self.get_session_external()
-
-    # TODO: [high] @cblades - why is there are setter for exit_code and set_exit_code method?
-    # def set_exit_code(self, exit_code: ExitCode):
-    #     """Set the exit code (registry)"""
-    #     self.exit_code = exit_code
-
-    @registry.factory(Tokens, singleton=True)
-    @cached_property
-    def token(self) -> Tokens:
-        """Return token object."""
-        _proxies = None
-        if self.inputs.model_unresolved.tc_proxy_tc is True:
-            _proxies = self.proxies
-
-        _tokens = Tokens(
-            self.inputs.model_unresolved.tc_api_path,
-            self.inputs.model_unresolved.tc_verify,
-            _proxies,
-        )
-
-        # register token for Apps that pass token on start
-        if all(
-            [self.inputs.model_unresolved.tc_token, self.inputs.model_unresolved.tc_token_expires]
-        ):
-            _tokens.register_token(
-                key=threading.current_thread().name,
-                token=self.inputs.model_unresolved.tc_token,
-                expires=self.inputs.model_unresolved.tc_token_expires,
-            )
-        return _tokens
-
-    # TODO: [low] - is tc_utils required since you can simply do api.tc.utils?
-    @property
-    def ti_utils(self) -> ThreatIntelUtils:
+    def session(self) -> RequestsSession:
         """Return instance of Threat Intel Utils."""
-        return ThreatIntelUtils(self.session_tc)
+        return RequestsSession(self.inputs, self.proxies)
 
     @cached_property
-    def utils(self) -> Utils:
+    def util(self) -> Util:
         """Include the Utils module."""
-        return Utils()
-
-    # TODO: [low] - are v2 and v3 required since you can simply do api.tc.v2 or api.tc.v3?
-    @cached_property
-    def v2(self) -> V2:
-        """Return a case management instance."""
-        return V2(self.inputs, self.session_tc)
-
-    # TODO: [low] - are v2 and v3 required since you can simply do api.tc.v2 or api.tc.v3?
-    @cached_property
-    def v3(self) -> V3:
-        """Return a case management instance."""
-        return V3(self.session_tc)
+        return Util()

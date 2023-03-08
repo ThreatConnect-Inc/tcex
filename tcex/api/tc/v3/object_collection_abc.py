@@ -11,10 +11,10 @@ from requests.exceptions import ProxyError, RetryError
 
 # first-party
 from tcex.api.tc.v3.tql.tql import Tql
-from tcex.backports import cached_property
+from tcex.backport import cached_property
 from tcex.exit.error_codes import handle_error
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
-from tcex.utils import Utils
+from tcex.util import Util
 
 # get tcex logger
 logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
@@ -46,7 +46,7 @@ class ObjectCollectionABC(ABC):
         self.tql = Tql()
         self._model = None
         self.type_ = None  # defined in child class
-        self.utils = Utils()
+        self.util = Util()
 
     def __len__(self) -> int:
         """Return the length of the collection."""
@@ -61,7 +61,7 @@ class ObjectCollectionABC(ABC):
 
         # convert all keys to camel case
         for k, v in list(parameters.items()):
-            k = self.utils.snake_to_camel(k)
+            k = self.util.snake_to_camel(k)
             # if result_limit and resultLimit both show up use the proper cased version
             if k not in parameters:
                 parameters[k] = v
@@ -158,7 +158,7 @@ class ObjectCollectionABC(ABC):
 
         # convert all keys to camel case
         for k, v in list(params.items()):
-            k = self.utils.snake_to_camel(k)
+            k = self.util.snake_to_camel(k)
             params[k] = v
 
         tql_string = self.tql.raw_tql or self.tql.as_str

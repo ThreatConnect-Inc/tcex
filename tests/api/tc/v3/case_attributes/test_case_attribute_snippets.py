@@ -16,7 +16,7 @@ class TestCaseAttributeSnippets(TestV3):
     # def test_case_attributes_get_all(self):
     #     """Test snippet"""
     #     # Begin Snippet
-    #     for case_attribute in self.tcex.v3.case_attributes():
+    #     for case_attribute in self.tcex.api.tc.v3.case_attributes():
     #         print(case_attribute.model.dict(exclude_none=True))
     #     # End Snippet
 
@@ -41,7 +41,7 @@ class TestCaseAttributeSnippets(TestV3):
             pytest.fail('Case attribute id not found.')
 
         # Begin Snippet
-        case_attributes = self.tcex.v3.case_attributes()
+        case_attributes = self.tcex.api.tc.v3.case_attributes()
         case_attributes.filter.date_added(TqlOperator.GT, '1 day ago')
         case_attributes.filter.id(TqlOperator.EQ, attribute_id)
         case_attributes.filter.case_id(TqlOperator.EQ, case.model.id)
@@ -70,7 +70,7 @@ class TestCaseAttributeSnippets(TestV3):
         attribute_id = case.model.attributes.data[0].id
 
         # Begin Snippet
-        case_attribute = self.tcex.v3.case_attribute(id=attribute_id)
+        case_attribute = self.tcex.api.tc.v3.case_attribute(id=attribute_id)
         case_attribute.get()
         print(case_attribute.model.dict(exclude_none=True))
         # End Snippet

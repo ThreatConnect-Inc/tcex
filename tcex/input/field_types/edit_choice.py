@@ -7,7 +7,7 @@ from pydantic.fields import ModelField  # TYPE-CHECKING
 
 # first-party
 from tcex.api.tc.utils.threat_intel_utils import ThreatIntelUtils
-from tcex.app_config.install_json import InstallJson
+from tcex.app.config.install_json import InstallJson
 from tcex.input.field_types.exception import InvalidEmptyValue, InvalidInput, InvalidType
 from tcex.pleb.registry import registry
 

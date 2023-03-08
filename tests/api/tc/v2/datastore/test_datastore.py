@@ -29,12 +29,12 @@ class TestDataStore:
         def mp_post(*args, **kwargs):  # pylint: disable=unused-argument
             return MockPost({}, ok=False)
 
-        monkeypatch.setattr(tcex.session_tc, 'post', mp_post)
+        monkeypatch.setattr(tcex.session.tc, 'post', mp_post)
 
         # create index
         key = str(uuid.uuid4())
         try:
-            tcex.v2.datastore('local', key)
+            tcex.api.tc.v2.datastore('local', key)
             assert False, 'Failed to catch error on ok=False'
         except RuntimeError:
             assert True
@@ -45,7 +45,7 @@ class TestDataStore:
         Args:
             tcex (fixture): An instantiated instance of TcEx.
         """
-        tcex.v2.datastore('local', self.data_type)
+        tcex.api.tc.v2.datastore('local', self.data_type)
 
     @staticmethod
     def test_data_store_local_new_index(tcex: TcEx):
@@ -58,7 +58,7 @@ class TestDataStore:
         key = str(uuid.uuid4())
         rid = 'one'
 
-        ds = tcex.v2.datastore('local', key)
+        ds = tcex.api.tc.v2.datastore('local', key)
 
         results = ds.add(rid=rid, data=data)
         if results is None:

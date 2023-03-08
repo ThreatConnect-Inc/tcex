@@ -84,7 +84,7 @@ class SecurityLabel(Mappings):
         Args:
             date_added: Converted to %Y-%m-%dT%H:%M:%SZ date format
         """
-        date_added = self._utils.any_to_datetime(date_added).strftime('%Y-%m-%dT%H:%M:%SZ')
+        date_added = self.util.any_to_datetime(date_added).strftime('%Y-%m-%dT%H:%M:%SZ')
 
         self._data['dateAdded'] = date_added
         data = {'dateAdded': date_added}

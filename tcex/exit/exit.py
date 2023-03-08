@@ -4,9 +4,10 @@ import logging
 import os
 import sys
 from enum import Enum
+from typing import Literal
 
 # first-party
-from tcex.app_config import InstallJson
+from tcex.app.config import InstallJson
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 from tcex.pleb.registry import registry
 
@@ -14,11 +15,14 @@ from tcex.pleb.registry import registry
 logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
 
+EXIT_CODES = Literal[0, 1, 3, 4]
+
+
 class ExitCode(int, Enum):
     """Valid exit codes for a ThreatConnect app.
 
-    Note not all exit codes are valid for all app types: partial failure is not valid for playbook
-    apps.
+    Note not all exit codes are valid for all app types:
+    partial failure is not valid for playbook apps.
     """
 
     SUCCESS = 0
@@ -32,7 +36,7 @@ class ExitCode(int, Enum):
         return f'{self.value} ({clean_name})'
 
 
-class ExitService:
+class Exit:
     """Provides functionality around exiting an app."""
 
     def __init__(self, inputs):
@@ -40,15 +44,61 @@ class ExitService:
         self.ij = InstallJson()
         self.inputs = inputs
 
+        # properties
         self._exit_code = ExitCode.SUCCESS
+        self._message = None
+
+    def _aot_rpush(self, exit_code: int):
+        """Push message to AOT action channel."""
+        if self.inputs.contents.get('tc_playbook_db_type') == 'Redis':
+            try:
+                # pylint: disable=no-member
+                registry.redis_client.rpush(self.inputs.contents.get('tc_exit_channel'), exit_code)
+            except Exception as e:  # pragma: no cover
+                self._exit(ExitCode.FAILURE, f'Exception during AOT exit push ({e}).')
+
+    def _exit(self, code: ExitCode | int, msg: str):
+        """Exit the App"""
+        code = ExitCode(code) if code is not None else self.code
+
+        # handle exit msg logging
+        self._exit_msg_handler(code, msg)
+
+        logger.info(f'exit-code={code}')
+        sys.exit(code.value)
+
+    def _message_tc(self, message: str, max_length: int = 255):
+        """Write data to message_tc file in TcEX specified directory.
+
+        This method is used to set and exit message in the ThreatConnect Platform.
+        ThreatConnect only supports files of max_message_length.  Any data exceeding
+        this limit will be truncated. The last <max_length> characters will be preserved.
+
+        Args:
+            message: The message to add to message_tc file
+            max_length: The maximum length of an exit message. Defaults to 255.
+        """
+        if not isinstance(message, str):
+            message = str(message)
+
+        if os.access(self.inputs.contents.get('tc_out_path'), os.W_OK):
+            message_file = os.path.join(self.inputs.contents.get('tc_out_path'), 'message.tc')
+        else:
+            message_file = 'message.tc'
+
+        if not message.endswith('\n'):
+            message += '\n'
+        with open(message_file, 'w') as mh:
+            # write last <max_length> characters to file
+            mh.write(message[-max_length:])
 
     @property
-    def exit_code(self) -> 'ExitCode':
+    def code(self) -> ExitCode:
         """Get exit code."""
         return self._exit_code
 
-    @exit_code.setter
-    def exit_code(self, exit_code: ExitCode | int):
+    @code.setter
+    def code(self, exit_code: ExitCode | int):
         """Set exit code.
 
         Will automatically change partial failure to success if app is a playbook app.
@@ -76,7 +126,7 @@ class ExitService:
             code: The exit code value for the app.
             msg: A message to log and add to message tc output.
         """
-        code = ExitCode(code) if code is not None else self.exit_code
+        code = ExitCode(code) if code is not None else self.code
         msg = msg if msg is not None else ''
 
         # playbook exit handler
@@ -95,16 +145,6 @@ class ExitService:
         # exit
         self._exit(code, msg)
 
-    def _exit(self, code: ExitCode | int, msg: str):
-        """Exit the App"""
-        code = ExitCode(code) if code is not None else self.exit_code
-
-        # handle exit msg logging
-        self._exit_msg_handler(code, msg)
-
-        logger.info(f'exit-code={code}')
-        sys.exit(code.value)
-
     # TODO: [med] @cblades - is msg required?
     # pylint: disable=unused-argument
     def exit_aot_terminate(self, code: ExitCode | int | None = None, msg: str | None = None):
@@ -118,8 +158,8 @@ class ExitService:
             code: The exit code value for the app.
             msg: A message to log and add to message tc output.
         """
-        code = ExitCode(code) if code is not None else self.exit_code
-        msg = msg if msg is not None else ''
+        code = ExitCode(code) if code is not None else self.code
+        msg = msg if msg is not None else self.message
 
         # aot notify
         if 'tc_aot_enabled' in self.inputs.contents and self.inputs.contents.get('tc_aot_enabled'):
@@ -128,6 +168,16 @@ class ExitService:
 
         logger.info(f'exit-code={code}')
         sys.exit(code)
+
+    def _exit_msg_handler(self, code: ExitCode, msg: str):
+        """Handle exit message. Write to both log and message_tc."""
+        if msg is not None:
+            log_msg = msg.replace('\n', ',')
+            if code in [ExitCode.SUCCESS, ExitCode.PARTIAL_FAILURE]:
+                logger.info(f'exit-message="{log_msg}"')
+            else:
+                logger.error(f'exit-message="{log_msg}"')
+            self._message_tc(msg)
 
     def exit_playbook_handler(self, msg: str):
         """Perform special action for PB Apps before exit."""
@@ -143,46 +193,12 @@ class ExitService:
                 self.inputs.model_unresolved.tcex_testing_context, '_exit_message', msg
             )
 
-    def _exit_msg_handler(self, code: ExitCode, msg: str):
-        """Handle exit message. Write to both log and message_tc."""
-        if msg is not None:
-            log_msg = msg.replace('\n', ',')
-            if code in [ExitCode.SUCCESS, ExitCode.PARTIAL_FAILURE]:
-                logger.info(f'exit-message="{log_msg}"')
-            else:
-                logger.error(f'exit-message="{log_msg}"')
-            self._message_tc(msg)
+    @property
+    def message(self) -> str:
+        """Get exit code."""
+        return self._message or ''
 
-    def _aot_rpush(self, exit_code: int):
-        """Push message to AOT action channel."""
-        if self.inputs.contents.get('tc_playbook_db_type') == 'Redis':
-            try:
-                # pylint: disable=no-member
-                registry.redis_client.rpush(self.inputs.contents.get('tc_exit_channel'), exit_code)
-            except Exception as e:  # pragma: no cover
-                self._exit(ExitCode.FAILURE, f'Exception during AOT exit push ({e}).')
-
-    def _message_tc(self, message: str, max_length: int = 255):
-        """Write data to message_tc file in TcEX specified directory.
-
-        This method is used to set and exit message in the ThreatConnect Platform.
-        ThreatConnect only supports files of max_message_length.  Any data exceeding
-        this limit will be truncated. The last <max_length> characters will be preserved.
-
-        Args:
-            message: The message to add to message_tc file
-            max_length: The maximum length of an exit message. Defaults to 255.
-        """
-        if not isinstance(message, str):
-            message = str(message)
-
-        if os.access(self.inputs.contents.get('tc_out_path'), os.W_OK):
-            message_file = os.path.join(self.inputs.contents.get('tc_out_path'), 'message.tc')
-        else:
-            message_file = 'message.tc'
-
-        if not message.endswith('\n'):
-            message += '\n'
-        with open(message_file, 'w') as mh:
-            # write last <max_length> characters to file
-            mh.write(message[-max_length:])
+    @message.setter
+    def message(self, message: str):
+        """Set exit message."""
+        self._message = message

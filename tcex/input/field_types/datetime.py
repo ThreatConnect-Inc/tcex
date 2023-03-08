@@ -9,7 +9,7 @@ from pydantic.fields import ModelField
 
 # first-party
 from tcex.input.field_types.exception import InvalidInput
-from tcex.utils import Utils
+from tcex.util import Util
 
 
 class DateTime(arrow.Arrow):
@@ -24,6 +24,6 @@ class DateTime(arrow.Arrow):
     def _validate(cls, value: Any, field: ModelField) -> arrow.Arrow:
         """Pydantic validate method."""
         try:
-            return Utils.any_to_datetime(value)
+            return Util.any_to_datetime(value)
         except RuntimeError as ex:
             raise InvalidInput(field_name=field.name, error=str(ex)) from ex

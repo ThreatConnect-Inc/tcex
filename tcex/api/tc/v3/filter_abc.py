@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
-from tcex.utils.utils import Utils
+from tcex.util.util import Util
 
 if TYPE_CHECKING:
     # first-party
@@ -20,7 +20,7 @@ class FilterABC(ABC):
         self._tql = tql
 
         # properties
-        self.utils = Utils()
+        self.util = Util()
 
     @property
     def _api_endpoint(self):

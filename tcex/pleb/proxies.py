@@ -10,7 +10,7 @@ def proxies(
     proxy_host: str | None,
     proxy_port: int | None,
     proxy_user: str | None,
-    proxy_pass: Sensitive | None,
+    proxy_pass: Sensitive | str | None,
 ) -> dict:
     """Format the proxy configuration for Python Requests module.
 
@@ -30,7 +30,10 @@ def proxies(
         proxy_auth = ''
         if proxy_user is not None and proxy_pass is not None:
             proxy_user = quote(proxy_user, safe='~')
-            proxy_pass_ = quote(proxy_pass.value, safe='~')
+            if isinstance(proxy_pass, Sensitive):
+                proxy_pass_ = quote(proxy_pass.value, safe='~')
+            else:
+                proxy_pass_ = quote(proxy_pass, safe='~')
 
             # proxy url with auth
             proxy_auth = f'{proxy_user}:{proxy_pass_}@'

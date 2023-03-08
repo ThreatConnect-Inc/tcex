@@ -29,7 +29,7 @@ class TIHelper:
         # properties
         self.app = MockApp(runtime_level='Playbook')
         self.tcex = self.app.tcex
-        self.ti: ThreatIntelligence = self.tcex.v2.ti
+        self.ti: ThreatIntelligence = self.tcex.api.tc.v2.ti
 
         # indicator_type_value_map
         self.im = {
@@ -74,29 +74,29 @@ class TIHelper:
     def rand_email_address(self) -> str:
         """Return a random email subject."""
         return (
-            f'{self.tcex.utils.random_string(randint(5,15))}@'
-            f'{self.tcex.utils.random_string(randint(5,15))}.com'
+            f'{self.tcex.util.random_string(randint(5,15))}@'
+            f'{self.tcex.util.random_string(randint(5,15))}.com'
         ).lower()
 
     def rand_email_subject(self) -> str:
         """Return a random email subject."""
         return (
-            f'{self.tcex.utils.random_string(randint(5,15))} '
-            f'{self.tcex.utils.random_string(randint(5,15))} '
-            f'{self.tcex.utils.random_string(randint(5,15))}'
+            f'{self.tcex.util.random_string(randint(5,15))} '
+            f'{self.tcex.util.random_string(randint(5,15))} '
+            f'{self.tcex.util.random_string(randint(5,15))}'
         )
 
     def rand_filename(self) -> str:
         """Return a random hashtag."""
-        return f'{self.tcex.utils.random_string(randint(5,15))}.pdf'.lower()
+        return f'{self.tcex.util.random_string(randint(5,15))}.pdf'.lower()
 
     def rand_hashtag(self) -> str:
         """Return a random hashtag."""
-        return f'#{self.tcex.utils.random_string(randint(5,15))}'.lower()
+        return f'#{self.tcex.util.random_string(randint(5,15))}'.lower()
 
     def rand_host(self) -> str:
         """Return a random hashtag."""
-        return f'{self.tcex.utils.random_string(randint(5,15))}.com'.lower()
+        return f'{self.tcex.util.random_string(randint(5,15))}.com'.lower()
 
     @staticmethod
     def rand_ip() -> str:
@@ -110,11 +110,11 @@ class TIHelper:
 
     def rand_mutex(self) -> str:
         """Return a random Mutex."""
-        return f'Global\\{self.tcex.utils.random_string(randint(5,10))}'
+        return f'Global\\{self.tcex.util.random_string(randint(5,10))}'
 
     def rand_name(self) -> str:
         """Return a random name."""
-        return f'{self.tcex.utils.random_string(randint(10,100))}'
+        return f'{self.tcex.util.random_string(randint(10,100))}'
 
     @staticmethod
     def rand_phone_number() -> str:
@@ -146,8 +146,8 @@ class TIHelper:
     def rand_url(self) -> str:
         """Return a random hashtag."""
         return (
-            f'https://{self.tcex.utils.random_string(randint(5,15))}.com/'
-            f'{self.tcex.utils.random_string(randint(5,15))}/'
+            f'https://{self.tcex.util.random_string(randint(5,15))}.com/'
+            f'{self.tcex.util.random_string(randint(5,15))}/'
         ).lower()
 
     @staticmethod
@@ -483,7 +483,7 @@ class TestThreatIntelligence:
             self.ti_helper.cleanup()
 
         # clean up monitor thread
-        self.ti_helper.tcex.token.shutdown = True
+        self.ti_helper.tcex.app.token.shutdown = True
 
     def _add_group_fields(self, group_data):
         """Add any required or optional fields to the request body."""

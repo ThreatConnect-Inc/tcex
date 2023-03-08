@@ -10,12 +10,12 @@ from typing import Any
 from requests import Session
 
 # first-party
-from tcex.app_config.install_json import InstallJson
+from tcex.app.config.install_json import InstallJson
 from tcex.input.field_types.sensitive import Sensitive
 from tcex.pleb.registry import registry
-from tcex.sessions.auth.hmac_auth import HmacAuth
+from tcex.requests_session.auth.hmac_auth import HmacAuth
 from tcex.tcex import TcEx
-from tcex.utils.utils import Utils
+from tcex.util.util import Util
 
 
 class MockApp:
@@ -45,7 +45,7 @@ class MockApp:
         self.tc_api_path = os.getenv('TC_API_PATH')
         self.tc_token_url = os.getenv('TC_TOKEN_URL')
         self.tc_token_svc_id = os.getenv('TC_TOKEN_SVC_ID')
-        self.utils = Utils()
+        self.util = Util()
         self._tcex = None
 
         # External Apps don't require an install.json file
@@ -243,11 +243,11 @@ class MockApp:
     def _write_file_params_encrypted_file(self, config: dict):
         """Write the App encrypted fileParams file."""
         config_data = json.dumps(config).encode()
-        config_key = self.utils.random_string(16)
+        config_key = self.util.random_string(16)
         config_file = 'app_params.aes'
 
         # encrypt the serialized config data
-        encrypted_contents = self.utils.encrypt_aes_cbc(config_key, config_data)
+        encrypted_contents = self.util.encrypt_aes_cbc(config_key, config_data)
 
         # write the config data to disk
         with open(config_file, 'wb') as fh:

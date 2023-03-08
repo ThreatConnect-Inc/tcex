@@ -16,7 +16,7 @@ class TestTags1:
     @pytest.mark.parametrize('name,tag', [('pytest-adversary-i1-001', 'PyTest1')])
     def test_tag(self, name, tag, tcex: TcEx):
         """Test adversary creation"""
-        batch = tcex.v2.batch(owner='TCI')
+        batch = tcex.api.tc.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'adversary', name])
         ti = batch.adversary(name=name, xid=xid)
 

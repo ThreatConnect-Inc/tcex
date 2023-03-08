@@ -6,13 +6,13 @@ from pydantic import Field
 
 # first-party
 from tcex.api.tc.v3.security.users.user_model import UserModel
-from tcex.utils import Utils
+from tcex.util import Util
 
 
 class AssigneeUserModel(
     UserModel,
     title='Assignee User Model',
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     validate_assignment=True,
 ):
     """Assignee Model"""

@@ -48,7 +48,7 @@ class TestLogs:
         tcex = playbook_app(config_data=config_data).tcex
 
         for _ in range(0, 500):
-            tcex.log.info(f'A long random string {tcex.utils.random_string(randint(200, 250))}')
+            tcex.log.info(f'A long random string {tcex.util.random_string(randint(200, 250))}')
 
         # simple assert to ensure the log file was created
         assert os.path.exists(

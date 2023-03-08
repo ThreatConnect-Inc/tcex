@@ -7,7 +7,7 @@ from typing import Any
 from pydantic import BaseModel, root_validator, validator
 
 # first-party
-from tcex.app_config import InstallJson
+from tcex.app.config import InstallJson
 
 # get instance of InstallJson
 ij = InstallJson()

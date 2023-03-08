@@ -2,4 +2,4 @@
 # flake8: noqa
 # first-party
 from tcex.exit.error_codes import handle_error
-from tcex.exit.exit import ExitCode, ExitService
+from tcex.exit.exit import Exit, ExitCode

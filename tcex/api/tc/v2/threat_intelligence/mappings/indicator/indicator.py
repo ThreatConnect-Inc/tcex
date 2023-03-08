@@ -160,7 +160,7 @@ class Indicator(Mappings):
         """Convert the value and adds it as a data field."""
         key = self._metadata_map().get(key, key)
         if key in ['dateAdded', 'lastModified']:
-            self._data[key] = self._utils.any_to_datetime(value).strftime('%Y-%m-%dT%H:%M:%SZ')
+            self._data[key] = self.util.any_to_datetime(value).strftime('%Y-%m-%dT%H:%M:%SZ')
         elif key == 'confidence':
             self._data[key] = int(value)
         elif key == 'rating':
@@ -233,9 +233,7 @@ class Indicator(Mappings):
 
         data = {
             'count': count,
-            'dateObserved': self._utils.any_to_datetime(date_observed).strftime(
-                '%Y-%m-%dT%H:%M:%SZ'
-            ),
+            'dateObserved': self.util.any_to_datetime(date_observed).strftime('%Y-%m-%dT%H:%M:%SZ'),
         }
 
         return self.tc_requests.add_observations(
