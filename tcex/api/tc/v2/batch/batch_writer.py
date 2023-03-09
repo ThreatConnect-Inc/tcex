@@ -17,7 +17,7 @@ from typing import Any
 from requests import Session  # TYPE-CHECKING
 
 # first-party
-from tcex.api.tc.utils.threat_intel_utils import ThreatIntelUtils
+from tcex.api.tc.util.threat_intel_util import ThreatIntelUtil
 from tcex.api.tc.v2.batch.group import (
     Adversary,
     AttackPattern,
@@ -122,7 +122,7 @@ class BatchWriter:
         self._batch_size = 0  # track current batch size
         self._batch_max_size = 75_000_000  # max size in bytes
         self.log = logger
-        self.tic = ThreatIntelUtils(self.session_tc)
+        self.tic = ThreatIntelUtil(self.session_tc)
         self.util = Util()
 
         # shelf settings

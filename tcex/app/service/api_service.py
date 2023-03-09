@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING, Any
 
 # first-party
 from tcex.app.service.common_service import CommonService
-from tcex.input.field_types.sensitive import Sensitive
+from tcex.input.field_type.sensitive import Sensitive
 
 if TYPE_CHECKING:
     # first-party

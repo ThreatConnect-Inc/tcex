@@ -5,8 +5,8 @@ import re
 import sys
 
 # first-party
-import tcex.input.field_types as FieldTypes  # noqa: N812
-from tcex.app.config.models.install_json_model import ParamsModel  # TYPE-CHECKING
+import tcex.input.field_type as FieldTypes  # noqa: N812
+from tcex.app.config.model.install_json_model import ParamsModel  # TYPE-CHECKING
 from tcex.app.config.permutation import Permutation
 from tcex.backport import cached_property
 from tcex.bin.bin_abc import BinABC

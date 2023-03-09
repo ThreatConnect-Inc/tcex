@@ -363,10 +363,10 @@ class V3ModelABC(BaseModel, ABC):
             key = property_['title']
             if isinstance(value, BaseModel) and property_.get('read_only') is False:
                 value: Self = value
-                # Handle nested models that should be included in the body (non-read-only).
+                # Handle nested model that should be included in the body (non-read-only).
 
                 if hasattr(value, 'data') and isinstance(value.data, list):  # type: ignore
-                    # Handle nested object types where the "data" field contains an array of models.
+                    # Handle nested object types where the "data" field contains an array of model.
                     _data = self._process_nested_data_array(method, mode, value)
                     if _data:
                         _body.setdefault(key, {})['data'] = _data

@@ -199,7 +199,7 @@ class CommonService:
 
     @property
     def metrics(self) -> dict:
-        """Return current metrics."""
+        """Return current metric."""
         # TODO: move to trigger command and handle API Service
         if self._metrics.get('Active Playbooks') is not None:
             self.update_metric('Active Playbooks', len(self.configs))
@@ -207,11 +207,11 @@ class CommonService:
 
     @metrics.setter
     def metrics(self, metrics: dict):
-        """Return current metrics."""
+        """Return current metric."""
         if isinstance(metrics, dict):
             self._metrics = metrics
         else:
-            self.log.error('feature=service, event=invalid-metrics')
+            self.log.error('feature=service, event=invalid-metric')
 
     def on_connect_handler(self, client, userdata, flags, rc):  # pylint: disable=unused-argument
         """On connect method for mqtt broker."""
@@ -295,7 +295,7 @@ class CommonService:
         self.message_broker.publish(
             message=json.dumps(response), topic=self.models.tc_svc_client_topic
         )
-        self.log.info(f'feature=service, event=heartbeat-sent, metrics={self.metrics}')
+        self.log.info(f'feature=service, event=heartbeat-sent, metric={self.metrics}')
 
     def process_logging_change_command(self, message: dict):
         """Process the LoggingChange command.

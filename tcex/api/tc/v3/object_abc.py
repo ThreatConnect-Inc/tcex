@@ -14,7 +14,7 @@ from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
 from tcex.backport import cached_property
-from tcex.exit.error_codes import handle_error
+from tcex.exit.error_code import handle_error
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 from tcex.util import Util
 

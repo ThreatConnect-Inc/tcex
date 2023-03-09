@@ -9,7 +9,7 @@ from hashlib import sha256
 from requests import PreparedRequest, auth
 
 # first-party
-from tcex.input.field_types.sensitive import Sensitive
+from tcex.input.field_type.sensitive import Sensitive
 
 
 class HmacAuth(auth.AuthBase):

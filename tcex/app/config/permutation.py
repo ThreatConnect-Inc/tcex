@@ -20,8 +20,8 @@ except ImportError:  # pragma: no cover
 # first-party
 from tcex.app.config.install_json import InstallJson
 from tcex.app.config.layout_json import LayoutJson
-from tcex.app.config.models.install_json_model import OutputVariablesModel, ParamsModel
-from tcex.app.config.models.layout_json_model import OutputsModel
+from tcex.app.config.model.install_json_model import OutputVariablesModel, ParamsModel
+from tcex.app.config.model.layout_json_model import OutputsModel
 from tcex.backport import cached_property
 from tcex.pleb.none_model import NoneModel
 

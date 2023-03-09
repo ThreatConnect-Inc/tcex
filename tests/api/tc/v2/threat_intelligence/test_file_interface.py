@@ -7,9 +7,9 @@ from random import randint
 from typing import cast
 
 # first-party
-from tcex.api.tc.v2.threat_intelligence.mappings.indicator.indicator_types.file import File
+from tcex.api.tc.v2.threat_intelligence.mapping.indicator.indicator_type.file import File
 from tcex.tcex import TcEx
-from tests.api.tc.v2.threat_intelligence.ti_helpers import TestThreatIntelligence, TIHelper
+from tests.api.tc.v2.threat_intelligence.ti_helper import TestThreatIntelligence, TIHelper
 
 
 class TestFileIndicators(TestThreatIntelligence):

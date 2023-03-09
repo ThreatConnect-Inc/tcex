@@ -3,7 +3,7 @@
 from typing import TYPE_CHECKING
 
 # first-party
-from tcex.app.config.models import InstallJsonModel
+from tcex.app.config.model import InstallJsonModel
 from tcex.bin.bin_abc import BinABC
 
 if TYPE_CHECKING:

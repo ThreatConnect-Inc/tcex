@@ -10,7 +10,7 @@ from tcex.app.playbook.playbook_output import PlaybookOutput
 from tcex.app.playbook.playbook_read import PlaybookRead
 from tcex.backport import cached_property
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
-from tcex.util.models import PlaybookVariableModel
+from tcex.util.model import PlaybookVariableModel
 from tcex.util.util import Util
 
 # get tcex logger

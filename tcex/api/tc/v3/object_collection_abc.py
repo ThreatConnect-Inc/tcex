@@ -12,7 +12,7 @@ from requests.exceptions import ProxyError, RetryError
 # first-party
 from tcex.api.tc.v3.tql.tql import Tql
 from tcex.backport import cached_property
-from tcex.exit.error_codes import handle_error
+from tcex.exit.error_code import handle_error
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 from tcex.util import Util
 

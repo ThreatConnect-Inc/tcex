@@ -12,7 +12,7 @@ from deepdiff import DeepDiff
 # first-party
 from tcex.app.config.install_json import InstallJson
 from tcex.app.config.layout_json import LayoutJson
-from tcex.app.config.models.layout_json_model import OutputsModel, ParametersModel
+from tcex.app.config.model.layout_json_model import OutputsModel, ParametersModel
 
 
 class TestLayoutJson:

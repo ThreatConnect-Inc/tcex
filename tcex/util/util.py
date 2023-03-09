@@ -150,7 +150,7 @@ class Util(AesOperation, DatetimeOperation, StringOperation, Variable):
 
     @staticmethod
     def remove_none(dict_: dict[Any, Any | None]) -> dict[Any, Any]:
-        """Remove any mappings from a single level dict with a None value."""
+        """Remove any mapping from a single level dict with a None value."""
         return {k: v for k, v in dict_.items() if v is not None}
 
     @staticmethod

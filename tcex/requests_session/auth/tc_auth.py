@@ -5,7 +5,7 @@ from collections.abc import Callable
 
 # first-party
 from tcex.app.token import Token
-from tcex.input.field_types.sensitive import Sensitive  # TYPE-CHECKING
+from tcex.input.field_type.sensitive import Sensitive  # TYPE-CHECKING
 from tcex.requests_session.auth.hmac_auth import HmacAuth
 from tcex.requests_session.auth.token_auth import TokenAuth
 

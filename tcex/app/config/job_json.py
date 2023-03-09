@@ -6,7 +6,7 @@ from collections import OrderedDict
 from pathlib import Path
 
 # first-party
-from tcex.app.config.models import JobJsonModel
+from tcex.app.config.model import JobJsonModel
 from tcex.backport import cached_property
 from tcex.pleb.singleton import Singleton
 

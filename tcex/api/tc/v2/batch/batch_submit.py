@@ -11,7 +11,7 @@ import time
 from requests import Session
 
 # first-party
-from tcex.exit.error_codes import handle_error
+from tcex.exit.error_code import handle_error
 from tcex.input.input import Input
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 

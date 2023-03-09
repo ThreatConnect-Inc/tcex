@@ -8,8 +8,8 @@ from tcex.api.tc.v2.batch.batch_submit import BatchSubmit
 from tcex.api.tc.v2.batch.batch_writer import BatchWriter
 from tcex.api.tc.v2.datastore.cache import Cache
 from tcex.api.tc.v2.datastore.datastore import DataStore
-from tcex.api.tc.v2.metrics.metrics import Metrics
-from tcex.api.tc.v2.notifications.notifications import Notifications
+from tcex.api.tc.v2.metric.metric import Metric
+from tcex.api.tc.v2.notification.notification import Notification
 from tcex.api.tc.v2.threat_intelligence.threat_intelligence import ThreatIntelligence
 from tcex.input.input import Input  # TYPE-CHECKING
 
@@ -135,7 +135,7 @@ class V2:
                 while "local" access is restricted to the App writing the data. The "system" option
                 should not be used in almost all cases.
             data_type: The data type descriptor (e.g., tc:whois:cache).
-            mapping: ElasticSearch mappings data.
+            mapping: ElasticSearch mapping data.
         """
         return DataStore(
             session_tc=self.session_tc, domain=domain, data_type=data_type, mapping=mapping
@@ -148,7 +148,7 @@ class V2:
         data_type: str,
         interval: str,
         keyed: bool = False,
-    ) -> Metrics:
+    ) -> Metric:
         """Get instance of the Metrics module.
 
         Args:
@@ -158,7 +158,7 @@ class V2:
             interval: The metric interval: Hourly, Daily, Weekly, Monthly, and Yearly.
             keyed: Indicates whether the data will have a keyed value.
         """
-        return Metrics(
+        return Metric(
             session_tc=self.session_tc,
             name=name,
             description=description,
@@ -168,9 +168,9 @@ class V2:
         )
 
     @property
-    def notification(self) -> Notifications:
+    def notification(self) -> Notification:
         """Get instance of the Notification module."""
-        return Notifications(self.session_tc)
+        return Notification(self.session_tc)
 
     @property
     def ti(self) -> ThreatIntelligence:

@@ -3,7 +3,7 @@
 import re
 
 # first-party
-from tcex.util.models import PlaybookVariableModel
+from tcex.util.model import PlaybookVariableModel
 
 
 class BinaryVariable(bytes):

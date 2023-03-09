@@ -11,7 +11,7 @@ from requests.exceptions import ProxyError
 
 # first-party
 from tcex.api.tc.v3._gen._gen_abc import GenerateABC
-from tcex.api.tc.v3._gen.models import FilterModel
+from tcex.api.tc.v3._gen.model import FilterModel
 from tcex.backport import cached_property
 from tcex.util.string_operation import SnakeString
 

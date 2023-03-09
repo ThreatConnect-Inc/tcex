@@ -9,7 +9,7 @@ from requests import auth
 
 # first-party
 from tcex.app.token import Token
-from tcex.input.field_types.sensitive import Sensitive
+from tcex.input.field_type.sensitive import Sensitive
 
 
 class TokenAuth(auth.AuthBase):

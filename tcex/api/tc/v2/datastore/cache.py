@@ -25,7 +25,7 @@ class Cache:
         domain: A value of “system”, “organization”, or “local”.
         data_type: A free form type name for the data.
         ttl_seconds: Number of seconds the cache is valid.
-        mapping: Elasticsearch mappings data.
+        mapping: Elasticsearch mapping data.
     """
 
     def __init__(

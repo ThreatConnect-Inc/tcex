@@ -6,9 +6,9 @@ from collections import OrderedDict
 from pathlib import Path
 
 # first-party
-from tcex.app.config.models import LayoutJsonModel
-from tcex.app.config.models.install_json_model import OutputVariablesModel  # TYPE-CHECKING
-from tcex.app.config.models.install_json_model import ParamsModel  # TYPE-CHECKING
+from tcex.app.config.model import LayoutJsonModel
+from tcex.app.config.model.install_json_model import OutputVariablesModel  # TYPE-CHECKING
+from tcex.app.config.model.install_json_model import ParamsModel  # TYPE-CHECKING
 from tcex.backport import cached_property
 from tcex.pleb.singleton import Singleton
 

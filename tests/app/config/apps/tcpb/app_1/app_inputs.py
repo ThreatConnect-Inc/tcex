@@ -7,7 +7,7 @@ from typing import Any
 from pydantic import BaseModel, validator
 
 # first-party
-from tcex.input.field_types import (
+from tcex.input.field_type import (
     Choice,
     KeyValue,
     Sensitive,
@@ -141,7 +141,7 @@ class AppInputs:
         return action_model_map[tc_action]
 
     def update_inputs(self):
-        """Add custom App models to inputs.
+        """Add custom App model to inputs.
 
         Input will be validate when the model is added an any exceptions will
         cause the App to exit with a status code of 1.

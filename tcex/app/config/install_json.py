@@ -9,8 +9,8 @@ from typing import Any
 # first-party
 from tcex.app.config.install_json_update import InstallJsonUpdate
 from tcex.app.config.install_json_validate import InstallJsonValidate
-from tcex.app.config.models import InstallJsonModel
-from tcex.app.config.models.install_json_model import ParamsModel  # TYPE-CHECKING
+from tcex.app.config.model import InstallJsonModel
+from tcex.app.config.model.install_json_model import ParamsModel  # TYPE-CHECKING
 from tcex.backport import cached_property
 
 # get tcex logger

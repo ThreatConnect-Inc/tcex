@@ -12,9 +12,9 @@ from requests import Session
 from requests.exceptions import ProxyError
 
 # first-party
-from tcex.api.tc.v3._gen.models import PropertyModel
+from tcex.api.tc.v3._gen.model import PropertyModel
 from tcex.backport import cached_property
-from tcex.input.field_types.sensitive import Sensitive
+from tcex.input.field_type.sensitive import Sensitive
 from tcex.requests_session.auth.hmac_auth import HmacAuth
 from tcex.util import Util
 from tcex.util.string_operation import SnakeString

@@ -2,7 +2,7 @@
 
 # first-party
 from tcex.app.config import AppSpecYml
-from tcex.app.config.models import LayoutJsonModel
+from tcex.app.config.model import LayoutJsonModel
 from tcex.bin.bin_abc import BinABC
 
 

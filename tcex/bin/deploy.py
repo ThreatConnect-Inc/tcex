@@ -10,7 +10,7 @@ import typer
 
 # first-party
 from tcex.bin.bin_abc import BinABC
-from tcex.input.field_types.sensitive import Sensitive
+from tcex.input.field_type.sensitive import Sensitive
 from tcex.pleb.proxies import proxies
 from tcex.requests_session.auth.hmac_auth import HmacAuth
 from tcex.requests_session.tc_session import TcSession

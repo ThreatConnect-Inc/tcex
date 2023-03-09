@@ -126,7 +126,7 @@ TOTAL                                     151      3    98%
 4 Test Cases
 
 ```bash
-pytest -n 4 --cov=tcex/api/tc/v2/metrics --cov-report=term-missing tests/api/tc/v2/metrics
+pytest -n 4 --cov=tcex/api/tc/v2/metric --cov-report=term-missing tests/api/tc/v2/metric
 ```
 
 #### Results
@@ -142,7 +142,7 @@ TOTAL                                      64      1    98%
 3 Test Cases
 
 ```bash
-pytest -n 3 --cov=tcex/api/tc/v2/notifications --cov-report=term-missing tests/api/tc/v2/notifications
+pytest -n 3 --cov=tcex/api/tc/v2/notification --cov-report=term-missing tests/api/tc/v2/notification
 ```
 
 #### Results
@@ -479,7 +479,7 @@ TOTAL                                     139      5    96%
 116 Test Cases
 
 ```bash
-pytest -n auto --cov=tcex/utils/ --cov-report=term-missing tests/utils/
+pytest -n auto --cov=tcex/util/ --cov-report=term-missing tests/util/
 ```
 
 ### Results

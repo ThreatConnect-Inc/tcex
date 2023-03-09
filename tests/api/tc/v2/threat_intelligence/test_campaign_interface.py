@@ -5,9 +5,9 @@ from datetime import datetime, timedelta
 from typing import cast
 
 # first-party
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.campaign import Campaign
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.campaign import Campaign
 from tcex.tcex import TcEx
-from tests.api.tc.v2.threat_intelligence.ti_helpers import TestThreatIntelligence, TIHelper
+from tests.api.tc.v2.threat_intelligence.ti_helper import TestThreatIntelligence, TIHelper
 
 
 class TestCampaignGroups(TestThreatIntelligence):

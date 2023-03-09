@@ -5,7 +5,7 @@ from requests import Session  # TYPE-CHECKING
 # first-party
 from tcex.api.tc.ti_transform import TiTransform, TiTransforms
 from tcex.api.tc.ti_transform.model import GroupTransformModel, IndicatorTransformModel
-from tcex.api.tc.utils.threat_intel_utils import ThreatIntelUtils
+from tcex.api.tc.util.threat_intel_util import ThreatIntelUtil
 from tcex.api.tc.v2.v2 import V2
 from tcex.api.tc.v3.v3 import V3
 from tcex.backport import cached_property
@@ -52,9 +52,9 @@ class TC:
         return TiTransforms(ti_dict, transforms)
 
     @cached_property
-    def utils(self) -> ThreatIntelUtils:
+    def utils(self) -> ThreatIntelUtil:
         """Return an instance of TI Transform class."""
-        return ThreatIntelUtils(self.session_tc)
+        return ThreatIntelUtil(self.session_tc)
 
     @cached_property
     def v2(self) -> V2:

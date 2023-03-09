@@ -3,7 +3,7 @@
 from urllib.parse import quote
 
 # first-party
-from tcex.input.field_types.sensitive import Sensitive  # TYPE-CHECKING
+from tcex.input.field_type.sensitive import Sensitive  # TYPE-CHECKING
 
 
 def proxies(

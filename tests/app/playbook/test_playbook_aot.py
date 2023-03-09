@@ -4,7 +4,7 @@
 from pydantic import BaseModel
 
 # first-party
-from tcex.input.field_types import String
+from tcex.input.field_type import String
 
 
 class InputModel(BaseModel):

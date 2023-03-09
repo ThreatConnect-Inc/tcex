@@ -8,47 +8,43 @@ from typing import cast
 from requests import Response, Session  # TYPE-CHECKING
 
 # first-party
-from tcex.api.tc.v2.threat_intelligence.mappings.filters import Filters
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group import Group
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.adversary import Adversary
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.attack_pattern import (
-    AttackPattern,
-)
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.campaign import Campaign
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.course_of_action import (
+from tcex.api.tc.v2.threat_intelligence.mapping.filters import Filters
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group import Group
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.adversary import Adversary
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.attack_pattern import AttackPattern
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.campaign import Campaign
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.course_of_action import (
     CourseOfAction,
 )
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.document import Document
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.email import Email
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.event import Event
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.incident import Incident
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.intrusion_set import IntrusionSet
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.malware import Malware
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.report import Report
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.signature import Signature
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.tactic import Tactic
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.threat import Threat
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.tool import Tool
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.vulnerability import (
-    Vulnerability,
-)
-from tcex.api.tc.v2.threat_intelligence.mappings.indicator.indicator import (
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.document import Document
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.email import Email
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.event import Event
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.incident import Incident
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.intrusion_set import IntrusionSet
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.malware import Malware
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.report import Report
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.signature import Signature
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.tactic import Tactic
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.threat import Threat
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.tool import Tool
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.vulnerability import Vulnerability
+from tcex.api.tc.v2.threat_intelligence.mapping.indicator.indicator import (
     Indicator,
     custom_indicator_class_factory,
 )
-from tcex.api.tc.v2.threat_intelligence.mappings.indicator.indicator_types.address import Address
-from tcex.api.tc.v2.threat_intelligence.mappings.indicator.indicator_types.email_address import (
+from tcex.api.tc.v2.threat_intelligence.mapping.indicator.indicator_type.address import Address
+from tcex.api.tc.v2.threat_intelligence.mapping.indicator.indicator_type.email_address import (
     EmailAddress,
 )
-from tcex.api.tc.v2.threat_intelligence.mappings.indicator.indicator_types.file import File
-from tcex.api.tc.v2.threat_intelligence.mappings.indicator.indicator_types.host import Host
-from tcex.api.tc.v2.threat_intelligence.mappings.indicator.indicator_types.url import URL
-from tcex.api.tc.v2.threat_intelligence.mappings.owner import Owner
-from tcex.api.tc.v2.threat_intelligence.mappings.tag import Tag
-from tcex.api.tc.v2.threat_intelligence.mappings.tags import Tags
-from tcex.api.tc.v2.threat_intelligence.mappings.task import Task
-from tcex.api.tc.v2.threat_intelligence.mappings.victim import Victim
-from tcex.exit.error_codes import TcExErrorCodes
+from tcex.api.tc.v2.threat_intelligence.mapping.indicator.indicator_type.file import File
+from tcex.api.tc.v2.threat_intelligence.mapping.indicator.indicator_type.host import Host
+from tcex.api.tc.v2.threat_intelligence.mapping.indicator.indicator_type.url import URL
+from tcex.api.tc.v2.threat_intelligence.mapping.owner import Owner
+from tcex.api.tc.v2.threat_intelligence.mapping.tag import Tag
+from tcex.api.tc.v2.threat_intelligence.mapping.tags import Tags
+from tcex.api.tc.v2.threat_intelligence.mapping.task import Task
+from tcex.api.tc.v2.threat_intelligence.mapping.victim import Victim
+from tcex.exit.error_code import TcExErrorCode
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 from tcex.util import Util
 
@@ -76,9 +72,9 @@ class ThreatIntelligence:
 
     @property
     @lru_cache
-    def _error_codes(self) -> TcExErrorCodes:
+    def _error_codes(self) -> TcExErrorCode:
         """Return TcEx error codes."""
-        return TcExErrorCodes()
+        return TcExErrorCode()
 
     @property
     def _group_types(self) -> list:

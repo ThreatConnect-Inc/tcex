@@ -10,7 +10,7 @@ import colorama as c
 
 # first-party
 from tcex.app.config.install_json import InstallJson
-from tcex.app.config.models import TcexJsonModel
+from tcex.app.config.model import TcexJsonModel
 from tcex.app.config.tcex_json_update import TcexJsonUpdate
 from tcex.backport import cached_property
 

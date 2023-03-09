@@ -18,10 +18,10 @@ from requests.auth import HTTPBasicAuth
 from tinydb import Query, TinyDB
 
 # first-party
-from tcex.app.config.models import TemplateConfigModel
+from tcex.app.config.model import TemplateConfigModel
 from tcex.backport import cached_property
 from tcex.bin.bin_abc import BinABC
-from tcex.input.field_types import Sensitive
+from tcex.input.field_type import Sensitive
 from tcex.pleb.proxies import proxies
 
 

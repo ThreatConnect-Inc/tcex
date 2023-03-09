@@ -10,7 +10,7 @@ import pytest
 # first-party
 from tcex.app.token.token import Token
 from tcex.backport import cached_property
-from tcex.input.field_types import Sensitive
+from tcex.input.field_type import Sensitive
 from tcex.pleb.scoped_property import scoped_property
 from tests.mock_app import MockApp
 

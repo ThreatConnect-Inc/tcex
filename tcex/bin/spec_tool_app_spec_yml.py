@@ -8,7 +8,7 @@ from semantic_version import Version
 
 # first-party
 from tcex.app.config import AppSpecYml, InstallJson, JobJson, LayoutJson, TcexJson
-from tcex.app.config.models import AppSpecYmlModel
+from tcex.app.config.model import AppSpecYmlModel
 from tcex.bin.bin_abc import BinABC
 
 

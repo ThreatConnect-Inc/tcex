@@ -12,7 +12,7 @@ from urllib3.util.retry import Retry
 
 # first-party
 from tcex.backport import cached_property
-from tcex.input.field_types.sensitive import Sensitive
+from tcex.input.field_type.sensitive import Sensitive
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 from tcex.pleb.threading import ExceptionThread
 

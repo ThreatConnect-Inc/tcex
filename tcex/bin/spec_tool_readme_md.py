@@ -2,8 +2,8 @@
 # first-party
 from tcex.app.config import AppSpecYml  # TYPE-CHECKING
 from tcex.app.config.layout_json import LayoutJson
-from tcex.app.config.models.app_spec_yml_model import SectionsModel  # TYPE-CHECKING
-from tcex.app.config.models.install_json_model import ParamsModel  # TYPE-CHECKING
+from tcex.app.config.model.app_spec_yml_model import SectionsModel  # TYPE-CHECKING
+from tcex.app.config.model.install_json_model import ParamsModel  # TYPE-CHECKING
 from tcex.app.config.permutation import Permutation
 from tcex.bin.bin_abc import BinABC
 

@@ -14,7 +14,7 @@ import typer
 from semantic_version import Version
 
 # first-party
-from tcex.app.config.models.tcex_json_model import LibVersionModel
+from tcex.app.config.model.tcex_json_model import LibVersionModel
 from tcex.backport import cached_property
 from tcex.bin.bin_abc import BinABC
 from tcex.pleb.env_path import EnvPath

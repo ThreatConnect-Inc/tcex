@@ -8,7 +8,7 @@ import pytest
 
 # first-party
 from tcex.backport import cached_property
-from tcex.input.field_types import KeyValue
+from tcex.input.field_type import KeyValue
 from tcex.pleb.scoped_property import scoped_property
 from tests.mock_app import MockApp  # TYPE-CHECKING
 

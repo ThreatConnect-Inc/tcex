@@ -17,7 +17,7 @@ except ImportError:
 
 # first-party
 from tcex.app.config.install_json import InstallJson
-from tcex.app.config.models import AppSpecYmlModel
+from tcex.app.config.model import AppSpecYmlModel
 from tcex.app.config.tcex_json import TcexJson
 from tcex.backport import cached_property
 

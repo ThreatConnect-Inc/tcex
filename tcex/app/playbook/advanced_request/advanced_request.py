@@ -12,7 +12,7 @@ from requests.exceptions import RequestException
 # first-party
 from tcex.app.playbook import Playbook
 from tcex.input.input import Input
-from tcex.input.models.advanced_request_model import _AdvancedRequestModel
+from tcex.input.model.advanced_request_model import _AdvancedRequestModel
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 
 # get tcex logger

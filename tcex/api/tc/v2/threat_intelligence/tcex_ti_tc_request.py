@@ -9,7 +9,7 @@ from urllib.parse import quote
 from requests import Session
 
 # first-party
-from tcex.exit.error_codes import TcExErrorCodes
+from tcex.exit.error_code import TcExErrorCode
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 
 # import local modules for dynamic reference
@@ -51,9 +51,9 @@ class TiTcRequest:
 
     @property
     @lru_cache
-    def _error_codes(self) -> TcExErrorCodes:
+    def _error_codes(self) -> TcExErrorCode:
         """Return TcEx error codes."""
-        return TcExErrorCodes()
+        return TcExErrorCode()
 
     def _get(self, url, params=None):
         """Delete data from API."""
