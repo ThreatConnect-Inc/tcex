@@ -31,7 +31,7 @@ class TestUserSnippets(TestV3):
     def test_user_get_by_id(self):
         """Test snippet"""
         # Begin Snippet
-        user = self.tcex.api.tc.v3.user(id=5)
+        user = self.tcex.api.tc.v3.user(id=15)
         user.get()
         print(user.model.dict(exclude_none=True))
         # End Snippet

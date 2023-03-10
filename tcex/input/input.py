@@ -17,9 +17,10 @@ from tcex.app.config.install_json import InstallJson
 from tcex.app.key_value_store import RedisClient
 from tcex.backport import cached_property
 from tcex.input.field_type import Sensitive
+from tcex.input.model.app_external_model import AppExternalModel
 from tcex.input.model.common_advanced_model import CommonAdvancedModel
 from tcex.input.model.common_model import CommonModel
-from tcex.input.model.model_map import feature_map, runtime_level_map, tc_action_map
+from tcex.input.model.model_map import feature_map, tc_action_map
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 from tcex.pleb.registry import registry
 from tcex.util import Util
@@ -361,15 +362,11 @@ class Input:
         """Return all model for inputs."""
         # support external Apps that don't have an install.json
         if not self.ij.fqfn.is_file():
-            return runtime_level_map['external']
+            return [AppExternalModel]
 
         # add all model for any supported features of the App
         for feature in self.ij.model.features:
             self._models.extend(feature_map.get(feature, []))
-
-        # add all model based on the runtime level of the App
-        rlm = runtime_level_map.get(self.ij.model.runtime_level.lower()) or []
-        self._models.extend(rlm)
 
         return self._models
 
