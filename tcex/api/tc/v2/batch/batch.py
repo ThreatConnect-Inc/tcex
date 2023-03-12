@@ -18,7 +18,7 @@ from requests import Response, Session
 # first-party
 from tcex.api.tc.v2.batch.batch_submit import BatchSubmit
 from tcex.api.tc.v2.batch.batch_writer import BatchWriter, GroupType, IndicatorType
-from tcex.exit.error_codes import handle_error
+from tcex.exit.error_code import handle_error
 from tcex.input.input import Input
 
 

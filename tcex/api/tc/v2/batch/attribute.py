@@ -4,13 +4,13 @@ import json
 from collections.abc import Callable
 
 # first-party
-from tcex.utils import Utils
+from tcex.util import Util
 
 
 class Attribute:
     """ThreatConnect Batch Attribute Object"""
 
-    __slots__ = ['_attribute_data', '_valid', 'utils']
+    __slots__ = ['_attribute_data', '_valid', 'util']
 
     def __init__(
         self,
@@ -51,7 +51,7 @@ class Attribute:
             self._valid = False
 
         # properties
-        self.utils = Utils()
+        self.util = Util()
 
     @property
     def data(self) -> dict:
@@ -61,7 +61,7 @@ class Attribute:
     @property
     def displayed(self) -> bool:
         """Return Attribute displayed."""
-        return self.utils.to_bool(self._attribute_data.get('displayed') or False)
+        return self.util.to_bool(self._attribute_data.get('displayed') or False)
 
     @displayed.setter
     def displayed(self, displayed: bool):

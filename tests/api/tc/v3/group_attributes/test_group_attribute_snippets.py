@@ -13,7 +13,7 @@ class TestGroupAttributeSnippets(TestV3):
     # def test_group_attributes_get_all(self):
     #     """Test snippet"""
     #     # Begin Snippet
-    #     for group_attribute in self.tcex.v3.group_attributes():
+    #     for group_attribute in self.tcex.api.tc.v3.group_attributes():
     #         print(group_attribute.model.dict(exclude_none=True))
     #     # End Snippet
 
@@ -36,7 +36,7 @@ class TestGroupAttributeSnippets(TestV3):
         group_id = group.model.id
 
         # Begin Snippet
-        group_attributes = self.tcex.v3.group_attributes()
+        group_attributes = self.tcex.api.tc.v3.group_attributes()
         group_attributes.filter.date_added(TqlOperator.GT, '1 day ago')
         group_attributes.filter.displayed(TqlOperator.EQ, True)
         group_attributes.filter.id(TqlOperator.EQ, attribute_id)
@@ -63,6 +63,6 @@ class TestGroupAttributeSnippets(TestV3):
         attribute_id = group.model.attributes.data[0].id
 
         # Begin Snippet
-        group_attribute = self.tcex.v3.group_attribute(id=attribute_id)
+        group_attribute = self.tcex.api.tc.v3.group_attribute(id=attribute_id)
         group_attribute.get()
         # End Snippet

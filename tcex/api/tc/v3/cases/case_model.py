@@ -8,12 +8,12 @@ from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
-from tcex.utils import Utils
+from tcex.util import Util
 
 
 class CaseModel(
     V3ModelABC,
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     extra=Extra.allow,
     title='Case Model',
     validate_assignment=True,
@@ -351,7 +351,7 @@ class CaseModel(
 class CaseDataModel(
     BaseModel,
     title='Case Data Model',
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     validate_assignment=True,
 ):
     """Cases Data Model"""
@@ -367,7 +367,7 @@ class CaseDataModel(
 class CasesModel(
     BaseModel,
     title='Cases Model',
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     validate_assignment=True,
 ):
     """Cases Model"""

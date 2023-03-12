@@ -111,7 +111,7 @@ class UserFilter(FilterABC):
             operator: The operator enum for the filter.
             last_login: The last time the user logged in.
         """
-        last_login = self.utils.any_to_datetime(last_login).strftime('%Y-%m-%d %H:%M:%S')
+        last_login = self.util.any_to_datetime(last_login).strftime('%Y-%m-%d %H:%M:%S')
         self._tql.add_filter('lastLogin', operator, last_login, TqlType.STRING)
 
     def last_name(self, operator: Enum, last_name: list | str):
@@ -138,7 +138,7 @@ class UserFilter(FilterABC):
             operator: The operator enum for the filter.
             last_password_change: The last time the user changed their password.
         """
-        last_password_change = self.utils.any_to_datetime(last_password_change).strftime(
+        last_password_change = self.util.any_to_datetime(last_password_change).strftime(
             '%Y-%m-%d %H:%M:%S'
         )
         self._tql.add_filter('lastPasswordChange', operator, last_password_change, TqlType.STRING)
@@ -151,6 +151,24 @@ class UserFilter(FilterABC):
             locked: A flag indicating whether or not the user's account has been locked.
         """
         self._tql.add_filter('locked', operator, locked, TqlType.BOOLEAN)
+
+    def logout_interval_minutes(self, operator: Enum, logout_interval_minutes: int | list):
+        """Filter Logout Interval based on **logoutIntervalMinutes** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            logout_interval_minutes: The configured period of time to wait for idle activity before
+                being logged out.
+        """
+        if isinstance(logout_interval_minutes, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
+        self._tql.add_filter(
+            'logoutIntervalMinutes', operator, logout_interval_minutes, TqlType.INTEGER
+        )
 
     def password_reset_required(self, operator: Enum, password_reset_required: bool):
         """Filter Password Reset Required based on **passwordResetRequired** keyword.
@@ -212,7 +230,7 @@ class UserFilter(FilterABC):
             operator: The operator enum for the filter.
             terms_accepted_date: Date and time the user accepted the current Terms of Service.
         """
-        terms_accepted_date = self.utils.any_to_datetime(terms_accepted_date).strftime(
+        terms_accepted_date = self.util.any_to_datetime(terms_accepted_date).strftime(
             '%Y-%m-%d %H:%M:%S'
         )
         self._tql.add_filter('termsAcceptedDate', operator, terms_accepted_date, TqlType.STRING)
@@ -231,6 +249,21 @@ class UserFilter(FilterABC):
             )
 
         self._tql.add_filter('tqlTimeout', operator, tql_timeout, TqlType.INTEGER)
+
+    def ui_theme(self, operator: Enum, ui_theme: list | str):
+        """Filter UI Theme based on **uiTheme** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            ui_theme: The user's configured theme (e.g. light/dark).
+        """
+        if isinstance(ui_theme, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
+        self._tql.add_filter('uiTheme', operator, ui_theme, TqlType.STRING)
 
     def user_name(self, operator: Enum, user_name: list | str):
         """Filter User Name based on **userName** keyword.

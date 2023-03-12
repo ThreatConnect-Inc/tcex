@@ -5,7 +5,7 @@ from random import randint
 
 # first-party
 from tcex.tcex import TcEx
-from tests.api.tc.v2.threat_intelligence.ti_helpers import TestThreatIntelligence, TIHelper
+from tests.api.tc.v2.threat_intelligence.ti_helper import TestThreatIntelligence, TIHelper
 
 
 class TestUrlIndicators(TestThreatIntelligence):

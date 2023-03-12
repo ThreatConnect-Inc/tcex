@@ -5,12 +5,12 @@ from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
-from tcex.utils import Utils
+from tcex.util import Util
 
 
 class VictimAssetModel(
     V3ModelABC,
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     extra=Extra.allow,
     title='VictimAsset Model',
     validate_assignment=True,
@@ -138,7 +138,7 @@ class VictimAssetModel(
 class VictimAssetDataModel(
     BaseModel,
     title='VictimAsset Data Model',
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     validate_assignment=True,
 ):
     """Victim_Assets Data Model"""
@@ -154,7 +154,7 @@ class VictimAssetDataModel(
 class VictimAssetsModel(
     BaseModel,
     title='VictimAssets Model',
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     validate_assignment=True,
 ):
     """Victim_Assets Model"""

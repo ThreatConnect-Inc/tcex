@@ -20,7 +20,7 @@ class TestGroups(TestV3):
         super().setup_method()
 
         # remove an previous groups with the next test case name as a tag
-        groups = self.tcex.v3.groups()
+        groups = self.tcex.api.tc.v3.groups()
         groups.filter.tag(TqlOperator.EQ, method.__name__)
         for group in groups:
             group.delete()
@@ -80,7 +80,7 @@ class TestGroups(TestV3):
             'type': 'ASN',
         }
 
-        group = self.tcex.v3.group(name='MyAdversary-03', type='Adversary')
+        group = self.tcex.api.tc.v3.group(name='MyAdversary-03', type='Adversary')
 
         self.v3_helper._associations(group, artifact, artifact_2, artifact_3)
 
@@ -97,7 +97,7 @@ class TestGroups(TestV3):
         case_2 = self.v3_helper.create_case(name='MyCase-01')
         case_3 = {'name': 'MyCase-02', 'severity': 'Low', 'status': 'Open'}
 
-        group = self.tcex.v3.group(
+        group = self.tcex.api.tc.v3.group(
             name='MyAdversary-02',
             type='Adversary',
         )
@@ -116,7 +116,7 @@ class TestGroups(TestV3):
             name='StagedGroup-02', xid='staged_group_02-xid'
         )
 
-        group = self.tcex.v3.group(
+        group = self.tcex.api.tc.v3.group(
             name='MyAdversary-01',
             type='Adversary',
             associated_groups={
@@ -189,7 +189,7 @@ class TestGroups(TestV3):
         assert staged_victim.as_entity.get('id') is not None
 
         # Add attribute
-        asset = self.tcex.v3.victim_asset(
+        asset = self.tcex.api.tc.v3.victim_asset(
             type='EmailAddress', address='malware@example.com', address_type='Trojan'
         )
         staged_victim.stage_victim_asset(asset)

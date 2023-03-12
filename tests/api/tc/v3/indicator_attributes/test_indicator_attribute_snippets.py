@@ -29,7 +29,7 @@ class TestIndicatorAttributeSnippets(TestV3):
     # def test_indicator_attributes_get_all(self):
     #     """Test snippet"""
     #     # Begin Snippet
-    #     for indicator_attribute in self.tcex.v3.indicator_attributes():
+    #     for indicator_attribute in self.tcex.api.tc.v3.indicator_attributes():
     #         print(indicator_attribute.model.dict(exclude_none=True))
     #     # End Snippet
 
@@ -56,7 +56,7 @@ class TestIndicatorAttributeSnippets(TestV3):
         assert indicator_id is not None, 'No indicator id found.'
 
         # Begin Snippet
-        indicator_attributes = self.tcex.v3.indicator_attributes()
+        indicator_attributes = self.tcex.api.tc.v3.indicator_attributes()
         indicator_attributes.filter.date_added(TqlOperator.GT, '1 day ago')
         indicator_attributes.filter.displayed(TqlOperator.EQ, True)
         indicator_attributes.filter.id(TqlOperator.EQ, attribute_id)
@@ -85,7 +85,7 @@ class TestIndicatorAttributeSnippets(TestV3):
         attribute_id = indicator.model.attributes.data[0].id
 
         # Begin Snippet
-        indicator_attribute = self.tcex.v3.indicator_attribute(id=attribute_id)
+        indicator_attribute = self.tcex.api.tc.v3.indicator_attribute(id=attribute_id)
         indicator_attribute.get()
         print(indicator_attribute.model.dict(exclude_none=True))
         # End Snippet

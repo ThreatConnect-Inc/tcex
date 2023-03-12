@@ -9,21 +9,21 @@
 
 ```bash
 > cloc bin tcex tests
-     556 text files.
-     484 unique files.
-    1500 files ignored.
+     567 text files.
+     497 unique files.
+     674 files ignored.
 
-github.com/AlDanial/cloc v 1.94  T=1.09 s (444.3 files/s, 80452.7 lines/s)
+github.com/AlDanial/cloc v 1.94  T=0.82 s (606.1 files/s, 110333.3 lines/s)
 -------------------------------------------------------------------------------
 Language                     files          blank        comment           code
 -------------------------------------------------------------------------------
-Python                         443          12376          19572          45681
-JSON                            35              0              0           9051
+Python                         463          12769          19781          48249
+JSON                            28              0              0           8705
 YAML                             1              1              9            394
-Markdown                         4            174              0            391
+Markdown                         4            172              0            391
 Text                             1              0              0              1
 -------------------------------------------------------------------------------
-SUM:                           484          12551          19581          55518
+SUM:                           497          12942          19790          57740
 -------------------------------------------------------------------------------
 ```
 
@@ -63,10 +63,12 @@ pytest \
 
 ### Results
 
+1,788 Test Cases
+
 ```
 Name                                    Stmts   Miss  Cover
 -----------------------------------------------------------
-TOTAL                                   13959   3314    76%
+TOTAL                                   16855   4367    74%
 ```
 
 # Module Testing
@@ -126,7 +128,7 @@ TOTAL                                     151      3    98%
 4 Test Cases
 
 ```bash
-pytest -n 4 --cov=tcex/api/tc/v2/metrics --cov-report=term-missing tests/api/tc/v2/metrics
+pytest -n 4 --cov=tcex/api/tc/v2/metric --cov-report=term-missing tests/api/tc/v2/metric
 ```
 
 #### Results
@@ -142,7 +144,7 @@ TOTAL                                      64      1    98%
 3 Test Cases
 
 ```bash
-pytest -n 3 --cov=tcex/api/tc/v2/notifications --cov-report=term-missing tests/api/tc/v2/notifications
+pytest -n 3 --cov=tcex/api/tc/v2/notification --cov-report=term-missing tests/api/tc/v2/notification
 ```
 
 #### Results
@@ -323,150 +325,65 @@ pytest --cov=tcex/api/tc/v3/workflow_events --cov-report=term-missing tests/api/
 pytest --cov=tcex/api/tc/v3/workflow_templates --cov-report=term-missing tests/api/tc/v3/workflow_templates
 ```
 
-## app_config
+## app/config
 
-44 Test Cases
 
 ```bash
-pytest -n auto --cov=tcex/app_config/ --cov-report=term-missing tests/app_config/
+pytest -n auto --cov=tcex/app/config/ --cov-report=term-missing tests/app/config/
 ```
 
 ### Results
+
+48 Test Cases
 
 ```
 Name                                    Stmts   Miss  Cover
 -----------------------------------------------------------
-TOTAL                                     850      8    99%
+TOTAL                                    1411    357    75%
 ```
-
-## app_feature
-
-6 Test Cases
+## app/decorator
 
 ```bash
-pytest -n 6 --cov=tcex/app_feature/ --cov-report=term-missing tests/app_feature/
+pytest -n auto --cov=tcex/app/decorator/ --cov-report=term-missing tests/app/decorator/
 ```
 
 ### Results
+
+42 Test Cases
 
 ```
 Name                                    Stmts   Miss  Cover
 -----------------------------------------------------------
-TOTAL                                      67      2    97%
+TOTAL                                     163      0   100%
 ```
 
-## bin
+## app/playbook
 
-8 Test Cases
-
-```bash
-pytest -n 8 --cov=tcex/bin/ --cov-report=term-missing tests/bin/
-```
-
-## decorators
-
-36 Test Cases
 
 ```bash
-pytest -n auto --cov=tcex/decorators/ --cov-report=term-missing tests/decorators/
+pytest -n auto --cov=tcex/app/playbook/ --cov-report=term-missing tests/app/playbook/
 ```
 
 ### Results
+
+318 Test Cases
 
 ```
 Name                                    Stmts   Miss  Cover
 -----------------------------------------------------------
-TOTAL                                     131      0   100%
+TOTAL                                     647     50    92%
 ```
 
-## input
+## app/token
 
-356 Test Cases
 
 ```bash
-pytest -n auto --cov=tcex/input/ --cov-report=term-missing tests/input/
+pytest -n 8 --cov=tcex/app/token/ --cov-report=term-missing tests/app/token_/
 ```
 
 ### Results
 
-```
-Name                                    Stmts   Miss  Cover
------------------------------------------------------------
-TOTAL                                    898     90    90%
-```
-
-## logger
-
-5 Test Cases
-
-```bash
-pytest -n 5 --cov=tcex/logger/ --cov-report=term-missing tests/logger/
-```
-
-### Results
-
-```
-Name                                    Stmts   Miss  Cover
------------------------------------------------------------
-TOTAL                                     293     68    77%
-```
-
-## playbooks
-
-289 Test Cases
-
-```bash
-pytest -n auto --cov=tcex/playbook/ --cov-report=term-missing tests/playbook/
-```
-
-### Results
-
-```
-Name                                    Stmts   Miss  Cover
------------------------------------------------------------
-TOTAL                                     513     20    96%
-```
-
-## sessions
-
-17 Cases
-
-```bash
-pytest -n auto --cov=tcex/sessions/ --cov-report=term-missing tests/sessions/
-```
-
-### Results
-
-```
-Name                                    Stmts   Miss  Cover
------------------------------------------------------------
-TOTAL                                     293     40    86%
-```
-
-## tcex methods
-
-3 Test Cases
-
-```bash
-pytest tests/tcex_methods/
-```
-
-### Results
-
-```
-Name                                    Stmts   Miss  Cover
------------------------------------------------------------
-```
-
-## tokens
-
-8 Test Cases
-
-```bash
-pytest -n 8 --cov=tcex/tokens/ --cov-report=term-missing tests/tokens/
-```
-
-### Results
+9 Test Cases
 
 ```
 Name                                    Stmts   Miss  Cover
@@ -474,15 +391,86 @@ Name                                    Stmts   Miss  Cover
 TOTAL                                     139      5    96%
 ```
 
-## utils
+## bin
 
-116 Test Cases
+11 Test Cases
 
 ```bash
-pytest -n auto --cov=tcex/utils/ --cov-report=term-missing tests/utils/
+pytest -n 8 --cov=tcex/bin/ --cov-report=term-missing tests/bin/
+```
+
+## exit
+
+```bash
+pytest -n 6 --cov=tcex/exit/ --cov-report=term-missing tests/exit/
 ```
 
 ### Results
+
+4 Test Cases
+
+```
+Name                                    Stmts   Miss  Cover
+-----------------------------------------------------------
+TOTAL                                     110     55    50%
+```
+
+## input
+
+```bash
+pytest -n auto --cov=tcex/input/ --cov-report=term-missing tests/input/
+```
+
+### Results
+
+397 Test Cases
+
+```
+Name                                    Stmts   Miss  Cover
+-----------------------------------------------------------
+TOTAL                                    965    122    87%
+```
+
+## logger
+
+```bash
+pytest -n 5 --cov=tcex/logger/ --cov-report=term-missing tests/logger/
+```
+
+### Results
+
+9 Test Cases
+
+```
+Name                                    Stmts   Miss  Cover
+-----------------------------------------------------------
+TOTAL                                     324     56    83%
+```
+
+## requests_session
+
+```bash
+pytest -n auto --cov=tcex/requests_session/ --cov-report=term-missing tests/requests_session/
+```
+### Results
+
+20 Cases
+
+```
+Name                                    Stmts   Miss  Cover
+-----------------------------------------------------------
+TOTAL                                     351     29    92%
+```
+
+## util
+
+```bash
+pytest -n auto --cov=tcex/util/ --cov-report=term-missing tests/util/
+```
+
+### Results
+
+187 Test Cases
 
 ```
 Name                                    Stmts   Miss  Cover

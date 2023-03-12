@@ -12,14 +12,14 @@ class TestSystemRolesSnippets(TestV3):
     def test_system_roles_get_all(self):
         """Test snippet"""
         # Begin Snippet
-        for system_role in self.tcex.v3.system_roles():
+        for system_role in self.tcex.api.tc.v3.system_roles():
             print(system_role.model.dict(exclude_none=True))
         # End Snippet
 
     def test_system_roles_tql_filter(self):
         """Test snippet"""
         # Begin Snippet
-        system_roles = self.tcex.v3.system_roles()
+        system_roles = self.tcex.api.tc.v3.system_roles()
         system_roles.filter.active(TqlOperator.EQ, True)
         system_roles.filter.assignable(TqlOperator.EQ, True)
         system_roles.filter.displayed(TqlOperator.EQ, True)
@@ -30,7 +30,7 @@ class TestSystemRolesSnippets(TestV3):
     def test_system_role_get_by_id(self):
         """Test snippet"""
         # Begin Snippet
-        system_role = self.tcex.v3.system_role(id=1)
+        system_role = self.tcex.api.tc.v3.system_role(id=1)
         system_role.get()
         print(system_role.model.dict(exclude_none=True))
         # End Snippet

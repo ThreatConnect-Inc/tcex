@@ -13,13 +13,13 @@ class TestBatch:
     @staticmethod
     def test_batch_action(tcex: TcEx):
         """Test batch attributes creation"""
-        batch = tcex.v2.batch(action='Delete', owner=os.getenv('TC_OWNER', 'TCI'))
+        batch = tcex.api.tc.v2.batch(action='Delete', owner=os.getenv('TC_OWNER', 'TCI'))
         assert batch.action == 'Delete'
 
     @staticmethod
     def test_batch_group_existing(request, tcex: TcEx):
         """Test batch attributes creation"""
-        batch = tcex.v2.batch(owner=os.getenv('TC_OWNER', 'TCI'))
+        batch = tcex.api.tc.v2.batch(owner=os.getenv('TC_OWNER', 'TCI'))
         group_data = {
             'first_seen': (datetime.now() - timedelta(days=2)).isoformat(),
             'name': request.node.name,
@@ -36,7 +36,7 @@ class TestBatch:
     @staticmethod
     def test_batch_group_existing_shelf(request, tcex: TcEx):
         """Test batch attributes creation"""
-        batch = tcex.v2.batch(owner=os.getenv('TC_OWNER', 'TCI'))
+        batch = tcex.api.tc.v2.batch(owner=os.getenv('TC_OWNER', 'TCI'))
         group_data = {
             'first_seen': (datetime.now() - timedelta(days=2)).isoformat(),
             'name': request.node.name,
@@ -54,7 +54,7 @@ class TestBatch:
     @staticmethod
     def test_batch_group_file(request, tcex: TcEx):
         """Test batch attributes creation"""
-        batch = tcex.v2.batch(owner=os.getenv('TC_OWNER', 'TCI'))
+        batch = tcex.api.tc.v2.batch(owner=os.getenv('TC_OWNER', 'TCI'))
 
         def file_content(xid):
             """Return dummy file content."""
@@ -76,7 +76,7 @@ class TestBatch:
     @staticmethod
     def test_batch_indicator_existing(request, tcex: TcEx):
         """Test batch attributes creation"""
-        batch = tcex.v2.batch(owner=os.getenv('TC_OWNER', 'TCI'))
+        batch = tcex.api.tc.v2.batch(owner=os.getenv('TC_OWNER', 'TCI'))
         indicator_data = {
             'confidence': 42,
             'ip': '1.1.1.1',
@@ -95,7 +95,7 @@ class TestBatch:
     @staticmethod
     def test_batch_indicator_existing_shelf(request, tcex: TcEx):
         """Test batch attributes creation"""
-        batch = tcex.v2.batch(owner=os.getenv('TC_OWNER', 'TCI'))
+        batch = tcex.api.tc.v2.batch(owner=os.getenv('TC_OWNER', 'TCI'))
         indicator_data = {
             'confidence': 42,
             'ip': '1.1.1.1',
@@ -115,7 +115,7 @@ class TestBatch:
     @staticmethod
     def test_batch_indicator_expand(tcex: TcEx):
         """Test batch attributes creation"""
-        batch = tcex.v2.batch(owner=os.getenv('TC_OWNER', 'TCI'))
+        batch = tcex.api.tc.v2.batch(owner=os.getenv('TC_OWNER', 'TCI'))
         indicator_data = (
             'e3fc50a88d0a364313df4b21ef20c29e : '
             '92170cdc034b2ff819323ff670d3b7266c8bffcd : '

@@ -13,8 +13,8 @@ from requests import Session  # TYPE-CHECKING
 
 # first-party
 # pylint: disable=no-name-in-module
-from tcex.app_config.install_json import InstallJson
-from tcex.input.models.common_model import CommonModel  # TYPE-CHECKING
+from tcex.app.config.install_json import InstallJson
+from tcex.input.model.common_model import CommonModel  # TYPE-CHECKING
 from tcex.logger.api_handler import ApiHandler, ApiHandlerFormatter
 from tcex.logger.cache_handler import CacheHandler
 from tcex.logger.pattern_file_handler import PatternFileHandler

@@ -5,18 +5,17 @@ from collections.abc import Callable, Container
 from typing import TYPE_CHECKING, Any, TypeVar
 
 # third-party
-from redis import Redis  # TYPE-CHECKING
-
-# first-party
-from tcex.key_value_store import KeyValueApi, KeyValueRedis  # TYPE-CHECKING
+from redis import Redis
 
 if TYPE_CHECKING:
     # first-party
-    from tcex.exit.exit import ExitService  # CIRCULAR-IMPORT
+    from tcex.app.app import App  # CIRCULAR-IMPORT
+    from tcex.app.playbook.playbook import Playbook  # CIRCULAR-IMPORT
+    from tcex.app.token import Token  # CIRCULAR-IMPORT
+    from tcex.exit.exit import Exit  # CIRCULAR-IMPORT
     from tcex.input.input import Input  # CIRCULAR-IMPORT
-    from tcex.playbook.playbook import Playbook  # CIRCULAR-IMPORT
-    from tcex.sessions.tc_session import TcSession  # CIRCULAR-IMPORT
-    from tcex.tokens import Tokens  # CIRCULAR-IMPORT
+    from tcex.requests_session.requests_session import RequestsSession  # CIRCULAR-IMPORT
+    from tcex.requests_session.tc_session import TcSession  # CIRCULAR-IMPORT
 
 T = TypeVar('T')
 
@@ -161,9 +160,14 @@ class Registry(Container):
     #
 
     @property
-    def exit(self) -> 'ExitService':
+    def app(self) -> 'App':
+        """Return a Token."""
+        return self.App
+
+    @property
+    def exit(self) -> 'Exit':
         """@cblades"""
-        return self.ExitService
+        return self.Exit
 
     @property
     def handle_error(self) -> Callable:
@@ -175,30 +179,35 @@ class Registry(Container):
         """Return an Inputs object."""
         return self.Input
 
-    @property
-    def key_value_store(self) -> KeyValueRedis | KeyValueApi:
-        """Return a KeyValue object, either an API version or a Redis one."""
-        return self.KeyValueStore
+    # @property
+    # def key_value_store(self) -> KeyValueRedis | KeyValueApi:
+    #     """Return a KeyValue object, either an API version or a Redis one."""
+    #     return self.KeyValueStore
 
     @property
     def playbook(self) -> 'Playbook':
         """Return a Playbook object."""
-        return self.Playbook
+        return self.app.playbook
 
     @property
     def redis_client(self) -> Redis:
         """Return a Redis client object (redis.Redis)."""
-        return self.RedisClient
+        return self.app.key_value_store.redis_client
+
+    @property
+    def session(self) -> 'RequestsSession':
+        """Return a TcSession."""
+        return self.RequestsSession
 
     @property
     def session_tc(self) -> 'TcSession':
         """Return a TcSession."""
-        return self.TcSession
+        return self.session.tc
 
     @property
-    def token(self) -> 'Tokens':
-        """Return a Tokens."""
-        return self.Tokens
+    def token(self) -> 'Token':
+        """Return a Token."""
+        return self.app.token
 
 
 registry = Registry()

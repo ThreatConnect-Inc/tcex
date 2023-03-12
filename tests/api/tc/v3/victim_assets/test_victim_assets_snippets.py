@@ -31,7 +31,7 @@ class TestVictimSnippets(TestV3):
 
         # Begin Snippet
         # Add attribute
-        asset = self.tcex.v3.victim_asset(
+        asset = self.tcex.api.tc.v3.victim_asset(
             type='EmailAddress', address='malware@example.com', address_type='Trojan'
         )
         victim.stage_victim_asset(asset)
@@ -54,7 +54,7 @@ class TestVictimSnippets(TestV3):
         group = self.v3_helper.create_group()
 
         # Begin Snippet
-        asset = self.tcex.v3.victim_asset(id=victim.model.assets.data[0].id)
+        asset = self.tcex.api.tc.v3.victim_asset(id=victim.model.assets.data[0].id)
         asset.stage_associated_group(group)
         asset.update()
 

@@ -11,9 +11,9 @@ from requests.exceptions import ProxyError
 
 # first-party
 from tcex.api.tc.v3._gen._gen_abc import GenerateABC
-from tcex.api.tc.v3._gen.models import FilterModel
-from tcex.backports import cached_property
-from tcex.utils.string_operations import SnakeString
+from tcex.api.tc.v3._gen.model import FilterModel
+from tcex.backport import cached_property
+from tcex.util.string_operation import SnakeString
 
 
 class GenerateFilterABC(GenerateABC, ABC):
@@ -142,7 +142,7 @@ class GenerateFilterABC(GenerateABC, ABC):
             )
             _code.extend(
                 [
-                    f'''{self.i2}{filter_data.keyword.snake_case()} = self.utils.any_to_datetime'''
+                    f'''{self.i2}{filter_data.keyword.snake_case()} = self.util.any_to_datetime'''
                     f'''({filter_data.keyword.snake_case()}).strftime('%Y-%m-%d %H:%M:%S')'''
                 ]
             )

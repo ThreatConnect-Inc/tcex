@@ -21,7 +21,7 @@ class TestDataStore:
         """
         rid = 'three'
 
-        ds = tcex.v2.datastore('local', self.data_type)
+        ds = tcex.api.tc.v2.datastore('local', self.data_type)
 
         # add entry to be deleted
         ds.add(rid, {'delete': 'delete'})
@@ -48,10 +48,10 @@ class TestDataStore:
             return MockPost({}, ok=False)
 
         # delete
-        ds = tcex.v2.datastore('local', self.data_type)
+        ds = tcex.api.tc.v2.datastore('local', self.data_type)
 
         # patch after datastore created
-        monkeypatch.setattr(tcex.session_tc, 'post', mp_post)
+        monkeypatch.setattr(tcex.session.tc, 'post', mp_post)
         try:
             ds.delete(rid=rid)
             assert False
@@ -66,7 +66,7 @@ class TestDataStore:
         """
         rid = 'three'
 
-        ds = tcex.v2.datastore('organization', self.data_type)
+        ds = tcex.api.tc.v2.datastore('organization', self.data_type)
 
         # add entry to be deleted
         ds.add(rid, {'three': 3})

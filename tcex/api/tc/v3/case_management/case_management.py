@@ -21,7 +21,7 @@ class CaseManagement:
         """Return a instance of Artifact object.
 
         Model Schema:
-        >>> from tcex.api.tc.v3.case_management.models.artifact_model import ArtifactModel
+        >>> from tcex.api.tc.v3.case_management.model.artifact_model import ArtifactModel
         >>> print(ArtifactModel.schema_json(by_alias=False, indent=2))
 
         Args:

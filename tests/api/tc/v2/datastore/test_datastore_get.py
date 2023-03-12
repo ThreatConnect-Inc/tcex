@@ -22,7 +22,7 @@ class TestDataStoreGet:
         data = {'two': 2}
         rid = 'two'
 
-        ds = tcex.v2.datastore('local', self.data_type)
+        ds = tcex.api.tc.v2.datastore('local', self.data_type)
 
         # add entry to be deleted
         ds.add(rid, data)
@@ -43,7 +43,7 @@ class TestDataStoreGet:
         Args:
             tcex (fixture): An instantiated instance of TcEx.
         """
-        ds = tcex.v2.datastore('local', self.data_type)
+        ds = tcex.api.tc.v2.datastore('local', self.data_type)
 
         results = ds.get()
         if results is None:
@@ -63,10 +63,10 @@ class TestDataStoreGet:
             return MockPost({}, ok=False)
 
         # delete
-        ds = tcex.v2.datastore('local', self.data_type)
+        ds = tcex.api.tc.v2.datastore('local', self.data_type)
 
         # patch after datastore created
-        monkeypatch.setattr(tcex.session_tc, 'post', mp_post)
+        monkeypatch.setattr(tcex.session.tc, 'post', mp_post)
         try:
             ds.get()
             assert False
@@ -82,7 +82,7 @@ class TestDataStoreGet:
         data = {'two': 2}
         rid = 'two'
 
-        ds = tcex.v2.datastore('organization', self.data_type)
+        ds = tcex.api.tc.v2.datastore('organization', self.data_type)
 
         # add entry to get
         ds.add(rid, data)

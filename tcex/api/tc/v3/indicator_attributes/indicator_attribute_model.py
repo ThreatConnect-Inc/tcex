@@ -8,12 +8,12 @@ from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
-from tcex.utils import Utils
+from tcex.util import Util
 
 
 class IndicatorAttributeModel(
     V3ModelABC,
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     extra=Extra.allow,
     title='IndicatorAttribute Model',
     validate_assignment=True,
@@ -125,7 +125,7 @@ class IndicatorAttributeModel(
 class IndicatorAttributeDataModel(
     BaseModel,
     title='IndicatorAttribute Data Model',
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     validate_assignment=True,
 ):
     """Indicator_Attributes Data Model"""
@@ -141,7 +141,7 @@ class IndicatorAttributeDataModel(
 class IndicatorAttributesModel(
     BaseModel,
     title='IndicatorAttributes Model',
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     validate_assignment=True,
 ):
     """Indicator_Attributes Model"""

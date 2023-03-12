@@ -22,7 +22,7 @@ class TestDataStore:
         data = {'one': 1}
         rid = 'one'
 
-        ds = tcex.v2.datastore('local', self.data_type)
+        ds = tcex.api.tc.v2.datastore('local', self.data_type)
 
         # add entry to update
         ds.add(rid, {'one': 2})
@@ -46,10 +46,10 @@ class TestDataStore:
             return MockPost({}, ok=False)
 
         # delete
-        ds = tcex.v2.datastore('local', self.data_type)
+        ds = tcex.api.tc.v2.datastore('local', self.data_type)
 
         # patch after datastore created
-        monkeypatch.setattr(tcex.session_tc, 'post', mp_post)
+        monkeypatch.setattr(tcex.session.tc, 'post', mp_post)
         try:
             ds.update(rid=None, data=None)  # type: ignore
             assert False

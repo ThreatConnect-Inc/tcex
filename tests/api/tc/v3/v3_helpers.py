@@ -16,7 +16,7 @@ from pydantic import BaseModel
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tcex.api.tc.v3.v3 import V3
 from tcex.tcex import TcEx
-from tcex.utils.utils import Utils
+from tcex.util.util import Util
 from tests.mock_app import MockApp
 
 
@@ -34,8 +34,8 @@ class V3Helper:
         # properties
         self.app = MockApp(runtime_level='Playbook')
         self.tcex = self.app.tcex
-        self.v3 = self.tcex.v3
-        self.utils = Utils()
+        self.v3 = self.tcex.api.tc.v3
+        self.util = Util()
 
         # get v3 obj and obj collection (could append s for collection, but dict is cleaner)
         module_data = self._module_map(v3_object)
@@ -59,7 +59,7 @@ class V3Helper:
         # print(f'method=import_module, module={module}, class_name={class_name}')
         v3_class = getattr(importlib.import_module(module), class_name)
         # print(f'method=import_module, v3-class-type={type(v3_class)}')
-        v3_obj = v3_class(session=self.tcex.session_tc)
+        v3_obj = v3_class(session=self.tcex.session.tc)  # pylint: disable=no-member
         # print(f'method=import_module, v3-obj-type={type(v3_obj)}')
         return v3_obj
 
@@ -320,7 +320,7 @@ class V3Helper:
             'missing': [],
         }
         for keyword in self.v3_obj_collection.tql_keywords:
-            keyword = self.utils.camel_to_snake(keyword)
+            keyword = self.util.camel_to_snake(keyword)
             if keyword.startswith('has'):
                 continue
             operator, value = get_value(keyword, model_data[get_model_keyword(keyword)])
@@ -691,7 +691,7 @@ class TestV3:
     v3: V3
     v3_helper: V3Helper
     tcex: TcEx
-    utils = Utils()
+    util = Util()
 
     def setup_method(self):
         """Configure setup before all tests."""
@@ -705,7 +705,7 @@ class TestV3:
             self.v3_helper.cleanup()
 
         # clean up monitor thread
-        self.v3_helper.tcex.token.shutdown = True
+        self.v3_helper.tcex.app.token.shutdown = True
 
     def obj_api_options(self):
         """Test filter keywords.
@@ -759,7 +759,7 @@ class TestV3:
         """
         for keyword in self.v3_helper.v3_obj_collection.tql_keywords:
             # convert camel keyword from API to snake before comparing
-            keyword = self.utils.camel_to_snake(keyword)
+            keyword = self.util.camel_to_snake(keyword)
             if keyword not in self.v3_helper.v3_obj_collection.filter.implemented_keywords:
                 assert False, f'Missing TQL keyword {keyword}.'
 

@@ -9,7 +9,7 @@ from typing import Any
 from tcex.api.tc.v2.batch.attribute import Attribute
 from tcex.api.tc.v2.batch.security_label import SecurityLabel
 from tcex.api.tc.v2.batch.tag import Tag
-from tcex.utils import Utils
+from tcex.util import Util
 
 
 class Group:
@@ -28,7 +28,7 @@ class Group:
         'malware',
         'password',
         'status',
-        'utils',
+        'util',
     ]
 
     def __init__(self, group_type: str, name: str, **kwargs):
@@ -49,7 +49,7 @@ class Group:
         self._file_content = None
         self._tags = []
         self._processed = False
-        self.utils = Utils()
+        self.util = Util()
 
         # process all kwargs and update metadata field names
         for arg, value in kwargs.items():
@@ -105,7 +105,7 @@ class Group:
         key = self._metadata_map.get(key, key)
         if key in ['dateAdded', 'eventDate', 'firstSeen', 'publishDate']:
             if value is not None:
-                self._group_data[key] = self.utils.any_to_datetime(value).strftime(
+                self._group_data[key] = self.util.any_to_datetime(value).strftime(
                     '%Y-%m-%dT%H:%M:%SZ'
                 )
         elif key == 'file_content':
@@ -198,7 +198,7 @@ class Group:
     @date_added.setter
     def date_added(self, date_added: str):
         """Set Indicator dateAdded."""
-        self._group_data['dateAdded'] = self.utils.any_to_datetime(date_added).strftime(
+        self._group_data['dateAdded'] = self.util.any_to_datetime(date_added).strftime(
             '%Y-%m-%dT%H:%M:%SZ'
         )
 
@@ -344,7 +344,7 @@ class Campaign(Group):
     @first_seen.setter
     def first_seen(self, first_seen: str):
         """Set Document first seen."""
-        self._group_data['firstSeen'] = self.utils.any_to_datetime(first_seen).strftime(
+        self._group_data['firstSeen'] = self.util.any_to_datetime(first_seen).strftime(
             '%Y-%m-%dT%H:%M:%SZ'
         )
 
@@ -504,7 +504,7 @@ class Event(Group):
     @event_date.setter
     def event_date(self, event_date: str):
         """Set the Events "event date" value."""
-        self._group_data['eventDate'] = self.utils.any_to_datetime(event_date).strftime(
+        self._group_data['eventDate'] = self.util.any_to_datetime(event_date).strftime(
             '%Y-%m-%dT%H:%M:%SZ'
         )
 
@@ -555,7 +555,7 @@ class Incident(Group):
     @event_date.setter
     def event_date(self, event_date: str):
         """Set Incident event_date."""
-        self._group_data['eventDate'] = self.utils.any_to_datetime(event_date).strftime(
+        self._group_data['eventDate'] = self.util.any_to_datetime(event_date).strftime(
             '%Y-%m-%dT%H:%M:%SZ'
         )
 
@@ -652,7 +652,7 @@ class Report(Group):
     @publish_date.setter
     def publish_date(self, publish_date: str):
         """Set Report publish date"""
-        self._group_data['publishDate'] = self.utils.any_to_datetime(publish_date).strftime(
+        self._group_data['publishDate'] = self.util.any_to_datetime(publish_date).strftime(
             '%Y-%m-%dT%H:%M:%SZ'
         )
 

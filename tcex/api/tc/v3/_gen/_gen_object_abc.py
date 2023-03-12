@@ -5,7 +5,7 @@ from abc import ABC
 # first-party
 from tcex.api.tc.v3._gen._gen_abc import GenerateABC
 from tcex.api.tc.v3._gen._gen_args_abc import GenerateArgsABC
-from tcex.utils.string_operations import SnakeString
+from tcex.util.string_operation import SnakeString
 
 
 class GenerateArgs(GenerateArgsABC):
@@ -202,7 +202,7 @@ class GenerateObjectABC(GenerateABC, ABC):
                 f'''{self.i2}if deleted_since is not None:''',
                 f'''{self.i3}deleted_since = str(''',
                 (
-                    f'''{self.i4}self.utils.any_to_datetime(deleted_since)'''
+                    f'''{self.i4}self.util.any_to_datetime(deleted_since)'''
                     '''.strftime('%Y-%m-%dT%H:%M:%SZ')'''
                 ),
                 f'''{self.i3})''',
@@ -281,10 +281,10 @@ class GenerateObjectABC(GenerateABC, ABC):
             self._model = ArtifactModel(**kwargs)
         """
         # set nested type
-        nested_field_name = self.utils.snake_string(self.type_).camel_case().plural()
+        nested_field_name = self.util.snake_string(self.type_).camel_case().plural()
         if self.type_ in ['indicators', 'groups']:
             nested_field_name = (
-                self.utils.snake_string(f'associated_{self.type_}').camel_case().plural()
+                self.util.snake_string(f'associated_{self.type_}').camel_case().plural()
             )
         elif self.type_ in ['case_attributes', 'group_attributes', 'indicator_attributes']:
             nested_field_name = 'attributes'
@@ -452,16 +452,16 @@ class GenerateObjectABC(GenerateABC, ABC):
 
             _code += self._gen_code_object_add_type_method('users', 'user_access')
         """
-        type_ = self.utils.snake_string(type_)
-        model_type = self.utils.snake_string(model_type or type_)
+        type_ = self.util.snake_string(type_)
+        model_type = self.util.snake_string(model_type or type_)
         model_reference = model_type
 
         # Unlike all of the other objects, on the victims model, it references 'assets' not the
         # model name 'VictimAssets'
         if type_.lower() == 'victim_assets' and self.type_.lower() == 'victims':
-            model_reference = self.utils.camel_string('assets')
+            model_reference = self.util.camel_string('assets')
         elif type_.lower() == 'users':
-            model_type = self.utils.camel_string('user_accesses')
+            model_type = self.util.camel_string('user_accesses')
             model_reference = 'user_access'
 
         # get model from map and update requirements
@@ -615,8 +615,8 @@ class GenerateObjectABC(GenerateABC, ABC):
 
             yield from self._iterate_over_sublist(Artifacts)
         """
-        type_ = self.utils.snake_string(type_)
-        model_type = self.utils.snake_string(model_type or type_)
+        type_ = self.util.snake_string(type_)
+        model_type = self.util.snake_string(model_type or type_)
 
         # get model from map and update requirements
         model_import_data = self._module_import_data(type_)

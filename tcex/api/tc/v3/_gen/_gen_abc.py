@@ -12,12 +12,12 @@ from requests import Session
 from requests.exceptions import ProxyError
 
 # first-party
-from tcex.api.tc.v3._gen.models import PropertyModel
-from tcex.backports import cached_property
-from tcex.input.field_types.sensitive import Sensitive
-from tcex.sessions.auth.hmac_auth import HmacAuth
-from tcex.utils import Utils
-from tcex.utils.string_operations import SnakeString
+from tcex.api.tc.v3._gen.model import PropertyModel
+from tcex.backport import cached_property
+from tcex.input.field_type.sensitive import Sensitive
+from tcex.requests_session.auth.hmac_auth import HmacAuth
+from tcex.util import Util
+from tcex.util.string_operation import SnakeString
 
 
 class GenerateABC(ABC):
@@ -37,7 +37,7 @@ class GenerateABC(ABC):
         self.i5 = ' ' * 20  # indent level 5
         self.messages = []
         self.requirements = {}
-        self.utils = Utils()
+        self.util = Util()
 
     @staticmethod
     def _format_description(arg: str, description: str, length: int, indent: str) -> str:
@@ -67,7 +67,7 @@ class GenerateABC(ABC):
             type_ = 'indicator_attributes'
         elif type_ == 'attributes' and self.type_ == 'victims':
             type_ = 'victim_attributes'
-        return self.utils.snake_string(type_)
+        return self.util.snake_string(type_)
 
     def _module_import_data(self, type_: SnakeString) -> dict[str, str]:
         """Return the model module map data.
@@ -138,7 +138,7 @@ class GenerateABC(ABC):
                     field_data = field_data['data'][0]
 
                     # if there is a data array, then the type should always be plural.
-                    field_data['type'] = self.utils.camel_string(field_data['type']).plural()
+                    field_data['type'] = self.util.camel_string(field_data['type']).plural()
             elif isinstance(field_data, list):
                 # in a few instance like attributeType the value of the properties key/value
                 # pair is a list (currently the list only contains a single dict). to be safe
@@ -462,7 +462,7 @@ class GenerateABC(ABC):
 
     def tap(self, type_: str):
         """Return the TcEx Api Path."""
-        type_ = self.utils.snake_string(type_)
+        type_ = self.util.snake_string(type_)
         if type_.plural().lower() in [
             'owners',
             'owner_roles',

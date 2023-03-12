@@ -12,8 +12,8 @@ import colorama as c
 from pydantic import BaseModel
 
 # first-party
-from tcex.app_config.install_json import InstallJson
-from tcex.backports import cached_property
+from tcex.app.config.install_json import InstallJson
+from tcex.backport import cached_property
 from tcex.bin.bin_abc import BinABC
 
 

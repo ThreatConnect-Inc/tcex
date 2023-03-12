@@ -278,7 +278,7 @@ class TestCases(TestV3):
             'status': 'Open',
             'xid': self.xid(request),
         }
-        case = self.tcex.v3.case(**case_data)
+        case = self.tcex.api.tc.v3.case(**case_data)
         case.create()
 
         # [Retrieve Testing] Verify that the attribute was created.

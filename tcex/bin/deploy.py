@@ -10,10 +10,10 @@ import typer
 
 # first-party
 from tcex.bin.bin_abc import BinABC
-from tcex.input.field_types.sensitive import Sensitive
+from tcex.input.field_type.sensitive import Sensitive
 from tcex.pleb.proxies import proxies
-from tcex.sessions.auth.hmac_auth import HmacAuth
-from tcex.sessions.tc_session import TcSession
+from tcex.requests_session.auth.hmac_auth import HmacAuth
+from tcex.requests_session.tc_session import TcSession
 
 
 class Deploy(BinABC):
@@ -142,6 +142,6 @@ class Deploy(BinABC):
             proxy_host=self.proxy_host,
             proxy_port=self.proxy_port,
             proxy_user=self.proxy_user,
-            proxy_pass=Sensitive(self.proxy_pass),
+            proxy_pass=self.proxy_pass,
         )
         return TcSession(auth=self.auth, base_url=self.base_url, proxies=_proxies)

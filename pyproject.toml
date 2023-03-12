@@ -36,6 +36,12 @@ pythonVersion = "3.11"
 reportPrivateImportUsage = false
 
 [tool.pytest.ini_options]
+# addopts = "-p no:warnings"
+filterwarnings = [
+  # "error",
+  # "ignore:.*Unverified HTTPS request is being made to host.*",
+  "ignore:The --rsyncdir command line argument and rsyncdirs config variable are deprecated.:DeprecationWarning",
+]
 junit_family = "xunit2"
 testpaths = [
   "tests",

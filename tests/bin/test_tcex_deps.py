@@ -45,8 +45,8 @@ class TestTcexCliDeps:
         request: FixtureRequest,
     ) -> Result:
         """Test Case"""
-        app_path = os.path.join(request.fspath.dirname, 'app', 'tcpb', 'app_1')  # type: ignore
-        new_app_path = os.path.join(os.getcwd(), 'app', 'tcpb', new_app_dir)
+        app_path = Path(request.fspath.dirname) / 'app' / 'tcpb' / 'app_1'  # type: ignore
+        new_app_path = Path.cwd() / 'app' / 'tcpb' / new_app_dir
         shutil.copytree(app_path, new_app_path)
 
         # change to testing directory

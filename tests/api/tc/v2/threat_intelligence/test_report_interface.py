@@ -6,9 +6,9 @@ from random import randint
 from typing import cast
 
 # first-party
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.report import Report
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.report import Report
 from tcex.tcex import TcEx
-from tests.api.tc.v2.threat_intelligence.ti_helpers import TestThreatIntelligence, TIHelper
+from tests.api.tc.v2.threat_intelligence.ti_helper import TestThreatIntelligence, TIHelper
 
 
 class TestReportGroups(TestThreatIntelligence):

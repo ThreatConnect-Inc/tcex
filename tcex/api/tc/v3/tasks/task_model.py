@@ -8,12 +8,12 @@ from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
-from tcex.utils import Utils
+from tcex.util import Util
 
 
 class TaskModel(
     V3ModelABC,
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     extra=Extra.allow,
     title='Task Model',
     validate_assignment=True,
@@ -226,7 +226,7 @@ class TaskModel(
 class TaskDataModel(
     BaseModel,
     title='Task Data Model',
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     validate_assignment=True,
 ):
     """Tasks Data Model"""
@@ -242,7 +242,7 @@ class TaskDataModel(
 class TasksModel(
     BaseModel,
     title='Tasks Model',
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     validate_assignment=True,
 ):
     """Tasks Model"""

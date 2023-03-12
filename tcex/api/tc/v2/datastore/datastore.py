@@ -6,7 +6,7 @@ import logging
 from requests import Response, Session  # TYPE-CHECKING
 
 # first-party
-from tcex.exit.error_codes import handle_error
+from tcex.exit.error_code import handle_error
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 
 # get tcex logger
@@ -35,7 +35,7 @@ class DataStore:
         session_tc: A requests.Session instance with auth configured for the ThreatConnect API.
         domain: A value of “system”, “organization”, or “local”.
         data_type: A free form type name for the data.
-        mapping: Elasticsearch mappings data.
+        mapping: Elasticsearch mapping data.
     """
 
     def __init__(
@@ -71,7 +71,7 @@ class DataStore:
             self.delete(rid, False)
 
     def _update_mappings(self):
-        """Update the mappings for the current index."""
+        """Update the mapping for the current index."""
         headers = {'Content-Type': 'application/json', 'DB-Method': 'PUT'}
         url = f'/v2/exchange/db/{self.domain}/{self.data_type}/_mappings'
         r: 'Response' = self.session_tc.post(url, json=self.mapping, headers=headers)

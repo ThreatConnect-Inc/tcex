@@ -27,7 +27,7 @@ class TestGroup2:
     )
     def test_adversary(self, name, description, label, tag, tcex: TcEx):
         """Test adversary creation"""
-        batch = tcex.v2.batch(owner='TCI')
+        batch = tcex.api.tc.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'adversary', name])
         ti = cast(Group, batch.group(group_type='Adversary', name=name, xid=xid))
         ti.attribute(attr_type='Description', attr_value=description, displayed=True)
@@ -50,7 +50,7 @@ class TestGroup2:
     )
     def test_campaign(self, name, description, label, tag, tcex: TcEx):
         """Test campaign creation"""
-        batch = tcex.v2.batch(owner='TCI')
+        batch = tcex.api.tc.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'campaign', name])
         ti = cast(Group, batch.group(group_type='Campaign', name=name, xid=xid))
         ti.attribute(attr_type='Description', attr_value=description, displayed=True)
@@ -73,7 +73,7 @@ class TestGroup2:
     )
     def test_document(self, name, description, label, tag, tcex: TcEx):
         """Test document creation"""
-        batch = tcex.v2.batch(owner='TCI')
+        batch = tcex.api.tc.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'document', name])
         ti = cast(
             Group, batch.group(group_type='Document', name=name, file_name='example.txt', xid=xid)
@@ -99,7 +99,7 @@ class TestGroup2:
     )
     def test_document_malware(self, name, description, label, tag, tcex: TcEx):
         """Test document creation"""
-        batch = tcex.v2.batch(owner='TCI')
+        batch = tcex.api.tc.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'document', name])
         ti = cast(
             Group, batch.group(group_type='Document', name=name, file_name='example.zip', xid=xid)
@@ -126,7 +126,7 @@ class TestGroup2:
     )
     def test_email(self, name, description, label, tag, tcex: TcEx):
         """Test email creation"""
-        batch = tcex.v2.batch(owner='TCI')
+        batch = tcex.api.tc.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'email', name])
         ti = cast(
             Group,
@@ -159,7 +159,7 @@ class TestGroup2:
     )
     def test_event(self, name, description, label, tag, tcex: TcEx):
         """Test event creation"""
-        batch = tcex.v2.batch(owner='TCI')
+        batch = tcex.api.tc.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'event', name])
         ti = cast(
             Group,
@@ -186,7 +186,7 @@ class TestGroup2:
     )
     def test_incident(self, name, description, label, tag, tcex: TcEx):
         """Test incident creation"""
-        batch = tcex.v2.batch(owner='TCI')
+        batch = tcex.api.tc.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'incident', name])
         ti = cast(Group, batch.group(group_type='Incident', name=name, xid=xid))
         ti.attribute(attr_type='Description', attr_value=description, displayed=True)
@@ -209,7 +209,7 @@ class TestGroup2:
     )
     def test_intrusion_set(self, name, description, label, tag, tcex: TcEx):
         """Test intrusion_set creation"""
-        batch = tcex.v2.batch(owner='TCI')
+        batch = tcex.api.tc.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'intrusion_set', name])
         ti = cast(Group, batch.group(group_type='Intrusion Set', name=name, xid=xid))
         ti.attribute(attr_type='Description', attr_value=description, displayed=True)
@@ -232,7 +232,7 @@ class TestGroup2:
     )
     def test_report(self, name, description, label, tag, tcex: TcEx):
         """Test report creation"""
-        batch = tcex.v2.batch(owner='TCI')
+        batch = tcex.api.tc.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'report', name])
         ti = cast(
             Group,
@@ -265,7 +265,7 @@ class TestGroup2:
     )
     def test_signature(self, name, description, label, tag, tcex: TcEx):
         """Test signature creation"""
-        batch = tcex.v2.batch(owner='TCI')
+        batch = tcex.api.tc.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'signature', name])
         ti = cast(
             Group,
@@ -298,7 +298,7 @@ class TestGroup2:
     )
     def test_threat(self, name, description, label, tag, tcex: TcEx):
         """Test threat creation"""
-        batch = tcex.v2.batch(owner='TCI')
+        batch = tcex.api.tc.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'threat', name])
         ti = cast(Group, batch.group(group_type='Threat', name=name, xid=xid))
         ti.attribute(attr_type='Description', attr_value=description, displayed=True)

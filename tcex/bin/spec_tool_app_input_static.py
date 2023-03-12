@@ -1,7 +1,7 @@
 """Gen Code App Input Map"""
 
 # first-party
-from tcex.app_config.install_json import InstallJson
+from tcex.app.config.install_json import InstallJson
 
 
 class SpecToolAppInputStatic:
@@ -31,7 +31,7 @@ class SpecToolAppInputStatic:
             f'''{self.i2}self.inputs = inputs''',
             '',
             f'''{self.i1}def update_inputs(self):''',
-            f'''{self.i2}"""Add custom App models to inputs.''',
+            f'''{self.i2}"""Add custom App model to inputs.''',
             '',
             f'''{self.i2}Input will be validate when the model is added an any exceptions will''',
             f'''{self.i2}cause the App to exit with a status code of 1.''',
@@ -103,7 +103,7 @@ class SpecToolAppInputStatic:
             f'''{self.i2}return action_model_map.get(tc_action)''',
             '',
             f'''{self.i1}def update_inputs(self):''',
-            f'''{self.i2}"""Add custom App models to inputs.''',
+            f'''{self.i2}"""Add custom App model to inputs.''',
             '',
             f'''{self.i2}Input will be validate when the model is added an any exceptions will''',
             f'''{self.i2}cause the App to exit with a status code of 1.''',
@@ -136,7 +136,7 @@ class SpecToolAppInputStatic:
 
         # add import for service trigger Apps
         if self.ij.model.is_trigger_app:
-            _imports.append('from tcex.input.models import CreateConfigModel')
+            _imports.append('from tcex.input.model import CreateConfigModel')
 
         # add new lines
         _imports.extend(

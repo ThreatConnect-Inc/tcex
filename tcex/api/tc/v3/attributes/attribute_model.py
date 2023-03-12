@@ -6,13 +6,13 @@ from datetime import datetime
 from pydantic import BaseModel, Extra, Field
 
 # first-party
-from tcex.utils import Utils
+from tcex.util import Util
 
 
 class AttributeModel(
     BaseModel,
     title='Attribute Model',
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     extra=Extra.allow,
     validate_assignment=True,
 ):
@@ -60,7 +60,7 @@ class AttributeModel(
 class AttributeData(
     BaseModel,
     title='Attribute Data',
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     validate_assignment=True,
 ):
     """Attribute Data"""
@@ -76,7 +76,7 @@ class AttributeData(
 class AttributesModel(
     BaseModel,
     title='Attributes Model',
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     validate_assignment=True,
 ):
     """Attributes Model"""

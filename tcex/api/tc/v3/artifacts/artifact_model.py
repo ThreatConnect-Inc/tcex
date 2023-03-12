@@ -8,12 +8,12 @@ from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
-from tcex.utils import Utils
+from tcex.util import Util
 
 
 class ArtifactModel(
     V3ModelABC,
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     extra=Extra.allow,
     title='Artifact Model',
     validate_assignment=True,
@@ -258,7 +258,7 @@ class ArtifactModel(
 class ArtifactDataModel(
     BaseModel,
     title='Artifact Data Model',
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     validate_assignment=True,
 ):
     """Artifacts Data Model"""
@@ -274,7 +274,7 @@ class ArtifactDataModel(
 class ArtifactsModel(
     BaseModel,
     title='Artifacts Model',
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     validate_assignment=True,
 ):
     """Artifacts Model"""

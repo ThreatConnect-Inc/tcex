@@ -174,7 +174,7 @@ class TagFilter(FilterABC):
             operator: The operator enum for the filter.
             last_used: The date this tag was last used.
         """
-        last_used = self.utils.any_to_datetime(last_used).strftime('%Y-%m-%d %H:%M:%S')
+        last_used = self.util.any_to_datetime(last_used).strftime('%Y-%m-%d %H:%M:%S')
         self._tql.add_filter('lastUsed', operator, last_used, TqlType.STRING)
 
     def name(self, operator: Enum, name: list | str):

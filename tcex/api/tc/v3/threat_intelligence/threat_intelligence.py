@@ -3,7 +3,7 @@
 from requests import Session
 
 # first-party
-from tcex.api.tc.utils.threat_intel_utils import ThreatIntelUtils
+from tcex.api.tc.util.threat_intel_util import ThreatIntelUtil
 from tcex.api.tc.v3.group_attributes.group_attribute import GroupAttribute, GroupAttributes
 from tcex.api.tc.v3.groups.group import Group, Groups
 from tcex.api.tc.v3.indicator_attributes.indicator_attribute import (
@@ -33,7 +33,7 @@ class ThreatIntelligence:
     def ti_utils(self):
         """Return instance of Threat Intel Utils."""
         if not self._ti_utils:
-            self._ti_utils = ThreatIntelUtils(session_tc=self.session)
+            self._ti_utils = ThreatIntelUtil(session_tc=self.session)
         return self._ti_utils
 
     def create_entity(self, entity: dict, owner: str) -> dict | None:

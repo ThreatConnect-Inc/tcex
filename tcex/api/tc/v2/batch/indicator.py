@@ -9,7 +9,7 @@ from typing import ForwardRef
 from tcex.api.tc.v2.batch.attribute import Attribute
 from tcex.api.tc.v2.batch.security_label import SecurityLabel
 from tcex.api.tc.v2.batch.tag import Tag
-from tcex.utils import Utils
+from tcex.util import Util
 
 FileOccurrences = ForwardRef('FileOccurrences')
 
@@ -64,7 +64,7 @@ class Indicator:
         '_summary',
         '_tags',
         '_type',
-        'utils',
+        'util',
     ]
 
     def __init__(self, indicator_type: str, summary: str, **kwargs):
@@ -94,7 +94,7 @@ class Indicator:
         self._labels = []
         self._occurrences = []
         self._tags = []
-        self.utils = Utils()
+        self.util = Util()
 
         # process all kwargs and update metadata field names
         for arg, value in kwargs.items():
@@ -133,7 +133,7 @@ class Indicator:
         """
         key = self._metadata_map.get(key, key)
         if key in ['dateAdded', 'lastModified']:
-            self._indicator_data[key] = self.utils.any_to_datetime(value).strftime(
+            self._indicator_data[key] = self.util.any_to_datetime(value).strftime(
                 '%Y-%m-%dT%H:%M:%SZ'
             )
         elif key == 'confidence':
@@ -151,7 +151,7 @@ class Indicator:
     @active.setter
     def active(self, active: bool):
         """Set Indicator active."""
-        self._indicator_data['active'] = self.utils.to_bool(active)
+        self._indicator_data['active'] = self.util.to_bool(active)
 
     def association(self, group_xid: str):
         """Add association using xid value.
@@ -274,7 +274,7 @@ class Indicator:
     @date_added.setter
     def date_added(self, date_added: str):
         """Set Indicator dateAdded."""
-        self._indicator_data['dateAdded'] = self.utils.any_to_datetime(date_added).strftime(
+        self._indicator_data['dateAdded'] = self.util.any_to_datetime(date_added).strftime(
             '%Y-%m-%dT%H:%M:%SZ'
         )
 
@@ -286,7 +286,7 @@ class Indicator:
     @last_modified.setter
     def last_modified(self, last_modified: str):
         """Set Indicator lastModified."""
-        self._indicator_data['lastModified'] = self.utils.any_to_datetime(last_modified).strftime(
+        self._indicator_data['lastModified'] = self.util.any_to_datetime(last_modified).strftime(
             '%Y-%m-%dT%H:%M:%SZ'
         )
 
@@ -322,7 +322,7 @@ class Indicator:
     @private_flag.setter
     def private_flag(self, private_flag: bool):
         """Set Indicator private flag."""
-        self._indicator_data['privateFlag'] = self.utils.to_bool(private_flag)
+        self._indicator_data['privateFlag'] = self.util.to_bool(private_flag)
 
     @property
     def rating(self) -> float:
@@ -590,7 +590,7 @@ class Host(Indicator):
     @dns_active.setter
     def dns_active(self, dns_active: bool):
         """Set Indicator dns active."""
-        self._indicator_data['flag1'] = self.utils.to_bool(dns_active)
+        self._indicator_data['flag1'] = self.util.to_bool(dns_active)
 
     @property
     def whois_active(self) -> bool:
@@ -600,7 +600,7 @@ class Host(Indicator):
     @whois_active.setter
     def whois_active(self, whois_active: bool):
         """Set Indicator whois active."""
-        self._indicator_data['flag2'] = self.utils.to_bool(whois_active)
+        self._indicator_data['flag2'] = self.util.to_bool(whois_active)
 
 
 class Mutex(Indicator):
@@ -733,7 +733,7 @@ class FileAction:
 class FileOccurrence:
     """ThreatConnect Batch FileAction Object."""
 
-    __slots__ = ['_occurrence_data', 'utils']
+    __slots__ = ['_occurrence_data', 'util']
 
     def __init__(
         self,
@@ -751,14 +751,14 @@ class FileOccurrence:
         self._occurrence_data = {}
 
         # properties
-        self.utils = Utils()
+        self.util = Util()
 
         if file_name is not None:
             self._occurrence_data['fileName'] = file_name
         if path is not None:
             self._occurrence_data['path'] = path
         if date is not None:
-            self._occurrence_data['date'] = self.utils.any_to_datetime(date).strftime(
+            self._occurrence_data['date'] = self.util.any_to_datetime(date).strftime(
                 '%Y-%m-%dT%H:%M:%SZ'
             )
 
@@ -775,7 +775,7 @@ class FileOccurrence:
     @date.setter
     def date(self, date: str):
         """Set File Occurrence date."""
-        self._occurrence_data['date'] = self.utils.any_to_datetime(date).strftime(
+        self._occurrence_data['date'] = self.util.any_to_datetime(date).strftime(
             '%Y-%m-%dT%H:%M:%SZ'
         )
 

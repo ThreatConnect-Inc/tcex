@@ -4,7 +4,7 @@ from requests import Session  # TYPE-CHECKING
 
 # first-party
 from tcex.api.tc import TC
-from tcex.backports import cached_property
+from tcex.backport import cached_property
 from tcex.input.input import Input  # TYPE-CHECKING
 
 

@@ -12,14 +12,14 @@ class TestUserSnippets(TestV3):
     def test_user_get_all(self):
         """Test snippet"""
         # Begin Snippet
-        for user in self.tcex.v3.users():
+        for user in self.tcex.api.tc.v3.users():
             print(user.model.dict(exclude_none=True))
         # End Snippet
 
     def test_user_tql_filter(self):
         """Test snippet"""
         # Begin Snippet
-        users = self.tcex.v3.users()
+        users = self.tcex.api.tc.v3.users()
         users.filter.first_name(TqlOperator.EQ, 'Robin')
         # users.filter.group_id(TqlOperator.EQ, 'Robin')
         users.filter.last_name(TqlOperator.EQ, 'Sparkles')
@@ -31,7 +31,7 @@ class TestUserSnippets(TestV3):
     def test_user_get_by_id(self):
         """Test snippet"""
         # Begin Snippet
-        user = self.tcex.v3.user(id=5)
+        user = self.tcex.api.tc.v3.user(id=15)
         user.get()
         print(user.model.dict(exclude_none=True))
         # End Snippet

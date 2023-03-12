@@ -16,11 +16,11 @@ from pydantic import ValidationError
 from stdlib_list import stdlib_list
 
 # first-party
-from tcex.app_config.install_json import InstallJson
-from tcex.app_config.job_json import JobJson
-from tcex.app_config.layout_json import LayoutJson
-from tcex.app_config.permutation import Permutation
-from tcex.app_config.tcex_json import TcexJson
+from tcex.app.config.install_json import InstallJson
+from tcex.app.config.job_json import JobJson
+from tcex.app.config.layout_json import LayoutJson
+from tcex.app.config.permutation import Permutation
+from tcex.app.config.tcex_json import TcexJson
 from tcex.bin.bin_abc import BinABC
 
 try:

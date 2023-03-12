@@ -10,7 +10,7 @@ from pydantic import BaseModel, Field, PrivateAttr
 # first-party
 from tcex.api.tc.v3.security.users.user_model import UserModel
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
-from tcex.utils import Utils
+from tcex.util import Util
 
 
 class AssigneeTypes(str, Enum):
@@ -23,7 +23,7 @@ class AssigneeTypes(str, Enum):
 class TaskAssigneeModel(
     V3ModelABC,
     title='User Data Model',
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     validate_assignment=True,
 ):
     """Task Assignee Model
@@ -77,7 +77,7 @@ class TaskAssigneeModel(
 class TaskAssigneesModel(
     BaseModel,
     title='User Data Model',
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     validate_assignment=True,
 ):
     """Task Assignees Model"""

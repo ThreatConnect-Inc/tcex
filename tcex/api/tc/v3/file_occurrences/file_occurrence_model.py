@@ -7,14 +7,14 @@ from pydantic import BaseModel, Extra, Field, PrivateAttr
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
-from tcex.utils import Utils
+from tcex.util import Util
 
 
 class FileOccurrenceModel(
     V3ModelABC,
     title='File Occurrence Model',
     extra=Extra.allow,
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     validate_assignment=True,
 ):
     """File Occurrences Model"""
@@ -43,7 +43,7 @@ class FileOccurrenceModel(
 class FileOccurrencesModel(
     BaseModel,
     title='File Occurrences Model',
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     validate_assignment=True,
 ):
     """File Occurrences Data Model"""

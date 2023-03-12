@@ -362,7 +362,7 @@ class Indicators(ObjectCollectionABC):
 
         if deleted_since is not None:
             deleted_since = str(
-                self.utils.any_to_datetime(deleted_since).strftime('%Y-%m-%dT%H:%M:%SZ')
+                self.util.any_to_datetime(deleted_since).strftime('%Y-%m-%dT%H:%M:%SZ')
             )
 
         yield from self.iterate(
