@@ -93,6 +93,7 @@ class Package(BinABC):
             'package.json',  # npm package file
             'pyproject.toml',  # project configuration file
             'README.html',  # documentation file
+            'run_local.py',  # local runner file
             'target',  # the target directory for builds
             'test-reports',  # pytest in CI/CD
             'tests',  # pytest test directory

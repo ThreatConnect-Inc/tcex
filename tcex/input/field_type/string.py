@@ -92,7 +92,7 @@ def string(
     min_length: int | None = None,
     regex: str | None = None,
     strip: bool = False,
-) -> type:
+) -> type[String]:
     """Return configured instance of String."""
     namespace = {
         'allow_empty': allow_empty,

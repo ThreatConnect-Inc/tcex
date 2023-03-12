@@ -51,7 +51,7 @@ class IpAddress(str):
 
 def ip_address(
     strip_port: bool = False,
-) -> type:
+) -> type[IpAddress]:
     """Return configured instance of String."""
     namespace = {
         'strip_port': strip_port,

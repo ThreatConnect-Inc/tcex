@@ -80,7 +80,7 @@ def integer(
     ge: OptionalInt = None,
     lt: OptionalInt = None,
     le: OptionalInt = None,
-) -> type:
+) -> type[Integer]:
     """Return configured instance of String."""
     namespace = {
         'gt': gt,

@@ -6,6 +6,5 @@ from tcex.input.model.playbook_common_model import PlaybookCommonModel
 from tcex.input.model.service_model import ServiceModel
 
 
-# pylint: disable=too-many-ancestors
 class AppApiServiceModel(CommonModel, PlaybookCommonModel, ServiceModel):
     """Model Definition"""

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 """TcEx framework CLI command"""
 # standard library
-import os
 import traceback
 from pathlib import Path
 from typing import Optional
@@ -16,6 +15,7 @@ from tcex.bin import Dep, Deploy, Package, SpecTool, Template, Validate
 
 # initialize typer
 app = typer.Typer()
+default_branch = 'v2'
 
 # typer does not yet support PEP 604, but pyupgrade will enforce
 # PEP 604. this is a temporary workaround until support is added.
@@ -26,7 +26,7 @@ StrOrNone = Optional[str]
 @app.command()
 def deps(
     branch: str = typer.Option(
-        'main',
+        default_branch,
         help=(
             'The git branch of the tcex repository to use. '
             'This override what is in the requirements.txt file.'
@@ -52,7 +52,7 @@ def deps(
         # configure proxy settings
         tcd.configure_proxy()
 
-        if branch != 'main':
+        if branch != default_branch:
             # create temp requirements.txt file pointing to tcex branch
             tcd.create_temp_requirements()
 
@@ -167,7 +167,7 @@ def init(
     ),
     force: bool = typer.Option(False, help='Force App init even if files exist in directory.'),
     branch: str = typer.Option(
-        'main', help='The git branch of the tcex-app-template repository to use.'
+        default_branch, help='The git branch of the tcex-app-template repository to use.'
     ),
     app_builder: bool = typer.Option(
         False, help='Include .appbuilderconfig file in template download.'
@@ -195,7 +195,7 @@ def init(
         proxy_user,
         proxy_pass,
     )
-    if os.listdir(os.getcwd()) and force is False:
+    if list(Path.cwd().iterdir()) and force is False:
         tt.print_block(
             'The current directory does not appear to be empty. Apps should '
             'be initialized in an empty directory. If attempting to update an '
@@ -235,7 +235,7 @@ def init(
 def list_(
     template_type: StrOrNone = typer.Option(None, '--type', help='The App type being initialized.'),
     branch: str = typer.Option(
-        'main', help='The git branch of the tcex-app-template repository to use.'
+        default_branch, help='The git branch of the tcex-app-template repository to use.'
     ),
     proxy_host: Optional[str] = typer.Option(
         None, help='(Advanced) Hostname for the proxy server.'
@@ -329,7 +329,7 @@ def update(
     ),
     template_type: StrOrNone = typer.Option(None, '--type', help='The App type being initialized.'),
     branch: str = typer.Option(
-        'main', help='The git branch of the tcex-app-template repository to use.'
+        default_branch, help='The git branch of the tcex-app-template repository to use.'
     ),
     force: bool = typer.Option(
         False, help="Update files from template even if they haven't changed."
@@ -356,7 +356,7 @@ def update(
     file will also be updated with new values.
     """
     # external Apps do not support update
-    if not os.path.isfile('tcex.json'):
+    if not Path('tcex.json').is_file():
         typer.secho(
             'Update requires a tcex.json file, "external" App templates can not be update.',
             fg=typer.colors.RED,

@@ -47,13 +47,13 @@ class CaseManagementEntity(TCEntity):
 
 def case_management_entity(
     case_management_types: list[str], model_name: str = 'CustomCaseManagementEntity'
-) -> CaseManagementEntity:
+) -> type[CaseManagementEntity]:
     """Dynamically create a Case Management Entity model."""
     return create_model(
         model_name,
         case_management_types=(ClassVar[list[str]], case_management_types),
         __base__=CaseManagementEntity,
-    )  # type: ignore
+    )
 
 
 ArtifactEntity = case_management_entity(case_management_types=['Artifact'])
@@ -63,45 +63,3 @@ ArtifactTypeEntity = case_management_entity(case_management_types=['Artifact Typ
 NoteEntity = case_management_entity(case_management_types=['Note'])
 WorkflowEventEntity = case_management_entity(case_management_types=['Workflow Event'])
 WorkflowTemplateEntity = case_management_entity(case_management_types=['Workflow Template'])
-
-
-# class ArtifactEntity(CaseManagementEntity):
-#     """Model Definition"""
-#
-#     case_management_types: list[str] = ['Artifact']
-#
-#
-# class CaseEntity(CaseManagementEntity):
-#     """Model Definition"""
-#
-#     case_management_types: list[str] = ['Case']
-#
-#
-# class TaskEntity(CaseManagementEntity):
-#     """Model Definition"""
-#
-#     case_management_types: list[str] = ['Task']
-#
-#
-# class ArtifactTypeEntity(CaseManagementEntity):
-#     """Model Definition"""
-#
-#     case_management_types: list[str] = ['Artifact Type']
-#
-#
-# class NoteEntity(CaseManagementEntity):
-#     """Model Definition"""
-#
-#     case_management_types: list[str] = ['Note']
-#
-#
-# class WorkflowEventEntity(CaseManagementEntity):
-#     """Model Definition"""
-#
-#     case_management_types: list[str] = ['Workflow Event']
-#
-#
-# class WorkflowTemplateEntity(CaseManagementEntity):
-#     """Model Definition"""
-#
-#     case_management_types: list[str] = ['Workflow Template']
