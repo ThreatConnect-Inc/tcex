@@ -22,13 +22,10 @@ class TcexJsonUpdate:
         self.update_package_app_name()
 
         # update deprecated fields
-        # self.update_deprecated_fields()
+        self.update_deprecated_fields()
 
         # update package excludes
         self.update_package_excludes()
-
-        # update package excludes
-        self.update_lib_versions()
 
         # update template
         if template is not None:
@@ -36,6 +33,11 @@ class TcexJsonUpdate:
 
         # write updated profile
         self.tj.write()
+
+    def update_deprecated_fields(self):
+        """Update the lib_versions array in the tcex.json file."""
+        if hasattr(self.tj.model, 'lib_versions'):
+            self.tj.model.lib_versions = None
 
     def update_package_app_name(self):
         """Update the package app_name in the tcex.json file."""
@@ -73,16 +75,3 @@ class TcexJsonUpdate:
             if i not in self.tj.model.package.excludes:
                 # TODO: [low] pydantic doesn't seem to allow removing items from list???
                 self.tj.model.package.excludes.append(i)
-
-    def update_lib_versions(self):
-        """Update the lib_versions array in the tcex.json file."""
-        if os.getenv('TCEX_LIB_VERSIONS') and not self.tj.model.lib_versions:
-            _lib_versions = []
-            for version in os.getenv('TCEX_LIB_VERSIONS', '').split(','):
-                _lib_versions.append(
-                    {
-                        'lib_dir': f'lib_${{env:{version}}}',
-                        'python_executable': f'~/.pyenv/versions/${{env:{version}}}/bin/python',
-                    }
-                )
-            self.tj.model.lib_versions = _lib_versions

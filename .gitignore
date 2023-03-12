@@ -18,8 +18,8 @@ __pycache__
 # Build Exclusions
 #-------------------------------------------------
 build
+deps
 dist
-lib_*
 target
 temp
 *.egg-info

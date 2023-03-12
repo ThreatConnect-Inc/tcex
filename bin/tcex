@@ -49,6 +49,9 @@ def deps(
     """
     tcd = Dep(branch, dev, no_cache_dir, pre, proxy_host, proxy_port, proxy_user, proxy_pass)
     try:
+        # validate python versions
+        tcd.validate_python_version()
+
         # configure proxy settings
         tcd.configure_proxy()
 
@@ -411,7 +414,7 @@ def validate(
 
     Validations:
     * validate Python files have valid syntax
-    * validate all imports are available in lib_ directories
+    * validate all imports are available in deps directories
     * validate install.json has valid syntax
     * validate layout.json has valid syntax
     * validate the feed files are valid

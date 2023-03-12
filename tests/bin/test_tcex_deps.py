@@ -30,12 +30,9 @@ class TestTcexCliDeps:
 
     def teardown_method(self):
         """Configure teardown before all tests."""
-        # cleanup
-        for lib_dir in Path('.').glob('lib_*'):
-            if lib_dir.is_dir():
-                shutil.rmtree(lib_dir)
-            elif lib_dir.is_symlink():
-                lib_dir.unlink()
+        deps_dir = Path('deps')
+        if deps_dir.is_dir():
+            shutil.rmtree(deps_dir)
 
     def _run_command(
         self,
