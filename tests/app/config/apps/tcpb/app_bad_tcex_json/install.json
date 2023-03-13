@@ -14,7 +14,7 @@
     "label2",
     "label3"
   ],
-  "languageVersion": "3.6",
+  "languageVersion": "3.11.0",
   "listDelimiter": "|",
   "note": "A TcEx testing App.",
   "params": [
@@ -742,5 +742,6 @@
   "programLanguage": "PYTHON",
   "programMain": "run",
   "programVersion": "1.0.0",
-  "runtimeLevel": "Playbook"
+  "runtimeLevel": "Playbook",
+  "sdkVersion": "4.0.0"
 }

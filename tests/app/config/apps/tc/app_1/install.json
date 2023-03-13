@@ -38,9 +38,9 @@
     "label1",
     "label2"
   ],
-  "languageVersion": "3.6",
+  "languageVersion": "3.11.0",
   "listDelimiter": "|",
-  "minServerVersion": "6.0.0",
+  "minServerVersion": "7.2.0",
   "note": "The App Note.",
   "params": [
     {
@@ -166,5 +166,6 @@
     10,
     15
   ],
-  "runtimeLevel": "Organization"
+  "runtimeLevel": "Organization",
+  "sdkVersion": "4.0.0"
 }

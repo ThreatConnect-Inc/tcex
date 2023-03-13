@@ -15,9 +15,9 @@
     "label2",
     "label3"
   ],
-  "languageVersion": "3.6",
+  "languageVersion": "3.11.0",
   "listDelimiter": "|",
-  "minServerVersion": "6.0.0",
+  "minServerVersion": "7.2.0",
   "note": "A TcEx testing App.",
   "params": [
     {
@@ -750,5 +750,6 @@
   "programMain": "run",
   "programName": "program_name",
   "programVersion": "1.0.0",
-  "runtimeLevel": "Playbook"
+  "runtimeLevel": "Playbook",
+  "sdkVersion": "4.0.0"
 }

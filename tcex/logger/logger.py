@@ -4,6 +4,7 @@ import logging
 import os
 import platform
 import sys
+from importlib.metadata import version
 from pathlib import Path
 from urllib.parse import urlsplit
 
@@ -384,10 +385,7 @@ class Logger:
 
     def _log_tcex_version(self):
         """Log the current TcEx version number."""
-        app_path = str(Path().parent.absolute())
-        full_path = str(Path(__file__).parent.absolute())
-        tcex_path = os.path.dirname(full_path.replace(app_path, ''))
-        self.log.info(f'tcex-version={__import__(__name__).__version__}, tcex-path="{tcex_path}"')
+        self.log.info(f'''tcex-version={version('tcex')}''')
 
     @staticmethod
     def _sanitize_proxy_url(url: str | None) -> str | None:

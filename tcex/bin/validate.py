@@ -134,13 +134,16 @@ class Validate(BinABC):
         Returns:
             bool: Returns True if the module is in the stdlib or template.
         """
-        if (
-            module in stdlib_list('3.6')
-            or module in stdlib_list('3.7')
-            or module in stdlib_list('3.8')
-            or module
-            in ['app', 'args', 'base_app_input', 'job_app', 'playbook_app', 'run', 'service_app']
-        ):
+        if module in stdlib_list('3.11') or module in [
+            'app',
+            'args',
+            'base_app_input',
+            'job_app',
+            'playbook_app',
+            'run',
+            'run_local',
+            'service_app',
+        ]:
             return True
         return False
 

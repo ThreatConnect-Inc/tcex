@@ -10,6 +10,7 @@ from pathlib import Path
 # third-party
 import typer
 from click import Choice
+from semantic_version import Version
 
 # first-party
 from tcex.app.config.install_json import InstallJson
@@ -45,6 +46,13 @@ class BinABC(ABC):
         _out_path = Path(os.path.expanduser('~/.tcex'))
         _out_path.mkdir(exist_ok=True, parents=True)
         return _out_path
+
+    @cached_property
+    def deps_dir(self) -> Path:
+        """Return the deps directory."""
+        if self.ij.model.sdk_version < Version('4.0.0'):
+            return Path('lib_latest')
+        return Path('deps')
 
     @staticmethod
     def handle_error(err, halt: bool = True):
@@ -175,21 +183,19 @@ class BinABC(ABC):
             type=choice,
         )
 
-    @staticmethod
-    def update_system_path():
+    def update_system_path(self):
         """Update the system path to ensure project modules and dependencies can be found."""
-        cwd = Path.cwd()
-        deps_dir = str(cwd / 'deps')
+        # insert the deps or lib_latest directory into the system Path. this entry
+        # will be bumped to index 1 after adding the current working directory.
+        deps_dir_str = str(self.deps_dir.resolve())
+        if not [p for p in sys.path if deps_dir_str in p]:
+            sys.path.insert(0, deps_dir_str)
 
-        # insert the lib_latest directory into the system Path if no other lib directory found. This
-        # entry will be bumped to index 1 after adding the current working directory.
-        if not [p for p in sys.path if deps_dir in p]:
-            sys.path.insert(0, deps_dir)  # insert deps directory at the front of the path
-
-        # insert the current working directory into the system Path for the App, ensuring that it is
-        # always the first entry in the list.
+        # insert the current working directory into the system Path for
+        # the App, ensuring that it is always the first entry in the list.
+        cwd_str = str(Path.cwd())
         try:
-            sys.path.remove(str(cwd))
+            sys.path.remove(cwd_str)
         except ValueError:
             pass
-        sys.path.insert(0, str(cwd))
+        sys.path.insert(0, cwd_str)

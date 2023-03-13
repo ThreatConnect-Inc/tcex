@@ -76,6 +76,7 @@ class InstallJson:
             'programMain': 'run.py',
             'programVersion': '0.0.0',
             'runtimeLevel': 'external',
+            'sdkVersion': '4.0.0',
         }
 
     def create_output_variables(self, output_variables: list, job_id: int = 9876) -> list:
@@ -161,8 +162,8 @@ class InstallJson:
         """Return True if App does not have a install.json file."""
         return not self.fqfn.is_file()
 
-    # @cached_property
-    @property
+    # this needs to be a cached property, for tcex package to update install.json properly
+    @cached_property
     def model(self) -> InstallJsonModel:
         """Return the Install JSON model."""
         return InstallJsonModel(**self.contents)

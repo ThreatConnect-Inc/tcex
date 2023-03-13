@@ -12,9 +12,9 @@
     "label1",
     "label1"
   ],
-  "languageVersion": "3.6",
+  "languageVersion": "3.11.0",
   "listDelimiter": "|",
-  "minServerVersion": "6.0.0",
+  "minServerVersion": "7.2.0",
   "note": "The App Note.",
   "params": [
     {
@@ -142,5 +142,6 @@
   "programLanguage": "PYTHON",
   "programMain": "run",
   "programVersion": "1.0.0",
-  "runtimeLevel": "FeedApiService"
+  "runtimeLevel": "FeedApiService",
+  "sdkVersion": "4.0.0"
 }

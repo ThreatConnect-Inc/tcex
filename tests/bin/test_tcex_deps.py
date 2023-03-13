@@ -51,7 +51,7 @@ class TestTcexCliDeps:
 
         try:
             result = runner.invoke(app, args)
-            assert os.path.isdir(os.path.join('lib_latest', 'tcex'))
+            assert os.path.isdir(os.path.join('deps', 'tcex')), result.output
         finally:
             # clean up
             shutil.rmtree(new_app_path)
