@@ -237,17 +237,9 @@ class TransformABC(ABC):
             param_keys = ['type_', 'value', 'displayed', 'source']
             params = [dict(zip(param_keys, p)) for p in zip(types, values, displayed, source)]
 
-            # self.log.trace(
-            #     f'feature=transform, action=process-attributes, values={values}, '
-            #     f'types={types}, source={source}, displayed={displayed}, params={params}'
-            # )
             for param in params:
                 param = self.utils.remove_none(param)
                 if 'value' not in param:
-                    self.log.warning(
-                        'feature=transform, action=process-attribute, '
-                        f'transform={attribute.dict(exclude_unset=True)}, error=no-value'
-                    )
                     continue
 
                 if 'type_' not in param:
@@ -405,20 +397,18 @@ class TransformABC(ABC):
             descriptions = self._process_metadata_transform_model(
                 label.description, expected_length=len(names)
             )
-            colors = self._process_metadata_transform_model(
-                label.colors, expected_length=len(names)
-            )
+            colors = self._process_metadata_transform_model(label.color, expected_length=len(names))
 
             param_keys = ['color', 'description', 'name']
             params = [dict(zip(param_keys, p)) for p in zip(colors, descriptions, names)]
 
             for kwargs in params:
+                kwargs = self.utils.remove_none(kwargs)
                 if 'name' not in kwargs:
-                    self.log.warning(f'Attribute transform {label.dict()} did not yield a name')
                     continue
                 # strip out None params so that required params are enforced and optional
                 # params with default values are respected.
-                self.add_security_label(**self.utils.remove_none(kwargs))
+                self.add_security_label(**kwargs)
 
     def _process_tags(self, tags: List['TagTransformModel']):
         """Process Tag data"""
