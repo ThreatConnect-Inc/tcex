@@ -1,30 +1,14 @@
 """TcEx JSON Model"""
-# pylint: disable=no-self-argument; noqa: N805
 # standard library
-# from enum import Enum
 from pathlib import PosixPath
 
 # third-party
 from pydantic import BaseModel, validator
 
-# first-party
-from tcex.pleb.env_path import EnvPath
-
 __all__ = ['TcexJsonModel']
 
 
-class LibVersionModel(BaseModel):
-    """Model for tcex_json.lib_version"""
-
-    lib_dir: EnvPath
-    python_executable: EnvPath
-
-    class Config:
-        """DataModel Config"""
-
-        validate_assignment = True
-
-
+# pylint: disable=no-self-argument
 class PackageModel(BaseModel):
     """Model for tcex_json.package"""
 
@@ -46,26 +30,12 @@ class PackageModel(BaseModel):
         validate_assignment = True
 
 
-# class TemplateTypes(str, Enum):
-#     """Enum for tcex.template_type"""
-#
-#     api_service = 'api_service'
-#     external = 'external'
-#     organization = 'organization'
-#     playbook = 'playbook'
-#     trigger_service = 'trigger_service'
-#     web_api_service = 'web_api_service'
-#     webhook_trigger_service = 'webhook_trigger_service'
-
-
 class TcexJsonModel(BaseModel):
     """TcEx JSON Model"""
 
-    lib_versions: list[LibVersionModel] | None
     package: PackageModel
     template_name: str
     template_repo_hash: str | None = None
-    # template_type: TemplateTypes
     template_type: str
 
     class Config:

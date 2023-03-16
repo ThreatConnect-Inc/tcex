@@ -178,19 +178,18 @@ class BinABC(ABC):
     @staticmethod
     def update_system_path():
         """Update the system path to ensure project modules and dependencies can be found."""
-        cwd = os.getcwd()
-        lib_dir = os.path.join(os.getcwd(), 'lib_')
-        lib_latest = os.path.join(os.getcwd(), 'lib_latest')
+        cwd = Path.cwd()
+        deps_dir = str(cwd / 'deps')
 
         # insert the lib_latest directory into the system Path if no other lib directory found. This
         # entry will be bumped to index 1 after adding the current working directory.
-        if not [p for p in sys.path if lib_dir in p]:
-            sys.path.insert(0, lib_latest)
+        if not [p for p in sys.path if deps_dir in p]:
+            sys.path.insert(0, deps_dir)  # insert deps directory at the front of the path
 
         # insert the current working directory into the system Path for the App, ensuring that it is
         # always the first entry in the list.
         try:
-            sys.path.remove(cwd)
+            sys.path.remove(str(cwd))
         except ValueError:
             pass
-        sys.path.insert(0, cwd)
+        sys.path.insert(0, str(cwd))

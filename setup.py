@@ -37,6 +37,7 @@ dev_packages = [
     'pytest-html',
     'pytest-ordering',
     'pytest-xdist',
+    'python-dotenv',
     'pyupgrade',
 ]
 
