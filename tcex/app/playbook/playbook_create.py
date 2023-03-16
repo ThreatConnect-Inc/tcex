@@ -596,9 +596,6 @@ class PlaybookCreate:
             key: The variable to write to the DB (e.g., app.colors).
             value: The data to write to the DB.
             variable_type: The variable type being written. Only required if not unique.
-
-        Returns:
-            (str): Result string of DB write.
         """
         if self._check_null(key, value) is True:
             return None

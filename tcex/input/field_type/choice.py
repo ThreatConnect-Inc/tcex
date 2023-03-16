@@ -32,7 +32,7 @@ class Choice(EditChoice):
         return _value
 
 
-def choice(value_transformations: dict[str, str] | None = None) -> type:
+def choice(value_transformations: dict[str, str] | None = None) -> type[Choice]:
     """Return configured instance of String.
 
     :param value_transformations: dictionary that dictates how a choice should be transformed.

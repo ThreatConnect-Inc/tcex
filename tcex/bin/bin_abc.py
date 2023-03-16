@@ -143,10 +143,11 @@ class BinABC(ABC):
     ):
         """Print Setting."""
         fg_color = getattr(typer.colors, fg_color.upper())
+        indent_ = ' ' * indent
 
         # print setting
         value_display = typer.style(f'{value}', fg=fg_color, bold=bold)
-        typer.echo(f'{indent}{label:<20}: {value_display}')
+        typer.echo(f'{indent_}{label:<20}: {value_display}')
 
     @staticmethod
     def print_title(title: str, divider: bool = True, **kwargs):

@@ -60,11 +60,9 @@ class Template(BinABC):
         super().__init__()
 
         # properties
-        self.base_url = os.getenv(
-            'TCEX_TEMPLATE_URL',
-            'https://api.github.com/repos/ThreatConnect-Inc/tcex-app-templates',
-        )
-        self.base_raw_url = 'https://raw.githubusercontent.com/ThreatConnect-Inc/tcex-app-templates'
+        _github_user = os.getenv('TCEX_TEMPLATE_GITHUB_USER', 'ThreatConnect-Inc')
+        self.base_url = f'https://api.github.com/repos/{_github_user}/tcex-app-templates'
+        self.base_raw_url = f'https://raw.githubusercontent.com/{_github_user}/tcex-app-templates'
         self.errors = False
         self.password = os.getenv('GITHUB_PAT')
         self.template_configs = {}
@@ -237,6 +235,7 @@ class Template(BinABC):
                 # rename gitignore to .gitignore
                 if content.get('name') == 'gitignore':
                     content['name'] = '.gitignore'
+                    content['path'] = '_app_common/.gitignore'
 
                 yield content
 
@@ -276,7 +275,7 @@ class Template(BinABC):
                 return f'{self.base_url}/contents/{template_type}/{template_path}'
 
     def get_template_config(
-        self, template_name: str, template_type: str, branch: str = 'main'
+        self, template_name: str, template_type: str, branch: str = 'v2'
     ) -> TemplateConfigModel | None:
         """Return the data from the template.yaml file.
 
@@ -404,6 +403,7 @@ class Template(BinABC):
         _path = item.name
         if item.path.startswith(template_path):
             _path = item.path.replace(template_path, '')
+
         return Path(_path)
 
     @staticmethod
@@ -446,7 +446,7 @@ class Template(BinABC):
                 self.print_setting('Contributor', config.contributor, fg_color='green', bold=False)
                 self.print_setting('Summary', config.summary, fg_color='green', bold=False)
                 install_cmd = f'tcex init --type {template_type} --template {config.name}'
-                if branch != 'main':
+                if branch != 'v2':
                     install_cmd += f' --branch {branch}'
                 self.print_setting(
                     'Install Command',
@@ -514,7 +514,7 @@ class Template(BinABC):
             fh.write('\n')
 
     def template_parents(
-        self, template_name: str, template_type: str, branch: str = 'main'
+        self, template_name: str, template_type: str, branch: str = 'v2'
     ) -> list[str]:
         """Return all parents for the provided template."""
         # get the config for the requested template

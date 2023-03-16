@@ -42,13 +42,15 @@ class GroupEntity(TCEntity):
         return value
 
 
-def group_entity(group_types: list[str], model_name: str = 'CustomGroupEntity') -> GroupEntity:
+def group_entity(
+    group_types: list[str], model_name: str = 'CustomGroupEntity'
+) -> type[GroupEntity]:
     """Dynamically create a Case Management Entity model."""
     return create_model(
         model_name,
         group_types=(ClassVar[list[str]], group_types),
         __base__=GroupEntity,
-    )  # type: ignore
+    )
 
 
 AdversaryEntity = group_entity(group_types=['Adversary'])

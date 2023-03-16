@@ -3,6 +3,13 @@
 # first-party
 from tcex.input.model.advanced_request_model import _AdvancedRequestModel
 from tcex.input.model.aot_execution_enabled_model import AotExecutionEnabledModel
+from tcex.input.model.app_api_service_model import AppApiServiceModel
+from tcex.input.model.app_external_model import AppExternalModel
+from tcex.input.model.app_feed_api_service_model import AppFeedApiServiceModel
+from tcex.input.model.app_organization_model import AppOrganizationModel
+from tcex.input.model.app_playbook_model import AppPlaybookModel
+from tcex.input.model.app_trigger_service_model import AppTriggerServiceModel
+from tcex.input.model.app_webhook_trigger_service_model import AppWebhookTriggerServiceModel
 from tcex.input.model.cal_setting_model import CalSettingModel
 
 # from tcex.input.model.service_model import ServiceModel
@@ -27,6 +34,17 @@ feature_map = {
     'DeletesIndicator': [],
     'DeletesSecurityLabel': [],
     'DeletesTag': [],
+}
+
+# define runtime level to model map
+runtime_level_map = {
+    'apiservice': AppApiServiceModel,
+    'feedapiservice': AppFeedApiServiceModel,
+    'external': AppExternalModel,
+    'organization': AppOrganizationModel,
+    'playbook': AppPlaybookModel,
+    'triggerservice': AppTriggerServiceModel,
+    'webhooktriggerservice': AppWebhookTriggerServiceModel,
 }
 
 tc_action_map = {

@@ -41,13 +41,13 @@ class IndicatorEntity(TCEntity):
 
 def indicator_entity(
     indicator_types: list[str], model_name: str = 'CustomIndicatorEntity'
-) -> IndicatorEntity:
+) -> type[IndicatorEntity]:
     """Dynamically create a Case Management Entity model."""
     return create_model(
         model_name,
         indicator_types=(ClassVar[list[str]], indicator_types),
         __base__=IndicatorEntity,
-    )  # type: ignore
+    )
 
 
 AddressEntity = indicator_entity(indicator_types=['Address'])

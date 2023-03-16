@@ -85,7 +85,7 @@ class EditChoice(str):
 
 def edit_choice(
     allow_additional: bool = False, value_transformations: dict[str, str] | None = None
-) -> type:
+) -> type[EditChoice]:
     """Return configured instance of String.
 
     :param allow_additional: Denotes whether this field will allow values that are not found in

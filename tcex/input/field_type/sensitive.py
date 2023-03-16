@@ -144,7 +144,7 @@ def sensitive(
     allow_empty: bool = True,
     max_length: int | None = None,
     min_length: int | None = None,
-) -> type:
+) -> type[Sensitive]:
     """Return configured instance of String."""
     namespace = {
         'allow_empty': allow_empty,
