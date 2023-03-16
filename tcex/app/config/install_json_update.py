@@ -2,7 +2,12 @@
 # pylint: disable=R0401
 # standard library
 import os
+import platform
+from importlib.metadata import version
 from typing import TYPE_CHECKING
+
+# third-party
+from semantic_version import Version
 
 if TYPE_CHECKING:
     # first-party
@@ -19,23 +24,31 @@ class InstallJsonUpdate:
     def multiple(
         self,
         features: bool = True,
+        language_version: bool = True,
         migrate: bool = False,
         sequence: bool = True,
         valid_values: bool = True,
         playbook_data_types: bool = True,
+        sdk_version: bool = True,
     ):
         """Update the profile with all required changes.
 
         Args:
             features: If True, features will be updated.
+            language_version: If True, the language version will be updated.
             migrate: If True, programMain will be set to "run".
             sequence: If True, sequence numbers will be updated.
             valid_values: If True, validValues will be updated.
             playbook_data_types:  If True, pbDataTypes will be updated.
+            sdk_version: If True, the sdk version will be updated.
         """
         # update features array
         if features is True:
             self.update_features()
+
+        if language_version is True:
+            # update language version to the current version of Python
+            self.update_language_version()
 
         if migrate is True:
             # update programMain to run
@@ -53,16 +66,12 @@ class InstallJsonUpdate:
         if playbook_data_types is True:
             self.update_playbook_data_types()
 
+        if sdk_version is True:
+            # update language version to the current version of Python
+            self.update_sdk_version()
+
         # write updated profile
         self.ij.write()
-
-    # def update_display_name(self, json_data: dict):
-    #     """Update the displayName parameter."""
-    #     if not self.ij.model.display_name:
-    #         display_name = os.path.basename(os.getcwd()).replace(self.app_prefix, '')
-    #         display_name = display_name.replace('_', ' ').replace('-', ' ')
-    #         display_name = ' '.join([a.title() for a in display_name.split(' ')])
-    #     self.ij.model.display_name = self.ij.model.display_name or display_name
 
     def update_features(self):
         """Update feature set based on App type."""
@@ -109,6 +118,10 @@ class InstallJsonUpdate:
                 features.append(feature)
 
         self.ij.model.features = sorted(list(set(features)))
+
+    def update_language_version(self):
+        """Update language version."""
+        self.ij.model.language_version = Version(platform.python_version())
 
     def update_program_main(self):
         """Update program main."""
@@ -162,3 +175,7 @@ class InstallJsonUpdate:
                 continue
             if not param.playbook_data_type:
                 param.playbook_data_type.append('String')
+
+    def update_sdk_version(self):
+        """Update sdk version."""
+        self.ij.model.sdk_version = Version(version('tcex'))

@@ -2,9 +2,11 @@
 # pylint: disable=no-self-argument; noqa: N805
 # standard library
 import os
+import platform
 import re
 import uuid
 from enum import Enum
+from importlib.metadata import version
 
 # third-party
 from pydantic import BaseModel, Field, validator
@@ -547,11 +549,11 @@ class InstallJsonCommonModel(BaseModel):
         [],
         description='A list of labels for the App.',
     )
-    language_version: str | None = Field(
+    language_version: Version = Field(
         ...,
         description=(
-            'Optional property used solely for tracking purposes. It does not affect '
-            'the version of Python or Java used by the Job Execution Engine to run the App.'
+            'The major.minor version of the language (e.g., Python "3.11"). This value is used by '
+            'the Core platform to control which version of Python is used to launch the App.'
         ),
     )
     list_delimiter: str = Field(
@@ -562,11 +564,10 @@ class InstallJsonCommonModel(BaseModel):
         ),
     )
     min_server_version: Version = Field(
-        '6.2.0',
+        '7.2.0',
         description=(
             'Optional string property restricting the ThreatConnect instance from '
-            'installing the App if it does not meet this version requirement '
-            '(e.g., 6.5.0).'
+            'installing the App if it does not meet this version requirement (e.g., 7.2.0).'
         ),
     )
     note: str | None = Field(
@@ -612,13 +613,49 @@ class InstallJsonCommonModel(BaseModel):
         None,
         description='',
     )
+    sdk_version: Version | None = Field(
+        None,
+        description=(
+            'The version of the SDK (TcEx). This value is used by the Core '
+            'platform to control behavior in App Builder.'
+        ),
+    )
 
     @validator('min_server_version', 'program_version', pre=True)
-    def version(cls, v):
+    def version(cls, v) -> Version:
         """Return a version object for "version" fields."""
         if v is not None:
             return Version(v)
-        return v  # pragma: no cover
+        return v
+
+    @validator('language_version', always=True, pre=True)
+    def _language_version(cls, v) -> Version:
+        """Return a version object for "version" field."""
+        if v is None:
+            return Version(platform.python_version())
+
+        if not isinstance(v, Version):
+            # handle non-sematic version strings (e.g., 3.6)
+            if re.match(r'^\d+\.\d+$', str(v)):
+                v = f'{v}.0'
+
+        return v if isinstance(v, Version) else Version(v)
+
+    @validator('sdk_version', always=True, pre=True)
+    def _sdk_version(cls, v) -> Version:
+        """Return a version object for "version" field."""
+        if v is None:
+            # assume legacy App
+            return Version('2.0.0')
+
+        # ensure v is a Version object
+        v = v if isinstance(v, Version) else Version(v)
+
+        # update version
+        if v >= Version('4.0.0'):
+            return Version(version('tcex'))
+
+        return v
 
     class Config:
         """DataModel Config"""

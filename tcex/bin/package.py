@@ -151,7 +151,8 @@ class Package(BinABC):
         # load template install json
         ij_template = InstallJson(path=app_path_fqpn)
 
-        # automatically update install.json in template directory
+        # automatically update install.json in the package directory. specifically, update the
+        # languageVersion and sdkVersion fields to match the current values.
         ij_template.update.multiple(sequence=False, valid_values=False, playbook_data_types=False)
 
         # zip file

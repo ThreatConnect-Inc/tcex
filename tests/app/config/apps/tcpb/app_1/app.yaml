@@ -12,7 +12,8 @@ app:
     - label1
     - label2
     - label3
-  languageVersion: "3.6"
+  languageVersion: "3.11.0"
+  sdkVersion: "4.0.0"
   listDelimiter: "|"
   note: A TcEx testing App.
   outputPrefix: app_1

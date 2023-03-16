@@ -102,11 +102,9 @@ class Dep(BinABC):
 
         return _env
 
-    @staticmethod
-    def _remove_previous():
+    def _remove_previous(self):
         """Remove previous deps directory recursively."""
-        if os.access('deps', os.W_OK):
-            shutil.rmtree('deps')
+        shutil.rmtree(str(self.deps_dir), ignore_errors=True)
 
     def configure_proxy(self):
         """Configure proxy settings using environment variables."""
@@ -172,11 +170,6 @@ class Dep(BinABC):
 
         # display branch setting
         self.print_setting('Using Branch', self.branch)
-
-    @cached_property
-    def deps_dir(self) -> Path:
-        """Return the deps directory."""
-        return Path('deps')
 
     @property
     def has_requirements_lock(self):
@@ -298,14 +291,17 @@ class Dep(BinABC):
 
     def validate_python_version(self):
         """Validate the python version."""
-        major_minor = f'{sys.version_info.major}.{sys.version_info.minor}'
+        python_major_minor = f'{sys.version_info.major}.{sys.version_info.minor}'
         ij_language_version = InstallJson().model.language_version
-        if major_minor != ij_language_version:
+        language_major_minor = f'{ij_language_version.major}.{ij_language_version.minor}'
+
+        if python_major_minor != language_major_minor:
             typer.secho(
                 (
                     'The App languageVersion defined in the install.json '
                     'file does not match the current Python version.'
-                    f'\n\nij-version={ij_language_version} != current-version={major_minor}.'
+                    f'\n\ndefined-version={language_major_minor} '
+                    f'!= current-version={python_major_minor}.'
                 ),
                 err=True,
                 color=True,
