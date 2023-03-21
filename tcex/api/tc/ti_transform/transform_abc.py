@@ -332,6 +332,9 @@ class TransformABC(ABC):
         # handle the 3 possible indicator fields
         self._process_indicator_values()
 
+        if self.transform.active:
+            self._process_metadata('active', self.transform.active)
+
         self._process_confidence(self.transform.confidence)
         self._process_rating(self.transform.rating)
 
