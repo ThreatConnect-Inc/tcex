@@ -16,7 +16,7 @@ class SpecToolAppSpecYml(BinABC):
     """Generate App Config File"""
 
     def __init__(self):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         super().__init__()
 
         # properties

@@ -15,7 +15,7 @@ class Group(Mapping):
     """Unique API calls for Group API Endpoints"""
 
     def __init__(self, ti: 'ThreatIntelligence', **kwargs):
-        """Initialize Class properties."""
+        """Initialize instance properties."""
         super().__init__(
             ti,
             'Group',

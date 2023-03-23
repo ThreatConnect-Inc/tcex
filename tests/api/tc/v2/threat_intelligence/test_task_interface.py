@@ -434,7 +434,6 @@ class TestTask(TestThreatIntelligence):
         }
         helper_ti = self.ti.task(**task_data)
         try:
-            print('before call')
             helper_ti.escalatees()
             assert False, 'failed to catch escalatees fetch on an task with no id.'
         except RuntimeError:

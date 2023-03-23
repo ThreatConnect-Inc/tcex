@@ -8,8 +8,8 @@ from tcex.api.tc.ti_transform.model import GroupTransformModel, IndicatorTransfo
 from tcex.api.tc.util.threat_intel_util import ThreatIntelUtil
 from tcex.api.tc.v2.v2 import V2
 from tcex.api.tc.v3.v3 import V3
-from tcex.backport import cached_property
 from tcex.input.input import Input  # TYPE-CHECKING
+from tcex.pleb.cached_property import cached_property
 
 
 class TC:
@@ -21,7 +21,7 @@ class TC:
     """
 
     def __init__(self, inputs: Input, session_tc: Session):
-        """Initialize Class properties."""
+        """Initialize instance properties."""
         self.inputs = inputs
         self.session_tc = session_tc
 

@@ -1,5 +1,5 @@
 """TcEx Framework module init file."""
-# flake8: noqa
+
 # standard library
 import logging
 

@@ -8,7 +8,7 @@ from pathlib import Path
 from tcex.app.config.install_json import InstallJson
 from tcex.app.config.layout_json import LayoutJson
 from tcex.app.config.permutation import Permutation
-from tcex.backport import cached_property
+from tcex.pleb.cached_property import cached_property
 
 
 class TestPermutation:

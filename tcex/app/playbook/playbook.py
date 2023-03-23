@@ -8,8 +8,8 @@ from tcex.app.playbook.playbook_create import PlaybookCreate
 from tcex.app.playbook.playbook_delete import PlaybookDelete
 from tcex.app.playbook.playbook_output import PlaybookOutput
 from tcex.app.playbook.playbook_read import PlaybookRead
-from tcex.backport import cached_property
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
+from tcex.pleb.cached_property import cached_property
 from tcex.util.model import PlaybookVariableModel
 from tcex.util.util import Util
 

@@ -9,7 +9,7 @@ from string import ascii_letters
 import inflect
 
 # first-party
-from tcex.backport import cached_property
+from tcex.pleb.cached_property import cached_property
 
 
 class StringOperation:

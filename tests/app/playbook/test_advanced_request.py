@@ -5,7 +5,8 @@ from collections.abc import Callable
 
 # first-party
 from tcex import TcEx
-from tcex.backport import cached_property
+from tcex.app.playbook.advanced_request import AdvancedRequest
+from tcex.pleb.cached_property import cached_property
 from tcex.pleb.scoped_property import scoped_property
 from tests.mock_app import MockApp
 
@@ -56,7 +57,19 @@ class TestAdvancedRequest:
         Args:
             playbook_app (MockApp, fixture): The playbook_app fixture.
         """
-        tcex: TcEx = playbook_app(
+        tcex = playbook_app(
+            ij_data={
+                'params': [
+                    {
+                        'label': 'HTTP Method',
+                        'name': 'tc_adv_req_http_method',
+                        'required': True,
+                        'sequence': 99,
+                        'type': 'Choice',
+                        'validValues': ['DELETE', 'GET', 'POST', 'PUT'],
+                    },
+                ]
+            },
             config_data={
                 'tc_adv_req_exclude_null_params': False,
                 'tc_adv_req_fail_on_error': False,
@@ -66,15 +79,20 @@ class TestAdvancedRequest:
                 'tc_adv_req_http_method': 'GET',
                 'tc_adv_req_params': [{'key': 'one', 'value': '1'}, {'key': 'two', 'value': ''}],
                 'tc_adv_req_path': '/anything',
-            }
+            },
         ).tcex
 
         se = tcex.session.external
         se.base_url = 'https://httpbin.tci.ninja'
         se.verify = False
 
-        ar = tcex.app.advanced_request(session=se, output_prefix='pytest', timeout=60)
-
+        ar = AdvancedRequest(
+            model=tcex.inputs.model_advanced_request,
+            playbook=tcex.app.playbook,
+            session=se,
+            output_prefix='pytest',
+            timeout=60,
+        )
         r = ar.request()
         if r is None:
             assert False, 'Request should not be None.'
@@ -95,7 +113,19 @@ class TestAdvancedRequest:
         Args:
             playbook_app (MockApp, fixture): The playbook_app fixture.
         """
-        tcex: TcEx = playbook_app(
+        tcex = playbook_app(
+            ij_data={
+                'params': [
+                    {
+                        'label': 'HTTP Method',
+                        'name': 'tc_adv_req_http_method',
+                        'required': True,
+                        'sequence': 99,
+                        'type': 'Choice',
+                        'validValues': ['DELETE', 'GET', 'POST', 'PUT'],
+                    },
+                ]
+            },
             config_data={
                 'tc_playbook_out_variables': self.tc_playbook_out_variables,
                 'tc_adv_req_exclude_null_params': False,
@@ -106,15 +136,20 @@ class TestAdvancedRequest:
                 'tc_adv_req_http_method': 'GET',
                 'tc_adv_req_params': [{'key': 'one', 'value': '1'}, {'key': 'two', 'value': ''}],
                 'tc_adv_req_path': '/status/500',
-            }
+            },
         ).tcex
 
         se = tcex.session.external
         se.base_url = 'https://httpbin.tci.ninja'
         se.verify = False
 
-        ar = tcex.app.advanced_request(session=se, output_prefix='pytest', timeout=60)
-
+        ar = AdvancedRequest(
+            model=tcex.inputs.model_advanced_request,
+            playbook=tcex.app.playbook,
+            session=se,
+            output_prefix='pytest',
+            timeout=60,
+        )
         try:
             ar.request()
         except RuntimeError:
@@ -147,7 +182,19 @@ class TestAdvancedRequest:
         Args:
             playbook_app (MockApp, fixture): The playbook_app fixture.
         """
-        tcex: TcEx = playbook_app(
+        tcex = playbook_app(
+            ij_data={
+                'params': [
+                    {
+                        'label': 'HTTP Method',
+                        'name': 'tc_adv_req_http_method',
+                        'required': True,
+                        'sequence': 99,
+                        'type': 'Choice',
+                        'validValues': ['DELETE', 'GET', 'POST', 'PUT'],
+                    },
+                ]
+            },
             config_data={
                 'tc_adv_req_exclude_null_params': True,
                 'tc_adv_req_fail_on_error': False,
@@ -157,15 +204,20 @@ class TestAdvancedRequest:
                 'tc_adv_req_http_method': 'GET',
                 'tc_adv_req_params': [{'key': 'one', 'value': '1'}, {'key': 'two', 'value': None}],
                 'tc_adv_req_path': '/anything',
-            }
+            },
         ).tcex
 
         se = tcex.session.external
         se.base_url = 'https://httpbin.tci.ninja'
         se.verify = False
 
-        ar = tcex.app.advanced_request(session=se, output_prefix='pytest', timeout=60)
-
+        ar = AdvancedRequest(
+            model=tcex.inputs.model_advanced_request,
+            playbook=tcex.app.playbook,
+            session=se,
+            output_prefix='pytest',
+            timeout=60,
+        )
         r = ar.request()
         if r is None:
             assert False, 'Request should not be None.'
@@ -187,7 +239,19 @@ class TestAdvancedRequest:
         Args:
             playbook_app (MockApp, fixture): The playbook_app fixture.
         """
-        tcex: TcEx = playbook_app(
+        tcex = playbook_app(
+            ij_data={
+                'params': [
+                    {
+                        'label': 'HTTP Method',
+                        'name': 'tc_adv_req_http_method',
+                        'required': True,
+                        'sequence': 99,
+                        'type': 'Choice',
+                        'validValues': ['DELETE', 'GET', 'POST', 'PUT'],
+                    },
+                ]
+            },
             config_data={
                 'tc_adv_req_exclude_null_params': False,
                 'tc_adv_req_fail_on_error': False,
@@ -197,15 +261,20 @@ class TestAdvancedRequest:
                 'tc_adv_req_http_method': 'POST',
                 'tc_adv_req_params': [{'key': 'one', 'value': '1'}],
                 'tc_adv_req_path': '/anything',
-            }
+            },
         ).tcex
 
         se = tcex.session.external
         se.base_url = 'https://httpbin.tci.ninja'
         se.verify = False
 
-        ar = tcex.app.advanced_request(session=se, output_prefix='pytest', timeout=60)
-
+        ar = AdvancedRequest(
+            model=tcex.inputs.model_advanced_request,
+            playbook=tcex.app.playbook,
+            session=se,
+            output_prefix='pytest',
+            timeout=60,
+        )
         r = ar.request()
         if r is None:
             assert False, 'Request should not be None.'
@@ -228,7 +297,19 @@ class TestAdvancedRequest:
         Args:
             playbook_app (MockApp, fixture): The playbook_app fixture.
         """
-        tcex: TcEx = playbook_app(
+        tcex = playbook_app(
+            ij_data={
+                'params': [
+                    {
+                        'label': 'HTTP Method',
+                        'name': 'tc_adv_req_http_method',
+                        'required': True,
+                        'sequence': 99,
+                        'type': 'Choice',
+                        'validValues': ['DELETE', 'GET', 'POST', 'PUT'],
+                    },
+                ]
+            },
             config_data={
                 'tc_adv_req_exclude_null_params': False,
                 'tc_adv_req_fail_on_error': False,
@@ -238,15 +319,20 @@ class TestAdvancedRequest:
                 'tc_adv_req_http_method': 'POST',
                 'tc_adv_req_params': [{'key': 'one', 'value': '1'}],
                 'tc_adv_req_path': '/anything',
-            }
+            },
         ).tcex
 
         se = tcex.session.external
         se.base_url = 'https://httpbin.tci.ninja'
         se.verify = False
 
-        ar = tcex.app.advanced_request(session=se, output_prefix='pytest', timeout=60)
-
+        ar = AdvancedRequest(
+            model=tcex.inputs.model_advanced_request,
+            playbook=tcex.app.playbook,
+            session=se,
+            output_prefix='pytest',
+            timeout=60,
+        )
         r = ar.request()
         if r is None:
             assert False, 'Request should not be None.'
@@ -269,7 +355,19 @@ class TestAdvancedRequest:
         Args:
             playbook_app (MockApp, fixture): The playbook_app fixture.
         """
-        tcex: TcEx = playbook_app(
+        tcex = playbook_app(
+            ij_data={
+                'params': [
+                    {
+                        'label': 'HTTP Method',
+                        'name': 'tc_adv_req_http_method',
+                        'required': True,
+                        'sequence': 99,
+                        'type': 'Choice',
+                        'validValues': ['DELETE', 'GET', 'POST', 'PUT'],
+                    },
+                ]
+            },
             config_data={
                 'tc_adv_req_exclude_null_params': False,
                 'tc_adv_req_fail_on_error': False,
@@ -279,15 +377,20 @@ class TestAdvancedRequest:
                 'tc_adv_req_http_method': 'POST',
                 'tc_adv_req_params': [{'key': 'one', 'value': '1'}],
                 'tc_adv_req_path': '/anything',
-            }
+            },
         ).tcex
 
         se = tcex.session.external
         se.base_url = 'https://httpbin.tci.ninja'
         se.verify = False
 
-        ar = tcex.app.advanced_request(session=se, output_prefix='pytest', timeout=60)
-
+        ar = AdvancedRequest(
+            model=tcex.inputs.model_advanced_request,
+            playbook=tcex.app.playbook,
+            session=se,
+            output_prefix='pytest',
+            timeout=60,
+        )
         r = ar.request()
         if r is None:
             assert False, 'Request should not be None.'

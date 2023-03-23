@@ -12,7 +12,7 @@ from requests.exceptions import ProxyError
 # first-party
 from tcex.api.tc.v3._gen._gen_abc import GenerateABC
 from tcex.api.tc.v3._gen.model import FilterModel
-from tcex.backport import cached_property
+from tcex.pleb.cached_property import cached_property
 from tcex.util.string_operation import SnakeString
 
 
@@ -20,7 +20,7 @@ class GenerateFilterABC(GenerateABC, ABC):
     """Generate Models for Case Management Types"""
 
     def __init__(self, type_: SnakeString):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         super().__init__(type_)
 
         # properties

@@ -1,5 +1,5 @@
 """Bin module for TcEx Framework"""
-# flake8: noqa
+
 # first-party
 from tcex.bin.dep import Dep
 from tcex.bin.deploy import Deploy

@@ -12,7 +12,7 @@ class GenerateModelABC(GenerateABC, ABC):
     """Generate Models for Case Management Types"""
 
     def __init__(self, type_: SnakeString):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         super().__init__(type_)
 
         # properties

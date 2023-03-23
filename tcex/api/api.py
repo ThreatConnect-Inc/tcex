@@ -3,9 +3,9 @@
 from requests import Session  # TYPE-CHECKING
 
 # first-party
-from tcex.api.tc import TC
-from tcex.backport import cached_property
+from tcex.api.tc.tc import TC
 from tcex.input.input import Input  # TYPE-CHECKING
+from tcex.pleb.cached_property import cached_property
 
 
 class API:
@@ -17,7 +17,7 @@ class API:
     """
 
     def __init__(self, inputs: Input, session_tc: Session):
-        """Initialize Class properties."""
+        """Initialize instance properties."""
         self.inputs = inputs
         self.session_tc = session_tc
 

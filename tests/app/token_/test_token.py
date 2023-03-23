@@ -9,8 +9,8 @@ import pytest
 
 # first-party
 from tcex.app.token.token import Token
-from tcex.backport import cached_property
 from tcex.input.field_type import Sensitive
+from tcex.pleb.cached_property import cached_property
 from tcex.pleb.scoped_property import scoped_property
 from tests.mock_app import MockApp
 
@@ -32,7 +32,7 @@ def await_token_barrier_disabled(token_service: Token, timeout: int = 60):
         raise RuntimeError('Timeout Expired while waiting for token barrier to be disabled')
 
 
-def await_token_renewal_cycle(token_service: Token, timeout=60):
+def await_token_renewal_cycle(token_service: Token, timeout: int = 60):
     """Await for a token renewal cycle to take place and finish"""
     # wait until renewal monitor has enabled the barrier (is_set == False), which
     # means that renewal monitor has started renewal process

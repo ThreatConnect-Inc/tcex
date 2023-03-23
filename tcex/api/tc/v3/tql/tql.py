@@ -11,7 +11,7 @@ class Tql:
     """ThreatConnect TQL"""
 
     def __init__(self):
-        """Initialize Class Properties"""
+        """Initialize instance properties"""
         self._filters = []
         self.raw_tql = None
 

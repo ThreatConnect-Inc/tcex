@@ -18,7 +18,7 @@ class Victim(Mapping):
     """Unique API calls for Victim API Endpoints"""
 
     def __init__(self, ti: 'ThreatIntelligence', **kwargs):
-        """Initialize Class properties.
+        """Initialize instance properties.
 
         Args:
             ti (ThreatIntelligence): An instance of the ThreatIntelligence Class.

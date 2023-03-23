@@ -32,7 +32,7 @@ class Registry(Container):
     """
 
     def __init__(self):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         self._values = {}
 
     def add_service(self, type_or_name: str | type, value: Any):

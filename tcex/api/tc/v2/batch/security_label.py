@@ -9,7 +9,7 @@ class SecurityLabel:
     __slots__ = ['_label_data']
 
     def __init__(self, name: str, description: str | None = None, color: str | None = None):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Args:
             name: The value for this security label.

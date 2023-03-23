@@ -49,7 +49,7 @@ class Batch(BatchWriter, BatchSubmit):
         tag_write_type: str = 'Replace',
         security_label_write_type: str = 'Replace',
     ):
-        """Initialize Class properties."""
+        """Initialize instance properties."""
         BatchWriter.__init__(self, inputs=inputs, session_tc=session_tc, output_dir='')
         BatchSubmit.__init__(
             self,

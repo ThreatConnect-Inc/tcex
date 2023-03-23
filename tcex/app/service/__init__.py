@@ -1,5 +1,5 @@
 """Service module for TcEx Framework"""
-# flake8: noqa
+
 # first-party
 from tcex.app.service.api_service import ApiService
 from tcex.app.service.common_service_trigger import CommonServiceTrigger

@@ -7,7 +7,7 @@ class CacheHandler(logging.Handler):
     """Logger handler for caching event until all handlers are available."""
 
     def __init__(self, max_cache: int = 100):
-        """Initialize Class properties.
+        """Initialize instance properties.
 
         Args:
             max_cache (int): The maximum numbers of records to cache.

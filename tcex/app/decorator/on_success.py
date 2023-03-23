@@ -26,7 +26,7 @@ class OnSuccess:
     """
 
     def __init__(self, exit_msg: str | None = None):
-        """Initialize Class properties"""
+        """Initialize instance properties"""
         self.exit_msg = exit_msg or 'App finished successfully.'
 
     @wrapt.decorator

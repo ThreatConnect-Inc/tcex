@@ -13,9 +13,9 @@ from requests.exceptions import ProxyError, RetryError
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
-from tcex.backport import cached_property
 from tcex.exit.error_code import handle_error
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
+from tcex.pleb.cached_property import cached_property
 from tcex.util import Util
 
 # get tcex logger
@@ -32,7 +32,7 @@ class ObjectABC(ABC):
     """
 
     def __init__(self, session: Session):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         self._session: Session = session
 
         # properties
@@ -162,6 +162,7 @@ class ObjectABC(ABC):
         """
         method = 'POST'
         body = self.model.gen_body_json(method=method)
+        params = self.gen_params(params) if params else None
         self._request(
             method,
             self.url(method),
@@ -242,7 +243,7 @@ class ObjectABC(ABC):
         """
         method = 'GET'
         object_id = object_id or self.model.id
-        params = params or {}
+        params = self.gen_params(params) if params else None
 
         # get the unique id value for id, xid, summary, etc ...
         unique_id = self._calculate_unique_id().get('value')
@@ -251,7 +252,6 @@ class ObjectABC(ABC):
         self._validate_id(unique_id, self.url(method, unique_id))
 
         body = self.model.gen_body_json(method)
-        params = self.gen_params(params)
         self._request(method, self.url(method, unique_id), body, params)
 
         # update model
@@ -338,6 +338,7 @@ class ObjectABC(ABC):
         """
         method = 'PUT'
         body = self.model.gen_body_json(method=method, mode=mode)
+        params = self.gen_params(params) if params else None
 
         # get the unique id value for id, xid, summary, etc ...
         unique_id = self._calculate_unique_id().get('value')

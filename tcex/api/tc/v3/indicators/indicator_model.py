@@ -388,6 +388,13 @@ class IndicatorModel(
         read_only=True,
         title='threatAssessScoreObserved',
     )
+    tracked_users: dict | None = Field(
+        None,
+        allow_mutation=False,
+        description='List of tracked users and their observation and false positive stats.',
+        read_only=True,
+        title='trackedUsers',
+    )
     type: str | None = Field(
         None,
         description='The **type** for the Indicator.',

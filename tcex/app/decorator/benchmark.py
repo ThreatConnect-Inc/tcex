@@ -38,7 +38,7 @@ class Benchmark:
         milliseconds: int = 0,
         seconds: int = 0,
     ):
-        """Initialize Class properties."""
+        """Initialize instance properties."""
         self.microseconds = microseconds
         self.milliseconds = milliseconds
         self.seconds = seconds

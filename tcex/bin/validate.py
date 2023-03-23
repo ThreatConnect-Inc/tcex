@@ -41,7 +41,7 @@ class Validate(BinABC):
     """
 
     def __init__(self, ignore_validation: bool):
-        """Initialize Class properties."""
+        """Initialize instance properties."""
         super().__init__()
         self.permutations = Permutation()
         self.ignore_validation = ignore_validation

@@ -47,7 +47,7 @@ class FailOnOutput:
         fail_msg_property: str | None = None,
         write_output: bool = True,
     ):
-        """Initialize Class properties."""
+        """Initialize instance properties."""
         self.fail_enabled = fail_enabled
         self.fail_msg = fail_msg
         self.fail_on = fail_on or []

@@ -12,7 +12,7 @@ class TcexJsonUpdate:
     """Update install.json file with current standards and schema."""
 
     def __init__(self, tj: 'TcexJson'):  # pylint: disable=E0601
-        """Initialize class properties."""
+        """Initialize instance properties."""
         self.tj = tj
 
     def multiple(self, template: str | None = None):

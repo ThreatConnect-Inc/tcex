@@ -68,7 +68,7 @@ class Indicator:
     ]
 
     def __init__(self, indicator_type: str, summary: str, **kwargs):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Args:
             indicator_type: The ThreatConnect define Indicator type.
@@ -404,7 +404,7 @@ class Address(Indicator):
     __slots__ = []
 
     def __init__(self, ip: str, **kwargs):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Args:
             ip: The value for this Indicator.
@@ -425,7 +425,7 @@ class ASN(Indicator):
     __slots__ = []
 
     def __init__(self, as_number: str, **kwargs):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Args:
             as_number: The value for this Indicator.
@@ -446,7 +446,7 @@ class CIDR(Indicator):
     __slots__ = []
 
     def __init__(self, block: str, **kwargs):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Args:
             block: The value for this Indicator.
@@ -467,7 +467,7 @@ class EmailAddress(Indicator):
     __slots__ = []
 
     def __init__(self, address: str, **kwargs):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Args:
             address: The value for this Indicator.
@@ -494,7 +494,7 @@ class File(Indicator):
         sha256: str | None = None,
         **kwargs,
     ):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Args:
             md5: The md5 value for this Indicator.
@@ -566,7 +566,7 @@ class Host(Indicator):
     __slots__ = []
 
     def __init__(self, hostname: str, **kwargs):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Args:
             hostname: The value for this Indicator.
@@ -609,7 +609,7 @@ class Mutex(Indicator):
     __slots__ = []
 
     def __init__(self, mutex: str, **kwargs):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Args:
             mutex: The value for this Indicator.
@@ -630,7 +630,7 @@ class RegistryKey(Indicator):
     __slots__ = []
 
     def __init__(self, key_name: str, value_name: str, value_type: str, **kwargs):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Args:
             key_name: The key_name value for this Indicator.
@@ -654,7 +654,7 @@ class URL(Indicator):
     __slots__ = []
 
     def __init__(self, text: str, **kwargs):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Args:
             text: The value for this Indicator.
@@ -675,7 +675,7 @@ class UserAgent(Indicator):
     __slots__ = []
 
     def __init__(self, text: str, **kwargs):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Args:
             text: The value for this Indicator.
@@ -696,7 +696,7 @@ class FileAction:
     __slots__ = ['_action_data', '_children', 'xid']
 
     def __init__(self, parent_xid: str, relationship):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         .. warning:: This code is not complete and may require some update to the API.
 
@@ -741,7 +741,7 @@ class FileOccurrence:
         path: str | None = None,
         date: str | None = None,
     ):
-        """Initialize Class Properties
+        """Initialize instance properties
 
         Args:
             file_name (str, optional): The file name for this occurrence.

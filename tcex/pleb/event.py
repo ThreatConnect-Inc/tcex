@@ -10,7 +10,7 @@ class Event(metaclass=Singleton):
     """Event Class"""
 
     def __init__(self):
-        """Initialize Class properties."""
+        """Initialize instance properties."""
         self.channels = {}
 
     def send(self, channel: str, **kwargs):

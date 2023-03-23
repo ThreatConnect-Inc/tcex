@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """Permutation"""
 # standard library
 import json
@@ -7,9 +6,9 @@ import os
 import random
 import re
 import sys
-from collections.abc import Generator
+from collections.abc import Generator, Iterator
 from pathlib import Path
-from typing import Any, cast
+from typing import Any, NoReturn, cast
 
 try:
     # standard library
@@ -22,7 +21,7 @@ from tcex.app.config.install_json import InstallJson
 from tcex.app.config.layout_json import LayoutJson
 from tcex.app.config.model.install_json_model import OutputVariablesModel, ParamsModel
 from tcex.app.config.model.layout_json_model import OutputsModel
-from tcex.backport import cached_property
+from tcex.pleb.cached_property import cached_property
 from tcex.pleb.none_model import NoneModel
 
 # get tcex logger
@@ -43,10 +42,11 @@ class Permutation:
     """Permutations Module"""
 
     def __init__(self, logger: logging.Logger | None = None):
-        """Initialize Class properties"""
+        """Initialize instance properties"""
         self.log = logger or tcex_logger
 
         # properties
+        self._input_names = None
         self._input_table = 'inputs'
         self._input_permutations: list[list[InputModel]] = []
         self._output_permutations: list[list[OutputVariablesModel]] = []
@@ -159,13 +159,15 @@ class Permutation:
                 self._output_permutations.append(outputs)
 
     @property
-    def _params_data(self) -> Generator[ParamsModel | None, ParamsModel, None]:
+    def _params_data(self) -> Generator[ParamsModel, None, None]:
         """Return all defined params from layout.json/install.json, including hidden params."""
         # using inputs from layout.json since they are required to be in order
         # (display field can only use inputs previously defined)
         for input_name in self.lj.model.params:
             # get data from install.json based on name
-            yield self.ij.model.get_param(input_name)
+            param = self.ij.model.get_param(input_name)
+            if param is not None:
+                yield param
 
         # hidden fields will not be in layout.json so they need to be include manually
         for input_name, ij_data in self.ij.model.filter_params(hidden=True).items():
@@ -287,7 +289,7 @@ class Permutation:
                 self.log.error(f'SQL update failed - SQL: "{sql}", Error: "{ex}"')
                 sys.exit(1)
 
-    def handle_error(self, err: str, halt: bool = True):  # pragma: no cover
+    def handle_error(self, err: str) -> NoReturn:  # pragma: no cover
         """Print errors message and optionally exit.
 
         Args:
@@ -296,8 +298,7 @@ class Permutation:
         """
         self.log.error(err)
         print(err)
-        if halt:
-            sys.exit(1)
+        sys.exit(1)
 
     def get_action_input_names(self, action: str) -> list[str]:
         """Return the input names for the provided action."""
@@ -325,6 +326,36 @@ class Permutation:
                 return False  # not found
         return True
 
+    def extract_tc_action_clause(self, display_clause: str | None) -> str | None:
+        """Extract the tc_action part of the display clause."""
+        if display_clause is not None:
+            # action_clause_extract_pattern = r'(tc_action\sin\s\([^\)]*\))'
+            action_clause_extract_pattern = r'''(tc_action\sin\s\(.+?(?<='\)))'''
+            _tc_action_clause = re.search(
+                action_clause_extract_pattern, display_clause, re.IGNORECASE
+            )
+            if _tc_action_clause is not None:
+                self.log.debug(f'action=extract-action-clause, display-clause={display_clause}')
+                return _tc_action_clause.group(1)
+        return None
+
+    # TODO: [bcs] this typing hing doesn't make sense on second yield
+    @property
+    def inputs_ordered(
+        self,
+    ) -> Generator[ParamsModel | str | None, None, None]:
+        """Return inputs ordered properly.
+
+        Layout based playbook Apps have the inputs ordered in
+        the layout.json so that the display clause is guaranteed
+        to have conditional defined before the clause is executed.
+        """
+        if self.lj.has_layout:
+            for name in self.lj.model.param_names:
+                yield self.ij.model.get_param(name)
+        else:
+            yield from self.lj.model.params
+
     # TODO: [low] improve this logic
     def init_permutations(self):
         """Process layout.json names/display to get all permutations of args."""
@@ -341,6 +372,33 @@ class Permutation:
 
             # drop database
             self.db_drop_table(self._input_table)
+
+    def inputs_by_action(
+        self, action: str, include_hidden: bool = True
+    ) -> Iterator[dict[str, bool | ParamsModel]]:
+        """Return all inputs for the provided action."""
+        for ij_data in self._params_data:
+            # get a display clause with just the tc_action condition
+            display = self.extract_tc_action_clause(self.lj.model.get_param(ij_data.name).display)
+            self.log.debug(f'action=input-by-action, input-name={ij_data.name}, display={display}')
+
+            if ij_data.service_config:
+                # inputs that are serviceConfig are not applicable for profiles
+                continue
+
+            if display is None:
+                # when there is no display clause or the input is hidden,
+                # then the input gets added to the AppBaseModel
+                applies_to_all = True
+            elif ij_data.hidden is True and include_hidden is True:
+                applies_to_all = True
+            elif self.validate_input_variable(ij_data.name, {'tc_action': action}, display):
+                # each input will be checked for permutations if the App has layout and not hidden
+                applies_to_all = False
+            else:
+                continue
+
+            yield {'applies_to_all': applies_to_all, 'input': ij_data}
 
     def input_dict(self, permutation_id: int) -> dict:
         """Return all input permutation names for provided permutation id.
@@ -396,6 +454,40 @@ class Permutation:
         if self._output_permutations is None:
             self.init_permutations()
         return self._output_permutations
+
+    def outputs_by_action(self, action: str) -> Iterator[OutputVariablesModel]:
+        """Return all inputs for the provided action."""
+        yield from self.outputs_by_inputs({'tc_action': action})
+
+    def outputs_by_inputs(self, inputs: dict[str, str]) -> Iterator[OutputVariablesModel]:
+        """Return all output based on provided inputs
+
+        Args:
+            inputs: The args/inputs dict.
+
+        Returns:
+            list: List of Lists of valid outputs objects.
+        """
+        table = f'temp_{random.randint(100,999)}'  # nosec
+        self.db_create_table(table, self.ij.model.param_names)
+        self.db_insert_record(table, self.ij.model.param_names)
+
+        for name, val in inputs.items():
+            self.db_update_record(table, name, val)
+
+        # iterate of InstallJsonModel -> PlaybookModel -> OutputVariablesModel
+        if self.ij.model.playbook:
+            for o in self.ij.model.playbook.output_variables:
+                lj_output = self.lj.model.get_output(o.name)
+                if isinstance(lj_output, NoneModel):  # pragma: no cover
+                    # an output not listed in layout.json should always be shown
+                    yield o
+                elif self.validate_layout_display(table, lj_output.display):
+                    # all other outputs must be validated
+                    yield o
+
+        # drop database
+        self.db_drop_table(table)
 
     def permutations(self):
         """Process layout.json names/display to get all permutations of args."""

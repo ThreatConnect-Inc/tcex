@@ -18,7 +18,7 @@ class InstallJsonUpdate:
     """Update install.json file with current standards and schema."""
 
     def __init__(self, ij: 'InstallJson'):  # pylint: disable=E0601
-        """Initialize class properties."""
+        """Initialize instance properties."""
         self.ij = ij
 
     def multiple(

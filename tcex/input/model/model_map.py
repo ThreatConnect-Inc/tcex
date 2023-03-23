@@ -1,7 +1,7 @@
 """Model Map"""
 
 # first-party
-from tcex.input.model.advanced_request_model import _AdvancedRequestModel
+from tcex.input.model.advanced_request_model import AdvancedRequestModel
 from tcex.input.model.aot_execution_enabled_model import AotExecutionEnabledModel
 from tcex.input.model.app_api_service_model import AppApiServiceModel
 from tcex.input.model.app_external_model import AppExternalModel
@@ -48,5 +48,5 @@ runtime_level_map = {
 }
 
 tc_action_map = {
-    'Advanced Request': [_AdvancedRequestModel],
+    'Advanced Request': [AdvancedRequestModel],
 }

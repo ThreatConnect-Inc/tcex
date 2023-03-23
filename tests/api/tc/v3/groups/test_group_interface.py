@@ -194,7 +194,7 @@ class TestGroups(TestV3):
         )
         staged_victim.stage_victim_asset(asset)
 
-        staged_victim.update(params={'owner': 'TCI'})
+        staged_group.update(params={'owner': 'TCI', 'fields': ['_all_']})
 
         assert asset.as_entity.get('type') == 'Victim Asset : EmailAddress'
         assert asset.as_entity.get('value') == 'Trojan : malware@example.com'
@@ -202,7 +202,7 @@ class TestGroups(TestV3):
         asset = staged_victim.model.assets.data[0]
 
         staged_group.stage_associated_victim_asset(asset)
-        staged_group.update(params={'owner': 'TCI'})
+        staged_group.update(params={'owner': 'TCI', 'fields': ['_all_']})
 
         found_victim_assets = 0
         staged_victim_asset_found = False

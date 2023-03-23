@@ -27,7 +27,7 @@ class SpecTool(BinABC):
     """Generate App Config Files"""
 
     def __init__(self, overwrite: bool = False):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         super().__init__()
         self.overwrite = overwrite
 

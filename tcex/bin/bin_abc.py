@@ -16,11 +16,11 @@ from semantic_version import Version
 from tcex.app.config.install_json import InstallJson
 from tcex.app.config.layout_json import LayoutJson
 from tcex.app.config.tcex_json import TcexJson
-from tcex.backport import cached_property
 from tcex.logger.rotating_file_handler_custom import (  # pylint: disable=no-name-in-module
     RotatingFileHandlerCustom,
 )
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
+from tcex.pleb.cached_property import cached_property
 from tcex.util.util import Util
 
 
@@ -28,7 +28,7 @@ class BinABC(ABC):
     """Base Class for ThreatConnect command line tools."""
 
     def __init__(self):
-        """Initialize Class properties."""
+        """Initialize instance properties."""
         # properties
         self.app_path = Path.cwd()
         self.exit_code = 0

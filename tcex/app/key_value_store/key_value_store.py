@@ -1,7 +1,6 @@
 """TcEx Module"""
 # standard library
 import logging
-from typing import TYPE_CHECKING
 
 # third-party
 from redis import Redis
@@ -15,10 +14,6 @@ from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-m
 from tcex.pleb.scoped_property import scoped_property
 from tcex.requests_session.tc_session import TcSession
 
-if TYPE_CHECKING:
-    # first-party
-    from tcex.input.input import Input
-
 # get tcex logger
 logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 
@@ -26,11 +21,18 @@ logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 class KeyValueStore:
     """TcEx Module"""
 
-    # TODO: @bcs - only needs model_unresolved
-    def __init__(self, inputs: 'Input', session_tc: TcSession):
+    def __init__(
+        self,
+        session_tc: TcSession,
+        tc_kvstore_host: str,
+        tc_kvstore_port: int,
+        tc_kvstore_type: str,
+    ):
         """Initialize the class properties."""
-        self.inputs = inputs
         self.session_tc = session_tc
+        self.tc_kvstore_host = tc_kvstore_host
+        self.tc_kvstore_port = tc_kvstore_port
+        self.tc_kvstore_type = tc_kvstore_type
 
         # properties
         self.log = logger
@@ -42,22 +44,20 @@ class KeyValueStore:
         The TCKeyValueAPI KV store is limited to two operations (create and read),
         while the Redis kvstore wraps a few other Redis methods.
         """
-        if self.inputs.model_unresolved.tc_kvstore_type == 'Redis':
+        if self.tc_kvstore_type == 'Redis':
             return KeyValueRedis(self.redis_client)
 
-        if self.inputs.model_unresolved.tc_kvstore_type == 'TCKeyValueAPI':
+        if self.tc_kvstore_type == 'TCKeyValueAPI':
             return KeyValueApi(self.session_tc)  # pylint: disable=no-member
 
-        if self.inputs.model_unresolved.tc_kvstore_type == 'Mock':
+        if self.tc_kvstore_type == 'Mock':
             self.log.warning(
                 'Using mock key-value store. '
                 'This should *never* happen when running in-platform.'
             )
             return KeyValueMock()
 
-        raise RuntimeError(
-            f'Invalid KV Store Type: ({self.inputs.model_unresolved.tc_kvstore_type})'
-        )
+        raise RuntimeError(f'Invalid KV Store Type: ({self.tc_kvstore_type})')
 
     @staticmethod
     def get_redis_client(
@@ -86,7 +86,7 @@ class KeyValueStore:
     def redis_client(self) -> Redis:
         """Return redis client instance configure for Playbook/Service Apps."""
         return self.get_redis_client(
-            host=self.inputs.model_unresolved.tc_kvstore_host,
-            port=self.inputs.model_unresolved.tc_kvstore_port,
+            host=self.tc_kvstore_host,
+            port=self.tc_kvstore_port,
             db=0,
         )

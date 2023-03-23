@@ -39,7 +39,7 @@ class Mapping:
         api_branch,
         owner,
     ):
-        """Initialize Class Properties"""
+        """Initialize instance properties"""
         self._api_branch = api_branch
         self._api_entity = api_entity
         self._api_sub_type = sub_type

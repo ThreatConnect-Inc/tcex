@@ -19,7 +19,7 @@ except ImportError:
 from tcex.app.config.install_json import InstallJson
 from tcex.app.config.model import AppSpecYmlModel
 from tcex.app.config.tcex_json import TcexJson
-from tcex.backport import cached_property
+from tcex.pleb.cached_property import cached_property
 
 # get tcex logger
 tcex_logger = logging.getLogger('tcex')
@@ -34,7 +34,7 @@ class AppSpecYml:
         path: str | None = None,
         logger: logging.Logger | None = None,
     ):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         filename = filename or 'app_spec.yml'
         path = path or os.getcwd()
         self.log = logger or tcex_logger

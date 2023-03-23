@@ -4,9 +4,10 @@ import logging
 
 # first-party
 from tcex.app.config.install_json import InstallJson
-from tcex.backport import cached_property
-from tcex.input.input import Input
-from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
+from tcex.input.model.module_requests_session_model import ModuleRequestsSessionModel
+from tcex.logger.trace_logger import TraceLogger
+from tcex.pleb.cached_property import cached_property
+from tcex.pleb.proxies import proxies
 from tcex.pleb.registry import registry
 from tcex.pleb.scoped_property import scoped_property
 from tcex.requests_session.auth.hmac_auth import HmacAuth
@@ -22,10 +23,9 @@ logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
 class RequestsSession:
     """TcEx Module"""
 
-    def __init__(self, inputs: Input, proxies: dict[str, str]):
-        """Initialize Class properties."""
-        self.inputs = inputs
-        self.proxies = proxies
+    def __init__(self, model: ModuleRequestsSessionModel):
+        """Initialize instance properties."""
+        self.model = model
 
         # properties
         self.install_json = InstallJson()
@@ -44,14 +44,14 @@ class RequestsSession:
         _session_external.headers.update(registry.app.user_agent)
 
         # add proxy support if requested
-        if self.inputs.model_unresolved.tc_proxy_external:
+        if self.model.tc_proxy_external:
             _session_external.proxies = self.proxies
             self.log.info(
-                f'Using proxy host {self.inputs.model_unresolved.tc_proxy_host}:'
-                f'{self.inputs.model_unresolved.tc_proxy_port} for external session.'
+                f'Using proxy host {self.model.tc_proxy_host}:'
+                f'{self.model.tc_proxy_port} for external session.'
             )
 
-        if self.inputs.model_unresolved.tc_log_curl:
+        if self.model.tc_log_curl:
             _session_external.log_curl = log_curl
 
         return _session_external
@@ -61,7 +61,7 @@ class RequestsSession:
         auth: HmacAuth | TokenAuth | TcAuth | None = None,
         base_url: str | None = None,
         log_curl: bool | None = None,
-        proxies: dict[str, str] | None = None,  # pylint: disable=redefined-outer-name
+        proxies_: dict[str, str] | None = None,
         proxies_enabled: bool | None = None,
         verify: bool | str | None = None,
     ) -> TcSession:
@@ -73,32 +73,42 @@ class RequestsSession:
         very useful when connecting between multiple TC instances (e.g., migrating data).
         """
         if log_curl is None:
-            log_curl = self.inputs.model_unresolved.tc_log_curl
+            log_curl = self.model.tc_log_curl
 
         if proxies_enabled is None:
-            proxies_enabled = self.inputs.model_unresolved.tc_proxy_tc
+            proxies_enabled = self.model.tc_proxy_tc
 
         if verify is None:
-            verify = self.inputs.model_unresolved.tc_verify
+            verify = self.model.tc_verify
 
-        token = registry.app.token
+        token_callable = registry.app.token.get_token
         if self.install_json.is_external_app is True:
-            token = None
+            token_callable = None
 
         auth = auth or TcAuth(
-            tc_api_access_id=self.inputs.model_unresolved.tc_api_access_id,
-            tc_api_secret_key=self.inputs.model_unresolved.tc_api_secret_key,
-            tc_token=token,
+            tc_api_access_id=self.model.tc_api_access_id,
+            tc_api_secret_key=self.model.tc_api_secret_key,
+            tc_token=token_callable,
         )
 
         return TcSession(
             auth=auth,
-            base_url=base_url or self.inputs.model_unresolved.tc_api_path,
+            base_url=base_url or self.model.tc_api_path,
             log_curl=log_curl,
-            proxies=proxies or self.proxies,
+            proxies=proxies_ or self.proxies,
             proxies_enabled=proxies_enabled,
             user_agent=registry.app.user_agent,
             verify=verify,
+        )
+
+    @cached_property
+    def proxies(self) -> dict:
+        """Return proxies dictionary for use with the Python Requests module."""
+        return proxies(
+            proxy_host=self.model.tc_proxy_host,
+            proxy_port=self.model.tc_proxy_port,
+            proxy_user=self.model.tc_proxy_username,
+            proxy_pass=self.model.tc_proxy_password,
         )
 
     @scoped_property

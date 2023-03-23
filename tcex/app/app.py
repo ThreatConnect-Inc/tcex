@@ -5,18 +5,14 @@ import os
 import threading
 from typing import TYPE_CHECKING
 
-# third-party
-from requests import Session
-
 # first-party
 from tcex.app.config.install_json import InstallJson
 from tcex.app.key_value_store.key_value_store import KeyValueStore
-from tcex.app.playbook.advanced_request.advanced_request import AdvancedRequest
 from tcex.app.playbook.playbook import Playbook
 from tcex.app.service import ApiService, CommonServiceTrigger, WebhookTriggerService
 from tcex.app.token import Token
-from tcex.backport import cached_property
-from tcex.input.input import Input
+from tcex.input.model.module_app_model import ModuleAppModel
+from tcex.pleb.cached_property import cached_property
 from tcex.pleb.registry import registry
 from tcex.pleb.scoped_property import scoped_property
 from tcex.util.file_operation import FileOperation
@@ -29,33 +25,18 @@ if TYPE_CHECKING:
 class App:
     """TcEx Module"""
 
-    def __init__(self, inputs: Input, proxies: dict[str, str], tcex: 'TcEx'):
-        """Initialize Class properties."""
-        self.inputs = inputs
+    def __init__(self, model: ModuleAppModel, proxies: dict[str, str], tcex: 'TcEx'):
+        """Initialize instance properties."""
+        self.model = model
         self.proxies = proxies
         self.tcex = tcex
-
-    def advanced_request(
-        self,
-        session: Session,
-        output_prefix: str,
-        timeout: int = 600,
-    ) -> AdvancedRequest:
-        """Return instance of AdvancedRequest.
-
-        Args:
-            session: An instance of requests.Session.
-            output_prefix: A value to prepend to outputs.
-            timeout: The number of second before timing out the request.
-        """
-        return AdvancedRequest(self.inputs, self.playbook, session, output_prefix, timeout)
 
     @cached_property
     def file_operation(self) -> FileOperation:
         """Include the Utils module."""
         return FileOperation(
-            out_path=self.inputs.model_unresolved.tc_out_path,
-            temp_path=self.inputs.model_unresolved.tc_temp_path,
+            out_path=self.model.tc_out_path,
+            temp_path=self.model.tc_temp_path,
         )
 
     def get_playbook(
@@ -69,9 +50,7 @@ class App:
             output_variables: The requested output variables. For PB Apps outputs are provided on
                 startup, but for service Apps each request gets different outputs.
         """
-        return Playbook(
-            self.key_value_store, context, output_variables  # pylint: disable=no-member
-        )
+        return Playbook(self.key_value_store, context, output_variables)
 
     @scoped_property
     def key_value_store(self) -> KeyValueStore:
@@ -80,7 +59,12 @@ class App:
         The TCKeyValueAPI KV store is limited to two operations (create and read),
         while the Redis kvstore wraps a few other Redis methods.
         """
-        return KeyValueStore(self.inputs, registry.session_tc)
+        return KeyValueStore(
+            registry.session_tc,
+            self.model.tc_kvstore_host,
+            self.model.tc_kvstore_port,
+            self.model.tc_kvstore_type,
+        )
 
     @cached_property
     def ij(self) -> InstallJson:
@@ -99,8 +83,8 @@ class App:
         This property defaults context and output variables to arg values.
         """
         return self.get_playbook(
-            context=self.inputs.model_unresolved.tc_playbook_kvstore_context,
-            output_variables=self.inputs.model_unresolved.tc_playbook_out_variables,
+            context=self.model.tc_playbook_kvstore_context,
+            output_variables=self.model.tc_playbook_out_variables,
         )
 
     def results_tc(self, key: str, value: str):
@@ -113,8 +97,8 @@ class App:
             key: The data key to be stored.
             value: The data value to be stored.
         """
-        if os.access(self.inputs.model_unresolved.tc_out_path, os.W_OK):
-            results_file = f'{self.inputs.model_unresolved.tc_out_path}/results.tc'
+        if os.access(self.model.tc_out_path, os.W_OK):
+            results_file = f'{self.model.tc_out_path}/results.tc'
         else:
             results_file = 'results.tc'
 
@@ -160,28 +144,25 @@ class App:
 
         return Service(self.tcex)
 
-    @registry.factory(Token, singleton=True)
     @cached_property
     def token(self) -> Token:
         """Return token object."""
         _proxies = None
-        if self.inputs.model_unresolved.tc_proxy_tc is True:
+        if self.model.tc_proxy_tc is True:
             _proxies = self.proxies
 
         _tokens = Token(
-            self.inputs.model_unresolved.tc_api_path,
-            self.inputs.model_unresolved.tc_verify,
+            self.model.tc_api_path,
+            self.model.tc_verify,
             _proxies,
         )
 
         # register token for Apps that pass token on start
-        if all(
-            [self.inputs.model_unresolved.tc_token, self.inputs.model_unresolved.tc_token_expires]
-        ):
+        if all([self.model.tc_token, self.model.tc_token_expires]):
             _tokens.register_token(
                 key=threading.current_thread().name,
-                token=self.inputs.model_unresolved.tc_token,
-                expires=self.inputs.model_unresolved.tc_token_expires,
+                token=self.model.tc_token,
+                expires=self.model.tc_token_expires,
             )
         return _tokens
 

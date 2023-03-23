@@ -2,6 +2,34 @@
 line-length = 100
 skip-string-normalization = true
 
+[tool.codespell]
+# ignore-words-list=
+skip = "*.history,*local"
+
+[tool.isort]
+dedup_headings = false
+import_heading_firstparty = "first-party"
+import_heading_stdlib = "standard library"
+import_heading_thirdparty = "third-party"
+include_trailing_comma = true
+known_first_party = ""
+known_local_folder = "."
+known_third_party = ""
+line_length = 100
+profile = "black"
+
+[tool.pydocstyle]
+ignore = [
+  "D202", # no blank lines allowed after function docstring
+  "D203", # 1 blank line required before class docstring (found 0)
+  "D213", # Multi-line docstring summary should start at the second line
+  "D400", # First line should end with a period ...
+  "D406", # Section name should end with a newline ...
+  "D407", # Missing dashed underline after section ...
+  "D413", # Missing blank line after last section ...
+  "D415", # First line should end with a period, question mark, or exclamation point ...
+]
+
 [tool.pylint.messages_control]
 disable = [
   "broad-exception-caught",

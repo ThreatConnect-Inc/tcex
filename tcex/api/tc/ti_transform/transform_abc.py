@@ -78,7 +78,7 @@ class TransformsABC(ABC):
         ti_dicts: list[dict],
         transforms: list[GroupTransformModel | IndicatorTransformModel],
     ):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         self.ti_dicts = ti_dicts
         self.transforms = transforms if isinstance(transforms, list) else [transforms]
 
@@ -108,7 +108,7 @@ class TransformABC(ABC):
         ti_dict: dict,
         transforms: list[GroupTransformModel | IndicatorTransformModel],
     ):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         self.ti_dict = ti_dict
         self.transforms = transforms if isinstance(transforms, list) else [transforms]
 

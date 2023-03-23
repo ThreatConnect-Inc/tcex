@@ -4,12 +4,18 @@ import logging
 import os
 import sys
 from enum import Enum
-from typing import Literal
+from pathlib import Path
+from typing import TYPE_CHECKING, Literal
 
 # first-party
 from tcex.app.config import InstallJson
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
 from tcex.pleb.registry import registry
+
+if TYPE_CHECKING:
+    # first-party
+    from tcex.input.input import Input  # CIRCULAR-IMPORT
+
 
 # get tcex logger
 logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
@@ -39,8 +45,8 @@ class ExitCode(int, Enum):
 class Exit:
     """Provides functionality around exiting an app."""
 
-    def __init__(self, inputs):
-        """."""
+    def __init__(self, inputs: 'Input'):
+        """Initialize instance properties."""
         self.ij = InstallJson()
         self.inputs = inputs
 
@@ -53,7 +59,7 @@ class Exit:
         if self.inputs.contents.get('tc_playbook_db_type') == 'Redis':
             try:
                 # pylint: disable=no-member
-                registry.redis_client.rpush(self.inputs.contents.get('tc_exit_channel'), exit_code)
+                registry.redis_client.rpush(self.inputs.contents['tc_exit_channel'], exit_code)
             except Exception as e:  # pragma: no cover
                 self._exit(ExitCode.FAILURE, f'Exception during AOT exit push ({e}).')
 
@@ -81,14 +87,14 @@ class Exit:
         if not isinstance(message, str):
             message = str(message)
 
-        if os.access(self.inputs.contents.get('tc_out_path'), os.W_OK):
-            message_file = os.path.join(self.inputs.contents.get('tc_out_path'), 'message.tc')
+        if os.access(self.inputs.model_tc.tc_out_path, os.W_OK):
+            message_file = self.inputs.model_tc.tc_out_path / 'message.tc'
         else:
-            message_file = 'message.tc'
+            message_file = Path('message.tc')
 
         if not message.endswith('\n'):
             message += '\n'
-        with open(message_file, 'w') as mh:
+        with message_file.open('w') as mh:
             # write last <max_length> characters to file
             mh.write(message[-max_length:])
 
@@ -186,11 +192,11 @@ class Exit:
 
         # required only for tcex testing framework
         if (
-            hasattr(self.inputs.model_unresolved, 'tcex_testing_context')
-            and self.inputs.model_unresolved.tcex_testing_context is not None
+            hasattr(self.inputs.model_tc, 'tcex_testing_context')
+            and self.inputs.model_tc.tcex_testing_context is not None
         ):  # pragma: no cover
             registry.redis_client.hset(  # pylint: disable=no-member
-                self.inputs.model_unresolved.tcex_testing_context, '_exit_message', msg
+                self.inputs.model_tc.tcex_testing_context, '_exit_message', msg
             )
 
     @property

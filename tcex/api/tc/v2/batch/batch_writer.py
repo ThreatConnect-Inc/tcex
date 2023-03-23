@@ -108,7 +108,7 @@ class BatchWriter:
     """
 
     def __init__(self, inputs: Input, session_tc: Session, output_dir: str, **kwargs):
-        """Initialize Class properties."""
+        """Initialize instance properties."""
         self.inputs = inputs
         self.output_dir = output_dir
         self.output_extension = kwargs.get('output_extension')

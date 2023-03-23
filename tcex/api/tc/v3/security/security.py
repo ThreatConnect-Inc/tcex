@@ -18,7 +18,7 @@ class Security:
     """
 
     def __init__(self, session: Session):
-        """Initialize Class properties."""
+        """Initialize instance properties."""
         self.session = session
 
     def owner_role(self, **kwargs) -> OwnerRole:

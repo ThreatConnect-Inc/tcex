@@ -14,7 +14,7 @@ class Tags:
     """Unique API calls for Tags API Endpoints"""
 
     def __init__(self, ti: 'ThreatIntelligence'):
-        """Initialize Class Properties."""
+        """Initialize instance properties."""
 
         # properties
         self._api_entity = 'tag'

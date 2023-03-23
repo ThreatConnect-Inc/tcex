@@ -20,7 +20,7 @@ class IntrusionSet(Group):
     """
 
     def __init__(self, ti: 'ThreatIntelligence', **kwargs):
-        """Initialize Class Properties."""
+        """Initialize instance properties."""
         super().__init__(
             ti,
             sub_type='Intrusion Set',

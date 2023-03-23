@@ -34,7 +34,7 @@ class BatchSubmit:
         tag_write_type: str = 'Replace',
         security_label_write_type: str = 'Replace',
     ):
-        """Initialize Class properties.
+        """Initialize instance properties.
 
         Args:
             inputs: The App inputs.

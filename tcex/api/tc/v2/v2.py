@@ -23,7 +23,7 @@ class V2:
     """
 
     def __init__(self, inputs: Input, session_tc: Session):
-        """Initialize Class properties."""
+        """Initialize instance properties."""
         self.inputs = inputs
         self.session_tc = session_tc
 

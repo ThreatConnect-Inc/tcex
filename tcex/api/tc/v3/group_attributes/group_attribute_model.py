@@ -49,6 +49,13 @@ class GroupAttributeModel(
         read_only=False,
         title='default',
     )
+    group: 'GroupModel' = Field(
+        None,
+        description='Details of group associated with attribute.',
+        methods=['POST'],
+        read_only=False,
+        title='group',
+    )
     group_id: int | None = Field(
         None,
         description='Group associated with attribute.',
@@ -109,6 +116,12 @@ class GroupAttributeModel(
         title='value',
     )
 
+    @validator('group', always=True, pre=True)
+    def _validate_group(cls, v):
+        if not v:
+            return GroupModel()  # type: ignore
+        return v
+
     @validator('security_labels', always=True, pre=True)
     def _validate_security_labels(cls, v):
         if not v:
@@ -163,6 +176,7 @@ class GroupAttributesModel(
 
 
 # first-party
+from tcex.api.tc.v3.groups.group_model import GroupModel
 from tcex.api.tc.v3.security.users.user_model import UserModel
 from tcex.api.tc.v3.security_labels.security_label_model import SecurityLabelsModel
 

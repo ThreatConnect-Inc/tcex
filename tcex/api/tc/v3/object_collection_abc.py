@@ -11,9 +11,9 @@ from requests.exceptions import ProxyError, RetryError
 
 # first-party
 from tcex.api.tc.v3.tql.tql import Tql
-from tcex.backport import cached_property
 from tcex.exit.error_code import handle_error
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
+from tcex.pleb.cached_property import cached_property
 from tcex.util import Util
 
 # get tcex logger
@@ -35,7 +35,7 @@ class ObjectCollectionABC(ABC):
         tql_filters: list | None = None,  # This will be removed!
         params: dict | None = None,
     ):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         self._params = params or {}
         self._tql_filters = tql_filters or []
 

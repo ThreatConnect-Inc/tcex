@@ -7,7 +7,6 @@ import pytest
 from pydantic import BaseModel, ValidationError
 
 # first-party
-from tcex import TcEx  # TYPE-CHECKING
 from tcex.input.field_type import Sensitive
 from tcex.input.field_type.sensitive import sensitive
 from tcex.pleb.scoped_property import scoped_property
@@ -193,7 +192,7 @@ class TestInputsFieldTypeSensitive(InputTest):
             my_sensitive: Sensitive
 
         config_data = {'my_sensitive': input_value}
-        tcex: TcEx = playbook_app(config_data=config_data).tcex
+        tcex = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
 
         assert '****' in str(tcex.inputs.model.my_sensitive)  # type: ignore
@@ -235,7 +234,7 @@ class TestInputsFieldTypeSensitive(InputTest):
             my_sensitive: Sensitive
 
         config_data = {'my_sensitive': input_value}
-        tcex: TcEx = playbook_app(config_data=config_data).tcex
+        tcex = playbook_app(config_data=config_data).tcex
 
         with pytest.raises(ValidationError) as exc_info:
             tcex.inputs.add_model(PytestModel)

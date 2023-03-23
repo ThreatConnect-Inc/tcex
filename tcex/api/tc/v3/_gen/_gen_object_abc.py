@@ -16,7 +16,7 @@ class GenerateObjectABC(GenerateABC, ABC):
     """Generate Models for Case Management Types"""
 
     def __init__(self, type_: SnakeString):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         super().__init__(type_)
 
         # properties
@@ -55,7 +55,7 @@ class GenerateObjectABC(GenerateABC, ABC):
         """Return the method code.
 
         def __init__(self, **kwargs):
-            '''Initialize Class properties.'''
+            '''Initialize instance properties.'''
             super().__init__(
                 kwargs.pop('session', None),
                 kwargs.pop('tql_filter', None),
@@ -74,7 +74,7 @@ class GenerateObjectABC(GenerateABC, ABC):
         return '\n'.join(
             [
                 f'''{self.i1}def __init__(self, **kwargs):''',
-                f'''{self.i2}"""Initialize class properties."""''',
+                f'''{self.i2}"""Initialize instance properties."""''',
                 f'''{self.i2}super().__init__(''',
                 (
                     f'''{self.i3}kwargs.pop('session', None), '''
@@ -276,7 +276,7 @@ class GenerateObjectABC(GenerateABC, ABC):
         """Return the method code.
 
         def __init__(self, **kwargs):
-            '''Initialize Class properties'''
+            '''Initialize instance properties'''
             super().__init__(kwargs.pop('session', None))
             self._model = ArtifactModel(**kwargs)
         """
@@ -293,7 +293,7 @@ class GenerateObjectABC(GenerateABC, ABC):
         return '\n'.join(
             [
                 f'''{self.i1}def __init__(self, **kwargs):''',
-                f'''{self.i2}"""Initialize class properties."""''',
+                f'''{self.i2}"""Initialize instance properties."""''',
                 f'''{self.i2}super().__init__(kwargs.pop('session', None))''',
                 '',
                 f'''{self.i2}# properties''',

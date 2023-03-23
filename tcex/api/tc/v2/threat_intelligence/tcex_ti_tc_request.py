@@ -23,7 +23,7 @@ class TiTcRequest:
     """Common API calls to ThreatConnect"""
 
     def __init__(self, session: Session):
-        """Initialize Class properties."""
+        """Initialize instance properties."""
         self.session = session
 
         # properties

@@ -14,6 +14,7 @@ from tcex.input.field_type import (
     always_array,
     indicator_entity,
 )
+from tcex.input.model.app_playbook_model import AppPlaybookModel
 from tcex.pleb.scoped_property import scoped_property
 from tests.input.field_type.util import InputTest
 from tests.mock_app import MockApp  # TYPE-CHECKING
@@ -567,12 +568,12 @@ class TestInputsFieldTypes(InputTest):
         Validation: Not null
         """
 
-        class PytestModelRequired(BaseModel):
+        class PytestModelRequired(AppPlaybookModel):
             """Test Model for Inputs"""
 
             my_data: indicator_entity(indicator_types=indicator_types)  # type: ignore
 
-        class PytestModelOptional(BaseModel):
+        class PytestModelOptional(AppPlaybookModel):
             """Test Model for Inputs"""
 
             my_data: indicator_entity(indicator_types=indicator_types) | None  # type: ignore

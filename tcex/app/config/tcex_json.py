@@ -12,7 +12,7 @@ import colorama as c
 from tcex.app.config.install_json import InstallJson
 from tcex.app.config.model import TcexJsonModel
 from tcex.app.config.tcex_json_update import TcexJsonUpdate
-from tcex.backport import cached_property
+from tcex.pleb.cached_property import cached_property
 
 # get tcex logger
 tcex_logger = logging.getLogger('tcex')
@@ -27,7 +27,7 @@ class TcexJson:
         path: Path | str | None = None,
         logger: logging.Logger | None = None,
     ):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         filename = filename or 'tcex.json'
         path = Path(path or Path.cwd())
         self.log = logger or tcex_logger

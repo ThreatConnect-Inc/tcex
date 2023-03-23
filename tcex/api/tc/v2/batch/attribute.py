@@ -20,7 +20,7 @@ class Attribute:
         source: str | None = None,
         formatter: Callable[[str], str] | None = None,
     ):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Args:
             attr_type: The ThreatConnect defined attribute type.

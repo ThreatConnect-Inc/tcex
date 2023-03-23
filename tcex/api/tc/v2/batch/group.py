@@ -32,7 +32,7 @@ class Group:
     ]
 
     def __init__(self, group_type: str, name: str, **kwargs):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Args:
             group_type (str): The ThreatConnect define Group type.
@@ -294,7 +294,7 @@ class Adversary(Group):
     __slots__ = []
 
     def __init__(self, name: str, **kwargs):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Args:
             name: The name for this Group.
@@ -310,7 +310,7 @@ class AttackPattern(Group):
     __slots__ = []
 
     def __init__(self, name: str, **kwargs):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Args:
             name: The name for this Group.
@@ -326,7 +326,7 @@ class Campaign(Group):
     __slots__ = []
 
     def __init__(self, name: str, **kwargs):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Args:
             name: The name for this Group.
@@ -355,7 +355,7 @@ class CourseOfAction(Group):
     __slots__ = []
 
     def __init__(self, name: str, **kwargs):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Args:
             name: The name for this Group.
@@ -371,7 +371,7 @@ class Document(Group):
     __slots__ = ['_file_data']
 
     def __init__(self, name: str, file_name: str, **kwargs):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Args:
             name: The name for this Group.
@@ -424,7 +424,7 @@ class Email(Group):
     __slots__ = []
 
     def __init__(self, name: str, subject: str, header: str, body: str, **kwargs):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Args:
             name: The name for this Group.
@@ -479,7 +479,7 @@ class Event(Group):
     __slots__ = []
 
     def __init__(self, name: str, **kwargs):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Valid Values:
         + Escalated
@@ -525,7 +525,7 @@ class Incident(Group):
     __slots__ = []
 
     def __init__(self, name: str, **kwargs):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Valid Values:
         + Closed
@@ -588,7 +588,7 @@ class IntrusionSet(Group):
     __slots__ = []
 
     def __init__(self, name: str, **kwargs):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Args:
             name: The name for this Group.
@@ -604,7 +604,7 @@ class Malware(Group):
     __slots__ = []
 
     def __init__(self, name: str, **kwargs):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Args:
             name: The name for this Group.
@@ -620,7 +620,7 @@ class Report(Group):
     __slots__ = []
 
     def __init__(self, name, **kwargs):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Args:
             name: The name for this Group.
@@ -663,7 +663,7 @@ class Signature(Group):
     __slots__ = []
 
     def __init__(self, name: str, file_name: str, file_type: str, file_text: str, **kwargs):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Valid file_types:
         + Snort ®
@@ -696,7 +696,7 @@ class Tactic(Group):
     __slots__ = []
 
     def __init__(self, name: str, **kwargs):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Args:
             name: The name for this Group.
@@ -712,7 +712,7 @@ class Threat(Group):
     __slots__ = []
 
     def __init__(self, name: str, **kwargs):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Args:
             name: The name for this Group.
@@ -728,7 +728,7 @@ class Tool(Group):
     __slots__ = []
 
     def __init__(self, name: str, **kwargs):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Args:
             name: The name for this Group.
@@ -744,7 +744,7 @@ class Vulnerability(Group):
     __slots__ = []
 
     def __init__(self, name: str, **kwargs):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Args:
             name: The name for this Group.

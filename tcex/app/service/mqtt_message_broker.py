@@ -10,9 +10,9 @@ from collections.abc import Callable
 import paho.mqtt.client as mqtt
 
 # first-party
-from tcex.backport import cached_property
 from tcex.input.field_type.sensitive import Sensitive
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
+from tcex.pleb.cached_property import cached_property
 
 # get tcex logger
 logger: TraceLogger = logging.getLogger('tcex')  # type: ignore

@@ -12,7 +12,7 @@ class ApiHandler(logging.Handler):
     """Logger handler for ThreatConnect Exchange API logging."""
 
     def __init__(self, session: Session, flush_limit=100):
-        """Initialize Class properties.
+        """Initialize instance properties.
 
         Args:
             session (Request.Session): The pre-configured instance of Session for ThreatConnect API.
@@ -86,7 +86,7 @@ class ApiHandlerFormatter(logging.Formatter):
     """Logger formatter for ThreatConnect Exchange API logging."""
 
     def __init__(self):
-        """Initialize Class properties."""
+        """Initialize instance properties."""
         super().__init__()
 
     def format(self, record: logging.LogRecord):

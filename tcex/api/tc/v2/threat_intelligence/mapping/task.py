@@ -30,7 +30,7 @@ class Task(Mapping):
     """
 
     def __init__(self, ti: 'ThreatIntelligence', **kwargs):
-        """Initialize Class Properties."""
+        """Initialize instance properties."""
         super().__init__(
             ti,
             main_type='Task',

@@ -20,7 +20,7 @@ class TIHelper:
     """
 
     def __init__(self, ti_type, ti_field=None, optional_fields=None, required_fields=None):
-        """Initialize Class Properties"""
+        """Initialize instance properties"""
         self.ti_type = ti_type
         self.ti_field = ti_field
         self.optional_fields = optional_fields or {}

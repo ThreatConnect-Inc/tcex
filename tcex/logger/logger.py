@@ -28,7 +28,7 @@ class Logger:
     """Framework logger module."""
 
     def __init__(self, logger_name: str):
-        """Initialize Class Properties."""
+        """Initialize instance properties."""
         self.logger_name = logger_name
 
         # properties

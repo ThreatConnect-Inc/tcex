@@ -20,7 +20,7 @@ class Tag:
     """
 
     def __init__(self, ti: 'ThreatIntelligence', name):
-        """Initialize Class Properties."""
+        """Initialize instance properties."""
         self._name = name
 
         # properties

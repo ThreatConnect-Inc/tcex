@@ -8,7 +8,7 @@ class SpecToolAppInputStatic:
     """Generate App Config File"""
 
     def __init__(self):
-        """Initialize class properties."""
+        """Initialize instance properties."""
 
         # class properties
         self.i1 = ' ' * 4
@@ -27,7 +27,7 @@ class SpecToolAppInputStatic:
             f'''{self.i1}"""App Inputs"""''',
             '',
             f'''{self.i1}def __init__(self, inputs: 'BaseModel'):''',
-            f'''{self.i2}"""Initialize class properties."""''',
+            f'''{self.i2}"""Initialize instance properties."""''',
             f'''{self.i2}self.inputs = inputs''',
             '',
             f'''{self.i1}def update_inputs(self):''',
@@ -93,7 +93,7 @@ class SpecToolAppInputStatic:
             f'''{self.i1}"""App Inputs"""''',
             '',
             f'''{self.i1}def __init__(self, inputs: BaseModel):''',
-            f'''{self.i2}"""Initialize class properties."""''',
+            f'''{self.i2}"""Initialize instance properties."""''',
             f'''{self.i2}self.inputs = inputs''',
             '',
             f'''{self.i1}def get_model(self, tc_action: str | None = None) -> BaseModel:''',

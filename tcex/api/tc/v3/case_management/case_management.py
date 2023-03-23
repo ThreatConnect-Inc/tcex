@@ -14,7 +14,7 @@ class CaseManagement:
     """
 
     def __init__(self, session: Session):
-        """Initialize Class properties."""
+        """Initialize instance properties."""
         self.session = session
 
     def artifact(self, **kwargs) -> 'Artifact':

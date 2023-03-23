@@ -5,7 +5,7 @@ class Filters:
     """Filters module for Threat Intelligence"""
 
     def __init__(self):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         self._filters = []
 
     @property

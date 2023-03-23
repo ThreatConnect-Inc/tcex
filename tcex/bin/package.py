@@ -13,8 +13,8 @@ from pydantic import BaseModel
 
 # first-party
 from tcex.app.config.install_json import InstallJson
-from tcex.backport import cached_property
 from tcex.bin.bin_abc import BinABC
+from tcex.pleb.cached_property import cached_property
 
 
 class AppMetadata(BaseModel):
@@ -34,7 +34,7 @@ class Package(BinABC):
     """
 
     def __init__(self, excludes: list[str] | None, ignore_validation: bool, output_dir: Path):
-        """Initialize Class properties."""
+        """Initialize instance properties."""
         super().__init__()
         self._excludes = excludes or []
         self.ignore_validation = ignore_validation

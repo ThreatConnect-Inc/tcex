@@ -20,7 +20,7 @@ class AttackPattern(Group):
     """
 
     def __init__(self, ti: 'ThreatIntelligence', **kwargs):
-        """Initialize Class properties."""
+        """Initialize instance properties."""
         super().__init__(
             ti,
             sub_type='Attack Pattern',

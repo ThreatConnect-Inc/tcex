@@ -8,16 +8,16 @@ import sys
 import tcex.input.field_type as FieldTypes  # noqa: N812
 from tcex.app.config.model.install_json_model import ParamsModel  # TYPE-CHECKING
 from tcex.app.config.permutation import Permutation
-from tcex.backport import cached_property
 from tcex.bin.bin_abc import BinABC
 from tcex.bin.spec_tool_app_input_static import SpecToolAppInputStatic
+from tcex.pleb.cached_property import cached_property
 
 
 class SpecToolAppInput(BinABC):
     """Generate App Config File"""
 
     def __init__(self):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         super().__init__()
 
         # properties

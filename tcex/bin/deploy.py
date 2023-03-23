@@ -4,6 +4,7 @@
 import os
 import sys
 from pathlib import Path
+from typing import NoReturn
 
 # third-party
 import typer
@@ -30,7 +31,7 @@ class Deploy(BinABC):
         proxy_user: str | None,
         proxy_pass: str | None,
     ):
-        """Initialize Class properties."""
+        """Initialize instance properties."""
         super().__init__()
         self._app_file = app_file
         self.allow_all_orgs = allow_all_orgs
@@ -46,7 +47,7 @@ class Deploy(BinABC):
         return None if proxy_pass is None else Sensitive(proxy_pass)
 
     @staticmethod
-    def _handle_missing_environment(variable: str):
+    def _handle_missing_environment(variable: str) -> NoReturn:
         """Print error on missing environment variable."""
         typer.secho(
             f'Could not find environment variable: {variable}.',

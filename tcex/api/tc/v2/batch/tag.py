@@ -10,7 +10,7 @@ class Tag:
     __slots__ = ['_tag_data', '_valid']
 
     def __init__(self, name: str, formatter: Callable[[str], str] | None = None):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Args:
             name: The value for this tag.

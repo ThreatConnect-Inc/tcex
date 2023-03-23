@@ -15,13 +15,17 @@ from redis import Redis
 # first-party
 from tcex.app.config.install_json import InstallJson
 from tcex.app.key_value_store import RedisClient
-from tcex.backport import cached_property
 from tcex.input.field_type import Sensitive
+from tcex.input.model.advanced_request_model import AdvancedRequestModel
 from tcex.input.model.app_external_model import AppExternalModel
 from tcex.input.model.common_advanced_model import CommonAdvancedModel
 from tcex.input.model.common_model import CommonModel
 from tcex.input.model.model_map import feature_map, runtime_level_map, tc_action_map
+from tcex.input.model.module_app_model import ModuleAppModel
+from tcex.input.model.module_requests_session_model import ModuleRequestsSessionModel
+from tcex.input.model.path_model import PathModel
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
+from tcex.pleb.cached_property import cached_property
 from tcex.pleb.registry import registry
 from tcex.util import Util
 
@@ -60,7 +64,7 @@ class Input:
     """Module to handle inputs for all App types."""
 
     def __init__(self, config: dict | None = None, config_file: str | None = None):
-        """Initialize class properties."""
+        """Initialize instance properties."""
 
         self.config = config
         self.config_file = config_file
@@ -216,10 +220,9 @@ class Input:
 
         # add App level model based on special "tc_action" input. this field
         # doesn't exist on the common model, but can be added by the App.
-        if hasattr(self.model_unresolved, 'tc_action'):
-            self._models.extend(
-                tc_action_map.get(self.model_unresolved.tc_action, [])  # type: ignore
-            )
+        # the tc_action can never be a variable (choice input).
+        if tc_action := self.contents.get('tc_action'):
+            self._models.extend(tc_action_map.get(tc_action, []))
 
         # force data model to load so that validation is done at this EXACT point
         _ = self.model
@@ -348,14 +351,50 @@ class Input:
         return input_model(self.models)(**self.contents_resolved)  # type: ignore
 
     @cached_property
+    def model_advanced_request(self) -> AdvancedRequestModel:
+        """Return the Requests Session Model."""
+
+        class _AdvancedRequestModel(AdvancedRequestModel, extra=Extra.ignore):
+            """Model Definition for AdvancedRequestModel inputs ONLY."""
+
+        return _AdvancedRequestModel(**self.contents)
+
+    @cached_property
     def model_organization_unresolved(self) -> CommonModel:
         """Return the Input Model using contents (no resolved values)."""
         return input_model(self.models)(**self.contents)  # type: ignore
 
     @cached_property
+    def model_path(self) -> PathModel:
+        """Return the Requests Session Model."""
+
+        class _PathModel(PathModel, extra=Extra.ignore):
+            """Model Definition for PathModel inputs ONLY."""
+
+        return _PathModel(**self.contents)
+
+    @cached_property
     def model_unresolved(self) -> CommonAdvancedModel:
-        """Return the Input Model using contents (no resolved values)."""
+        """Return full data model with no resolved values.
+
+        This model has all inputs, including App inputs (e.g., tc_action), but
+        any pb/tc variables will not be resolved in the model. The model is
+        useful getting and process keyvalue variables that have mixed types.
+        """
         return input_model(self.models)(**self.contents)  # type: ignore
+
+    @cached_property
+    def model_tc(self) -> CommonAdvancedModel:
+        """Return data model for ThreatConnect specific inputs.
+
+        This model does not have any App inputs (e.g., tc_action) and
+        should only be used for accessing ThreatConnect specific inputs.
+        """
+
+        class _CommonAdvancedModel(CommonAdvancedModel, extra=Extra.ignore):
+            """Model Definition for CommonAdvancedModel inputs ONLY."""
+
+        return _CommonAdvancedModel(**self.contents)
 
     @cached_property
     def models(self) -> list:
@@ -385,6 +424,16 @@ class Input:
 
         return properties
 
+    @cached_property
+    def module_app_model(self) -> ModuleAppModel:
+        """Return the Module App Model."""
+        return ModuleAppModel(**self.contents)
+
+    @cached_property
+    def module_requests_session_model(self) -> ModuleRequestsSessionModel:
+        """Return the Module Requests Session Model."""
+        return ModuleRequestsSessionModel(**self.contents)
+
     def resolve_variable(self, variable: str) -> bytes | str | Sensitive:
         """Resolve FILE/KEYCHAIN/TEXT variables.
 
@@ -392,7 +441,7 @@ class Input:
 
         Data Format:
         {
-            "data": "value"
+                "data": "value"
         }
         """
         match = re.match(Util().variable_tc_match, variable)

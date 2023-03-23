@@ -36,7 +36,7 @@ class VictimAttribute(ObjectABC):
     """
 
     def __init__(self, **kwargs):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         super().__init__(kwargs.pop('session', None))
 
         # properties
@@ -105,7 +105,7 @@ class VictimAttributes(ObjectCollectionABC):
     """
 
     def __init__(self, **kwargs):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         super().__init__(
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
         )

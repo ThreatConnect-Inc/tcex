@@ -36,7 +36,7 @@ class Cache:
         ttl_seconds: int | None = None,
         mapping: dict | None = None,
     ):
-        """Initialize class properties."""
+        """Initialize instance properties."""
 
         # properties
         self.ds = DataStore(session, domain, data_type, mapping)

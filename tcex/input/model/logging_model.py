@@ -21,12 +21,6 @@ class LoggingModel(BaseModel):
         inclusion_reason='runtimeLevel',
         requires_definition=True,
     )
-    tc_log_curl: bool = Field(
-        False,
-        description='Flag to enable logging curl commands.',
-        inclusion_reason='runtimeLevel',
-        requires_definition=True,
-    )
     tc_log_file: str = Field(
         'app.log',
         description='The default name of the App\'s log file.',

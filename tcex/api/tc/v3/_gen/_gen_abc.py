@@ -13,8 +13,8 @@ from requests.exceptions import ProxyError
 
 # first-party
 from tcex.api.tc.v3._gen.model import PropertyModel
-from tcex.backport import cached_property
 from tcex.input.field_type.sensitive import Sensitive
+from tcex.pleb.cached_property import cached_property
 from tcex.requests_session.auth.hmac_auth import HmacAuth
 from tcex.util import Util
 from tcex.util.string_operation import SnakeString
@@ -24,7 +24,7 @@ class GenerateABC(ABC):
     """Generate Abstract Base Class"""
 
     def __init__(self, type_: SnakeString):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         self.type_ = type_
 
         # properties
@@ -174,6 +174,10 @@ class GenerateABC(ABC):
 
         # update "bad" data
         self._prop_content_update(_properties)
+
+        # maybe a temp issue?
+        if self.type_ == 'indicators':
+            _properties['enrichment']['data'][0]['type'] = 'Enrichment'
 
         # critical fix for breaking API change
         if self.type_ in [

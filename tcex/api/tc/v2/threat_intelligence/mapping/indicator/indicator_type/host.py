@@ -15,7 +15,7 @@ class Host(Indicator):
     """Unique API calls for Host API Endpoints"""
 
     def __init__(self, ti: 'ThreatIntelligence', **kwargs):
-        """Initialize Class Properties.
+        """Initialize instance properties.
 
         Args:
             ti (ThreatIntelligence): An instance of the ThreatIntelligence Class.

@@ -7,7 +7,7 @@ from pathlib import Path
 
 # first-party
 from tcex.app.config.model import JobJsonModel
-from tcex.backport import cached_property
+from tcex.pleb.cached_property import cached_property
 from tcex.pleb.singleton import Singleton
 
 # get tcex logger
@@ -23,7 +23,7 @@ class JobJson(metaclass=Singleton):
         path: Path | str | None = None,
         logger: logging.Logger | None = None,
     ):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         filename = filename or 'tcex.json'
         path = Path(path or Path.cwd())
         self.log = logger or tcex_logger

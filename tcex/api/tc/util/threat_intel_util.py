@@ -9,9 +9,9 @@ import jmespath
 from requests import Session
 
 # first-party
-from tcex.backport import cached_property
 from tcex.exit.error_code import handle_error
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
+from tcex.pleb.cached_property import cached_property
 
 # get tcex logger
 logger: TraceLogger = logging.getLogger('tcex')  # type: ignore
@@ -24,7 +24,7 @@ class ThreatIntelUtil:
     GROUP = 'Group'
 
     def __init__(self, session_tc: Session):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         self.session_tc = session_tc
 
         # properties

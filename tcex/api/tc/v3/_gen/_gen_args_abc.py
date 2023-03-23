@@ -13,7 +13,7 @@ class GenerateArgsABC(GenerateABC, ABC):
     """Generate docstring for Model."""
 
     def __init__(self, type_: Any):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         super().__init__(type_)
 
     @staticmethod

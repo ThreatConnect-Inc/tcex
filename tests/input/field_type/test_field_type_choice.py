@@ -7,9 +7,8 @@ import pytest
 from pydantic import BaseModel, ValidationError
 
 # first-party
-from tcex import TcEx  # TYPE-CHECKING
-from tcex.backport import cached_property
 from tcex.input.field_type import Choice, choice
+from tcex.pleb.cached_property import cached_property
 from tcex.pleb.scoped_property import scoped_property
 from tests.input.field_type.util import InputTest
 from tests.mock_app import MockApp  # TYPE-CHECKING
@@ -38,7 +37,7 @@ class TestInputsFieldTypeChoice(InputTest):
             my_choice: Choice
 
         config_data = {'my_choice': 'choice_1'}
-        tcex: TcEx = playbook_app(config_data=config_data).tcex
+        tcex = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
         assert tcex.inputs.model.my_choice == 'choice_1'  # type: ignore
 
@@ -56,7 +55,7 @@ class TestInputsFieldTypeChoice(InputTest):
             my_choice: Choice | None
 
         config_data = {'my_choice': None}
-        tcex: TcEx = playbook_app(config_data=config_data).tcex
+        tcex = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
         assert tcex.inputs.model.my_choice is None  # type: ignore
 
@@ -74,7 +73,7 @@ class TestInputsFieldTypeChoice(InputTest):
             my_choice: Choice
 
         config_data = {'my_choice': None}
-        tcex: TcEx = playbook_app(config_data=config_data).tcex
+        tcex = playbook_app(config_data=config_data).tcex
         with pytest.raises(ValidationError) as exc_info:
             tcex.inputs.add_model(PytestModel)
 
@@ -94,7 +93,7 @@ class TestInputsFieldTypeChoice(InputTest):
             my_choice: Choice
 
         config_data = {'my_choice': 'choice_1'}
-        tcex: TcEx = playbook_app(config_data=config_data).tcex
+        tcex = playbook_app(config_data=config_data).tcex
         tcex.inputs.add_model(PytestModel)
         assert tcex.inputs.model.my_choice == 'choice_1'  # type: ignore
 

@@ -10,7 +10,7 @@ from pydantic import BaseModel, Field, validator
 from tcex.input.field_type import EditChoice
 
 
-class _AdvancedRequestModel(BaseModel):
+class AdvancedRequestModel(BaseModel):
     """Advanced Settings Model
 
     * why was input included -> feature (what feature?), runtime_level

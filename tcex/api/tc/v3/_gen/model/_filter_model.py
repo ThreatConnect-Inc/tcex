@@ -3,7 +3,7 @@
 from pydantic import BaseModel, Extra, Field, validator
 
 # first-party
-from tcex.backport import cached_property
+from tcex.pleb.cached_property import cached_property
 from tcex.util import Util
 from tcex.util.string_operation import CamelString
 

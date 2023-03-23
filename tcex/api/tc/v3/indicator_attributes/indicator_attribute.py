@@ -25,6 +25,7 @@ class IndicatorAttribute(ObjectABC):
     Args:
         default (bool, kwargs): A flag indicating that this is the default attribute of its type
             within the object. Only applies to certain attribute and data types.
+        indicator (Indicator, kwargs): Details of indicator associated with attribute.
         indicator_id (int, kwargs): Indicator associated with attribute.
         pinned (bool, kwargs): A flag indicating that the attribute has been noted for importance.
         security_labels (SecurityLabels, kwargs): A list of Security Labels corresponding to the
@@ -36,7 +37,7 @@ class IndicatorAttribute(ObjectABC):
     """
 
     def __init__(self, **kwargs):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         super().__init__(kwargs.pop('session', None))
 
         # properties
@@ -105,7 +106,7 @@ class IndicatorAttributes(ObjectCollectionABC):
     """
 
     def __init__(self, **kwargs):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         super().__init__(
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
         )

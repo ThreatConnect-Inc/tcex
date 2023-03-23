@@ -12,8 +12,8 @@ import typer
 
 # first-party
 from tcex.app.config.install_json import InstallJson
-from tcex.backport import cached_property
 from tcex.bin.bin_abc import BinABC
+from tcex.pleb.cached_property import cached_property
 
 
 class Dep(BinABC):
@@ -30,7 +30,7 @@ class Dep(BinABC):
         proxy_user: str | None,
         proxy_pass: str | None,
     ):
-        """Initialize Class properties."""
+        """Initialize instance properties."""
         super().__init__()
         self.branch = branch
         self.dev = dev

@@ -3,7 +3,7 @@
 import redis
 
 # first-party
-from tcex.backport import cached_property
+from tcex.pleb.cached_property import cached_property
 
 
 class RedisClient:
@@ -32,7 +32,7 @@ class RedisClient:
         blocking_pool: bool = False,
         **kwargs
     ):
-        """Initialize class properties"""
+        """Initialize instance properties"""
         pool = redis.ConnectionPool
         if blocking_pool:
             kwargs.pop('blocking_pool')  # remove blocking_pool key

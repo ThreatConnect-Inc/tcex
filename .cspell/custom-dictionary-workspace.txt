@@ -1,4 +1,5 @@
 actiononobjectives
+addopts
 addressIpval
 ajfmuyodhscwegea
 apiservice
@@ -23,6 +24,7 @@ cblades
 certifi
 chdir
 ciphertext
+codespell
 commandandcontrol
 compresslevel
 courseofAction
@@ -37,6 +39,7 @@ dbfilename
 ddiff
 debugpy
 decrypter
+dedup
 deepdiff
 deleteconfig
 dendrol
@@ -56,6 +59,8 @@ exitstatus
 fakeredis
 feedapiservice
 fget
+filterwarnings
+firstparty
 fixdate
 fnmatch
 forcelist
@@ -63,6 +68,7 @@ fpfn
 fqfn
 fqpn
 fspath
+fstring
 functool
 getsizeof
 gitmodules
@@ -125,6 +131,8 @@ relativedelta
 reqs
 rfile
 rpush
+rsyncdir
+rsyncdirs
 ruamel
 runservice
 safetag
@@ -171,8 +179,11 @@ tcvc
 tcvp
 tcvw
 teea
+testpaths
+thirdparty
 timedelta
 tinydb
+toplevel
 traceback
 typer
 tzlocal
@@ -199,5 +210,6 @@ wfile
 writeback
 xdist
 xids
+xunit
 yara
 YYYYDDDD

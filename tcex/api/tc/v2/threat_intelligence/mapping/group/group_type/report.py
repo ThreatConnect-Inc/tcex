@@ -23,7 +23,7 @@ class Report(Group):
     """
 
     def __init__(self, ti: 'ThreatIntelligence', **kwargs):
-        """Initialize Class Properties."""
+        """Initialize instance properties."""
 
         super().__init__(ti, sub_type='Report', api_entity='report', api_branch='reports', **kwargs)
 

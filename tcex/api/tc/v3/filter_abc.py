@@ -16,7 +16,7 @@ class FilterABC(ABC):
     """Case Management Filter Abstract Base Class"""
 
     def __init__(self, tql: 'Tql'):
-        """Initialize Class properties"""
+        """Initialize instance properties"""
         self._tql = tql
 
         # properties

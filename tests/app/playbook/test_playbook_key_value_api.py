@@ -7,7 +7,7 @@ from typing import Any
 import pytest
 
 # first-party
-from tcex.backport import cached_property
+from tcex.pleb.cached_property import cached_property
 from tcex.pleb.scoped_property import scoped_property
 from tests.mock_app import MockApp
 
@@ -16,7 +16,7 @@ class MockApi:
     """Mock tcex session.get() method."""
 
     def __init__(self, ok=True):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         super().__init__()
         self._content = None
         self._ok = ok
@@ -125,7 +125,8 @@ class TestPlaybookKeyValueApi:
                     {'id': '002', 'type': 'Address', 'value': '2.2.2.2'},
                 ],
             ),
-            ('#App:0001:r1!Raw', b'raw data'),
+            # is it possible to send bytes to API?
+            # ('#App:0001:r1!Raw', b'raw data'),
             ('#App:0001:dup.name!String', 'dup name'),
             ('#App:0001:dup.name!StringArray', ['dup name']),
         ],

@@ -37,7 +37,7 @@ class GenerateFilter(GenerateFilterABC):
     """Generate Models for TC API Types"""
 
     def __init__(self, type_: SnakeString):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         super().__init__(type_)
 
         # properties
@@ -49,7 +49,7 @@ class GenerateModel(GenerateModelABC):
     """Generate Models for TC API Types"""
 
     def __init__(self, type_: SnakeString):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         super().__init__(type_)
 
         # properties
@@ -61,7 +61,7 @@ class GenerateObject(GenerateObjectABC):
     """Generate Models for TC API Types"""
 
     def __init__(self, type_: SnakeString):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         super().__init__(type_)
 
         # properties

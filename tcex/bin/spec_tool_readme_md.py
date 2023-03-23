@@ -12,7 +12,7 @@ class SpecToolReadmeMd(BinABC):
     """Generate App Config File"""
 
     def __init__(self, asy: AppSpecYml):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         super().__init__()
         self.asy = asy
 

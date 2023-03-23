@@ -1,5 +1,5 @@
 """TcEx Module"""
-# flake8: noqa
+
 # first-party
 from tcex.app.config.app_spec_yml import AppSpecYml
 from tcex.app.config.install_json import InstallJson

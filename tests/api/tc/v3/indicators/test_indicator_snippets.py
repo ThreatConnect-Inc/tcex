@@ -296,7 +296,7 @@ class TestIndicatorSnippets(TestV3):
         # Begin Snippet
         relationship_type = 'File DNS Query'
         indicator.stage_file_action({'relationship': relationship_type, 'indicator': host.model})
-        indicator.update()
+        indicator.update(params={'fields': ['_all_']})
         # End Snippet
 
         assert indicator.model.file_actions.data is not None, 'fileActions should not be None.'
@@ -324,7 +324,7 @@ class TestIndicatorSnippets(TestV3):
         # [Stage Testing] - Stage an the file action to be removed
         indicator.stage_file_action({'relationship': relationship_type, 'indicator': host.model})
         # [Delete Testing] - Delete the newly staged file action
-        indicator.update(mode='delete')
+        indicator.update(mode='delete', params={'fields': ['_all_']})
         # End Snippet
 
         assert indicator.model.file_actions.data is not None, 'fileActions should not be None.'
@@ -351,7 +351,7 @@ class TestIndicatorSnippets(TestV3):
         # [Stage Testing] - Stage an the file action. This will replace the existing file actions.
         indicator.stage_file_action({'relationship': relationship_type, 'indicator': host_2.model})
         # [Replace Testing] - Replace all the current file actions with the new file actions.
-        indicator.update(mode='replace')
+        indicator.update(mode='replace', params={'fields': ['_all_']})
         # End Snippet
 
         assert indicator.model.file_actions.data is not None, 'fileActions should not be None.'

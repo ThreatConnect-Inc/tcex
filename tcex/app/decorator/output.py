@@ -33,7 +33,7 @@ class Output:
     """
 
     def __init__(self, attribute: str, overwrite: bool = False):
-        """Initialize Class properties"""
+        """Initialize instance properties"""
         self.attribute = attribute
         self.overwrite = overwrite
 

@@ -11,9 +11,9 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 # first-party
-from tcex.backport import cached_property
 from tcex.input.field_type.sensitive import Sensitive
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
+from tcex.pleb.cached_property import cached_property
 from tcex.pleb.threading import ExceptionThread
 
 # get tcex logger
@@ -88,6 +88,41 @@ class Token:
 
         # start token renewal process
         self.token_renewal()
+
+    def get_token(self) -> Sensitive:
+        """Return token for current thread."""
+        # wait until renewal barrier is set to True (meaning no renewal
+        # is in progress). If already true, then simply proceed.
+
+        # perform three attempts - safety net in case of heavily overloaded monitor. If
+        # we cannot retrieve a token after three attempts, there must be an issue
+        for i in range(3):
+            if self._barrier.wait(timeout=self.token_renewal_buffer_time + 10):
+                _token = self.token_map.get(self.key, {}).get('token')
+                if _token is not None:
+                    return _token
+
+            self.log.debug(
+                'Timeout expired while waiting for token renewal barrier to be disabled. '
+                f'Attempts: {i + 1}'
+            )
+
+            if not self.monitor_thread.is_alive():
+                break
+
+        self.log.error(
+            'Could not retrieve TC token. Token renewal monitor did not disable token barrier. '
+            f'Token renewal monitor thread alive: {self.monitor_thread.is_alive()}'
+        )
+
+        # timeout expired, monitor likely offline
+        exc = RuntimeError(
+            'Timeout expired while waiting for renewal thread to disable token barrier.'
+        )
+        if self.monitor_thread.exception is not None:
+            raise exc from self.monitor_thread.exception
+
+        raise exc  # pragma: no cover
 
     @property
     def key(self) -> str:
@@ -192,36 +227,7 @@ class Token:
     @property
     def token(self) -> Sensitive | None:
         """Return token for current thread."""
-        # wait until renewal barrier is set to True (meaning no renewal
-        # is in progress). If already true, then simply proceed.
-
-        # perform three attempts - safety net in case of heavily overloaded monitor. If
-        # we cannot retrieve a token after three attempts, there must be an issue
-        for i in range(3):
-            if self._barrier.wait(timeout=self.token_renewal_buffer_time + 10):
-                return self.token_map.get(self.key, {}).get('token')
-
-            self.log.debug(
-                'Timeout expired while waiting for token renewal barrier to be disabled. '
-                f'Attempts: {i + 1}'
-            )
-
-            if not self.monitor_thread.is_alive():
-                break
-
-        self.log.error(
-            'Could not retrieve TC token. Token renewal monitor did not disable token barrier. '
-            f'Token renewal monitor thread alive: {self.monitor_thread.is_alive()}'
-        )
-
-        # timeout expired, monitor likely offline
-        exc = RuntimeError(
-            'Timeout expired while waiting for renewal thread to disable token barrier.'
-        )
-        if self.monitor_thread.exception is not None:
-            raise exc from self.monitor_thread.exception
-
-        raise exc  # pragma: no cover
+        return self.get_token()
 
     @token.setter
     def token(self, token: Sensitive | str):

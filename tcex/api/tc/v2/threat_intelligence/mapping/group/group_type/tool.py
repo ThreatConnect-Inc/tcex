@@ -20,5 +20,5 @@ class Tool(Group):
     """
 
     def __init__(self, ti: 'ThreatIntelligence', **kwargs):
-        """Initialize Class properties."""
+        """Initialize instance properties."""
         super().__init__(ti, sub_type='Tool', api_entity='tool', api_branch='tools', **kwargs)

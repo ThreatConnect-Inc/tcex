@@ -8,7 +8,7 @@ class MockPost:
     """Mock tcex session.get() method."""
 
     def __init__(self, data: Any, ok=True):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         self.data = data
         self._ok = ok
 

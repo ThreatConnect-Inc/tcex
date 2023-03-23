@@ -44,6 +44,12 @@ class ApiModel(BaseModel):
         inclusion_reason='runtimeLevel',
         requires_definition=True,
     )
+    tc_log_curl: bool = Field(
+        False,
+        description='Flag to enable logging curl commands.',
+        inclusion_reason='runtimeLevel',
+        requires_definition=True,
+    )
     tc_token: Sensitive | None = Field(
         None,
         description='A ThreatConnect API token.',

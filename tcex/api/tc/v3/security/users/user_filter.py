@@ -152,24 +152,6 @@ class UserFilter(FilterABC):
         """
         self._tql.add_filter('locked', operator, locked, TqlType.BOOLEAN)
 
-    def logout_interval_minutes(self, operator: Enum, logout_interval_minutes: int | list):
-        """Filter Logout Interval based on **logoutIntervalMinutes** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            logout_interval_minutes: The configured period of time to wait for idle activity before
-                being logged out.
-        """
-        if isinstance(logout_interval_minutes, list) and operator not in self.list_types:
-            raise RuntimeError(
-                'Operator must be CONTAINS, NOT_CONTAINS, IN'
-                'or NOT_IN when filtering on a list of values.'
-            )
-
-        self._tql.add_filter(
-            'logoutIntervalMinutes', operator, logout_interval_minutes, TqlType.INTEGER
-        )
-
     def password_reset_required(self, operator: Enum, password_reset_required: bool):
         """Filter Password Reset Required based on **passwordResetRequired** keyword.
 
@@ -249,21 +231,6 @@ class UserFilter(FilterABC):
             )
 
         self._tql.add_filter('tqlTimeout', operator, tql_timeout, TqlType.INTEGER)
-
-    def ui_theme(self, operator: Enum, ui_theme: list | str):
-        """Filter UI Theme based on **uiTheme** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            ui_theme: The user's configured theme (e.g. light/dark).
-        """
-        if isinstance(ui_theme, list) and operator not in self.list_types:
-            raise RuntimeError(
-                'Operator must be CONTAINS, NOT_CONTAINS, IN'
-                'or NOT_IN when filtering on a list of values.'
-            )
-
-        self._tql.add_filter('uiTheme', operator, ui_theme, TqlType.STRING)
 
     def user_name(self, operator: Enum, user_name: list | str):
         """Filter User Name based on **userName** keyword.

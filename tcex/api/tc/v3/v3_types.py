@@ -1,5 +1,5 @@
 """ThreatConnect API V3 Types."""
-# flake8: noqa
+
 # standard library
 from typing import TYPE_CHECKING
 

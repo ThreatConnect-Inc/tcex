@@ -36,7 +36,7 @@ class MockApp:
     """
 
     def __init__(self, runtime_level: str, **kwargs):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         self.runtime_level = runtime_level
         self.cd: dict = kwargs.get('config_data', {})  # configuration data for tcex instance
         self.ijd: dict = kwargs.get('ij_data', {})  # install.json data

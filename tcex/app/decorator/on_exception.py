@@ -42,7 +42,7 @@ class OnException:
         exit_enabled: bool | str = True,
         write_output: bool = True,
     ):
-        """Initialize Class properties"""
+        """Initialize instance properties"""
         self.exit_enabled = exit_enabled
         self.exit_msg = exit_msg or 'An exception has been caught. See the logs for more details.'
         self.write_output = write_output

@@ -12,7 +12,7 @@ class InstallJsonValidate:
     """Validate install.json file."""
 
     def __init__(self, ij: 'InstallJson'):  # pylint: disable=E0601
-        """Initialize class properties."""
+        """Initialize instance properties."""
         self.ij = ij
 
     def validate_duplicate_input(self) -> list:

@@ -101,7 +101,7 @@ class Indicator(Mapping):
     """Unique API calls for Indicator API Endpoints"""
 
     def __init__(self, ti: 'ThreatIntelligence', **kwargs):
-        """Initialize Class Properties."""
+        """Initialize instance properties."""
         super().__init__(
             ti,
             'Indicator',

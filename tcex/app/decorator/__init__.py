@@ -1,5 +1,5 @@
 """Decorators module for TcEx Framework"""
-# flake8: noqa
+
 # first-party
 from tcex.app.decorator.benchmark import Benchmark
 from tcex.app.decorator.debug import Debug

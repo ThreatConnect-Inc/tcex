@@ -16,8 +16,8 @@ import redis
 from tcex import TcEx
 from tcex.app.key_value_store import RedisClient
 from tcex.app.playbook.playbook import Playbook
-from tcex.backport import cached_property
 from tcex.logger.trace_logger import TraceLogger  # pylint: disable=no-name-in-module
+from tcex.pleb.cached_property import cached_property
 from tcex.pleb.registry import registry
 from tcex.pleb.scoped_property import scoped_property
 from tests.mock_app import MockApp

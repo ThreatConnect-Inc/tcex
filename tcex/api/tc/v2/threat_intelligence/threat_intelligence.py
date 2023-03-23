@@ -59,7 +59,7 @@ class ThreatIntelligence:
     """ThreatConnect Threat Intelligence Module"""
 
     def __init__(self, session_tc: Session):
-        """Initialize Class properties."""
+        """Initialize instance properties."""
         self.session_tc = session_tc
 
         # properties

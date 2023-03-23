@@ -46,7 +46,7 @@ class KeyValueRedis(KeyValueABC):
         """
         return self.redis_client.hdel(context, key)
 
-    def get_all(self, context: str) -> dict[str, bytes | str | None]:
+    def get_all(self, context: str) -> dict[bytes | str, bytes | str | None]:
         """Return the contents for a given context.
 
         Args:
@@ -54,7 +54,7 @@ class KeyValueRedis(KeyValueABC):
         """
         return self.hgetall(context)
 
-    def hgetall(self, context: str) -> dict[str, bytes | str | None]:
+    def hgetall(self, context: str) -> dict[bytes | str, bytes | str | None]:
         """Read data from Redis for the current context.
 
         Args:

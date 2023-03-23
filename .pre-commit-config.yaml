@@ -45,10 +45,6 @@ repos:
     rev: v2.2.2
     hooks:
       - id: codespell
-  - repo: https://github.com/pycqa/flake8
-    rev: 6.0.0
-    hooks:
-      - id: flake8
   - repo: https://github.com/pre-commit/mirrors-isort
     rev: v5.10.1
     hooks:

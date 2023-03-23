@@ -46,7 +46,7 @@ class V3ModelABC(BaseModel, ABC):
     id: int | None = None
 
     def __init__(self, **kwargs):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         super().__init__(**kwargs)
 
         # when "id" field is present it indicates that the data was returned from the

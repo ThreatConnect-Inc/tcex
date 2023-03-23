@@ -80,7 +80,7 @@ class Group(ObjectABC):
     """
 
     def __init__(self, **kwargs):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         super().__init__(kwargs.pop('session', None))
 
         # properties
@@ -365,7 +365,7 @@ class Groups(ObjectCollectionABC):
     """
 
     def __init__(self, **kwargs):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         super().__init__(
             kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
         )

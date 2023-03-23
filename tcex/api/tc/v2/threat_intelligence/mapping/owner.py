@@ -14,7 +14,7 @@ class Owner:
     """Common API calls for for Indicators/SecurityLabels/Groups and Victims"""
 
     def __init__(self, ti: 'ThreatIntelligence'):
-        """Initialize Class properties."""
+        """Initialize instance properties."""
         self._data = {}
 
         self._type = 'Owner'

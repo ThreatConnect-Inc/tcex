@@ -4,7 +4,6 @@ import time
 from collections.abc import Callable
 
 # first-party
-from tcex.app.token import Token
 from tcex.input.field_type.sensitive import Sensitive  # TYPE-CHECKING
 from tcex.requests_session.auth.hmac_auth import HmacAuth
 from tcex.requests_session.auth.token_auth import TokenAuth
@@ -17,9 +16,9 @@ class TcAuth(HmacAuth, TokenAuth):
         self,
         tc_api_access_id: str | None = None,
         tc_api_secret_key: Sensitive | None = None,
-        tc_token: Callable | str | Sensitive | Token | None = None,
+        tc_token: Callable | str | Sensitive | None = None,
     ):
-        """Initialize Class Properties."""
+        """Initialize instance properties."""
         if tc_api_access_id is not None and tc_api_secret_key is not None:
             HmacAuth.__init__(self, tc_api_access_id, tc_api_secret_key)
             self.auth_type = 'hmac'

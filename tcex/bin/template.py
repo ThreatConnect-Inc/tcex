@@ -19,9 +19,9 @@ from tinydb import Query, TinyDB
 
 # first-party
 from tcex.app.config.model import TemplateConfigModel
-from tcex.backport import cached_property
 from tcex.bin.bin_abc import BinABC
 from tcex.input.field_type import Sensitive
+from tcex.pleb.cached_property import cached_property
 from tcex.pleb.proxies import proxies
 
 
@@ -56,7 +56,7 @@ class Template(BinABC):
         proxy_user,
         proxy_pass,
     ):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         super().__init__()
 
         # properties

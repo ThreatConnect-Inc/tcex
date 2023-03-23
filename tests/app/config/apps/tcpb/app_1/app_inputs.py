@@ -126,7 +126,7 @@ class AppInputs:
     """App Inputs"""
 
     def __init__(self, inputs: Input):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         self.inputs = inputs
 
     def get_model(self, tc_action: str | None = None) -> BaseModel:

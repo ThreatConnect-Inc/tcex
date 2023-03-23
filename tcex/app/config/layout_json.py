@@ -9,7 +9,7 @@ from pathlib import Path
 from tcex.app.config.model import LayoutJsonModel
 from tcex.app.config.model.install_json_model import OutputVariablesModel  # TYPE-CHECKING
 from tcex.app.config.model.install_json_model import ParamsModel  # TYPE-CHECKING
-from tcex.backport import cached_property
+from tcex.pleb.cached_property import cached_property
 from tcex.pleb.singleton import Singleton
 
 # get tcex logger
@@ -25,7 +25,7 @@ class LayoutJson(metaclass=Singleton):
         path: Path | str | None = None,
         logger: logging.Logger | None = None,
     ):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         filename = filename or 'layout.json'
         path = Path(path or Path.cwd())
         self.log = logger or tcex_logger
@@ -120,7 +120,7 @@ class LayoutJsonUpdate:
     """Update layout.json file with current standards and schema."""
 
     def __init__(self, lj: LayoutJson):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         self.lj = lj
 
     def multiple(self):
