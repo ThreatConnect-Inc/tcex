@@ -314,7 +314,7 @@ class TransformABC(ABC):
             self._process_metadata('to', self.transform.to_addr)
 
         if self.transformed_item['type'] in ('Event', 'Incident'):
-            self._process_metadata('eventDate', self.transform.event_date)
+            self._process_metadata_datetime('eventDate', self.transform.event_date)
             self._process_metadata('status', self.transform.status)
 
         if self.transformed_item['type'] == 'Report':
