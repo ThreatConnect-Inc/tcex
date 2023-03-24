@@ -177,6 +177,7 @@ class IndicatorTransformModel(TiTransformModel, extra=Extra.forbid):
     # host
     dns_active: Optional[MetadataTransformModel] = Field(None, description='')
     whois_active: Optional[MetadataTransformModel] = Field(None, description='')
+    active: Optional[MetadataTransformModel] = Field(None, description='')
 
     # root validator that ensure at least one indicator value/summary is set
     @root_validator()
