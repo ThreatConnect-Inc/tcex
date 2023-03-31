@@ -1,4 +1,4 @@
-"""Input for Apps"""
+"""TcEx Framework Module"""
 # standard library
 import json
 import logging
@@ -6,33 +6,37 @@ import os
 import re
 from base64 import b64decode
 from pathlib import Path
-from typing import TYPE_CHECKING, Dict, Optional, Union
 
 # third-party
+from pydantic import ValidationError  # TYPE-CHECKING
 from pydantic import BaseModel, Extra
+from redis import Redis
 
 # first-party
-from tcex.app_config.install_json import InstallJson
-from tcex.backports import cached_property
-from tcex.input.field_types import Sensitive
-from tcex.input.models import feature_map, runtime_level_map, tc_action_map
-from tcex.key_value_store import RedisClient
-from tcex.pleb.none_model import NoneModel
-from tcex.pleb.registry import registry
-from tcex.utils import Utils
-
-if TYPE_CHECKING:
-    # third-party
-    from pydantic import ValidationError
+from tcex.app.config.install_json import InstallJson
+from tcex.app.key_value_store import RedisClient
+from tcex.input.field_type import Sensitive
+from tcex.input.model.advanced_request_model import AdvancedRequestModel
+from tcex.input.model.app_external_model import AppExternalModel
+from tcex.input.model.common_advanced_model import CommonAdvancedModel
+from tcex.input.model.common_model import CommonModel
+from tcex.input.model.model_map import feature_map, runtime_level_map, tc_action_map
+from tcex.input.model.module_app_model import ModuleAppModel
+from tcex.input.model.module_requests_session_model import ModuleRequestsSessionModel
+from tcex.input.model.path_model import PathModel
+from tcex.logger.trace_logger import TraceLogger
+from tcex.pleb.cached_property import cached_property
+from tcex.registry import registry
+from tcex.util import Util
 
 # get tcex logger
-logger = logging.getLogger('tcex')
+_logger: TraceLogger = logging.getLogger(__name__.split('.', maxsplit=1)[0])  # type: ignore
 
 # define JSON encoders
 json_encoders = {Sensitive: lambda v: str(v)}  # pylint: disable=W0108
 
 
-def input_model(models: list) -> 'BaseModel':
+def input_model(models: list) -> CommonModel | CommonAdvancedModel:
     """Return Input Model."""
 
     class InputModel(*models):
@@ -44,7 +48,7 @@ def input_model(models: list) -> 'BaseModel':
 
         # the user id of the one executing the App
         # supported runtimeLevel: [Organization, Playbook]
-        tc_user_id: Optional[int]
+        tc_user_id: int | None
 
         class Config:
             """DataModel Config"""
@@ -59,26 +63,20 @@ def input_model(models: list) -> 'BaseModel':
 class Input:
     """Module to handle inputs for all App types."""
 
-    def __init__(self, config: Optional[dict] = None, config_file: Optional[str] = None, **kwargs):
-        """Initialize class properties.
+    def __init__(self, config: dict | None = None, config_file: str | None = None):
+        """Initialize instance properties."""
 
-        Keyword Args:
-            tc_session: pass a tc_session object to use, else will use the one from registry.
-        """
-
-        # TODO [HIGH] kwarg - don't add built-in models, supply custom TcSession object
         self.config = config
         self.config_file = config_file
 
         # properties
         self._models = []
         self.ij = InstallJson()
-        self.log = logger
-        self.utils = Utils()
-        self.tc_session = kwargs.get('tc_session')
+        self.log = _logger
+        self.util = Util()
 
     @staticmethod
-    def _get_redis_client(host, port, db):
+    def _get_redis_client(host: str, port: int, db: int) -> Redis:
         """Return RedisClient client"""
         return RedisClient(host=host, port=port, db=db).client
 
@@ -90,14 +88,24 @@ class Input:
         tc_kvstore_port: int,
         tc_action_channel: str,
         tc_terminate_seconds: int,
-    ) -> Dict[str, any]:
+    ) -> dict[str, dict | list | str]:
         """Subscribe to AOT action channel."""
         params = {}
         if tc_aot_enabled is not True:
             return params
 
-        if tc_kvstore_type == 'Redis':
+        if not all(
+            [
+                tc_kvstore_type,
+                tc_kvstore_host,
+                tc_kvstore_port,
+                tc_action_channel,
+                tc_terminate_seconds,
+            ]
+        ):
+            return params
 
+        if tc_kvstore_type == 'Redis':
             # get an instance of redis client
             redis_client = self._get_redis_client(
                 host=tc_kvstore_host,
@@ -114,22 +122,22 @@ class Input:
 
                 if msg_data is None:  # pragma: no cover
                     # send exit to tcex.exit method
-                    registry.ExitService.exit_aot_terminate(
+                    registry.exit.exit_aot_terminate(
                         code=1, msg='AOT subscription timeout reached.'
                     )
-
-                msg_data = json.loads(msg_data[1])
-                msg_type = msg_data.get('type', 'terminate')
-                if msg_type == 'execute':
-                    params = msg_data.get('params', {})
-                elif msg_type == 'terminate':
-                    # send exit to tcex.exit method
-                    registry.ExitService.exit_aot_terminate(
-                        code=0, msg='Received AOT terminate message.'
-                    )
+                else:
+                    msg_data = json.loads(msg_data[1])
+                    msg_type = msg_data.get('type', 'terminate')
+                    if msg_type == 'execute':
+                        params = msg_data.get('params', {})
+                    elif msg_type == 'terminate':
+                        # send exit to tcex.exit method
+                        registry.exit.exit_aot_terminate(
+                            code=0, msg='Received AOT terminate message.'
+                        )
             except Exception as e:  # pragma: no cover
                 # send exit to tcex.exit method
-                registry.ExitService.exit_aot_terminate(
+                registry.exit.exit_aot_terminate(
                     code=1, msg=f'Exception during AOT subscription ({e}).'
                 )
 
@@ -167,42 +175,42 @@ class Input:
 
         tc_app_param_file = os.getenv('TC_APP_PARAM_FILE')
         tc_app_param_key = os.getenv('TC_APP_PARAM_KEY')
-        if not all([tc_app_param_file, tc_app_param_key]):
-            return file_content
+        if tc_app_param_file and tc_app_param_key:
+            # tc_app_param_file is a fully qualified file name
+            fqfn = Path(tc_app_param_file)
+            if not fqfn.is_file():  # pragma: no cover
+                self.log.error(
+                    'feature=inputs, event=load-file-params, '
+                    f'exception=file-not-found, filename={fqfn.name}'
+                )
+                return file_content
 
-        # tc_app_param_file is a fully qualified file name
-        fqfn = Path(tc_app_param_file)
-        if not fqfn.is_file():  # pragma: no cover
-            self.log.error(
-                'feature=inputs, event=load-file-params, '
-                f'exception=file-not-found, filename={fqfn.name}'
-            )
-            return file_content
+            # read file contents
+            try:
+                # read encrypted file from "in" directory
+                with fqfn.open(mode='rb') as fh:
+                    encrypted_contents = fh.read()
+            except Exception:  # pragma: no cover
+                self.log.error(f'feature=inputs, event=config-parse-failure, filename={fqfn.name}')
+                return file_content
 
-        # read file contents
-        try:
-            # read encrypted file from "in" directory
-            with fqfn.open(mode='rb') as fh:
-                encrypted_contents = fh.read()
-        except Exception:  # pragma: no cover
-            self.log.error(f'feature=inputs, event=config-parse-failure, filename={fqfn.name}')
-            return file_content
+            # decrypt file contents
+            try:
+                file_content = json.loads(
+                    self.util.decrypt_aes_cbc(tc_app_param_key, encrypted_contents).decode()
+                )
 
-        # decrypt file contents
-        try:
-            file_content = json.loads(
-                self.utils.decrypt_aes_cbc(tc_app_param_key, encrypted_contents).decode()
-            )
-
-            # delete file
-            fqfn.unlink()
-        except Exception:  # pragma: no cover
-            self.log.error(f'feature=inputs, event=config-decryption-failure, filename={fqfn.name}')
+                # delete file
+                fqfn.unlink()
+            except Exception:  # pragma: no cover
+                self.log.error(
+                    f'feature=inputs, event=config-decryption-failure, filename={fqfn.name}'
+                )
 
         return file_content
 
-    def add_model(self, model: BaseModel):
-        """Add additional input models."""
+    def add_model(self, model: type[BaseModel]):
+        """Add additional input model."""
         if model:
             self._models.insert(0, model)
 
@@ -210,9 +218,11 @@ class Input:
         if 'model' in self.__dict__:
             del self.__dict__['model']
 
-        # add App level models based on special "tc_action" input
-        if hasattr(self.model_unresolved, 'tc_action'):
-            self._models.extend(tc_action_map.get(self.model_unresolved.tc_action, []))
+        # add App level model based on special "tc_action" input. this field
+        # doesn't exist on the common model, but can be added by the App.
+        # the tc_action can never be a variable (choice input).
+        if tc_action := self.contents.get('tc_action'):
+            self._models.extend(tc_action_map.get(tc_action, []))
 
         # force data model to load so that validation is done at this EXACT point
         _ = self.model
@@ -233,16 +243,30 @@ class Input:
         _contents.update(self._load_file_params())
 
         # aot params - must be loaded last so that it has the kv store channels
-        _contents.update(
-            self._load_aot_params(
-                tc_aot_enabled=self.utils.to_bool(_contents.get('tc_aot_enabled', False)),
-                tc_kvstore_type=_contents.get('tc_kvstore_type'),
-                tc_kvstore_host=_contents.get('tc_kvstore_host'),
-                tc_kvstore_port=_contents.get('tc_kvstore_port'),
-                tc_action_channel=_contents.get('tc_action_channel'),
-                tc_terminate_seconds=_contents.get('tc_terminate_seconds'),
-            )
-        )
+        tc_aot_enabled = self.util.to_bool(_contents.get('tc_aot_enabled', False))
+        if tc_aot_enabled is True:
+            tc_kvstore_type = _contents.get('tc_kvstore_type')
+            tc_kvstore_host = _contents.get('tc_kvstore_host')
+            tc_kvstore_port = _contents.get('tc_kvstore_port')
+            tc_action_channel = _contents.get('tc_action_channel')
+            tc_terminate_seconds = _contents.get('tc_terminate_seconds')
+
+            if (
+                tc_kvstore_type
+                and tc_kvstore_host
+                and tc_kvstore_port
+                and tc_action_channel
+                and tc_terminate_seconds
+            ):
+                param_data = self._load_aot_params(
+                    tc_aot_enabled=tc_aot_enabled,
+                    tc_kvstore_type=tc_kvstore_type,
+                    tc_kvstore_host=tc_kvstore_host,
+                    tc_kvstore_port=tc_kvstore_port,
+                    tc_action_channel=tc_action_channel,
+                    tc_terminate_seconds=tc_terminate_seconds,
+                )
+                _contents.update(param_data)
         return _contents
 
     @cached_property
@@ -266,7 +290,7 @@ class Input:
                 # and 2) doesn't make sense.  Service configs will never have playbook variables.
                 continue
 
-            if self.utils.is_tc_variable(value):  # only matches playbook variables
+            if self.util.is_tc_variable(value):  # only matches threatconnect variables
                 value = self.resolve_variable(variable=value)
             elif self.ij.model.is_playbook_app:
                 if isinstance(value, list):
@@ -278,8 +302,8 @@ class Input:
                         # TODO: [high] does resolve variable need to be added here
                         updated_value_array.append(v)
                     value = updated_value_array
-                elif self.utils.is_playbook_variable(value):  # only matches playbook variables
-                    # when using Union[Bytes, String] in App input model the value
+                elif self.util.is_playbook_variable(value):  # only matches playbook variables
+                    # when using Bytes | String in App input model the value
                     # can be coerced to the wrong type. the BinaryVariable and
                     # StringVariable custom types allows for the validator in Binary
                     # and String types to raise a value error.
@@ -287,7 +311,7 @@ class Input:
                 elif isinstance(value, str):
                     value = registry.playbook.read._read_embedded(value)
             else:
-                for match in re.finditer(self.utils.variable_tc_pattern, str(value)):
+                for match in re.finditer(self.util.variable_tc_pattern, str(value)):
                     variable = match.group(0)  # the full variable pattern
                     if match.group('type').lower() == 'file':
                         v = '<file>'
@@ -309,7 +333,7 @@ class Input:
             # MultiChoice data should be represented as JSON array and Boolean values should be a
             # JSON boolean and not a string.
             param = self.ij.model.get_param(name)
-            if isinstance(param, NoneModel):
+            if param is None:
                 # skip over "default" inputs not defined in the install.json file
                 continue
 
@@ -322,28 +346,71 @@ class Input:
                 inputs[name] = value.lower() == 'true'
 
     @cached_property
-    def model(self) -> 'BaseModel':
+    def model(self) -> CommonAdvancedModel:
         """Return the Input Model."""
-        return input_model(self.models)(**self.contents_resolved)
+        return input_model(self.models)(**self.contents_resolved)  # type: ignore
 
     @cached_property
-    def model_unresolved(self) -> 'BaseModel':
+    def model_advanced_request(self) -> AdvancedRequestModel:
+        """Return the Requests Session Model."""
+
+        class _AdvancedRequestModel(AdvancedRequestModel, extra=Extra.ignore):
+            """Model Definition for AdvancedRequestModel inputs ONLY."""
+
+        return _AdvancedRequestModel(**self.contents)
+
+    @cached_property
+    def model_organization_unresolved(self) -> CommonModel:
         """Return the Input Model using contents (no resolved values)."""
-        return input_model(self.models)(**self.contents)
+        return input_model(self.models)(**self.contents)  # type: ignore
+
+    @cached_property
+    def model_path(self) -> PathModel:
+        """Return the Requests Session Model."""
+
+        class _PathModel(PathModel, extra=Extra.ignore):
+            """Model Definition for PathModel inputs ONLY."""
+
+        return _PathModel(**self.contents)
+
+    @cached_property
+    def model_unresolved(self) -> CommonAdvancedModel:
+        """Return full data model with no resolved values.
+
+        This model has all inputs, including App inputs (e.g., tc_action), but
+        any pb/tc variables will not be resolved in the model. The model is
+        useful getting and process keyvalue variables that have mixed types.
+        """
+        return input_model(self.models)(**self.contents)  # type: ignore
+
+    @cached_property
+    def model_tc(self) -> CommonAdvancedModel:
+        """Return data model for ThreatConnect specific inputs.
+
+        This model does not have any App inputs (e.g., tc_action) and
+        should only be used for accessing ThreatConnect specific inputs.
+        """
+
+        class _CommonAdvancedModel(CommonAdvancedModel, extra=Extra.ignore):
+            """Model Definition for CommonAdvancedModel inputs ONLY."""
+
+        return _CommonAdvancedModel(**self.contents)
 
     @cached_property
     def models(self) -> list:
-        """Return all models for inputs."""
+        """Return all model for inputs."""
         # support external Apps that don't have an install.json
         if not self.ij.fqfn.is_file():
-            return runtime_level_map.get('external')
+            return [AppExternalModel]
 
-        # add all models for any supported features of the App
+        # add all model for any supported features of the App
         for feature in self.ij.model.features:
             self._models.extend(feature_map.get(feature, []))
 
-        # add all models based on the runtime level of the App
-        self._models.extend(runtime_level_map.get(self.ij.model.runtime_level.lower()))
+        # add all model based on the runtime level of the App
+        rlm = runtime_level_map.get(self.ij.model.runtime_level.lower())
+        if rlm is not None:
+            self._models.append(rlm)
 
         return self._models
 
@@ -357,25 +424,37 @@ class Input:
 
         return properties
 
-    def resolve_variable(self, variable: str) -> Union[bytes, str]:
+    @cached_property
+    def module_app_model(self) -> ModuleAppModel:
+        """Return the Module App Model."""
+        return ModuleAppModel(**self.contents)
+
+    @cached_property
+    def module_requests_session_model(self) -> ModuleRequestsSessionModel:
+        """Return the Module Requests Session Model."""
+        return ModuleRequestsSessionModel(**self.contents)
+
+    def resolve_variable(self, variable: str) -> bytes | str | Sensitive:
         """Resolve FILE/KEYCHAIN/TEXT variables.
 
         Feature: PLAT-2688
 
         Data Format:
         {
-            "data": "value"
+                "data": "value"
         }
         """
-        match = re.match(Utils().variable_tc_match, variable)
+        match = re.match(Util().variable_tc_match, variable)
+        if not match:
+            raise RuntimeError(f'Could not parse variable: {variable}')
+
         key = match.group('key')
         provider = match.group('provider')
         type_ = match.group('type')
 
         # retrieve value from API
         data = None
-        session = self.tc_session if self.tc_session else registry.session_tc
-        r = session.get(f'/internal/variable/runtime/{provider}/{key}')
+        r = registry.session_tc.get(f'/internal/variable/runtime/{provider}/{key}')
         if r.ok:
             try:
                 data = r.json().get('data')
@@ -396,11 +475,11 @@ class Input:
         return data
 
     @staticmethod
-    def validation_exit_message(ex: 'ValidationError'):
+    def validation_exit_message(ex: ValidationError):
         """Format and return validation error message."""
         _exit_message = {}
         for err in ex.errors():
-            # deduplicate error messagese
+            # deduplicate error messages
             err_loc = ','.join([str(e) for e in err.get('loc')])
             err_msg = err.get('msg')
             _exit_message.setdefault(err_loc, [])

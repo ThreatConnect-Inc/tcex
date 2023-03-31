@@ -1,10 +1,9 @@
-"""Request Key File Handler Class"""
+"""TcEx Framework Module"""
 # standard library
 import logging
 import os
 import re
 import threading
-from typing import Optional
 
 
 class PatternFileHandler(logging.FileHandler):
@@ -15,14 +14,17 @@ class PatternFileHandler(logging.FileHandler):
     on disk.
     """
 
+    handler_key: str
+    thread_key: str
+
     def __init__(
         self,
         filename: str,
         pattern: str,
-        mode: Optional[str] = 'a',
-        encoding: Optional[str] = None,
-        delay: Optional[bool] = False,
-        max_log_count: Optional[int] = 100,
+        mode: str = 'a',
+        encoding: str | None = None,
+        delay: bool = False,
+        max_log_count: int = 100,
     ):
         """Add logic to create log directory if it does not exists.
 
@@ -43,7 +45,7 @@ class PatternFileHandler(logging.FileHandler):
         # create pattern
         self.pattern = re.compile(pattern, re.I)
 
-        # trim the number of logfiles to the max log count
+        # trim the number of log files to the max log count
         self._trim_log_files(filename, max_log_count)
 
         super().__init__(filename=filename, mode=mode, encoding=encoding, delay=delay)
@@ -69,7 +71,7 @@ class PatternFileHandler(logging.FileHandler):
         # sort log file entries based on modified time
         log_files.sort(key=lambda e: e.stat().st_mtime, reverse=True)
 
-        # remove oldest logfiles
+        # remove oldest log files
         for entry in log_files[max_log_count:]:
             try:
                 os.remove(entry.path)
@@ -77,7 +79,7 @@ class PatternFileHandler(logging.FileHandler):
                 # best effort
                 pass
 
-    def emit(self, record: object):
+    def emit(self, record: logging.LogRecord):
         """Emit a record.
 
         Emit logging events only if handler_key matches thread_key.

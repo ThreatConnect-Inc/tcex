@@ -1,0 +1,20 @@
+{
+  "dictionaries": [
+    "custom-words"
+  ],
+  "dictionaryDefinitions": [
+    {
+      "addWords": true,
+      "name": "custom-words",
+      "path": "./.cspell/custom-dictionary-workspace.txt"
+    }
+  ],
+  "ignorePaths": [
+    "tests"
+  ],
+  "ignoreWords": [],
+  "import": [],
+  "useGitignore": true,
+  "version": "0.2",
+  "words": []
+}

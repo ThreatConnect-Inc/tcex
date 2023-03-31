@@ -1,6 +1,6 @@
-"""Test the TcEx API Module."""
-# third-party
-# import pytest
+"""TcEx Framework Module"""
+# standard library
+from collections.abc import Callable
 
 # third-party
 import pytest
@@ -13,17 +13,14 @@ from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 class TestGroups(TestV3):
     """Test TcEx API Interface."""
 
-    v3 = None
+    v3_helper = V3Helper('groups')
 
-    def setup_method(self, method: callable):
+    def setup_method(self, method: Callable):  # pylint: disable=arguments-differ
         """Configure setup before all tests."""
-        print('')  # ensure any following print statements will be on new line
-        self.v3_helper = V3Helper('groups')
-        self.v3 = self.v3_helper.v3
-        self.tcex = self.v3_helper.tcex
+        super().setup_method()
 
         # remove an previous groups with the next test case name as a tag
-        groups = self.tcex.v3.groups()
+        groups = self.tcex.api.tc.v3.groups()
         groups.filter.tag(TqlOperator.EQ, method.__name__)
         for group in groups:
             group.delete()
@@ -83,7 +80,7 @@ class TestGroups(TestV3):
             'type': 'ASN',
         }
 
-        group = self.tcex.v3.group(name='MyAdversary-03', type='Adversary')
+        group = self.tcex.api.tc.v3.group(name='MyAdversary-03', type='Adversary')
 
         self.v3_helper._associations(group, artifact, artifact_2, artifact_3)
 
@@ -100,7 +97,7 @@ class TestGroups(TestV3):
         case_2 = self.v3_helper.create_case(name='MyCase-01')
         case_3 = {'name': 'MyCase-02', 'severity': 'Low', 'status': 'Open'}
 
-        group = self.tcex.v3.group(
+        group = self.tcex.api.tc.v3.group(
             name='MyAdversary-02',
             type='Adversary',
         )
@@ -119,7 +116,7 @@ class TestGroups(TestV3):
             name='StagedGroup-02', xid='staged_group_02-xid'
         )
 
-        group = self.tcex.v3.group(
+        group = self.tcex.api.tc.v3.group(
             name='MyAdversary-01',
             type='Adversary',
             associated_groups={
@@ -192,20 +189,20 @@ class TestGroups(TestV3):
         assert staged_victim.as_entity.get('id') is not None
 
         # Add attribute
-        asset = self.tcex.v3.victim_asset(
+        asset = self.tcex.api.tc.v3.victim_asset(
             type='EmailAddress', address='malware@example.com', address_type='Trojan'
         )
         staged_victim.stage_victim_asset(asset)
 
-        staged_victim.update(params={'owner': 'TCI'})
+        staged_victim.update(params={'owner': 'TCI', 'fields': ['_all_']})
 
         assert asset.as_entity.get('type') == 'Victim Asset : EmailAddress'
         assert asset.as_entity.get('value') == 'Trojan : malware@example.com'
-
+        assert staged_victim.model.assets.data is not None, 'No assets found'
         asset = staged_victim.model.assets.data[0]
 
         staged_group.stage_associated_victim_asset(asset)
-        staged_group.update(params={'owner': 'TCI'})
+        staged_group.update(params={'owner': 'TCI', 'fields': ['_all_']})
 
         found_victim_assets = 0
         staged_victim_asset_found = False

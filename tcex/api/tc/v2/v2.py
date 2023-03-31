@@ -1,6 +1,6 @@
-"""API -> TC -> V2"""
-# standard library
-from typing import TYPE_CHECKING, Optional
+"""TcEx Framework Module"""
+# third-party
+from requests import Session  # TYPE-CHECKING
 
 # first-party
 from tcex.api.tc.v2.batch.batch import Batch
@@ -8,16 +8,10 @@ from tcex.api.tc.v2.batch.batch_submit import BatchSubmit
 from tcex.api.tc.v2.batch.batch_writer import BatchWriter
 from tcex.api.tc.v2.datastore.cache import Cache
 from tcex.api.tc.v2.datastore.datastore import DataStore
-from tcex.api.tc.v2.metrics.metrics import Metrics
-from tcex.api.tc.v2.notifications.notifications import Notifications
+from tcex.api.tc.v2.metric.metric import Metric
+from tcex.api.tc.v2.notification.notification import Notification
 from tcex.api.tc.v2.threat_intelligence.threat_intelligence import ThreatIntelligence
-
-if TYPE_CHECKING:
-    # third-party
-    from requests import Session
-
-    # first-party
-    from tcex.input.input import Input
+from tcex.input.input import Input  # TYPE-CHECKING
 
 
 class V2:
@@ -28,21 +22,21 @@ class V2:
         session_tc: An configured instance of request.Session with TC API Auth.
     """
 
-    def __init__(self, inputs: 'Input', session_tc: 'Session'):
-        """Initialize Class properties."""
+    def __init__(self, inputs: Input, session_tc: Session):
+        """Initialize instance properties."""
         self.inputs = inputs
         self.session_tc = session_tc
 
     def batch(
         self,
         owner: str,
-        action: Optional[str] = 'Create',
-        attribute_write_type: Optional[str] = 'Replace',
-        halt_on_error: Optional[bool] = False,
-        playbook_triggers_enabled: Optional[bool] = False,
-        tag_write_type: Optional[str] = 'Replace',
-        security_label_write_type: Optional[str] = 'Replace',
-    ) -> 'Batch':
+        action: str = 'Create',
+        attribute_write_type: str = 'Replace',
+        halt_on_error: bool = False,
+        playbook_triggers_enabled: bool = False,
+        tag_write_type: str = 'Replace',
+        security_label_write_type: str = 'Replace',
+    ) -> Batch:
         """Return instance of Batch
 
         Args:
@@ -69,13 +63,13 @@ class V2:
     def batch_submit(
         self,
         owner: str,
-        action: Optional[str] = 'Create',
-        attribute_write_type: Optional[str] = 'Replace',
-        halt_on_error: Optional[bool] = False,
-        playbook_triggers_enabled: Optional[bool] = False,
-        tag_write_type: Optional[str] = 'Replace',
-        security_label_write_type: Optional[str] = 'Replace',
-    ) -> 'BatchSubmit':
+        action: str = 'Create',
+        attribute_write_type: str = 'Replace',
+        halt_on_error: bool = False,
+        playbook_triggers_enabled: bool = False,
+        tag_write_type: str = 'Replace',
+        security_label_write_type: str = 'Replace',
+    ) -> BatchSubmit:
         """Return instance of Batch
 
         Args:
@@ -99,16 +93,18 @@ class V2:
             security_label_write_type,
         )
 
-    def batch_writer(self, output_dir: str, **kwargs) -> 'BatchWriter':
+    def batch_writer(self, output_dir: str, **kwargs) -> BatchWriter:
         """Return instance of Batch
 
         Args:
             output_dir: Deprecated input, will not be used.
-            output_extension (kwargs: str): Append this extension to output files.
-            write_callback (kwargs: Callable): A callback method to call when a batch json file
-                is written. The callback will be passed the fully qualified name of the written
-                file.
-            write_callback_kwargs (kwargs: dict): Additional values to send to callback method.
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
+            output_extension (str): Append this extension to output files.
+            write_callback (Callable): A callback method to call when a batch json file is
+                written. The callback will be passed the fully qualified name of the written file.
+            write_callback_kwargs (dict): Additional values to send to callback method.
         """
         return BatchWriter(self.inputs, self.session_tc, output_dir, **kwargs)
 
@@ -116,8 +112,8 @@ class V2:
         self,
         domain: str,
         data_type: str,
-        ttl_seconds: Optional[int] = None,
-        mapping: Optional[dict] = None,
+        ttl_seconds: int | None = None,
+        mapping: dict | None = None,
     ) -> Cache:
         """Get instance of the Cache module.
 
@@ -132,7 +128,7 @@ class V2:
         """
         return Cache(self.session_tc, domain, data_type, ttl_seconds, mapping)
 
-    def datastore(self, domain: str, data_type: str, mapping: Optional[dict] = None) -> 'DataStore':
+    def datastore(self, domain: str, data_type: str, mapping: dict | None = None) -> DataStore:
         """Return Datastore Module.
 
         Args:
@@ -141,7 +137,7 @@ class V2:
                 while "local" access is restricted to the App writing the data. The "system" option
                 should not be used in almost all cases.
             data_type: The data type descriptor (e.g., tc:whois:cache).
-            mapping: ElasticSearch mappings data.
+            mapping: ElasticSearch mapping data.
         """
         return DataStore(
             session_tc=self.session_tc, domain=domain, data_type=data_type, mapping=mapping
@@ -153,8 +149,8 @@ class V2:
         description: str,
         data_type: str,
         interval: str,
-        keyed: Optional[bool] = False,
-    ) -> 'Metrics':
+        keyed: bool = False,
+    ) -> Metric:
         """Get instance of the Metrics module.
 
         Args:
@@ -164,7 +160,7 @@ class V2:
             interval: The metric interval: Hourly, Daily, Weekly, Monthly, and Yearly.
             keyed: Indicates whether the data will have a keyed value.
         """
-        return Metrics(
+        return Metric(
             session_tc=self.session_tc,
             name=name,
             description=description,
@@ -174,11 +170,11 @@ class V2:
         )
 
     @property
-    def notification(self) -> 'Notifications':
+    def notification(self) -> Notification:
         """Get instance of the Notification module."""
-        return Notifications(self.session_tc)
+        return Notification(self.session_tc)
 
     @property
-    def ti(self) -> 'ThreatIntelligence':
+    def ti(self) -> ThreatIntelligence:
         """Get instance of the Notification module."""
         return ThreatIntelligence(self.session_tc)

@@ -1,8 +1,9 @@
-"""ThreatConnect TQL"""
+"""TcEx Framework Module"""
 # standard library
-from typing import List, Optional
+from enum import Enum
 
 # first-party
+from tcex.api.tc.v3.filter_abc import FilterABC
 from tcex.api.tc.v3.tql.tql_type import TqlType
 
 
@@ -10,7 +11,7 @@ class Tql:
     """ThreatConnect TQL"""
 
     def __init__(self):
-        """Initialize Class Properties"""
+        """Initialize instance properties"""
         self._filters = []
         self.raw_tql = None
 
@@ -20,12 +21,12 @@ class Tql:
         filters = []
         for tql_filter in self.filters:
             # keywords are all one work (e.g. task_id should be taskid)
-            keyword = tql_filter.get('keyword').replace('_', '')
-            value = tql_filter.get('value')
+            keyword = tql_filter['keyword'].replace('_', '')
+            value = tql_filter['value']
             try:
                 filters.append(f'''{keyword}({value._tql.as_str})''')
             except Exception:
-                if isinstance(value, List):
+                if isinstance(value, list):
                     if tql_filter.get('type') == TqlType.INTEGER:
                         value = [str(int_) for int_ in value]
                     elif tql_filter.get('type') == TqlType.STRING:
@@ -34,22 +35,26 @@ class Tql:
                     value = f'({value})'
                 elif tql_filter.get('type') == TqlType.STRING:
                     value = f'"{value}"'
-                filters.append(f'''{keyword} {tql_filter.get('operator').value} {value}''')
+                filters.append(f'''{keyword} {tql_filter['operator'].value} {value}''')
 
         return ' and '.join(filters)
 
     @property
-    def filters(self) -> List[dict]:
+    def filters(self) -> list[dict]:
         """Return the filters"""
         return self._filters
 
     @filters.setter
-    def filters(self, filters: List[dict]):
+    def filters(self, filters: list[dict]):
         """Set the filters"""
         self._filters = filters
 
     def add_filter(
-        self, keyword: str, operator: str, value: str, type_: Optional[TqlType] = TqlType.STRING
+        self,
+        keyword: str,
+        operator: Enum | str,
+        value: int | list | str | FilterABC,
+        type_: TqlType | None = TqlType.STRING,
     ):
         """Add a filter to the current obj
 

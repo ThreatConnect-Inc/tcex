@@ -1,11 +1,11 @@
-"""Trace Logger Class"""
+"""TcEx Framework Module"""
 # standard library
 import logging
 from inspect import getframeinfo, stack
 
 # Create trace logging level
-logging.TRACE = logging.DEBUG - 5
-logging.addLevelName(logging.TRACE, 'TRACE')
+logging.TRACE = logging.DEBUG - 5  # type: ignore
+logging.addLevelName(logging.TRACE, 'TRACE')  # type: ignore
 
 
 class TraceLogger(logging.Logger):
@@ -14,15 +14,8 @@ class TraceLogger(logging.Logger):
     # supports updated call for Python 3.8
     def findCaller(
         self, stack_info=False, stacklevel=1
-    ):  # pylint: disable=arguments-differ,unused-argument
-        """Find the caller for the current log event.
-
-        Args:
-            stack_info (bool, optional): Defaults to False.
-
-        Returns:
-            tuple: The caller stack information.
-        """
+    ) -> tuple:  # pylint: disable=arguments-differ,unused-argument
+        """Find the caller for the current log event."""
         caller = None
         depth = 3
         while True:
@@ -35,9 +28,5 @@ class TraceLogger(logging.Logger):
         return (caller.filename, caller.lineno, caller.function, None)
 
     def trace(self, msg, *args, **kwargs):
-        """Set trace logging level
-
-        Args:
-            msg (str): The message to be logged.
-        """
-        self.log(logging.TRACE, msg, *args, **kwargs)
+        """Set trace logging level."""
+        self.log(logging.TRACE, msg, *args, **kwargs)  # type: ignore

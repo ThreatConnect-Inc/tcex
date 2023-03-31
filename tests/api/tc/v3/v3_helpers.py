@@ -1,4 +1,4 @@
-"""Case Management PyTest Helper Method"""
+"""TcEx Framework Module"""
 # standard library
 import importlib
 import inspect
@@ -6,41 +6,36 @@ import os
 import time
 from datetime import datetime
 from random import randint
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import Any
 
 # third-party
+from _pytest.fixtures import FixtureRequest
 from pydantic import BaseModel
 
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
-from tcex.utils.utils import Utils
+from tcex.api.tc.v3.v3 import V3
+from tcex.tcex import TcEx
+from tcex.util.util import Util
 from tests.mock_app import MockApp
-
-if TYPE_CHECKING:
-    # third-party
-    import pytest
 
 
 class V3Helper:
-    """V3 API Helper Module
-
-    Args:
-        v3_object: The name of the object (e.g., artifact) being tested.
-    """
+    """V3 API Helper Module"""
 
     def __init__(self, v3_object: str):
-        """Initialize Class Properties"""
+        """Initialize instance properties"""
         self.v3_object = v3_object
 
         # properties
         self.app = MockApp(runtime_level='Playbook')
         self.tcex = self.app.tcex
-        self.v3 = self.tcex.v3
-        self.utils = Utils()
+        self.v3 = self.tcex.api.tc.v3
+        self.util = Util()
 
         # get v3 obj and obj collection (could append s for collection, but dict is cleaner)
         module_data = self._module_map(v3_object)
-        self.v3_obj = self._import_model(module_data.get('module'), module_data.get('class_name'))
+        self.v3_obj = self._import_model(module_data['module'], module_data.get('class_name'))
         self.v3_obj_collection = self._import_model(
             module_data.get('module'), module_data.get('collection_class_name')
         )
@@ -60,7 +55,7 @@ class V3Helper:
         # print(f'method=import_module, module={module}, class_name={class_name}')
         v3_class = getattr(importlib.import_module(module), class_name)
         # print(f'method=import_module, v3-class-type={type(v3_class)}')
-        v3_obj = v3_class(session=self.tcex.session_tc)
+        v3_obj = v3_class(session=self.tcex.session.tc)  # pylint: disable=no-member
         # print(f'method=import_module, v3-obj-type={type(v3_obj)}')
         return v3_obj
 
@@ -73,7 +68,7 @@ class V3Helper:
             obj.delete()
 
     def _associations(self, root, association_1, association_2, association_data):
-        """Helper method to test associations."""
+        """Process associations."""
 
         obj_type = root.__class__.__name__.lower()
         association_type = association_1.__class__.__name__
@@ -132,7 +127,7 @@ class V3Helper:
         assert found_associations == 0
 
     @staticmethod
-    def _module_map(module: str) -> Dict:
+    def _module_map(module: str) -> dict:
         """Return the module map data."""
         _modules = {
             'adversary_assets': {
@@ -256,10 +251,10 @@ class V3Helper:
                 'collection_class_name': 'WorkflowTemplates',
             },
         }
-        return _modules.get(module)
+        return _modules.get(module, {})
 
     @staticmethod
-    def assert_generator(model: 'BaseModel', object_name: str):
+    def assert_generator(model: BaseModel, object_name: str):
         """Print assert statements for the provided model.
 
         self.v3_helper.assert_generator(owner.model, 'owners')
@@ -273,7 +268,7 @@ class V3Helper:
                 value = f'\'{value}\''
             print(f'''{' ' * 8}assert {object_name}.model.{key} == {value}''')
 
-    def tql_generator(self, model: 'BaseModel', object_name: str):
+    def tql_generator(self, model: BaseModel, object_name: str):
         """Print TQL filter.
 
         group.get(params={'fields': ['_all_']})
@@ -321,10 +316,10 @@ class V3Helper:
             'missing': [],
         }
         for keyword in self.v3_obj_collection.tql_keywords:
-            keyword = self.utils.camel_to_snake(keyword)
+            keyword = self.util.camel_to_snake(keyword)
             if keyword.startswith('has'):
                 continue
-            operator, value = get_value(keyword, model_data.get(get_model_keyword(keyword)))
+            operator, value = get_value(keyword, model_data[get_model_keyword(keyword)])
 
             # print TQL filters
             tql_filter = f'''{object_name}.filter.{keyword}(TqlOperator.{operator}, {value})'''
@@ -359,9 +354,7 @@ class V3Helper:
             status (str, kwargs): Optional status.
             tags (dict|list, kwargs): Optional tags.
             xid (str, kwargs): Optional XID.
-
-        Returns:
-            CaseManagement.Case: A CM case object.
+            kwargs: Optional keyword arguments.
         """
         # Use the test case name in xid and to control delete
         test_case_name = inspect.stack()[1].function
@@ -409,17 +402,18 @@ class V3Helper:
             case.stage_task(self.v3.task(**task))
 
         # create object
-        case.create(kwargs.get('params', {}))
+        case.create(params={'fields': ['_all_']})
 
         # store case id for cleanup
         self._v3_objects.append(case)
 
         return case
 
-    def create_group(self, type_: Optional[str] = 'Adversary', **kwargs):
+    def create_group(self, type_: str | None = 'Adversary', **kwargs):
         """Create a group.
 
         Args:
+            type_: The Indicator type.
             active (bool, kwargs): Optional active bool.
             associated_groups (dict|list, kwargs): Optional group associations.
             associated_indicator (dict|list, kwargs): Optional indicator associations.
@@ -430,9 +424,7 @@ class V3Helper:
             source (str, kwargs): Optional source.
             tags (dict|list, kwargs): Optional tags.
             xid (str, kwargs): Optional XID.
-
-        Returns:
-            V3.Group: A group object.
+            kwargs: Optional keyword arguments.
         """
         # Use the test case name in xid and to control delete
         test_case_name = inspect.stack()[1].function
@@ -482,17 +474,18 @@ class V3Helper:
             group.stage_tag(self.v3.tag(**tag))
 
         # create object
-        group.create()
+        group.create(params={'fields': ['_all_']})
 
         # store case id for cleanup
         self._v3_objects.append(group)
 
         return group
 
-    def create_indicator(self, type_: Optional[str] = 'Address', **kwargs):
+    def create_indicator(self, type_: str = 'Address', **kwargs):
         """Create a indicator.
 
         Args:
+            type_: The Indicator type.
             active (bool, kwargs): Optional active bool.
             associated_groups (dict|list, kwargs): Optional group associations.
             attributes (dict|list, kwargs): Optional indicator attributes.
@@ -505,9 +498,7 @@ class V3Helper:
             value_1 (str, kwargs): Optional indicator value 1.
             value_2 (str, kwargs): Optional indicator value 2.
             value_3 (str, kwargs): Optional indicator value 3.
-
-        Returns:
-            V3.Indicator: A indicator object.
+            kwargs: Optional keyword arguments.
         """
         # Use the test case name in xid and to control delete
         test_case_name = inspect.stack()[1].function
@@ -524,7 +515,7 @@ class V3Helper:
                 'Host': 'hostName',
                 'URL': 'text',
             }
-            return value_1_mapping.get(type_, 'value1')
+            return value_1_mapping.get(type_, type_)
 
         def value_2_map():
             """Return the appropriate indicator field name."""
@@ -589,7 +580,7 @@ class V3Helper:
             indicator.stage_tag(self.v3.tag(**tag))
 
         # create object
-        indicator.create()
+        indicator.create(params={'fields': ['_all_']})
 
         # store case id for cleanup
         self._v3_objects.append(indicator)
@@ -619,9 +610,7 @@ class V3Helper:
             tags (Tags, kwargs): A list of Tags corresponding to the item (NOTE: Setting this
                 parameter will replace any existing tag(s) with the one(s) specified)
             work_location (str, kwargs): Work Location of the Victim.
-
-        Returns:
-            V3.Victim: A victim object.
+            kwargs: Optional keyword arguments.
         """
         # Use the test case name in xid and to control delete
         test_case_name = inspect.stack()[1].function
@@ -669,7 +658,7 @@ class V3Helper:
             victim.stage_tag(self.v3.tag(**tag))
 
         # create object
-        victim.create()
+        victim.create(params={'fields': ['_all_']})
 
         # store case id for cleanup
         self._v3_objects.append(victim)
@@ -689,9 +678,16 @@ class V3Helper:
 class TestV3:
     """Test TcEx V3 Base Class"""
 
+    v3: V3
     v3_helper: V3Helper
-    tcex = None
-    utils = Utils()
+    tcex: TcEx
+    util = Util()
+
+    def setup_method(self):
+        """Configure setup before all tests."""
+        print('')  # ensure any following print statements will be on new line
+        self.tcex = self.v3_helper.tcex
+        self.v3 = self.v3_helper.v3
 
     def teardown_method(self):
         """Clean up resources"""
@@ -699,7 +695,7 @@ class TestV3:
             self.v3_helper.cleanup()
 
         # clean up monitor thread
-        self.v3_helper.tcex.token.shutdown = True
+        self.v3_helper.tcex.app.token.shutdown = True
 
     def obj_api_options(self):
         """Test filter keywords.
@@ -753,7 +749,7 @@ class TestV3:
         """
         for keyword in self.v3_helper.v3_obj_collection.tql_keywords:
             # convert camel keyword from API to snake before comparing
-            keyword = self.utils.camel_to_snake(keyword)
+            keyword = self.util.camel_to_snake(keyword)
             if keyword not in self.v3_helper.v3_obj_collection.filter.implemented_keywords:
                 assert False, f'Missing TQL keyword {keyword}.'
 
@@ -779,6 +775,6 @@ class TestV3:
             assert prop in self.v3_helper.v3_obj.properties, f'Extra {prop} property.'
 
     @staticmethod
-    def xid(request: 'pytest.FixtureRequest') -> str:
+    def xid(request: FixtureRequest) -> str:
         """Return a valid for a test case."""
         return f'{request.node.name}-{time.time()}'

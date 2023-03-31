@@ -1,2 +1,1 @@
-"""ThreatConnect API Security Module."""
-# flake8: noqa
+"""TcEx Framework Module"""

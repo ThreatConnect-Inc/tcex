@@ -1,9 +1,14 @@
-"""Test the TcEx Threat Intel Module."""
+"""TcEx Framework Module"""
 # standard library
 import os
 from random import randint
 
-from .ti_helpers import TestThreatIntelligence, TIHelper
+# third-party
+from _pytest.fixtures import FixtureRequest
+
+# first-party
+from tcex.tcex import TcEx
+from tests.api.tc.v2.threat_intelligence.ti_helper import TestThreatIntelligence, TIHelper
 
 
 class TestHostIndicators(TestThreatIntelligence):
@@ -14,9 +19,7 @@ class TestHostIndicators(TestThreatIntelligence):
     indicator_field_custom = 'hostname'
     indicator_type = 'Host'
     owner = os.getenv('TC_OWNER')
-    ti = None
-    ti_helper = None
-    tcex = None
+    tcex: TcEx
 
     def setup_method(self):
         """Configure setup before all tests."""
@@ -57,7 +60,7 @@ class TestHostIndicators(TestThreatIntelligence):
         r = ti.delete()
         assert r.status_code == 200
 
-    def tests_ti_host_add_attribute(self, request):
+    def tests_ti_host_add_attribute(self, request: FixtureRequest):
         """Test indicator add attribute."""
         super().indicator_add_attribute(request)
 
@@ -65,7 +68,7 @@ class TestHostIndicators(TestThreatIntelligence):
         """Test indicator add label."""
         super().indicator_add_label()
 
-    def tests_ti_host_add_tag(self, request):
+    def tests_ti_host_add_tag(self, request: FixtureRequest):
         """Test indicator add tag."""
         super().indicator_add_tag(request)
 
@@ -77,11 +80,11 @@ class TestHostIndicators(TestThreatIntelligence):
         """Test indicator get with generic indicator method."""
         super().indicator_get()
 
-    def tests_ti_host_get_includes(self, request):
+    def tests_ti_host_get_includes(self, request: FixtureRequest):
         """Test indicator get with includes."""
         super().indicator_get_includes(request)
 
-    def tests_ti_host_get_attribute(self, request):
+    def tests_ti_host_get_attribute(self, request: FixtureRequest):
         """Test indicator get attribute."""
         super().indicator_get_attribute(request)
 
@@ -89,7 +92,7 @@ class TestHostIndicators(TestThreatIntelligence):
         """Test indicator get label."""
         super().indicator_get_label()
 
-    def tests_ti_host_get_tag(self, request):
+    def tests_ti_host_get_tag(self, request: FixtureRequest):
         """Test indicator get tag."""
         super().indicator_get_tag(request)
 

@@ -1,30 +1,29 @@
-"""Base pytest configuration file."""
+"""TcEx Framework Module"""
 # standard library
 import hashlib
 import logging
 import os
 import re
 import shutil
-from typing import TYPE_CHECKING
+from collections.abc import Callable, Iterator
 
 # third-party
 import fakeredis
 import pytest
 import redis
+from _pytest.monkeypatch import MonkeyPatch
 
 # first-party
-from tcex.backports import cached_property
-from tcex.key_value_store import RedisClient
-from tcex.pleb.registry import registry
+from tcex import TcEx
+from tcex.app.key_value_store import RedisClient
+from tcex.app.playbook.playbook import Playbook
+from tcex.logger.trace_logger import TraceLogger
+from tcex.pleb.cached_property import cached_property
 from tcex.pleb.scoped_property import scoped_property
+from tcex.registry import registry
 from tests.mock_app import MockApp
 
-if TYPE_CHECKING:
-    # first-party
-    from tcex import TcEx
-    from tcex.playbook.playbook import Playbook
-
-logger = logging.getLogger('tcex')
+_logger: TraceLogger = logging.getLogger(__name__.split('.', maxsplit=1)[0])  # type: ignore
 
 #
 # fixtures
@@ -39,7 +38,7 @@ def _reset_modules():
 
 
 @pytest.fixture(autouse=True)
-def change_test_dir(request, monkeypatch):
+def change_test_dir(request, monkeypatch: MonkeyPatch):
     """Change the test working directory to prevent conflicts with other tests."""
     test_name = request.node.name
 
@@ -52,23 +51,23 @@ def change_test_dir(request, monkeypatch):
     temp_test_path = os.path.join(
         request.fspath.dirname.replace(os.getcwd(), f'{os.getcwd()}/log'), test_name
     )
-    logger.debug(f'Working directory: test-name={request.node.name}, test-path={temp_test_path}')
+    _logger.debug(f'Working directory: test-name={request.node.name}, test-path={temp_test_path}')
     os.makedirs(temp_test_path, exist_ok=True)
     os.makedirs(os.path.join(temp_test_path, 'DEBUG'), exist_ok=True)
     monkeypatch.chdir(temp_test_path)
 
 
 @pytest.fixture()
-def owner_id():
+def owner_id() -> Iterator[Callable]:
     """Return an owner id."""
     _reset_modules()
     _tcex = MockApp(runtime_level='Playbook').tcex
 
-    def get_owner_id(name):
+    def get_owner_id(name) -> int | None:
         """Return owner Id give the name."""
         id_ = None
         for o in (
-            _tcex.session_tc.get('/v2/owners')  # pylint: disable=no-member
+            _tcex.session.tc.get('/v2/owners')  # pylint: disable=no-member
             .json()
             .get('data', [])
             .get('owner', [])
@@ -80,25 +79,25 @@ def owner_id():
 
     yield get_owner_id
 
-    _tcex.token.shutdown = True
+    _tcex.app.token.shutdown = True
 
 
 @pytest.fixture()
-def playbook() -> 'Playbook':
-    """Return an instance of tcex.playbook."""
+def playbook() -> Iterator[Playbook]:
+    """Return an instance of tcex.app.playbook."""
     _reset_modules()
     app = MockApp(runtime_level='Playbook')
-    yield app.tcex.playbook
-    app.tcex.token.shutdown = True
+    yield app.tcex.app.playbook
+    app.tcex.app.token.shutdown = True
 
 
 @pytest.fixture()
-def playbook_app() -> 'MockApp':
+def playbook_app() -> Iterator[Callable[..., MockApp]]:
     """Mock a playbook App."""
     _reset_modules()
-    app_refs = []
+    app_refs: list[MockApp] = []
 
-    def app(**kwargs):
+    def app(**kwargs) -> MockApp:
         nonlocal app_refs
         if kwargs.get('runtime_level') is None:
             kwargs['runtime_level'] = 'Playbook'
@@ -109,7 +108,7 @@ def playbook_app() -> 'MockApp':
     yield app
 
     for _app in app_refs:
-        _app.tcex.token.shutdown = True
+        _app.tcex.app.token.shutdown = True
 
 
 @pytest.fixture()
@@ -119,12 +118,12 @@ def redis_client() -> redis.Redis:
 
 
 @pytest.fixture()
-def service_app() -> 'MockApp':
+def service_app() -> Iterator[Callable]:
     """Mock a service App."""
     _reset_modules()
-    app_refs = []
+    app_refs: list[MockApp] = []
 
-    def app(**kwargs):
+    def app(**kwargs) -> MockApp:
         nonlocal app_refs
         if kwargs.get('runtime_level') is None:
             kwargs['runtime_level'] = 'TriggerService'
@@ -135,29 +134,20 @@ def service_app() -> 'MockApp':
     yield app
 
     for _app in app_refs:
-        _app.tcex.token.shutdown = True
-
-
-# @pytest.fixture()
-# def tc_log_file() -> str:
-#     """Return tcex config data."""
-#     _reset_modules()
-#     app = MockApp(runtime_level='Playbook')
-#     yield 'test.log'
-#     app.tcex.token.shutdown = True
+        _app.tcex.app.token.shutdown = True
 
 
 @pytest.fixture()
-def tcex() -> 'TcEx':
+def tcex() -> Iterator[TcEx]:
     """Return an instance of tcex."""
     _reset_modules()
     _tcex = MockApp(runtime_level='Playbook').tcex
     yield _tcex
-    _tcex.token.shutdown = True
+    _tcex.app.token.shutdown = True
 
 
 @pytest.fixture()
-def tcex_hmac() -> 'TcEx':
+def tcex_hmac() -> Iterator[TcEx]:
     """Return an instance of tcex with hmac auth."""
     _reset_modules()
     config_data_ = {
@@ -166,12 +156,12 @@ def tcex_hmac() -> 'TcEx':
     }
     app = MockApp(runtime_level='Playbook', config_data=config_data_)
     yield app.tcex
-    app.tcex.token.shutdown = True
+    app.tcex.app.token.shutdown = True
 
 
 # @pytest.fixture(scope='module')
 @pytest.fixture()
-def tcex_proxy() -> 'TcEx':
+def tcex_proxy() -> Iterator[TcEx]:
     """Return an instance of tcex with proxy configured.
 
     mitmproxy -p 4242 --ssl-insecure
@@ -183,7 +173,7 @@ def tcex_proxy() -> 'TcEx':
     }
     app = MockApp(runtime_level='Playbook', config_data=config_data_)
     yield app.tcex
-    app.tcex.token.shutdown = True
+    app.tcex.app.token.shutdown = True
 
 
 #
@@ -208,7 +198,7 @@ def pytest_configure(config):  # pylint: disable=unused-argument
     # Replace Redis with FakeRedis for testing
     client_prop = cached_property(lambda *args: fakeredis.FakeRedis())
     client_prop.__set_name__(RedisClient, 'client')
-    RedisClient.client = client_prop
+    RedisClient.client = client_prop  # type: ignore
 
 
 def pytest_sessionstart(session):  # pylint: disable=unused-argument

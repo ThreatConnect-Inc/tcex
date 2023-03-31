@@ -1,0 +1,17 @@
+{
+  "package": {
+    "app_name": "TC_-_TcEx_App_1",
+    "excludes": [
+      "*.install.json",
+      ".gitignore",
+      ".pre-commit-config.yaml",
+      "local-*",
+      "pyproject.toml",
+      "setup.cfg",
+      "tcex.json",
+      "app.yaml"
+    ]
+  },
+  "template_name": "basic",
+  "template_type": "organization"
+}

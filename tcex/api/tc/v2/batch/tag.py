@@ -1,7 +1,7 @@
-"""ThreatConnect Batch Import Module"""
+"""TcEx Framework Module"""
 # standard library
 import json
-from typing import Callable, Optional
+from collections.abc import Callable
 
 
 class Tag:
@@ -9,8 +9,8 @@ class Tag:
 
     __slots__ = ['_tag_data', '_valid']
 
-    def __init__(self, name: str, formatter: Optional[Callable[[str], str]] = None):
-        """Initialize Class Properties.
+    def __init__(self, name: str, formatter: Callable[[str], str] | None = None):
+        """Initialize instance properties.
 
         Args:
             name: The value for this tag.
@@ -32,7 +32,7 @@ class Tag:
     @property
     def name(self) -> str:
         """Return Tag name."""
-        return self._tag_data.get('name')
+        return self._tag_data.get('name')  # type: ignore
 
     @property
     def valid(self) -> bool:
@@ -40,5 +40,5 @@ class Tag:
         return self._valid
 
     def __str__(self) -> str:
-        """Return string represtentation of object."""
+        """Return string representation of object."""
         return json.dumps(self.data, indent=4)

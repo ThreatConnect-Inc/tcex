@@ -1,10 +1,9 @@
-"""Case Management"""
+"""TcEx Framework Module"""
 # third-party
 from requests import Session
 
 # first-party
 from tcex.api.tc.v3.case_attributes.case_attribute import CaseAttribute, CaseAttributes
-from tcex.api.tc.v3.security.assignee_model import AssigneeModel
 
 
 class CaseManagement:
@@ -15,17 +14,20 @@ class CaseManagement:
     """
 
     def __init__(self, session: Session):
-        """Initialize Class properties."""
+        """Initialize instance properties."""
         self.session = session
 
     def artifact(self, **kwargs) -> 'Artifact':
         """Return a instance of Artifact object.
 
         Model Schema:
-        >>> from tcex.api.tc.v3.case_management.models.artifact_model import ArtifactModel
+        >>> from tcex.api.tc.v3.case_management.model.artifact_model import ArtifactModel
         >>> print(ArtifactModel.schema_json(by_alias=False, indent=2))
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             case_id (int, kwargs): The **case id** for the Artifact.
             case_xid (str, kwargs): The **case xid** for the Artifact.
             derived_link (bool, kwargs): Flag to specify if this artifact should be used for
@@ -57,6 +59,9 @@ class CaseManagement:
             }
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             initial_response (dict, optional): Initial data in Case Object for Artifact.
             tql_filters (list, optional): A list of TQL filters.
             params (dict, optional): A dict of query params for the request.
@@ -67,6 +72,9 @@ class CaseManagement:
         """Return a instance of Artifact Type object.
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             tcex (TcEx): An instantiated instance of TcEx object.
             data_type (str, kwargs): [Read-Only] The **Data Type** for the Artifact Type.
             description (str, kwargs): [Read-Only] The **Description** for the Artifact Type.
@@ -90,6 +98,9 @@ class CaseManagement:
             }
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             tcex (TcEx): An instantiated instance of TcEx object.
             initial_response (dict, optional): Initial data in
                 Case Object for Artifact.
@@ -99,28 +110,13 @@ class CaseManagement:
         """
         return ArtifactTypes(session=self.session, **kwargs)
 
-    def assignee(self, **kwargs) -> 'AssigneeModel':
-        """Return a instance of Assignee object.
-
-        For User type the user_name or id fields is required and
-        for the Group type the name or id is required.
-
-        Args:
-            first_name (str, kwargs): The first name of the User.
-            id (id, kwargs): The id of the User.
-            name (str, kwargs): The name of the Group.
-            last_name (str, kwargs): The last name of the user.
-            pseudonym (str, kwargs): The pseudonym of the User.
-            role (str, kwargs): The role of the User.
-            user_name (str, kwargs): The user name of the User.
-            type (str, kwargs): The assignee type. Default to User.
-        """
-        return AssigneeModel(session=self.session, **kwargs)
-
     def case(self, **kwargs) -> 'Case':
         """Return a instance of Case object.
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             artifacts (Artifacts, kwargs): A list of Artifacts corresponding to the Case.
             assignee (Assignee, kwargs): The user or group Assignee object for the Case.
             description (str, kwargs): The **description** for the Case.
@@ -142,10 +138,13 @@ class CaseManagement:
         """
         return Case(session=self.session, **kwargs)
 
-    def case_attribute(self, **kwargs) -> 'CaseAttribute':
+    def case_attribute(self, **kwargs) -> CaseAttribute:
         """Return a instance of Case Attributes object.
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             case_id (int, kwargs): Case associated with attribute.
             default (bool, kwargs): A flag indicating that this is the default attribute of its type
                 within the object. Only applies to certain attribute and data types.
@@ -155,7 +154,7 @@ class CaseManagement:
         """
         return CaseAttribute(session=self.session, **kwargs)
 
-    def case_attributes(self, **kwargs) -> 'CaseAttributes':
+    def case_attributes(self, **kwargs) -> CaseAttributes:
         """Return a instance of Case Attributes object.
 
         .. code-block:: python
@@ -170,6 +169,9 @@ class CaseManagement:
             }
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             initial_response (dict, optional): Initial data in Case Object for Group.
             tql_filters (list, optional): A list of TQL filters.
             params (dict, optional): A dict of query params for the request.
@@ -191,6 +193,9 @@ class CaseManagement:
             }
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             tcex (TcEx): An instantiated instance of TcEx object.
             initial_response (dict, optional): Initial data in
                 Case Object for Artifact.
@@ -200,7 +205,7 @@ class CaseManagement:
         """
         return Cases(session=self.session, **kwargs)
 
-    def create_entity(self, entity: dict, owner: str) -> dict:
+    def create_entity(self, entity: dict, owner: str) -> dict | None:
         """Create a CM object provided a dict and owner."""
         entity_type = entity.pop('type').lower()
         entity_type = entity_type.replace(' ', '_')
@@ -223,6 +228,9 @@ class CaseManagement:
         """Return a instance of Note object.
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             tcex (TcEx): An instantiated instance of TcEx object.
             artifact (Artifact, kwargs): [Read-Only] The **Artifact** for the Note.
             artifact_id (int, kwargs): the ID of the Artifact on which to apply the Note
@@ -258,6 +266,9 @@ class CaseManagement:
             }
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             tcex (TcEx): An instantiated instance of TcEx object.
             initial_response (dict, optional): Initial data in
                 Case Object for Note.
@@ -271,6 +282,9 @@ class CaseManagement:
         """Return a instance of Tag object.
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             tcex (TcEx): An instantiated instance of TcEx object.
             cases (Case, kwargs): [Read-Only] The **Cases** for the Tag.
             description (str, kwargs): a brief description of the Tag
@@ -295,6 +309,9 @@ class CaseManagement:
             }
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             tcex (TcEx): An instantiated instance of TcEx object.
             initial_response (dict, optional): Initial data in
                 Case Object for Tag.
@@ -308,6 +325,9 @@ class CaseManagement:
         """Return a instance of Task object.
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             tcex (TcEx): An instantiated instance of TcEx object.
             artifacts (Artifact, kwargs): a list of Artifacts corresponding to the Task
             assignee (Assignee, kwargs): the user or group Assignee object for the Task
@@ -348,6 +368,9 @@ class CaseManagement:
             }
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             tcex (TcEx): An instantiated instance of TcEx object.
             initial_response (dict, optional): Initial data in
                 Case Object for Task.
@@ -357,33 +380,13 @@ class CaseManagement:
         """
         return Tasks(session=self.session, **kwargs)
 
-    # @staticmethod
-    # def user(self, **kwargs) -> 'User':
-    #     """Return a instance of User object.
-    #
-    #     Args:
-    #         first_name (str, kwargs): The first name of the user.
-    #         id (id, kwargs): The id of the user.
-    #         last_name (str, kwargs): The last name of the user.
-    #         pseudonym (str, kwargs): The pseudonym of the user.
-    #         role (str, kwargs): The role of the user.
-    #         user_name (str, kwargs): The user name of the user.
-    #     """
-    #     return User(session=self.session, **kwargs)
-
-    # @staticmethod
-    # def users(users) -> 'Users':
-    #     """Sub class of the Cases object. Used to map the users to.
-
-    #     Args:
-    #         users (list): A array of user data
-    #     """
-    #     return Users(users)
-
     def workflow_event(self, **kwargs) -> 'WorkflowEvent':
         """Return a instance of Workflow Event object.
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             tcex (TcEx): An instantiated instance of TcEx object.
             case_id (int, kwargs): [Required (alt: caseXid)] The **Case Id** for the Workflow Event.
             case_xid (str, kwargs): [Required (alt: caseId)] The **Case Xid**
@@ -419,6 +422,9 @@ class CaseManagement:
             }
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             tcex (TcEx): An instantiated instance of TcEx object.
             initial_response (dict, optional): Initial data in
                 Case Object for Artifact.
@@ -433,6 +439,9 @@ class CaseManagement:
 
         Args:
             tcex (TcEx): An instantiated instance of TcEx object.
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             active (bool, kwargs): [Read-Only] The **Active** flag for the Workflow Template.
             assignee (Assignee, kwargs): [Read-Only] The **Assignee** for the Workflow Template.
             cases (Case, kwargs): [Read-Only] The **Cases** for the Workflow Template.
@@ -463,6 +472,9 @@ class CaseManagement:
             }
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             tcex (TcEx): An instantiated instance of TcEx object.
             initial_response (dict, optional): Initial data in
                 Case Object for Workflow Template.
@@ -474,7 +486,6 @@ class CaseManagement:
 
 
 # first-party
-# TODO: [low] @bsummers - can these be moved to the top?
 # pylint: disable=wrong-import-position
 from tcex.api.tc.v3.artifact_types.artifact_type import ArtifactType, ArtifactTypes
 from tcex.api.tc.v3.artifacts.artifact import Artifact, Artifacts

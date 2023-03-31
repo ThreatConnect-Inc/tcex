@@ -1,0 +1,405 @@
+app:
+  allowOnDemand: true
+  appId: 308206c9-c6ea-51a4-8519-14c25ca2dc6f
+  appName: TCPB_-_TcEx_App_1
+  displayName: TCPB_-_TcEx_App_1
+  features:
+    - aotExecutionEnabled
+    - appBuilderCompliant
+    - fileParams
+    - layoutEnabledApp
+  labels:
+    - label1
+    - label2
+    - label3
+  languageVersion: "3.11.0"
+  sdkVersion: "4.0.0"
+  listDelimiter: "|"
+  note: A TcEx testing App.
+  outputPrefix: app_1
+  playbookType: TcEx Example
+  programLanguage: PYTHON
+  programMain: run
+  programVersion: 1.0.0
+  releaseNotes:
+    1.0.0 (2050-01-01):
+      - Initial Release
+  retry:
+    allowed: true
+    defaultDelayMinutes: 2
+    defaultMaxRetries: 10
+  runtimeLevel: Playbook
+inputGroups:
+  - group: Action
+    inputs:
+      - default: Action 1
+        label: Action
+        name: tc_action
+        note: The action to perform
+        required: true
+        type: Choice
+        validValues:
+          - Action 1
+          - Action 2
+          - Action 3
+          - Action 4
+  - group: Connection
+    inputs:
+      - label: Username
+        name: username
+        note: Username String Input
+        playbookDataType:
+          - String
+        required: true
+        validValues:
+          - ${TEXT}
+      - encrypt: true
+        label: Password
+        name: password
+        note: Password String Input
+        playbookDataType:
+          - String
+        required: true
+        validValues:
+          - ${FILE}
+          - ${KEYCHAIN}
+  - group: Configure
+    # Require fields go in Action 1
+    # Optional fields go in Action 2
+    # Default fields go in Action 3
+    # All others go in Action 4
+    inputs:
+      # Boolean Examples
+      - display: tc_action in ('Action 1')
+        label: Boolean Input Required
+        name: boolean_input_required
+        note: A Required Boolean Input
+        required: true
+        type: Boolean
+      - display: tc_action in ('Action 2')
+        label: Boolean Input Optional
+        name: boolean_input_optional
+        note: An Optional Boolean Input
+        required: false
+        type: Boolean
+      - display: tc_action in ('Action 3')
+        default: true
+        label: Boolean Input Default
+        name: boolean_input_default
+        note: A Default Boolean Input
+        required: false
+        type: Boolean
+      # Choice Examples
+      - display: tc_action in ('Action 1')
+        label: Choice Input Required
+        name: choice_required
+        note: A Required Choice Input
+        required: true
+        type: Choice
+        validValues:
+          - Option 1
+          - Option 2
+          - Option 3
+      - display: tc_action in ('Action 2')
+        label: Choice Input Optional
+        name: choice_optional
+        note: An Optional Choice Input
+        required: false
+        type: Choice
+        validValues:
+          - Option 1
+          - Option 2
+          - Option 3
+      - display: tc_action in ('Action 3')
+        default: Option 1
+        label: Choice Input Default
+        name: choice_default
+        note: A Default Choice Input
+        required: false
+        type: Choice
+        validValues:
+          - Option 1
+          - Option 2
+          - Option 3
+      # KeyValueList Examples
+      - display: tc_action in ('Action 1')
+        label: KeyValueList Input Required
+        name: key_value_list_required
+        note: A Required KeyValueList Input
+        required: true
+        type: KeyValueList
+      - display: tc_action in ('Action 2')
+        label: KeyValueList Input Optional
+        name: key_value_list_optional
+        note: An Optional KeyValueList Input
+        required: false
+        type: KeyValueList
+      - display: tc_action in ('Action 3')
+        default: "[{'key': 'key1', 'value': value1}, {'key': 'key2', 'value': value2}]"
+        label: KeyValueList Input Default
+        name: key_value_list_default
+        note: A Default KeyValueList Input
+        playbookDataType:
+          - String
+        required: false
+        type: KeyValueList
+      - display: tc_action in ('Action 4')
+        exposePlaybookKeyAs: String
+        label: KeyValueList Input Expose Playbook Key As String
+        name: key_value_list_expose_playbook_key_as_string
+        note: A Expose Playbook Key As String KeyValueList Input
+        playbookDataType:
+          - String
+        required: false
+        type: KeyValueList
+      # MultiChoice Examples
+      - display: tc_action in ('Action 1')
+        label: MultiChoice Input Required
+        name: multi_choice_required
+        note: A Required MultiChoice Input
+        required: true
+        type: MultiChoice
+        validValues:
+          - Option 1
+          - Option 2
+          - Option 3
+      - display: tc_action in ('Action 2')
+        label: MultiChoice Input Optional
+        name: multi_choice_optional
+        note: An Optional MultiChoice Input
+        required: false
+        type: MultiChoice
+        validValues:
+          - Option 1
+          - Option 2
+          - Option 3
+      - display: tc_action in ('Action 3')
+        default: Option 1|Option 2
+        label: MultiChoice Input Default
+        name: multi_choice_default
+        note: A Default MultiChoice Input
+        required: false
+        type: MultiChoice
+        validValues:
+          - Option 1
+          - Option 2
+          - Option 3
+      # String Examples
+      - display: tc_action in ('Action 1')
+        label: String Input Required
+        name: string_required
+        note: A required String Input
+        playbookDataType:
+          - Binary
+          - BinaryArray
+          - KeyValue
+          - KeyValueArray
+          - String
+          - StringArray
+          - TCEntity
+          - TCEntityArray
+          - TCEnhancedEntityArray
+        required: true
+      - display: tc_action in ('Action 2')
+        label: String Input Optional
+        name: string_optional
+        note: An Optional String Input
+        playbookDataType:
+          - Any
+        required: false
+      - display: tc_action in ('Action 3')
+        default: default string
+        label: String Input Default
+        name: string_default
+        note: An Default String Input
+        playbookDataType:
+          - Any
+        required: false
+      - display: tc_action in ('Action 4')
+        encrypt: true
+        label: String Input Encrypt
+        name: string_encrypt
+        note: An Encrypted String Input
+        playbookDataType:
+          - String
+        required: false
+        validValues:
+          - ${FILE}
+          - ${KEYCHAIN}
+      - display: tc_action in ('Action 4')
+        label: String Input Hidden
+        hidden: true
+        name: string_hidden
+        note: A Hidden String Input
+        required: false
+      - display: tc_action in ('Action 4')
+        allowMultiple: true
+        label: String Input Allow Multiple
+        name: string_allow_multiple
+        note: An Allow Multiple String Input
+        playbookDataType:
+          - String
+          - StringArray
+        required: false
+      - display: tc_action in ('Action 4')
+        label: String Intel Type
+        intelType:
+          - Address
+        name: string_intel_type
+        note: An Intel Type String Input
+        required: false
+  - group: Advanced
+    inputs:
+      - allowMultiple: true
+        encrypt: true
+        default: advanced
+        label: String Advanced
+        intelType:
+          - Address
+        name: string_advanced
+        note: An Advanced Input
+        playbookDataType:
+          - Binary
+          - BinaryArray
+          - KeyValue
+          - KeyValueArray
+          - String
+          - StringArray
+          - TCEntity
+          - TCEntityArray
+          - TCEnhancedEntityArray
+        required: true
+
+outputGroups:
+  tc_action in ('Action 1'):
+    Binary:
+      - action_1.binary.output1
+      - action_1.binary.output2
+      - action_1.binary.output3
+    BinaryArray:
+      - action_1.binary_array.output1
+      - action_1.binary_array.output2
+      - action_1.binary_array.output3
+    KeyValue:
+      - action_1.key_value.output1
+      - action_1.key_value.output2
+      - action_1.key_value.output3
+    KeyValueArray:
+      - action_1.key_value_array.output1
+      - action_1.key_value_array.output2
+      - action_1.key_value_array.output3
+    String:
+      - action_1.string.output1
+      - action_1.string.output2
+      - action_1.string.output3
+    StringArray:
+      - action_1.string_array.output1
+      - action_1.string_array.output2
+      - action_1.string_array.output3
+    TCEntity:
+      - action_1.tcentity.output1
+      - action_1.tcentity.output2
+      - action_1.tcentity.output3
+    TCEntityArray:
+      - action_1.tcentity_array.output1
+      - action_1.tcentity_array.output2
+      - action_1.tcentity_array.output3
+  tc_action in ('Action 2'):
+    Binary:
+      - action_2.binary.output1
+      - action_2.binary.output2
+      - action_2.binary.output3
+    BinaryArray:
+      - action_2.binary_array.output1
+      - action_2.binary_array.output2
+      - action_2.binary_array.output3
+    KeyValue:
+      - action_2.key_value.output1
+      - action_2.key_value.output2
+      - action_2.key_value.output3
+    KeyValueArray:
+      - action_2.key_value_array.output1
+      - action_2.key_value_array.output2
+      - action_2.key_value_array.output3
+    String:
+      - action_2.string.output1
+      - action_2.string.output2
+      - action_2.string.output3
+    StringArray:
+      - action_2.string_array.output1
+      - action_2.string_array.output2
+      - action_2.string_array.output3
+    TCEntity:
+      - action_2.tcentity.output1
+      - action_2.tcentity.output2
+      - action_2.tcentity.output3
+    TCEntityArray:
+      - action_2.tcentity_array.output1
+      - action_2.tcentity_array.output2
+      - action_2.tcentity_array.output3
+  tc_action in ('Action 3'):
+    Binary:
+      - action_3.binary.output1
+      - action_3.binary.output2
+      - action_3.binary.output3
+    BinaryArray:
+      - action_3.binary_array.output1
+      - action_3.binary_array.output2
+      - action_3.binary_array.output3
+    KeyValue:
+      - action_3.key_value.output1
+      - action_3.key_value.output2
+      - action_3.key_value.output3
+    KeyValueArray:
+      - action_3.key_value_array.output1
+      - action_3.key_value_array.output2
+      - action_3.key_value_array.output3
+    String:
+      - action_3.string.output1
+      - action_3.string.output2
+      - action_3.string.output3
+    StringArray:
+      - action_3.string_array.output1
+      - action_3.string_array.output2
+      - action_3.string_array.output3
+    TCEntity:
+      - action_3.tcentity.output1
+      - action_3.tcentity.output2
+      - action_3.tcentity.output3
+    TCEntityArray:
+      - action_3.tcentity_array.output1
+      - action_3.tcentity_array.output2
+      - action_3.tcentity_array.output3
+  tc_action not in (''):
+    Binary:
+      - action_all.binary.output1
+      - action_all.binary.output2
+      - action_all.binary.output3
+    BinaryArray:
+      - action_all.binary_array.output1
+      - action_all.binary_array.output2
+      - action_all.binary_array.output3
+    KeyValue:
+      - action_all.key_value.output1
+      - action_all.key_value.output2
+      - action_all.key_value.output3
+    KeyValueArray:
+      - action_all.key_value_array.output1
+      - action_all.key_value_array.output2
+      - action_all.key_value_array.output3
+    String:
+      - action_all.string.output1
+      - action_all.string.output2
+      - action_all.string.output3
+    StringArray:
+      - action_all.string_array.output1
+      - action_all.string_array.output2
+      - action_all.string_array.output3
+    TCEntity:
+      - action_all.tcentity.output1
+      - action_all.tcentity.output2
+      - action_all.tcentity.output3
+    TCEntityArray:
+      - action_all.tcentity_array.output1
+      - action_all.tcentity_array.output2
+      - action_all.tcentity_array.output3

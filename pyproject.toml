@@ -1,33 +1,245 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools"]
+
+[project]
+authors = [
+  {name = "ThreatConnect", email = "support@threatconnect.com"},
+]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "Natural Language :: English",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+  "Topic :: Security",
+]
+dependencies = [
+  "arrow",
+  "black",
+  "inflect",
+  "isort",
+  "pyaes",
+  "pydantic",
+  "python-dateutil",
+  "PyYAML",
+  "redis",
+  "requests",
+  "rich",
+  "semantic_version",
+  "typer[all]",
+  "wrapt",
+]
+description = "ThreatConnect Exchange App Framework"
+dynamic = ["readme", "version"]
+keywords = ["exchange", "tcex", "threatconnect"]
+license = {text = "Apache-2.0"}
+name = "tcex"
+requires-python = ">=3.11"
+
+[project.optional-dependencies]
+dev = [
+  "bandit",
+  "deepdiff",
+  "fakeredis",
+  "pre-commit",
+  "pydocstyle",
+  "pylint",
+  "pyright",
+  "pyupgrade",
+  "typer[all]",
+]
+test = [
+  "pytest",
+  "pytest-cov",
+  "pytest-html",
+  "pytest-ordering",
+  "pytest-xdist",
+]
+
+[project.urls]
+Documentation = "https://github.com/ThreatConnect-Inc/tcex"
+Source = "https://github.com/ThreatConnect-Inc/tcex"
+
+[tool.setuptools.dynamic]
+readme = {file = ["README.md"], content-type = "text/markdown"}
+version = {attr = "tcex.__version__"}
+
+[tool.setuptools.packages.find]
+exclude = ["tests"]
+
+#
+# Linters / Formatters
+#
+
 [tool.black]
 line-length = 100
 skip-string-normalization = true
 
+[tool.isort]
+dedup_headings = false
+import_heading_firstparty = "first-party"
+import_heading_stdlib = "standard library"
+import_heading_thirdparty = "third-party"
+include_trailing_comma = true
+known_first_party = ""
+known_local_folder = "."
+known_third_party = ""
+line_length = 100
+profile = "black"
+
+[tool.pydocstyle]
+ignore = [
+  "D202", # no blank lines allowed after function docstring
+  "D203", # 1 blank line required before class docstring (found 0)
+  "D213", # Multi-line docstring summary should start at the second line
+  "D400", # First line should end with a period ...
+  "D406", # Section name should end with a newline ...
+  "D407", # Missing dashed underline after section ...
+  "D413", # Missing blank line after last section ...
+  "D415", # First line should end with a period, question mark, or exclamation point ...
+]
+
 [tool.pylint.messages_control]
-# C0103 - invalid-name
-# C0302 - too-many-lines
-# C0330 - bad-continuation
-# C0401 - wrong-spelling
-# R0205 - useless-object-inheritance
-# R0801 - duplicate-code
-# R0902 - too-many-instance-attributes
-# R0903 - too-few-public-methods
-# R0904 - too-many-public-methods
-# R0912 - too-many-branches
-# R0913 - too-many-arguments
-# R0914 - too-many-locals
-# R0915 - too-many-statements
-# R1702 - too-many-nested-blocks
-# W0212 - protected-access
-# W0511 - fixme
-# W0703 - broad-except
-# W0707 - raise-missing-from
-# W1203 - logging-fstring-interpolation
-# W1514 - Using open without explicitly specifying an encoding (unspecified-encoding)
-disable = "C0103,C0302,C0330,C0415,E0401,R0205,R0801,R0902,R0903,R0904,R0912,R0913,R0914,R0915,R1702,W0212,W0511,W0703,W0707,W1203,W1514"
+disable = [
+  "broad-exception-caught",
+  "fixme",
+  "import-outside-toplevel",
+  "invalid-name",
+  "inconsistent-return-statements", # pylint doesn't properly handle "NoReturn" in all cases
+  "logging-fstring-interpolation",
+  "protected-access",
+  "raise-missing-from", # TODO: fix issues and remove this disable
+  "too-few-public-methods",
+  "too-many-ancestors",
+  "too-many-arguments",
+  "too-many-branches",
+  "too-many-instance-attributes",
+  "too-many-lines",
+  "too-many-locals",
+  "too-many-nested-blocks",
+  "too-many-public-methods",
+  "too-many-statements",
+  "unspecified-encoding", # TODO: fix issues and remove this disable
+]
 extension-pkg-whitelist = "pydantic"
 
+[tool.pyright]
+# https://github.com/microsoft/pyright/blob/main/docs/configuration.md#sample-pyprojecttoml-file
+exclude = [
+  "**/.history",
+  "**/__pycache__",
+]
+pythonPlatform = "Linux"
+pythonVersion = "3.11"
+reportPrivateImportUsage = false
+
 [tool.pytest.ini_options]
+# addopts = "-p no:warnings"
+# addopts = "--tb=short --show-capture=no"
+filterwarnings = [
+  # "error",
+  # "ignore:.*Unverified HTTPS request is being made to host.*",
+  "ignore:The --rsyncdir command line argument and rsyncdirs config variable are deprecated.:DeprecationWarning",
+]
 junit_family = "xunit2"
 testpaths = [
   "tests",
 ]
+
+# experimental - testing locally, not in pre-commit
+[tool.ruff]
+
+# control "--fix" behavior.
+fixable = []
+unfixable = []
+
+# exclude additional directories, outside of .gitignore.
+exclude = []
+
+# https://beta.ruff.rs/docs/configuration/#error-suppression
+ignore = [
+  "B011", # do not call assert False since python -O removes these calls
+  "E402", # module level import not at top of file
+  "D202", # no blank lines allowed after function docstring
+  "D203", # 1 blank line required before class docstring (found 0)
+  "D213", # Multi-line docstring summary should start at the second line
+  "D400", # First line should end with a period ...
+  "D406", # Section name should end with a newline ...
+  "D407", # Missing dashed underline after section ...
+  "D413", # Missing blank line after last section ...
+  "D415", # First line should end with a period, question mark, or exclamation point ...
+  "PT006", # Wrong name(s) type in `@pytest.mark.parametrize`, expected `tuple`
+]
+
+# set line length to match black
+line-length = 100
+
+# control enabled plugins
+select = [
+  "A", # flake8-builtins
+  "ARG", # flake8-unused-arguments
+  "B", # flake8-bugbear
+  "BLE", # flake8-blind-except
+  "C", # flake8-comprehensions
+  "C4", # flake8-comprehensions
+  "C90", # mccabe
+  "D", # pydocstyle
+  "DJ", # flake8-django
+  "DTZ", # flake8-datetimez
+  "E", # pycodestyle
+  "W", # pycodestyle
+  "E", # pycodestyle
+  "EM", # flake8-errmsg
+  "EXE", # flake8-executable
+  "F", # Pyflakes
+  "FBT", # flake8-boolean-trap
+  "G", # flake8-logging-format
+  "I", # isort
+  "ICN", # flake8-import-conventions
+  "INP", # flake8-no-pep420
+  "ISC", # flake8-implicit-str-concat
+  "N", # pep8-naming
+  "NPY", # NumPy-specific
+  "PD", # pandas-vet
+  "PGH", # pygrep-hooks
+  "PIE", # flake8-pie
+  "PL", # Pylint
+  "PLC", # Convention
+  "PLE", # Error
+  "PLR", # Refactor
+  "PLW", # Warning
+  "PT", # flake8-pytest-style
+  "PTH", # flake8-use-pathlib
+  "PYI", # flake8-pyi
+  "RET", # flake8-return
+  "RSE", # flake8-raise
+  "RUF", # Ruff-specific
+  "SIM", # flake8-simplify
+  "SLF", # flake8-self
+  "T10", # flake8-debugger
+  "T20", # flake8-print
+  "TCH", # flake8-type-checking
+  "TID", # flake8-tidy-imports
+  "TRY", # tryceratops
+  "UP", # pyupgrade
+  "W", # pycodestyle
+  "YTT", # flake8-2020
+]
+
+# Other Options
+# "ANN", # flake8-annotations
+# "COM", # flake8-commas
+# "ERA", # eradicate
+# "S", # flake8-bandit
+# "Q", # flake8-quotes
+
+# set the python target
+target-version = "py311"
+
+[tool.ruff.pydocstyle]
+convention = "google"

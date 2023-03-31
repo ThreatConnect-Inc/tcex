@@ -1,4 +1,4 @@
-"""Cache Handler Class"""
+"""TcEx Framework Module"""
 # standard library
 import logging
 
@@ -6,8 +6,8 @@ import logging
 class CacheHandler(logging.Handler):
     """Logger handler for caching event until all handlers are available."""
 
-    def __init__(self, max_cache=100):
-        """Initialize Class properties.
+    def __init__(self, max_cache: int = 100):
+        """Initialize instance properties.
 
         Args:
             max_cache (int): The maximum numbers of records to cache.
@@ -16,7 +16,7 @@ class CacheHandler(logging.Handler):
         self.max_cache = max_cache
         self._events = []
 
-    def emit(self, record):
+    def emit(self, record: logging.LogRecord):
         """Emit a record.
 
         Args:

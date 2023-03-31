@@ -1,13 +1,10 @@
-"""Generate Models for ThreatConnect V3 API"""
+"""TcEx Framework Module"""
 # standard library
 import os
-import sys
 from enum import Enum
 from pathlib import Path
 
 # third-party
-import black
-import isort
 import typer
 
 # first-party
@@ -16,17 +13,19 @@ from tcex.api.tc.v3._gen._gen_filter_abc import GenerateFilterABC
 from tcex.api.tc.v3._gen._gen_model_abc import GenerateModelABC
 from tcex.api.tc.v3._gen._gen_object_abc import GenerateObjectABC
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
-from tcex.utils import Utils
-from tcex.utils.string_operations import SnakeString
+from tcex.util import Util
+from tcex.util.code_operation import CodeOperation
+from tcex.util.render.render import Render
+from tcex.util.string_operation import SnakeString
 
-# initialize Utils module
-utils = Utils()
+# initialize Util module
+util = Util()
 
 
 def log_server():
     """Log server."""
     _api_server = os.getenv('TC_API_PATH')
-    typer.secho(f'Using server {_api_server}', fg=typer.colors.BRIGHT_MAGENTA)
+    Render.panel.info(f'Using server {_api_server}')
 
 
 class GenerateArgs(GenerateArgsABC):
@@ -37,7 +36,7 @@ class GenerateFilter(GenerateFilterABC):
     """Generate Models for TC API Types"""
 
     def __init__(self, type_: SnakeString):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         super().__init__(type_)
 
         # properties
@@ -49,7 +48,7 @@ class GenerateModel(GenerateModelABC):
     """Generate Models for TC API Types"""
 
     def __init__(self, type_: SnakeString):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         super().__init__(type_)
 
         # properties
@@ -61,36 +60,12 @@ class GenerateObject(GenerateObjectABC):
     """Generate Models for TC API Types"""
 
     def __init__(self, type_: SnakeString):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         super().__init__(type_)
 
         # properties
         _api_endpoint = getattr(ApiEndpoints, type_.upper()).value
         self.api_url = f'{self._api_server}{_api_endpoint}'
-
-
-def format_code(_code):
-    """Return formatted code."""
-
-    # run black formatter on code
-    mode = black.FileMode(line_length=100, string_normalization=False)
-    try:
-        _code = black.format_file_contents(_code, fast=False, mode=mode)
-    except black.InvalidInput as ex:
-        print(f'Formatting of code failed {ex}.')
-        sys.exit(1)
-    except black.NothingChanged:
-        pass
-
-    # run isort on code
-    try:
-        isort_config = isort.Config(settings_file='setup.cfg')
-        _code = isort.code(_code, config=isort_config)
-    except Exception as ex:
-        print(f'Formatting of code failed {ex}.')
-        sys.exit(1)
-
-    return _code
 
 
 def gen_args(type_: SnakeString, indent_blocks: int):
@@ -114,8 +89,7 @@ def gen_filter(type_: SnakeString):
     out_file = Path(os.path.join(*out_path))
 
     if not out_file.is_file():
-        typer.secho(f'\nCould not find file {out_file}.', fg=typer.colors.RED)
-        typer.Exit(code=1)
+        Render.panel.failure(f'\nCould not find file {out_file}.')
 
     # generate class methods first so requirements can be updated
     class_methods = gen.gen_class_methods()
@@ -127,12 +101,12 @@ def gen_filter(type_: SnakeString):
     _code += ''  # newline at the end of the file
 
     with out_file.open(mode='w') as fh:
-        fh.write(format_code(_code))
+        fh.write(CodeOperation.format_code(_code))
 
-    typer.secho(f'Successfully wrote {out_file}.', fg=typer.colors.GREEN)
+    Render.panel.success(f'Successfully wrote {out_file}.')
 
     for msg in gen.messages:
-        typer.secho(msg, fg=typer.colors.YELLOW)
+        Render.panel.warning(msg)
 
 
 def gen_model(type_: SnakeString):
@@ -145,8 +119,7 @@ def gen_model(type_: SnakeString):
     out_file = Path(os.path.join(*out_path))
 
     if not out_file.is_file():
-        typer.secho(f'\nCould not find file {out_file}.', fg=typer.colors.RED)
-        typer.Exit(code=1)
+        Render.panel.failure(f'\nCould not find file {out_file}.')
 
     # generate model fields code first so that requirements can be determined
     container_private_attrs = gen.gen_container_private_attrs()
@@ -156,31 +129,31 @@ def gen_model(type_: SnakeString):
 
     _code = gen.gen_doc_string()
     _code += gen.gen_requirements()
-    # add container model
-    _code += gen.gen_container_class()
-    _code += container_private_attrs
-    _code += gen.gen_container_fields()
-    # add data model
-    _code += gen.gen_data_class()
-    _code += gen.gen_data_fields()
-    # add data model
+    # add generated model class (ArtifactModel, CaseModel, etc.)
     _code += gen.gen_model_class()
     _code += model_private_attrs
     _code += model_fields
-    # add validators
+    # add validators to model class
     _code += validator_methods
+    # add generated "data" model class (ArtifactDataModel, CaseDataModel, etc.)
+    _code += gen.gen_data_class()
+    _code += gen.gen_data_fields()
+    # add generated container model class (ArtifactsModel, CasesModel, etc.)
+    _code += gen.gen_container_class()
+    _code += container_private_attrs
+    _code += gen.gen_container_fields()
     # add forward reference requirements
     _code += gen.gen_requirements_first_party_forward_reference()
     # add forward references
     _code += gen.gen_forward_reference()
 
     with out_file.open(mode='w') as fh:
-        fh.write(format_code(_code))
+        fh.write(CodeOperation.format_code(_code))
 
-    typer.secho(f'Successfully wrote {out_file}.', fg=typer.colors.GREEN)
+    Render.panel.success(f'Successfully wrote {out_file}.')
 
     for msg in gen.messages:
-        typer.secho(msg, fg=typer.colors.YELLOW)
+        Render.panel.warning(msg)
 
 
 def gen_object(type_: SnakeString):
@@ -193,8 +166,7 @@ def gen_object(type_: SnakeString):
     out_file = Path(os.path.join(*out_path))
 
     if not out_file.is_file():
-        typer.secho(f'\nCould not find file {out_file}.', fg=typer.colors.RED)
-        typer.Exit(code=1)
+        Render.panel.failure(f'\nCould not find file {out_file}.')
 
     # generate class method code first so that requirements can be determined
     container_methods = gen.gen_container_methods()
@@ -202,18 +174,20 @@ def gen_object(type_: SnakeString):
 
     _code = gen.gen_doc_string()
     _code += gen.gen_requirements()
-    _code += gen.gen_container_class()
-    _code += container_methods
+    # add generated class (Artifact, Case, etc.)
     _code += gen.gen_object_class()
     _code += object_methods
+    # add generated container class (Artifacts, Cases, etc.)
+    _code += gen.gen_container_class()
+    _code += container_methods
 
     with out_file.open(mode='w') as fh:
-        fh.write(format_code(_code))
+        fh.write(CodeOperation.format_code(_code))
 
-    typer.secho(f'Successfully wrote {out_file}.', fg=typer.colors.GREEN)
+    Render.panel.success(f'Successfully wrote {out_file}.')
 
     for msg in gen.messages:
-        typer.secho(msg, fg=typer.colors.YELLOW)
+        Render.panel.warning(msg)
 
 
 #
@@ -272,7 +246,7 @@ def all(  # pylint: disable=redefined-builtin
     log_server()
     gen_type = gen_type.value.lower()
     for type_ in ObjectTypes:
-        type_ = utils.snake_string(type_.value)
+        type_ = util.snake_string(type_.value)
 
         if gen_type in ['all', 'filter']:
             gen_filter(type_)
@@ -293,7 +267,7 @@ def args(
 ):
     """Generate Args."""
     log_server()
-    gen_args(utils.snake_string(type_.value), indent_blocks)
+    gen_args(util.snake_string(type_.value), indent_blocks)
 
 
 @app.command()
@@ -304,7 +278,7 @@ def code(
 ):
     """Generate Args."""
     log_server()
-    tv = utils.snake_string(type_.value)
+    tv = util.snake_string(type_.value)
     gen_filter(tv)
     gen_model(tv)
     gen_object(tv)
@@ -318,7 +292,7 @@ def filter(  # pylint: disable=redefined-builtin
 ):
     """Generate the filter code."""
     log_server()
-    gen_filter(utils.snake_string(type_.value))
+    gen_filter(util.snake_string(type_.value))
 
 
 @app.command()
@@ -329,7 +303,7 @@ def model(
 ):
     """Generate the model"""
     log_server()
-    gen_model(utils.snake_string(type_.value))
+    gen_model(util.snake_string(type_.value))
 
 
 @app.command()
@@ -340,7 +314,7 @@ def object(  # pylint: disable=redefined-builtin
 ):
     """Generate the filter class"""
     log_server()
-    gen_object(utils.snake_string(type_.value))
+    gen_object(util.snake_string(type_.value))
 
 
 if __name__ == '__main__':

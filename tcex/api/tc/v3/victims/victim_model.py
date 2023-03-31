@@ -1,60 +1,19 @@
-"""Victim / Victims Model"""
-# pylint: disable=no-member,no-self-argument,no-self-use,wrong-import-position
+"""TcEx Framework Module"""
+# pylint: disable=no-member,no-self-argument,wrong-import-position
 # standard library
 from datetime import datetime
-from typing import List, Optional
 
 # third-party
 from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
-from tcex.utils import Utils
-
-
-class VictimsModel(
-    BaseModel,
-    title='Victims Model',
-    alias_generator=Utils().snake_to_camel,
-    validate_assignment=True,
-):
-    """Victims Model"""
-
-    _mode_support = PrivateAttr(False)
-
-    data: Optional[List['VictimModel']] = Field(
-        [],
-        description='The data for the Victims.',
-        methods=['POST', 'PUT'],
-        title='data',
-    )
-    mode: str = Field(
-        'append',
-        description='The PUT mode for nested objects (append, delete, replace). Default: append',
-        methods=['POST', 'PUT'],
-        title='append',
-    )
-
-
-class VictimDataModel(
-    BaseModel,
-    title='Victim Data Model',
-    alias_generator=Utils().snake_to_camel,
-    validate_assignment=True,
-):
-    """Victims Data Model"""
-
-    data: Optional[List['VictimModel']] = Field(
-        [],
-        description='The data for the Victims.',
-        methods=['POST', 'PUT'],
-        title='data',
-    )
+from tcex.util import Util
 
 
 class VictimModel(
     V3ModelABC,
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     extra=Extra.allow,
     title='Victim Model',
     validate_assignment=True,
@@ -66,35 +25,35 @@ class VictimModel(
     _shared_type = PrivateAttr(False)
     _staged = PrivateAttr(False)
 
-    assets: Optional['VictimAssetsModel'] = Field(
+    assets: 'VictimAssetsModel' = Field(
         None,
         description='A list of victim assets corresponding to the Victim.',
         methods=['POST', 'PUT'],
         read_only=False,
         title='assets',
     )
-    associated_groups: Optional['GroupsModel'] = Field(
+    associated_groups: 'GroupsModel' = Field(
         None,
         description='A list of groups that this victim is associated with.',
         methods=['POST', 'PUT'],
         read_only=False,
         title='associatedGroups',
     )
-    attributes: Optional['VictimAttributesModel'] = Field(
+    attributes: 'VictimAttributesModel' = Field(
         None,
         description='A list of Attributes corresponding to the Victim.',
         methods=['POST', 'PUT'],
         read_only=False,
         title='attributes',
     )
-    date_added: Optional[datetime] = Field(
+    date_added: datetime | None = Field(
         None,
         allow_mutation=False,
         description='The date and time that the item was first created.',
         read_only=True,
         title='dateAdded',
     )
-    description: Optional[str] = Field(
+    description: str | None = Field(
         None,
         allow_mutation=False,
         description='Description of the Victim.',
@@ -103,13 +62,13 @@ class VictimModel(
         read_only=True,
         title='description',
     )
-    id: Optional[int] = Field(
+    id: int | None = Field(
         None,
         description='The ID of the item.',
         read_only=True,
         title='id',
     )
-    name: Optional[str] = Field(
+    name: str | None = Field(
         None,
         description='Name of the Victim.',
         methods=['POST', 'PUT'],
@@ -118,7 +77,7 @@ class VictimModel(
         read_only=False,
         title='name',
     )
-    nationality: Optional[str] = Field(
+    nationality: str | None = Field(
         None,
         description='Nationality of the Victim.',
         methods=['POST', 'PUT'],
@@ -127,7 +86,7 @@ class VictimModel(
         read_only=False,
         title='nationality',
     )
-    org: Optional[str] = Field(
+    org: str | None = Field(
         None,
         description='Org of the Victim.',
         methods=['POST', 'PUT'],
@@ -136,14 +95,14 @@ class VictimModel(
         read_only=False,
         title='org',
     )
-    owner_name: Optional[str] = Field(
+    owner_name: str | None = Field(
         None,
         allow_mutation=False,
         description='The name of the Organization, Community, or Source that the item belongs to.',
         read_only=True,
         title='ownerName',
     )
-    security_labels: Optional['SecurityLabelsModel'] = Field(
+    security_labels: 'SecurityLabelsModel' = Field(
         None,
         description=(
             'A list of Security Labels corresponding to the Intel item (NOTE: Setting this '
@@ -153,7 +112,7 @@ class VictimModel(
         read_only=False,
         title='securityLabels',
     )
-    suborg: Optional[str] = Field(
+    suborg: str | None = Field(
         None,
         description='Suborg of the Victim.',
         methods=['POST', 'PUT'],
@@ -162,7 +121,7 @@ class VictimModel(
         read_only=False,
         title='suborg',
     )
-    tags: Optional['TagsModel'] = Field(
+    tags: 'TagsModel' = Field(
         None,
         description=(
             'A list of Tags corresponding to the item (NOTE: Setting this parameter will replace '
@@ -172,14 +131,14 @@ class VictimModel(
         read_only=False,
         title='tags',
     )
-    web_link: Optional[str] = Field(
+    web_link: str | None = Field(
         None,
         allow_mutation=False,
         description='A link to the ThreatConnect details page for this entity.',
         read_only=True,
         title='webLink',
     )
-    work_location: Optional[str] = Field(
+    work_location: str | None = Field(
         None,
         description='Work location of the Victim.',
         methods=['POST', 'PUT'],
@@ -189,35 +148,75 @@ class VictimModel(
         title='workLocation',
     )
 
-    @validator('associated_groups', always=True)
+    @validator('associated_groups', always=True, pre=True)
     def _validate_groups(cls, v):
         if not v:
-            return GroupsModel()
+            return GroupsModel()  # type: ignore
         return v
 
-    @validator('security_labels', always=True)
+    @validator('security_labels', always=True, pre=True)
     def _validate_security_labels(cls, v):
         if not v:
-            return SecurityLabelsModel()
+            return SecurityLabelsModel()  # type: ignore
         return v
 
-    @validator('tags', always=True)
+    @validator('tags', always=True, pre=True)
     def _validate_tags(cls, v):
         if not v:
-            return TagsModel()
+            return TagsModel()  # type: ignore
         return v
 
-    @validator('assets', always=True)
+    @validator('assets', always=True, pre=True)
     def _validate_victim_assets(cls, v):
         if not v:
-            return VictimAssetsModel()
+            return VictimAssetsModel()  # type: ignore
         return v
 
-    @validator('attributes', always=True)
+    @validator('attributes', always=True, pre=True)
     def _validate_victim_attributes(cls, v):
         if not v:
-            return VictimAttributesModel()
+            return VictimAttributesModel()  # type: ignore
         return v
+
+
+class VictimDataModel(
+    BaseModel,
+    title='Victim Data Model',
+    alias_generator=Util().snake_to_camel,
+    validate_assignment=True,
+):
+    """Victims Data Model"""
+
+    data: list[VictimModel] | None = Field(
+        [],
+        description='The data for the Victims.',
+        methods=['POST', 'PUT'],
+        title='data',
+    )
+
+
+class VictimsModel(
+    BaseModel,
+    title='Victims Model',
+    alias_generator=Util().snake_to_camel,
+    validate_assignment=True,
+):
+    """Victims Model"""
+
+    _mode_support = PrivateAttr(False)
+
+    data: list[VictimModel] | None = Field(
+        [],
+        description='The data for the Victims.',
+        methods=['POST', 'PUT'],
+        title='data',
+    )
+    mode: str = Field(
+        'append',
+        description='The PUT mode for nested objects (append, delete, replace). Default: append',
+        methods=['POST', 'PUT'],
+        title='append',
+    )
 
 
 # first-party

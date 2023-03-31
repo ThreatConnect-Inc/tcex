@@ -1,10 +1,17 @@
-"""Test the TcEx Threat Intel Module."""
+"""TcEx Framework Module"""
 # standard library
 import os
 from datetime import datetime, timedelta
 from random import randint
+from typing import cast
 
-from .ti_helpers import TestThreatIntelligence, TIHelper
+# third-party
+from _pytest.fixtures import FixtureRequest
+
+# first-party
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.report import Report
+from tcex.tcex import TcEx
+from tests.api.tc.v2.threat_intelligence.ti_helper import TestThreatIntelligence, TIHelper
 
 
 class TestReportGroups(TestThreatIntelligence):
@@ -14,9 +21,7 @@ class TestReportGroups(TestThreatIntelligence):
     owner = os.getenv('TC_OWNER')
     file_content = 'pytest report text'
     required_fields = {'file_name': 'pytest.pdf'}
-    ti = None
-    ti_helper = None
-    tcex = None
+    tcex: TcEx
 
     def setup_method(self):
         """Configure setup before all tests."""
@@ -55,7 +60,7 @@ class TestReportGroups(TestThreatIntelligence):
         r = ti.delete()
         assert r.status_code == 200
 
-    def tests_ti_report_add_attribute(self, request):
+    def tests_ti_report_add_attribute(self, request: FixtureRequest):
         """Test group add attribute."""
         super().group_add_attribute(request)
 
@@ -63,7 +68,7 @@ class TestReportGroups(TestThreatIntelligence):
         """Test group add label."""
         super().group_add_label()
 
-    def tests_ti_report_add_tag(self, request):
+    def tests_ti_report_add_tag(self, request: FixtureRequest):
         """Test group add tag."""
         super().group_add_tag(request)
 
@@ -79,11 +84,11 @@ class TestReportGroups(TestThreatIntelligence):
         """Test group get with filter."""
         super().group_get_filter()
 
-    def tests_ti_report_get_includes(self, request):
+    def tests_ti_report_get_includes(self, request: FixtureRequest):
         """Test group get with includes."""
         super().group_get_includes(request)
 
-    def tests_ti_report_get_attribute(self, request):
+    def tests_ti_report_get_attribute(self, request: FixtureRequest):
         """Test group get attribute."""
         super().group_get_attribute(request)
 
@@ -91,11 +96,11 @@ class TestReportGroups(TestThreatIntelligence):
         """Test group get label."""
         super().group_get_label()
 
-    def tests_ti_report_get_tag(self, request):
+    def tests_ti_report_get_tag(self, request: FixtureRequest):
         """Test group get tag."""
         super().group_get_tag(request)
 
-    def tests_ti_report_update(self, request):
+    def tests_ti_report_update(self, request: FixtureRequest):
         """Test updating group metadata."""
         super().group_update(request)
 
@@ -105,7 +110,7 @@ class TestReportGroups(TestThreatIntelligence):
 
     def tests_ti_report_file_content_update(self):
         """Test updating the file content of a Report."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Report, self.ti_helper.create_group())
 
         # update file content (coverage)
         r = helper_ti.file_content(self.file_content)
@@ -129,7 +134,7 @@ class TestReportGroups(TestThreatIntelligence):
 
     def tests_ti_report_file_name_update(self):
         """Test updating the file name of a Report."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Report, self.ti_helper.create_group())
 
         # update file content (coverage)
         file_name = self.ti_helper.rand_filename()
@@ -154,7 +159,7 @@ class TestReportGroups(TestThreatIntelligence):
 
     def tests_ti_report_file_size_update(self):
         """Create a label on a group."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Report, self.ti_helper.create_group())
 
         # update file content (coverage)
         file_size = randint(1000, 10000)
@@ -180,7 +185,7 @@ class TestReportGroups(TestThreatIntelligence):
 
     def tests_ti_report_status_update(self):
         """Create a label on a group."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Report, self.ti_helper.create_group())
 
         # update file content (coverage)
         r = helper_ti.status(self.ti_helper.rand_report_status())
@@ -204,7 +209,7 @@ class TestReportGroups(TestThreatIntelligence):
 
     def tests_ti_report_file_published_date_update(self):
         """Create a label on a group."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Report, self.ti_helper.create_group())
 
         # update file content (coverage)
         date = (datetime.now() - timedelta(days=2)).isoformat()
@@ -230,7 +235,7 @@ class TestReportGroups(TestThreatIntelligence):
 
     def tests_ti_report_download_update(self):
         """Create a label on a group."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Report, self.ti_helper.create_group())
 
         # update file content (coverage)
         r = helper_ti.file_content(self.file_content)

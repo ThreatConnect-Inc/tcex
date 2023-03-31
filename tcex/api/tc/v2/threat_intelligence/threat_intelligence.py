@@ -1,85 +1,80 @@
-"""ThreatConnect Threat Intelligence Module"""
+"""TcEx Framework Module"""
 # standard library
 import logging
 from functools import lru_cache
-from typing import TYPE_CHECKING, Optional
+from typing import cast
+
+# third-party
+from requests import Response, Session  # TYPE-CHECKING
 
 # first-party
-from tcex.api.tc.v2.threat_intelligence.mappings.filters import Filters
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group import Group
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.adversary import Adversary
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.attack_pattern import (
-    AttackPattern,
-)
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.campaign import Campaign
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.course_of_action import (
+from tcex.api.tc.v2.threat_intelligence.mapping.filters import Filters
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group import Group
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.adversary import Adversary
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.attack_pattern import AttackPattern
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.campaign import Campaign
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.course_of_action import (
     CourseOfAction,
 )
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.document import Document
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.email import Email
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.event import Event
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.incident import Incident
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.intrusion_set import IntrusionSet
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.malware import Malware
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.report import Report
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.signature import Signature
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.tactic import Tactic
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.threat import Threat
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.tool import Tool
-from tcex.api.tc.v2.threat_intelligence.mappings.group.group_types.vulnerability import (
-    Vulnerability,
-)
-from tcex.api.tc.v2.threat_intelligence.mappings.indicator.indicator import (
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.document import Document
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.email import Email
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.event import Event
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.incident import Incident
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.intrusion_set import IntrusionSet
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.malware import Malware
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.report import Report
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.signature import Signature
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.tactic import Tactic
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.threat import Threat
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.tool import Tool
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.vulnerability import Vulnerability
+from tcex.api.tc.v2.threat_intelligence.mapping.indicator.indicator import (
     Indicator,
     custom_indicator_class_factory,
 )
-from tcex.api.tc.v2.threat_intelligence.mappings.indicator.indicator_types.address import Address
-from tcex.api.tc.v2.threat_intelligence.mappings.indicator.indicator_types.email_address import (
+from tcex.api.tc.v2.threat_intelligence.mapping.indicator.indicator_type.address import Address
+from tcex.api.tc.v2.threat_intelligence.mapping.indicator.indicator_type.email_address import (
     EmailAddress,
 )
-from tcex.api.tc.v2.threat_intelligence.mappings.indicator.indicator_types.file import File
-from tcex.api.tc.v2.threat_intelligence.mappings.indicator.indicator_types.host import Host
-from tcex.api.tc.v2.threat_intelligence.mappings.indicator.indicator_types.url import URL
-from tcex.api.tc.v2.threat_intelligence.mappings.owner import Owner
-from tcex.api.tc.v2.threat_intelligence.mappings.tag import Tag
-from tcex.api.tc.v2.threat_intelligence.mappings.tags import Tags
-from tcex.api.tc.v2.threat_intelligence.mappings.task import Task
-from tcex.api.tc.v2.threat_intelligence.mappings.victim import Victim
-from tcex.exit.error_codes import TcExErrorCodes
-from tcex.utils import Utils
-
-if TYPE_CHECKING:
-    # third-party
-    from requests import Session
-
+from tcex.api.tc.v2.threat_intelligence.mapping.indicator.indicator_type.file import File
+from tcex.api.tc.v2.threat_intelligence.mapping.indicator.indicator_type.host import Host
+from tcex.api.tc.v2.threat_intelligence.mapping.indicator.indicator_type.url import URL
+from tcex.api.tc.v2.threat_intelligence.mapping.owner import Owner
+from tcex.api.tc.v2.threat_intelligence.mapping.tag import Tag
+from tcex.api.tc.v2.threat_intelligence.mapping.tags import Tags
+from tcex.api.tc.v2.threat_intelligence.mapping.task import Task
+from tcex.api.tc.v2.threat_intelligence.mapping.victim import Victim
+from tcex.exit.error_code import TcExErrorCode
+from tcex.logger.trace_logger import TraceLogger
+from tcex.util import Util
 
 # import local modules for dynamic reference
 module = __import__(__name__)
 
 # get tcex logger
-logger = logging.getLogger('tcex')
+_logger: TraceLogger = logging.getLogger(__name__.split('.', maxsplit=1)[0])  # type: ignore
 
 
 class ThreatIntelligence:
     """ThreatConnect Threat Intelligence Module"""
 
-    def __init__(self, session_tc: 'Session'):
-        """Initialize Class properties."""
+    def __init__(self, session_tc: Session):
+        """Initialize instance properties."""
         self.session_tc = session_tc
 
         # properties
         self._custom_indicator_classes = {}
-        self.log = logger
-        self.utils = Utils()
+        self.log = _logger
+        self.util = Util()
 
         # generate custom ioc classes
         self._gen_indicator_class()
 
     @property
-    @lru_cache()
-    def _error_codes(self) -> 'TcExErrorCodes':  # noqa: F821
+    @lru_cache
+    def _error_codes(self) -> TcExErrorCode:
         """Return TcEx error codes."""
-        return TcExErrorCodes()
+        return TcExErrorCode()
 
     @property
     def _group_types(self) -> list:
@@ -132,7 +127,7 @@ class ThreatIntelligence:
         }
 
     @property
-    @lru_cache()
+    @lru_cache
     def _indicator_types_data(self) -> dict:
         """Return ThreatConnect indicator types data.
 
@@ -156,13 +151,13 @@ class ThreatIntelligence:
         return _indicator_types_data
 
     def _handle_error(
-        self, code: int, message_values: Optional[list] = None, raise_error: Optional[bool] = True
+        self, code: int, message_values: list | None = None, raise_error: bool = True
     ):
         """Raise RuntimeError
 
         Args:
             code: The error code from API or SDK.
-            message: The error message from API or SDK.
+            message_values: The error message from API or SDK.
             raise_error: Raise a Runtime error. Defaults to True.
 
         Raises:
@@ -188,6 +183,9 @@ class ThreatIntelligence:
         """Return an Address TI object.
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             ip (str, kwargs): [Required for Create] The IP value for this Indicator.
             active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
@@ -206,6 +204,9 @@ class ThreatIntelligence:
         """Create the URL TI object.
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             owner (str, kwargs): The name for this Group. Default to default Org when not provided
             text (str, kwargs): [Required for Create] The URL value for this Indicator.
 
@@ -218,6 +219,9 @@ class ThreatIntelligence:
         """Create the Email Address TI object.
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             owner (str, kwargs): The name for this Group. Default to default Org when not provided
             address (str, kwargs): [Required for Create] The Email Address value for this Indicator.
 
@@ -230,6 +234,9 @@ class ThreatIntelligence:
         """Create the File TI object.
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             owner (str, kwargs): The name for this Group. Default to default Org when not provided
 
         Return:
@@ -241,6 +248,9 @@ class ThreatIntelligence:
         """Create the Host TI object.
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             owner (str, kwargs): The name for this Group. Default to default Org when not provided
             hostname (str, kwargs): [Required for Create] The Host value for this Indicator.
 
@@ -258,14 +268,17 @@ class ThreatIntelligence:
         """Return an TI object.
 
         Args:
+            indicator_type (str): The indicator type.
+            owner (str): The name for this Group. Default to default Org when not provided
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): [Read-Only] The date timestamp the Indicator was created.
-            indicator_type (str): The indicator type.
             ip (str, kwargs): [address] The value for this Indicator.
             last_modified (str, kwargs): [Read-Only] The date timestamp the Indicator was last
                 modified.
-            owner (str, kwargs): The name for this Group. Default to default Org when not provided
             private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
 
@@ -297,15 +310,16 @@ class ThreatIntelligence:
         kwargs['owner'] = owner
 
         # return correct indicator object
-        indicator_object = indicator_type_map.get(indicator_type)
+        indicator_object = indicator_type_map[indicator_type]
         return indicator_object(self, **kwargs)
 
     def group(self, group_type=None, owner=None, **kwargs):
         """Create the Group TI object.
 
         Args:
-            owner (str): The ThreatConnect owner name.
             group_type: The type of group object.
+            owner (str): The ThreatConnect owner name.
+            **kwargs: Additional keyword arguments.
         """
         if not group_type:
             return Group(self, owner=owner, **kwargs)
@@ -341,13 +355,16 @@ class ThreatIntelligence:
         kwargs['owner'] = owner
 
         # return correct group object
-        group_object = group_type_map.get(group_type)
+        group_object = group_type_map[group_type]
         return group_object(self, **kwargs)
 
     def attack_pattern(self, **kwargs):
         """Create the Attack Pattern TI object.
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             name (str, kwargs): [Required for Create] The name for this Group.
             owner (str, kwargs): The name for this Group. Default to default Org when not provided
 
@@ -360,6 +377,9 @@ class ThreatIntelligence:
         """Create the Malware TI object.
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             name (str, kwargs): [Required for Create] The name for this Group.
             owner (str, kwargs): The name for this Group. Default to default Org when not provided
 
@@ -372,6 +392,9 @@ class ThreatIntelligence:
         """Create the Vulnerability TI object.
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             name (str, kwargs): [Required for Create] The name for this Group.
             owner (str, kwargs): The name for this Group. Default to default Org when not provided
 
@@ -384,6 +407,9 @@ class ThreatIntelligence:
         """Create the Tactic TI object.
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             name (str, kwargs): [Required for Create] The name for this Group.
             owner (str, kwargs): The name for this Group. Default to default Org when not provided
 
@@ -396,6 +422,9 @@ class ThreatIntelligence:
         """Create the Tool TI object.
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             name (str, kwargs): [Required for Create] The name for this Group.
             owner (str, kwargs): The name for this Group. Default to default Org when not provided
 
@@ -408,6 +437,9 @@ class ThreatIntelligence:
         """Create the Course of Action TI object.
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             name (str, kwargs): [Required for Create] The name for this Group.
             owner (str, kwargs): The name for this Group. Default to default Org when not provided
 
@@ -420,6 +452,9 @@ class ThreatIntelligence:
         """Create the Adversary TI object.
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             name (str, kwargs): [Required for Create] The name for this Group.
             owner (str, kwargs): The name for this Group. Default to default Org when not provided
 
@@ -432,6 +467,9 @@ class ThreatIntelligence:
         """Create the Campaign TI object.
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             name (str, kwargs): [Required for Create] The name for this Group.
             owner (str, kwargs): The name for this Group. Default to default Org when not provided
             first_seen (str, kwargs): The first seen datetime expression for this Group.
@@ -445,6 +483,9 @@ class ThreatIntelligence:
         """Create the Document TI object.
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             name (str, kwargs): [Required for Create] The name for this Group.
             owner (str, kwargs): The name for this Group. Default to default Org when not provided
             file_name (str, kwargs): The name for the attached file for this Group.
@@ -460,6 +501,9 @@ class ThreatIntelligence:
         """Create the Email TI object.
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             body (str): The body for this Email.
             from_addr (str, kwargs): The **from** address for this Email.
             header (str): The header for this Email.
@@ -477,6 +521,9 @@ class ThreatIntelligence:
         """Create the Event TI object.
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             event_date (str, kwargs): The event "event date" datetime expression for this Group.
             name (str, kwargs): [Required for Create] The name for this Group.
             owner (str, kwargs): The name for this Group. Default to default Org when not provided
@@ -491,6 +538,9 @@ class ThreatIntelligence:
         """Create the Incident TI object.
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             event_date (str, kwargs): The incident event date expression for this Group.
             name (str, kwargs): [Required for Create] The name for this Group.
             status (str, kwargs): The status for this Group.
@@ -501,9 +551,12 @@ class ThreatIntelligence:
         return Incident(self, **kwargs)
 
     def intrusion_set(self, **kwargs):
-        """Create the Intrustion Set TI object.
+        """Create the Intrusion Set TI object.
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             name (str, kwargs): [Required for Create] The name for this Group.
             owner (str, kwargs): The name for this Group. Default to default Org when not provided
 
@@ -516,6 +569,9 @@ class ThreatIntelligence:
         """Create the Report TI object.
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             owner (str): The ThreatConnect owner name.
             name:
             **kwargs:
@@ -526,6 +582,9 @@ class ThreatIntelligence:
         """Create the Signature TI object.
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             owner (str): The ThreatConnect owner name.
             name (str): The name for this Group.
             file_name (str): The name for the attached signature for this Group.
@@ -542,6 +601,9 @@ class ThreatIntelligence:
         """Create the Task TI object.
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             name (str, kwargs): [Required for Create] The name for this Group.
             owner (str, kwargs): The name for this Group. Default to default Org when not provided
             status (str, kwargs): Not started, In Progress, Completed, Waiting on Someone, Deferred
@@ -558,9 +620,11 @@ class ThreatIntelligence:
         """Create the Threat TI object.
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             owner (str): The ThreatConnect owner name.
             name:
-            **kwargs:
         """
         return Threat(self, **kwargs)
 
@@ -568,10 +632,11 @@ class ThreatIntelligence:
         """Create the Victim TI object.
 
         Args:
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
             owner (str): The ThreatConnect owner name.
             name:
-            **kwargs:
-
         """
         return Victim(self, **kwargs)
 
@@ -589,7 +654,6 @@ class ThreatIntelligence:
 
     def create_entity(self, entity, owner):
         """Given a Entity and a Owner, creates a indicator/group in ThreatConnect"""
-
         attributes = entity.pop('attribute', [])
         associations = entity.pop('associations', [])
         security_labels = entity.pop('securityLabel', [])
@@ -599,7 +663,7 @@ class ThreatIntelligence:
         if entity_type in ['document', 'report']:
             file_content = entity.pop('file_content', None) or entity.pop('fileContent', None)
         try:
-            ti = self.indicator(entity_type, owner, **entity)
+            ti = cast(Indicator, self.indicator(entity_type, owner, **entity))
             if entity.get('falsePositive'):
                 ti.add_false_positive()
         except Exception:
@@ -611,11 +675,12 @@ class ThreatIntelligence:
                     ti = self.task(owner=owner, **entity)
                 else:
                     ti = self.group(entity_type, owner, **entity)
-        r = ti.create()
-        if entity_type in ['document', 'report']:
+        r = cast(Response, ti.create())
+        if file_content and entity_type in ['document', 'report']:
+            ti = cast(Document | Report, ti)
             ti.file_content(file_content)
 
-        data = {'status_code': r.status_code}
+        data: dict[str, int | list | str] = {'status_code': r.status_code}
         if r.ok:
             data.update(r.json().get('data', {}))
             data['main_type'] = ti.type
@@ -628,6 +693,8 @@ class ThreatIntelligence:
             data['tags'] = []
             data['security_labels'] = []
             data['associations'] = []
+        else:
+            return None
 
         for attribute in attributes:
             r = ti.add_attribute(attribute.get('type'), attribute.get('value'))
@@ -636,11 +703,11 @@ class ThreatIntelligence:
                 attribute_data.update(r.json().get('attribute', {}))
             data['attributes'].append(attribute_data)
         for tag in tags:
-            r = ti.add_tag(tag)
+            r = cast(Response, ti.add_tag(tag))
             tag_response = {'status_code': r.status_code}
             data['tags'].append(tag_response)
         for label in security_labels:
-            r = ti.add_label(label)
+            r = cast(Response, ti.add_label(label))
             label_response = {'status_code': r.status_code}
             data['security_labels'].append(label_response)
         for association in associations:
@@ -651,7 +718,7 @@ class ThreatIntelligence:
                 association_target = self.group(
                     association.pop('type', None), association.pop('owner', None), **association
                 )
-            r = ti.add_association(association_target)
+            r = cast(Response, ti.add_association(association_target))
             association_response = {'status_code': r.status_code}
             if r.ok:
                 association_response.update(r.json().get('association', {}))
@@ -755,12 +822,12 @@ class ThreatIntelligence:
             keys = d.keys()
             if resource_type.lower() in map(str.lower, self._group_types):
                 # @bpurdy - is this okay?
-                # r = self.tcex.v2.ti.group(group_type=resource_type, name=d.get('name'))
+                # r = self.tcex.api.tc.v2.ti.group(group_type=resource_type, name=d.get('name'))
                 r = self.group(group_type=resource_type, name=d.get('name'))
                 value = d.get('name')
             elif resource_type.lower() in map(str.lower, self._indicator_types_data):
                 # @bpurdy - is this okay?
-                # r = self.tcex.v2.ti.indicator(indicator_type=resource_type)
+                # r = self.tcex.api.tc.v2.ti.indicator(indicator_type=resource_type)
                 r = self.indicator(indicator_type=resource_type)
                 r._set_unique_id(d)
                 value = r.unique_id
@@ -769,10 +836,12 @@ class ThreatIntelligence:
                 value = d.get('name')
             else:
                 self._handle_error(925, ['type', 'entities', 'type', 'type', resource_type])
+                continue
 
             if 'summary' in d:
                 values.append(d.get('summary'))
             else:
+                r = cast(Indicator, r)
                 if resource_type.lower() in ['file']:
                     value = r.build_summary(d.get('md5'), d.get('sha1'), d.get('sha256'))
                 values.append(r.fully_decode_uri(value))
@@ -840,7 +909,7 @@ class ThreatIntelligence:
                     entity['publishDate'] = d.get('publishDate')
                 if r.api_sub_type.lower() in ['signature', 'document', 'report']:
                     r.unique_id = d.get('id')
-                    content_response = r.download()
+                    content_response = r.download()  # type: ignore
                     if content_response.ok:
                         entity['fileContent'] = content_response.text
             # get the entity type
@@ -858,7 +927,7 @@ class ThreatIntelligence:
             name = entry.get('name')
             class_name = name.replace(' ', '')
             # temp fix for API issue where boolean are returned as strings
-            entry['custom'] = self.utils.to_bool(entry.get('custom'))
+            entry['custom'] = self.util.to_bool(entry.get('custom'))
 
             if class_name in globals():
                 # skip Indicator Type if a class already exists

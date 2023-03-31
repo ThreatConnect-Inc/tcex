@@ -1,8 +1,9 @@
-"""Indicator / Indicators Object"""
+"""TcEx Framework Module"""
 # standard library
 import json
+from collections.abc import Generator, Iterator
 from datetime import datetime
-from typing import TYPE_CHECKING, Iterator, Optional, Union
+from typing import TYPE_CHECKING, Self
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -21,74 +22,14 @@ from tcex.api.tc.v3.tags.tag_model import TagModel
 
 if TYPE_CHECKING:  # pragma: no cover
     # first-party
-    from tcex.api.tc.v3.artifacts.artifact import Artifact
-    from tcex.api.tc.v3.cases.case import Case
-    from tcex.api.tc.v3.groups.group import Group
-    from tcex.api.tc.v3.indicator_attributes.indicator_attribute import IndicatorAttribute
-    from tcex.api.tc.v3.security_labels.security_label import SecurityLabel
-    from tcex.api.tc.v3.tags.tag import Tag
-
-
-class Indicators(ObjectCollectionABC):
-    """Indicators Collection.
-
-    # Example of params input
-    {
-        'result_limit': 100,  # Limit the retrieved results.
-        'result_start': 10,  # Starting count used for pagination.
-        'fields': ['caseId', 'summary']  # Select additional return fields.
-    }
-
-    Args:
-        session (Session): Session object configured with TC API Auth.
-        tql_filters (list): List of TQL filters.
-        params (dict): Additional query params (see example above).
-    """
-
-    def __init__(self, **kwargs):
-        """Initialize class properties."""
-        super().__init__(
-            kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
-        )
-        self._model = IndicatorsModel(**kwargs)
-        self.type_ = 'indicators'
-
-    def __iter__(self) -> 'Indicator':
-        """Iterate over CM objects."""
-        return self.iterate(base_class=Indicator)
-
-    @property
-    def _api_endpoint(self) -> str:
-        """Return the type specific API endpoint."""
-        return ApiEndpoints.INDICATORS.value
-
-    @property
-    def filter(self) -> 'IndicatorFilter':
-        """Return the type specific filter object."""
-        return IndicatorFilter(self.tql)
-
-    def deleted(
-        self,
-        deleted_since: Optional[Union[datetime, str]],
-        type_: Optional[str] = None,
-        owner: Optional[str] = None,
-    ):
-        """Return deleted indicators.
-
-        This will not use the default params set on the "Indicators"
-        object and instead used the params that are passed in.
-        """
-
-        if deleted_since is not None:
-            deleted_since = str(
-                self.utils.any_to_datetime(deleted_since).strftime('%Y-%m-%dT%H:%M:%SZ')
-            )
-
-        yield from self.iterate(
-            base_class=Indicator,
-            api_endpoint=f'{self._api_endpoint}/deleted',
-            params={'deletedSince': deleted_since, 'owner': owner, 'type': type_},
-        )
+    from tcex.api.tc.v3.artifacts.artifact import Artifact  # CIRCULAR-IMPORT
+    from tcex.api.tc.v3.cases.case import Case  # CIRCULAR-IMPORT
+    from tcex.api.tc.v3.groups.group import Group  # CIRCULAR-IMPORT
+    from tcex.api.tc.v3.indicator_attributes.indicator_attribute import (  # CIRCULAR-IMPORT
+        IndicatorAttribute,
+    )
+    from tcex.api.tc.v3.security_labels.security_label import SecurityLabel  # CIRCULAR-IMPORT
+    from tcex.api.tc.v3.tags.tag import Tag  # CIRCULAR-IMPORT
 
 
 class Indicator(ObjectABC):
@@ -141,11 +82,11 @@ class Indicator(ObjectABC):
     """
 
     def __init__(self, **kwargs):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         super().__init__(kwargs.pop('session', None))
 
         # properties
-        self._model = IndicatorModel(**kwargs)
+        self._model: IndicatorModel = IndicatorModel(**kwargs)
         self._nested_field_name = 'associatedIndicators'
         self._nested_filter = 'has_indicator'
         self.type_ = 'Indicator'
@@ -156,12 +97,12 @@ class Indicator(ObjectABC):
         return ApiEndpoints.INDICATORS.value
 
     @property
-    def model(self) -> 'IndicatorModel':
+    def model(self) -> IndicatorModel:
         """Return the model data."""
         return self._model
 
     @model.setter
-    def model(self, data: Union['IndicatorModel', dict]):
+    def model(self, data: dict | IndicatorModel):
         """Create model using the provided data."""
         if isinstance(data, type(self.model)):
             # provided data is already a model, nothing required to change
@@ -179,7 +120,7 @@ class Indicator(ObjectABC):
 
         return {'type': type_, 'id': self.model.id, 'value': self.model.summary}
 
-    def remove(self, params: Optional[dict] = None):
+    def remove(self, params: dict | None = None):
         """Remove a nested object."""
         method = 'PUT'
         unique_id = self._calculate_unique_id()
@@ -215,114 +156,114 @@ class Indicator(ObjectABC):
         return self.request
 
     @property
-    def associated_artifacts(self) -> Iterator['Artifact']:
+    def associated_artifacts(self) -> Generator['Artifact', None, None]:
         """Yield Artifact from Artifacts."""
         # first-party
         from tcex.api.tc.v3.artifacts.artifact import Artifacts
 
-        yield from self._iterate_over_sublist(Artifacts)
+        yield from self._iterate_over_sublist(Artifacts)  # type: ignore
 
     @property
-    def associated_cases(self) -> Iterator['Case']:
+    def associated_cases(self) -> Generator['Case', None, None]:
         """Yield Case from Cases."""
         # first-party
         from tcex.api.tc.v3.cases.case import Cases
 
-        yield from self._iterate_over_sublist(Cases)
+        yield from self._iterate_over_sublist(Cases)  # type: ignore
 
     @property
-    def associated_groups(self) -> Iterator['Group']:
+    def associated_groups(self) -> Generator['Group', None, None]:
         """Yield Group from Groups."""
         # first-party
         from tcex.api.tc.v3.groups.group import Groups
 
-        yield from self._iterate_over_sublist(Groups)
+        yield from self._iterate_over_sublist(Groups)  # type: ignore
 
     @property
-    def associated_indicators(self) -> Iterator['Indicator']:
+    def associated_indicators(self) -> Generator[Self, None, None]:
         """Yield Indicator from Indicators."""
         # Ensure the current item is not returned as a association
-        for indicator in self._iterate_over_sublist(Indicators):
+        for indicator in self._iterate_over_sublist(Indicators):  # type: ignore
             if indicator.model.id == self.model.id:
                 continue
-            yield indicator
+            yield indicator  # type: ignore
 
     @property
-    def attributes(self) -> Iterator['IndicatorAttribute']:
+    def attributes(self) -> Generator['IndicatorAttribute', None, None]:
         """Yield Attribute from Attributes."""
         # first-party
         from tcex.api.tc.v3.indicator_attributes.indicator_attribute import IndicatorAttributes
 
-        yield from self._iterate_over_sublist(IndicatorAttributes)
+        yield from self._iterate_over_sublist(IndicatorAttributes)  # type: ignore
 
     @property
-    def security_labels(self) -> Iterator['SecurityLabel']:
+    def security_labels(self) -> Generator['SecurityLabel', None, None]:
         """Yield SecurityLabel from SecurityLabels."""
         # first-party
         from tcex.api.tc.v3.security_labels.security_label import SecurityLabels
 
-        yield from self._iterate_over_sublist(SecurityLabels)
+        yield from self._iterate_over_sublist(SecurityLabels)  # type: ignore
 
     @property
-    def tags(self) -> Iterator['Tag']:
+    def tags(self) -> Generator['Tag', None, None]:
         """Yield Tag from Tags."""
         # first-party
         from tcex.api.tc.v3.tags.tag import Tags
 
-        yield from self._iterate_over_sublist(Tags)
+        yield from self._iterate_over_sublist(Tags)  # type: ignore
 
-    def stage_associated_case(self, data: Union[dict, 'ObjectABC', 'CaseModel']):
+    def stage_associated_case(self, data: dict | ObjectABC | CaseModel):
         """Stage case on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = CaseModel(**data)
 
         if not isinstance(data, CaseModel):
             raise RuntimeError('Invalid type passed in to stage_associated_case')
         data._staged = True
-        self.model.associated_cases.data.append(data)
+        self.model.associated_cases.data.append(data)  # type: ignore
 
-    def stage_associated_artifact(self, data: Union[dict, 'ObjectABC', 'ArtifactModel']):
+    def stage_associated_artifact(self, data: dict | ObjectABC | ArtifactModel):
         """Stage artifact on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = ArtifactModel(**data)
 
         if not isinstance(data, ArtifactModel):
             raise RuntimeError('Invalid type passed in to stage_associated_artifact')
         data._staged = True
-        self.model.associated_artifacts.data.append(data)
+        self.model.associated_artifacts.data.append(data)  # type: ignore
 
-    def stage_associated_group(self, data: Union[dict, 'ObjectABC', 'GroupModel']):
+    def stage_associated_group(self, data: dict | ObjectABC | GroupModel):
         """Stage group on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = GroupModel(**data)
 
         if not isinstance(data, GroupModel):
             raise RuntimeError('Invalid type passed in to stage_associated_group')
         data._staged = True
-        self.model.associated_groups.data.append(data)
+        self.model.associated_groups.data.append(data)  # type: ignore
 
-    def stage_attribute(self, data: Union[dict, 'ObjectABC', 'IndicatorAttributeModel']):
+    def stage_attribute(self, data: dict | ObjectABC | IndicatorAttributeModel):
         """Stage attribute on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = IndicatorAttributeModel(**data)
 
         if not isinstance(data, IndicatorAttributeModel):
             raise RuntimeError('Invalid type passed in to stage_attribute')
         data._staged = True
-        self.model.attributes.data.append(data)
+        self.model.attributes.data.append(data)  # type: ignore
 
-    def stage_file_action(self, data: Union[dict, 'ObjectABC', 'FileActionModel']):
+    def stage_file_action(self, data: dict | ObjectABC | FileActionModel):
         """Stage file_action on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = FileActionModel(**data)
 
@@ -330,40 +271,102 @@ class Indicator(ObjectABC):
             raise RuntimeError('Invalid type passed in to stage_file_action')
         data._staged = True
         data.indicator._staged = True
-        self.model.file_actions.data.append(data)
+        self.model.file_actions.data.append(data)  # type: ignore
 
-    def stage_file_occurrence(self, data: Union[dict, 'ObjectABC', 'FileOccurrenceModel']):
+    def stage_file_occurrence(self, data: dict | ObjectABC | FileOccurrenceModel):
         """Stage file_occurrence on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = FileOccurrenceModel(**data)
 
         if not isinstance(data, FileOccurrenceModel):
             raise RuntimeError('Invalid type passed in to stage_file_occurrence')
         data._staged = True
-        self.model.file_occurrences.data.append(data)
+        self.model.file_occurrences.data.append(data)  # type: ignore
 
-    def stage_security_label(self, data: Union[dict, 'ObjectABC', 'SecurityLabelModel']):
+    def stage_security_label(self, data: dict | ObjectABC | SecurityLabelModel):
         """Stage security_label on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = SecurityLabelModel(**data)
 
         if not isinstance(data, SecurityLabelModel):
             raise RuntimeError('Invalid type passed in to stage_security_label')
         data._staged = True
-        self.model.security_labels.data.append(data)
+        self.model.security_labels.data.append(data)  # type: ignore
 
-    def stage_tag(self, data: Union[dict, 'ObjectABC', 'TagModel']):
+    def stage_tag(self, data: dict | ObjectABC | TagModel):
         """Stage tag on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = TagModel(**data)
 
         if not isinstance(data, TagModel):
             raise RuntimeError('Invalid type passed in to stage_tag')
         data._staged = True
-        self.model.tags.data.append(data)
+        self.model.tags.data.append(data)  # type: ignore
+
+
+class Indicators(ObjectCollectionABC):
+    """Indicators Collection.
+
+    # Example of params input
+    {
+        'result_limit': 100,  # Limit the retrieved results.
+        'result_start': 10,  # Starting count used for pagination.
+        'fields': ['caseId', 'summary']  # Select additional return fields.
+    }
+
+    Args:
+        session (Session): Session object configured with TC API Auth.
+        tql_filters (list): List of TQL filters.
+        params (dict): Additional query params (see example above).
+    """
+
+    def __init__(self, **kwargs):
+        """Initialize instance properties."""
+        super().__init__(
+            kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
+        )
+        self._model = IndicatorsModel(**kwargs)
+        self.type_ = 'indicators'
+
+    def __iter__(self) -> Iterator[Indicator]:
+        """Return CM objects."""
+        return self.iterate(base_class=Indicator)  # type: ignore
+
+    @property
+    def _api_endpoint(self) -> str:
+        """Return the type specific API endpoint."""
+        return ApiEndpoints.INDICATORS.value
+
+    @property
+    def filter(self) -> IndicatorFilter:
+        """Return the type specific filter object."""
+        return IndicatorFilter(self.tql)
+
+    def deleted(
+        self,
+        deleted_since: datetime | str | None,
+        type_: str | None = None,
+        owner: str | None = None,
+    ):
+        """Return deleted indicators.
+
+        This will not use the default params set on the "Indicators"
+        object and instead used the params that are passed in.
+        """
+
+        if deleted_since is not None:
+            deleted_since = str(
+                self.util.any_to_datetime(deleted_since).strftime('%Y-%m-%dT%H:%M:%SZ')
+            )
+
+        yield from self.iterate(
+            base_class=Indicator,
+            api_endpoint=f'{self._api_endpoint}/deleted',
+            params={'deletedSince': deleted_since, 'owner': owner, 'type': type_},
+        )

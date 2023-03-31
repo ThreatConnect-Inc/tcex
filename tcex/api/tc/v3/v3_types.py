@@ -1,11 +1,11 @@
-"""ThreatConnect API V3 Types."""
-# flake8: noqa
+"""TcEx Framework Module"""
+
 # standard library
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma: no cover
     # first-party
-    from tcex.api.tc.v3.adversary_assets.adversary_asset import AdversaryAsset
+    # from tcex.api.tc.v3.adversary_assets.adversary_asset import AdversaryAsset
     from tcex.api.tc.v3.artifact_types.artifact_type import ArtifactType
     from tcex.api.tc.v3.artifacts.artifact import Artifact
     from tcex.api.tc.v3.cases.case import Case
@@ -24,23 +24,23 @@ if TYPE_CHECKING:  # pragma: no cover
     from tcex.api.tc.v3.workflow_events.workflow_event import WorkflowEvent
     from tcex.api.tc.v3.workflow_templates.workflow_template import WorkflowTemplate
 
-    V3Type = Union[
-        AdversaryAsset,
-        ArtifactType,
-        Artifact,
-        Case,
-        Group,
-        Indicator,
-        Note,
-        OwnerRole,
-        Owner,
-        SystemRole,
-        UserGroup,
-        User,
-        Tag,
-        Task,
-        VictimAsset,
-        Victim,
-        WorkflowEvent,
-        WorkflowTemplate,
-    ]
+    V3Type = (
+        # AdversaryAsset
+        ArtifactType
+        | Artifact
+        | Case
+        | Group
+        | Indicator
+        | Note
+        | OwnerRole
+        | Owner
+        | SystemRole
+        | UserGroup
+        | User
+        | Tag
+        | Task
+        | VictimAsset
+        | Victim
+        | WorkflowEvent
+        | WorkflowTemplate
+    )

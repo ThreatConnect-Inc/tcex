@@ -1,59 +1,16 @@
-"""Workflow_Template / Workflow_Templates Model"""
-# pylint: disable=no-member,no-self-argument,no-self-use,wrong-import-position
-# standard library
-from typing import List, Optional, Union
-
+"""TcEx Framework Module"""
+# pylint: disable=no-member,no-self-argument,wrong-import-position
 # third-party
 from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
-from tcex.utils import Utils
-
-
-class WorkflowTemplatesModel(
-    BaseModel,
-    title='WorkflowTemplates Model',
-    alias_generator=Utils().snake_to_camel,
-    validate_assignment=True,
-):
-    """Workflow_Templates Model"""
-
-    _mode_support = PrivateAttr(False)
-
-    data: Optional[List['WorkflowTemplateModel']] = Field(
-        [],
-        description='The data for the WorkflowTemplates.',
-        methods=['POST', 'PUT'],
-        title='data',
-    )
-    mode: str = Field(
-        'append',
-        description='The PUT mode for nested objects (append, delete, replace). Default: append',
-        methods=['POST', 'PUT'],
-        title='append',
-    )
-
-
-class WorkflowTemplateDataModel(
-    BaseModel,
-    title='WorkflowTemplate Data Model',
-    alias_generator=Utils().snake_to_camel,
-    validate_assignment=True,
-):
-    """Workflow_Templates Data Model"""
-
-    data: Optional[List['WorkflowTemplateModel']] = Field(
-        [],
-        description='The data for the WorkflowTemplates.',
-        methods=['POST', 'PUT'],
-        title='data',
-    )
+from tcex.util import Util
 
 
 class WorkflowTemplateModel(
     V3ModelABC,
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     extra=Extra.allow,
     title='WorkflowTemplate Model',
     validate_assignment=True,
@@ -72,49 +29,49 @@ class WorkflowTemplateModel(
         read_only=True,
         title='active',
     )
-    assignee: Optional['AssigneeModel'] = Field(
+    assignee: 'AssigneeModel' = Field(
         None,
         allow_mutation=False,
         description='The **assignee** for the Workflow_Template.',
         read_only=True,
         title='assignee',
     )
-    cases: Optional['CasesModel'] = Field(
+    cases: 'CasesModel' = Field(
         None,
         allow_mutation=False,
         description='The **cases** for the Workflow_Template.',
         read_only=True,
         title='cases',
     )
-    config_artifact: Optional[str] = Field(
+    config_artifact: str | None = Field(
         None,
         allow_mutation=False,
         description='The **config artifact** for the Workflow_Template.',
         read_only=True,
         title='configArtifact',
     )
-    config_attribute: Union[Optional[dict], Optional[List[dict]]] = Field(
+    config_attribute: dict | list[dict] | None = Field(
         None,
         description='The **config attribute** for the Workflow_Template.',
         methods=['POST', 'PUT'],
         read_only=False,
         title='configAttribute',
     )
-    config_playbook: Optional[str] = Field(
+    config_playbook: str | None = Field(
         None,
         allow_mutation=False,
         description='The **config playbook** for the Workflow_Template.',
         read_only=True,
         title='configPlaybook',
     )
-    config_task: Union[Optional[dict], Optional[List[dict]]] = Field(
+    config_task: dict | list[dict] | None = Field(
         None,
         allow_mutation=False,
         description='The **config task** for the Workflow_Template.',
         read_only=True,
         title='configTask',
     )
-    description: Optional[str] = Field(
+    description: str | None = Field(
         None,
         description='The **description** for the Workflow_Template.',
         methods=['POST', 'PUT'],
@@ -123,13 +80,13 @@ class WorkflowTemplateModel(
         read_only=False,
         title='description',
     )
-    id: Optional[int] = Field(
+    id: int | None = Field(
         None,
         description='The ID of the item.',
         read_only=True,
         title='id',
     )
-    name: Optional[str] = Field(
+    name: str | None = Field(
         None,
         description='The **name** for the Workflow_Template.',
         methods=['POST', 'PUT'],
@@ -138,21 +95,21 @@ class WorkflowTemplateModel(
         read_only=False,
         title='name',
     )
-    owner: Optional[str] = Field(
+    owner: str | None = Field(
         None,
         allow_mutation=False,
         description='The name of the Owner of the Case.',
         read_only=True,
         title='owner',
     )
-    owner_id: Optional[int] = Field(
+    owner_id: int | None = Field(
         None,
         allow_mutation=False,
         description='The name of the Owner of the Case.',
         read_only=True,
         title='ownerId',
     )
-    version: Optional[int] = Field(
+    version: int | None = Field(
         None,
         description='The **version** for the Workflow_Template.',
         methods=['POST', 'PUT'],
@@ -161,17 +118,57 @@ class WorkflowTemplateModel(
         title='version',
     )
 
-    @validator('assignee', always=True)
+    @validator('assignee', always=True, pre=True)
     def _validate_assignee(cls, v):
         if not v:
-            return AssigneeModel()
+            return AssigneeModel()  # type: ignore
         return v
 
-    @validator('cases', always=True)
+    @validator('cases', always=True, pre=True)
     def _validate_cases(cls, v):
         if not v:
-            return CasesModel()
+            return CasesModel()  # type: ignore
         return v
+
+
+class WorkflowTemplateDataModel(
+    BaseModel,
+    title='WorkflowTemplate Data Model',
+    alias_generator=Util().snake_to_camel,
+    validate_assignment=True,
+):
+    """Workflow_Templates Data Model"""
+
+    data: list[WorkflowTemplateModel] | None = Field(
+        [],
+        description='The data for the WorkflowTemplates.',
+        methods=['POST', 'PUT'],
+        title='data',
+    )
+
+
+class WorkflowTemplatesModel(
+    BaseModel,
+    title='WorkflowTemplates Model',
+    alias_generator=Util().snake_to_camel,
+    validate_assignment=True,
+):
+    """Workflow_Templates Model"""
+
+    _mode_support = PrivateAttr(False)
+
+    data: list[WorkflowTemplateModel] | None = Field(
+        [],
+        description='The data for the WorkflowTemplates.',
+        methods=['POST', 'PUT'],
+        title='data',
+    )
+    mode: str = Field(
+        'append',
+        description='The PUT mode for nested objects (append, delete, replace). Default: append',
+        methods=['POST', 'PUT'],
+        title='append',
+    )
 
 
 # first-party

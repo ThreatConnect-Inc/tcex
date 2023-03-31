@@ -1,7 +1,5 @@
-"""ThreatConnect Assignee Module"""
-# pylint: disable=no-member,no-self-argument,no-self-use,wrong-import-position
-# standard library
-from typing import Optional, Union
+"""TcEx Framework Module"""
+# pylint: disable=no-member,no-self-argument,wrong-import-position
 
 # third-party
 from pydantic import Field, validator
@@ -10,18 +8,18 @@ from pydantic import Field, validator
 from tcex.api.tc.v3.security.assignee_user_group_model import AssigneeUserGroupModel
 from tcex.api.tc.v3.security.assignee_user_model import AssigneeUserModel
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
-from tcex.utils import Utils
+from tcex.util import Util
 
 
 class AssigneeModel(
     V3ModelABC,
     title='User Data Model',
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     validate_assignment=True,
 ):
     """Assignee Model"""
 
-    type: Optional[str] = Field(
+    type: str | None = Field(
         None,
         description='The **Type** for the Assignee.',
         methods=['POST', 'PUT'],
@@ -29,7 +27,7 @@ class AssigneeModel(
         title='type',
     )
 
-    data: Optional[Union[AssigneeUserModel, AssigneeUserGroupModel]] = Field(
+    data: AssigneeUserModel | AssigneeUserGroupModel | None = Field(
         None,
         description='The **Data** for the Assignee.',
         methods=['POST', 'PUT'],

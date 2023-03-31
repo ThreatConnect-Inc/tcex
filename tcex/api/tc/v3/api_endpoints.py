@@ -1,4 +1,4 @@
-"""ThreatConnect V3 API Endpoints"""
+"""TcEx Framework Module"""
 # standard library
 from enum import Enum
 

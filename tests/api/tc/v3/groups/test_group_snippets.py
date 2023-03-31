@@ -1,7 +1,8 @@
-"""Test the TcEx API Snippets."""
+"""TcEx Framework Module"""
 # standard library
 import base64
 import time
+from collections.abc import Callable
 
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
@@ -11,17 +12,14 @@ from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 class TestGroupSnippets(TestV3):
     """Test TcEx API Interface."""
 
-    example_pdf = None
-    v3 = None
+    example_pdf: str
+    v3_helper = V3Helper('groups')
 
-    def setup_method(self, method: callable):
+    def setup_method(self, method: Callable):  # pylint: disable=arguments-differ
         """Configure setup before all tests."""
-        print('')  # ensure any following print statements will be on new line
-        self.v3_helper = V3Helper('groups')
-        self.v3 = self.v3_helper.v3
-        self.tcex = self.v3_helper.tcex
+        super().setup_method()
 
-        self.example_pdf = (
+        self.example_pdf = str(
             r'JVBERi0xLjIgCjkgMCBvYmoKPDwKPj4Kc3RyZWFtCkJULyAzMiBUZiggIFRjRXggVGVzdGluZyAg'
             r'ICknIEVUCmVuZHN0cmVhbQplbmRvYmoKNCAwIG9iago8PAovVHlwZSAvUGFnZQovUGFyZW50IDUg'
             r'MCBSCi9Db250ZW50cyA5IDAgUgo+PgplbmRvYmoKNSAwIG9iago8PAovS2lkcyBbNCAwIFIgXQov'
@@ -31,7 +29,7 @@ class TestGroupSnippets(TestV3):
         )
 
         # remove an previous groups with the next test case name as a tag
-        groups = self.tcex.v3.groups()
+        groups = self.tcex.api.tc.v3.groups()
         groups.filter.tag(TqlOperator.EQ, method.__name__)
         for group in groups:
             group.delete()
@@ -43,7 +41,7 @@ class TestGroupSnippets(TestV3):
     def test_group_create(self):
         """Test snippet"""
         # Begin Snippet
-        group = self.tcex.v3.group(
+        group = self.tcex.api.tc.v3.group(
             name='MyAdversary',
             type='Adversary',
         )
@@ -57,13 +55,13 @@ class TestGroupSnippets(TestV3):
     def test_group_stage_group_associations(self):
         """Test snippet"""
         # Begin Snippet
-        group = self.tcex.v3.group(
+        group = self.tcex.api.tc.v3.group(
             name='MyAdversary',
             type='Adversary',
         )
 
         # Add association
-        association = self.tcex.v3.group(name='MyThreat', type='Threat')
+        association = self.tcex.api.tc.v3.group(name='MyThreat', type='Threat')
         group.stage_associated_group(association)
 
         group.create(params={'owner': 'TCI'})
@@ -75,13 +73,13 @@ class TestGroupSnippets(TestV3):
     def test_group_stage_indicator_associations(self):
         """Test snippet"""
         # Begin Snippet
-        group = self.tcex.v3.group(
+        group = self.tcex.api.tc.v3.group(
             name='MyAdversary',
             type='Adversary',
         )
 
         # Add association
-        association = self.tcex.v3.indicator(ip='222.222.222.100', type='Address')
+        association = self.tcex.api.tc.v3.indicator(ip='222.222.222.100', type='Address')
         group.stage_associated_indicator(association)
 
         group.create(params={'owner': 'TCI'})
@@ -93,13 +91,13 @@ class TestGroupSnippets(TestV3):
     def test_group_stage_attribute(self):
         """Test snippet"""
         # Begin Snippet
-        group = self.tcex.v3.group(
+        group = self.tcex.api.tc.v3.group(
             name='MyAdversary',
             type='Adversary',
         )
 
         # Add attribute
-        attribute = self.tcex.v3.group_attribute(
+        attribute = self.tcex.api.tc.v3.group_attribute(
             value='An example description attribute.',
             type='Description',
         )
@@ -114,13 +112,13 @@ class TestGroupSnippets(TestV3):
     def test_group_stage_security_label(self):
         """Test snippet"""
         # Begin Snippet
-        group = self.tcex.v3.group(
+        group = self.tcex.api.tc.v3.group(
             name='MyAdversary',
             type='Adversary',
         )
 
         # stage security label
-        security_label = self.tcex.v3.security_label(name='TLP:WHITE')
+        security_label = self.tcex.api.tc.v3.security_label(name='TLP:WHITE')
         group.stage_security_label(security_label)
 
         group.create(params={'owner': 'TCI'})
@@ -132,13 +130,13 @@ class TestGroupSnippets(TestV3):
     def test_group_stage_tag(self):
         """Test snippet"""
         # Begin Snippet
-        group = self.tcex.v3.group(
+        group = self.tcex.api.tc.v3.group(
             name='MyAdversary',
             type='Adversary',
         )
 
         # stage tag
-        tag = self.tcex.v3.tag(name='Example-Tag')
+        tag = self.tcex.api.tc.v3.tag(name='Example-Tag')
         group.stage_tag(tag)
 
         group.create(params={'owner': 'TCI'})
@@ -153,14 +151,14 @@ class TestGroupSnippets(TestV3):
 
     def test_group_delete_by_id(self):
         """Test snippet"""
-        group = self.tcex.v3.group(
+        group = self.tcex.api.tc.v3.group(
             name='MyAdversary',
             type='Adversary',
         )
         group.create(params={'owner': 'TCI'})
 
         # Begin Snippet
-        group = self.tcex.v3.group(id=group.model.id)
+        group = self.tcex.api.tc.v3.group(id=group.model.id)
         group.delete(params={'owner': 'TCI'})
         # End Snippet
 
@@ -181,7 +179,7 @@ class TestGroupSnippets(TestV3):
             ],
         )
         # Begin Snippet
-        group = self.tcex.v3.group(id=group.model.id)
+        group = self.tcex.api.tc.v3.group(id=group.model.id)
         for attribute in group.attributes:
             if attribute.model.value == 'An example description attribute':
                 attribute.delete()
@@ -199,7 +197,7 @@ class TestGroupSnippets(TestV3):
         )
 
         # Begin Snippet
-        group = self.tcex.v3.group(id=group.model.id)
+        group = self.tcex.api.tc.v3.group(id=group.model.id)
 
         for association in group.associated_groups:
             if association.model.name == 'MyGroup':
@@ -220,7 +218,7 @@ class TestGroupSnippets(TestV3):
         )
 
         # Begin Snippet
-        group = self.tcex.v3.group(id=group.model.id)
+        group = self.tcex.api.tc.v3.group(id=group.model.id)
 
         for association in group.associated_indicators:
             if association.model.summary == '222.222.222.102':
@@ -241,7 +239,7 @@ class TestGroupSnippets(TestV3):
         )
 
         # Begin Snippet
-        group = self.tcex.v3.group(id=group.model.id)
+        group = self.tcex.api.tc.v3.group(id=group.model.id)
 
         for security_label in group.security_labels:
             if security_label.model.name == 'TLP:WHITE':
@@ -259,7 +257,7 @@ class TestGroupSnippets(TestV3):
         )
 
         # Begin Snippet
-        group = self.tcex.v3.group(id=group.model.id)
+        group = self.tcex.api.tc.v3.group(id=group.model.id)
 
         for tag in group.tags:
             if tag.model.name == 'Example-Tag':
@@ -277,8 +275,8 @@ class TestGroupSnippets(TestV3):
         )
 
         # Begin Snippet
-        group = self.tcex.v3.group(id=group.model.id)
-        updated_group = self.tcex.v3.group(id=group.model.id)
+        group = self.tcex.api.tc.v3.group(id=group.model.id)
+        updated_group = self.tcex.api.tc.v3.group(id=group.model.id)
         for tag in group.tags:
             if tag.model.name == 'Example-Tag':
                 # IMPORTANT the "remove()" method will remove the tag from the group and
@@ -293,29 +291,31 @@ class TestGroupSnippets(TestV3):
 
     def test_group_get_by_id(self):
         """Test snippet"""
-        group = self.tcex.v3.group(
+        group = self.tcex.api.tc.v3.group(
             name='MyAdversary',
             type='Adversary',
         )
         group.create(params={'owner': 'TCI'})
 
         # Begin Snippet
-        group = self.tcex.v3.group(id=group.model.id, params={'fields': ['_all_']})
+        group = self.tcex.api.tc.v3.group(id=group.model.id, params={'fields': ['_all_']})
         group.get()
         # End Snippet
 
     def test_group_get_tql(self):
         """Test snippet"""
-        group = self.tcex.v3.group(
+        group = self.tcex.api.tc.v3.group(
             name='MyAdversary',
             type='Adversary',
         )
         group.create(params={'owner': 'TCI'})
+        assert group.model.id is not None, 'Failed to create group.'
+        group_id = group.model.id
 
         # Begin Snippet
-        groups = self.tcex.v3.groups()
+        groups = self.tcex.api.tc.v3.groups()
         groups.filter.date_added(TqlOperator.GT, '1 day ago')
-        groups.filter.id(TqlOperator.EQ, group.model.id)
+        groups.filter.id(TqlOperator.EQ, group_id)
         groups.filter.owner_name(TqlOperator.EQ, 'TCI')
         groups.filter.type_name(TqlOperator.EQ, 'Adversary')
         for group in groups:
@@ -334,9 +334,8 @@ class TestGroupSnippets(TestV3):
         )
 
         # Begin Snippet
-        group = self.tcex.v3.group(id=group.model.id)
-        # This will update the confidence to "50"
-        group.model.name = 50
+        group = self.tcex.api.tc.v3.group(id=group.model.id)
+        group.model.name = 'MyAdversary2'
         group.update(params={'owner': 'TCI'})
         # End Snippet
 
@@ -347,14 +346,14 @@ class TestGroupSnippets(TestV3):
     def test_document_download_pdf(self):
         """Test snippet"""
         # Begin Snippet
-        group = self.tcex.v3.group(
+        group = self.tcex.api.tc.v3.group(
             name='MyAdversary',
             type='Adversary',
         )
         group.create(params={'owner': 'TCI'})
 
         # Begin Snippet
-        group = self.tcex.v3.group(id=group.model.id)
+        group = self.tcex.api.tc.v3.group(id=group.model.id)
         _ = group.pdf()  # pdf is returned as bytes
         # End Snippet
 
@@ -362,7 +361,7 @@ class TestGroupSnippets(TestV3):
         """Test snippet"""
         file_content = base64.b64decode(self.example_pdf)
         # Begin Snippet
-        group = self.tcex.v3.group(
+        group = self.tcex.api.tc.v3.group(
             file_name='example.pdf',
             name='MyDocument',
             type='Document',
@@ -389,7 +388,7 @@ class TestGroupSnippets(TestV3):
         time.sleep(1)
 
         # Begin Snippet
-        group = self.tcex.v3.group(id=group.model.id)
+        group = self.tcex.api.tc.v3.group(id=group.model.id)
         _ = group.download()  # content is returned as bytes
         if not group.request.ok:
             print(f'The download failed: {group.request.reason}')
