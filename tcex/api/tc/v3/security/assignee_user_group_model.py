@@ -1,25 +1,23 @@
-"""ThreatConnect Assignee Module"""
-# pylint: disable=no-member,no-self-argument,no-self-use,wrong-import-position
-# standard library
-from typing import Optional
+"""TcEx Framework Module"""
+# pylint: disable=no-member,no-self-argument,wrong-import-position
 
 # third-party
 from pydantic import Field
 
 # first-party
 from tcex.api.tc.v3.security.user_groups.user_group_model import UserGroupModel
-from tcex.utils import Utils
+from tcex.util import Util
 
 
 class AssigneeUserGroupModel(
     UserGroupModel,
     title='Assignee User Group Model',
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     validate_assignment=True,
 ):
     """Assignee Model"""
 
-    name: Optional[str] = Field(
+    name: str | None = Field(
         None,
         allow_mutation=False,
         description='The **name** for the User_Group.',

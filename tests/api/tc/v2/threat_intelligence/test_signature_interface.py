@@ -1,9 +1,16 @@
-"""Test the TcEx Threat Intel Module."""
+"""TcEx Framework Module"""
 # standard library
 import os
 import random
+from typing import cast
 
-from .ti_helpers import TestThreatIntelligence, TIHelper
+# third-party
+from _pytest.fixtures import FixtureRequest
+
+# first-party
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.signature import Signature
+from tcex.tcex import TcEx
+from tests.api.tc.v2.threat_intelligence.ti_helper import TestThreatIntelligence, TIHelper
 
 
 class TestSignatureGroups(TestThreatIntelligence):
@@ -17,9 +24,7 @@ class TestSignatureGroups(TestThreatIntelligence):
         'file_type': random.choice(file_types),
         'file_text': 'pytest signature text',
     }
-    ti = None
-    ti_helper = None
-    tcex = None
+    tcex: TcEx
 
     def setup_method(self):
         """Configure setup before all tests."""
@@ -61,7 +66,7 @@ class TestSignatureGroups(TestThreatIntelligence):
         r = ti.delete()
         assert r.status_code == 200
 
-    def tests_ti_signature_add_attribute(self, request):
+    def tests_ti_signature_add_attribute(self, request: FixtureRequest):
         """Test group add attribute."""
         super().group_add_attribute(request)
 
@@ -69,7 +74,7 @@ class TestSignatureGroups(TestThreatIntelligence):
         """Test group add label."""
         super().group_add_label()
 
-    def tests_ti_signature_add_tag(self, request):
+    def tests_ti_signature_add_tag(self, request: FixtureRequest):
         """Test group add tag."""
         super().group_add_tag(request)
 
@@ -85,11 +90,11 @@ class TestSignatureGroups(TestThreatIntelligence):
         """Test group get with filter."""
         super().group_get_filter()
 
-    def tests_ti_signature_get_includes(self, request):
+    def tests_ti_signature_get_includes(self, request: FixtureRequest):
         """Test group get with includes."""
         super().group_get_includes(request)
 
-    def tests_ti_signature_get_attribute(self, request):
+    def tests_ti_signature_get_attribute(self, request: FixtureRequest):
         """Test group get attribute."""
         super().group_get_attribute(request)
 
@@ -97,11 +102,11 @@ class TestSignatureGroups(TestThreatIntelligence):
         """Test group get label."""
         super().group_get_label()
 
-    def tests_ti_signature_get_tag(self, request):
+    def tests_ti_signature_get_tag(self, request: FixtureRequest):
         """Test group get tag."""
         super().group_get_tag(request)
 
-    def tests_ti_signature_update(self, request):
+    def tests_ti_signature_update(self, request: FixtureRequest):
         """Test updating group metadata."""
         super().group_update(request)
 
@@ -111,7 +116,7 @@ class TestSignatureGroups(TestThreatIntelligence):
 
     def tests_ti_signature_download(self):
         """Test downloading group signature."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Signature, self.ti_helper.create_group())
         r = helper_ti.download()
 
         assert r.status_code == 200

@@ -1,11 +1,15 @@
-"""Test the TcEx Threat Intel Module."""
+"""TcEx Framework Module"""
 # standard library
 import os
 from datetime import datetime, timedelta
 from random import randint
 
+# third-party
+from _pytest.fixtures import FixtureRequest
+
 # first-party
-from tests.api.tc.v2.threat_intelligence.ti_helpers import TestThreatIntelligence, TIHelper
+from tcex.tcex import TcEx
+from tests.api.tc.v2.threat_intelligence.ti_helper import TestThreatIntelligence, TIHelper
 
 
 class TestAddressIndicators(TestThreatIntelligence):
@@ -16,9 +20,7 @@ class TestAddressIndicators(TestThreatIntelligence):
     indicator_field_custom = 'ip'
     indicator_type = 'Address'
     owner = os.getenv('TC_OWNER')
-    ti = None
-    ti_helper = None
-    tcex = None
+    tcex: TcEx
 
     def setup_class(self):
         """Configure setup before all tests."""
@@ -107,10 +109,10 @@ class TestAddressIndicators(TestThreatIntelligence):
         indicator.create()
         today = datetime.strftime(datetime.utcnow(), '%Y-%m-%d')
         tomorrow = datetime.strftime(datetime.utcnow() + timedelta(1), '%Y-%m-%d')
-        filters = self.tcex.v2.ti.filters()
+        filters = self.tcex.api.tc.v2.ti.filters()
         filters.add_filter('dateAdded', '>', today)
         filters.add_filter('dateAdded', '<', tomorrow)
-        indicators = self.tcex.v2.ti.indicator()
+        indicators = self.tcex.api.tc.v2.ti.indicator()
         found = False
         for indicator in indicators.many(filters=filters):
             if indicator.get('summary') == rand_ip:
@@ -138,7 +140,7 @@ class TestAddressIndicators(TestThreatIntelligence):
         filters.add_filter('active', '=', 'true')
         filters.add_filter('active', '=', 'false')
         parameters = {'orParams': 'true'}
-        indicators = self.tcex.v2.ti.indicator()
+        indicators = self.tcex.api.tc.v2.ti.indicator()
         active_found = False
         inactive_found = False
         for indicator in indicators.many(filters=filters, params=parameters):
@@ -165,7 +167,7 @@ class TestAddressIndicators(TestThreatIntelligence):
         indicator.create()
         filters = self.ti.filters()
         filters.add_filter('active', '=', 'false')
-        indicators = self.tcex.v2.ti.indicator()
+        indicators = self.tcex.api.tc.v2.ti.indicator()
         active_found = False
         for indicator in indicators.many(filters=filters):
             if indicator.get('summary') == rand_ip:
@@ -230,7 +232,7 @@ class TestAddressIndicators(TestThreatIntelligence):
         r = ti.delete()
         assert r.status_code == 200
 
-    def tests_ti_address_add_attribute(self, request):
+    def tests_ti_address_add_attribute(self, request: FixtureRequest):
         """Test indicator add attribute."""
         super().indicator_add_attribute(request)
 
@@ -238,7 +240,7 @@ class TestAddressIndicators(TestThreatIntelligence):
         """Test indicator add label."""
         super().indicator_add_label()
 
-    def tests_ti_address_add_tag(self, request):
+    def tests_ti_address_add_tag(self, request: FixtureRequest):
         """Test indicator add tag."""
         super().indicator_add_tag(request)
 
@@ -250,11 +252,11 @@ class TestAddressIndicators(TestThreatIntelligence):
         """Test indicator get with generic indicator method."""
         super().indicator_get()
 
-    def tests_ti_address_get_includes(self, request):
+    def tests_ti_address_get_includes(self, request: FixtureRequest):
         """Test indicator get with includes."""
         super().indicator_get_includes(request)
 
-    def tests_ti_address_get_attribute(self, request):
+    def tests_ti_address_get_attribute(self, request: FixtureRequest):
         """Test indicator get attribute."""
         super().indicator_get_attribute(request)
 
@@ -262,7 +264,7 @@ class TestAddressIndicators(TestThreatIntelligence):
         """Test indicator get label."""
         super().indicator_get_label()
 
-    def tests_ti_address_get_tag(self, request):
+    def tests_ti_address_get_tag(self, request: FixtureRequest):
         """Test indicator get tag."""
         super().indicator_get_tag(request)
 

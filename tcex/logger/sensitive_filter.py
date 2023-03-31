@@ -1,4 +1,4 @@
-"""TcEx logging filter module"""
+"""TcEx Framework Module"""
 # standard library
 import logging
 

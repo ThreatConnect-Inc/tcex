@@ -1,9 +1,3 @@
-"""Package version and other metadata"""
-__author__ = 'ThreatConnect (support@threatconnect.com)'
-__author_email__ = 'support@threatconnect.com'
-__description__ = 'ThreatConnect Exchange App Framework'
-__license__ = 'Apache License, Version 2'
-__package_name__ = 'tcex'
-__url__ = 'https://github.com/ThreatConnect-Inc/tcex'
-__version__ = '3.0.8'
-__download_url__ = f'https://github.com/ThreatConnect-Inc/tcex/tarball/{__version__}'
+"""TcEx Framework Module"""
+__license__ = 'Apache-2.0'
+__version__ = '4.0.0'

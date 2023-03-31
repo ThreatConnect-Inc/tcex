@@ -1,0 +1,16 @@
+{
+  "package": {
+    "app_name": "TCPB_-_Test_Update",
+    "app_version": "1.0.0",
+    "excludes": [
+      ".gitignore",
+      ".pre-commit-config.yaml",
+      "local-*",
+      "pyproject.toml",
+      "setup.cfg",
+      "tcex.json"
+    ]
+  },
+  "template_name": "service_api",
+  "template_type": "playbook"
+}

@@ -1,36 +1,36 @@
-"""Generate Docs for ThreatConnect API"""
+"""TcEx Framework Module"""
 # standard library
 import importlib
-import sys
 from abc import ABC
-from typing import Any, Optional
+from typing import Any
 
 # first-party
 from tcex.api.tc.v3._gen._gen_abc import GenerateABC
+from tcex.util.render.render import Render
 
 
 class GenerateArgsABC(GenerateABC, ABC):
     """Generate docstring for Model."""
 
     def __init__(self, type_: Any):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         super().__init__(type_)
 
     @staticmethod
-    def _import_model(module, class_name) -> Any:
+    def _import_model(module: Any, class_name: str) -> Any:
         """Import the appropriate model."""
         return getattr(importlib.import_module(module), class_name)
 
-    def _prop_type(self, prop_data: dict) -> str:
+    def _prop_type(self, prop_data: dict[str, dict | str | None]) -> str | None:
         """Return the appropriate arg type."""
         prop_type = None
-        if 'type' in prop_data:
-            prop_type = self._prop_type_map(prop_data.get('type'))
+        if 'type' in prop_data and prop_data.get('type') is not None:
+            prop_type = self._prop_type_map(prop_data.get('type'))  # type: ignore
         elif 'allOf' in prop_data and prop_data.get('allOf'):
-            ref = prop_data.get('allOf')[0].get('$ref')
+            ref: str = prop_data.get('allOf')[0].get('$ref')  # type: ignore
             prop_type = ref.split('/')[-1].replace('Model', '')
         elif 'items' in prop_data and prop_data.get('items'):
-            ref = prop_data.get('items').get('$ref')
+            ref: str = prop_data.get('items', {}).get('$ref')  # type: ignore
             prop_type = ref.split('/')[-1].replace('Model', '')
         return prop_type
 
@@ -46,9 +46,9 @@ class GenerateArgsABC(GenerateABC, ABC):
 
     def gen_args(
         self,
-        i1: Optional[str] = None,
-        i2: Optional[str] = None,
-        updatable: Optional[bool] = True,
+        i1: str | None = None,
+        i2: str | None = None,
+        updatable: bool = True,
     ) -> str:
         """Model Map"""
         i1 = i1 or self.i1
@@ -56,7 +56,7 @@ class GenerateArgsABC(GenerateABC, ABC):
 
         module_import_data = self._module_import_data(self.type_)
         model = self._import_model(
-            module_import_data.get('model_module'), module_import_data.get('model_class')
+            module_import_data['model_module'], module_import_data['model_class']
         )
         _doc_string = [f'{i1}Args:']
 
@@ -68,8 +68,7 @@ class GenerateArgsABC(GenerateABC, ABC):
         elif 'properties' in schema:
             properties = schema.get('properties')
         else:
-            print(model().schema_json(by_alias=False))
-            sys.exit()
+            Render.panel.failure(model().schema_json(by_alias=False))
 
         # iterate over properties to build docstring
         for arg, prop_data in properties.items():

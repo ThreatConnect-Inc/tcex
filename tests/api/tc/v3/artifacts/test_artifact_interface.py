@@ -1,4 +1,4 @@
-"""Test the TcEx API Module."""
+"""TcEx Framework Module"""
 # standard library
 import time
 from datetime import datetime, timedelta
@@ -16,14 +16,7 @@ from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 class TestArtifacts(TestV3):
     """Test TcEx API Interface."""
 
-    v3 = None
-
-    def setup_method(self):
-        """Configure setup before all tests."""
-        print('')  # ensure any following print statements will be on new line
-        self.v3_helper = V3Helper('artifacts')
-        self.v3 = self.v3_helper.v3
-        self.tcex = self.v3_helper.tcex
+    v3_helper = V3Helper('artifacts')
 
     def test_artifact_api_options(self):
         """Test filter keywords."""
@@ -172,7 +165,9 @@ class TestArtifacts(TestV3):
 
         # [Retrieve Testing] run assertions on the nested note data, which
         # is only available due to params being added to the get() method.
-        assert artifact.model.notes.data[0].text == note_data.get('text')
+        assert artifact.model.notes.data and artifact.model.notes.data[0].text == note_data.get(
+            'text'
+        )
 
         # [Retrieve Testing] run assertions on returned data
         assert artifact.model.intel_type == artifact_data.get('intel_type')
@@ -184,6 +179,8 @@ class TestArtifacts(TestV3):
         """Test TQL Filters for artifact on a Case"""
         # [Pre-Requisite] - create case
         case = self.v3_helper.create_case()
+        if case.model.id is None:
+            pytest.fail('Case ID is None')
 
         # [Create Testing] define object data
         artifact_data = {
@@ -212,7 +209,12 @@ class TestArtifacts(TestV3):
 
         # [Retrieve Testing] get the object from the API
         artifact.get(params={'fields': 'notes'})
+        if not artifact.model.id or not artifact.model.notes.data:
+            pytest.fail('Artifact ID is None')
+
         note_id = artifact.model.notes.data[0].id
+        if not note_id:
+            pytest.fail('Note ID is None')
 
         # [Retrieve Testing] retrieve object using tql filters
         artifacts = self.v3.artifacts(params={'fields': 'analytics'})
@@ -254,16 +256,16 @@ class TestArtifacts(TestV3):
         artifacts.filter.note_id(TqlOperator.EQ, note_id)
 
         # [Filter Testing] source
-        artifacts.filter.source(TqlOperator.EQ, artifact_data.get('source'))
+        artifacts.filter.source(TqlOperator.EQ, artifact_data['source'])
 
         # [Filter Testing] summary
-        artifacts.filter.summary(TqlOperator.EQ, artifact_data.get('summary'))
+        artifacts.filter.summary(TqlOperator.EQ, artifact_data['summary'])
 
         # [Filter Testing] type
-        artifacts.filter.type(TqlOperator.EQ, artifact_data.get('type'))
+        artifacts.filter.type(TqlOperator.EQ, artifact_data['type'])
 
         # [Filter Testing] type_name
-        artifacts.filter.type_name(TqlOperator.EQ, artifact_data.get('type'))
+        artifacts.filter.type_name(TqlOperator.EQ, artifact_data['type'])
 
         # [Retrieve Testing] get the object from the API
         for artifact in artifacts:
@@ -288,6 +290,8 @@ class TestArtifacts(TestV3):
 
         # [Create Testing] create the task with the TC API
         task.create()
+        if task.model.id is None:
+            pytest.fail('Task ID is None')
 
         # [Create Testing] define object data
         artifact_data = {
@@ -390,6 +394,9 @@ class TestArtifacts(TestV3):
         """Test Artifact Get Many"""
         # [Pre-Requisite] - create case
         case = self.v3_helper.create_case()
+        if case.model.id is None:
+            pytest.fail('Case ID is None')
+
         artifact_count = 10
         artifact_ids = []
         for _ in range(0, artifact_count):
@@ -406,13 +413,15 @@ class TestArtifacts(TestV3):
 
             # [Create Testing] create the object to the TC API
             artifact.create()
+            if artifact.model.id is None:
+                pytest.fail('Artifact ID is None')
             artifact_ids.append(artifact.model.id)
 
         # [Retrieve Testing] iterate over all object looking for needle
         artifacts = self.v3.artifacts(params={'resultLimit': 5})
         artifacts.filter.case_id(TqlOperator.EQ, case.model.id)
-        for _, a in enumerate(artifacts):
-            assert artifact.model.id in artifact_ids
+        for a in artifacts:
+            assert a.model.id in artifact_ids
             artifact_ids.remove(a.model.id)
 
         assert len(artifacts) == artifact_count
@@ -491,7 +500,7 @@ class TestArtifacts(TestV3):
         assert artifact.model.task_xid == task.model.xid
         assert artifact.model.intel_type is None
         assert artifact.model.type == artifact_data.get('type')
-        for note in artifact.model.notes.data:
+        for note in artifact.model.notes.data or []:
             if note.text == artifact_data.get('note_text'):
                 break
             assert False, 'Note not found'
@@ -540,7 +549,7 @@ class TestArtifacts(TestV3):
 
         # [Create Testing] add the note data to the object
         notes = {'data': [{'text': artifact_data.get('note_text')}]}
-        artifact.model.notes = notes
+        artifact.model.notes = notes  # type: ignore
 
         # [Create Testing] create the object to the TC API
         artifact.create()
@@ -562,7 +571,7 @@ class TestArtifacts(TestV3):
         assert artifact.model.task_xid is None
         assert artifact.model.intel_type is None
         assert artifact.model.type == artifact_data.get('type')
-        for note in artifact.model.notes.data:  # Double check
+        for note in artifact.model.notes.data or []:  # Double check
             if note.text == artifact_data.get('note_text'):
                 break
             assert False, 'Note not found'

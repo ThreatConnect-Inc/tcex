@@ -1,0 +1,171 @@
+{
+  "allowOnDemand": true,
+  "appId": "f0a3fa03-8df8-52fe-9c64-5970c0bf4cdf",
+  "commitHash": "abc123",
+  "displayName": "TcEx TC App 1",
+  "features": [
+    "fileParams",
+    "secureParams"
+  ],
+  "feeds": [
+    {
+      "attributesFile": "attributes.json",
+      "deprecation": [
+        {
+          "confidenceAmount": 3,
+          "deleteAtMinimum": true,
+          "indicatorType": "Host",
+          "intervalDays": 11,
+          "percentage": true
+        }
+      ],
+      "documentStorageLimitMb": 10000,
+      "enableBulkJson": true,
+      "firstRunParams": [
+        {
+          "param": "last_run",
+          "value": "90 days ago"
+        }
+      ],
+      "indicatorLimit": 50000000,
+      "jobFile": "app_1_job.json",
+      "sourceCategory": "Premium",
+      "sourceDescription": "TcEx Testing Job App 1",
+      "sourceName": "TcEx Testing"
+    }
+  ],
+  "labels": [
+    "label1",
+    "label2"
+  ],
+  "languageVersion": "3.11.0",
+  "listDelimiter": "|",
+  "minServerVersion": "7.2.0",
+  "note": "The App Note.",
+  "params": [
+    {
+      "label": "String Required",
+      "name": "string_required",
+      "required": true,
+      "sequence": 1,
+      "type": "String",
+      "validValues": [
+        "${USER:TEXT}",
+        "${ORGANIZATION:TEXT}"
+      ]
+    },
+    {
+      "label": "String Optional",
+      "name": "string_optional",
+      "sequence": 2,
+      "type": "String",
+      "validValues": [
+        "${USER:TEXT}",
+        "${ORGANIZATION:TEXT}"
+      ]
+    },
+    {
+      "hidden": true,
+      "label": "String Hidden",
+      "name": "string_hidden",
+      "sequence": 3,
+      "type": "String",
+      "validValues": [
+        "${USER:TEXT}",
+        "${ORGANIZATION:TEXT}"
+      ]
+    },
+    {
+      "encrypt": true,
+      "label": "String Encrypted",
+      "name": "string_encrypted",
+      "sequence": 4,
+      "type": "String",
+      "validValues": [
+        "${USER:KEYCHAIN}",
+        "${ORGANIZATION:KEYCHAIN}"
+      ]
+    },
+    {
+      "allowMultiple": true,
+      "label": "String Allow Multiple",
+      "name": "string_allow_multiple",
+      "sequence": 5,
+      "type": "String",
+      "validValues": [
+        "${USER:TEXT}",
+        "${ORGANIZATION:TEXT}"
+      ]
+    },
+    {
+      "label": "Choice Required",
+      "name": "choice_required",
+      "required": true,
+      "sequence": 6,
+      "type": "Choice",
+      "validValues": [
+        "${OWNERS}"
+      ]
+    },
+    {
+      "label": "Choice Optional",
+      "name": "choice_optional",
+      "sequence": 7,
+      "type": "Choice",
+      "validValues": [
+        "${OWNERS}"
+      ]
+    },
+    {
+      "default": "choice1|choice2",
+      "label": "MultiChoice Required",
+      "name": "multi_choice_required",
+      "required": true,
+      "sequence": 8,
+      "type": "MultiChoice",
+      "validValues": [
+        "choice1",
+        "choice2",
+        "choice3"
+      ]
+    },
+    {
+      "label": "MultiChoice Optional",
+      "name": "multi_choice_optional",
+      "sequence": 9,
+      "type": "MultiChoice",
+      "validValues": [
+        "choice1",
+        "choice2",
+        "choice3"
+      ]
+    },
+    {
+      "default": true,
+      "label": "Boolean Required",
+      "name": "boolean_required",
+      "sequence": 10,
+      "type": "Boolean"
+    },
+    {
+      "label": "Boolean Optional",
+      "name": "boolean_optional",
+      "sequence": 11,
+      "type": "Boolean"
+    }
+  ],
+  "programLanguage": "PYTHON",
+  "programMain": "run",
+  "programVersion": "1.0.0",
+  "publishOutFiles": [
+    "publish_out_file1",
+    "publish_out_file2"
+  ],
+  "repeatingMinutes": [
+    5,
+    10,
+    15
+  ],
+  "runtimeLevel": "Organization",
+  "sdkVersion": "4.0.0"
+}

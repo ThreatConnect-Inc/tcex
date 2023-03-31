@@ -1,60 +1,19 @@
-"""Case_Attribute / Case_Attributes Model"""
-# pylint: disable=no-member,no-self-argument,no-self-use,wrong-import-position
+"""TcEx Framework Module"""
+# pylint: disable=no-member,no-self-argument,wrong-import-position
 # standard library
 from datetime import datetime
-from typing import List, Optional
 
 # third-party
 from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
-from tcex.utils import Utils
-
-
-class CaseAttributesModel(
-    BaseModel,
-    title='CaseAttributes Model',
-    alias_generator=Utils().snake_to_camel,
-    validate_assignment=True,
-):
-    """Case_Attributes Model"""
-
-    _mode_support = PrivateAttr(True)
-
-    data: Optional[List['CaseAttributeModel']] = Field(
-        [],
-        description='The data for the CaseAttributes.',
-        methods=['POST', 'PUT'],
-        title='data',
-    )
-    mode: str = Field(
-        'append',
-        description='The PUT mode for nested objects (append, delete, replace). Default: append',
-        methods=['POST', 'PUT'],
-        title='append',
-    )
-
-
-class CaseAttributeDataModel(
-    BaseModel,
-    title='CaseAttribute Data Model',
-    alias_generator=Utils().snake_to_camel,
-    validate_assignment=True,
-):
-    """Case_Attributes Data Model"""
-
-    data: Optional[List['CaseAttributeModel']] = Field(
-        [],
-        description='The data for the CaseAttributes.',
-        methods=['POST', 'PUT'],
-        title='data',
-    )
+from tcex.util import Util
 
 
 class CaseAttributeModel(
     V3ModelABC,
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     extra=Extra.allow,
     title='CaseAttribute Model',
     validate_assignment=True,
@@ -66,21 +25,21 @@ class CaseAttributeModel(
     _shared_type = PrivateAttr(False)
     _staged = PrivateAttr(False)
 
-    case_id: Optional[int] = Field(
+    case_id: int | None = Field(
         None,
         description='Case associated with attribute.',
         methods=['POST'],
         read_only=False,
         title='caseId',
     )
-    created_by: Optional['UserModel'] = Field(
+    created_by: 'UserModel' = Field(
         None,
         allow_mutation=False,
         description='The **created by** for the Case_Attribute.',
         read_only=True,
         title='createdBy',
     )
-    date_added: Optional[datetime] = Field(
+    date_added: datetime | None = Field(
         None,
         allow_mutation=False,
         description='The date and time that the item was first created.',
@@ -97,13 +56,13 @@ class CaseAttributeModel(
         read_only=False,
         title='default',
     )
-    id: Optional[int] = Field(
+    id: int | None = Field(
         None,
         description='The ID of the item.',
         read_only=True,
         title='id',
     )
-    last_modified: Optional[datetime] = Field(
+    last_modified: datetime | None = Field(
         None,
         allow_mutation=False,
         description='The date and time that the Attribute was last modified.',
@@ -117,7 +76,7 @@ class CaseAttributeModel(
         read_only=False,
         title='pinned',
     )
-    security_labels: Optional['SecurityLabelsModel'] = Field(
+    security_labels: 'SecurityLabelsModel' = Field(
         None,
         description=(
             'A list of Security Labels corresponding to the Intel item (NOTE: Setting this '
@@ -127,21 +86,21 @@ class CaseAttributeModel(
         read_only=False,
         title='securityLabels',
     )
-    source: Optional[str] = Field(
+    source: str | None = Field(
         None,
         description='The attribute source.',
         methods=['POST', 'PUT'],
         read_only=False,
         title='source',
     )
-    type: Optional[str] = Field(
+    type: str | None = Field(
         None,
         description='The attribute type.',
         methods=['POST'],
         read_only=False,
         title='type',
     )
-    value: Optional[str] = Field(
+    value: str | None = Field(
         None,
         description='The attribute value.',
         methods=['POST', 'PUT'],
@@ -150,17 +109,57 @@ class CaseAttributeModel(
         title='value',
     )
 
-    @validator('security_labels', always=True)
+    @validator('security_labels', always=True, pre=True)
     def _validate_security_labels(cls, v):
         if not v:
-            return SecurityLabelsModel()
+            return SecurityLabelsModel()  # type: ignore
         return v
 
-    @validator('created_by', always=True)
+    @validator('created_by', always=True, pre=True)
     def _validate_user(cls, v):
         if not v:
-            return UserModel()
+            return UserModel()  # type: ignore
         return v
+
+
+class CaseAttributeDataModel(
+    BaseModel,
+    title='CaseAttribute Data Model',
+    alias_generator=Util().snake_to_camel,
+    validate_assignment=True,
+):
+    """Case_Attributes Data Model"""
+
+    data: list[CaseAttributeModel] | None = Field(
+        [],
+        description='The data for the CaseAttributes.',
+        methods=['POST', 'PUT'],
+        title='data',
+    )
+
+
+class CaseAttributesModel(
+    BaseModel,
+    title='CaseAttributes Model',
+    alias_generator=Util().snake_to_camel,
+    validate_assignment=True,
+):
+    """Case_Attributes Model"""
+
+    _mode_support = PrivateAttr(True)
+
+    data: list[CaseAttributeModel] | None = Field(
+        [],
+        description='The data for the CaseAttributes.',
+        methods=['POST', 'PUT'],
+        title='data',
+    )
+    mode: str = Field(
+        'append',
+        description='The PUT mode for nested objects (append, delete, replace). Default: append',
+        methods=['POST', 'PUT'],
+        title='append',
+    )
 
 
 # first-party

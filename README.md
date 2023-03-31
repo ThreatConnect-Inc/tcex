@@ -5,8 +5,6 @@ The ThreatConnect&trade; TcEx App Framework provides functionality for writing T
 ## Requirements
 
  * arrow (https://pypi.python.org/pypi/arrow)
- * backports.cached-property (https://pypi.org/project/backports.cached-property/)
- * colorama (https://pypi.python.org/pypi/colorama)
  * future (https://pypi.org/project/future/)
  * inflect (https://pypi.python.org/pypi/inflect)
  * jmespath (https://pypi.org/project/jmespath/)

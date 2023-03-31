@@ -1,25 +1,26 @@
-"""Generate Filters for ThreatConnect API"""
+"""TcEx Framework Module"""
 # standard library
 from abc import ABC
-from typing import Any, Dict, Generator, List
+from collections.abc import Generator
+from typing import Any
 
 # third-party
-import typer
 from pydantic import ValidationError
 from requests.exceptions import ProxyError
 
 # first-party
 from tcex.api.tc.v3._gen._gen_abc import GenerateABC
-from tcex.api.tc.v3._gen.models import FilterModel
-from tcex.backports import cached_property
-from tcex.utils.string_operations import SnakeString
+from tcex.api.tc.v3._gen.model import FilterModel
+from tcex.pleb.cached_property import cached_property
+from tcex.util.render.render import Render
+from tcex.util.string_operation import SnakeString
 
 
 class GenerateFilterABC(GenerateABC, ABC):
     """Generate Models for Case Management Types"""
 
     def __init__(self, type_: SnakeString):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         super().__init__(type_)
 
         # properties
@@ -48,7 +49,7 @@ class GenerateFilterABC(GenerateABC, ABC):
             )
 
     @cached_property
-    def _filter_contents(self) -> List[Dict[str, Any]]:
+    def _filter_contents(self) -> list[dict[str, Any]]:
         """Return defined API properties for the current object.
 
         Response:
@@ -68,13 +69,12 @@ class GenerateFilterABC(GenerateABC, ABC):
             if r.ok:
                 _properties = r.json().get('data', [])
         except (ConnectionError, ProxyError) as ex:
-            typer.secho(f'Failed getting types properties ({ex}).', fg=typer.colors.RED)
-            typer.Exit(1)
+            Render.panel.failure(f'Failed getting types properties ({ex}).')
 
         return _properties
 
     @property
-    def _filter_contents_updated(self) -> List[Dict[str, Any]]:
+    def _filter_contents_updated(self) -> list[dict[str, Any]]:
         """Update the properties contents, fixing issues in core data."""
         filters = self._filter_contents
 
@@ -89,6 +89,7 @@ class GenerateFilterABC(GenerateABC, ABC):
                     self.messages.append(f'- [{self.type_}] - ({title}) - fix NOT required.')
 
             if self.type_ == 'cases' and 'description' in filter_:
+                # fix misspelling in core data
                 miss_map = {
                     'occured': 'occurred',
                     'Threatassess': 'ThreatAssess',
@@ -104,11 +105,7 @@ class GenerateFilterABC(GenerateABC, ABC):
             try:
                 yield FilterModel(**field_data)
             except ValidationError as ex:
-                typer.secho(
-                    f'Failed generating property model: data={field_data} ({ex}).',
-                    fg=typer.colors.RED,
-                )
-                raise
+                Render.panel.failure(f'Failed generating property model: data={field_data} ({ex}).')
 
     def _gen_code_generic_method(self, filter_data: FilterModel) -> list:
         """Return code for generic TQL filter methods."""
@@ -132,10 +129,31 @@ class GenerateFilterABC(GenerateABC, ABC):
             f'{self.i2}"""',
         ]
         if filter_data.type.lower() in ['date', 'datetime']:
+            self.requirements['first-party'].extend(
+                [
+                    'from arrow import Arrow',
+                    'from datetime import datetime',
+                ]
+            )
             _code.extend(
                 [
-                    f'''{self.i2}{filter_data.keyword.snake_case()} = self.utils.any_to_datetime'''
+                    f'''{self.i2}{filter_data.keyword.snake_case()} = self.util.any_to_datetime'''
                     f'''({filter_data.keyword.snake_case()}).strftime('%Y-%m-%d %H:%M:%S')'''
+                ]
+            )
+
+        if 'list' in filter_data.extra.typing_type:
+            _code.extend(
+                [
+                    (
+                        f'''{self.i2}if isinstance({filter_data.keyword.snake_case()}, list) '''
+                        '''and operator not in self.list_types:'''
+                    ),
+                    f'''{self.i3}raise RuntimeError('''
+                    f'''{self.i5}'Operator must be CONTAINS, NOT_CONTAINS, IN\''''
+                    f'''{self.i5}'or NOT_IN when filtering on a list of values.\''''
+                    f'''{self.i4})''',
+                    '',
                 ]
             )
         _code.extend(
@@ -430,7 +448,7 @@ class GenerateFilterABC(GenerateABC, ABC):
         ]
 
     def gen_api_endpoint_method(self) -> str:
-        """Generate private class method/property.
+        r"""Generate private class method/property.
 
         @property
         def _api_endpoint(self) -> str:
@@ -465,7 +483,6 @@ class GenerateFilterABC(GenerateABC, ABC):
         _filter_class.append(self.gen_api_endpoint_method())
 
         for f in self._filter_models:
-
             if f.keyword.snake_case() == 'has_artifact':
                 _filter_class.extend(self._gen_code_has_artifact_method())
             elif f.keyword.snake_case() == 'has_case':
@@ -495,4 +512,5 @@ class GenerateFilterABC(GenerateABC, ABC):
 
     def gen_doc_string(self) -> str:
         """Generate doc string."""
-        return f'"""{self.type_.singular().title()} TQL Filter"""\n'
+        # return f'"""{self.type_.singular().title()} TQL Filter"""\n'
+        return '"""TcEx Framework Module"""\n'

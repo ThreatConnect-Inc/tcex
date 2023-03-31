@@ -1,4 +1,4 @@
-"""Test the TcEx API Snippets."""
+"""TcEx Framework Module"""
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
@@ -7,26 +7,19 @@ from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 class TestOwnerSnippets(TestV3):
     """Test TcEx API Interface."""
 
-    v3 = None
-
-    def setup_method(self):
-        """Configure setup before all tests."""
-        print('')  # ensure any following print statements will be on new line
-        self.v3_helper = V3Helper('owners')
-        self.v3 = self.v3_helper.v3
-        self.tcex = self.v3_helper.tcex
+    v3_helper = V3Helper('owners')
 
     def test_owner_get_all(self):
         """Test snippet"""
         # Begin Snippet
-        for owner in self.tcex.v3.owners():
+        for owner in self.tcex.api.tc.v3.owners():
             print(owner.model.dict(exclude_none=True))
         # End Snippet
 
     def test_owner_tql_filter(self):
         """Test snippet"""
         # Begin Snippet
-        owners = self.tcex.v3.owners()
+        owners = self.tcex.api.tc.v3.owners()
         owners.filter.perm_apps(TqlOperator.EQ, 'BUILD')
         owners.filter.perm_artifact(TqlOperator.EQ, 'FULL')
         owners.filter.perm_attribute(TqlOperator.EQ, 'FULL')
@@ -58,7 +51,7 @@ class TestOwnerSnippets(TestV3):
     def test_owner_get_by_id(self):
         """Test snippet"""
         # Begin Snippet
-        owner = self.tcex.v3.owner(id=3)
+        owner = self.tcex.api.tc.v3.owner(id=3)
         owner.get()
         print(owner.model.dict(exclude_none=True))
         # End Snippet

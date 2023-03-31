@@ -18,8 +18,8 @@ __pycache__
 # Build Exclusions
 #-------------------------------------------------
 build
+deps
 dist
-lib_*
 target
 temp
 *.egg-info
@@ -51,6 +51,7 @@ log/*
 permutations.json
 templates
 threatconnect*
+test.log*
 tests/reports/*
 TODO.md
 
@@ -58,3 +59,4 @@ TODO.md
 # Other Nonsense
 #-------------------------------------------------
 codeql-tcex
+install.json

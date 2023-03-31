@@ -1,8 +1,8 @@
-"""Cache"""
+"""TcEx Framework Module"""
 # standard library
 import logging
+from collections.abc import Callable
 from datetime import datetime, timedelta
-from typing import Callable, Optional
 
 # third-party
 import arrow
@@ -10,10 +10,11 @@ from requests import Session
 
 # first-party
 from tcex.api.tc.v2.datastore.datastore import DataStore
-from tcex.utils import Utils
+from tcex.logger.trace_logger import TraceLogger
+from tcex.util import Util
 
 # get tcex logger
-logger = logging.getLogger('tcex')
+_logger: TraceLogger = logging.getLogger(__name__.split('.', maxsplit=1)[0])  # type: ignore
 
 
 class Cache:
@@ -24,7 +25,7 @@ class Cache:
         domain: A value of “system”, “organization”, or “local”.
         data_type: A free form type name for the data.
         ttl_seconds: Number of seconds the cache is valid.
-        mapping: Elasticsearch mappings data.
+        mapping: Elasticsearch mapping data.
     """
 
     def __init__(
@@ -32,22 +33,22 @@ class Cache:
         session: Session,
         domain: str,
         data_type: str,
-        ttl_seconds: Optional[int] = None,
-        mapping: Optional[dict] = None,
+        ttl_seconds: int | None = None,
+        mapping: dict | None = None,
     ):
-        """Initialize class properties."""
+        """Initialize instance properties."""
 
         # properties
         self.ds = DataStore(session, domain, data_type, mapping)
-        self.log = logger
-        self.ttl_seconds: Optional[int] = ttl_seconds
-        self.utils = Utils()
+        self.log = _logger
+        self.ttl_seconds = ttl_seconds
+        self.util = Util()
 
         # Warranty void if any of these are changed.  Don't touch.
         self._cache_data_key: str = 'cache-data'
         self._cache_date_key: str = 'cache-date'
 
-    def add(self, rid: str, data: dict, raise_on_error: Optional[bool] = True) -> dict:
+    def add(self, rid: str, data: dict, raise_on_error: bool = True) -> dict | None:
         """Write cache data to the data store.
 
         **Example Response**
@@ -77,13 +78,13 @@ class Cache:
         Returns:
             dict : The response dict
         """
-        data: dict = {
+        data = {
             self._cache_date_key: datetime.utcnow().isoformat(),
             self._cache_data_key: data,
         }
         return self.ds.post(rid, data, raise_on_error)
 
-    def delete(self, rid: str, raise_on_error: Optional[bool] = True) -> dict:
+    def delete(self, rid: str, raise_on_error: bool = True) -> dict | None:
         """Write cache data to the data store.
 
         **Example Response**
@@ -117,9 +118,9 @@ class Cache:
     def get(
         self,
         rid: str,
-        data_callback: Optional[Callable[[str], dict]] = None,
-        raise_on_error: Optional[bool] = True,
-    ) -> dict:
+        data_callback: Callable[[str], dict] | None = None,
+        raise_on_error: bool = True,
+    ) -> dict | None:
         """Get cached data from the data store.
 
         **Example Response**
@@ -141,8 +142,8 @@ class Cache:
         Returns:
             dict: The cached data.
         """
-        cache_data = None
-        ds_data: dict = self.ds.get(rid, raise_on_error=False)
+        cache_data: dict | None = None
+        ds_data: dict[str, bool | dict | str] | None = self.ds.get(rid, raise_on_error=False)
 
         if ds_data is None:
             # default the response when TC API doesn't return a value
@@ -151,8 +152,8 @@ class Cache:
         if ds_data is not None:
             expired = False
             if ds_data.get('found') is True:
-                cache_data: dict = ds_data.get('_source', {})
-                cache_date: str = cache_data.get(self._cache_date_key)
+                cache_data = ds_data.get('_source') or {}  # type: ignore
+                cache_date = cache_data[self._cache_date_key]  # type: ignore
                 if self._is_cache_expired(cache_date):
                     cache_data = None
                     expired = True
@@ -162,7 +163,7 @@ class Cache:
                 # when cache is expired or does not exist use callback to get data if possible
                 if callable(data_callback):
                     # cache_data = self._encode_data(data_callback(rid))
-                    cache_data: Optional[dict] = data_callback(rid)
+                    cache_data: dict | None = data_callback(rid)
                     self.log.debug(f'Using callback data for ({rid}).')
                     if cache_data:
                         cache_data = self.update(
@@ -173,7 +174,7 @@ class Cache:
 
         return cache_data
 
-    def update(self, rid: str, data: dict, raise_on_error: Optional[bool] = True) -> dict:
+    def update(self, rid: str, data: dict, raise_on_error: bool = True) -> dict:
         """Write updated cache data to the DataStore.
 
         **Example Response**
@@ -189,7 +190,7 @@ class Cache:
 
         Args:
             rid: The record identifier.
-            data): The record data.
+            data: The record data.
             raise_on_error: If True and not r.ok this method will raise a RunTimeError.
 
         Returns:
@@ -216,7 +217,7 @@ class Cache:
 
         # convert the stored time expression to a datetime
         # object (support for different tcex version)
-        cached_datetime = self.utils.any_to_datetime(cached_date).datetime
+        cached_datetime = self.util.any_to_datetime(cached_date).datetime
 
         # calculate the cache expiration time by adding the ttl seconds to the cached time
         cache_expires = cached_datetime + timedelta(seconds=self.ttl_seconds)

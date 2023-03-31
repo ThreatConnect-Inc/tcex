@@ -1,60 +1,19 @@
-"""Group_Attribute / Group_Attributes Model"""
-# pylint: disable=no-member,no-self-argument,no-self-use,wrong-import-position
+"""TcEx Framework Module"""
+# pylint: disable=no-member,no-self-argument,wrong-import-position
 # standard library
 from datetime import datetime
-from typing import List, Optional
 
 # third-party
 from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC
-from tcex.utils import Utils
-
-
-class GroupAttributesModel(
-    BaseModel,
-    title='GroupAttributes Model',
-    alias_generator=Utils().snake_to_camel,
-    validate_assignment=True,
-):
-    """Group_Attributes Model"""
-
-    _mode_support = PrivateAttr(True)
-
-    data: Optional[List['GroupAttributeModel']] = Field(
-        [],
-        description='The data for the GroupAttributes.',
-        methods=['POST', 'PUT'],
-        title='data',
-    )
-    mode: str = Field(
-        'append',
-        description='The PUT mode for nested objects (append, delete, replace). Default: append',
-        methods=['POST', 'PUT'],
-        title='append',
-    )
-
-
-class GroupAttributeDataModel(
-    BaseModel,
-    title='GroupAttribute Data Model',
-    alias_generator=Utils().snake_to_camel,
-    validate_assignment=True,
-):
-    """Group_Attributes Data Model"""
-
-    data: Optional[List['GroupAttributeModel']] = Field(
-        [],
-        description='The data for the GroupAttributes.',
-        methods=['POST', 'PUT'],
-        title='data',
-    )
+from tcex.util import Util
 
 
 class GroupAttributeModel(
     V3ModelABC,
-    alias_generator=Utils().snake_to_camel,
+    alias_generator=Util().snake_to_camel,
     extra=Extra.allow,
     title='GroupAttribute Model',
     validate_assignment=True,
@@ -66,14 +25,14 @@ class GroupAttributeModel(
     _shared_type = PrivateAttr(False)
     _staged = PrivateAttr(False)
 
-    created_by: Optional['UserModel'] = Field(
+    created_by: 'UserModel' = Field(
         None,
         allow_mutation=False,
         description='The **created by** for the Group_Attribute.',
         read_only=True,
         title='createdBy',
     )
-    date_added: Optional[datetime] = Field(
+    date_added: datetime | None = Field(
         None,
         allow_mutation=False,
         description='The date and time that the item was first created.',
@@ -90,20 +49,27 @@ class GroupAttributeModel(
         read_only=False,
         title='default',
     )
-    group_id: Optional[int] = Field(
+    group: 'GroupModel' = Field(
+        None,
+        description='Details of group associated with attribute.',
+        methods=['POST'],
+        read_only=False,
+        title='group',
+    )
+    group_id: int | None = Field(
         None,
         description='Group associated with attribute.',
         methods=['POST'],
         read_only=False,
         title='groupId',
     )
-    id: Optional[int] = Field(
+    id: int | None = Field(
         None,
         description='The ID of the item.',
         read_only=True,
         title='id',
     )
-    last_modified: Optional[datetime] = Field(
+    last_modified: datetime | None = Field(
         None,
         allow_mutation=False,
         description='The date and time that the Attribute was last modified.',
@@ -117,7 +83,7 @@ class GroupAttributeModel(
         read_only=False,
         title='pinned',
     )
-    security_labels: Optional['SecurityLabelsModel'] = Field(
+    security_labels: 'SecurityLabelsModel' = Field(
         None,
         description=(
             'A list of Security Labels corresponding to the Intel item (NOTE: Setting this '
@@ -127,21 +93,21 @@ class GroupAttributeModel(
         read_only=False,
         title='securityLabels',
     )
-    source: Optional[str] = Field(
+    source: str | None = Field(
         None,
         description='The attribute source.',
         methods=['POST', 'PUT'],
         read_only=False,
         title='source',
     )
-    type: Optional[str] = Field(
+    type: str | None = Field(
         None,
         description='The attribute type.',
         methods=['POST'],
         read_only=False,
         title='type',
     )
-    value: Optional[str] = Field(
+    value: str | None = Field(
         None,
         description='The attribute value.',
         methods=['POST', 'PUT'],
@@ -150,20 +116,67 @@ class GroupAttributeModel(
         title='value',
     )
 
-    @validator('security_labels', always=True)
-    def _validate_security_labels(cls, v):
+    @validator('group', always=True, pre=True)
+    def _validate_group(cls, v):
         if not v:
-            return SecurityLabelsModel()
+            return GroupModel()  # type: ignore
         return v
 
-    @validator('created_by', always=True)
+    @validator('security_labels', always=True, pre=True)
+    def _validate_security_labels(cls, v):
+        if not v:
+            return SecurityLabelsModel()  # type: ignore
+        return v
+
+    @validator('created_by', always=True, pre=True)
     def _validate_user(cls, v):
         if not v:
-            return UserModel()
+            return UserModel()  # type: ignore
         return v
+
+
+class GroupAttributeDataModel(
+    BaseModel,
+    title='GroupAttribute Data Model',
+    alias_generator=Util().snake_to_camel,
+    validate_assignment=True,
+):
+    """Group_Attributes Data Model"""
+
+    data: list[GroupAttributeModel] | None = Field(
+        [],
+        description='The data for the GroupAttributes.',
+        methods=['POST', 'PUT'],
+        title='data',
+    )
+
+
+class GroupAttributesModel(
+    BaseModel,
+    title='GroupAttributes Model',
+    alias_generator=Util().snake_to_camel,
+    validate_assignment=True,
+):
+    """Group_Attributes Model"""
+
+    _mode_support = PrivateAttr(True)
+
+    data: list[GroupAttributeModel] | None = Field(
+        [],
+        description='The data for the GroupAttributes.',
+        methods=['POST', 'PUT'],
+        title='data',
+    )
+    mode: str = Field(
+        'append',
+        description='The PUT mode for nested objects (append, delete, replace). Default: append',
+        methods=['POST', 'PUT'],
+        title='append',
+    )
 
 
 # first-party
+from tcex.api.tc.v3.groups.group_model import GroupModel
 from tcex.api.tc.v3.security.users.user_model import UserModel
 from tcex.api.tc.v3.security_labels.security_label_model import SecurityLabelsModel
 

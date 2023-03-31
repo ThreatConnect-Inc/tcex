@@ -1,10 +1,17 @@
-"""Test the TcEx Threat Intel Module."""
+"""TcEx Framework Module"""
 # standard library
 import os
 import time
 from random import randint
+from typing import cast
 
-from .ti_helpers import TestThreatIntelligence, TIHelper
+# third-party
+from _pytest.fixtures import FixtureRequest
+
+# first-party
+from tcex.api.tc.v2.threat_intelligence.mapping.group.group_type.document import Document
+from tcex.tcex import TcEx
+from tests.api.tc.v2.threat_intelligence.ti_helper import TestThreatIntelligence, TIHelper
 
 
 class TestDocumentGroups(TestThreatIntelligence):
@@ -13,9 +20,7 @@ class TestDocumentGroups(TestThreatIntelligence):
     group_type = 'Document'
     owner = os.getenv('TC_OWNER')
     required_fields = {'file_name': 'pytest.pdf'}
-    ti = None
-    ti_helper = None
-    tcex = None
+    tcex: TcEx
 
     def setup_method(self):
         """Configure setup before all tests."""
@@ -54,7 +59,7 @@ class TestDocumentGroups(TestThreatIntelligence):
         r = ti.delete()
         assert r.status_code == 200
 
-    def tests_ti_document_add_attribute(self, request):
+    def tests_ti_document_add_attribute(self, request: FixtureRequest):
         """Test group add attribute."""
         super().group_add_attribute(request)
 
@@ -62,7 +67,7 @@ class TestDocumentGroups(TestThreatIntelligence):
         """Test group add label."""
         super().group_add_label()
 
-    def tests_ti_document_add_tag(self, request):
+    def tests_ti_document_add_tag(self, request: FixtureRequest):
         """Test group add tag."""
         super().group_add_tag(request)
 
@@ -78,11 +83,11 @@ class TestDocumentGroups(TestThreatIntelligence):
         """Test group get with filter."""
         super().group_get_filter()
 
-    def tests_ti_document_get_includes(self, request):
+    def tests_ti_document_get_includes(self, request: FixtureRequest):
         """Test group get with includes."""
         super().group_get_includes(request)
 
-    def tests_ti_document_get_attribute(self, request):
+    def tests_ti_document_get_attribute(self, request: FixtureRequest):
         """Test group get attribute."""
         super().group_get_attribute(request)
 
@@ -90,11 +95,11 @@ class TestDocumentGroups(TestThreatIntelligence):
         """Test group get label."""
         super().group_get_label()
 
-    def tests_ti_document_get_tag(self, request):
+    def tests_ti_document_get_tag(self, request: FixtureRequest):
         """Test group get tag."""
         super().group_get_tag(request)
 
-    def tests_ti_document_update(self, request):
+    def tests_ti_document_update(self, request: FixtureRequest):
         """Test updating group metadata."""
         super().group_update(request)
 
@@ -104,7 +109,7 @@ class TestDocumentGroups(TestThreatIntelligence):
 
     def tests_ti_document_download(self):
         """Create a group using specific interface."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Document, self.ti_helper.create_group())
 
         # update file content
         file_content = b'pytest content'
@@ -136,7 +141,7 @@ class TestDocumentGroups(TestThreatIntelligence):
 
     def tests_ti_document_file_content(self):
         """Update file content value."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Document, self.ti_helper.create_group())
 
         # update file content
         file_content = b'pytest content'
@@ -158,16 +163,16 @@ class TestDocumentGroups(TestThreatIntelligence):
         except RuntimeError:
             assert True, 'caught group method call with no id'
 
-    def tests_ti_document_file_name(self, request):
+    def tests_ti_document_file_name(self, request: FixtureRequest):
         """Update file name value."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Document, self.ti_helper.create_group())
 
         # update file name
         file_name = request.node.name
         r = helper_ti.file_name(file_name)
         assert r.status_code == 200
 
-    def tests_ti_document_file_name_no_update(self, request):
+    def tests_ti_document_file_name_no_update(self, request: FixtureRequest):
         """Create a group using specific interface."""
         group_data = {
             'file_name': self.ti_helper.rand_filename(),
@@ -184,7 +189,7 @@ class TestDocumentGroups(TestThreatIntelligence):
 
     def tests_ti_document_file_size(self):
         """Update file size value."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Document, self.ti_helper.create_group())
 
         # update file size
         file_size = str(randint(10, 20))
@@ -206,9 +211,9 @@ class TestDocumentGroups(TestThreatIntelligence):
         except RuntimeError:
             assert True, 'caught group method call with no id'
 
-    def tests_ti_document_malware(self, request):
+    def tests_ti_document_malware(self, request: FixtureRequest):
         """Update file size value."""
-        helper_ti = self.ti_helper.create_group()
+        helper_ti = cast(Document, self.ti_helper.create_group())
 
         file_data = {
             'file_name': request.node.name,
@@ -218,7 +223,7 @@ class TestDocumentGroups(TestThreatIntelligence):
         r = helper_ti.malware(**file_data)
         assert r.status_code == 200
 
-    def tests_ti_document_malware_no_update(self, request):
+    def tests_ti_document_malware_no_update(self, request: FixtureRequest):
         """Create a group using specific interface."""
         group_data = {
             'file_name': self.ti_helper.rand_filename(),

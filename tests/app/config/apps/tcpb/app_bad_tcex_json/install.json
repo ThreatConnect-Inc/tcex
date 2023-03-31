@@ -1,0 +1,747 @@
+{
+  "allowOnDemand": true,
+  "appId": "308206c9-c6ea-51a4-8519-14c25ca2dc6f",
+  "commitHash": "ef63c07945f11c8b8645db60cf6fd758321e1da0",
+  "displayName": "TCPB_-_TcEx_App_1",
+  "features": [
+    "aotExecutionEnabled",
+    "appBuilderCompliant",
+    "fileParams",
+    "layoutEnabledApp"
+  ],
+  "labels": [
+    "label1",
+    "label2",
+    "label3"
+  ],
+  "languageVersion": "3.11.0",
+  "listDelimiter": "|",
+  "note": "A TcEx testing App.",
+  "params": [
+    {
+      "default": "Action 1",
+      "label": "Action",
+      "name": "tc_action",
+      "note": "The action to perform",
+      "required": true,
+      "sequence": 1,
+      "type": "Choice",
+      "validValues": [
+        "Action 1",
+        "Action 2",
+        "Action 3",
+        "Action 4"
+      ]
+    },
+    {
+      "label": "Username",
+      "name": "username",
+      "note": "Username String Input",
+      "playbookDataType": [
+        "String"
+      ],
+      "required": true,
+      "sequence": 2,
+      "type": "String",
+      "validValues": [
+        "${TEXT}"
+      ]
+    },
+    {
+      "encrypt": true,
+      "label": "Password",
+      "name": "password",
+      "note": "Password String Input",
+      "playbookDataType": [
+        "String"
+      ],
+      "required": true,
+      "sequence": 3,
+      "type": "String",
+      "validValues": [
+        "${FILE}",
+        "${KEYCHAIN}"
+      ]
+    },
+    {
+      "label": "Boolean Input Required",
+      "name": "boolean_input_required",
+      "note": "A Required Boolean Input",
+      "required": true,
+      "sequence": 4,
+      "type": "Boolean"
+    },
+    {
+      "label": "Boolean Input Optional",
+      "name": "boolean_input_optional",
+      "note": "An Optional Boolean Input",
+      "sequence": 5,
+      "type": "Boolean"
+    },
+    {
+      "default": true,
+      "label": "Boolean Input Default",
+      "name": "boolean_input_default",
+      "note": "A Default Boolean Input",
+      "sequence": 6,
+      "type": "Boolean"
+    },
+    {
+      "label": "Choice Input Required",
+      "name": "choice_required",
+      "note": "A Required Choice Input",
+      "required": true,
+      "sequence": 7,
+      "type": "Choice",
+      "validValues": [
+        "Option 1",
+        "Option 2",
+        "Option 3"
+      ]
+    },
+    {
+      "label": "Choice Input Optional",
+      "name": "choice_optional",
+      "note": "An Optional Choice Input",
+      "sequence": 8,
+      "type": "Choice",
+      "validValues": [
+        "Option 1",
+        "Option 2",
+        "Option 3"
+      ]
+    },
+    {
+      "default": "Option 1",
+      "label": "Choice Input Default",
+      "name": "choice_default",
+      "note": "A Default Choice Input",
+      "sequence": 9,
+      "type": "Choice",
+      "validValues": [
+        "Option 1",
+        "Option 2",
+        "Option 3"
+      ]
+    },
+    {
+      "label": "KeyValueList Input Required",
+      "name": "key_value_list_required",
+      "note": "A Required KeyValueList Input",
+      "playbookDataType": [
+        "String"
+      ],
+      "required": true,
+      "sequence": 10,
+      "type": "KeyValueList",
+      "validValues": [
+        "${TEXT}"
+      ]
+    },
+    {
+      "label": "KeyValueList Input Optional",
+      "name": "key_value_list_optional",
+      "note": "An Optional KeyValueList Input",
+      "playbookDataType": [
+        "String"
+      ],
+      "sequence": 11,
+      "type": "KeyValueList",
+      "validValues": [
+        "${TEXT}"
+      ]
+    },
+    {
+      "default": "[{'key': 'key1', 'value': value1}, {'key': 'key2', 'value': value2}]",
+      "label": "KeyValueList Input Default",
+      "name": "key_value_list_default",
+      "note": "A Default KeyValueList Input",
+      "playbookDataType": [
+        "String"
+      ],
+      "sequence": 12,
+      "type": "KeyValueList",
+      "validValues": [
+        "${TEXT}"
+      ]
+    },
+    {
+      "exposePlaybookKeyAs": "String",
+      "label": "KeyValueList Input Expose Playbook Key As String",
+      "name": "key_value_list_expose_playbook_key_as_string",
+      "note": "A Expose Playbook Key As String KeyValueList Input",
+      "playbookDataType": [
+        "String"
+      ],
+      "sequence": 13,
+      "type": "KeyValueList",
+      "validValues": [
+        "${TEXT}"
+      ]
+    },
+    {
+      "label": "MultiChoice Input Required",
+      "name": "multi_choice_required",
+      "note": "A Required MultiChoice Input",
+      "required": true,
+      "sequence": 14,
+      "type": "MultiChoice",
+      "validValues": [
+        "Option 1",
+        "Option 2",
+        "Option 3"
+      ]
+    },
+    {
+      "label": "MultiChoice Input Optional",
+      "name": "multi_choice_optional",
+      "note": "An Optional MultiChoice Input",
+      "sequence": 15,
+      "type": "MultiChoice",
+      "validValues": [
+        "Option 1",
+        "Option 2",
+        "Option 3"
+      ]
+    },
+    {
+      "default": "Option 1|Option 2",
+      "label": "MultiChoice Input Default",
+      "name": "multi_choice_default",
+      "note": "A Default MultiChoice Input",
+      "sequence": 16,
+      "type": "MultiChoice",
+      "validValues": [
+        "Option 1",
+        "Option 2",
+        "Option 3"
+      ]
+    },
+    {
+      "label": "String Input Required",
+      "name": "string_required",
+      "note": "A required String Input",
+      "playbookDataType": [
+        "Binary",
+        "BinaryArray",
+        "KeyValue",
+        "KeyValueArray",
+        "String",
+        "StringArray",
+        "TCEntity",
+        "TCEntityArray",
+        "TCEnhancedEntityArray"
+      ],
+      "required": true,
+      "sequence": 17,
+      "type": "String",
+      "validValues": [
+        "${TEXT}"
+      ]
+    },
+    {
+      "label": "String Input Optional",
+      "name": "string_optional",
+      "note": "An Optional String Input",
+      "playbookDataType": [
+        "Any"
+      ],
+      "sequence": 18,
+      "type": "String"
+    },
+    {
+      "default": "default string",
+      "label": "String Input Default",
+      "name": "string_default",
+      "note": "An Default String Input",
+      "playbookDataType": [
+        "Any"
+      ],
+      "sequence": 19,
+      "type": "String"
+    },
+    {
+      "encrypt": true,
+      "label": "String Input Encrypt",
+      "name": "string_encrypt",
+      "note": "An Encrypted String Input",
+      "playbookDataType": [
+        "String"
+      ],
+      "sequence": 20,
+      "type": "String",
+      "validValues": [
+        "${FILE}",
+        "${KEYCHAIN}"
+      ]
+    },
+    {
+      "hidden": true,
+      "label": "String Input Hidden",
+      "name": "string_hidden",
+      "note": "A Hidden String Input",
+      "playbookDataType": [
+        "String"
+      ],
+      "sequence": 21,
+      "type": "String",
+      "validValues": [
+        "${TEXT}"
+      ]
+    },
+    {
+      "allowMultiple": true,
+      "label": "String Input Allow Multiple",
+      "name": "string_allow_multiple",
+      "note": "An Allow Multiple String Input",
+      "playbookDataType": [
+        "String",
+        "StringArray"
+      ],
+      "sequence": 22,
+      "type": "String",
+      "validValues": [
+        "${TEXT}"
+      ]
+    },
+    {
+      "intelType": [
+        "Address"
+      ],
+      "label": "String Intel Type",
+      "name": "string_intel_type",
+      "note": "An Intel Type String Input",
+      "playbookDataType": [
+        "String"
+      ],
+      "sequence": 23,
+      "type": "String",
+      "validValues": [
+        "${TEXT}"
+      ]
+    },
+    {
+      "allowMultiple": true,
+      "default": "advanced",
+      "encrypt": true,
+      "intelType": [
+        "Address"
+      ],
+      "label": "String Advanced",
+      "name": "string_advanced",
+      "note": "An Advanced Input",
+      "playbookDataType": [
+        "Binary",
+        "BinaryArray",
+        "KeyValue",
+        "KeyValueArray",
+        "String",
+        "StringArray",
+        "TCEntity",
+        "TCEntityArray",
+        "TCEnhancedEntityArray"
+      ],
+      "required": true,
+      "sequence": 24,
+      "type": "String",
+      "validValues": [
+        "${KEYCHAIN}",
+        "${TEXT}"
+      ]
+    }
+  ],
+  "playbook": {
+    "outputVariables": [
+      {
+        "name": "action_1.binary.output1",
+        "type": "Binary"
+      },
+      {
+        "name": "action_1.binary.output2",
+        "type": "Binary"
+      },
+      {
+        "name": "action_1.binary.output3",
+        "type": "Binary"
+      },
+      {
+        "name": "action_1.binary_array.output1",
+        "type": "BinaryArray"
+      },
+      {
+        "name": "action_1.binary_array.output2",
+        "type": "BinaryArray"
+      },
+      {
+        "name": "action_1.binary_array.output3",
+        "type": "BinaryArray"
+      },
+      {
+        "name": "action_1.key_value.output1",
+        "type": "KeyValue"
+      },
+      {
+        "name": "action_1.key_value.output2",
+        "type": "KeyValue"
+      },
+      {
+        "name": "action_1.key_value.output3",
+        "type": "KeyValue"
+      },
+      {
+        "name": "action_1.key_value_array.output1",
+        "type": "KeyValueArray"
+      },
+      {
+        "name": "action_1.key_value_array.output2",
+        "type": "KeyValueArray"
+      },
+      {
+        "name": "action_1.key_value_array.output3",
+        "type": "KeyValueArray"
+      },
+      {
+        "name": "action_1.string.output1",
+        "type": "String"
+      },
+      {
+        "name": "action_1.string.output2",
+        "type": "String"
+      },
+      {
+        "name": "action_1.string.output3",
+        "type": "String"
+      },
+      {
+        "name": "action_1.string_array.output1",
+        "type": "StringArray"
+      },
+      {
+        "name": "action_1.string_array.output2",
+        "type": "StringArray"
+      },
+      {
+        "name": "action_1.string_array.output3",
+        "type": "StringArray"
+      },
+      {
+        "name": "action_1.tcentity.output1",
+        "type": "TCEntity"
+      },
+      {
+        "name": "action_1.tcentity.output2",
+        "type": "TCEntity"
+      },
+      {
+        "name": "action_1.tcentity.output3",
+        "type": "TCEntity"
+      },
+      {
+        "name": "action_1.tcentity_array.output1",
+        "type": "TCEntityArray"
+      },
+      {
+        "name": "action_1.tcentity_array.output2",
+        "type": "TCEntityArray"
+      },
+      {
+        "name": "action_1.tcentity_array.output3",
+        "type": "TCEntityArray"
+      },
+      {
+        "name": "action_2.binary.output1",
+        "type": "Binary"
+      },
+      {
+        "name": "action_2.binary.output2",
+        "type": "Binary"
+      },
+      {
+        "name": "action_2.binary.output3",
+        "type": "Binary"
+      },
+      {
+        "name": "action_2.binary_array.output1",
+        "type": "BinaryArray"
+      },
+      {
+        "name": "action_2.binary_array.output2",
+        "type": "BinaryArray"
+      },
+      {
+        "name": "action_2.binary_array.output3",
+        "type": "BinaryArray"
+      },
+      {
+        "name": "action_2.key_value.output1",
+        "type": "KeyValue"
+      },
+      {
+        "name": "action_2.key_value.output2",
+        "type": "KeyValue"
+      },
+      {
+        "name": "action_2.key_value.output3",
+        "type": "KeyValue"
+      },
+      {
+        "name": "action_2.key_value_array.output1",
+        "type": "KeyValueArray"
+      },
+      {
+        "name": "action_2.key_value_array.output2",
+        "type": "KeyValueArray"
+      },
+      {
+        "name": "action_2.key_value_array.output3",
+        "type": "KeyValueArray"
+      },
+      {
+        "name": "action_2.string.output1",
+        "type": "String"
+      },
+      {
+        "name": "action_2.string.output2",
+        "type": "String"
+      },
+      {
+        "name": "action_2.string.output3",
+        "type": "String"
+      },
+      {
+        "name": "action_2.string_array.output1",
+        "type": "StringArray"
+      },
+      {
+        "name": "action_2.string_array.output2",
+        "type": "StringArray"
+      },
+      {
+        "name": "action_2.string_array.output3",
+        "type": "StringArray"
+      },
+      {
+        "name": "action_2.tcentity.output1",
+        "type": "TCEntity"
+      },
+      {
+        "name": "action_2.tcentity.output2",
+        "type": "TCEntity"
+      },
+      {
+        "name": "action_2.tcentity.output3",
+        "type": "TCEntity"
+      },
+      {
+        "name": "action_2.tcentity_array.output1",
+        "type": "TCEntityArray"
+      },
+      {
+        "name": "action_2.tcentity_array.output2",
+        "type": "TCEntityArray"
+      },
+      {
+        "name": "action_2.tcentity_array.output3",
+        "type": "TCEntityArray"
+      },
+      {
+        "name": "action_3.binary.output1",
+        "type": "Binary"
+      },
+      {
+        "name": "action_3.binary.output2",
+        "type": "Binary"
+      },
+      {
+        "name": "action_3.binary.output3",
+        "type": "Binary"
+      },
+      {
+        "name": "action_3.binary_array.output1",
+        "type": "BinaryArray"
+      },
+      {
+        "name": "action_3.binary_array.output2",
+        "type": "BinaryArray"
+      },
+      {
+        "name": "action_3.binary_array.output3",
+        "type": "BinaryArray"
+      },
+      {
+        "name": "action_3.key_value.output1",
+        "type": "KeyValue"
+      },
+      {
+        "name": "action_3.key_value.output2",
+        "type": "KeyValue"
+      },
+      {
+        "name": "action_3.key_value.output3",
+        "type": "KeyValue"
+      },
+      {
+        "name": "action_3.key_value_array.output1",
+        "type": "KeyValueArray"
+      },
+      {
+        "name": "action_3.key_value_array.output2",
+        "type": "KeyValueArray"
+      },
+      {
+        "name": "action_3.key_value_array.output3",
+        "type": "KeyValueArray"
+      },
+      {
+        "name": "action_3.string.output1",
+        "type": "String"
+      },
+      {
+        "name": "action_3.string.output2",
+        "type": "String"
+      },
+      {
+        "name": "action_3.string.output3",
+        "type": "String"
+      },
+      {
+        "name": "action_3.string_array.output1",
+        "type": "StringArray"
+      },
+      {
+        "name": "action_3.string_array.output2",
+        "type": "StringArray"
+      },
+      {
+        "name": "action_3.string_array.output3",
+        "type": "StringArray"
+      },
+      {
+        "name": "action_3.tcentity.output1",
+        "type": "TCEntity"
+      },
+      {
+        "name": "action_3.tcentity.output2",
+        "type": "TCEntity"
+      },
+      {
+        "name": "action_3.tcentity.output3",
+        "type": "TCEntity"
+      },
+      {
+        "name": "action_3.tcentity_array.output1",
+        "type": "TCEntityArray"
+      },
+      {
+        "name": "action_3.tcentity_array.output2",
+        "type": "TCEntityArray"
+      },
+      {
+        "name": "action_3.tcentity_array.output3",
+        "type": "TCEntityArray"
+      },
+      {
+        "name": "action_all.binary.output1",
+        "type": "Binary"
+      },
+      {
+        "name": "action_all.binary.output2",
+        "type": "Binary"
+      },
+      {
+        "name": "action_all.binary.output3",
+        "type": "Binary"
+      },
+      {
+        "name": "action_all.binary_array.output1",
+        "type": "BinaryArray"
+      },
+      {
+        "name": "action_all.binary_array.output2",
+        "type": "BinaryArray"
+      },
+      {
+        "name": "action_all.binary_array.output3",
+        "type": "BinaryArray"
+      },
+      {
+        "name": "action_all.key_value.output1",
+        "type": "KeyValue"
+      },
+      {
+        "name": "action_all.key_value.output2",
+        "type": "KeyValue"
+      },
+      {
+        "name": "action_all.key_value.output3",
+        "type": "KeyValue"
+      },
+      {
+        "name": "action_all.key_value_array.output1",
+        "type": "KeyValueArray"
+      },
+      {
+        "name": "action_all.key_value_array.output2",
+        "type": "KeyValueArray"
+      },
+      {
+        "name": "action_all.key_value_array.output3",
+        "type": "KeyValueArray"
+      },
+      {
+        "name": "action_all.string.output1",
+        "type": "String"
+      },
+      {
+        "name": "action_all.string.output2",
+        "type": "String"
+      },
+      {
+        "name": "action_all.string.output3",
+        "type": "String"
+      },
+      {
+        "name": "action_all.string_array.output1",
+        "type": "StringArray"
+      },
+      {
+        "name": "action_all.string_array.output2",
+        "type": "StringArray"
+      },
+      {
+        "name": "action_all.string_array.output3",
+        "type": "StringArray"
+      },
+      {
+        "name": "action_all.tcentity.output1",
+        "type": "TCEntity"
+      },
+      {
+        "name": "action_all.tcentity.output2",
+        "type": "TCEntity"
+      },
+      {
+        "name": "action_all.tcentity.output3",
+        "type": "TCEntity"
+      },
+      {
+        "name": "action_all.tcentity_array.output1",
+        "type": "TCEntityArray"
+      },
+      {
+        "name": "action_all.tcentity_array.output2",
+        "type": "TCEntityArray"
+      },
+      {
+        "name": "action_all.tcentity_array.output3",
+        "type": "TCEntityArray"
+      }
+    ],
+    "type": "TcEx Example"
+  },
+  "programLanguage": "PYTHON",
+  "programMain": "run",
+  "programVersion": "1.0.0",
+  "runtimeLevel": "Playbook",
+  "sdkVersion": "4.0.0"
+}

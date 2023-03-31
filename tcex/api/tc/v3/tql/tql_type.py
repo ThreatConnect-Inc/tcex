@@ -1,4 +1,4 @@
-"""ThreatConnect API TQL Types"""
+"""TcEx Framework Module"""
 # standard library
 from enum import Enum, unique
 

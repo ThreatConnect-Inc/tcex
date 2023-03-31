@@ -1,16 +1,15 @@
-"""Test Module"""
+"""TcEx Framework Module"""
 # standard library
 import os
+from collections.abc import Callable
 from random import randint
-from typing import TYPE_CHECKING
 
 # third-party
 import pytest
 
-if TYPE_CHECKING:
-    # first-party
-    from tcex import TcEx
-    from tests.mock_app import MockApp
+# first-party
+from tcex import TcEx
+from tests.mock_app import MockApp
 
 
 @pytest.mark.run(order=1)
@@ -18,7 +17,7 @@ class TestLogs:
     """Test Module"""
 
     @staticmethod
-    def test_logger_level(tcex: 'TcEx', caplog: 'pytest.LogCaptureFixture'):
+    def test_logger_level(tcex: TcEx, caplog: pytest.LogCaptureFixture):
         """Test Case"""
         trace_logging_message = 'STD TRACE LOGGING'
         debug_logging_message = 'STD DEBUG LOGGING'
@@ -43,13 +42,13 @@ class TestLogs:
         assert error_logging_message in caplog.text
 
     @staticmethod
-    def test_logger_rotate(playbook_app: 'MockApp'):
+    def test_logger_rotate(playbook_app: Callable[..., MockApp]):
         """Test Case"""
         config_data = {'tc_log_file': 'rotate.log', 'tc_log_max_bytes': 100_048}
         tcex = playbook_app(config_data=config_data).tcex
 
         for _ in range(0, 500):
-            tcex.log.info(f'A long random string {tcex.utils.random_string(randint(200, 250))}')
+            tcex.log.info(f'A long random string {tcex.util.random_string(randint(200, 250))}')
 
         # simple assert to ensure the log file was created
         assert os.path.exists(

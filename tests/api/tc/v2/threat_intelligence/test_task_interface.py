@@ -1,20 +1,23 @@
-"""Test the TcEx Threat Intel Module."""
+"""TcEx Framework Module"""
 # standard library
 import os
 import random
 from datetime import datetime, timedelta
 
-from .ti_helpers import TestThreatIntelligence, TIHelper
+# third-party
+from _pytest.fixtures import FixtureRequest
+
+# first-party
+from tcex.tcex import TcEx
+from tests.api.tc.v2.threat_intelligence.ti_helper import TestThreatIntelligence, TIHelper
 
 
 class TestTask(TestThreatIntelligence):
     """Test TcEx Threat Groups."""
 
     owner = os.getenv('TC_OWNER')
-    ti = None
-    ti_helper = None
-    tcex = None
     tc_api_access_id = os.getenv('TC_API_ACCESS_ID')
+    tcex: TcEx
 
     def setup_method(self):
         """Configure setup before all tests."""
@@ -54,7 +57,7 @@ class TestTask(TestThreatIntelligence):
         r = ti.delete()
         assert r.status_code == 200
 
-    def tests_ti_task_add_attribute(self, request):
+    def tests_ti_task_add_attribute(self, request: FixtureRequest):
         """Test task add attribute."""
         helper_ti = self.ti_helper.create_task()
 
@@ -82,17 +85,21 @@ class TestTask(TestThreatIntelligence):
         helper_ti = self.ti_helper.create_task()
 
         r = helper_ti.add_label(label='TLP:GREEN')
+        if r is None:
+            assert False, 'Failed adding label.'
         response_data = r.json()
 
         # assert response
         assert r.status_code == 201
         assert response_data.get('status') == 'Success'
 
-    def tests_ti_task_add_tag(self, request):
+    def tests_ti_task_add_tag(self, request: FixtureRequest):
         """Test task add tag."""
         helper_ti = self.ti_helper.create_task()
 
         r = helper_ti.add_tag(request.node.name)
+        if r is None:
+            assert False, 'Failed adding tag.'
         response_data = r.json()
 
         # assert response
@@ -159,7 +166,7 @@ class TestTask(TestThreatIntelligence):
         else:
             assert False, f'task {helper_ti.name} was not found.'
 
-    def tests_ti_task_get_includes(self, request):
+    def tests_ti_task_get_includes(self, request: FixtureRequest):
         """Test task get with includes."""
         attribute_data = {
             'attribute_type': 'Description',
@@ -207,7 +214,7 @@ class TestTask(TestThreatIntelligence):
         else:
             assert False, f"Could not find tag {tag_data.get('name')}"
 
-    def tests_ti_task_get_attribute(self, request):
+    def tests_ti_task_get_attribute(self, request: FixtureRequest):
         """Test task get attribute."""
         attribute_data = {
             'attribute_type': 'Description',
@@ -246,7 +253,7 @@ class TestTask(TestThreatIntelligence):
         else:
             assert False, f"Could not find tag with value {label_data.get('label')}"
 
-    def tests_ti_task_get_tag(self, request):
+    def tests_ti_task_get_tag(self, request: FixtureRequest):
         """Test task get tag."""
         tag_data = {'name': request.node.name}
         helper_ti = self.ti_helper.create_task(tags=tag_data)
@@ -264,7 +271,7 @@ class TestTask(TestThreatIntelligence):
         else:
             assert False, f'Could not find tag with value {request.node.name}'
 
-    def tests_ti_task_update(self, request):
+    def tests_ti_task_update(self, request: FixtureRequest):
         """Test updating task metadata."""
         helper_ti = self.ti_helper.create_task()
 
@@ -329,6 +336,8 @@ class TestTask(TestThreatIntelligence):
         """Test adding assignee to a task."""
         helper_ti = self.ti_helper.create_task()
         r = helper_ti.add_assignee(self.tc_api_access_id)
+        if r is None:
+            assert False, 'failed to add assignee to task.'
         assert r.status_code == 200
 
     def tests_ti_task_assignee_add_invalid(self):
@@ -349,6 +358,8 @@ class TestTask(TestThreatIntelligence):
         helper_ti = self.ti_helper.create_task()
         helper_ti.add_assignee(self.tc_api_access_id)
         r = helper_ti.delete_assignee(self.tc_api_access_id)
+        if r is None:
+            assert False, 'failed to delete assignee from task.'
         assert r.status_code == 200
 
     def tests_ti_task_assignee_delete_invalid(self):
@@ -369,6 +380,8 @@ class TestTask(TestThreatIntelligence):
         helper_ti = self.ti_helper.create_task()
         helper_ti.add_assignee(self.tc_api_access_id)
         r = helper_ti.get_assignee(self.tc_api_access_id)
+        if r is None:
+            assert False, 'failed to get assignee for task.'
         assert r.status_code == 200
 
     def tests_ti_task_assignee_get_invalid(self):
@@ -424,7 +437,6 @@ class TestTask(TestThreatIntelligence):
         }
         helper_ti = self.ti.task(**task_data)
         try:
-            print('before call')
             helper_ti.escalatees()
             assert False, 'failed to catch escalatees fetch on an task with no id.'
         except RuntimeError:
@@ -434,6 +446,8 @@ class TestTask(TestThreatIntelligence):
         """Test adding escalatee to a task."""
         helper_ti = self.ti_helper.create_task()
         r = helper_ti.add_escalatee(self.tc_api_access_id)
+        if r is None:
+            assert False, 'failed to add escalatee for task.'
         assert r.status_code == 200
         for escalatee in helper_ti.escalatees():
             assert escalatee.get('userName') == self.tc_api_access_id
@@ -456,9 +470,11 @@ class TestTask(TestThreatIntelligence):
         helper_ti = self.ti_helper.create_task()
         helper_ti.add_escalatee(self.tc_api_access_id)
         r = helper_ti.delete_escalatee(self.tc_api_access_id)
+        if r is None:
+            assert False, 'failed to delete escalatee from task.'
         assert r.status_code == 200
         escalatees_len = 0
-        for escalatee in helper_ti.escalatees():  # pylint: disable=unused-variable
+        for _escalatee in helper_ti.escalatees():  # pylint: disable=unused-variable
             escalatees_len += 1
         assert escalatees_len == 0, f'{escalatees_len} are present instead of 0.'
 
@@ -480,6 +496,8 @@ class TestTask(TestThreatIntelligence):
         helper_ti = self.ti_helper.create_task()
         helper_ti.add_escalatee(self.tc_api_access_id)
         r = helper_ti.get_escalatee(self.tc_api_access_id)
+        if r is None:
+            assert False, 'failed to get escalatee for task.'
         assert r.status_code == 200
 
     def tests_ti_task_escalatee_get_invalid(self):

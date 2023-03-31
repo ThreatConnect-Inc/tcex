@@ -1,9 +1,14 @@
-"""Test the TcEx Threat Intel Module."""
+"""TcEx Framework Module"""
 # standard library
 import os
 from random import randint
 
-from .ti_helpers import TestThreatIntelligence, TIHelper
+# third-party
+from _pytest.fixtures import FixtureRequest
+
+# first-party
+from tcex.tcex import TcEx
+from tests.api.tc.v2.threat_intelligence.ti_helper import TestThreatIntelligence, TIHelper
 
 
 class TestAdversaryGroups(TestThreatIntelligence):
@@ -11,9 +16,7 @@ class TestAdversaryGroups(TestThreatIntelligence):
 
     group_type = 'Adversary'
     owner = os.getenv('TC_OWNER')
-    ti = None
-    ti_helper = None
-    tcex = None
+    tcex: TcEx
 
     def setup_method(self):
         """Configure setup before all tests."""
@@ -94,7 +97,7 @@ class TestAdversaryGroups(TestThreatIntelligence):
                 assert ti_host_data.get('dnsActive', 'false').lower() == 'true'
                 assert ti_host_data.get('whoisActive', 'false').lower() == 'true'
 
-    def tests_ti_adversary_add_attribute(self, request):
+    def tests_ti_adversary_add_attribute(self, request: FixtureRequest):
         """Test group add attribute."""
         super().group_add_attribute(request)
 
@@ -102,7 +105,7 @@ class TestAdversaryGroups(TestThreatIntelligence):
         """Test group add label."""
         super().group_add_label()
 
-    def tests_ti_adversary_add_tag(self, request):
+    def tests_ti_adversary_add_tag(self, request: FixtureRequest):
         """Test group add tag."""
         super().group_add_tag(request)
 
@@ -118,11 +121,11 @@ class TestAdversaryGroups(TestThreatIntelligence):
         """Test group get with filter."""
         super().group_get_filter()
 
-    def tests_ti_adversary_get_includes(self, request):
+    def tests_ti_adversary_get_includes(self, request: FixtureRequest):
         """Test group get with includes."""
         super().group_get_includes(request)
 
-    def tests_ti_adversary_get_attribute(self, request):
+    def tests_ti_adversary_get_attribute(self, request: FixtureRequest):
         """Test group get attribute."""
         super().group_get_attribute(request)
 
@@ -130,10 +133,10 @@ class TestAdversaryGroups(TestThreatIntelligence):
         """Test group get label."""
         super().group_get_label()
 
-    def tests_ti_adversary_get_tag(self, request):
+    def tests_ti_adversary_get_tag(self, request: FixtureRequest):
         """Test group get tag."""
         super().group_get_tag(request)
 
-    def tests_ti_adversary_update(self, request):
+    def tests_ti_adversary_update(self, request: FixtureRequest):
         """Test updating group metadata."""
         super().group_update(request)

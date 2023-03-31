@@ -1,33 +1,33 @@
-"""ThreatConnect Threat Intelligence Module"""
+"""TcEx Framework Module"""
 # standard library
 import hashlib
 import logging
 from functools import lru_cache
-from typing import Optional
 from urllib.parse import quote
 
 # third-party
 from requests import Session
 
 # first-party
-from tcex.exit.error_codes import TcExErrorCodes
+from tcex.exit.error_code import TcExErrorCode
+from tcex.logger.trace_logger import TraceLogger
 
 # import local modules for dynamic reference
 module = __import__(__name__)
 
 # get tcex logger
-logger = logging.getLogger('tcex')
+_logger: TraceLogger = logging.getLogger(__name__.split('.', maxsplit=1)[0])  # type: ignore
 
 
 class TiTcRequest:
     """Common API calls to ThreatConnect"""
 
     def __init__(self, session: Session):
-        """Initialize Class properties."""
+        """Initialize instance properties."""
         self.session = session
 
         # properties
-        self.log = logger
+        self.log = _logger
         self.result_limit = 10000
 
     def _delete(self, url, params=None):
@@ -37,7 +37,7 @@ class TiTcRequest:
 
         r = self.session.delete(url, params=params)
         self.log.debug(
-            f'Method: ({r.request.method.upper()}), '
+            f'Method: ({r.request.method}), '
             f'Params: ({params}), '
             f'Status Code: {r.status_code}, '
             f'URL: ({r.url})'
@@ -50,10 +50,10 @@ class TiTcRequest:
         return r
 
     @property
-    @lru_cache()
-    def _error_codes(self) -> 'TcExErrorCodes':  # noqa: F821
+    @lru_cache
+    def _error_codes(self) -> TcExErrorCode:
         """Return TcEx error codes."""
-        return TcExErrorCodes()
+        return TcExErrorCode()
 
     def _get(self, url, params=None):
         """Delete data from API."""
@@ -63,7 +63,7 @@ class TiTcRequest:
         r = self.session.get(url, params=params)
 
         self.log.debug(
-            f'Method: ({r.request.method.upper()}), '
+            f'Method: ({r.request.method}), '
             f'Params: ({params}), '
             f'Status Code: {r.status_code}, '
             f'URL: ({r.url})'
@@ -76,13 +76,13 @@ class TiTcRequest:
         return r
 
     def _handle_error(
-        self, code: int, message_values: Optional[list] = None, raise_error: Optional[bool] = True
+        self, code: int, message_values: list | None = None, raise_error: bool = True
     ):
         """Raise RuntimeError
 
         Args:
             code: The error code from API or SDK.
-            message: The error message from API or SDK.
+            message_values: The error message from API or SDK.
             raise_error: Raise a Runtime error. Defaults to True.
 
         Raises:
@@ -139,7 +139,7 @@ class TiTcRequest:
 
         r = self.session.post(url, data=data, params=params)
         self.log.debug(
-            f'Method: ({r.request.method.upper()}), '
+            f'Method: ({r.request.method}), '
             f'Params: ({params}), '
             f'Status Code: {r.status_code}, '
             f'URL: ({r.url})'
@@ -160,7 +160,7 @@ class TiTcRequest:
 
         r = self.session.post(url, json=json_data, params=params)
         self.log.debug(
-            f'Method: ({r.request.method.upper()}), '
+            f'Method: ({r.request.method}), '
             f'Params: ({params}), '
             f'Status Code: {r.status_code}, '
             f'URL: ({r.url})'
@@ -180,7 +180,7 @@ class TiTcRequest:
 
         r = self.session.put(url, json=json_data, params=params)
         self.log.debug(
-            f'Method: ({r.request.method.upper()}), '
+            f'Method: ({r.request.method}), '
             f'Params: ({params}), '
             f'Status Code: {r.status_code}, '
             f'URL: ({r.url})'
@@ -389,7 +389,7 @@ class TiTcRequest:
         Args:
             main_type (str): The TI type (e.g., groups or indicators).
             sub_type (str): The TI sub type (e.g., adversaries or addresses).
-            data (dict): The body for the POST.
+            unique_id (str): The unique ID of the TI object.
             owner (str): The name of the TC owner.
 
         Returns:
@@ -406,7 +406,7 @@ class TiTcRequest:
         return self._delete(url, params)
 
     def delete_adversary_handle_asset(self, unique_id, asset_id):
-        """Delete Adversary handle assest
+        """Delete Adversary handle asset
 
         Args:
             unique_id (str): The unique ID of the Adversary.
@@ -418,7 +418,7 @@ class TiTcRequest:
         return self.adversary_handle_asset(unique_id, asset_id, action='DELETE')
 
     def delete_adversary_phone_asset(self, unique_id, asset_id):
-        """Delete Adversary phone assest
+        """Delete Adversary phone asset
 
         Args:
             unique_id (str): The unique ID of the Adversary.
@@ -430,7 +430,7 @@ class TiTcRequest:
         return self.adversary_phone_asset(unique_id, asset_id, action='DELETE')
 
     def delete_adversary_url_asset(self, unique_id, asset_id):
-        """Delete Adversary URL assest
+        """Delete Adversary URL asset
 
         Args:
             unique_id (str): The unique ID of the Adversary.
@@ -458,11 +458,12 @@ class TiTcRequest:
         return self._get(url)
 
     def get_adversary_handle_asset(self, unique_id, asset_id, params=None):
-        """Get Adversary handle assest
+        """Get Adversary handle asset
 
         Args:
             unique_id (str): The unique ID of the Adversary.
             asset_id: (str) The ID of the asset.
+            params: (dict) Optional query parameters.
 
         Returns:
             requests.Response: A request Response object.
@@ -470,11 +471,12 @@ class TiTcRequest:
         return self.adversary_handle_asset(unique_id, asset_id, params=params)
 
     def get_adversary_phone_asset(self, unique_id, asset_id, params=None):
-        """Get Adversary phone assest
+        """Get Adversary phone asset
 
         Args:
             unique_id (str): The unique ID of the Adversary.
             asset_id: (str) The ID of the asset.
+            params: (dict) Optional query parameters.
 
         Returns:
             requests.Response: A request Response object.
@@ -482,11 +484,12 @@ class TiTcRequest:
         return self.adversary_phone_asset(unique_id, asset_id, params=params)
 
     def get_adversary_url_asset(self, unique_id, asset_id, params=None):
-        """Get Adversary URL assest
+        """Get Adversary URL asset
 
         Args:
             unique_id (str): The unique ID of the Adversary.
             asset_id: (str) The ID of the asset.
+            params: (dict) Optional query parameters.
 
         Returns:
             requests.Response: A request Response object.
@@ -694,7 +697,7 @@ class TiTcRequest:
         else:
             url = f'/v2/{main_type}/{sub_type}/{unique_id}/victimAssets'
         entity_type = 'victimAsset'
-        asset_type = self.victim_asset_type_mapping.get(asset_type)
+        asset_type = self.victim_asset_type_mapping.get(asset_type)  # type: ignore
         if asset_type:
             url += f'/{asset_type}'
         return self._iterate(url, params, entity_type)

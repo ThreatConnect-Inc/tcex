@@ -1,6 +1,7 @@
-"""Case / Cases Object"""
+"""TcEx Framework Module"""
 # standard library
-from typing import TYPE_CHECKING, Iterator, Union
+from collections.abc import Generator, Iterator
+from typing import TYPE_CHECKING, Self
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
@@ -20,52 +21,13 @@ from tcex.api.tc.v3.tasks.task_model import TaskModel
 
 if TYPE_CHECKING:  # pragma: no cover
     # first-party
-    from tcex.api.tc.v3.artifacts.artifact import Artifact
-    from tcex.api.tc.v3.case_attributes.case_attribute import CaseAttribute
-    from tcex.api.tc.v3.groups.group import Group
-    from tcex.api.tc.v3.indicators.indicator import Indicator
-    from tcex.api.tc.v3.notes.note import Note
-    from tcex.api.tc.v3.tags.tag import Tag
-    from tcex.api.tc.v3.tasks.task import Task
-
-
-class Cases(ObjectCollectionABC):
-    """Cases Collection.
-
-    # Example of params input
-    {
-        'result_limit': 100,  # Limit the retrieved results.
-        'result_start': 10,  # Starting count used for pagination.
-        'fields': ['caseId', 'summary']  # Select additional return fields.
-    }
-
-    Args:
-        session (Session): Session object configured with TC API Auth.
-        tql_filters (list): List of TQL filters.
-        params (dict): Additional query params (see example above).
-    """
-
-    def __init__(self, **kwargs):
-        """Initialize class properties."""
-        super().__init__(
-            kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
-        )
-        self._model = CasesModel(**kwargs)
-        self.type_ = 'cases'
-
-    def __iter__(self) -> 'Case':
-        """Iterate over CM objects."""
-        return self.iterate(base_class=Case)
-
-    @property
-    def _api_endpoint(self) -> str:
-        """Return the type specific API endpoint."""
-        return ApiEndpoints.CASES.value
-
-    @property
-    def filter(self) -> 'CaseFilter':
-        """Return the type specific filter object."""
-        return CaseFilter(self.tql)
+    from tcex.api.tc.v3.artifacts.artifact import Artifact  # CIRCULAR-IMPORT
+    from tcex.api.tc.v3.case_attributes.case_attribute import CaseAttribute  # CIRCULAR-IMPORT
+    from tcex.api.tc.v3.groups.group import Group  # CIRCULAR-IMPORT
+    from tcex.api.tc.v3.indicators.indicator import Indicator  # CIRCULAR-IMPORT
+    from tcex.api.tc.v3.notes.note import Note  # CIRCULAR-IMPORT
+    from tcex.api.tc.v3.tags.tag import Tag  # CIRCULAR-IMPORT
+    from tcex.api.tc.v3.tasks.task import Task  # CIRCULAR-IMPORT
 
 
 class Case(ObjectABC):
@@ -102,11 +64,11 @@ class Case(ObjectABC):
     """
 
     def __init__(self, **kwargs):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         super().__init__(kwargs.pop('session', None))
 
         # properties
-        self._model = CaseModel(**kwargs)
+        self._model: CaseModel = CaseModel(**kwargs)
         self._nested_field_name = 'cases'
         self._nested_filter = 'has_case'
         self.type_ = 'Case'
@@ -117,12 +79,12 @@ class Case(ObjectABC):
         return ApiEndpoints.CASES.value
 
     @property
-    def model(self) -> 'CaseModel':
+    def model(self) -> CaseModel:
         """Return the model data."""
         return self._model
 
     @model.setter
-    def model(self, data: Union['CaseModel', dict]):
+    def model(self, data: dict | CaseModel):
         """Create model using the provided data."""
         if isinstance(data, type(self.model)):
             # provided data is already a model, nothing required to change
@@ -141,191 +103,230 @@ class Case(ObjectABC):
         return {'type': type_, 'id': self.model.id, 'value': self.model.name}
 
     @property
-    def artifacts(self) -> Iterator['Artifact']:
+    def artifacts(self) -> Generator['Artifact', None, None]:
         """Yield Artifact from Artifacts."""
         # first-party
         from tcex.api.tc.v3.artifacts.artifact import Artifacts
 
-        yield from self._iterate_over_sublist(Artifacts)
+        yield from self._iterate_over_sublist(Artifacts)  # type: ignore
 
     @property
-    def associated_cases(self) -> Iterator['Case']:
+    def associated_cases(self) -> Generator[Self, None, None]:
         """Yield Case from Cases."""
         # Ensure the current item is not returned as a association
-        for case in self._iterate_over_sublist(Cases):
+        for case in self._iterate_over_sublist(Cases):  # type: ignore
             if case.model.id == self.model.id:
                 continue
-            yield case
+            yield case  # type: ignore
 
     @property
-    def associated_groups(self) -> Iterator['Group']:
+    def associated_groups(self) -> Generator['Group', None, None]:
         """Yield Group from Groups."""
         # first-party
         from tcex.api.tc.v3.groups.group import Groups
 
-        yield from self._iterate_over_sublist(Groups)
+        yield from self._iterate_over_sublist(Groups)  # type: ignore
 
     @property
-    def associated_indicators(self) -> Iterator['Indicator']:
+    def associated_indicators(self) -> Generator['Indicator', None, None]:
         """Yield Indicator from Indicators."""
         # first-party
         from tcex.api.tc.v3.indicators.indicator import Indicators
 
-        yield from self._iterate_over_sublist(Indicators)
+        yield from self._iterate_over_sublist(Indicators)  # type: ignore
 
     @property
-    def attributes(self) -> Iterator['CaseAttribute']:
+    def attributes(self) -> Generator['CaseAttribute', None, None]:
         """Yield Attribute from Attributes."""
         # first-party
         from tcex.api.tc.v3.case_attributes.case_attribute import CaseAttributes
 
-        yield from self._iterate_over_sublist(CaseAttributes)
+        yield from self._iterate_over_sublist(CaseAttributes)  # type: ignore
 
     @property
-    def notes(self) -> Iterator['Note']:
+    def notes(self) -> Generator['Note', None, None]:
         """Yield Note from Notes."""
         # first-party
         from tcex.api.tc.v3.notes.note import Notes
 
-        yield from self._iterate_over_sublist(Notes)
+        yield from self._iterate_over_sublist(Notes)  # type: ignore
 
     @property
-    def tags(self) -> Iterator['Tag']:
+    def tags(self) -> Generator['Tag', None, None]:
         """Yield Tag from Tags."""
         # first-party
         from tcex.api.tc.v3.tags.tag import Tags
 
-        yield from self._iterate_over_sublist(Tags)
+        yield from self._iterate_over_sublist(Tags)  # type: ignore
 
     @property
-    def tasks(self) -> Iterator['Task']:
+    def tasks(self) -> Generator['Task', None, None]:
         """Yield Task from Tasks."""
         # first-party
         from tcex.api.tc.v3.tasks.task import Tasks
 
-        yield from self._iterate_over_sublist(Tasks)
+        yield from self._iterate_over_sublist(Tasks)  # type: ignore
 
-    def stage_artifact(self, data: Union[dict, 'ObjectABC', 'ArtifactModel']):
+    def stage_artifact(self, data: dict | ObjectABC | ArtifactModel):
         """Stage artifact on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = ArtifactModel(**data)
 
         if not isinstance(data, ArtifactModel):
             raise RuntimeError('Invalid type passed in to stage_artifact')
         data._staged = True
-        self.model.artifacts.data.append(data)
+        self.model.artifacts.data.append(data)  # type: ignore
 
     # pylint: disable=redefined-builtin
-    def stage_assignee(self, type: str, data: Union[dict, 'ObjectABC', 'ArtifactModel']):
+    def stage_assignee(self, type: str, data: dict | ObjectABC | UserModel | UserGroupModel):
         """Stage artifact on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif type.lower() == 'user' and isinstance(data, dict):
             data = UserModel(**data)
         elif type.lower() == 'group' and isinstance(data, dict):
             data = UserGroupModel(**data)
 
-        if not isinstance(data, (UserModel, UserGroupModel)):
+        if not isinstance(data, UserModel | UserGroupModel):
             raise RuntimeError('Invalid type passed in to stage_assignee')
         data._staged = True
         self.model.assignee._staged = True
         self.model.assignee.type = type
-        self.model.assignee.data = data
+        self.model.assignee.data = data  # type: ignore
 
-    def stage_associated_case(self, data: Union[dict, 'ObjectABC', 'CaseModel']):
+    def stage_associated_case(self, data: dict | ObjectABC | CaseModel):
         """Stage case on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = CaseModel(**data)
 
         if not isinstance(data, CaseModel):
             raise RuntimeError('Invalid type passed in to stage_associated_case')
         data._staged = True
-        self.model.associated_cases.data.append(data)
+        self.model.associated_cases.data.append(data)  # type: ignore
 
-    def stage_associated_group(self, data: Union[dict, 'ObjectABC', 'GroupModel']):
+    def stage_associated_group(self, data: dict | ObjectABC | GroupModel):
         """Stage group on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = GroupModel(**data)
 
         if not isinstance(data, GroupModel):
             raise RuntimeError('Invalid type passed in to stage_associated_group')
         data._staged = True
-        self.model.associated_groups.data.append(data)
+        self.model.associated_groups.data.append(data)  # type: ignore
 
-    def stage_associated_indicator(self, data: Union[dict, 'ObjectABC', 'IndicatorModel']):
+    def stage_associated_indicator(self, data: dict | ObjectABC | IndicatorModel):
         """Stage indicator on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = IndicatorModel(**data)
 
         if not isinstance(data, IndicatorModel):
             raise RuntimeError('Invalid type passed in to stage_associated_indicator')
         data._staged = True
-        self.model.associated_indicators.data.append(data)
+        self.model.associated_indicators.data.append(data)  # type: ignore
 
-    def stage_attribute(self, data: Union[dict, 'ObjectABC', 'CaseAttributeModel']):
+    def stage_attribute(self, data: dict | ObjectABC | CaseAttributeModel):
         """Stage attribute on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = CaseAttributeModel(**data)
 
         if not isinstance(data, CaseAttributeModel):
             raise RuntimeError('Invalid type passed in to stage_attribute')
         data._staged = True
-        self.model.attributes.data.append(data)
+        self.model.attributes.data.append(data)  # type: ignore
 
-    def stage_note(self, data: Union[dict, 'ObjectABC', 'NoteModel']):
+    def stage_note(self, data: dict | ObjectABC | NoteModel):
         """Stage note on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = NoteModel(**data)
 
         if not isinstance(data, NoteModel):
             raise RuntimeError('Invalid type passed in to stage_note')
         data._staged = True
-        self.model.notes.data.append(data)
+        self.model.notes.data.append(data)  # type: ignore
 
-    def stage_tag(self, data: Union[dict, 'ObjectABC', 'TagModel']):
+    def stage_tag(self, data: dict | ObjectABC | TagModel):
         """Stage tag on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = TagModel(**data)
 
         if not isinstance(data, TagModel):
             raise RuntimeError('Invalid type passed in to stage_tag')
         data._staged = True
-        self.model.tags.data.append(data)
+        self.model.tags.data.append(data)  # type: ignore
 
-    def stage_task(self, data: Union[dict, 'ObjectABC', 'TaskModel']):
+    def stage_task(self, data: dict | ObjectABC | TaskModel):
         """Stage task on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = TaskModel(**data)
 
         if not isinstance(data, TaskModel):
             raise RuntimeError('Invalid type passed in to stage_task')
         data._staged = True
-        self.model.tasks.data.append(data)
+        self.model.tasks.data.append(data)  # type: ignore
 
-    def stage_user_access(self, data: Union[dict, 'ObjectABC', 'UserModel']):
+    def stage_user_access(self, data: dict | ObjectABC | UserModel):
         """Stage user on the object."""
         if isinstance(data, ObjectABC):
-            data = data.model
+            data = data.model  # type: ignore
         elif isinstance(data, dict):
             data = UserModel(**data)
 
         if not isinstance(data, UserModel):
             raise RuntimeError('Invalid type passed in to stage_user_access')
         data._staged = True
-        self.model.user_access.data.append(data)
+        self.model.user_access.data.append(data)  # type: ignore
+
+
+class Cases(ObjectCollectionABC):
+    """Cases Collection.
+
+    # Example of params input
+    {
+        'result_limit': 100,  # Limit the retrieved results.
+        'result_start': 10,  # Starting count used for pagination.
+        'fields': ['caseId', 'summary']  # Select additional return fields.
+    }
+
+    Args:
+        session (Session): Session object configured with TC API Auth.
+        tql_filters (list): List of TQL filters.
+        params (dict): Additional query params (see example above).
+    """
+
+    def __init__(self, **kwargs):
+        """Initialize instance properties."""
+        super().__init__(
+            kwargs.pop('session', None), kwargs.pop('tql_filter', None), kwargs.pop('params', None)
+        )
+        self._model = CasesModel(**kwargs)
+        self.type_ = 'cases'
+
+    def __iter__(self) -> Iterator[Case]:
+        """Return CM objects."""
+        return self.iterate(base_class=Case)  # type: ignore
+
+    @property
+    def _api_endpoint(self) -> str:
+        """Return the type specific API endpoint."""
+        return ApiEndpoints.CASES.value
+
+    @property
+    def filter(self) -> CaseFilter:
+        """Return the type specific filter object."""
+        return CaseFilter(self.tql)

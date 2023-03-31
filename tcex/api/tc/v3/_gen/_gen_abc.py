@@ -1,30 +1,30 @@
-"""Generate Abstract Base Class"""
+"""TcEx Framework Module"""
 # standard library
 import os
 from abc import ABC
+from collections.abc import Generator
 from textwrap import TextWrapper
-from typing import Dict, Iterable, List, Union
 
 # third-party
-import typer
 from pydantic import ValidationError
 from requests import Session
 from requests.exceptions import ProxyError
 
 # first-party
-from tcex.api.tc.v3._gen.models import PropertyModel
-from tcex.backports import cached_property
-from tcex.input.field_types.sensitive import Sensitive
-from tcex.sessions.auth.hmac_auth import HmacAuth
-from tcex.utils import Utils
-from tcex.utils.string_operations import SnakeString
+from tcex.api.tc.v3._gen.model import PropertyModel
+from tcex.input.field_type.sensitive import Sensitive
+from tcex.pleb.cached_property import cached_property
+from tcex.requests_tc.auth.hmac_auth import HmacAuth
+from tcex.util import Util
+from tcex.util.render.render import Render
+from tcex.util.string_operation import SnakeString
 
 
 class GenerateABC(ABC):
     """Generate Abstract Base Class"""
 
     def __init__(self, type_: SnakeString):
-        """Initialize class properties."""
+        """Initialize instance properties."""
         self.type_ = type_
 
         # properties
@@ -37,7 +37,7 @@ class GenerateABC(ABC):
         self.i5 = ' ' * 20  # indent level 5
         self.messages = []
         self.requirements = {}
-        self.utils = Utils()
+        self.util = Util()
 
     @staticmethod
     def _format_description(arg: str, description: str, length: int, indent: str) -> str:
@@ -67,9 +67,9 @@ class GenerateABC(ABC):
             type_ = 'indicator_attributes'
         elif type_ == 'attributes' and self.type_ == 'victims':
             type_ = 'victim_attributes'
-        return self.utils.snake_string(type_)
+        return self.util.snake_string(type_)
 
-    def _module_import_data(self, type_: SnakeString) -> Dict:
+    def _module_import_data(self, type_: SnakeString) -> dict[str, str]:
         """Return the model module map data.
 
         This method provides the logic to build the import module and class dynamically. Using
@@ -104,12 +104,11 @@ class GenerateABC(ABC):
             if r.ok:
                 _properties = r.json()
         except (ConnectionError, ProxyError) as ex:
-            typer.secho(f'Failed getting types properties ({ex}).', fg=typer.colors.RED)
-            typer.Exit(1)
+            Render.panel.failure(f'Failed getting types properties ({ex}).')
 
         return _properties
 
-    def _prop_contents_data(self, properties: dict) -> Iterable[dict]:
+    def _prop_contents_data(self, properties: dict) -> Generator:
         """Yield the appropriate data object.
 
         artifacts": {
@@ -138,7 +137,7 @@ class GenerateABC(ABC):
                     field_data = field_data['data'][0]
 
                     # if there is a data array, then the type should always be plural.
-                    field_data['type'] = self.utils.camel_string(field_data['type']).plural()
+                    field_data['type'] = self.util.camel_string(field_data['type']).plural()
             elif isinstance(field_data, list):
                 # in a few instance like attributeType the value of the properties key/value
                 # pair is a list (currently the list only contains a single dict). to be safe
@@ -174,6 +173,10 @@ class GenerateABC(ABC):
 
         # update "bad" data
         self._prop_content_update(_properties)
+
+        # maybe a temp issue?
+        if self.type_ == 'indicators':
+            _properties['enrichment']['data'][0]['type'] = 'Enrichment'
 
         # critical fix for breaking API change
         if self.type_ in [
@@ -381,15 +384,17 @@ class GenerateABC(ABC):
         """Update "bad" data in properties."""
         if self.type_ in ['groups']:
             # fixed fields that are missing readOnly property
-            properties['downVoteCount']['readOnly'] = True
-            properties['upVoteCount']['readOnly'] = True
+            if 'downVoteCount' in properties:
+                properties['downVoteCount']['readOnly'] = True
+            if 'upVoteCount' in properties:
+                properties['upVoteCount']['readOnly'] = True
 
         if self.type_ in ['victims']:
             # ownerName is readOnly, but readOnly is not defined in response from OPTIONS endpoint
             properties['ownerName']['readOnly'] = True
 
     @property
-    def _prop_models(self) -> List[PropertyModel]:
+    def _prop_models(self) -> list[PropertyModel]:
         """Return a list of PropertyModel objects."""
         properties_models = []
         for field_data in self._prop_contents_data(self._prop_contents_updated):
@@ -397,11 +402,9 @@ class GenerateABC(ABC):
                 properties_models.append(PropertyModel(**field_data))
             except ValidationError as ex:
                 # print(field_data)
-                typer.secho(
+                Render.panel.failure(
                     f'Failed generating property model: data={field_data} ({ex}).',
-                    fg=typer.colors.RED,
                 )
-                raise
         return properties_models
 
     def gen_requirements(self):
@@ -411,7 +414,7 @@ class GenerateABC(ABC):
             self.requirements['standard library'].append('from typing import TYPE_CHECKING')
 
         indent = ''
-        _libs: List[Union[dict, str]] = []
+        _libs: list[dict | str] = []
         for from_, libs in self.requirements.items():
             if not libs:
                 # continue if there are no libraries to import
@@ -421,11 +424,13 @@ class GenerateABC(ABC):
                 # skip forward references
                 continue
 
+            comment = ''
             if from_ == 'type-checking':
                 _libs.append('if TYPE_CHECKING:  # pragma: no cover')
                 indent = self.i1
                 # this should be fine?
                 from_ = 'first-party'
+                comment = '  # CIRCULAR-IMPORT'
 
             _libs.append(f'{indent}# {from_}')
 
@@ -434,9 +439,11 @@ class GenerateABC(ABC):
             for lib in libs:
                 if isinstance(lib, dict):
                     imports = ', '.join(sorted(lib.get('imports')))  # type: ignore
-                    _imports.append(f'''{indent}from {lib.get('module')} import {imports}''')
+                    _imports.append(
+                        f'''{indent}from {lib.get('module')} import {imports}{comment}'''
+                    )
                 elif isinstance(lib, str):
-                    _imports.append(f'{indent}{lib}')
+                    _imports.append(f'{indent}{lib}{comment}')
             _libs.extend(sorted(_imports))  # add imports sorted
 
             _libs.append('')  # add newline
@@ -446,7 +453,7 @@ class GenerateABC(ABC):
         return '\n'.join(_libs)  # type: ignore
 
     @property
-    def session(self) -> 'Session':
+    def session(self) -> Session:
         """Return Session configured for TC API."""
         _session = Session()
         _session.auth = HmacAuth(
@@ -456,7 +463,7 @@ class GenerateABC(ABC):
 
     def tap(self, type_: str):
         """Return the TcEx Api Path."""
-        type_ = self.utils.snake_string(type_)
+        type_ = self.util.snake_string(type_)
         if type_.plural().lower() in [
             'owners',
             'owner_roles',
