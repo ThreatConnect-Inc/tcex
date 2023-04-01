@@ -3,9 +3,11 @@
 import logging
 from functools import cached_property
 
-from ..app.config.install_json import InstallJson
-from ..input.model.module_requests_session_model import ModuleRequestsSessionModel
-from .external_session import ExternalSession
+# first-party
+from tcex.app.config.install_json import InstallJson
+from tcex.input.model.module_requests_session_model import ModuleRequestsSessionModel
+from tcex.registry import registry
+from tcex.requests_external.external_session import ExternalSession
 
 # get logger
 _logger = logging.getLogger(__name__.split('.', maxsplit=1)[0])
@@ -23,7 +25,7 @@ class RequestsExternal:
         """Initialize instance properties."""
         self.model = model
         self.proxies = proxies
-        self.user_agent = user_agent
+        self.user_agent = user_agent or registry.app.user_agent
 
         # properties
         self.install_json = InstallJson()

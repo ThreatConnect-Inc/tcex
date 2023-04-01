@@ -8,7 +8,8 @@ import time
 # third-party
 from requests import PreparedRequest, Response
 
-from ..util import Util  # type: ignore # pylint: disable=import-error
+# first-party
+from tcex.util import Util
 
 
 class RateLimitHandler:

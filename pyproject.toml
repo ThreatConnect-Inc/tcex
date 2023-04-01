@@ -23,6 +23,7 @@ dependencies = [
   "black",
   "inflect",
   "isort",
+  "paho-mqtt",
   "pyaes",
   "pydantic",
   "python-dateutil",
@@ -31,7 +32,6 @@ dependencies = [
   "requests",
   "rich",
   "semantic_version",
-  "typer[all]",
   "wrapt",
 ]
 description = "ThreatConnect Exchange App Framework"
@@ -62,7 +62,8 @@ test = [
 ]
 
 [project.urls]
-Documentation = "https://github.com/ThreatConnect-Inc/tcex"
+Documentation = "https://threatconnect.readme.io/docs/overview"
+"Release Notes" = "https://threatconnect.readme.io/docs/release-notes"
 Source = "https://github.com/ThreatConnect-Inc/tcex"
 
 [tool.setuptools.dynamic]
@@ -141,6 +142,7 @@ reportPrivateImportUsage = false
 [tool.pytest.ini_options]
 # addopts = "-p no:warnings"
 # addopts = "--tb=short --show-capture=no"
+addopts = "-n auto"
 filterwarnings = [
   # "error",
   # "ignore:.*Unverified HTTPS request is being made to host.*",
