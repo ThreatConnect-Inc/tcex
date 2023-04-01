@@ -10,9 +10,10 @@ from requests import Response, Session, adapters, exceptions
 from requests.adapters import DEFAULT_POOLBLOCK, DEFAULT_POOLSIZE, DEFAULT_RETRIES
 from urllib3.util.retry import Retry
 
-from ..util.requests_to_curl import RequestsToCurl  # type: ignore # pylint: disable=import-error
-from ..util.util import Util  # type: ignore # pylint: disable=import-error
-from .rate_limit_handler import RateLimitHandler
+# first-party
+from tcex.requests_external.rate_limit_handler import RateLimitHandler
+from tcex.util.requests_to_curl import RequestsToCurl
+from tcex.util.util import Util
 
 # get logger
 _logger = logging.getLogger(__name__.split('.', maxsplit=1)[0])

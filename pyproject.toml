@@ -142,6 +142,7 @@ reportPrivateImportUsage = false
 [tool.pytest.ini_options]
 # addopts = "-p no:warnings"
 # addopts = "--tb=short --show-capture=no"
+addopts = "-n auto"
 filterwarnings = [
   # "error",
   # "ignore:.*Unverified HTTPS request is being made to host.*",
