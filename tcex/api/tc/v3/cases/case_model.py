@@ -193,6 +193,13 @@ class CaseModel(
         read_only=True,
         title='id',
     )
+    last_updated: Optional[datetime] = Field(
+        None,
+        allow_mutation=False,
+        description='The date and time that the Case was last updated.',
+        read_only=True,
+        title='lastUpdated',
+    )
     name: Optional[str] = Field(
         None,
         description='The name of the Case.',

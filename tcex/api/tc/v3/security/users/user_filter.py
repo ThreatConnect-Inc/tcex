@@ -110,18 +110,6 @@ class UserFilter(FilterABC):
         """
         self._tql.add_filter('locked', operator, locked, TqlType.BOOLEAN)
 
-    def logout_interval_minutes(self, operator: Enum, logout_interval_minutes: int):
-        """Filter Logout Interval based on **logoutIntervalMinutes** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            logout_interval_minutes: The configured period of time to wait for idle activity before
-                being logged out.
-        """
-        self._tql.add_filter(
-            'logoutIntervalMinutes', operator, logout_interval_minutes, TqlType.INTEGER
-        )
-
     def password_reset_required(self, operator: Enum, password_reset_required: bool):
         """Filter Password Reset Required based on **passwordResetRequired** keyword.
 
@@ -181,15 +169,6 @@ class UserFilter(FilterABC):
             tql_timeout: The custom TQL timeout value (if defined).
         """
         self._tql.add_filter('tqlTimeout', operator, tql_timeout, TqlType.INTEGER)
-
-    def ui_theme(self, operator: Enum, ui_theme: str):
-        """Filter UI Theme based on **uiTheme** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            ui_theme: The user's configured theme (e.g. light/dark).
-        """
-        self._tql.add_filter('uiTheme', operator, ui_theme, TqlType.STRING)
 
     def user_name(self, operator: Enum, user_name: str):
         """Filter User Name based on **userName** keyword.
