@@ -141,6 +141,11 @@ class PropertyModel(
         # process special types
         self.__process_special_types(self, extra)
 
+        if extra.get('typing_type') is None:
+            raise RuntimeError(
+                f'Unable to determine typing_type for name={self.name}, type={self.type}.'
+            )
+
         return extra
 
     def __calculate_methods(self):
@@ -170,7 +175,7 @@ class PropertyModel(
         types = [
             'AttributeSource',
             'DNSResolutions',
-            'Enrichment',
+            'Enrichments',
             'GeoLocation',
             'InvestigationLinks',
             'Links',
@@ -242,11 +247,31 @@ class PropertyModel(
                     'typing_type': cls.__extra_format_type('datetime'),
                 }
             )
+        elif pm.type == 'Group':
+            bi += 'groups.group_model'
+            extra.update(
+                {
+                    'import_data': f'{bi} import GroupModel',
+                    'import_source': 'first-party-forward-reference',
+                    'model': f'{pm.type}Model',
+                    'typing_type': cls.__extra_format_type_model(pm.type),
+                }
+            )
         elif pm.type == 'GroupAttributes':
             bi += 'group_attributes.group_attribute_model'
             extra.update(
                 {
                     'import_data': f'{bi} import GroupAttributesModel',
+                    'import_source': 'first-party-forward-reference',
+                    'model': f'{pm.type}Model',
+                    'typing_type': cls.__extra_format_type_model(pm.type),
+                }
+            )
+        elif pm.type == 'Indicator':
+            bi += 'indicators.indicator_model'
+            extra.update(
+                {
+                    'import_data': f'{bi} import IndicatorModel',
                     'import_source': 'first-party-forward-reference',
                     'model': f'{pm.type}Model',
                     'typing_type': cls.__extra_format_type_model(pm.type),
