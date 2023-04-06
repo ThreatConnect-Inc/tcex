@@ -236,6 +236,15 @@ class GroupFilter(FilterABC):
         self._tql.add_filter('hasIndicator', TqlOperator.EQ, indicators, TqlType.SUB_QUERY)
         return indicators
 
+    def has_intel_query(self, operator: Enum, has_intel_query: int):
+        """Filter Associated User Queries based on **hasIntelQuery** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            has_intel_query: A nested query for association to User Queries.
+        """
+        self._tql.add_filter('hasIntelQuery', operator, has_intel_query, TqlType.INTEGER)
+
     @property
     def has_security_label(self):
         """Return **SecurityLabel** for further filtering."""

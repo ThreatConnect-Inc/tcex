@@ -175,6 +175,10 @@ class GenerateABC(ABC):
         # update "bad" data
         self._prop_content_update(_properties)
 
+        # Temp issue
+        if self.type_ == 'indicators':
+            _properties['enrichment']['data'][0]['type'] = 'Enrichment'
+
         # critical fix for breaking API change
         if self.type_ in [
             'case_attributes',
@@ -381,8 +385,10 @@ class GenerateABC(ABC):
         """Update "bad" data in properties."""
         if self.type_ in ['groups']:
             # fixed fields that are missing readOnly property
-            properties['downVoteCount']['readOnly'] = True
-            properties['upVoteCount']['readOnly'] = True
+            if 'downVoteCount' in properties:
+                properties['downVoteCount']['readOnly'] = True
+            if 'upVoteCount' in properties:
+                properties['upVoteCount']['readOnly'] = True
 
         if self.type_ in ['victims']:
             # ownerName is readOnly, but readOnly is not defined in response from OPTIONS endpoint

@@ -289,6 +289,16 @@ class CaseFilter(FilterABC):
         """
         self._tql.add_filter('idAsString', operator, id_as_string, TqlType.STRING)
 
+    def last_updated(self, operator: Enum, last_updated: str):
+        """Filter Last Updated based on **lastUpdated** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            last_updated: The date the case was last updated in the system.
+        """
+        last_updated = self.utils.any_to_datetime(last_updated).strftime('%Y-%m-%d %H:%M:%S')
+        self._tql.add_filter('lastUpdated', operator, last_updated, TqlType.STRING)
+
     def missing_artifact_count(self, operator: Enum, missing_artifact_count: int):
         """Filter Missing Artifact Count For Tasks based on **missingArtifactCount** keyword.
 
