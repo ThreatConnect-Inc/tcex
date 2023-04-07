@@ -197,7 +197,7 @@ class TestGroups(TestV3):
         )
         staged_victim.stage_victim_asset(asset)
 
-        staged_victim.update(params={'owner': 'TCI'})
+        staged_victim.update(params={'owner': 'TCI', 'fields': ['_all_']})
 
         assert asset.as_entity.get('type') == 'Victim Asset : EmailAddress'
         assert asset.as_entity.get('value') == 'Trojan : malware@example.com'

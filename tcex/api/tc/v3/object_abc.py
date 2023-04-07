@@ -162,6 +162,8 @@ class ObjectABC(ABC):
         """
         method = 'POST'
         body = self.model.gen_body_json(method=method)
+
+        params = self.gen_params(params or {})
         self._request(
             method,
             self.url(method),
@@ -345,6 +347,7 @@ class ObjectABC(ABC):
         # validate an id is available
         self._validate_id(unique_id, self.url(method))
 
+        params = self.gen_params(params or {})
         self._request(
             method,
             self.url(method, unique_id=unique_id),
