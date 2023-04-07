@@ -21,21 +21,21 @@ with open('README.md') as f:
     readme = f.read()
 
 dev_packages = [
-    'black',
-    'codespell',
+    'black==22.8.0',
+    'codespell==2.2.1',
     'fakeredis==1.7.0',
-    'flake8',
-    'isort>=5.0.0',
-    'mako',
-    'pre-commit',
+    'flake8==5.0.4',
+    'isort==5.10.1',
+    'mako==1.1.6',
+    'pre-commit==2.17.0',
     'pydocstyle',
     'pylint>=2.5.0,<2.14.0',
-    'pytest',
+    'pytest==7.0.1',
     'pytest-cov',
     'pytest-html',
     'pytest-ordering',
-    'pytest-xdist>=2.5.0',
-    'pyupgrade',
+    'pytest-xdist==3.0.2',
+    'pyupgrade==2.31.0',
 ]
 if sys.version_info <= (3, 7):
     # these packages dropped support for 3.6

@@ -96,6 +96,13 @@ class IndicatorAttributeModel(
         read_only=True,
         title='id',
     )
+    indicator: Optional['IndicatorModel'] = Field(
+        None,
+        description='Details of indicator associated with attribute.',
+        methods=['POST'],
+        read_only=False,
+        title='indicator',
+    )
     indicator_id: Optional[int] = Field(
         None,
         description='Indicator associated with attribute.',
@@ -150,6 +157,12 @@ class IndicatorAttributeModel(
         title='value',
     )
 
+    @validator('indicator', always=True)
+    def _validate_indicator(cls, v):
+        if not v:
+            return IndicatorModel()
+        return v
+
     @validator('security_labels', always=True)
     def _validate_security_labels(cls, v):
         if not v:
@@ -164,6 +177,7 @@ class IndicatorAttributeModel(
 
 
 # first-party
+from tcex.api.tc.v3.indicators.indicator_model import IndicatorModel
 from tcex.api.tc.v3.security.users.user_model import UserModel
 from tcex.api.tc.v3.security_labels.security_label_model import SecurityLabelsModel
 

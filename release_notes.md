@@ -1,5 +1,16 @@
 # Release Notes
 
+### 3.0.8
+
+-   APP-3899 - [CLI] Updated error handling on CLI when downloading template files
+-   APP-3900 - [CLI] Updated proxy support for CLI
+-   APP-3906 - [CLI] Updated Deps command to no create the requirements.lock file on error
+-   APP-3922 - [API] Updated TI Transforms to treat event_date field on some group types as a datetime transform
+-   APP-3937 - [TcEx] Pinned dependencies to prevent pickup up packages that dropped support for Python 3.6
+-   APP-3938 - [API] Updated TI Transforms to support active field on indicators
+-   APP-3939 - [API] Updated TI Transforms to support Security Labels
+-   APP-3940 - [API] Updated `api.tc.v3` module to support changes in TC 7.1
+
 ### 3.0.7
 
 -   APP-3859 - [API] Enhancements for ThreatConnect 7.x

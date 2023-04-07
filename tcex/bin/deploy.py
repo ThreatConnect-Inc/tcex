@@ -138,6 +138,6 @@ class Deploy(BinABC):
             proxy_host=self.proxy_host,
             proxy_port=self.proxy_port,
             proxy_user=self.proxy_user,
-            proxy_pass=self.proxy_pass,
+            proxy_pass=Sensitive(self.proxy_pass),
         )
         return TcSession(auth=self.auth, base_url=self.base_url, proxies=_proxies)

@@ -409,7 +409,7 @@ class V3Helper:
             case.stage_task(self.v3.task(**task))
 
         # create object
-        case.create(kwargs.get('params', {}))
+        case.create(params={'fields': ['_all_']})
 
         # store case id for cleanup
         self._v3_objects.append(case)
@@ -482,7 +482,7 @@ class V3Helper:
             group.stage_tag(self.v3.tag(**tag))
 
         # create object
-        group.create()
+        group.create(params={'fields': ['_all_']})
 
         # store case id for cleanup
         self._v3_objects.append(group)
@@ -589,7 +589,7 @@ class V3Helper:
             indicator.stage_tag(self.v3.tag(**tag))
 
         # create object
-        indicator.create()
+        indicator.create(params={'fields': ['_all_']})
 
         # store case id for cleanup
         self._v3_objects.append(indicator)
@@ -669,7 +669,7 @@ class V3Helper:
             victim.stage_tag(self.v3.tag(**tag))
 
         # create object
-        victim.create()
+        victim.create(params={'fields': ['_all_']})
 
         # store case id for cleanup
         self._v3_objects.append(victim)

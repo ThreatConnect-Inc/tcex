@@ -9,7 +9,7 @@ import sys
 from distutils.version import StrictVersion  # pylint: disable=no-name-in-module
 from pathlib import Path
 from typing import List, Optional
-from urllib.parse import quote
+from urllib.parse import quote, urlsplit
 
 # third-party
 import typer
@@ -44,6 +44,13 @@ class Dep(BinABC):
         self.proxy_port = proxy_port
         self.proxy_user = proxy_user
         self.proxy_pass = proxy_pass
+
+        if not self.proxy_host and os.environ.get('https_proxy'):
+            parsed_proxy_url = urlsplit(os.environ.get('https_proxy'))
+            self.proxy_host = parsed_proxy_url.hostname
+            self.proxy_port = parsed_proxy_url.port
+            self.proxy_user = parsed_proxy_url.username
+            self.proxy_pass = parsed_proxy_url.password
 
         # properties
         self.env = self._env
@@ -200,6 +207,8 @@ class Dep(BinABC):
 
     def install_deps(self):
         """Install Required Libraries using pip."""
+        error = False  # track if any errors have occurred and if so, don't create lock file.
+
         # check for requirements.txt
         if not self.requirements_fqfn.is_file():
             self.handle_error(
@@ -218,7 +227,7 @@ class Dep(BinABC):
                 not lib_version.python_executable.is_file()
                 and not lib_version.python_executable.is_symlink()
             ):
-
+                error = True
                 # display error
                 typer.secho(
                     f'The Python executable ({lib_version.python_executable}) could not be found. '
@@ -279,7 +288,13 @@ class Dep(BinABC):
         self._create_lib_latest()
 
         if self.has_requirements_lock is False:
-            self.create_requirements_lock()
+            if error:
+                typer.secho(
+                    'Not creating requirements.lock file due to errors.',
+                    fg=typer.colors.YELLOW,
+                )
+            else:
+                self.create_requirements_lock()
 
     @property
     def lib_versions(self) -> List[LibVersionModel]:

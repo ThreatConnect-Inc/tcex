@@ -429,6 +429,13 @@ class IndicatorModel(
         read_only=True,
         title='threatAssessScoreObserved',
     )
+    tracked_users: Optional[dict] = Field(
+        None,
+        allow_mutation=False,
+        description='List of tracked users and their observation and false positive stats.',
+        read_only=True,
+        title='trackedUsers',
+    )
     type: Optional[str] = Field(
         None,
         description='The **type** for the Indicator.',

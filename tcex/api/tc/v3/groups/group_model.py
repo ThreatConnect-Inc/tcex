@@ -137,7 +137,7 @@ class GroupModel(
     date_added: Optional[datetime] = Field(
         None,
         allow_mutation=False,
-        description='The date and time that the Entity was first created.',
+        description='The date and time that the item was first created.',
         read_only=True,
         title='dateAdded',
     )
