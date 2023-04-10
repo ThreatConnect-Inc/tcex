@@ -312,6 +312,9 @@ class TransformABC(ABC):
         if self.transformed_item['type'] == 'Email':
             self._process_metadata('from', self.transform.from_addr)
             self._process_metadata('to', self.transform.to_addr)
+            self._process_metadata('subject', self.transform.subject)
+            self._process_metadata('body', self.transform.body)
+            self._process_metadata('header', self.transform.header)
 
         if self.transformed_item['type'] in ('Event', 'Incident'):
             self._process_metadata_datetime('eventDate', self.transform.event_date)
