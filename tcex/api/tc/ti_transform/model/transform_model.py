@@ -149,6 +149,9 @@ class GroupTransformModel(TiTransformModel, extra=Extra.forbid):
     from_addr: Optional[MetadataTransformModel] = Field(None, description='')
     score: Optional[MetadataTransformModel] = Field(None, description='')
     to_addr: Optional[MetadataTransformModel] = Field(None, description='')
+    subject: Optional[MetadataTransformModel] = Field(None, description='')
+    body: Optional[MetadataTransformModel] = Field(None, description='')
+    header: Optional[MetadataTransformModel] = Field(None, description='')
     # event, incident
     event_date: Optional[DatetimeTransformModel] = Field(None, description='')
     status: Optional[MetadataTransformModel] = Field(None, description='')
