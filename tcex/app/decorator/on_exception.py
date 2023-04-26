@@ -2,7 +2,7 @@
 # standard library
 import traceback
 from collections.abc import Callable
-from typing import Any
+from typing import Any, cast
 
 # third-party
 import wrapt
@@ -48,7 +48,7 @@ class OnException:
         self.write_output = write_output
 
     @wrapt.decorator
-    def __call__(self, wrapped: Callable, instance: Callable, args: list, kwargs: dict):
+    def __call__(self, wrapped_args) -> Any:
         """Implement __call__ function for decorator.
 
         Args:
@@ -64,18 +64,15 @@ class OnException:
         Returns:
             function: The custom decorator function.
         """
+        # using wrapped args to support typing hints in PyRight
+        wrapped: Callable = wrapped_args[0]
+        app: Any = wrapped_args[1]
+        args: list = wrapped_args[2] if len(wrapped_args) > 1 else []
+        kwargs: dict = wrapped_args[3] if len(wrapped_args) > 2 else {}
 
-        def exception(
-            app, *args: list, **kwargs: dict
-        ) -> Any:  # pylint: disable=inconsistent-return-statements
-            """Call the function and handle any exception.
-
-            Args:
-                app (class): The instance of the App class "self".
-                *args: Additional positional arguments.
-                **kwargs: Additional keyword arguments.
-            """
-            tcex: TcEx = app.tcex
+        def exception() -> Any:  # pylint: disable=inconsistent-return-statements
+            """Call the function and handle any exception."""
+            tcex = cast(TcEx, app.tcex)
 
             # self.enable (e.g., True or 'fail_on_false') enables/disables this feature
             enabled = self.exit_enabled
@@ -100,4 +97,4 @@ class OnException:
                     tcex.exit.exit(ExitCode.FAILURE, self.exit_msg)
             return None
 
-        return exception(instance, *args, **kwargs)
+        return exception()

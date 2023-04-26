@@ -23,6 +23,7 @@ dependencies = [
   "black",
   "inflect",
   "isort",
+  "jmespath",
   "paho-mqtt",
   "pyaes",
   "pydantic",
