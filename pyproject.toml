@@ -135,6 +135,7 @@ extension-pkg-whitelist = "pydantic"
 exclude = [
   "**/.history",
   "**/__pycache__",
+  "**/local-*",
 ]
 pythonPlatform = "Linux"
 pythonVersion = "3.11"
