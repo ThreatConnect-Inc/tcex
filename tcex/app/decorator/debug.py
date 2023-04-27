@@ -25,7 +25,7 @@ class Debug:
     """
 
     @wrapt.decorator
-    def __call__(self, wrapped_args) -> Any:
+    def __call__(self, *wrapped_args) -> Any:
         """Implement __call__ function for decorator.
 
         Args:

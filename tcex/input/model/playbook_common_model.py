@@ -2,6 +2,9 @@
 # third-party
 from pydantic import BaseModel, Field
 
+# first-party
+from tcex.input.field_type.sensitive import Sensitive
+
 
 class PlaybookCommonModel(BaseModel):
     """Playbook Common Model
@@ -20,20 +23,27 @@ class PlaybookCommonModel(BaseModel):
     )
     tc_kvstore_host: str = Field(
         'localhost',
-        alias='tc_playbook_db_path',
         description='The KV Store hostname.',
+        inclusion_reason='runtimeLevel',
+    )
+    tc_kvstore_pass: Sensitive | None = Field(
+        None,
+        description='The KV Store password.',
         inclusion_reason='runtimeLevel',
     )
     tc_kvstore_port: int = Field(
         6379,
-        alias='tc_playbook_db_port',
         description='The KV Store port number.',
         inclusion_reason='runtimeLevel',
     )
     tc_kvstore_type: str = Field(
         'Redis',
-        alias='tc_playbook_db_type',
         description='The KV Store type (Redis or TCKeyValueAPI).',
+        inclusion_reason='runtimeLevel',
+    )
+    tc_kvstore_user: str | None = Field(
+        None,
+        description='The KV Store username.',
         inclusion_reason='runtimeLevel',
     )
     tc_playbook_kvstore_id: int = Field(

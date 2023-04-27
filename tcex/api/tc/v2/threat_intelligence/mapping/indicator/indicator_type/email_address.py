@@ -35,7 +35,7 @@ class EmailAddress(Indicator):
             sub_type='Email Address',
             api_entity='emailAddress',
             api_branch='emailAddresses',
-            **kwargs
+            **kwargs,
         )
         self.unique_id = kwargs.get('unique_id', kwargs.get('address'))
         self._data['address'] = self.unique_id

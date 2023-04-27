@@ -62,7 +62,7 @@ class TransformsABC(ABC):
     ):
         """Initialize instance properties."""
         self.ti_dicts = ti_dicts
-        self.transforms = transforms if isinstance(transforms, list) else [transforms]
+        self.transforms = transforms
 
         # properties
         self.log = _logger
@@ -399,7 +399,7 @@ class TransformABC(ABC):
             params = [dict(zip(param_keys, p)) for p in zip(colors, descriptions, names)]
 
             for kwargs in params:
-                kwargs = self.utils.remove_none(kwargs)
+                kwargs = self.util.remove_none(kwargs)
                 if 'name' not in kwargs:
                     continue
                 # strip out None params so that required params are enforced and optional

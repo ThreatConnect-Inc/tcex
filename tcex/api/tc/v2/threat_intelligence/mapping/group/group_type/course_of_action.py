@@ -26,5 +26,5 @@ class CourseOfAction(Group):
             sub_type='Course of Action',
             api_entity='courseOfAction',
             api_branch='coursesOfAction',
-            **kwargs
+            **kwargs,
         )

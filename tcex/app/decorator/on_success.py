@@ -30,7 +30,7 @@ class OnSuccess:
         self.exit_msg = exit_msg or 'App finished successfully.'
 
     @wrapt.decorator
-    def __call__(self, wrapped_args) -> Any:
+    def __call__(self, *wrapped_args) -> Any:
         """Implement __call__ function for decorator.
 
         Args:
