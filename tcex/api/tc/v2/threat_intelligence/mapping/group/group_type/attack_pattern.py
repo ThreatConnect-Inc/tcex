@@ -26,5 +26,5 @@ class AttackPattern(Group):
             sub_type='Attack Pattern',
             api_entity='attackPattern',
             api_branch='attackPatterns',
-            **kwargs
+            **kwargs,
         )

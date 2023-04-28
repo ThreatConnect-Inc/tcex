@@ -38,7 +38,7 @@ class Output:
         self.overwrite = overwrite
 
     @wrapt.decorator
-    def __call__(self, wrapped: Callable, instance: Callable, args: list, kwargs: dict) -> Any:
+    def __call__(self, *wrapped_args) -> Any:
         """Implement __call__ function for decorator.
 
         Args:
@@ -51,8 +51,13 @@ class Output:
             kwargs: The dictionary of keyword arguments
                 supplied when the decorated function was called.
         """
+        # using wrapped args to support typing hints in PyRight
+        wrapped: Callable = wrapped_args[0]
+        app: Any = wrapped_args[1]
+        args: list = wrapped_args[2] if len(wrapped_args) > 1 else []
+        kwargs: dict = wrapped_args[3] if len(wrapped_args) > 2 else {}
 
-        def output(app, *args: list, **kwargs: dict) -> Any:
+        def output() -> Any:
             """Call the function and store or append return value.
 
             Args:
@@ -94,4 +99,4 @@ class Output:
 
             return data
 
-        return output(instance, *args, **kwargs)
+        return output()

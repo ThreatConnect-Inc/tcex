@@ -53,6 +53,7 @@ dendrol
 deps
 deque
 digestmod
+dotenv
 downvotes
 dunder
 editchoice

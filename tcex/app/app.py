@@ -64,6 +64,8 @@ class App:
             self.model.tc_kvstore_host,
             self.model.tc_kvstore_port,
             self.model.tc_kvstore_type,
+            self.model.tc_kvstore_pass,
+            self.model.tc_kvstore_user,
         )
 
     @cached_property

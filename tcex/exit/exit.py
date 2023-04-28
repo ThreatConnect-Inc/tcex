@@ -5,7 +5,7 @@ import os
 import sys
 from enum import Enum
 from pathlib import Path
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Literal, NoReturn
 
 # first-party
 from tcex.app.config import InstallJson
@@ -64,7 +64,7 @@ class Exit:
             except Exception as e:  # pragma: no cover
                 self._exit(ExitCode.FAILURE, f'Exception during AOT exit push ({e}).')
 
-    def _exit(self, code: ExitCode | int, msg: str):
+    def _exit(self, code: ExitCode | int, msg: str) -> NoReturn:
         """Exit the App"""
         code = ExitCode(code) if code is not None else self.code
 
@@ -122,7 +122,7 @@ class Exit:
             exit_code = ExitCode.SUCCESS
         self._exit_code = exit_code
 
-    def exit(self, code: ExitCode | int | None = None, msg: str | None = None):
+    def exit(self, code: ExitCode | int | None = None, msg: str | None = None) -> NoReturn:
         """Application exit method with proper exit code
 
         The method will run the Python standard sys.exit() with the exit code

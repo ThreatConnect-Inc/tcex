@@ -23,10 +23,12 @@ dependencies = [
   "black",
   "inflect",
   "isort",
+  "jmespath",
   "paho-mqtt",
   "pyaes",
   "pydantic",
   "python-dateutil",
+  "python-dotenv", # required by run_local.py in templates
   "PyYAML",
   "redis",
   "requests",
@@ -134,6 +136,7 @@ extension-pkg-whitelist = "pydantic"
 exclude = [
   "**/.history",
   "**/__pycache__",
+  "**/local-*",
 ]
 pythonPlatform = "Linux"
 pythonVersion = "3.11"

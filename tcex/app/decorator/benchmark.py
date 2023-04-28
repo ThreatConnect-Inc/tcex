@@ -44,7 +44,7 @@ class Benchmark:
         self.seconds = seconds
 
     @wrapt.decorator
-    def __call__(self, wrapped: Callable, instance: Callable, args: list, kwargs: dict) -> Any:
+    def __call__(self, *wrapped_args) -> Any:
         """Implement __call__ function for decorator.
 
         Args:
@@ -60,8 +60,12 @@ class Benchmark:
         Returns:
             function: The custom decorator function.
         """
+        # using wrapped args to support typing hints in PyRight
+        wrapped: Callable = wrapped_args[0]
+        args: list = wrapped_args[2] if len(wrapped_args) > 1 else []
+        kwargs: dict = wrapped_args[3] if len(wrapped_args) > 2 else {}
 
-        def benchmark(_, *args: list, **kwargs: dict) -> Any:
+        def benchmark() -> Any:
             """Iterate over data, calling the decorated function for each value.
 
             Args:
@@ -80,4 +84,4 @@ class Benchmark:
                 _logger.debug(f'function: "{wrapped.__name__}", benchmark_time: "{delta}"')
             return data
 
-        return benchmark(instance, *args, **kwargs)
+        return benchmark()

@@ -26,5 +26,5 @@ class IntrusionSet(Group):
             sub_type='Intrusion Set',
             api_entity='intrusionSet',
             api_branch='intrusionSets',
-            **kwargs
+            **kwargs,
         )

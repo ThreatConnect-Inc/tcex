@@ -1,10 +1,13 @@
 """TcEx Framework Module"""
 # standard library
 from collections.abc import Callable
-from typing import Any
+from typing import Any, cast
 
 # third-party
 import wrapt
+
+# first-party
+from tcex.tcex import TcEx
 
 
 class Debug:
@@ -22,7 +25,7 @@ class Debug:
     """
 
     @wrapt.decorator
-    def __call__(self, wrapped: Callable, instance: Callable, args: list, kwargs: dict) -> Any:
+    def __call__(self, *wrapped_args) -> Any:
         """Implement __call__ function for decorator.
 
         Args:
@@ -38,8 +41,13 @@ class Debug:
         Returns:
             function: The custom decorator function.
         """
+        # using wrapped args to support typing hints in PyRight
+        wrapped: Callable = wrapped_args[0]
+        app: Any = wrapped_args[1]
+        args: list = wrapped_args[2] if len(wrapped_args) > 1 else []
+        kwargs: dict = wrapped_args[3] if len(wrapped_args) > 2 else {}
 
-        def debug(app, *args, **kwargs) -> Any:
+        def debug() -> Any:
             """Iterate over data, calling the decorated function for each value.
 
             Args:
@@ -47,10 +55,12 @@ class Debug:
                 *args: Additional positional arguments.
                 **kwargs: Additional keyword arguments.
             """
+            tcex = cast(TcEx, app.tcex)
+
             data = wrapped(*args, **kwargs)
-            app.tcex.log.debug(
+            tcex.log.debug(
                 f'function: "{self.__class__.__name__}", args: "{args}", kwargs: "{kwargs}"'
             )
             return data
 
-        return debug(instance, *args, **kwargs)
+        return debug()

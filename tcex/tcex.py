@@ -1,16 +1,12 @@
 """TcEx Framework Module"""
 
-# * update input model
-
 # standard library
 import inspect
 import os
 import platform
 import signal
 import threading
-
-# third-party
-from attr import dataclass
+from dataclasses import dataclass
 
 # first-party
 from tcex.api.api import API

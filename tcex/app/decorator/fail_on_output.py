@@ -1,7 +1,7 @@
 """TcEx Framework Module"""
 # standard library
 from collections.abc import Callable
-from typing import Any
+from typing import Any, cast
 
 # third-party
 import wrapt
@@ -55,7 +55,7 @@ class FailOnOutput:
         self.write_output = write_output
 
     @wrapt.decorator
-    def __call__(self, wrapped: Callable, instance: Callable, args: list, kwargs: dict) -> Any:
+    def __call__(self, *wrapped_args) -> Any:
         """Implement __call__ function for decorator.
 
         Args:
@@ -71,16 +71,15 @@ class FailOnOutput:
         Returns:
             function: The custom decorator function.
         """
+        # using wrapped args to support typing hints in PyRight
+        wrapped: Callable = wrapped_args[0]
+        app: Any = wrapped_args[1]
+        args: list = wrapped_args[2] if len(wrapped_args) > 1 else []
+        kwargs: dict = wrapped_args[3] if len(wrapped_args) > 2 else {}
 
-        def fail(app, *args: list, **kwargs: dict) -> Any:
-            """Call the function and store or append return value.
-
-            Args:
-                app (class): The instance of the App class "self".
-                *args: Additional positional arguments.
-                **kwargs: Additional keyword arguments.
-            """
-            tcex: TcEx = app.tcex
+        def fail() -> Any:
+            """Call the function and store or append return value."""
+            tcex = cast(TcEx, app.tcex)
 
             # call method to get output
             data = wrapped(*args, **kwargs)
@@ -117,7 +116,7 @@ class FailOnOutput:
                     tcex.exit.exit(ExitCode.FAILURE, self.get_fail_msg(app))
             return data
 
-        return fail(instance, *args, **kwargs)
+        return fail()
 
     def get_fail_msg(self, app) -> str:
         """Return the appropriate fail message."""
