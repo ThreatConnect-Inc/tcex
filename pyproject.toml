@@ -28,6 +28,7 @@ dependencies = [
   "pyaes",
   "pydantic",
   "python-dateutil",
+  "python-dotenv", # required by run_local.py in templates
   "PyYAML",
   "redis",
   "requests",

@@ -13,6 +13,7 @@ The ThreatConnect&trade; TcEx App Framework provides functionality for writing T
  * pyaes (https://pypi.org/project/pyaes/)
  * pydantic (https://pypi.org/project/pydantic/)
  * python-dateutil (https://pypi.python.org/pypi/python-dateutil)
+ * python-dotenv (https://pypi.org/project/python-dotenv/)
  * pyyaml (https://pypi.python.org/pypi/pyyaml)
  * redis (https://pypi.python.org/pypi/redis)
  * requests (https://pypi.python.org/pypi/requests)
