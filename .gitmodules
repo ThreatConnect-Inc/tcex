@@ -4,9 +4,6 @@
 [submodule "tcex/app/config"]
 	path = tcex/app/config
 	url = git@github.com:ThreatConnect-Inc/tcex-app-config.git
-[submodule "tcex/requests_session"]
-	path = tcex/requests_session
-	url = git@github.com:ThreatConnect-Inc/tcex-requests-session.git
 [submodule "tcex/pleb"]
 	path = tcex/pleb
 	url = git@github.com:ThreatConnect-Inc/tcex-pleb.git

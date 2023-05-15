@@ -33,7 +33,7 @@ from tcex.util import Util
 _logger: TraceLogger = logging.getLogger(__name__.split('.', maxsplit=1)[0])  # type: ignore
 
 # define JSON encoders
-json_encoders = {Sensitive: lambda v: str(v)}  # pylint: disable=W0108
+json_encoders = {Sensitive: lambda v: str(v)}  # pylint: disable=unnecessary-lambda
 
 
 def input_model(models: list) -> CommonModel | CommonAdvancedModel:
@@ -284,10 +284,11 @@ class Input:
 
         for name, value in _inputs.items():
             if name == 'tc_playbook_out_variables':
-                # for services, this input contains the name of the expected outputs.  If we don't
-                # skip this, we'll try to resolve the value (e.g.
-                # #Trigger:334:example.service_input!String), but that 1) won't work for services
-                # and 2) doesn't make sense.  Service configs will never have playbook variables.
+                # for services, tc_playbook_out_variables contains the name of the expected outputs.
+                # If we don't skip this, we'll try to resolve the value (e.g.
+                # #Trigger:334:example.service_input!String)
+                # 1. this won't work for services
+                # 2. service configs will never have playbook variables
                 continue
 
             if self.util.is_tc_variable(value):  # only matches threatconnect variables

@@ -142,7 +142,7 @@ class MockApp:
                 'fileParams',
                 'secureParams',
             ],
-            'languageVersion': '3.6',
+            'languageVersion': '3.11',
             'listDelimiter': '|',
             'note': 'TcEx Testing',
             'programLanguage': 'PYTHON',

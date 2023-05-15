@@ -73,7 +73,7 @@ readme = {file = ["README.md"], content-type = "text/markdown"}
 version = {attr = "tcex.__version__"}
 
 [tool.setuptools.packages.find]
-exclude = ["tests"]
+exclude = ["tests*", "local-*"]
 
 #
 # Linters / Formatters
