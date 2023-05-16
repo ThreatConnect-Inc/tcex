@@ -2,6 +2,7 @@
 
 ### 3.0.9
 - APP-3943 [API] Update Transforms to Support Email Group Type
+- APP-3981 [API] Updated v3 gen body to allow 0 and false in body
 - APP-3972 [Logging] Add lock to sensitive filter to fix concurrent update exception
 
 ### 3.0.8
