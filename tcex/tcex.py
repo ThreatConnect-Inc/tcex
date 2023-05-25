@@ -10,6 +10,7 @@ import threading
 from typing import TYPE_CHECKING, Dict, Optional, Union
 
 # third-party
+from redis import Redis
 from requests import Session
 
 # first-party
@@ -21,6 +22,7 @@ from tcex.app_config.install_json import InstallJson
 from tcex.app_feature import AdvancedRequest
 from tcex.backports import cached_property
 from tcex.exit.exit import ExitCode, ExitService
+from tcex.input.field_types.sensitive import Sensitive
 from tcex.input.input import Input
 from tcex.key_value_store import KeyValueApi, KeyValueMock, KeyValueRedis, RedisClient
 from tcex.logger.logger import Logger  # pylint: disable=no-name-in-module
@@ -198,7 +200,7 @@ class TcEx:
     @staticmethod
     def get_redis_client(
         host: str, port: int, db: int = 0, blocking_pool: bool = False, **kwargs
-    ) -> 'RedisClient':
+    ) -> Redis:
         """Return a *new* instance of Redis client.
 
         For a full list of kwargs see https://redis-py.readthedocs.io/en/latest/#redis.Connection.
@@ -208,15 +210,19 @@ class TcEx:
             port: The REDIS port. Defaults to 6379.
             db: The REDIS db. Defaults to 0.
             blocking_pool: Use BlockingConnectionPool instead of ConnectionPool.
-            errors (str, kwargs): The REDIS errors policy (e.g. strict).
-            max_connections (int, kwargs): The maximum number of connections to REDIS.
-            password (str, kwargs): The REDIS password.
-            socket_timeout (int, kwargs): The REDIS socket timeout.
-            timeout (int, kwargs): The REDIS Blocking Connection Pool timeout value.
+            **kwargs: Additional keyword arguments.
 
-        Returns:
-            Redis.client: An instance of redis client.
+        Keyword Args:
+            errors (str): The REDIS errors policy (e.g. strict).
+            max_connections (int): The maximum number of connections to REDIS.
+            password (Sensitive): The REDIS password.
+            socket_timeout (int): The REDIS socket timeout.
+            timeout (int): The REDIS Blocking Connection Pool timeout value.
+            username (str): The REDIS username.
         """
+        # get value from Sensitive value before passing to Redis
+        password = kwargs.get('password')
+        kwargs['password'] = password.value if isinstance(password, Sensitive) else password
         return RedisClient(
             host=host, port=port, db=db, blocking_pool=blocking_pool, **kwargs
         ).client
@@ -405,12 +411,14 @@ class TcEx:
 
     @registry.factory(RedisClient)
     @scoped_property
-    def redis_client(self) -> 'RedisClient':
+    def redis_client(self) -> Redis:
         """Return redis client instance configure for Playbook/Service Apps."""
         return self.get_redis_client(
             host=self.inputs.contents.get('tc_kvstore_host'),
             port=self.inputs.contents.get('tc_kvstore_port'),
             db=0,
+            username=self.inputs.contents.get('tc_kvstore_user'),
+            password=self.inputs.contents.get('tc_kvstore_pass'),
         )
 
     def results_tc(self, key: str, value: str):
