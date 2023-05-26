@@ -1,6 +1,12 @@
 """Playbook Common Model"""
+# standard library
+from typing import Optional
+
 # third-party
 from pydantic import BaseModel, Field
+
+# first-party
+from tcex.input.field_types.sensitive import Sensitive
 
 
 class PlaybookCommonModel(BaseModel):
@@ -24,10 +30,20 @@ class PlaybookCommonModel(BaseModel):
         description='The KV Store hostname.',
         inclusion_reason='runtimeLevel',
     )
+    tc_kvstore_pass: Optional[Sensitive] = Field(
+        None,
+        description='The KV Store password.',
+        inclusion_reason='runtimeLevel',
+    )
     tc_kvstore_port: int = Field(
         6379,
         alias='tc_playbook_db_port',
         description='The KV Store port number.',
+        inclusion_reason='runtimeLevel',
+    )
+    tc_kvstore_user: Optional[str] = Field(
+        None,
+        description='The KV Store username.',
         inclusion_reason='runtimeLevel',
     )
     tc_kvstore_type: str = Field(
