@@ -1,6 +1,7 @@
 """TcEx logging filter module"""
 # standard library
 import logging
+from threading import Lock
 
 
 class SensitiveFilter(logging.Filter):
@@ -10,12 +11,14 @@ class SensitiveFilter(logging.Filter):
         """Plug in a new filter to an existing formatter"""
         super().__init__(name)
         self._sensitive_registry = set()
+        self._lock = Lock()
 
     def add(self, value: str):
         """Add sensitive value to registry."""
         if value:
-            # don't add empty string
-            self._sensitive_registry.add(str(value))
+            with self._lock:
+                # don't add empty string
+                self._sensitive_registry.add(str(value))
 
     def filter(self, record: logging.LogRecord) -> bool:
         """Filter the record"""
@@ -26,6 +29,7 @@ class SensitiveFilter(logging.Filter):
 
     def replace(self, obj: str):
         """Replace any sensitive data in the object if its a string"""
-        for replacement in self._sensitive_registry:
-            obj = obj.replace(replacement, '***')
+        with self._lock:
+            for replacement in self._sensitive_registry:
+                obj = obj.replace(replacement, '***')
         return obj
