@@ -60,6 +60,7 @@ class TcEx:
         registry.register(self)
         registry.add_service(Input, self.inputs)
         registry.add_service(App, self.app)
+        registry.add_service(Logger, self.logger)
         registry.add_service(RequestsTc, self.requests_tc)
 
         # log standard App info early so it shows at the top of the logfile
@@ -89,7 +90,7 @@ class TcEx:
     @cached_property
     def app(self) -> App:
         """Return instance of App."""
-        return App(self.inputs.module_app_model, self.proxies, self)
+        return App(self.inputs.module_app_model, self.proxies)
 
     @registry.factory(Exit)
     @scoped_property

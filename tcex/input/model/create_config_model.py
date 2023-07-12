@@ -4,7 +4,7 @@
 from typing import Any
 
 # third-party
-from pydantic import BaseModel, root_validator, validator
+from pydantic import BaseModel, Extra, root_validator, validator
 
 # first-party
 from tcex.app.config import InstallJson
@@ -20,7 +20,7 @@ class CreateConfigModel(BaseModel):
     trigger_id: int
 
     @validator('tc_playbook_out_variables', pre=True)
-    def _tc_playbook_out_variables(cls, v):
+    def _tc_playbook_out_variables(cls, v) -> list[str]:
         """Convert tc_playbook_out_variables into a list of strings.
 
         This value comes-in as a comma-separated list.
@@ -46,3 +46,8 @@ class CreateConfigModel(BaseModel):
                 values[field] = None
 
         return values
+
+    class Config:
+        """Model Config"""
+
+        extra = Extra.allow

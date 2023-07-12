@@ -5,24 +5,18 @@ import os
 import threading
 import traceback
 from collections.abc import Callable
-from typing import TYPE_CHECKING, Any
-
-# third-party
-from pydantic import BaseModel
+from typing import Any
 
 # first-party
+from tcex.app.key_value_store.key_value_store import KeyValueStore
 from tcex.app.playbook import Playbook
 from tcex.app.service.common_service import CommonService
+from tcex.app.token import Token
+from tcex.input.field_type.sensitive import Sensitive
+from tcex.input.model.create_config_model import CreateConfigModel
+from tcex.input.model.module_app_model import ModuleAppModel
+from tcex.logger.logger import Logger
 from tcex.registry import registry
-from tcex.util.util import Util
-
-if TYPE_CHECKING:
-    # first-party
-    from tcex import TcEx
-
-
-class PlaceHolderModel(BaseModel):
-    """Place Holder Model."""
 
 
 class CommonServiceTrigger(CommonService):
@@ -33,24 +27,25 @@ class CommonServiceTrigger(CommonService):
     * Webhook Trigger Service
     """
 
-    def __init__(self, tcex: 'TcEx'):
-        """Initialize the Class properties.
-
-        Args:
-            tcex: Instance of TcEx.
-        """
-        super().__init__(tcex)
+    def __init__(
+        self,
+        key_value_store: KeyValueStore,
+        logger: Logger,
+        model: ModuleAppModel,
+        token: Token,
+    ):
+        """Initialize the Class properties."""
+        super().__init__(key_value_store, logger, model, token)
 
         # properties
         self._metrics = {'Active Playbooks': 0, 'Errors': 0, 'Hits': 0, 'Misses': 0}
-        self.configs = {}
+        self.configs: dict[int, CreateConfigModel] = {}
         self.config_thread = None
-        self.util = Util()
 
         # config callbacks
-        self.create_config_callback = None
+        self.create_config_callback: Callable[..., bool | dict | None]
         self.delete_config_callback = None
-        self.trigger_input_model = PlaceHolderModel  # real model set in App run.py
+        self.trigger_input_model = CreateConfigModel
 
     def _tcex_testing(self, session_id: str, trigger_id: int):
         """Write data required for testing framework to Redis.
@@ -59,13 +54,13 @@ class CommonServiceTrigger(CommonService):
             session_id: The context/session id value for the current operation.
             trigger_id: The trigger ID for the current playbook.
         """
-        if self.models.tcex_testing_context is not None:
+        if self.model.tcex_testing_context is not None:
             _context_tracker: list[str] = json.loads(
-                self.redis_client.hget(self.models.tcex_testing_context, '_context_tracker') or '[]'
+                self.redis_client.hget(self.model.tcex_testing_context, '_context_tracker') or '[]'
             )
             _context_tracker.append(session_id)
             self.redis_client.hset(
-                self.models.tcex_testing_context,
+                self.model.tcex_testing_context,
                 '_context_tracker',
                 json.dumps(_context_tracker),
             )
@@ -84,7 +79,7 @@ class CommonServiceTrigger(CommonService):
             session_id: The context/session id value for the current operation.
             fired: The value to increment the count by.
         """
-        if self.models.tcex_testing_context is not None:
+        if self.model.tcex_testing_context is not None:
             self.redis_client.hset(
                 session_id, '#Trigger:9876:_fired!String', json.dumps(str(fired).lower())
             )
@@ -111,9 +106,9 @@ class CommonServiceTrigger(CommonService):
             logfile: The CreateConfig logfile to return in response ack.
         """
         try:
-            if status is not True and self.configs.get(str(trigger_id)) is not None:
+            if status is not True and self.configs.get(trigger_id) is not None:
                 # add config to configs
-                del self.configs[str(trigger_id)]
+                del self.configs[trigger_id]
 
             # send ack response
             self.message_broker.publish(
@@ -130,7 +125,7 @@ class CommonServiceTrigger(CommonService):
                         'triggerId': trigger_id,
                     }
                 ),
-                self.models.tc_svc_client_topic,
+                self.model.tc_svc_client_topic,
             )
         except Exception as e:
             self.log.error(
@@ -162,14 +157,12 @@ class CommonServiceTrigger(CommonService):
                         'triggerId': trigger_id,
                     }
                 ),
-                self.models.tc_svc_client_topic,
+                self.model.tc_svc_client_topic,
             )
-        except Exception as e:
-            self.log.error(
-                'feature=service, event=delete-config-callback-exception, '
-                f'trigger-id={trigger_id}, error="""{e}"""'
+        except Exception:
+            self.log.exception(
+                f'feature=service, event=delete-config-callback-exception, trigger-id={trigger_id}'
             )
-            # self.log.trace(traceback.format_exc())
 
     def fire_event(self, callback: Callable[..., bool], **kwargs):
         """Trigger a FireEvent command.
@@ -202,9 +195,7 @@ class CommonServiceTrigger(CommonService):
                 outputs: list | str = config.tc_playbook_out_variables or []
                 if isinstance(outputs, str):
                     outputs = outputs.split(',')
-                playbook: object = self.tcex.app.get_playbook(
-                    context=session_id, output_variables=outputs
-                )
+                playbook = self.get_playbook(context=session_id, output_variables=outputs)
 
                 self.log.info(f'feature=trigger-service, event=fire-event, trigger-id={session_id}')
 
@@ -243,7 +234,7 @@ class CommonServiceTrigger(CommonService):
         }
 
         self.log.info(f'feature=service, event=update-trigger-value, msg={msg}')
-        self.message_broker.publish(json.dumps(msg), self.models.tc_svc_client_topic)
+        self.message_broker.publish(json.dumps(msg), self.model.tc_svc_client_topic)
 
     def fire_event_publish(self, trigger_id: int, session_id: str, request_key: str | None = None):
         """Send FireEvent command.
@@ -263,7 +254,7 @@ class CommonServiceTrigger(CommonService):
         self.log.info(f'feature=service, event=fire-event, msg={msg}')
 
         # publish FireEvent command to client topic
-        self.message_broker.publish(json.dumps(msg), self.models.tc_svc_client_topic)
+        self.message_broker.publish(json.dumps(msg), self.model.tc_svc_client_topic)
 
     def fire_event_trigger(
         self,
@@ -284,7 +275,7 @@ class CommonServiceTrigger(CommonService):
             config: A dict containing the configuration information.
             **kwargs: Additional keyword arguments.
         """
-        self._create_logging_handler()
+        # self._create_logging_handler()
         self.log.info('feature=trigger-service, event=fire-event-trigger')
 
         try:
@@ -309,8 +300,6 @@ class CommonServiceTrigger(CommonService):
                 f'feature=trigger-service, event=fire-event-callback-exception, error="""{e}"""'
             )
             self.log.trace(traceback.format_exc())
-        finally:
-            self.logger.remove_handler_by_name(self.thread_name)
 
     def log_config(self, trigger_id: int, config: dict):
         """Log the config while hiding encrypted values.
@@ -354,21 +343,9 @@ class CommonServiceTrigger(CommonService):
         Args:
             message: The message payload from the server topic.
         """
-        config: dict = message['config']
+        config: dict[str, bytes | str | Sensitive] = message['config']
         status = True
-        trigger_id = int(message['triggerId'])
-
-        # create trigger id logging filehandler
-        self.logger.add_thread_file_handler(
-            backup_count=1,  # required for logs to be rotated
-            name=self.thread_name,
-            filename=self.trigger_logfile,
-            level=self.models.tc_log_level,
-            max_bytes=1048576,  # 1Mb
-            path=self.models.tc_log_path,
-            handler_key=str(trigger_id),
-            thread_key='trigger_id',
-        )
+        trigger_id = message['triggerId']
 
         # log the config
         self.log_config(trigger_id, config)
@@ -378,8 +355,15 @@ class CommonServiceTrigger(CommonService):
             str(trigger_id), message.get('apiToken'), message.get('expireSeconds')
         )
 
+        # Resolve any variables in config
+        updated_config = {
+            k: (registry.inputs.resolve_variable(str(v)) if self.util.is_tc_variable(str(v)) else v)
+            for k, v in config.items()
+        }
+        updated_config['trigger_id'] = trigger_id
+
         # temporarily add config, will be removed if callback fails
-        self.configs[trigger_id] = config
+        self.configs[trigger_id] = CreateConfigModel(**updated_config)  # type: ignore
 
         msg = 'Create Config'
         if callable(self.create_config_callback):
@@ -389,21 +373,12 @@ class CommonServiceTrigger(CommonService):
                 kwargs['url'] = message.get('url')
 
             try:
-                # Resolve any variables in config
-                updated_config = {
-                    k: (registry.inputs.resolve_variable(v) if self.util.is_tc_variable(v) else v)
-                    for k, v in config.items()
-                }
-                updated_config['trigger_id'] = trigger_id
-
-                # Instantiate trigger input model
-                # pylint: disable=not-callable
-                config_input = self.trigger_input_model(**updated_config)
-
+                # convert config data from message to TriggerInputModel
+                config_input = self.trigger_input_model(**updated_config)  # type: ignore
                 self.configs[trigger_id] = config_input
+
                 # call callback for create config and handle exceptions to protect thread
-                # pylint: disable=not-callable
-                response: dict | None = self.create_config_callback(config_input, **kwargs)
+                response = self.create_config_callback(config_input, **kwargs)
                 if isinstance(response, dict):
                     status = response.get('status', False)
                     msg = response.get('msg') or msg
@@ -465,9 +440,6 @@ class CommonServiceTrigger(CommonService):
 
         # delete config
         self.delete_config(trigger_id, msg, status)
-
-        # remove temporary logging file handler
-        self.logger.remove_handler_by_name(self.thread_name)
 
     @property
     def trigger_logfile(self) -> str:

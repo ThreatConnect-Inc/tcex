@@ -13,7 +13,6 @@ The ThreatConnect&trade; TcEx App Framework provides functionality for writing T
  * pyaes (https://pypi.org/project/pyaes/)
  * pydantic (https://pypi.org/project/pydantic/)
  * python-dateutil (https://pypi.python.org/pypi/python-dateutil)
- * python-dotenv (https://pypi.org/project/python-dotenv/)
  * pyyaml (https://pypi.python.org/pypi/pyyaml)
  * redis (https://pypi.python.org/pypi/redis)
  * requests (https://pypi.python.org/pypi/requests)
@@ -31,21 +30,25 @@ The ThreatConnect&trade; TcEx App Framework provides functionality for writing T
  * pylint (https://pypi.org/project/pylint/)
  * pyright (https://pypi.org/project/pyright/)
  * pyupgrade (https://pypi.org/project/pyupgrade/)
+ * typer (https://pypi.python.org/pypi/typer)
+
+### Test Requirements
+
  * pytest (https://pypi.org/project/pytest/)
  * pytest-cov (https://pypi.org/project/pytest-cov/)
  * pytest-html (https://pypi.org/project/pytest-html/)
+ * pytest-ordering (https://pypi.org/project/pytest-ordering/)
  * pytest-xdist (https://pypi.org/project/pytest-xdist/)
- * pyupgrade (https://pypi.org/project/pyupgrade/)
- * typer (https://pypi.python.org/pypi/typer)
 
 ## Installation
 
-**Using pip**
-
 ```
 pip install tcex
-pip install tcex[dev]
 ```
+
+### Development / Testing
+
+pip install tcex[dev,test]
 
 ## Documentation
 

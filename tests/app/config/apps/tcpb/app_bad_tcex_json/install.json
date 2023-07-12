@@ -14,7 +14,7 @@
     "label2",
     "label3"
   ],
-  "languageVersion": "3.11.0",
+  "languageVersion": "3.11",
   "listDelimiter": "|",
   "note": "A TcEx testing App.",
   "params": [
