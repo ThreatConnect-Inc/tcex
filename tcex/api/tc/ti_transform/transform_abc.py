@@ -169,7 +169,7 @@ class TransformABC(ABC):
         """Process Attribute data"""
         for association in associations or []:
             for value in filter(bool, self._process_metadata_transform_model(association.value)):
-                self.add_associated_group(value)
+                self.add_associated_group(value)  # type: ignore
 
     def _process_metadata_transform_model(
         self, value: bool | MetadataTransformModel | str | None, expected_length: int | None = None
@@ -410,7 +410,7 @@ class TransformABC(ABC):
         """Process Tag data"""
         for tag in tags or []:
             for value in filter(bool, self._process_metadata_transform_model(tag.value)):
-                self.add_tag(name=value)
+                self.add_tag(name=value)  # type: ignore
 
     def _process_rating(self, metadata: MetadataTransformModel | None):
         """Process standard metadata fields."""

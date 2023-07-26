@@ -307,7 +307,7 @@ class TestIndicators(TestV3):
         """Test Artifact get single attached to task by id"""
         associated_indicator = self.v3_helper.create_indicator()
         associated_group = self.v3_helper.create_group(
-            **{
+            **{  # type: ignore
                 'associated_indicators': associated_indicator.model.gen_body(
                     method='PUT', nested=True
                 )

@@ -678,7 +678,7 @@ class Batch(BatchWriter, BatchSubmit):
                         .get('data', {})
                         .get('batchStatus', {})
                     )
-                    if errors:
+                    if errors and batch_data is not None:
                         # retrieve errors
                         error_count = batch_data.get('errorCount', 0)
                         error_groups = batch_data.get('errorGroupCount', 0)
