@@ -125,7 +125,7 @@ class PropertyModel(
         # process str types
         self.__process_str_types(self, extra)
 
-        # # process tc types
+        # process tc types
         self.__process_tc_types(self, extra)
 
         # process special types
@@ -171,6 +171,7 @@ class PropertyModel(
             'Links',
             'Map',
             'ValidationRule',
+            'Strings',
             'WhoIs',
         ]
         if pm.type in types:
