@@ -239,7 +239,7 @@ class MqttMessageBroker:
             message: The message to be sent on client topic.
             topic: The broker topic.
         """
-        r: object = self.client.publish(topic, message)
+        r = self.client.publish(topic, message)
         self.log.debug(
             f'feature=service, event=publish-message, topic="{topic}", '
             f'message={message}, response={r}'

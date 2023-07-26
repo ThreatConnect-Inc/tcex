@@ -17,9 +17,7 @@ from tcex.app.config.install_json import InstallJson
 from tcex.input.model.common_model import CommonModel  # TYPE-CHECKING
 from tcex.logger.api_handler import ApiHandler, ApiHandlerFormatter
 from tcex.logger.cache_handler import CacheHandler
-from tcex.logger.pattern_file_handler import PatternFileHandler
 from tcex.logger.rotating_file_handler_custom import RotatingFileHandlerCustom
-from tcex.logger.thread_file_handler import ThreadFileHandler
 from tcex.logger.trace_logger import TraceLogger
 
 
@@ -170,48 +168,6 @@ class Logger:
         cache.setFormatter(self._formatter)
         self._logger.addHandler(cache)
 
-    def add_pattern_file_handler(
-        self,
-        name: str,
-        filename: str,
-        level: str,
-        path: Path,
-        pattern: str,
-        formatter: logging.Formatter | None = None,
-        handler_key: str | None = None,
-        max_log_count: int = 100,
-        thread_key: str | None = None,
-    ):
-        """Add custom file logging handler.
-
-        This handler is intended for service Apps that need to log events based on the
-        current session id. All log event would be in context to a single playbook execution.
-
-        Args:
-            name: The name of the handler.
-            filename: The name of the logfile.
-            level: The logging level.
-            path: The path for the logfile.
-            formatter: The logging formatter to use.
-            handler_key: Additional properties for handler to thread condition.
-            max_log_count: The maximum number of logs to keep that match the provided pattern.
-            pattern: The pattern used to match the log files.
-            thread_key: Additional properties for handler to thread condition.
-        """
-        self.remove_handler_by_name(name)
-        formatter = formatter or self._formatter
-        # create customized handler
-        fh = PatternFileHandler(
-            filename=os.path.join(path, filename), pattern=pattern, max_log_count=max_log_count
-        )
-        fh.set_name(name)
-        fh.setFormatter(formatter)
-        fh.setLevel(self.log_level(level))
-        # add *new* keys for handler emit method conditional
-        fh.handler_key = handler_key  # type: ignore
-        fh.thread_key = thread_key  # type: ignore
-        self._logger.addHandler(fh)
-
     def add_rotating_file_handler(
         self,
         name: str,
@@ -268,50 +224,6 @@ class Logger:
         sh.setFormatter(formatter)
         sh.setLevel(self.log_level(level))
         self._logger.addHandler(sh)
-
-    def add_thread_file_handler(
-        self,
-        name: str,
-        filename: str,
-        level: str,
-        path: Path | str,
-        backup_count: int = 0,
-        formatter: logging.Formatter | None = None,
-        handler_key: str | None = None,
-        max_bytes: int = 0,
-        mode: str = 'a',
-        thread_key: str | None = None,
-    ):
-        """Add custom file logging handler.
-
-        This handler is intended for service Apps that need to log events based on the
-        current trigger id. All log events would be in context to a single playbook.
-
-        Args:
-            name: The name of the handler.
-            filename: The name of the logfile.
-            level: The logging level.
-            path: The path for the logfile.
-            backup_count: The maximum # of backup files.
-            formatter: The logging formatter to use.
-            handler_key: Additional properties for handler to thread condition.
-            max_bytes: The max file size before rotating.
-            mode: The write mode for the file.
-            thread_key: Additional properties for handler to thread condition.
-        """
-        self.remove_handler_by_name(name)
-        formatter_ = formatter or self._formatter_thread_name
-        # create customized handler
-        fh = ThreadFileHandler(
-            os.path.join(path, filename), backupCount=backup_count, maxBytes=max_bytes, mode=mode
-        )
-        fh.set_name(name)
-        fh.setFormatter(formatter_)
-        fh.setLevel(self.log_level(level))
-        # add keys for handler emit method conditional
-        fh.handler_key = handler_key  # type: ignore
-        fh.thread_key = thread_key  # type: ignore
-        self._logger.addHandler(fh)
 
     #
     # App info logging

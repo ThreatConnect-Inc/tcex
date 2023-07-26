@@ -8,33 +8,35 @@ import traceback
 from collections.abc import Callable
 from functools import reduce
 from io import BytesIO
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 # first-party
+from tcex.app.key_value_store.key_value_store import KeyValueStore
 from tcex.app.service.common_service import CommonService
+from tcex.app.token import Token
 from tcex.input.field_type.sensitive import Sensitive
-
-if TYPE_CHECKING:
-    # first-party
-    from tcex import TcEx  # CIRCULAR-IMPORT
+from tcex.input.model.module_app_model import ModuleAppModel
+from tcex.logger.logger import Logger
 
 
 class ApiService(CommonService):
     """TcEx Framework API Service module."""
 
-    def __init__(self, tcex: 'TcEx'):
-        """Initialize the Class properties.
-
-        Args:
-            tcex: Instance of TcEx.
-        """
-        super().__init__(tcex)
+    def __init__(
+        self,
+        key_value_store: KeyValueStore,
+        logger: Logger,
+        model: ModuleAppModel,
+        token: Token,
+    ):
+        """Initialize the Class properties."""
+        super().__init__(key_value_store, logger, model, token)
 
         # properties
         self._metrics = {'Errors': 0, 'Requests': 0, 'Responses': 0}
 
         # config callbacks
-        self.api_event_callback = None
+        self.api_event_callback: Any = None
 
         # thread pool to handle HTTP requests
         self.request_thread_pool = concurrent.futures.ThreadPoolExecutor(max_workers=5)
@@ -131,7 +133,7 @@ class ApiService(CommonService):
                 'type': 'RunService',
             }
             self.log.info('feature=api-service, event=response-sent')
-            self.message_broker.publish(json.dumps(response), self.models.tc_svc_client_topic)
+            self.message_broker.publish(json.dumps(response), self.model.tc_svc_client_topic)
             self.increment_metric('Responses')
         except Exception as e:
             self.log.error(
@@ -187,7 +189,7 @@ class ApiService(CommonService):
         except Exception as e:
             self.log.error(f'feature=api-service, event=failed-reading-body, error="""{e}"""')
             self.log.trace(traceback.format_exc())
-        headers: dict = self.format_request_headers(message.pop('headers'))
+        headers = self.format_request_headers(message.pop('headers'))
         method: str = message.pop('method')
         params: dict = message.pop('queryParams')
         path: str = message.pop('path')
@@ -229,8 +231,8 @@ class ApiService(CommonService):
             # make values from message available in env in camel
             # case (e.g., falcon -> req.env.get('request_url))
             for key, value in message.items():
-                if key not in environ and self.tcex.util.camel_to_snake(key) not in environ:
-                    environ[self.tcex.util.camel_to_snake(key)] = value
+                if key not in environ and self.util.camel_to_snake(key) not in environ:
+                    environ[self.util.camel_to_snake(key)] = value
 
             self.log.trace(f'feature=api-service, environ={environ}')
             self.increment_metric('Requests')
@@ -310,8 +312,6 @@ class ApiService(CommonService):
         def _thread_wrapper():
             t = threading.current_thread()
             t.name = name
-            t.session_id = session_id  # type: ignore
-            t.trigger_id = trigger_id  # type: ignore
             target(*args, **kwargs)
 
         if target is self.process_run_service_command:

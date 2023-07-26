@@ -57,9 +57,9 @@ class IndicatorAttributeModel(
     )
     indicator: 'IndicatorModel' = Field(
         None,
+        allow_mutation=False,
         description='Details of indicator associated with attribute.',
-        methods=['POST'],
-        read_only=False,
+        read_only=True,
         title='indicator',
     )
     indicator_id: int | None = Field(

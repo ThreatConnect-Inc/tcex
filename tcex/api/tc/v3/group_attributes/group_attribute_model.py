@@ -51,9 +51,9 @@ class GroupAttributeModel(
     )
     group: 'GroupModel' = Field(
         None,
+        allow_mutation=False,
         description='Details of group associated with attribute.',
-        methods=['POST'],
-        read_only=False,
+        read_only=True,
         title='group',
     )
     group_id: int | None = Field(

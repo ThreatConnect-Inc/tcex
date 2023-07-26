@@ -26,9 +26,8 @@ dependencies = [
   "jmespath",
   "paho-mqtt",
   "pyaes",
-  "pydantic",
+  "pydantic<2.0.0",
   "python-dateutil",
-  "python-dotenv", # required by run_local.py in templates
   "PyYAML",
   "redis",
   "requests",
@@ -73,7 +72,7 @@ readme = {file = ["README.md"], content-type = "text/markdown"}
 version = {attr = "tcex.__version__"}
 
 [tool.setuptools.packages.find]
-exclude = ["tests"]
+exclude = ["tests*", "local-*"]
 
 #
 # Linters / Formatters
@@ -145,7 +144,7 @@ reportPrivateImportUsage = false
 [tool.pytest.ini_options]
 # addopts = "-p no:warnings"
 # addopts = "--tb=short --show-capture=no"
-addopts = "-n auto"
+# addopts = "-n auto"
 filterwarnings = [
   # "error",
   # "ignore:.*Unverified HTTPS request is being made to host.*",

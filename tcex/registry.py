@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from .app.token import Token
     from .exit.exit import Exit
     from .input.input import Input
+    from .logger.logger import Logger
     from .requests_tc import RequestsTc, TcSession
 
 T = TypeVar('T')
@@ -105,7 +106,7 @@ class Registry(Container):
         """Enable property-access style access to registered services, i.e., registry.MyClass."""
         return self._retrieve_registered_value(type_or_name)
 
-    def __contains__(self, item: object) -> bool:
+    def __contains__(self, item: Any) -> bool:
         """Enable the syntax MyClass in registry."""
         try:
             self.__getattr__(item)
@@ -169,6 +170,11 @@ class Registry(Container):
     def inputs(self) -> 'Input':
         """Return an Inputs object."""
         return self.Input
+
+    @property
+    def logger(self) -> 'Logger':
+        """Return an Inputs object."""
+        return self.Logger
 
     @property
     def playbook(self) -> 'Playbook':

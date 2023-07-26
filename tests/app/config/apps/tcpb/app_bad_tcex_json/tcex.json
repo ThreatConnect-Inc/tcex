@@ -8,7 +8,8 @@
       "local-*",
       "pyproject.toml",
       "setup.cfg",
-      "tcex.json"
+      "tcex.json",
+      "app_spec.yaml"
     ]
   },
   "template_name": "service_api",

@@ -8,16 +8,17 @@ import traceback
 import uuid
 from collections.abc import Callable
 from datetime import datetime
-from typing import TYPE_CHECKING
 
 # first-party
 from tcex.app.config import InstallJson
+from tcex.app.key_value_store.key_value_store import KeyValueStore
+from tcex.app.playbook.playbook import Playbook
 from tcex.app.service.mqtt_message_broker import MqttMessageBroker
+from tcex.app.token import Token
+from tcex.input.model.module_app_model import ModuleAppModel
+from tcex.logger.logger import Logger
 from tcex.logger.trace_logger import TraceLogger
-
-if TYPE_CHECKING:
-    # first-party
-    from tcex import TcEx
+from tcex.util.util import Util
 
 # get tcex logger
 _logger: TraceLogger = logging.getLogger(__name__.split('.', maxsplit=1)[0])  # type: ignore
@@ -32,58 +33,55 @@ class CommonService:
     * Webhook Trigger Service
     """
 
-    def __init__(self, tcex: 'TcEx'):
-        """Initialize the Class properties.
-
-        Args:
-            tcex: Instance of TcEx.
-        """
-        self.tcex = tcex
-
+    def __init__(
+        self,
+        key_value_store: KeyValueStore,
+        logger: Logger,
+        model: ModuleAppModel,
+        token: Token,
+    ):
+        """Initialize the Class properties."""
         # properties
         self._ready = False
         self._start_time = datetime.now()
-        self.models = tcex.inputs.model
+        self.model = model
         self.configs = {}
         self.heartbeat_max_misses = 3
         self.heartbeat_sleep_time = 1
         self.heartbeat_watchdog = 0
-        self.ij: InstallJson = tcex.app.ij
-        self.key_value_store = self.tcex.app.key_value_store
+        self.ij = InstallJson()
+        self.key_value_store = key_value_store
         self.log = _logger
-        self.logger = tcex.logger
+        self.logger = logger
         self.message_broker = MqttMessageBroker(
-            broker_host=self.models.tc_svc_broker_host,
-            broker_port=self.models.tc_svc_broker_port,
-            broker_timeout=self.models.tc_svc_broker_conn_timeout,
-            broker_token=self.models.tc_svc_broker_token,
-            broker_cacert=self.models.tc_svc_broker_cacert_file,
+            broker_host=self.model.tc_svc_broker_host,
+            broker_port=self.model.tc_svc_broker_port,
+            broker_timeout=self.model.tc_svc_broker_conn_timeout,
+            broker_token=self.model.tc_svc_broker_token,
+            broker_cacert=self.model.tc_svc_broker_cacert_file,
         )
         self.ready = False
-        self.redis_client = self.tcex.app.key_value_store.redis_client
-        self.token = tcex.app.token
+        self.redis_client = self.key_value_store.redis_client
+        self.token = token
+        self.util = Util()
 
         # config callbacks
         self.shutdown_callback = None
 
-    def _create_logging_handler(self):
-        """Create a logging handler."""
-        if self.logger.handler_exist(self.thread_name):
-            return
+    def get_playbook(
+        self, context: str | None = None, output_variables: list | None = None
+    ) -> Playbook:
+        """Return a new instance of playbook module.
 
-        # create trigger id logging filehandler
-        self.logger.add_pattern_file_handler(
-            name=self.thread_name,
-            filename=f'''{datetime.today().strftime('%Y%m%d')}/{self.session_id}.log''',
-            level=self.models.tc_log_level,
-            path=self.models.tc_log_path,
-            # uuid4 pattern for session_id
-            pattern=r'^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}.log$',
-            handler_key=self.session_id,
-            thread_key='session_id',
-        )
+        Args:
+            context: The KV Store context/session_id. For PB Apps the context is provided on
+                startup, but for service Apps each request gets a different context.
+            output_variables: The requested output variables. For PB Apps outputs are provided on
+                startup, but for service Apps each request gets different outputs.
+        """
+        return Playbook(self.key_value_store, context, output_variables)
 
-    def process_acknowledged_command(self, message: dict):  # pylint: disable=unused-argument
+    def process_acknowledged_command(self, message: dict):
         """Process the Acknowledge command.
 
         Args:
@@ -134,7 +132,7 @@ class CommonService:
             'heartbeat_watchdog': self.heartbeat_watchdog,
         }
         self.message_broker.publish(
-            message=json.dumps(message), topic=self.models.tc_svc_server_topic
+            message=json.dumps(message), topic=self.model.tc_svc_server_topic
         )
 
         # allow time for message to be received
@@ -146,7 +144,7 @@ class CommonService:
         while True:
             # check heartbeat is not missed
             if self.heartbeat_watchdog > (
-                int(self.models.tc_svc_hb_timeout_seconds) / int(self.heartbeat_sleep_time)
+                int(self.model.tc_svc_hb_timeout_seconds) / int(self.heartbeat_sleep_time)
             ):
                 # send self check message
                 self.heartbeat_broker_check()
@@ -173,7 +171,7 @@ class CommonService:
         """List for message coming from broker."""
         self.message_broker.add_on_connect_callback(self.on_connect_handler)
         self.message_broker.add_on_message_callback(
-            self.on_message_handler, topics=[self.models.tc_svc_server_topic]
+            self.on_message_handler, topics=[self.model.tc_svc_server_topic]
         )
         self.message_broker.register_callbacks()
 
@@ -216,9 +214,9 @@ class CommonService:
     def on_connect_handler(self, client, userdata, flags, rc):  # pylint: disable=unused-argument
         """On connect method for mqtt broker."""
         self.log.info(
-            f'feature=service, event=topic-subscription, topic={self.models.tc_svc_server_topic}'
+            f'feature=service, event=topic-subscription, topic={self.model.tc_svc_server_topic}'
         )
-        self.message_broker.client.subscribe(self.models.tc_svc_server_topic)
+        self.message_broker.client.subscribe(self.model.tc_svc_server_topic)
         self.message_broker.client.disable_logger()
 
     def on_message_handler(self, client, userdata, message):  # pylint: disable=unused-argument
@@ -226,6 +224,8 @@ class CommonService:
         try:
             # messages on server topic must be json objects
             m = json.loads(message.payload)
+            if m.get('triggerId') is not None:
+                m['triggerId'] = int(m['triggerId'])
         except ValueError:
             self.log.warning(
                 f'feature=service, event=parsing-issue, message="""{message.payload}"""'
@@ -233,8 +233,8 @@ class CommonService:
             return
 
         # use the command to call the appropriate method defined in command_map
-        command: str = m.get('command', 'invalid').lower()
-        trigger_id: int | None = m.get('triggerId')
+        command = m.get('command', 'invalid').lower()
+        trigger_id = m.get('triggerId')
         if trigger_id is not None:
             # coerce trigger_id to int in case a string was provided (testing framework)
             trigger_id = int(trigger_id)
@@ -293,7 +293,7 @@ class CommonService:
         # send heartbeat -acknowledge- command
         response = {'command': 'Heartbeat', 'metric': self.metrics}
         self.message_broker.publish(
-            message=json.dumps(response), topic=self.models.tc_svc_client_topic
+            message=json.dumps(response), topic=self.model.tc_svc_client_topic
         )
         self.log.info(f'feature=service, event=heartbeat-sent, metric={self.metrics}')
 
@@ -312,7 +312,7 @@ class CommonService:
         Args:
             message: The message payload from the server topic.
         """
-        level: str = message['level']
+        level = message['level']
         self.log.info(f'feature=service, event=logging-change, level={level}')
         self.logger.update_handler_level(level)
 
@@ -349,7 +349,7 @@ class CommonService:
         # acknowledge shutdown command
         self.message_broker.publish(
             json.dumps({'command': 'Acknowledged', 'type': 'Shutdown'}),
-            self.models.tc_svc_client_topic,
+            self.model.tc_svc_client_topic,
         )
 
         # call App shutdown callback
@@ -364,16 +364,11 @@ class CommonService:
                 self.log.trace(traceback.format_exc())
 
         # unsubscribe and disconnect from the broker
-        self.message_broker.client.unsubscribe(self.models.tc_svc_server_topic)
+        self.message_broker.client.unsubscribe(self.model.tc_svc_server_topic)
         self.message_broker.client.disconnect()
 
         # update shutdown flag
         self.message_broker.shutdown = True
-
-        # TODO: [review] this doesn't help if MainThread does not die.
-        # # delay shutdown to give App time to cleanup
-        # time.sleep(5)
-        # self.tcex.exit(ExitCode.SUCCESS)  # final shutdown in case App did not
 
     @property
     def ready(self) -> bool:
@@ -395,7 +390,7 @@ class CommonService:
                 if self.ij.model.is_api_service_app and self.ij.model.service:
                     ready_command['discoveryTypes'] = self.ij.model.service.discovery_types
                 self.message_broker.publish(
-                    json.dumps(ready_command), self.models.tc_svc_client_topic
+                    json.dumps(ready_command), self.model.tc_svc_client_topic
                 )
                 self._ready = True
 
@@ -422,10 +417,9 @@ class CommonService:
         args = args or ()
         try:
             t = threading.Thread(name=name, target=target, args=args, kwargs=kwargs, daemon=True)
-            # add session_id to thread to use in logger emit
             t.session_id = session_id  # type: ignore
-            # add trigger_id to thread to use in logger emit
-            t.trigger_id = trigger_id  # type: ignore
+            # trigger id is used in Token module for the unique key for a token
+            t.trigger_id = str(trigger_id)  # type: ignore
             t.start()
         except Exception:
             self.log.trace(traceback.format_exc())
@@ -441,16 +435,6 @@ class CommonService:
     def thread_name(self) -> str:
         """Return a uuid4 session id."""
         return threading.current_thread().name
-
-    @property
-    def trigger_id(self) -> int | None:
-        """Return the current trigger_id."""
-        trigger_id = None
-        if hasattr(threading.current_thread(), 'trigger_id'):
-            trigger_id = threading.current_thread().trigger_id  # type: ignore
-            if trigger_id is not None:
-                trigger_id = int(trigger_id)
-        return trigger_id
 
     def update_metric(self, label: str, value: int | str):
         """Update a metric if already exists.

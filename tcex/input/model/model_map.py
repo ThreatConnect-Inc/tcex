@@ -43,6 +43,8 @@ runtime_level_map = {
     'external': AppExternalModel,
     'organization': AppOrganizationModel,
     'playbook': AppPlaybookModel,
+    # special case for non-supported system based Apps
+    'system': AppOrganizationModel,
     'triggerservice': AppTriggerServiceModel,
     'webhooktriggerservice': AppWebhookTriggerServiceModel,
 }

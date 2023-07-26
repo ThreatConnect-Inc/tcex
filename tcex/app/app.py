@@ -9,7 +9,6 @@ from typing import TYPE_CHECKING
 from tcex.app.config.install_json import InstallJson
 from tcex.app.key_value_store.key_value_store import KeyValueStore
 from tcex.app.playbook.playbook import Playbook
-from tcex.app.service import ApiService, CommonServiceTrigger, WebhookTriggerService
 from tcex.app.token import Token
 from tcex.input.model.module_app_model import ModuleAppModel
 from tcex.pleb.cached_property import cached_property
@@ -19,17 +18,16 @@ from tcex.util.file_operation import FileOperation
 
 if TYPE_CHECKING:
     # first-party
-    from tcex.tcex import TcEx
+    from tcex.app.service import ApiService, CommonServiceTrigger, WebhookTriggerService
 
 
 class App:
     """TcEx Module"""
 
-    def __init__(self, model: ModuleAppModel, proxies: dict[str, str], tcex: 'TcEx'):
+    def __init__(self, model: ModuleAppModel, proxies: dict[str, str]):
         """Initialize instance properties."""
         self.model = model
         self.proxies = proxies
-        self.tcex = tcex
 
     @cached_property
     def file_operation(self) -> FileOperation:
@@ -128,23 +126,22 @@ class App:
             fh.write(results)
             fh.truncate()
 
-    # pylint: disable=reimported
     @cached_property
-    def service(self) -> ApiService | CommonServiceTrigger | WebhookTriggerService:
+    def service(self) -> 'ApiService | CommonServiceTrigger | WebhookTriggerService':
         """Include the Service Module."""
         if self.install_json.model.is_api_service_app:
             # first-party
             from tcex.app.service import ApiService as Service
-        elif self.ij.model.is_trigger_app and not self.install_json.model.is_webhook_trigger_app:
-            # first-party
-            from tcex.app.service import CommonServiceTrigger as Service
         elif self.ij.model.is_webhook_trigger_app:
             # first-party
             from tcex.app.service import WebhookTriggerService as Service
+        elif self.ij.model.is_trigger_app:
+            # first-party
+            from tcex.app.service import CommonServiceTrigger as Service
         else:
             raise RuntimeError('Could not determine the service type.')
 
-        return Service(self.tcex)
+        return Service(self.key_value_store, registry.logger, self.model, self.token)
 
     @cached_property
     def token(self) -> Token:

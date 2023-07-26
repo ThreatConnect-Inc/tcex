@@ -15,7 +15,7 @@
     "label1",
     "label2"
   ],
-  "languageVersion": "3.11.0",
+  "languageVersion": "3.11",
   "listDelimiter": "|",
   "minServerVersion": "7.2.0",
   "note": "The App Note.",
