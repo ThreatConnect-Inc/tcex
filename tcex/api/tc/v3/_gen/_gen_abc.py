@@ -414,7 +414,8 @@ class GenerateABC(ABC):
             self.requirements['standard library'].append('from typing import TYPE_CHECKING')
 
         indent = ''
-        _libs: list[dict | str] = []
+        # _libs: list[dict | str] = []
+        _libs = []
         for from_, libs in self.requirements.items():
             if not libs:
                 # continue if there are no libraries to import
