@@ -113,7 +113,7 @@ class V3ModelABC(BaseModel, ABC):
 
         # METHOD RULE: If the current method is in the property "methods" list the
         #     field should be included when available.
-        if method in property_.get('methods', []) and value:
+        if method in property_.get('methods', []) and (value or value in [0, False]):
             return True
 
         # DEFAULT RULE -> Fields should not be included unless the match a previous rule.
