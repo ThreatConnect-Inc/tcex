@@ -1,9 +1,10 @@
 # Release Notes
 
-## 4.x
-
 ### 4.0.1
 
+-   APP-4055 - [API] Updated v3 gen body to allow 0 and false in body
+-   APP-4056 - [API] Update Transforms to Support Email Group Type
+-   APP-4057 - [Logging] Add lock to sensitive filter to fix concurrent update exception
 
 ### 4.0.0
 

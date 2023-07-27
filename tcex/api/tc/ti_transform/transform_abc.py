@@ -407,7 +407,7 @@ class TransformABC(ABC):
                     continue
                 # strip out None params so that required params are enforced and optional
                 # params with default values are respected.
-                self.add_security_label(**self.util.remove_none(kwargs))
+                self.add_security_label(**kwargs)
 
     def _process_tags(self, tags: list[TagTransformModel]):
         """Process Tag data"""
