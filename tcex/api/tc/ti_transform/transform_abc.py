@@ -294,7 +294,10 @@ class TransformABC(ABC):
             self._process_metadata('password', self.transform.password)
 
         if self.transformed_item['type'] == 'Email':
+            self._process_metadata('body', self.transform.body)
             self._process_metadata('from', self.transform.from_addr)
+            self._process_metadata('header', self.transform.header)
+            self._process_metadata('subject', self.transform.subject)
             self._process_metadata('to', self.transform.to_addr)
 
         if self.transformed_item['type'] in ('Event', 'Incident'):

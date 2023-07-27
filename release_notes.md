@@ -1,14 +1,33 @@
 # Release Notes
 
+## 4.x
+
+### 4.0.1
+
+
 ### 4.0.0
 
+-   APP-3910 - [TcEx] Updated typing hint to Python 3.11 standards
+-   APP-3911 - [TcEx] General code enhancement
+-   APP-3914 - [TcEx] Restructured code for better programming interface
+-   APP-3918 - [Inputs] Added App type specific models to use in app_inputs.py file in templates
+-   APP-3925 - [CLI] Split CLI tools into a new project (tcex-cli)
+
+## 3.x
+
+### 3.0.9
+
+-   APP-3943 - [API] Update Transforms to Support Email Group Type
+-   APP-3981 - [API] Updated v3 gen body to allow 0 and false in body
+-   APP-3972 - [Logging] Add lock to sensitive filter to fix concurrent update exception
+-   APP-3993 - [KVStore] Added Redis password support
 
 ### 3.0.8
 
--   APP-3899 [CLI] Updated error handling on CLI when downloading template files
--   APP-3900 [CLI] Updated proxy support for CLI
--   APP-3906 [CLI] Don't create requirements.lock file if any errors occurred during tcex deps.
-    APP-3922 [API] Update TI Transforms to treat event_date field on some group types as a datetime transform.
+-   APP-3899 - [CLI] Updated error handling on CLI when downloading template files
+-   APP-3900 - [CLI] Updated proxy support for CLI
+-   APP-3906 - [CLI] Don't create requirements.lock file if any errors occurred during tcex deps.
+    APP-3922 - [API] Update TI Transforms to treat event_date field on some group types as a datetime transform.
 
 ### 3.0.7
 
