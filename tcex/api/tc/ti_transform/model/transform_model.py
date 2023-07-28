@@ -1,4 +1,4 @@
-"""TcEx Framework Module"""
+"""Model Definition"""
 # standard library
 from collections.abc import Callable
 
@@ -149,6 +149,9 @@ class GroupTransformModel(TiTransformModel, extra=Extra.forbid):
     from_addr: MetadataTransformModel | None = Field(None, description='')
     score: MetadataTransformModel | None = Field(None, description='')
     to_addr: MetadataTransformModel | None = Field(None, description='')
+    subject: MetadataTransformModel | None = Field(None, description='')
+    body: MetadataTransformModel | None = Field(None, description='')
+    header: MetadataTransformModel | None = Field(None, description='')
     # event, incident
     event_date: DatetimeTransformModel | None = Field(None, description='')
     status: MetadataTransformModel | None = Field(None, description='')

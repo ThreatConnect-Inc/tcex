@@ -294,7 +294,10 @@ class TransformABC(ABC):
             self._process_metadata('password', self.transform.password)
 
         if self.transformed_item['type'] == 'Email':
+            self._process_metadata('body', self.transform.body)
             self._process_metadata('from', self.transform.from_addr)
+            self._process_metadata('header', self.transform.header)
+            self._process_metadata('subject', self.transform.subject)
             self._process_metadata('to', self.transform.to_addr)
 
         if self.transformed_item['type'] in ('Event', 'Incident'):
@@ -404,7 +407,7 @@ class TransformABC(ABC):
                     continue
                 # strip out None params so that required params are enforced and optional
                 # params with default values are respected.
-                self.add_security_label(**self.util.remove_none(kwargs))
+                self.add_security_label(**kwargs)
 
     def _process_tags(self, tags: list[TagTransformModel]):
         """Process Tag data"""
