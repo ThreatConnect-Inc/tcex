@@ -3,8 +3,9 @@
 ### 4.0.1
 
 -   APP-4055 - [API] Updated v3 gen body to allow 0 and false in body
--   APP-4056 - [API] Update Transforms to Support Email Group Type
--   APP-4057 - [Logging] Add lock to sensitive filter to fix concurrent update exception
+-   APP-4056 - [API] Updated Transforms to Support Email Group Type
+-   APP-4057 - [Logging] Added lock to sensitive filter to fix concurrent update exception
+-   APP-4075 - [APP] Added support for System App type
 
 ### 4.0.0
 
@@ -28,7 +29,7 @@
 -   APP-3899 - [CLI] Updated error handling on CLI when downloading template files
 -   APP-3900 - [CLI] Updated proxy support for CLI
 -   APP-3906 - [CLI] Don't create requirements.lock file if any errors occurred during tcex deps.
-    APP-3922 - [API] Update TI Transforms to treat event_date field on some group types as a datetime transform.
+-   APP-3922 - [API] Update TI Transforms to treat event_date field on some group types as a datetime transform.
 
 ### 3.0.7
 
