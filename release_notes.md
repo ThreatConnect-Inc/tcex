@@ -6,6 +6,7 @@
 -   APP-4056 - [API] Updated Transforms to Support Email Group Type
 -   APP-4057 - [Logging] Added lock to sensitive filter to fix concurrent update exception
 -   APP-4075 - [APP] Added support for System App type
+-   APP-4107 - [Config] Updated config submodule (tcex.json model) to support legacy App Builder Apps
 
 ### 4.0.0
 

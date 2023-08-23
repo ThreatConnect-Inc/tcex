@@ -29,7 +29,7 @@ dependencies = [
   "pydantic<2.0.0",
   "python-dateutil",
   "PyYAML",
-  "redis",
+  "redis<5.0.0",
   "requests",
   "rich",
   "semantic_version",
