@@ -29,8 +29,6 @@ class SecurityLabelModel(
         None,
         description='Color of the security label.',
         methods=['POST', 'PUT'],
-        max_length=10,
-        min_length=1,
         read_only=False,
         title='color',
     )
@@ -45,8 +43,6 @@ class SecurityLabelModel(
         None,
         description='Description of the security label.',
         methods=['POST', 'PUT'],
-        max_length=400,
-        min_length=1,
         read_only=False,
         title='description',
     )
@@ -60,8 +56,6 @@ class SecurityLabelModel(
         None,
         description='Name of the security label.',
         methods=['POST', 'PUT'],
-        max_length=50,
-        min_length=1,
         read_only=False,
         title='name',
     )

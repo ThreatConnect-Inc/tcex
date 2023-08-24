@@ -57,8 +57,6 @@ class VictimModel(
         None,
         allow_mutation=False,
         description='Description of the Victim.',
-        max_length=255,
-        min_length=0,
         read_only=True,
         title='description',
     )
@@ -72,8 +70,6 @@ class VictimModel(
         None,
         description='Name of the Victim.',
         methods=['POST', 'PUT'],
-        max_length=100,
-        min_length=1,
         read_only=False,
         title='name',
     )
@@ -81,8 +77,6 @@ class VictimModel(
         None,
         description='Nationality of the Victim.',
         methods=['POST', 'PUT'],
-        max_length=100,
-        min_length=0,
         read_only=False,
         title='nationality',
     )
@@ -90,8 +84,6 @@ class VictimModel(
         None,
         description='Org of the Victim.',
         methods=['POST', 'PUT'],
-        max_length=100,
-        min_length=0,
         read_only=False,
         title='org',
     )
@@ -116,8 +108,6 @@ class VictimModel(
         None,
         description='Suborg of the Victim.',
         methods=['POST', 'PUT'],
-        max_length=100,
-        min_length=0,
         read_only=False,
         title='suborg',
     )
@@ -142,8 +132,6 @@ class VictimModel(
         None,
         description='Work location of the Victim.',
         methods=['POST', 'PUT'],
-        max_length=100,
-        min_length=0,
         read_only=False,
         title='workLocation',
     )

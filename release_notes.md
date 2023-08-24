@@ -7,6 +7,7 @@
 -   APP-4057 - [Logging] Added lock to sensitive filter to fix concurrent update exception
 -   APP-4075 - [APP] Added support for System App type
 -   APP-4107 - [Config] Updated config submodule (tcex.json model) to support legacy App Builder Apps
+-   APP-4108 - [API] Removed max_length and min_length from TI models
 
 ### 4.0.0
 

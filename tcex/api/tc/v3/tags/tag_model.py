@@ -36,8 +36,6 @@ class TagModel(
         None,
         description='A brief description of the Tag.',
         methods=['POST', 'PUT'],
-        max_length=4000,
-        min_length=0,
         read_only=False,
         title='description',
     )
@@ -72,8 +70,6 @@ class TagModel(
         None,
         description='The **name** for the Tag.',
         methods=['POST', 'PUT'],
-        max_length=128,
-        min_length=1,
         read_only=False,
         title='name',
     )

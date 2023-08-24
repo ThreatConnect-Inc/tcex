@@ -358,8 +358,8 @@ class GenerateModelABC(GenerateABC, ABC):
                 _model.append(f'''{self.i2}methods={prop.extra.methods},''')
 
             # max_length
-            if prop.max_length is not None:
-                _model.append(f'''{self.i2}max_length={prop.max_length},''')
+            # if prop.max_length is not None:
+            #     _model.append(f'''{self.i2}max_length={prop.max_length},''')
 
             # max_size
             # if field_max_size is not None:
@@ -370,8 +370,8 @@ class GenerateModelABC(GenerateABC, ABC):
                 _model.append(f'''{self.i2}maximum={prop.max_value},''')
 
             # min_length
-            if prop.min_length is not None:
-                _model.append(f'''{self.i2}min_length={prop.min_length},''')
+            # if prop.min_length is not None:
+            #     _model.append(f'''{self.i2}min_length={prop.min_length},''')
 
             # min_value
             if prop.min_value is not None:

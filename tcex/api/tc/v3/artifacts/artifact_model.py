@@ -118,8 +118,6 @@ class ArtifactModel(
         None,
         description='The field name for the artifact.',
         methods=['POST', 'PUT'],
-        max_length=100,
-        min_length=0,
         read_only=False,
         title='fieldName',
     )
@@ -175,8 +173,6 @@ class ArtifactModel(
         None,
         description='The **source** for the Artifact.',
         methods=['POST', 'PUT'],
-        max_length=100,
-        min_length=0,
         read_only=False,
         title='source',
     )
@@ -184,8 +180,6 @@ class ArtifactModel(
         None,
         description='The **summary** for the Artifact.',
         methods=['POST', 'PUT'],
-        max_length=500,
-        min_length=1,
         read_only=False,
         title='summary',
     )
