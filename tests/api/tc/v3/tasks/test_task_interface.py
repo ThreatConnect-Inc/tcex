@@ -194,7 +194,7 @@ class TestTasks(TestV3):
         tasks.filter.case_id(TqlOperator.EQ, case.model.id)
         if task.model.completed_date:
             tasks.filter.completed_date(TqlOperator.EQ, task.model.completed_date)
-        tasks.filter.due_date(TqlOperator.GT, task_data['due_date'])
+        tasks.filter.due_date(TqlOperator.EQ, task_data['due_date'])
         if task.model.id is not None:
             tasks.filter.id(TqlOperator.EQ, task.model.id)
         tasks.filter.description(TqlOperator.EQ, task_data['description'])
