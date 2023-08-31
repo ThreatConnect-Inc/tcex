@@ -81,8 +81,6 @@ class GroupModel(
         applies_to=['Email'],
         description='The email Body.',
         methods=['POST', 'PUT'],
-        max_length=65535,
-        min_length=0,
         read_only=False,
         title='body',
     )
@@ -169,8 +167,6 @@ class GroupModel(
         conditional_required=['Document', 'Report', 'Signature'],
         description='The document or signature file name.',
         methods=['POST', 'PUT'],
-        max_length=255,
-        min_length=0,
         read_only=False,
         title='fileName',
     )
@@ -212,8 +208,6 @@ class GroupModel(
         applies_to=['Email'],
         description='The email From field.',
         methods=['POST', 'PUT'],
-        max_length=100,
-        min_length=0,
         read_only=False,
         title='from',
     )
@@ -229,8 +223,6 @@ class GroupModel(
         applies_to=['Email'],
         description='The email Header field.',
         methods=['POST', 'PUT'],
-        max_length=65535,
-        min_length=0,
         read_only=False,
         title='header',
     )
@@ -266,8 +258,6 @@ class GroupModel(
         None,
         description='The name of the group.',
         methods=['POST', 'PUT'],
-        max_length=100,
-        min_length=0,
         read_only=False,
         title='name',
     )
@@ -383,8 +373,6 @@ class GroupModel(
         applies_to=['Email'],
         description='The email Subject section.',
         methods=['POST', 'PUT'],
-        max_length=255,
-        min_length=0,
         read_only=False,
         title='subject',
     )
@@ -410,7 +398,6 @@ class GroupModel(
         None,
         description='The **type** for the Group.',
         methods=['POST', 'PUT'],
-        min_length=1,
         read_only=False,
         title='type',
     )

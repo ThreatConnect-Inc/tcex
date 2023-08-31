@@ -128,8 +128,6 @@ class NoteModel(
         None,
         description='The **text** for the Note.',
         methods=['POST', 'PUT'],
-        max_length=65500,
-        min_length=1,
         read_only=False,
         title='text',
     )

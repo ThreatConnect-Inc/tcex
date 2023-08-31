@@ -8,6 +8,7 @@ from tcex.input.model.app_external_model import AppExternalModel
 from tcex.input.model.app_feed_api_service_model import AppFeedApiServiceModel
 from tcex.input.model.app_organization_model import AppOrganizationModel
 from tcex.input.model.app_playbook_model import AppPlaybookModel
+from tcex.input.model.app_system_model import AppSystemModel
 from tcex.input.model.app_trigger_service_model import AppTriggerServiceModel
 from tcex.input.model.app_webhook_trigger_service_model import AppWebhookTriggerServiceModel
 from tcex.input.model.cal_setting_model import CalSettingModel
@@ -44,7 +45,7 @@ runtime_level_map = {
     'organization': AppOrganizationModel,
     'playbook': AppPlaybookModel,
     # special case for non-supported system based Apps
-    'system': AppOrganizationModel,
+    'system': AppSystemModel,
     'triggerservice': AppTriggerServiceModel,
     'webhooktriggerservice': AppWebhookTriggerServiceModel,
 }

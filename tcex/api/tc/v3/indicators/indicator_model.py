@@ -399,7 +399,6 @@ class IndicatorModel(
         None,
         description='The **type** for the Indicator.',
         methods=['POST', 'PUT'],
-        min_length=1,
         read_only=False,
         title='type',
     )

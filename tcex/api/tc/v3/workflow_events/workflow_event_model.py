@@ -59,8 +59,6 @@ class WorkflowEventModel(
         None,
         description='The reason for deleting the event (required input for DELETE operation only).',
         methods=['DELETE'],
-        max_length=255,
-        min_length=1,
         read_only=False,
         title='deletedReason',
     )
@@ -109,8 +107,6 @@ class WorkflowEventModel(
         None,
         description='The **summary** for the Workflow_Event.',
         methods=['POST', 'PUT'],
-        max_length=255,
-        min_length=1,
         read_only=False,
         title='summary',
     )

@@ -141,8 +141,6 @@ class CaseModel(
         None,
         description='The description of the Case.',
         methods=['POST', 'PUT'],
-        max_length=1500,
-        min_length=0,
         read_only=False,
         title='description',
     )
@@ -163,8 +161,6 @@ class CaseModel(
         None,
         description='The name of the Case.',
         methods=['POST', 'PUT'],
-        max_length=255,
-        min_length=1,
         read_only=False,
         title='name',
     )
@@ -262,8 +258,6 @@ class CaseModel(
         None,
         description='The **xid** for the Case.',
         methods=['POST'],
-        max_length=100,
-        min_length=10,
         read_only=False,
         title='xid',
     )
