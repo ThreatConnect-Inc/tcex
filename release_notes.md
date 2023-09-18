@@ -1,6 +1,10 @@
 # Release Notes
 
-### 4.0.1
+## 4.0.2
+
+-   APP-4175x - [API] Updated API to support TC 7.3 API changes
+
+## 4.0.1
 
 -   APP-4055 - [API] Updated v3 gen body to allow 0 and false in body
 -   APP-4056 - [API] Updated Transforms to Support Email Group Type
@@ -9,7 +13,7 @@
 -   APP-4107 - [Config] Updated config submodule (tcex.json model) to support legacy App Builder Apps
 -   APP-4108 - [API] Removed max_length and min_length from TI models
 
-### 4.0.0
+## 4.0.0
 
 -   APP-3910 - [TcEx] Updated typing hint to Python 3.11 standards
 -   APP-3911 - [TcEx] General code enhancement

@@ -109,7 +109,6 @@ class WorkflowTemplateModel(
         None,
         description='The **version** for the Workflow_Template.',
         methods=['POST', 'PUT'],
-        minimum=1,
         read_only=False,
         title='version',
     )

@@ -248,10 +248,10 @@ def all(  # pylint: disable=redefined-builtin
     for type_ in ObjectTypes:
         type_ = util.snake_string(type_.value)
 
-        if gen_type_ in ['all', 'filter']:
-            gen_filter(type_)
         if gen_type_ in ['all', 'model']:
             gen_model(type_)
+        if gen_type_ in ['all', 'filter']:
+            gen_filter(type_)
         if gen_type_ in ['all', 'object']:
             gen_object(type_)
 

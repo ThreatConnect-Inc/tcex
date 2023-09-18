@@ -224,7 +224,7 @@ class CommonService:
         try:
             # messages on server topic must be json objects
             m = json.loads(message.payload)
-            if m.get('triggerId') is not None:
+            if m.get('triggerId') not in [None, '']:
                 m['triggerId'] = int(m['triggerId'])
         except ValueError:
             self.log.warning(

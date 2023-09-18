@@ -366,16 +366,16 @@ class GenerateModelABC(GenerateABC, ABC):
             #     _model.append(f'''{self.i2}max_items={field_max_size},''')
 
             # max_value
-            if prop.max_value is not None:
-                _model.append(f'''{self.i2}maximum={prop.max_value},''')
+            # if prop.max_value is not None:
+            #     _model.append(f'''{self.i2}maximum={prop.max_value},''')
 
             # min_length
             # if prop.min_length is not None:
             #     _model.append(f'''{self.i2}min_length={prop.min_length},''')
 
             # min_value
-            if prop.min_value is not None:
-                _model.append(f'''{self.i2}minimum={prop.min_value},''')
+            # if prop.min_value is not None:
+            #     _model.append(f'''{self.i2}minimum={prop.min_value},''')
 
             # readOnly/allow_mutation setting
             _model.append(f'''{self.i2}read_only={prop.read_only},''')

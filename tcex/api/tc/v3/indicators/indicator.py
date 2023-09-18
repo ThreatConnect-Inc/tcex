@@ -49,13 +49,23 @@ class Indicator(ObjectABC):
         attributes (IndicatorAttributes, kwargs): A list of Attributes corresponding to the
             Indicator.
         confidence (int, kwargs): The indicator threat confidence.
+        custom_association_name (str, kwargs): The custom association name if assigned to this
+            indicator.
+        custom_associations (Indicators, kwargs): A list of indicators with custom associations to
+            this indicator.
         dns_active (bool, kwargs): Is dns active for the indicator?
+        external_date_added (str, kwargs): The date and time that the item was first created
+            externally.
+        external_date_expires (str, kwargs): The date and time the item expires externally.
+        external_last_modified (str, kwargs): The date and time the item was modified externally.
         file_actions (FileActions, kwargs): The type of file action associated with this indicator.
         file_occurrences (FileOccurrences, kwargs): A list of file occurrences associated with this
             indicator.
+        first_seen (str, kwargs): The date and time that the item was first seen.
         host_name (str, kwargs): The host name of the indicator (Host specific summary field).
         ip (str, kwargs): The ip address associated with this indicator (Address specific summary
             field).
+        last_seen (str, kwargs): The date and time that the item was last seen.
         md5 (str, kwargs): The md5 associated with this indicator (File specific summary field).
         mode (str, kwargs): The operation to perform on the file hashes (delete | merge).
         owner_id (int, kwargs): The id of the Organization, Community, or Source that the item
