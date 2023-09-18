@@ -198,7 +198,7 @@ class ThreatIntelligence:
         mitre_tags = {}
         try:
             tags = Tags(session=self.session, params={'resultLimit': 1_000})
-            tags.filter.technique_id(TqlOperator.NE, None)
+            tags.filter.technique_id(TqlOperator.NE, None)  # type: ignore
             for tag in tags:
                 mitre_tags[str(tag.model.technique_id)] = tag.model.name
         except Exception as e:
