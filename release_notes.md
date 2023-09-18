@@ -1,5 +1,9 @@
 # Release Notes
 
+### 4.0.2
+
+-   APP-4155 [API] Added Mitre Attack module for lookup by id or name
+
 ### 4.0.1
 
 -   APP-4055 - [API] Updated v3 gen body to allow 0 and false in body
