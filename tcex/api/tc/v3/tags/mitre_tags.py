@@ -16,6 +16,7 @@ _logger: TraceLogger = logging.getLogger(__name__.split('.', maxsplit=1)[0])  # 
 
 class MitreTag(BaseModel):
     """MitreTag Class"""
+
     id: str
     name: str
 
@@ -27,6 +28,7 @@ class MitreTag(BaseModel):
 
 class MitreTags:
     """MitreTags Class"""
+
     def __init__(self, mitre_tags: dict[str, str]):
         """Initialize instance properties."""
         self._mitre_tags = {id_: MitreTag(id=id_, name=name) for id_, name in mitre_tags.items()}
