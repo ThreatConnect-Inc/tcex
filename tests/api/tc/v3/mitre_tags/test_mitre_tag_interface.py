@@ -6,7 +6,7 @@ import pytest
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 
 
-class TestCases(TestV3):
+class TestMitreTags(TestV3):
     """Test TcEx Mitre Tags."""
 
     v3_helper = V3Helper('cases')
