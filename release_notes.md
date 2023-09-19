@@ -2,7 +2,7 @@
 
 ## 4.0.2
 
--   APP-4175x - [API] Updated API to support TC 7.3 API changes
+-   APP-4175 - [API] Updated API to support TC 7.3 API changes
 
 ## 4.0.1
 
