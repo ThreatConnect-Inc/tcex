@@ -71,8 +71,6 @@ class VictimAssetModel(
         conditional_required=['SocialNetwork', 'NetworkAccount'],
         description='The network name.',
         methods=['POST', 'PUT'],
-        max_length=255,
-        min_length=1,
         read_only=False,
         title='accountName',
     )
@@ -82,8 +80,6 @@ class VictimAssetModel(
         conditional_required=['EmailAddress'],
         description='The email address associated with the E-Mail Address asset.',
         methods=['POST', 'PUT'],
-        max_length=255,
-        min_length=1,
         read_only=False,
         title='address',
     )
@@ -123,8 +119,6 @@ class VictimAssetModel(
         conditional_required=['Phone'],
         description='The phone number of the asset.',
         methods=['POST', 'PUT'],
-        max_length=255,
-        min_length=1,
         read_only=False,
         title='phone',
     )
@@ -141,7 +135,6 @@ class VictimAssetModel(
         None,
         description='Type of victim asset.',
         methods=['POST'],
-        min_length=1,
         read_only=False,
         title='type',
     )
@@ -165,8 +158,6 @@ class VictimAssetModel(
         conditional_required=['WebSite'],
         description='The website of the asset.',
         methods=['POST', 'PUT'],
-        max_length=255,
-        min_length=1,
         read_only=False,
         title='website',
     )

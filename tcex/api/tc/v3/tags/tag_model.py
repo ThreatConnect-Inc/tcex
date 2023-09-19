@@ -77,8 +77,6 @@ class TagModel(
         None,
         description='A brief description of the Tag.',
         methods=['POST', 'PUT'],
-        max_length=255,
-        min_length=0,
         read_only=False,
         title='description',
     )
@@ -113,10 +111,17 @@ class TagModel(
         None,
         description='The **name** for the Tag.',
         methods=['POST', 'PUT'],
-        max_length=128,
-        min_length=1,
         read_only=False,
         title='name',
+    )
+    normalized: bool = Field(
+        None,
+        allow_mutation=False,
+        description=(
+            'Indicates whether this tag is specified as a Main Tag within Tag Normalization.'
+        ),
+        read_only=True,
+        title='normalized',
     )
     owner: Optional[str] = Field(
         None,
@@ -124,6 +129,30 @@ class TagModel(
         methods=['POST'],
         read_only=False,
         title='owner',
+    )
+    platforms: Optional[dict] = Field(
+        None,
+        allow_mutation=False,
+        description='For ATT&CK-based tags, these are the platforms applicable to the technique.',
+        read_only=True,
+        title='platforms',
+    )
+    synonymous_tag_names: Optional[dict] = Field(
+        None,
+        allow_mutation=False,
+        description=(
+            'For Normalized tags, this is a list of defined synonymous tag names that would '
+            'normalize to this main tag.'
+        ),
+        read_only=True,
+        title='synonymousTagNames',
+    )
+    technique_id: Optional[str] = Field(
+        None,
+        allow_mutation=False,
+        description='For ATT&CK-based tags, this is the technique ID assigned to the tag.',
+        read_only=True,
+        title='techniqueId',
     )
     victims: Optional['VictimsModel'] = Field(
         None,

@@ -122,8 +122,6 @@ class GroupModel(
         applies_to=['Email'],
         description='The email Body.',
         methods=['POST', 'PUT'],
-        max_length=65535,
-        min_length=0,
         read_only=False,
         title='body',
     )
@@ -204,14 +202,33 @@ class GroupModel(
         read_only=False,
         title='eventDate',
     )
+    external_date_added: Optional[datetime] = Field(
+        None,
+        description='The date and time that the item was first created externally.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='externalDateAdded',
+    )
+    external_date_expires: Optional[datetime] = Field(
+        None,
+        description='The date and time the item expires externally.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='externalDateExpires',
+    )
+    external_last_modified: Optional[datetime] = Field(
+        None,
+        description='The date and time the item was modified externally.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='externalLastModified',
+    )
     file_name: Optional[str] = Field(
         None,
         applies_to=['Document', 'Report', 'Signature'],
         conditional_required=['Document', 'Report', 'Signature'],
         description='The document or signature file name.',
         methods=['POST', 'PUT'],
-        max_length=255,
-        min_length=0,
         read_only=False,
         title='fileName',
     )
@@ -241,8 +258,7 @@ class GroupModel(
     )
     first_seen: Optional[datetime] = Field(
         None,
-        applies_to=['Campaign'],
-        description='The date and time that the campaign was first created.',
+        description='The date and time that the item was first seen.',
         methods=['POST', 'PUT'],
         read_only=False,
         title='firstSeen',
@@ -253,8 +269,6 @@ class GroupModel(
         applies_to=['Email'],
         description='The email From field.',
         methods=['POST', 'PUT'],
-        max_length=100,
-        min_length=0,
         read_only=False,
         title='from',
     )
@@ -270,8 +284,6 @@ class GroupModel(
         applies_to=['Email'],
         description='The email Header field.',
         methods=['POST', 'PUT'],
-        max_length=65535,
-        min_length=0,
         read_only=False,
         title='header',
     )
@@ -287,6 +299,13 @@ class GroupModel(
         description='The date and time that the Entity was last modified.',
         read_only=True,
         title='lastModified',
+    )
+    last_seen: Optional[datetime] = Field(
+        None,
+        description='The date and time that the item was last seen.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='lastSeen',
     )
     legacy_link: Optional[str] = Field(
         None,
@@ -307,8 +326,6 @@ class GroupModel(
         None,
         description='The name of the group.',
         methods=['POST', 'PUT'],
-        max_length=100,
-        min_length=0,
         read_only=False,
         title='name',
     )
@@ -424,8 +441,6 @@ class GroupModel(
         applies_to=['Email'],
         description='The email Subject section.',
         methods=['POST', 'PUT'],
-        max_length=255,
-        min_length=0,
         read_only=False,
         title='subject',
     )
@@ -451,7 +466,6 @@ class GroupModel(
         None,
         description='The **type** for the Group.',
         methods=['POST', 'PUT'],
-        min_length=1,
         read_only=False,
         title='type',
     )

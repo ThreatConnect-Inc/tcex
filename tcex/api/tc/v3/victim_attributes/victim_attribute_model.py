@@ -138,7 +138,6 @@ class VictimAttributeModel(
         None,
         description='The attribute value.',
         methods=['POST', 'PUT'],
-        min_length=1,
         read_only=False,
         title='value',
     )

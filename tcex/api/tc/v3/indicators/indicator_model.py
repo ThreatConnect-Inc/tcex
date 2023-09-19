@@ -131,10 +131,22 @@ class IndicatorModel(
         None,
         description='The indicator threat confidence.',
         methods=['POST', 'PUT'],
-        maximum=100,
-        minimum=0,
         read_only=False,
         title='confidence',
+    )
+    custom_association_name: Optional[str] = Field(
+        None,
+        description='The custom association name if assigned to this indicator.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='customAssociationName',
+    )
+    custom_associations: Optional['IndicatorsModel'] = Field(
+        None,
+        description='A list of indicators with custom associations to this indicator.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='customAssociations',
     )
     date_added: Optional[datetime] = Field(
         None,
@@ -174,6 +186,27 @@ class IndicatorModel(
         read_only=True,
         title='enrichment',
     )
+    external_date_added: Optional[datetime] = Field(
+        None,
+        description='The date and time that the item was first created externally.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='externalDateAdded',
+    )
+    external_date_expires: Optional[datetime] = Field(
+        None,
+        description='The date and time the item expires externally.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='externalDateExpires',
+    )
+    external_last_modified: Optional[datetime] = Field(
+        None,
+        description='The date and time the item was modified externally.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='externalLastModified',
+    )
     false_positive_reported_by_user: bool = Field(
         None,
         allow_mutation=False,
@@ -201,6 +234,13 @@ class IndicatorModel(
         methods=['POST', 'PUT'],
         read_only=False,
         title='fileOccurrences',
+    )
+    first_seen: Optional[datetime] = Field(
+        None,
+        description='The date and time that the item was first seen.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='firstSeen',
     )
     geo_location: Optional[dict] = Field(
         None,
@@ -267,6 +307,13 @@ class IndicatorModel(
         read_only=True,
         title='lastObserved',
     )
+    last_seen: Optional[datetime] = Field(
+        None,
+        description='The date and time that the item was last seen.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='lastSeen',
+    )
     legacy_link: Optional[str] = Field(
         None,
         allow_mutation=False,
@@ -322,8 +369,6 @@ class IndicatorModel(
         None,
         description='The indicator threat rating.',
         methods=['POST', 'PUT'],
-        maximum=5,
-        minimum=0,
         read_only=False,
         title='rating',
     )
@@ -440,7 +485,6 @@ class IndicatorModel(
         None,
         description='The **type** for the Indicator.',
         methods=['POST', 'PUT'],
-        min_length=1,
         read_only=False,
         title='type',
     )
@@ -526,7 +570,7 @@ class IndicatorModel(
             return IndicatorAttributesModel()
         return v
 
-    @validator('associated_indicators', always=True)
+    @validator('associated_indicators', 'custom_associations', always=True)
     def _validate_indicators(cls, v):
         if not v:
             return IndicatorsModel()

@@ -180,6 +180,54 @@ class GroupFilter(FilterABC):
         event_date = self.utils.any_to_datetime(event_date).strftime('%Y-%m-%d %H:%M:%S')
         self._tql.add_filter('eventDate', operator, event_date, TqlType.STRING)
 
+    def external_date_added(self, operator: Enum, external_date_added: str):
+        """Filter External Date Added based on **externalDateAdded** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            external_date_added: The date and time that the group was first created externally.
+        """
+        external_date_added = self.utils.any_to_datetime(external_date_added).strftime(
+            '%Y-%m-%d %H:%M:%S'
+        )
+        self._tql.add_filter('externalDateAdded', operator, external_date_added, TqlType.STRING)
+
+    def external_date_expires(self, operator: Enum, external_date_expires: str):
+        """Filter External Date Expires based on **externalDateExpires** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            external_date_expires: The date and time the group expires externally.
+        """
+        external_date_expires = self.utils.any_to_datetime(external_date_expires).strftime(
+            '%Y-%m-%d %H:%M:%S'
+        )
+        self._tql.add_filter('externalDateExpires', operator, external_date_expires, TqlType.STRING)
+
+    def external_last_modified(self, operator: Enum, external_last_modified: str):
+        """Filter External Last Modified based on **externalLastModified** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            external_last_modified: The date and time the group was modified externally.
+        """
+        external_last_modified = self.utils.any_to_datetime(external_last_modified).strftime(
+            '%Y-%m-%d %H:%M:%S'
+        )
+        self._tql.add_filter(
+            'externalLastModified', operator, external_last_modified, TqlType.STRING
+        )
+
+    def first_seen(self, operator: Enum, first_seen: str):
+        """Filter First Seen based on **firstSeen** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            first_seen: The date and time that the group was first seen.
+        """
+        first_seen = self.utils.any_to_datetime(first_seen).strftime('%Y-%m-%d %H:%M:%S')
+        self._tql.add_filter('firstSeen', operator, first_seen, TqlType.STRING)
+
     def generated_report(self, operator: Enum, generated_report: bool):
         """Filter Generated (Report) based on **generatedReport** keyword.
 
@@ -244,6 +292,17 @@ class GroupFilter(FilterABC):
             has_intel_query: A nested query for association to User Queries.
         """
         self._tql.add_filter('hasIntelQuery', operator, has_intel_query, TqlType.INTEGER)
+
+    def has_intel_requirement(self, operator: Enum, has_intel_requirement: int):
+        """Filter Associated Intel Requirement based on **hasIntelRequirement** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            has_intel_requirement: A nested query for association to intel requirements.
+        """
+        self._tql.add_filter(
+            'hasIntelRequirement', operator, has_intel_requirement, TqlType.INTEGER
+        )
 
     @property
     def has_security_label(self):
@@ -312,6 +371,16 @@ class GroupFilter(FilterABC):
         """
         last_modified = self.utils.any_to_datetime(last_modified).strftime('%Y-%m-%d %H:%M:%S')
         self._tql.add_filter('lastModified', operator, last_modified, TqlType.STRING)
+
+    def last_seen(self, operator: Enum, last_seen: str):
+        """Filter Last Seen based on **lastSeen** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            last_seen: The date and time that the group was last seen.
+        """
+        last_seen = self.utils.any_to_datetime(last_seen).strftime('%Y-%m-%d %H:%M:%S')
+        self._tql.add_filter('lastSeen', operator, last_seen, TqlType.STRING)
 
     def owner(self, operator: Enum, owner: int):
         """Filter Owner ID based on **owner** keyword.

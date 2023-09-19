@@ -181,6 +181,7 @@ class PropertyModel(
             'Links',
             'Map',
             'ValidationRule',
+            'Strings',
             'WhoIs',
         ]
         if pm.type in types:
