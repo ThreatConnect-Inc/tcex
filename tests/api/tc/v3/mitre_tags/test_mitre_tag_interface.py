@@ -16,7 +16,7 @@ class TestMitreTags(TestV3):
         [
             ('T1205.001', 'T1205.001 - Traffic Signaling: Port Knocking'),
             ('T1205', 'T1205 - Traffic Signaling'),
-            ('T9999', 'T9999')
+            ('T9999', 'T9999'),
         ],
     )
     def test_get_by_id(self, mitre_id: str, output: str):
