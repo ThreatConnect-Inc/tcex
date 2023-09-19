@@ -18,7 +18,6 @@ class InstallJsonUpdate:
     def multiple(
         self,
         features: Optional[bool] = True,
-        migrate: Optional[bool] = False,
         sequence: Optional[bool] = True,
         valid_values: Optional[bool] = True,
         playbook_data_types: Optional[bool] = True,
@@ -36,10 +35,6 @@ class InstallJsonUpdate:
         if features is True:
             self.update_features()
 
-        if migrate is True:
-            # update programMain to run
-            self.update_program_main()
-
         # update sequence numbers
         if sequence is True:
             self.update_sequence_numbers()
@@ -54,14 +49,6 @@ class InstallJsonUpdate:
 
         # write updated profile
         self.ij.write()
-
-    # def update_display_name(self, json_data: dict):
-    #     """Update the displayName parameter."""
-    #     if not self.ij.model.display_name:
-    #         display_name = os.path.basename(os.getcwd()).replace(self.app_prefix, '')
-    #         display_name = display_name.replace('_', ' ').replace('-', ' ')
-    #         display_name = ' '.join([a.title() for a in display_name.split(' ')])
-    #     self.ij.model.display_name = self.ij.model.display_name or display_name
 
     def update_features(self):
         """Update feature set based on App type."""
@@ -108,10 +95,6 @@ class InstallJsonUpdate:
                 features.append(feature)
 
         self.ij.model.features = sorted(list(set(features)))
-
-    def update_program_main(self):
-        """Update program main."""
-        self.ij.model.program_main = 'run'
 
     def update_sequence_numbers(self):
         """Update program sequence numbers."""

@@ -92,9 +92,9 @@ class GroupAttributeModel(
     )
     group: Optional['GroupModel'] = Field(
         None,
+        allow_mutation=False,
         description='Details of group associated with attribute.',
-        methods=['POST'],
-        read_only=False,
+        read_only=True,
         title='group',
     )
     group_id: Optional[int] = Field(
@@ -152,7 +152,6 @@ class GroupAttributeModel(
         None,
         description='The attribute value.',
         methods=['POST', 'PUT'],
-        min_length=1,
         read_only=False,
         title='value',
     )

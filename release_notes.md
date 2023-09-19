@@ -1,6 +1,12 @@
 # Release Notes
 
+### 3.0.10
+
+-   APP-4076 - [Input] Added support for System type App
+-   APP-4174 - [API] Updated API module for TC 7.3 changes
+
 ### 3.0.9
+
 -   APP-3943 - [API] Update Transforms to Support Email Group Type
 -   APP-3981 - [API] Updated v3 gen body to allow 0 and false in body
 -   APP-3972 - [Logging] Add lock to sensitive filter to fix concurrent update exception

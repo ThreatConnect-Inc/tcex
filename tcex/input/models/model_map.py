@@ -80,6 +80,14 @@ runtime_level_map = {
         ProxyModel,
         # ServiceModel,
     ],
+    'system': [
+        ApiModel,
+        BatchModel,
+        LoggingModel,
+        OrganizationModel,
+        PathModel,
+        ProxyModel,
+    ],
     'triggerservice': [
         ApiModel,
         BatchModel,

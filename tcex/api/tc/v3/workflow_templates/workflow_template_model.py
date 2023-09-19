@@ -118,8 +118,6 @@ class WorkflowTemplateModel(
         None,
         description='The **description** for the Workflow_Template.',
         methods=['POST', 'PUT'],
-        max_length=1500,
-        min_length=0,
         read_only=False,
         title='description',
     )
@@ -133,8 +131,6 @@ class WorkflowTemplateModel(
         None,
         description='The **name** for the Workflow_Template.',
         methods=['POST', 'PUT'],
-        max_length=255,
-        min_length=1,
         read_only=False,
         title='name',
     )
@@ -156,7 +152,6 @@ class WorkflowTemplateModel(
         None,
         description='The **version** for the Workflow_Template.',
         methods=['POST', 'PUT'],
-        minimum=1,
         read_only=False,
         title='version',
     )

@@ -166,3 +166,12 @@ class TagFilter(FilterABC):
             summary: The name of the tag (case insensitive).
         """
         self._tql.add_filter('summary', operator, summary, TqlType.STRING)
+
+    def technique_id(self, operator: Enum, technique_id: str):
+        """Filter Technique ID based on **techniqueId** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            technique_id: The standard ID for specific MITRE ATT&CK techniques and subtechniques.
+        """
+        self._tql.add_filter('techniqueId', operator, technique_id, TqlType.STRING)

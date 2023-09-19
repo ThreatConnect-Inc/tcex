@@ -87,12 +87,17 @@ class Group(ObjectABC):
         due_date (str, kwargs): The date and time that the Task is due.
         escalation_date (str, kwargs): The escalation date and time.
         event_date (str, kwargs): The date and time that the incident or event was first created.
+        external_date_added (str, kwargs): The date and time that the item was first created
+            externally.
+        external_date_expires (str, kwargs): The date and time the item expires externally.
+        external_last_modified (str, kwargs): The date and time the item was modified externally.
         file_name (str, kwargs): The document or signature file name.
         file_text (str, kwargs): The signature file text.
         file_type (str, kwargs): The signature file type.
-        first_seen (str, kwargs): The date and time that the campaign was first created.
+        first_seen (str, kwargs): The date and time that the item was first seen.
         from_ (str, kwargs): The email From field.
         header (str, kwargs): The email Header field.
+        last_seen (str, kwargs): The date and time that the item was last seen.
         malware (bool, kwargs): Is the document malware?
         name (str, kwargs): The name of the group.
         owner_id (int, kwargs): The id of the Organization, Community, or Source that the item

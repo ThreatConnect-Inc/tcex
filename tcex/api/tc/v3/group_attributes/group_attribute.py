@@ -63,7 +63,6 @@ class GroupAttribute(ObjectABC):
     Args:
         default (bool, kwargs): A flag indicating that this is the default attribute of its type
             within the object. Only applies to certain attribute and data types.
-        group (Group, kwargs): Details of group associated with attribute.
         group_id (int, kwargs): Group associated with attribute.
         pinned (bool, kwargs): A flag indicating that the attribute has been noted for importance.
         security_labels (SecurityLabels, kwargs): A list of Security Labels corresponding to the

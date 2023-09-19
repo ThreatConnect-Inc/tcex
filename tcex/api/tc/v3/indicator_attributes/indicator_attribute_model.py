@@ -98,9 +98,9 @@ class IndicatorAttributeModel(
     )
     indicator: Optional['IndicatorModel'] = Field(
         None,
+        allow_mutation=False,
         description='Details of indicator associated with attribute.',
-        methods=['POST'],
-        read_only=False,
+        read_only=True,
         title='indicator',
     )
     indicator_id: Optional[int] = Field(
@@ -152,7 +152,6 @@ class IndicatorAttributeModel(
         None,
         description='The attribute value.',
         methods=['POST', 'PUT'],
-        min_length=1,
         read_only=False,
         title='value',
     )
