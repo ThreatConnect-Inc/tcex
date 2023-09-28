@@ -1,4 +1,7 @@
 """TcEx Framework Module"""
+# standard library
+import logging
+
 # third-party
 from requests import Session
 
@@ -12,9 +15,16 @@ from tcex.api.tc.v3.indicator_attributes.indicator_attribute import (
 )
 from tcex.api.tc.v3.indicators.indicator import Indicator, Indicators
 from tcex.api.tc.v3.security_labels.security_label import SecurityLabel
+from tcex.api.tc.v3.tags.mitre_tags import MitreTags
+from tcex.api.tc.v3.tags.tag import Tags
+from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tcex.api.tc.v3.victim_assets.victim_asset import VictimAsset, VictimAssets
 from tcex.api.tc.v3.victim_attributes.victim_attribute import VictimAttribute, VictimAttributes
 from tcex.api.tc.v3.victims.victim import Victim, Victims
+from tcex.logger.trace_logger import TraceLogger
+from tcex.pleb.cached_property import cached_property
+
+_logger: TraceLogger = logging.getLogger(__name__.split('.', maxsplit=1)[0])  # type: ignore
 
 
 class ThreatIntelligence:
@@ -28,6 +38,7 @@ class ThreatIntelligence:
         """Initialize instance properties."""
         self.session = session
         self._ti_utils = None
+        self.log = _logger
 
     @property
     def ti_utils(self):
@@ -180,6 +191,20 @@ class ThreatIntelligence:
             params (dict, optional): A dict of query params for the request.
         """
         return Groups(session=self.session, **kwargs)
+
+    @cached_property
+    def mitre_tags(self) -> MitreTags:
+        """Mitre Tags"""
+        mitre_tags = {}
+        try:
+            tags = Tags(session=self.session, params={'resultLimit': 1_000})
+            tags.filter.technique_id(TqlOperator.NE, None)  # type: ignore
+            for tag in tags:
+                mitre_tags[str(tag.model.technique_id)] = tag.model.name
+        except Exception as e:
+            self.log.exception('Error downloading Mitre Tags')
+            raise e
+        return MitreTags(mitre_tags)
 
     def indicator(self, **kwargs) -> Indicator:
         """Return a instance of Group object.
