@@ -89,6 +89,7 @@ class FilterModel(
             'Boolean': {'base_type': 'bool', 'typing_type': 'bool'},
             'Date': {'base_type': 'str', 'typing_type': 'Arrow | datetime | int | str'},
             'DateTime': {'base_type': 'str', 'typing_type': 'Arrow | datetime | int | str'},
+            'Double': {'base_type': 'float', 'typing_type': 'float | list'},
             'Enum': {'base_type': 'str', 'typing_type': 'list | str'},
             'EnumToInteger': {'base_type': 'str', 'typing_type': 'list | str'},
             'Integer': {'base_type': 'int', 'typing_type': 'int | list'},
@@ -114,6 +115,7 @@ class FilterModel(
         # tql types for the add_filter method call
         tql_type_map = {
             'bool': 'TqlType.BOOLEAN',
+            'float': 'TqlType.FLOAT',
             'int': 'TqlType.INTEGER',
             'str': 'TqlType.STRING',
         }

@@ -168,6 +168,9 @@ class PropertyModel(
             'Enrichments',
             'GeoLocation',
             'InvestigationLinks',
+            'IntelReqType',
+            'IntelRequirement',
+            'KeywordSection',
             'Links',
             'Map',
             'ValidationRule',
@@ -268,6 +271,16 @@ class PropertyModel(
                     'typing_type': cls.__extra_format_type_model(pm.type),
                 }
             )
+        elif pm.type == 'IntelReqType':
+            bi += 'intel_requirements.intel_req_type_model'
+            extra.update(
+                {
+                    'import_data': f'{bi} import IntelReqTypeModel',
+                    'import_source': 'first-party-forward-reference',
+                    'model': 'IntelReqTypeModel',
+                    'typing_type': cls.__extra_format_type_model(pm.type),
+                }
+            )
         elif pm.type == 'IndicatorAttributes':
             bi += 'indicator_attributes.indicator_attribute_model'
             extra.update(
@@ -283,6 +296,16 @@ class PropertyModel(
                 {
                     'import_source': 'standard library',
                     'typing_type': '''dict | list[dict] | None''',
+                }
+            )
+        elif pm.type == 'KeywordSection':
+            bi += 'intel_requirements.keyword_section_model'
+            extra.update(
+                {
+                    'import_data': f'{bi} import KeywordSectionModel',
+                    'import_source': 'first-party-forward-reference',
+                    'model': 'KeywordSectionModel',
+                    'typing_type': f'list[{cls.__extra_format_type_model(pm.type)}]',
                 }
             )
         elif pm.type == 'TaskAssignees':
@@ -393,4 +416,12 @@ class PropertyModel(
             'user_groups',
         ]:
             return 'tcex.api.tc.v3.security'
+
+        if type_.snake_case().plural().lower() in [
+            'categories',
+            'results',
+            'subtypes',
+        ]:
+            return 'tcex.api.tc.v3.intel_requirements'
+
         return 'tcex.api.tc.v3'

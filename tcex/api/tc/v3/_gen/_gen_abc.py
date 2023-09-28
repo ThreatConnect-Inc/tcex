@@ -473,4 +473,12 @@ class GenerateABC(ABC):
             'user_groups',
         ]:
             return 'tcex.api.tc.v3.security'
+
+        if type_.plural().lower() in [
+            'categories',
+            'results',
+            'subtypes',
+        ]:
+            return 'tcex.api.tc.v3.intel_requirements'
+
         return 'tcex.api.tc.v3'

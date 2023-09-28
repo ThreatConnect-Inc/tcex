@@ -2,7 +2,9 @@
 
 ## 4.0.2
 
+-   APP-4155 - [API] Added Mitre Attack module for lookup by id or name
 -   APP-4175 - [API] Updated API to support TC 7.3 API changes
+-   APP-4187 - [Playbook] Updated inputs to support TC variable nested in a Playbook variable (Key Value List)
 
 ## 4.0.1
 

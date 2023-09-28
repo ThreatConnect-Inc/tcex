@@ -3,6 +3,7 @@
 # first-party
 from tcex.api.tc.v3.attribute_types.attribute_type import AttributeType, AttributeTypes
 from tcex.api.tc.v3.case_management.case_management import CaseManagement
+from tcex.api.tc.v3.intel_requirement.ir import IR
 from tcex.api.tc.v3.security.security import Security
 from tcex.api.tc.v3.threat_intelligence.threat_intelligence import ThreatIntelligence
 
@@ -26,6 +27,11 @@ class V3(CaseManagement, Security, ThreatIntelligence):
     def cm(self) -> CaseManagement:
         """Return Case Management API collection."""
         return CaseManagement(self.session)
+
+    @property
+    def ir(self) -> IR:
+        """Return Intel Requirement API collection."""
+        return IR(self.session)
 
     @property
     def security(self) -> Security:
