@@ -242,7 +242,7 @@ class TagFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            technique_id: The standard ID for specific MITRE ATT&CK techniques and sub-techniques.
+            technique_id: The standard ID for specific MITRE ATT&CK techniques and subtechniques.
         """
         if isinstance(technique_id, list) and operator not in self.list_types:
             raise RuntimeError(

@@ -44,7 +44,7 @@ class GenerateModelABC(GenerateABC, ABC):
         """Add pydantic validator only when required."""
         self._add_module_class('third-party', 'pydantic', 'PrivateAttr')
 
-    def _gen_code_validator_method(self, type_: str, fields: list[str]) -> str:
+    def _gen_code_validator_method(self, type_: str, data: dict) -> str:
         """Return the validator code
 
         @validator('artifact_type', always=True, pre=True)
@@ -54,6 +54,8 @@ class GenerateModelABC(GenerateABC, ABC):
             return v
         """
         type_ = self.util.camel_string(type_)
+        fields = data['fields']
+        typing_type = data['typing_type'].strip('\'')
 
         fields_string = ', '.join(f'\'{field}\'' for field in fields)
         return '\n'.join(
@@ -61,7 +63,7 @@ class GenerateModelABC(GenerateABC, ABC):
                 f'''{self.i1}@validator({fields_string}, always=True, pre=True)''',
                 f'''{self.i1}def _validate_{type_.snake_case()}(cls, v):''',
                 f'''{self.i2}if not v:''',
-                f'''{self.i3}return {type_}Model()  # type: ignore''',
+                f'''{self.i3}return {typing_type}()  # type: ignore''',
                 f'''{self.i2}return v''',
                 '',
             ]
@@ -314,7 +316,10 @@ class GenerateModelABC(GenerateABC, ABC):
 
             # add validator
             if prop.extra.model is not None:
-                self.validators.setdefault(prop.type, []).append(prop.name.snake_case())
+                self.validators.setdefault(prop.type, {})
+                self.validators[prop.type].setdefault('fields', [])
+                self.validators[prop.type]['fields'].append(prop.name.snake_case())
+                self.validators[prop.type]['typing_type'] = prop.extra.typing_type
 
             # update model
             _model.append(
@@ -366,16 +371,16 @@ class GenerateModelABC(GenerateABC, ABC):
             #     _model.append(f'''{self.i2}max_items={field_max_size},''')
 
             # max_value
-            if prop.max_value is not None:
-                _model.append(f'''{self.i2}maximum={prop.max_value},''')
+            # if prop.max_value is not None:
+            #     _model.append(f'''{self.i2}maximum={prop.max_value},''')
 
             # min_length
             # if prop.min_length is not None:
             #     _model.append(f'''{self.i2}min_length={prop.min_length},''')
 
             # min_value
-            if prop.min_value is not None:
-                _model.append(f'''{self.i2}minimum={prop.min_value},''')
+            # if prop.min_value is not None:
+            #     _model.append(f'''{self.i2}minimum={prop.min_value},''')
 
             # readOnly/allow_mutation setting
             _model.append(f'''{self.i2}read_only={prop.read_only},''')
@@ -465,13 +470,11 @@ class GenerateModelABC(GenerateABC, ABC):
         """Generate model validator."""
         _v = []
 
-        validators = dict(
-            sorted({k: v for k, v in self.validators.items() if v is not None}.items())
-        )
-        for key, fields in validators.items():
-            if not fields:
+        validators = dict(sorted({k: v for k, v in self.validators.items() if v['fields']}.items()))
+        for key, data in validators.items():
+            if not data['fields']:
                 continue
-            _v.append(self._gen_code_validator_method(key, fields))
+            _v.append(self._gen_code_validator_method(key, data))
 
         # add blank line above validators only if validators exists
         if _v:

@@ -373,6 +373,9 @@ class GenerateObjectABC(GenerateABC, ABC):
         name_entities = [
             'artifact_types',
             'cases',
+            'categories',
+            'results',
+            'subtypes',
             'tags',
             'tasks',
             'workflow_templates',
@@ -383,6 +386,8 @@ class GenerateObjectABC(GenerateABC, ABC):
         value = 'self.model.summary'
         if self.type_.lower() in name_entities:
             value = 'self.model.name'
+        elif self.type_.lower() == 'intel_requirements':
+            value = 'self.model.requirement_text'
 
         as_entity_property_method = [
             f'''{self.i1}@property''',

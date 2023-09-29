@@ -157,8 +157,8 @@ class UserFilter(FilterABC):
 
         Args:
             operator: The operator enum for the filter.
-            password_reset_required: A flag indicating whether or not the user's password needs to
-                be reset upon next login.
+            password_reset_required: A flag indicating whether or not
+                the user's password needs to be reset upon next login.
         """
         self._tql.add_filter(
             'passwordResetRequired', operator, password_reset_required, TqlType.BOOLEAN

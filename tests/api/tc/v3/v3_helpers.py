@@ -160,6 +160,11 @@ class V3Helper:
                 'class_name': 'Case',
                 'collection_class_name': 'Cases',
             },
+            'categories': {
+                'module': 'tcex.api.tc.v3.intel_requirements.categories.category',
+                'class_name': 'Category',
+                'collection_class_name': 'Categories',
+            },
             'group_attributes': {
                 'module': 'tcex.api.tc.v3.group_attributes.group_attribute',
                 'class_name': 'GroupAttribute',
@@ -180,6 +185,11 @@ class V3Helper:
                 'class_name': 'IndicatorAttribute',
                 'collection_class_name': 'IndicatorAttributes',
             },
+            'intel_requirements': {
+                'module': 'tcex.api.tc.v3.intel_requirements.intel_requirement',
+                'class_name': 'IntelRequirement',
+                'collection_class_name': 'IntelRequirements',
+            },
             'notes': {
                 'module': 'tcex.api.tc.v3.notes.note',
                 'class_name': 'Note',
@@ -195,6 +205,11 @@ class V3Helper:
                 'class_name': 'Owner',
                 'collection_class_name': 'Owners',
             },
+            'results': {
+                'module': 'tcex.api.tc.v3.intel_requirements.results.result',
+                'class_name': 'Result',
+                'collection_class_name': 'Results',
+            },
             'security_labels': {
                 'module': 'tcex.api.tc.v3.security_labels.security_label',
                 'class_name': 'SecurityLabel',
@@ -204,6 +219,11 @@ class V3Helper:
                 'module': 'tcex.api.tc.v3.security.system_roles.system_role',
                 'class_name': 'SystemRole',
                 'collection_class_name': 'SystemRoles',
+            },
+            'subtypes': {
+                'module': 'tcex.api.tc.v3.intel_requirements.subtypes.subtype',
+                'class_name': 'Subtype',
+                'collection_class_name': 'Subtypes',
             },
             'tags': {
                 'module': 'tcex.api.tc.v3.tags.tag',
@@ -716,7 +736,10 @@ class TestV3:
                     'analyticsType',
                 ]
 
-            if self.v3_helper.v3_object in ['cases', 'groups'] and 'userDetails' in names:
+            if (
+                self.v3_helper.v3_object in ['cases', 'groups', 'intel_requirements']
+                and 'userDetails' in names
+            ):
                 # fix discrepancy between <endpoint>/fields and <endpoint>
                 names = ['createdBy']
 
@@ -736,6 +759,13 @@ class TestV3:
                         'threatAssessScoreFalsePositive',
                         'threatAssessScoreObserved',
                     ]
+
+            if self.v3_helper.v3_object == 'results':
+                if 'intelRequirementDetails' in names:
+                    # fix discrepancy between <endpoint>/fields and <endpoint>
+                    names = ['intelRequirement']
+                if 'intelRequirementId' in names:
+                    names = ['intelReqId']
 
             for name in names:
                 if name not in self.v3_helper.v3_obj.properties:

@@ -61,14 +61,14 @@ class GenerateArgsABC(GenerateABC, ABC):
         _doc_string = [f'{i1}Args:']
 
         # get properties from schema
-        schema = model().schema(by_alias=False)
+        schema = model.schema(by_alias=False)
         if '$ref' in schema:
             model_name = schema.get('$ref').split('/')[-1]
             properties = schema.get('definitions').get(model_name).get('properties')
         elif 'properties' in schema:
             properties = schema.get('properties')
         else:
-            Render.panel.failure(model().schema_json(by_alias=False))
+            Render.panel.failure(model.schema_json(by_alias=False))
 
         # iterate over properties to build docstring
         for arg, prop_data in properties.items():

@@ -170,8 +170,6 @@ class TaskModel(
         None,
         description='The phase of the workflow.',
         methods=['POST'],
-        maximum=127,
-        minimum=0,
         read_only=False,
         title='workflowPhase',
     )
@@ -179,8 +177,6 @@ class TaskModel(
         None,
         description='The step of the workflow.',
         methods=['POST'],
-        maximum=127,
-        minimum=1,
         read_only=False,
         title='workflowStep',
     )

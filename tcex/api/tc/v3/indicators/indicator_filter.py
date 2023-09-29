@@ -247,6 +247,129 @@ class IndicatorFilter(FilterABC):
 
         self._tql.add_filter('description', operator, description, TqlType.STRING)
 
+    def dt_last_updated(self, operator: Enum, dt_last_updated: Arrow | datetime | int | str):
+        """Filter DomainTools Last Updated based on **dtLastUpdated** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            dt_last_updated: The date the indicator has been looked at with DomainTools.
+        """
+        dt_last_updated = self.util.any_to_datetime(dt_last_updated).strftime('%Y-%m-%d %H:%M:%S')
+        self._tql.add_filter('dtLastUpdated', operator, dt_last_updated, TqlType.STRING)
+
+    def dt_malware_score(self, operator: Enum, dt_malware_score: int | list):
+        """Filter DomainTools Malware Score based on **dtMalwareScore** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            dt_malware_score: The malware risk score from the DomainTools enrichment data.
+        """
+        if isinstance(dt_malware_score, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
+        self._tql.add_filter('dtMalwareScore', operator, dt_malware_score, TqlType.INTEGER)
+
+    def dt_overall_score(self, operator: Enum, dt_overall_score: int | list):
+        """Filter DomainTools Overall Score based on **dtOverallScore** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            dt_overall_score: The overall risk score from the DomainTools enrichment data.
+        """
+        if isinstance(dt_overall_score, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
+        self._tql.add_filter('dtOverallScore', operator, dt_overall_score, TqlType.INTEGER)
+
+    def dt_phishing_score(self, operator: Enum, dt_phishing_score: int | list):
+        """Filter DomainTools Phishing Score based on **dtPhishingScore** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            dt_phishing_score: The phishing risk score from the DomainTools enrichment data.
+        """
+        if isinstance(dt_phishing_score, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
+        self._tql.add_filter('dtPhishingScore', operator, dt_phishing_score, TqlType.INTEGER)
+
+    def dt_spam_score(self, operator: Enum, dt_spam_score: int | list):
+        """Filter DomainTools Spam Score based on **dtSpamScore** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            dt_spam_score: The spam risk score from the DomainTools enrichment data.
+        """
+        if isinstance(dt_spam_score, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
+        self._tql.add_filter('dtSpamScore', operator, dt_spam_score, TqlType.INTEGER)
+
+    def dt_status(self, operator: Enum, dt_status: bool):
+        """Filter DomainTools Status based on **dtStatus** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            dt_status: The domain status (active/inactive) from the DomainTools enrichment data.
+        """
+        self._tql.add_filter('dtStatus', operator, dt_status, TqlType.BOOLEAN)
+
+    def external_date_added(
+        self, operator: Enum, external_date_added: Arrow | datetime | int | str
+    ):
+        """Filter External Date Added based on **externalDateAdded** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            external_date_added: The date and time that the indicator was first created externally.
+        """
+        external_date_added = self.util.any_to_datetime(external_date_added).strftime(
+            '%Y-%m-%d %H:%M:%S'
+        )
+        self._tql.add_filter('externalDateAdded', operator, external_date_added, TqlType.STRING)
+
+    def external_date_expires(
+        self, operator: Enum, external_date_expires: Arrow | datetime | int | str
+    ):
+        """Filter External Date Expires based on **externalDateExpires** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            external_date_expires: The date and time the indicator expires externally.
+        """
+        external_date_expires = self.util.any_to_datetime(external_date_expires).strftime(
+            '%Y-%m-%d %H:%M:%S'
+        )
+        self._tql.add_filter('externalDateExpires', operator, external_date_expires, TqlType.STRING)
+
+    def external_last_modified(
+        self, operator: Enum, external_last_modified: Arrow | datetime | int | str
+    ):
+        """Filter External Last Modified based on **externalLastModified** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            external_last_modified: The date and time the indicator was modified externally.
+        """
+        external_last_modified = self.util.any_to_datetime(external_last_modified).strftime(
+            '%Y-%m-%d %H:%M:%S'
+        )
+        self._tql.add_filter(
+            'externalLastModified', operator, external_last_modified, TqlType.STRING
+        )
+
     def false_positive_count(self, operator: Enum, false_positive_count: int | list):
         """Filter False Positive Count based on **falsePositiveCount** keyword.
 
@@ -277,6 +400,16 @@ class IndicatorFilter(FilterABC):
             )
 
         self._tql.add_filter('fileSize', operator, file_size, TqlType.INTEGER)
+
+    def first_seen(self, operator: Enum, first_seen: Arrow | datetime | int | str):
+        """Filter First Seen based on **firstSeen** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            first_seen: The date and time that the indicator was first seen.
+        """
+        first_seen = self.util.any_to_datetime(first_seen).strftime('%Y-%m-%d %H:%M:%S')
+        self._tql.add_filter('firstSeen', operator, first_seen, TqlType.STRING)
 
     @property
     def has_artifact(self):
@@ -326,6 +459,23 @@ class IndicatorFilter(FilterABC):
         indicators = IndicatorFilter(Tql())
         self._tql.add_filter('hasIndicator', TqlOperator.EQ, indicators, TqlType.SUB_QUERY)
         return indicators
+
+    def has_intel_requirement(self, operator: Enum, has_intel_requirement: int | list):
+        """Filter Associated Intel Requirement based on **hasIntelRequirement** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            has_intel_requirement: A nested query for association to intel requirements.
+        """
+        if isinstance(has_intel_requirement, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
+        self._tql.add_filter(
+            'hasIntelRequirement', operator, has_intel_requirement, TqlType.INTEGER
+        )
 
     @property
     def has_security_label(self):
@@ -442,6 +592,16 @@ class IndicatorFilter(FilterABC):
         """
         last_observed = self.util.any_to_datetime(last_observed).strftime('%Y-%m-%d %H:%M:%S')
         self._tql.add_filter('lastObserved', operator, last_observed, TqlType.STRING)
+
+    def last_seen(self, operator: Enum, last_seen: Arrow | datetime | int | str):
+        """Filter Last Seen based on **lastSeen** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            last_seen: The date and time that the indicator was last seen.
+        """
+        last_seen = self.util.any_to_datetime(last_seen).strftime('%Y-%m-%d %H:%M:%S')
+        self._tql.add_filter('lastSeen', operator, last_seen, TqlType.STRING)
 
     def observation_count(self, operator: Enum, observation_count: int | list):
         """Filter Observation Count based on **observationCount** keyword.

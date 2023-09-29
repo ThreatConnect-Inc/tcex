@@ -186,6 +186,7 @@ stringarray
 Stringdummy
 strptime
 suborg
+subtechniques
 suricata
 targetable
 taskid

@@ -161,6 +161,27 @@ class GroupModel(
         read_only=False,
         title='eventDate',
     )
+    external_date_added: datetime | None = Field(
+        None,
+        description='The date and time that the item was first created externally.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='externalDateAdded',
+    )
+    external_date_expires: datetime | None = Field(
+        None,
+        description='The date and time the item expires externally.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='externalDateExpires',
+    )
+    external_last_modified: datetime | None = Field(
+        None,
+        description='The date and time the item was modified externally.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='externalLastModified',
+    )
     file_name: str | None = Field(
         None,
         applies_to=['Document', 'Report', 'Signature'],
@@ -196,8 +217,7 @@ class GroupModel(
     )
     first_seen: datetime | None = Field(
         None,
-        applies_to=['Campaign'],
-        description='The date and time that the campaign was first created.',
+        description='The date and time that the item was first seen.',
         methods=['POST', 'PUT'],
         read_only=False,
         title='firstSeen',
@@ -238,6 +258,13 @@ class GroupModel(
         description='The date and time that the Entity was last modified.',
         read_only=True,
         title='lastModified',
+    )
+    last_seen: datetime | None = Field(
+        None,
+        description='The date and time that the item was last seen.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='lastSeen',
     )
     legacy_link: str | None = Field(
         None,

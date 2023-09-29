@@ -89,7 +89,7 @@ def gen_filter(type_: SnakeString):
     out_file = Path(os.path.join(*out_path))
 
     if not out_file.is_file():
-        Render.panel.failure(f'\nCould not find file {out_file}.')
+        out_file.write_text('')
 
     # generate class methods first so requirements can be updated
     class_methods = gen.gen_class_methods()
@@ -119,7 +119,7 @@ def gen_model(type_: SnakeString):
     out_file = Path(os.path.join(*out_path))
 
     if not out_file.is_file():
-        Render.panel.failure(f'\nCould not find file {out_file}.')
+        out_file.write_text('')
 
     # generate model fields code first so that requirements can be determined
     container_private_attrs = gen.gen_container_private_attrs()
@@ -166,7 +166,7 @@ def gen_object(type_: SnakeString):
     out_file = Path(os.path.join(*out_path))
 
     if not out_file.is_file():
-        Render.panel.failure(f'\nCould not find file {out_file}.')
+        out_file.write_text('')
 
     # generate class method code first so that requirements can be determined
     container_methods = gen.gen_container_methods()
@@ -198,30 +198,42 @@ def gen_object(type_: SnakeString):
 class ObjectTypes(str, Enum):
     """Object Types"""
 
-    # adversary_assets = 'adversary_assets'
+    # shared
+    tags = 'tags'
+
+    # case management
     artifacts = 'artifacts'
     artifact_types = 'artifact_types'
-    attribute_types = 'attribute_types'
     cases = 'cases'
     case_attributes = 'case_attributes'
+    notes = 'notes'
+    tasks = 'tasks'
+    workflow_events = 'workflow_events'
+    workflow_templates = 'workflow_templates'
+
+    # intel requirements
+    intel_requirements = 'intel_requirements'
+    categories = 'categories'
+    results = 'results'
+    subtypes = 'subtypes'
+
+    # security
+    owner_roles = 'owner_roles'
+    owners = 'owners'
+    users = 'users'
+    user_groups = 'user_groups'
+    system_roles = 'system_roles'
+
+    # threat intelligence
+    attribute_types = 'attribute_types'
     group_attributes = 'group_attributes'
     groups = 'groups'
     indicator_attributes = 'indicator_attributes'
     indicators = 'indicators'
-    notes = 'notes'
-    owner_roles = 'owner_roles'
-    owners = 'owners'
     security_labels = 'security_labels'
-    system_roles = 'system_roles'
-    tags = 'tags'
-    tasks = 'tasks'
-    users = 'users'
-    user_groups = 'user_groups'
     victims = 'victims'
     victim_assets = 'victim_assets'
     victim_attributes = 'victim_attributes'
-    workflow_events = 'workflow_events'
-    workflow_templates = 'workflow_templates'
 
 
 class GenTypes(str, Enum):
@@ -248,10 +260,10 @@ def all(  # pylint: disable=redefined-builtin
     for type_ in ObjectTypes:
         type_ = util.snake_string(type_.value)
 
-        if gen_type_ in ['all', 'filter']:
-            gen_filter(type_)
         if gen_type_ in ['all', 'model']:
             gen_model(type_)
+        if gen_type_ in ['all', 'filter']:
+            gen_filter(type_)
         if gen_type_ in ['all', 'object']:
             gen_object(type_)
 

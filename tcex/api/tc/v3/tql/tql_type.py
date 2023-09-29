@@ -7,7 +7,8 @@ from enum import Enum, unique
 class TqlType(Enum):
     """ThreatConnect API TQL Types"""
 
-    STRING = 'String'
-    INTEGER = 'Integer'
     BOOLEAN = 'Boolean'
+    FLOAT = 'Float'
+    INTEGER = 'Integer'
+    STRING = 'String'
     SUB_QUERY = 'Sub Query'

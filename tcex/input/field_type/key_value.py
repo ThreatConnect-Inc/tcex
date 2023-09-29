@@ -9,6 +9,7 @@ from pydantic.fields import ModelField  # TYPE-CHECKING
 # first-party
 from tcex.input.field_type.binary import Binary
 from tcex.input.field_type.exception import InvalidEmptyValue
+from tcex.input.field_type.sensitive import Sensitive
 from tcex.input.field_type.string import String
 from tcex.input.field_type.tc_entity import TCEntity
 
@@ -30,6 +31,7 @@ class KeyValue(BaseModel):
         | String
         | list[Binary]
         | Binary
+        | Sensitive
     )
 
     @validator('key')
