@@ -63,7 +63,7 @@ class Binary(bytes):
         """Raise exception if value is not a Binary type."""
         if not isinstance(value, bytes):
             raise InvalidType(
-                field_name=field.name, expected_types='(bytes)', provided_type=type(value)
+                field_name=field.name, expected_types='(bytes)', provided_type=str(type(value))
             )
         return value
 

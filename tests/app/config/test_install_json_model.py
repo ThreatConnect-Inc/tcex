@@ -354,7 +354,7 @@ class TestInstallJson:
         for app_type in ['tc', 'tcpb', 'tcva']:
             ij = self.ij_bad(app_type=app_type)
             try:
-                ij.update.multiple(migrate=True)
+                ij.update.multiple()
                 assert True
             except Exception as ex:
                 assert False, f'Failed to update install.json file ({ex}).'
