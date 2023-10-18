@@ -36,6 +36,16 @@ class PlaybookCommonModel(BaseModel):
         description='The KV Store port number.',
         inclusion_reason='runtimeLevel',
     )
+    tc_kvstore_tls_enabled: bool = Field(
+        False,
+        description='If true, KV Store requires SSL connection.',
+        inclusion_reason='runtimeLevel',
+    )
+    tc_kvstore_tls_port: int = Field(
+        6379,
+        description='The KV Store TLS port number.',
+        inclusion_reason='runtimeLevel',
+    )
     tc_kvstore_type: str = Field(
         'Redis',
         description='The KV Store type (Redis or TCKeyValueAPI).',

@@ -15,16 +15,6 @@ class ServiceModel(BaseModel):
     * WebhookTriggerService
     """
 
-    tc_svc_broker_cacert_file: str = Field(
-        None,
-        description='The Broker SSL CA (full chain) certificate.',
-        inclusion_reason='runtimeLevel',
-    )
-    tc_svc_broker_cert_file: str = Field(
-        None,
-        description='The Broker SSL Server certificate.',
-        inclusion_reason='runtimeLevel',
-    )
     tc_svc_broker_conn_timeout: int = Field(
         60,
         description='The broker connection startup timeout in seconds.',
@@ -34,16 +24,6 @@ class ServiceModel(BaseModel):
     tc_svc_broker_host: str = Field(
         None,
         description='The Broker service hostname.',
-        inclusion_reason='runtimeLevel',
-    )
-    tc_svc_broker_jks_file: str | None = Field(
-        'Unused',
-        description='Input for Java Apps.',
-        inclusion_reason='runtimeLevel',
-    )
-    tc_svc_broker_jks_pwd: str | None = Field(
-        'Unused',
-        description='Input for Java Apps.',
         inclusion_reason='runtimeLevel',
     )
     tc_svc_broker_port: int = Field(

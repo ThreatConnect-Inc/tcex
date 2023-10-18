@@ -62,8 +62,14 @@ class App:
             self.model.tc_kvstore_host,
             self.model.tc_kvstore_port,
             self.model.tc_kvstore_type,
+            self.model.tc_playbook_kvstore_id,
             self.model.tc_kvstore_pass,
             self.model.tc_kvstore_user,
+            self.model.tc_kvstore_tls_enabled,
+            self.model.tc_kvstore_tls_port,
+            self.model.tc_svc_broker_cacert_file,
+            self.model.tc_svc_broker_cert_file,
+            self.model.tc_svc_broker_key_file,
         )
 
     @cached_property

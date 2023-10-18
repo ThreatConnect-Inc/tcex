@@ -10,11 +10,9 @@ from pathlib import Path
 # third-party
 from pydantic import ValidationError  # TYPE-CHECKING
 from pydantic import BaseModel, Extra
-from redis import Redis
 
 # first-party
 from tcex.app.config.install_json import InstallJson
-from tcex.app.key_value_store import RedisClient
 from tcex.input.field_type import Sensitive
 from tcex.input.model.advanced_request_model import AdvancedRequestModel
 from tcex.input.model.app_external_model import AppExternalModel
@@ -74,74 +72,6 @@ class Input:
         self.ij = InstallJson()
         self.log = _logger
         self.util = Util()
-
-    @staticmethod
-    def _get_redis_client(host: str, port: int, db: int) -> Redis:
-        """Return RedisClient client"""
-        return RedisClient(host=host, port=port, db=db).client
-
-    def _load_aot_params(
-        self,
-        tc_aot_enabled: bool,
-        tc_kvstore_type: str,
-        tc_kvstore_host: str,
-        tc_kvstore_port: int,
-        tc_action_channel: str,
-        tc_terminate_seconds: int,
-    ) -> dict[str, dict | list | str]:
-        """Subscribe to AOT action channel."""
-        params = {}
-        if tc_aot_enabled is not True:
-            return params
-
-        if not all(
-            [
-                tc_kvstore_type,
-                tc_kvstore_host,
-                tc_kvstore_port,
-                tc_action_channel,
-                tc_terminate_seconds,
-            ]
-        ):
-            return params
-
-        if tc_kvstore_type == 'Redis':
-            # get an instance of redis client
-            redis_client = self._get_redis_client(
-                host=tc_kvstore_host,
-                port=tc_kvstore_port,
-                db=0,
-            )
-
-            try:
-                self.log.info('feature=inputs, event=blocking-for-aot')
-                msg_data = redis_client.blpop(
-                    keys=tc_action_channel,
-                    timeout=int(tc_terminate_seconds),
-                )
-
-                if msg_data is None:  # pragma: no cover
-                    # send exit to tcex.exit method
-                    registry.exit.exit_aot_terminate(
-                        code=1, msg='AOT subscription timeout reached.'
-                    )
-                else:
-                    msg_data = json.loads(msg_data[1])
-                    msg_type = msg_data.get('type', 'terminate')
-                    if msg_type == 'execute':
-                        params = msg_data.get('params', {})
-                    elif msg_type == 'terminate':
-                        # send exit to tcex.exit method
-                        registry.exit.exit_aot_terminate(
-                            code=0, msg='Received AOT terminate message.'
-                        )
-            except Exception as e:  # pragma: no cover
-                # send exit to tcex.exit method
-                registry.exit.exit_aot_terminate(
-                    code=1, msg=f'Exception during AOT subscription ({e}).'
-                )
-
-        return params
 
     def _load_config_file(self):
         """Load config file params provided passed to inputs."""
@@ -242,31 +172,6 @@ class Input:
         # file params
         _contents.update(self._load_file_params())
 
-        # aot params - must be loaded last so that it has the kv store channels
-        tc_aot_enabled = self.util.to_bool(_contents.get('tc_aot_enabled', False))
-        if tc_aot_enabled is True:
-            tc_kvstore_type = _contents.get('tc_kvstore_type')
-            tc_kvstore_host = _contents.get('tc_kvstore_host')
-            tc_kvstore_port = _contents.get('tc_kvstore_port')
-            tc_action_channel = _contents.get('tc_action_channel')
-            tc_terminate_seconds = _contents.get('tc_terminate_seconds')
-
-            if (
-                tc_kvstore_type
-                and tc_kvstore_host
-                and tc_kvstore_port
-                and tc_action_channel
-                and tc_terminate_seconds
-            ):
-                param_data = self._load_aot_params(
-                    tc_aot_enabled=tc_aot_enabled,
-                    tc_kvstore_type=tc_kvstore_type,
-                    tc_kvstore_host=tc_kvstore_host,
-                    tc_kvstore_port=tc_kvstore_port,
-                    tc_action_channel=tc_action_channel,
-                    tc_terminate_seconds=tc_terminate_seconds,
-                )
-                _contents.update(param_data)
         return _contents
 
     @cached_property
