@@ -85,8 +85,6 @@ class MockApp:
     def _config_playbook(self) -> dict[str, bool | int | str]:
         """Return config data for mocked App."""
         return {
-            'tc_action_channel': 'action-channel',
-            'tc_aot_enabled': False,
             'tc_exit_channel': 'exit-channel',
             'tc_terminate_seconds': 30,
         }
@@ -136,7 +134,6 @@ class MockApp:
             'displayName': self.ijd.get('display_name') or 'Pytest',
             'features': self.ijd.get('features', [])
             or [
-                'aotExecutionEnabled',
                 'appBuilderCompliant',
                 'layoutEnabledApp',
                 'fileParams',

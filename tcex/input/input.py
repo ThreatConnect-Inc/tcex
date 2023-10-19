@@ -233,9 +233,9 @@ class Input:
 
     # TODO: [high] - can this be replaced with a pydantic root validator?
     def contents_update(self, inputs: dict):
-        """Update inputs provided by AOT to be of the proper value and type."""
+        """Update inputs provided by core to be of the proper value and type."""
         for name, value in inputs.items():
-            # ThreatConnect AOT params could be updated in the future to proper JSON format.
+            # ThreatConnect params could be updated in the future to proper JSON format.
             # MultiChoice data should be represented as JSON array and Boolean values should be a
             # JSON boolean and not a string.
             param = self.ij.model.get_param(name)

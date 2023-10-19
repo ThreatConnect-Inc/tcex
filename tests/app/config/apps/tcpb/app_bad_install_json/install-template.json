@@ -5,7 +5,6 @@
   "appId": "7d1a3338-59ef-59a9-a41e-ae853af5988f",
   "displayName": "Playbook App",
   "features": [
-    "aotExecutionEnabled",
     "appBuilderCompliant",
     "fileParams",
     "layoutEnabledApp",

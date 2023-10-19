@@ -4,66 +4,16 @@ import json
 import os
 from collections.abc import Callable
 from pathlib import Path
-from random import randint
 from uuid import uuid4
-
-# third-party
-import redis
-from _pytest.monkeypatch import MonkeyPatch
-from pydantic import BaseModel, Extra
 
 # first-party
 from tcex import TcEx
-from tcex.input.input import Input
 from tcex.registry import registry
 from tests.mock_app import MockApp
 
 
 class TestInputsConfig:
     """Test TcEx Inputs Config."""
-
-    @staticmethod
-    def test_aot_inputs(
-        playbook_app: Callable[..., MockApp], redis_client: redis.Redis, monkeypatch: MonkeyPatch
-    ):
-        """Test AOT input method of TcEx"""
-        registry._reset()
-
-        class PytestModel(BaseModel):
-            """Test Model for Inputs"""
-
-            my_bool: bool
-            my_multi: list
-
-            class Config:
-                """."""
-
-                extra = Extra.allow
-
-        # add AOT setting to App
-        config_data = {
-            'tc_action_channel': f'pytest-action-channel-{randint(1000,9999)}',
-            'tc_aot_enabled': True,
-        }
-        app = playbook_app(config_data=config_data)
-
-        # ensure inputs object has same FakeRedis instance as the one we will push data to
-        monkeypatch.setattr(Input, '_get_redis_client', lambda *args, **kwargs: redis_client)
-
-        # send redis rpush AOT message
-        aot_config_data = {'my_bool': 'true', 'my_multi': 'one|two'}
-        aot_config_data.update(app.config_data)
-        aot_msg = {'type': 'execute', 'params': aot_config_data}
-        redis_client.rpush(config_data['tc_action_channel'], json.dumps(aot_msg))
-
-        # get a configured instance of tcex, missing AOT values
-        # tcex will block, check for the AOT method, parse new config, and then run
-        tcex = app.tcex
-        tcex.inputs.add_model(PytestModel)  # type: ignore
-
-        # print(tcex.inputs.model.json(indent=2))
-        assert tcex.inputs.model.my_bool is True  # type: ignore
-        assert tcex.inputs.model.my_multi == ['one', 'two']  # type: ignore
 
     @staticmethod
     def test_config_kwarg():

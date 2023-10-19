@@ -55,15 +55,6 @@ class Exit:
         self._message = None
         self.log = _logger
 
-    def _aot_rpush(self, exit_code: int):
-        """Push message to AOT action channel."""
-        if self.inputs.contents.get('tc_playbook_db_type') == 'Redis':
-            try:
-                # pylint: disable=no-member
-                registry.redis_client.rpush(self.inputs.contents['tc_exit_channel'], exit_code)
-            except Exception as e:  # pragma: no cover
-                self._exit(ExitCode.FAILURE, f'Exception during AOT exit push ({e}).')
-
     def _exit(self, code: ExitCode | int, msg: str) -> NoReturn:
         """Exit the App"""
         code = ExitCode(code) if code is not None else self.code
@@ -140,41 +131,12 @@ class Exit:
         if self.ij.model.is_playbook_app:
             self.exit_playbook_handler(msg)
 
-        # aot notify
-        if 'tc_aot_enabled' in self.inputs.contents and self.inputs.contents.get('tc_aot_enabled'):
-            # push exit message
-            self._aot_rpush(code.value)
-
         # exit token renewal thread
         if not self.ij.is_external_app:
             registry.token.shutdown = True
 
         # exit
         self._exit(code, msg)
-
-    # TODO: [med] @cblades - is msg required?
-    # pylint: disable=unused-argument
-    def exit_aot_terminate(self, code: ExitCode | int | None = None, msg: str | None = None):
-        """Application exit method with proper exit code only for AOT.
-
-        The method will run the Python standard sys.exit() with the exit code
-        previously defined via :py:meth:`~tcex.tcex.TcEx.exit_code` or provided
-        during the call of this method.
-
-        Args:
-            code: The exit code value for the app.
-            msg: A message to log and add to message tc output.
-        """
-        code = ExitCode(code) if code is not None else self.code
-        msg = msg if msg is not None else self.message
-
-        # aot notify
-        if 'tc_aot_enabled' in self.inputs.contents and self.inputs.contents.get('tc_aot_enabled'):
-            # push exit message
-            self._aot_rpush(code.value)
-
-        self.log.info(f'exit-code={code}')
-        sys.exit(code)
 
     def _exit_msg_handler(self, code: ExitCode, msg: str):
         """Handle exit message. Write to both log and message_tc."""
