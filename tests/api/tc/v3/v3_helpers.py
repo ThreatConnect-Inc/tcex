@@ -743,6 +743,19 @@ class TestV3:
                 # fix discrepancy between <endpoint>/fields and <endpoint>
                 names = ['createdBy']
 
+            if self.v3_helper.v3_object in ['groups', 'indicators'] and 'externalDates' in names:
+                names = [
+                    'externalDateAdded',
+                    'externalDateExpires',
+                    'externalLastModified',
+                ]
+
+            if self.v3_helper.v3_object in ['groups', 'indicators'] and 'sightings' in names:
+                names = [
+                    'firstSeen',
+                    'lastSeen',
+                ]
+
             if self.v3_helper.v3_object == 'indicators':
                 if 'genericCustomIndicatorValues' in names:
                     # fix discrepancy between <endpoint>/fields and <endpoint>

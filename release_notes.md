@@ -1,5 +1,10 @@
 # Release Notes
 
+## 4.0.3
+
+-   APP-4245 - [Inputs] Added support for secure Redis (SSL and User/Pass)
+-   APP-4246 - [Playbook] Removed support for AOT execution
+
 ## 4.0.2
 
 -   APP-4155 - [API] Added Mitre Attack module for lookup by id or name

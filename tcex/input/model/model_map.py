@@ -2,7 +2,6 @@
 
 # first-party
 from tcex.input.model.advanced_request_model import AdvancedRequestModel
-from tcex.input.model.aot_execution_enabled_model import AotExecutionEnabledModel
 from tcex.input.model.app_api_service_model import AppApiServiceModel
 from tcex.input.model.app_external_model import AppExternalModel
 from tcex.input.model.app_feed_api_service_model import AppFeedApiServiceModel
@@ -18,7 +17,6 @@ from tcex.input.model.smtp_setting_model import SmtpSettingModel
 
 # define feature to model map
 feature_map = {
-    'aotExecutionEnabled': [AotExecutionEnabledModel],
     'appBuilderCompliant': [],
     # 'advancedRequest': [],
     'CALSettings': [CalSettingModel],

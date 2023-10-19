@@ -4,7 +4,6 @@ app:
   appName: TCPB_-_TcEx_App_1
   displayName: TCPB_-_TcEx_App_1
   features:
-    - aotExecutionEnabled
     - appBuilderCompliant
     - fileParams
     - layoutEnabledApp
