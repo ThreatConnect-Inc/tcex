@@ -109,6 +109,8 @@ ignore = [
 [tool.pylint.messages_control]
 disable = [
   "broad-exception-caught",
+  "cyclic-import", # pylint incorrectly identifies cyclic imports
+  "duplicate-code",
   "fixme",
   "import-outside-toplevel",
   "invalid-name",
