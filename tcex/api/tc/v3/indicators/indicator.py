@@ -199,6 +199,11 @@ class Indicator(ObjectABC):
             yield indicator  # type: ignore
 
     @property
+    def custom_associations(self) -> Generator[Self, None, None]:
+        """Yield Indicator from Indicators."""
+        yield from self._iterate_over_sublist(Indicators, custom_associations=True)  # type: ignore
+
+    @property
     def attributes(self) -> Generator['IndicatorAttribute', None, None]:
         """Yield Attribute from Attributes."""
         # first-party

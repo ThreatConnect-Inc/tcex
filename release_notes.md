@@ -1,5 +1,9 @@
 # Release Notes
 
+## 4.0.4
+
+-   APP-4306 - [API] Added support for custom association pagination
+
 ## 4.0.3
 
 -   APP-4245 - [Inputs] Added support for secure Redis (SSL and User/Pass)

@@ -65,6 +65,12 @@ class TestIndicators(TestV3):
 
     #     return
 
+    # def test_custom_associations(self):
+    #     """."""
+    #     indicators = self.v3.indicator(id=2984993)
+    #     for indicator in enumerate(indicators.custom_associations, start=1):
+    #         print(indicator.model.json(indent=4, exclude_none=True, exclude_unset=True))
+
     def test_indicator_create_and_retrieve_nested_types(self):
         """Test Object Creation
 
