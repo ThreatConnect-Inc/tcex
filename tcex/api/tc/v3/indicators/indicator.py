@@ -258,6 +258,11 @@ class Indicator(ObjectABC):
             yield indicator
 
     @property
+    def custom_associations(self) -> Iterator['Indicator']:
+        """Yield Indicator from Indicators."""
+        yield from self._iterate_over_sublist(Indicators, custom_associations=True)  # type: ignore
+
+    @property
     def attributes(self) -> Iterator['IndicatorAttribute']:
         """Yield Attribute from Attributes."""
         # first-party
