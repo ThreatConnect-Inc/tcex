@@ -5,7 +5,7 @@ import logging
 # import inspect
 # import re
 from abc import ABC
-from typing import TYPE_CHECKING, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Union
 
 # third-party
 from requests import Response
@@ -73,17 +73,28 @@ class ObjectABC(ABC):
 
         return {}
 
-    def _iterate_over_sublist(self, sublist_type: object) -> 'V3Type':
+    def _iterate_over_sublist(
+        self, sublist_type: object, custom_associations: bool = False
+    ) -> 'Iterable[V3Type]':
         """Iterate over any nested collections."""
-        sublist = sublist_type(session=self._session)
+        sublist = sublist_type(session=self._session)  # type: ignore
 
         # determine the filter type and value based on the available object fields.
         unique_id_data = self._calculate_unique_id()
 
+        # id!=2984993+AND+hasGroup(typename="all"+AND+isGroup+=+false+AND+hasIndicator(id=2984993))
         # add the filter (e.g., group.has_indicator.id(TqlOperator.EQ, 123)) for the parent object.
-        getattr(getattr(sublist.filter, self._nested_filter), unique_id_data.get('filter'))(
-            TqlOperator.EQ, unique_id_data.get('value')
-        )
+        if custom_associations is True:
+            sublist.filter.tql = (
+                'id!={id} AND hasGroup(typename="all" '
+                'AND isGroup = false AND hasIndicator(id={id}))'
+            ).format(id=self.model.id)
+            sublist.params = {'fields': ['associationName']}
+        else:
+            getattr(
+                getattr(sublist.filter, self._nested_filter),  # type: ignore
+                unique_id_data.get('filter'),  # type: ignore
+            )(TqlOperator.EQ, unique_id_data.get('value'))
 
         # return the sub object, injecting the parent data
         for obj in sublist:
