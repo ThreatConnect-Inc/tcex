@@ -559,7 +559,7 @@ class GenerateObjectABC(GenerateABC, ABC):
         )
 
     def _gen_code_object_type_property_method(
-        self, type_: str, model_type: Optional[str] = None
+        self, type_: str, model_type: str | None = None, custom_associations: bool = False
     ) -> str:
         """Return the method code.
 
@@ -610,7 +610,18 @@ class GenerateObjectABC(GenerateABC, ABC):
 
         # Custom logic to ensure that when iterating over the associated indicators or associated
         # groups then the item currently being iterated over is not included in the results.
-        if (
+        if custom_associations is True:
+            _code.extend(
+                [
+                    (
+                        f'''{self.i2}yield from self._iterate_over_sublist'''
+                        f'''({model_import_data.get('object_collection_class')}, '''
+                        '''custom_associations=True)'''
+                        '''  # type: ignore'''
+                    ),
+                ]
+            )
+        elif (
             self.type_ in ['indicators', 'groups', 'artifacts', 'cases']
             and model_type == f'associated_{self.type_}'
         ):
@@ -837,10 +848,16 @@ class GenerateObjectABC(GenerateABC, ABC):
         if 'associatedGroups' in add_properties:
             _code += self._gen_code_object_type_property_method('groups', 'associated_groups')
 
-        # generate associated_indicator property method
+        # generate associated_indicator propertsy method
         if 'associatedIndicators' in add_properties:
             _code += self._gen_code_object_type_property_method(
                 'indicators', 'associated_indicators'
+            )
+
+        # generate custom_associations property method
+        if 'customAssociations' in add_properties:
+            _code += self._gen_code_object_type_property_method(
+                'indicators', 'custom_associations', custom_associations=True
             )
 
         # generate associated_victim_asset property method
