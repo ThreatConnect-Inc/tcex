@@ -1,5 +1,8 @@
 # Release Notes
 
+### 3.0.11
+-   APP-4309 - [API] Add support for paginating custom associations
+
 ### 3.0.10
 
 -   APP-4076 - [Input] Added support for System type App
