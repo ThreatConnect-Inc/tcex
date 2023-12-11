@@ -559,7 +559,7 @@ class GenerateObjectABC(GenerateABC, ABC):
         )
 
     def _gen_code_object_type_property_method(
-        self, type_: str, model_type: str | None = None, custom_associations: bool = False
+        self, type_: str, model_type: Optional[str] = None, custom_associations: bool = False
     ) -> str:
         """Return the method code.
 
@@ -848,7 +848,7 @@ class GenerateObjectABC(GenerateABC, ABC):
         if 'associatedGroups' in add_properties:
             _code += self._gen_code_object_type_property_method('groups', 'associated_groups')
 
-        # generate associated_indicator propertsy method
+        # generate associated_indicator property method
         if 'associatedIndicators' in add_properties:
             _code += self._gen_code_object_type_property_method(
                 'indicators', 'associated_indicators'
