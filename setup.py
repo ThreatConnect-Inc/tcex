@@ -75,7 +75,7 @@ setup(
         'jmespath',
         'paho-mqtt',
         'pyaes',
-        'pydantic',
+        'pydantic<2.0.0',
         'python-dateutil>=2.6.1',
         'pyyaml',
         'redis>=2.10.6',
