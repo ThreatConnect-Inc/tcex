@@ -134,12 +134,12 @@ class IndicatorModel(
         read_only=False,
         title='confidence',
     )
-    custom_association_name: Optional[str] = Field(
+    custom_association_names: Optional[List[str]] = Field(
         None,
-        description='The custom association name if assigned to this indicator.',
+        description='The custom association names if assigned to this indicator.',
         methods=['POST', 'PUT'],
         read_only=False,
-        title='customAssociationName',
+        title='customAssociationNames',
     )
     custom_associations: Optional['IndicatorsModel'] = Field(
         None,
