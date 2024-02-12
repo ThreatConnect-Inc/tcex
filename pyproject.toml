@@ -138,9 +138,13 @@ exclude = [
   "**/.history",
   "**/__pycache__",
   "**/local-*",
+  "tcex/api/tc/v2",
+  "tests",
 ]
 pythonPlatform = "Linux"
 pythonVersion = "3.11"
+reportIncompatibleMethodOverride = false
+reportIncompatibleVariableOverride = false
 reportPrivateImportUsage = false
 
 [tool.pytest.ini_options]
