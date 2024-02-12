@@ -1,5 +1,9 @@
 # Release Notes
 
+## 4.0.4
+-   APP-4334 - [API] Call method transforms in TI transform models even if value is not a string
+-   APP-4380 - [API] Add externalDateAdded, externalDateExpires, externalLastModified, firstSeen, and lastSeen fields to TI Transform model
+
 ## 4.0.3
 
 -   APP-4245 - [Inputs] Added support for secure Redis (SSL and User/Pass)
