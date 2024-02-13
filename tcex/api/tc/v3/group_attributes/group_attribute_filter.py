@@ -51,6 +51,15 @@ class GroupAttributeFilter(FilterABC):
         date_val = self.util.any_to_datetime(date_val).strftime('%Y-%m-%d %H:%M:%S')
         self._tql.add_filter('dateVal', operator, date_val, TqlType.STRING)
 
+    def default(self, operator: Enum, default: bool):
+        """Filter Associable based on **default** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            default: A flag to include an attribute in group associations.
+        """
+        self._tql.add_filter('default', operator, default, TqlType.BOOLEAN)
+
     def displayed(self, operator: Enum, displayed: bool):
         """Filter Displayed based on **displayed** keyword.
 
@@ -188,6 +197,21 @@ class GroupAttributeFilter(FilterABC):
             pinned: Whether or not the attribute is pinned with importance.
         """
         self._tql.add_filter('pinned', operator, pinned, TqlType.BOOLEAN)
+
+    def short_text(self, operator: Enum, short_text: list | str):
+        """Filter Text based on **shortText** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            short_text: The short text of the attribute (only applies to certain types).
+        """
+        if isinstance(short_text, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
+        self._tql.add_filter('shortText', operator, short_text, TqlType.STRING)
 
     def source(self, operator: Enum, source: list | str):
         """Filter Source based on **source** keyword.

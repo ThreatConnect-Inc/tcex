@@ -321,6 +321,22 @@ class IntelRequirementFilter(FilterABC):
         """
         self._tql.add_filter('generatedReport', operator, generated_report, TqlType.BOOLEAN)
 
+    def has_all_tags(self, operator: Enum, has_all_tags: int | list):
+        """Filter All Tags based on **hasAllTags** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            has_all_tags: Filters data tagged with all provided Tag IDs. Query must only contain
+                'id=x' or 'id IN (x,y,z)'.
+        """
+        if isinstance(has_all_tags, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
+        self._tql.add_filter('hasAllTags', operator, has_all_tags, TqlType.INTEGER)
+
     @property
     def has_artifact(self):
         """Return **ArtifactFilter** for further filtering."""
@@ -457,6 +473,21 @@ class IntelRequirementFilter(FilterABC):
             )
 
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
+
+    def insights(self, operator: Enum, insights: list | str):
+        """Filter Insights (Report) based on **insights** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            insights: The AI generated synopsis of the report.
+        """
+        if isinstance(insights, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
+        self._tql.add_filter('insights', operator, insights, TqlType.STRING)
 
     def is_group(self, operator: Enum, is_group: bool):
         """Filter isGroup based on **isGroup** keyword.

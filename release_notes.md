@@ -3,6 +3,8 @@
 ## 4.0.4
 
 -   APP-4306 - [API] Added support for custom association pagination
+-   APP-4381 - [Logging] Fix API logging issues
+-   APP-4383 - [API] Update for changes in the TC V3 API
 
 ## 4.0.3
 

@@ -60,7 +60,7 @@ class ApiHandler(logging.Handler):
         # for the I/O lock from super().handle.
         if threading.current_thread().name != 'MainThread':
             with self._entries_lock:
-                self._entries.append(record)
+                self._entries.append(self.format(record))
         else:
             super().handle(record)
 

@@ -93,6 +93,22 @@ class VictimFilter(FilterABC):
 
         self._tql.add_filter('description', operator, description, TqlType.STRING)
 
+    def has_all_tags(self, operator: Enum, has_all_tags: int | list):
+        """Filter All Tags based on **hasAllTags** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            has_all_tags: Filters data tagged with all provided Tag IDs. Query must only contain
+                'id=x' or 'id IN (x,y,z)'.
+        """
+        if isinstance(has_all_tags, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
+        self._tql.add_filter('hasAllTags', operator, has_all_tags, TqlType.INTEGER)
+
     @property
     def has_attribute(self):
         """Return **VictimAttributeFilter** for further filtering."""

@@ -67,6 +67,21 @@ class NoteFilter(FilterABC):
 
         self._tql.add_filter('caseId', operator, case_id, TqlType.INTEGER)
 
+    def data(self, operator: Enum, data: list | str):
+        """Filter Data based on **data** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            data: Contents of the note.
+        """
+        if isinstance(data, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
+        self._tql.add_filter('data', operator, data, TqlType.STRING)
+
     def date_added(self, operator: Enum, date_added: Arrow | datetime | int | str):
         """Filter Date Added based on **dateAdded** keyword.
 

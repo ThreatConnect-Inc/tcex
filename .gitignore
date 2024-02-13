@@ -53,6 +53,7 @@ templates
 threatconnect*
 test.log*
 tests/reports/*
+tcex/api/tc/v3/_gen/options_data
 TODO.md
 
 #-------------------------------------------------

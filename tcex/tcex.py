@@ -120,10 +120,9 @@ class TcEx:
         self._log = _logger.log
 
         # add api handler
-        if (
-            self.inputs.contents.get('tc_token') is not None
-            and self.inputs.contents.get('tc_log_to_api') is True
-        ):
+        if self.inputs.contents.get('tc_token') is not None and self.inputs.contents.get(
+            'tc_log_to_api'
+        ) in (True, 'true'):
             _logger.add_api_handler(
                 session_tc=self.requests_tc.get_session(),
                 level=self.inputs.model_tc.tc_log_level,
