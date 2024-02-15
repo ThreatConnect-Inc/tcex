@@ -466,12 +466,11 @@ class TransformABC(ABC):
 
         for t in metadata.transform or []:
             # pass value to static_map or callable, but never both
-            if isinstance(value, str):
-                if t.filter_map is not None:
-                    value = self._transform_value_map(value, t.filter_map, True)
-                elif t.static_map is not None:
-                    value = self._transform_value_map(value, t.static_map)
-            elif value is not None and callable(t.method):
+            if t.filter_map is not None:
+                value = self._transform_value_map(value, t.filter_map, True)
+            elif t.static_map is not None:
+                value = self._transform_value_map(value, t.static_map)
+            elif callable(t.method) and value is not None:
                 value = self._transform_value_callable(value, t.method, t.kwargs)
 
         # ensure only a string value or None is returned (set to default if required)
