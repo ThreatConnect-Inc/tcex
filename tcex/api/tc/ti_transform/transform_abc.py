@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 from collections.abc import Callable
 from datetime import datetime
 from inspect import signature
-from typing import Any
+from typing import Any, cast
 
 # third-party
 import jmespath
@@ -474,11 +474,12 @@ class TransformABC(ABC):
 
         for t in metadata.transform or []:
             # pass value to static_map or callable, but never both
+            value = cast(Any, value)  # due to line 472, we know value is not None.
             if t.filter_map is not None:
                 value = self._transform_value_map(value, t.filter_map, True)
             elif t.static_map is not None:
                 value = self._transform_value_map(value, t.static_map)
-            elif callable(t.method) and value is not None:
+            elif callable(t.method):
                 value = self._transform_value_callable(value, t.method, t.kwargs)
 
         # ensure only a string value or None is returned (set to default if required)
