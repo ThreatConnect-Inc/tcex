@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 from collections.abc import Callable
 from datetime import datetime
 from inspect import signature
-from typing import Any
+from typing import Any, cast
 
 # third-party
 import jmespath
@@ -158,8 +158,16 @@ class TransformABC(ABC):
         self._process_tags(self.transform.tags or [])
 
         # date fields
+        # date fields
         self._process_metadata_datetime('dateAdded', self.transform.date_added)
         self._process_metadata_datetime('lastModified', self.transform.last_modified)
+        self._process_metadata_datetime('firstSeen', self.transform.first_seen)
+        self._process_metadata_datetime('lastSeen', self.transform.first_seen)
+        self._process_metadata_datetime('externalDateAdded', self.transform.external_date_added)
+        self._process_metadata_datetime('externalDateExpires', self.transform.external_date_expires)
+        self._process_metadata_datetime(
+            'externalLastModified', self.transform.external_last_modified
+        )
         self._process_metadata_datetime('firstSeen', self.transform.first_seen)
         self._process_metadata_datetime('lastSeen', self.transform.first_seen)
         self._process_metadata_datetime('externalDateAdded', self.transform.external_date_added)
@@ -466,12 +474,12 @@ class TransformABC(ABC):
 
         for t in metadata.transform or []:
             # pass value to static_map or callable, but never both
-            if isinstance(value, str):
-                if t.filter_map is not None:
-                    value = self._transform_value_map(value, t.filter_map, True)
-                elif t.static_map is not None:
-                    value = self._transform_value_map(value, t.static_map)
-            elif value is not None and callable(t.method):
+            value = cast(Any, value)  # due to line 472, we know value is not None.
+            if t.filter_map is not None:
+                value = self._transform_value_map(value, t.filter_map, True)
+            elif t.static_map is not None:
+                value = self._transform_value_map(value, t.static_map)
+            elif callable(t.method):
                 value = self._transform_value_callable(value, t.method, t.kwargs)
 
         # ensure only a string value or None is returned (set to default if required)
