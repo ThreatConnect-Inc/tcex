@@ -48,3 +48,26 @@ class KeyValue(BaseModel):
 
 
 KeyValue.update_forward_refs()
+
+
+def key_value(allow_none=False):
+    """Return configured instance of KeyValue model."""
+    key_value_model = KeyValue
+    if allow_none is True:
+
+        class _KeyValue(KeyValue):
+            value: (
+                list[KeyValue]
+                | KeyValue
+                | list[TCEntity]
+                | TCEntity
+                | list[String]
+                | String
+                | list[Binary]
+                | Binary
+                | Sensitive
+                | None
+            )
+
+        key_value_model = _KeyValue
+    return key_value_model
