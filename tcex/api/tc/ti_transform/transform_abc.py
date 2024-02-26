@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # standard library
 import collections
 import logging
@@ -6,7 +7,7 @@ from abc import ABC, abstractmethod
 from collections.abc import Callable
 from datetime import datetime
 from inspect import signature
-from typing import Any
+from typing import Any, cast
 
 # third-party
 import jmespath
@@ -156,11 +157,24 @@ class TransformABC(ABC):
         self._process_security_labels(self.transform.security_labels or [])
         self._process_tags(self.transform.tags or [])
 
-        # date added
+        # date fields
+        # date fields
         self._process_metadata_datetime('dateAdded', self.transform.date_added)
-
-        # last modified
         self._process_metadata_datetime('lastModified', self.transform.last_modified)
+        self._process_metadata_datetime('firstSeen', self.transform.first_seen)
+        self._process_metadata_datetime('lastSeen', self.transform.first_seen)
+        self._process_metadata_datetime('externalDateAdded', self.transform.external_date_added)
+        self._process_metadata_datetime('externalDateExpires', self.transform.external_date_expires)
+        self._process_metadata_datetime(
+            'externalLastModified', self.transform.external_last_modified
+        )
+        self._process_metadata_datetime('firstSeen', self.transform.first_seen)
+        self._process_metadata_datetime('lastSeen', self.transform.first_seen)
+        self._process_metadata_datetime('externalDateAdded', self.transform.external_date_added)
+        self._process_metadata_datetime('externalDateExpires', self.transform.external_date_expires)
+        self._process_metadata_datetime(
+            'externalLastModified', self.transform.external_last_modified
+        )
 
         # xid
         self._process_metadata('xid', self.transform.xid)
@@ -459,14 +473,14 @@ class TransformABC(ABC):
             return metadata.default
 
         for t in metadata.transform or []:
-            if isinstance(value, str):
-                # pass value to static_map or callable, but never both
-                if t.filter_map is not None:
-                    value = self._transform_value_map(value, t.filter_map, True)
-                elif t.static_map is not None:
-                    value = self._transform_value_map(value, t.static_map)
-                elif callable(t.method):
-                    value = self._transform_value_callable(value, t.method, t.kwargs)
+            # pass value to static_map or callable, but never both
+            value = cast(Any, value)  # due to line 472, we know value is not None.
+            if t.filter_map is not None:
+                value = self._transform_value_map(value, t.filter_map, True)
+            elif t.static_map is not None:
+                value = self._transform_value_map(value, t.static_map)
+            elif callable(t.method):
+                value = self._transform_value_callable(value, t.method, t.kwargs)
 
         # ensure only a string value or None is returned (set to default if required)
         if value is None:

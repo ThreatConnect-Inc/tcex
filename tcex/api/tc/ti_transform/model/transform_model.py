@@ -1,4 +1,5 @@
 """Model Definition"""
+
 # standard library
 from collections.abc import Callable
 
@@ -129,7 +130,12 @@ class TiTransformModel(BaseModel, extra=Extra.forbid):
     associated_groups: list[AssociatedGroupTransform] = Field([], description='')
     attributes: list[AttributeTransformModel] = Field([], description='')
     date_added: DatetimeTransformModel | None = Field(None, description='')
+    external_date_added: DatetimeTransformModel | None = Field(None, description='')
+    external_date_expires: DatetimeTransformModel | None = Field(None, description='')
+    external_last_modified: DatetimeTransformModel | None = Field(None, description='')
+    first_seen: DatetimeTransformModel | None = Field(None, description='')
     last_modified: DatetimeTransformModel | None = Field(None, description='')
+    last_seen: DatetimeTransformModel | None = Field(None, description='')
     security_labels: list[SecurityLabelTransformModel] = Field([], description='')
     tags: list[TagTransformModel] = Field([], description='')
     type: MetadataTransformModel = Field(..., description='')
@@ -140,8 +146,6 @@ class GroupTransformModel(TiTransformModel, extra=Extra.forbid):
     """."""
 
     name: MetadataTransformModel = Field(..., description='')
-    # campaign
-    first_seen: DatetimeTransformModel | None = Field(None, description='')
     # document
     malware: MetadataTransformModel | None = Field(None, description='')
     password: MetadataTransformModel | None = Field(None, description='')

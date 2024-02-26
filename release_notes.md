@@ -3,6 +3,8 @@
 ## 4.0.4
 
 -   APP-4306 - [API] Added support for custom association pagination
+-   APP-4334 - [API] Call method transforms in TI transform models even if value is not a string
+-   APP-4380 - [API] Add externalDateAdded, externalDateExpires, externalLastModified, firstSeen, and lastSeen fields to TI Transform model
 -   APP-4381 - [Logging] Fix API logging issues
 -   APP-4383 - [API] Update for changes in the TC V3 API
 -   APP-4400 - [Input] Add support for KeyValue input type with None value
