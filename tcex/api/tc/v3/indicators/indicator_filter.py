@@ -411,21 +411,15 @@ class IndicatorFilter(FilterABC):
         first_seen = self.util.any_to_datetime(first_seen).strftime('%Y-%m-%d %H:%M:%S')
         self._tql.add_filter('firstSeen', operator, first_seen, TqlType.STRING)
 
-    def has_all_tags(self, operator: Enum, has_all_tags: int | list):
-        """Filter All Tags based on **hasAllTags** keyword.
+    @property
+    def has_all_tags(self):
+        """Return **TagFilter** for further filtering."""
+        # first-party
+        from tcex.api.tc.v3.tags.tag_filter import TagFilter
 
-        Args:
-            operator: The operator enum for the filter.
-            has_all_tags: Filters data tagged with all provided Tag IDs. Query must only contain
-                'id=x' or 'id IN (x,y,z)'.
-        """
-        if isinstance(has_all_tags, list) and operator not in self.list_types:
-            raise RuntimeError(
-                'Operator must be CONTAINS, NOT_CONTAINS, IN'
-                'or NOT_IN when filtering on a list of values.'
-            )
-
-        self._tql.add_filter('hasAllTags', operator, has_all_tags, TqlType.INTEGER)
+        tags = TagFilter(Tql())
+        self._tql.add_filter('hasAllTags', TqlOperator.EQ, tags, TqlType.SUB_QUERY)
+        return tags
 
     @property
     def has_artifact(self):

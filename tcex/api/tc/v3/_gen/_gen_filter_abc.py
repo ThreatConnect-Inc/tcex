@@ -315,6 +315,25 @@ class GenerateFilterABC(GenerateABC, ABC):
             '',
         ]
 
+    def _gen_code_has_all_tags_method(self) -> list:
+        """Return code for has_tag TQL filter methods."""
+        self._add_tql_imports()
+        return [
+            f'{self.i1}@property',
+            f'{self.i1}def has_all_tags(self):',
+            f'{self.i2}"""Return **TagFilter** for further filtering."""',
+            f'{self.i2}# first-party',
+            f'{self.i2}from tcex.api.tc.v3.tags.tag_filter import TagFilter',
+            '',
+            f'{self.i2}tags = TagFilter(Tql())',
+            (
+                f'''{self.i2}self._tql.add_filter('hasAllTags', '''
+                '''TqlOperator.EQ, tags, TqlType.SUB_QUERY)'''
+            ),
+            f'{self.i2}return tags',
+            '',
+        ]
+
     def _gen_code_has_task_method(self) -> list:
         """Return code for has_task TQL filter methods."""
         self._add_tql_imports()
@@ -495,6 +514,8 @@ class GenerateFilterABC(GenerateABC, ABC):
                 _filter_class.extend(self._gen_code_has_note_method())
             elif f.keyword.snake_case() == 'has_tag':
                 _filter_class.extend(self._gen_code_has_tag_method())
+            elif f.keyword.snake_case() == 'has_all_tags':
+                _filter_class.extend(self._gen_code_has_all_tags_method())
             elif f.keyword.snake_case() == 'has_task':
                 _filter_class.extend(self._gen_code_has_task_method())
             elif f.keyword.snake_case() == 'has_attribute':

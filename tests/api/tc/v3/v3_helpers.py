@@ -757,12 +757,12 @@ class TestV3:
                 ]
 
             if self.v3_helper.v3_object == 'indicators':
+                if 'associationName' in names:
+                    # fix discrepancy between <endpoint>/fields and <endpoint>
+                    names = ['customAssociationNames']
                 if 'genericCustomIndicatorValues' in names:
                     # fix discrepancy between <endpoint>/fields and <endpoint>
                     names = ['value1', 'value2', 'value3']
-                if 'whoIs' in names:
-                    # fix discrepancy between <endpoint>/fields and <endpoint>
-                    names = ['whois']
                 if 'threatAssess' in names:
                     # fix discrepancy between <endpoint>/fields and <endpoint>
                     names = [
@@ -772,6 +772,9 @@ class TestV3:
                         'threatAssessScoreFalsePositive',
                         'threatAssessScoreObserved',
                     ]
+                if 'whoIs' in names:
+                    # fix discrepancy between <endpoint>/fields and <endpoint>
+                    names = ['whois']
 
             if self.v3_helper.v3_object == 'results':
                 if 'intelRequirementDetails' in names:

@@ -376,6 +376,7 @@ class TestCases(TestV3):
         case_occurrence_time = datetime.now() - timedelta(days=20)
 
         assignee = {'type': 'User', 'data': {'user_name': os.getenv('TC_API_ACCESS_ID')}}
+        # assignee = {'type': 'Group', 'data': {'name': 'TcEx Testing'}}
 
         # [Create Testing] define case data
         case_data = {

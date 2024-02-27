@@ -34,7 +34,7 @@ class CustomJSONEncoder(JSONEncoder):
         return o
 
 
-class V3ModelABC(BaseModel, ABC):
+class V3ModelABC(BaseModel, ABC, allow_population_by_field_name=True):
     """V3 Base Model"""
 
     _associated_type = PrivateAttr(False)
