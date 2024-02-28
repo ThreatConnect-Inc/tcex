@@ -163,7 +163,7 @@ class TestGroup2:
         xid = batch.generate_xid(['pytest', 'event', name])
         ti = cast(
             Group,
-            batch.group(group_type='Event', name=name, event_data='2008-12-12T12:12:12Z', xid=xid),
+            batch.group(group_type='Event', name=name, event_date='2008-12-12T12:12:12Z', xid=xid),
         )
         ti.status = 'Escalated'
         ti.attribute(attr_type='Description', attr_value=description, displayed=True)
