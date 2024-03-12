@@ -145,7 +145,8 @@ class TestGroup1:
         """Test event creation"""
         batch = tcex.api.tc.v2.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'event', name])
-        ti = batch.event(name=name, event_data='2008-12-12T12:12:12Z', xid=xid)
+        ti = batch.event(name=name, event_date='2008-12-12T12:12:12Z', xid=xid)
+        # ti = batch.event(name=name, event_date='2008-12-12', xid=xid)
         ti.status = 'Escalated'
         ti.attribute(attr_type='Description', attr_value=description, displayed=True)
         ti.security_label(name=label, description='Pytest Label Description', color='ffc0cb')

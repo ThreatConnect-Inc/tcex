@@ -322,6 +322,16 @@ class GroupFilter(FilterABC):
         self._tql.add_filter('generatedReport', operator, generated_report, TqlType.BOOLEAN)
 
     @property
+    def has_all_tags(self):
+        """Return **TagFilter** for further filtering."""
+        # first-party
+        from tcex.api.tc.v3.tags.tag_filter import TagFilter
+
+        tags = TagFilter(Tql())
+        self._tql.add_filter('hasAllTags', TqlOperator.EQ, tags, TqlType.SUB_QUERY)
+        return tags
+
+    @property
     def has_artifact(self):
         """Return **ArtifactFilter** for further filtering."""
         # first-party
@@ -454,6 +464,21 @@ class GroupFilter(FilterABC):
             )
 
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
+
+    def insights(self, operator: Enum, insights: list | str):
+        """Filter Insights (Report) based on **insights** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            insights: The AI generated synopsis of the report.
+        """
+        if isinstance(insights, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
+        self._tql.add_filter('insights', operator, insights, TqlType.STRING)
 
     def is_group(self, operator: Enum, is_group: bool):
         """Filter isGroup based on **isGroup** keyword.

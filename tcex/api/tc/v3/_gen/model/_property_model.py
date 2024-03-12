@@ -163,6 +163,7 @@ class PropertyModel(
     def __process_dict_types(cls, pm: 'PropertyModel', extra: dict[str, str]):
         """Process standard type."""
         types = [
+            'AttackSecurityCoverage',
             'AttributeSource',
             'DNSResolutions',
             'Enrichments',
@@ -306,6 +307,12 @@ class PropertyModel(
                     'import_source': 'first-party-forward-reference',
                     'model': 'KeywordSectionModel',
                     'typing_type': f'list[{cls.__extra_format_type_model(pm.type)}]',
+                }
+            )
+        elif pm.name == 'customAssociationNames':
+            extra.update(
+                {
+                    'typing_type': 'list[str]',
                 }
             )
         elif pm.type == 'TaskAssignees':

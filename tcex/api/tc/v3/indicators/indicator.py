@@ -49,7 +49,7 @@ class Indicator(ObjectABC):
         attributes (IndicatorAttributes, kwargs): A list of Attributes corresponding to the
             Indicator.
         confidence (int, kwargs): The indicator threat confidence.
-        custom_association_name (str, kwargs): The custom association name if assigned to this
+        custom_association_names (array, kwargs): The custom association names assigned to this
             indicator.
         custom_associations (Indicators, kwargs): A list of indicators with custom associations to
             this indicator.
@@ -197,6 +197,11 @@ class Indicator(ObjectABC):
             if indicator.model.id == self.model.id:
                 continue
             yield indicator  # type: ignore
+
+    @property
+    def custom_associations(self) -> Generator[Self, None, None]:
+        """Yield Indicator from Indicators."""
+        yield from self._iterate_over_sublist(Indicators, custom_associations=True)  # type: ignore
 
     @property
     def attributes(self) -> Generator['IndicatorAttribute', None, None]:

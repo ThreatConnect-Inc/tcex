@@ -412,6 +412,16 @@ class IndicatorFilter(FilterABC):
         self._tql.add_filter('firstSeen', operator, first_seen, TqlType.STRING)
 
     @property
+    def has_all_tags(self):
+        """Return **TagFilter** for further filtering."""
+        # first-party
+        from tcex.api.tc.v3.tags.tag_filter import TagFilter
+
+        tags = TagFilter(Tql())
+        self._tql.add_filter('hasAllTags', TqlOperator.EQ, tags, TqlType.SUB_QUERY)
+        return tags
+
+    @property
     def has_artifact(self):
         """Return **ArtifactFilter** for further filtering."""
         # first-party
@@ -442,6 +452,23 @@ class IndicatorFilter(FilterABC):
         cases = CaseFilter(Tql())
         self._tql.add_filter('hasCase', TqlOperator.EQ, cases, TqlType.SUB_QUERY)
         return cases
+
+    def has_custom_association(self, operator: Enum, has_custom_association: int | list):
+        """Filter Associated Indicator based on **hasCustomAssociation** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            has_custom_association: A nested query for association to other indicators.
+        """
+        if isinstance(has_custom_association, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
+        self._tql.add_filter(
+            'hasCustomAssociation', operator, has_custom_association, TqlType.INTEGER
+        )
 
     @property
     def has_group(self):
@@ -662,6 +689,40 @@ class IndicatorFilter(FilterABC):
             )
 
         self._tql.add_filter('rating', operator, rating, TqlType.INTEGER)
+
+    def risk_iq_classification(self, operator: Enum, risk_iq_classification: list | str):
+        """Filter RiskIQ Classification based on **riskIqClassification** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            risk_iq_classification: The classification from the RiskIQ enrichment data.
+        """
+        if isinstance(risk_iq_classification, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
+        self._tql.add_filter(
+            'riskIqClassification', operator, risk_iq_classification, TqlType.STRING
+        )
+
+    def risk_iq_reputation_score(self, operator: Enum, risk_iq_reputation_score: int | list):
+        """Filter RiskIQ Reputation Score based on **riskIqReputationScore** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            risk_iq_reputation_score: The reputation score from the RiskIQ enrichment data.
+        """
+        if isinstance(risk_iq_reputation_score, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
+        self._tql.add_filter(
+            'riskIqReputationScore', operator, risk_iq_reputation_score, TqlType.INTEGER
+        )
 
     def security_label(self, operator: Enum, security_label: list | str):
         """Filter Security Label based on **securityLabel** keyword.

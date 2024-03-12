@@ -1,8 +1,10 @@
 """TcEx Framework Module"""
 # standard library
+import json
 import os
 from abc import ABC
 from collections.abc import Generator
+from pathlib import Path
 from textwrap import TextWrapper
 
 # third-party
@@ -103,6 +105,11 @@ class GenerateABC(ABC):
             # print(r.request.method, r.request.url, r.text)
             if r.ok:
                 _properties = r.json()
+
+                options_data = Path('tcex/api/tc/v3/_gen/options_data') / f'{self.type_}.json'
+                with options_data.open(mode='w') as fh:
+                    json.dump(r.json(), fh, indent=2)
+
         except (ConnectionError, ProxyError) as ex:
             Render.panel.failure(f'Failed getting types properties ({ex}).')
 
@@ -143,6 +150,11 @@ class GenerateABC(ABC):
                 # pair is a list (currently the list only contains a single dict). to be safe
                 # we loop over the list and update the type for each item.
                 field_data = field_data[0]
+
+                # # handle special case for customAssociationNames, where the data is an array of
+                # # string, but the type in the object states 'String'.
+                # if field_data['type'] == 'String':
+                #     field_data['type'] = 'ListString'
             else:
                 raise RuntimeError(
                     f'Invalid type properties data: field-name={field_name}, type={self.type_}'

@@ -94,6 +94,16 @@ class VictimFilter(FilterABC):
         self._tql.add_filter('description', operator, description, TqlType.STRING)
 
     @property
+    def has_all_tags(self):
+        """Return **TagFilter** for further filtering."""
+        # first-party
+        from tcex.api.tc.v3.tags.tag_filter import TagFilter
+
+        tags = TagFilter(Tql())
+        self._tql.add_filter('hasAllTags', TqlOperator.EQ, tags, TqlType.SUB_QUERY)
+        return tags
+
+    @property
     def has_attribute(self):
         """Return **VictimAttributeFilter** for further filtering."""
         # first-party

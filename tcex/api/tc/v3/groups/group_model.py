@@ -252,6 +252,14 @@ class GroupModel(
         read_only=True,
         title='id',
     )
+    insights: str | None = Field(
+        None,
+        allow_mutation=False,
+        applies_to=['Document', 'Report'],
+        description='An AI generated synopsis of the document.',
+        read_only=True,
+        title='insights',
+    )
     last_modified: datetime | None = Field(
         None,
         allow_mutation=False,

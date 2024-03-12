@@ -17,8 +17,8 @@ class AssigneeUserModel(
 ):
     """Assignee Model"""
 
-    user_name: str | None = Field(
-        None,
+    user_name: str = Field(
+        ...,
         allow_mutation=False,
         description='The **user name** for the User.',
         methods=['POST', 'PUT'],

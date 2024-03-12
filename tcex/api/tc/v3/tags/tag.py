@@ -18,6 +18,8 @@ class Tag(ObjectABC):
         description (str, kwargs): A brief description of the Tag.
         name (str, kwargs): The **name** for the Tag.
         owner (str, kwargs): The name of the Owner of the Tag.
+        security_coverage (object, kwargs): For ATT&CK-based tags, this is the security coverage
+            level assigned to the tag.
     """
 
     def __init__(self, **kwargs):
