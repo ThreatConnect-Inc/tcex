@@ -32,8 +32,6 @@ class GroupAttribute(ObjectABC):
             the one(s) specified).
         source (str, kwargs): The attribute source.
         type (str, kwargs): The attribute type.
-        update_last_modified_date (bool, kwargs): A flag giving the client the ability to choose if
-            the attribute last modified date should be changed.
         value (str, kwargs): The attribute value.
     """
 

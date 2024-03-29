@@ -21,7 +21,7 @@ classifiers = [
 dependencies = [
   "arrow",
   "black",
-  "inflect",
+  "inflection",
   "isort",
   "jmespath",
   "paho-mqtt<2.0.0",

@@ -81,7 +81,7 @@ class TcEx:
         # pylint: disable=no-member
         self.exit.exit(exit_code, 'The App received an interrupt signal and will now exit.')
 
-    @property
+    @cached_property
     def api(self) -> API:
         """Return instance of API."""
         # pylint: disable=no-member

@@ -2,6 +2,13 @@
 
 ## 4.0.4
 
+-   APP-4442 - [Mitre] Updated MITRE module to support passthru mode and make logging optional
+-   APP-4443 - [API] Updated multiple API modules to be cached properties
+-   APP-4444 - [Util] Replaced inflect package with inflection package
+-   APP-4445 - [Util] Updated utils module to use inflection from case conversion
+
+## 4.0.4
+
 -   APP-4307 - [API] Added support for paginating indicator custom associations
 -   APP-4334 - [API] Fixed issue where transform methods wasn't being called if value was not a string
 -   APP-4380 - [API] Added support for external date fields to TI Transform model

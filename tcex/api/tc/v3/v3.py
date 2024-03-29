@@ -6,6 +6,7 @@ from tcex.api.tc.v3.case_management.case_management import CaseManagement
 from tcex.api.tc.v3.intel_requirement.ir import IR
 from tcex.api.tc.v3.security.security import Security
 from tcex.api.tc.v3.threat_intelligence.threat_intelligence import ThreatIntelligence
+from tcex.pleb.cached_property import cached_property
 
 
 class V3(CaseManagement, Security, ThreatIntelligence):
@@ -23,22 +24,22 @@ class V3(CaseManagement, Security, ThreatIntelligence):
         """Return a instance of Attribute Types object."""
         return AttributeTypes(session=self.session, **kwargs)
 
-    @property
+    @cached_property
     def cm(self) -> CaseManagement:
         """Return Case Management API collection."""
         return CaseManagement(self.session)
 
-    @property
+    @cached_property
     def ir(self) -> IR:
         """Return Intel Requirement API collection."""
         return IR(self.session)
 
-    @property
+    @cached_property
     def security(self) -> Security:
         """Return Security API collection."""
         return Security(self.session)
 
-    @property
+    @cached_property
     def ti(self) -> ThreatIntelligence:
         """Return Threat Intelligence API collection."""
         return ThreatIntelligence(self.session)

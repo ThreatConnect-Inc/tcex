@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # standard library
 import logging
 
@@ -37,15 +38,12 @@ class ThreatIntelligence:
     def __init__(self, session: Session):
         """Initialize instance properties."""
         self.session = session
-        self._ti_utils = None
         self.log = _logger
 
-    @property
+    @cached_property
     def ti_utils(self):
         """Return instance of Threat Intel Utils."""
-        if not self._ti_utils:
-            self._ti_utils = ThreatIntelUtil(session_tc=self.session)
-        return self._ti_utils
+        return ThreatIntelUtil(session_tc=self.session)
 
     def create_entity(self, entity: dict, owner: str) -> dict | None:
         """Create a CM object provided a dict and owner."""
@@ -192,20 +190,6 @@ class ThreatIntelligence:
         """
         return Groups(session=self.session, **kwargs)
 
-    @cached_property
-    def mitre_tags(self) -> MitreTags:
-        """Mitre Tags"""
-        mitre_tags = {}
-        try:
-            tags = Tags(session=self.session, params={'resultLimit': 1_000})
-            tags.filter.technique_id(TqlOperator.NE, None)  # type: ignore
-            for tag in tags:
-                mitre_tags[str(tag.model.technique_id)] = tag.model.name
-        except Exception as e:
-            self.log.exception('Error downloading Mitre Tags')
-            raise e
-        return MitreTags(mitre_tags)
-
     def indicator(self, **kwargs) -> Indicator:
         """Return a instance of Group object.
 
@@ -314,6 +298,20 @@ class ThreatIntelligence:
             params (dict, optional): A dict of query params for the request.
         """
         return Indicators(session=self.session, **kwargs)
+
+    @cached_property
+    def mitre_tags(self) -> MitreTags:
+        """Mitre Tags"""
+        mitre_tags = {}
+        try:
+            tags = Tags(session=self.session, params={'resultLimit': 1_000})
+            tags.filter.technique_id(TqlOperator.NE, None)  # type: ignore
+            for tag in tags:
+                mitre_tags[str(tag.model.technique_id)] = tag.model.name
+        except Exception as e:
+            self.log.exception('Error downloading Mitre Tags')
+            raise e
+        return MitreTags(mitre_tags)
 
     def security_label(self, **kwargs) -> SecurityLabel:
         """Return a instance of Case Attributes object.

@@ -6,7 +6,7 @@ The ThreatConnect&trade; TcEx App Framework provides functionality for writing T
 
  * arrow (https://pypi.python.org/pypi/arrow)
  * black (https://pypi.org/project/black/)
- * inflect (https://pypi.python.org/pypi/inflect)
+ * inflection (https://pypi.org/project/inflection/)
  * isort (https://pypi.org/project/isort/)
  * jmespath (https://pypi.org/project/jmespath/)
  * paho-mqtt (https://pypi.org/project/paho-mqtt/)
