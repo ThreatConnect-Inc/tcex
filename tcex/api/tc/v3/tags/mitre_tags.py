@@ -47,34 +47,33 @@ class MitreTags:
 
         return mitre_tags
 
-    def get_by_name(self, name: str, passthru: bool = True) -> str | None:
+    def get_by_name(self, name: str, default: str | None = None) -> str | None:
         """Return the tag id for the provided name."""
         mitre_tag = self.mitre_tags_name_id.get(name.lower())
         if mitre_tag is None:
             if self.verbose is True:
                 self.log.warning(f'No Mitre match found for {name}.')
-            return None if passthru is False else name
+            return default
         return mitre_tag.formatted
 
-    def get_by_id(self, id_: str, passthru: bool = True) -> str | None:
+    def get_by_id(self, id_: str, default: str | None = None) -> str | None:
         """Return the tag name for the provided id (e.g., T1000)."""
         mitre_tag = self._mitre_tags.get(str(id_).upper())
         if mitre_tag is None:
             if self.verbose is True:
                 self.log.warning(f'No Mitre match found for {id_}, returning id unformatted.')
-            return None if passthru is False else id_
+            return default
         return mitre_tag.formatted
 
-    def get_by_id_regex(self, value: str, passthru: bool = True) -> str | None:
+    def get_by_id_regex(self, value: str, default: str | None = None) -> str | None:
         r"""Get the appropriate MitreTag using the (T\d+(?:\.\d+)?) regex."""
         matches = re.findall(r'([Tt]\d+(?:\.\d+)?)', value)
         if not matches:
             if self.verbose is True:
                 self.log.warning(f'No Mitre matches found for {value}')
-            return None if passthru is False else value
+            return default
         if len(matches) > 1:
             if self.verbose is True:
                 self.log.warning(f'Multiple Mitre matches found for {value}: {matches}')
-            return None if passthru is False else value
-        mitre_tag = self.get_by_id(matches[0], False)
-        return mitre_tag if mitre_tag is not None else (None if passthru is False else value)
+            return default
+        return self.get_by_id(matches[0], default)

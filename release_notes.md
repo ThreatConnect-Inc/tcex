@@ -1,8 +1,8 @@
 # Release Notes
 
-## 4.0.4
+## 4.0.5
 
--   APP-4442 - [Mitre] Updated MITRE module to support passthru mode and make logging optional
+-   APP-4442 - [Mitre] Updated MITRE module to support default value and make logging optional
 -   APP-4443 - [API] Updated multiple API modules to be cached properties
 -   APP-4444 - [Util] Replaced inflect package with inflection package
 -   APP-4445 - [Util] Updated utils module to use inflection from case conversion
