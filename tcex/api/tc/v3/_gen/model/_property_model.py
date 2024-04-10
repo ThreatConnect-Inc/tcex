@@ -322,6 +322,12 @@ class PropertyModel(
                     'typing_type': 'list[str]',
                 }
             )
+        elif pm.name == 'customAssociationNames':
+            extra.update(
+                {
+                    'typing_type': 'list[str]',
+                }
+            )
         elif pm.type == 'TaskAssignees':
             extra.update(
                 {
