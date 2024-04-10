@@ -252,7 +252,7 @@ class GroupModel(
         read_only=True,
         title='id',
     )
-    insights: str | None = Field(
+    insights: dict | None = Field(
         None,
         allow_mutation=False,
         applies_to=['Document', 'Report'],

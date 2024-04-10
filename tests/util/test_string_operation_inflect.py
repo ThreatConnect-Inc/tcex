@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # third-party
 import pytest
 
@@ -29,5 +30,5 @@ class TestStringOperationInflect:
     )
     def test_utils_inflect(self, string: str, expected: str):
         """Test Case"""
-        result = self.so.inflect.plural(string)
+        result = self.so.inflection.pluralize(string)
         assert result == expected, f'Input {string} result of {result} != {expected}'

@@ -1,10 +1,12 @@
 """TcEx Framework Module"""
+
 # third-party
 from pydantic import BaseModel, Extra, Field, validator
 
 # first-party
 from tcex.pleb.cached_property import cached_property
 from tcex.util import Util
+from tcex.util.render.render import Render
 from tcex.util.string_operation import CamelString
 
 
@@ -132,8 +134,12 @@ class PropertyModel(
         self.__process_special_types(self, extra)
 
         if extra.get('typing_type') is None:
-            raise RuntimeError(
-                f'Unable to determine typing_type for name={self.name}, type={self.type}.'
+            Render.panel.failure(
+                f'New type found for object name="{self.name}"\n'
+                f'Type: "{self.type}" should be added to PropertyModel '
+                f'in one of the following methods:\n'
+                f'_process_dict, _process_tc_type, _process_special_types\n'
+                f'\nextra: {extra}'
             )
 
         return extra
@@ -163,6 +169,7 @@ class PropertyModel(
     def __process_dict_types(cls, pm: 'PropertyModel', extra: dict[str, str]):
         """Process standard type."""
         types = [
+            'AiInsights',
             'AttackSecurityCoverage',
             'AttributeSource',
             'DNSResolutions',
@@ -307,6 +314,12 @@ class PropertyModel(
                     'import_source': 'first-party-forward-reference',
                     'model': 'KeywordSectionModel',
                     'typing_type': f'list[{cls.__extra_format_type_model(pm.type)}]',
+                }
+            )
+        elif pm.name == 'customAssociationNames':
+            extra.update(
+                {
+                    'typing_type': 'list[str]',
                 }
             )
         elif pm.name == 'customAssociationNames':

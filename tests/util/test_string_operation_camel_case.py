@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # third-party
 import pytest
 
@@ -14,7 +15,22 @@ class TestStringOperationCamelCase:
     @pytest.mark.parametrize(
         'string,pascal_case,plural,singular,snake_case,space_case',
         [
-            ('upperUpper', 'UpperUpper', 'upperUppers', 'upperUpper', 'upper_upper', 'upper upper'),
+            (
+                'upperUpper',
+                'UpperUpper',
+                'upperUppers',
+                'upperUpper',
+                'upper_upper',
+                'upper upper',
+            ),
+            (
+                'testTEST',
+                'TestTest',
+                'testTESTs',
+                'testTEST',
+                'test_test',
+                'test test',
+            ),
         ],
     )
     def test_string_operation_camel_string(

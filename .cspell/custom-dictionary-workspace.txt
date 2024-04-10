@@ -128,6 +128,7 @@ openapi
 outdir
 paco
 paho
+passthru
 pathlib
 playbookdb
 poolblock

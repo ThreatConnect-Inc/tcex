@@ -107,16 +107,6 @@ class IndicatorAttributeModel(
         read_only=False,
         title='type',
     )
-    update_last_modified_date: bool = Field(
-        None,
-        description=(
-            'A flag giving the client the ability to choose if the attribute last modified date '
-            'should be changed.'
-        ),
-        methods=['POST', 'PUT'],
-        read_only=False,
-        title='updateLastModifiedDate',
-    )
     value: str | None = Field(
         None,
         description='The attribute value.',

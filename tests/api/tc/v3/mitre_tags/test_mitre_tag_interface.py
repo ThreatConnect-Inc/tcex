@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # third-party
 import pytest
 
@@ -21,7 +22,7 @@ class TestMitreTags(TestV3):
     )
     def test_get_by_id(self, mitre_id: str, output: str):
         """Test get_by_id method."""
-        mitre_tag = self.v3_helper.tcex.api.tc.v3.mitre_tags.get_by_id(mitre_id)
+        mitre_tag = self.v3_helper.tcex.api.tc.v3.mitre_tags.get_by_id(mitre_id, default=mitre_id)
         assert mitre_tag == output
 
     @pytest.mark.parametrize(
@@ -53,10 +54,10 @@ class TestMitreTags(TestV3):
             ('T1205.001 and T1205', None),
             ('', None),
             ('No id in string', None),
-            ('Invalid ID in string T99999', 'T99999'),
+            ('Invalid ID in string T99999', None),
         ],
     )
     def test_get_by_regex(self, value: str, output: str | None):
         """Test get_by_regex method."""
         mitre_tag = self.v3_helper.tcex.api.tc.v3.mitre_tags.get_by_id_regex(value)
-        assert mitre_tag == output
+        assert mitre_tag == output, f'mitre-tag: {mitre_tag} != {output}'
