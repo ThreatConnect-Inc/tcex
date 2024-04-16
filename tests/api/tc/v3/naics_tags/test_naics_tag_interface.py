@@ -51,6 +51,27 @@ class TestNAICSTags(TestV3):
         naics_tag = self.v3_helper.tcex.api.tc.v3.naics_tags.get_all_by_id(id_, default=default)
         assert naics_tag == output
 
+
+    @pytest.mark.parametrize(
+        'name,output,default',
+        [
+            ('Oilseed and Grain Farming', ['NAICS: 1111 - Oilseed and Grain Farming'], ['Unknown']),
+            ('support activities for animal production', [
+                'NAICS: 1152 - Support Activities for Animal Production',
+                'NAICS: 11521 - Support Activities for Animal Production',
+                'NAICS: 115210 - Support Activities for Animal Production'
+            ], None),
+            ('NA', None, None),
+            ('NA', ['Unknown'], ['Unknown']),
+        ],
+    )
+    def test_get_by_name(self, name: str, output: list[str], default: list[str] | None):
+        """Test get_by_name method."""
+        naics_tag = self.v3_helper.tcex.api.tc.v3.naics_tags.get_by_name(name, default=default)
+        print(naics_tag)
+        print(output)
+        assert naics_tag == output
+
     def test_cached(self):
         """Test that naics_tags property is cached."""
         naics_tag = self.v3_helper.tcex.api.tc.v3.naics_tags

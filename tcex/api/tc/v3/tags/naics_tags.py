@@ -8,6 +8,8 @@ from pydantic import BaseModel
 
 # first-party
 from tcex.logger.trace_logger import TraceLogger
+from tcex.pleb.cached_property import cached_property
+
 
 _logger: TraceLogger = logging.getLogger(__name__.split('.', maxsplit=1)[0])  # type: ignore
 
@@ -32,6 +34,25 @@ class NAICSTags:
         self._naics_tags = {id_: NAICSTag(id=id_, name=name) for id_, name in naics_tags.items()}
         self.verbose = verbose
         self.log = _logger
+
+    @cached_property
+    def naics_tags_name_id(self) -> dict[str, list[NAICSTag]]:
+        """Return a dict of MitreTags keyed by name."""
+        naics_tags = {}
+        for key, tag in self._naics_tags.items():
+            naics_tags.setdefault(tag.name.lower(), []).append(NAICSTag(id=tag.id, name=tag.name))
+
+        return naics_tags
+
+    def get_by_name(self, name: str, default: str | None = None) -> str | None:
+        """Return the tag id for the provided name."""
+        naics_tags = self.naics_tags_name_id.get(name.lower(), [])
+        tags = []
+        for tag in naics_tags:
+            tags.append(tag.formatted)
+        if not tags and self.verbose:
+            self.log.warning(f'No NAICS match found for {name}.')
+        return tags or default
 
     def get_by_id(self, id_: str | int, default=None) -> str | None:
         """Return the tag name for the provided id."""
