@@ -34,7 +34,7 @@ class FileOccurrenceModel(
         methods=['POST', 'PUT'],
         title='path',
     )
-    id: int | None = Field(  # pylint: disable=redefined-builtin
+    id: int | None = Field(  # type: ignore
         None,
         title='id',
     )
