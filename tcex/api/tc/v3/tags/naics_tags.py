@@ -44,7 +44,7 @@ class NAICSTags:
 
         return naics_tags
 
-    def get_by_name(self, name: str, default: str | None = None) -> str | None:
+    def get_by_name(self, name: str, default: list[str] | None = None) -> list[str] | None:
         """Return the tag id for the provided name."""
         naics_tags = self.naics_tags_name_id.get(name.lower(), [])
         tags = []
@@ -64,7 +64,6 @@ class NAICSTags:
                 self.log.warning(f'No NAICS match found for {id_}.')
             return default
         return tag.formatted
-
 
     def get_all_by_id(self, id_: str | int, default=None) -> list[str] | None:
         """Return the tag name for the provided id."""
