@@ -119,6 +119,8 @@ mitmproxy
 mqtt
 multichoice
 multiprocess
+naic
+naics
 nargs
 nbproject
 networkaccount
