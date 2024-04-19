@@ -1,5 +1,8 @@
 # Release Notes
 
+## 4.0.6
+-   APP-4482 - [API] Updated transforms to support new static methods.
+
 ## 4.0.5
 
 -   APP-4442 - [Mitre] Updated MITRE module to support default value and make logging optional
