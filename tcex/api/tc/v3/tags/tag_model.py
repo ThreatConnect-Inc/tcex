@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # pylint: disable=no-member,no-self-argument,wrong-import-position
 # standard library
 from datetime import datetime
@@ -46,7 +47,7 @@ class TagModel(
         read_only=True,
         title='groups',
     )
-    id: int | None = Field(
+    id: int | None = Field(  # type: ignore
         None,
         description='The ID of the item.',
         read_only=True,
@@ -95,15 +96,6 @@ class TagModel(
         description='For ATT&CK-based tags, these are the platforms applicable to the technique.',
         read_only=True,
         title='platforms',
-    )
-    security_coverage: dict | None = Field(
-        None,
-        description=(
-            'For ATT&CK-based tags, this is the security coverage level assigned to the tag.'
-        ),
-        methods=['POST', 'PUT'],
-        read_only=False,
-        title='securityCoverage',
     )
     synonymous_tag_names: dict | None = Field(
         None,

@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # standard library
 from datetime import datetime
 from enum import Enum
@@ -206,21 +207,6 @@ class IndicatorFilter(FilterABC):
             )
 
         self._tql.add_filter('attribute', operator, attribute, TqlType.STRING)
-
-    def common_id(self, operator: Enum, common_id: int | list):
-        """Filter Common Id based on **commonId** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            common_id: The common ID of the indicator linking it between owners.
-        """
-        if isinstance(common_id, list) and operator not in self.list_types:
-            raise RuntimeError(
-                'Operator must be CONTAINS, NOT_CONTAINS, IN'
-                'or NOT_IN when filtering on a list of values.'
-            )
-
-        self._tql.add_filter('commonId', operator, common_id, TqlType.INTEGER)
 
     def confidence(self, operator: Enum, confidence: int | list):
         """Filter Confidence Rating based on **confidence** keyword.
@@ -467,23 +453,6 @@ class IndicatorFilter(FilterABC):
         cases = CaseFilter(Tql())
         self._tql.add_filter('hasCase', TqlOperator.EQ, cases, TqlType.SUB_QUERY)
         return cases
-
-    def has_custom_association(self, operator: Enum, has_custom_association: int | list):
-        """Filter Associated Indicator based on **hasCustomAssociation** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            has_custom_association: A nested query for association to other indicators.
-        """
-        if isinstance(has_custom_association, list) and operator not in self.list_types:
-            raise RuntimeError(
-                'Operator must be CONTAINS, NOT_CONTAINS, IN'
-                'or NOT_IN when filtering on a list of values.'
-            )
-
-        self._tql.add_filter(
-            'hasCustomAssociation', operator, has_custom_association, TqlType.INTEGER
-        )
 
     @property
     def has_group(self):

@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # standard library
 from datetime import datetime
 from enum import Enum
@@ -221,22 +222,6 @@ class TagFilter(FilterABC):
             )
 
         self._tql.add_filter('ownerName', operator, owner_name, TqlType.STRING)
-
-    def security_coverage(self, operator: Enum, security_coverage: list | str):
-        """Filter Security Coverage based on **securityCoverage** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            security_coverage: The security coverage level of an ATT&CK-based tag as it relates to
-                the user's organization.
-        """
-        if isinstance(security_coverage, list) and operator not in self.list_types:
-            raise RuntimeError(
-                'Operator must be CONTAINS, NOT_CONTAINS, IN'
-                'or NOT_IN when filtering on a list of values.'
-            )
-
-        self._tql.add_filter('securityCoverage', operator, security_coverage, TqlType.STRING)
 
     def summary(self, operator: Enum, summary: list | str):
         """Filter Summary based on **summary** keyword.

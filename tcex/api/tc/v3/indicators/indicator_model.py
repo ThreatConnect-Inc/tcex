@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # pylint: disable=no-member,no-self-argument,wrong-import-position
 # standard library
 from datetime import datetime
@@ -93,12 +94,12 @@ class IndicatorModel(
         read_only=False,
         title='confidence',
     )
-    custom_association_names: list[str] = Field(
+    custom_association_name: str | None = Field(
         None,
-        description='The custom association names assigned to this indicator.',
+        description='The custom association name if assigned to this indicator.',
         methods=['POST', 'PUT'],
         read_only=False,
-        title='customAssociationNames',
+        title='customAssociationName',
     )
     custom_associations: 'IndicatorsModel' = Field(
         None,
@@ -219,7 +220,7 @@ class IndicatorModel(
         read_only=False,
         title='hostName',
     )
-    id: int | None = Field(
+    id: int | None = Field(  # type: ignore
         None,
         description='The ID of the item.',
         read_only=True,

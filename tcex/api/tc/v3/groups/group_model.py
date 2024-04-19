@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # pylint: disable=no-member,no-self-argument,wrong-import-position
 # standard library
 from datetime import datetime
@@ -246,13 +247,13 @@ class GroupModel(
         read_only=False,
         title='header',
     )
-    id: int | None = Field(
+    id: int | None = Field(  # type: ignore
         None,
         description='The ID of the item.',
         read_only=True,
         title='id',
     )
-    insights: dict | None = Field(
+    insights: str | None = Field(
         None,
         allow_mutation=False,
         applies_to=['Document', 'Report'],

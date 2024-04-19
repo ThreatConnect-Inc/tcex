@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # standard library
 from enum import Enum
 
@@ -30,15 +31,6 @@ class AttributeTypeFilter(FilterABC):
             )
 
         self._tql.add_filter('associatedType', operator, associated_type, TqlType.STRING)
-
-    def default(self, operator: Enum, default: bool):
-        """Filter Displayed based on **default** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            default: Whether or not the attribute type is displayable on the item.
-        """
-        self._tql.add_filter('default', operator, default, TqlType.BOOLEAN)
 
     def description(self, operator: Enum, description: list | str):
         """Filter Description based on **description** keyword.
