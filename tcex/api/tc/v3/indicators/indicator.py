@@ -50,7 +50,7 @@ class Indicator(ObjectABC):
         attributes (IndicatorAttributes, kwargs): A list of Attributes corresponding to the
             Indicator.
         confidence (int, kwargs): The indicator threat confidence.
-        custom_association_names (array, kwargs): The custom association names assigned to this
+        custom_association_name (str, kwargs): The custom association name if assigned to this
             indicator.
         custom_associations (Indicators, kwargs): A list of indicators with custom associations to
             this indicator.

@@ -52,6 +52,15 @@ class GroupAttributeFilter(FilterABC):
         date_val = self.util.any_to_datetime(date_val).strftime('%Y-%m-%d %H:%M:%S')
         self._tql.add_filter('dateVal', operator, date_val, TqlType.STRING)
 
+    def default(self, operator: Enum, default: bool):
+        """Filter Associable based on **default** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            default: A flag to include an attribute in group associations.
+        """
+        self._tql.add_filter('default', operator, default, TqlType.BOOLEAN)
+
     def displayed(self, operator: Enum, displayed: bool):
         """Filter Displayed based on **displayed** keyword.
 

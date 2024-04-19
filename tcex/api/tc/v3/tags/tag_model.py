@@ -97,6 +97,15 @@ class TagModel(
         read_only=True,
         title='platforms',
     )
+    security_coverage: dict | None = Field(
+        None,
+        description=(
+            'For ATT&CK-based tags, this is the security coverage level assigned to the tag.'
+        ),
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='securityCoverage',
+    )
     synonymous_tag_names: dict | None = Field(
         None,
         allow_mutation=False,
