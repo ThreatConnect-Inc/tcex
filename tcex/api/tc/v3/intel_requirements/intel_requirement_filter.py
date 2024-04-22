@@ -259,6 +259,21 @@ class IntelRequirementFilter(FilterABC):
         event_date = self.util.any_to_datetime(event_date).strftime('%Y-%m-%d %H:%M:%S')
         self._tql.add_filter('eventDate', operator, event_date, TqlType.STRING)
 
+    def event_type(self, operator: Enum, event_type: list | str):
+        """Filter Event Type based on **eventType** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            event_type: The event type of the group.
+        """
+        if isinstance(event_type, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
+        self._tql.add_filter('eventType', operator, event_type, TqlType.STRING)
+
     def external_date_added(
         self, operator: Enum, external_date_added: Arrow | datetime | int | str
     ):

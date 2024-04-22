@@ -162,6 +162,14 @@ class GroupModel(
         read_only=False,
         title='eventDate',
     )
+    event_type: str | None = Field(
+        None,
+        applies_to=['Event'],
+        description='The identification of an event type.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='eventType',
+    )
     external_date_added: datetime | None = Field(
         None,
         description='The date and time that the item was first created externally.',
