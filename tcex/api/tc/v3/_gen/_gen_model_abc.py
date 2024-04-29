@@ -322,8 +322,12 @@ class GenerateModelABC(GenerateABC, ABC):
                 self.validators[prop.type]['typing_type'] = prop.extra.typing_type
 
             # update model
+            comment = ''
+            if prop.extra.alias.snake_case() in ['id']:
+                comment = '  # type: ignore'
             _model.append(
-                f'''{self.i1}{prop.extra.alias.snake_case()}: {prop.extra.typing_type} = Field('''
+                f'''{self.i1}{prop.extra.alias.snake_case()}: '''
+                f'''{prop.extra.typing_type} = Field({comment}'''
             )
             _model.append(f'''{self.i2}None,''')  # the default value
 

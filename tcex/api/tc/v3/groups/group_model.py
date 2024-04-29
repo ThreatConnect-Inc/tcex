@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # pylint: disable=no-member,no-self-argument,wrong-import-position
 # standard library
 from datetime import datetime
@@ -161,6 +162,14 @@ class GroupModel(
         read_only=False,
         title='eventDate',
     )
+    event_type: str | None = Field(
+        None,
+        applies_to=['Event'],
+        description='The identification of an event type.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='eventType',
+    )
     external_date_added: datetime | None = Field(
         None,
         description='The date and time that the item was first created externally.',
@@ -246,7 +255,7 @@ class GroupModel(
         read_only=False,
         title='header',
     )
-    id: int | None = Field(
+    id: int | None = Field(  # type: ignore
         None,
         description='The ID of the item.',
         read_only=True,
