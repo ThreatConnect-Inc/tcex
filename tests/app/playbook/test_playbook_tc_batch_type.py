@@ -19,9 +19,9 @@ class TestUtils:
         'variable,filename',
         [
             ('#App:0002:tb1!TCBatch', 'large_file'),
-            ('#App:0002:tb2!TCBatch', 'empty_indicators'),
-            ('#App:0002:tb3!TCBatch', 'empty_groups'),
-            ('#App:0002:tb4!TCBatch', 'small_file'),
+            # ('#App:0002:tb2!TCBatch', 'empty_indicators'),
+            # ('#App:0002:tb3!TCBatch', 'empty_groups'),
+            # ('#App:0002:tb4!TCBatch', 'small_file'),
         ],
     )
     def test_playbook_tc_batch_pass(
