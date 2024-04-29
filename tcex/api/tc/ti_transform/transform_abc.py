@@ -14,6 +14,7 @@ import jmespath
 from jmespath import functions
 
 # first-party
+from tcex.api.tc.ti_transform import ti_predefined_functions
 from tcex.api.tc.ti_transform.model import AttributeTransformModel  # TYPE-CHECKING
 from tcex.api.tc.ti_transform.model import SecurityLabelTransformModel  # TYPE-CHECKING
 from tcex.api.tc.ti_transform.model import TagTransformModel  # TYPE-CHECKING
@@ -26,6 +27,7 @@ from tcex.api.tc.ti_transform.model.transform_model import (
     AssociatedGroupTransform,
     DatetimeTransformModel,
     FileOccurrenceTransformModel,
+    PredefinedFunctionModel,
 )
 from tcex.logger.trace_logger import TraceLogger
 from tcex.util import Util
@@ -491,10 +493,16 @@ class TransformABC(ABC):
         return value
 
     def _transform_value_callable(
-        self, value: dict | list | str, c: Callable, kwargs=None
+        self, value: dict | list | str, c: Callable | PredefinedFunctionModel, kwargs=None
     ) -> str | None | list[str] | None:
         """Transform values in the TI data."""
         # find signature of method and call with correct args
+        if isinstance(c, PredefinedFunctionModel):
+            normalized_params = {
+                k.replace(' ', '_').lower(): v for k, v in PredefinedFunctionModel.params or {}
+            }
+            return getattr(ti_predefined_functions, c.name)(value, **normalized_params)
+
         kwargs = kwargs or {}
         try:
             sig = signature(c, follow_wrapped=True)

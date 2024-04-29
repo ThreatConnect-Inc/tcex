@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 4.0.6
-
+-   APP-4482 - [API] Updated transforms to support new static methods.
 -   APP-4472 - [NAICS] Added NAICS module for lookup by id or name.
 
 ## 4.0.5

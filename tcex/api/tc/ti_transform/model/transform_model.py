@@ -16,14 +16,21 @@ def _always_array(value: list | str) -> list[str]:
     return value
 
 
+class PredefinedFunctionModel(BaseModel, extra=Extra.forbid):
+    """Model Definitions"""
+
+    name: str = Field(..., description='The name of the static method.')
+    params: dict | None = Field({}, description='The parameters for the static method.')
+
+
 # pylint: disable=no-self-argument
 class TransformModel(BaseModel, extra=Extra.forbid):
     """Model Definition"""
 
     filter_map: dict | None = Field(None, description='')
     kwargs: dict | None = Field({}, description='')
-    method: Callable | None = Field(None, description='')
-    for_each: Callable | None = Field(None, description='')
+    method: Callable | PredefinedFunctionModel | None = Field(None, description='')
+    for_each: Callable | PredefinedFunctionModel | None = Field(None, description='')
     static_map: dict | None = Field(None, description='')
 
     @validator('filter_map', 'static_map', pre=True)
