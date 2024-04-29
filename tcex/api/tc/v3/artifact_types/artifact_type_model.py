@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # pylint: disable=no-member,no-self-argument,wrong-import-position
 # third-party
 from pydantic import BaseModel, Extra, Field, PrivateAttr
@@ -43,7 +44,7 @@ class ArtifactTypeModel(
         read_only=True,
         title='description',
     )
-    id: int | None = Field(
+    id: int | None = Field(  # type: ignore
         None,
         description='The ID of the item.',
         read_only=True,

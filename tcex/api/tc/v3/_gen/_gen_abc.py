@@ -106,7 +106,9 @@ class GenerateABC(ABC):
             if r.ok:
                 _properties = r.json()
 
-                options_data = Path('tcex/api/tc/v3/_gen/options_data') / f'{self.type_}.json'
+                options_data = Path('tcex/api/tc/v3/_gen/options_data')
+                options_data.mkdir(parents=True, exist_ok=True)
+                options_data = options_data / f'{self.type_}.json'
                 with options_data.open(mode='w') as fh:
                     json.dump(r.json(), fh, indent=2)
 

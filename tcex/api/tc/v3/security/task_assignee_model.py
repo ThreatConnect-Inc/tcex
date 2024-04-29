@@ -52,7 +52,7 @@ class TaskAssigneeModel(
         read_only=True,
         title='dateAdded',
     )
-    id: int | None = Field(
+    id: int | None = Field(  # type: ignore
         None,
         description='The ID of the item.',
         read_only=True,

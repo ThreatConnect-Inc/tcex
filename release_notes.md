@@ -1,5 +1,9 @@
 # Release Notes
 
+## 4.0.6
+
+-   APP-4472 - [NAICS] Added NAICS module for lookup by id or name.
+
 ## 4.0.5
 
 -   APP-4442 - [Mitre] Updated MITRE module to support default value and make logging optional
