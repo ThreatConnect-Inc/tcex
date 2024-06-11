@@ -393,7 +393,7 @@ class V3ModelABC(BaseModel, ABC, allow_population_by_field_name=True):
                     # (e.g., CaseModel -> workflowTemplate field)
                     # if method == 'POST' or value.id is None or value.updated is True:
                     if self._calculate_nested_inclusion(method, mode, value):  # type: ignore
-                        _data = value.gen_body(method, mode, nested=True)  # type: ignore
+                        _data = value.gen_body(method, mode, nested=True)
                         if _data:
                             _body[key] = _data
 
