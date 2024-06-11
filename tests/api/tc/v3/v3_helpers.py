@@ -377,13 +377,16 @@ class V3Helper:
             'subtype': kwargs.get('subtype', {'id': 1}),
             'unique_id': kwargs.get('unique_id', f'test-{time.time()}'),
             'description': kwargs.get('description', 'A description for the Intel Requirements'),
-            'keyword_sections': kwargs.get('keyword_sections', [
-                {
-                    'sectionNumber': 0,
-                    'compareValue': 'includes',
-                    'keywords': [{'value': 'testing'}]
-                }
-            ]),
+            'keyword_sections': kwargs.get(
+                'keyword_sections',
+                [
+                    {
+                        'sectionNumber': 0,
+                        'compareValue': 'includes',
+                        'keywords': [{'value': 'testing'}],
+                    }
+                ],
+            ),
         }
 
         # create object
@@ -399,7 +402,6 @@ class V3Helper:
         for tag in tags:
             ir.stage_tag(self.v3.tag(**tag))
         ir.update()
-
 
         # store case id for cleanup
         self._v3_objects.append(ir)
@@ -737,7 +739,6 @@ class V3Helper:
     def cleanup(self):
         """Remove all cases and child data."""
         # remove cases created by the create_case method
-        return
         for obj in self._v3_objects:
             try:
                 obj.delete()
@@ -787,8 +788,8 @@ class TestV3:
                 ]
 
             if (
-                    self.v3_helper.v3_object in ['cases', 'groups', 'intel_requirements']
-                    and 'userDetails' in names
+                self.v3_helper.v3_object in ['cases', 'groups', 'intel_requirements']
+                and 'userDetails' in names
             ):
                 # fix discrepancy between <endpoint>/fields and <endpoint>
                 names = ['createdBy']

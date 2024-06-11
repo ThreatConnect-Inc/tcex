@@ -1,12 +1,12 @@
 """TcEx Framework Module"""
-from typing import Callable
+# standard library
+from collections.abc import Callable
 
 # third-party
 import pytest
 
-from tcex.api.tc.v3.tql.tql_operator import TqlOperator
-
 # first-party
+from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 
 
@@ -106,7 +106,7 @@ class TestIntelRequirements(TestV3):
                     'associatedCases',
                     'associatedGroups',
                     'associatedIndicators',
-                    'associatedVictimAssets'
+                    'associatedVictimAssets',
                 ]
             }
         )
@@ -145,13 +145,3 @@ class TestIntelRequirements(TestV3):
             assert ir.model.id in ids
             ids.remove(ir.model.id)
         assert not ids, 'Not all ids were found in the response.'
-
-
-
-
-
-
-
-
-
-
