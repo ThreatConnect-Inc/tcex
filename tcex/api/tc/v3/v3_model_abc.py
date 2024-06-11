@@ -362,12 +362,12 @@ class V3ModelABC(BaseModel, ABC, allow_population_by_field_name=True):
             property_ = schema_properties.get(name, {})
             key = property_['title']
             if isinstance(value, BaseModel) and property_.get('read_only') is False:
-                value: Self = value
+                value: Self  # type: ignore
                 # Handle nested model that should be included in the body (non-read-only).
 
                 if hasattr(value, 'data') and isinstance(value.data, list):  # type: ignore
                     # Handle nested object types where the "data" field contains an array of model.
-                    _data = self._process_nested_data_array(method, mode, value)
+                    _data = self._process_nested_data_array(method, mode, value)  # type: ignore
                     if _data:
                         _body.setdefault(key, {})['data'] = _data
 
@@ -380,7 +380,7 @@ class V3ModelABC(BaseModel, ABC, allow_population_by_field_name=True):
                 elif hasattr(value, 'data'):
                     # Handle "non-standard" condition for Assignee where the nested "data"
                     # field contains an object instead of an Array.
-                    _data = self._process_nested_data_object(method, mode, value)
+                    _data = self._process_nested_data_object(method, mode, value)  # type: ignore
                     if _data:
                         _body.setdefault(key, {})['data'] = _data
 
@@ -392,14 +392,15 @@ class V3ModelABC(BaseModel, ABC, allow_population_by_field_name=True):
                     # Handle nested object types where field contains an object.
                     # (e.g., CaseModel -> workflowTemplate field)
                     # if method == 'POST' or value.id is None or value.updated is True:
-                    if self._calculate_nested_inclusion(method, mode, value):
-                        _data = value.gen_body(method, mode, nested=True)
+                    if self._calculate_nested_inclusion(method, mode, value):  # type: ignore
+                        _data = value.gen_body(method, mode, nested=True)  # type: ignore
                         if _data:
                             _body[key] = _data
 
             elif self._calculate_field_inclusion(key, method, mode, nested, property_, value):
                 # Handle non-nested fields and their values based on well defined rules.
                 if value and isinstance(value, list) and isinstance(value[0], BaseModel):
+                    value: list[Self]
                     _data = []
                     for model in value:  # type: ignore
                         if self._calculate_nested_inclusion(method, mode, model):

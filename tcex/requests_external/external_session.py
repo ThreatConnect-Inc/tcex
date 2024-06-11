@@ -355,7 +355,7 @@ class ExternalSession(Session):
             total=retries,
             read=retries,
             connect=retries,
-            backoff_factor=backoff_factor,
+            backoff_factor=backoff_factor,  # type: ignore
             status_forcelist=status_forcelist or [500, 502, 504],
         )
         urls = kwargs.get('urls') or ['https://']

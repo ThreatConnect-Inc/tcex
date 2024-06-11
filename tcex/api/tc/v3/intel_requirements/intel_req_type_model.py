@@ -18,7 +18,7 @@ class IntelReqTypeModel(
 ):
     """Model Definition"""
 
-    id: int | None = Field(
+    id: int | None = Field(  # pyright: ignore [reportGeneralTypeIssues]
         None,
         methods=['POST', 'PUT'],
         description='The ID of the item.',
