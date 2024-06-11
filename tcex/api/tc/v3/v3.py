@@ -9,7 +9,7 @@ from tcex.api.tc.v3.threat_intelligence.threat_intelligence import ThreatIntelli
 from tcex.pleb.cached_property import cached_property
 
 
-class V3(CaseManagement, Security, ThreatIntelligence):
+class V3(CaseManagement, Security, ThreatIntelligence, IR):
     """V3 API Collection
 
     Args:

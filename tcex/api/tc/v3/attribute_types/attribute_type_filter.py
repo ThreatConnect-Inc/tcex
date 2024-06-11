@@ -41,6 +41,36 @@ class AttributeTypeFilter(FilterABC):
         """
         self._tql.add_filter('default', operator, default, TqlType.BOOLEAN)
 
+    def default_owner_id(self, operator: Enum, default_owner_id: int | list):
+        """Filter Attribute settings owner id based on **defaultOwnerId** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            default_owner_id: The owner id of the attribute type settings.
+        """
+        if isinstance(default_owner_id, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
+        self._tql.add_filter('defaultOwnerId', operator, default_owner_id, TqlType.INTEGER)
+
+    def default_type(self, operator: Enum, default_type: list | str):
+        """Filter Defaulted Type based on **defaultType** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            default_type: The data type(s) that the attribute type is defaulted for.
+        """
+        if isinstance(default_type, list) and operator not in self.list_types:
+            raise RuntimeError(
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+
+        self._tql.add_filter('defaultType', operator, default_type, TqlType.STRING)
+
     def description(self, operator: Enum, description: list | str):
         """Filter Description based on **description** keyword.
 

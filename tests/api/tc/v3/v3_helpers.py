@@ -357,6 +357,55 @@ class V3Helper:
         for missing_tracker in tql_filters['missing']:
             print(missing_tracker)
 
+    def create_ir(self, **kwargs):
+        """Create an Intel Requirement.
+
+        Args:
+            requirement_text (str, kwargs): The text of the Intel Requirement.
+            subtype (dict, kwargs): The Subtype of the Intel Requirement.
+            unique_id (str, kwargs): The unique ID of the Intel Requirement.
+            kwargs: Optional keyword arguments.
+        """
+        # Use the test case name in xid and to control delete
+        test_case_name = inspect.stack()[1].function
+
+        # create Intel Requirement
+        ir_data = {
+            'requirement_text': kwargs.get(
+                'requirement_text', f'Requirement Text for the Intel Requirement - {time.time()}'
+            ),
+            'subtype': kwargs.get('subtype', {'id': 1}),
+            'unique_id': kwargs.get('unique_id', f'test-{time.time()}'),
+            'description': kwargs.get('description', 'A description for the Intel Requirements'),
+            'keyword_sections': kwargs.get('keyword_sections', [
+                {
+                    'sectionNumber': 0,
+                    'compareValue': 'includes',
+                    'keywords': [{'value': 'testing'}]
+                }
+            ]),
+        }
+
+        # create object
+        ir = self.v3.intel_requirement(**ir_data)
+
+        ir.create()
+
+        # Ticket ESUP-2519 - Not being able to create IR with tags
+
+        ir = self.v3.intel_requirement(id=ir.model.id)
+        tags = self._to_list(kwargs.get('tags', []))
+        ir.stage_tag(self.v3.tag(name=test_case_name))
+        for tag in tags:
+            ir.stage_tag(self.v3.tag(**tag))
+        ir.update()
+
+
+        # store case id for cleanup
+        self._v3_objects.append(ir)
+
+        return ir
+
     def create_case(self, **kwargs):
         """Create an case.
 
@@ -524,7 +573,7 @@ class V3Helper:
         test_case_name = inspect.stack()[1].function
 
         # create indicator
-        value_1 = kwargs.get('value1', f'123.{randint(1,255)}.{randint(1,255)}.{randint(1,255)}')
+        value_1 = kwargs.get('value1', f'123.{randint(1, 255)}.{randint(1, 255)}.{randint(1, 255)}')
 
         def value_1_map():
             """Return the appropriate indicator field name."""
@@ -688,6 +737,7 @@ class V3Helper:
     def cleanup(self):
         """Remove all cases and child data."""
         # remove cases created by the create_case method
+        return
         for obj in self._v3_objects:
             try:
                 obj.delete()
@@ -737,8 +787,8 @@ class TestV3:
                 ]
 
             if (
-                self.v3_helper.v3_object in ['cases', 'groups', 'intel_requirements']
-                and 'userDetails' in names
+                    self.v3_helper.v3_object in ['cases', 'groups', 'intel_requirements']
+                    and 'userDetails' in names
             ):
                 # fix discrepancy between <endpoint>/fields and <endpoint>
                 names = ['createdBy']

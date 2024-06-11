@@ -399,7 +399,16 @@ class V3ModelABC(BaseModel, ABC, allow_population_by_field_name=True):
 
             elif self._calculate_field_inclusion(key, method, mode, nested, property_, value):
                 # Handle non-nested fields and their values based on well defined rules.
-                _body[key] = value
+                if value and isinstance(value, list) and isinstance(value[0], BaseModel):
+                    _data = []
+                    for model in value:  # type: ignore
+                        if self._calculate_nested_inclusion(method, mode, model):
+                            data = model.gen_body(method, mode, nested=True)
+                            if data:
+                                _data.append(data)
+                    _body[key] = _data
+                else:
+                    _body[key] = value
 
         return _body
 

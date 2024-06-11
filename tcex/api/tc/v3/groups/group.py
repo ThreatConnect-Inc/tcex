@@ -50,6 +50,7 @@ class Group(ObjectABC):
         due_date (str, kwargs): The date and time that the Task is due.
         escalation_date (str, kwargs): The escalation date and time.
         event_date (str, kwargs): The date and time that the incident or event was first created.
+        event_type (str, kwargs): The identification of an event type.
         external_date_added (str, kwargs): The date and time that the item was first created
             externally.
         external_date_expires (str, kwargs): The date and time the item expires externally.

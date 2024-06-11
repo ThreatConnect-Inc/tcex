@@ -20,6 +20,18 @@ class TestStringOperationTruncateString:
             ('short_no_truncate', 20, ' ...', False, 'short_no_truncate'),
             # no truncate, append, spaces
             ('short_no_truncate', 20, '', True, 'short_no_truncate'),
+            # APP-4520
+            ('this_is_a_longer_string_with_no_spaces', 10, '', True, 'this_is_a_'),
+            # APP-4520
+            ('this_is_a_longer_string_with_no_spaces', 10, '...', True, 'this_is...'),
+            # APP-4520
+            ('this_is_a_longer_string_with_no_spaces', 10, ' ...', True, 'this_i ...'),
+            # APP-4520
+            ('this_is_a_longer_string_with_no_spaces with spaces', 10, ' ...', True, 'this_i ...'),
+            # APP-4520
+            ('this_is_a longer_string_with_no_spaces with spaces', 10, '', True, 'this_is_a'),
+            # APP-4520
+            ('this_is_a longer_string_with_no_spaces with spaces', 10, '', False, 'this_is_a'),
             # truncate, no append, no spaces
             ('truncate_string', 5, '', False, 'trunc'),
             # truncate, append, no spaces
@@ -39,7 +51,7 @@ class TestStringOperationTruncateString:
             # return empty string
             ('input', 0, None, False, ''),
             # return empty string, spaces
-            ('input', 2, None, True, ''),
+            ('input', 2, None, True, 'in'),
         ],
     )
     def test_string_operation_truncate_string(
