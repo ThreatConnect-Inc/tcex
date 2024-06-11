@@ -122,11 +122,11 @@ class TestIntelRequirements(TestV3):
         for associated_group in ir.associated_groups:
             assert group.model.id == associated_group.model.id
 
-        # TODO: Create a plat ticket for this
+        # Associations not bi-directional
         # for associated_case in ir.associated_cases:
         #     assert case.model.id == associated_case.model.id
 
-        # TODO: Create a plat ticket for this
+        # Associations not bi-directional
         # for associated_artifact in ir.associated_artifacts:
         #     assert artifact.model.id == associated_artifact.model.id
 
