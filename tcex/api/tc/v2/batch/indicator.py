@@ -135,7 +135,16 @@ class Indicator:
             value: The field value to add to the JSON batch data.
         """
         key = self._metadata_map.get(key, key)
-        if key in ['dateAdded', 'lastModified']:
+
+        if key in {
+            'dateAdded',
+            'lastModified',
+            'firstSeen',
+            'lastSeen',
+            'externalDateCreated',
+            'externalDateExpires',
+            'externalLastModified',
+        }:
             self._indicator_data[key] = self.util.any_to_datetime(value).strftime(
                 '%Y-%m-%dT%H:%M:%SZ'
             )
@@ -292,6 +301,69 @@ class Indicator:
         self._indicator_data['lastModified'] = self.util.any_to_datetime(last_modified).strftime(
             '%Y-%m-%dT%H:%M:%SZ'
         )
+
+    @property
+    def first_seen(self) -> str:
+        """Return Indicator firstSeen."""
+        return self._indicator_data.get('firstSeen')  # type: ignore
+
+    @first_seen.setter
+    def first_seen(self, first_seen: str):
+        """Set Indicator firstSeen."""
+        self._indicator_data['firstSeen'] = self.util.any_to_datetime(first_seen).strftime(
+            '%Y-%m-%dT%H:%M:%SZ'
+        )
+
+    @property
+    def last_seen(self) -> str:
+        """Return Indicator lastSeen."""
+        return self._indicator_data.get('lastSeen')  # type: ignore
+
+    @last_seen.setter
+    def last_seen(self, last_seen: str):
+        """Set Indicator lastSeen."""
+        self._indicator_data['lastSeen'] = self.util.any_to_datetime(last_seen).strftime(
+            '%Y-%m-%dT%H:%M:%SZ'
+        )
+
+    @property
+    def external_date_created(self) -> str:
+        """Return Indicator externalDateCreated."""
+        return self._indicator_data.get('externalDateCreated')  # type: ignore
+
+    @external_date_created.setter
+    def external_date_created(self, external_date_created: str):
+        """Set Indicator externalDateCreated."""
+        external_date_created = self.util.any_to_datetime(external_date_created).strftime(
+            '%Y-%m-%dT%H:%M:%SZ'
+        )
+        self._indicator_data['externalDateCreated'] = external_date_created
+
+    @property
+    def external_date_expires(self) -> str:
+        """Return Indicator externalDateExpires."""
+        return self._indicator_data.get('externalDateExpires')  # type: ignore
+
+    @external_date_expires.setter
+    def external_date_expires(self, external_date_expires: str):
+        """Set Indicator externalDateExpires."""
+        external_date_expires = self.util.any_to_datetime(external_date_expires).strftime(
+            '%Y-%m-%dT%H:%M:%SZ'
+        )
+        self._indicator_data['externalDateExpires'] = external_date_expires
+
+    @property
+    def external_date_last_modified(self) -> str:
+        """Return Indicator externalLastModified."""
+        return self._indicator_data.get('externalLastModified')  # type: ignore
+
+    @external_date_expires.setter
+    def external_date_expires(self, external_date_last_modified: str):
+        """Set Indicator externalLastModified."""
+        external_date_last_modified = self.util.any_to_datetime(
+            external_date_last_modified
+        ).strftime('%Y-%m-%dT%H:%M:%SZ')
+        self._indicator_data['externalLastModified'] = external_date_last_modified
 
     def occurrence(
         self,

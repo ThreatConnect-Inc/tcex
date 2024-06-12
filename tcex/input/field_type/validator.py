@@ -217,7 +217,7 @@ def modify_advanced_settings(input_name) -> Any:
 
         if not isinstance(value, str):
             raise InvalidType(
-                field_name=field.name, expected_types='(str)', provided_type=type(value)
+                field_name=field.name, expected_types='(str)', provided_type=str(type(value))
             )
 
         entries = value.split('|')

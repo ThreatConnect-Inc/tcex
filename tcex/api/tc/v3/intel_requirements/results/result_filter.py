@@ -10,6 +10,8 @@ from arrow import Arrow
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
 from tcex.api.tc.v3.filter_abc import FilterABC
+from tcex.api.tc.v3.tql.tql import Tql
+from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tcex.api.tc.v3.tql.tql_type import TqlType
 
 
@@ -31,22 +33,19 @@ class ResultFilter(FilterABC):
         archived_date = self.util.any_to_datetime(archived_date).strftime('%Y-%m-%d %H:%M:%S')
         self._tql.add_filter('archivedDate', operator, archived_date, TqlType.STRING)
 
-    def has_intel_requirement(self, operator: Enum, has_intel_requirement: int | list):
-        """Filter Parent Intel Requirement based on **hasIntelRequirement** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            has_intel_requirement: A nested query to identify results to intel requirements.
-        """
-        if isinstance(has_intel_requirement, list) and operator not in self.list_types:
-            raise RuntimeError(
-                'Operator must be CONTAINS, NOT_CONTAINS, IN'
-                'or NOT_IN when filtering on a list of values.'
-            )
-
-        self._tql.add_filter(
-            'hasIntelRequirement', operator, has_intel_requirement, TqlType.INTEGER
+    @property
+    def has_intel_requirement(self):
+        """Return **IntelRequirementFilter** for further filtering."""
+        # first-party
+        from tcex.api.tc.v3.intel_requirements.intel_requirement_filter import (
+            IntelRequirementFilter,
         )
+
+        intel_requirements = IntelRequirementFilter(Tql())
+        self._tql.add_filter(
+            'hasIntelRequirement', TqlOperator.EQ, intel_requirements, TqlType.SUB_QUERY
+        )
+        return intel_requirements
 
     def id(self, operator: Enum, id: int | list):  # pylint: disable=redefined-builtin
         """Filter ID based on **id** keyword.

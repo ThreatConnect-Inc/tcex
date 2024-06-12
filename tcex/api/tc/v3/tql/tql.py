@@ -1,6 +1,10 @@
 """TcEx Framework Module"""
 # standard library
+from datetime import datetime
 from enum import Enum
+
+# third-party
+from arrow import Arrow
 
 # first-party
 from tcex.api.tc.v3.filter_abc import FilterABC
@@ -53,7 +57,7 @@ class Tql:
         self,
         keyword: str,
         operator: Enum | str,
-        value: int | float | list | str | FilterABC,
+        value: int | float | list | str | FilterABC | Arrow | datetime,
         type_: TqlType | None = TqlType.STRING,
     ):
         """Add a filter to the current obj

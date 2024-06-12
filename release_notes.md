@@ -1,6 +1,10 @@
 # Release Notes
 
 ## 4.0.6
+
+-   APP-4522 - [API] Updated batch module to support external date fields
+-   APP-4521 - [API] Updated support for IR endpoints
+-   APP-4520 - [Util] Fixed TCEX string operations trim method
 -   APP-4482 - [API] Updated transforms to support new static methods.
 -   APP-4472 - [NAICS] Added NAICS module for lookup by id or name.
 

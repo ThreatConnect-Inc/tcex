@@ -375,6 +375,37 @@ class GenerateFilterABC(GenerateABC, ABC):
             '',
         ]
 
+    def _gen_code_has_intel_requirement_method(self) -> list:
+        self._add_tql_imports()
+        _code = [
+            f'{self.i1}@property',
+            f'{self.i1}def has_intel_requirement(self):',
+            f'{self.i2}"""Return **IntelRequirementFilter** for further filtering."""',
+        ]
+        if self.type_ != 'intel_requirements':
+            _code.extend(
+                [
+                    f'{self.i2}# first-party',
+                    (
+                        f'{self.i2}from tcex.api.tc.v3.intel_requirements.intel_requirement_filter '
+                        'import IntelRequirementFilter'
+                    ),
+                    '',
+                ]
+            )
+        _code.extend(
+            [
+                f'{self.i2}intel_requirements = IntelRequirementFilter(Tql())',
+                (
+                    f'''{self.i2}self._tql.add_filter('hasIntelRequirement', '''
+                    '''TqlOperator.EQ, intel_requirements, TqlType.SUB_QUERY)'''
+                ),
+                f'{self.i2}return intel_requirements',
+                '',
+            ]
+        )
+        return _code
+
     def _gen_code_has_victim_asset_method(self) -> list:
         """Return code for has_victim_asset TQL filter methods."""
         self._add_tql_imports()
@@ -526,6 +557,8 @@ class GenerateFilterABC(GenerateABC, ABC):
                 _filter_class.extend(self._gen_code_has_victim_method())
             elif f.keyword.snake_case() == 'has_victim_asset':
                 _filter_class.extend(self._gen_code_has_victim_asset_method())
+            elif f.keyword.snake_case() == 'has_intel_requirement':
+                _filter_class.extend(self._gen_code_has_intel_requirement_method())
             else:
                 _filter_class.extend(self._gen_code_generic_method(f))
 

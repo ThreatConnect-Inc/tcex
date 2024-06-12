@@ -79,8 +79,6 @@ class TestNAICSTags(TestV3):
     def test_get_by_name(self, name: str, output: list[str], default: list[str] | None):
         """Test get_by_name method."""
         naics_tag = self.v3_helper.tcex.api.tc.v3.naics_tags.get_by_name(name, default=default)
-        print(naics_tag)
-        print(output)
         assert naics_tag == output
 
     def test_cached(self):

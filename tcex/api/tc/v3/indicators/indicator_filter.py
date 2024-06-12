@@ -503,22 +503,19 @@ class IndicatorFilter(FilterABC):
         self._tql.add_filter('hasIndicator', TqlOperator.EQ, indicators, TqlType.SUB_QUERY)
         return indicators
 
-    def has_intel_requirement(self, operator: Enum, has_intel_requirement: int | list):
-        """Filter Associated Intel Requirement based on **hasIntelRequirement** keyword.
-
-        Args:
-            operator: The operator enum for the filter.
-            has_intel_requirement: A nested query for association to intel requirements.
-        """
-        if isinstance(has_intel_requirement, list) and operator not in self.list_types:
-            raise RuntimeError(
-                'Operator must be CONTAINS, NOT_CONTAINS, IN'
-                'or NOT_IN when filtering on a list of values.'
-            )
-
-        self._tql.add_filter(
-            'hasIntelRequirement', operator, has_intel_requirement, TqlType.INTEGER
+    @property
+    def has_intel_requirement(self):
+        """Return **IntelRequirementFilter** for further filtering."""
+        # first-party
+        from tcex.api.tc.v3.intel_requirements.intel_requirement_filter import (
+            IntelRequirementFilter,
         )
+
+        intel_requirements = IntelRequirementFilter(Tql())
+        self._tql.add_filter(
+            'hasIntelRequirement', TqlOperator.EQ, intel_requirements, TqlType.SUB_QUERY
+        )
+        return intel_requirements
 
     @property
     def has_security_label(self):
