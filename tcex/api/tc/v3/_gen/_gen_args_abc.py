@@ -62,6 +62,7 @@ class GenerateArgsABC(GenerateABC, ABC):
 
         # get properties from schema
         schema = model.schema(by_alias=False)
+        properties = {}
         if '$ref' in schema:
             model_name = schema.get('$ref').split('/')[-1]
             properties = schema.get('definitions').get(model_name).get('properties')
