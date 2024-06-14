@@ -54,12 +54,13 @@ class TestIntelRequirements(TestV3):
         ir.update()
 
         # ESUP-2521
-        # assert ir.model.description == 'testing2'
+        assert ir.model.description == 'testing2'
 
     def test_associations(self):
         """Test associations."""
         ir = self.v3_helper.create_ir()
-        # THIS DOES NOT WORK BECAUSE IT SENDS THE WRONG FIELDS VIA PUT!
+        # ESUP-2533 : Fields returned on get/create/put are not consistent
+
         # indicator = self.v3_helper.create_indicator()
         # group = self.v3_helper.create_group()
         # case = self.v3_helper.create_case()
@@ -78,10 +79,19 @@ class TestIntelRequirements(TestV3):
         # ir.stage_associated_case(case)
         # ir.stage_associated_artifact(artifact)
         # ir.update()
+
         ir = self.v3.intel_requirement(id=ir.model.id)
         indicator = self.v3_helper.create_indicator()
         group = self.v3_helper.create_group()
         case = self.v3_helper.create_case()
+        victim = self.v3_helper.create_victim()
+        asset = self.tcex.api.tc.v3.victim_asset(
+            type='EmailAddress', address='malware@example.com', address_type='Trojan'
+        )
+        victim.stage_victim_asset(asset)
+
+        victim.update(params={'owner': 'TCI', 'fields': ['_all_']})
+        asset.model.id = victim.model.assets.data[0].id
         artifact = self.v3.artifact(
             **{
                 'case_id': case.model.id,
@@ -96,25 +106,17 @@ class TestIntelRequirements(TestV3):
         ir.stage_associated_group(group)
         ir.stage_associated_case(case)
         ir.stage_associated_artifact(artifact)
+        ir.stage_associated_victim_asset(asset)
         ir.update()
 
         ir = self.v3.intel_requirement(id=ir.model.id)
-        ir.get(
-            params={
-                'fields': [
-                    'associatedArtifacts',
-                    'associatedCases',
-                    'associatedGroups',
-                    'associatedIndicators',
-                    'associatedVictimAssets',
-                ]
-            }
-        )
+        ir.get(params={'fields': ['_all_']})
 
         assert ir.model.associated_indicators.data[0].id == indicator.model.id
         assert ir.model.associated_groups.data[0].id == group.model.id
         assert ir.model.associated_cases.data[0].id == case.model.id
         assert ir.model.associated_artifacts.data[0].id == artifact.model.id
+        assert ir.model.associated_victim_assets.data[0].id == asset.model.id
 
         for associated_indicator in ir.associated_indicators:
             assert indicator.model.id == associated_indicator.model.id
@@ -122,13 +124,15 @@ class TestIntelRequirements(TestV3):
         for associated_group in ir.associated_groups:
             assert group.model.id == associated_group.model.id
 
-        # Associations not bi-directional
+        # ESUP-2532 : Associations not bi-directional
         # for associated_case in ir.associated_cases:
         #     assert case.model.id == associated_case.model.id
 
-        # Associations not bi-directional
         # for associated_artifact in ir.associated_artifacts:
         #     assert artifact.model.id == associated_artifact.model.id
+
+        # for associated_asset in ir.associated_victim_assets:
+        #     assert associated_asset.model.id == asset.model.id
 
     def test_intel_requirement_get_many(self, count=10):
         """Test Intel Requirement Get Many."""
