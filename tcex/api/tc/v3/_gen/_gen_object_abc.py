@@ -479,7 +479,7 @@ class GenerateObjectABC(GenerateABC, ABC):
             f'''{self.i2}elif all(isinstance(item, dict) for item in data):'''
             f'''{self.i3}transformed_data = [{model_class}(**d) for d in data]''',
             f'''{self.i2}else:'''
-            f'''{self.i3}raise ValueError("Invalid data to replace_{model_type.singular()}")''',
+            f'''{self.i3}raise ValueError('Invalid data to replace_{model_type.singular()}')''',
             '',
             '',
             f'''{self.i2}for item in transformed_data:''',

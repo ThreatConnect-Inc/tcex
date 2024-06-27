@@ -187,7 +187,7 @@ class IntelRequirement(ObjectABC):
         elif all(isinstance(item, dict) for item in data):
             transformed_data = [KeywordSectionModel(**d) for d in data]
         else:
-            raise ValueError("Invalid data to replace_keyword_section")
+            raise ValueError('Invalid data to replace_keyword_section')
 
         for item in transformed_data:
             item._staged = True
