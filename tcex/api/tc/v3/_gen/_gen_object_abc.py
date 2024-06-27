@@ -445,6 +445,53 @@ class GenerateObjectABC(GenerateABC, ABC):
         )
         return '\n'.join(as_entity_property_method)
 
+    def _gen_code_object_replace_type_method(
+        self, type_: str, model_type: str | None = None
+    ) -> str:
+        """Return the method code.
+
+        def replace_artifact(self, **kwargs):
+            '''Replace an Artifact on the object. (mark as staged)
+        """
+        type_ = self.util.snake_string(type_)
+        model_type = self.util.snake_string(model_type or type_)
+        model_reference = model_type
+
+        # get model from map and update requirements
+        model_import_data = self._module_import_data(type_)
+        model_class = model_import_data.get('model_class')
+        self.requirements['first-party'].append(
+            f'''from {model_import_data.get('model_module')} '''
+            f'''import {model_import_data.get('model_class')}'''
+        )
+        stage_method = [
+            (
+                f'''{self.i1}def replace_{model_type.singular()}(self, '''
+                f'''data: dict | list | ObjectABC | {model_class}'''
+                f'''):'''
+            ),
+            f'''{self.i2}"""Replace {type_.singular()} on the object."""''',
+            f'''{self.i2}if not isinstance(data, list):''',
+            f'''{self.i3}data = [data]''',
+            '',
+            f'''{self.i2}if all(isinstance(item, ({model_class}, ObjectABC)) for item in data):'''
+            f'''{self.i3}transformed_data = data''',
+            f'''{self.i2}elif all(isinstance(item, dict) for item in data):'''
+            f'''{self.i3}transformed_data = [{model_class}(**d) for d in data]''',
+            f'''{self.i2}else:'''
+            f'''{self.i3}raise ValueError('Invalid data to replace_{model_type.singular()}')''',
+            '',
+            '',
+            f'''{self.i2}for item in transformed_data:''',
+            f'''{self.i3}item._staged = True''',
+            '',
+            f'''{self.i2}self.model.{model_reference} = transformed_data  # type: ignore''',
+            '',
+            '',
+        ]
+
+        return '\n'.join(stage_method)
+
     def _gen_code_object_stage_type_method(self, type_: str, model_type: str | None = None) -> str:
         """Return the method code.
 
@@ -978,10 +1025,12 @@ class GenerateObjectABC(GenerateABC, ABC):
             _code += self._gen_code_object_stage_type_method('victim_assets')
 
         # generate stage_associated_group method
-        if 'associatedCases' in add_properties:
+        # ESUP-2532 - Associations are not Bi-Directional for IRs
+        if 'associatedCases' in add_properties and self.type_ != 'intel_requirements':
             _code += self._gen_code_object_stage_type_method('cases', 'associated_cases')
 
-        if 'associatedArtifacts' in add_properties:
+        # ESUP-2532 - Associations are not Bi-Directional for IRs
+        if 'associatedArtifacts' in add_properties and self.type_ != 'intel_requirements':
             _code += self._gen_code_object_stage_type_method('artifacts', 'associated_artifacts')
 
         # victims have associatedGroups but groups must be
@@ -1014,6 +1063,10 @@ class GenerateObjectABC(GenerateABC, ABC):
         # generate stage_file_occurrences method
         if 'fileOccurrences' in add_properties:
             _code += self._gen_code_object_stage_type_method('file_occurrences')
+
+        # generate stage_keyword_section method
+        if 'keywordSections' in add_properties and self.type_ == 'intel_requirements':
+            _code += self._gen_code_object_replace_type_method('keyword_sections')
 
         # generate stage_note method
         if 'notes' in add_properties:

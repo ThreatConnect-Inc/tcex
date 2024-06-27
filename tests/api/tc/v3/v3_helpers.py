@@ -392,16 +392,14 @@ class V3Helper:
         # create object
         ir = self.v3.intel_requirement(**ir_data)
 
-        ir.create()
-
         # Ticket ESUP-2519 - Not being able to create IR with tags
-
-        ir = self.v3.intel_requirement(id=ir.model.id)
-        tags = self._to_list(kwargs.get('tags', []))
         ir.stage_tag(self.v3.tag(name=test_case_name))
+
+        tags = self._to_list(kwargs.get('tags', []))
         for tag in tags:
             ir.stage_tag(self.v3.tag(**tag))
-        ir.update()
+
+        ir.create()
 
         # store case id for cleanup
         self._v3_objects.append(ir)

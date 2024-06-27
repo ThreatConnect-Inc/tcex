@@ -51,8 +51,15 @@ class V3ModelABC(BaseModel, ABC, allow_population_by_field_name=True):
 
         # when "id" field is present it indicates that the data was returned from the
         # API, otherwise the assumption is that the developer staged the data during
-        # instantiation of the object.
-        if kwargs and hasattr(self, 'id') and self.id is None:  # pylint: disable=no-member
+        # instantiation of the object. Keyword Section Model is the only exception to
+        # this rule.
+        # pylint: disable=no-member
+        if (
+            kwargs
+            and hasattr(self, 'id')
+            and self.id is None
+            and self.__config__.title != 'Keyword Section Model'
+        ):
             self._staged = True
 
         # store initial dict hash of model

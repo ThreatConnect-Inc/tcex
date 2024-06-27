@@ -488,11 +488,7 @@ class GenerateABC(ABC):
         ]:
             return 'tcex.api.tc.v3.security'
 
-        if type_.plural().lower() in [
-            'categories',
-            'results',
-            'subtypes',
-        ]:
+        if type_.plural().lower() in ['categories', 'results', 'subtypes', 'keyword_sections']:
             return 'tcex.api.tc.v3.intel_requirements'
 
         return 'tcex.api.tc.v3'

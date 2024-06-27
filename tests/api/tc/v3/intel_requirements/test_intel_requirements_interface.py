@@ -6,6 +6,9 @@ from collections.abc import Callable
 import pytest
 
 # first-party
+from tcex.api.tc.v3.intel_requirements.keyword_sections.keyword_section_model import (
+    KeywordSectionModel,
+)
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 
@@ -54,67 +57,28 @@ class TestIntelRequirements(TestV3):
         ir.update()
 
         # ESUP-2521
-        # assert ir.model.description == 'testing2'
+        assert ir.model.description == 'testing2'
 
     def test_associations(self):
         """Test associations."""
         ir = self.v3_helper.create_ir()
-        # THIS DOES NOT WORK BECAUSE IT SENDS THE WRONG FIELDS VIA PUT!
-        # indicator = self.v3_helper.create_indicator()
-        # group = self.v3_helper.create_group()
-        # case = self.v3_helper.create_case()
-        # artifact = self.v3.artifact(
-        #     **{
-        #         'case_id': case.model.id,
-        #         'intel_type': 'indicator-ASN',
-        #         'summary': 'asn111',
-        #         'type': 'ASN',
-        #     }
-        # )
-        # artifact.create()
-        #
-        # ir.stage_associated_indicator(indicator)
-        # ir.stage_associated_group(group)
-        # ir.stage_associated_case(case)
-        # ir.stage_associated_artifact(artifact)
-        # ir.update()
-        ir = self.v3.intel_requirement(id=ir.model.id)
         indicator = self.v3_helper.create_indicator()
         group = self.v3_helper.create_group()
-        case = self.v3_helper.create_case()
-        artifact = self.v3.artifact(
-            **{
-                'case_id': case.model.id,
-                'intel_type': 'indicator-ASN',
-                'summary': 'asn111',
-                'type': 'ASN',
-            }
-        )
-        artifact.create()
-
         ir.stage_associated_indicator(indicator)
         ir.stage_associated_group(group)
-        ir.stage_associated_case(case)
-        ir.stage_associated_artifact(artifact)
+
+        # ESUP-2532 : Associations not bi-directional
+        # ir.stage_associated_case(case)
+        # ir.stage_associated_artifact(artifact)
+        # ir.stage_associated_victim_asset(asset)
+
         ir.update()
 
-        ir = self.v3.intel_requirement(id=ir.model.id)
-        ir.get(
-            params={
-                'fields': [
-                    'associatedArtifacts',
-                    'associatedCases',
-                    'associatedGroups',
-                    'associatedIndicators',
-                    'associatedVictimAssets',
-                ]
-            }
-        )
+        # ir = self.v3.intel_requirement(id=ir.model.id)
+        ir.get(params={'fields': ['_all_']})
 
         assert ir.model.associated_indicators.data[0].id == indicator.model.id
         assert ir.model.associated_groups.data[0].id == group.model.id
-        assert ir.model.associated_cases.data[0].id == case.model.id
-        assert ir.model.associated_artifacts.data[0].id == artifact.model.id
 
         for associated_indicator in ir.associated_indicators:
             assert indicator.model.id == associated_indicator.model.id
@@ -122,13 +86,29 @@ class TestIntelRequirements(TestV3):
         for associated_group in ir.associated_groups:
             assert group.model.id == associated_group.model.id
 
-        # Associations not bi-directional
-        # for associated_case in ir.associated_cases:
-        #     assert case.model.id == associated_case.model.id
+    def test_keywords_section(self):
+        """Test keywords section."""
+        ir = self.v3_helper.create_ir()
+        keyword_sections = [
+            KeywordSectionModel(
+                section_number=0, compare_value='includes', keywords=[{'value': 'keyword1'}]
+            ),
+            KeywordSectionModel(
+                section_number=1, compare_value='includes', keywords=[{'value': 'keyword2'}]
+            ),
+        ]
+        ir.replace_keyword_section(keyword_sections)
+        ir.update()
+        ir = self.v3.intel_requirement(id=ir.model.id)
+        ir.get()
 
-        # Associations not bi-directional
-        # for associated_artifact in ir.associated_artifacts:
-        #     assert artifact.model.id == associated_artifact.model.id
+        assert len(ir.model.keyword_sections) == 2
+        # assert ir.model.keyword_sections[0].section_number == 0  # This doesnt come back
+        assert ir.model.keyword_sections[0].compare_value == 'includes'
+        assert ir.model.keyword_sections[0].keywords[0].get('value') == 'keyword1'
+        # assert ir.model.keyword_sections[1].section_number == 1  # This doesnt come back
+        assert ir.model.keyword_sections[1].compare_value == 'includes'
+        assert ir.model.keyword_sections[1].keywords[0].get('value') == 'keyword2'
 
     def test_intel_requirement_get_many(self, count=10):
         """Test Intel Requirement Get Many."""
