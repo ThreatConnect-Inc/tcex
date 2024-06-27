@@ -55,9 +55,10 @@ class V3ModelABC(BaseModel, ABC, allow_population_by_field_name=True):
         # this rule.
         # pylint: disable=no-member
         if (
-                kwargs and hasattr(self, 'id') and
-                self.id is None and
-                self.__config__.title != 'Keyword Section Model'
+            kwargs
+            and hasattr(self, 'id')
+            and self.id is None
+            and self.__config__.title != 'Keyword Section Model'
         ):
             self._staged = True
 

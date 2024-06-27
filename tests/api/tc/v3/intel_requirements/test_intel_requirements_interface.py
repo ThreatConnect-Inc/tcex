@@ -5,9 +5,10 @@ from collections.abc import Callable
 # third-party
 import pytest
 
-from tcex.api.tc.v3.intel_requirements.keyword_sections.keyword_section_model import \
-    KeywordSectionModel
 # first-party
+from tcex.api.tc.v3.intel_requirements.keyword_sections.keyword_section_model import (
+    KeywordSectionModel,
+)
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 
@@ -90,15 +91,11 @@ class TestIntelRequirements(TestV3):
         ir = self.v3_helper.create_ir()
         keyword_sections = [
             KeywordSectionModel(
-                section_number=0,
-                compare_value='includes',
-                keywords=[{'value': 'keyword1'}]
+                section_number=0, compare_value='includes', keywords=[{'value': 'keyword1'}]
             ),
             KeywordSectionModel(
-                section_number=1,
-                compare_value='includes',
-                keywords=[{'value': 'keyword2'}]
-            )
+                section_number=1, compare_value='includes', keywords=[{'value': 'keyword2'}]
+            ),
         ]
         ir.replace_keyword_section(keyword_sections)
         ir.update()

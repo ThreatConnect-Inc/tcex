@@ -445,7 +445,9 @@ class GenerateObjectABC(GenerateABC, ABC):
         )
         return '\n'.join(as_entity_property_method)
 
-    def _gen_code_object_replace_type_method(self, type_: str, model_type: str | None = None) -> str:
+    def _gen_code_object_replace_type_method(
+        self, type_: str, model_type: str | None = None
+    ) -> str:
         """Return the method code.
 
         def replace_artifact(self, **kwargs):

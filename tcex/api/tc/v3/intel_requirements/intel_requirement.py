@@ -182,9 +182,8 @@ class IntelRequirement(ObjectABC):
         if not isinstance(data, list):
             data = [data]
 
-        if (
-                isinstance(data, list) and
-                all(isinstance(item, (ObjectABC, KeywordSectionModel)) for item in data)
+        if isinstance(data, list) and all(
+            isinstance(item, (ObjectABC, KeywordSectionModel)) for item in data
         ):
             transformed_data = data
         elif isinstance(data, list) and all(isinstance(item, dict) for item in data):
@@ -192,7 +191,7 @@ class IntelRequirement(ObjectABC):
         elif isinstance(data, dict):
             transformed_data = KeywordSectionModel(**data)
         else:
-            raise ValueError("Invalid data to replace_keyword_section")
+            raise ValueError('Invalid data to replace_keyword_section')
 
         if isinstance(transformed_data, list):
             for item in transformed_data:
