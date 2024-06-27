@@ -277,7 +277,9 @@ from tcex.api.tc.v3.cases.case_model import CasesModel
 from tcex.api.tc.v3.groups.group_model import GroupsModel
 from tcex.api.tc.v3.indicators.indicator_model import IndicatorsModel
 from tcex.api.tc.v3.intel_requirements.intel_req_type_model import IntelReqTypeModel
-from tcex.api.tc.v3.intel_requirements.keyword_section_model import KeywordSectionModel
+from tcex.api.tc.v3.intel_requirements.keyword_sections.keyword_section_model import (
+    KeywordSectionModel,
+)
 from tcex.api.tc.v3.security.users.user_model import UserModel
 from tcex.api.tc.v3.tags.tag_model import TagsModel
 from tcex.api.tc.v3.victim_assets.victim_asset_model import VictimAssetsModel

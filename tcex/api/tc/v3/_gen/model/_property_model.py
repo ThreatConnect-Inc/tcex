@@ -307,7 +307,7 @@ class PropertyModel(
                 }
             )
         elif pm.type == 'KeywordSection':
-            bi += 'intel_requirements.keyword_section_model'
+            bi += 'intel_requirements.keyword_sections.keyword_section_model'
             extra.update(
                 {
                     'import_data': f'{bi} import KeywordSectionModel',

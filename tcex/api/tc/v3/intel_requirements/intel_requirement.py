@@ -6,14 +6,15 @@ from typing import TYPE_CHECKING
 
 # first-party
 from tcex.api.tc.v3.api_endpoints import ApiEndpoints
-from tcex.api.tc.v3.artifacts.artifact_model import ArtifactModel
-from tcex.api.tc.v3.cases.case_model import CaseModel
 from tcex.api.tc.v3.groups.group_model import GroupModel
 from tcex.api.tc.v3.indicators.indicator_model import IndicatorModel
 from tcex.api.tc.v3.intel_requirements.intel_requirement_filter import IntelRequirementFilter
 from tcex.api.tc.v3.intel_requirements.intel_requirement_model import (
     IntelRequirementModel,
     IntelRequirementsModel,
+)
+from tcex.api.tc.v3.intel_requirements.keyword_sections.keyword_section_model import (
+    KeywordSectionModel,
 )
 from tcex.api.tc.v3.object_abc import ObjectABC
 from tcex.api.tc.v3.object_collection_abc import ObjectCollectionABC
@@ -140,30 +141,6 @@ class IntelRequirement(ObjectABC):
 
         yield from self._iterate_over_sublist(Tags)  # type: ignore
 
-    def stage_associated_case(self, data: dict | ObjectABC | CaseModel):
-        """Stage case on the object."""
-        if isinstance(data, ObjectABC):
-            data = data.model  # type: ignore
-        elif isinstance(data, dict):
-            data = CaseModel(**data)
-
-        if not isinstance(data, CaseModel):
-            raise RuntimeError('Invalid type passed in to stage_associated_case')
-        data._staged = True
-        self.model.associated_cases.data.append(data)  # type: ignore
-
-    def stage_associated_artifact(self, data: dict | ObjectABC | ArtifactModel):
-        """Stage artifact on the object."""
-        if isinstance(data, ObjectABC):
-            data = data.model  # type: ignore
-        elif isinstance(data, dict):
-            data = ArtifactModel(**data)
-
-        if not isinstance(data, ArtifactModel):
-            raise RuntimeError('Invalid type passed in to stage_associated_artifact')
-        data._staged = True
-        self.model.associated_artifacts.data.append(data)  # type: ignore
-
     def stage_associated_group(self, data: dict | ObjectABC | GroupModel):
         """Stage group on the object."""
         if isinstance(data, ObjectABC):
@@ -199,6 +176,28 @@ class IntelRequirement(ObjectABC):
             raise RuntimeError('Invalid type passed in to stage_associated_indicator')
         data._staged = True
         self.model.associated_indicators.data.append(data)  # type: ignore
+
+    def replace_keyword_section(self, data: dict | list | ObjectABC | KeywordSectionModel):
+        """Replace keyword_section on the object."""
+        if not isinstance(data, list):
+            data = [data]
+
+        if (
+                isinstance(data, list) and
+                all(isinstance(item, (ObjectABC, KeywordSectionModel)) for item in data)
+        ):
+            transformed_data = data
+        elif isinstance(data, list) and all(isinstance(item, dict) for item in data):
+            transformed_data = [KeywordSectionModel(**d) for d in data]
+        elif isinstance(data, dict):
+            transformed_data = KeywordSectionModel(**data)
+        else:
+            raise ValueError("Invalid data to replace_keyword_section")
+
+        if isinstance(transformed_data, list):
+            for item in transformed_data:
+                item._staged = True
+        self.model.keyword_sections = transformed_data  # type: ignore
 
     def stage_tag(self, data: dict | ObjectABC | TagModel):
         """Stage tag on the object."""

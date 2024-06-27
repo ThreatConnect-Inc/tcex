@@ -492,6 +492,7 @@ class GenerateABC(ABC):
             'categories',
             'results',
             'subtypes',
+            'keyword_sections'
         ]:
             return 'tcex.api.tc.v3.intel_requirements'
 
