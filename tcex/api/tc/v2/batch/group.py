@@ -71,6 +71,10 @@ class Group:
             'file_text': 'fileText',
             'file_type': 'fileType',
             'first_seen': 'firstSeen',
+            'last_seen': 'lastSeen',
+            'external_date_created': 'externalDateCreated',
+            'external_date_expires': 'externalDateExpires',
+            'external_last_modified': 'externalLastModified',
             'from_addr': 'from',
             'publish_date': 'publishDate',
             'to_addr': 'to',
@@ -106,7 +110,16 @@ class Group:
             value: The field value to add to the JSON batch data.
         """
         key = self._metadata_map.get(key, key)
-        if key in ['dateAdded', 'eventDate', 'firstSeen', 'publishDate']:
+        if key in {
+            'dateAdded',
+            'eventDate',
+            'firstSeen',
+            'lastSeen',
+            'externalDateCreated',
+            'externalDateExpires',
+            'externalLastModified',
+            'publishDate'
+        }:
             if value is not None:
                 self._group_data[key] = self.util.any_to_datetime(value).strftime(
                     '%Y-%m-%dT%H:%M:%SZ'
@@ -204,6 +217,69 @@ class Group:
         self._group_data['dateAdded'] = self.util.any_to_datetime(date_added).strftime(
             '%Y-%m-%dT%H:%M:%SZ'
         )
+
+    @property
+    def first_seen(self) -> str:
+        """Return Indicator firstSeen."""
+        return self._group_data.get('firstSeen')  # type: ignore
+
+    @first_seen.setter
+    def first_seen(self, first_seen: str):
+        """Set Indicator firstSeen."""
+        self._group_data['firstSeen'] = self.util.any_to_datetime(first_seen).strftime(
+            '%Y-%m-%dT%H:%M:%SZ'
+        )
+
+    @property
+    def last_seen(self) -> str:
+        """Return Indicator lastSeen."""
+        return self._group_data.get('lastSeen')  # type: ignore
+
+    @last_seen.setter
+    def last_seen(self, last_seen: str):
+        """Set Indicator lastSeen."""
+        self._group_data['lastSeen'] = self.util.any_to_datetime(last_seen).strftime(
+            '%Y-%m-%dT%H:%M:%SZ'
+        )
+
+    @property
+    def external_date_created(self) -> str:
+        """Return Indicator externalDateCreated."""
+        return self._group_data.get('externalDateCreated')  # type: ignore
+
+    @external_date_created.setter
+    def external_date_created(self, external_date_created: str):
+        """Set Indicator externalDateCreated."""
+        external_date_created = self.util.any_to_datetime(external_date_created).strftime(
+            '%Y-%m-%dT%H:%M:%SZ'
+        )
+        self._group_data['externalDateCreated'] = external_date_created
+
+    @property
+    def external_date_expires(self) -> str:
+        """Return Indicator externalDateExpires."""
+        return self._group_data.get('externalDateExpires')  # type: ignore
+
+    @external_date_expires.setter
+    def external_date_expires(self, external_date_expires: str):
+        """Set Indicator externalDateExpires."""
+        external_date_expires = self.util.any_to_datetime(external_date_expires).strftime(
+            '%Y-%m-%dT%H:%M:%SZ'
+        )
+        self._group_data['externalDateExpires'] = external_date_expires
+
+    @property
+    def external_last_modified(self) -> str:
+        """Return Indicator externalLastModified."""
+        return self._group_data.get('externalLastModified')  # type: ignore
+
+    @external_last_modified.setter
+    def external_last_modified(self, external_date_last_modified: str):
+        """Set Indicator externalLastModified."""
+        external_date_last_modified = self.util.any_to_datetime(
+            external_date_last_modified
+        ).strftime('%Y-%m-%dT%H:%M:%SZ')
+        self._group_data['externalLastModified'] = external_date_last_modified
 
     @property
     def file_data(self) -> dict:
@@ -347,18 +423,6 @@ class Campaign(Group):
             xid (str, kwargs): The external id for this Group.
         """
         super().__init__('Campaign', name, **kwargs)
-
-    @property
-    def first_seen(self) -> str:
-        """Return Document first seen."""
-        return self._group_data.get('firstSeen')  # type: ignore
-
-    @first_seen.setter
-    def first_seen(self, first_seen: str):
-        """Set Document first seen."""
-        self._group_data['firstSeen'] = self.util.any_to_datetime(first_seen).strftime(
-            '%Y-%m-%dT%H:%M:%SZ'
-        )
 
 
 class CourseOfAction(Group):
