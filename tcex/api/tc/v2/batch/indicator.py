@@ -353,12 +353,12 @@ class Indicator:
         self._indicator_data['externalDateExpires'] = external_date_expires
 
     @property
-    def external_date_last_modified(self) -> str:
+    def external_last_modified(self) -> str:
         """Return Indicator externalLastModified."""
         return self._indicator_data.get('externalLastModified')  # type: ignore
 
-    @external_date_expires.setter
-    def external_date_expires(self, external_date_last_modified: str):
+    @external_last_modified.setter
+    def external_last_modified(self, external_date_last_modified: str):
         """Set Indicator externalLastModified."""
         external_date_last_modified = self.util.any_to_datetime(
             external_date_last_modified
