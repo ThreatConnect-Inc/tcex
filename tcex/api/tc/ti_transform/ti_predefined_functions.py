@@ -4,8 +4,6 @@
 import json
 from functools import wraps
 from inspect import signature
-from os import name
-from pyclbr import Function
 from typing import TypedDict
 
 # first-party
