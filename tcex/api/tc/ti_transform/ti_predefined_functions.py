@@ -11,13 +11,6 @@ from typing import TypedDict
 # first-party
 from tcex.util import Util
 
-to_upper_case = str.upper
-to_lower_case = str.lower
-to_title_case = str.title
-
-prepend = '{prefix} {}'.format
-append = '{} {suffix}'.format
-
 
 class ParamDefinition(TypedDict):
     name: str
@@ -57,7 +50,10 @@ def custom_function_definition(definition: FunctionDefinition):
 
 
 class ProcessingFunctions:
+    """Predefined functions to use in transforms."""
+
     def __init__(self, tcex) -> None:
+        """."""
         self.tcex = tcex
 
     @return_none_for_empty
@@ -125,12 +121,12 @@ class ProcessingFunctions:
     @return_none_for_empty
     def append(self, value, suffix: str):
         """Append a value to the input value."""
-        return f'{value} {suffix}'
+        return f'{value}{suffix}'
 
     @return_none_for_empty
     def prepend(self, value, prefix: str):
         """Prepend a value to the input value."""
-        return f'{prefix} {value}'
+        return f'{prefix}{value}'
 
     @return_none_for_empty
     def replace(self, value, old_value: str, new_value: str):
@@ -210,7 +206,3 @@ class ProcessingFunctions:
         ]
 
         return specs  # type: ignore
-
-
-if __name__ == '__main__':
-    print("\n".join([str(i) for i in ProcessingFunctions.get_function_definitions()]))
