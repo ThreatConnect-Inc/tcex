@@ -151,12 +151,11 @@ class ProcessingFunctions:
         """Truncate a string."""
         return self.tcex.util.truncate_string(value, length=length, append_chars=append_chars)
 
-    @classmethod
-    def get_function_definitions(cls) -> list[FunctionDefinition]:
+    def get_function_definitions(self) -> list[FunctionDefinition]:
         """Get function definitions in JSON format, suitable for the transform builder UI."""
 
         def _is_function(obj):
-            return type(obj).__name__ == 'function'
+            return type(obj).__name__ == 'method'
 
         def _snake_to_tile_case(name):
             return name.replace('_', ' ').title()
@@ -189,7 +188,11 @@ class ProcessingFunctions:
 
         fns = [
             fn
-            for fn in (getattr(cls, n) for n in dir(cls) if not n.startswith('_'))
+            for fn in (
+                getattr(self, n)
+                for n in dir(self)
+                if not n.startswith('_') and n != 'get_function_definitions'
+            )
             if _is_function(fn)
         ]
 
@@ -204,3 +207,9 @@ class ProcessingFunctions:
         ]
 
         return specs  # type: ignore
+
+
+if __name__ == '__main__':
+    p = ProcessingFunctions(None)
+    fs = p.get_function_definitions()
+    print(fs)
