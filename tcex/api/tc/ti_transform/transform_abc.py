@@ -557,7 +557,7 @@ class TransformABC(ABC):
 
         # return default if value of None is returned from Path
         # IMPORTANT: a None value passed to the transform may cause a failure (lambda x: x.lower())
-        if value in [None, []]:
+        if value in [None, [], '']:
             default = _default()
             # self.log.trace(
             #     f'feature=transform, action=transform-values, metadata-path=None, value={default}'
