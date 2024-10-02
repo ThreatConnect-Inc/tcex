@@ -17,7 +17,8 @@ class TiTransforms(TransformsABC):
         for ti_dict in self.ti_dicts:
             self.transformed_collection.append(TiTransform(ti_dict, self.transforms))
 
-    def batch(self, raise_exceptions=True) -> dict:
+    @property
+    def batch(self) -> dict:
         """Return the data in batch format."""
         self.process()
 
@@ -35,7 +36,7 @@ class TiTransforms(TransformsABC):
                 data = t.batch
             except Exception:
                 self.log.exception('feature=ti-transforms, event=transform-error')
-                if raise_exceptions:
+                if self.raise_exceptions:
                     raise
                 continue
 

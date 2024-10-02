@@ -75,6 +75,7 @@ class TransformsABC(ABC):
         self,
         ti_dicts: list[dict],
         transforms: list[GroupTransformModel | IndicatorTransformModel],
+        raise_exceptions: bool = False,
     ):
         """Initialize instance properties."""
         self.ti_dicts = ti_dicts
@@ -82,6 +83,7 @@ class TransformsABC(ABC):
 
         # properties
         self.log = _logger
+        self.raise_exceptions = raise_exceptions
         self.transformed_collection: list[TransformABC] = []
 
         # validate transforms
