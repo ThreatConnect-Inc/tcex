@@ -36,6 +36,19 @@ from tcex.util import Util
 _logger: TraceLogger = logging.getLogger(__name__.split('.', maxsplit=1)[0])  # type: ignore
 
 
+class TransformException(Exception):
+    """Base exception for transform errors."""
+
+    def __init__(self, field: str, cause: Exception, context: dict | None, *args) -> None:
+        super().__init__(*args)
+        self.field = field
+        self.cause = cause
+        self.context = context
+
+    def __str__(self) -> str:
+        return f'Error transforming {self.field}: {self.cause}'
+
+
 class TcFunctions(functions.Functions):
     """ThreatConnect custom jmespath functions."""
 
@@ -183,9 +196,14 @@ class TransformABC(ABC):
 
     def _process_associated_group(self, associations: list[AssociatedGroupTransform]):
         """Process Attribute data"""
-        for association in associations or []:
-            for value in filter(bool, self._process_metadata_transform_model(association.value)):
-                self.add_associated_group(value)  # type: ignore
+        for i, association in enumerate(associations or [], 1):
+            try:
+                for value in filter(
+                    bool, self._process_metadata_transform_model(association.value)
+                ):
+                    self.add_associated_group(value)  # type: ignore
+            except Exception as e:
+                raise TransformException(f'Associated Group [{i}]', e, context=association.dict())
 
     def _process_metadata_transform_model(
         self, value: bool | MetadataTransformModel | str | None, expected_length: int | None = None
@@ -388,64 +406,84 @@ class TransformABC(ABC):
 
     def _process_metadata(self, key: str, metadata: MetadataTransformModel | None):
         """Process standard metadata fields."""
-        value = self._transform_value(metadata)
-        if value is not None:
-            self.add_metadata(key, value)
+        try:
+            value = self._transform_value(metadata)
+            if value is not None:
+                self.add_metadata(key, value)
+        except Exception as e:
+            raise TransformException(key, e, metadata.dict() if metadata else None)
 
     def _process_metadata_datetime(self, key: str, metadata: DatetimeTransformModel | None):
         """Process metadata fields that should be a TC datetime."""
-        if metadata is not None and metadata.path is not None:
-            value = self._path_search(metadata.path)
-            if value is not None:
-                self.add_metadata(
-                    key, self.util.any_to_datetime(value).strftime('%Y-%m-%dT%H:%M:%SZ')
-                )
+        try:
+            if metadata is not None and metadata.path is not None:
+                value = self._path_search(metadata.path)
+                if value is not None:
+                    self.add_metadata(
+                        key, self.util.any_to_datetime(value).strftime('%Y-%m-%dT%H:%M:%SZ')
+                    )
+        except Exception as e:
+            raise TransformException(key, e, context=metadata.dict() if metadata else None)
 
     def _process_security_labels(self, labels: list[SecurityLabelTransformModel]):
         """Process Tag data"""
-        for label in labels or []:
-            names = self._process_metadata_transform_model(label.value)
-            if not names:
-                # self.log.info(f'No values found for security label transform {label.dict()}')
-                continue
-
-            descriptions = self._process_metadata_transform_model(
-                label.description, expected_length=len(names)
-            )
-            colors = self._process_metadata_transform_model(label.color, expected_length=len(names))
-
-            param_keys = ['color', 'description', 'name']
-            params = [dict(zip(param_keys, p)) for p in zip(colors, descriptions, names)]
-
-            for kwargs in params:
-                kwargs = self.util.remove_none(kwargs)
-                if 'name' not in kwargs:
+        for i, label in enumerate(labels or [], 1):
+            try:
+                names = self._process_metadata_transform_model(label.value)
+                if not names:
+                    # self.log.info(f'No values found for security label transform {label.dict()}')
                     continue
-                # strip out None params so that required params are enforced and optional
-                # params with default values are respected.
-                self.add_security_label(**kwargs)
+
+                descriptions = self._process_metadata_transform_model(
+                    label.description, expected_length=len(names)
+                )
+                colors = self._process_metadata_transform_model(
+                    label.color, expected_length=len(names)
+                )
+
+                param_keys = ['color', 'description', 'name']
+                params = [dict(zip(param_keys, p)) for p in zip(colors, descriptions, names)]
+
+                for kwargs in params:
+                    kwargs = self.util.remove_none(kwargs)
+                    if 'name' not in kwargs:
+                        continue
+                    # strip out None params so that required params are enforced and optional
+                    # params with default values are respected.
+                    self.add_security_label(**kwargs)
+            except Exception as e:
+                raise TransformException(f'Security Labels [{i}]', e, context=label.dict())
 
     def _process_tags(self, tags: list[TagTransformModel]):
         """Process Tag data"""
-        for tag in tags or []:
-            for value in filter(bool, self._process_metadata_transform_model(tag.value)):
-                self.add_tag(name=value)  # type: ignore
+        for i, tag in enumerate(tags or [], 1):
+            try:
+                for value in filter(bool, self._process_metadata_transform_model(tag.value)):
+                    self.add_tag(name=value)  # type: ignore
+            except Exception as e:
+                raise TransformException(f'Tags [{i}]', e, context=tag.dict())
 
     def _process_rating(self, metadata: MetadataTransformModel | None):
         """Process standard metadata fields."""
-        self.add_rating(self._transform_value(metadata))
+        try:
+            self.add_rating(self._transform_value(metadata))
+        except Exception as e:
+            raise TransformException('Rating', e, context=metadata.dict() if metadata else None)
 
     def _process_type(self):
         """Process standard metadata fields."""
-        _type = self._transform_value(self.transform.type)
-        if _type is not None:
-            self.transformed_item['type'] = _type
-        else:
-            self.log.error(
-                'feature=ti-transform, action=process-type, error=invalid=type, '
-                f'path={self.transform.type.path}, value={_type}'
-            )
-            raise RuntimeError('Invalid type')
+        try:
+            _type = self._transform_value(self.transform.type)
+            if _type is not None:
+                self.transformed_item['type'] = _type
+            else:
+                self.log.error(
+                    'feature=ti-transform, action=process-type, error=invalid=type, '
+                    f'path={self.transform.type.path}, value={_type}'
+                )
+                raise RuntimeError('Invalid type')
+        except Exception as e:
+            raise TransformException('Type', e, context=self.transform.type.dict())
 
     def _select_transform(self):
         """Select the correct transform based on the "applies" field."""

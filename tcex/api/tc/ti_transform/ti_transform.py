@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # standard library
 from datetime import datetime
 
@@ -16,8 +17,7 @@ class TiTransforms(TransformsABC):
         for ti_dict in self.ti_dicts:
             self.transformed_collection.append(TiTransform(ti_dict, self.transforms))
 
-    @property
-    def batch(self) -> dict:
+    def batch(self, raise_exceptions=True) -> dict:
         """Return the data in batch format."""
         self.process()
 
@@ -35,6 +35,8 @@ class TiTransforms(TransformsABC):
                 data = t.batch
             except Exception:
                 self.log.exception('feature=ti-transforms, event=transform-error')
+                if raise_exceptions:
+                    raise
                 continue
 
             # now that batch is called we can identify the ti type

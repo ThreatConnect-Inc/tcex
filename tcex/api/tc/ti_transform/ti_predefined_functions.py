@@ -40,7 +40,7 @@ def transform_builder_to_model(
             for item in data:
                 yield from find_entries(item, key)
 
-    for processing in find_entries(transform, 'transform'):
+    for processing in find_entries(transform['transform'], 'transform'):
         if not isinstance(processing, list):
             processing = [processing]
 
@@ -161,9 +161,10 @@ class ProcessingFunctions:
 
     def prepend(self, value, prefix: str):
         """Prepend a value to the input value."""
+        raise RuntimeError('Error during prepend')
         return f'{prefix}{value}'
 
-    def replace(self, value, old_value: str, new_value: str):
+    def replace(self, value, old_value: str, new_value: str = ''):
         """Replace a value in the input value."""
         return value.replace(old_value, new_value)
 
@@ -195,7 +196,7 @@ class ProcessingFunctions:
         """Strip leading and trailing whitespace from a string."""
         return value.strip()
 
-    @custom_function_definition({'name': 'uuid5', 'label': 'To UUID5', 'params': []})
+    @custom_function_definition({'name': 'uuid5', 'label': 'To UUID5', 'help': '', 'params': []})
     def uuid5(self, value, namespace=None) -> str:
         """Generate a UUID5."""
         return str(uuid.uuid5(namespace or uuid.NAMESPACE_DNS, value))
