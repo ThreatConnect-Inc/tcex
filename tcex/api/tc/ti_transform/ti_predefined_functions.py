@@ -217,6 +217,9 @@ class ProcessingFunctions:
 
         fn_name = api_def[type_]
 
+        if callable(fn_name):
+            return api_def
+
         fn = getattr(self, fn_name)
 
         if not fn:
