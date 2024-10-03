@@ -4,8 +4,9 @@
 import hashlib
 import json
 import uuid
+from collections.abc import Iterable
 from inspect import _empty, signature
-from typing import Iterable, TypedDict
+from typing import TypedDict
 
 # first-party
 # first-part
@@ -110,9 +111,9 @@ class ProcessingFunctions:
         """Return the value if it is in the list of values, else return None."""
         if not values.startswith('"'):
             values.replace('"', '\"')
-            Values = f'"{values}"'
+            values = f'"{values}"'
 
-        return value if value in [v.strip() for v in json.loads(Values).split(delimiter)] else None
+        return value if value in [v.strip() for v in json.loads(values).split(delimiter)] else None
 
     @custom_function_definition(
         {
@@ -179,7 +180,7 @@ class ProcessingFunctions:
         return str.lower(value)
 
     def to_titlecase(self, value):
-        """Convert value to titlecase."""
+        """Convert value to title case."""
         return str.title(value)
 
     def truncate(self, value, length: int, append_chars: str = '...'):

@@ -40,12 +40,14 @@ class TransformException(Exception):
     """Base exception for transform errors."""
 
     def __init__(self, field: str, cause: Exception, context: dict | None, *args) -> None:
+        """."""
         super().__init__(*args)
         self.field = field
         self.cause = cause
         self.context = context
 
     def __str__(self) -> str:
+        """."""
         return f'Error transforming {self.field}: {self.cause}'
 
 

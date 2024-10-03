@@ -118,7 +118,7 @@ class Group:
             'externalDateCreated',
             'externalDateExpires',
             'externalLastModified',
-            'publishDate'
+            'publishDate',
         }:
             if value is not None:
                 self._group_data[key] = self.util.any_to_datetime(value).strftime(
