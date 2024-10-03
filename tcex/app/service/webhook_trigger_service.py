@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # standard library
 import base64
 import json
@@ -314,6 +315,7 @@ class WebhookTriggerService(CommonServiceTrigger):
             try:
                 # call callback method
                 # pylint: disable=not-callable
+                # type: ignore
                 callback_response: dict | None = self.webhook_marshall_event_callback(
                     body=body,
                     headers=message.get('headers'),
