@@ -102,6 +102,8 @@ class ProcessingFunctions:
 
         If there is no matching value in the mapping the original value will be returned.
         """
+        if not isinstance(mapping, dict):
+            mapping = json.loads(mapping)
         return mapping.get(str(value), value)
 
     def value_in(self, value, values: str, delimiter: str = ','):
