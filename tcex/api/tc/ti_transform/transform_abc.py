@@ -51,6 +51,10 @@ class TransformException(Exception):
         return f'Error transforming {self.field}: {self.cause}'
 
 
+class NoValidTransformException(Exception):
+    """Exception for when no valid transform is found."""
+
+
 class TransformsABC(ABC):
     """Transform Abstract Base Class"""
 
@@ -76,7 +80,7 @@ class TransformsABC(ABC):
         """Validate the transform model."""
         if len(self.transforms) > 1:
             for transform in self.transforms:
-                if transform.applies is None:
+                if not callable(transform.applies):
                     raise ValueError(
                         'If more than one transform is provided, each '
                         'provided transform must provide an apply field.',
@@ -477,7 +481,7 @@ class TransformABC(ABC):
                 self.transform = transform
                 break
         else:
-            raise RuntimeError('No transform found for TI data')
+            raise NoValidTransformException('No transform found for TI data')
 
     def _transform_value(self, metadata: MetadataTransformModel | None) -> str | None:
         """Pass value to series transforms."""

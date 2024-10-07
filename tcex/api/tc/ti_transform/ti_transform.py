@@ -4,8 +4,15 @@
 from datetime import datetime
 
 # first-party
+from build.lib.build.lib.build.lib.build.lib.build.lib.build.lib.build.lib.build.lib.build.lib.build.lib.build.lib.build.lib.build.lib.build.lib.build.lib.build.lib.build.lib.tcex.api.tc.ti_transform.transform_abc import (
+    TransformException,
+)
 from tcex.api.tc.ti_transform.model import GroupTransformModel, IndicatorTransformModel
-from tcex.api.tc.ti_transform.transform_abc import TransformABC, TransformsABC
+from tcex.api.tc.ti_transform.transform_abc import (
+    NoValidTransformException,
+    TransformABC,
+    TransformsABC,
+)
 
 
 class TiTransforms(TransformsABC):
@@ -34,6 +41,17 @@ class TiTransforms(TransformsABC):
             # batch must be called so that the transform type is selected
             try:
                 data = t.batch
+            except NoValidTransformException:
+                self.log.exception('feature=ti-transforms, event=runtime-error')
+                continue
+            except TransformException as e:
+                self.log.warning(
+                    f'feature=ti-transforms, event=transform-error, field="{e.field}", '
+                    f'cause="{e.cause}", context="{e.context}"'
+                )
+                if self.raise_exceptions:
+                    raise
+                continue
             except Exception:
                 self.log.exception('feature=ti-transforms, event=transform-error')
                 if self.raise_exceptions:
