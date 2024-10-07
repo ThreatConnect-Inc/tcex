@@ -4,13 +4,11 @@
 from datetime import datetime
 
 # first-party
-from build.lib.build.lib.build.lib.build.lib.build.lib.build.lib.build.lib.build.lib.build.lib.build.lib.build.lib.build.lib.build.lib.build.lib.build.lib.build.lib.build.lib.tcex.api.tc.ti_transform.transform_abc import (
-    TransformException,
-)
 from tcex.api.tc.ti_transform.model import GroupTransformModel, IndicatorTransformModel
 from tcex.api.tc.ti_transform.transform_abc import (
     NoValidTransformException,
     TransformABC,
+    TransformException,
     TransformsABC,
 )
 

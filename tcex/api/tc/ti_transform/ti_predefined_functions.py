@@ -269,7 +269,7 @@ class ProcessingFunctions:
             getattr(fn, '_tcex_function_definition', {})
             or {
                 'name': fn.__name__,
-                'label': self._snake_to_tilecase(fn.__name__),
+                'label': self._snake_to_titlecase(fn.__name__),
                 'params': self._get_params_defs(fn),
                 'help': getattr(fn, '__doc__', ''),
             }
@@ -300,7 +300,7 @@ class ProcessingFunctions:
                     sig.parameters[p].default if sig.parameters[p].default != _empty else None
                 ),
                 'name': p,
-                'label': ProcessingFunctions._snake_to_tilecase(p),
+                'label': ProcessingFunctions._snake_to_titlecase(p),
                 'type': (
                     sig.parameters[p].annotation.__name__ if sig.parameters[p].annotation else 'str'
                 ),
