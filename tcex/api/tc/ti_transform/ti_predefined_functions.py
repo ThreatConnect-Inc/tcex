@@ -179,7 +179,7 @@ class ProcessingFunctions:
         return str.lower(value)
 
     def to_titlecase(self, value):
-        """Convert value to title-case."""
+        """Convert value to titlecase."""
         return str.title(value)
 
     def truncate(self, value, length: int, append_chars: str = '...'):

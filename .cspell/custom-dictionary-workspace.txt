@@ -224,6 +224,7 @@ threatassess
 threatconnect
 timedelta
 tinydb
+titlecase
 toplevel
 traceback
 triggerservice
