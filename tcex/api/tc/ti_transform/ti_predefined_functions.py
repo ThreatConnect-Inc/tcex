@@ -164,7 +164,6 @@ class ProcessingFunctions:
 
     def prepend(self, value, prefix: str):
         """Prepend a value to the input value."""
-        raise RuntimeError('Error during prepend')
         return f'{prefix}{value}'
 
     def replace(self, value, old_value: str, new_value: str = ''):
