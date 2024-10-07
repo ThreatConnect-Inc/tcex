@@ -1,5 +1,12 @@
 # Release Notes
 
+## 4.0.7
+-   APP-4601 - [pleb] add jmespath custom functions to pleb to centralize that functionality to be used across apps.
+-   APP-4604 - [transform] Add Processing Functions class to include pre-defined functions that can be used in transform builder and across TIE apps.
+-   APP-4605 - [transform] normalize the way null/empty values are handled in transforms, and include empty string ''.
+-   APP-4620 - [transform] Add structured/contextualized exceptions to transform to be able to deliver detailed error messages to users.
+
+
 ## 4.0.6
 
 -   APP-4472 - [API] Added NAICS industry classification module
