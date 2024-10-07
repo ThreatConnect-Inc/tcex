@@ -11,7 +11,6 @@ from typing import Any, cast
 
 # third-party
 import jmespath
-from jmespath import functions
 
 # first-party
 from tcex.api.tc.ti_transform import ti_predefined_functions
@@ -30,6 +29,7 @@ from tcex.api.tc.ti_transform.model.transform_model import (
     PredefinedFunctionModel,
 )
 from tcex.logger.trace_logger import TraceLogger
+from tcex.pleb.jmespath_custom import TcFunctions
 from tcex.util import Util
 
 # get tcex logger
@@ -49,25 +49,6 @@ class TransformException(Exception):
     def __str__(self) -> str:
         """."""
         return f'Error transforming {self.field}: {self.cause}'
-
-
-class TcFunctions(functions.Functions):
-    """ThreatConnect custom jmespath functions."""
-
-    @functions.signature({'types': ['array']}, {'types': ['string']})
-    def _func_null_leaf(self, arr: list, search: str) -> list:
-        """Return value in array even if they are null."""
-        return [a.get(search) for a in arr]
-
-    @functions.signature({'types': ['array']}, {'types': ['string']})
-    def _func_delete(self, arr: list, search: str) -> list:
-        """Return array after popping value at address out."""
-        for a in arr:
-            try:
-                a.pop(search)
-            except Exception:
-                _logger.debug('Skipping delete, field not found.')
-        return arr
 
 
 class TransformsABC(ABC):
