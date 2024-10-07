@@ -315,13 +315,14 @@ class WebhookTriggerService(CommonServiceTrigger):
             try:
                 # call callback method
                 # pylint: disable=not-callable
-                # type: ignore
-                callback_response: dict | None = self.webhook_marshall_event_callback(
-                    body=body,
-                    headers=message.get('headers'),
-                    request_key=request_key,
-                    status_code=message.get('statusCode'),
-                    trigger_id=message.get('triggerId'),
+                callback_response: dict | None = (
+                    self.webhook_marshall_event_callback(  # type: ignore
+                        body=body,
+                        headers=message.get('headers'),
+                        request_key=request_key,
+                        status_code=message.get('statusCode'),
+                        trigger_id=message.get('triggerId'),
+                    )
                 )
                 if isinstance(callback_response, dict):
                     response.update(callback_response)
