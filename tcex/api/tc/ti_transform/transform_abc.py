@@ -228,40 +228,45 @@ class TransformABC(ABC):
 
     def _process_attributes(self, attributes: list[AttributeTransformModel]):
         """Process Attribute data"""
-        for attribute in attributes or []:
-            values = self._process_metadata_transform_model(attribute.value)
-            if not values:
-                # self.log.info(f'No values found for attribute transform {attribute.dict()}')
-                continue
-
-            types = self._process_metadata_transform_model(attribute.type, len(values))
-            source = self._process_metadata_transform_model(attribute.source, len(values))
-            displayed = self._process_metadata_transform_model(attribute.displayed, len(values))
-
-            param_keys = ['type_', 'value', 'displayed', 'source']
-            params = [dict(zip(param_keys, p)) for p in zip(types, values, displayed, source)]
-
-            for param in params:
-                param = self.util.remove_none(param)
-                if 'value' not in param:
+        for i, attribute in enumerate(attributes or [], start=1):
+            try:
+                values = self._process_metadata_transform_model(attribute.value)
+                if not values:
+                    # self.log.info(f'No values found for attribute transform {attribute.dict()}')
                     continue
 
-                if 'type_' not in param:
-                    self.log.warning(
-                        'feature=transform, action=process-attribute, '
-                        f'transform={attribute.dict(exclude_unset=True)}, error=no-type'
-                    )
-                    continue
+                types = self._process_metadata_transform_model(attribute.type, len(values))
+                source = self._process_metadata_transform_model(attribute.source, len(values))
+                displayed = self._process_metadata_transform_model(attribute.displayed, len(values))
 
-                # strip out None params so that required params are enforced and optional
-                # params with default values are respected.
-                try:
-                    self.add_attribute(**param)
-                except Exception:
-                    self.log.exception(
-                        'feature=transform, action=process-attribute, '
-                        f'transform={attribute.dict(exclude_unset=True)}'
-                    )
+                param_keys = ['type_', 'value', 'displayed', 'source']
+                params = [dict(zip(param_keys, p)) for p in zip(types, values, displayed, source)]
+
+                for param in params:
+                    param = self.util.remove_none(param)
+                    if 'value' not in param:
+                        continue
+
+                    if 'type_' not in param:
+                        self.log.warning(
+                            'feature=transform, action=process-attribute, '
+                            f'transform={attribute.dict(exclude_unset=True)}, error=no-type'
+                        )
+                        continue
+
+                    # strip out None params so that required params are enforced and optional
+                    # params with default values are respected.
+                    try:
+                        self.add_attribute(**param)
+                    except Exception:
+                        self.log.exception(
+                            'feature=transform, action=process-attribute, '
+                            f'transform={attribute.dict(exclude_unset=True)}'
+                        )
+            except Exception as e:
+                raise TransformException(
+                    f'Attribute [{i}], type={attribute.type}', e, context=attribute.dict()
+                )
 
     def _process_file_occurrences(self, file_occurrences: list[FileOccurrenceTransformModel]):
         """Process File Occurrences data.
