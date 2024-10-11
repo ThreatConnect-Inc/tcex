@@ -49,7 +49,9 @@ def transform_builder_to_model(
             fn_name = step.get('for_each') or step.get('method')
             step.update(
                 processing_functions.translate_def_to_fn(
-                    step, f'{context}, Processing Function: {fn_name}'
+                    step,
+                    f'{context}, Processing Function: '
+                    f'{processing_functions._snake_to_titlecase(fn_name)}',
                 )
             )
 
