@@ -29,24 +29,29 @@ def transform_builder_to_model(
 ) -> IndicatorTransformModel | GroupTransformModel:
     """Convert a transform from Transform Builder to one of the tcex transform models."""
 
-    def find_entries(data, key) -> Iterable[dict]:
+    def find_entries(data, key, context='') -> Iterable[tuple[str, dict]]:
         """Find entries in a dict with a given name, regardless of depth."""
         if isinstance(data, dict):
             for k, v in data.items():
                 if k == key:
-                    yield v
+                    yield (context, v)
                 elif isinstance(v, (dict, list)):
-                    yield from find_entries(v, key)
+                    yield from find_entries(v, key, context=f'{context}.{k}' if context else k)
         elif isinstance(data, list):
-            for item in data:
-                yield from find_entries(item, key)
+            for i, item in enumerate(data):
+                yield from find_entries(item, key, context=f'{context}[{i}]')
 
-    for processing in find_entries(transform['transform'], 'transform'):
+    for context, processing in find_entries(transform['transform'], 'transform'):
         if not isinstance(processing, list):
             processing = [processing]
 
         for step in processing:
-            step.update(processing_functions.translate_def_to_fn(step))
+            fn_name = step.get('for_each') or step.get('method')
+            step.update(
+                processing_functions.translate_def_to_fn(
+                    step, f'{context}, Processing Function: {fn_name}'
+                )
+            )
 
     match transform['type'].lower():
         case 'indicator':
@@ -207,46 +212,52 @@ class ProcessingFunctions:
         """Transform MITRE tags to TC format."""
         return self.tcex.api.tc.v3.mitre_tags.get_by_id_regex(value, value)
 
-    def translate_def_to_fn(self, api_def: dict):
+    def translate_def_to_fn(self, api_def: dict, context: str):
         """Translate a function definition in transform builder/API format to an actual function."""
+        additional_context = ''
+        try:
+            translated = api_def.copy()
 
-        translated = api_def.copy()
+            type_ = 'method' if 'method' in api_def else 'for_each'
 
-        type_ = 'method' if 'method' in api_def else 'for_each'
+            if not type_:
+                raise ValueError('No method or for_each key found in definition.')
 
-        if not type_:
-            raise ValueError('No method or for_each key found in definition.')
+            fn_name = api_def[type_]
 
-        fn_name = api_def[type_]
+            if callable(fn_name):
+                return api_def
 
-        if callable(fn_name):
-            return api_def
+            fn = getattr(self, fn_name)
 
-        fn = getattr(self, fn_name)
+            if not fn:
+                raise ValueError(f'Unknown function: {fn_name}')
 
-        if not fn:
-            raise ValueError(f'Unknown function: {fn_name}')
+            translated[type_] = fn
 
-        translated[type_] = fn
+            if 'kwargs' in api_def:
+                sig = signature(fn)
 
-        if 'kwargs' in api_def:
-            sig = signature(fn)
+                for kwarg in api_def['kwargs']:
+                    if kwarg not in sig.parameters:
+                        raise ValueError(f'Unknown argument {kwarg} for function {fn_name}')
 
-            for kwarg in api_def['kwargs']:
-                if kwarg not in sig.parameters:
-                    raise ValueError(f'Unknown argument {kwarg} for function {fn_name}')
+                    annotation = sig.parameters[kwarg].annotation
+                    additional_context = f', Argument: {kwarg}'
+                    match annotation():
+                        case dict():
+                            translated['kwargs'][kwarg] = json.loads(api_def['kwargs'][kwarg])
+                        case _:
+                            translated['kwargs'][kwarg] = sig.parameters[kwarg].annotation(
+                                api_def['kwargs'][kwarg]
+                            )
 
-                annotation = sig.parameters[kwarg].annotation
+            return translated
+        except Exception as e:
+            # first-party
+            from tcex.api.tc.ti_transform import TransformException
 
-                match annotation():
-                    case dict():
-                        translated['kwargs'][kwarg] = json.loads(api_def['kwargs'][kwarg])
-                    case _:
-                        translated['kwargs'][kwarg] = sig.parameters[kwarg].annotation(
-                            api_def['kwargs'][kwarg]
-                        )
-
-        return translated
+            raise TransformException(f'{context}{additional_context}', e, context=api_def)
 
     def get_function_definitions(self) -> list[FunctionDefinition]:
         """Get function definitions in JSON format, suitable for the transform builder UI."""
