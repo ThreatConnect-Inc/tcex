@@ -117,6 +117,7 @@ class AttributeTransformModel(ValueTransformModel, extra=Extra.forbid):
     displayed: bool | MetadataTransformModel = Field(False, description='')
     source: str | MetadataTransformModel | None = Field(None, description='')
     type: str | MetadataTransformModel = Field(..., description='')
+    pinned: bool | MetadataTransformModel = Field(False, description='')
 
 
 class SecurityLabelTransformModel(ValueTransformModel, extra=Extra.forbid):

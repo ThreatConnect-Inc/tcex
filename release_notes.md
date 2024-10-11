@@ -5,6 +5,7 @@
 -   APP-4604 - [transform] Add Processing Functions class to include pre-defined functions that can be used in transform builder and across TIE apps.
 -   APP-4605 - [transform] normalize the way null/empty values are handled in transforms, and include empty string ''.
 -   APP-4620 - [transform] Add structured/contextualized exceptions to transform to be able to deliver detailed error messages to users.
+-  APP-4632 - [transform] Add attribute.pinned field
 
 
 ## 4.0.6

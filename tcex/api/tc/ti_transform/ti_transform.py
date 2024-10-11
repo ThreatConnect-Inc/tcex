@@ -91,6 +91,7 @@ class TiTransform(TransformABC):
         type_: str,
         value: str,
         displayed: bool = False,
+        pinned: bool = False,
         source: str | None = None,
     ):
         """Add an attribute to the transformed item."""
@@ -103,6 +104,10 @@ class TiTransform(TransformABC):
             # displayed is a special case, it only needs to be added if True
             if displayed is True:
                 attribute_data['displayed'] = displayed
+
+            # pinned is a special case, it only needs to be added if True
+            if pinned is True:
+                attribute_data['pinned'] = displayed
 
             # source is a special case, it only needs to be added if not None
             if source is not None:

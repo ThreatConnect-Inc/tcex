@@ -238,9 +238,12 @@ class TransformABC(ABC):
                 types = self._process_metadata_transform_model(attribute.type, len(values))
                 source = self._process_metadata_transform_model(attribute.source, len(values))
                 displayed = self._process_metadata_transform_model(attribute.displayed, len(values))
+                pinned = self._process_metadata_transform_model(attribute.pinned, len(values))
 
-                param_keys = ['type_', 'value', 'displayed', 'source']
-                params = [dict(zip(param_keys, p)) for p in zip(types, values, displayed, source)]
+                param_keys = ['type_', 'value', 'displayed', 'pinned', 'source']
+                params = [
+                    dict(zip(param_keys, p)) for p in zip(types, values, displayed, pinned, source)
+                ]
 
                 for param in params:
                     param = self.util.remove_none(param)
@@ -654,6 +657,7 @@ class TransformABC(ABC):
         type_: str,
         value: str,
         displayed: bool = False,
+        pinned: bool = False,
         source: str | None = None,
     ):
         """Abstract method"""
