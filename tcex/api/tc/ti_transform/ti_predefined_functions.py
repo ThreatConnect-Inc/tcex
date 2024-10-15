@@ -163,7 +163,7 @@ class ProcessingFunctions:
 
     def any_to_datetime(self, value):
         """Convert any value to a datetime object."""
-        return self.tcex.util.any_to_datetime(value)
+        return self.tcex.util.any_to_datetime(value).isoformat()
 
     def append(self, value, suffix: str):
         """Append a value to the input value."""
