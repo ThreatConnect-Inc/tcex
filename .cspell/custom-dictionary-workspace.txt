@@ -68,6 +68,7 @@ fakeredis
 feedapiservice
 fget
 filterwarnings
+FIPS
 firstparty
 fixdate
 fnmatch

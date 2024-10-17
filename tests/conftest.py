@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # standard library
 import hashlib
 import logging
@@ -187,6 +188,7 @@ def pytest_configure(config):  # pylint: disable=unused-argument
     Allows plugins and conftest files to perform initial configuration. This hook is called for
     every plugin and initial conftest file after command line options have been parsed.
     """
+
     os.environ['TCEX_TEST_DIR'] = os.path.join(os.getcwd(), 'tests')
 
     # remove log directory
