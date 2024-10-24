@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # standard library
 from abc import ABC
 from textwrap import TextWrapper

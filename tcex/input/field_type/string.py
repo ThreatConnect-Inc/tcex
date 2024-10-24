@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # standard library
 import re
 from collections.abc import Generator

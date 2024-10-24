@@ -64,9 +64,11 @@ escalatee
 escalatees
 ESUP
 exitstatus
+expref
 fakeredis
 feedapiservice
 fget
+fillvalue
 filterwarnings
 FIPS
 firstparty
@@ -189,6 +191,7 @@ stmts
 stringarray
 Stringdummy
 strptime
+subexpression
 suborg
 subtechniques
 suricata
@@ -245,6 +248,7 @@ urlencoding
 urllib
 userdata
 usergroup
+Variadict
 virtualenv
 walklevel
 Weaponization

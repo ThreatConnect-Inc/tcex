@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # standard library
 import ipaddress
 from collections.abc import Generator

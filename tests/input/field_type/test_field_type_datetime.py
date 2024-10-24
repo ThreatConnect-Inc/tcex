@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # standard library
 import math
 from collections.abc import Callable
