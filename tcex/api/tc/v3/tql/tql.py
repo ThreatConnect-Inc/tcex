@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # standard library
 from datetime import datetime
 from enum import Enum

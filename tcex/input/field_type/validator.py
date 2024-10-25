@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # standard library
 import operator
 from collections.abc import Callable

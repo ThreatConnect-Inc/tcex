@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # first-party
 from tcex import TcEx
 

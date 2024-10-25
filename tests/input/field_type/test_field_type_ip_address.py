@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # standard library
 from collections.abc import Callable
 
@@ -278,14 +279,11 @@ class TestInputsIpAddressFieldTypes(InputTest):
         class PytestModelOptional(BaseModel):
             """Test Model for Inputs"""
 
-            my_data: (
-                None
-                | (
-                    list[IpAddress]
-                    | IpAddress
-                    | list[AddressEntity]  # type: ignore
-                    | AddressEntity  # type: ignore
-                )
+            my_data: None | (
+                list[IpAddress]
+                | IpAddress
+                | list[AddressEntity]  # type: ignore
+                | AddressEntity  # type: ignore
             )
 
             _entity_input = validator('my_data', allow_reuse=True)(

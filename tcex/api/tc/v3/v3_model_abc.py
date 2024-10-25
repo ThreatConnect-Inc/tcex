@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # standard library
 import datetime
 import hashlib
@@ -332,7 +333,7 @@ class V3ModelABC(BaseModel, ABC, allow_population_by_field_name=True):
     def gen_model_hash(json_: str) -> str:
         """Return the current dict hash."""
         # get hash of dict
-        hash_ = hashlib.md5()  # nosec
+        hash_ = hashlib.sha256()  # nosec
         encoded = json_.encode()
         hash_.update(encoded)
         return hash_.hexdigest()

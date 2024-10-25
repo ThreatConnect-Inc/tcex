@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # standard library
 import json
 from pathlib import Path
@@ -226,9 +227,10 @@ def transform(tcex: TcEx) -> IndicatorTransformModel:
 def test_indicators_regression(tcex: TcEx):
     """Test large data set to ensure results have not changed."""
     current_path = Path(__file__).parent
-    with open(current_path / 'data' / 'input_indicators.json') as input_, open(
-        current_path / 'data' / 'transformed_indicators.json'
-    ) as output:
+    with (
+        open(current_path / 'data' / 'input_indicators.json') as input_,
+        open(current_path / 'data' / 'transformed_indicators.json') as output,
+    ):
         transforms = tcex.api.tc.ti_transforms(json.load(input_), [transform(tcex)])
         tcex.log.warning(json.dumps(transforms.batch))
         assert not deepdiff.DeepDiff(transforms.batch, json.load(output))

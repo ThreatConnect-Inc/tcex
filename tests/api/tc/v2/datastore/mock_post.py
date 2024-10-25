@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # standard library
 import json
 from typing import Any

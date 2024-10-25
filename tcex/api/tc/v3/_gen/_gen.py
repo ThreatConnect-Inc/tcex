@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # standard library
 import os
 from enum import Enum

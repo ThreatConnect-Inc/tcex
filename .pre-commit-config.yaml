@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v5.0.0
     hooks:
       - id: check-added-large-files
       - id: check-ast
@@ -27,7 +27,7 @@ repos:
       - id: requirements-txt-fixer
       - id: trailing-whitespace
   - repo: https://github.com/pycqa/bandit
-    rev: 1.7.4
+    rev: 1.7.10
     hooks:
       - id: bandit
         exclude: |
@@ -35,11 +35,11 @@ repos:
               ^tests/
           )
   - repo: https://github.com/psf/black
-    rev: 23.1.0
+    rev: 24.10.0
     hooks:
       - id: black
   - repo: https://github.com/streetsidesoftware/cspell-cli
-    rev: v6.2.0
+    rev: v8.15.1
     hooks:
       - id: cspell
         exclude: |
@@ -66,7 +66,7 @@ repos:
               ^tests/
           )
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.3.1
+    rev: v3.18.0
     hooks:
       - id: pyupgrade
         args:

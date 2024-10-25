@@ -1,11 +1,12 @@
 # Release Notes
 
 ## 4.0.7
--   APP-4601 - [pleb] add jmespath custom functions to pleb to centralize that functionality to be used across apps.
--   APP-4604 - [transform] Add Processing Functions class to include pre-defined functions that can be used in transform builder and across TIE apps.
--   APP-4605 - [transform] normalize the way null/empty values are handled in transforms, and include empty string ''.
--   APP-4620 - [transform] Add structured/contextualized exceptions to transform to be able to deliver detailed error messages to users.
--  APP-4632 - [transform] Add attribute.pinned field
+-   APP-4601 - [pleb] Added jmespath custom functions to pleb to centralize functionality
+-   APP-4604 - [transform] Added standard processing functions class
+-   APP-4605 - [transform] Normalized the way null/empty values are handled in transforms (includes '')
+-   APP-4620 - [transform] Added structured/contextualized exceptions to transform
+-   APP-4632 - [transform] Added support for attribute.pinned field
+-   APP-4640 - [api] Updated API hashing method to use SHA256 for FIPS compliance
 
 
 ## 4.0.6

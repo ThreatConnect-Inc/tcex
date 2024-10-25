@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # pylint: disable=no-self-argument
 
 # third-party

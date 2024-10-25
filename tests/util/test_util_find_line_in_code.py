@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # standard library
 from pathlib import Path
 from re import Pattern

@@ -1,4 +1,5 @@
 """TcEx Framework Module"""
+
 # third-party
 from pydantic import BaseModel, Extra, validator
 from pydantic.fields import ModelField  # TYPE-CHECKING
