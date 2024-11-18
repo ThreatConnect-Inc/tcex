@@ -100,10 +100,39 @@ class ProcessingFunctions:
     def __init__(self, tcex) -> None:
         """."""
         self.tcex = tcex
+        self.custom_fns = {}
 
-    def custom(self, value, description: str):
+    @custom_function_definition(
+        {
+            'name': 'custom',
+            'label': 'Custom',
+            'help': 'Describe a custom processing function.',
+            'params': [
+                {
+                    'default': None,
+                    'name': 'name',
+                    'label': 'Name',
+                    'type': 'str',
+                    'help': 'A unique name for this custom processing function.',
+                    'required': True,
+                },
+                {
+                    'default': None,
+                    'name': 'description',
+                    'label': 'Description',
+                    'type': 'str',
+                    'help': 'Describe the custom processing function.',
+                    'required': True,
+                },
+            ],
+        }
+    )
+    def custom(self, value, name: str, description: str, ti_dict, transform, **kwargs):
         """Allow for custom processing to be described."""
-        raise RuntimeError(f'Custom function not implemented: {description}')
+        fn = self.custom_fns.get(name.lower())
+        if not fn:
+            raise NotImplementedError(f'Custom function not implemented: {description}')
+        return fn(value, ti_dict=ti_dict, transform=transform, **kwargs)
 
     def static_map(self, value, mapping: dict):
         """Map values to static values.
@@ -122,23 +151,6 @@ class ProcessingFunctions:
 
         return value if value in [v.strip() for v in json.loads(values).split(delimiter)] else None
 
-    @custom_function_definition(
-        {
-            'name': 'format_table',
-            'label': 'Format Objects as Markdown Table',
-            'help': 'Format a list of objects as a markdown table.',
-            'params': [
-                {
-                    'default': None,
-                    'name': 'column_order',
-                    'label': 'Column Order',
-                    'type': 'str',
-                    'help': 'The order of the columns.',
-                    'required': False,
-                }
-            ],
-        }
-    )
     def format_table(self, value, column_order: str):
         """Format a markdown table.
 
