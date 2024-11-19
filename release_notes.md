@@ -7,7 +7,7 @@
 -   APP-4620 - [transform] Added structured/contextualized exceptions to transform
 -   APP-4632 - [transform] Added support for attribute.pinned field
 -   APP-4640 - [api] Updated API hashing method to use SHA256 for FIPS compliance
-
+-   APP-4656 - [transform] refactor how the custom predefined function works
 
 ## 4.0.6
 
