@@ -4,7 +4,7 @@
 from datetime import datetime
 
 # third-party
-from pydantic import BaseModel, Extra, Field
+from pydantic.v1 import BaseModel, Extra, Field
 
 # first-party
 from tcex.util import Util

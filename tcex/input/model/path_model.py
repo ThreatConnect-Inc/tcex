@@ -5,7 +5,7 @@ import tempfile
 from pathlib import Path
 
 # third-party
-from pydantic import BaseModel, Field
+from pydantic.v1 import BaseModel, Field
 
 
 class PathModel(BaseModel):

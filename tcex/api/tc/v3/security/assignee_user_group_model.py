@@ -3,7 +3,7 @@
 # pylint: disable=no-member,no-self-argument,wrong-import-position
 
 # third-party
-from pydantic import Field
+from pydantic.v1 import Field
 
 # first-party
 from tcex.api.tc.v3.security.user_groups.user_group_model import UserGroupModel

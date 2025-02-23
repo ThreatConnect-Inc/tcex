@@ -10,7 +10,7 @@ from json import JSONEncoder
 from typing import Any, Self
 
 # third-party
-from pydantic import BaseModel, PrivateAttr
+from pydantic.v1 import BaseModel, PrivateAttr
 
 # first-party
 from tcex.logger.trace_logger import TraceLogger

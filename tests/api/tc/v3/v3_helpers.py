@@ -11,7 +11,7 @@ from typing import Any
 
 # third-party
 from _pytest.fixtures import FixtureRequest
-from pydantic import BaseModel
+from pydantic.v1 import BaseModel
 
 # first-party
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator

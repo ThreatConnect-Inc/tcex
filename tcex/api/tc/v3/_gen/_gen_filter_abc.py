@@ -6,7 +6,7 @@ from collections.abc import Generator
 from typing import Any
 
 # third-party
-from pydantic import ValidationError
+from pydantic.v1 import ValidationError
 from requests.exceptions import ProxyError
 
 # first-party

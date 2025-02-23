@@ -5,7 +5,7 @@ from collections.abc import Callable
 
 # third-party
 import pytest
-from pydantic import BaseModel, ValidationError
+from pydantic.v1 import BaseModel, ValidationError
 
 # first-party
 from tcex.input.field_type import Choice, choice

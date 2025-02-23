@@ -1,7 +1,7 @@
 """TcEx Framework Module"""
 
 # third-party
-from pydantic import Extra
+from pydantic.v1 import Extra
 
 # first-party
 from tcex.input.model.api_model import ApiModel
