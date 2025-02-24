@@ -4,7 +4,7 @@
 import logging
 
 # third-party
-from pydantic import BaseModel
+from pydantic.v1 import BaseModel
 
 # first-party
 from tcex.logger.trace_logger import TraceLogger

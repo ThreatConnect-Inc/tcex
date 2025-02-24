@@ -4,8 +4,8 @@
 from typing import ForwardRef
 
 # third-party
-from pydantic import BaseModel, validator
-from pydantic.fields import ModelField  # TYPE-CHECKING
+from pydantic.v1 import BaseModel, validator
+from pydantic.v1.fields import ModelField  # TYPE-CHECKING
 
 # first-party
 from tcex.input.field_type.binary import Binary

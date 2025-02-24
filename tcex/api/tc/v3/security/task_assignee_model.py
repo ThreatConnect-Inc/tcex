@@ -6,7 +6,7 @@ from datetime import datetime
 from enum import Enum
 
 # third-party
-from pydantic import BaseModel, Field, PrivateAttr
+from pydantic.v1 import BaseModel, Field, PrivateAttr
 
 # first-party
 from tcex.api.tc.v3.security.users.user_model import UserModel

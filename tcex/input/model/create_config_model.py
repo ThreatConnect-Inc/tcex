@@ -5,7 +5,7 @@
 from typing import Any
 
 # third-party
-from pydantic import BaseModel, Extra, root_validator, validator
+from pydantic.v1 import BaseModel, Extra, root_validator, validator
 
 # first-party
 from tcex.app.config import InstallJson

@@ -3,7 +3,7 @@
 # pylint: disable=no-self-argument
 
 # third-party
-from pydantic import BaseModel, Field, validator
+from pydantic.v1 import BaseModel, Field, validator
 
 # first-party
 from tcex.app.config.install_json import InstallJson

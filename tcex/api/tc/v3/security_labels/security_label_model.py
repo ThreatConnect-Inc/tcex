@@ -5,7 +5,7 @@
 from datetime import datetime
 
 # third-party
-from pydantic import BaseModel, Extra, Field, PrivateAttr
+from pydantic.v1 import BaseModel, Extra, Field, PrivateAttr
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC

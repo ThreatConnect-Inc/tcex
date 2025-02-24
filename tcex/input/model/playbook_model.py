@@ -1,7 +1,7 @@
 """TcEx Framework Module"""
 
 # third-party
-from pydantic import BaseModel, Field, validator
+from pydantic.v1 import BaseModel, Field, validator
 
 
 class PlaybookModel(BaseModel):

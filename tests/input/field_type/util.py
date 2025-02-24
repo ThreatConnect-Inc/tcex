@@ -6,7 +6,7 @@ from typing import Any
 
 # third-party
 import pytest
-from pydantic import BaseModel, ValidationError
+from pydantic.v1 import BaseModel, ValidationError
 
 # first-party
 from tcex.input.field_type.sensitive import Sensitive

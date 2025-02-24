@@ -10,7 +10,7 @@ from operator import add, sub
 import arrow
 import pytest
 from dateutil.relativedelta import relativedelta
-from pydantic import BaseModel, ValidationError
+from pydantic.v1 import BaseModel, ValidationError
 
 # first-party
 from tcex import TcEx  # TYPE-CHECKING

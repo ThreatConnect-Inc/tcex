@@ -5,7 +5,7 @@
 from typing import Any
 
 # third-party
-from pydantic import BaseModel, validator
+from pydantic.v1 import BaseModel, validator
 
 # first-party
 from tcex.input.field_type import (

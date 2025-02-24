@@ -5,7 +5,7 @@ from collections.abc import Callable
 
 # third-party
 from jmespath import compile as jmespath_compile
-from pydantic import BaseModel, Extra, Field, root_validator, validator
+from pydantic.v1 import BaseModel, Extra, Field, root_validator, validator
 
 
 # reusable validator

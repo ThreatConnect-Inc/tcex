@@ -5,7 +5,7 @@ from collections.abc import Callable
 
 # third-party
 import pytest
-from pydantic import BaseModel, Extra, ValidationError
+from pydantic.v1 import BaseModel, Extra, ValidationError
 
 # first-party
 from tcex.input.field_type import DateTime, String, modify_advanced_settings

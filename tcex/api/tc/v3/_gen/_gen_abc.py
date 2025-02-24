@@ -9,7 +9,7 @@ from pathlib import Path
 from textwrap import TextWrapper
 
 # third-party
-from pydantic import ValidationError
+from pydantic.v1 import ValidationError
 from requests import Session
 from requests.exceptions import ProxyError
 

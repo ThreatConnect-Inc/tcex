@@ -3,7 +3,7 @@
 # pylint: disable=no-member,no-self-argument,wrong-import-position
 
 # third-party
-from pydantic import Field, validator
+from pydantic.v1 import Field, validator
 
 # first-party
 from tcex.api.tc.v3.security.assignee_user_group_model import AssigneeUserGroupModel

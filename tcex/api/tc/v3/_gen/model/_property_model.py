@@ -1,7 +1,7 @@
 """TcEx Framework Module"""
 
 # third-party
-from pydantic import BaseModel, Extra, Field, validator
+from pydantic.v1 import BaseModel, Extra, Field, validator
 
 # first-party
 from tcex.pleb.cached_property import cached_property

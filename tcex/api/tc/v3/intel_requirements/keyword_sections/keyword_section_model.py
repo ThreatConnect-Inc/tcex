@@ -3,7 +3,7 @@
 # pylint: disable=no-member,no-self-argument,wrong-import-position
 
 # third-party
-from pydantic import Field, PrivateAttr
+from pydantic.v1 import Field, PrivateAttr
 
 # first-party
 from tcex.api.tc.v3.v3_model_abc import V3ModelABC

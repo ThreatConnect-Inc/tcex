@@ -9,8 +9,8 @@ from base64 import b64decode
 from pathlib import Path
 
 # third-party
-from pydantic import ValidationError  # TYPE-CHECKING
-from pydantic import BaseModel, Extra
+from pydantic.v1 import ValidationError  # TYPE-CHECKING
+from pydantic.v1 import BaseModel, Extra
 
 # first-party
 from tcex.app.config.install_json import InstallJson
@@ -232,7 +232,7 @@ class Input:
         self.contents_update(_inputs)
         return dict(sorted(_inputs.items()))
 
-    # TODO: [high] - can this be replaced with a pydantic root validator?
+    # TODO: [high] - can this be replaced with a pydantic.v1 root validator?
     def contents_update(self, inputs: dict):
         """Update inputs provided by core to be of the proper value and type."""
         for name, value in inputs.items():

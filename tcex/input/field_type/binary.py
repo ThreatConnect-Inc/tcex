@@ -4,7 +4,7 @@
 from collections.abc import Generator
 
 # third-party
-from pydantic.fields import ModelField  # TYPE-CHECKING
+from pydantic.v1.fields import ModelField  # TYPE-CHECKING
 
 # first-party
 from tcex.input.field_type.exception import InvalidEmptyValue, InvalidLengthValue, InvalidType
