@@ -2,14 +2,16 @@
 
 # standard library
 from collections.abc import Generator
-from typing import Any
+from typing import Any, Optional
 
 # third-party
-from pydantic.fields import ModelField  # TYPE-CHECKING
-from pydantic.types import OptionalInt
+from pydantic.v1.fields import ModelField  # TYPE-CHECKING
 
 # first-party
 from tcex.input.field_type.exception import InvalidIntegerValue, InvalidType
+
+# NOTE: This is not available through the pydantic.v1 compatability namespace
+OptionalInt = Optional[int]
 
 
 class Integer(int):

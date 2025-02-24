@@ -6,7 +6,7 @@ from typing import Any
 
 # third-party
 import arrow
-from pydantic.fields import ModelField
+from pydantic.v1.fields import ModelField
 
 # first-party
 from tcex.input.field_type.exception import InvalidInput

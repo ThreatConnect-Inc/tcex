@@ -4,8 +4,8 @@
 from typing import ClassVar
 
 # third-party
-from pydantic import create_model, validator
-from pydantic.fields import ModelField  # TYPE-CHECKING
+from pydantic.v1 import create_model, validator
+from pydantic.v1.fields import ModelField  # TYPE-CHECKING
 
 # first-party
 from tcex.input.field_type.exception import InvalidEmptyValue, InvalidEntityType

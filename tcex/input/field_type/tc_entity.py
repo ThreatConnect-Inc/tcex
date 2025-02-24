@@ -1,8 +1,8 @@
 """TcEx Framework Module"""
 
 # third-party
-from pydantic import BaseModel, Extra, validator
-from pydantic.fields import ModelField  # TYPE-CHECKING
+from pydantic.v1 import BaseModel, Extra, validator
+from pydantic.v1.fields import ModelField  # TYPE-CHECKING
 
 # first-party
 from tcex.input.field_type.exception import InvalidEmptyValue
