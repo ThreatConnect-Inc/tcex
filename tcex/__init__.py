@@ -3,6 +3,7 @@
 # ruff: noqa: F401
 
 # standard library
+import contextlib
 import logging
 
 # first-party
@@ -34,9 +35,6 @@ def initialize_logger():
 # init logger before instantiating tcex
 initialize_logger()
 
-try:
+with contextlib.suppress(ImportError):
     # first-party
-    from tcex.tcex import TcEx  # noqa: F401
-except ImportError as ex:
-    print(f'Error: {ex}')
-    print('Try running tcex deps')
+    from tcex.tcex import TcEx

@@ -4,7 +4,7 @@ The ThreatConnect&trade; TcEx App Framework provides functionality for writing T
 
 ## Requirements
 
- * arrow (https://pypi.python.org/pypi/arrow)
+ * arrow (https://pypi.python.org/pypi/arrow/)
  * black (https://pypi.org/project/black/)
  * inflection (https://pypi.org/project/inflection/)
  * isort (https://pypi.org/project/isort/)
@@ -12,28 +12,27 @@ The ThreatConnect&trade; TcEx App Framework provides functionality for writing T
  * paho-mqtt (https://pypi.org/project/paho-mqtt/)
  * pyaes (https://pypi.org/project/pyaes/)
  * pydantic (https://pypi.org/project/pydantic/)
- * python-dateutil (https://pypi.python.org/pypi/python-dateutil)
- * pyyaml (https://pypi.python.org/pypi/pyyaml)
- * redis (https://pypi.python.org/pypi/redis)
- * requests (https://pypi.python.org/pypi/requests)
- * rich (https://pypi.python.org/pypi/rich)
+ * python-dateutil (https://pypi.python.org/pypi/python-dateutil/)
+ * pyyaml (https://pypi.python.org/pypi/pyyaml/)
+ * redis (https://pypi.python.org/pypi/redis/)
+ * requests (https://pypi.python.org/pypi/requests/)
+ * rich (https://pypi.python.org/pypi/rich/)
  * semantic_version (https://pypi.org/project/semantic-version/)
  * wrapt (https://pypi.org/project/wrapt/)
 
 ### Development Requirements
 
  * bandit (https://pypi.org/project/bandit/)
- * deepdiff (https://pypi.org/project/deepdiff/)
- * fakeredis (https://pypi.org/project/fakeredis/)
  * pre-commit (https://pypi.org/project/pre-commit/)
- * pydocstyle (https://pypi.org/project/pydocstyle/)
- * pylint (https://pypi.org/project/pylint/)
  * pyright (https://pypi.org/project/pyright/)
  * pyupgrade (https://pypi.org/project/pyupgrade/)
- * typer (https://pypi.python.org/pypi/typer)
+ * ruff (https://pypi.org/project/ruff/)
+ * typer (https://pypi.python.org/pypi/typer/)
 
 ### Test Requirements
 
+ * deepdiff (https://pypi.org/project/deepdiff/)
+ * fakeredis (https://pypi.org/project/fakeredis/)
  * pytest (https://pypi.org/project/pytest/)
  * pytest-cov (https://pypi.org/project/pytest-cov/)
  * pytest-html (https://pypi.org/project/pytest-html/)
@@ -42,13 +41,17 @@ The ThreatConnect&trade; TcEx App Framework provides functionality for writing T
 
 ## Installation
 
-```
+```bash
 pip install tcex
 ```
 
 ### Development / Testing
 
-pip install tcex[dev,test]
+ * uv (https://pypi.python.org/pypi/uv/)
+
+```bash
+uv sync
+```
 
 ## Documentation
 

@@ -9,7 +9,6 @@ from tcex.util import Util
 from tcex.util.string_operation import CamelString
 
 
-# pylint: disable=no-self-argument
 class ExtraModel(
     BaseModel,
     extra=Extra.forbid,
@@ -23,7 +22,6 @@ class ExtraModel(
     typing_type: str = Field(..., description='The Python typing hint type.')
 
 
-# pylint: disable=no-self-argument
 class FilterModel(
     BaseModel,
     alias_generator=Util().snake_to_camel,
@@ -36,18 +34,22 @@ class FilterModel(
     """Model Definition"""
 
     description: str = Field('No description provided.', description='Description of the filter.')
-    groupable: bool = Field(False, description='True if the filter is able to be grouped.')
+    groupable: bool = Field(default=False, description='True if the filter is able to be grouped.')
     keyword: CamelString = Field(..., description='The filter keyword.')
     name: CamelString = Field(..., description='The name of the filter.')
-    targetable: bool = Field(False, description='True if the filter is able to be targeted.')
+    targetable: bool = Field(
+        default=False, description='True if the filter is able to be targeted.'
+    )
     type: str = Field(..., description='The type of the filter.')
 
     @validator('keyword', 'name', always=True, pre=True)
+    @classmethod
     def _camel_string(cls, v):
         """Convert to CamelString."""
         return CamelString(v)
 
     @validator('description', always=True, pre=True)
+    @classmethod
     def _fix_first_letter_of_sentence(cls, v):
         """Convert to CamelString."""
         if v:
@@ -77,7 +79,7 @@ class FilterModel(
     def __calculate_comment(cls, keyword: str) -> str:
         """Return the calculated filter type."""
         if keyword in ['id', 'type']:
-            return '  # pylint: disable=redefined-builtin'
+            return '  # noqa: A002'
         return ''
 
     @classmethod
@@ -106,7 +108,8 @@ class FilterModel(
 
         # fail on any unknown types (core added something new)
         if hint_type is None:
-            raise RuntimeError(f'Invalid type of {type_} (Core team added something new?)')
+            ex_msg = f'Invalid type of {type_} (Core team added something new?)'
+            raise RuntimeError(ex_msg)
 
         return hint_type
 

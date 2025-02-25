@@ -8,7 +8,6 @@ from pydantic.fields import ModelField  # TYPE-CHECKING
 from tcex.input.field_type.exception import InvalidEmptyValue
 
 
-# pylint: disable=no-self-argument
 class TCEntity(BaseModel):
     """Model for TCEntity Input."""
 
@@ -23,6 +22,7 @@ class TCEntity(BaseModel):
     rating: int | None
 
     @validator('id', 'type', 'value')
+    @classmethod
     def non_empty_string(cls, v: dict[str, str], field: ModelField) -> dict[str, str]:
         """Validate that the value is a non-empty string."""
         if isinstance(v, str) and v.replace(' ', '') == '':  # None value are automatically covered

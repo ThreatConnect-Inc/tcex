@@ -32,7 +32,7 @@ class BatchModel(BaseModel):
         requires_definition=True,
     )
     batch_halt_on_error: bool = Field(
-        False,
+        default=False,
         description='Flag to control batch job failure behavior.',
         inclusion_reason='runtimeLevel',
         requires_definition=True,

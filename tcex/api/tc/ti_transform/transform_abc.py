@@ -14,13 +14,13 @@ import jmespath
 
 # first-party
 from tcex.api.tc.ti_transform import ti_predefined_functions
-from tcex.api.tc.ti_transform.model import AttributeTransformModel  # TYPE-CHECKING
-from tcex.api.tc.ti_transform.model import SecurityLabelTransformModel  # TYPE-CHECKING
-from tcex.api.tc.ti_transform.model import TagTransformModel  # TYPE-CHECKING
 from tcex.api.tc.ti_transform.model import (
+    AttributeTransformModel,
     GroupTransformModel,
     IndicatorTransformModel,
     MetadataTransformModel,
+    SecurityLabelTransformModel,
+    TagTransformModel,
 )
 from tcex.api.tc.ti_transform.model.transform_model import (
     AssociatedGroupTransform,
@@ -55,7 +55,7 @@ class NoValidTransformException(Exception):
     """Exception for when no valid transform is found."""
 
 
-class TransformsABC(ABC):
+class TransformsABC(ABC):  # noqa: B024
     """Transform Abstract Base Class"""
 
     def __init__(
@@ -81,10 +81,11 @@ class TransformsABC(ABC):
         if len(self.transforms) > 1:
             for transform in self.transforms:
                 if not callable(transform.applies):
-                    raise ValueError(
+                    ex_msg = (
                         'If more than one transform is provided, each '
-                        'provided transform must provide an apply field.',
+                        'provided transform must provide an apply field.'
                     )
+                    raise ValueError(ex_msg)  # noqa: TRY004
 
 
 class TransformABC(ABC):
@@ -136,9 +137,8 @@ class TransformABC(ABC):
         Path can return any type of data from the TI dict.
         """
         if path is not None:
-            value = jmespath.search(path, self.ti_dict, options=self.jmespath_options)
+            return jmespath.search(path, self.ti_dict, options=self.jmespath_options)
             # self.log.trace(f'feature=transform, action=path-search, path={path}, value={value}')
-            return value
         return None
 
     def _process(self):
@@ -191,8 +191,9 @@ class TransformABC(ABC):
                     bool, self._process_metadata_transform_model(association.value)
                 ):
                     self.add_associated_group(value)  # type: ignore
-            except Exception as e:
-                raise TransformException(f'Associated Group [{i}]', e, context=association.dict())
+            except Exception as ex:
+                ex_msg = f'Associated Group [{i}]'
+                raise TransformException(ex_msg, ex, context=association.dict()) from ex
 
     def _process_metadata_transform_model(
         self, value: bool | MetadataTransformModel | str | None, expected_length: int | None = None
@@ -212,19 +213,15 @@ class TransformABC(ABC):
             transformed_value = self._transform_values(value)
 
             if expected_length is not None and len(transformed_value) != expected_length:
-                raise RuntimeError(
+                ex_msg = (
                     f'Expected transform value of length {expected_length} for {value}, '
                     f'but length was {len(transformed_value)}'
                 )
+                raise RuntimeError(ex_msg)
 
             return transformed_value
 
-        if expected_length is not None:
-            transformed_value = [value] * expected_length
-        else:
-            transformed_value = [value]
-
-        return transformed_value
+        return [value] * expected_length if expected_length is not None else [value]
 
     def _process_attributes(self, attributes: list[AttributeTransformModel]):
         """Process Attribute data"""
@@ -242,15 +239,16 @@ class TransformABC(ABC):
 
                 param_keys = ['type_', 'value', 'displayed', 'pinned', 'source']
                 params = [
-                    dict(zip(param_keys, p)) for p in zip(types, values, displayed, pinned, source)
+                    dict(zip(param_keys, p, strict=False))
+                    for p in zip(types, values, displayed, pinned, source, strict=False)
                 ]
 
                 for param in params:
-                    param = self.util.remove_none(param)
-                    if 'value' not in param:
+                    param_ = self.util.remove_none(param)
+                    if 'value' not in param_:
                         continue
 
-                    if 'type_' not in param:
+                    if 'type_' not in param_:
                         self.log.warning(
                             'feature=transform, action=process-attribute, '
                             f'transform={attribute.dict(exclude_unset=True)}, error=no-type'
@@ -260,16 +258,15 @@ class TransformABC(ABC):
                     # strip out None params so that required params are enforced and optional
                     # params with default values are respected.
                     try:
-                        self.add_attribute(**param)
+                        self.add_attribute(**param_)
                     except Exception:
                         self.log.exception(
                             'feature=transform, action=process-attribute, '
                             f'transform={attribute.dict(exclude_unset=True)}'
                         )
-            except Exception as e:
-                raise TransformException(
-                    f'Attribute [{i}], type={attribute.type}', e, context=attribute.dict()
-                )
+            except Exception as ex:
+                ex_msg = f'Attribute [{i}], type={attribute.type}'
+                raise TransformException(ex_msg, ex, context=attribute.dict()) from ex
 
     def _process_file_occurrences(self, file_occurrences: list[FileOccurrenceTransformModel]):
         """Process File Occurrences data.
@@ -280,18 +277,16 @@ class TransformABC(ABC):
         """
         for file_occurrence in file_occurrences or []:
             expected_length = max(
-                map(
-                    lambda f: len(self._process_metadata_transform_model(f)),
-                    [
-                        field
-                        for field in (
-                            file_occurrence.file_name,
-                            file_occurrence.path,
-                            file_occurrence.date,
-                        )
-                        if field is not None
-                    ],
-                )
+                len(self._process_metadata_transform_model(f))
+                for f in [
+                    field
+                    for field in (
+                        file_occurrence.file_name,
+                        file_occurrence.path,
+                        file_occurrence.date,
+                    )
+                    if field is not None
+                ]
             )
             file_name = self._process_metadata_transform_model(
                 file_occurrence.file_name, expected_length
@@ -300,7 +295,10 @@ class TransformABC(ABC):
             date = self._process_metadata_transform_model(file_occurrence.date, expected_length)
 
             param_keys = ['file_name', 'path', 'date']
-            params = [dict(zip(param_keys, p)) for p in zip(file_name, path, date)]
+            params = [
+                dict(zip(param_keys, p, strict=False))
+                for p in zip(file_name, path, date, strict=False)
+            ]
 
             for kwargs in filter(bool, params):  # get rid of empty dicts
                 self.add_file_occurrence(**self.util.remove_none(kwargs))
@@ -381,7 +379,8 @@ class TransformABC(ABC):
                 'feature=ti-transform, event=process-indicators, message=no-indicator-value-found, '
                 f'path-value1={value1}, path-value2={value2}, path-value3={value3}'
             )
-            raise RuntimeError('At least one indicator value must be provided.')
+            ex_msg = 'At least one indicator value must be provided.'
+            raise RuntimeError(ex_msg)
 
         self.add_summary(self._build_summary(value1, value2, value3))
 
@@ -397,7 +396,8 @@ class TransformABC(ABC):
                 'feature=ti-transform, event=process-group-name, message=no-name-found, '
                 f'path={self.transform.name.path}'
             )
-            raise RuntimeError('At least one indicator value must be provided.')
+            ex_msg = 'At least one indicator value must be provided.'
+            raise RuntimeError(ex_msg)
 
         self.add_name(name)
 
@@ -407,8 +407,8 @@ class TransformABC(ABC):
             value = self._transform_value(metadata)
             if value is not None:
                 self.add_metadata(key, value)
-        except Exception as e:
-            raise TransformException(key, e, metadata.dict() if metadata else None)
+        except Exception as ex:
+            raise TransformException(key, ex, metadata.dict() if metadata else None) from ex
 
     def _process_metadata_datetime(self, key: str, metadata: DatetimeTransformModel | None):
         """Process metadata fields that should be a TC datetime."""
@@ -419,8 +419,8 @@ class TransformABC(ABC):
                     self.add_metadata(
                         key, self.util.any_to_datetime(value).strftime('%Y-%m-%dT%H:%M:%SZ')
                     )
-        except Exception as e:
-            raise TransformException(key, e, context=metadata.dict() if metadata else None)
+        except Exception as ex:
+            raise TransformException(key, ex, context=metadata.dict() if metadata else None) from ex
 
     def _process_security_labels(self, labels: list[SecurityLabelTransformModel]):
         """Process Tag data"""
@@ -439,17 +439,21 @@ class TransformABC(ABC):
                 )
 
                 param_keys = ['color', 'description', 'name']
-                params = [dict(zip(param_keys, p)) for p in zip(colors, descriptions, names)]
+                params = [
+                    dict(zip(param_keys, p, strict=False))
+                    for p in zip(colors, descriptions, names, strict=False)
+                ]
 
                 for kwargs in params:
-                    kwargs = self.util.remove_none(kwargs)
-                    if 'name' not in kwargs:
+                    kwargs_ = self.util.remove_none(kwargs)
+                    if 'name' not in kwargs_:
                         continue
                     # strip out None params so that required params are enforced and optional
                     # params with default values are respected.
-                    self.add_security_label(**kwargs)
-            except Exception as e:
-                raise TransformException(f'Security Labels [{i}]', e, context=label.dict())
+                    self.add_security_label(**kwargs_)
+            except Exception as ex:
+                ex_msg = f'Security Labels [{i}]'
+                raise TransformException(ex_msg, ex, context=label.dict()) from ex
 
     def _process_tags(self, tags: list[TagTransformModel]):
         """Process Tag data"""
@@ -457,15 +461,19 @@ class TransformABC(ABC):
             try:
                 for value in filter(bool, self._process_metadata_transform_model(tag.value)):
                     self.add_tag(name=value)  # type: ignore
-            except Exception as e:
-                raise TransformException(f'Tags [{i}]', e, context=tag.dict())
+            except Exception as ex:
+                ex_msg = f'Tags [{i}]'
+                raise TransformException(ex_msg, ex, context=tag.dict()) from ex
 
     def _process_rating(self, metadata: MetadataTransformModel | None):
         """Process standard metadata fields."""
         try:
             self.add_rating(self._transform_value(metadata))
-        except Exception as e:
-            raise TransformException('Rating', e, context=metadata.dict() if metadata else None)
+        except Exception as ex:
+            ex_msg = 'Rating'
+            raise TransformException(
+                ex_msg, ex, context=metadata.dict() if metadata else None
+            ) from ex
 
     def _process_type(self):
         """Process standard metadata fields."""
@@ -478,9 +486,11 @@ class TransformABC(ABC):
                     'feature=ti-transform, action=process-type, error=invalid=type, '
                     f'path={self.transform.type.path}, value={_type}'
                 )
-                raise RuntimeError('Invalid type')
-        except Exception as e:
-            raise TransformException('Type', e, context=self.transform.type.dict())
+                ex_msg = 'Invalid type'
+                raise RuntimeError(ex_msg)  # noqa: TRY301
+        except Exception as ex:
+            ex_msg = 'Type'
+            raise TransformException(ex_msg, ex, context=self.transform.type.dict()) from ex
 
     def _select_transform(self):
         """Select the correct transform based on the "applies" field."""
@@ -489,7 +499,8 @@ class TransformABC(ABC):
                 self.transform = transform
                 break
         else:
-            raise NoValidTransformException('No transform found for TI data')
+            ex_msg = 'No transform found for TI data'
+            raise NoValidTransformException(ex_msg)
 
     def _transform_value(self, metadata: MetadataTransformModel | None) -> str | None:
         """Pass value to series transforms."""
@@ -513,7 +524,7 @@ class TransformABC(ABC):
             # pass value to static_map or callable, but never both
             value = cast(Any, value)  # due to line 472, we know value is not None.
             if t.filter_map is not None:
-                value = self._transform_value_map(value, t.filter_map, True)
+                value = self._transform_value_map(value, t.filter_map, passthrough=True)
             elif t.static_map is not None:
                 value = self._transform_value_map(value, t.static_map)
             elif callable(t.method):
@@ -529,7 +540,7 @@ class TransformABC(ABC):
 
     def _transform_value_callable(
         self, value: dict | list | str, c: Callable | PredefinedFunctionModel, kwargs=None
-    ) -> str | None | list[str] | None:
+    ) -> str | None | list[str]:
         """Transform values in the TI data."""
         # find signature of method and call with correct args
         if isinstance(c, PredefinedFunctionModel):
@@ -559,8 +570,8 @@ class TransformABC(ABC):
             value = map_.get(value.lower(), _default)
         else:
             self.log.warning(
-                f'''feature=ti-transform, action=transform-value, '''
-                f'''message='static-map-requires-str-value", value={value}'''
+                f"""feature=ti-transform, action=transform-value, """
+                f"""message='static-map-requires-str-value", value={value}"""
             )
         return value
 
@@ -581,11 +592,10 @@ class TransformABC(ABC):
 
         # not all metadata fields have a path, but they must have a path or default
         if metadata.path is None:
-            default = _default()
+            return _default()
             # self.log.trace(
             #     f'feature=transform, action=transform-values, metadata-path=None, value={default}'
             # )
-            return default
 
         # path search can return multiple data types and single or multiple values
         value = self._path_search(metadata.path)
@@ -593,26 +603,25 @@ class TransformABC(ABC):
         # return default if value of None is returned from Path
         # IMPORTANT: a None value passed to the transform may cause a failure (lambda x: x.lower())
         if value in [None, [], '']:
-            default = _default()
+            return _default()
             # self.log.trace(
             #     f'feature=transform, action=transform-values, metadata-path=None, value={default}'
             # )
-            return default
 
         for t in metadata.transform or []:
             if t.filter_map is not None:
                 # when path search returns an array of values, each value is mapped
                 value = [
-                    self._transform_value_map(v, t.filter_map, True)
+                    self._transform_value_map(v, t.filter_map, passthrough=True)
                     for v in self._always_array(value)
                 ]
             elif t.static_map is not None:
                 # when path search returns an array of values, each value is mapped
                 _values = []
                 for v in self._always_array(value):
-                    v = self._transform_value_map(v, t.static_map)
-                    if v is not None:
-                        _values.append(v)
+                    v_ = self._transform_value_map(v, t.static_map)
+                    if v_ is not None:
+                        _values.append(v_)
                 value = _values
             # PYRIGHT-MISS - None check for value already performed above
             elif callable(t.method) and value is not None:
@@ -642,9 +651,12 @@ class TransformABC(ABC):
         if len(self.transforms) > 1:
             for transform in self.transforms:
                 if transform.applies is None:
-                    raise ValueError(
+                    msg = (
                         'If more than one transform is provided, each '
-                        'provided transform must provide an apply field.',
+                        'provided transform must provide an apply field.'
+                    )
+                    raise ValueError(
+                        msg,
                     )
 
     @abstractmethod
@@ -684,7 +696,7 @@ class TransformABC(ABC):
         """Abstract method"""
 
     @abstractmethod
-    def add_rating(self, rating: float | int | str | None):
+    def add_rating(self, rating: float | str | None):
         """Abstract method"""
 
     @abstractmethod

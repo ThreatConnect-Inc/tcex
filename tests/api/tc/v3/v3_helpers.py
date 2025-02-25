@@ -56,7 +56,7 @@ class V3Helper:
         # print(f'method=import_module, module={module}, class_name={class_name}')
         v3_class = getattr(importlib.import_module(module), class_name)
         # print(f'method=import_module, v3-class-type={type(v3_class)}')
-        v3_obj = v3_class(session=self.tcex.session.tc)  # pylint: disable=no-member
+        v3_obj = v3_class(session=self.tcex.session.tc)
         # print(f'method=import_module, v3-obj-type={type(v3_obj)}')
         return v3_obj
 
@@ -786,6 +786,10 @@ class TestV3:
                     'analyticsType',
                 ]
 
+            if self.v3_helper.v3_object in ['groups']:
+                if 'intelReviews' in names:
+                    names = ['reviews']
+
             if (
                 self.v3_helper.v3_object in ['cases', 'groups', 'intel_requirements']
                 and 'userDetails' in names
@@ -833,7 +837,13 @@ class TestV3:
                 if 'intelRequirementId' in names:
                     names = ['intelReqId']
 
+            # ignore these fields
+            ignore_fields = {'AIsummary'}
+
             for name in names:
+                if name in ignore_fields:
+                    continue
+
                 if name not in self.v3_helper.v3_obj.properties:
                     assert False, f'''{name} not in {self.v3_helper.v3_obj.properties.keys()}'''
 

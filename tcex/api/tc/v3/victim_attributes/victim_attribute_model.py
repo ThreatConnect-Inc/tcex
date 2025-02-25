@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# pylint: disable=no-member,no-self-argument,wrong-import-position
 # standard library
 from datetime import datetime
 
@@ -21,10 +20,10 @@ class VictimAttributeModel(
 ):
     """Victim_Attribute Model"""
 
-    _associated_type = PrivateAttr(False)
-    _cm_type = PrivateAttr(False)
-    _shared_type = PrivateAttr(False)
-    _staged = PrivateAttr(False)
+    _associated_type = PrivateAttr(default=False)
+    _cm_type = PrivateAttr(default=False)
+    _shared_type = PrivateAttr(default=False)
+    _staged = PrivateAttr(default=False)
 
     created_by: 'UserModel' = Field(
         None,
@@ -110,12 +109,14 @@ class VictimAttributeModel(
     )
 
     @validator('security_labels', always=True, pre=True)
+    @classmethod
     def _validate_security_labels(cls, v):
         if not v:
             return SecurityLabelsModel()  # type: ignore
         return v
 
     @validator('created_by', always=True, pre=True)
+    @classmethod
     def _validate_user(cls, v):
         if not v:
             return UserModel()  # type: ignore
@@ -146,7 +147,7 @@ class VictimAttributesModel(
 ):
     """Victim_Attributes Model"""
 
-    _mode_support = PrivateAttr(False)
+    _mode_support = PrivateAttr(default=False)
 
     data: list[VictimAttributeModel] | None = Field(
         [],

@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# pylint: disable=no-member,no-self-argument,wrong-import-position
 # standard library
 from datetime import datetime
 
@@ -21,10 +20,10 @@ class GroupModel(
 ):
     """Group Model"""
 
-    _associated_type = PrivateAttr(True)
-    _cm_type = PrivateAttr(False)
-    _shared_type = PrivateAttr(False)
-    _staged = PrivateAttr(False)
+    _associated_type = PrivateAttr(default=True)
+    _cm_type = PrivateAttr(default=False)
+    _shared_type = PrivateAttr(default=False)
+    _staged = PrivateAttr(default=False)
 
     assignments: 'TaskAssigneesModel' = Field(
         None,
@@ -322,6 +321,7 @@ class GroupModel(
     )
     owner_name: str | None = Field(
         None,
+        conditional_read_only=['Victim'],
         description='The name of the Organization, Community, or Source that the item belongs to.',
         methods=['POST'],
         read_only=False,
@@ -358,6 +358,13 @@ class GroupModel(
         methods=['POST', 'PUT'],
         read_only=False,
         title='reminderDate',
+    )
+    reviews: dict | None = Field(
+        None,
+        description='A list of reviews corresponding to the Group.',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='reviews',
     )
     score: int | None = Field(
         None,
@@ -404,6 +411,7 @@ class GroupModel(
     status: str | None = Field(
         None,
         applies_to=['Document', 'Report', 'Event', 'Task', 'Incident'],
+        conditional_read_only=['Document', 'Report', 'Task'],
         description=(
             'The status associated with this document, event, task, or incident (read only for '
             'task, document, and report).'
@@ -447,12 +455,12 @@ class GroupModel(
     )
     up_vote: bool = Field(
         None,
+        allow_mutation=False,
         description=(
             'Is the intelligence valid and useful? (0 means downvote, 1 means upvote, and NULL '
             'means no vote).'
         ),
-        methods=['POST', 'PUT'],
-        read_only=False,
+        read_only=True,
         title='upVote',
     )
     up_vote_count: int | None = Field(
@@ -478,60 +486,70 @@ class GroupModel(
     )
 
     @validator('associated_artifacts', always=True, pre=True)
+    @classmethod
     def _validate_artifacts(cls, v):
         if not v:
             return ArtifactsModel()  # type: ignore
         return v
 
     @validator('associated_cases', always=True, pre=True)
+    @classmethod
     def _validate_cases(cls, v):
         if not v:
             return CasesModel()  # type: ignore
         return v
 
     @validator('attributes', always=True, pre=True)
+    @classmethod
     def _validate_group_attributes(cls, v):
         if not v:
             return GroupAttributesModel()  # type: ignore
         return v
 
     @validator('associated_groups', always=True, pre=True)
+    @classmethod
     def _validate_groups(cls, v):
         if not v:
             return GroupsModel()  # type: ignore
         return v
 
     @validator('associated_indicators', always=True, pre=True)
+    @classmethod
     def _validate_indicators(cls, v):
         if not v:
             return IndicatorsModel()  # type: ignore
         return v
 
     @validator('security_labels', always=True, pre=True)
+    @classmethod
     def _validate_security_labels(cls, v):
         if not v:
             return SecurityLabelsModel()  # type: ignore
         return v
 
     @validator('tags', always=True, pre=True)
+    @classmethod
     def _validate_tags(cls, v):
         if not v:
             return TagsModel()  # type: ignore
         return v
 
     @validator('assignments', always=True, pre=True)
+    @classmethod
     def _validate_task_assignees(cls, v):
         if not v:
             return TaskAssigneesModel()  # type: ignore
         return v
 
     @validator('created_by', always=True, pre=True)
+    @classmethod
     def _validate_user(cls, v):
         if not v:
             return UserModel()  # type: ignore
         return v
 
     @validator('associated_victim_assets', always=True, pre=True)
+    @classmethod
     def _validate_victim_assets(cls, v):
         if not v:
             return VictimAssetsModel()  # type: ignore
@@ -562,7 +580,7 @@ class GroupsModel(
 ):
     """Groups Model"""
 
-    _mode_support = PrivateAttr(True)
+    _mode_support = PrivateAttr(default=True)
 
     data: list[GroupModel] | None = Field(
         [],

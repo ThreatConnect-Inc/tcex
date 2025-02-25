@@ -3,9 +3,7 @@
 # standard library
 import base64
 import json
-import traceback
-from collections.abc import Callable
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 # first-party
 from tcex.app.key_value_store.key_value_store import KeyValueStore
@@ -14,6 +12,10 @@ from tcex.app.token import Token
 from tcex.input.model.create_config_model import CreateConfigModel
 from tcex.input.model.module_app_model import ModuleAppModel
 from tcex.logger.logger import Logger
+
+if TYPE_CHECKING:
+    # standard library
+    from collections.abc import Callable
 
 
 class WebhookTriggerService(CommonServiceTrigger):
@@ -93,12 +95,12 @@ class WebhookTriggerService(CommonServiceTrigger):
             self._tcex_testing(self.session_id, message['triggerId'])
 
             # capture fired status for testing framework
-            self._tcex_testing_fired_events(self.session_id, True)
+            self._tcex_testing_fired_events(self.session_id, fired=True)
         else:
             self.increment_metric('Misses')
 
             # capture fired status for testing framework
-            self._tcex_testing_fired_events(self.session_id, False)
+            self._tcex_testing_fired_events(self.session_id, fired=False)
 
     def callback_response_marshall(self, callback_response: Any, message: dict):
         """Handle the different types of callback responses.
@@ -163,23 +165,20 @@ class WebhookTriggerService(CommonServiceTrigger):
             :lineno-start: 1
 
             {
-                "appId": 387,
-                "command": "WebhookEvent",
-                "triggerId": 1,
-                "requestKey": "cd8c7a3a-7968-4b97-80c9-68b83a8ef1a1",
-                "method": "GET",
-                "headers": [
+                'appId': 387,
+                'command': 'WebhookEvent',
+                'triggerId': 1,
+                'requestKey': 'cd8c7a3a-7968-4b97-80c9-68b83a8ef1a1',
+                'method': 'GET',
+                'headers': [
                     {
-                        "name": "Accept-Encoding",
-                        "value": "gzip, deflate, br"
+                        'name': 'Accept-Encoding',
+                        'value': 'gzip, deflate, br',
                     }
                 ],
-                "queryParams": [
-                    {
-                        "name": "registration",
-                        "value": "true"
-                    }
-                ]
+                'queryParams': [
+                    {'name': 'registration', 'value': 'true'}
+                ],
             }
 
         Args:
@@ -199,8 +198,8 @@ class WebhookTriggerService(CommonServiceTrigger):
             config = self.configs.get(message['triggerId'])
             if config is None:
                 self.log.error(
-                    '''feature=webhook-trigger-service, event=missing-config, '''
-                    f'''trigger-id={message.get('triggerId')}'''
+                    """feature=webhook-trigger-service, event=missing-config, """
+                    f"""trigger-id={message.get('triggerId')}"""
                 )
                 return
             outputs = config.tc_playbook_out_variables
@@ -211,7 +210,6 @@ class WebhookTriggerService(CommonServiceTrigger):
             body: Any = self.key_value_store.client.read(message['requestKey'], 'request.body')
             if body is not None:
                 body = base64.b64decode(body).decode()
-            # pylint: disable=not-callable
             callback_data = {
                 'body': body,
                 'headers': message.get('headers'),
@@ -237,13 +235,9 @@ class WebhookTriggerService(CommonServiceTrigger):
                 **callback_data
             )
             self.callback_response_handler(callback_response, message)
-        except Exception as e:
+        except Exception:
             self.increment_metric('Errors')
-            self.log.error(
-                'feature=webhook-trigger-service, event=webhook-callback-exception, '
-                f'error="""{e}"""'
-            )
-            self.log.trace(traceback.format_exc())
+            self.log.exception('feature=webhook-trigger-service, event=webhook-callback-exception')
 
     def process_webhook_marshall_event_command(self, message: dict):
         """Process the WebhookMarshallEvent command.
@@ -253,18 +247,13 @@ class WebhookTriggerService(CommonServiceTrigger):
             :lineno-start: 1
 
             {
-                "appId": 95,
-                "bodyVariable": "request.body",
-                "command": "WebhookMarshallEvent",
-                "headers": [
-                    {
-                        "name": "Accept",
-                        "value": "*/*"
-                    }
-                ],
-                "requestKey": "c29927c8-b94d-4116-a397-e6eb7002f41c",
-                "statusCode": 200,
-                "triggerId": 1234
+                'appId': 95,
+                'bodyVariable': 'request.body',
+                'command': 'WebhookMarshallEvent',
+                'headers': [{'name': 'Accept', 'value': '*/*'}],
+                'requestKey': 'c29927c8-b94d-4116-a397-e6eb7002f41c',
+                'statusCode': 200,
+                'triggerId': 1234,
             }
 
         Args:
@@ -282,8 +271,8 @@ class WebhookTriggerService(CommonServiceTrigger):
         config = self.configs.get(message['triggerId'])
         if config is None:
             self.log.error(
-                '''feature=webhook-trigger-service, event=missing-config, '''
-                f'''trigger-id={message.get('triggerId')}'''
+                """feature=webhook-trigger-service, event=missing-config, """
+                f"""trigger-id={message.get('triggerId')}"""
             )
             return
 
@@ -292,17 +281,16 @@ class WebhookTriggerService(CommonServiceTrigger):
 
         try:
             body: Any = self.key_value_store.client.read(
-                request_key, 'request.body'  # type: ignore
+                request_key,  # type: ignore
+                'request.body',
             )
             if body is not None:
                 body = base64.b64decode(body).decode()
-        except Exception as e:
+        except Exception:
             self.increment_metric('Errors')
-            self.log.error(
-                'feature=webhook-trigger-service, event=webhook-marshall-callback-exception, '
-                f'error="""{e}"""'
+            self.log.exception(
+                'feature=webhook-trigger-service, event=webhook-marshall-callback-exception'
             )
-            self.log.trace(traceback.format_exc())
 
         # set default value for callback response to the data returned from the playbook
         response = {
@@ -314,25 +302,20 @@ class WebhookTriggerService(CommonServiceTrigger):
         if callable(self.webhook_marshall_event_callback):
             try:
                 # call callback method
-                # pylint: disable=not-callable
-                callback_response: dict | None = (
-                    self.webhook_marshall_event_callback(  # type: ignore
-                        body=body,
-                        headers=message.get('headers'),
-                        request_key=request_key,
-                        status_code=message.get('statusCode'),
-                        trigger_id=message.get('triggerId'),
-                    )
+                callback_response: dict | None = self.webhook_marshall_event_callback(  # type: ignore
+                    body=body,
+                    headers=message.get('headers'),
+                    request_key=request_key,
+                    status_code=message.get('statusCode'),
+                    trigger_id=message.get('triggerId'),
                 )
                 if isinstance(callback_response, dict):
                     response.update(callback_response)
-            except Exception as e:
+            except Exception:
                 self.increment_metric('Errors')
-                self.log.error(
-                    'feature=webhook-trigger-service, event=webhook-marshall-callback-exception, '
-                    f'error="""{e}"""'
+                self.log.exception(
+                    'feature=webhook-trigger-service, event=webhook-marshall-callback-exception'
                 )
-                self.log.trace(traceback.format_exc())
 
         # webhook responses are for providers that require a subscription req/resp.
         self.publish_webhook_event_response(message, response)
@@ -363,10 +346,10 @@ class WebhookTriggerService(CommonServiceTrigger):
             :lineno-start: 1
 
             {
-                "command": "Acknowledged",
-                "requestKey": "cd8c7a3a-7968-4b97-80c9-68b83a8ef1a1",
-                "triggerId": 1,
-                "type": "WebhookMarshallResponse"
+                'command': 'Acknowledged',
+                'requestKey': 'cd8c7a3a-7968-4b97-80c9-68b83a8ef1a1',
+                'triggerId': 1,
+                'type': 'WebhookMarshallResponse',
             }
 
         Args:

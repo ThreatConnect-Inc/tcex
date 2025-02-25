@@ -22,7 +22,9 @@ class CaseManagement:
         """Return a instance of Artifact object.
 
         Model Schema:
-        >>> from tcex.api.tc.v3.case_management.model.artifact_model import ArtifactModel
+        >>> from tcex.api.tc.v3.case_management.model.artifact_model import (
+        ...     ArtifactModel,
+        ... )
         >>> print(ArtifactModel.schema_json(by_alias=False, indent=2))
 
         Args:
@@ -56,7 +58,10 @@ class CaseManagement:
             {
                 'result_limit': 100,  # How many results are retrieved.
                 'result_start': 10,  # Starting point on retrieved results.
-                'fields': ['caseId', 'summary']  # Additional fields returned on the results
+                'fields': [
+                    'caseId',
+                    'summary',
+                ],  # Additional fields returned on the results
             }
 
         Args:
@@ -95,7 +100,10 @@ class CaseManagement:
             {
                 'result_limit': 100,  # How many results are retrieved.
                 'result_start': 10,  # Starting point on retrieved results.
-                'fields': ['caseId', 'summary']  # Additional fields returned on the results
+                'fields': [
+                    'caseId',
+                    'summary',
+                ],  # Additional fields returned on the results
             }
 
         Args:
@@ -166,7 +174,10 @@ class CaseManagement:
             {
                 'result_limit': 100,  # How many results are retrieved.
                 'result_start': 10,  # Starting point on retrieved results.
-                'fields': ['caseId', 'summary']  # Additional fields returned on the results
+                'fields': [
+                    'caseId',
+                    'summary',
+                ],  # Additional fields returned on the results
             }
 
         Args:
@@ -190,7 +201,10 @@ class CaseManagement:
             {
                 'result_limit': 100,  # How many results are retrieved.
                 'result_start': 10,  # Starting point on retrieved results.
-                'fields': ['caseId', 'summary']  # Additional fields returned on the results
+                'fields': [
+                    'caseId',
+                    'summary',
+                ],  # Additional fields returned on the results
             }
 
         Args:
@@ -263,7 +277,10 @@ class CaseManagement:
             {
                 'result_limit': 100,  # How many results are retrieved.
                 'result_start': 10,  # Starting point on retrieved results.
-                'fields': ['caseId', 'summary']  # Additional fields returned on the results
+                'fields': [
+                    'caseId',
+                    'summary',
+                ],  # Additional fields returned on the results
             }
 
         Args:
@@ -306,7 +323,10 @@ class CaseManagement:
             {
                 'result_limit': 100,  # How many results are retrieved.
                 'result_start': 10,  # Starting point on retrieved results.
-                'fields': ['caseId', 'summary']  # Additional fields returned on the results
+                'fields': [
+                    'caseId',
+                    'summary',
+                ],  # Additional fields returned on the results
             }
 
         Args:
@@ -365,7 +385,10 @@ class CaseManagement:
             {
                 'result_limit': 100,  # How many results are retrieved.
                 'result_start': 10,  # Starting point on retrieved results.
-                'fields': ['caseId', 'summary']  # Additional fields returned on the results
+                'fields': [
+                    'caseId',
+                    'summary',
+                ],  # Additional fields returned on the results
             }
 
         Args:
@@ -419,7 +442,10 @@ class CaseManagement:
             {
                 'result_limit': 100,  # How many results are retrieved.
                 'result_start': 10,  # Starting point on retrieved results.
-                'fields': ['caseId', 'summary']  # Additional fields returned on the results
+                'fields': [
+                    'caseId',
+                    'summary',
+                ],  # Additional fields returned on the results
             }
 
         Args:
@@ -469,7 +495,10 @@ class CaseManagement:
             {
                 'result_limit': 100,  # How many results are retrieved.
                 'result_start': 10,  # Starting point on retrieved results.
-                'fields': ['caseId', 'summary']  # Additional fields returned on the results
+                'fields': [
+                    'caseId',
+                    'summary',
+                ],  # Additional fields returned on the results
             }
 
         Args:
@@ -487,7 +516,6 @@ class CaseManagement:
 
 
 # first-party
-# pylint: disable=wrong-import-position
 from tcex.api.tc.v3.artifact_types.artifact_type import ArtifactType, ArtifactTypes
 from tcex.api.tc.v3.artifacts.artifact import Artifact, Artifacts
 from tcex.api.tc.v3.cases.case import Case, Cases

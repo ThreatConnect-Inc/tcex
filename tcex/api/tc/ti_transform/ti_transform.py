@@ -165,7 +165,7 @@ class TiTransform(TransformABC):
         if name is not None:
             self.transformed_item['name'] = name
 
-    def add_rating(self, rating: float | int | str | None):
+    def add_rating(self, rating: float | str | None):
         """Add a rating to the transformed item."""
         if rating is not None:
             self.transformed_item['rating'] = float(rating)

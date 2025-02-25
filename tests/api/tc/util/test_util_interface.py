@@ -4,7 +4,6 @@
 import pytest
 
 # first-party
-# pylint: disable=import-error
 from tcex.api.tc.v3.v3 import V3
 from tcex.tcex import TcEx
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper

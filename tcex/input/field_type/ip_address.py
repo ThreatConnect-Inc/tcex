@@ -25,17 +25,17 @@ class IpAddress(str):
     @classmethod
     def validate_strip_port(cls, value: str, field: ModelField) -> str:
         """Modify value when requested."""
-        if cls.strip_port is True:
-            if ':' in value:
-                _value, port = value.rsplit(':', 1)
+        if cls.strip_port is True and ':' in value:
+            _value, port = value.rsplit(':', 1)
 
-                try:
-                    if int(port) > 65535 or int(port) < 0:
-                        raise ValueError()
-                except ValueError:
-                    raise InvalidInput(field.name, f'Invalid IP Address provided ({value}).')
+            max_port_number = 65535
+            try:
+                if int(port) > max_port_number or int(port) < 0:
+                    raise ValueError  # noqa: TRY301
+            except ValueError as ex:
+                raise InvalidInput(field.name, f'Invalid IP Address provided ({value}).') from ex
 
-                value = _value
+            value = _value
 
         return value
 

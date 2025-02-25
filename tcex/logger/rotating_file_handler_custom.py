@@ -5,6 +5,7 @@ import gzip
 import os
 import shutil
 from logging.handlers import RotatingFileHandler
+from pathlib import Path
 
 
 class RotatingFileHandlerCustom(RotatingFileHandler):
@@ -14,8 +15,8 @@ class RotatingFileHandlerCustom(RotatingFileHandler):
         self,
         filename: str,
         mode: str = 'a',
-        maxBytes: int = 0,
-        backupCount: int = 0,
+        maxBytes: int = 0,  # noqa: N803
+        backupCount: int = 0,  # noqa: N803
         encoding: str | None = None,
         delay: bool = False,
     ):
@@ -31,8 +32,8 @@ class RotatingFileHandlerCustom(RotatingFileHandler):
         """
         if encoding is None and os.getenv('LANG') is None:
             encoding = 'UTF-8'
-        if not os.path.exists(os.path.dirname(filename)):
-            os.makedirs(os.path.dirname(filename), exist_ok=True)
+
+        Path(filename).parent.mkdir(parents=True, exist_ok=True)
         RotatingFileHandler.__init__(self, filename, mode, maxBytes, backupCount, encoding, delay)
 
         # set namer
@@ -56,7 +57,7 @@ class RotatingFileHandlerCustom(RotatingFileHandler):
             source: The source filename.
             dest: The destination filename.
         """
-        with open(source, 'rb') as f_in:
-            with gzip.open(dest, 'wb') as f_out:
-                shutil.copyfileobj(f_in, f_out)
-        os.remove(source)
+        source_filename = Path(source)
+        with source_filename.open(mode='rb') as f_in, gzip.open(dest, 'wb') as f_out:
+            shutil.copyfileobj(f_in, f_out)
+        source_filename.unlink()

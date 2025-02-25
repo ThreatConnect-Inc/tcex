@@ -20,7 +20,7 @@ class TestCache:
         self.data_type = 'pytest'
 
     @staticmethod
-    def expired_data_callback(rid):  # pylint: disable=unused-argument
+    def expired_data_callback(rid):
         """Return dummy data for cache callback."""
         return {'results': 'not-cached'}
 

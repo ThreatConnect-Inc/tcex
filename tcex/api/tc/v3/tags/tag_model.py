@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# pylint: disable=no-member,no-self-argument,wrong-import-position
 # standard library
 from datetime import datetime
 
@@ -21,10 +20,10 @@ class TagModel(
 ):
     """Tag Model"""
 
-    _associated_type = PrivateAttr(False)
-    _cm_type = PrivateAttr(False)
-    _shared_type = PrivateAttr(True)
-    _staged = PrivateAttr(False)
+    _associated_type = PrivateAttr(default=False)
+    _cm_type = PrivateAttr(default=False)
+    _shared_type = PrivateAttr(default=True)
+    _staged = PrivateAttr(default=False)
 
     cases: 'CasesModel' = Field(
         None,
@@ -116,6 +115,13 @@ class TagModel(
         read_only=True,
         title='synonymousTagNames',
     )
+    tactics: dict | None = Field(
+        None,
+        allow_mutation=False,
+        description='For ATT&CK-based tags, these are the tactics applicable to the technique.',
+        read_only=True,
+        title='tactics',
+    )
     technique_id: str | None = Field(
         None,
         allow_mutation=False,
@@ -132,24 +138,28 @@ class TagModel(
     )
 
     @validator('cases', always=True, pre=True)
+    @classmethod
     def _validate_cases(cls, v):
         if not v:
             return CasesModel()  # type: ignore
         return v
 
     @validator('groups', always=True, pre=True)
+    @classmethod
     def _validate_groups(cls, v):
         if not v:
             return GroupsModel()  # type: ignore
         return v
 
     @validator('indicators', always=True, pre=True)
+    @classmethod
     def _validate_indicators(cls, v):
         if not v:
             return IndicatorsModel()  # type: ignore
         return v
 
     @validator('victims', always=True, pre=True)
+    @classmethod
     def _validate_victims(cls, v):
         if not v:
             return VictimsModel()  # type: ignore
@@ -180,7 +190,7 @@ class TagsModel(
 ):
     """Tags Model"""
 
-    _mode_support = PrivateAttr(True)
+    _mode_support = PrivateAttr(default=True)
 
     data: list[TagModel] | None = Field(
         [],

@@ -212,21 +212,21 @@ class ThreatIntelUtil:
                 continue
 
             # clean up input
-            input_ = input_.strip()
+            input__ = input_.strip()
 
             # handle unknown input types
-            if input_ not in self.resolvable_variables:
-                resolved_inputs.append(input_)
+            if input__ not in self.resolvable_variables:
+                resolved_inputs.append(input__)
                 continue
 
             # special handling of group types (no API request required)
-            if input_ == '${GROUP_TYPES}':
+            if input__ == '${GROUP_TYPES}':
                 for type_ in self.group_types:
                     resolved_inputs.append(type_)
                 continue
 
             # get variable settings
-            resolvable_variable_details = self.resolvable_variables[input_]
+            resolvable_variable_details = self.resolvable_variables[input__]
 
             # make API call to retrieve variable data
             r = self.session_tc.get(
@@ -234,7 +234,8 @@ class ThreatIntelUtil:
             )
 
             if not r.ok:
-                raise RuntimeError(f'Could not retrieve {input_} from ThreatConnect API.')
+                ex_msg = f'Could not retrieve {input__} from ThreatConnect API.'
+                raise RuntimeError(ex_msg)
 
             json_ = r.json()
             for item in jmespath.search(resolvable_variable_details.get('jmspath'), json_):
@@ -256,7 +257,8 @@ class ThreatIntelUtil:
 
         # TODO: [low] use handle error instead
         if not r.ok:
-            raise RuntimeError('Could not retrieve indicator types from ThreatConnect API.')
+            ex_msg = 'Could not retrieve indicator types from ThreatConnect API.'
+            raise RuntimeError(ex_msg)
 
         _indicator_types = {}
         for itd in r.json().get('data', {}).get('indicatorType'):
@@ -321,12 +323,12 @@ class ThreatIntelUtil:
             group_name_array = group_name.split(' ')
             group_name = ''
             for word in group_name_array:
-                word = f'{word}'
-                if (len(group_name) + len(word) + len(ellipsis_value)) >= group_max_length:
+                word_ = f'{word}'
+                if (len(group_name) + len(word_) + len(ellipsis_value)) >= group_max_length:
                     group_name = f'{group_name}{ellipsis_value}'
                     group_name = group_name.lstrip(' ')
                     break
-                group_name += f' {word}'
+                group_name += f' {word_}'
         return group_name
 
     @staticmethod
@@ -385,10 +387,12 @@ class ThreatIntelUtil:
         """
 
         if restrict_to is not None and restrict_to not in [self.INDICATOR, self.GROUP]:
-            raise ValueError(f'restrict_to must be {self.INDICATOR} or {self.GROUP}')
+            ex_msg = f'restrict_to must be {self.INDICATOR} or {self.GROUP}'
+            raise ValueError(ex_msg)
 
         if not isinstance(types_list, list):
-            raise TypeError('types_list must be a a list.')
+            ex_msg = 'types_list must be a a list.'
+            raise TypeError(ex_msg)
 
         if restrict_to:
             valid_types = self.group_types if restrict_to == self.GROUP else self.indicator_types
@@ -396,4 +400,5 @@ class ThreatIntelUtil:
             valid_types = self.indicator_types + self.group_types
 
         if any(_type not in valid_types for _type in types_list):
-            raise ValueError(f'Type list "{types_list}" contains invalid Intel Type.')
+            ex_msg = f'Type list "{types_list}" contains invalid Intel Type.'
+            raise ValueError(ex_msg)

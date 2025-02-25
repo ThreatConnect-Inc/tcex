@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from tcex.api.tc.v3.tql.tql import Tql  # CIRCULAR-IMPORT
 
 
-class FilterABC(ABC):
+class FilterABC(ABC):  # noqa: B024
     """Case Management Filter Abstract Base Class"""
 
     def __init__(self, tql: 'Tql'):
@@ -25,7 +25,8 @@ class FilterABC(ABC):
 
     @property
     def _api_endpoint(self):
-        raise NotImplementedError('Child class must implement this method.')
+        ex_msg = 'Child class must implement this method.'
+        raise NotImplementedError(ex_msg)
 
     @property
     def implemented_keywords(self) -> list[str]:

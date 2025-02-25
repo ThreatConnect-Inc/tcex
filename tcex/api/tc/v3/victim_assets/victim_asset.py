@@ -64,7 +64,8 @@ class VictimAsset(ObjectABC):
             # provided data is raw response, load the model
             self._model = type(self.model)(**data)
         else:
-            raise RuntimeError(f'Invalid data type: {type(data)} provided.')
+            ex_msg = f'Invalid data type: {type(data)} provided.'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
 
     @property
     def as_entity(self) -> dict:
@@ -90,9 +91,8 @@ class VictimAsset(ObjectABC):
                     value.append(self.model.address_type)
                 if self.model.address:
                     value.append(self.model.address)
-            elif self.model.type.lower() == 'website':
-                if self.model.website:
-                    value.append(self.model.website)
+            elif self.model.type.lower() == 'website' and self.model.website:
+                value.append(self.model.website)
 
         value = ' : '.join(value) if value else ''
         type_ = f'Victim Asset : {self.model.type}'
@@ -115,8 +115,9 @@ class VictimAsset(ObjectABC):
             data = GroupModel(**data)
 
         if not isinstance(data, GroupModel):
-            raise RuntimeError('Invalid type passed in to stage_associated_group')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_associated_group'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.associated_groups.data.append(data)  # type: ignore
 
 
@@ -125,9 +126,9 @@ class VictimAssets(ObjectCollectionABC):
 
     # Example of params input
     {
-        'result_limit': 100,  # Limit the retrieved results.
-        'result_start': 10,  # Starting count used for pagination.
-        'fields': ['caseId', 'summary']  # Select additional return fields.
+        "result_limit": 100,  # Limit the retrieved results.
+        "result_start": 10,  # Starting count used for pagination.
+        "fields": ["caseId", "summary"]  # Select additional return fields.
     }
 
     Args:

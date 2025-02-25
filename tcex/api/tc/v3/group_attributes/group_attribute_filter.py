@@ -78,10 +78,11 @@ class GroupAttributeFilter(FilterABC):
             group_id: The ID of the group the group attribute is applied to.
         """
         if isinstance(group_id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('groupId', operator, group_id, TqlType.INTEGER)
 
@@ -105,7 +106,7 @@ class GroupAttributeFilter(FilterABC):
         self._tql.add_filter('hasSecurityLabel', TqlOperator.EQ, security_labels, TqlType.SUB_QUERY)
         return security_labels
 
-    def id(self, operator: Enum, id: int | list):  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int | list):  # noqa: A002
         """Filter ID based on **id** keyword.
 
         Args:
@@ -113,10 +114,11 @@ class GroupAttributeFilter(FilterABC):
             id: The ID of the attribute.
         """
         if isinstance(id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
@@ -128,10 +130,11 @@ class GroupAttributeFilter(FilterABC):
             int_val: The integer value of the attribute (only applies to certain types).
         """
         if isinstance(int_val, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('intVal', operator, int_val, TqlType.INTEGER)
 
@@ -153,10 +156,11 @@ class GroupAttributeFilter(FilterABC):
             max_size: The max length of the attribute text.
         """
         if isinstance(max_size, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('maxSize', operator, max_size, TqlType.INTEGER)
 
@@ -168,10 +172,11 @@ class GroupAttributeFilter(FilterABC):
             owner: The owner ID of the attribute.
         """
         if isinstance(owner, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('owner', operator, owner, TqlType.INTEGER)
 
@@ -183,10 +188,11 @@ class GroupAttributeFilter(FilterABC):
             owner_name: The owner name of the attribute.
         """
         if isinstance(owner_name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('ownerName', operator, owner_name, TqlType.STRING)
 
@@ -207,10 +213,11 @@ class GroupAttributeFilter(FilterABC):
             short_text: The short text of the attribute (only applies to certain types).
         """
         if isinstance(short_text, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('shortText', operator, short_text, TqlType.STRING)
 
@@ -222,10 +229,11 @@ class GroupAttributeFilter(FilterABC):
             source: The source text of the attribute.
         """
         if isinstance(source, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('source', operator, source, TqlType.STRING)
 
@@ -237,14 +245,15 @@ class GroupAttributeFilter(FilterABC):
             text: The text of the attribute (only applies to certain types).
         """
         if isinstance(text, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('text', operator, text, TqlType.STRING)
 
-    def type(self, operator: Enum, type: int | list):  # pylint: disable=redefined-builtin
+    def type(self, operator: Enum, type: int | list):  # noqa: A002
         """Filter Type ID based on **type** keyword.
 
         Args:
@@ -252,10 +261,11 @@ class GroupAttributeFilter(FilterABC):
             type: The ID of the attribute type.
         """
         if isinstance(type, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('type', operator, type, TqlType.INTEGER)
 
@@ -267,10 +277,11 @@ class GroupAttributeFilter(FilterABC):
             type_name: The name of the attribute type.
         """
         if isinstance(type_name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('typeName', operator, type_name, TqlType.STRING)
 
@@ -282,9 +293,10 @@ class GroupAttributeFilter(FilterABC):
             user: The user who created the attribute.
         """
         if isinstance(user, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('user', operator, user, TqlType.STRING)

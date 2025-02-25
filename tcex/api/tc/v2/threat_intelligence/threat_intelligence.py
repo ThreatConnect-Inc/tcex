@@ -72,7 +72,7 @@ class ThreatIntelligence:
         self._gen_indicator_class()
 
     @property
-    @lru_cache
+    @lru_cache  # noqa: B019
     def _error_codes(self) -> TcExErrorCode:
         """Return TcEx error codes."""
         return TcExErrorCode()
@@ -128,7 +128,7 @@ class ThreatIntelligence:
         }
 
     @property
-    @lru_cache
+    @lru_cache  # noqa: B019
     def _indicator_types_data(self) -> dict:
         """Return ThreatConnect indicator types data.
 
@@ -144,7 +144,8 @@ class ThreatIntelligence:
 
         # TODO: use handle error instead
         if not r.ok:
-            raise RuntimeError('Could not retrieve indicator types from ThreatConnect API.')
+            ex_msg = 'Could not retrieve indicator types from ThreatConnect API.'
+            raise RuntimeError(ex_msg)
 
         for itd in r.json().get('data', {}).get('indicatorType'):
             _indicator_types_data[itd.get('name')] = itd
@@ -169,14 +170,16 @@ class ThreatIntelligence:
                 message_values = []
             message = self._error_codes.message(code).format(*message_values)
             self.log.error(f'Error code: {code}, {message}')
-        except AttributeError:
-            self.log.error(f'Incorrect error code provided ({code}).')
-            raise RuntimeError(100, 'Generic Failure, see logs for more details.')
-        except IndexError:
-            self.log.error(
+        except AttributeError as ex:
+            self.log.exception(f'Incorrect error code provided ({code}).')
+            ex_msg = 'Generic Failure, see logs for more details.'
+            raise RuntimeError(100, ex_msg) from ex
+        except IndexError as ex:
+            self.log.exception(
                 f'Incorrect message values provided for error code {code} ({message_values}).'
             )
-            raise RuntimeError(100, 'Generic Failure, see logs for more details.')
+            ex_msg = 'Generic Failure, see logs for more details.'
+            raise RuntimeError(100, ex_msg) from ex
         if raise_error:
             raise RuntimeError(code, message)
 
@@ -305,7 +308,8 @@ class ThreatIntelligence:
                     indicator_type_map[custom_type.lower()] = getattr(module, a)
 
         if indicator_type not in indicator_type_map:
-            raise RuntimeError(f'Invalid indicator type "{indicator_type}" provided.')
+            ex_msg = f'Invalid indicator type "{indicator_type}" provided.'
+            raise RuntimeError(ex_msg)
 
         # update kwargs
         kwargs['owner'] = owner
@@ -350,7 +354,8 @@ class ThreatIntelligence:
 
         group_type = group_type.lower()
         if group_type not in group_type_map:
-            raise RuntimeError(f'Invalid group type "{group_type}" provided.')
+            ex_msg = f'Invalid group type "{group_type}" provided.'
+            raise RuntimeError(ex_msg)
 
         # update kwargs
         kwargs['owner'] = owner
@@ -830,7 +835,7 @@ class ThreatIntelligence:
                 # @bpurdy - is this okay?
                 # r = self.tcex.api.tc.v2.ti.indicator(indicator_type=resource_type)
                 r = self.indicator(indicator_type=resource_type)
-                r._set_unique_id(d)
+                r._set_unique_id(d)  # noqa: SLF001
                 value = r.unique_id
             elif resource_type.lower() in ['victim']:
                 r = self.victim(name=d.get('name'))
@@ -978,7 +983,7 @@ class ThreatIntelligence:
         ti = self
 
         # Add Method for each Custom Indicator class
-        def method_1(**kwargs):  # pylint: disable=possibly-unused-variable
+        def method_1(**kwargs):
             """Add Custom Indicator data to Batch object"""
             return custom_class(ti, **kwargs)
 

@@ -34,14 +34,15 @@ class WorkflowTemplateFilter(FilterABC):
             description: The description of this template.
         """
         if isinstance(description, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('description', operator, description, TqlType.STRING)
 
-    def id(self, operator: Enum, id: int | list):  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int | list):  # noqa: A002
         """Filter ID based on **id** keyword.
 
         Args:
@@ -49,10 +50,11 @@ class WorkflowTemplateFilter(FilterABC):
             id: The ID of the template.
         """
         if isinstance(id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
@@ -64,10 +66,11 @@ class WorkflowTemplateFilter(FilterABC):
             name: The name of this template.
         """
         if isinstance(name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('name', operator, name, TqlType.STRING)
 
@@ -79,10 +82,11 @@ class WorkflowTemplateFilter(FilterABC):
             owner: The Owner ID for the template.
         """
         if isinstance(owner, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('owner', operator, owner, TqlType.INTEGER)
 
@@ -94,10 +98,11 @@ class WorkflowTemplateFilter(FilterABC):
             owner_name: The owner name for the template.
         """
         if isinstance(owner_name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('ownerName', operator, owner_name, TqlType.STRING)
 
@@ -109,10 +114,11 @@ class WorkflowTemplateFilter(FilterABC):
             target_id: The assigned user or group ID for the template.
         """
         if isinstance(target_id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('targetId', operator, target_id, TqlType.INTEGER)
 
@@ -124,10 +130,11 @@ class WorkflowTemplateFilter(FilterABC):
             target_type: The target type for this template (either User or Group).
         """
         if isinstance(target_type, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('targetType', operator, target_type, TqlType.STRING)
 
@@ -139,9 +146,10 @@ class WorkflowTemplateFilter(FilterABC):
             version: The version of this template.
         """
         if isinstance(version, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('version', operator, version, TqlType.INTEGER)

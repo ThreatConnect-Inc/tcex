@@ -33,6 +33,16 @@ class ResultFilter(FilterABC):
         archived_date = self.util.any_to_datetime(archived_date).strftime('%Y-%m-%d %H:%M:%S')
         self._tql.add_filter('archivedDate', operator, archived_date, TqlType.STRING)
 
+    def date_added(self, operator: Enum, date_added: Arrow | datetime | int | str):
+        """Filter Date Added based on **dateAdded** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            date_added: The date and time that the entity was first created.
+        """
+        date_added = self.util.any_to_datetime(date_added).strftime('%Y-%m-%d %H:%M:%S')
+        self._tql.add_filter('dateAdded', operator, date_added, TqlType.STRING)
+
     @property
     def has_intel_requirement(self):
         """Return **IntelRequirementFilter** for further filtering."""
@@ -47,7 +57,7 @@ class ResultFilter(FilterABC):
         )
         return intel_requirements
 
-    def id(self, operator: Enum, id: int | list):  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int | list):  # noqa: A002
         """Filter ID based on **id** keyword.
 
         Args:
@@ -55,10 +65,11 @@ class ResultFilter(FilterABC):
             id: The ID of the intel query result.
         """
         if isinstance(id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
@@ -70,10 +81,11 @@ class ResultFilter(FilterABC):
             intel_id: The ID of the entity related to the result.
         """
         if isinstance(intel_id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('intelId', operator, intel_id, TqlType.INTEGER)
 
@@ -85,10 +97,11 @@ class ResultFilter(FilterABC):
             intel_req_id: The ID of the intel requirement.
         """
         if isinstance(intel_req_id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('intelReqId', operator, intel_req_id, TqlType.INTEGER)
 
@@ -100,10 +113,11 @@ class ResultFilter(FilterABC):
             intel_type: The intel type of the result.
         """
         if isinstance(intel_type, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('intelType', operator, intel_type, TqlType.STRING)
 
@@ -124,6 +138,15 @@ class ResultFilter(FilterABC):
             is_associated: A true/false indicating if the result has been associated.
         """
         self._tql.add_filter('isAssociated', operator, is_associated, TqlType.BOOLEAN)
+
+    def is_deleted(self, operator: Enum, is_deleted: bool):
+        """Filter Deleted based on **isDeleted** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            is_deleted: A true/false indicating if the result has been deleted.
+        """
+        self._tql.add_filter('isDeleted', operator, is_deleted, TqlType.BOOLEAN)
 
     def is_false_positive(self, operator: Enum, is_false_positive: bool):
         """Filter False Positive based on **isFalsePositive** keyword.
@@ -156,6 +179,16 @@ class ResultFilter(FilterABC):
         )
         self._tql.add_filter('lastMatchedDate', operator, last_matched_date, TqlType.STRING)
 
+    def last_modified(self, operator: Enum, last_modified: Arrow | datetime | int | str):
+        """Filter Last Modified based on **lastModified** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            last_modified: The date and time the entity was modified.
+        """
+        last_modified = self.util.any_to_datetime(last_modified).strftime('%Y-%m-%d %H:%M:%S')
+        self._tql.add_filter('lastModified', operator, last_modified, TqlType.STRING)
+
     def owner(self, operator: Enum, owner: int | list):
         """Filter Owner ID based on **owner** keyword.
 
@@ -164,10 +197,11 @@ class ResultFilter(FilterABC):
             owner: The Owner ID for the result.
         """
         if isinstance(owner, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('owner', operator, owner, TqlType.INTEGER)
 
@@ -179,10 +213,11 @@ class ResultFilter(FilterABC):
             owner_name: The owner name for the result.
         """
         if isinstance(owner_name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('ownerName', operator, owner_name, TqlType.STRING)
 
@@ -194,10 +229,11 @@ class ResultFilter(FilterABC):
             score: The weighted score in the relevancy of the result.
         """
         if isinstance(score, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('score', operator, score, TqlType.FLOAT)
 
@@ -209,9 +245,10 @@ class ResultFilter(FilterABC):
             summary: The summary of the result.
         """
         if isinstance(summary, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('summary', operator, summary, TqlType.STRING)

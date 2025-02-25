@@ -64,8 +64,7 @@ class TcExErrorCode(metaclass=Singleton):
             910: 'Error during get. {} does not have a unique_id set and cannot be fetched.',
             915: 'Error during delete. {} does not have a unique_id set and cannot be deleted.',
             920: (
-                'Error during create. {} does not have required values set and cannot be '
-                'created.'
+                'Error during create. {} does not have required values set and cannot be created.'
             ),
             # TODO: fix this and all references
             925: 'Error invalid {}. {} does not accept that {}, {}: {}.',
@@ -91,8 +90,8 @@ class TcExErrorCode(metaclass=Singleton):
         """
         try:
             return self.errors[code]
-        except KeyError:
-            raise RuntimeError(100, 'Generic Failure, invalid error code provided.')
+        except KeyError as ex:
+            raise RuntimeError(100, 'Generic Failure, invalid error code provided.') from ex
 
 
 def handle_error(

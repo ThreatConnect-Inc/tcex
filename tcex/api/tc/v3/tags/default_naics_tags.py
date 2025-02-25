@@ -1,8 +1,7 @@
 """TcEx Framework Module"""
 
-# standard library
-#  pylint: disable=line-too-long
-#  cSpell:disable
+# ruff: noqa
+# cSpell:disable
 NAICS_TAGS = {
     '11': 'Agriculture, Forestry, Fishing and Hunting',
     '111': 'Crop Production',

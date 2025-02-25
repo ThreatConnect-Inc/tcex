@@ -62,7 +62,8 @@ class ThreatIntelligence:
                 main_type = 'Victim'
                 obj = self.victim(**entity)
             else:
-                raise RuntimeError(f'Invalid entity type provided for: {entity}')
+                ex_msg = f'Invalid entity type provided for: {entity}'
+                raise RuntimeError(ex_msg)
         except AttributeError:
             return None
 
@@ -155,7 +156,10 @@ class ThreatIntelligence:
             {
                 'result_limit': 100,  # How many results are retrieved.
                 'result_start': 10,  # Starting point on retrieved results.
-                'fields': ['caseId', 'summary']  # Additional fields returned on the results
+                'fields': [
+                    'caseId',
+                    'summary',
+                ],  # Additional fields returned on the results
             }
 
         Args:
@@ -179,7 +183,10 @@ class ThreatIntelligence:
             {
                 'result_limit': 100,  # How many results are retrieved.
                 'result_start': 10,  # Starting point on retrieved results.
-                'fields': ['caseId', 'summary']  # Additional fields returned on the results
+                'fields': [
+                    'caseId',
+                    'summary',
+                ],  # Additional fields returned on the results
             }
 
         Args:
@@ -269,7 +276,10 @@ class ThreatIntelligence:
             {
                 'result_limit': 100,  # How many results are retrieved.
                 'result_start': 10,  # Starting point on retrieved results.
-                'fields': ['caseId', 'summary']  # Additional fields returned on the results
+                'fields': [
+                    'caseId',
+                    'summary',
+                ],  # Additional fields returned on the results
             }
 
         Args:
@@ -293,7 +303,10 @@ class ThreatIntelligence:
             {
                 'result_limit': 100,  # How many results are retrieved.
                 'result_start': 10,  # Starting point on retrieved results.
-                'fields': ['caseId', 'summary']  # Additional fields returned on the results
+                'fields': [
+                    'caseId',
+                    'summary',
+                ],  # Additional fields returned on the results
             }
 
         Args:
@@ -315,9 +328,9 @@ class ThreatIntelligence:
             tags.filter.technique_id(TqlOperator.NE, None)  # type: ignore
             for tag in tags:
                 mitre_tags[str(tag.model.technique_id)] = tag.model.name
-        except Exception as e:
+        except Exception:
             self.log.exception('Error downloading Mitre Tags')
-            raise e
+            raise
         return MitreTags(mitre_tags)
 
     def security_label(self, **kwargs) -> SecurityLabel:
@@ -376,7 +389,10 @@ class ThreatIntelligence:
             {
                 'result_limit': 100,  # How many results are retrieved.
                 'result_start': 10,  # Starting point on retrieved results.
-                'fields': ['caseId', 'summary']  # Additional fields returned on the results
+                'fields': [
+                    'caseId',
+                    'summary',
+                ],  # Additional fields returned on the results
             }
 
         Args:
@@ -405,7 +421,10 @@ class ThreatIntelligence:
             {
                 'result_limit': 100,  # How many results are retrieved.
                 'result_start': 10,  # Starting point on retrieved results.
-                'fields': ['caseId', 'summary']  # Additional fields returned on the results
+                'fields': [
+                    'caseId',
+                    'summary',
+                ],  # Additional fields returned on the results
             }
 
         Args:
@@ -434,7 +453,10 @@ class ThreatIntelligence:
             {
                 'result_limit': 100,  # How many results are retrieved.
                 'result_start': 10,  # Starting point on retrieved results.
-                'fields': ['caseId', 'summary']  # Additional fields returned on the results
+                'fields': [
+                    'caseId',
+                    'summary',
+                ],  # Additional fields returned on the results
             }
 
         Args:

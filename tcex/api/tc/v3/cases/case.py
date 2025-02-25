@@ -94,7 +94,8 @@ class Case(ObjectABC):
             # provided data is raw response, load the model
             self._model = type(self.model)(**data)
         else:
-            raise RuntimeError(f'Invalid data type: {type(data)} provided.')
+            ex_msg = f'Invalid data type: {type(data)} provided.'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
 
     @property
     def as_entity(self) -> dict:
@@ -176,12 +177,16 @@ class Case(ObjectABC):
             data = ArtifactModel(**data)
 
         if not isinstance(data, ArtifactModel):
-            raise RuntimeError('Invalid type passed in to stage_artifact')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_artifact'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.artifacts.data.append(data)  # type: ignore
 
-    # pylint: disable=redefined-builtin
-    def stage_assignee(self, type: str, data: dict | ObjectABC | UserModel | UserGroupModel):
+    def stage_assignee(
+        self,
+        type: str,  # noqa: A002
+        data: dict | ObjectABC | UserModel | UserGroupModel,
+    ):
         """Stage artifact on the object."""
         if isinstance(data, ObjectABC):
             data = data.model  # type: ignore
@@ -191,9 +196,10 @@ class Case(ObjectABC):
             data = UserGroupModel(**data)
 
         if not isinstance(data, UserModel | UserGroupModel):
-            raise RuntimeError('Invalid type passed in to stage_assignee')
-        data._staged = True
-        self.model.assignee._staged = True
+            ex_msg = 'Invalid type passed in to stage_assignee'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
+        self.model.assignee._staged = True  # noqa: SLF001
         self.model.assignee.type = type
         self.model.assignee.data = data  # type: ignore
 
@@ -205,8 +211,9 @@ class Case(ObjectABC):
             data = CaseModel(**data)
 
         if not isinstance(data, CaseModel):
-            raise RuntimeError('Invalid type passed in to stage_associated_case')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_associated_case'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.associated_cases.data.append(data)  # type: ignore
 
     def stage_associated_group(self, data: dict | ObjectABC | GroupModel):
@@ -217,8 +224,9 @@ class Case(ObjectABC):
             data = GroupModel(**data)
 
         if not isinstance(data, GroupModel):
-            raise RuntimeError('Invalid type passed in to stage_associated_group')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_associated_group'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.associated_groups.data.append(data)  # type: ignore
 
     def stage_associated_indicator(self, data: dict | ObjectABC | IndicatorModel):
@@ -229,8 +237,9 @@ class Case(ObjectABC):
             data = IndicatorModel(**data)
 
         if not isinstance(data, IndicatorModel):
-            raise RuntimeError('Invalid type passed in to stage_associated_indicator')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_associated_indicator'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.associated_indicators.data.append(data)  # type: ignore
 
     def stage_attribute(self, data: dict | ObjectABC | CaseAttributeModel):
@@ -241,8 +250,9 @@ class Case(ObjectABC):
             data = CaseAttributeModel(**data)
 
         if not isinstance(data, CaseAttributeModel):
-            raise RuntimeError('Invalid type passed in to stage_attribute')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_attribute'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.attributes.data.append(data)  # type: ignore
 
     def stage_note(self, data: dict | ObjectABC | NoteModel):
@@ -253,8 +263,9 @@ class Case(ObjectABC):
             data = NoteModel(**data)
 
         if not isinstance(data, NoteModel):
-            raise RuntimeError('Invalid type passed in to stage_note')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_note'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.notes.data.append(data)  # type: ignore
 
     def stage_tag(self, data: dict | ObjectABC | TagModel):
@@ -265,8 +276,9 @@ class Case(ObjectABC):
             data = TagModel(**data)
 
         if not isinstance(data, TagModel):
-            raise RuntimeError('Invalid type passed in to stage_tag')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_tag'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.tags.data.append(data)  # type: ignore
 
     def stage_task(self, data: dict | ObjectABC | TaskModel):
@@ -277,8 +289,9 @@ class Case(ObjectABC):
             data = TaskModel(**data)
 
         if not isinstance(data, TaskModel):
-            raise RuntimeError('Invalid type passed in to stage_task')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_task'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.tasks.data.append(data)  # type: ignore
 
     def stage_user_access(self, data: dict | ObjectABC | UserModel):
@@ -289,8 +302,9 @@ class Case(ObjectABC):
             data = UserModel(**data)
 
         if not isinstance(data, UserModel):
-            raise RuntimeError('Invalid type passed in to stage_user_access')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_user_access'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.user_access.data.append(data)  # type: ignore
 
 
@@ -299,9 +313,9 @@ class Cases(ObjectCollectionABC):
 
     # Example of params input
     {
-        'result_limit': 100,  # Limit the retrieved results.
-        'result_start': 10,  # Starting count used for pagination.
-        'fields': ['caseId', 'summary']  # Select additional return fields.
+        "result_limit": 100,  # Limit the retrieved results.
+        "result_start": 10,  # Starting count used for pagination.
+        "fields": ["caseId", "summary"]  # Select additional return fields.
     }
 
     Args:

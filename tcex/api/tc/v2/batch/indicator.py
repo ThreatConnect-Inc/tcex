@@ -18,30 +18,25 @@ FileOccurrences = ForwardRef('FileOccurrences')
 module = __import__(__name__)
 
 
-# pylint: disable=unnecessary-dunder-call
 def custom_indicator_class_factory(indicator_type, base_class, class_dict, value_fields):
     """Return internal methods for dynamically building Custom Indicator Class."""
     value_count = len(value_fields)
 
-    def init_1(self, tcex, value1, xid, **kwargs):  # pylint: disable=possibly-unused-variable
+    def init_1(self, tcex, value1, xid, **kwargs):
         """Init method for Custom Indicator Types with one value"""
         summary = self.build_summary(value1)  # build the indicator summary
         base_class.__init__(self, tcex, indicator_type, summary, xid, **kwargs)
         for k, v in class_dict.items():
             setattr(self, k, v)
 
-    def init_2(  # pylint: disable=possibly-unused-variable
-        self, tcex, value1, value2, xid, **kwargs
-    ):
+    def init_2(self, tcex, value1, value2, xid, **kwargs):
         """Init method for Custom Indicator Types with two values."""
         summary = self.build_summary(value1, value2)  # build the indicator summary
         base_class.__init__(self, tcex, indicator_type, summary, xid, **kwargs)
         for k, v in class_dict.items():
             setattr(self, k, v)
 
-    def init_3(  # pylint: disable=possibly-unused-variable
-        self, tcex, value1, value2, value3, xid, **kwargs
-    ):
+    def init_3(self, tcex, value1, value2, value3, xid, **kwargs):
         """Init method for Custom Indicator Types with three values."""
         summary = self.build_summary(value1, value2, value3)  # build the indicator summary
         base_class.__init__(self, tcex, indicator_type, summary, xid, **kwargs)
@@ -128,7 +123,9 @@ class Indicator:
 
         Example::
 
-            file_hash = tcex.batch.file('File', '1d878cdc391461e392678ba3fc9f6f32')
+            file_hash = tcex.batch.file(
+                'File', '1d878cdc391461e392678ba3fc9f6f32'
+            )
             file_hash.add_key_value('size', '1024')
 
         Args:

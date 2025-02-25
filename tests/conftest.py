@@ -68,7 +68,7 @@ def owner_id() -> Iterator[Callable]:
         """Return owner Id give the name."""
         id_ = None
         for o in (
-            _tcex.session.tc.get('/v2/owners')  # pylint: disable=no-member
+            _tcex.session.tc.get('/v2/owners')
             .json()
             .get('data', [])
             .get('owner', [])
@@ -182,7 +182,7 @@ def tcex_proxy() -> Iterator[TcEx]:
 #
 
 
-def pytest_configure(config):  # pylint: disable=unused-argument
+def pytest_configure(config):
     """Execute configure logic.
 
     Allows plugins and conftest files to perform initial configuration. This hook is called for
@@ -203,7 +203,7 @@ def pytest_configure(config):  # pylint: disable=unused-argument
     RedisClient.client = client_prop  # type: ignore
 
 
-def pytest_sessionstart(session):  # pylint: disable=unused-argument
+def pytest_sessionstart(session):
     """Execute session start logic.
 
     Runs after the Session object has been created and before performing collection and entering
@@ -211,14 +211,14 @@ def pytest_sessionstart(session):  # pylint: disable=unused-argument
     """
 
 
-def pytest_sessionfinish(session, exitstatus):  # pylint: disable=unused-argument
+def pytest_sessionfinish(session, exitstatus):
     """Execute session finish logic.
 
     Runs after whole test run completes, before returning the exit status.
     """
 
 
-def pytest_unconfigure(config):  # pylint: disable=unused-argument
+def pytest_unconfigure(config):
     """Execute unconfigure logic before test process is exited."""
     try:
         # remove temp app_config.json file

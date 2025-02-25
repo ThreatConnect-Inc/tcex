@@ -25,14 +25,15 @@ class UserGroupFilter(FilterABC):
             description: The description of the user group.
         """
         if isinstance(description, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('description', operator, description, TqlType.STRING)
 
-    def id(self, operator: Enum, id: int | list):  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int | list):  # noqa: A002
         """Filter ID based on **id** keyword.
 
         Args:
@@ -40,10 +41,11 @@ class UserGroupFilter(FilterABC):
             id: The ID of the user group.
         """
         if isinstance(id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
@@ -55,9 +57,10 @@ class UserGroupFilter(FilterABC):
             name: The name of the user group.
         """
         if isinstance(name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('name', operator, name, TqlType.STRING)

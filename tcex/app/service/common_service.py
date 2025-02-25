@@ -5,10 +5,9 @@ import json
 import logging
 import threading
 import time
-import traceback
 import uuid
 from collections.abc import Callable
-from datetime import datetime
+from datetime import UTC, datetime
 
 # first-party
 from tcex.app.config import InstallJson
@@ -44,7 +43,7 @@ class CommonService:
         """Initialize the Class properties."""
         # properties
         self._ready = False
-        self._start_time = datetime.now()
+        self._start_time = datetime.now(UTC)
         self.model = model
         self.configs = {}
         self.heartbeat_max_misses = 3
@@ -113,7 +112,7 @@ class CommonService:
         }
 
     @staticmethod
-    def create_session_id() -> str:  # pylint: disable=unused-argument
+    def create_session_id() -> str:
         """Return a uuid4 session id.
 
         Returns:
@@ -129,7 +128,7 @@ class CommonService:
         """Send self check message to ensure communications with message broker."""
         message = {
             'command': 'BrokerCheck',
-            'date': str(datetime.now()),
+            'date': str(datetime.now(UTC)),
             'heartbeat_watchdog': self.heartbeat_watchdog,
         }
         self.message_broker.publish(
@@ -212,7 +211,7 @@ class CommonService:
         else:
             self.log.error('feature=service, event=invalid-metric')
 
-    def on_connect_handler(self, client, userdata, flags, rc):  # pylint: disable=unused-argument
+    def on_connect_handler(self, client, userdata, flags, rc):  # noqa: ARG002
         """On connect method for mqtt broker."""
         self.log.info(
             f'feature=service, event=topic-subscription, topic={self.model.tc_svc_server_topic}'
@@ -220,7 +219,7 @@ class CommonService:
         self.message_broker.client.subscribe(self.model.tc_svc_server_topic)
         self.message_broker.client.disable_logger()
 
-    def on_message_handler(self, client, userdata, message):  # pylint: disable=unused-argument
+    def on_message_handler(self, client, userdata, message):  # noqa: ARG002
         """On message for mqtt."""
         try:
             # messages on server topic must be json objects
@@ -264,7 +263,7 @@ class CommonService:
             :lineno-start: 1
 
             {
-                "command": "BrokerCheck",
+                'command': 'BrokerCheck',
             }
 
         Args:
@@ -272,7 +271,7 @@ class CommonService:
         """
         self.log.warning(f'feature=service, event=broker-check, message={message}')
 
-    def process_heartbeat_command(self, message: dict):  # pylint: disable=unused-argument
+    def process_heartbeat_command(self, message: dict):  # noqa: ARG002
         """Process the HeartBeat command.
 
         .. code-block:: python
@@ -280,10 +279,10 @@ class CommonService:
             :lineno-start: 1
 
             {
-                "command": "Heartbeat",
-                "metric": {},
-                "memoryPercent": 0,
-                "cpuPercent": 0
+                'command': 'Heartbeat',
+                'metric': {},
+                'memoryPercent': 0,
+                'cpuPercent': 0,
             }
 
         Args:
@@ -305,10 +304,7 @@ class CommonService:
             :linenos:
             :lineno-start: 1
 
-            {
-                "command": "LoggingChange",
-                "level": "DEBUG"
-            }
+            {'command': 'LoggingChange', 'level': 'DEBUG'}
 
         Args:
             message: The message payload from the server topic.
@@ -335,8 +331,8 @@ class CommonService:
             :lineno-start: 1
 
             {
-                "command": "Shutdown",
-                "reason": "Service disabled by user."
+                'command': 'Shutdown',
+                'reason': 'Service disabled by user.',
             }
 
         Args:
@@ -357,12 +353,9 @@ class CommonService:
         if callable(self.shutdown_callback):
             try:
                 # call callback for shutdown and handle exceptions to protect thread
-                self.shutdown_callback()  # pylint: disable=not-callable
-            except Exception as e:
-                self.log.error(
-                    f'feature=service, event=shutdown-callback-error, error="""({e})""".'
-                )
-                self.log.trace(traceback.format_exc())
+                self.shutdown_callback()
+            except Exception:
+                self.log.exception('feature=service, event=shutdown-callback-error')
 
         # unsubscribe and disconnect from the broker
         self.message_broker.client.unsubscribe(self.model.tc_svc_server_topic)
@@ -381,11 +374,11 @@ class CommonService:
         """Set ready boolean."""
         if isinstance(bool_val, bool) and bool_val is True:
             # wait until connected to send ready command
-            while not self.message_broker._connected:
+            while not self.message_broker._connected:  # noqa: SLF001
                 if self.message_broker.shutdown:
                     break
                 time.sleep(1)
-            else:  # pylint: disable=useless-else-on-loop
+            else:
                 self.log.info('feature=service, event=service-ready')
                 ready_command: dict[str, list[str] | str] = {'command': 'Ready'}
                 if self.ij.model.is_api_service_app and self.ij.model.service:
@@ -423,7 +416,7 @@ class CommonService:
             t.trigger_id = str(trigger_id)  # type: ignore
             t.start()
         except Exception:
-            self.log.trace(traceback.format_exc())
+            self.log.trace('feature=service, event=service-thread-creation-error')
 
     @property
     def session_id(self) -> str:

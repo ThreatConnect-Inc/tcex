@@ -23,6 +23,24 @@ class IndicatorFilter(FilterABC):
         """Return the API endpoint."""
         return ApiEndpoints.INDICATORS.value
 
+    def abuse_ipdb_confidence_score(self, operator: Enum, abuse_ipdb_confidence_score: int | list):
+        """Filter Abuse IPDB Confidence Score based on **abuseIpdbConfidenceScore** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            abuse_ipdb_confidence_score: The confidence score from the Abuse IPDB enrichment data.
+        """
+        if isinstance(abuse_ipdb_confidence_score, list) and operator not in self.list_types:
+            ex_msg = (
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+            raise RuntimeError(ex_msg)
+
+        self._tql.add_filter(
+            'abuseIpdbConfidenceScore', operator, abuse_ipdb_confidence_score, TqlType.INTEGER
+        )
+
     def active_locked(self, operator: Enum, active_locked: bool):
         """Filter Indicator Status Locked based on **activeLocked** keyword.
 
@@ -40,10 +58,11 @@ class IndicatorFilter(FilterABC):
             address_asn: The Autonomous System Number (ASN) of an address.
         """
         if isinstance(address_asn, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('addressAsn', operator, address_asn, TqlType.INTEGER)
 
@@ -55,10 +74,11 @@ class IndicatorFilter(FilterABC):
             address_cidr: A CIDR block used to search for a range of addresses.
         """
         if isinstance(address_cidr, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('addressCidr', operator, address_cidr, TqlType.STRING)
 
@@ -70,10 +90,11 @@ class IndicatorFilter(FilterABC):
             address_city: The name of the city an address is registered to.
         """
         if isinstance(address_city, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('addressCity', operator, address_city, TqlType.STRING)
 
@@ -85,10 +106,11 @@ class IndicatorFilter(FilterABC):
             address_country_code: The registered country code for an address.
         """
         if isinstance(address_country_code, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('addressCountryCode', operator, address_country_code, TqlType.STRING)
 
@@ -100,10 +122,11 @@ class IndicatorFilter(FilterABC):
             address_country_name: The name of the country an address is registered to.
         """
         if isinstance(address_country_name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('addressCountryName', operator, address_country_name, TqlType.STRING)
 
@@ -115,10 +138,11 @@ class IndicatorFilter(FilterABC):
             address_ip_val: The numeric value of an address.
         """
         if isinstance(address_ip_val, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('addressIpVal', operator, address_ip_val, TqlType.INTEGER)
 
@@ -139,10 +163,11 @@ class IndicatorFilter(FilterABC):
             address_registering_org: The registering organization for an address.
         """
         if isinstance(address_registering_org, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter(
             'addressRegisteringOrg', operator, address_registering_org, TqlType.STRING
@@ -156,10 +181,11 @@ class IndicatorFilter(FilterABC):
             address_state: The name of the state an address is registered to.
         """
         if isinstance(address_state, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('addressState', operator, address_state, TqlType.STRING)
 
@@ -171,10 +197,11 @@ class IndicatorFilter(FilterABC):
             address_timezone: The time zone an address resides within.
         """
         if isinstance(address_timezone, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('addressTimezone', operator, address_timezone, TqlType.STRING)
 
@@ -186,10 +213,11 @@ class IndicatorFilter(FilterABC):
             associated_group: No description provided.
         """
         if isinstance(associated_group, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('associatedGroup', operator, associated_group, TqlType.INTEGER)
 
@@ -201,10 +229,11 @@ class IndicatorFilter(FilterABC):
             attribute: No description provided.
         """
         if isinstance(attribute, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('attribute', operator, attribute, TqlType.STRING)
 
@@ -216,10 +245,11 @@ class IndicatorFilter(FilterABC):
             common_id: The common ID of the indicator linking it between owners.
         """
         if isinstance(common_id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('commonId', operator, common_id, TqlType.INTEGER)
 
@@ -231,10 +261,11 @@ class IndicatorFilter(FilterABC):
             confidence: The confidence in the indicator's rating.
         """
         if isinstance(confidence, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('confidence', operator, confidence, TqlType.INTEGER)
 
@@ -256,10 +287,11 @@ class IndicatorFilter(FilterABC):
             description: The default description of the indicator.
         """
         if isinstance(description, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('description', operator, description, TqlType.STRING)
 
@@ -281,10 +313,11 @@ class IndicatorFilter(FilterABC):
             dt_malware_score: The malware risk score from the DomainTools enrichment data.
         """
         if isinstance(dt_malware_score, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('dtMalwareScore', operator, dt_malware_score, TqlType.INTEGER)
 
@@ -296,10 +329,11 @@ class IndicatorFilter(FilterABC):
             dt_overall_score: The overall risk score from the DomainTools enrichment data.
         """
         if isinstance(dt_overall_score, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('dtOverallScore', operator, dt_overall_score, TqlType.INTEGER)
 
@@ -311,10 +345,11 @@ class IndicatorFilter(FilterABC):
             dt_phishing_score: The phishing risk score from the DomainTools enrichment data.
         """
         if isinstance(dt_phishing_score, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('dtPhishingScore', operator, dt_phishing_score, TqlType.INTEGER)
 
@@ -326,10 +361,11 @@ class IndicatorFilter(FilterABC):
             dt_spam_score: The spam risk score from the DomainTools enrichment data.
         """
         if isinstance(dt_spam_score, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('dtSpamScore', operator, dt_spam_score, TqlType.INTEGER)
 
@@ -395,10 +431,11 @@ class IndicatorFilter(FilterABC):
                 positive.
         """
         if isinstance(false_positive_count, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('falsePositiveCount', operator, false_positive_count, TqlType.INTEGER)
 
@@ -410,10 +447,11 @@ class IndicatorFilter(FilterABC):
             file_size: The size of a file.
         """
         if isinstance(file_size, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('fileSize', operator, file_size, TqlType.INTEGER)
 
@@ -477,10 +515,11 @@ class IndicatorFilter(FilterABC):
             has_custom_association: A nested query for association to other indicators.
         """
         if isinstance(has_custom_association, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter(
             'hasCustomAssociation', operator, has_custom_association, TqlType.INTEGER
@@ -575,7 +614,7 @@ class IndicatorFilter(FilterABC):
         """
         self._tql.add_filter('hostWhoisActive', operator, host_whois_active, TqlType.BOOLEAN)
 
-    def id(self, operator: Enum, id: int | list):  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int | list):  # noqa: A002
         """Filter ID based on **id** keyword.
 
         Args:
@@ -583,10 +622,11 @@ class IndicatorFilter(FilterABC):
             id: The ID of the indicator.
         """
         if isinstance(id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
@@ -651,10 +691,11 @@ class IndicatorFilter(FilterABC):
             observation_count: The number of times the indicator has been observed.
         """
         if isinstance(observation_count, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('observationCount', operator, observation_count, TqlType.INTEGER)
 
@@ -666,10 +707,11 @@ class IndicatorFilter(FilterABC):
             owner: The Owner ID for the indicator.
         """
         if isinstance(owner, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('owner', operator, owner, TqlType.INTEGER)
 
@@ -681,10 +723,11 @@ class IndicatorFilter(FilterABC):
             owner_name: The owner name of the indicator.
         """
         if isinstance(owner_name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('ownerName', operator, owner_name, TqlType.STRING)
 
@@ -696,10 +739,11 @@ class IndicatorFilter(FilterABC):
             rating: The rating of the indicator.
         """
         if isinstance(rating, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('rating', operator, rating, TqlType.INTEGER)
 
@@ -711,10 +755,11 @@ class IndicatorFilter(FilterABC):
             risk_iq_classification: The classification from the RiskIQ enrichment data.
         """
         if isinstance(risk_iq_classification, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter(
             'riskIqClassification', operator, risk_iq_classification, TqlType.STRING
@@ -728,10 +773,11 @@ class IndicatorFilter(FilterABC):
             risk_iq_reputation_score: The reputation score from the RiskIQ enrichment data.
         """
         if isinstance(risk_iq_reputation_score, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter(
             'riskIqReputationScore', operator, risk_iq_reputation_score, TqlType.INTEGER
@@ -745,10 +791,11 @@ class IndicatorFilter(FilterABC):
             security_label: The name of a security label applied to the indicator.
         """
         if isinstance(security_label, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('securityLabel', operator, security_label, TqlType.STRING)
 
@@ -760,10 +807,11 @@ class IndicatorFilter(FilterABC):
             source: The default source of the indicator.
         """
         if isinstance(source, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('source', operator, source, TqlType.STRING)
 
@@ -775,10 +823,11 @@ class IndicatorFilter(FilterABC):
             summary: The summary of the indicator.
         """
         if isinstance(summary, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('summary', operator, summary, TqlType.STRING)
 
@@ -790,10 +839,11 @@ class IndicatorFilter(FilterABC):
             tag: The name of a tag applied to the indicator.
         """
         if isinstance(tag, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('tag', operator, tag, TqlType.STRING)
 
@@ -805,10 +855,11 @@ class IndicatorFilter(FilterABC):
             tag_owner: The ID of the owner of a tag.
         """
         if isinstance(tag_owner, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('tagOwner', operator, tag_owner, TqlType.INTEGER)
 
@@ -820,10 +871,11 @@ class IndicatorFilter(FilterABC):
             tag_owner_name: The name of the owner of a tag.
         """
         if isinstance(tag_owner_name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('tagOwnerName', operator, tag_owner_name, TqlType.STRING)
 
@@ -835,14 +887,15 @@ class IndicatorFilter(FilterABC):
             threat_assess_score: The threat-assessed score of the indicator.
         """
         if isinstance(threat_assess_score, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('threatAssessScore', operator, threat_assess_score, TqlType.INTEGER)
 
-    def type(self, operator: Enum, type: int | list):  # pylint: disable=redefined-builtin
+    def type(self, operator: Enum, type: int | list):  # noqa: A002
         """Filter Type ID based on **type** keyword.
 
         Args:
@@ -850,10 +903,11 @@ class IndicatorFilter(FilterABC):
             type: The ID of the indicator type.
         """
         if isinstance(type, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('type', operator, type, TqlType.INTEGER)
 
@@ -865,10 +919,11 @@ class IndicatorFilter(FilterABC):
             type_name: The name of the indicator type.
         """
         if isinstance(type_name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('typeName', operator, type_name, TqlType.STRING)
 
@@ -880,10 +935,11 @@ class IndicatorFilter(FilterABC):
             value1: No description provided.
         """
         if isinstance(value1, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('value1', operator, value1, TqlType.STRING)
 
@@ -895,10 +951,11 @@ class IndicatorFilter(FilterABC):
             value2: No description provided.
         """
         if isinstance(value2, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('value2', operator, value2, TqlType.STRING)
 
@@ -910,10 +967,11 @@ class IndicatorFilter(FilterABC):
             value3: No description provided.
         """
         if isinstance(value3, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('value3', operator, value3, TqlType.STRING)
 
@@ -935,9 +993,10 @@ class IndicatorFilter(FilterABC):
             vt_malicious_count: The number of malicious reports for an indicator from Virus Total.
         """
         if isinstance(vt_malicious_count, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('vtMaliciousCount', operator, vt_malicious_count, TqlType.INTEGER)

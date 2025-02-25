@@ -31,10 +31,11 @@ class NoteFilter(FilterABC):
             artifact_id: The ID of the artifact this note is associated with.
         """
         if isinstance(artifact_id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('artifactId', operator, artifact_id, TqlType.INTEGER)
 
@@ -46,10 +47,11 @@ class NoteFilter(FilterABC):
             author: The account login of the user who wrote the note.
         """
         if isinstance(author, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('author', operator, author, TqlType.STRING)
 
@@ -61,10 +63,11 @@ class NoteFilter(FilterABC):
             case_id: The ID of the case this note is associated with.
         """
         if isinstance(case_id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('caseId', operator, case_id, TqlType.INTEGER)
 
@@ -76,10 +79,11 @@ class NoteFilter(FilterABC):
             data: Contents of the note.
         """
         if isinstance(data, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('data', operator, data, TqlType.STRING)
 
@@ -123,7 +127,7 @@ class NoteFilter(FilterABC):
         self._tql.add_filter('hasTask', TqlOperator.EQ, tasks, TqlType.SUB_QUERY)
         return tasks
 
-    def id(self, operator: Enum, id: int | list):  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int | list):  # noqa: A002
         """Filter ID based on **id** keyword.
 
         Args:
@@ -131,10 +135,11 @@ class NoteFilter(FilterABC):
             id: The ID of the case.
         """
         if isinstance(id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
@@ -156,10 +161,11 @@ class NoteFilter(FilterABC):
             summary: Text of the first 100 characters of the note.
         """
         if isinstance(summary, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('summary', operator, summary, TqlType.STRING)
 
@@ -171,10 +177,11 @@ class NoteFilter(FilterABC):
             task_id: The ID of the task this note is associated with.
         """
         if isinstance(task_id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('taskId', operator, task_id, TqlType.INTEGER)
 
@@ -186,9 +193,10 @@ class NoteFilter(FilterABC):
             workflow_event_id: The ID of the workflow event this note is associated with.
         """
         if isinstance(workflow_event_id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('workflowEventId', operator, workflow_event_id, TqlType.INTEGER)

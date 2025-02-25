@@ -27,10 +27,11 @@ class VictimFilter(FilterABC):
             asset_name: The asset name assigned to a victim.
         """
         if isinstance(asset_name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('assetName', operator, asset_name, TqlType.STRING)
 
@@ -42,10 +43,11 @@ class VictimFilter(FilterABC):
             asset_type: The asset type ID assigned to a victim.
         """
         if isinstance(asset_type, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('assetType', operator, asset_type, TqlType.INTEGER)
 
@@ -57,10 +59,11 @@ class VictimFilter(FilterABC):
             asset_typename: The asset type name assigned to a victim.
         """
         if isinstance(asset_typename, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('assetTypename', operator, asset_typename, TqlType.STRING)
 
@@ -72,10 +75,11 @@ class VictimFilter(FilterABC):
             attribute: No description provided.
         """
         if isinstance(attribute, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('attribute', operator, attribute, TqlType.STRING)
 
@@ -87,10 +91,11 @@ class VictimFilter(FilterABC):
             description: The description of the victim.
         """
         if isinstance(description, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('description', operator, description, TqlType.STRING)
 
@@ -171,7 +176,7 @@ class VictimFilter(FilterABC):
         self._tql.add_filter('hasVictimAsset', TqlOperator.EQ, victim_assets, TqlType.SUB_QUERY)
         return victim_assets
 
-    def id(self, operator: Enum, id: int | list):  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int | list):  # noqa: A002
         """Filter ID based on **id** keyword.
 
         Args:
@@ -179,10 +184,11 @@ class VictimFilter(FilterABC):
             id: The ID of the victim.
         """
         if isinstance(id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
@@ -194,10 +200,11 @@ class VictimFilter(FilterABC):
             name: The name of the victim.
         """
         if isinstance(name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('name', operator, name, TqlType.STRING)
 
@@ -209,10 +216,11 @@ class VictimFilter(FilterABC):
             nationality: The nationality of the victim.
         """
         if isinstance(nationality, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('nationality', operator, nationality, TqlType.STRING)
 
@@ -224,10 +232,11 @@ class VictimFilter(FilterABC):
             organization: The organization of the victim.
         """
         if isinstance(organization, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('organization', operator, organization, TqlType.STRING)
 
@@ -239,10 +248,11 @@ class VictimFilter(FilterABC):
             owner: The owner ID of the victim.
         """
         if isinstance(owner, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('owner', operator, owner, TqlType.INTEGER)
 
@@ -254,10 +264,11 @@ class VictimFilter(FilterABC):
             owner_name: The owner name of the victim.
         """
         if isinstance(owner_name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('ownerName', operator, owner_name, TqlType.STRING)
 
@@ -269,10 +280,11 @@ class VictimFilter(FilterABC):
             security_label: The name of a security label applied to the victim.
         """
         if isinstance(security_label, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('securityLabel', operator, security_label, TqlType.STRING)
 
@@ -284,10 +296,11 @@ class VictimFilter(FilterABC):
             sub_org: The sub-organization of the victim.
         """
         if isinstance(sub_org, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('subOrg', operator, sub_org, TqlType.STRING)
 
@@ -299,10 +312,11 @@ class VictimFilter(FilterABC):
             summary: The name of the victim.
         """
         if isinstance(summary, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('summary', operator, summary, TqlType.STRING)
 
@@ -314,10 +328,11 @@ class VictimFilter(FilterABC):
             tag: The name of a tag applied to the victim.
         """
         if isinstance(tag, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('tag', operator, tag, TqlType.STRING)
 
@@ -329,10 +344,11 @@ class VictimFilter(FilterABC):
             tag_owner: The owner ID of a tag applied to the victim.
         """
         if isinstance(tag_owner, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('tagOwner', operator, tag_owner, TqlType.INTEGER)
 
@@ -344,10 +360,11 @@ class VictimFilter(FilterABC):
             tag_owner_name: The owner name of a tag applied to the victim.
         """
         if isinstance(tag_owner_name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('tagOwnerName', operator, tag_owner_name, TqlType.STRING)
 
@@ -359,9 +376,10 @@ class VictimFilter(FilterABC):
             work_location: The work location of the victim.
         """
         if isinstance(work_location, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('workLocation', operator, work_location, TqlType.STRING)

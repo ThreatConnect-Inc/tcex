@@ -67,10 +67,7 @@ class Logger:
         Returns:
             bool: True if handler current exists
         """
-        for h in self._logger.handlers:
-            if h.get_name() == handler_name:
-                return True
-        return False
+        return any(h.get_name() == handler_name for h in self._logger.handlers)
 
     @property
     def log(self) -> TraceLogger:
@@ -197,7 +194,7 @@ class Logger:
 
         # create customized handler
         fh = RotatingFileHandlerCustom(
-            os.path.join(path, filename), backupCount=backup_count, maxBytes=max_bytes, mode=mode
+            str(Path(path) / filename), backupCount=backup_count, maxBytes=max_bytes, mode=mode
         )
         fh.set_name(name)
         fh.setFormatter(formatter)
@@ -250,7 +247,7 @@ class Logger:
             if self.ij.model.app_id is not None:
                 self.log.info(f'app-id={self.ij.model.app_id}')
             if self.ij.model.features:
-                self.log.info(f'''app-features={','.join(self.ij.model.features)}''')
+                self.log.info(f"""app-features={','.join(self.ij.model.features)}""")
             self.log.info(f'app-minimum-threatconnect-version={self.ij.model.min_server_version}')
             self.log.info(f'app-runtime-level={self.ij.model.runtime_level}')
             app_version = f'app-version={self.ij.model.program_version}'
@@ -262,16 +259,16 @@ class Logger:
 
     def _log_environment(self):
         """Log the current environment variables."""
-        self.log.info(f'''env-all-proxy={self._sanitize_proxy_url(os.getenv('ALL_PROXY'))}''')
-        self.log.info(f'''env-http-proxy={self._sanitize_proxy_url(os.getenv('HTTP_PROXY'))}''')
-        self.log.info(f'''env-https-proxy={self._sanitize_proxy_url(os.getenv('HTTPS_PROXY'))}''')
-        self.log.info(f'''env-no-proxy={os.getenv('NO_PROXY')}''')
-        self.log.info(f'''env-curl-ca-bundle={os.getenv('CURL_CA_BUNDLE')}''')
-        self.log.info(f'''env-request-ca-bundle={os.getenv('REQUESTS_CA_BUNDLE')}''')
-        self.log.info(f'''env-ssl-cert-file={os.getenv('SSL_CERT_FILE')}''')
+        self.log.info(f"""env-all-proxy={self._sanitize_proxy_url(os.getenv('ALL_PROXY'))}""")
+        self.log.info(f"""env-http-proxy={self._sanitize_proxy_url(os.getenv('HTTP_PROXY'))}""")
+        self.log.info(f"""env-https-proxy={self._sanitize_proxy_url(os.getenv('HTTPS_PROXY'))}""")
+        self.log.info(f"""env-no-proxy={os.getenv('NO_PROXY')}""")
+        self.log.info(f"""env-curl-ca-bundle={os.getenv('CURL_CA_BUNDLE')}""")
+        self.log.info(f"""env-request-ca-bundle={os.getenv('REQUESTS_CA_BUNDLE')}""")
+        self.log.info(f"""env-ssl-cert-file={os.getenv('SSL_CERT_FILE')}""")
 
         # log certifi where
-        self.log.info(f'''certifi-where={where()}''')
+        self.log.info(f"""certifi-where={where()}""")
 
     def _log_platform(self):
         """Log the current Platform."""
@@ -298,7 +295,7 @@ class Logger:
     def _log_tcex_version(self):
         """Log the current TcEx version number."""
         try:
-            self.log.info(f'''tcex-version={version('tcex')}''')
+            self.log.info(f"""tcex-version={version('tcex')}""")
         except ImportError:
             self.log.warning('TcEx version no found.')
 

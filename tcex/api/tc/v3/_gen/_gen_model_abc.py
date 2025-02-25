@@ -33,9 +33,8 @@ class GenerateModelABC(GenerateABC, ABC):
     def _add_module_class(self, from_: str, module: str, class_: str):
         """Add pydantic validator only when required."""
         for lib in self.requirements[from_]:
-            if isinstance(lib, dict):
-                if lib.get('module') == module:
-                    lib['imports'].append(class_)
+            if isinstance(lib, dict) and lib.get('module') == module:
+                lib['imports'].append(class_)
 
     def _add_pydantic_validator(self):
         """Add pydantic validator only when required."""
@@ -56,22 +55,22 @@ class GenerateModelABC(GenerateABC, ABC):
         """
         type_ = self.util.camel_string(type_)
         fields = data['fields']
-        typing_type = data['typing_type'].strip('\'')
+        typing_type = data['typing_type'].strip("'")
 
-        fields_string = ', '.join(f'\'{field}\'' for field in fields)
+        fields_string = ', '.join(f"'{field}'" for field in fields)
         return '\n'.join(
             [
-                f'''{self.i1}@validator({fields_string}, always=True, pre=True)''',
-                f'''{self.i1}def _validate_{type_.snake_case()}(cls, v):''',
-                f'''{self.i2}if not v:''',
-                f'''{self.i3}return {typing_type}()  # type: ignore''',
-                f'''{self.i2}return v''',
+                f'{self.i1}@validator({fields_string}, always=True, pre=True)',
+                f'{self.i1}@classmethod',
+                f'{self.i1}def _validate_{type_.snake_case()}(cls, v):',
+                f'{self.i2}if not v:',
+                f'{self.i3}return {typing_type}()  # type: ignore',
+                f'{self.i2}return v',
                 '',
             ]
         )
 
     # TODO: [low] bsummers - research combining this method with parent method
-    # pylint: disable=arguments-differ
     def _format_description(self, description: str, length: int) -> str:
         """Format description for field."""
         # fix descriptions coming from core API endpoint
@@ -85,18 +84,18 @@ class GenerateModelABC(GenerateABC, ABC):
         # there are 23 characters used on the line (indent -> key -> quote -> comma)
         other_used_space = 22  # space used by indent -> single quote -> key -> comma
         if len(description) < length - other_used_space:
-            return f'\'{description}\''
+            return f"'{description}'"
 
         _description = ['(']
         _description.extend(
             [
-                f'{line}\''
+                f"{line}'"
                 for line in TextWrapper(
                     break_long_words=False,
                     drop_whitespace=False,
                     expand_tabs=True,
-                    initial_indent=' ' * 12 + '\'',
-                    subsequent_indent=' ' * 12 + '\'',
+                    initial_indent=' ' * 12 + "'",
+                    subsequent_indent=' ' * 12 + "'",
                     tabsize=15,
                     width=length - 1,
                 ).wrap(description)
@@ -107,14 +106,7 @@ class GenerateModelABC(GenerateABC, ABC):
 
     def gen_doc_string(self) -> str:
         """Generate doc string."""
-        # return (
-        #     f'"""{self.type_.singular().title()} / {self.type_.plural().title()} Model"""\n'
-        #     '# pylint: disable=no-member,no-self-argument,wrong-import-position\n'
-        # )
-        return (
-            '"""TcEx Framework Module"""\n'
-            '# pylint: disable=no-member,no-self-argument,wrong-import-position\n'
-        )
+        return '"""TcEx Framework Module"""\n'
 
     def gen_container_class(self) -> str:
         """Generate the Container Model
@@ -129,12 +121,12 @@ class GenerateModelABC(GenerateABC, ABC):
         return '\n'.join(
             [
                 '',
-                f'''class {self.type_.plural().pascal_case()}Model(''',
-                f'''{self.i1}BaseModel,''',
-                f'''{self.i1}title='{self.type_.plural().pascal_case()} Model',''',
-                f'''{self.i1}alias_generator=Util().snake_to_camel,''',
-                f'''{self.i1}validate_assignment=True,''',
-                '''):''',
+                f"""class {self.type_.plural().pascal_case()}Model(""",
+                f"""{self.i1}BaseModel,""",
+                f"""{self.i1}title='{self.type_.plural().pascal_case()} Model',""",
+                f"""{self.i1}alias_generator=Util().snake_to_camel,""",
+                f"""{self.i1}validate_assignment=True,""",
+                """):""",
                 f'''{self.i1}"""{self.type_.plural().title()} Model"""''',
                 '',
                 '',
@@ -154,27 +146,27 @@ class GenerateModelABC(GenerateABC, ABC):
         return '\n'.join(
             [
                 (
-                    f'''{self.i1}data: '''
-                    f'''list[{self.type_.singular().pascal_case()}Model] | None '''
-                    '''= Field('''
+                    f"""{self.i1}data: """
+                    f"""list[{self.type_.singular().pascal_case()}Model] | None """
+                    """= Field("""
                 ),
-                f'''{self.i2}[],''',
+                f"""{self.i2}[],""",
                 (
-                    f'''{self.i2}description='The data for the '''
-                    f'''{self.type_.plural().pascal_case()}.','''
+                    f"""{self.i2}description='The data for the """
+                    f"""{self.type_.plural().pascal_case()}.',"""
                 ),
-                f'''{self.i2}methods=['POST', 'PUT'],''',
-                f'''{self.i2}title='data',''',
-                f'''{self.i1})''',
-                f'''{self.i1}mode: str = Field(''',
-                f'''{self.i2}'append',''',
+                f"""{self.i2}methods=['POST', 'PUT'],""",
+                f"""{self.i2}title='data',""",
+                f"""{self.i1})""",
+                f"""{self.i1}mode: str = Field(""",
+                f"""{self.i2}'append',""",
                 (
-                    f'''{self.i2}description='The PUT mode for nested '''
-                    '''objects (append, delete, replace). Default: append','''
+                    f"""{self.i2}description='The PUT mode for nested """
+                    """objects (append, delete, replace). Default: append',"""
                 ),
-                f'''{self.i2}methods=['POST', 'PUT'],''',
-                f'''{self.i2}title='append',''',
-                f'''{self.i1})''',
+                f"""{self.i2}methods=['POST', 'PUT'],""",
+                f"""{self.i2}title='append',""",
+                f"""{self.i1})""",
                 '',
                 '',
             ]
@@ -197,14 +189,14 @@ class GenerateModelABC(GenerateABC, ABC):
         ]:
             return '\n'.join(
                 [
-                    f'{self.i1}_mode_support = PrivateAttr(True)',
+                    f'{self.i1}_mode_support = PrivateAttr(default=True)',
                     '',
                     '',
                 ]
             )
         return '\n'.join(
             [
-                f'{self.i1}_mode_support = PrivateAttr(False)',
+                f'{self.i1}_mode_support = PrivateAttr(default=False)',
                 '',
                 '',
             ]
@@ -223,12 +215,12 @@ class GenerateModelABC(GenerateABC, ABC):
         return '\n'.join(
             [
                 '',
-                f'''class {self.type_.singular().pascal_case()}DataModel(''',
-                f'''{self.i1}BaseModel,''',
-                f'''{self.i1}title='{self.type_.singular().pascal_case()} Data Model',''',
-                f'''{self.i1}alias_generator=Util().snake_to_camel,''',
-                f'''{self.i1}validate_assignment=True,''',
-                '''):''',
+                f"""class {self.type_.singular().pascal_case()}DataModel(""",
+                f"""{self.i1}BaseModel,""",
+                f"""{self.i1}title='{self.type_.singular().pascal_case()} Data Model',""",
+                f"""{self.i1}alias_generator=Util().snake_to_camel,""",
+                f"""{self.i1}validate_assignment=True,""",
+                """):""",
                 f'''{self.i1}"""{self.type_.plural().title()} Data Model"""''',
                 '',
                 '',
@@ -247,18 +239,18 @@ class GenerateModelABC(GenerateABC, ABC):
         return '\n'.join(
             [
                 (
-                    f'''{self.i1}data: '''
-                    f'''list[{self.type_.singular().pascal_case()}Model] | None '''
-                    '''= Field('''
+                    f"""{self.i1}data: """
+                    f"""list[{self.type_.singular().pascal_case()}Model] | None """
+                    """= Field("""
                 ),
-                f'''{self.i2}[],''',
+                f"""{self.i2}[],""",
                 (
-                    f'''{self.i2}description='The data for the '''
-                    f'''{self.type_.plural().pascal_case()}.','''
+                    f"""{self.i2}description='The data for the """
+                    f"""{self.type_.plural().pascal_case()}.',"""
                 ),
-                f'''{self.i2}methods=['POST', 'PUT'],''',
-                f'''{self.i2}title='data',''',
-                f'''{self.i1})''',
+                f"""{self.i2}methods=['POST', 'PUT'],""",
+                f"""{self.i2}title='data',""",
+                f"""{self.i1})""",
                 '',
                 '',
             ]
@@ -277,13 +269,13 @@ class GenerateModelABC(GenerateABC, ABC):
         return '\n'.join(
             [
                 '',
-                f'''class {self.type_.singular().pascal_case()}Model(''',
-                f'''{self.i1}V3ModelABC,''',
-                f'''{self.i1}alias_generator=Util().snake_to_camel,''',
-                f'''{self.i1}extra=Extra.allow,''',
-                f'''{self.i1}title='{self.type_.singular().pascal_case()} Model',''',
-                f'''{self.i1}validate_assignment=True,''',
-                '''):''',
+                f"""class {self.type_.singular().pascal_case()}Model(""",
+                f"""{self.i1}V3ModelABC,""",
+                f"""{self.i1}alias_generator=Util().snake_to_camel,""",
+                f"""{self.i1}extra=Extra.allow,""",
+                f"""{self.i1}title='{self.type_.singular().pascal_case()} Model',""",
+                f"""{self.i1}validate_assignment=True,""",
+                """):""",
                 f'''{self.i1}"""{self.type_.singular().title()} Model"""''',
                 '',
                 '',
@@ -311,9 +303,12 @@ class GenerateModelABC(GenerateABC, ABC):
         _model = []
         for prop in self._prop_models:
             # only add requirements for non-current model type
-            if prop.extra.type != self.type_.plural().pascal_case():
-                if prop.extra.import_data and prop.extra.import_source:
-                    self.requirements[prop.extra.import_source].append(prop.extra.import_data)
+            if (
+                prop.extra.type != self.type_.plural().pascal_case()
+                and prop.extra.import_data
+                and prop.extra.import_source
+            ):
+                self.requirements[prop.extra.import_source].append(prop.extra.import_data)
 
             # add validator
             if prop.extra.model is not None:
@@ -327,26 +322,30 @@ class GenerateModelABC(GenerateABC, ABC):
             if prop.extra.alias.snake_case() in ['id']:
                 comment = '  # type: ignore'
             _model.append(
-                f'''{self.i1}{prop.extra.alias.snake_case()}: '''
-                f'''{prop.extra.typing_type} = Field({comment}'''
+                f"""{self.i1}{prop.extra.alias.snake_case()}: """
+                f"""{prop.extra.typing_type} = Field({comment}"""
             )
-            _model.append(f'''{self.i2}None,''')  # the default value
+            _model.append(f"""{self.i2}None,""")  # the default value
 
             # allow_mutation / readOnly
             if prop.read_only is True and prop.name != 'id':
-                _model.append(f'''{self.i2}allow_mutation=False,''')  # readOnly/mutation setting
+                _model.append(f"""{self.i2}allow_mutation=False,""")  # readOnly/mutation setting
 
             # alias
             if prop.extra.alias is not None and prop.name != prop.extra.alias:
-                _model.append(f'''{self.i2}alias='{prop.name}',''')
+                _model.append(f"""{self.i2}alias='{prop.name}',""")
 
             # applies_to
             if prop.applies_to is not None:
-                _model.append(f'''{self.i2}applies_to={prop.applies_to},''')
+                _model.append(f"""{self.i2}applies_to={prop.applies_to},""")
+
+            # conditional_read_only
+            if prop.conditional_read_only is not None:
+                _model.append(f"""{self.i2}conditional_read_only={prop.conditional_read_only},""")
 
             # conditional_required
             if prop.conditional_required is not None:
-                _model.append(f'''{self.i2}conditional_required={prop.conditional_required},''')
+                _model.append(f"""{self.i2}conditional_required={prop.conditional_required},""")
 
             # description - Use the TC provided description
             # if available, otherwise use a default format.
@@ -357,15 +356,15 @@ class GenerateModelABC(GenerateABC, ABC):
                         f'The **{prop.name.space_case().lower()}** '
                         f'for the {self.type_.singular().title()}.'
                     )
-                ).replace('\'', '\\\''),
+                ).replace("'", "\\'"),
                 100,
             )
             if field_description is not None:
-                _model.append(f'''{self.i2}description={field_description},''')
+                _model.append(f"""{self.i2}description={field_description},""")
 
             # methods (HTTP)
             if prop.extra.methods:
-                _model.append(f'''{self.i2}methods={prop.extra.methods},''')
+                _model.append(f"""{self.i2}methods={prop.extra.methods},""")
 
             # max_length
             # if prop.max_length is not None:
@@ -388,16 +387,16 @@ class GenerateModelABC(GenerateABC, ABC):
             #     _model.append(f'''{self.i2}minimum={prop.min_value},''')
 
             # readOnly/allow_mutation setting
-            _model.append(f'''{self.i2}read_only={prop.read_only},''')
+            _model.append(f"""{self.i2}read_only={prop.read_only},""")
 
             # required-alt-field
             if prop.required_alt_field is not None:
-                _model.append(f'''{self.i2}required_alt_field='{prop.required_alt_field}',''')
+                _model.append(f"""{self.i2}required_alt_field='{prop.required_alt_field}',""")
 
             # title
-            _model.append(f'''{self.i2}title='{prop.name}',''')
+            _model.append(f"""{self.i2}title='{prop.name}',""")
 
-            _model.append(f'''{self.i1})''')
+            _model.append(f"""{self.i1})""")
         _model.append('')
 
         return '\n'.join(_model)
@@ -433,10 +432,10 @@ class GenerateModelABC(GenerateABC, ABC):
 
         return '\n'.join(
             [
-                f'{self.i1}_associated_type = PrivateAttr({associated_type})',
-                f'{self.i1}_cm_type = PrivateAttr({cm_type})',
-                f'{self.i1}_shared_type = PrivateAttr({shared_type})',
-                f'{self.i1}_staged = PrivateAttr(False)',
+                f'{self.i1}_associated_type = PrivateAttr(default={associated_type})',
+                f'{self.i1}_cm_type = PrivateAttr(default={cm_type})',
+                f'{self.i1}_shared_type = PrivateAttr(default={shared_type})',
+                f'{self.i1}_staged = PrivateAttr(default=False)',
                 '',
                 '',
             ]

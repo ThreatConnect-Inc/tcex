@@ -95,11 +95,13 @@ class ApiHandlerFormatter(logging.Formatter):
 
         Example log event::
 
-            [{
-                "timestamp": 1478907537000,
-                "message": "Test Message",
-                "level": "DEBUG"
-            }]
+            [
+                {
+                    'timestamp': 1478907537000,
+                    'message': 'Test Message',
+                    'level': 'DEBUG',
+                }
+            ]
 
         Args:
             record (obj): The record to be logged.

@@ -16,7 +16,7 @@ class TestGroupSnippets(TestV3):
     example_pdf: str
     v3_helper = V3Helper('groups')
 
-    def setup_method(self, method: Callable):  # pylint: disable=arguments-differ
+    def setup_method(self, method: Callable):
         """Configure setup before all tests."""
         super().setup_method()
 
@@ -393,4 +393,19 @@ class TestGroupSnippets(TestV3):
         _ = group.download()  # content is returned as bytes
         if not group.request.ok:
             print(f'The download failed: {group.request.reason}')
+        # End Snippet
+
+    def test_document_status_field(self):
+        """Test snippet"""
+        group = self.v3_helper.create_group(
+            file_name='status.pdf',
+            type_='Document',
+        )
+
+        # Begin Snippet
+        group = self.tcex.api.tc.v3.group(id=group.model.id)
+
+        group.get()
+        group.stage_security_label(self.tcex.api.tc.v3.security_label(name='TLP:WHITE'))
+        group.update()
         # End Snippet

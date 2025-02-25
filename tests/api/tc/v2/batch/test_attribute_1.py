@@ -23,7 +23,7 @@ class TestAttributes:
             )
         ],
     )
-    def test_attributes(  # pylint: disable=unused-argument
+    def test_attributes(
         self, name, description, attr_type, attr_value, displayed, source, tcex: TcEx
     ):
         """Test batch attributes creation"""

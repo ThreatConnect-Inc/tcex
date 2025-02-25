@@ -3,14 +3,17 @@
 # standard library
 import datetime
 import logging
-from collections.abc import Callable
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 # third-party
 import wrapt
 
 # first-party
 from tcex.logger.trace_logger import TraceLogger
+
+if TYPE_CHECKING:
+    # standard library
+    from collections.abc import Callable
 
 # get tcex logger
 _logger: TraceLogger = logging.getLogger(__name__.split('.', maxsplit=1)[0])  # type: ignore
@@ -27,6 +30,7 @@ class Benchmark:
         :lineno-start: 1
 
         import time
+
 
         @Benchmark()
         def my_method():
@@ -45,7 +49,7 @@ class Benchmark:
         self.seconds = seconds
 
     @wrapt.decorator
-    def __call__(self, *wrapped_args) -> Any:
+    def __call__(self, *wrapped_args) -> Any:  # noqa: D417
         """Implement __call__ function for decorator.
 
         Args:
@@ -64,7 +68,7 @@ class Benchmark:
         # using wrapped args to support typing hints in PyRight
         wrapped: Callable = wrapped_args[0]
         args: list = wrapped_args[2] if len(wrapped_args) > 1 else []
-        kwargs: dict = wrapped_args[3] if len(wrapped_args) > 2 else {}
+        kwargs: dict = wrapped_args[3] if len(wrapped_args) > 2 else {}  # noqa: PLR2004
 
         def benchmark() -> Any:
             """Iterate over data, calling the decorated function for each value.
@@ -75,9 +79,9 @@ class Benchmark:
                 **kwargs: Additional keyword arguments.
             """
 
-            before = datetime.datetime.now()
+            before = datetime.datetime.now(datetime.UTC)
             data = wrapped(*args, **kwargs)
-            after = datetime.datetime.now()
+            after = datetime.datetime.now(datetime.UTC)
             delta = after - before
             if delta > datetime.timedelta(
                 microseconds=self.microseconds, milliseconds=self.milliseconds, seconds=self.seconds

@@ -38,9 +38,9 @@ class File(Indicator):
 
         self.unique_id = (
             kwargs.get('unique_id')
-            or kwargs.get('md5', None)
-            or kwargs.get('sha1', None)
-            or kwargs.get('sha256', None)
+            or kwargs.get('md5')
+            or kwargs.get('sha1')
+            or kwargs.get('sha256')
         )
         self.data['md5'] = self.data.get('md5') or self._hash_from_unique_id(hash_type='md5')
         self.data['sha1'] = self.data.get('sha1') or self._hash_from_unique_id(hash_type='sha1')
@@ -49,24 +49,28 @@ class File(Indicator):
         )
         if self.unique_id:
             for value in self.unique_id.split(':'):
-                value = value.strip()
-                if value:
-                    self.unique_id = value
+                value_ = value.strip()
+                if value_:
+                    self.unique_id = value_
                     break
         self.data['size'] = kwargs.get('size', 0)
 
     def _hash_from_unique_id(self, hash_type='md5'):
+        """."""
+        md5_length = 32
+        sha1_length = 40
+        sha256_length = 64
         if not self.unique_id:
             return None
 
         for hash_value in self.unique_id.split(':'):
-            hash_value = hash_value.strip()
-            if hash_type.lower() == 'md5' and len(hash_value) == 32:
-                return hash_value
-            if hash_type.lower() == 'sha1' and len(hash_value) == 40:
-                return hash_value
-            if hash_type.lower() == 'sha256' and len(hash_value) == 64:
-                return hash_value
+            hash_value_ = hash_value.strip()
+            if hash_type.lower() == 'md5' and len(hash_value_) == md5_length:
+                return hash_value_
+            if hash_type.lower() == 'sha1' and len(hash_value_) == sha1_length:
+                return hash_value_
+            if hash_type.lower() == 'sha256' and len(hash_value_) == sha256_length:
+                return hash_value_
         return None
 
     def can_create(self):
@@ -75,14 +79,12 @@ class File(Indicator):
         If the md5/sha1/sha256 has been provided returns that the File can be
         created, otherwise returns that the File cannot be created.
         """
-        if (
+        return bool(
             self.unique_id
             or self.data.get('md5')
             or self.data.get('sha1')
             or self.data.get('sha256')
-        ):
-            return True
-        return False
+        )
 
     def _set_unique_id(self, json_response):
         """Set the unique_id provided a json response.

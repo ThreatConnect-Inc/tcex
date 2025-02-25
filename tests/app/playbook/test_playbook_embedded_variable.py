@@ -87,13 +87,13 @@ class TestEmbedded:
             # (
             #     (
             #         '{\n\"trackingID\": 12345,\n\"title\": \"#App:0001:string.7!String\",\n'
-            #         '\"comments\": \"#App:0001:string.8!String\",\n\"requestor\": '
+            #         '\"comments\": \"#App:0001:string.8!String\",\n\"requester\": '
             #         '\"ThreatConnect Playbook\"}'
             #     ),
             #     (
             #         '{\n\"trackingID\": 12345,\n\"title\": \"invalid json char \" \\",\n'
             #         '\"comments\": \"Json Reserved Characters: \\\\" \n \r \f \b \t '
-            #         '\\",\n\"requestor\": \"ThreatConnect Playbook\"}'
+            #         '\\",\n\"requester\": \"ThreatConnect Playbook\"}'
             #     ),
             # ),
             # test \s replacement

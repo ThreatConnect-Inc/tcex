@@ -31,10 +31,11 @@ class GroupFilter(FilterABC):
             associated_indicator: No description provided.
         """
         if isinstance(associated_indicator, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('associatedIndicator', operator, associated_indicator, TqlType.INTEGER)
 
@@ -46,10 +47,11 @@ class GroupFilter(FilterABC):
             attribute: No description provided.
         """
         if isinstance(attribute, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('attribute', operator, attribute, TqlType.STRING)
 
@@ -61,10 +63,11 @@ class GroupFilter(FilterABC):
             child_group: No description provided.
         """
         if isinstance(child_group, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('childGroup', operator, child_group, TqlType.INTEGER)
 
@@ -76,10 +79,11 @@ class GroupFilter(FilterABC):
             created_by: The user who created the group.
         """
         if isinstance(created_by, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('createdBy', operator, created_by, TqlType.STRING)
 
@@ -115,10 +119,11 @@ class GroupFilter(FilterABC):
             document_filename: The file name of the document.
         """
         if isinstance(document_filename, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('documentFilename', operator, document_filename, TqlType.STRING)
 
@@ -130,10 +135,11 @@ class GroupFilter(FilterABC):
             document_filesize: The filesize of the document.
         """
         if isinstance(document_filesize, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('documentFilesize', operator, document_filesize, TqlType.INTEGER)
 
@@ -145,10 +151,11 @@ class GroupFilter(FilterABC):
             document_status: The status of the document.
         """
         if isinstance(document_status, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('documentStatus', operator, document_status, TqlType.STRING)
 
@@ -160,10 +167,11 @@ class GroupFilter(FilterABC):
             document_type: The type of document.
         """
         if isinstance(document_type, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('documentType', operator, document_type, TqlType.STRING)
 
@@ -175,10 +183,11 @@ class GroupFilter(FilterABC):
             downvote_count: The number of downvotes the group has received.
         """
         if isinstance(downvote_count, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('downvoteCount', operator, downvote_count, TqlType.INTEGER)
 
@@ -200,10 +209,11 @@ class GroupFilter(FilterABC):
             email_from: The 'from' field of the email.
         """
         if isinstance(email_from, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('emailFrom', operator, email_from, TqlType.STRING)
 
@@ -215,10 +225,11 @@ class GroupFilter(FilterABC):
             email_score: The score of the email.
         """
         if isinstance(email_score, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('emailScore', operator, email_score, TqlType.INTEGER)
 
@@ -242,10 +253,11 @@ class GroupFilter(FilterABC):
             email_subject: The subject of the email.
         """
         if isinstance(email_subject, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('emailSubject', operator, email_subject, TqlType.STRING)
 
@@ -267,10 +279,11 @@ class GroupFilter(FilterABC):
             event_type: The event type of the group.
         """
         if isinstance(event_type, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('eventType', operator, event_type, TqlType.STRING)
 
@@ -402,10 +415,11 @@ class GroupFilter(FilterABC):
             has_intel_query: A nested query for association to User Queries.
         """
         if isinstance(has_intel_query, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('hasIntelQuery', operator, has_intel_query, TqlType.INTEGER)
 
@@ -463,7 +477,7 @@ class GroupFilter(FilterABC):
         self._tql.add_filter('hasVictimAsset', TqlOperator.EQ, victim_assets, TqlType.SUB_QUERY)
         return victim_assets
 
-    def id(self, operator: Enum, id: int | list):  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int | list):  # noqa: A002
         """Filter ID based on **id** keyword.
 
         Args:
@@ -471,10 +485,11 @@ class GroupFilter(FilterABC):
             id: The ID of the group.
         """
         if isinstance(id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
@@ -486,10 +501,11 @@ class GroupFilter(FilterABC):
             insights: The AI generated synopsis of the report.
         """
         if isinstance(insights, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('insights', operator, insights, TqlType.STRING)
 
@@ -530,10 +546,11 @@ class GroupFilter(FilterABC):
             owner: The Owner ID for the group.
         """
         if isinstance(owner, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('owner', operator, owner, TqlType.INTEGER)
 
@@ -545,10 +562,11 @@ class GroupFilter(FilterABC):
             owner_name: The owner name for the group.
         """
         if isinstance(owner_name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('ownerName', operator, owner_name, TqlType.STRING)
 
@@ -560,10 +578,11 @@ class GroupFilter(FilterABC):
             parent_group: No description provided.
         """
         if isinstance(parent_group, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('parentGroup', operator, parent_group, TqlType.INTEGER)
 
@@ -575,10 +594,11 @@ class GroupFilter(FilterABC):
             security_label: The name of a security label applied to the group.
         """
         if isinstance(security_label, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('securityLabel', operator, security_label, TqlType.STRING)
 
@@ -604,10 +624,11 @@ class GroupFilter(FilterABC):
             signature_filename: The file name of the signature.
         """
         if isinstance(signature_filename, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('signatureFilename', operator, signature_filename, TqlType.STRING)
 
@@ -619,10 +640,11 @@ class GroupFilter(FilterABC):
             signature_type: The type of signature.
         """
         if isinstance(signature_type, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('signatureType', operator, signature_type, TqlType.STRING)
 
@@ -634,10 +656,11 @@ class GroupFilter(FilterABC):
             status: Status of the group.
         """
         if isinstance(status, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('status', operator, status, TqlType.STRING)
 
@@ -649,10 +672,11 @@ class GroupFilter(FilterABC):
             summary: The summary (name) of the group.
         """
         if isinstance(summary, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('summary', operator, summary, TqlType.STRING)
 
@@ -664,10 +688,11 @@ class GroupFilter(FilterABC):
             tag: The name of a tag applied to the group.
         """
         if isinstance(tag, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('tag', operator, tag, TqlType.STRING)
 
@@ -679,10 +704,11 @@ class GroupFilter(FilterABC):
             tag_owner: The ID of the owner of a tag.
         """
         if isinstance(tag_owner, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('tagOwner', operator, tag_owner, TqlType.INTEGER)
 
@@ -694,10 +720,11 @@ class GroupFilter(FilterABC):
             tag_owner_name: The name of the owner of a tag.
         """
         if isinstance(tag_owner_name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('tagOwnerName', operator, tag_owner_name, TqlType.STRING)
 
@@ -709,10 +736,11 @@ class GroupFilter(FilterABC):
             task_assignee: The assignee of the task.
         """
         if isinstance(task_assignee, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('taskAssignee', operator, task_assignee, TqlType.STRING)
 
@@ -724,10 +752,11 @@ class GroupFilter(FilterABC):
             task_assignee_pseudo: The pseudonym of the assignee of the task.
         """
         if isinstance(task_assignee_pseudo, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('taskAssigneePseudo', operator, task_assignee_pseudo, TqlType.STRING)
 
@@ -824,14 +853,15 @@ class GroupFilter(FilterABC):
             task_status: The status of the task.
         """
         if isinstance(task_status, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('taskStatus', operator, task_status, TqlType.STRING)
 
-    def type(self, operator: Enum, type: int | list):  # pylint: disable=redefined-builtin
+    def type(self, operator: Enum, type: int | list):  # noqa: A002
         """Filter Type based on **type** keyword.
 
         Args:
@@ -839,10 +869,11 @@ class GroupFilter(FilterABC):
             type: The ID of the group type.
         """
         if isinstance(type, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('type', operator, type, TqlType.INTEGER)
 
@@ -854,10 +885,11 @@ class GroupFilter(FilterABC):
             type_name: The name of the group type.
         """
         if isinstance(type_name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('typeName', operator, type_name, TqlType.STRING)
 
@@ -869,10 +901,11 @@ class GroupFilter(FilterABC):
             upvote_count: The number of upvotes the group has received.
         """
         if isinstance(upvote_count, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('upvoteCount', operator, upvote_count, TqlType.INTEGER)
 
@@ -884,9 +917,10 @@ class GroupFilter(FilterABC):
             victim_asset: No description provided.
         """
         if isinstance(victim_asset, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('victimAsset', operator, victim_asset, TqlType.STRING)

@@ -4,6 +4,7 @@ See https://tools.ietf.org/id/draft-polli-ratelimit-headers-00.html for implemen
 """
 
 # standard library
+import contextlib
 import time
 
 # third-party
@@ -96,9 +97,7 @@ class RateLimitHandler:
                 response.headers.get(self.limit_remaining_header, 0)
             )
             # TODO: [high] - @cblades - what should this be?
-            self._last_limit_reset_value = response.headers.get(
-                self.limit_reset_header
-            )  # type: ignore
+            self._last_limit_reset_value = response.headers.get(self.limit_reset_header)  # type: ignore
 
     def pre_send(self, request: PreparedRequest):
         """Call before request is sent and provides an opportunity to pause for rate limiting.
@@ -116,7 +115,7 @@ class RateLimitHandler:
         ):
             self.sleep(request)
 
-    def sleep(self, _: PreparedRequest):  # pylint: disable=unused-argument
+    def sleep(self, _: PreparedRequest):
         """Sleeps to rate-limit.
 
         Sleeps until the time specified in X-RateLimit-Reset.
@@ -127,9 +126,7 @@ class RateLimitHandler:
         util = Util()
         seconds = self.last_limit_reset_value
         if seconds is not None:
-            try:
+            with contextlib.suppress(RuntimeError):
                 seconds = util.any_to_datetime(seconds).timestamp() - time.time()
-            except RuntimeError:
-                pass
 
             time.sleep(float(seconds))

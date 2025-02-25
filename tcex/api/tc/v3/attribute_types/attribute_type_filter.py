@@ -25,10 +25,11 @@ class AttributeTypeFilter(FilterABC):
             associated_type: The data type(s) that the attribute type can be used for.
         """
         if isinstance(associated_type, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('associatedType', operator, associated_type, TqlType.STRING)
 
@@ -49,10 +50,11 @@ class AttributeTypeFilter(FilterABC):
             default_owner_id: The owner id of the attribute type settings.
         """
         if isinstance(default_owner_id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('defaultOwnerId', operator, default_owner_id, TqlType.INTEGER)
 
@@ -64,10 +66,11 @@ class AttributeTypeFilter(FilterABC):
             default_type: The data type(s) that the attribute type is defaulted for.
         """
         if isinstance(default_type, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('defaultType', operator, default_type, TqlType.STRING)
 
@@ -79,14 +82,15 @@ class AttributeTypeFilter(FilterABC):
             description: The description of the attribute type.
         """
         if isinstance(description, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('description', operator, description, TqlType.STRING)
 
-    def id(self, operator: Enum, id: int | list):  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int | list):  # noqa: A002
         """Filter ID based on **id** keyword.
 
         Args:
@@ -94,10 +98,11 @@ class AttributeTypeFilter(FilterABC):
             id: The ID of the attribute type.
         """
         if isinstance(id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
@@ -109,10 +114,11 @@ class AttributeTypeFilter(FilterABC):
             maxsize: Max size of the attribute.
         """
         if isinstance(maxsize, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('maxsize', operator, maxsize, TqlType.INTEGER)
 
@@ -124,10 +130,11 @@ class AttributeTypeFilter(FilterABC):
             name: The name of the attribute type.
         """
         if isinstance(name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('name', operator, name, TqlType.STRING)
 
@@ -139,10 +146,11 @@ class AttributeTypeFilter(FilterABC):
             owner: The owner ID of the attribute type.
         """
         if isinstance(owner, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('owner', operator, owner, TqlType.INTEGER)
 
@@ -154,10 +162,11 @@ class AttributeTypeFilter(FilterABC):
             owner_name: The owner name of the attribute type.
         """
         if isinstance(owner_name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('ownerName', operator, owner_name, TqlType.STRING)
 

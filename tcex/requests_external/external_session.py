@@ -1,9 +1,11 @@
 """TcEx Framework Module"""
 
 # standard library
+import contextlib
 import logging
 import time
 from collections.abc import Callable
+from typing import ClassVar
 
 # third-party
 import urllib3
@@ -121,7 +123,7 @@ class ExternalSession(Session):
         base_url: The base URL for all requests.
     """
 
-    __attrs__ = [
+    __attrs__: ClassVar = [
         'adapters',
         'auth',
         'cert',
@@ -260,9 +262,7 @@ class ExternalSession(Session):
         if self._custom_adapter:
             self._custom_adapter.rate_limit_handler = rate_limit_handler
 
-    def request(  # pylint: disable=arguments-differ
-        self, method: str, url: str, **kwargs
-    ) -> object:
+    def request(self, method: str, url: str, **kwargs) -> object:
         """Override request method disabling verify on token renewal if disabled on session.
 
         Args:
@@ -282,7 +282,8 @@ class ExternalSession(Session):
 
         response: Response = super().request(method, url, **kwargs)
 
-        if response.status_code == 429 and not tc_is_retry:
+        too_many_requests_code = 429
+        if response.status_code == too_many_requests_code and not tc_is_retry:
             too_many_requests_handler = self.too_many_requests_handler
             time.sleep(too_many_requests_handler(response))
             kwargs['tc_is_retry'] = True
@@ -290,7 +291,7 @@ class ExternalSession(Session):
 
         # APP-79 - adding logging of request as curl commands
         if not response.ok or self.log_curl:
-            try:
+            with contextlib.suppress(Exception):
                 self.log.debug(
                     self.requests_to_curl.convert(
                         response.request,
@@ -301,8 +302,6 @@ class ExternalSession(Session):
                         verify=self.verify,
                     )
                 )
-            except Exception:  # nosec
-                pass  # logging curl command is best effort
 
         self.log.debug(
             f'feature=external-session, request-url={response.request.url}, '
@@ -366,7 +365,8 @@ class ExternalSession(Session):
         else:
             # TODO: @cblades - max_retries is typed as int and Retry is being passed
             self._custom_adapter = CustomAdapter(
-                rate_limit_handler=self.rate_limit_handler, max_retries=retry_object  # type: ignore
+                rate_limit_handler=self.rate_limit_handler,
+                max_retries=retry_object,  # type: ignore
             )
 
         # mount the custom adapter

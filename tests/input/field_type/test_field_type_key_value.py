@@ -15,7 +15,6 @@ from tests.input.field_type.util import InputTest
 from tests.mock_app import MockApp  # TYPE-CHECKING
 
 
-# pylint: disable=no-self-argument
 class TestInputsFieldTypeKeyValue(InputTest):
     """Test TcEx Inputs Config."""
 

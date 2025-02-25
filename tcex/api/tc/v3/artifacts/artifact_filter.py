@@ -31,10 +31,11 @@ class ArtifactFilter(FilterABC):
             analytics_score: The intel score of the artifact.
         """
         if isinstance(analytics_score, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('analyticsScore', operator, analytics_score, TqlType.INTEGER)
 
@@ -46,10 +47,11 @@ class ArtifactFilter(FilterABC):
             case_id: The ID of the case associated with this artifact.
         """
         if isinstance(case_id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('caseId', operator, case_id, TqlType.INTEGER)
 
@@ -113,7 +115,7 @@ class ArtifactFilter(FilterABC):
         self._tql.add_filter('hasTask', TqlOperator.EQ, tasks, TqlType.SUB_QUERY)
         return tasks
 
-    def id(self, operator: Enum, id: int | list):  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int | list):  # noqa: A002
         """Filter ID based on **id** keyword.
 
         Args:
@@ -121,10 +123,11 @@ class ArtifactFilter(FilterABC):
             id: The ID of the artifact.
         """
         if isinstance(id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
@@ -145,10 +148,11 @@ class ArtifactFilter(FilterABC):
             note_id: The ID of the note associated with this artifact.
         """
         if isinstance(note_id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('noteId', operator, note_id, TqlType.INTEGER)
 
@@ -160,10 +164,11 @@ class ArtifactFilter(FilterABC):
             source: The source of the artifact.
         """
         if isinstance(source, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('source', operator, source, TqlType.STRING)
 
@@ -175,10 +180,11 @@ class ArtifactFilter(FilterABC):
             summary: The summary of the artifact.
         """
         if isinstance(summary, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('summary', operator, summary, TqlType.STRING)
 
@@ -190,14 +196,15 @@ class ArtifactFilter(FilterABC):
             task_id: The ID of the task associated with this artifact.
         """
         if isinstance(task_id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('taskId', operator, task_id, TqlType.INTEGER)
 
-    def type(self, operator: Enum, type: list | str):  # pylint: disable=redefined-builtin
+    def type(self, operator: Enum, type: list | str):  # noqa: A002
         """Filter typeName based on **type** keyword.
 
         Args:
@@ -205,10 +212,11 @@ class ArtifactFilter(FilterABC):
             type: The type name of the artifact.
         """
         if isinstance(type, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('type', operator, type, TqlType.STRING)
 
@@ -220,9 +228,10 @@ class ArtifactFilter(FilterABC):
             type_name: The type name of the artifact.
         """
         if isinstance(type_name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('typeName', operator, type_name, TqlType.STRING)

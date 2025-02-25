@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# pylint: disable=no-member,no-self-argument,wrong-import-position
 # standard library
 from datetime import datetime
 
@@ -21,10 +20,10 @@ class ResultModel(
 ):
     """Result Model"""
 
-    _associated_type = PrivateAttr(False)
-    _cm_type = PrivateAttr(False)
-    _shared_type = PrivateAttr(False)
-    _staged = PrivateAttr(False)
+    _associated_type = PrivateAttr(default=False)
+    _cm_type = PrivateAttr(default=False)
+    _shared_type = PrivateAttr(default=False)
+    _staged = PrivateAttr(default=False)
 
     archived: bool = Field(
         None,
@@ -163,7 +162,7 @@ class ResultsModel(
 ):
     """Results Model"""
 
-    _mode_support = PrivateAttr(False)
+    _mode_support = PrivateAttr(default=False)
 
     data: list[ResultModel] | None = Field(
         [],

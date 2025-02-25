@@ -31,10 +31,11 @@ class IntelRequirementFilter(FilterABC):
             category: The subtype of the intel requirement.
         """
         if isinstance(category, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('category', operator, category, TqlType.STRING)
 
@@ -118,7 +119,7 @@ class IntelRequirementFilter(FilterABC):
         self._tql.add_filter('hasVictimAsset', TqlOperator.EQ, victim_assets, TqlType.SUB_QUERY)
         return victim_assets
 
-    def id(self, operator: Enum, id: int | list):  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int | list):  # noqa: A002
         """Filter Bucket ID based on **id** keyword.
 
         Args:
@@ -126,10 +127,11 @@ class IntelRequirementFilter(FilterABC):
             id: The bucket ID of the intel requirement.
         """
         if isinstance(id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
@@ -141,10 +143,11 @@ class IntelRequirementFilter(FilterABC):
             id_bucket: The bucket ID of the intel requirement.
         """
         if isinstance(id_bucket, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('idBucket', operator, id_bucket, TqlType.INTEGER)
 
@@ -156,10 +159,11 @@ class IntelRequirementFilter(FilterABC):
             id_parent: The ID of the parent intel requirement.
         """
         if isinstance(id_parent, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('idParent', operator, id_parent, TqlType.INTEGER)
 
@@ -181,10 +185,11 @@ class IntelRequirementFilter(FilterABC):
             owner: The Owner ID for the intel requirement.
         """
         if isinstance(owner, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('owner', operator, owner, TqlType.INTEGER)
 
@@ -196,10 +201,11 @@ class IntelRequirementFilter(FilterABC):
             owner_name: The owner name for the intel requirement.
         """
         if isinstance(owner_name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('ownerName', operator, owner_name, TqlType.STRING)
 
@@ -211,10 +217,11 @@ class IntelRequirementFilter(FilterABC):
             requirement: The Requirement of the intel requirement.
         """
         if isinstance(requirement, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('requirement', operator, requirement, TqlType.STRING)
 
@@ -226,10 +233,11 @@ class IntelRequirementFilter(FilterABC):
             subtype: The subtype of the intel requirement.
         """
         if isinstance(subtype, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('subtype', operator, subtype, TqlType.STRING)
 
@@ -241,10 +249,11 @@ class IntelRequirementFilter(FilterABC):
             tag: The name of a tag applied to the group.
         """
         if isinstance(tag, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('tag', operator, tag, TqlType.STRING)
 
@@ -256,9 +265,10 @@ class IntelRequirementFilter(FilterABC):
             unique_id: The unique ID of the intel requirement.
         """
         if isinstance(unique_id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('uniqueId', operator, unique_id, TqlType.STRING)

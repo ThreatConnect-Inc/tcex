@@ -17,7 +17,6 @@ if TYPE_CHECKING:
 module = __import__(__name__)
 
 
-# pylint: disable=unnecessary-dunder-call
 def custom_indicator_class_factory(
     indicator_type, entity_type, branch_type, base_class, value_fields
 ):
@@ -26,14 +25,14 @@ def custom_indicator_class_factory(
     @staticmethod
     def _metadata_map_1():
         """Map field data."""
-        metadata_map = base_class._metadata_map()
+        metadata_map = base_class._metadata_map()  # noqa: SLF001
         for value in value_fields:
             manipulated_value = value.lower().replace(' ', '_')
-            if manipulated_value not in metadata_map.keys():
+            if manipulated_value not in metadata_map:
                 metadata_map[manipulated_value] = value
         return metadata_map
 
-    def init(self, ti, **kwargs):  # pylint: disable=possibly-unused-variable
+    def init(self, ti, **kwargs):
         """Init method for Custom Indicator Types with one value"""
         base_class.__init__(
             self,
@@ -52,9 +51,9 @@ def custom_indicator_class_factory(
 
         if len(values) == 1:
             self.unique_id = kwargs.get('unique_id', values[0])
-        elif len(values) == 2:
+        elif len(values) == 2:  # noqa: PLR2004
             self.unique_id = kwargs.get('unique_id', self.build_summary(values[0], values[1]))
-        elif len(values) == 3:
+        elif len(values) == 3:  # noqa: PLR2004
             self.unique_id = kwargs.get(
                 'unique_id', self.build_summary(values[0], values[1], values[2])
             )
@@ -67,12 +66,12 @@ def custom_indicator_class_factory(
             values.append(quote(self.fully_decode_uri(value), safe=''))
         if len(values) == 1:
             self.unique_id = values[0]
-        elif len(values) == 2:
+        elif len(values) == 2:  # noqa: PLR2004
             self.unique_id = self.build_summary(values[0], values[1])
         elif len(values) == 1:
             self.unique_id = self.build_summary(values[0], values[1], values[2])
 
-    def can_create(self):  # pylint: disable=unused-argument,possibly-unused-variable
+    def can_create(self):  # noqa: ARG001
         """Determine if the required data that the API endpoint is expecting is present."""
         valid_create = True
         for field in value_fields:
@@ -85,7 +84,7 @@ def custom_indicator_class_factory(
     set_unique_id_method = locals()['_set_unique_id']
     can_create_method = locals()['can_create']
     _metadata_map = locals()['_metadata_map_1']
-    new_class = type(
+    return type(
         str(class_name),
         (base_class,),
         {
@@ -95,7 +94,6 @@ def custom_indicator_class_factory(
             '_metadata_map': _metadata_map,
         },
     )
-    return new_class
 
 
 class Indicator(Mapping):

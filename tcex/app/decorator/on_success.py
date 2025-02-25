@@ -1,11 +1,14 @@
 """TcEx Framework Module"""
 
 # standard library
-from collections.abc import Callable
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 # third-party
 import wrapt
+
+if TYPE_CHECKING:
+    # standard library
+    from collections.abc import Callable
 
 
 class OnSuccess:
@@ -31,7 +34,7 @@ class OnSuccess:
         self.exit_msg = exit_msg or 'App finished successfully.'
 
     @wrapt.decorator
-    def __call__(self, *wrapped_args) -> Any:
+    def __call__(self, *wrapped_args) -> Any:  # noqa: D417
         """Implement __call__ function for decorator.
 
         Args:
@@ -51,7 +54,7 @@ class OnSuccess:
         wrapped: Callable = wrapped_args[0]
         app: Any = wrapped_args[1]
         args: list = wrapped_args[2] if len(wrapped_args) > 1 else []
-        kwargs: dict = wrapped_args[3] if len(wrapped_args) > 2 else {}
+        kwargs: dict = wrapped_args[3] if len(wrapped_args) > 2 else {}  # noqa: PLR2004
 
         def completion() -> Any:
             """Call the function and handle any exception.

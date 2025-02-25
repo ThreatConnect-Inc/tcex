@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# pylint: disable=no-member,no-self-argument,wrong-import-position
 # standard library
 from datetime import datetime
 
@@ -21,10 +20,10 @@ class NoteModel(
 ):
     """Note Model"""
 
-    _associated_type = PrivateAttr(False)
-    _cm_type = PrivateAttr(True)
-    _shared_type = PrivateAttr(False)
-    _staged = PrivateAttr(False)
+    _associated_type = PrivateAttr(default=False)
+    _cm_type = PrivateAttr(default=True)
+    _shared_type = PrivateAttr(default=False)
+    _staged = PrivateAttr(default=False)
 
     artifact: 'ArtifactModel' = Field(
         None,
@@ -148,24 +147,28 @@ class NoteModel(
     )
 
     @validator('artifact', always=True, pre=True)
+    @classmethod
     def _validate_artifact(cls, v):
         if not v:
             return ArtifactModel()  # type: ignore
         return v
 
     @validator('parent_case', always=True, pre=True)
+    @classmethod
     def _validate_case(cls, v):
         if not v:
             return CaseModel()  # type: ignore
         return v
 
     @validator('task', always=True, pre=True)
+    @classmethod
     def _validate_task(cls, v):
         if not v:
             return TaskModel()  # type: ignore
         return v
 
     @validator('workflow_event', always=True, pre=True)
+    @classmethod
     def _validate_workflow_event(cls, v):
         if not v:
             return WorkflowEventModel()  # type: ignore
@@ -196,7 +199,7 @@ class NotesModel(
 ):
     """Notes Model"""
 
-    _mode_support = PrivateAttr(False)
+    _mode_support = PrivateAttr(default=False)
 
     data: list[NoteModel] | None = Field(
         [],

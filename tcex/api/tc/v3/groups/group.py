@@ -72,6 +72,7 @@ class Group(ObjectABC):
             true).
         publish_date (str, kwargs): The date and time that the report was first created.
         reminder_date (str, kwargs): The reminder date and time.
+        reviews (object, kwargs): A list of reviews corresponding to the Group.
         security_labels (SecurityLabels, kwargs): A list of Security Labels corresponding to the
             Intel item (NOTE: Setting this parameter will replace any existing tag(s) with
             the one(s) specified).
@@ -81,8 +82,6 @@ class Group(ObjectABC):
         tags (Tags, kwargs): A list of Tags corresponding to the item (NOTE: Setting this parameter
             will replace any existing tag(s) with the one(s) specified).
         type (str, kwargs): The **type** for the Group.
-        up_vote (bool, kwargs): Is the intelligence valid and useful? (0 means downvote, 1 means
-            upvote, and NULL means no vote).
         xid (str, kwargs): The xid of the item.
     """
 
@@ -116,7 +115,8 @@ class Group(ObjectABC):
             # provided data is raw response, load the model
             self._model = type(self.model)(**data)
         else:
-            raise RuntimeError(f'Invalid data type: {type(data)} provided.')
+            ex_msg = f'Invalid data type: {type(data)} provided.'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
 
     @property
     def as_entity(self) -> dict:
@@ -164,7 +164,7 @@ class Group(ObjectABC):
         """Return the document attachment for Document/Report Types."""
         self._request(
             method='GET',
-            url=f'''{self.url('GET')}/download''',
+            url=f"""{self.url('GET')}/download""",
             headers={'Accept': 'application/octet-stream'},
             params=params,
         )
@@ -175,7 +175,7 @@ class Group(ObjectABC):
         self._request(
             method='GET',
             body=None,
-            url=f'''{self.url('GET')}/pdf''',
+            url=f"""{self.url('GET')}/pdf""",
             headers={'Accept': 'application/octet-stream'},
             params=params,
         )
@@ -186,7 +186,7 @@ class Group(ObjectABC):
         """Return the document attachment for Document/Report Types."""
         self._request(
             method='POST',
-            url=f'''{self.url('GET')}/upload''',
+            url=f"""{self.url('GET')}/upload""",
             body=content,
             headers={'content-type': 'application/octet-stream'},
             params=params,
@@ -266,8 +266,9 @@ class Group(ObjectABC):
             data = CaseModel(**data)
 
         if not isinstance(data, CaseModel):
-            raise RuntimeError('Invalid type passed in to stage_associated_case')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_associated_case'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.associated_cases.data.append(data)  # type: ignore
 
     def stage_associated_artifact(self, data: dict | ObjectABC | ArtifactModel):
@@ -278,8 +279,9 @@ class Group(ObjectABC):
             data = ArtifactModel(**data)
 
         if not isinstance(data, ArtifactModel):
-            raise RuntimeError('Invalid type passed in to stage_associated_artifact')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_associated_artifact'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.associated_artifacts.data.append(data)  # type: ignore
 
     def stage_associated_group(self, data: dict | ObjectABC | GroupModel):
@@ -290,8 +292,9 @@ class Group(ObjectABC):
             data = GroupModel(**data)
 
         if not isinstance(data, GroupModel):
-            raise RuntimeError('Invalid type passed in to stage_associated_group')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_associated_group'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.associated_groups.data.append(data)  # type: ignore
 
     def stage_associated_victim_asset(self, data: dict | ObjectABC | VictimAssetModel):
@@ -302,8 +305,9 @@ class Group(ObjectABC):
             data = VictimAssetModel(**data)
 
         if not isinstance(data, VictimAssetModel):
-            raise RuntimeError('Invalid type passed in to stage_associated_victim_asset')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_associated_victim_asset'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.associated_victim_assets.data.append(data)  # type: ignore
 
     def stage_associated_indicator(self, data: dict | ObjectABC | IndicatorModel):
@@ -314,8 +318,9 @@ class Group(ObjectABC):
             data = IndicatorModel(**data)
 
         if not isinstance(data, IndicatorModel):
-            raise RuntimeError('Invalid type passed in to stage_associated_indicator')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_associated_indicator'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.associated_indicators.data.append(data)  # type: ignore
 
     def stage_attribute(self, data: dict | ObjectABC | GroupAttributeModel):
@@ -326,8 +331,9 @@ class Group(ObjectABC):
             data = GroupAttributeModel(**data)
 
         if not isinstance(data, GroupAttributeModel):
-            raise RuntimeError('Invalid type passed in to stage_attribute')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_attribute'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.attributes.data.append(data)  # type: ignore
 
     def stage_security_label(self, data: dict | ObjectABC | SecurityLabelModel):
@@ -338,8 +344,9 @@ class Group(ObjectABC):
             data = SecurityLabelModel(**data)
 
         if not isinstance(data, SecurityLabelModel):
-            raise RuntimeError('Invalid type passed in to stage_security_label')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_security_label'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.security_labels.data.append(data)  # type: ignore
 
     def stage_tag(self, data: dict | ObjectABC | TagModel):
@@ -350,8 +357,9 @@ class Group(ObjectABC):
             data = TagModel(**data)
 
         if not isinstance(data, TagModel):
-            raise RuntimeError('Invalid type passed in to stage_tag')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_tag'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.tags.data.append(data)  # type: ignore
 
 
@@ -360,9 +368,9 @@ class Groups(ObjectCollectionABC):
 
     # Example of params input
     {
-        'result_limit': 100,  # Limit the retrieved results.
-        'result_start': 10,  # Starting count used for pagination.
-        'fields': ['caseId', 'summary']  # Select additional return fields.
+        "result_limit": 100,  # Limit the retrieved results.
+        "result_start": 10,  # Starting count used for pagination.
+        "fields": ["caseId", "summary"]  # Select additional return fields.
     }
 
     Args:

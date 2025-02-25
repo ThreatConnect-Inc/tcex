@@ -3,6 +3,7 @@
 # standard library
 import os
 import threading
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 # first-party
@@ -104,14 +105,13 @@ class App:
             value: The data value to be stored.
         """
         if os.access(self.model.tc_out_path, os.W_OK):
-            results_file = f'{self.model.tc_out_path}/results.tc'
+            results_file = Path(self.model.tc_out_path) / 'results.tc'
         else:
-            results_file = 'results.tc'
+            results_file = Path('results.tc')
 
         new = True
-        # ensure file exists
-        open(results_file, 'a').close()  # pylint: disable=consider-using-with
-        with open(results_file, 'r+') as fh:
+        results_file.open('a').close()  # create file
+        with results_file.open('r+') as fh:
             results = ''
             for line in fh.read().strip().split('\n'):
                 if not line:
@@ -145,7 +145,8 @@ class App:
             # first-party
             from tcex.app.service import CommonServiceTrigger as Service
         else:
-            raise RuntimeError('Could not determine the service type.')
+            ex_msg = 'Could not determine the service type.'
+            raise RuntimeError(ex_msg)
 
         return Service(self.key_value_store, registry.logger, self.model, self.token)
 

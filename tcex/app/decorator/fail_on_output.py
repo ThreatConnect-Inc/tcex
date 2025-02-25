@@ -1,8 +1,7 @@
 """TcEx Framework Module"""
 
 # standard library
-from collections.abc import Callable
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
 
 # third-party
 import wrapt
@@ -10,6 +9,10 @@ import wrapt
 # first-party
 from tcex.exit import ExitCode
 from tcex.tcex import TcEx
+
+if TYPE_CHECKING:
+    # standard library
+    from collections.abc import Callable
 
 
 class FailOnOutput:
@@ -23,7 +26,8 @@ class FailOnOutput:
         :lineno-start: 1
 
         @FailOnOutput(
-            fail_on=['false'], fail_msg='Operation returned a value of "false".'
+            fail_on=['false'],
+            fail_msg='Operation returned a value of "false".',
         )
         def my_method(data):
             return data.lowercase()
@@ -56,7 +60,7 @@ class FailOnOutput:
         self.write_output = write_output
 
     @wrapt.decorator
-    def __call__(self, *wrapped_args) -> Any:
+    def __call__(self, *wrapped_args) -> Any:  # noqa: D417
         """Implement __call__ function for decorator.
 
         Args:
@@ -76,7 +80,7 @@ class FailOnOutput:
         wrapped: Callable = wrapped_args[0]
         app: Any = wrapped_args[1]
         args: list = wrapped_args[2] if len(wrapped_args) > 1 else []
-        kwargs: dict = wrapped_args[3] if len(wrapped_args) > 2 else {}
+        kwargs: dict = wrapped_args[3] if len(wrapped_args) > 2 else {}  # noqa: PLR2004
 
         def fail() -> Any:
             """Call the function and store or append return value."""
@@ -91,9 +95,8 @@ class FailOnOutput:
                 # get enabled value from App inputs
                 enabled = getattr(tcex.inputs.model, enabled)
                 if not isinstance(enabled, bool):  # pragma: no cover
-                    raise RuntimeError(
-                        'The fail_enabled value must be a boolean or resolved to bool.'
-                    )
+                    ex_msg = 'The fail_enabled value must be a boolean or resolved to bool.'
+                    raise RuntimeError(ex_msg)  # noqa: TRY004
                 tcex.log.debug(f'Fail enabled is {enabled} ({self.fail_enabled}).')
 
             failed = False
@@ -104,9 +107,8 @@ class FailOnOutput:
                         if d in self.fail_on:
                             failed = True
                             break
-                else:
-                    if data in self.fail_on:
-                        failed = True
+                elif data in self.fail_on:
+                    failed = True
 
                 if failed:
                     if self.write_output:
@@ -122,7 +124,10 @@ class FailOnOutput:
     def get_fail_msg(self, app) -> str:
         """Return the appropriate fail message."""
         fail_msg = self.fail_msg
-        if isinstance(self.fail_msg_property, str):
-            if self.fail_msg_property and hasattr(app, self.fail_msg_property):
-                fail_msg = getattr(app, self.fail_msg_property)
+        if (
+            isinstance(self.fail_msg_property, str)
+            and self.fail_msg_property
+            and hasattr(app, self.fail_msg_property)
+        ):
+            fail_msg = getattr(app, self.fail_msg_property)
         return fail_msg

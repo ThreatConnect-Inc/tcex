@@ -7,6 +7,5 @@ from tcex.input.model.playbook_model import PlaybookModel
 from tcex.input.model.service_model import ServiceModel
 
 
-# pylint: disable=too-many-ancestors
 class CommonAdvancedModel(CommonModel, PlaybookCommonModel, PlaybookModel, ServiceModel):
     """Model Definition"""

@@ -145,9 +145,7 @@ class Task(Mapping):
         Return:
             bool: Boolean value indicating whether the object can be created.
         """
-        if self.data.get('name'):
-            return True
-        return False
+        return bool(self.data.get('name'))
 
     def delete_assignee(self, assignee):
         """Delete the desired assignee from the Task.

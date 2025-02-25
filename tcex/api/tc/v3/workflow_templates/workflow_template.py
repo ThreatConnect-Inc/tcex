@@ -54,7 +54,8 @@ class WorkflowTemplate(ObjectABC):
             # provided data is raw response, load the model
             self._model = type(self.model)(**data)
         else:
-            raise RuntimeError(f'Invalid data type: {type(data)} provided.')
+            ex_msg = f'Invalid data type: {type(data)} provided.'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
 
     @property
     def as_entity(self) -> dict:
@@ -69,9 +70,9 @@ class WorkflowTemplates(ObjectCollectionABC):
 
     # Example of params input
     {
-        'result_limit': 100,  # Limit the retrieved results.
-        'result_start': 10,  # Starting count used for pagination.
-        'fields': ['caseId', 'summary']  # Select additional return fields.
+        "result_limit": 100,  # Limit the retrieved results.
+        "result_start": 10,  # Starting count used for pagination.
+        "fields": ["caseId", "summary"]  # Select additional return fields.
     }
 
     Args:

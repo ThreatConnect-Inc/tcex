@@ -66,7 +66,7 @@ class Sensitive:
 
     def __repr__(self) -> str:
         """."""
-        return f'''Sensitive('{self}')'''
+        return f"""Sensitive('{self}')"""
 
     def __str__(self) -> str:
         """Return the value masked.
@@ -75,9 +75,15 @@ class Sensitive:
         than X, then show the first and last character of the value. This is very
         helpful in debugging App where the incorrect credential could have been passed.
         """
-        if self._sensitive_value and _logger.getEffectiveLevel() <= 10:  # DEBUG or TRACE
-            if isinstance(self.value, str) and len(self.value) >= 10:
-                return f'''{self.value[:1]}{'*' * 4}{self.value[-1:]}'''
+        # DEBUG or TRACE
+        trace_log_level = 10
+        if (
+            self._sensitive_value
+            and _logger.getEffectiveLevel() <= trace_log_level
+            and isinstance(self.value, str)
+            and len(self.value) >= trace_log_level
+        ):
+            return f"""{self.value[:1]}{'*' * 4}{self.value[-1:]}"""
         return '**********'
 
     @classmethod

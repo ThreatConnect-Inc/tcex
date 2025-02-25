@@ -25,7 +25,7 @@ class TestDataStore:
         """Test failure to create an index."""
 
         # monkeypatch method
-        def mp_post(*args, **kwargs):  # pylint: disable=unused-argument
+        def mp_post(*args, **kwargs):
             return MockPost({}, ok=False)
 
         monkeypatch.setattr(tcex.session.tc, 'post', mp_post)

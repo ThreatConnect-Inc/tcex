@@ -114,13 +114,13 @@ class TestInputsConfig:
 #         tcex.parser.add_argument('--my_multi', action='append')
 #
 #         # args and rargs must be called once before accessing args
-#         tcex.args  # pylint: disable=pointless-statement
-#         tcex.rargs  # pylint: disable=pointless-statement
+#         tcex.args
+#         tcex.rargs
 #
 #         assert tcex.args.my_bool is True
-#         assert tcex.rargs.my_bool is True  # pylint: disable=no-member
+#         assert tcex.rargs.my_bool is True
 #         assert tcex.args.my_multi == ['one', 'two']
-#         assert tcex.rargs.my_multi == ['one', 'two']  # pylint: disable=no-member
+#         assert tcex.rargs.my_multi == ['one', 'two']
 #
 #     @staticmethod
 #     def test_duplicate_args(playbook_app: Callable[..., MockApp]):
