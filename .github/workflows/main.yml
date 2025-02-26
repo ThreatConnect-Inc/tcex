@@ -2,9 +2,9 @@ name: Lint Project
 
 on:
   push:
-    branches: [develop, main]
+    branches: [main]
   pull_request:
-    branches: [develop, main]
+    branches: [main]
 
 jobs:
   build:
@@ -26,10 +26,12 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install .[dev,test]
-          pip freeze
+          pip install uv
+          uv sync
+          uv tree
       - name: Lint with pre-commit
         run: |
+          source .venv/bin/activate
           pre-commit --version
           pre-commit install
           pre-commit run --all-files

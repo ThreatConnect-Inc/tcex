@@ -72,11 +72,12 @@ class GenerateObject(GenerateObjectABC):
 def gen_args(type_: SnakeString, indent_blocks: int):
     """Generate args code."""
     # get instance of doc generator
-    GenerateArgs(type_)
+    gen = GenerateArgs(type_)
 
     # run model code first so that requirements can be determined
     i1 = ' ' * (4 * indent_blocks)
-    i1 + ' ' * 4
+    i2 = i1 + ' ' * 4
+    print(gen.gen_args(i1=i1, i2=i2))  # noqa: T201
 
 
 def gen_filter(type_: SnakeString):

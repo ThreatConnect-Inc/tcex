@@ -651,13 +651,11 @@ class TransformABC(ABC):
         if len(self.transforms) > 1:
             for transform in self.transforms:
                 if transform.applies is None:
-                    msg = (
+                    ex_msg = (
                         'If more than one transform is provided, each '
                         'provided transform must provide an apply field.'
                     )
-                    raise ValueError(
-                        msg,
-                    )
+                    raise ValueError(ex_msg)
 
     @abstractmethod
     def add_associated_group(self, group_xid: str):
