@@ -31,10 +31,11 @@ class TaskFilter(FilterABC):
             assigned_to_user_or_group: A value of User, Group, or None depending on the assignee.
         """
         if isinstance(assigned_to_user_or_group, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter(
             'assignedToUserOrGroup', operator, assigned_to_user_or_group, TqlType.STRING
@@ -48,10 +49,11 @@ class TaskFilter(FilterABC):
             assignee_name: The user or group name assigned to the Task.
         """
         if isinstance(assignee_name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('assigneeName', operator, assignee_name, TqlType.STRING)
 
@@ -72,10 +74,11 @@ class TaskFilter(FilterABC):
             case_id: The ID of the case this Task is associated with.
         """
         if isinstance(case_id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('caseId', operator, case_id, TqlType.INTEGER)
 
@@ -87,10 +90,11 @@ class TaskFilter(FilterABC):
             case_id_as_string: The ID of the case as a String.
         """
         if isinstance(case_id_as_string, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('caseIdAsString', operator, case_id_as_string, TqlType.STRING)
 
@@ -102,10 +106,11 @@ class TaskFilter(FilterABC):
             case_severity: The severity of the case associated with the task.
         """
         if isinstance(case_severity, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('caseSeverity', operator, case_severity, TqlType.STRING)
 
@@ -117,10 +122,11 @@ class TaskFilter(FilterABC):
             completed_by: The account login of the user who completed the task.
         """
         if isinstance(completed_by, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('completedBy', operator, completed_by, TqlType.STRING)
 
@@ -142,10 +148,11 @@ class TaskFilter(FilterABC):
             description: The description of the task.
         """
         if isinstance(description, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('description', operator, description, TqlType.STRING)
 
@@ -189,7 +196,7 @@ class TaskFilter(FilterABC):
         self._tql.add_filter('hasNote', TqlOperator.EQ, notes, TqlType.SUB_QUERY)
         return notes
 
-    def id(self, operator: Enum, id: int | list):  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int | list):  # noqa: A002
         """Filter ID based on **id** keyword.
 
         Args:
@@ -197,10 +204,11 @@ class TaskFilter(FilterABC):
             id: The ID of the task.
         """
         if isinstance(id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
@@ -212,10 +220,11 @@ class TaskFilter(FilterABC):
             missing_artifact_count: The number of required artifacts that are missing.
         """
         if isinstance(missing_artifact_count, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter(
             'missingArtifactCount', operator, missing_artifact_count, TqlType.INTEGER
@@ -229,10 +238,11 @@ class TaskFilter(FilterABC):
             name: The name of the task.
         """
         if isinstance(name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('name', operator, name, TqlType.STRING)
 
@@ -244,10 +254,11 @@ class TaskFilter(FilterABC):
             owner: The Owner ID for the case.
         """
         if isinstance(owner, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('owner', operator, owner, TqlType.INTEGER)
 
@@ -259,10 +270,11 @@ class TaskFilter(FilterABC):
             owner_name: The owner name for the case.
         """
         if isinstance(owner_name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('ownerName', operator, owner_name, TqlType.STRING)
 
@@ -283,10 +295,11 @@ class TaskFilter(FilterABC):
             status: The status of the task.
         """
         if isinstance(status, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('status', operator, status, TqlType.STRING)
 
@@ -298,10 +311,11 @@ class TaskFilter(FilterABC):
             target_id: The assigned user or group ID for the task.
         """
         if isinstance(target_id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('targetId', operator, target_id, TqlType.INTEGER)
 
@@ -313,10 +327,11 @@ class TaskFilter(FilterABC):
             target_type: The target type for this task (either User or Group).
         """
         if isinstance(target_type, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('targetType', operator, target_type, TqlType.STRING)
 
@@ -328,10 +343,11 @@ class TaskFilter(FilterABC):
             workflow_phase: The workflow phase of the task.
         """
         if isinstance(workflow_phase, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('workflowPhase', operator, workflow_phase, TqlType.INTEGER)
 
@@ -343,10 +359,11 @@ class TaskFilter(FilterABC):
             workflow_step: The workflow step of the task.
         """
         if isinstance(workflow_step, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('workflowStep', operator, workflow_step, TqlType.INTEGER)
 
@@ -358,9 +375,10 @@ class TaskFilter(FilterABC):
             xid: The XID of the task.
         """
         if isinstance(xid, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('xid', operator, xid, TqlType.STRING)

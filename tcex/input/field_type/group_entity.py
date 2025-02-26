@@ -14,13 +14,13 @@ from tcex.input.field_type.tc_entity import TCEntity
 from tcex.registry import registry
 
 
-# pylint: disable=no-self-argument
 class GroupEntity(TCEntity):
     """Group Entity Field (Model) Type"""
 
     group_types: ClassVar[list[str]] = []
 
     @validator('type', allow_reuse=True)
+    @classmethod
     def is_empty(cls, value: str, field: ModelField) -> str:
         """Validate that the value is a non-empty string."""
         if isinstance(value, str) and value.replace(' ', '') == '':
@@ -28,6 +28,7 @@ class GroupEntity(TCEntity):
         return value
 
     @validator('type', allow_reuse=True)
+    @classmethod
     def is_type(cls, value: str, field: ModelField) -> str:
         """Validate that the value is a non-empty string.
 

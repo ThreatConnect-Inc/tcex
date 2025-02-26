@@ -19,7 +19,7 @@ class TestIntelRequirements(TestV3):
 
     v3_helper = V3Helper('intel_requirements')
 
-    def setup_method(self, method: Callable):  # pylint: disable=arguments-differ
+    def setup_method(self, method: Callable):
         """Configure setup before all tests."""
         super().setup_method()
 
@@ -78,8 +78,8 @@ class TestIntelRequirements(TestV3):
         # ir = self.v3.intel_requirement(id=ir.model.id)
         ir.get(params={'fields': ['_all_']})
 
-        assert ir.model.associated_indicators.data[0].id == indicator.model.id
-        assert ir.model.associated_groups.data[0].id == group.model.id
+        assert ir.model.associated_indicators.data[0].id == indicator.model.id # type: ignore
+        assert ir.model.associated_groups.data[0].id == group.model.id # type: ignore
 
         for associated_indicator in ir.associated_indicators:
             assert indicator.model.id == associated_indicator.model.id
@@ -104,12 +104,12 @@ class TestIntelRequirements(TestV3):
         ir.get()
 
         assert len(ir.model.keyword_sections) == 2
-        # assert ir.model.keyword_sections[0].section_number == 0  # This doesnt come back
+        # assert ir.model.keyword_sections[0].section_number == 0  # This doesn't come back
         assert ir.model.keyword_sections[0].compare_value == 'includes'
-        assert ir.model.keyword_sections[0].keywords[0].get('value') == 'keyword1'
-        # assert ir.model.keyword_sections[1].section_number == 1  # This doesnt come back
+        assert ir.model.keyword_sections[0].keywords[0].get('value') == 'keyword1' # type: ignore
+        # assert ir.model.keyword_sections[1].section_number == 1  # This doesn't come back
         assert ir.model.keyword_sections[1].compare_value == 'includes'
-        assert ir.model.keyword_sections[1].keywords[0].get('value') == 'keyword2'
+        assert ir.model.keyword_sections[1].keywords[0].get('value') == 'keyword2' # type: ignore
 
     def test_intel_requirement_get_many(self, count=10):
         """Test Intel Requirement Get Many."""

@@ -8,7 +8,6 @@ import shelve  # nosec
 import sys
 import threading
 import time
-import traceback
 from collections import deque
 from collections.abc import Callable
 from typing import Any
@@ -100,12 +99,12 @@ class Batch(BatchWriter, BatchSubmit):
 
         # batch debug/replay variables
         self._debug = None
-        self.debug_path = os.path.join(self.inputs.model.tc_temp_path, 'DEBUG')
-        self.debug_path_batch = os.path.join(self.debug_path, 'batch_data')
-        self.debug_path_group_shelf = os.path.join(self.debug_path, 'groups-saved')
-        self.debug_path_indicator_shelf = os.path.join(self.debug_path, 'indicators-saved')
-        self.debug_path_files = os.path.join(self.debug_path, 'batch_files')
-        self.debug_path_xids = os.path.join(self.debug_path, 'xids-saved')
+        self.debug_path = self.inputs.model.tc_temp_path / 'DEBUG'
+        self.debug_path_batch = self.debug_path / 'batch_data'
+        self.debug_path_group_shelf = self.debug_path / 'groups-saved'
+        self.debug_path_indicator_shelf = self.debug_path / 'indicators-saved'
+        self.debug_path_files = self.debug_path / 'batch_files'
+        self.debug_path_xids = self.debug_path / 'xids-saved'
 
     def _group(self, group_data: dict | GroupType, store: bool = True) -> dict | GroupType:
         """Return previously stored group or new group.
@@ -120,13 +119,8 @@ class Batch(BatchWriter, BatchSubmit):
         if store is False:
             return group_data
 
-        if isinstance(group_data, dict):
-            # get xid from dict
-            xid = group_data['xid']
-        else:
-            # get xid from GroupType
-            xid = group_data.xid
-
+        # get xid from dict or from GroupType
+        xid = group_data['xid'] if isinstance(group_data, dict) else group_data.xid
         if self.groups.get(xid) is not None:
             # return existing group from memory
             group_data = self.groups[xid]
@@ -150,12 +144,8 @@ class Batch(BatchWriter, BatchSubmit):
         if store is False:
             return indicator_data
 
-        if isinstance(indicator_data, dict):
-            # get xid from dict
-            xid = indicator_data['xid']
-        else:
-            # get xid from IndicatorType
-            xid = indicator_data.xid
+        # get xid from dict or from IndicatorType
+        xid = indicator_data['xid'] if isinstance(indicator_data, dict) else indicator_data.xid
 
         if self.indicators.get(xid) is not None:
             # return existing indicator from memory
@@ -182,10 +172,10 @@ class Batch(BatchWriter, BatchSubmit):
         self.indicators_shelf.close()
         if not self.debug and not self.enable_saved_file:
             # delete saved files
-            if os.path.isfile(self.group_shelf_fqfn):
-                os.remove(self.group_shelf_fqfn)
-            if os.path.isfile(self.group_shelf_fqfn):
-                os.remove(self.indicator_shelf_fqfn)
+            if self.debug_path_group_shelf.is_file():
+                self.debug_path_group_shelf.unlink()
+            if self.debug_path_indicator_shelf.is_file():
+                self.debug_path_indicator_shelf.unlink()
 
     @property
     def data(self) -> dict:
@@ -313,8 +303,8 @@ class Batch(BatchWriter, BatchSubmit):
             if tracker['count'] % 2_500 == 0:
                 # log count/size at a sane level
                 self.log.info(
-                    '''feature=batch, action=data-groups, '''
-                    f'''count={tracker.get('count'):,}, bytes={tracker.get('bytes'):,}'''
+                    """feature=batch, action=data-groups, """
+                    f"""count={tracker.get('count'):,}, bytes={tracker.get('bytes'):,}"""
                 )
 
             if (
@@ -323,8 +313,8 @@ class Batch(BatchWriter, BatchSubmit):
             ):
                 # stop processing xid once max limit are reached
                 self.log.info(
-                    '''feature=batch, event=max-value-reached, '''
-                    f'''count={tracker.get('count'):,}, bytes={tracker.get('bytes'):,}'''
+                    """feature=batch, event=max-value-reached, """
+                    f"""count={tracker.get('count'):,}, bytes={tracker.get('bytes'):,}"""
                 )
                 return True
         return False
@@ -345,20 +335,21 @@ class Batch(BatchWriter, BatchSubmit):
         """
         # process the indicators
         for xid, indicator_data in list(indicators.items()):
+            indicator_data_ = indicator_data
             if not isinstance(indicator_data, dict):
-                indicator_data = indicator_data.data
-            data['indicator'].append(indicator_data)
+                indicator_data_ = indicator_data.data
+            data['indicator'].append(indicator_data_)
             del indicators[xid]
 
             # update entity trackers
             tracker['count'] += 1
-            tracker['bytes'] += sys.getsizeof(json.dumps(indicator_data))
+            tracker['bytes'] += sys.getsizeof(json.dumps(indicator_data_))
 
             if tracker['count'] % 2_500 == 0:
                 # log count/size at a sane level
                 self.log.info(
-                    '''feature=batch, action=data-indicators, '''
-                    f'''count={tracker.get('count'):,}, bytes={tracker.get('bytes'):,}'''
+                    """feature=batch, action=data-indicators, """
+                    f"""count={tracker.get('count'):,}, bytes={tracker.get('bytes'):,}"""
                 )
 
             if (
@@ -367,8 +358,8 @@ class Batch(BatchWriter, BatchSubmit):
             ):
                 # stop processing xid once max limit are reached
                 self.log.info(
-                    '''feature=batch, event=max-value-reached, '''
-                    f'''count={tracker.get('count'):,}, bytes={tracker.get('bytes'):,}'''
+                    """feature=batch, event=max-value-reached, """
+                    f"""count={tracker.get('count'):,}, bytes={tracker.get('bytes'):,}"""
                 )
                 return True
         return False
@@ -380,18 +371,18 @@ class Batch(BatchWriter, BatchSubmit):
             self._debug = False
 
             # switching DEBUG file to a directory
-            if os.path.isfile(self.debug_path):
-                os.remove(self.debug_path)
-                os.makedirs(self.debug_path, exist_ok=True)
+            if self.debug_path.is_file():
+                self.debug_path.unlink()
+                self.debug_path.mkdir(parents=True, exist_ok=True)
 
-            if os.path.isdir(self.debug_path) and os.access(self.debug_path, os.R_OK):
+            if self.debug_path.is_dir() and os.access(self.debug_path, os.R_OK):
                 # create directories only required when debug is enabled
                 # batch_json - store the batch*.json files
                 # documents - store the file downloads (e.g., *.pdf)
                 # reports - store the file downloads (e.g., *.pdf)
-                os.makedirs(self.debug_path, exist_ok=True)
-                os.makedirs(self.debug_path_batch, exist_ok=True)
-                os.makedirs(self.debug_path_files, exist_ok=True)
+                self.debug_path.mkdir(parents=True, exist_ok=True)
+                self.debug_path_batch.mkdir(parents=True, exist_ok=True)
+                self.debug_path_files.mkdir(parents=True, exist_ok=True)
                 self._debug = True
         return self._debug
 
@@ -423,12 +414,12 @@ class Batch(BatchWriter, BatchSubmit):
 
             # store the length of the batch data to use for poll interval calculations
             self.log.info(
-                '''feature=batch, event=process-all, type=group, '''
-                f'''count={len(content['group']):,}'''
+                """feature=batch, event=process-all, type=group, """
+                f"""count={len(content['group']):,}"""
             )
             self.log.info(
-                '''feature=batch, event=process-all, type=indicator, '''
-                f'''count={len(content['indicator']):,}'''
+                """feature=batch, event=process-all, type=indicator, """
+                f"""count={len(content['indicator']):,}"""
             )
 
         if process_files:
@@ -445,9 +436,9 @@ class Batch(BatchWriter, BatchSubmit):
 
             # define the saved filename
             api_branch = 'documents' if content_data.get('type') == 'Report' else 'reports'
-            fqfn = os.path.join(
-                self.debug_path_files,
-                f'''{api_branch}--{xid}--{content_data.get('fileName').replace('/', ':')}''',
+            fqfn = (
+                self.debug_path_files
+                / f'{api_branch}--{xid}--{content_data.get("fileName").replace("/", ":")}'
             )
 
             # used for debug/testing to prevent upload of previously uploaded file
@@ -457,7 +448,7 @@ class Batch(BatchWriter, BatchSubmit):
                 )
                 continue
 
-            if os.path.isfile(fqfn):
+            if fqfn.is_file():
                 self.log.debug(
                     f'feature=batch-submit-files, action=skip-previously-saved-file, xid={xid}'
                 )
@@ -477,7 +468,7 @@ class Batch(BatchWriter, BatchSubmit):
                 continue
 
             # write the file to disk
-            with open(fqfn, 'wb') as fh:
+            with fqfn.open('wb') as fh:
                 fh.write(content)
 
     @property
@@ -487,7 +478,7 @@ class Batch(BatchWriter, BatchSubmit):
             self._saved_groups = False
             if (
                 self.enable_saved_file
-                and os.path.isfile(self.debug_path_group_shelf)
+                and self.debug_path_group_shelf.is_file()
                 and os.access(self.debug_path_group_shelf, os.R_OK)
             ):
                 self._saved_groups = True
@@ -501,7 +492,7 @@ class Batch(BatchWriter, BatchSubmit):
             self._saved_indicators = False
             if (
                 self.enable_saved_file
-                and os.path.isfile(self.debug_path_indicator_shelf)
+                and self.debug_path_indicator_shelf.is_file()
                 and os.access(self.debug_path_indicator_shelf, os.R_OK)
             ):
                 self._saved_indicators = True
@@ -513,21 +504,22 @@ class Batch(BatchWriter, BatchSubmit):
         """Return previously saved xids."""
         if self._saved_xids is None:
             self._saved_xids = []
-            if self.debug:
-                if os.path.isfile(self.debug_path_xids) and os.access(
-                    self.debug_path_xids, os.R_OK
-                ):
-                    with open(self.debug_path_xids) as fh:
-                        self._saved_xids = fh.read().splitlines()
+            if (
+                self.debug
+                and self.debug_path_xids.is_file()
+                and os.access(self.debug_path_xids, os.R_OK)
+            ):
+                with self.debug_path_xids.open() as fh:
+                    self._saved_xids = fh.read().splitlines()
         return self._saved_xids
 
     @saved_xids.setter
     def saved_xids(self, xid: str):
         """Append xid to xids saved file."""
-        with open(self.debug_path_xids, 'a') as fh:
+        with self.debug_path_xids.open('a') as fh:
             fh.write(f'{xid}\n')
 
-    def submit(  # pylint: disable=arguments-differ, arguments-renamed
+    def submit(
         self,
         poll: bool = True,
         errors: bool = True,
@@ -651,7 +643,7 @@ class Batch(BatchWriter, BatchSubmit):
 
                 # while waiting of FR for delete support in createAndUpload submit delete request
                 # the old way (submit job + submit data), still using V2.
-                if len(content) > 0:  # pylint: disable=len-as-condition
+                if len(content) > 0:
                     batch_id = self.submit_job(halt_on_error)
                     if batch_id is not None:
                         batch_data = self.submit_data(
@@ -688,9 +680,8 @@ class Batch(BatchWriter, BatchSubmit):
                             isinstance(error_count, int)
                             and isinstance(error_groups, int)
                             and isinstance(error_indicators, int)
-                        ):
-                            if error_count > 0 or error_groups > 0 or error_indicators > 0:
-                                batch_data['errors'] = self.errors(batch_id)
+                        ) and (error_count > 0 or error_groups > 0 or error_indicators > 0):
+                            batch_data['errors'] = self.errors(batch_id)
                 else:
                     # can't process files if status is unknown (polling must be enabled)
                     process_files = False
@@ -855,12 +846,12 @@ class Batch(BatchWriter, BatchSubmit):
 
         # store the length of the batch data to use for poll interval calculations
         self.log.info(
-            '''feature=batch, event=submit-create-and-upload, type=group, '''
-            f'''count={len(content['group']):,}'''
+            """feature=batch, event=submit-create-and-upload, type=group, """
+            f"""count={len(content['group']):,}"""
         )
         self.log.info(
-            '''feature=batch, event=submit-create-and-upload, type=indicator, '''
-            f'''count={len(content['indicator']):,}'''
+            """feature=batch, event=submit-create-and-upload, type=indicator, """
+            f"""count={len(content['indicator']):,}"""
         )
 
         try:
@@ -933,12 +924,12 @@ class Batch(BatchWriter, BatchSubmit):
 
             if self.debug and content_data.get('fileName'):
                 # special code for debugging App using batchV2.
-                fqfn = os.path.join(
-                    self.debug_path_files,
-                    f'''{api_branch}--{xid}--{content_data.get('fileName').replace('/', ':')}''',
+                fqfn = (
+                    self.debug_path_files
+                    / f'{api_branch}--{xid}--{content_data.get("fileName").replace("/", ":")}'
                 )
-                if os.path.isdir(os.path.dirname(fqfn)):
-                    with open(fqfn, 'wb') as fh:
+                if fqfn.parent.is_dir():
+                    with fqfn.open(mode='wb') as fh:
                         if not isinstance(content, bytes):
                             content = content.encode()
                         fh.write(content)
@@ -951,7 +942,8 @@ class Batch(BatchWriter, BatchSubmit):
             if r is None:
                 return None
 
-            if r.status_code == 401:
+            http_unauthorized_code = 401
+            if r.status_code == http_unauthorized_code:
                 # use PUT method if file already exists
                 self.log.info('feature=batch, event=401-from-post, action=switch-to-put')
                 r = self.submit_file_content('PUT', url, content, headers, params, halt_on_error)
@@ -1063,7 +1055,7 @@ class Batch(BatchWriter, BatchSubmit):
             t = threading.Thread(name=name, target=target, args=args, kwargs=kwargs, daemon=True)
             t.start()
         except Exception:
-            self.log.trace(traceback.format_exc())
+            self.log.exception('feature=batch, event=submit-thread')
         return t
 
     def write_error_json(self, errors: list):
@@ -1077,7 +1069,7 @@ class Batch(BatchWriter, BatchSubmit):
                 errors = []
             # get timestamp as a string without decimal place and consistent length
             timestamp = str(int(time.time() * 10000000))
-            error_json_file = os.path.join(self.debug_path_batch, f'errors-{timestamp}.json.gz')
+            error_json_file = self.debug_path_batch / f'errors-{timestamp}.json.gz'
             with gzip.open(error_json_file, mode='wt', encoding='utf-8') as fh:
                 json.dump(errors, fh)
 
@@ -1086,7 +1078,7 @@ class Batch(BatchWriter, BatchSubmit):
         if self.debug and content:
             # get timestamp as a string without decimal place and consistent length
             timestamp = str(int(time.time() * 10000000))
-            batch_json_file = os.path.join(self.debug_path_batch, f'batch-{timestamp}.json.gz')
+            batch_json_file = self.debug_path_batch / f'batch-{timestamp}.json.gz'
             with gzip.open(batch_json_file, mode='wt', encoding='utf-8') as fh:
                 json.dump(content, fh)
 

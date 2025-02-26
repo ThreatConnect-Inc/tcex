@@ -62,20 +62,20 @@ class DataStore:
             index_settings = {}
             headers = {'Content-Type': 'application/json', 'DB-Method': 'POST'}
             url = f'/v2/exchange/db/{self.domain}/{self.data_type}/{rid}'
-            r: 'Response' = self.session_tc.post(url, json=index_settings, headers=headers)
+            r: Response = self.session_tc.post(url, json=index_settings, headers=headers)
 
             if not r.ok:
                 error: str = r.text or r.reason
                 handle_error(code=800, message_values=[r.status_code, error])
             self.log.debug(f'creating index. status_code: {r.status_code}, response: "{r.text}".')
             # delete temporary record
-            self.delete(rid, False)
+            self.delete(rid, raise_on_error=False)
 
     def _update_mappings(self):
         """Update the mapping for the current index."""
         headers = {'Content-Type': 'application/json', 'DB-Method': 'PUT'}
         url = f'/v2/exchange/db/{self.domain}/{self.data_type}/_mappings'
-        r: 'Response' = self.session_tc.post(url, json=self.mapping, headers=headers)
+        r: Response = self.session_tc.post(url, json=self.mapping, headers=headers)
         self.log.debug(f'update mapping. status_code: {r.status_code}, response: "{r.text}".')
 
     @property
@@ -83,7 +83,7 @@ class DataStore:
         """Check to see if index exists."""
         headers = {'Content-Type': 'application/json', 'DB-Method': 'GET'}
         url = f'/v2/exchange/db/{self.domain}/{self.data_type}/_search'
-        r: 'Response' = self.session_tc.post(url, headers=headers)
+        r: Response = self.session_tc.post(url, headers=headers)
         if not r.ok:
             self.log.warning(f'The provided index was not found ({r.text}).')
             return False
@@ -134,7 +134,7 @@ class DataStore:
         response_data: dict | None = None
         headers = {'Content-Type': 'application/json', 'DB-Method': 'DELETE'}
         url = f'/v2/exchange/db/{self.domain}/{self.data_type}/{rid}'
-        r: 'Response' = self.session_tc.post(url, headers=headers)
+        r: Response = self.session_tc.post(url, headers=headers)
         self.log.debug(f'datastore delete status code: {r.status_code}')
         if r.ok and 'application/json' in r.headers.get('content-type', ''):
             response_data = r.json()
@@ -290,7 +290,7 @@ class DataStore:
         headers = {'Content-Type': 'application/json', 'DB-Method': 'PUT'}
         url = f'/v2/exchange/db/{self.domain}/{self.data_type}/{rid}'
 
-        r: 'Response' = self.session_tc.post(url, json=data, headers=headers)
+        r: Response = self.session_tc.post(url, json=data, headers=headers)
         self.log.debug(f'datastore put status code: {r.status_code}')
 
         if r.ok and 'application/json' in r.headers.get('content-type', ''):

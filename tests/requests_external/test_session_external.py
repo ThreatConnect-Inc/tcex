@@ -75,7 +75,6 @@ class TestUtils:
     def test_too_many_request_handler_properties(tcex: TcEx):
         """Test the too_many_requests properties."""
         s = tcex.session.external
-        # pylint: disable=comparison-with-callable
         assert s.too_many_requests_handler == default_too_many_requests_handler
 
         def test_handler():
@@ -83,7 +82,6 @@ class TestUtils:
 
         s.too_many_requests_handler = test_handler  # type: ignore
 
-        # pylint: disable=comparison-with-callable
         assert s.too_many_requests_handler == test_handler
 
     @staticmethod

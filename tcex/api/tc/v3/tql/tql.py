@@ -29,18 +29,18 @@ class Tql:
             keyword = tql_filter['keyword'].replace('_', '')
             value = tql_filter['value']
             try:
-                filters.append(f'''{keyword}({value._tql.as_str})''')
+                filters.append(f'{keyword}({value._tql.as_str})')  # noqa: SLF001
             except Exception:
                 if isinstance(value, list):
                     if tql_filter.get('type') in (TqlType.FLOAT, TqlType.INTEGER):
                         value = [str(int_) for int_ in value]
                     elif tql_filter.get('type') == TqlType.STRING:
-                        value = [f'"{str(str_)}"' for str_ in value]
+                        value = [f'"{str_}"' for str_ in value]
                     value = ','.join(value)
                     value = f'({value})'
                 elif tql_filter.get('type') == TqlType.STRING:
                     value = f'"{value}"'
-                filters.append(f'''{keyword} {tql_filter['operator'].value} {value}''')
+                filters.append(f'{keyword} {tql_filter["operator"].value} {value}')
 
         return ' and '.join(filters)
 
@@ -58,7 +58,7 @@ class Tql:
         self,
         keyword: str,
         operator: Enum | str,
-        value: int | float | list | str | FilterABC | Arrow | datetime,
+        value: float | list | str | FilterABC | Arrow | datetime,
         type_: TqlType | None = TqlType.STRING,
     ):
         """Add a filter to the current obj

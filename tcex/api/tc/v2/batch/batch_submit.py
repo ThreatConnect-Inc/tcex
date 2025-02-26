@@ -307,10 +307,7 @@ class BatchSubmit:
         poll_retry_seconds = int(5 if retry_seconds is None else retry_seconds)
 
         # poll timeout
-        if timeout is None:
-            timeout = self.poll_timeout
-        else:
-            timeout = int(timeout)
+        timeout = self.poll_timeout if timeout is None else int(timeout)
         params = {'includeAdditional': 'true'}
 
         poll_count = 0
@@ -425,25 +422,27 @@ class BatchSubmit:
         Returns.
             dict: The Batch Status from the ThreatConnect API.
         """
-        content = gzip.open(batch_filename, 'rt').read()
+        # content = gzip.open(batch_filename, 'rt').read()
+        with gzip.open(batch_filename, 'rt') as fh:
+            content = fh.read()
 
-        # check global setting for override
-        if self.halt_on_batch_error is not None:
-            halt_on_error = self.halt_on_batch_error
+            # check global setting for override
+            if self.halt_on_batch_error is not None:
+                halt_on_error = self.halt_on_batch_error
 
-        files = (('config', json.dumps(self.settings)), ('content', content))
-        params = {'includeAdditional': 'true'}
-        try:
-            r = self.session_tc.post('/v2/batch/createAndUpload', files=files, params=params)
-            if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-                handle_error(
-                    code=10510,
-                    message_values=[r.status_code, r.text],
-                    raise_error=halt_on_error,
-                )
-            return r.json()
-        except Exception as e:
-            handle_error(code=10505, message_values=[e], raise_error=halt_on_error)
+            files = (('config', json.dumps(self.settings)), ('content', content))
+            params = {'includeAdditional': 'true'}
+            try:
+                r = self.session_tc.post('/v2/batch/createAndUpload', files=files, params=params)
+                if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
+                    handle_error(
+                        code=10510,
+                        message_values=[r.status_code, r.text],
+                        raise_error=halt_on_error,
+                    )
+                return r.json()
+            except Exception as e:
+                handle_error(code=10505, message_values=[e], raise_error=halt_on_error)
 
         return {}
 

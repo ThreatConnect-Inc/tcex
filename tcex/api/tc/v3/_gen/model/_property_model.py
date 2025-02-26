@@ -10,7 +10,6 @@ from tcex.util.render.render import Render
 from tcex.util.string_operation import CamelString
 
 
-# pylint: disable=no-self-argument
 class ExtraModel(
     BaseModel,
     extra=Extra.forbid,
@@ -30,12 +29,12 @@ class ExtraModel(
     typing_type: str = Field(..., description='The Python typing hint type.')
 
     @validator('alias', 'type', always=True, pre=True)
+    @classmethod
     def _camel_string(cls, v):
         """Convert to CamelString."""
         return CamelString(v)
 
 
-# pylint: disable=no-self-argument
 class PropertyModel(
     BaseModel,
     alias_generator=Util().snake_to_camel,
@@ -51,6 +50,7 @@ class PropertyModel(
     allowable_values: list[str] | None = Field(
         None, description='Allowable values for the property.'
     )
+    common: bool = Field(default=False, description='Common property.')
     conditional_read_only: list[str] | None = Field(
         None, description='Conditionally read-only property.'
     )
@@ -76,13 +76,16 @@ class PropertyModel(
     updatable: bool = Field(default=True, description='Updatable property.')
 
     @validator('name', 'type', always=True, pre=True)
+    @classmethod
     def _came_string(cls, v):
         """Convert to CamelString."""
         if v is None:
-            raise ValueError('The property must have a name.')
+            ex_msg = 'The property must have a name.'
+            raise ValueError(ex_msg)
         return CamelString(v)
 
     @validator('description', always=True, pre=True)
+    @classmethod
     def _fix_first_letter_of_sentence(cls, v):
         """Convert to CamelString."""
         if v:
@@ -176,6 +179,7 @@ class PropertyModel(
             'Enrichments',
             'GeoLocation',
             'InvestigationLinks',
+            'IntelligenceReviews',
             'IntelReqType',
             'IntelRequirement',
             'KeywordSection',
@@ -303,7 +307,7 @@ class PropertyModel(
             extra.update(
                 {
                     'import_source': 'standard library',
-                    'typing_type': '''dict | list[dict] | None''',
+                    'typing_type': """dict | list[dict] | None""",
                 }
             )
         elif pm.type == 'KeywordSection':
@@ -314,12 +318,6 @@ class PropertyModel(
                     'import_source': 'first-party-forward-reference',
                     'model': 'KeywordSectionModel',
                     'typing_type': f'list[{cls.__extra_format_type_model(pm.type)}]',
-                }
-            )
-        elif pm.name == 'customAssociationNames':
-            extra.update(
-                {
-                    'typing_type': 'list[str]',
                 }
             )
         elif pm.name == 'customAssociationNames':
@@ -417,8 +415,8 @@ class PropertyModel(
     def __extra_format_type_non_native(cls, type_: str, optional: bool = False) -> str:
         """Format type for use in code."""
         if optional:
-            return f'\'{type_} | None\''
-        return f'\'{type_}\''
+            return f"'{type_} | None'"
+        return f"'{type_}'"
 
     @classmethod
     def __extra_format_type_model(cls, type_: str, optional: bool = False) -> str:

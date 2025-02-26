@@ -30,6 +30,8 @@ class TiTcRequest:
         # properties
         self.log = _logger
         self.result_limit = 10000
+        self.max_request_body_length = 50
+        self.max_response_body_length = 500
 
     def _delete(self, url, params=None):
         """Delete data from API."""
@@ -43,7 +45,7 @@ class TiTcRequest:
             f'Status Code: {r.status_code}, '
             f'URL: ({r.url})'
         )
-        if len(r.content) < 500:
+        if len(r.content) < self.max_response_body_length:
             self.log.trace(f'response: {r.text}')
         if not r.ok:
             err = r.text or r.reason
@@ -51,7 +53,7 @@ class TiTcRequest:
         return r
 
     @property
-    @lru_cache
+    @lru_cache  # noqa: B019
     def _error_codes(self) -> TcExErrorCode:
         """Return TcEx error codes."""
         return TcExErrorCode()
@@ -69,7 +71,7 @@ class TiTcRequest:
             f'Status Code: {r.status_code}, '
             f'URL: ({r.url})'
         )
-        if len(r.content) < 500:
+        if len(r.content) < self.max_response_body_length:
             self.log.trace(f'response: {r.text}')
         if not r.ok:
             err = r.text or r.reason
@@ -94,14 +96,16 @@ class TiTcRequest:
                 message_values = []
             message = self._error_codes.message(code).format(*message_values)
             self.log.error(f'Error code: {code}, {message}')
-        except AttributeError:
-            self.log.error(f'Incorrect error code provided ({code}).')
-            raise RuntimeError(100, 'Generic Failure, see logs for more details.')
-        except IndexError:
-            self.log.error(
+        except AttributeError as ex:
+            self.log.exception(f'Incorrect error code provided ({code}).')
+            ex_msg = 'Generic Failure, see logs for more details.'
+            raise RuntimeError(100, ex_msg) from ex
+        except IndexError as ex:
+            self.log.exception(
                 f'Incorrect message values provided for error code {code} ({message_values}).'
             )
-            raise RuntimeError(100, 'Generic Failure, see logs for more details.')
+            ex_msg = 'Generic Failure, see logs for more details.'
+            raise RuntimeError(100, ex_msg) from ex
         if raise_error:
             raise RuntimeError(code, message)
 
@@ -116,7 +120,7 @@ class TiTcRequest:
             result_start = int(result_start)
         except Exception:
             result_start = 0
-            self.log.error('Invalid ResultStart Param. Starting at 0')
+            self.log.exception('Invalid ResultStart Param. Starting at 0')
         while should_iterate:
             safe_params['resultStart'] = result_start
             r = self._get(url, params=safe_params)
@@ -145,9 +149,9 @@ class TiTcRequest:
             f'Status Code: {r.status_code}, '
             f'URL: ({r.url})'
         )
-        if len(data) < 50 and not isinstance(data, bytes):
+        if len(data) < self.max_request_body_length and not isinstance(data, bytes):
             self.log.trace(f'body: {data}')
-        if len(r.content) < 500:
+        if len(r.content) < self.max_response_body_length:
             self.log.trace(f'response: {r.text}')
         if not r.ok:
             err = r.text or r.reason
@@ -167,7 +171,7 @@ class TiTcRequest:
             f'URL: ({r.url})'
         )
         self.log.trace(f'body: {json_data}')
-        if len(r.content) < 500:
+        if len(r.content) < self.max_response_body_length:
             self.log.trace(f'response: {r.text}')
         if not r.ok:
             err = r.text or r.reason
@@ -186,9 +190,9 @@ class TiTcRequest:
             f'Status Code: {r.status_code}, '
             f'URL: ({r.url})'
         )
-        if len(json_data) < 50 and not isinstance(json_data, bytes):
+        if len(json_data) < self.max_request_body_length and not isinstance(json_data, bytes):
             self.log.trace(f'body: {json_data}')
-        if len(r.content) < 500:
+        if len(r.content) < self.max_response_body_length:
             self.log.trace(f'response: {r.text}')
         if not r.ok:
             err = r.text or r.reason
@@ -397,9 +401,8 @@ class TiTcRequest:
             request.Response: The response from the API call.
         """
         url = f'/v2/{main_type}/{unique_id}'
-        if sub_type:
-            if unique_id:
-                url = f'/v2/{main_type}/{sub_type}/{unique_id}'
+        if sub_type and unique_id:
+            url = f'/v2/{main_type}/{sub_type}/{unique_id}'
 
         params = {}
         if owner:
@@ -616,9 +619,8 @@ class TiTcRequest:
             request.Response: The response from the API call.
         """
         url = f'/v2/{main_type}/{unique_id}'
-        if sub_type:
-            if unique_id:
-                url = f'/v2/{main_type}/{sub_type}/{unique_id}'
+        if sub_type and unique_id:
+            url = f'/v2/{main_type}/{sub_type}/{unique_id}'
 
         params = {}
         if owner:
@@ -935,10 +937,7 @@ class TiTcRequest:
         if deleted_since:
             params['deletedSince'] = deleted_since
 
-        if not sub_type:
-            url = f'/v2/{main_type}/deleted'
-        else:
-            url = f'/v2/{main_type}/{sub_type}/deleted'
+        url = f'/v2/{main_type}/deleted' if not sub_type else f'/v2/{main_type}/{sub_type}/deleted'
 
         r = self._get(url, params)
 

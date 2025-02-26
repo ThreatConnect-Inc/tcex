@@ -50,7 +50,7 @@ class TestDataStoreGet:
         """Test failure of data store local get."""
 
         # monkeypatch method
-        def mp_post(*args, **kwargs):  # pylint: disable=unused-argument
+        def mp_post(*args, **kwargs):
             return MockPost({}, ok=False)
 
         # delete

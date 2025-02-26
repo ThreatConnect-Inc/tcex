@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# pylint: disable=no-member,no-self-argument,wrong-import-position
 # standard library
 from datetime import datetime
 
@@ -21,10 +20,10 @@ class IntelRequirementModel(
 ):
     """Intel_Requirement Model"""
 
-    _associated_type = PrivateAttr(False)
-    _cm_type = PrivateAttr(False)
-    _shared_type = PrivateAttr(False)
-    _staged = PrivateAttr(False)
+    _associated_type = PrivateAttr(default=False)
+    _cm_type = PrivateAttr(default=False)
+    _shared_type = PrivateAttr(default=False)
+    _staged = PrivateAttr(default=False)
 
     associated_artifacts: 'ArtifactsModel' = Field(
         None,
@@ -177,54 +176,63 @@ class IntelRequirementModel(
     )
 
     @validator('associated_artifacts', always=True, pre=True)
+    @classmethod
     def _validate_artifacts(cls, v):
         if not v:
             return ArtifactsModel()  # type: ignore
         return v
 
     @validator('associated_cases', always=True, pre=True)
+    @classmethod
     def _validate_cases(cls, v):
         if not v:
             return CasesModel()  # type: ignore
         return v
 
     @validator('associated_groups', always=True, pre=True)
+    @classmethod
     def _validate_groups(cls, v):
         if not v:
             return GroupsModel()  # type: ignore
         return v
 
     @validator('associated_indicators', always=True, pre=True)
+    @classmethod
     def _validate_indicators(cls, v):
         if not v:
             return IndicatorsModel()  # type: ignore
         return v
 
     @validator('category', 'subtype', always=True, pre=True)
+    @classmethod
     def _validate_intel_req_type(cls, v):
         if not v:
             return IntelReqTypeModel()  # type: ignore
         return v
 
     @validator('keyword_sections', always=True, pre=True)
+    @classmethod
     def _validate_keyword_section(cls, v):
         if not v:
             return list['KeywordSectionModel']()  # type: ignore
         return v
 
     @validator('tags', always=True, pre=True)
+    @classmethod
     def _validate_tags(cls, v):
         if not v:
             return TagsModel()  # type: ignore
         return v
 
     @validator('created_by', always=True, pre=True)
+    @classmethod
     def _validate_user(cls, v):
         if not v:
             return UserModel()  # type: ignore
         return v
 
     @validator('associated_victim_assets', always=True, pre=True)
+    @classmethod
     def _validate_victim_assets(cls, v):
         if not v:
             return VictimAssetsModel()  # type: ignore
@@ -255,7 +263,7 @@ class IntelRequirementsModel(
 ):
     """Intel_Requirements Model"""
 
-    _mode_support = PrivateAttr(False)
+    _mode_support = PrivateAttr(default=False)
 
     data: list[IntelRequirementModel] | None = Field(
         [],

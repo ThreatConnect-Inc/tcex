@@ -43,10 +43,11 @@ class OwnerRoleFilter(FilterABC):
             description_admin: The description of this role's admin access.
         """
         if isinstance(description_admin, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('descriptionAdmin', operator, description_admin, TqlType.STRING)
 
@@ -58,10 +59,11 @@ class OwnerRoleFilter(FilterABC):
             description_comm: The description of this role's access within a community.
         """
         if isinstance(description_comm, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('descriptionComm', operator, description_comm, TqlType.STRING)
 
@@ -73,14 +75,15 @@ class OwnerRoleFilter(FilterABC):
             description_org: The description of this role's access within an organization.
         """
         if isinstance(description_org, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('descriptionOrg', operator, description_org, TqlType.STRING)
 
-    def id(self, operator: Enum, id: int | list):  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int | list):  # noqa: A002
         """Filter ID based on **id** keyword.
 
         Args:
@@ -88,10 +91,11 @@ class OwnerRoleFilter(FilterABC):
             id: The ID of the user.
         """
         if isinstance(id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
@@ -103,10 +107,11 @@ class OwnerRoleFilter(FilterABC):
             name: The name of the role.
         """
         if isinstance(name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('name', operator, name, TqlType.STRING)
 
@@ -127,9 +132,10 @@ class OwnerRoleFilter(FilterABC):
             version: The version number of the role.
         """
         if isinstance(version, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('version', operator, version, TqlType.INTEGER)

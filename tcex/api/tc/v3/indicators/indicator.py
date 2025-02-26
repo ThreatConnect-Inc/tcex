@@ -59,6 +59,7 @@ class Indicator(ObjectABC):
             externally.
         external_date_expires (str, kwargs): The date and time the item expires externally.
         external_last_modified (str, kwargs): The date and time the item was modified externally.
+        false_positive_flag (bool, kwargs): Is the indicator a false positive?
         file_actions (FileActions, kwargs): The type of file action associated with this indicator.
         file_occurrences (FileOccurrences, kwargs): A list of file occurrences associated with this
             indicator.
@@ -69,6 +70,7 @@ class Indicator(ObjectABC):
         last_seen (str, kwargs): The date and time that the item was last seen.
         md5 (str, kwargs): The md5 associated with this indicator (File specific summary field).
         mode (str, kwargs): The operation to perform on the file hashes (delete | merge).
+        observations (int, kwargs): The number of times this indicator has been observed.
         owner_id (int, kwargs): The id of the Organization, Community, or Source that the item
             belongs to.
         owner_name (str, kwargs): The name of the Organization, Community, or Source that the item
@@ -122,7 +124,8 @@ class Indicator(ObjectABC):
             # provided data is raw response, load the model
             self._model = type(self.model)(**data)
         else:
-            raise RuntimeError(f'Invalid data type: {type(data)} provided.')
+            ex_msg = f'Invalid data type: {type(data)} provided.'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
 
     @property
     def as_entity(self) -> dict:
@@ -236,8 +239,9 @@ class Indicator(ObjectABC):
             data = CaseModel(**data)
 
         if not isinstance(data, CaseModel):
-            raise RuntimeError('Invalid type passed in to stage_associated_case')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_associated_case'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.associated_cases.data.append(data)  # type: ignore
 
     def stage_associated_artifact(self, data: dict | ObjectABC | ArtifactModel):
@@ -248,8 +252,9 @@ class Indicator(ObjectABC):
             data = ArtifactModel(**data)
 
         if not isinstance(data, ArtifactModel):
-            raise RuntimeError('Invalid type passed in to stage_associated_artifact')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_associated_artifact'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.associated_artifacts.data.append(data)  # type: ignore
 
     def stage_associated_group(self, data: dict | ObjectABC | GroupModel):
@@ -260,8 +265,9 @@ class Indicator(ObjectABC):
             data = GroupModel(**data)
 
         if not isinstance(data, GroupModel):
-            raise RuntimeError('Invalid type passed in to stage_associated_group')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_associated_group'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.associated_groups.data.append(data)  # type: ignore
 
     def stage_attribute(self, data: dict | ObjectABC | IndicatorAttributeModel):
@@ -272,8 +278,9 @@ class Indicator(ObjectABC):
             data = IndicatorAttributeModel(**data)
 
         if not isinstance(data, IndicatorAttributeModel):
-            raise RuntimeError('Invalid type passed in to stage_attribute')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_attribute'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.attributes.data.append(data)  # type: ignore
 
     def stage_file_action(self, data: dict | ObjectABC | FileActionModel):
@@ -284,9 +291,10 @@ class Indicator(ObjectABC):
             data = FileActionModel(**data)
 
         if not isinstance(data, FileActionModel):
-            raise RuntimeError('Invalid type passed in to stage_file_action')
-        data._staged = True
-        data.indicator._staged = True
+            ex_msg = 'Invalid type passed in to stage_file_action'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
+        data.indicator._staged = True  # noqa: SLF001
         self.model.file_actions.data.append(data)  # type: ignore
 
     def stage_file_occurrence(self, data: dict | ObjectABC | FileOccurrenceModel):
@@ -297,8 +305,9 @@ class Indicator(ObjectABC):
             data = FileOccurrenceModel(**data)
 
         if not isinstance(data, FileOccurrenceModel):
-            raise RuntimeError('Invalid type passed in to stage_file_occurrence')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_file_occurrence'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.file_occurrences.data.append(data)  # type: ignore
 
     def stage_security_label(self, data: dict | ObjectABC | SecurityLabelModel):
@@ -309,8 +318,9 @@ class Indicator(ObjectABC):
             data = SecurityLabelModel(**data)
 
         if not isinstance(data, SecurityLabelModel):
-            raise RuntimeError('Invalid type passed in to stage_security_label')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_security_label'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.security_labels.data.append(data)  # type: ignore
 
     def stage_tag(self, data: dict | ObjectABC | TagModel):
@@ -321,8 +331,9 @@ class Indicator(ObjectABC):
             data = TagModel(**data)
 
         if not isinstance(data, TagModel):
-            raise RuntimeError('Invalid type passed in to stage_tag')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_tag'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.tags.data.append(data)  # type: ignore
 
 
@@ -331,9 +342,9 @@ class Indicators(ObjectCollectionABC):
 
     # Example of params input
     {
-        'result_limit': 100,  # Limit the retrieved results.
-        'result_start': 10,  # Starting count used for pagination.
-        'fields': ['caseId', 'summary']  # Select additional return fields.
+        "result_limit": 100,  # Limit the retrieved results.
+        "result_start": 10,  # Starting count used for pagination.
+        "fields": ["caseId", "summary"]  # Select additional return fields.
     }
 
     Args:

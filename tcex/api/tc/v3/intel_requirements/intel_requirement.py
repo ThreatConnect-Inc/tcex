@@ -84,7 +84,8 @@ class IntelRequirement(ObjectABC):
             # provided data is raw response, load the model
             self._model = type(self.model)(**data)
         else:
-            raise RuntimeError(f'Invalid data type: {type(data)} provided.')
+            ex_msg = f'Invalid data type: {type(data)} provided.'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
 
     @property
     def as_entity(self) -> dict:
@@ -149,8 +150,9 @@ class IntelRequirement(ObjectABC):
             data = GroupModel(**data)
 
         if not isinstance(data, GroupModel):
-            raise RuntimeError('Invalid type passed in to stage_associated_group')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_associated_group'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.associated_groups.data.append(data)  # type: ignore
 
     def stage_associated_victim_asset(self, data: dict | ObjectABC | VictimAssetModel):
@@ -161,8 +163,9 @@ class IntelRequirement(ObjectABC):
             data = VictimAssetModel(**data)
 
         if not isinstance(data, VictimAssetModel):
-            raise RuntimeError('Invalid type passed in to stage_associated_victim_asset')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_associated_victim_asset'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.associated_victim_assets.data.append(data)  # type: ignore
 
     def stage_associated_indicator(self, data: dict | ObjectABC | IndicatorModel):
@@ -173,8 +176,9 @@ class IntelRequirement(ObjectABC):
             data = IndicatorModel(**data)
 
         if not isinstance(data, IndicatorModel):
-            raise RuntimeError('Invalid type passed in to stage_associated_indicator')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_associated_indicator'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.associated_indicators.data.append(data)  # type: ignore
 
     def replace_keyword_section(self, data: dict | list | ObjectABC | KeywordSectionModel):
@@ -182,15 +186,16 @@ class IntelRequirement(ObjectABC):
         if not isinstance(data, list):
             data = [data]
 
-        if all(isinstance(item, (KeywordSectionModel, ObjectABC)) for item in data):
+        if all(isinstance(item, (KeywordSectionModel | ObjectABC)) for item in data):
             transformed_data = data
         elif all(isinstance(item, dict) for item in data):
             transformed_data = [KeywordSectionModel(**d) for d in data]
         else:
-            raise ValueError('Invalid data to replace_keyword_section')
+            ex_msg = 'Invalid data to replace_keyword_section'
+            raise ValueError(ex_msg)
 
         for item in transformed_data:
-            item._staged = True
+            item._staged = True  # noqa: SLF001
 
         self.model.keyword_sections = transformed_data  # type: ignore
 
@@ -202,8 +207,9 @@ class IntelRequirement(ObjectABC):
             data = TagModel(**data)
 
         if not isinstance(data, TagModel):
-            raise RuntimeError('Invalid type passed in to stage_tag')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_tag'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.tags.data.append(data)  # type: ignore
 
 
@@ -212,9 +218,9 @@ class IntelRequirements(ObjectCollectionABC):
 
     # Example of params input
     {
-        'result_limit': 100,  # Limit the retrieved results.
-        'result_start': 10,  # Starting count used for pagination.
-        'fields': ['caseId', 'summary']  # Select additional return fields.
+        "result_limit": 100,  # Limit the retrieved results.
+        "result_start": 10,  # Starting count used for pagination.
+        "fields": ["caseId", "summary"]  # Select additional return fields.
     }
 
     Args:

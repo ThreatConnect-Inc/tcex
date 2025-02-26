@@ -43,10 +43,10 @@ class GenerateObjectABC(GenerateABC, ABC):
         """
         return '\n'.join(
             [
-                f'''{self.i1}@property''',
-                f'''{self.i1}def _api_endpoint(self) -> str:''',
-                f'''{self.i2}"""Return the type specific API endpoint."""''',
-                f'''{self.i2}return ApiEndpoints.{self.type_.upper()}.value''',
+                f'{self.i1}@property',
+                f'{self.i1}def _api_endpoint(self) -> str:',
+                f'{self.i2}"""Return the type specific API endpoint."""',
+                f'{self.i2}return ApiEndpoints.{self.type_.upper()}.value',
                 '',
                 '',
             ]
@@ -74,17 +74,17 @@ class GenerateObjectABC(GenerateABC, ABC):
         model_name = f'{self.type_.plural().pascal_case()}Model'
         return '\n'.join(
             [
-                f'''{self.i1}def __init__(self, **kwargs):''',
-                f'''{self.i2}"""Initialize instance properties."""''',
-                f'''{self.i2}super().__init__(''',
+                f'{self.i1}def __init__(self, **kwargs):',
+                f'{self.i2}"""Initialize instance properties."""',
+                f'{self.i2}super().__init__(',
                 (
-                    f'''{self.i3}kwargs.pop('session', None), '''
-                    f'''kwargs.pop('tql_filter', None), '''
-                    f'''kwargs.pop('params', None)'''
+                    f'{self.i3}kwargs.pop("session", None), '
+                    f'kwargs.pop("tql_filter", None), '
+                    f'kwargs.pop("params", None)'
                 ),
-                f'''{self.i2})''',
-                f'''{self.i2}self._model = {model_name}(**kwargs)''',
-                f'''{self.i2}self.type_ = \'{self.type_.plural()}\'''',
+                f'{self.i2})',
+                f'{self.i2}self._model = {model_name}(**kwargs)',
+                f'{self.i2}self.type_ = "{self.type_.plural()}"',
                 '',
                 '',
             ]
@@ -101,14 +101,14 @@ class GenerateObjectABC(GenerateABC, ABC):
         return '\n'.join(
             [
                 (
-                    f'''{self.i1}def __iter__(self) -> '''
-                    f'''Iterator[{self.type_.singular().pascal_case()}]:'''
+                    f'{self.i1}def __iter__(self) -> '
+                    f'Iterator[{self.type_.singular().pascal_case()}]:'
                 ),
-                f'''{self.i2}"""Return CM objects."""''',
+                f'{self.i2}"""Return CM objects."""',
                 (
-                    f'''{self.i2}return self.iterate(base_class='''
-                    f'''{self.type_.singular().pascal_case()})'''
-                    '''  # type: ignore'''
+                    f'{self.i2}return self.iterate(base_class='
+                    f'{self.type_.singular().pascal_case()})'
+                    '  # type: ignore'
                 ),
                 '',
                 '',
@@ -168,10 +168,10 @@ class GenerateObjectABC(GenerateABC, ABC):
         self.update_requirements(self.type_, f'{self.type_.singular()}_filter', [filter_class])
         return '\n'.join(
             [
-                f'''{self.i1}@property''',
-                f'''{self.i1}def filter(self) -> {filter_class}:''',
-                f'''{self.i2}"""Return the type specific filter object."""''',
-                f'''{self.i2}return {filter_class}(self.tql)''',
+                f'{self.i1}@property',
+                f'{self.i1}def filter(self) -> {filter_class}:',
+                f'{self.i2}"""Return the type specific filter object."""',
+                f'{self.i2}return {filter_class}(self.tql)',
                 '',
                 '',
             ]
@@ -188,34 +188,34 @@ class GenerateObjectABC(GenerateABC, ABC):
         self.requirements['first-party'].append({'module': 'datetime', 'imports': ['datetime']})
         return '\n'.join(
             [
-                f'''{self.i1}def deleted(''',
-                f'''{self.i2}self,''',
-                f'''{self.i2}deleted_since: datetime | str | None,''',
-                f'''{self.i2}type_: str | None = None,''',
-                f'''{self.i2}owner: str | None = None''',
-                f'''{self.i1}):''',
-                f'''{self.i2}"""Return deleted indicators.''',
+                f'{self.i1}def deleted(',
+                f'{self.i2}self,',
+                f'{self.i2}deleted_since: datetime | str | None,',
+                f'{self.i2}type_: str | None = None,',
+                f'{self.i2}owner: str | None = None',
+                f'{self.i1}):',
+                f'{self.i2}"""Return deleted indicators.',
                 '',
-                f'''{self.i2}This will not use the default params set on the "Indicators" ''',
-                f'''{self.i2}object and instead used the params that are passed in.''',
-                f'''{self.i2}"""''',
+                f'{self.i2}This will not use the default params set on the "Indicators" ',
+                f'{self.i2}object and instead used the params that are passed in.',
+                f'{self.i2}"""',
                 '',
-                f'''{self.i2}if deleted_since is not None:''',
-                f'''{self.i3}deleted_since = str(''',
+                f'{self.i2}if deleted_since is not None:',
+                f'{self.i3}deleted_since = str(',
                 (
-                    f'''{self.i4}self.util.any_to_datetime(deleted_since)'''
-                    '''.strftime('%Y-%m-%dT%H:%M:%SZ')'''
+                    f'{self.i4}self.util.any_to_datetime(deleted_since)'
+                    '.strftime("%Y-%m-%dT%H:%M:%SZ")'
                 ),
-                f'''{self.i3})''',
+                f'{self.i3})',
                 '',
-                f'''{self.i2}yield from self.iterate(''',
-                f'''{self.i3}base_class=Indicator,''',
-                f'''{self.i3}api_endpoint=f'{{self._api_endpoint}}/deleted',''',
+                f'{self.i2}yield from self.iterate(',
+                f'{self.i3}base_class=Indicator,',
+                f'{self.i3}api_endpoint=f"{{self._api_endpoint}}/deleted",',
                 (
-                    f'''{self.i3}params={{'deletedSince': deleted_since, '''
-                    ''''owner': owner, 'type': type_}'''
+                    f'{self.i3}params={{"deletedSince": deleted_since, '
+                    '"owner": owner, "type": type_}'
                 ),
-                f'''{self.i2})''',
+                f'{self.i2})',
                 '',
             ]
         )
@@ -228,46 +228,45 @@ class GenerateObjectABC(GenerateABC, ABC):
             '''Return the type specific filter object.'''
             return ArtifactFilter(self._session, self.tql)
         """
-        # BCS
         # self.requirements['type-checking'].append('''from requests import Response''')
-        self.requirements['first-party'].append('''from requests import Response''')
+        self.requirements['first-party'].append("""from requests import Response""")
         return '\n'.join(
             [
-                f'''{self.i1}def download(self, params: dict | None = None) -> bytes:''',
-                f'''{self.i2}"""Return the document attachment for Document/Report Types."""''',
-                f'''{self.i2}self._request(''',
-                f'''{self.i3}method='GET',''',
-                f'''{self.i3}url=f\'\'\'{{self.url('GET')}}/download\'\'\',''',
-                f'''{self.i3}headers={{'Accept': 'application/octet-stream'}},''',
-                f'''{self.i3}params=params,''',
-                f'''{self.i2})''',
-                f'''{self.i2}return self.request.content''',
+                f'{self.i1}def download(self, params: dict | None = None) -> bytes:',
+                f'{self.i2}"""Return the document attachment for Document/Report Types."""',
+                f'{self.i2}self._request(',
+                f'{self.i3}method="GET",',
+                f"{self.i3}url=f'''{{self.url(\"GET\")}}/download''',",
+                f'{self.i3}headers={{"Accept": "application/octet-stream"}},',
+                f'{self.i3}params=params,',
+                f'{self.i2})',
+                f'{self.i2}return self.request.content',
                 '',
-                f'''{self.i1}def pdf(self, params: dict | None = None) -> bytes:''',
-                f'''{self.i2}"""Return the document attachment for Document/Report Types."""''',
-                f'''{self.i2}self._request(''',
-                f'''{self.i3}method='GET',''',
-                f'''{self.i3}body=None,''',
-                f'''{self.i3}url=f\'\'\'{{self.url('GET')}}/pdf\'\'\',''',
-                f'''{self.i3}headers={{'Accept': 'application/octet-stream'}},''',
-                f'''{self.i3}params=params,''',
-                f'''{self.i2})''',
+                f'{self.i1}def pdf(self, params: dict | None = None) -> bytes:',
+                f'{self.i2}"""Return the document attachment for Document/Report Types."""',
+                f'{self.i2}self._request(',
+                f'{self.i3}method="GET",',
+                f'{self.i3}body=None,',
+                f"{self.i3}url=f'''{{self.url(\"GET\")}}/pdf''',",
+                f'{self.i3}headers={{"Accept": "application/octet-stream"}},',
+                f'{self.i3}params=params,',
+                f'{self.i2})',
                 '',
-                f'''{self.i2}return self.request.content''',
+                f'{self.i2}return self.request.content',
                 '',
                 (
-                    f'''{self.i1}def upload(self, content: bytes | str, '''
-                    '''params: dict | None = None) -> Response:'''
+                    f'{self.i1}def upload(self, content: bytes | str, '
+                    'params: dict | None = None) -> Response:'
                 ),
-                f'''{self.i2}"""Return the document attachment for Document/Report Types."""''',
-                f'''{self.i2}self._request(''',
-                f'''{self.i3}method='POST',''',
-                f'''{self.i3}url=f\'\'\'{{self.url('GET')}}/upload\'\'\',''',
-                f'''{self.i3}body=content,''',
-                f'''{self.i3}headers={{'content-type': 'application/octet-stream'}},''',
-                f'''{self.i3}params=params,''',
-                f'''{self.i2})''',
-                f'''{self.i2}return self.request''',
+                f'{self.i2}"""Return the document attachment for Document/Report Types."""',
+                f'{self.i2}self._request(',
+                f'{self.i3}method="POST",',
+                f"{self.i3}url=f'''{{self.url(\"GET\")}}/upload''',",
+                f'{self.i3}body=content,',
+                f'{self.i3}headers={{"content-type": "application/octet-stream"}},',
+                f'{self.i3}params=params,',
+                f'{self.i2})',
+                f'{self.i2}return self.request',
                 '',
                 '',
             ]
@@ -293,15 +292,15 @@ class GenerateObjectABC(GenerateABC, ABC):
         model_name = f'{self.type_.singular().pascal_case()}Model'
         return '\n'.join(
             [
-                f'''{self.i1}def __init__(self, **kwargs):''',
-                f'''{self.i2}"""Initialize instance properties."""''',
-                f'''{self.i2}super().__init__(kwargs.pop('session', None))''',
+                f'{self.i1}def __init__(self, **kwargs):',
+                f'{self.i2}"""Initialize instance properties."""',
+                f'{self.i2}super().__init__(kwargs.pop("session", None))',
                 '',
-                f'''{self.i2}# properties''',
-                f'''{self.i2}self._model: {model_name} = {model_name}(**kwargs)''',
-                f'''{self.i2}self._nested_field_name = '{nested_field_name}' ''',
-                f'''{self.i2}self._nested_filter = 'has_{self.type_.singular()}' ''',
-                f'''{self.i2}self.type_ = \'{self.type_.singular().space_case()}\'''',
+                f'{self.i2}# properties',
+                f'{self.i2}self._model: {model_name} = {model_name}(**kwargs)',
+                f'{self.i2}self._nested_field_name = "{nested_field_name}" ',
+                f'{self.i2}self._nested_filter = "has_{self.type_.singular()}" ',
+                f'{self.i2}self.type_ = "{self.type_.singular().space_case()}"',
                 '',
                 '',
             ]
@@ -328,29 +327,31 @@ class GenerateObjectABC(GenerateABC, ABC):
                 # provided data is raw response, load the model
                 self._model = type(self.model)(**data)
             else:
-                raise RuntimeError(f'Invalid data type: {type(data)} provided.')
+                ex_msg = f'Invalid data type: {type(data)} provided.'
+                raise RuntimeError(ex_msg)
         """
         return '\n'.join(
             [
-                f'''{self.i1}@property''',
-                f'''{self.i1}def model(self) -> {self.type_.singular().pascal_case()}Model:''',
-                f'''{self.i2}"""Return the model data."""''',
-                f'''{self.i2}return self._model''',
+                f'{self.i1}@property',
+                f'{self.i1}def model(self) -> {self.type_.singular().pascal_case()}Model:',
+                f'{self.i2}"""Return the model data."""',
+                f'{self.i2}return self._model',
                 '',
-                f'''{self.i1}@model.setter''',
+                f'{self.i1}@model.setter',
                 (
-                    f'''{self.i1}def model(self, data: '''
-                    f'''dict | {self.type_.singular().pascal_case()}Model):'''
+                    f'{self.i1}def model(self, data: '
+                    f'dict | {self.type_.singular().pascal_case()}Model):'
                 ),
-                f'''{self.i2}"""Create model using the provided data."""''',
-                f'''{self.i2}if isinstance(data, type(self.model)):''',
-                f'''{self.i3}# provided data is already a model, nothing required to change''',
-                f'''{self.i3}self._model = data''',
-                f'''{self.i2}elif isinstance(data, dict):''',
-                f'''{self.i3}# provided data is raw response, load the model''',
-                f'''{self.i3}self._model = type(self.model)(**data)''',
-                f'''{self.i2}else:''',
-                f'''{self.i3}raise RuntimeError(f'Invalid data type: {{type(data)}} provided.')''',
+                f'{self.i2}"""Create model using the provided data."""',
+                f'{self.i2}if isinstance(data, type(self.model)):',
+                f'{self.i3}# provided data is already a model, nothing required to change',
+                f'{self.i3}self._model = data',
+                f'{self.i2}elif isinstance(data, dict):',
+                f'{self.i3}# provided data is raw response, load the model',
+                f'{self.i3}self._model = type(self.model)(**data)',
+                f'{self.i2}else:',
+                f'{self.i3}ex_msg = f"Invalid data type: {{type(data)}} provided."',
+                f'{self.i3}raise RuntimeError(ex_msg)  # noqa: TRY004',
                 '',
                 '',
             ]
@@ -391,55 +392,51 @@ class GenerateObjectABC(GenerateABC, ABC):
             value = 'self.model.requirement_text'
 
         as_entity_property_method = [
-            f'''{self.i1}@property''',
-            f'''{self.i1}def as_entity(self) -> dict:''',
-            f'''{self.i2}"""Return the entity representation of the object."""''',
+            f'{self.i1}@property',
+            f'{self.i1}def as_entity(self) -> dict:',
+            f'{self.i2}"""Return the entity representation of the object."""',
         ]
         if self.type_.lower() in ['groups', 'indicators']:
-            as_entity_property_method.append(f'''{self.i2}type_ = self.model.type''')
+            as_entity_property_method.append(f'{self.i2}type_ = self.model.type')
         elif self.type_.lower() in ['victim_assets']:
             value = 'value'
             as_entity_property_method.extend(
                 [
-                    f'''{self.i2}value = []''',
+                    f'{self.i2}value = []',
                     '',
-                    f'''{self.i2}if self.model.type is not None:''',
-                    f'''{self.i3}if self.model.type.lower() == 'phone':''',
-                    f'''{self.i4}if self.model.phone:''',
-                    f'''{self.i5}value.append(self.model.phone)''',
-                    f'''{self.i3}elif self.model.type.lower() == 'socialnetwork':''',
-                    f'''{self.i4}if self.model.social_network:''',
-                    f'''{self.i5}value.append(self.model.social_network)''',
-                    f'''{self.i4}if self.model.account_name:''',
-                    f'''{self.i5}value.append(self.model.account_name)''',
-                    f'''{self.i3}elif self.model.type.lower() == 'networkaccount':''',
-                    f'''{self.i4}if self.model.network_type:''',
-                    f'''{self.i5}value.append(self.model.network_type)''',
-                    f'''{self.i4}if self.model.account_name:''',
-                    f'''{self.i5}value.append(self.model.account_name)''',
-                    f'''{self.i3}elif self.model.type.lower() == 'emailaddress':''',
-                    f'''{self.i4}if self.model.address_type:''',
-                    f'''{self.i5}value.append(self.model.address_type)''',
-                    f'''{self.i4}if self.model.address:''',
-                    f'''{self.i5}value.append(self.model.address)''',
-                    f'''{self.i3}elif self.model.type.lower() == 'website':''',
-                    f'''{self.i4}if self.model.website:''',
-                    f'''{self.i5}value.append(self.model.website)''',
+                    f'{self.i2}if self.model.type is not None:',
+                    f'{self.i3}if self.model.type.lower() == "phone":',
+                    f'{self.i4}if self.model.phone:',
+                    f'{self.i5}value.append(self.model.phone)',
+                    f'{self.i3}elif self.model.type.lower() == "socialnetwork":',
+                    f'{self.i4}if self.model.social_network:',
+                    f'{self.i5}value.append(self.model.social_network)',
+                    f'{self.i4}if self.model.account_name:',
+                    f'{self.i5}value.append(self.model.account_name)',
+                    f'{self.i3}elif self.model.type.lower() == "networkaccount":',
+                    f'{self.i4}if self.model.network_type:',
+                    f'{self.i5}value.append(self.model.network_type)',
+                    f'{self.i4}if self.model.account_name:',
+                    f'{self.i5}value.append(self.model.account_name)',
+                    f'{self.i3}elif self.model.type.lower() == "emailaddress":',
+                    f'{self.i4}if self.model.address_type:',
+                    f'{self.i5}value.append(self.model.address_type)',
+                    f'{self.i4}if self.model.address:',
+                    f'{self.i5}value.append(self.model.address)',
+                    f'{self.i3}elif self.model.type.lower() == "website" and self.model.website:',
+                    f'{self.i4}value.append(self.model.website)',
                     '',
                     '',
-                    f'''{self.i2}value = ' : '.join(value) if value else \'\'''',
-                    f'''{self.i2}type_ = f'Victim Asset : {{self.model.type}}\'''',
+                    f'{self.i2}value = " : ".join(value) if value else ""',
+                    f'{self.i2}type_ = f"Victim Asset : {{self.model.type}}"',
                 ]
             )
         else:
-            as_entity_property_method.append(f'''{self.i2}type_ = self.type_''')
+            as_entity_property_method.append(f'{self.i2}type_ = self.type_')
         as_entity_property_method.extend(
             [
                 '',
-                (
-                    f'''{self.i2}return {{'type': type_, 'id': '''
-                    f'''self.model.id, 'value': {value}}}'''
-                ),
+                f'{self.i2}return {{"type": type_, "id": self.model.id, "value": {value}}}',
                 '',
                 '',
             ]
@@ -462,31 +459,32 @@ class GenerateObjectABC(GenerateABC, ABC):
         model_import_data = self._module_import_data(type_)
         model_class = model_import_data.get('model_class')
         self.requirements['first-party'].append(
-            f'''from {model_import_data.get('model_module')} '''
-            f'''import {model_import_data.get('model_class')}'''
+            f'from {model_import_data.get("model_module")} '
+            f'import {model_import_data.get("model_class")}'
         )
         stage_method = [
             (
-                f'''{self.i1}def replace_{model_type.singular()}(self, '''
-                f'''data: dict | list | ObjectABC | {model_class}'''
-                f'''):'''
+                f'{self.i1}def replace_{model_type.singular()}(self, '
+                f'data: dict | list | ObjectABC | {model_class}'
+                f'):'
             ),
-            f'''{self.i2}"""Replace {type_.singular()} on the object."""''',
-            f'''{self.i2}if not isinstance(data, list):''',
-            f'''{self.i3}data = [data]''',
+            f'{self.i2}"""Replace {type_.singular()} on the object."""',
+            f'{self.i2}if not isinstance(data, list):',
+            f'{self.i3}data = [data]',
             '',
-            f'''{self.i2}if all(isinstance(item, ({model_class}, ObjectABC)) for item in data):'''
-            f'''{self.i3}transformed_data = data''',
-            f'''{self.i2}elif all(isinstance(item, dict) for item in data):'''
-            f'''{self.i3}transformed_data = [{model_class}(**d) for d in data]''',
-            f'''{self.i2}else:'''
-            f'''{self.i3}raise ValueError('Invalid data to replace_{model_type.singular()}')''',
+            f'{self.i2}if all(isinstance(item, ({model_class} | ObjectABC)) for item in data):'
+            f'{self.i3}transformed_data = data',
+            f'{self.i2}elif all(isinstance(item, dict) for item in data):'
+            f'{self.i3}transformed_data = [{model_class}(**d) for d in data]',
+            f'{self.i2}else:',
+            f'{self.i3}ex_msg = "Invalid data to replace_{model_type.singular()}"',
+            f'{self.i3}raise ValueError(ex_msg)',
             '',
             '',
-            f'''{self.i2}for item in transformed_data:''',
-            f'''{self.i3}item._staged = True''',
+            f'{self.i2}for item in transformed_data:',
+            f'{self.i3}item._staged = True  # noqa: SLF001',
             '',
-            f'''{self.i2}self.model.{model_reference} = transformed_data  # type: ignore''',
+            f'{self.i2}self.model.{model_reference} = transformed_data  # type: ignore',
             '',
             '',
         ]
@@ -520,36 +518,34 @@ class GenerateObjectABC(GenerateABC, ABC):
         # get model from map and update requirements
         model_import_data = self._module_import_data(type_)
         self.requirements['first-party'].append(
-            f'''from {model_import_data.get('model_module')} '''
-            f'''import {model_import_data.get('model_class')}'''
+            f'from {model_import_data.get("model_module")} '
+            f'import {model_import_data.get("model_class")}'
         )
         stage_method = [
             (
-                f'''{self.i1}def stage_{model_type.singular()}(self, '''
-                f'''data: dict | ObjectABC | {model_import_data.get('model_class')}'''
-                f'''):'''
+                f'{self.i1}def stage_{model_type.singular()}(self, '
+                f'data: dict | ObjectABC | {model_import_data.get("model_class")}'
+                f'):'
             ),
-            f'''{self.i2}"""Stage {type_.singular()} on the object."""''',
-            f'''{self.i2}if isinstance(data, ObjectABC):''',
-            f'''{self.i3}data = data.model  # type: ignore''',
-            f'''{self.i2}elif isinstance(data, dict):''',
-            f'''{self.i3}data = {model_import_data.get('model_class')}(**data)''',
+            f'{self.i2}"""Stage {type_.singular()} on the object."""',
+            f'{self.i2}if isinstance(data, ObjectABC):',
+            f'{self.i3}data = data.model  # type: ignore',
+            f'{self.i2}elif isinstance(data, dict):',
+            f'{self.i3}data = {model_import_data.get("model_class")}(**data)',
             '',
-            f'''{self.i2}if not isinstance(data, {model_import_data.get('model_class')}):''',
-            (
-                f'''{self.i3}raise RuntimeError('Invalid type '''
-                f'''passed in to stage_{model_type.singular()}')'''
-            ),
-            f'''{self.i2}data._staged = True''',
+            f'{self.i2}if not isinstance(data, {model_import_data.get("model_class")}):',
+            f'{self.i3}ex_msg = "Invalid type passed in to stage_{model_type.singular()}"',
+            f'{self.i3}raise RuntimeError(ex_msg)  # noqa: TRY004',
+            f'{self.i2}data._staged = True  # noqa: SLF001',
         ]
         if type_.lower() == 'file_actions' and self.type_.lower() == 'indicators':
             # The `indicator` field in the FileActionModel must be staged to be
             # submitted through the API
-            stage_method.append(f'''{self.i2}data.indicator._staged = True''')
+            stage_method.append(f'{self.i2}data.indicator._staged = True  # noqa: SLF001')
 
         stage_method.extend(
             [
-                f'''{self.i2}self.model.{model_reference}.data.append(data)  # type: ignore''',
+                f'{self.i2}self.model.{model_reference}.data.append(data)  # type: ignore',
                 '',
                 '',
             ]
@@ -562,40 +558,40 @@ class GenerateObjectABC(GenerateABC, ABC):
         self.requirements['standard library'].append('import json')
         return '\n'.join(
             [
-                f'''{self.i1}def remove(self, params: dict | None = None):''',
-                f'''{self.i2}"""Remove a nested object."""''',
-                f'''{self.i2}method = \'PUT\'''',
-                f'''{self.i2}unique_id = self._calculate_unique_id()''',
+                f'{self.i1}def remove(self, params: dict | None = None):',
+                f'{self.i2}"""Remove a nested object."""',
+                f"{self.i2}method = 'PUT'",
+                f'{self.i2}unique_id = self._calculate_unique_id()',
                 '',
-                f'''{self.i2}# validate an id is available''',
-                f'''{self.i2}self._validate_id(unique_id.get('value'), '')''',
+                f'{self.i2}# validate an id is available',
+                f'{self.i2}self._validate_id(unique_id.get("value"), "")',
                 '',
-                f'''{self.i2}body = json.dumps(''',
-                f'''{self.i3}{{''',
-                f'''{self.i4}self._nested_field_name: {{''',
-                f'''{self.i5}'data': [{{unique_id.get('filter'): unique_id.get('value')}}],''',
-                f'''{self.i5}'mode': 'delete',''',
-                f'''{self.i4}}}''',
-                f'''{self.i3}}}''',
-                f'''{self.i2})''',
+                f'{self.i2}body = json.dumps(',
+                f'{self.i3}{{',
+                f'{self.i4}self._nested_field_name: {{',
+                f'{self.i5}"data": [{{unique_id.get("filter"): unique_id.get("value")}}],',
+                f'{self.i5}"mode": "delete",',
+                f'{self.i4}}}',
+                f'{self.i3}}}',
+                f'{self.i2})',
                 '',
-                f'''{self.i2}# get the unique id value for id, xid, summary, etc ...''',
-                f'''{self.i2}parent_api_endpoint = self._parent_data.get('api_endpoint')''',
-                f'''{self.i2}parent_unique_id = self._parent_data.get('unique_id')''',
-                f'''{self.i2}url = f\'{{parent_api_endpoint}}/{{parent_unique_id}}\'''',
+                f'{self.i2}# get the unique id value for id, xid, summary, etc ...',
+                f'{self.i2}parent_api_endpoint = self._parent_data.get("api_endpoint")',
+                f'{self.i2}parent_unique_id = self._parent_data.get("unique_id")',
+                f'{self.i2}url = f"{{parent_api_endpoint}}/{{parent_unique_id}}"',
                 '',
-                f'''{self.i2}# validate parent an id is available''',
-                f'''{self.i2}self._validate_id(parent_unique_id, url)''',
+                f'{self.i2}# validate parent an id is available',
+                f'{self.i2}self._validate_id(parent_unique_id, url)',
                 '',
-                f'''{self.i2}self._request(''',
-                f'''{self.i3}method=method,''',
-                f'''{self.i3}url=url,''',
-                f'''{self.i3}body=body,''',
-                f'''{self.i3}headers={{'content-type': 'application/json'}},''',
-                f'''{self.i3}params=params,''',
-                f'''{self.i2})''',
+                f'{self.i2}self._request(',
+                f'{self.i3}method=method,',
+                f'{self.i3}url=url,',
+                f'{self.i3}body=body,',
+                f'{self.i3}headers={{"content-type": "application/json"}},',
+                f'{self.i3}params=params,',
+                f'{self.i2})',
                 '',
-                f'''{self.i2}return self.request''',
+                f'{self.i2}return self.request',
                 '',
                 '',
             ]
@@ -616,9 +612,10 @@ class GenerateObjectABC(GenerateABC, ABC):
                 data = UserGroupModel(**data)
 
             if not isinstance(data, UserModel | UserGroupModel):
-                raise RuntimeError('Invalid type passed in to stage_assignee')
-            data._staged = True
-            self.model.assignee._staged = True
+                ex_msg = 'Invalid type passed in to stage_assignee'
+                raise RuntimeError(ex_msg)  # noqa: TRY004
+            data._staged = True  # noqa: SLF001
+            self.model.assignee._staged = True  # noqa: SLF001
             self.model.assignee.type = type
             self.model.assignee.data = data
         """
@@ -631,26 +628,30 @@ class GenerateObjectABC(GenerateABC, ABC):
 
         return '\n'.join(
             [
-                f'''{self.i1}# pylint: disable=redefined-builtin''',
+                f'{self.i1}',
                 (
-                    f'''{self.i1}def stage_assignee(self, type: str, data: '''
-                    f'''dict | ObjectABC | UserModel | UserGroupModel):'''
+                    f'{self.i1}def stage_assignee(\n'
+                    f'{self.i2}self,\n'
+                    f'{self.i2}type: str,  # noqa: A002\n'
+                    f'{self.i2}data: dict | ObjectABC | UserModel | UserGroupModel,\n'
+                    f'{self.i1}):\n'
                 ),
-                f'''{self.i2}"""Stage artifact on the object."""''',
-                f'''{self.i2}if isinstance(data, ObjectABC):''',
-                f'''{self.i3}data = data.model  # type: ignore''',
-                f'''{self.i2}elif type.lower() == 'user' and isinstance(data, dict):''',
-                f'''{self.i3}data = UserModel(**data)''',
-                f'''{self.i2}elif type.lower() == 'group' and isinstance(data, dict):''',
-                f'''{self.i3}data = UserGroupModel(**data)''',
+                f'{self.i2}"""Stage artifact on the object."""',
+                f'{self.i2}if isinstance(data, ObjectABC):',
+                f'{self.i3}data = data.model  # type: ignore',
+                f'{self.i2}elif type.lower() == "user" and isinstance(data, dict):',
+                f'{self.i3}data = UserModel(**data)',
+                f'{self.i2}elif type.lower() == "group" and isinstance(data, dict):',
+                f'{self.i3}data = UserGroupModel(**data)',
                 '',
-                f'''{self.i2}if not isinstance(data, UserModel | UserGroupModel):''',
-                f'''{self.i3}raise RuntimeError('Invalid type passed in to stage_assignee')''',
-                f'''{self.i2}data._staged = True''',
-                f'''{self.i2}self.model.assignee._staged = True''',
-                f'''{self.i2}self.model.assignee.type = type''',
+                f'{self.i2}if not isinstance(data, UserModel | UserGroupModel):',
+                f'{self.i3}ex_msg = "Invalid type passed in to stage_assignee"',
+                f'{self.i3}raise RuntimeError(ex_msg)  # noqa: TRY004',
+                f'{self.i2}data._staged = True  # noqa: SLF001',
+                f'{self.i2}self.model.assignee._staged = True  # noqa: SLF001',
+                f'{self.i2}self.model.assignee.type = type',
                 # pylance shows a warning on type here, but it in not handling inheritance properly.
-                f'''{self.i2}self.model.assignee.data = data  # type: ignore''',
+                f'{self.i2}self.model.assignee.data = data  # type: ignore',
                 '',
                 '',
             ]
@@ -687,21 +688,18 @@ class GenerateObjectABC(GenerateABC, ABC):
             )
         else:
             # set typing to model class and add import
-            return_type = f'''\'{model_import_data.get('object_class')}\''''
+            return_type = f'"{model_import_data.get("object_class")}"'
             self.requirements['type-checking'].append(
-                f'''from {model_import_data.get('object_module')} '''
-                f'''import {model_import_data.get('object_class')}'''
+                f'from {model_import_data.get("object_module")} '
+                f'import {model_import_data.get("object_class")}'
             )
 
         _code = [
-            f'''{self.i1}@property''',
+            f'{self.i1}@property',
+            (f'{self.i1}def {model_type.plural()}(self) -> Generator[{return_type}, None, None]:'),
             (
-                f'''{self.i1}def {model_type.plural()}(self) ->'''
-                f''' Generator[{return_type}, None, None]:'''
-            ),
-            (
-                f'''{self.i2}"""Yield {type_.singular().pascal_case()} '''
-                f'''from {type_.plural().pascal_case()}."""'''
+                f'{self.i2}"""Yield {type_.singular().pascal_case()} '
+                f'from {type_.plural().pascal_case()}."""'
             ),
         ]
 
@@ -709,8 +707,8 @@ class GenerateObjectABC(GenerateABC, ABC):
             _code.extend(
                 [
                     (
-                        f'''{self.i2}from {model_import_data.get('object_module')} '''
-                        f'''import {model_import_data.get('object_collection_class')}'''
+                        f'{self.i2}from {model_import_data.get("object_module")} '
+                        f'import {model_import_data.get("object_collection_class")}'
                     ),
                     '',
                 ]
@@ -722,10 +720,10 @@ class GenerateObjectABC(GenerateABC, ABC):
             _code.extend(
                 [
                     (
-                        f'''{self.i2}yield from self._iterate_over_sublist'''
-                        f'''({model_import_data.get('object_collection_class')}, '''
-                        '''custom_associations=True)'''
-                        '''  # type: ignore'''
+                        f'{self.i2}yield from self._iterate_over_sublist'
+                        f'({model_import_data.get("object_collection_class")}, '
+                        'custom_associations=True)'
+                        '  # type: ignore'
                     ),
                 ]
             )
@@ -735,42 +733,39 @@ class GenerateObjectABC(GenerateABC, ABC):
         ):
             _code.extend(
                 [
-                    f'''{self.i2}# Ensure the current item is not returned as a association''',
+                    f'{self.i2}# Ensure the current item is not returned as a association',
                     (
-                        f'''{self.i2}for {type_.singular()} in self._iterate_over_sublist'''
-                        f'''({model_import_data.get('object_collection_class')}):'''
-                        '''  # type: ignore'''
+                        f'{self.i2}for {type_.singular()} in self._iterate_over_sublist'
+                        f'({model_import_data.get("object_collection_class")}):'
+                        '  # type: ignore'
                     ),
                 ]
             )
             if self.type_ == 'indicator':
                 _code.extend(
                     [
-                        (
-                            f'''{self.i3}if {type_.singular()}.model.summary == '''
-                            '''self.model.summary:'''
-                        ),
+                        (f'{self.i3}if {type_.singular()}.model.summary == self.model.summary:'),
                     ]
                 )
             else:
                 _code.extend(
                     [
-                        (f'''{self.i3}if {type_.singular()}.model.id == self.model.id:'''),
+                        (f'{self.i3}if {type_.singular()}.model.id == self.model.id:'),
                     ]
                 )
             _code.extend(
                 [
-                    f'''{self.i4}continue''',
-                    f'''{self.i3}yield {type_.singular()}  # type: ignore''',
+                    f'{self.i4}continue',
+                    f'{self.i3}yield {type_.singular()}  # type: ignore',
                 ]
             )
         else:
             _code.extend(
                 [
                     (
-                        f'''{self.i2}yield from self._iterate_over_sublist'''
-                        f'''({model_import_data.get('object_collection_class')})'''
-                        '''  # type: ignore'''
+                        f'{self.i2}yield from self._iterate_over_sublist'
+                        f'({model_import_data.get("object_collection_class")})'
+                        '  # type: ignore'
                     ),
                 ]
             )
@@ -804,20 +799,20 @@ class GenerateObjectABC(GenerateABC, ABC):
         return '\n'.join(
             [
                 '',
-                f'''class {self.type_.plural().pascal_case()}(ObjectCollectionABC):''',
-                f'''{self.i1}"""{self.type_.plural().pascal_case()} Collection.''',
+                f'class {self.type_.plural().pascal_case()}(ObjectCollectionABC):',
+                f'{self.i1}"""{self.type_.plural().pascal_case()} Collection.',
                 '',
-                f'''{self.i1}# Example of params input''',
-                f'''{self.i1}{{''',
-                f'''{self.i2}'result_limit': 100,  # Limit the retrieved results.''',
-                f'''{self.i2}'result_start': 10,  # Starting count used for pagination.''',
-                f'''{self.i2}'fields': ['caseId', 'summary']  # Select additional return fields.''',
-                f'''{self.i1}}}''',
+                f'{self.i1}# Example of params input',
+                f'{self.i1}{{',
+                f'{self.i2}"result_limit": 100,  # Limit the retrieved results.',
+                f'{self.i2}"result_start": 10,  # Starting count used for pagination.',
+                f'{self.i2}"fields": ["caseId", "summary"]  # Select additional return fields.',
+                f'{self.i1}}}',
                 '',
-                f'''{self.i1}Args:''',
-                f'''{self.i2}session (Session): Session object configured with TC API Auth.''',
-                f'''{self.i2}tql_filters (list): List of TQL filters.''',
-                f'''{self.i2}params (dict): Additional query params (see example above).''',
+                f'{self.i1}Args:',
+                f'{self.i2}session (Session): Session object configured with TC API Auth.',
+                f'{self.i2}tql_filters (list): List of TQL filters.',
+                f'{self.i2}params (dict): Additional query params (see example above).',
                 f'{self.i1}"""',
                 '',
                 '',
@@ -881,7 +876,7 @@ class GenerateObjectABC(GenerateABC, ABC):
         return '\n'.join(
             [
                 '',
-                f'''class {self.type_.singular().pascal_case()}(ObjectABC):''',
+                f'class {self.type_.singular().pascal_case()}(ObjectABC):',
                 f'''{self.i1}"""{self.type_.plural().pascal_case()} Object.''',
                 '',
                 f'{args}',

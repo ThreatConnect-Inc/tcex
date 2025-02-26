@@ -1,6 +1,7 @@
-"""TcEx Framework Module"""
+"""TcEx Framework Module"""  # noqa: A005
 
 # standard library
+import contextlib
 import logging
 import os
 import threading
@@ -61,7 +62,8 @@ class Token:
 
         # validation for singleton
         if not token_url:  # pragma: no cover
-            raise ValueError('A value for token_url is required.')
+            ex_msg = 'A value for token_url is required.'
+            raise ValueError(ex_msg)
 
         # properties
         self._shutdown = False
@@ -144,14 +146,13 @@ class Token:
         """
         if token is None or expires is None:  # pragma: no cover
             self.log.error(
-                'feature=token, event=invalid-token-data, ' f'token="{token}", expires={expires}.'
+                f'feature=token, event=invalid-token-data, token="{token}", expires={expires}.'
             )
             return
 
         self.token_map[key] = {'token': Sensitive(token), 'token_expires': int(expires)}
         self.log.debug(
-            f'feature=token, action=token-register, key={key}, '
-            f'token={token}, expiration={expires}'
+            f'feature=token, action=token-register, key={key}, token={token}, expiration={expires}'
         )
 
     def renew_token(self, token: Sensitive):
@@ -180,14 +181,16 @@ class Token:
                 )
                 self.log.error(err_msg)
                 raise RuntimeError(1042, err_msg)
-        except exceptions.SSLError:  # pragma: no cover
-            raise RuntimeError('Token renewal failed with an SSL Error.')
+        except exceptions.SSLError as ex:  # pragma: no cover
+            ex_msg = 'Token renewal failed with an SSL Error.'
+            raise RuntimeError(ex_msg) from ex
 
         # process response for token
         try:
             api_token_data = r.json()
-        except (AttributeError, ValueError) as e:  # pragma: no cover
-            raise RuntimeError(f'Token renewal failed ({e}).')
+        except (AttributeError, ValueError) as ex:  # pragma: no cover
+            ex_msg = f'Token renewal failed ({ex}).'
+            raise RuntimeError(ex_msg) from ex
         finally:
             self.log.in_token_renewal = False  # type: ignore
 
@@ -267,11 +270,11 @@ class Token:
                     token_data.get('token_expires') - int(time.time()) - self.token_window
                 )
                 self.log.trace(
-                    '''feature=token, '''
-                    f'''event=token-status, key={key}, '''
-                    f'''token={token_data.get('token')}, '''
-                    f'''expires={token_data.get('token_expires')}, '''
-                    f'''sleep-seconds={sleep_seconds}'''
+                    """feature=token, """
+                    f'event=token-status, key={key}, '
+                    f'token={token_data.get("token")}, '
+                    f'expires={token_data.get("token_expires")}, '
+                    f'sleep-seconds={sleep_seconds}'
                 )
 
                 if sleep_seconds > 0:
@@ -283,17 +286,15 @@ class Token:
                     self.token_map[key]['token'] = Sensitive(api_token_data['apiToken'])
                     self.token_map[key]['token_expires'] = int(api_token_data['apiTokenExpires'])
                     self.log.info(
-                        f'''feature=token, action=token-renewed, key={key}, '''
-                        f'''token={api_token_data['apiToken']}, '''
-                        f'''expires={api_token_data['apiTokenExpires']}'''
+                        f'feature=token, action=token-renewed, key={key}, '
+                        f'token={api_token_data["apiToken"]}, '
+                        f'expires={api_token_data["apiTokenExpires"]}'
                     )
-                except RuntimeError as e:
-                    self.log.error(e)
-                    try:
+                except RuntimeError:
+                    self.log.exception('Token renewal failed.')
+                    with contextlib.suppress(KeyError):
                         del self.token_map[key]
-                        self.log.error(f'feature=token, event=token-removal-failure, key={key}')
-                    except KeyError:  # pragma: no cover
-                        pass
+                        self.log.exception(f'feature=token, event=token-removal-failure, key={key}')
 
             # renewal loop is finished, grant access to token via token property once again
             self._barrier.set()

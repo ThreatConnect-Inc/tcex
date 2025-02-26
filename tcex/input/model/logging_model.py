@@ -24,7 +24,7 @@ class LoggingModel(BaseModel):
     )
     tc_log_file: str = Field(
         'app.log',
-        description='The default name of the App\'s log file.',
+        description="The default name of the App's log file.",
         inclusion_reason='runtimeLevel',
         requires_definition=True,
     )
@@ -42,7 +42,7 @@ class LoggingModel(BaseModel):
         requires_definition=True,
     )
     tc_log_to_api: bool = Field(
-        False,
+        default=False,
         description='Flag to enable API logging for the App.',
         inclusion_reason='runtimeLevel',
     )

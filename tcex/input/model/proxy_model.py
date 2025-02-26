@@ -39,12 +39,12 @@ class ProxyModel(BaseModel):
         inclusion_reason='runtimeLevel',
     )
     tc_proxy_external: bool = Field(
-        False,
+        default=False,
         description='Flag to enable proxy for external connections.',
         inclusion_reason='runtimeLevel',
     )
     tc_proxy_tc: bool = Field(
-        False,
+        default=False,
         description='Flag to enable proxy for ThreatConnect connection.',
         inclusion_reason='runtimeLevel',
     )

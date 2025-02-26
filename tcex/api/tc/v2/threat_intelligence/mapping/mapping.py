@@ -1,6 +1,7 @@
 """TcEx Framework Module"""
 
 # standard library
+import contextlib
 import json
 import logging
 from functools import lru_cache
@@ -58,7 +59,7 @@ class Mapping:
         self._unique_id = None
 
     @property
-    @lru_cache
+    @lru_cache  # noqa: B019
     def _error_codes(self) -> TcExErrorCode:
         """Return TcEx error codes."""
         return TcExErrorCode()
@@ -86,21 +87,24 @@ class Mapping:
                 message_values = []
             message = self._error_codes.message(code).format(*message_values)
             self.log.error(f'Error code: {code}, {message}')
-        except AttributeError:
-            self.log.error(f'Incorrect error code provided ({code}).')
-            raise RuntimeError(100, 'Generic Failure, see logs for more details.')
-        except IndexError:
-            self.log.error(
+        except AttributeError as ex:
+            self.log.exception(f'Incorrect error code provided ({code}).')
+            ex_msg = 'Generic Failure, see logs for more details.'
+            raise RuntimeError(100, ex_msg) from ex
+        except IndexError as ex:
+            self.log.exception(
                 f'Incorrect message values provided for error code {code} ({message_values}).'
             )
-            raise RuntimeError(100, 'Generic Failure, see logs for more details.')
+            ex_msg = 'Generic Failure, see logs for more details.'
+            raise RuntimeError(100, ex_msg) from ex
         if raise_error:
             raise RuntimeError(code, message)
 
     @property
     def as_entity(self):  # pragma: no cover
         """Return the object as an entity."""
-        raise NotImplementedError('Child class must implement this method.')
+        ex_msg = 'Child class must implement this method.'
+        raise NotImplementedError(ex_msg)
 
     @property
     def as_dict(self):
@@ -108,16 +112,15 @@ class Mapping:
         properties = vars(self)
         as_dict = {}
         for key, value in properties.items():
-            key = key.lstrip('_')
-            if key in self._excluded_properties:
+            key_ = key.lstrip('_')
+            if key_ in self._excluded_properties:
                 continue
-            try:
-                value = value.as_dict
-            except AttributeError:
-                pass
-            if value is None:
+            value_ = value
+            with contextlib.suppress(AttributeError):
+                value_ = value.as_dict
+            if value_ is None:
                 continue
-            as_dict[key] = value
+            as_dict[key_] = value_
         if not as_dict:
             return None
         return as_dict
@@ -722,11 +725,12 @@ class Mapping:
     def fully_decode_uri(self, uri):
         """Decode a url till it is no longer encoded."""
         safety_valve = 0
+        safety_valve_max_length = 10
 
         while self.is_encoded(uri):
             uri = unquote(uri)
             safety_valve += 1
-            if safety_valve > 10:
+            if safety_valve > safety_valve_max_length:
                 break
 
         return uri

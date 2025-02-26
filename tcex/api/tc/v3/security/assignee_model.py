@@ -1,7 +1,5 @@
 """TcEx Framework Module"""
 
-# pylint: disable=no-member,no-self-argument,wrong-import-position
-
 # third-party
 from pydantic import Field, validator
 
@@ -37,6 +35,7 @@ class AssigneeModel(
     )
 
     @validator('type', always=True)
+    @classmethod
     def _validate_type(cls, v):
         if not v:
             return v
@@ -47,4 +46,5 @@ class AssigneeModel(
         if v.lower() in ['group', 'user_group', 'usergroup']:
             return 'Group'
 
-        raise ValueError('Value must be either `User` or `Group`.')
+        ex_msg = 'Value must be either `User` or `Group`.'
+        raise ValueError(ex_msg)

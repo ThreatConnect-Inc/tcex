@@ -31,10 +31,11 @@ class TagFilter(FilterABC):
             associated_case: No description provided.
         """
         if isinstance(associated_case, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('associatedCase', operator, associated_case, TqlType.INTEGER)
 
@@ -46,10 +47,11 @@ class TagFilter(FilterABC):
             associated_group: No description provided.
         """
         if isinstance(associated_group, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('associatedGroup', operator, associated_group, TqlType.INTEGER)
 
@@ -61,10 +63,11 @@ class TagFilter(FilterABC):
             associated_indicator: No description provided.
         """
         if isinstance(associated_indicator, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('associatedIndicator', operator, associated_indicator, TqlType.INTEGER)
 
@@ -76,10 +79,11 @@ class TagFilter(FilterABC):
             associated_victim: No description provided.
         """
         if isinstance(associated_victim, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('associatedVictim', operator, associated_victim, TqlType.INTEGER)
 
@@ -91,10 +95,11 @@ class TagFilter(FilterABC):
             case_id: The ID of the case the tag is applied to.
         """
         if isinstance(case_id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('caseId', operator, case_id, TqlType.INTEGER)
 
@@ -106,10 +111,11 @@ class TagFilter(FilterABC):
             description: The description of the tag.
         """
         if isinstance(description, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('description', operator, description, TqlType.STRING)
 
@@ -153,7 +159,7 @@ class TagFilter(FilterABC):
         self._tql.add_filter('hasVictim', TqlOperator.EQ, victims, TqlType.SUB_QUERY)
         return victims
 
-    def id(self, operator: Enum, id: int | list):  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int | list):  # noqa: A002
         """Filter ID based on **id** keyword.
 
         Args:
@@ -161,10 +167,11 @@ class TagFilter(FilterABC):
             id: The ID of the tag.
         """
         if isinstance(id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
@@ -186,10 +193,11 @@ class TagFilter(FilterABC):
             name: The name of the tag (case sensitive).
         """
         if isinstance(name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('name', operator, name, TqlType.STRING)
 
@@ -201,10 +209,11 @@ class TagFilter(FilterABC):
             owner: The owner ID of the tag.
         """
         if isinstance(owner, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('owner', operator, owner, TqlType.INTEGER)
 
@@ -216,10 +225,11 @@ class TagFilter(FilterABC):
             owner_name: The owner name of the tag.
         """
         if isinstance(owner_name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('ownerName', operator, owner_name, TqlType.STRING)
 
@@ -232,10 +242,11 @@ class TagFilter(FilterABC):
                 the user's organization.
         """
         if isinstance(security_coverage, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('securityCoverage', operator, security_coverage, TqlType.STRING)
 
@@ -247,10 +258,11 @@ class TagFilter(FilterABC):
             summary: The name of the tag (case insensitive).
         """
         if isinstance(summary, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('summary', operator, summary, TqlType.STRING)
 
@@ -262,9 +274,10 @@ class TagFilter(FilterABC):
             technique_id: The standard ID for specific MITRE ATT&CK techniques and subtechniques.
         """
         if isinstance(technique_id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('techniqueId', operator, technique_id, TqlType.STRING)

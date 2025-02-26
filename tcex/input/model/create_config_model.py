@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# pylint: disable=no-self-argument
 # standard library
 from typing import Any
 
@@ -21,6 +20,7 @@ class CreateConfigModel(BaseModel):
     trigger_id: int
 
     @validator('tc_playbook_out_variables', pre=True)
+    @classmethod
     def _tc_playbook_out_variables(cls, v) -> list[str]:
         """Convert tc_playbook_out_variables into a list of strings.
 
@@ -30,6 +30,7 @@ class CreateConfigModel(BaseModel):
 
     # TODO: [low] workaround for PLAT-4393
     @root_validator(pre=True)
+    @classmethod
     def _update_inputs(cls, values: dict[str, Any]):
         """Convert empty strings to None.
 
@@ -39,9 +40,13 @@ class CreateConfigModel(BaseModel):
         """
         for field, value in values.items():
             param = ij.model.get_param(field)
-            if param is not None and (param.type.lower() == 'multichoice' or param.allow_multiple):
-                if value is not None and not isinstance(value, list):
-                    values[field] = value.split(ij.model.list_delimiter or '|')
+            if (
+                param is not None
+                and (param.type.lower() == 'multichoice' or param.allow_multiple)
+                and value is not None
+                and not isinstance(value, list)
+            ):
+                values[field] = value.split(ij.model.list_delimiter or '|')
 
             if value == '':
                 values[field] = None

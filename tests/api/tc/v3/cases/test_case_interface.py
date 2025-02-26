@@ -20,7 +20,7 @@ class TestCases(TestV3):
 
     v3_helper = V3Helper('cases')
 
-    def setup_method(self, method: Callable):  # pylint: disable=arguments-differ
+    def setup_method(self, method: Callable):
         """Configure setup before all tests."""
         super().setup_method()
 

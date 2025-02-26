@@ -2,11 +2,11 @@
 
 # standard library
 import inspect
-import os
 import platform
 import signal
 import threading
 from dataclasses import dataclass
+from pathlib import Path
 
 # first-party
 from tcex.api.api import API
@@ -68,8 +68,8 @@ class TcEx:
 
     def _signal_handler(self, signal_interrupt: int, _):
         """Handle signal interrupt."""
-        call_file = os.path.basename(inspect.stack()[1][0].f_code.co_filename)
-        call_module = inspect.stack()[1][0].f_globals['__name__'].lstrip('Functions.')
+        call_file = Path(inspect.stack()[1][0].f_code.co_filename).name
+        call_module = inspect.stack()[1][0].f_globals['__name__'].replace('Functions.', '', 1)
         call_line = inspect.stack()[1][0].f_lineno
         self.log.error(
             f'App interrupted - file: {call_file}, method: {call_module}, line: {call_line}.'
@@ -78,13 +78,11 @@ class TcEx:
         if threading.current_thread().name == 'MainThread' and signal_interrupt in (2, 15):
             exit_code = ExitCode.FAILURE
 
-        # pylint: disable=no-member
         self.exit.exit(exit_code, 'The App received an interrupt signal and will now exit.')
 
     @cached_property
     def api(self) -> API:
         """Return instance of API."""
-        # pylint: disable=no-member
         return API(self.inputs, self.session.tc)
 
     @cached_property
@@ -157,7 +155,7 @@ class TcEx:
         **Example Response**
         ::
 
-            {"http": "http://user:pass@10.10.1.10:3128/"}
+            {'http': 'http://user:pass@10.10.1.10:3128/'}
         """
         return proxies(
             proxy_host=self.inputs.model_tc.tc_proxy_host,

@@ -1,11 +1,14 @@
 """TcEx Framework Module"""
 
 # standard library
-from collections.abc import Callable
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 # third-party
 import wrapt
+
+if TYPE_CHECKING:
+    # standard library
+    from collections.abc import Callable
 
 
 class Output:
@@ -23,6 +26,7 @@ class Output:
             super(App, self).__init__(_tcex)
             self.output_strings = []  # Output decorator writes here.
 
+
         @Output(attribute='output_strings')
         def my_method(data):
             return data.lowercase()
@@ -39,7 +43,7 @@ class Output:
         self.overwrite = overwrite
 
     @wrapt.decorator
-    def __call__(self, *wrapped_args) -> Any:
+    def __call__(self, *wrapped_args) -> Any:  # noqa: D417
         """Implement __call__ function for decorator.
 
         Args:
@@ -56,7 +60,7 @@ class Output:
         wrapped: Callable = wrapped_args[0]
         app: Any = wrapped_args[1]
         args: list = wrapped_args[2] if len(wrapped_args) > 1 else []
-        kwargs: dict = wrapped_args[3] if len(wrapped_args) > 2 else {}
+        kwargs: dict = wrapped_args[3] if len(wrapped_args) > 2 else {}  # noqa: PLR2004
 
         def output() -> Any:
             """Call the function and store or append return value.

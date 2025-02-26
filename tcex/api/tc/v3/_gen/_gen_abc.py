@@ -23,7 +23,7 @@ from tcex.util.render.render import Render
 from tcex.util.string_operation import SnakeString
 
 
-class GenerateABC(ABC):
+class GenerateABC(ABC):  # noqa: B024
     """Generate Abstract Base Class"""
 
     def __init__(self, type_: SnakeString):
@@ -141,34 +141,31 @@ class GenerateABC(ABC):
         ],
         """
         for field_name, field_data in sorted(properties.items()):
-            if isinstance(field_data, dict):
-                if 'data' in field_data and isinstance(field_data['data'], list):
+            field_data_ = field_data
+
+            if isinstance(field_data_, dict):
+                if 'data' in field_data_ and isinstance(field_data_['data'], list):
                     # some properties have a data key with an array of items.
-                    field_data = field_data['data'][0]
+                    field_data_ = field_data_['data'][0]
 
                     # if there is a data array, then the type should always be plural.
-                    field_data['type'] = self.util.camel_string(field_data['type']).plural()
-            elif isinstance(field_data, list):
+                    field_data_['type'] = self.util.camel_string(field_data_['type']).plural()
+            elif isinstance(field_data_, list):
                 # in a few instance like attributeType the value of the properties key/value
                 # pair is a list (currently the list only contains a single dict). to be safe
                 # we loop over the list and update the type for each item.
-                field_data = field_data[0]
-
-                # # handle special case for customAssociationNames, where the data is an array of
-                # # string, but the type in the object states 'String'.
-                # if field_data['type'] == 'String':
-                #     field_data['type'] = 'ListString'
+                field_data_ = field_data_[0]
             else:
-                raise RuntimeError(
-                    f'Invalid type properties data: field-name={field_name}, type={self.type_}'
-                )
+                ex_msg = f'Invalid type properties data: field-name={field_name}, type={self.type_}'
+                raise RuntimeError(ex_msg)  # noqa: TRY004
 
-            field_data['name'] = field_name
-            yield field_data
+            field_data_['name'] = field_name
+            yield field_data_
 
     @property
     def _prop_contents_updated(self) -> dict:
         """Update the properties contents, fixing issues in core data."""
+        filename_max_length = 255
         _properties = self._prop_contents
 
         # add id field, if missing
@@ -209,8 +206,8 @@ class GenerateABC(ABC):
 
         if self.type_ == 'groups':
             title = 'Filename Max Length'
-            if _properties['fileName']['maxLength'] != 255:
-                _properties['fileName']['maxLength'] = 255
+            if _properties['fileName']['maxLength'] != filename_max_length:
+                _properties['fileName']['maxLength'] = filename_max_length
                 self.messages.append(f'- [{self.type_}] - ({title}) - fix required.')
             else:
                 self.messages.append(f'- [{self.type_}] - ({title}) - fix NOT required.')
@@ -336,9 +333,8 @@ class GenerateABC(ABC):
 
     def _prop_content_remove_unused(self, properties: dict):
         """Remove unused fields from properties."""
-        if self.type_ in ['attribute_types']:
-            if 'owner' in properties:
-                del properties['owner']
+        if self.type_ in ['attribute_types'] and 'owner' in properties:
+            del properties['owner']
 
         if self.type_ in [
             'attribute_types',
@@ -416,7 +412,6 @@ class GenerateABC(ABC):
             try:
                 properties_models.append(PropertyModel(**field_data))
             except ValidationError as ex:
-                # print(field_data)
                 Render.panel.failure(
                     f'Failed generating property model: data={field_data} ({ex}).',
                 )
@@ -445,19 +440,17 @@ class GenerateABC(ABC):
                 _libs.append('if TYPE_CHECKING:  # pragma: no cover')
                 indent = self.i1
                 # this should be fine?
-                from_ = 'first-party'
                 comment = '  # CIRCULAR-IMPORT'
-
-            _libs.append(f'{indent}# {from_}')
+                _libs.append(f'{indent}# first-party')
+            else:
+                _libs.append(f'{indent}# {from_}')
 
             # manage imports as string and dicts
             _imports = []  # temp store for imports so they can be sorted
             for lib in libs:
                 if isinstance(lib, dict):
                     imports = ', '.join(sorted(lib.get('imports')))  # type: ignore
-                    _imports.append(
-                        f'''{indent}from {lib.get('module')} import {imports}{comment}'''
-                    )
+                    _imports.append(f'{indent}from {lib.get("module")} import {imports}{comment}')
                 elif isinstance(lib, str):
                     _imports.append(f'{indent}{lib}{comment}')
             _libs.extend(sorted(_imports))  # add imports sorted

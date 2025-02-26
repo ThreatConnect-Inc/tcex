@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# pylint: disable=no-member,no-self-argument,wrong-import-position
 # standard library
 from datetime import datetime
 
@@ -21,10 +20,10 @@ class ArtifactModel(
 ):
     """Artifact Model"""
 
-    _associated_type = PrivateAttr(False)
-    _cm_type = PrivateAttr(True)
-    _shared_type = PrivateAttr(False)
-    _staged = PrivateAttr(False)
+    _associated_type = PrivateAttr(default=False)
+    _cm_type = PrivateAttr(default=True)
+    _shared_type = PrivateAttr(default=False)
+    _staged = PrivateAttr(default=False)
 
     analytics_priority: str | None = Field(
         None,
@@ -214,36 +213,42 @@ class ArtifactModel(
     )
 
     @validator('artifact_type', always=True, pre=True)
+    @classmethod
     def _validate_artifact_type(cls, v):
         if not v:
             return ArtifactTypeModel()  # type: ignore
         return v
 
     @validator('parent_case', always=True, pre=True)
+    @classmethod
     def _validate_case(cls, v):
         if not v:
             return CaseModel()  # type: ignore
         return v
 
     @validator('associated_groups', always=True, pre=True)
+    @classmethod
     def _validate_groups(cls, v):
         if not v:
             return GroupsModel()  # type: ignore
         return v
 
     @validator('associated_indicators', always=True, pre=True)
+    @classmethod
     def _validate_indicators(cls, v):
         if not v:
             return IndicatorsModel()  # type: ignore
         return v
 
     @validator('notes', always=True, pre=True)
+    @classmethod
     def _validate_notes(cls, v):
         if not v:
             return NotesModel()  # type: ignore
         return v
 
     @validator('task', always=True, pre=True)
+    @classmethod
     def _validate_task(cls, v):
         if not v:
             return TaskModel()  # type: ignore
@@ -274,7 +279,7 @@ class ArtifactsModel(
 ):
     """Artifacts Model"""
 
-    _mode_support = PrivateAttr(True)
+    _mode_support = PrivateAttr(default=True)
 
     data: list[ArtifactModel] | None = Field(
         [],

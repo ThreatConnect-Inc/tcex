@@ -1,17 +1,18 @@
 """TcEx Framework Module"""
 
 # standard library
+import contextlib
 import gzip
 import hashlib
 import json
 import logging
-import os
 import re
 import shelve  # nosec
 import sys
 import time
 import uuid
 from collections import deque
+from pathlib import Path
 from typing import Any
 
 # third-party
@@ -182,21 +183,17 @@ class BatchWriter:
         method_name = name.replace(' ', '_').lower()
 
         # Add Method for each Custom Indicator class
-        def method_1(value1: str, xid, **kwargs):  # pylint: disable=possibly-unused-variable
+        def method_1(value1: str, xid, **kwargs):
             """Add Custom Indicator data to Batch"""
             indicator_obj = custom_class(value1, xid, **kwargs)
             return self._indicator(indicator_obj, kwargs.get('store', True))
 
-        def method_2(
-            value1: str, value2: str, xid, **kwargs
-        ):  # pylint: disable=possibly-unused-variable
+        def method_2(value1: str, value2: str, xid, **kwargs):
             """Add Custom Indicator data to Batch"""
             indicator_obj = custom_class(value1, value2, xid, **kwargs)
             return self._indicator(indicator_obj, kwargs.get('store', True))
 
-        def method_3(
-            value1: str, value2: str, value3: str, xid, **kwargs
-        ):  # pylint: disable=possibly-unused-variable
+        def method_3(value1: str, value2: str, value3: str, xid, **kwargs):
             """Add Custom Indicator data to Batch"""
             indicator_obj = custom_class(value1, value2, value3, xid, **kwargs)
             return self._indicator(indicator_obj, kwargs.get('store', True))
@@ -214,12 +211,8 @@ class BatchWriter:
         if store is False:
             return group_data
 
-        if isinstance(group_data, dict):
-            # get xid from dict
-            xid = group_data['xid']
-        else:
-            # get xid from GroupType
-            xid = group_data.xid
+        # get xid from dict or from GroupType
+        xid = group_data['xid'] if isinstance(group_data, dict) else group_data.xid
 
         if self.groups.get(xid) is not None:
             # return existing group from memory
@@ -254,12 +247,8 @@ class BatchWriter:
         if store is False:
             return indicator_data
 
-        if isinstance(indicator_data, dict):
-            # get xid from dict
-            xid = indicator_data['xid']
-        else:
-            # get xid from IndicatorType
-            xid = indicator_data.xid
+        # get xid from dict or from IndicatorType
+        xid = indicator_data['xid'] if isinstance(indicator_data, dict) else indicator_data.xid
 
         if self.indicators.get(xid) is not None:
             # return existing indicator from memory
@@ -538,14 +527,14 @@ class BatchWriter:
         # cleanup shelf files
         try:
             self.groups_shelf.close()
-            os.unlink(self.group_shelf_fqfn)
+            self.group_shelf_fqfn.unlink()
         except Exception as ex:
             self.log.warning(f'action=batch-close, filename={self.group_shelf_fqfn} exception={ex}')
 
         # cleanup shelf files
         try:
             self.indicators_shelf.close()
-            os.unlink(self.indicator_shelf_fqfn)
+            self.indicator_shelf_fqfn.unlink()
         except Exception as ex:
             self.log.warning(
                 f'action=batch-close, filename={self.indicator_shelf_fqfn} exception={ex}'
@@ -690,9 +679,7 @@ class BatchWriter:
 
             if tracker['count'] % 10_000 == 0:
                 # log count/size at a sane level
-                self.log.debug(
-                    '''feature=batch, action=data-groups, ''' f'''count={tracker.get('count'):,}'''
-                )
+                self.log.debug(f'feature=batch, action=data-groups, count={tracker.get("count"):,}')
 
         return False
 
@@ -712,8 +699,9 @@ class BatchWriter:
         # process the indicator
         for xid, indicator_data in list(indicators.items()):
             if not isinstance(indicator_data, dict):
-                indicator_data = indicator_data.data
-            data['indicator'].append(indicator_data)
+                data['indicator'].append(indicator_data.data)
+            else:
+                data['indicator'].append(indicator_data)
             del indicators[xid]
 
             # update entity trackers
@@ -722,10 +710,9 @@ class BatchWriter:
             if tracker['count'] % 10_000 == 0:
                 # log count/size at a sane level
                 self.log.debug(
-                    '''feature=batch, action=data-indicators, '''
-                    f'''count={tracker.get('count'):,}'''
+                    """feature=batch, action=data-indicators, """
+                    f"""count={tracker.get('count'):,}"""
                 )
-
         return False
 
     def document(self, name: str, file_name: str, **kwargs) -> Document:
@@ -761,14 +748,11 @@ class BatchWriter:
         self.write_batch_json(content)
 
         # store the length of the batch data to use for poll interval calculations
+        self.log.info(f'feature=batch, event=dump, type=group, count={len(content["group"]):,}')
         self.log.info(
-            '''feature=batch, event=dump, type=group, ''' f'''count={len(content['group']):,}'''
+            f'feature=batch, event=dump, type=indicator, count={len(content["indicator"]):,}'
         )
-        self.log.info(
-            '''feature=batch, event=dump, type=indicator, '''
-            f'''count={len(content['indicator']):,}'''
-        )
-        self.log.info(f'''feature=batch, event=dump, type=batch, size={self._batch_size:,}''')
+        self.log.info(f'feature=batch, event=dump, type=batch, size={self._batch_size:,}')
 
         # reset batch size after dump
         self._batch_size = 0
@@ -905,7 +889,7 @@ class BatchWriter:
         return self._group(group_obj, kwargs.get('store', True))
 
     @property
-    def group_shelf_fqfn(self) -> str:
+    def group_shelf_fqfn(self) -> Path:
         """Return groups shelf fully qualified filename.
 
         For testing/debugging a previous shelf file can be copied into the tc_temp_path directory
@@ -913,9 +897,7 @@ class BatchWriter:
         """
         if self._group_shelf_fqfn is None:
             # new shelf file
-            self._group_shelf_fqfn = os.path.join(
-                self.inputs.model.tc_temp_path, f'groups-{str(uuid.uuid4())}'
-            )
+            self._group_shelf_fqfn = self.inputs.model.tc_temp_path / f'groups-{uuid.uuid4()!s}'
         return self._group_shelf_fqfn
 
     @property
@@ -929,7 +911,9 @@ class BatchWriter:
     def groups_shelf(self) -> shelve.Shelf[Any]:
         """Return dictionary of all Groups data."""
         if self._groups_shelf is None:
-            self._groups_shelf = shelve.open(self.group_shelf_fqfn, writeback=False)  # nosec
+            self._groups_shelf = (
+                shelve.open(self.group_shelf_fqfn, writeback=False)  # nosec  # noqa: SIM115
+            )
         return self._groups_shelf
 
     def host(self, hostname: str, **kwargs) -> Host:
@@ -995,7 +979,7 @@ class BatchWriter:
         return self._indicator(indicator_obj, kwargs.get('store', True))  # type: ignore
 
     @property
-    def indicator_shelf_fqfn(self) -> str:
+    def indicator_shelf_fqfn(self) -> Path:
         """Return indicator shelf fully qualified filename.
 
         For testing/debugging a previous shelf file can be copied into the tc_temp_path directory
@@ -1003,8 +987,8 @@ class BatchWriter:
         """
         if self._indicator_shelf_fqfn is None:
             # new shelf file
-            self._indicator_shelf_fqfn = os.path.join(
-                self.inputs.model.tc_temp_path, f'indicators-{str(uuid.uuid4())}'
+            self._indicator_shelf_fqfn = (
+                self.inputs.model.tc_temp_path / f'indicators-{uuid.uuid4()!s}'
             )
         return self._indicator_shelf_fqfn
 
@@ -1020,7 +1004,7 @@ class BatchWriter:
     def indicators_shelf(self) -> shelve.Shelf[Any]:
         """Return dictionary of all Indicator data."""
         if self._indicators_shelf is None:
-            self._indicators_shelf = shelve.open(  # nosec
+            self._indicators_shelf = shelve.open(  # nosec  # noqa: SIM115
                 self.indicator_shelf_fqfn, writeback=False
             )
         return self._indicators_shelf
@@ -1153,11 +1137,9 @@ class BatchWriter:
                     saved = False
 
                 if saved:
-                    try:
-                        del self.groups[xid]
-                    except KeyError:
+                    with contextlib.suppress(KeyError):
                         # if group was saved twice it would already be delete
-                        pass
+                        del self.groups[xid]
             elif resource_type in self.tic.indicator_types_data:
                 try:
                     # indicators
@@ -1166,11 +1148,9 @@ class BatchWriter:
                     saved = False
 
                 if saved:
-                    try:
-                        del self.indicators[xid]
-                    except KeyError:
+                    with contextlib.suppress(KeyError):
                         # if indicator was saved twice it would already be delete
-                        pass
+                        del self.indicators[xid]
 
     def signature(
         self, name: str, file_name: str, file_type: str, file_text: str, **kwargs
@@ -1321,13 +1301,13 @@ class BatchWriter:
         """Write batch json data to a file."""
         if content:
             # get timestamp as a string without decimal place and consistent length
-            filename = f'{str(round(time.time() * 10000000))}.json.gz'
+            filename = f'{round(time.time() * 10000000)!s}.json.gz'
             if self.output_extension is not None:
                 # add any additional extension provided
                 filename += self.output_extension
             # TODO: is this needed
             self._batch_files.append(filename)
-            fqfn = os.path.join(self.output_dir, filename)
+            fqfn = Path(self.output_dir) / filename
             with gzip.open(fqfn, mode='wt', encoding='utf-8') as fh:
                 json.dump(content, fh)
 

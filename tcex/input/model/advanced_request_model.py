@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# pylint: disable=no-self-argument,wrong-import-position
 # standard library
 from typing import Any
 
@@ -30,13 +29,13 @@ class AdvancedRequestModel(BaseModel):
         requires_definition=True,
     )
     tc_adv_req_exclude_null_params: bool = Field(
-        False,
+        default=False,
         description='Flag to exclude any null query parameters.',
         inclusion_reason='feature (advancedRequest)',
         requires_definition=True,
     )
     tc_adv_req_fail_on_error: bool = Field(
-        False,
+        default=False,
         description='Flag to force fail on any error.',
         inclusion_reason='feature (advancedRequest)',
         requires_definition=True,
@@ -66,13 +65,14 @@ class AdvancedRequestModel(BaseModel):
         requires_definition=True,
     )
     tc_adv_req_urlencode_body: bool = Field(
-        False,
+        default=False,
         description='Flag to set URL encoding for the request body.',
         inclusion_reason='feature (advancedRequest)',
         requires_definition=True,
     )
 
     @validator('tc_adv_req_headers', 'tc_adv_req_params', always=True, pre=True)
+    @classmethod
     def _always_array(cls, value: list | str | None) -> list:
         """Return array value for headers and params."""
         match value:

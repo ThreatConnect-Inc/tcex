@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# pylint: disable=no-member,no-self-argument,wrong-import-position
 # third-party
 from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
 
@@ -18,10 +17,10 @@ class WorkflowTemplateModel(
 ):
     """Workflow_Template Model"""
 
-    _associated_type = PrivateAttr(False)
-    _cm_type = PrivateAttr(True)
-    _shared_type = PrivateAttr(False)
-    _staged = PrivateAttr(False)
+    _associated_type = PrivateAttr(default=False)
+    _cm_type = PrivateAttr(default=True)
+    _shared_type = PrivateAttr(default=False)
+    _staged = PrivateAttr(default=False)
 
     active: bool = Field(
         None,
@@ -115,12 +114,14 @@ class WorkflowTemplateModel(
     )
 
     @validator('assignee', always=True, pre=True)
+    @classmethod
     def _validate_assignee(cls, v):
         if not v:
             return AssigneeModel()  # type: ignore
         return v
 
     @validator('cases', always=True, pre=True)
+    @classmethod
     def _validate_cases(cls, v):
         if not v:
             return CasesModel()  # type: ignore
@@ -151,7 +152,7 @@ class WorkflowTemplatesModel(
 ):
     """Workflow_Templates Model"""
 
-    _mode_support = PrivateAttr(False)
+    _mode_support = PrivateAttr(default=False)
 
     data: list[WorkflowTemplateModel] | None = Field(
         [],

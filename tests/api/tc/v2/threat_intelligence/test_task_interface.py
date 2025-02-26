@@ -475,7 +475,7 @@ class TestTask(TestThreatIntelligence):
             assert False, 'failed to delete escalatee from task.'
         assert r.status_code == 200
         escalatees_len = 0
-        for _escalatee in helper_ti.escalatees():  # pylint: disable=unused-variable
+        for _escalatee in helper_ti.escalatees():
             escalatees_len += 1
         assert escalatees_len == 0, f'{escalatees_len} are present instead of 0.'
 

@@ -73,7 +73,8 @@ class Task(ObjectABC):
             # provided data is raw response, load the model
             self._model = type(self.model)(**data)
         else:
-            raise RuntimeError(f'Invalid data type: {type(data)} provided.')
+            ex_msg = f'Invalid data type: {type(data)} provided.'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
 
     @property
     def as_entity(self) -> dict:
@@ -106,12 +107,16 @@ class Task(ObjectABC):
             data = ArtifactModel(**data)
 
         if not isinstance(data, ArtifactModel):
-            raise RuntimeError('Invalid type passed in to stage_artifact')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_artifact'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.artifacts.data.append(data)  # type: ignore
 
-    # pylint: disable=redefined-builtin
-    def stage_assignee(self, type: str, data: dict | ObjectABC | UserModel | UserGroupModel):
+    def stage_assignee(
+        self,
+        type: str,  # noqa: A002
+        data: dict | ObjectABC | UserModel | UserGroupModel,
+    ):
         """Stage artifact on the object."""
         if isinstance(data, ObjectABC):
             data = data.model  # type: ignore
@@ -121,9 +126,10 @@ class Task(ObjectABC):
             data = UserGroupModel(**data)
 
         if not isinstance(data, UserModel | UserGroupModel):
-            raise RuntimeError('Invalid type passed in to stage_assignee')
-        data._staged = True
-        self.model.assignee._staged = True
+            ex_msg = 'Invalid type passed in to stage_assignee'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
+        self.model.assignee._staged = True  # noqa: SLF001
         self.model.assignee.type = type
         self.model.assignee.data = data  # type: ignore
 
@@ -135,8 +141,9 @@ class Task(ObjectABC):
             data = NoteModel(**data)
 
         if not isinstance(data, NoteModel):
-            raise RuntimeError('Invalid type passed in to stage_note')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_note'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.notes.data.append(data)  # type: ignore
 
 
@@ -145,9 +152,9 @@ class Tasks(ObjectCollectionABC):
 
     # Example of params input
     {
-        'result_limit': 100,  # Limit the retrieved results.
-        'result_start': 10,  # Starting count used for pagination.
-        'fields': ['caseId', 'summary']  # Select additional return fields.
+        "result_limit": 100,  # Limit the retrieved results.
+        "result_start": 10,  # Starting count used for pagination.
+        "fields": ["caseId", "summary"]  # Select additional return fields.
     }
 
     Args:

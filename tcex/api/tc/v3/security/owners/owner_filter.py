@@ -17,7 +17,7 @@ class OwnerFilter(FilterABC):
         """Return the API endpoint."""
         return ApiEndpoints.OWNERS.value
 
-    def id(self, operator: Enum, id: int | list):  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int | list):  # noqa: A002
         """Filter ID based on **id** keyword.
 
         Args:
@@ -25,10 +25,11 @@ class OwnerFilter(FilterABC):
             id: The ID of the Community Membership.
         """
         if isinstance(id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
@@ -40,10 +41,11 @@ class OwnerFilter(FilterABC):
             owner_id: The ID of the Owner.
         """
         if isinstance(owner_id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('ownerId', operator, owner_id, TqlType.INTEGER)
 
@@ -55,10 +57,11 @@ class OwnerFilter(FilterABC):
             owner_name: The name of the Owner.
         """
         if isinstance(owner_name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('ownerName', operator, owner_name, TqlType.STRING)
 
@@ -70,10 +73,11 @@ class OwnerFilter(FilterABC):
             perm_apps: The User's Apps permission in the Owner.
         """
         if isinstance(perm_apps, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('permApps', operator, perm_apps, TqlType.STRING)
 
@@ -85,10 +89,11 @@ class OwnerFilter(FilterABC):
             perm_artifact: The User's Artifact permission in the Owner.
         """
         if isinstance(perm_artifact, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('permArtifact', operator, perm_artifact, TqlType.STRING)
 
@@ -100,10 +105,11 @@ class OwnerFilter(FilterABC):
             perm_attribute: The User's Attribute permission in the Owner.
         """
         if isinstance(perm_attribute, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('permAttribute', operator, perm_attribute, TqlType.STRING)
 
@@ -115,10 +121,11 @@ class OwnerFilter(FilterABC):
             perm_attribute_type: The User's AttributeType permission in the Owner.
         """
         if isinstance(perm_attribute_type, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('permAttributeType', operator, perm_attribute_type, TqlType.STRING)
 
@@ -130,10 +137,11 @@ class OwnerFilter(FilterABC):
             perm_case_tag: The User's CaseTag permission in the Owner.
         """
         if isinstance(perm_case_tag, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('permCaseTag', operator, perm_case_tag, TqlType.STRING)
 
@@ -145,10 +153,11 @@ class OwnerFilter(FilterABC):
             perm_comment: The User's Comment permission in the Owner.
         """
         if isinstance(perm_comment, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('permComment', operator, perm_comment, TqlType.STRING)
 
@@ -160,10 +169,11 @@ class OwnerFilter(FilterABC):
             perm_copy_data: The User's CopyData permission in the Owner.
         """
         if isinstance(perm_copy_data, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('permCopyData', operator, perm_copy_data, TqlType.STRING)
 
@@ -175,10 +185,11 @@ class OwnerFilter(FilterABC):
             perm_group: The User's Group permission in the Owner.
         """
         if isinstance(perm_group, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('permGroup', operator, perm_group, TqlType.STRING)
 
@@ -190,10 +201,11 @@ class OwnerFilter(FilterABC):
             perm_indicator: The User's Indicator permission in the Owner.
         """
         if isinstance(perm_indicator, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('permIndicator', operator, perm_indicator, TqlType.STRING)
 
@@ -205,10 +217,11 @@ class OwnerFilter(FilterABC):
             perm_invite: The User's Invite permission in the Owner.
         """
         if isinstance(perm_invite, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('permInvite', operator, perm_invite, TqlType.STRING)
 
@@ -220,10 +233,11 @@ class OwnerFilter(FilterABC):
             perm_members: The User's Members permission in the Owner.
         """
         if isinstance(perm_members, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('permMembers', operator, perm_members, TqlType.STRING)
 
@@ -235,10 +249,11 @@ class OwnerFilter(FilterABC):
             perm_playbooks: The User's Playbooks permission in the Owner.
         """
         if isinstance(perm_playbooks, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('permPlaybooks', operator, perm_playbooks, TqlType.STRING)
 
@@ -250,10 +265,11 @@ class OwnerFilter(FilterABC):
             perm_playbooks_execute: The User's PlaybooksExecute permission in the Owner.
         """
         if isinstance(perm_playbooks_execute, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter(
             'permPlaybooksExecute', operator, perm_playbooks_execute, TqlType.STRING
@@ -267,10 +283,11 @@ class OwnerFilter(FilterABC):
             perm_post: The User's Post permission in the Owner.
         """
         if isinstance(perm_post, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('permPost', operator, perm_post, TqlType.STRING)
 
@@ -282,10 +299,11 @@ class OwnerFilter(FilterABC):
             perm_publish: The User's Publish permission in the Owner.
         """
         if isinstance(perm_publish, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('permPublish', operator, perm_publish, TqlType.STRING)
 
@@ -297,10 +315,11 @@ class OwnerFilter(FilterABC):
             perm_security_label: The User's SecurityLabel permission in the Owner.
         """
         if isinstance(perm_security_label, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('permSecurityLabel', operator, perm_security_label, TqlType.STRING)
 
@@ -312,10 +331,11 @@ class OwnerFilter(FilterABC):
             perm_settings: The User's Settings permission in the Owner.
         """
         if isinstance(perm_settings, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('permSettings', operator, perm_settings, TqlType.STRING)
 
@@ -327,10 +347,11 @@ class OwnerFilter(FilterABC):
             perm_tag: The User's Tag permission in the Owner.
         """
         if isinstance(perm_tag, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('permTag', operator, perm_tag, TqlType.STRING)
 
@@ -342,10 +363,11 @@ class OwnerFilter(FilterABC):
             perm_task: The User's Task permission in the Owner.
         """
         if isinstance(perm_task, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('permTask', operator, perm_task, TqlType.STRING)
 
@@ -357,10 +379,11 @@ class OwnerFilter(FilterABC):
             perm_timeline: The User's Timeline permission in the Owner.
         """
         if isinstance(perm_timeline, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('permTimeline', operator, perm_timeline, TqlType.STRING)
 
@@ -372,10 +395,11 @@ class OwnerFilter(FilterABC):
             perm_track: The User's Track permission in the Owner.
         """
         if isinstance(perm_track, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('permTrack', operator, perm_track, TqlType.STRING)
 
@@ -387,10 +411,11 @@ class OwnerFilter(FilterABC):
             perm_users: The User's Users permission in the Owner.
         """
         if isinstance(perm_users, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('permUsers', operator, perm_users, TqlType.STRING)
 
@@ -402,10 +427,11 @@ class OwnerFilter(FilterABC):
             perm_victim: The User's Victim permission in the Owner.
         """
         if isinstance(perm_victim, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('permVictim', operator, perm_victim, TqlType.STRING)
 
@@ -417,10 +443,11 @@ class OwnerFilter(FilterABC):
             perm_workflow_template: The User's WorkflowTemplate permission in the Owner.
         """
         if isinstance(perm_workflow_template, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter(
             'permWorkflowTemplate', operator, perm_workflow_template, TqlType.STRING
@@ -434,9 +461,10 @@ class OwnerFilter(FilterABC):
             user_id: The ID of the user.
         """
         if isinstance(user_id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('userId', operator, user_id, TqlType.INTEGER)

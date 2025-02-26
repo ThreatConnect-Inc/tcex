@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# pylint: disable=no-member,no-self-argument,wrong-import-position
 # third-party
 from pydantic import BaseModel, Extra, Field, PrivateAttr
 
@@ -18,10 +17,10 @@ class UserModel(
 ):
     """User Model"""
 
-    _associated_type = PrivateAttr(False)
-    _cm_type = PrivateAttr(False)
-    _shared_type = PrivateAttr(False)
-    _staged = PrivateAttr(False)
+    _associated_type = PrivateAttr(default=False)
+    _cm_type = PrivateAttr(default=False)
+    _shared_type = PrivateAttr(default=False)
+    _staged = PrivateAttr(default=False)
 
     id: int | None = Field(  # type: ignore
         None,
@@ -62,7 +61,7 @@ class UsersModel(
 ):
     """Users Model"""
 
-    _mode_support = PrivateAttr(False)
+    _mode_support = PrivateAttr(default=False)
 
     data: list[UserModel] | None = Field(
         [],

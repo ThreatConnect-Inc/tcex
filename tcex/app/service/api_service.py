@@ -5,7 +5,6 @@ import concurrent.futures
 import json
 import sys
 import threading
-import traceback
 from collections.abc import Callable
 from functools import reduce
 from io import BytesIO
@@ -61,12 +60,9 @@ class ApiService(CommonService):
         query_string = []
         try:
             for q in params:
-                query_string.append(f'''{q.get('name')}={q.get('value')}''')
-        except AttributeError as e:
-            self.log.error(
-                f'feature=api-service, event=bad-params-provided, params={params}, error="""{e})"""'
-            )
-            self.log.trace(traceback.format_exc())
+                query_string.append(f"""{q.get('name')}={q.get('value')}""")
+        except AttributeError:
+            self.log.exception(f'feature=api-service, event=bad-params-provided, params={params}')
         return '&'.join(query_string)
 
     def format_request_headers(self, headers: dict) -> dict:
@@ -85,12 +81,10 @@ class ApiService(CommonService):
                 # headers_.setdefault(h.get('name').lower(), []).append(h.get('value'))
                 headers_.setdefault(h.get('name').lower(), str(h.get('value')))
 
-        except AttributeError as e:
-            self.log.error(
-                f'feature=api-service, event=bad-headers-provided, '
-                f'headers={headers}, error="""{e})"""'
+        except AttributeError:
+            self.log.exception(
+                f'feature=api-service, event=bad-headers-provided, headers={headers}'
             )
-            self.log.trace(traceback.format_exc())
         return headers_
 
     def format_response_headers(self, headers: dict) -> list[dict]:
@@ -106,12 +100,10 @@ class ApiService(CommonService):
         try:
             for h in headers:
                 headers_.append({'name': h[0], 'value': h[1]})
-        except AttributeError as e:
-            self.log.error(
-                f'feature=api-service, event=bad-headers-provided, '
-                f'headers={headers}, error="""{e})"""'
+        except AttributeError:
+            self.log.exception(
+                f'feature=api-service, event=bad-headers-provided, headers={headers}'
             )
-            self.log.trace(traceback.format_exc())
         return headers_
 
     def process_run_service_response(self, *args, **kwargs):
@@ -128,7 +120,7 @@ class ApiService(CommonService):
                 'bodyVariable': 'response.body',
                 'command': 'Acknowledged',
                 'headers': self.format_response_headers(args[1]),
-                'requestKey': kwargs.get('request_key'),  # pylint: disable=cell-var-from-loop
+                'requestKey': kwargs.get('request_key'),
                 'status': status,
                 'statusCode': status_code,
                 'type': 'RunService',
@@ -136,11 +128,8 @@ class ApiService(CommonService):
             self.log.info('feature=api-service, event=response-sent')
             self.message_broker.publish(json.dumps(response), self.model.tc_svc_client_topic)
             self.increment_metric('Responses')
-        except Exception as e:
-            self.log.error(
-                f'feature=api-service, event=failed-creating-response-body, error="""{e}"""'
-            )
-            self.log.trace(traceback.format_exc())
+        except Exception:
+            self.log.exception('feature=api-service, event=failed-creating-response-body')
             self.increment_metric('Errors')
 
     def process_run_service_command(self, message: dict):
@@ -187,9 +176,8 @@ class ApiService(CommonService):
                 if body is not None:
                     # for API service the data in Redis is not b64 encoded
                     body = BytesIO(body)
-        except Exception as e:
-            self.log.error(f'feature=api-service, event=failed-reading-body, error="""{e}"""')
-            self.log.trace(traceback.format_exc())
+        except Exception:
+            self.log.exception('feature=api-service, event=failed-reading-body')
         headers = self.format_request_headers(message.pop('headers'))
         method: str = message.pop('method')
         params: dict = message.pop('queryParams')
@@ -237,13 +225,12 @@ class ApiService(CommonService):
 
             self.log.trace(f'feature=api-service, environ={environ}')
             self.increment_metric('Requests')
-        except Exception as e:
-            self.log.error(f'feature=api-service, event=failed-building-environ, error="""{e}"""')
-            self.log.trace(traceback.format_exc())
+        except Exception:
+            self.log.exception('feature=api-service, event=failed-building-environ')
             self.increment_metric('Errors')
             return  # stop processing
 
-        def response_handler(*args, **kwargs):  # pylint: disable=unused-argument
+        def response_handler(*args, **kwargs):
             """Handle WSGI Response"""
             kwargs['event'] = event  # add event to kwargs for blocking
             kwargs['request_key'] = request_key
@@ -256,9 +243,7 @@ class ApiService(CommonService):
 
         if callable(self.api_event_callback):
             try:
-                body_data: Any = self.api_event_callback(  # pylint: disable=not-callable
-                    environ, response_handler
-                )
+                body_data: Any = self.api_event_callback(environ, response_handler)
                 if body_data:
                     body_data = reduce(lambda a, b: a + b, body_data)
 
@@ -271,11 +256,8 @@ class ApiService(CommonService):
 
                 # release event lock
                 event.set()
-            except Exception as e:
-                self.log.error(
-                    f'feature=api-service, event=api-event-callback-failed, error="""{e}""".'
-                )
-                self.log.trace(traceback.format_exc())
+            except Exception:
+                self.log.exception('feature=api-service, event=api-event-callback-failed')
                 self.increment_metric('Errors')
 
         # unregister config apiToken

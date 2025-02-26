@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# pylint: disable=no-member,no-self-argument,wrong-import-position
 # third-party
 from pydantic import BaseModel, Extra, Field, PrivateAttr, validator
 
@@ -18,10 +17,10 @@ class VictimAssetModel(
 ):
     """Victim_Asset Model"""
 
-    _associated_type = PrivateAttr(True)
-    _cm_type = PrivateAttr(False)
-    _shared_type = PrivateAttr(False)
-    _staged = PrivateAttr(False)
+    _associated_type = PrivateAttr(default=True)
+    _cm_type = PrivateAttr(default=False)
+    _shared_type = PrivateAttr(default=False)
+    _staged = PrivateAttr(default=False)
 
     account_name: str | None = Field(
         None,
@@ -121,6 +120,7 @@ class VictimAssetModel(
     )
 
     @validator('associated_groups', always=True, pre=True)
+    @classmethod
     def _validate_groups(cls, v):
         if not v:
             return GroupsModel()  # type: ignore
@@ -151,7 +151,7 @@ class VictimAssetsModel(
 ):
     """Victim_Assets Model"""
 
-    _mode_support = PrivateAttr(False)
+    _mode_support = PrivateAttr(default=False)
 
     data: list[VictimAssetModel] | None = Field(
         [],

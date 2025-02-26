@@ -14,13 +14,13 @@ from tcex.input.field_type.tc_entity import TCEntity
 from tcex.registry import registry
 
 
-# pylint: disable=no-self-argument
 class IndicatorEntity(TCEntity):
     """Indicator Entity Field (Model) Type"""
 
     indicator_types: ClassVar[list[str]] = []
 
     @validator('type', allow_reuse=True)
+    @classmethod
     def is_empty(cls, value: str, field: ModelField) -> str:
         """Validate that the value is a non-empty string."""
         if isinstance(value, str) and value.replace(' ', '') == '':
@@ -28,6 +28,7 @@ class IndicatorEntity(TCEntity):
         return value
 
     @validator('type', allow_reuse=True)
+    @classmethod
     def is_type(cls, value: str, field: ModelField) -> str:
         """Validate that the entity is of a specific Indicator type."""
         ti_utils = ThreatIntelUtil(session_tc=registry.session_tc)

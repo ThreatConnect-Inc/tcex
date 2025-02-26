@@ -152,14 +152,14 @@ class Exit:
     def exit_playbook_handler(self, msg: str):
         """Perform special action for PB Apps before exit."""
         # write outputs before exiting
-        registry.playbook.output.process()  # pylint: disable=no-member
+        registry.playbook.output.process()
 
         # required only for tcex testing framework
         if (
             hasattr(self.inputs.model_tc, 'tcex_testing_context')
             and self.inputs.model_tc.tcex_testing_context is not None
         ):  # pragma: no cover
-            registry.redis_client.hset(  # pylint: disable=no-member
+            registry.redis_client.hset(
                 self.inputs.model_tc.tcex_testing_context, '_exit_message', msg
             )
 

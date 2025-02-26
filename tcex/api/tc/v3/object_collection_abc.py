@@ -21,7 +21,7 @@ from tcex.util import Util
 _logger: TraceLogger = logging.getLogger(__name__.split('.', maxsplit=1)[0])  # type: ignore
 
 
-class ObjectCollectionABC(ABC):
+class ObjectCollectionABC(ABC):  # noqa: B024
     """Case Management Collection Abstract Base Class
 
     This class is a base class for Case Management collections that use
@@ -62,10 +62,10 @@ class ObjectCollectionABC(ABC):
 
         # convert all keys to camel case
         for k, v in list(parameters.items()):
-            k = self.util.snake_to_camel(k)
+            k_ = self.util.snake_to_camel(k)
             # if result_limit and resultLimit both show up use the proper cased version
-            if k not in parameters:
-                parameters[k] = v
+            if k_ not in parameters:
+                parameters[k_] = v
 
         self._request(
             'GET',
@@ -79,7 +79,8 @@ class ObjectCollectionABC(ABC):
     @property
     def _api_endpoint(self):  # pragma: no cover
         """Return filter method."""
-        raise NotImplementedError('Child class must implement this method.')
+        ex_msg = 'Child class must implement this method.'
+        raise NotImplementedError(ex_msg)
 
     def _request(
         self,
@@ -101,7 +102,7 @@ class ObjectCollectionABC(ABC):
                 message_values=[
                     method.upper(),
                     None,
-                    '{\"message\": \"Connection/Proxy Error/Retry\"}',
+                    '{"message": "Connection/Proxy Error/Retry"}',
                     url,
                 ],
             )
@@ -124,12 +125,14 @@ class ObjectCollectionABC(ABC):
     @property
     def filter(self):  # pragma: no cover
         """Return filter method."""
-        raise NotImplementedError('Child class must implement this method.')
+        ex_msg = 'Child class must implement this method.'
+        raise NotImplementedError(ex_msg)
 
     def log_response_text(self, response: Response):
         """Log the response text."""
+        max_text_length = 5_000
         response_text = 'response text: (text to large to log)'
-        if len(response.content) < 5000:  # check size of content for performance
+        if len(response.content) < max_text_length:  # check size of content for performance
             response_text = response.text
         self.log.debug(f'feature=api-tc-v3, response-body={response_text}')
 
@@ -159,8 +162,8 @@ class ObjectCollectionABC(ABC):
 
         # convert all keys to camel case
         for k, v in list(params.items()):
-            k = self.util.snake_to_camel(k)
-            params[k] = v
+            k_ = self.util.snake_to_camel(k)
+            params[k_] = v
 
         tql_string = self.tql.raw_tql or self.tql.as_str
 

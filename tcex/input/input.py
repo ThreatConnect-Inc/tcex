@@ -9,8 +9,7 @@ from base64 import b64decode
 from pathlib import Path
 
 # third-party
-from pydantic import ValidationError  # TYPE-CHECKING
-from pydantic import BaseModel, Extra
+from pydantic import BaseModel, Extra, ValidationError
 
 # first-party
 from tcex.app.config.install_json import InstallJson
@@ -32,7 +31,7 @@ from tcex.util import Util
 _logger: TraceLogger = logging.getLogger(__name__.split('.', maxsplit=1)[0])  # type: ignore
 
 # define JSON encoders
-json_encoders = {Sensitive: lambda v: str(v)}  # pylint: disable=unnecessary-lambda
+json_encoders = {Sensitive: lambda v: str(v)}
 
 
 def input_model(models: list) -> CommonModel | CommonAdvancedModel:
@@ -96,7 +95,7 @@ class Input:
             with fqfn.open(mode='rb') as fh:
                 return json.load(fh)
         except Exception:  # pragma: no cover
-            self.log.error(f'feature=inputs, event=config-parse-failure, filename={fqfn.name}')
+            self.log.exception(f'feature=inputs, event=config-parse-failure, filename={fqfn.name}')
             return file_content
 
     def _load_file_params(self):
@@ -122,7 +121,9 @@ class Input:
                 with fqfn.open(mode='rb') as fh:
                     encrypted_contents = fh.read()
             except Exception:  # pragma: no cover
-                self.log.error(f'feature=inputs, event=config-parse-failure, filename={fqfn.name}')
+                self.log.exception(
+                    f'feature=inputs, event=config-parse-failure, filename={fqfn.name}'
+                )
                 return file_content
 
             # decrypt file contents
@@ -134,7 +135,7 @@ class Input:
                 # delete file
                 fqfn.unlink()
             except Exception:  # pragma: no cover
-                self.log.error(
+                self.log.exception(
                     f'feature=inputs, event=config-decryption-failure, filename={fqfn.name}'
                 )
 
@@ -198,25 +199,28 @@ class Input:
                 continue
 
             if self.util.is_tc_variable(value):  # only matches threatconnect variables
-                value = self.resolve_variable(variable=value)
+                _inputs[name] = self.resolve_variable(variable=value)
             elif self.ij.model.is_playbook_app:
                 if isinstance(value, list):
                     # list could contain playbook variables, try to resolve the value
                     updated_value_array = []
                     for v in value:
                         if isinstance(v, str):
-                            v = registry.playbook.read.variable(v)
-                        # TODO: [high] does resolve variable need to be added here
-                        updated_value_array.append(v)
-                    value = updated_value_array
+                            updated_value_array.append(registry.playbook.read.variable(v))
+                        else:
+                            # TODO: [high] does resolve variable need to be added here
+                            updated_value_array.append(v)
+                    _inputs[name] = updated_value_array
                 elif self.util.is_playbook_variable(value):  # only matches playbook variables
                     # when using Bytes | String in App input model the value
                     # can be coerced to the wrong type. the BinaryVariable and
                     # StringVariable custom types allows for the validator in Binary
                     # and String types to raise a value error.
-                    value = registry.playbook.read.variable(value)
+                    _inputs[name] = registry.playbook.read.variable(value)
                 elif isinstance(value, str):
-                    value = registry.playbook.read._read_embedded(value)
+                    _inputs[name] = registry.playbook.read._read_embedded(value)  # noqa: SLF001
+                else:
+                    _inputs[name] = value
             else:
                 for match in re.finditer(self.util.variable_tc_pattern, str(value)):
                     variable = match.group(0)  # the full variable pattern
@@ -224,9 +228,7 @@ class Input:
                         v = '<file>'
                     else:
                         v = self.resolve_variable(variable=variable)
-                    value = value.replace(variable, v)
-
-            _inputs[name] = value
+                    _inputs[name] = value.replace(variable, v)
 
         # update contents
         self.contents_update(_inputs)
@@ -353,7 +355,8 @@ class Input:
         """
         match = re.match(Util().variable_tc_match, variable)
         if not match:
-            raise RuntimeError(f'Could not parse variable: {variable}')
+            ex_msg = f'Could not parse variable: {variable}'
+            raise RuntimeError(ex_msg)
 
         key = match.group('key')
         provider = match.group('provider')
@@ -371,13 +374,13 @@ class Input:
                 elif type_.lower() == 'keychain':
                     data = Sensitive(data)
             except Exception as ex:
-                raise RuntimeError(
+                ex_msg = (
                     f'Could not retrieve variable: provider={provider}, key={key}, type={type_}.'
-                ) from ex
+                )
+                raise RuntimeError(ex_msg) from ex
         else:
-            raise RuntimeError(
-                f'Could not retrieve variable: provider={provider}, key={key}, type={type_}.'
-            )
+            ex_msg = f'Could not retrieve variable: provider={provider}, key={key}, type={type_}.'
+            raise RuntimeError(ex_msg)
 
         return data
 
@@ -396,7 +399,7 @@ class Input:
         # format error messages
         _exit_message_list = ['Input validation errors']
         for loc, err_list in _exit_message.items():
-            _exit_message_list.append(f'''{loc}: {', '.join(err_list)}''')
+            _exit_message_list.append(f"""{loc}: {', '.join(err_list)}""")
 
         # exit with error message
         return '\n'.join(_exit_message_list)

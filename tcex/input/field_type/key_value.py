@@ -17,7 +17,6 @@ from tcex.input.field_type.tc_entity import TCEntity
 KeyValue = ForwardRef('KeyValue')  # type: ignore
 
 
-# pylint: disable=no-self-argument
 class KeyValue(BaseModel):
     """Model for KeyValue Input."""
 
@@ -36,6 +35,7 @@ class KeyValue(BaseModel):
     )
 
     @validator('key')
+    @classmethod
     def non_empty_string(cls, value: str, field: ModelField) -> str:
         """Validate that the value is a non-empty string."""
         if isinstance(value, str) and value.replace(' ', '') == '':

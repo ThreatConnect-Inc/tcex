@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# pylint: disable=no-member,no-self-argument,wrong-import-position
 # standard library
 from datetime import datetime
 
@@ -21,10 +20,10 @@ class TaskModel(
 ):
     """Task Model"""
 
-    _associated_type = PrivateAttr(False)
-    _cm_type = PrivateAttr(True)
-    _shared_type = PrivateAttr(False)
-    _staged = PrivateAttr(False)
+    _associated_type = PrivateAttr(default=False)
+    _cm_type = PrivateAttr(default=True)
+    _shared_type = PrivateAttr(default=False)
+    _staged = PrivateAttr(default=False)
 
     artifacts: 'ArtifactsModel' = Field(
         None,
@@ -190,24 +189,28 @@ class TaskModel(
     )
 
     @validator('artifacts', always=True, pre=True)
+    @classmethod
     def _validate_artifacts(cls, v):
         if not v:
             return ArtifactsModel()  # type: ignore
         return v
 
     @validator('assignee', always=True, pre=True)
+    @classmethod
     def _validate_assignee(cls, v):
         if not v:
             return AssigneeModel()  # type: ignore
         return v
 
     @validator('parent_case', always=True, pre=True)
+    @classmethod
     def _validate_case(cls, v):
         if not v:
             return CaseModel()  # type: ignore
         return v
 
     @validator('notes', always=True, pre=True)
+    @classmethod
     def _validate_notes(cls, v):
         if not v:
             return NotesModel()  # type: ignore
@@ -238,7 +241,7 @@ class TasksModel(
 ):
     """Tasks Model"""
 
-    _mode_support = PrivateAttr(False)
+    _mode_support = PrivateAttr(default=False)
 
     data: list[TaskModel] | None = Field(
         [],

@@ -27,46 +27,23 @@ repos:
       - id: requirements-txt-fixer
       - id: trailing-whitespace
   - repo: https://github.com/pycqa/bandit
-    rev: 1.7.10
+    rev: 1.8.3
     hooks:
       - id: bandit
         exclude: |
           (?x)(
               ^tests/
           )
-  - repo: https://github.com/psf/black
-    rev: 24.10.0
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.4.1
     hooks:
-      - id: black
-  - repo: https://github.com/streetsidesoftware/cspell-cli
-    rev: v8.15.1
-    hooks:
-      - id: cspell
-        exclude: |
-          (?x)(
-              ^.git|^tests
-          )
+      - id: codespell
   - repo: https://github.com/pre-commit/mirrors-isort
     rev: v5.10.1
     hooks:
       - id: isort
-        exclude: |
-          (?x)(
-              ^app_init/
-          )
-  - repo: https://github.com/pycqa/pydocstyle
-    rev: 6.3.0
-    hooks:
-      - id: pydocstyle
-        args:
-          - --ignore=D104,D202,D203,D213,D300,D301,D400,D402,D406,D407,D413,D415
-        exclude: |
-          (?x)(
-              ^tcex/threat_intelligence/|
-              ^tests/
-          )
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.18.0
+    rev: v3.19.1
     hooks:
       - id: pyupgrade
         args:
@@ -77,7 +54,8 @@ repos:
         entry: pyright
         language: system
         name: pyright
-        types: [python]
+        types:
+          - python
   - repo: local
     hooks:
       - id: pyright-submodules
@@ -85,21 +63,39 @@ repos:
         language: system
         name: pyright-submodules
         # pre-commit types_or and types with multiple values don't work for submodules
-        types: [directory]
+        types:
+          - directory
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.9.7
+    hooks:
+      - id: ruff
+        args:
+          - --fix
+        types_or:
+          - python
+          - pyi
+      - id: ruff-format
+        types_or:
+          - python
+          - pyi
   - repo: local
     hooks:
-      - id: pylint
-        args: ['--jobs=2']
-        entry: pylint
+      - id: ruff-submodules
+        entry: ruff
+        args:
+          - check
+          - --fix
         language: system
-        name: pylint
-        types: [python]
-  - repo: local
-    hooks:
-      - id: pylint-submodules
-        args: ['--jobs=2']
-        entry: pylint
-        language: system
-        name: pylint-submodules
+        name: ruff-submodules
         # pre-commit types_or and types with multiple values don't work for submodules
-        types: [directory]
+        types:
+          - directory
+      - id: ruff-format-submodules
+        entry: ruff
+        args:
+          - format
+        language: system
+        name: ruff-format-submodules
+        # pre-commit types_or and types with multiple values don't work for submodules
+        types:
+          - directory

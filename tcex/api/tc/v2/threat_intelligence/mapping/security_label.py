@@ -47,9 +47,7 @@ class SecurityLabel(Mapping):
 
     def can_create(self):
         """Return true if security label can be created."""
-        if self._data.get('name'):
-            return True
-        return False
+        return bool(self._data.get('name'))
 
     def add_key_value(self, key, value):
         """Convert the value and adds it as a data field."""

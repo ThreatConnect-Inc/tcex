@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# pylint: disable=no-member,no-self-argument,wrong-import-position
 # standard library
 from datetime import datetime
 
@@ -21,10 +20,10 @@ class IndicatorModel(
 ):
     """Indicator Model"""
 
-    _associated_type = PrivateAttr(True)
-    _cm_type = PrivateAttr(False)
-    _shared_type = PrivateAttr(False)
-    _staged = PrivateAttr(False)
+    _associated_type = PrivateAttr(default=True)
+    _cm_type = PrivateAttr(default=False)
+    _shared_type = PrivateAttr(default=False)
+    _staged = PrivateAttr(default=False)
 
     active: bool = Field(
         None,
@@ -167,6 +166,13 @@ class IndicatorModel(
         read_only=False,
         title='externalLastModified',
     )
+    false_positive_flag: bool = Field(
+        None,
+        description='Is the indicator a false positive?',
+        methods=['POST', 'PUT'],
+        read_only=False,
+        title='falsePositiveFlag',
+    )
     false_positive_reported_by_user: bool = Field(
         None,
         allow_mutation=False,
@@ -299,9 +305,9 @@ class IndicatorModel(
     )
     observations: int | None = Field(
         None,
-        allow_mutation=False,
         description='The number of times this indicator has been observed.',
-        read_only=True,
+        methods=['POST', 'PUT'],
+        read_only=False,
         title='observations',
     )
     owner_id: int | None = Field(
@@ -313,6 +319,7 @@ class IndicatorModel(
     )
     owner_name: str | None = Field(
         None,
+        conditional_read_only=['Victim'],
         description='The name of the Organization, Community, or Source that the item belongs to.',
         methods=['POST'],
         read_only=False,
@@ -495,54 +502,63 @@ class IndicatorModel(
     )
 
     @validator('associated_artifacts', always=True, pre=True)
+    @classmethod
     def _validate_artifacts(cls, v):
         if not v:
             return ArtifactsModel()  # type: ignore
         return v
 
     @validator('associated_cases', always=True, pre=True)
+    @classmethod
     def _validate_cases(cls, v):
         if not v:
             return CasesModel()  # type: ignore
         return v
 
     @validator('file_actions', always=True, pre=True)
+    @classmethod
     def _validate_file_actions(cls, v):
         if not v:
             return FileActionsModel()  # type: ignore
         return v
 
     @validator('file_occurrences', always=True, pre=True)
+    @classmethod
     def _validate_file_occurrences(cls, v):
         if not v:
             return FileOccurrencesModel()  # type: ignore
         return v
 
     @validator('associated_groups', always=True, pre=True)
+    @classmethod
     def _validate_groups(cls, v):
         if not v:
             return GroupsModel()  # type: ignore
         return v
 
     @validator('attributes', always=True, pre=True)
+    @classmethod
     def _validate_indicator_attributes(cls, v):
         if not v:
             return IndicatorAttributesModel()  # type: ignore
         return v
 
     @validator('associated_indicators', 'custom_associations', always=True, pre=True)
+    @classmethod
     def _validate_indicators(cls, v):
         if not v:
             return IndicatorsModel()  # type: ignore
         return v
 
     @validator('security_labels', always=True, pre=True)
+    @classmethod
     def _validate_security_labels(cls, v):
         if not v:
             return SecurityLabelsModel()  # type: ignore
         return v
 
     @validator('tags', always=True, pre=True)
+    @classmethod
     def _validate_tags(cls, v):
         if not v:
             return TagsModel()  # type: ignore
@@ -573,7 +589,7 @@ class IndicatorsModel(
 ):
     """Indicators Model"""
 
-    _mode_support = PrivateAttr(True)
+    _mode_support = PrivateAttr(default=True)
 
     data: list[IndicatorModel] | None = Field(
         [],

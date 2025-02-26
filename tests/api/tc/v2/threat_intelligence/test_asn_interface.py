@@ -27,7 +27,6 @@ class TestAsnIndicators(TestThreatIntelligence):
         self.ti = self.ti_helper.ti
         self.tcex = self.ti_helper.tcex
 
-    # pylint: disable=no-member
     def tests_ti_asn_create(self):
         """Create an indicator using specific interface."""
         indicator_data = {

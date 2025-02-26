@@ -1,7 +1,5 @@
 """TcEx Framework Module"""
 
-# pylint: disable=no-member,no-self-argument,wrong-import-position
-
 # third-party
 from pydantic import Field
 

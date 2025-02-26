@@ -31,10 +31,11 @@ class SecurityLabelFilter(FilterABC):
             color: The color of the security label (in hex triplet format).
         """
         if isinstance(color, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('color', operator, color, TqlType.STRING)
 
@@ -56,10 +57,11 @@ class SecurityLabelFilter(FilterABC):
             description: The description of the security label.
         """
         if isinstance(description, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('description', operator, description, TqlType.STRING)
 
@@ -81,10 +83,11 @@ class SecurityLabelFilter(FilterABC):
             has_group_attribute: A nested query for association to other groups.
         """
         if isinstance(has_group_attribute, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('hasGroupAttribute', operator, has_group_attribute, TqlType.INTEGER)
 
@@ -106,10 +109,11 @@ class SecurityLabelFilter(FilterABC):
             has_indicator_attribute: A nested query for association to other indicators.
         """
         if isinstance(has_indicator_attribute, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter(
             'hasIndicatorAttribute', operator, has_indicator_attribute, TqlType.INTEGER
@@ -133,14 +137,15 @@ class SecurityLabelFilter(FilterABC):
             has_victim_attribute: A nested query for association to other victims.
         """
         if isinstance(has_victim_attribute, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('hasVictimAttribute', operator, has_victim_attribute, TqlType.INTEGER)
 
-    def id(self, operator: Enum, id: int | list):  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int | list):  # noqa: A002
         """Filter ID based on **id** keyword.
 
         Args:
@@ -148,10 +153,11 @@ class SecurityLabelFilter(FilterABC):
             id: The ID of the security label.
         """
         if isinstance(id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
@@ -163,10 +169,11 @@ class SecurityLabelFilter(FilterABC):
             name: The name of the security label.
         """
         if isinstance(name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('name', operator, name, TqlType.STRING)
 
@@ -178,10 +185,11 @@ class SecurityLabelFilter(FilterABC):
             owner: The owner ID of the security label.
         """
         if isinstance(owner, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('owner', operator, owner, TqlType.INTEGER)
 
@@ -193,10 +201,11 @@ class SecurityLabelFilter(FilterABC):
             owner_name: The owner name of the security label.
         """
         if isinstance(owner_name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('ownerName', operator, owner_name, TqlType.STRING)
 
@@ -208,10 +217,11 @@ class SecurityLabelFilter(FilterABC):
             summary: The name of the security label.
         """
         if isinstance(summary, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('summary', operator, summary, TqlType.STRING)
 
@@ -223,9 +233,10 @@ class SecurityLabelFilter(FilterABC):
             victim_id: The ID of the victim the security label is applied to.
         """
         if isinstance(victim_id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('victimId', operator, victim_id, TqlType.INTEGER)

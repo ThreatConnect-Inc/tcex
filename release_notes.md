@@ -1,5 +1,11 @@
 # Release Notes
 
+
+## 4.0.8
+-   APP-4733 - Migrated to "uv" for package management
+-   APP-4734 - Switched linters to "ruff" (including linting fixes)
+-   APP-4743 - [API] Added support for "conditional-read-only" fields
+
 ## 4.0.7
 -   APP-4601 - [pleb] Added jmespath custom functions to pleb to centralize functionality
 -   APP-4604 - [transform] Added standard processing functions class

@@ -1,4 +1,4 @@
-"""TcEx Framework Module"""
+"""TcEx Framework Module"""  # noqa: A005
 
 # standard library
 import re
@@ -38,9 +38,8 @@ class String(str):
     @classmethod
     def validate_allow_empty(cls, value: str, field: ModelField) -> str:
         """Raise exception if value is empty and allow_empty is False."""
-        if cls.allow_empty is False:
-            if isinstance(value, str) and value == '':
-                raise InvalidEmptyValue(field_name=field.name)
+        if cls.allow_empty is False and isinstance(value, str) and value == '':
+            raise InvalidEmptyValue(field_name=field.name)
 
         return value
 
@@ -65,9 +64,8 @@ class String(str):
     @classmethod
     def validate_regex(cls, value: str, field: ModelField) -> str:
         """Raise exception if value does not match pattern."""
-        if isinstance(cls.regex, str):
-            if not re.compile(cls.regex).match(value):
-                raise InvalidPatternValue(field_name=field.name, pattern=cls.regex)
+        if isinstance(cls.regex, str) and not re.compile(cls.regex).match(value):
+            raise InvalidPatternValue(field_name=field.name, pattern=cls.regex)
         return value
 
     @classmethod

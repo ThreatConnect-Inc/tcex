@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# pylint: disable=no-member,no-self-argument,wrong-import-position
 # standard library
 from datetime import datetime
 
@@ -21,10 +20,10 @@ class CaseModel(
 ):
     """Case Model"""
 
-    _associated_type = PrivateAttr(False)
-    _cm_type = PrivateAttr(True)
-    _shared_type = PrivateAttr(False)
-    _staged = PrivateAttr(False)
+    _associated_type = PrivateAttr(default=False)
+    _cm_type = PrivateAttr(default=True)
+    _shared_type = PrivateAttr(default=False)
+    _staged = PrivateAttr(default=False)
 
     artifacts: 'ArtifactsModel' = Field(
         None,
@@ -264,54 +263,63 @@ class CaseModel(
     )
 
     @validator('artifacts', always=True, pre=True)
+    @classmethod
     def _validate_artifacts(cls, v):
         if not v:
             return ArtifactsModel()  # type: ignore
         return v
 
     @validator('assignee', always=True, pre=True)
+    @classmethod
     def _validate_assignee(cls, v):
         if not v:
             return AssigneeModel()  # type: ignore
         return v
 
     @validator('attributes', always=True, pre=True)
+    @classmethod
     def _validate_case_attributes(cls, v):
         if not v:
             return CaseAttributesModel()  # type: ignore
         return v
 
     @validator('associated_cases', 'related', always=True, pre=True)
+    @classmethod
     def _validate_cases(cls, v):
         if not v:
             return CasesModel()  # type: ignore
         return v
 
     @validator('associated_groups', always=True, pre=True)
+    @classmethod
     def _validate_groups(cls, v):
         if not v:
             return GroupsModel()  # type: ignore
         return v
 
     @validator('associated_indicators', always=True, pre=True)
+    @classmethod
     def _validate_indicators(cls, v):
         if not v:
             return IndicatorsModel()  # type: ignore
         return v
 
     @validator('notes', always=True, pre=True)
+    @classmethod
     def _validate_notes(cls, v):
         if not v:
             return NotesModel()  # type: ignore
         return v
 
     @validator('tags', always=True, pre=True)
+    @classmethod
     def _validate_tags(cls, v):
         if not v:
             return TagsModel()  # type: ignore
         return v
 
     @validator('tasks', always=True, pre=True)
+    @classmethod
     def _validate_tasks(cls, v):
         if not v:
             return TasksModel()  # type: ignore
@@ -326,24 +334,28 @@ class CaseModel(
         always=True,
         pre=True,
     )
+    @classmethod
     def _validate_user(cls, v):
         if not v:
             return UserModel()  # type: ignore
         return v
 
     @validator('user_access', always=True, pre=True)
+    @classmethod
     def _validate_users(cls, v):
         if not v:
             return UsersModel()  # type: ignore
         return v
 
     @validator('workflow_events', always=True, pre=True)
+    @classmethod
     def _validate_workflow_events(cls, v):
         if not v:
             return WorkflowEventsModel()  # type: ignore
         return v
 
     @validator('workflow_template', always=True, pre=True)
+    @classmethod
     def _validate_workflow_template(cls, v):
         if not v:
             return WorkflowTemplateModel()  # type: ignore
@@ -374,7 +386,7 @@ class CasesModel(
 ):
     """Cases Model"""
 
-    _mode_support = PrivateAttr(True)
+    _mode_support = PrivateAttr(default=True)
 
     data: list[CaseModel] | None = Field(
         [],

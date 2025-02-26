@@ -22,13 +22,13 @@ CASE_MANAGEMENT_TYPES = [
 ]
 
 
-# pylint: disable=no-self-argument
 class CaseManagementEntity(TCEntity):
     """Case Management Entity Field (Model) Type"""
 
     case_management_types: ClassVar[list[str]] = CASE_MANAGEMENT_TYPES
 
     @validator('type', allow_reuse=True)
+    @classmethod
     def is_empty(cls, value: str, field: ModelField) -> str:
         """Validate that the value is a non-empty string."""
         if isinstance(value, str) and value.replace(' ', '') == '':
@@ -36,6 +36,7 @@ class CaseManagementEntity(TCEntity):
         return value
 
     @validator('type', allow_reuse=True)
+    @classmethod
     def is_type(cls, value: str, field: ModelField) -> str:
         """Validate that the entity is of Indicator type."""
         if value.lower() not in [i.lower() for i in cls.case_management_types]:

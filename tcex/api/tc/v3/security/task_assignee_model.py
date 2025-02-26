@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# pylint: disable=no-member,no-self-argument,wrong-import-position
 # standard library
 from datetime import datetime
 from enum import Enum
@@ -83,7 +82,7 @@ class TaskAssigneesModel(
 ):
     """Task Assignees Model"""
 
-    _mode_support = PrivateAttr(True)
+    _mode_support = PrivateAttr(default=True)
 
     data: list[TaskAssigneeModel] | None = Field(
         [],

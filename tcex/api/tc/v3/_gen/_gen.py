@@ -77,7 +77,7 @@ def gen_args(type_: SnakeString, indent_blocks: int):
     # run model code first so that requirements can be determined
     i1 = ' ' * (4 * indent_blocks)
     i2 = i1 + ' ' * 4
-    print(gen.gen_args(i1=i1, i2=i2))
+    print(gen.gen_args(i1=i1, i2=i2))  # noqa: T201
 
 
 def gen_filter(type_: SnakeString):
@@ -86,8 +86,8 @@ def gen_filter(type_: SnakeString):
     gen = GenerateFilter(type_)
 
     # set the output filename using the appropriate tcex api path
-    out_path = gen.tap(type_).split('.') + [type_, f'{type_.singular()}_filter.py']
-    out_file = Path(os.path.join(*out_path))
+    out_path = [*gen.tap(type_).split('.'), type_, f'{type_.singular()}_filter.py']
+    out_file = Path().joinpath(*out_path)
 
     if not out_file.is_file():
         out_file.write_text('')
@@ -116,8 +116,8 @@ def gen_model(type_: SnakeString):
     gen = GenerateModel(type_)
 
     # set the output filename using the appropriate tcex api path
-    out_path = gen.tap(type_).split('.') + [type_, f'{type_.singular()}_model.py']
-    out_file = Path(os.path.join(*out_path))
+    out_path = [*gen.tap(type_).split('.'), type_, f'{type_.singular()}_model.py']
+    out_file = Path().joinpath(*out_path)
 
     if not out_file.is_file():
         out_file.write_text('')
@@ -163,8 +163,9 @@ def gen_object(type_: SnakeString):
     gen = GenerateObject(type_)
 
     # set the output filename using the appropriate tcex api path
-    out_path = gen.tap(type_).split('.') + [type_, f'{type_.singular()}.py']
-    out_file = Path(os.path.join(*out_path))
+    out_path = [*gen.tap(type_).split('.'), type_, f'{type_.singular()}.py']
+    # out_file = Path(os.path.join(*out_path))
+    out_file = Path().joinpath(*out_path)
 
     if not out_file.is_file():
         out_file.write_text('')
@@ -250,7 +251,7 @@ app = typer.Typer()
 
 
 @app.command()
-def all(  # pylint: disable=redefined-builtin
+def all(  # noqa: A001
     gen_type: GenTypes = typer.Option(
         'all', '--gen_type', help='Generate filter, model, or object file.'
     ),
@@ -259,14 +260,14 @@ def all(  # pylint: disable=redefined-builtin
     log_server()
     gen_type_ = gen_type.value.lower()
     for type_ in ObjectTypes:
-        type_ = util.snake_string(type_.value)
+        type__ = util.snake_string(type_.value)
 
         if gen_type_ in ['all', 'model']:
-            gen_model(type_)
+            gen_model(type__)
         if gen_type_ in ['all', 'filter']:
-            gen_filter(type_)
+            gen_filter(type__)
         if gen_type_ in ['all', 'object']:
-            gen_object(type_)
+            gen_object(type__)
 
 
 @app.command()
@@ -298,7 +299,7 @@ def code(
 
 
 @app.command()
-def filter(  # pylint: disable=redefined-builtin
+def filter(  # noqa: A001
     type_: ObjectTypes = typer.Option(
         ..., '--type', help='Generate filter object file for the provided type.'
     ),
@@ -320,7 +321,7 @@ def model(
 
 
 @app.command()
-def object(  # pylint: disable=redefined-builtin
+def object(  # noqa: A001
     type_: ObjectTypes = typer.Option(
         ..., '--type', help='Generate object file for the provided type.'
     ),

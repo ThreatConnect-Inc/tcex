@@ -106,7 +106,7 @@ class GenerateFilterABC(GenerateABC, ABC):
             try:
                 yield FilterModel(**field_data)
             except ValidationError as ex:
-                Render.panel.failure(f'Failed generating property model: data={field_data} ({ex}).')
+                Render.panel.failure(f'Failed generating filter model: data={field_data} ({ex}).')
 
     def _gen_code_generic_method(self, filter_data: FilterModel) -> list:
         """Return code for generic TQL filter methods."""
@@ -120,7 +120,7 @@ class GenerateFilterABC(GenerateABC, ABC):
             (
                 f'{self.i1}def {filter_data.keyword.snake_case()}'
                 f'(self, operator: Enum, {filter_data.keyword.snake_case()}: '
-                f'''{filter_data.extra.typing_type}):{filter_data.extra.comment}'''
+                f"""{filter_data.extra.typing_type}):{filter_data.extra.comment}"""
             ),
             f'{self.i2}"""Filter {filter_data.name} based on **{filter_data.keyword}** keyword.',
             '',
@@ -138,8 +138,8 @@ class GenerateFilterABC(GenerateABC, ABC):
             )
             _code.extend(
                 [
-                    f'''{self.i2}{filter_data.keyword.snake_case()} = self.util.any_to_datetime'''
-                    f'''({filter_data.keyword.snake_case()}).strftime('%Y-%m-%d %H:%M:%S')'''
+                    f"""{self.i2}{filter_data.keyword.snake_case()} = self.util.any_to_datetime"""
+                    f"""({filter_data.keyword.snake_case()}).strftime('%Y-%m-%d %H:%M:%S')"""
                 ]
             )
 
@@ -147,22 +147,23 @@ class GenerateFilterABC(GenerateABC, ABC):
             _code.extend(
                 [
                     (
-                        f'''{self.i2}if isinstance({filter_data.keyword.snake_case()}, list) '''
-                        '''and operator not in self.list_types:'''
+                        f"""{self.i2}if isinstance({filter_data.keyword.snake_case()}, list) """
+                        """and operator not in self.list_types:"""
                     ),
-                    f'''{self.i3}raise RuntimeError('''
-                    f'''{self.i5}'Operator must be CONTAINS, NOT_CONTAINS, IN\''''
-                    f'''{self.i5}'or NOT_IN when filtering on a list of values.\''''
-                    f'''{self.i4})''',
+                    f"""{self.i3}ex_msg = ("""
+                    f"""{self.i5}'Operator must be CONTAINS, NOT_CONTAINS, IN\'"""
+                    f"""{self.i5}'or NOT_IN when filtering on a list of values.\'"""
+                    f"""{self.i4})""",
+                    f"""{self.i3}raise RuntimeError(ex_msg)""",
                     '',
                 ]
             )
         _code.extend(
             [
                 (
-                    f'''{self.i2}self._tql.add_filter('{filter_data.keyword}', operator, '''
-                    f'''{filter_data.keyword.snake_case()}, '''
-                    f'''{filter_data.extra.tql_type})'''
+                    f"""{self.i2}self._tql.add_filter('{filter_data.keyword}', operator, """
+                    f"""{filter_data.keyword.snake_case()}, """
+                    f"""{filter_data.extra.tql_type})"""
                 ),
                 '',
             ]
@@ -181,8 +182,8 @@ class GenerateFilterABC(GenerateABC, ABC):
             '',
             f'{self.i2}artifacts = ArtifactFilter(Tql())',
             (
-                f'''{self.i2}self._tql.add_filter('hasArtifact', '''
-                '''TqlOperator.EQ, artifacts, TqlType.SUB_QUERY)'''
+                f"""{self.i2}self._tql.add_filter('hasArtifact', """
+                """TqlOperator.EQ, artifacts, TqlType.SUB_QUERY)"""
             ),
             f'{self.i2}return artifacts',
             '',
@@ -208,8 +209,8 @@ class GenerateFilterABC(GenerateABC, ABC):
             [
                 f'{self.i2}cases = CaseFilter(Tql())',
                 (
-                    f'''{self.i2}self._tql.add_filter('hasCase', '''
-                    '''TqlOperator.EQ, cases, TqlType.SUB_QUERY)'''
+                    f"""{self.i2}self._tql.add_filter('hasCase', """
+                    """TqlOperator.EQ, cases, TqlType.SUB_QUERY)"""
                 ),
                 f'{self.i2}return cases',
                 '',
@@ -237,8 +238,8 @@ class GenerateFilterABC(GenerateABC, ABC):
             [
                 f'{self.i2}groups = GroupFilter(Tql())',
                 (
-                    f'''{self.i2}self._tql.add_filter('hasGroup', '''
-                    '''TqlOperator.EQ, groups, TqlType.SUB_QUERY)'''
+                    f"""{self.i2}self._tql.add_filter('hasGroup', """
+                    """TqlOperator.EQ, groups, TqlType.SUB_QUERY)"""
                 ),
                 f'{self.i2}return groups',
                 '',
@@ -269,8 +270,8 @@ class GenerateFilterABC(GenerateABC, ABC):
             [
                 f'{self.i2}indicators = IndicatorFilter(Tql())',
                 (
-                    f'''{self.i2}self._tql.add_filter('hasIndicator', '''
-                    '''TqlOperator.EQ, indicators, TqlType.SUB_QUERY)'''
+                    f"""{self.i2}self._tql.add_filter('hasIndicator', """
+                    """TqlOperator.EQ, indicators, TqlType.SUB_QUERY)"""
                 ),
                 f'{self.i2}return indicators',
                 '',
@@ -290,8 +291,8 @@ class GenerateFilterABC(GenerateABC, ABC):
             '',
             f'{self.i2}notes = NoteFilter(Tql())',
             (
-                f'''{self.i2}self._tql.add_filter('hasNote', '''
-                f'''TqlOperator.EQ, notes, TqlType.SUB_QUERY)'''
+                f"""{self.i2}self._tql.add_filter('hasNote', """
+                f"""TqlOperator.EQ, notes, TqlType.SUB_QUERY)"""
             ),
             f'{self.i2}return notes',
             '',
@@ -309,8 +310,8 @@ class GenerateFilterABC(GenerateABC, ABC):
             '',
             f'{self.i2}tags = TagFilter(Tql())',
             (
-                f'''{self.i2}self._tql.add_filter('hasTag', '''
-                '''TqlOperator.EQ, tags, TqlType.SUB_QUERY)'''
+                f"""{self.i2}self._tql.add_filter('hasTag', """
+                """TqlOperator.EQ, tags, TqlType.SUB_QUERY)"""
             ),
             f'{self.i2}return tags',
             '',
@@ -328,8 +329,8 @@ class GenerateFilterABC(GenerateABC, ABC):
             '',
             f'{self.i2}tags = TagFilter(Tql())',
             (
-                f'''{self.i2}self._tql.add_filter('hasAllTags', '''
-                '''TqlOperator.EQ, tags, TqlType.SUB_QUERY)'''
+                f"""{self.i2}self._tql.add_filter('hasAllTags', """
+                """TqlOperator.EQ, tags, TqlType.SUB_QUERY)"""
             ),
             f'{self.i2}return tags',
             '',
@@ -347,8 +348,8 @@ class GenerateFilterABC(GenerateABC, ABC):
             '',
             f'{self.i2}tasks = TaskFilter(Tql())',
             (
-                f'''{self.i2}self._tql.add_filter('hasTask', '''
-                '''TqlOperator.EQ, tasks, TqlType.SUB_QUERY)'''
+                f"""{self.i2}self._tql.add_filter('hasTask', """
+                """TqlOperator.EQ, tasks, TqlType.SUB_QUERY)"""
             ),
             f'{self.i2}return tasks',
             '',
@@ -369,8 +370,8 @@ class GenerateFilterABC(GenerateABC, ABC):
             '',
             f'{self.i2}security_labels = SecurityLabelFilter(Tql())',
             (
-                f'''{self.i2}self._tql.add_filter('hasSecurityLabel', '''
-                '''TqlOperator.EQ, security_labels, TqlType.SUB_QUERY)'''
+                f"""{self.i2}self._tql.add_filter('hasSecurityLabel', """
+                """TqlOperator.EQ, security_labels, TqlType.SUB_QUERY)"""
             ),
             f'{self.i2}return security_labels',
             '',
@@ -398,8 +399,8 @@ class GenerateFilterABC(GenerateABC, ABC):
             [
                 f'{self.i2}intel_requirements = IntelRequirementFilter(Tql())',
                 (
-                    f'''{self.i2}self._tql.add_filter('hasIntelRequirement', '''
-                    '''TqlOperator.EQ, intel_requirements, TqlType.SUB_QUERY)'''
+                    f"""{self.i2}self._tql.add_filter('hasIntelRequirement', """
+                    """TqlOperator.EQ, intel_requirements, TqlType.SUB_QUERY)"""
                 ),
                 f'{self.i2}return intel_requirements',
                 '',
@@ -430,8 +431,8 @@ class GenerateFilterABC(GenerateABC, ABC):
             [
                 f'{self.i2}victim_assets = VictimAssetFilter(Tql())',
                 (
-                    f'''{self.i2}self._tql.add_filter('hasVictimAsset', '''
-                    '''TqlOperator.EQ, victim_assets, TqlType.SUB_QUERY)'''
+                    f"""{self.i2}self._tql.add_filter('hasVictimAsset', """
+                    """TqlOperator.EQ, victim_assets, TqlType.SUB_QUERY)"""
                 ),
                 f'{self.i2}return victim_assets',
                 '',
@@ -459,8 +460,8 @@ class GenerateFilterABC(GenerateABC, ABC):
             [
                 f'{self.i2}victims = VictimFilter(Tql())',
                 (
-                    f'''{self.i2}self._tql.add_filter('hasVictim', '''
-                    '''TqlOperator.EQ, victims, TqlType.SUB_QUERY)'''
+                    f"""{self.i2}self._tql.add_filter('hasVictim', """
+                    """TqlOperator.EQ, victims, TqlType.SUB_QUERY)"""
                 ),
                 f'{self.i2}return victims',
                 '',
@@ -491,8 +492,8 @@ class GenerateFilterABC(GenerateABC, ABC):
             '',
             f'{self.i2}attributes = {filter_type}(Tql())',
             (
-                f'''{self.i2}self._tql.add_filter('hasAttribute', '''
-                '''TqlOperator.EQ, attributes, TqlType.SUB_QUERY)'''
+                f"""{self.i2}self._tql.add_filter('hasAttribute', """
+                """TqlOperator.EQ, attributes, TqlType.SUB_QUERY)"""
             ),
             f'{self.i2}return attributes',
             '',

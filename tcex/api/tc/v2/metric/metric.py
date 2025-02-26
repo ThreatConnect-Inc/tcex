@@ -122,8 +122,7 @@ class Metric:
                 if metric.get('name') == self._metric_name:
                     self._metric_id = metric.get('id')
                     self.log.info(
-                        f'found metric with name "{self._metric_name}" '
-                        f'and Id {self._metric_id}.'
+                        f'found metric with name "{self._metric_name}" and Id {self._metric_id}.'
                     )
                     return True
             params['resultStart'] += params['resultLimit']
@@ -144,6 +143,8 @@ class Metric:
                 is returned.
         """
         data = {}
+        http_success_code = 200
+        http_no_content_code = 204
         if self._metric_id is None:  # pragma: no cover
             handle_error(715, [self._metric_name])
 
@@ -163,9 +164,11 @@ class Metric:
 
         url = f'/v2/customMetrics/{self._metric_id}/data'
         r = self.session_tc.post(url, json=body, params=params)
-        if r.status_code == 200 and 'application/json' in r.headers.get('content-type', ''):
+        if r.status_code == http_success_code and 'application/json' in r.headers.get(
+            'content-type', ''
+        ):
             data = r.json()
-        elif r.status_code == 204:
+        elif r.status_code == http_no_content_code:
             pass
         else:  # pragma: no cover
             handle_error(710, [r.status_code, r.text])

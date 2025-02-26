@@ -91,6 +91,7 @@ class Notification:
             'isOrganization': self._is_organization,
             'message': message,
         }
+        http_bad_request_code = 400
 
         if self._recipients:
             body['recipients'] = self._recipients
@@ -99,7 +100,7 @@ class Notification:
 
         # create our tcex resource
         r = self.session_tc.post('/v2/notifications', json=body)
-        if r.status_code == 400:
+        if r.status_code == http_bad_request_code:
             # specifically handle unknown users
             self.log.error(f'Failed to send notification ({r.text})')
         elif not r.ok:  # pragma: no cover

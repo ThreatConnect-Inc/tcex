@@ -38,7 +38,7 @@ class PlaybookCommonModel(BaseModel):
         inclusion_reason='runtimeLevel',
     )
     tc_kvstore_tls_enabled: bool = Field(
-        False,
+        default=False,
         description='If true, KV Store requires SSL connection.',
         inclusion_reason='runtimeLevel',
     )

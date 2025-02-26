@@ -49,7 +49,7 @@ class FileOccurrencesModel(
 ):
     """File Occurrences Data Model"""
 
-    _mode_support = PrivateAttr(True)
+    _mode_support = PrivateAttr(default=True)
 
     count: int | None = Field(None, description='The number of occurrences.')
 

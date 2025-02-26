@@ -9,7 +9,6 @@ from inspect import _empty, signature
 from typing import TypedDict
 
 # first-party
-# first-part
 from tcex.api.tc.ti_transform.model.transform_model import (
     GroupTransformModel,
     IndicatorTransformModel,
@@ -35,23 +34,24 @@ def transform_builder_to_model(
             for k, v in data.items():
                 if k == key:
                     yield (context, v)
-                elif isinstance(v, (dict, list)):
+                elif isinstance(v, dict | list):
                     yield from find_entries(v, key, context=f'{context}.{k}' if context else k)
         elif isinstance(data, list):
             for i, item in enumerate(data):
                 yield from find_entries(item, key, context=f'{context}[{i}]')
 
     for context, processing in find_entries(transform['transform'], 'transform'):
+        processing_ = processing
         if not isinstance(processing, list):
-            processing = [processing]
+            processing_ = [processing]
 
-        for step in processing:
+        for step in processing_:
             fn_name = step.get('for_each') or step.get('method')
             step.update(
                 processing_functions.translate_def_to_fn(
                     step,
                     f'{context}, Processing Function: '
-                    f'{processing_functions._snake_to_titlecase(fn_name)}',
+                    f'{processing_functions._snake_to_titlecase(fn_name)}',  # noqa: SLF001
                 )
             )
 
@@ -61,7 +61,8 @@ def transform_builder_to_model(
         case 'group':
             return GroupTransformModel(**transform['transform'])
         case _:
-            raise TypeError(f'Unknown transform type: {transform["type"]}')
+            ex_msg = f'Unknown transform type: {transform["type"]}'
+            raise TypeError(ex_msg)
 
 
 class ParamDefinition(TypedDict):
@@ -88,7 +89,7 @@ def custom_function_definition(definition: FunctionDefinition):
     """Attach a custom function definition to the function."""
 
     def _decorator(fn):
-        setattr(fn, '_tcex_function_definition', definition)
+        fn._tcex_function_definition = definition  # noqa: SLF001
         return fn
 
     return _decorator
@@ -131,7 +132,8 @@ class ProcessingFunctions:
         """Allow for custom processing to be described."""
         fn = self.custom_fns.get(name.lower())
         if not fn:
-            raise NotImplementedError(f'Custom function not implemented: {description}')
+            ex_msg = f'Custom function not implemented: {description}'
+            raise NotImplementedError(ex_msg)
         return fn(value, ti_dict=ti_dict, transform=transform, **kwargs)
 
     def static_map(self, value, mapping: dict):
@@ -146,7 +148,7 @@ class ProcessingFunctions:
     def value_in(self, value, values: str, delimiter: str = ','):
         """Return the value if it is in the list of values, else return None."""
         if not values.startswith('"'):
-            values.replace('"', '\"')
+            values.replace('"', '"')
             values = f'"{values}"'
 
         return value if value in [v.strip() for v in json.loads(values).split(delimiter)] else None
@@ -156,9 +158,6 @@ class ProcessingFunctions:
 
         value should be a list of objects that all have the same attributes.  The table will contain
         one row for each object in the list, and one column for each attribute of the objects.
-
-        Keyword Args:
-            Column Order - The order of the columns.
         """
         if column_order:
             order = [c.strip() for c in column_order.split(',')]
@@ -166,10 +165,10 @@ class ProcessingFunctions:
             order = list(value[0].keys())
 
         table = ''
-        table += f'|{"|".join(order) }|\n'
-        table += f'|{"|".join(["-" for o in order]) }|\n'
+        table += f'|{"|".join(order)}|\n'
+        table += f'|{"|".join(["-" for o in order])}|\n'
         for row in value:
-            table += f'|{"|".join([str(row.get(o, "")) for o in order]) }|\n'
+            table += f'|{"|".join([str(row.get(o, "")) for o in order])}|\n'
 
         return table
 
@@ -222,7 +221,7 @@ class ProcessingFunctions:
         """Generate a UUID5."""
         return str(uuid.uuid5(namespace or uuid.NAMESPACE_DNS, value))
 
-    def convert_to_MITRE_tag(self, value) -> str | None:
+    def convert_to_MITRE_tag(self, value) -> str | None:  # noqa: N802
         """Transform MITRE tags to TC format."""
         return self.tcex.api.tc.v3.mitre_tags.get_by_id_regex(value, value)
 
@@ -235,7 +234,8 @@ class ProcessingFunctions:
             type_ = 'method' if 'method' in api_def else 'for_each'
 
             if not type_:
-                raise ValueError('No method or for_each key found in definition.')
+                ex_msg = 'No method or for_each key found in definition.'
+                raise ValueError(ex_msg)  # noqa: TRY301
 
             fn_name = api_def[type_]
 
@@ -245,7 +245,8 @@ class ProcessingFunctions:
             fn = getattr(self, fn_name)
 
             if not fn:
-                raise ValueError(f'Unknown function: {fn_name}')
+                ex_msg = f'Unknown function: {fn_name}'
+                raise ValueError(ex_msg)  # noqa: TRY301
 
             translated[type_] = fn
 
@@ -254,7 +255,8 @@ class ProcessingFunctions:
 
                 for kwarg in api_def['kwargs']:
                     if kwarg not in sig.parameters:
-                        raise ValueError(f'Unknown argument {kwarg} for function {fn_name}')
+                        ex_msg = f'Unknown argument {kwarg} for function {fn_name}'
+                        raise ValueError(ex_msg)  # noqa: TRY301
 
                     annotation = sig.parameters[kwarg].annotation
                     additional_context = f', Argument: {kwarg}'
@@ -265,13 +267,14 @@ class ProcessingFunctions:
                             translated['kwargs'][kwarg] = sig.parameters[kwarg].annotation(
                                 api_def['kwargs'][kwarg]
                             )
-
-            return translated
-        except Exception as e:
+        except Exception as ex:
             # first-party
             from tcex.api.tc.ti_transform import TransformException
 
-            raise TransformException(f'{context}{additional_context}', e, context=api_def)
+            ex_msg = f'{context}{additional_context}'
+            raise TransformException(ex_msg, ex, context=api_def) from ex
+        else:
+            return translated
 
     def get_function_definitions(self) -> list[FunctionDefinition]:
         """Get function definitions in JSON format, suitable for the transform builder UI."""
@@ -290,7 +293,7 @@ class ProcessingFunctions:
             if _is_function(fn)
         ]
 
-        specs = [
+        return [
             getattr(fn, '_tcex_function_definition', {})
             or {
                 'name': fn.__name__,
@@ -299,9 +302,7 @@ class ProcessingFunctions:
                 'help': getattr(fn, '__doc__', ''),
             }
             for fn in fns
-        ]
-
-        return specs  # type: ignore
+        ]  # type: ignore
 
     @staticmethod
     def _snake_to_titlecase(name):

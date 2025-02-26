@@ -26,10 +26,11 @@ class CustomJSONEncoder(JSONEncoder):
     def default(self, o: Any) -> str:
         """Format object"""
         if isinstance(o, BaseModel):
-            raise ValueError(
+            ex_msg = (
                 f'Object of type {type(o)} is not JSON serializable. '
                 'Please verify that the object has been converted to a dictionary.'
             )
+            raise ValueError(ex_msg)  # noqa: TRY004
         if isinstance(o, datetime.date | datetime.datetime):
             return o.isoformat()
         return o
@@ -38,12 +39,12 @@ class CustomJSONEncoder(JSONEncoder):
 class V3ModelABC(BaseModel, ABC, allow_population_by_field_name=True):
     """V3 Base Model"""
 
-    _associated_type = PrivateAttr(False)
-    _cm_type = PrivateAttr(False)
+    _associated_type = PrivateAttr(default=False)
+    _cm_type = PrivateAttr(default=False)
     _dict_hash: str = PrivateAttr()
     _log = _logger
-    _shared_type = PrivateAttr(False)
-    _staged = PrivateAttr(False)
+    _shared_type = PrivateAttr(default=False)
+    _staged = PrivateAttr(default=False)
     id: int | None = None
 
     def __init__(self, **kwargs):
@@ -54,7 +55,6 @@ class V3ModelABC(BaseModel, ABC, allow_population_by_field_name=True):
         # API, otherwise the assumption is that the developer staged the data during
         # instantiation of the object. Keyword Section Model is the only exception to
         # this rule.
-        # pylint: disable=no-member
         if (
             kwargs
             and hasattr(self, 'id')
@@ -110,7 +110,7 @@ class V3ModelABC(BaseModel, ABC, allow_population_by_field_name=True):
         # NESTED RULE: For nested objects the body should use the valid POST fields
         #    instead of the PUT fields if id is not available. This handles including
         #    artifact type, attributes and other fields that are needed on the nested object.
-        if method == 'PUT' and nested is True and not self.id:  # pylint: disable=no-member
+        if method == 'PUT' and nested is True and not self.id:
             method = 'POST'
 
         # SHARED TYPE RULE: For nested "shared types" objects the body should use the valid
@@ -119,16 +119,21 @@ class V3ModelABC(BaseModel, ABC, allow_population_by_field_name=True):
         if method == 'POST' and nested is True and self._shared_type is True:
             method = 'PUT'
 
+        # EXCLUSION RULE: If the property "conditional_read_only" is set and the current type
+        #    is in the list the field should be excluded.
+        conditional_read_only = property_.get('conditional_read_only')
+        ti_type = getattr(self, 'type', None)
+        if conditional_read_only and ti_type in conditional_read_only:
+            return False
+
         # METHOD RULE: If the current method is in the property "methods" list the
         #     field should be included when available.
-        if method in property_.get('methods', []) and (value or value in [0, False]):
-            return True
-
         # DEFAULT RULE -> Fields should not be included unless the match a previous rule.
-        return False
+        return bool(method in property_.get('methods', []) and (value or value in [0, False]))
 
-    # pylint: disable=too-many-return-statements
-    def _calculate_nested_inclusion(self, method: str, mode: str | None, model: Self) -> bool:
+    def _calculate_nested_inclusion(  # noqa: PLR0911
+        self, method: str, mode: str | None, model: Self
+    ) -> bool:
         """Return True if the field is calculated to be included.
 
         Case Management Nested Logic:
@@ -157,7 +162,7 @@ class V3ModelABC(BaseModel, ABC, allow_population_by_field_name=True):
             return False
 
         # STAGED RULE: Any nested object provided by developer should be INCLUDED.
-        if model._staged is True:
+        if model._staged is True:  # noqa: SLF001
             return True
 
         # POST RULE: When method is POST all nested object should be INCLUDED.
@@ -190,7 +195,7 @@ class V3ModelABC(BaseModel, ABC, allow_population_by_field_name=True):
             # * Added on instantiation
             # * Added with stage_xxx() method
 
-            if model._cm_type is True:
+            if model._cm_type is True:  # noqa: SLF001
                 # RULE: Short-Circuit Nested CM Types
                 # Nested CM types are updated through their direct endpoints and should
                 #    never be INCLUDED when updating the parent. For new nested CM types
@@ -198,7 +203,7 @@ class V3ModelABC(BaseModel, ABC, allow_population_by_field_name=True):
                 #    before this rule.
                 return False
 
-            if model._shared_type is True:
+            if model._shared_type is True:  # noqa: SLF001
                 # RULE: Nested Tags
                 # Nested tags on a parent CM type behave as REPLACE mode and need to be
                 #     INCLUDED to prevent being removed.
@@ -214,7 +219,7 @@ class V3ModelABC(BaseModel, ABC, allow_population_by_field_name=True):
             #     efficient as updating them all in one request, it's is a simpler
             #     development design pattern.
 
-            if mode == 'replace':
+            if mode == 'replace':  # noqa: SIM103
                 # RULE: Nested Attributes w/ REPLACE mode
                 # Nested attributes on a parent CM type use the mode feature. When the mode
                 #     is REPLACE the attributes should be INCLUDED.
@@ -262,9 +267,9 @@ class V3ModelABC(BaseModel, ABC, allow_population_by_field_name=True):
 
         # * security_label -> delete (support id or name only)
         # * tag -> delete (support id or name only)
-        if (
+        if (  # noqa: SIM103
             mode == 'delete'
-            and (model._shared_type is True or self._associated_type is True)
+            and (model._shared_type is True or self._associated_type is True)  # noqa: SLF001
             and (model.id is not None or model.name is not None)  # type: ignore
         ):
             # RULE: Nested Shared Object w/ DELETE mode (TAGS, SECURITY LABELS)
@@ -380,7 +385,7 @@ class V3ModelABC(BaseModel, ABC, allow_population_by_field_name=True):
                         _body.setdefault(key, {})['data'] = _data
 
                         # value as a model can be ArtifactTypeModel, ArtifactModel, etc.
-                        if value._mode_support:  # type: ignore
+                        if value._mode_support:  # type: ignore  # noqa: SLF001
                             # Use the default mode defined in the model ("append") or the
                             # mode passed into this method as an override.
                             _body.setdefault(key, {})['mode'] = mode or value.mode  # type: ignore
@@ -396,14 +401,13 @@ class V3ModelABC(BaseModel, ABC, allow_population_by_field_name=True):
                         if hasattr(value, 'type'):
                             _body.setdefault(key, {})['type'] = value.type  # type: ignore
 
-                else:
+                elif self._calculate_nested_inclusion(method, mode, value):  # type: ignore
                     # Handle nested object types where field contains an object.
                     # (e.g., CaseModel -> workflowTemplate field)
                     # if method == 'POST' or value.id is None or value.updated is True:
-                    if self._calculate_nested_inclusion(method, mode, value):  # type: ignore
-                        _data = value.gen_body(method, mode, nested=True)  # type: ignore
-                        if _data:
-                            _body[key] = _data
+                    _data = value.gen_body(method, mode, nested=True)  # type: ignore
+                    if _data:
+                        _body[key] = _data
 
             elif self._calculate_field_inclusion(key, method, mode, nested, property_, value):
                 # Handle non-nested fields and their values based on well defined rules.

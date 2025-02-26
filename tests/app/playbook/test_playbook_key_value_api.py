@@ -156,12 +156,12 @@ class TestPlaybookKeyValueApi:
         mock_api = MockApi()
 
         # monkeypatch put method
-        def mp_put(*args, **kwargs):  # pylint: disable=unused-argument
+        def mp_put(*args, **kwargs):
             mock_api.content = kwargs.get('data')
             return mock_api
 
         # monkeypatch get method
-        def mp_get(*args, **kwargs):  # pylint: disable=unused-argument
+        def mp_get(*args, **kwargs):
             return mock_api
 
         monkeypatch.setattr(tcex.session.tc, 'get', mp_get)

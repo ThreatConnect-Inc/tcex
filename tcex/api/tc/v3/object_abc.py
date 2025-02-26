@@ -23,7 +23,7 @@ from tcex.util import Util
 _logger: TraceLogger = logging.getLogger(__name__.split('.', maxsplit=1)[0])  # type: ignore
 
 
-class ObjectABC(ABC):
+class ObjectABC(ABC):  # noqa: B024
     """Object Abstract Base Class
 
     This class is a base class for Object classes that use
@@ -57,7 +57,8 @@ class ObjectABC(ABC):
     @property
     def _api_endpoint(self) -> str:  # pragma: no cover
         """Return the type specific API endpoint."""
-        raise NotImplementedError('Child class must implement this property.')
+        ex_msg = 'Child class must implement this property.'
+        raise NotImplementedError(ex_msg)
 
     def _calculate_unique_id(self) -> dict[str, int | str]:
         if self.model.id:
@@ -84,9 +85,9 @@ class ObjectABC(ABC):
         # add the filter (e.g., group.has_indicator.id(TqlOperator.EQ, 123)) for the parent object.
         if custom_associations is True:
             sublist.filter.tql = (
-                'id!={id} AND hasGroup(typename="all" '
-                'AND isGroup = false AND hasIndicator(id={id}))'
-            ).format(id=self.model.id)
+                f'id!={self.model.id} AND hasGroup(typename="all" '
+                f'AND isGroup = false AND hasIndicator(id={self.model.id}))'
+            )
             sublist.params = {'fields': ['associationName']}
         else:
             getattr(
@@ -96,7 +97,7 @@ class ObjectABC(ABC):
 
         # return the sub object, injecting the parent data
         for obj in sublist:
-            obj._parent_data = {
+            obj._parent_data = {  # noqa: SLF001
                 'api_endpoint': self._api_endpoint,
                 'type': self.type_,
                 'unique_id': unique_id_data.get('value'),
@@ -113,11 +114,15 @@ class ObjectABC(ABC):
         headers: dict | None = None,
     ):
         """Handle standard request with error checking."""
+        max_length = 1_000
         try:
             self.request = self._session.request(
                 method, url, data=body, headers=headers, params=params
             )
-            if isinstance(self.request.request.body, str) and len(self.request.request.body) < 1000:
+            if (
+                isinstance(self.request.request.body, str)
+                and len(self.request.request.body) < max_length
+            ):
                 self.log.debug(f'feature=api-tc-v3, request-body={self.request.request.body}')
         except (ConnectionError, ProxyError, RetryError):  # pragma: no cover
             handle_error(
@@ -125,7 +130,7 @@ class ObjectABC(ABC):
                 message_values=[
                     method.upper(),
                     None,
-                    '{\"message\": \"Connection/Proxy Error/Retry\"}',
+                    '{"message": "Connection/Proxy Error/Retry"}',
                     url,
                 ],
             )
@@ -157,7 +162,8 @@ class ObjectABC(ABC):
     @property
     def as_entity(self) -> dict[str, str]:  # pragma: no cover
         """Return the entity representation of the object."""
-        raise NotImplementedError('Child class must implement this property.')
+        ex_msg = 'Child class must implement this property.'
+        raise NotImplementedError(ex_msg)
 
     @property
     def available_fields(self) -> list[str]:
@@ -243,7 +249,10 @@ class ObjectABC(ABC):
             {
                 'result_limit': 100,  # How many results are retrieved.
                 'result_start': 10,  # Starting point on retrieved results.
-                'fields': ['caseId', 'summary']  # Additional fields returned on the results
+                'fields': [
+                    'caseId',
+                    'summary',
+                ],  # Additional fields returned on the results
             }
 
         Args:
@@ -270,8 +279,9 @@ class ObjectABC(ABC):
 
     def log_response_text(self, response: Response):
         """Log the response text."""
+        max_text_length = 5_000
         response_text = 'response text: (text to large to log)'
-        if len(response.content) < 5000:  # check size of content for performance
+        if len(response.content) < max_text_length:  # check size of content for performance
             response_text = response.text
         self.log.debug(f'feature=api-tc-v3, response-body={response_text}')
 
@@ -290,7 +300,8 @@ class ObjectABC(ABC):
             # provided data is raw response, load the model
             self._model = type(self.model)(**data)
         else:
-            raise RuntimeError(f'Invalid data type: {type(data)} provided.')
+            ex_msg = f'Invalid data type: {type(data)} provided.'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
 
     @cached_property
     def properties(self) -> dict[str, dict | list]:
@@ -313,7 +324,7 @@ class ObjectABC(ABC):
                 message_values=[
                     'OPTIONS',
                     407,
-                    '{\"message\": \"Connection Error\"}',
+                    '{"message": "Connection Error"}',
                     self._api_endpoint,
                 ],
             )

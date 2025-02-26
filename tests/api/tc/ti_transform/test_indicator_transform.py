@@ -11,8 +11,6 @@ import deepdiff
 from tcex import TcEx
 from tcex.api.tc.ti_transform.model.transform_model import IndicatorTransformModel
 
-# pylint: disable=redefined-outer-name
-
 
 def transform(tcex: TcEx) -> IndicatorTransformModel:
     """Create transform for indicator regression test."""

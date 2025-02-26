@@ -1,14 +1,17 @@
 """TcEx Framework Module"""
 
 # standard library
-from collections.abc import Callable
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
 
 # third-party
 import wrapt
 
 # first-party
 from tcex.tcex import TcEx
+
+if TYPE_CHECKING:
+    # standard library
+    from collections.abc import Callable
 
 
 class Debug:
@@ -26,7 +29,7 @@ class Debug:
     """
 
     @wrapt.decorator
-    def __call__(self, *wrapped_args) -> Any:
+    def __call__(self, *wrapped_args) -> Any:  # noqa: D417
         """Implement __call__ function for decorator.
 
         Args:
@@ -46,7 +49,7 @@ class Debug:
         wrapped: Callable = wrapped_args[0]
         app: Any = wrapped_args[1]
         args: list = wrapped_args[2] if len(wrapped_args) > 1 else []
-        kwargs: dict = wrapped_args[3] if len(wrapped_args) > 2 else {}
+        kwargs: dict = wrapped_args[3] if len(wrapped_args) > 2 else {}  # noqa: PLR2004
 
         def debug() -> Any:
             """Iterate over data, calling the decorated function for each value.

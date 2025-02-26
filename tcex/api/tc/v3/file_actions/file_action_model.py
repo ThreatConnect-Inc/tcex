@@ -1,7 +1,5 @@
 """TcEx Framework Module"""
 
-# pylint: disable=no-member,no-self-argument,wrong-import-position
-
 # third-party
 from pydantic import BaseModel, Extra, Field, PrivateAttr
 
@@ -43,7 +41,7 @@ class FileActionsModel(
 ):
     """File Actions Model"""
 
-    _mode_support = PrivateAttr(True)
+    _mode_support = PrivateAttr(default=True)
 
     count: int | None = Field(None, description='The number of file actions.')
 

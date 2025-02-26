@@ -73,7 +73,8 @@ class Victim(ObjectABC):
             # provided data is raw response, load the model
             self._model = type(self.model)(**data)
         else:
-            raise RuntimeError(f'Invalid data type: {type(data)} provided.')
+            ex_msg = f'Invalid data type: {type(data)} provided.'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
 
     @property
     def as_entity(self) -> dict:
@@ -130,8 +131,9 @@ class Victim(ObjectABC):
             data = VictimAssetModel(**data)
 
         if not isinstance(data, VictimAssetModel):
-            raise RuntimeError('Invalid type passed in to stage_victim_asset')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_victim_asset'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.assets.data.append(data)  # type: ignore
 
     def stage_attribute(self, data: dict | ObjectABC | VictimAttributeModel):
@@ -142,8 +144,9 @@ class Victim(ObjectABC):
             data = VictimAttributeModel(**data)
 
         if not isinstance(data, VictimAttributeModel):
-            raise RuntimeError('Invalid type passed in to stage_attribute')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_attribute'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.attributes.data.append(data)  # type: ignore
 
     def stage_security_label(self, data: dict | ObjectABC | SecurityLabelModel):
@@ -154,8 +157,9 @@ class Victim(ObjectABC):
             data = SecurityLabelModel(**data)
 
         if not isinstance(data, SecurityLabelModel):
-            raise RuntimeError('Invalid type passed in to stage_security_label')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_security_label'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.security_labels.data.append(data)  # type: ignore
 
     def stage_tag(self, data: dict | ObjectABC | TagModel):
@@ -166,8 +170,9 @@ class Victim(ObjectABC):
             data = TagModel(**data)
 
         if not isinstance(data, TagModel):
-            raise RuntimeError('Invalid type passed in to stage_tag')
-        data._staged = True
+            ex_msg = 'Invalid type passed in to stage_tag'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
+        data._staged = True  # noqa: SLF001
         self.model.tags.data.append(data)  # type: ignore
 
 
@@ -176,9 +181,9 @@ class Victims(ObjectCollectionABC):
 
     # Example of params input
     {
-        'result_limit': 100,  # Limit the retrieved results.
-        'result_start': 10,  # Starting count used for pagination.
-        'fields': ['caseId', 'summary']  # Select additional return fields.
+        "result_limit": 100,  # Limit the retrieved results.
+        "result_start": 10,  # Starting count used for pagination.
+        "fields": ["caseId", "summary"]  # Select additional return fields.
     }
 
     Args:

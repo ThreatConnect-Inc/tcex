@@ -1,9 +1,7 @@
 """TcEx Framework Module"""
 
 # standard library
-import traceback
-from collections.abc import Callable
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
 
 # third-party
 import wrapt
@@ -11,6 +9,10 @@ import wrapt
 # first-party
 from tcex.exit import ExitCode
 from tcex.tcex import TcEx
+
+if TYPE_CHECKING:
+    # standard library
+    from collections.abc import Callable
 
 
 class OnException:
@@ -49,7 +51,7 @@ class OnException:
         self.write_output = write_output
 
     @wrapt.decorator
-    def __call__(self, *wrapped_args) -> Any:
+    def __call__(self, *wrapped_args) -> Any:  # noqa: D417
         """Implement __call__ function for decorator.
 
         Args:
@@ -69,9 +71,9 @@ class OnException:
         wrapped: Callable = wrapped_args[0]
         app: Any = wrapped_args[1]
         args: list = wrapped_args[2] if len(wrapped_args) > 1 else []
-        kwargs: dict = wrapped_args[3] if len(wrapped_args) > 2 else {}
+        kwargs: dict = wrapped_args[3] if len(wrapped_args) > 2 else {}  # noqa: PLR2004
 
-        def exception() -> Any:  # pylint: disable=inconsistent-return-statements
+        def exception() -> Any:
             """Call the function and handle any exception."""
             tcex = cast(TcEx, app.tcex)
 
@@ -80,15 +82,14 @@ class OnException:
             if not isinstance(self.exit_enabled, bool):
                 enabled = getattr(tcex.inputs.model, self.exit_enabled)
                 if not isinstance(enabled, bool):  # pragma: no cover
-                    raise RuntimeError(
-                        'The exit_enabled value must be a boolean or resolved to bool.'
-                    )
+                    ex_msg = 'The exit_enabled value must be a boolean or resolved to bool.'
+                    raise RuntimeError(ex_msg)  # noqa: TRY004
                 tcex.log.debug(f'Fail enabled is {enabled} ({self.exit_enabled}).')
 
             try:
                 return wrapped(*args, **kwargs)
             except Exception:
-                tcex.log.error(traceback.format_exc())
+                tcex.log.exception('An exception has been caught.')
                 app.exit_message = self.exit_msg  # for test cases
                 if enabled:
                     if self.write_output:

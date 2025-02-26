@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# pylint: disable=no-member,no-self-argument,wrong-import-position
 # standard library
 from datetime import datetime
 
@@ -21,10 +20,10 @@ class WorkflowEventModel(
 ):
     """Workflow_Event Model"""
 
-    _associated_type = PrivateAttr(False)
-    _cm_type = PrivateAttr(True)
-    _shared_type = PrivateAttr(False)
-    _staged = PrivateAttr(False)
+    _associated_type = PrivateAttr(default=False)
+    _cm_type = PrivateAttr(default=True)
+    _shared_type = PrivateAttr(default=False)
+    _staged = PrivateAttr(default=False)
 
     case_id: int | None = Field(
         None,
@@ -127,18 +126,21 @@ class WorkflowEventModel(
     )
 
     @validator('parent_case', always=True, pre=True)
+    @classmethod
     def _validate_case(cls, v):
         if not v:
             return CaseModel()  # type: ignore
         return v
 
     @validator('notes', always=True, pre=True)
+    @classmethod
     def _validate_notes(cls, v):
         if not v:
             return NotesModel()  # type: ignore
         return v
 
     @validator('user', always=True, pre=True)
+    @classmethod
     def _validate_user(cls, v):
         if not v:
             return UserModel()  # type: ignore
@@ -169,7 +171,7 @@ class WorkflowEventsModel(
 ):
     """Workflow_Events Model"""
 
-    _mode_support = PrivateAttr(False)
+    _mode_support = PrivateAttr(default=False)
 
     data: list[WorkflowEventModel] | None = Field(
         [],

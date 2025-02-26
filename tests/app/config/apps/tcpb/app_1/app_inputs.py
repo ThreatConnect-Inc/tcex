@@ -1,6 +1,6 @@
 """TcEx Framework Module"""
 
-# pylint: disable=no-self-argument
+
 # standard library
 from typing import Any
 

@@ -208,7 +208,6 @@ class TestInputsFieldTypeSensitive(InputTest):
         tcex.inputs.model.my_sensitive = tcex.inputs.model.my_sensitive  # type: ignore
 
         # code coverage -> def:__repr__
-        # pylint: disable=unnecessary-dunder-call
         tcex.inputs.model.my_sensitive.__repr__()  # type: ignore
 
         # code coverage -> Sensitive.__init__

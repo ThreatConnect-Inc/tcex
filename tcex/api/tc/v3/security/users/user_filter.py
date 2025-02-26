@@ -38,10 +38,11 @@ class UserFilter(FilterABC):
             first_name: The first name of the user.
         """
         if isinstance(first_name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('firstName', operator, first_name, TqlType.STRING)
 
@@ -53,14 +54,15 @@ class UserFilter(FilterABC):
             group_id: The ID of the group the user belongs to.
         """
         if isinstance(group_id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('groupId', operator, group_id, TqlType.INTEGER)
 
-    def id(self, operator: Enum, id: int | list):  # pylint: disable=redefined-builtin
+    def id(self, operator: Enum, id: int | list):  # noqa: A002
         """Filter ID based on **id** keyword.
 
         Args:
@@ -68,10 +70,11 @@ class UserFilter(FilterABC):
             id: The ID of the user.
         """
         if isinstance(id, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
@@ -83,10 +86,11 @@ class UserFilter(FilterABC):
             job_function: The user's job function.
         """
         if isinstance(job_function, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('jobFunction', operator, job_function, TqlType.STRING)
 
@@ -98,10 +102,11 @@ class UserFilter(FilterABC):
             job_role: The user's job role.
         """
         if isinstance(job_role, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('jobRole', operator, job_role, TqlType.STRING)
 
@@ -123,10 +128,11 @@ class UserFilter(FilterABC):
             last_name: The last name of the user.
         """
         if isinstance(last_name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('lastName', operator, last_name, TqlType.STRING)
 
@@ -159,7 +165,7 @@ class UserFilter(FilterABC):
         Args:
             operator: The operator enum for the filter.
             password_reset_required: A flag indicating whether or not the user's password needs to
-                be reset upon next login.
+                be reset upoin next login.
         """
         self._tql.add_filter(
             'passwordResetRequired', operator, password_reset_required, TqlType.BOOLEAN
@@ -173,10 +179,11 @@ class UserFilter(FilterABC):
             pseudonym: The user's pseudonym.
         """
         if isinstance(pseudonym, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('pseudonym', operator, pseudonym, TqlType.STRING)
 
@@ -188,10 +195,11 @@ class UserFilter(FilterABC):
             system_role: The system role name defined for the user.
         """
         if isinstance(system_role, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('systemRole', operator, system_role, TqlType.STRING)
 
@@ -226,10 +234,11 @@ class UserFilter(FilterABC):
             tql_timeout: The custom TQL timeout value (if defined).
         """
         if isinstance(tql_timeout, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('tqlTimeout', operator, tql_timeout, TqlType.INTEGER)
 
@@ -241,9 +250,10 @@ class UserFilter(FilterABC):
             user_name: The user name of the user.
         """
         if isinstance(user_name, list) and operator not in self.list_types:
-            raise RuntimeError(
+            ex_msg = (
                 'Operator must be CONTAINS, NOT_CONTAINS, IN'
                 'or NOT_IN when filtering on a list of values.'
             )
+            raise RuntimeError(ex_msg)
 
         self._tql.add_filter('userName', operator, user_name, TqlType.STRING)

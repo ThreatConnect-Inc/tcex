@@ -4,8 +4,8 @@
 import json
 import os
 import threading
-import traceback
 from collections.abc import Callable
+from pathlib import Path
 from typing import Any
 
 # first-party
@@ -57,7 +57,7 @@ class CommonServiceTrigger(CommonService):
         """
         if self.model.tcex_testing_context is not None:
             _context_tracker: list[str] = json.loads(
-                self.redis_client.hget(self.model.tcex_testing_context, '_context_tracker') or '[]'
+                self.redis_client.hget(self.model.tcex_testing_context, '_context_tracker') or '[]'  # type: ignore
             )
             _context_tracker.append(session_id)
             self.redis_client.hset(
@@ -65,7 +65,7 @@ class CommonServiceTrigger(CommonService):
                 '_context_tracker',
                 json.dumps(_context_tracker),
             )
-            self.redis_client.hset(session_id, '_trigger_id', trigger_id)
+            self.redis_client.hset(session_id, '_trigger_id', trigger_id)  # type: ignore
 
             # log
             self.log.info(
@@ -112,14 +112,12 @@ class CommonServiceTrigger(CommonService):
                 del self.configs[trigger_id]
 
             # send ack response
+            logfile = Path(self.trigger_logfile)
             self.message_broker.publish(
                 json.dumps(
                     {
                         'command': 'Acknowledged',
-                        'logFile': os.path.join(
-                            os.path.basename(os.path.dirname(self.trigger_logfile)),
-                            os.path.basename(self.trigger_logfile),
-                        ),
+                        'logfile': f'{logfile.parent.parent}{os.sep}{logfile.name}',
                         'message': message,
                         'status': 'Success' if status is True else 'Failed',
                         'type': 'CreateConfig',
@@ -128,12 +126,10 @@ class CommonServiceTrigger(CommonService):
                 ),
                 self.model.tc_svc_client_topic,
             )
-        except Exception as e:
-            self.log.error(
-                'feature=service, event=create-config-callback-exception, '
-                f'trigger-id={trigger_id}, error="""{e}"""'
+        except Exception:
+            self.log.exception(
+                f'feature=service, event=create-config-callback-exception, trigger-id={trigger_id}'
             )
-            self.log.trace(traceback.format_exc())
 
     def delete_config(self, trigger_id: int, message: str, status: bool | str):
         """Delete config item from config object.
@@ -174,7 +170,8 @@ class CommonServiceTrigger(CommonService):
             **kwargs: Additional keyword arguments.
         """
         if not callable(callback):
-            raise RuntimeError('Callback method (callback) is not a callable.')
+            ex_msg = 'Callback method (callback) is not a callable.'
+            raise RuntimeError(ex_msg)  # noqa: TRY004
 
         # get developer passed trigger_ids
         trigger_ids: list | None = kwargs.pop('trigger_ids', None)
@@ -216,7 +213,7 @@ class CommonServiceTrigger(CommonService):
                     trigger_id=trigger_id,
                 )
             except Exception:
-                self.log.trace(traceback.format_exc())
+                self.log.exception('feature=trigger-service, event=fire-event')
 
     def update_trigger_value(self, trigger_id: int, input_name: str, new_value: Any):
         """Send UpdateTriggerValue command.
@@ -285,7 +282,7 @@ class CommonServiceTrigger(CommonService):
                 self.fire_event_publish(trigger_id, session_id)
 
                 # capture fired status for testing framework
-                self._tcex_testing_fired_events(session_id, True)
+                self._tcex_testing_fired_events(session_id, fired=True)
             else:
                 self.increment_metric('Misses')
                 self.log.info(
@@ -294,13 +291,10 @@ class CommonServiceTrigger(CommonService):
                 )
 
                 # capture fired status for testing framework
-                self._tcex_testing_fired_events(session_id, False)
-        except Exception as e:
+                self._tcex_testing_fired_events(session_id, fired=False)
+        except Exception:
             self.increment_metric('Errors')
-            self.log.error(
-                f'feature=trigger-service, event=fire-event-callback-exception, error="""{e}"""'
-            )
-            self.log.trace(traceback.format_exc())
+            self.log.exception('feature=trigger-service, event=fire-event-callback-exception')
 
     def log_config(self, trigger_id: int, config: dict):
         """Log the config while hiding encrypted values.
@@ -328,17 +322,17 @@ class CommonServiceTrigger(CommonService):
             :lineno-start: 1
 
             {
-                "appId": 387,
-                "command": "CreateConfig",
-                "triggerId": 1,
-                "config": {
-                    "password": "test-pass",
-                    "username": "test-user",
-                    "cc_action": "pass",
-                    "tc_playbook_out_variables": "#Trigger:1:testing.body!String"
+                'appId': 387,
+                'command': 'CreateConfig',
+                'triggerId': 1,
+                'config': {
+                    'password': 'test-pass',
+                    'username': 'test-user',
+                    'cc_action': 'pass',
+                    'tc_playbook_out_variables': '#Trigger:1:testing.body!String',
                 },
-                "apiToken": "SVC:8:QQuyIp:1596817138182:387:+9vBOAT8Y56caHRcjLa4IwAqABoatsYOU ... ",
-                "expireSeconds": 1596817138
+                'apiToken': 'SVC:8:QQuyIp:1596817138182:387:+9vBOAT8Y56caHRcjLa4IwAqABoatsYOU ... ',
+                'expireSeconds': 1596817138,
             }
 
         Args:
@@ -387,14 +381,9 @@ class CommonServiceTrigger(CommonService):
                 # if callback does not return a boolean value assume it worked
                 if not isinstance(status, bool):
                     status = True
-            except Exception as e:
+            except Exception:
                 status = False
-                msg = str(e)
-                self.log.error(
-                    f'feature=service, event=create-config-callback-exception, error="""{e}"""'
-                )
-                self.log.error(message)
-                self.log.trace(traceback.format_exc())
+                self.log.exception('feature=service, event=create-config-callback-exception')
 
         # create config after callback to report status and message
         self.create_config(trigger_id, msg, status)
@@ -406,11 +395,7 @@ class CommonServiceTrigger(CommonService):
             :linenos:
             :lineno-start: 1
 
-            {
-                "appId": 387,
-                "command": "DeleteConfig",
-                "triggerId": 1
-            }
+            {'appId': 387, 'command': 'DeleteConfig', 'triggerId': 1}
 
         Args:
             message: The message payload from the server topic.
@@ -426,17 +411,13 @@ class CommonServiceTrigger(CommonService):
         if callable(self.delete_config_callback):
             try:
                 # call callback for delete config and handle exceptions to protect thread
-                # pylint: disable=not-callable
                 status: bool | None = self.delete_config_callback(trigger_id)
 
                 # if callback does not return a boolean value assume it worked
                 if not isinstance(status, bool):
                     status = True
-            except Exception as e:
-                self.log.error(
-                    f'feature=service, event=delete-config-callback-exception, error="""{e}"""'
-                )
-                self.log.trace(traceback.format_exc())
+            except Exception:
+                self.log.exception('feature=service, event=delete-config-callback-exception')
                 status = False
 
         # delete config
@@ -445,7 +426,7 @@ class CommonServiceTrigger(CommonService):
     @property
     def trigger_logfile(self) -> str:
         """Return the logfile name based on date and thread name."""
-        return f'''trigger-id-{self.thread_trigger_id}.log'''
+        return f"""trigger-id-{self.thread_trigger_id}.log"""
 
     @property
     def thread_trigger_id(self) -> str | None:

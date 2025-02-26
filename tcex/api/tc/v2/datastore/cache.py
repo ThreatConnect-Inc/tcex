@@ -3,7 +3,7 @@
 # standard library
 import logging
 from collections.abc import Callable
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 # third-party
 import arrow
@@ -80,7 +80,7 @@ class Cache:
             dict : The response dict
         """
         data = {
-            self._cache_date_key: datetime.utcnow().isoformat(),
+            self._cache_date_key: datetime.now(UTC).isoformat(),
             self._cache_data_key: data,
         }
         return self.ds.post(rid, data, raise_on_error)
@@ -197,7 +197,7 @@ class Cache:
         Returns:
             dict : The cached data.
         """
-        cache_date = datetime.utcnow().isoformat()
+        cache_date = datetime.now(UTC).isoformat()
         # cache_data = self._encode_data(data)
         data = {self._cache_date_key: cache_date, self._cache_data_key: data}
         self.ds.put(rid, data, raise_on_error)
@@ -224,4 +224,4 @@ class Cache:
         cache_expires = cached_datetime + timedelta(seconds=self.ttl_seconds)
 
         # if cache expires is less than "now" then return True/expired
-        return cache_expires < arrow.get(datetime.utcnow())
+        return cache_expires < arrow.get(datetime.now(UTC))

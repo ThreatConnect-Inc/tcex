@@ -1,6 +1,6 @@
 """TcEx Framework Module"""
 
-# pylint: disable=R1710
+
 # standard library
 import os
 from pathlib import Path

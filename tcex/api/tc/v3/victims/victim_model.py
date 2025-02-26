@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# pylint: disable=no-member,no-self-argument,wrong-import-position
 # standard library
 from datetime import datetime
 
@@ -21,10 +20,10 @@ class VictimModel(
 ):
     """Victim Model"""
 
-    _associated_type = PrivateAttr(False)
-    _cm_type = PrivateAttr(False)
-    _shared_type = PrivateAttr(False)
-    _staged = PrivateAttr(False)
+    _associated_type = PrivateAttr(default=False)
+    _cm_type = PrivateAttr(default=False)
+    _shared_type = PrivateAttr(default=False)
+    _staged = PrivateAttr(default=False)
 
     assets: 'VictimAssetsModel' = Field(
         None,
@@ -91,6 +90,7 @@ class VictimModel(
     owner_name: str | None = Field(
         None,
         allow_mutation=False,
+        conditional_read_only=['Victim'],
         description='The name of the Organization, Community, or Source that the item belongs to.',
         read_only=True,
         title='ownerName',
@@ -138,30 +138,35 @@ class VictimModel(
     )
 
     @validator('associated_groups', always=True, pre=True)
+    @classmethod
     def _validate_groups(cls, v):
         if not v:
             return GroupsModel()  # type: ignore
         return v
 
     @validator('security_labels', always=True, pre=True)
+    @classmethod
     def _validate_security_labels(cls, v):
         if not v:
             return SecurityLabelsModel()  # type: ignore
         return v
 
     @validator('tags', always=True, pre=True)
+    @classmethod
     def _validate_tags(cls, v):
         if not v:
             return TagsModel()  # type: ignore
         return v
 
     @validator('assets', always=True, pre=True)
+    @classmethod
     def _validate_victim_assets(cls, v):
         if not v:
             return VictimAssetsModel()  # type: ignore
         return v
 
     @validator('attributes', always=True, pre=True)
+    @classmethod
     def _validate_victim_attributes(cls, v):
         if not v:
             return VictimAttributesModel()  # type: ignore
@@ -192,7 +197,7 @@ class VictimsModel(
 ):
     """Victims Model"""
 
-    _mode_support = PrivateAttr(False)
+    _mode_support = PrivateAttr(default=False)
 
     data: list[VictimModel] | None = Field(
         [],

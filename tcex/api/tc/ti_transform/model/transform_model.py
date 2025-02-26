@@ -23,7 +23,6 @@ class PredefinedFunctionModel(BaseModel, extra=Extra.forbid):
     params: dict | None = Field({}, description='The parameters for the static method.')
 
 
-# pylint: disable=no-self-argument
 class TransformModel(BaseModel, extra=Extra.forbid):
     """Model Definition"""
 
@@ -34,6 +33,7 @@ class TransformModel(BaseModel, extra=Extra.forbid):
     static_map: dict | None = Field(None, description='')
 
     @validator('filter_map', 'static_map', pre=True)
+    @classmethod
     def _lower_map_keys(cls, v):
         """Validate static_map."""
         if isinstance(v, dict):
@@ -42,16 +42,19 @@ class TransformModel(BaseModel, extra=Extra.forbid):
 
     # root validator that ensure at least one indicator value/summary is set
     @root_validator()
+    @classmethod
     def _required_transform(cls, v: dict):
         """Validate either static_map or method is defined."""
 
         fields = [v.get('filter_map'), v.get('static_map'), v.get('method'), v.get('for_each')]
 
         if not any(fields):
-            raise ValueError('Either map or method must be defined.')
+            ex_msg = 'Either map or method must be defined.'
+            raise ValueError(ex_msg)
 
-        if fields.count(None) < 2:
-            raise ValueError('Only one transform mechanism can be defined.')
+        if fields.count(None) < 2:  # noqa: PLR2004
+            ex_msg = 'Only one transform mechanism can be defined.'
+            raise ValueError(ex_msg)
         return v
 
 
@@ -62,21 +65,25 @@ class PathTransformModel(BaseModel, extra=Extra.forbid):
     path: str | None = Field(None, description='')
 
     @validator('path')
+    @classmethod
     def _validate_path(cls, v):
         """Validate path."""
         if v is not None:
             try:
                 _ = jmespath_compile(v)
-            except Exception:
-                raise ValueError('A valid path must be provided.')
+            except Exception as ex:
+                ex_msg = 'A valid path must be provided.'
+                raise ValueError(ex_msg) from ex
         return v
 
     # root validator that ensure at least one indicator value/summary is set
     @root_validator()
+    @classmethod
     def _default_or_path(cls, values):
         """Validate either default or path is defined."""
         if not any([values.get('default'), values.get('path')]):
-            raise ValueError('Either default or path or both must be defined.')
+            ex_msg = 'Either default or path or both must be defined.'
+            raise ValueError(ex_msg)
         return values
 
 
@@ -114,10 +121,10 @@ class AssociatedGroupTransform(ValueTransformModel, extra=Extra.forbid):
 class AttributeTransformModel(ValueTransformModel, extra=Extra.forbid):
     """."""
 
-    displayed: bool | MetadataTransformModel = Field(False, description='')
+    displayed: bool | MetadataTransformModel = Field(default=False, description='')
     source: str | MetadataTransformModel | None = Field(None, description='')
     type: str | MetadataTransformModel = Field(..., description='')
-    pinned: bool | MetadataTransformModel = Field(False, description='')
+    pinned: bool | MetadataTransformModel = Field(default=False, description='')
 
 
 class SecurityLabelTransformModel(ValueTransformModel, extra=Extra.forbid):
@@ -176,7 +183,6 @@ class GroupTransformModel(TiTransformModel, extra=Extra.forbid):
     file_name: MetadataTransformModel | None = Field(None, description='')
 
 
-# pylint: disable=no-self-argument
 class IndicatorTransformModel(TiTransformModel, extra=Extra.forbid):
     """."""
 
@@ -196,6 +202,7 @@ class IndicatorTransformModel(TiTransformModel, extra=Extra.forbid):
 
     # root validator that ensure at least one indicator value/summary is set
     @root_validator()
+    @classmethod
     def _one_indicator_value(cls, values):
         """Validate that one set of credentials is provided for the TC API."""
 
@@ -206,7 +213,8 @@ class IndicatorTransformModel(TiTransformModel, extra=Extra.forbid):
                 values.get('value3'),
             ]
         ):
-            raise ValueError(
+            ex_msg = (
                 'An indicator transform must be defined (e.g., summary, value1, value2, value3).'
             )
+            raise ValueError(ex_msg)
         return values
