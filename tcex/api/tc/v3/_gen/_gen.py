@@ -225,6 +225,7 @@ class ObjectTypes(str, Enum):
     users = 'users'
     user_groups = 'user_groups'
     system_roles = 'system_roles'
+    exclusion_lists = 'exclusion_lists'
 
     # threat intelligence
     attribute_types = 'attribute_types'

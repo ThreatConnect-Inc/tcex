@@ -479,6 +479,7 @@ class GenerateABC(ABC):  # noqa: B024
             'system_roles',
             'users',
             'user_groups',
+            'exclusion_lists',
         ]:
             return 'tcex.api.tc.v3.security'
 

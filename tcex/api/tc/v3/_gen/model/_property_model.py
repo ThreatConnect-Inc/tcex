@@ -188,6 +188,7 @@ class PropertyModel(
             'ValidationRule',
             'Strings',
             'WhoIs',
+            'Exclusions',
         ]
         if pm.type in types:
             extra.update({'typing_type': cls.__extra_format_type('dict')})
@@ -432,6 +433,7 @@ class PropertyModel(
             'system_roles',
             'users',
             'user_groups',
+            'exclusion_lists',
         ]:
             return 'tcex.api.tc.v3.security'
 

@@ -25,6 +25,7 @@ class ApiEndpoints(Enum):
     OWNER_ROLES = '/v3/security/ownerRoles'
     SECURITY_LABELS = '/v3/securityLabels'
     SYSTEM_ROLES = '/v3/security/systemRoles'
+    EXCLUSION_LISTS = '/v3/security/exclusionLists'
     TAGS = '/v3/tags'
     TASKS = '/v3/tasks'
     USER_GROUPS = '/v3/security/userGroups'
