@@ -252,3 +252,15 @@ class MqttMessageBroker:
         self.client.on_publish = self.on_publish
         self.client.on_subscribe = self.on_subscribe
         self.client.on_unsubscribe = self.on_unsubscribe
+
+    def remove_on_message_callback(self, callback: Callable, topics: list[str] | None = None):
+        """Remove a callback for on_message events.
+
+        Args:
+            callback: A callback to remove.
+            topics: A optional list of topics to call callback. If value is None then callback
+                will always be called.
+        """
+        for cb in self._on_message_callbacks:
+            if cb['callback'] == callback and cb['topics'] == topics:
+                self._on_message_callbacks.remove(cb)

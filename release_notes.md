@@ -2,6 +2,8 @@
 
 
 ## 4.0.8
+-   APP-4717 - [API] Updated V3 API to include new endpoints (exclusionList, etc)
+-   APP-4744 - [API] Add support for v2 batch association changes
 -   APP-4733 - Migrated to "uv" for package management
 -   APP-4734 - Switched linters to "ruff" (including linting fixes)
 -   APP-4743 - [API] Added support for "conditional-read-only" fields

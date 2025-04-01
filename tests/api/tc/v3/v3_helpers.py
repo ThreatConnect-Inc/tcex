@@ -206,6 +206,11 @@ class V3Helper:
                 'class_name': 'Owner',
                 'collection_class_name': 'Owners',
             },
+            'exclusion_lists': {
+                'module': 'tcex.api.tc.v3.security.exclusion_lists.exclusion_list',
+                'class_name': 'ExclusionList',
+                'collection_class_name': 'ExclusionLists',
+            },
             'results': {
                 'module': 'tcex.api.tc.v3.intel_requirements.results.result',
                 'class_name': 'Result',
@@ -775,6 +780,13 @@ class TestV3:
         """
         for f in self.v3_helper.v3_obj.fields:
             names = [f.get('name')]
+
+            if self.v3_helper.v3_object == 'exclusion_lists':
+                if 'values' in names:
+                    # fix discrepancy between <endpoint>/fields and <endpoint>
+                    names.remove('values')
+                else:
+                    print('value not in names, this check can be removed.')
 
             if self.v3_helper.v3_object == 'artifacts' and 'analytics' in names:
                 # fix discrepancy between <endpoint>/fields and <endpoint>

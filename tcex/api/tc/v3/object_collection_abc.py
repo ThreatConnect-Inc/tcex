@@ -55,6 +55,9 @@ class ObjectCollectionABC(ABC):  # noqa: B024
         parameters['resultLimit'] = 1
         parameters['count'] = True
         tql_string = self.tql.raw_tql
+        if self.type_ and self.type_.lower() in {'exclusion_lists'}:
+            ex_msg = f'len op not supported for {self.type_} API endpoint.'
+            raise NotImplementedError(ex_msg)
         if not self.tql.raw_tql:
             tql_string = self.tql.as_str
         if tql_string:

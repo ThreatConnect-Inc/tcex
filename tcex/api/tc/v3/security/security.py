@@ -4,6 +4,7 @@
 from requests import Session
 
 # first-party
+from tcex.api.tc.v3.security.exclusion_lists.exclusion_list import ExclusionList, ExclusionLists
 from tcex.api.tc.v3.security.owner_roles.owner_role import OwnerRole, OwnerRoles
 from tcex.api.tc.v3.security.owners.owner import Owner, Owners
 from tcex.api.tc.v3.security.system_roles.system_role import SystemRole, SystemRoles
@@ -53,6 +54,14 @@ class Security:
     def user_groups(self, **kwargs) -> UserGroups:
         """Return a instance of User Group object."""
         return UserGroups(session=self.session, **kwargs)
+
+    def exclusion_list(self, **kwargs) -> ExclusionList:
+        """Return a instance of User Group object."""
+        return ExclusionList(session=self.session, **kwargs)
+
+    def exclusion_lists(self, **kwargs) -> ExclusionLists:
+        """Return a instance of User Group object."""
+        return ExclusionLists(session=self.session, **kwargs)
 
     def user(self, **kwargs) -> User:
         """Return a instance of User object."""

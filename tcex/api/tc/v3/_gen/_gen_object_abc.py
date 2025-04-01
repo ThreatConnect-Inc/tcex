@@ -921,6 +921,7 @@ class GenerateObjectABC(GenerateABC, ABC):
             'system_roles',
             'user_groups',
             'users',
+            'exclusion_lists',
         ]:
             # generate as_entity property method
             _code += self._gen_code_object_as_entity_property_method()
