@@ -1,6 +1,5 @@
 """TcEx Framework Module"""
 
-# pylint: disable=no-member,no-self-argument,wrong-import-position
 # third-party
 from pydantic import BaseModel, Extra, Field, PrivateAttr
 
@@ -22,6 +21,7 @@ class ExclusionListModel(
     _cm_type = PrivateAttr(default=False)
     _shared_type = PrivateAttr(default=False)
     _staged = PrivateAttr(default=False)
+
     active: bool = Field(
         None,
         description='Whether the rule is active or not.',
@@ -111,6 +111,7 @@ class ExclusionListsModel(
     """Exclusion_Lists Model"""
 
     _mode_support = PrivateAttr(default=False)
+
     data: list[ExclusionListModel] | None = Field(
         [],
         description='The data for the ExclusionLists.',

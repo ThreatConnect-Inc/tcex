@@ -180,6 +180,8 @@ class MockApp:
                         '${GROUP_TYPES}',
                         '${INDICATOR_TYPES}',
                         '${OWNERS}',
+                        '${USERS}',
+                        '${USER_GROUPS}',
                     ],
                 },
                 {

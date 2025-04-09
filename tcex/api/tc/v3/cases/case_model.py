@@ -144,6 +144,23 @@ class CaseModel(
         read_only=False,
         title='description',
     )
+    detection_due: datetime | None = Field(
+        None,
+        allow_mutation=False,
+        description='The date and time that the Case detection is due.',
+        read_only=True,
+        title='detectionDue',
+    )
+    detection_overdue: bool = Field(
+        None,
+        allow_mutation=False,
+        description=(
+            'Flag indicating whether or not the case detection is overdue, based on the '
+            'organization SLA settings.'
+        ),
+        read_only=True,
+        title='detectionOverdue',
+    )
     id: int | None = Field(  # type: ignore
         None,
         description='The ID of the item.',
@@ -199,6 +216,23 @@ class CaseModel(
         read_only=False,
         title='resolution',
     )
+    response_due: datetime | None = Field(
+        None,
+        allow_mutation=False,
+        description='The date and time that the Case response is due.',
+        read_only=True,
+        title='responseDue',
+    )
+    response_overdue: bool = Field(
+        None,
+        allow_mutation=False,
+        description=(
+            'Flag indicating whether or not the case response is overdue, based on the organization'
+            ' SLA settings.'
+        ),
+        read_only=True,
+        title='responseOverdue',
+    )
     severity: str | None = Field(
         None,
         description='The Case severity.',
@@ -229,6 +263,20 @@ class CaseModel(
         methods=['POST', 'PUT'],
         read_only=False,
         title='tasks',
+    )
+    time_to_detect: int | None = Field(
+        None,
+        allow_mutation=False,
+        description='The resultant time (in seconds) from the case detection time calculation.',
+        read_only=True,
+        title='timeToDetect',
+    )
+    time_to_respond: int | None = Field(
+        None,
+        allow_mutation=False,
+        description='The resultant time (in seconds) from the case response time calculation.',
+        read_only=True,
+        title='timeToRespond',
     )
     user_access: 'UsersModel' = Field(
         None,

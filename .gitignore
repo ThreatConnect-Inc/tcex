@@ -54,6 +54,7 @@ threatconnect*
 test.log*
 tests/reports/*
 tcex/api/tc/v3/_gen/options_data
+tcex/api/tc/v3/_gen/properties_data
 TODO.md
 
 #-------------------------------------------------

@@ -3,17 +3,11 @@
 # standard library
 from abc import ABC
 from collections.abc import Generator
-from typing import Any
-
-# third-party
-from pydantic import ValidationError
-from requests.exceptions import ProxyError
 
 # first-party
 from tcex.api.tc.v3._gen._gen_abc import GenerateABC
+from tcex.api.tc.v3._gen._options_data_filter import OptionsDataFilter
 from tcex.api.tc.v3._gen.model import FilterModel
-from tcex.pleb.cached_property import cached_property
-from tcex.util.render.render import Render
 from tcex.util.string_operation import SnakeString
 
 
@@ -39,6 +33,17 @@ class GenerateFilterABC(GenerateABC, ABC):
             'first-party-forward-reference': [],
         }
 
+    @property
+    def content_models(self) -> Generator[FilterModel, None, None]:
+        """Return the options for the current type."""
+        yield from self.options_data.content_models
+        self.messages.extend(self.options_data.messages)
+
+    @property
+    def options_data(self) -> OptionsDataFilter:
+        """Return the download options for the current type."""
+        return OptionsDataFilter(api_url=self.api_url, object_type=self.type_)
+
     def _add_tql_imports(self):
         """Add TQL imports when required."""
         if 'from tcex.api.tc.v3.tql.tql import Tql' not in self.requirements['first-party']:
@@ -48,65 +53,6 @@ class GenerateFilterABC(GenerateABC, ABC):
                     'from tcex.api.tc.v3.tql.tql_operator import TqlOperator',
                 ]
             )
-
-    @cached_property
-    def _filter_contents(self) -> list[dict[str, Any]]:
-        """Return defined API properties for the current object.
-
-        Response:
-        {
-            "keyword": "analyticsScore",
-            "name": "Analytics Score",
-            "type": "Integer",
-            "description": "The intel score of the artifact",
-            "groupable": false,
-            "targetable": true
-        }
-        """
-        _properties = []
-        try:
-            r = self.session.options(f'{self.api_url}/tql', params={})
-            # print(r.request.method, r.request.url, r.text)
-            if r.ok:
-                _properties = r.json().get('data', [])
-        except (ConnectionError, ProxyError) as ex:
-            Render.panel.failure(f'Failed getting types properties ({ex}).')
-
-        return _properties
-
-    @property
-    def _filter_contents_updated(self) -> list[dict[str, Any]]:
-        """Update the properties contents, fixing issues in core data."""
-        filters = self._filter_contents
-
-        # Provided invalid type "BigInteger" on tql options call and correcting it to String
-        for filter_ in filters:
-            if self.type_ == 'indicators':
-                title = 'Indicator Keyword Type'
-                if filter_['keyword'] == 'addressIpval' and filter_['type'] != 'String':
-                    self.messages.append(f'- [{self.type_}] - ({title}) - fix required.')
-                    filter_['type'] = 'String'
-                else:
-                    self.messages.append(f'- [{self.type_}] - ({title}) - fix NOT required.')
-
-            if self.type_ == 'cases' and 'description' in filter_:
-                # fix misspelling in core data
-                miss_map = {
-                    'occured': 'occurred',
-                    'Threatassess': 'ThreatAssess',
-                }
-                for c, w in miss_map.items():
-                    if c in filter_['description']:
-                        filter_['description'] = filter_['description'].replace(c, w)
-        return sorted(filters, key=lambda i: i['keyword'])
-
-    @cached_property
-    def _filter_models(self) -> Generator[FilterModel, None, None]:
-        for field_data in self._filter_contents_updated:
-            try:
-                yield FilterModel(**field_data)
-            except ValidationError as ex:
-                Render.panel.failure(f'Failed generating filter model: data={field_data} ({ex}).')
 
     def _gen_code_generic_method(self, filter_data: FilterModel) -> list:
         """Return code for generic TQL filter methods."""
@@ -534,7 +480,7 @@ class GenerateFilterABC(GenerateABC, ABC):
         # added _api_endpoint method
         _filter_class.append(self.gen_api_endpoint_method())
 
-        for f in self._filter_models:
+        for f in self.content_models:
             if f.keyword.snake_case() == 'has_artifact':
                 _filter_class.extend(self._gen_code_has_artifact_method())
             elif f.keyword.snake_case() == 'has_case':

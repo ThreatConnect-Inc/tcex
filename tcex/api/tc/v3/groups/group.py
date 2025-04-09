@@ -164,7 +164,7 @@ class Group(ObjectABC):
         """Return the document attachment for Document/Report Types."""
         self._request(
             method='GET',
-            url=f"""{self.url('GET')}/download""",
+            url=f'{self.url("GET")}/download',
             headers={'Accept': 'application/octet-stream'},
             params=params,
         )
@@ -175,7 +175,7 @@ class Group(ObjectABC):
         self._request(
             method='GET',
             body=None,
-            url=f"""{self.url('GET')}/pdf""",
+            url=f'{self.url("GET")}/pdf',
             headers={'Accept': 'application/octet-stream'},
             params=params,
         )
@@ -186,7 +186,7 @@ class Group(ObjectABC):
         """Return the document attachment for Document/Report Types."""
         self._request(
             method='POST',
-            url=f"""{self.url('GET')}/upload""",
+            url=f'{self.url("GET")}/upload',
             body=content,
             headers={'content-type': 'application/octet-stream'},
             params=params,
