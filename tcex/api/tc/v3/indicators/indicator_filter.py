@@ -237,6 +237,22 @@ class IndicatorFilter(FilterABC):
 
         self._tql.add_filter('attribute', operator, attribute, TqlType.STRING)
 
+    def cal_score(self, operator: Enum, cal_score: int | list):
+        """Filter CAL Score based on **calScore** keyword.
+
+        Args:
+            operator: The operator enum for the filter.
+            cal_score: The Collective Analytics Layer score of the indicator.
+        """
+        if isinstance(cal_score, list) and operator not in self.list_types:
+            ex_msg = (
+                'Operator must be CONTAINS, NOT_CONTAINS, IN'
+                'or NOT_IN when filtering on a list of values.'
+            )
+            raise RuntimeError(ex_msg)
+
+        self._tql.add_filter('calScore', operator, cal_score, TqlType.INTEGER)
+
     def common_id(self, operator: Enum, common_id: int | list):
         """Filter Common Id based on **commonId** keyword.
 

@@ -1,6 +1,7 @@
 """TcEx Framework Module"""
 
 # standard library
+import re
 from collections.abc import Generator
 
 # third-party
@@ -53,6 +54,11 @@ class EditChoice(str):
         """Raise exception if value is not a String type."""
         if value == '':
             raise InvalidEmptyValue(field.name)
+
+        # fix addressing PLAT-14751
+        pattern = re.compile(r'^\${(users|user_group):.*?}$', re.IGNORECASE)
+        if pattern.match(value):
+            value = re.sub(r'^\${(users|user_group):|}$', '', value, flags=re.IGNORECASE)
 
         ij = InstallJson()
         param = ij.model.get_param(field.name)

@@ -2,10 +2,13 @@
 
 # standard library
 from abc import ABC
+from collections.abc import Generator
 
 # first-party
 from tcex.api.tc.v3._gen._gen_abc import GenerateABC
 from tcex.api.tc.v3._gen._gen_args_abc import GenerateArgsABC
+from tcex.api.tc.v3._gen._options_data_object import OptionsDataObject
+from tcex.api.tc.v3._gen.model import PropertyModel
 from tcex.util.string_operation import SnakeString
 
 
@@ -32,6 +35,17 @@ class GenerateObjectABC(GenerateABC, ABC):
             'first-party-forward-reference': [],
             'type-checking': [],
         }
+
+    @property
+    def content_models(self) -> Generator[PropertyModel, None, None]:
+        """Return the options for the current type."""
+        yield from self.options_data.content_models
+        self.messages.extend(self.options_data.messages)
+
+    @property
+    def options_data(self) -> OptionsDataObject:
+        """Return the download options for the current type."""
+        return OptionsDataObject(api_url=self.api_url, object_type=self.type_)
 
     def _gen_code_api_endpoint_property(self) -> str:
         """Return the method code.
@@ -236,7 +250,7 @@ class GenerateObjectABC(GenerateABC, ABC):
                 f'{self.i2}"""Return the document attachment for Document/Report Types."""',
                 f'{self.i2}self._request(',
                 f'{self.i3}method="GET",',
-                f"{self.i3}url=f'''{{self.url(\"GET\")}}/download''',",
+                f'{self.i3}url=f\'{{self.url("GET")}}/download\',',
                 f'{self.i3}headers={{"Accept": "application/octet-stream"}},',
                 f'{self.i3}params=params,',
                 f'{self.i2})',
@@ -247,7 +261,7 @@ class GenerateObjectABC(GenerateABC, ABC):
                 f'{self.i2}self._request(',
                 f'{self.i3}method="GET",',
                 f'{self.i3}body=None,',
-                f"{self.i3}url=f'''{{self.url(\"GET\")}}/pdf''',",
+                f'{self.i3}url=f\'{{self.url("GET")}}/pdf\',',
                 f'{self.i3}headers={{"Accept": "application/octet-stream"}},',
                 f'{self.i3}params=params,',
                 f'{self.i2})',
@@ -261,7 +275,7 @@ class GenerateObjectABC(GenerateABC, ABC):
                 f'{self.i2}"""Return the document attachment for Document/Report Types."""',
                 f'{self.i2}self._request(',
                 f'{self.i3}method="POST",',
-                f"{self.i3}url=f'''{{self.url(\"GET\")}}/upload''',",
+                f'{self.i3}url=f\'{{self.url("GET")}}/upload\',',
                 f'{self.i3}body=content,',
                 f'{self.i3}headers={{"content-type": "application/octet-stream"}},',
                 f'{self.i3}params=params,',
@@ -941,7 +955,7 @@ class GenerateObjectABC(GenerateABC, ABC):
             _code += self._gen_code_group_methods()
 
         # get NON read-only properties of endpoint (OPTIONS: /v3/<object>)
-        add_properties = [prop.name for prop in self._prop_models if prop.read_only is False]
+        add_properties = [prop.name for prop in self.content_models if prop.read_only is False]
 
         # generate artifacts property method
         if 'artifacts' in add_properties:

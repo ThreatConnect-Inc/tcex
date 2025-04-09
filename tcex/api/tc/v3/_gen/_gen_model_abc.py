@@ -2,10 +2,13 @@
 
 # standard library
 from abc import ABC
+from collections.abc import Generator
 from textwrap import TextWrapper
 
 # first-party
 from tcex.api.tc.v3._gen._gen_abc import GenerateABC
+from tcex.api.tc.v3._gen._options_data_object import OptionsDataObject
+from tcex.api.tc.v3._gen.model import PropertyModel
 from tcex.util.string_operation import SnakeString
 
 
@@ -29,6 +32,17 @@ class GenerateModelABC(GenerateABC, ABC):
             'first-party-forward-reference': [],
         }
         self.validators = {}
+
+    @property
+    def content_models(self) -> Generator[PropertyModel, None, None]:
+        """Return the options for the current type."""
+        yield from self.options_data.content_models
+        self.messages.extend(self.options_data.messages)
+
+    @property
+    def options_data(self) -> OptionsDataObject:
+        """Return the download options for the current type."""
+        return OptionsDataObject(api_url=self.api_url, object_type=self.type_)
 
     def _add_module_class(self, from_: str, module: str, class_: str):
         """Add pydantic validator only when required."""
@@ -301,7 +315,7 @@ class GenerateModelABC(GenerateABC, ABC):
         )
         """
         _model = []
-        for prop in self._prop_models:
+        for prop in self.content_models:
             # only add requirements for non-current model type
             if (
                 prop.extra.type != self.type_.plural().pascal_case()

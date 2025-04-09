@@ -39,6 +39,7 @@ class ExclusionListFilter(FilterABC):
                 'or NOT_IN when filtering on a list of values.'
             )
             raise RuntimeError(ex_msg)
+
         self._tql.add_filter('id', operator, id, TqlType.INTEGER)
 
     def managed(self, operator: Enum, managed: bool):
@@ -63,6 +64,7 @@ class ExclusionListFilter(FilterABC):
                 'or NOT_IN when filtering on a list of values.'
             )
             raise RuntimeError(ex_msg)
+
         self._tql.add_filter('name', operator, name, TqlType.STRING)
 
     def owner(self, operator: Enum, owner: int | list):
@@ -78,4 +80,5 @@ class ExclusionListFilter(FilterABC):
                 'or NOT_IN when filtering on a list of values.'
             )
             raise RuntimeError(ex_msg)
+
         self._tql.add_filter('owner', operator, owner, TqlType.INTEGER)

@@ -18,7 +18,10 @@ class ExclusionList(ObjectABC):
     """ExclusionLists Object.
 
     Args:
+        active (bool, kwargs): Whether the rule is active or not.
         fixed_values (object, kwargs): A list of exclusions represent fixed values.
+        managed (bool, kwargs): Whether the rule is managed by the system.
+        name (str, kwargs): The name of the rule.
         owner (str, kwargs): The name of the Owner of the Exclusion List.
         owner_id (int, kwargs): The ID of the owner of this exclusion list.
         variable_values (object, kwargs): A list of exclusions serve as wildcards.
@@ -27,6 +30,7 @@ class ExclusionList(ObjectABC):
     def __init__(self, **kwargs):
         """Initialize instance properties."""
         super().__init__(kwargs.pop('session', None))
+
         # properties
         self._model: ExclusionListModel = ExclusionListModel(**kwargs)
         self._nested_field_name = 'exclusionLists'
@@ -62,9 +66,9 @@ class ExclusionLists(ObjectCollectionABC):
 
     # Example of params input
     {
-        'result_limit': 100,  # Limit the retrieved results.
-        'result_start': 10,  # Starting count used for pagination.
-        'fields': ['caseId', 'summary']  # Select additional return fields.
+        "result_limit": 100,  # Limit the retrieved results.
+        "result_start": 10,  # Starting count used for pagination.
+        "fields": ["caseId", "summary"]  # Select additional return fields.
     }
 
     Args:

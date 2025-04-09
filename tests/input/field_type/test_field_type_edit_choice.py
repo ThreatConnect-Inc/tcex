@@ -90,6 +90,23 @@ class TestInputsFieldTypes(InputTest):
             #
             # Pass Testing
             #
+            ('bsummers@threatconnect.com', 'bsummers@threatconnect.com', False, False, None, False),
+            (
+                '${users:bsummers@threatconnect.com}',
+                'bsummers@threatconnect.com',
+                False,
+                False,
+                None,
+                False
+            ),
+            (
+                '${user_group:bsummers@threatconnect.com}',
+                'bsummers@threatconnect.com',
+                False,
+                False,
+                None,
+                False
+            ),
             # required, normal input
             ('choice_1', 'choice_1', False, False, None, False),
             #

@@ -2,13 +2,16 @@
 
 
 ## 4.0.8
+
 -   APP-4717 - [API] Updated V3 API to include new endpoints (exclusionList, etc)
--   APP-4744 - [API] Add support for v2 batch association changes
--   APP-4733 - Migrated to "uv" for package management
--   APP-4734 - Switched linters to "ruff" (including linting fixes)
+-   APP-4740 - Migrated to "uv" for package management
+-   APP-4741 - Switched linters to "ruff" (including linting fixes)
 -   APP-4743 - [API] Added support for "conditional-read-only" fields
+-   APP-4744 - [API] Add support for v2 batch association changes
+-   APP-4769 - [INPUT] Update EditChoice input type to handle new value pattern
 
 ## 4.0.7
+
 -   APP-4601 - [pleb] Added jmespath custom functions to pleb to centralize functionality
 -   APP-4604 - [transform] Added standard processing functions class
 -   APP-4605 - [transform] Normalized the way null/empty values are handled in transforms (includes '')
