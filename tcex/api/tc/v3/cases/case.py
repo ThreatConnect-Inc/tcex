@@ -198,10 +198,11 @@ class Case(ObjectABC):
         if not isinstance(data, UserModel | UserGroupModel):
             ex_msg = 'Invalid type passed in to stage_assignee'
             raise RuntimeError(ex_msg)  # noqa: TRY004
-        data._staged = True  # noqa: SLF001
+
         self.model.assignee._staged = True  # noqa: SLF001
         self.model.assignee.type = type
         self.model.assignee.data = data  # type: ignore
+        self.model.assignee.data._staged = True
 
     def stage_associated_case(self, data: dict | ObjectABC | CaseModel):
         """Stage case on the object."""
