@@ -41,6 +41,10 @@ class FilterModel(
         default=False, description='True if the filter is able to be targeted.'
     )
     type: str = Field(..., description='The type of the filter.')
+    units: dict | None = Field(
+        default=None,
+        description='The units of the filter. This is only used for filters that are numeric.',
+    )
 
     @validator('keyword', 'name', always=True, pre=True)
     @classmethod
