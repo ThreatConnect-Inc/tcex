@@ -9,6 +9,7 @@
 -   APP-4743 - [API] Added support for "conditional-read-only" fields
 -   APP-4744 - [API] Add support for v2 batch association changes
 -   APP-4769 - [INPUT] Update EditChoice input type to handle new value pattern
+-   APP-4806 - [API] Updated stage_assignee method for cases and tasks
 
 ## 4.0.7
 

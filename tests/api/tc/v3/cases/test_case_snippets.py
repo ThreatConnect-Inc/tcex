@@ -2,8 +2,18 @@
 
 # standard library
 from collections.abc import Callable
+from typing import Any
+
+# third-party
+import pytest
+from pytest import FixtureRequest
 
 # first-party
+from tcex.api.tc.v3.security.assignee_model import AssigneeModel
+from tcex.api.tc.v3.security.assignee_user_group_model import AssigneeUserGroupModel
+from tcex.api.tc.v3.security.assignee_user_model import AssigneeUserModel
+from tcex.api.tc.v3.security.user_groups.user_group_model import UserGroupModel
+from tcex.api.tc.v3.security.users.user_model import UserModel
 from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tests.api.tc.v3.v3_helpers import TestV3, V3Helper
 
@@ -290,3 +300,43 @@ class TestCaseSnippets(TestV3):
         case.model.name = 'MyUpdatedCase'
         case.update()
         # End Snippet
+
+    @pytest.mark.parametrize(
+        'user_id_org,user_id_new,user_or_group,assignee_type',
+        [
+            (10, 11, 'User', dict),
+            (10, 11, 'User', AssigneeModel),
+            (10, 11, 'User', AssigneeUserModel),
+            (10, 11, 'Group', AssigneeUserGroupModel),
+            (10, 11, 'User', UserModel),
+            (10, 11, 'Group', UserGroupModel),
+        ]
+    )
+    def test_case_update_with_assignee(
+        self,
+        user_id_org: int,
+        user_id_new: int,
+        user_or_group: str,
+        assignee_type: Any,
+        request: FixtureRequest
+    ):
+        """Test case for assignee"""
+        case = self.v3_helper.create_case(
+            name=request.node.name,
+            assignee={'type': 'User', 'data': {'id': user_id_org}}
+        )
+        assert case.model.assignee.data, 'Created case assignee not set'
+
+        if assignee_type == AssigneeModel:
+            assignee = assignee_type(
+                **{'type': user_or_group, 'data': {'id':user_id_new, 'user_name':'blah'}}
+            )  # type: ignore[assignment]
+        else:
+            assignee = assignee_type(**{'id':user_id_new, 'user_name':'blah'})
+        case.stage_assignee(type=user_or_group, data=assignee)
+        case.update()
+
+        case.get()
+        assert case.model.assignee.data, 'Assignee not set'
+        if case.model.assignee.data:
+            assert case.model.assignee.data.id == user_id_new, 'Assignee ID not updated'
