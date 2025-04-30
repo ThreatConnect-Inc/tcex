@@ -1,5 +1,7 @@
 """TcEx Framework Module"""
 
+# standard library
+
 # third-party
 from pydantic import Field, validator
 
@@ -14,6 +16,7 @@ class AssigneeModel(
     V3ModelABC,
     title='User Data Model',
     alias_generator=Util().snake_to_camel,
+    fields={'id': {'exclude': True}},
     validate_assignment=True,
 ):
     """Assignee Model"""
