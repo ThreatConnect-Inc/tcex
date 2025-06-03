@@ -102,6 +102,7 @@ class ProcessingFunctions:
         """."""
         self.tcex = tcex
         self.custom_fns = {}
+        self.custom_fns = {}
 
     @custom_function_definition(
         {
@@ -132,8 +133,7 @@ class ProcessingFunctions:
         """Allow for custom processing to be described."""
         fn = self.custom_fns.get(name.lower())
         if not fn:
-            ex_msg = f'Custom function not implemented: {description}'
-            raise NotImplementedError(ex_msg)
+            raise NotImplementedError(f'Custom function not implemented: {description}')
         return fn(value, ti_dict=ti_dict, transform=transform, **kwargs)
 
     def static_map(self, value, mapping: dict):
