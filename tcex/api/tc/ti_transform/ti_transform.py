@@ -20,7 +20,13 @@ class TiTransforms(TransformsABC):
         """Process the mapping."""
         self.transformed_collection: list[TiTransform] = []
         for ti_dict in self.ti_dicts:
-            self.transformed_collection.append(TiTransform(ti_dict, self.transforms))
+            self.transformed_collection.append(
+                TiTransform(
+                    ti_dict,
+                    self.transforms,
+                    seperate_batch_associations=self.seperate_batch_associations,
+                )
+            )
 
     @property
     def batch(self) -> dict:
@@ -79,12 +85,21 @@ class TiTransform(TransformABC):
                 {
                     'groupXid': 'dd78f2b94ac61d3e5a55c1223a7635db00cd0aaa8aba26c5306e36dd6c1662ee'}
         """
-        # process type specific data
-        if isinstance(self.transform, GroupTransformModel):
-            self.transformed_item.setdefault('associatedGroupXid', []).append(group_xid)
-        elif isinstance(self.transform, IndicatorTransformModel):
-            associated_group = {'groupXid': group_xid}
-            self.transformed_item.setdefault('associatedGroups', []).append(associated_group)
+        if not self.seperate_batch_associations:
+            # process type specific data
+            if isinstance(self.transform, GroupTransformModel):
+                self.transformed_item.setdefault('associatedGroupXid', []).append(group_xid)
+            elif isinstance(self.transform, IndicatorTransformModel):
+                associated_group = {'groupXid': group_xid}
+                self.transformed_item.setdefault('associatedGroups', []).append(associated_group)
+        else:
+            self.transformed_item.setdefault('association', []).append(
+                {'ref_1': group_xid, 'ref_2': self.transformed_item['xid']}
+            )
+
+            self.log.info(
+                f'Added associated group with xid: {group_xid} to {self.transformed_item["xid"]}'
+            )
 
     def add_attribute(
         self,

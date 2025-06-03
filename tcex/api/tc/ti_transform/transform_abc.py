@@ -63,6 +63,8 @@ class TransformsABC(ABC):  # noqa: B024
         ti_dicts: list[dict],
         transforms: list[GroupTransformModel | IndicatorTransformModel],
         raise_exceptions: bool = False,
+        *,
+        seperate_batch_associations: bool = False,
     ):
         """Initialize instance properties."""
         self.ti_dicts = ti_dicts
@@ -71,6 +73,7 @@ class TransformsABC(ABC):  # noqa: B024
         # properties
         self.log = _logger
         self.raise_exceptions = raise_exceptions
+        self.seperate_batch_associations = seperate_batch_associations
         self.transformed_collection: list[TransformABC] = []
 
         # validate transforms
@@ -95,10 +98,13 @@ class TransformABC(ABC):
         self,
         ti_dict: dict,
         transforms: list[GroupTransformModel | IndicatorTransformModel],
+        *,
+        seperate_batch_associations: bool = False,
     ):
         """Initialize instance properties."""
         self.ti_dict = ti_dict
         self.transforms = transforms if isinstance(transforms, list) else [transforms]
+        self.seperate_batch_associations = seperate_batch_associations
 
         # properties
         self.adhoc_groups: list[dict] = []
