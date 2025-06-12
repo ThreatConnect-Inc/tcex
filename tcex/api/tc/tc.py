@@ -48,9 +48,13 @@ class TC:
     def ti_transforms(
         ti_dict: list[dict],
         transforms: list[GroupTransformModel | IndicatorTransformModel],
+        *,
+        seperate_batch_associations: bool = False,
     ) -> TiTransforms:
         """Return an instance of TI Transforms class."""
-        return TiTransforms(ti_dict, transforms)
+        return TiTransforms(
+            ti_dict, transforms, seperate_batch_associations=seperate_batch_associations
+        )
 
     @cached_property
     def utils(self) -> ThreatIntelUtil:

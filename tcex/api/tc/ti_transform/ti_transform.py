@@ -63,6 +63,9 @@ class TiTransforms(TransformsABC):
                 continue
 
             # now that batch is called we can identify the ti type
+            if self.seperate_batch_associations:
+                associations = data.pop('association', [])
+                batch.setdefault('association', []).extend(associations)
             if isinstance(t.transform, GroupTransformModel):
                 batch['group'].append(data)
             elif isinstance(t.transform, IndicatorTransformModel):
@@ -93,13 +96,31 @@ class TiTransform(TransformABC):
                 associated_group = {'groupXid': group_xid}
                 self.transformed_item.setdefault('associatedGroups', []).append(associated_group)
         else:
-            self.transformed_item.setdefault('association', []).append(
-                {'ref_1': group_xid, 'ref_2': self.transformed_item['xid']}
-            )
-
-            self.log.info(
-                f'Added associated group with xid: {group_xid} to {self.transformed_item["xid"]}'
-            )
+            if isinstance(self.transform, GroupTransformModel):
+                self.transformed_item.setdefault('association', []).append(
+                    {
+                        'ref_1': group_xid,
+                        'ref_2': self.transformed_item['xid'],
+                    }
+                )
+                self.log.info(
+                    'Added associated group with xid: %s to %s',
+                    group_xid,
+                    self.transformed_item["xid"],
+                )
+            elif isinstance(self.transform, IndicatorTransformModel):
+                self.transformed_item.setdefault('association', []).append(
+                    {
+                        'ref_1': group_xid,
+                        'ref_2': self.transformed_item['summary'],
+                        'type_2': self.transformed_item['type'],
+                    }
+                )
+                self.log.info(
+                    'Added associated group with xid: %s to %s',
+                    group_xid,
+                    self.transformed_item["summary"],
+                )
 
     def add_attribute(
         self,

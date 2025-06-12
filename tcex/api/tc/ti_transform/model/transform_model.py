@@ -68,12 +68,12 @@ class PathTransformModel(BaseModel, extra=Extra.forbid):
     @classmethod
     def _validate_path(cls, v):
         """Validate path."""
-        if v is not None:
-            try:
-                _ = jmespath_compile(v)
-            except Exception as ex:
-                ex_msg = 'A valid path must be provided.'
-                raise ValueError(ex_msg) from ex
+        # if v is not None:
+        #     try:
+        #         _ = jmespath_compile(v)
+        #     except Exception as ex:
+        #         ex_msg = 'A valid path must be provided.'
+        #         raise ValueError(ex_msg) from ex
         return v
 
     # root validator that ensure at least one indicator value/summary is set

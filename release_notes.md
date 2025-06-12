@@ -1,5 +1,9 @@
 # Release Notes
 
+## 4.0.9
+
+-   APP-4846 - [transform] Add support for Batch API update which enables top-level associations.
+
 
 ## 4.0.8
 
