@@ -154,6 +154,7 @@ skip-magic-trailing-comma = false
 
 # https://beta.ruff.rs/docs/configuration/#error-suppression
 ignore = [
+  "A004", # Import `print` is shadowing a Python builtin
   "B008", # Do not perform function call ... in argument defaults; instead, perform ...
   "B011", # do not call assert False since python -O removes these calls
   "BLE001", # Do not catch blind exception: ...
@@ -167,17 +168,35 @@ ignore = [
   "D413", # Missing blank line after last section ...
   "D415", # First line should end with a period, question mark, or exclamation point ...
   "E402", # module level import not at top of file
+  "EM101", # Exception must not use a string literal, assign to variable first
+  "EM102", # Exception must not use an f-string literal, assign to variable first
   "FBT001", # Boolean-typed positional argument in function definition
   "FBT002", # Boolean default positional argument in function definition
+  "FBT003", # Boolean positional value in function call
   "G004", # Logging statement uses f-string
+  "N801", # Class name `scoped_property` should use CapWords convention
   "N818", # Exception name ... should be named with an Error suffix
   "PGH003", # Use specific rule codes when ignoring type issues
   "PLR0912", # Too many branches
   "PLR0913", # Too many arguments in function definition
   "PLR0915", # Too many statements
+  "PLR2004", # Magic value used in comparison
+  "PLW2901", # `for` loop variable `v` overwritten by assignment target
   "PT006", # Wrong name(s) type in ..., expected ...
+  "PTH111", # `os.path.expanduser()` should be replaced by `Path.expanduser()`
+  "PTH113", #d `os.path.isfile()` should be replaced by `Path.is_file()`
+  "RET504", # Unnecessary assignment to `new_value` before `return` statement
+  "RUF005", # Consider `[*acc, curr]` instead of concatenation
+  "RUF012", # Mutable class attributes should be annotated with `typing.ClassVar`
+  "SIM102", # Use a single `if` statement instead of nested `if` statements
+  "SIM103", # Return the condition `bool(re.match(self.variable_tc_match, key))` directly
+  "SIM105, # Use `contextlib.suppress(Exception)` instead of `try`-`except`-`pass`
+  "SIM108", # Use ternary operator
   "TC001", # Move application import ... into a type-checking block
   "TID252", # Prefer absolute imports over relative imports from parent modules
+  "TRY003", # Avoid specifying long messages outside the exception class
+  "TRY201", # Use `raise` without specifying exception name
+  "TRY400", # Use `logging.exception` instead of `logging.error`
 ]
 
 # control enabled plugins
