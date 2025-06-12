@@ -34,7 +34,9 @@ _logger: TraceLogger = logging.getLogger(__name__.split('.', maxsplit=1)[0])  # 
 json_encoders = {Sensitive: lambda v: str(v)}
 
 
-def input_model(models: list) -> CommonModel | CommonAdvancedModel:
+def input_model(
+    models: list,
+) -> CommonModel | CommonAdvancedModel:
     """Return Input Model."""
 
     class InputModel(*models):
@@ -55,7 +57,7 @@ def input_model(models: list) -> CommonModel | CommonAdvancedModel:
             validate_assignment = True
             json_encoders = json_encoders
 
-    return InputModel
+    return InputModel  # type: ignore[return-value]
 
 
 class Input:
