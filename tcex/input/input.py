@@ -31,7 +31,7 @@ from tcex.util import Util
 _logger: TraceLogger = logging.getLogger(__name__.split('.', maxsplit=1)[0])  # type: ignore
 
 # define JSON encoders
-json_encoders = {Sensitive: lambda v: str(v)}
+json_encoders = {Sensitive: str}
 
 
 def input_model(
