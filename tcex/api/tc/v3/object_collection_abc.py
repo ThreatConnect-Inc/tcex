@@ -1,7 +1,9 @@
 """TcEx Framework Module"""
 
 # standard library
+import json
 import logging
+import urllib.parse
 from abc import ABC
 from collections.abc import Generator
 from typing import Any
@@ -85,6 +87,19 @@ class ObjectCollectionABC(ABC):  # noqa: B024
         ex_msg = 'Child class must implement this method.'
         raise NotImplementedError(ex_msg)
 
+    @property
+    def _max_logging_segment(self) -> int:
+        """Return the maximum logging length based on the log level."""
+        match self.log.getEffectiveLevel():
+            case logging.DEBUG:
+                return 1_000
+
+            case logging.TRACE:  # type: ignore
+                return 1_500
+
+            case _:
+                return 200
+
     def _request(
         self,
         method: str,
@@ -94,11 +109,20 @@ class ObjectCollectionABC(ABC):  # noqa: B024
         headers: dict | None = None,
     ):
         """Handle standard request with error checking."""
+        max_param_length = 2_000
+        if method == 'GET' and body is None and params is not None and params:
+            query_string = urllib.parse.urlencode(params)
+            if len(query_string) > max_param_length:
+                # set body to the format that TC support for params in body
+                body = json.dumps({'data': params})
+                # reset params to None
+                params = None
+
         try:
+            self.log_request(method, url, body, params)
             self.request = self._session.request(
                 method, url, data=body, headers=headers, params=params
             )
-            self.log.debug(f'feature=api-tc-v3, request-body={self.request.request.body}')
         except (ConnectionError, ProxyError, RetryError):  # pragma: no cover
             handle_error(
                 code=951,
@@ -123,7 +147,7 @@ class ObjectCollectionABC(ABC):  # noqa: B024
             )
 
         # log content for debugging
-        self.log_response_text(self.request)
+        self.log_response(self.request)
 
     @property
     def filter(self):  # pragma: no cover
@@ -131,13 +155,36 @@ class ObjectCollectionABC(ABC):  # noqa: B024
         ex_msg = 'Child class must implement this method.'
         raise NotImplementedError(ex_msg)
 
-    def log_response_text(self, response: Response):
+    def log_request(
+        self, method: str, url: str, body: bytes | str | None = None, params: dict | None = None
+    ):
         """Log the response text."""
-        max_text_length = 5_000
-        response_text = 'response text: (text to large to log)'
-        if len(response.content) < max_text_length:  # check size of content for performance
-            response_text = response.text
-        self.log.debug(f'feature=api-tc-v3, response-body={response_text}')
+        max_log_segment = self._max_logging_segment
+
+        if isinstance(body, bytes):
+            body = '[binary data]'
+
+        if body is not None and len(body) > (max_log_segment * 2):
+            body = body[:max_log_segment] + '... [truncated] ...' + body[-max_log_segment:]
+
+        self.log.info(
+            f'feature=api-tc-v3, request-method={method}, request-url={url}, '
+            f'request-body={body}, request-params={params}',
+        )
+
+    def log_response(self, response: Response):
+        """Log the response text."""
+        max_log_segment = self._max_logging_segment
+
+        body = response.text
+        if body is not None and len(body) > (max_log_segment * 2):
+            body = body[:max_log_segment] + '... [truncated] ...' + body[-max_log_segment:]
+
+        self.log.info(
+            f'feature=api-tc-v3, response-status={response.status_code}, '
+            f'response-body={body}, response-elapsed={response.elapsed.total_seconds()}, '
+            f'response-url={response.request.url}'
+        )
 
     @property
     def model(self):

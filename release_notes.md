@@ -1,5 +1,10 @@
 # Release Notes
 
+## 4.0.9
+
+-   APP-4851 - [Util] Updated regex patterns for Playbook and TC variable to be more specific
+-   APP-4852 - [API] Send query params in body for GET requests
+
 
 ## 4.0.8
 
