@@ -102,7 +102,6 @@ class ProcessingFunctions:
         """."""
         self.tcex = tcex
         self.custom_fns = {}
-        self.custom_fns = {}
 
     @custom_function_definition(
         {

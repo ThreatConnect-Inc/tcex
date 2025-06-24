@@ -80,6 +80,43 @@ class TiTransforms(TransformsABC):
 class TiTransform(TransformABC):
     """Threat Intelligence Transform Module"""
 
+    def add_custom_association(self, summary: str, indicator_type: str, association_type: str):
+        """Add a custom association."""
+        if not self.seperate_batch_associations:
+            raise TransformException(
+                field='associatedIndicator',
+                cause=RuntimeError(
+                    'Cannot add associated indicator to IndicatorTransformModel when '
+                    'seperate_batch_associations is False.'
+                ),
+                context=self.transformed_item,
+            )
+
+        self.transformed_item.setdefault('association', []).append(
+            {
+                'ref_1': self.transformed_item['summary'],
+                'type_1': self.transformed_item['type'],
+                'ref_2': summary,
+                'type_2': indicator_type,
+                'association_type': association_type,
+            }
+        )
+
+    def add_associated_indicator(self, summary: str, indicator_type: str):
+        """Add an associated indicator."""
+        if not self.seperate_batch_associations:
+            self.transformed_item.setdefault('associatedIndicators', []).append(
+                {'summary': summary, 'indicatorType': indicator_type}
+            )
+        else:
+            self.transformed_item.setdefault('association', []).append(
+                {
+                    'ref_1': self.transformed_item['xid'],
+                    'ref_2': summary,
+                    'type_2': indicator_type,
+                }
+            )
+
     def add_associated_group(self, group_xid: str):
         """Add an associated group.
 
