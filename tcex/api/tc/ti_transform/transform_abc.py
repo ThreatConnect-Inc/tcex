@@ -217,10 +217,10 @@ class TransformABC(ABC):
                 raise TransformException(ex_msg, ex, context=association.dict()) from ex
 
     def _process_associated_indicator(
-        self, asssociations: list[AssociatedIndicatorFromGroupTransform]
+        self, associations: list[AssociatedIndicatorFromGroupTransform]
     ):
         """Process Associated Indicator data."""
-        for i, association in enumerate(asssociations or [], 1):
+        for i, association in enumerate(associations or [], 1):
             try:
                 summary = self._process_metadata_transform_model(association.summary)
                 indicator_type = self._process_metadata_transform_model(association.indicator_type)
@@ -398,7 +398,7 @@ class TransformABC(ABC):
             self._process_metadata('fileType', self.transform.file_type)
             self._process_metadata('fileText', self.transform.file_text)
 
-        self._process_associated_indicators('associated_indicators')
+        self._process_associated_indicator(self.transform.associated_indicators)
 
     def _process_indicator(self):
         """Process Indicator Specific data."""
