@@ -24,6 +24,8 @@ from tcex.api.tc.ti_transform.model import (
 )
 from tcex.api.tc.ti_transform.model.transform_model import (
     AssociatedGroupTransform,
+    AssociatedIndicatorFromGroupTransform,
+    AssociatedIndicatorFromIndicatorTransform,
     DatetimeTransformModel,
     FileOccurrenceTransformModel,
     PredefinedFunctionModel,
@@ -63,6 +65,8 @@ class TransformsABC(ABC):  # noqa: B024
         ti_dicts: list[dict],
         transforms: list[GroupTransformModel | IndicatorTransformModel],
         raise_exceptions: bool = False,
+        *,
+        seperate_batch_associations: bool = False,
     ):
         """Initialize instance properties."""
         self.ti_dicts = ti_dicts
@@ -71,6 +75,7 @@ class TransformsABC(ABC):  # noqa: B024
         # properties
         self.log = _logger
         self.raise_exceptions = raise_exceptions
+        self.seperate_batch_associations = seperate_batch_associations
         self.transformed_collection: list[TransformABC] = []
 
         # validate transforms
@@ -95,10 +100,13 @@ class TransformABC(ABC):
         self,
         ti_dict: dict,
         transforms: list[GroupTransformModel | IndicatorTransformModel],
+        *,
+        seperate_batch_associations: bool = False,
     ):
         """Initialize instance properties."""
         self.ti_dict = ti_dict
         self.transforms = transforms if isinstance(transforms, list) else [transforms]
+        self.seperate_batch_associations = seperate_batch_associations
 
         # properties
         self.adhoc_groups: list[dict] = []
@@ -182,6 +190,53 @@ class TransformABC(ABC):
 
         # xid
         self._process_metadata('xid', self.transform.xid)
+
+    def _process_custom_association(
+        self, associations: list[AssociatedIndicatorFromIndicatorTransform]
+    ):
+        """Process Custom Association data."""
+        for i, association in enumerate(associations or [], 1):
+            try:
+                summary = self._process_metadata_transform_model(association.summary)
+                indicator_type = self._process_metadata_transform_model(association.type)
+                association_type = self._process_metadata_transform_model(
+                    association.association_type
+                )
+
+                if not summary or not indicator_type or not association_type:
+                    self.log.warning(
+                        'feature=transform, action=process-custom-association, '
+                        'transform=%s, error=no-summary-or-type',
+                        association.dict(exclude_unset=True),
+                    )
+                    continue
+
+                self.add_custom_association(summary, indicator_type, association_type)  # type: ignore
+            except Exception as ex:
+                ex_msg = f'Associated Indicator [{i}]'
+                raise TransformException(ex_msg, ex, context=association.dict()) from ex
+
+    def _process_associated_indicator(
+        self, associations: list[AssociatedIndicatorFromGroupTransform]
+    ):
+        """Process Associated Indicator data."""
+        for i, association in enumerate(associations or [], 1):
+            try:
+                summary = self._process_metadata_transform_model(association.summary)
+                indicator_type = self._process_metadata_transform_model(association.indicator_type)
+
+                if not summary or not indicator_type:
+                    self.log.warning(
+                        'feature=transform, action=process-associated-indicator, '
+                        'transform=%s, error=no-summary-or-type',
+                        association.dict(exclude_unset=True),
+                    )
+                    continue
+
+                self.add_associated_indicator(summary, indicator_type)  # type: ignore
+            except Exception as ex:
+                ex_msg = f'Associated Indicator [{i}]'
+                raise TransformException(ex_msg, ex, context=association.dict()) from ex
 
     def _process_associated_group(self, associations: list[AssociatedGroupTransform]):
         """Process Attribute data"""
@@ -342,6 +397,8 @@ class TransformABC(ABC):
             self._process_metadata('fileName', self.transform.file_name)
             self._process_metadata('fileType', self.transform.file_type)
             self._process_metadata('fileText', self.transform.file_text)
+
+        self._process_associated_indicator(self.transform.associated_indicators)
 
     def _process_indicator(self):
         """Process Indicator Specific data."""
@@ -660,6 +717,14 @@ class TransformABC(ABC):
     @abstractmethod
     def add_associated_group(self, group_xid: str):
         """Abstract method"""
+
+    @abstractmethod
+    def add_custom_association(self, summary: str, indicator_type: str, association_type: str):
+        """."""
+
+    @abstractmethod
+    def add_associated_indicator(self, summary: str, indicator_type: str):
+        """."""
 
     @abstractmethod
     def add_attribute(

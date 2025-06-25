@@ -118,6 +118,21 @@ class AssociatedGroupTransform(ValueTransformModel, extra=Extra.forbid):
     """."""
 
 
+class AssociatedIndicatorFromGroupTransform(BaseModel, extra=Extra.forbid):
+    """."""
+
+    summary: str | MetadataTransformModel = Field(..., description='')
+    indicator_type: str | MetadataTransformModel = Field(..., description='')
+
+
+class AssociatedIndicatorFromIndicatorTransform(BaseModel, extra=Extra.forbid):
+    """."""
+
+    summary: str | MetadataTransformModel = Field(..., description='')
+    type: str | MetadataTransformModel = Field(..., description='')
+    association_type: str | MetadataTransformModel = Field(..., description='')
+
+
 class AttributeTransformModel(ValueTransformModel, extra=Extra.forbid):
     """."""
 
@@ -160,6 +175,8 @@ class TiTransformModel(BaseModel, extra=Extra.forbid):
 class GroupTransformModel(TiTransformModel, extra=Extra.forbid):
     """."""
 
+    associated_indicators: list[AssociatedIndicatorFromGroupTransform] = Field([], description='')
+
     name: MetadataTransformModel = Field(..., description='')
     # document
     malware: MetadataTransformModel | None = Field(None, description='')
@@ -186,6 +203,9 @@ class GroupTransformModel(TiTransformModel, extra=Extra.forbid):
 class IndicatorTransformModel(TiTransformModel, extra=Extra.forbid):
     """."""
 
+    associated_indicators: list[AssociatedIndicatorFromIndicatorTransform] = Field(
+        [], description=''
+    )
     confidence: MetadataTransformModel | None = Field(None, description='')
     rating: MetadataTransformModel | None = Field(None, description='')
     # summary: MetadataTransformModel | None = Field(None, description='')

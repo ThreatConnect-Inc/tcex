@@ -24,5 +24,8 @@ class API:
 
     @cached_property
     def tc(self) -> TC:
-        """Return a case management instance."""
+        """Return a TC instance.
+
+        TC is a top-level class for accessing the ThreatConnect API.
+        """
         return TC(self.inputs, self.session_tc)
