@@ -398,6 +398,10 @@ class TransformABC(ABC):
             self._process_metadata('fileType', self.transform.file_type)
             self._process_metadata('fileText', self.transform.file_text)
 
+        if self.transformed_item['type'] == 'Case':
+            self._process_metadata('severity', self.transform.severity)
+            self._process_metadata('status', self.transform.status)
+
         self._process_associated_indicator(self.transform.associated_indicators)
 
     def _process_indicator(self):
