@@ -272,3 +272,67 @@ class TiTransform(TransformABC):
         """Return the data in batch format."""
         self._process()
         return dict(sorted(self.transformed_item.items()))
+
+    @property
+    def v3_api(self) -> dict:
+        """Return the data in v3 format."""
+        self._process()
+        v3_data = {**self.transformed_item}
+
+        # transform group associations
+        if v3_data.get('associatedGroupXid'):
+            v3_data['associatedGroup'] = {
+                'data': [{'xid': g for g in v3_data['associatedGroupXid']}]
+            }
+            del v3_data['associatedGroupXid']
+
+        # transform attributes
+        if v3_data.get('attribute'):
+            v3_data['attributes'] = {
+                'data': [
+                    {
+                        'type': a['type'],
+                        'value': a['value'],
+                        'displayed': a.get('displayed', False),
+                        'pinned': a.get('pinned', False),
+                        'source': a.get('source'),
+                    }
+                    for a in v3_data['attribute']
+                ]
+            }
+            del v3_data['attribute']
+
+        # transfomr tags
+        if v3_data.get('tag'):
+            v3_data['tags'] = {'data': [{'name': t['name']} for t in v3_data['tag']]}
+            del v3_data['tag']
+
+        # transform security labels
+        if v3_data.get('securityLabel'):
+            v3_data['securityLabels'] = {
+                'data': [
+                    {
+                        'name': l['name'],
+                        'color': l.get('color'),
+                        'description': l.get('description'),
+                    }
+                    for l in v3_data['securityLabel']
+                ]
+            }
+            del v3_data['securityLabel']
+
+        # transform file occurrences
+        if v3_data.get('fileOccurrence'):
+            v3_data['fileOccurrences'] = {
+                'data': [
+                    {
+                        'fileName': f.get('fileName'),
+                        'path': f.get('path'),
+                        'date': f.get('date'),
+                    }
+                    for f in v3_data['fileOccurrence']
+                ]
+            }
+            del v3_data['fileOccurrence']
+
+        return v3_data
