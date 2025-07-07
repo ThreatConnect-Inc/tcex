@@ -132,9 +132,18 @@ class ProcessingFunctions:
         """Allow for custom processing to be described."""
         fn = self.custom_fns.get(name.lower())
         if not fn:
-            ex_msg = f'Custom function not implemented: {description}'
+            ex_msg = f'Custom function not implemented: {name}:{description}'
+            ex_msg += f'\ncustom_fns: {self.custom_fns}'
             raise NotImplementedError(ex_msg)
-        return fn(value, ti_dict=ti_dict, transform=transform, **kwargs)
+        # Get the list of supported parameters for the function
+
+        sig = signature(fn)
+        params = {}
+        if 'ti_dict' in sig.parameters:
+            params['ti_dict'] = ti_dict
+        if 'transform' in sig.parameters:
+            params['transform'] = transform
+        return fn(value, **params, **kwargs)
 
     def static_map(self, value, mapping: dict):
         """Map values to static values.
