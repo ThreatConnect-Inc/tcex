@@ -76,6 +76,41 @@ class TiTransforms(TransformsABC):
             batch['indicator'].extend(t.adhoc_indicators)
         return batch
 
+    @property
+    def v3_api(self) -> dict:
+        """Return the data in v3 format."""
+        self.process()
+
+        v3_data = {}
+        self.log.trace(f'feature=ti-transform-v3, ti-count={len(self.transformed_collection)}')
+        for index, t in enumerate(self.transformed_collection):
+            if index and index % 1_000 == 0:
+                self.log.trace(f'feature=ti-transform-v3, items={index}')
+
+            # v3_api must be called so that the transform type is selected
+            try:
+                data = t.v3_api
+            except NoValidTransformException:
+                self.log.exception('feature=ti-transforms, event=runtime-error')
+                continue
+            except TransformException as e:
+                self.log.warning(
+                    f'feature=ti-transforms, event=transform-error, field="{e.field}", '
+                    f'cause="{e.cause}", context="{e.context}"'
+                )
+                if self.raise_exceptions:
+                    raise
+                continue
+            except Exception:
+                self.log.exception('feature=ti-transforms, event=transform-error')
+                if self.raise_exceptions:
+                    raise
+                continue
+
+            v3_data.setdefault(data.pop('type'), []).extend(data)
+
+        return v3_data
+
 
 class TiTransform(TransformABC):
     """Threat Intelligence Transform Module"""
@@ -281,8 +316,8 @@ class TiTransform(TransformABC):
 
         # transform group associations
         if v3_data.get('associatedGroupXid'):
-            v3_data['associatedGroup'] = {
-                'data': [{'xid': g for g in v3_data['associatedGroupXid']}]
+            v3_data['associatedGroups'] = {
+                'data': [{'xid': g for g in v3_data['associatedGroupXid']}]  # noqa
             }
             del v3_data['associatedGroupXid']
 
@@ -293,9 +328,11 @@ class TiTransform(TransformABC):
                     {
                         'type': a['type'],
                         'value': a['value'],
-                        'displayed': a.get('displayed', False),
                         'pinned': a.get('pinned', False),
                         'source': a.get('source'),
+                        # purposefully ignore the following fields, as they aren't part of the
+                        # v3 API
+                        # 'displayed': a.get('displayed', False),
                     }
                     for a in v3_data['attribute']
                 ]
@@ -312,11 +349,11 @@ class TiTransform(TransformABC):
             v3_data['securityLabels'] = {
                 'data': [
                     {
-                        'name': l['name'],
-                        'color': l.get('color'),
-                        'description': l.get('description'),
+                        'name': s['name'],
+                        'color': s.get('color'),
+                        'description': s.get('description'),
                     }
-                    for l in v3_data['securityLabel']
+                    for s in v3_data['securityLabel']
                 ]
             }
             del v3_data['securityLabel']
