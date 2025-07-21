@@ -198,6 +198,8 @@ class GroupTransformModel(TiTransformModel, extra=Extra.forbid):
     file_text: MetadataTransformModel | None = Field(None, description='')
     # document, signature
     file_name: MetadataTransformModel | None = Field(None, description='')
+    # Case
+    severity: MetadataTransformModel | None = Field(None, description='')
 
 
 class IndicatorTransformModel(TiTransformModel, extra=Extra.forbid):
