@@ -137,13 +137,13 @@ class ProcessingFunctions:
             raise NotImplementedError(ex_msg)
         # Get the list of supported parameters for the function
 
-        sig = signature(fn)
-        params = {}
-        if 'ti_dict' in sig.parameters:
-            params['ti_dict'] = ti_dict
-        if 'transform' in sig.parameters:
-            params['transform'] = transform
-        return fn(value, **params, **kwargs)
+        # Build params dynamically based on the function signature
+        all_args = {'ti_dict': ti_dict, 'transform': transform, **kwargs}
+        sig_params = signature(fn).parameters
+
+        # Only pass arguments that the function accepts
+        filtered_args = {k: v for k, v in all_args.items() if k in sig_params or 'kwargs' in sig_params}
+        return fn(value, **filtered_args)
 
     def static_map(self, value, mapping: dict):
         """Map values to static values.
