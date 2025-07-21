@@ -157,6 +157,9 @@ class TransformABC(ABC):
         # process type first, fail early
         self._process_type()
 
+        # xid
+        self._process_metadata('xid', self.transform.xid)
+
         # process type specific data
         if isinstance(self.transform, GroupTransformModel):
             self._process_group()
@@ -169,7 +172,6 @@ class TransformABC(ABC):
         self._process_security_labels(self.transform.security_labels or [])
         self._process_tags(self.transform.tags or [])
 
-        # date fields
         # date fields
         self._process_metadata_datetime('dateAdded', self.transform.date_added)
         self._process_metadata_datetime('lastModified', self.transform.last_modified)
@@ -187,9 +189,6 @@ class TransformABC(ABC):
         self._process_metadata_datetime(
             'externalLastModified', self.transform.external_last_modified
         )
-
-        # xid
-        self._process_metadata('xid', self.transform.xid)
 
     def _process_custom_association(
         self, associations: list[AssociatedIndicatorFromIndicatorTransform]
@@ -243,7 +242,8 @@ class TransformABC(ABC):
         for i, association in enumerate(associations or [], 1):
             try:
                 for value in filter(
-                    bool, self._process_metadata_transform_model(association.value)
+                    bool,
+                    [v for v in self._process_metadata_transform_model(association.value) if v],
                 ):
                     self.add_associated_group(value)  # type: ignore
             except Exception as ex:
@@ -397,6 +397,10 @@ class TransformABC(ABC):
             self._process_metadata('fileName', self.transform.file_name)
             self._process_metadata('fileType', self.transform.file_type)
             self._process_metadata('fileText', self.transform.file_text)
+
+        if self.transformed_item['type'] == 'Case':
+            self._process_metadata('severity', self.transform.severity)
+            self._process_metadata('status', self.transform.status)
 
         self._process_associated_indicator(self.transform.associated_indicators)
 
