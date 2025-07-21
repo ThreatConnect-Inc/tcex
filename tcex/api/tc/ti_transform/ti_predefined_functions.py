@@ -142,7 +142,9 @@ class ProcessingFunctions:
         sig_params = signature(fn).parameters
 
         # Only pass arguments that the function accepts
-        filtered_args = {k: v for k, v in all_args.items() if k in sig_params or 'kwargs' in sig_params}
+        filtered_args = {
+            k: v for k, v in all_args.items() if k in sig_params or 'kwargs' in sig_params
+        }
         return fn(value, **filtered_args)
 
     def static_map(self, value, mapping: dict):
