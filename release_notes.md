@@ -1,6 +1,9 @@
 # Release Notes
 
 ## 4.0.9
+
+-   APP-4870 - [Transform] Loosen restrictions for custom function transform definition
+-   APP-4869 - [Inputs] Add strip() option to always_array input validation
 -   APP-4866 - [transfomr] Add Support for "Severity" and "Status" fields to Case
 -   APP-4851 - [Util] Updated regex patterns for Playbook and TC variable to be more specific
 -   APP-4852 - [API] Send query params in body for GET requests
