@@ -799,6 +799,26 @@ class TestV3:
                 ]
 
             if self.v3_helper.v3_object in ['groups']:
+                # per Phil
+                # common -> provides the common group data:
+                #     for example, cvss_v4 and cvss_score_v4, etc.
+                # references -> provides the sources of the common group:
+                #     what was used to determine it was a vulnerability CVE or KEV
+                # linkedGroups -> provides all the groups/buckets linked to common group:
+                #     share the same name and type
+
+                if 'common' in names:
+                    # fix discrepancy between <endpoint>/fields and <endpoint>
+                    names = ['commonGroup']
+
+                if 'linkedGroups' in names:
+                    # fix discrepancy between <endpoint>/fields and <endpoint>
+                    names = ['commonGroup']
+
+                if 'references' in names:
+                    # fix discrepancy between <endpoint>/fields and <endpoint>
+                    names = ['commonGroup']
+
                 if 'intelReviews' in names:
                     names = ['reviews']
 

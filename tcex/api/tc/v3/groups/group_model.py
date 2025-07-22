@@ -84,6 +84,13 @@ class GroupModel(
         read_only=False,
         title='body',
     )
+    # common_group: dict | None = Field(
+    #     None,
+    #     allow_mutation=False,
+    #     description='The common data shared across groups by name and type.',
+    #     read_only=True,
+    #     title='commonGroup',
+    # )
     created_by: 'UserModel' = Field(
         None,
         allow_mutation=False,

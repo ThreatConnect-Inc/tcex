@@ -182,13 +182,6 @@ class OwnerModel(
         read_only=True,
         title='permTimeline',
     )
-    perm_track: str | None = Field(
-        None,
-        allow_mutation=False,
-        description='Permission is used for access to Tracks.',
-        read_only=True,
-        title='permTrack',
-    )
     perm_users: str | None = Field(
         None,
         allow_mutation=False,

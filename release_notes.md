@@ -2,14 +2,15 @@
 
 ## 4.0.9
 
--   APP-4870 - [Transform] Loosen restrictions for custom function transform definition
--   APP-4869 - [Inputs] Add strip() option to always_array input validation
--   APP-4866 - [transfomr] Add Support for "Severity" and "Status" fields to Case
+-   APP-4825 - [Token] Updated token logic to handle new long-lived tokens
+-   APP-4846 - [Transform] Added support for Batch API update which enables top-level associations
 -   APP-4851 - [Util] Updated regex patterns for Playbook and TC variable to be more specific
--   APP-4852 - [API] Send query params in body for GET requests
--   APP-4846 - [transform] Add support for Batch API update which enables top-level associations.
--   APP-4868 - [PREVIEW] [transform] add support for producing v3 api format
-
+-   APP-4852 - [API] Updated API logic to send query params in body when length exceeds max characters
+-   APP-4866 - [Transform] Added Support for "Severity" and "Status" fields to Case
+-   APP-4868 - (PREVIEW) [Transform] Added support for producing v3 API format
+-   APP-4869 - [Inputs] Added strip() option to always_array input validation
+-   APP-4870 - [Transform] Loosened restrictions for custom function transform definition
+-   APP-4886 - [API] Updated V3 API to include new endpoints and/or updates to existing endpoints
 
 ## 4.0.8
 
@@ -17,19 +18,19 @@
 -   APP-4740 - Migrated to "uv" for package management
 -   APP-4741 - Switched linters to "ruff" (including linting fixes)
 -   APP-4743 - [API] Added support for "conditional-read-only" fields
--   APP-4744 - [API] Add support for v2 batch association changes
--   APP-4769 - [INPUT] Update EditChoice input type to handle new value pattern
+-   APP-4744 - [API] Added support for v2 batch association changes
+-   APP-4769 - [INPUT] Updated EditChoice input type to handle new value pattern
 -   APP-4806 - [API] Updated stage_assignee method for cases and tasks
 
 ## 4.0.7
 
--   APP-4601 - [pleb] Added jmespath custom functions to pleb to centralize functionality
--   APP-4604 - [transform] Added standard processing functions class
--   APP-4605 - [transform] Normalized the way null/empty values are handled in transforms (includes '')
--   APP-4620 - [transform] Added structured/contextualized exceptions to transform
--   APP-4632 - [transform] Added support for attribute.pinned field
--   APP-4640 - [api] Updated API hashing method to use SHA256 for FIPS compliance
--   APP-4656 - [transform] refactor how the custom predefined function works
+-   APP-4601 - [Pleb] Added jmespath custom functions to pleb to centralize functionality
+-   APP-4604 - [Transform] Added standard processing functions class
+-   APP-4605 - [Transform] Normalized the way null/empty values are handled in transforms (includes '')
+-   APP-4620 - [Transform] Added structured/contextualized exceptions to transform
+-   APP-4632 - [Transform] Added support for attribute.pinned field
+-   APP-4640 - [API] Updated API hashing method to use SHA256 for FIPS compliance
+-   APP-4656 - [Transform] Refactored how the custom predefined function works
 
 ## 4.0.6
 

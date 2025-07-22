@@ -173,8 +173,10 @@ class PropertyModel(
         """Process standard type."""
         types = [
             'AiInsights',
+            'AttackFinancialImpact',
             'AttackSecurityCoverage',
             'AttributeSource',
+            'CommonGroup',
             'DNSResolutions',
             'Enrichments',
             'GeoLocation',
