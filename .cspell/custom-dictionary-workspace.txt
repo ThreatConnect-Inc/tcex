@@ -3,6 +3,7 @@ addopts
 addressIpval
 ajfmuyodhscwegea
 apiservice
+APIV2
 apng
 appbuilderconfig
 attackpatterns
@@ -19,6 +20,7 @@ bpurdy
 brokercheck
 bsummers
 builtins
+bumpversion
 cacert
 caplog
 caseid

@@ -17,6 +17,8 @@ class Tag(ObjectABC):
 
     Args:
         description (str, kwargs): A brief description of the Tag.
+        financial_impact (object, kwargs): For ATT&CK-based tags, this is the financial impact level
+            assigned to the tag.
         name (str, kwargs): The **name** for the Tag.
         owner (str, kwargs): The name of the Owner of the Tag.
         security_coverage (object, kwargs): For ATT&CK-based tags, this is the security coverage

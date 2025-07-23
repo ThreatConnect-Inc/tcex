@@ -100,7 +100,7 @@ class TestInputsFieldTypes(InputTest):
                 False
             ),
             (
-                '${user_group:bsummers@threatconnect.com}',
+                '${user_groups:bsummers@threatconnect.com}',
                 'bsummers@threatconnect.com',
                 False,
                 False,

@@ -1,23 +1,28 @@
+# Specify the build backend for PEP 517 builds
 [build-system]
 build-backend = "setuptools.build_meta"
 requires = ["setuptools>=61"]
 
+# Project metadata and configuration
 [project]
 authors = [
   {name = "ThreatConnect", email = "support@threatconnect.com"},
 ]
+
+# Classifiers for the project
 classifiers = [
-  "Development Status :: 5 - Production/Stable",
-  "Intended Audience :: Developers",
-  "Natural Language :: English",
-  "License :: OSI Approved :: Apache Software License",
-  "Operating System :: OS Independent",
-  "Programming Language :: Python",
+  "Development Status :: 5 - Production/Stable", # Project development status
+  "Intended Audience :: Developers", # Intended audience for the project
+  "Natural Language :: English", # Language used in the project
+  "Operating System :: OS Independent", # Supported operating systems
+  "Programming Language :: Python", # Supported programming languages
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
-  "Topic :: Security",
+  "Topic :: Security", # Project topic
 ]
+
+# List of runtime dependencies
 dependencies = [
   "arrow>=1.3.0",
   "black>=25.1.0",
@@ -35,18 +40,33 @@ dependencies = [
   "semantic-version>=2.10.0",
   "wrapt>=1.17.2",
 ]
+
+# Short description of the project
 description = "ThreatConnect Exchange App Framework"
+
+# List of dynamic fields to be provided at build time
 dynamic = ["readme", "version"]
+
+# List of keywords for the project
 keywords = ["exchange", "tcex", "threatconnect"]
-license = {text = "Apache-2.0"}
+
+# License information
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+
+# Name of the project
 name = "tcex"
+
+# Minimum required Python version
 requires-python = ">=3.11"
 
+# URLs related to the project
 [project.urls]
 Documentation = "https://threatconnect.readme.io/docs/overview"
 "Release Notes" = "https://threatconnect.readme.io/docs/release-notes"
 Source = "https://github.com/ThreatConnect-Inc/tcex"
 
+# Dependency groups for development and testing
 [dependency-groups]
 dev = [
   "bandit>=1.8.3",
@@ -66,26 +86,70 @@ test = [
   "pytest-xdist>=3.6.1",
 ]
 
-[tool.setuptools]
-license-files = []
-
+# Dynamic configuration for setuptools
 [tool.setuptools.dynamic]
 readme = {file = ["README.md"], content-type = "text/markdown"}
 version = {attr = "tcex.__version__"}
 
+# Package discovery options for setuptools
 [tool.setuptools.packages.find]
 exclude = ["tests*", "local-*"]
 
 #
-# Linters / Formatters
+# Tool configurations
 #
 
+# Configuration for bumpversion tool
+[tool.bumpversion]
+# Allow version bumping even if there are uncommitted changes
+allow_dirty = true
+# Controls whether to create a git commit after bumping the version
+commit = false
+# Additional arguments to pass to the git commit command
+commit_args = "--no-verify"
+# The current version of the project
+current_version = "4.0.9"
+# The commit message template used when committing version bumps
+message = "Version updated from {current_version} to {new_version}"
+# Regular expression for parsing version strings
+parse = """(?x)
+    (?P<major>0|[1-9]\\d*)\\.
+    (?P<minor>0|[1-9]\\d*)\\.
+    (?P<patch>0|[1-9]\\d*)
+    (?:
+        -                             # dash separator for pre-release section
+        (?P<pre_l>[a-zA-Z-]+)         # pre-release label
+        (?P<pre_n>0|[1-9]\\d*)        # pre-release version number
+    )?                                # pre-release section is optional
+"""
+# List of commands to run as pre-commit hooks before bumping the version
+pre_commit_hooks = ["uv sync --upgrade", "git add uv.lock"]
+# Whether to use regular expressions for version parsing
+regex = false
+# List of version string formats to use when serializing the new version
+serialize = [
+  "{major}.{minor}.{patch}-{pre_l}{pre_n}",
+  "{major}.{minor}.{patch}",
+]
+# Controls whether to create a git tag after bumping the version
+tag = false
+
+# Configuration for pre-release label part in versioning
+[tool.bumpversion.parts.pre_l]
+optional_value = "final"
+values = ["dev", "rc", "final"]
+
+# List of files to update when bumping the version
+[[tool.bumpversion.files]]
+filename = "tcex/__metadata__.py"
+
+# Configuration for codespell spell checker
 [tool.codespell]
 # https://streetsidesoftware.com/vscode-spell-checker/
-
 ignore-words-list = "ore"
 skip = "*.cspell*,*.history,*local,uv.lock"
 
+# Configuration for isort import sorter
 [tool.isort]
 dedup_headings = false
 import_heading_firstparty = "first-party"
@@ -98,9 +162,9 @@ known_third_party = ""
 line_length = 100
 profile = "black"
 
+# Configuration for pyright type checker
 [tool.pyright]
 # https://github.com/microsoft/pyright/blob/main/docs/configuration.md#sample-pyprojecttoml-file
-
 exclude = [
   "**/.history",
   "**/__pycache__",
@@ -114,6 +178,7 @@ reportIncompatibleMethodOverride = false
 reportIncompatibleVariableOverride = false
 reportPrivateImportUsage = false
 
+# Configuration for pytest test runner
 [tool.pytest.ini_options]
 filterwarnings = []
 junit_family = "xunit2"
@@ -121,23 +186,21 @@ testpaths = [
   "tests",
 ]
 
+# Configuration for ruff linter and formatter
 [tool.ruff]
 # https://docs.astral.sh/ruff/
-
 # exclude additional directories, outside of .gitignore.
 exclude = [
   "tests",
 ]
-
 # set line length to match black
 line-length = 100
-
 # set the python target
 target-version = "py311"
 
+# Configuration for ruff formatter
 [tool.ruff.format]
 # https://docs.astral.sh/ruff/formatter/
-
 docstring-code-format = true
 docstring-code-line-length = 60
 indent-style = "space"
@@ -145,13 +208,12 @@ line-ending = "auto"
 quote-style = "single"
 skip-magic-trailing-comma = false
 
+# Configuration for ruff linter rules
 [tool.ruff.lint]
 # https://docs.astral.sh/ruff/linter/
-
 # control "--fix" behavior.
 # fixable = []
 # unfixable = []
-
 # https://beta.ruff.rs/docs/configuration/#error-suppression
 ignore = [
   "B008", # Do not perform function call ... in argument defaults; instead, perform ...
@@ -180,9 +242,7 @@ ignore = [
   "TC001", # Move application import ... into a type-checking block
   "TC006", # Checks for unquoted type expressions in typing.cast() calls.
   "TID252", # Prefer absolute imports over relative imports from parent modules
-
 ]
-
 # control enabled plugins
 select = [
   "A", # flake8-builtins
@@ -234,7 +294,6 @@ select = [
   "W", # pycodestyle
   "YTT", # flake8-2020
 ]
-
 # Other Options
 # "ANN", # flake8-annotations
 # "COM", # flake8-commas
@@ -242,9 +301,11 @@ select = [
 # "S", # flake8-bandit
 # "Q", # flake8-quotes
 
+# Per-file ignores for ruff linter
 [tool.ruff.lint.extend-per-file-ignores]
 "__init__.py" = ["F401"]
 
+# Pydocstyle configuration for ruff linter
 [tool.ruff.lint.pydocstyle]
 # https://docs.astral.sh/ruff/linter/
 

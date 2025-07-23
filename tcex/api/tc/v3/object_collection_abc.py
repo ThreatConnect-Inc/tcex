@@ -112,7 +112,7 @@ class ObjectCollectionABC(ABC):  # noqa: B024
         max_param_length = 2_000
         if method == 'GET' and body is None and params is not None and params:
             query_string = urllib.parse.urlencode(params)
-            if len(query_string) > max_param_length:
+            if len(query_string) >= max_param_length:
                 # set body to the format that TC support for params in body
                 body = json.dumps({'data': params})
                 # reset params to None

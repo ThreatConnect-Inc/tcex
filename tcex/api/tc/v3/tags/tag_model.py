@@ -39,6 +39,15 @@ class TagModel(
         read_only=False,
         title='description',
     )
+    # financial_impact: dict | None = Field(
+    #     None,
+    #     description=(
+    #         'For ATT&CK-based tags, this is the financial impact level assigned to the tag.'
+    #     ),
+    #     methods=['POST', 'PUT'],
+    #     read_only=False,
+    #     title='financialImpact',
+    # )
     groups: 'GroupsModel' = Field(
         None,
         allow_mutation=False,
